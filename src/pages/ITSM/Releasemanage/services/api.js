@@ -239,3 +239,12 @@ export async function classifyList(taskIds) {
     method: 'GET',
   });
 }
+
+// 流程删除 /release/flow/delete?releaseNo=FB202108200009
+export async function deleteFlow(params) {
+  return request(`/release/flow/delete`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}

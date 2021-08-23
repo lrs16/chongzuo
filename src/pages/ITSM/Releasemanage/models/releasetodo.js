@@ -130,13 +130,31 @@ export default {
         payload: { statuse: response.code },
       });
       if (response.code === 200) {
-        if (buttype === 'save') {
-          message.success('保存成功');
-        };
         yield put({
           type: 'saveinfo',
           payload: { info: response.data.savePlatformValid, currentTaskStatus: response.data.currentTaskStatus },
         });
+        if (buttype === 'save') {
+          message.success('保存成功');
+        };
+        if (buttype === 'noPass') {
+          const tabid = sessionStorage.getItem('tabid');
+          const nopasspayload = {
+            taskId: response.data.currentTaskStatus.taskId,
+            type: 0,
+          };
+          const subres = yield call(flowSubmit, nopasspayload);
+          if (subres.code === 200) {
+            message.success(subres.msg);
+            router.push({
+              pathname: `/ITSM/releasemanage/to-do`,
+              query: { pathpush: true },
+              state: { cach: false, closetabid: tabid }
+            });
+          } else {
+            message.error('操作失败');
+          }
+        };
       } else {
         message.error('操作失败');
       }
@@ -154,13 +172,31 @@ export default {
         payload: { statuse: response.code },
       });
       if (response.code === 200) {
-        if (buttype === 'save') {
-          message.success('保存成功');
-        };
         yield put({
           type: 'saveinfo',
           payload: { info: response.data.saveBizValid, currentTaskStatus: response.data.currentTaskStatus },
         });
+        if (buttype === 'save') {
+          message.success('保存成功');
+        };
+        if (buttype === 'noPass') {
+          const tabid = sessionStorage.getItem('tabid');
+          const nopasspayload = {
+            taskId: response.data.currentTaskStatus.taskId,
+            type: 3,
+          };
+          const subres = yield call(flowSubmit, nopasspayload);
+          if (subres.code === 200) {
+            message.success(subres.msg);
+            router.push({
+              pathname: `/ITSM/releasemanage/to-do`,
+              query: { pathpush: true },
+              state: { cach: false, closetabid: tabid }
+            });
+          } else {
+            message.error('操作失败');
+          }
+        };
       } else {
         message.error(response.msg)
       }
@@ -267,7 +303,7 @@ export default {
     // },
 
     // 版本管理员审核，科室负责人审核
-    * checkversion({ payload: { values, releaseAttaches, buttype, releaseNo, taskName } }, { call, put }) {
+    * checkversion({ payload: { values, releaseAttaches, buttype, releaseNo, taskName, } }, { call, put }) {
       yield put({
         type: 'savestatuse',
         payload: { statuse: -1 },
@@ -290,22 +326,40 @@ export default {
         });
         if (response.code === 200) {
           if (buttype === 'save') {
-            message.success('操作成功')
+            message.success('操作成功');
+            const openres = yield call(openFlow, releaseNo);           // 最后打开待办
+            if (openres.code === 200) {
+              const infomap = new Map([
+                ['版本管理员审核', openres.data.checkVersionParam],
+                ['科室负责人审核', openres.data.checkDirectorParam],
+                ['中心领导审核', openres.data.checkLeaderParam],
+              ]);
+              yield put({
+                type: 'saveinfo',
+                payload: { info: infomap.get(openres.data.currentTaskStatus.taskName), currentTaskStatus: openres.data.currentTaskStatus },
+              });
+            } else {
+              message.error(openres.msg)
+            }
           };
-          const openres = yield call(openFlow, releaseNo);           // 最后打开待办
-          if (openres.code === 200) {
-            const infomap = new Map([
-              ['版本管理员审核', openres.data.checkVersionParam],
-              ['科室负责人审核', openres.data.checkDirectorParam],
-              ['中心领导审核', openres.data.checkLeaderParam],
-            ]);
-            yield put({
-              type: 'saveinfo',
-              payload: { info: infomap.get(openres.data.currentTaskStatus.taskName), currentTaskStatus: openres.data.currentTaskStatus },
-            });
-          } else {
-            message.error(openres.msg)
-          }
+          if (buttype === 'noPass') {
+            const tabid = sessionStorage.getItem('tabid');
+            const nopasspayload = {
+              taskId: response.data.currentTaskStatus.taskId,
+              type: taskName === '中心领导审核' ? 3 : 0,
+            };
+            const subres = yield call(flowSubmit, nopasspayload);
+            if (subres.code === 200) {
+              message.success(subres.msg);
+              router.push({
+                pathname: `/ITSM/releasemanage/to-do`,
+                query: { pathpush: true },
+                state: { cach: false, closetabid: tabid }
+              });
+            } else {
+              message.error('操作失败');
+            }
+          };
         } else {
           message.error(response.msg)
         }
@@ -348,13 +402,31 @@ export default {
         payload: { statuse: response.code },
       });
       if (response.code === 200) {
-        if (buttype === 'save') {
-          message.success('保存成功');
-        };
         yield put({
           type: 'saveinfo',
           payload: { info: response.data.bizCheckParam, currentTaskStatus: response.data.currentTaskStatus },
         });
+        if (buttype === 'save') {
+          message.success('保存成功');
+        };
+        if (buttype === 'flow') {
+          const tabid = sessionStorage.getItem('tabid');
+          const nopasspayload = {
+            taskId: response.data.currentTaskStatus.taskId,
+            type: 1,
+          };
+          const subres = yield call(flowSubmit, nopasspayload);
+          if (subres.code === 200) {
+            message.success(subres.msg);
+            router.push({
+              pathname: `/ITSM/releasemanage/to-do`,
+              query: { pathpush: true },
+              state: { cach: false, closetabid: tabid }
+            });
+          } else {
+            message.error('操作失败');
+          }
+        }
       } else {
         message.error(response.msg)
       }

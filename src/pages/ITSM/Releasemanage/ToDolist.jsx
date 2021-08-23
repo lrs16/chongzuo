@@ -199,7 +199,7 @@ function ToDolist(props) {
               taskName: record.taskName,
               Id: record.releaseNo,
               taskId: record.taskId,
-              type: record.releaseType,
+              releaseType: record.releaseType,
             },
             state: {
               dynamicpath: true,

@@ -118,6 +118,15 @@ function Registrat(props, ref) {
       if (info.platformValid.validResult === '不通过') {
         ChangeSubmitType(0)
       }
+    };
+    if (info && info.releaseBizValid && info.releaseBizValid.validResult) {
+      setAdopt(info.releaseBizValid.validResult);
+      if (info.releaseBizValid.validResult === '通过') {
+        ChangeSubmitType(1)
+      };
+      if (info.releaseBizValid.validResult === '不通过') {
+        ChangeSubmitType(0)
+      }
     }
   }, [info])
 
@@ -230,7 +239,7 @@ function Registrat(props, ref) {
           <Col span={24}>
             <Form.Item label="参与测试单位" {...formuintLayout}>
               {getFieldDecorator('testUnit', {
-                rules: [{ required, message: `请选择参与测试单位` }],
+                rules: [{ required, message: `请填写参与测试单位` }],
                 initialValue: formmap.get(taskName).testUnit,
               })(<TextArea autoSize disabled={!isEdit} />)}
             </Form.Item>

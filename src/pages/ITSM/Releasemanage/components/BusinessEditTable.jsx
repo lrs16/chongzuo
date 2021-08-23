@@ -113,6 +113,13 @@ function BusinessEditTable(props) {
       width: 100,
     },
     {
+      title: '业务负责人',
+      dataIndex: 'responsible',
+      key: 'responsible',
+      align: 'center',
+      width: 120,
+    },
+    {
       title: '开发人员',
       dataIndex: 'developer',
       key: 'developer',
@@ -124,13 +131,6 @@ function BusinessEditTable(props) {
       key: 'operator',
       align: 'center',
       width: 100,
-    },
-    {
-      title: '业务负责人',
-      dataIndex: 'responsible',
-      key: 'responsible',
-      align: 'center',
-      width: 120,
     },
     {
       title: '是否通过',
@@ -171,6 +171,13 @@ function BusinessEditTable(props) {
   ];
   const practicedone = columns.filter(item => item.key !== 'verifyStatus');
 
+  const sclicecolumns = (arr) => {
+    const newarr = arr.slice(0);
+    newarr.pop();
+    return newarr;
+  }
+  const practicedonecolumns = sclicecolumns(practicedone);
+
   return (
     <>
       <h4>
@@ -178,7 +185,7 @@ function BusinessEditTable(props) {
         {title}
       </h4>
       <Table
-        columns={type === '发布实施' ? practicedone : columns}
+        columns={type === '发布实施' ? practicedonecolumns : columns}
         dataSource={data}
         bordered
         size='middle'

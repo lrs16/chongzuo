@@ -23,7 +23,6 @@ function WorkOrder(props) {
   const [uservisible, setUserVisible] = useState(false);        // 是否显示选人组件
   const [userchoice, setUserChoice] = useState(false);          // 已经选择人员  
   const { submittype } = useContext(SubmitTypeContext);
-  // console.log(statuse)
 
   // 保存，保存提交
   const RegistratRef = useRef();
@@ -157,7 +156,6 @@ function WorkOrder(props) {
             message.error('请将信息填写完整')
           } else {
             savelatformValid();
-            tosubmit();
           }
         })
         break;
@@ -210,7 +208,6 @@ function WorkOrder(props) {
         })
         break;
       case 'noPass':
-        setUserChoice(false);
         sessionStorage.removeItem('NextflowUserId');
         RegistratRef.current.Forms((err, values) => {
           if (err) {
@@ -219,11 +216,10 @@ function WorkOrder(props) {
             const releaseStatus = values.releaseLists.map(item => {
               return item.verifyStatus;
             });
-            if (releaseStatus.includes('已转出')) {
-              message.error('发布清单还未全部验证')
+            if (releaseStatus.includes('已转出') || releaseStatus.includes(null)) {
+              message.error('发布清单还未全部验证，无法流转')
             } else {
-              savelatformValid();
-              tosubmit();
+              savebizValidate();
             }
           }
         })
@@ -324,6 +320,16 @@ function WorkOrder(props) {
           }
         })
         break;
+      case 'noPass':
+        sessionStorage.removeItem('NextflowUserId');
+        VersionAuditRef.current.Forms((err) => {
+          if (err) {
+            message.error('请将信息填写完整')
+          } else {
+            saveVersionAudit();
+          }
+        })
+        break;
       default:
         break;
     }
@@ -407,7 +413,6 @@ function WorkOrder(props) {
               message.error('发布清单还未全部复核，无法流转')
             } else {
               savebusinessReview();
-              tosubmit();
             }
           }
         })

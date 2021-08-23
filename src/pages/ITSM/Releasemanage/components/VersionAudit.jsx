@@ -50,31 +50,16 @@ function VersionAudit(props, ref) {
   const [activeKey, setActiveKey] = useState('');
   const [adopt, setAdopt] = useState('通过');
   const [rowkey, setRowKey] = useState('0');
-  const { ChangeSubmitType, ChangeButtype } = useContext(SubmitTypeContext);
+  const { ChangeSubmitType, ChangeButtype, releaseType } = useContext(SubmitTypeContext);
   const required = true;
 
   const [alertvisible, setAlertVisible] = useState(false);  // 超时告警是否显示
 
   const formmap = new Map([
-    ['版本管理员审核', info.mergeOrder || {}],
-    ['科室负责人审核', info.checkMerge || {}],
-    ['中心领导审核', info.checkMerge || {}],
+    ['版本管理员审核', info.mergeOrder],
+    ['科室负责人审核', info.checkMerge],
+    ['中心领导审核', info.checkMerge],
   ])
-
-  useEffect(() => {
-    if (taskName === '版本管理员审核') {
-      const type = getQueryVariable('type');
-      if (type === '计划发布') {
-        setRowKey('6')
-      };
-      if (type === '临时发布') {
-        setRowKey('7')
-      }
-    } else {
-      setRowKey('0')
-    }
-  }, [info])
-  console.log(rowkey)
 
   // 已合并工单
   const orderkeys = info.releaseMains && info.releaseMains.map((item) => {
@@ -238,26 +223,33 @@ function VersionAudit(props, ref) {
     </>
   )
   // 选择通过不通过改变流转类型
-  const handleAdopt = e => {
-    setAdopt(e.target.value);
-    if (e.target.value === '通过') {
+  const handleAdopt = value => {
+    setAdopt(value);
+    if (value === '通过') {
       ChangeSubmitType(1)
     };
-    if (e.target.value === '不通过') {
+    if (value === '不通过') {
       ChangeSubmitType(0)
     }
   };
+
+
   useEffect(() => {
-    if (info && info.platformValid && info.platformValid.validResult) {
-      setAdopt(info.platformValid.validResult);
-      if (info.platformValid.validResult === '通过') {
-        ChangeSubmitType(1)
+    if (taskName === '版本管理员审核') {
+      if (releaseType === '计划发布') {
+        setRowKey('6')
       };
-      if (info.platformValid.validResult === '不通过') {
-        ChangeSubmitType(0)
+      if (releaseType === '临时发布') {
+        setRowKey('7')
       }
+    } else {
+      setRowKey('0')
+    };
+    if (info && info.checkMerge && info.checkMerge.checkResult) {
+      handleAdopt(info.checkMerge.checkResult);
     }
-  }, [info])
+  }, [info]);
+
   return (
     <>
       {alertvisible && (<Alert
@@ -324,7 +316,7 @@ function VersionAudit(props, ref) {
                   {getFieldDecorator('checkResult', {
                     rules: [{ required, message: '请选择验证结果' }],
                     initialValue: formmap.get(taskName).checkResult || '通过',
-                  })(<RadioGroup onChange={handleAdopt}>
+                  })(<RadioGroup onChange={(e) => handleAdopt(e.target.value)}>
                     <Radio value='通过'>通过</Radio>
                     <Radio value='不通过'>不通过</Radio>
                   </RadioGroup>

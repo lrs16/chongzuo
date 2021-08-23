@@ -26,7 +26,7 @@ function getQueryVariable(variable) {
 
 function EditeTable(props) {
   const { title, functionmap, modulamap, isEdit, taskName, dataSource, ChangeValue,
-    dispatch, dutyUnits, dutyUnitListMsg, dutyUnitTotalMsg, dutyUnitList, ChangeAttActiveKey } = props;
+    dispatch, dutyUnits, dutyUnitListMsg, dutyUnitTotalMsg, dutyUnitList, ChangeAttActiveKey, saved } = props;
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -65,7 +65,7 @@ function EditeTable(props) {
       passTest: '通过',
       developer: '',
       developerId: '',
-      addStatus: taskName !== '版本管理员审核' ? taskId : '',
+      addStatus: (taskName === '版本管理员审核' || taskName === '出厂测试' || taskName === '新建') ? 'add' : taskId,
       verifyStatus: taskName === '版本管理员审核' ? '已验证' : '',
       operator: sessionStorage.getItem('userName'),
       operatorId: sessionStorage.getItem('userauthorityid'),
@@ -129,6 +129,10 @@ function EditeTable(props) {
     if (target) {
       target[fieldName] = e;
       setData(newData);
+      if (target.verification) {
+        ChangeValue(newData);
+        releaseListEdit(target);
+      }
     }
   };
 
@@ -141,6 +145,10 @@ function EditeTable(props) {
         target.responsible = e.label;
         target.responsibleId = e.key;
         setData(newData);
+        if (target.verification) {
+          ChangeValue(newData);
+          releaseListEdit(target);
+        }
       }
     }
   }
@@ -168,6 +176,7 @@ function EditeTable(props) {
     setNewButton(false)
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData) || {};
+    console.log()
     if (taskName === '业务验证') {
       if (!target.module || !target.abilityType || !target.module || !target.appName || !target.problemType || !target.testMenu || !target.testResult || !target.testStep || !target.developer) {
         message.error('请填写完整的发布清单信息');
@@ -186,6 +195,8 @@ function EditeTable(props) {
       target.verification = false;
       newData.sort((a, b) => a.key - b.key);
       setData(newData);
+
+      setPageinations({ current: Math.ceil(newData.length / 2), pageSize: 2 });
       ChangeValue(newData);
       if (taskName !== '新建') {
         ChangeButtype('save');
@@ -196,6 +207,7 @@ function EditeTable(props) {
       setNewButton(false)
       newData.sort((a, b) => a.key - b.key);
       setData(newData);
+      setPageinations({ current: Math.ceil(newData.length / 2), pageSize: 2 });
       ChangeValue(newData);
       if (taskName !== '新建') {
         ChangeButtype('save');
@@ -206,7 +218,7 @@ function EditeTable(props) {
   // 版本管理员审核保存
   const checsaveRow = (e, key) => {
     e.preventDefault();
-    setNewButton(false)
+    setNewButton(false);
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData) || {};
     const taskIdtarget = data.filter(item => item.releaseNo === target.releaseNo);
@@ -221,6 +233,7 @@ function EditeTable(props) {
         target.addStatus = newData[newData.length - 1].taskId;
       };
       setData(newData);
+      setPageinations({ current: Math.ceil(newData.length / 2), pageSize: 2 });
       const newlist = newData.filter(item => item.addStatus === item.taskId);
       if (newlist.length > 0) {
         ChangeaddAttaches('add');
@@ -407,6 +420,7 @@ function EditeTable(props) {
       const newData = dataSource.map((item, index) => ({
         ...item,
         editable: false,
+        verification: taskName === '平台验证' && item.addStatus !== item.taskId,
         key: (index + 1).toString(),
       }));
       setData(newData);
@@ -741,7 +755,7 @@ function EditeTable(props) {
               <Button type='link' onClick={e => newcancel(e, record.key)}>取消</Button>
             </>
           );
-        } if (record.editable || record.verification) {
+        } if (record.editable) {
           return (
             <>
               {taskName !== '版本管理员审核' && (
@@ -761,11 +775,12 @@ function EditeTable(props) {
         }
         return (
           <>
-            {(taskName === '新建' || taskName === '出厂测试' || taskName === '平台验证') && userid === record.operatorId && !newbutton && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
+            {(taskName === '新建' || taskName === '出厂测试') && userid === record.operatorId && !newbutton && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
+            {taskName === '平台验证' && userid === record.operatorId && record.taskId === record.addStatus && !newbutton && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
             {taskName === '业务验证' && userid === record.operatorId && !newbutton && !record.verifyStatus && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
-            {(taskName === '平台验证' || taskName === '发布实施') && userid !== record.operatorId && !newbutton && (<Button type='link' onClick={e => verificationRow(e, record.key)}>验证</Button>)}
+            {/* {(taskName === '平台验证' || taskName === '发布实施') && userid !== record.operatorId && !newbutton && (<Button type='link' onClick={e => verificationRow(e, record.key)}>验证</Button>)} */}
             {taskName === '版本管理员审核' && record.listType === '临时添加' && userid === record.operatorId && record.taskId === record.addStatus && !newbutton && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
-            {taskName === '版本管理员审核' && !newbutton && (<Button type='link' >回退</Button>)}
+            {/* {taskName === '版本管理员审核' && !newbutton && dutyUnits && dutyUnits.length > 1 && !saved && (<Button type='link' onMouseDown={() => { ChangeButtype('') }} onClick={() => ChangeButtype('goback')}>回退</Button>)} */}
           </>
         )
 
@@ -826,7 +841,7 @@ function EditeTable(props) {
       const newarr = arr;
       newarr.splice(-3, 0, verifyStatus)
       return newarr
-    } if (taskName === '版本管理员审核' || taskName === '科室负责人审核') {
+    } if ((taskName === '版本管理员审核' || taskName === '科室负责人审核') && dutyUnits && dutyUnits.length > 1) {
       const newarr = arr;
       newarr.splice(-1, 0, orderid);
       return newarr
@@ -850,7 +865,6 @@ function EditeTable(props) {
   // 点击公司页签
   const handleTabChange = key => {
     settabActivekey(key);
-    setPageinations({ current: 1, pageSize: 2 });
     setFilteredInfo({});
     if (dutyUnitList && dutyUnitList[key]) {
       const newData = dutyUnitList[key].map((item, index) => ({
@@ -876,7 +890,7 @@ function EditeTable(props) {
         handleTabChange(tabActivekey);
       } else {
         handleTabChange(dutyUnits[0]);
-      }
+      };
     }
   }, [dutyUnitList]);
 
@@ -892,7 +906,7 @@ function EditeTable(props) {
         <div style={{ paddingBottom: 12 }}>{dutyUnitTotalMsg}</div>
       )}
       {(taskName === '版本管理员审核' || taskName === '科室负责人审核' || taskName === '中心领导审核' || taskName === '业务复核') && dutyUnits && dutyUnits.length > 1 && (
-        <Tabs type='card' onChange={handleTabChange} activeKey={tabActivekey}>
+        <Tabs type='card' onClick={() => setPageinations({ current: 1, pageSize: 2 })} onChange={handleTabChange} activeKey={tabActivekey}>
           {dutyUnits.map((obj) => {
             return [
               <TabPane key={obj} tab={obj} />,

@@ -75,10 +75,17 @@ const errorHandler = error => {
     }
     if (status !== 401) {
       notification.destroy();
-      notification.error({
-        message: `${status}: ${url}`,
-        description: errorText,
-      });
+      const resJson = response.json();
+      resJson.then((res) => {
+        notification.destroy();
+        notification.error({
+          message: `${status}`,
+          description: res.msg || errorText,
+          // onClose: close,
+          duration: 4,
+        });
+
+      })
     }
   } else if (!response) {
     notification.error({
