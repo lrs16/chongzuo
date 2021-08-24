@@ -543,7 +543,7 @@ function WorkOrder(props) {
           ChangeSelectdata={newvalue => setSelectData(newvalue)}
           style={{ display: 'none' }}
         />
-        <TaskLinks records={tasklinks || []} />
+        {taskName !== '版本管理员审核' && <TaskLinks records={tasklinks || []} />}
         <Collapse
           expandIconPosition="right"
           activeKey={activeKey}

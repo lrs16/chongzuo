@@ -551,11 +551,18 @@ export default {
                           component: './ITSM/Releasemanage/Details',
                         },
                         {
+                          path: '/ITSM/releasemanage/timeoutrule',
+                          name: '发布超时规则',
+                          icon: 'control',
+                          component: './ITSM/Releasemanage/TimeoutRule',
+                        },
+                        {
                           path: '/ITSM/releasemanage/library',
                           name: '发布库',
                           icon: 'control',
                           component: './ITSM/Releasemanage/BusinessDetail',
                         },
+
                       ],
                     },
                     {

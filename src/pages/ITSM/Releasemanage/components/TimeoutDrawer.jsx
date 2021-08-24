@@ -1,16 +1,14 @@
 import React from 'react';
-import { Drawer, Button, Form, Input } from 'antd';
-
-const { TextArea } = Input;
+import { Drawer, Button, Form, Input, InputNumber } from 'antd';
 
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 4 },
+    sm: { span: 6 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 20 },
+    sm: { span: 18 },
   },
   colon: false,
 };
@@ -19,7 +17,7 @@ function agentDrawer(props) {
   const { visible, ChangeVisible, title, handleSubmit } = props;
   const { getFieldDecorator, validateFields } = props.form;
   const required = true;
-  const { id, agentName, agentHost, agentHyper, agentPort, agentToken, agentType, agentRemarks, } = props.record;
+  const { id, releaseType, releaseStatus, agentHyper, agentPort, agentToken, } = props.record;
 
   const hanldleCancel = () => {
     ChangeVisible(false);
@@ -53,40 +51,30 @@ function agentDrawer(props) {
             initialValue: id,
           })(<Input disabled />)}
         </Form.Item>
-        <Form.Item label="agent名称">
-          {getFieldDecorator('agentName', {
-            initialValue: agentName,
+        <Form.Item label="发布类型">
+          {getFieldDecorator('releaseType', {
+            initialValue: releaseType,
           })(<Input placeholder="请输入" />)}
         </Form.Item>
-        <Form.Item label="agent地址">
-          {getFieldDecorator('agentHost', {
-            initialValue: agentHost,
-          })(<Input placeholder="请输入" disabled />)}
+        <Form.Item label="环节名称">
+          {getFieldDecorator('releaseStatus', {
+            initialValue: releaseStatus,
+          })(<Input placeholder="请输入" />)}
         </Form.Item>
-        <Form.Item label="agent协议">
+        <Form.Item label="操作开始时间（日）">
           {getFieldDecorator('agentHyper', {
             initialValue: agentHyper,
-          })(<Input placeholder="请输入" />)}
+          })(<InputNumber min={1} max={31} style={{ width: '100%' }} />)}
         </Form.Item>
-        <Form.Item label="agent端口">
+        <Form.Item label="操作结束时间（日）">
           {getFieldDecorator('agentPort', {
             initialValue: agentPort,
-          })(<Input placeholder="请输入" disabled />)}
+          })(<InputNumber min={1} max={31} style={{ width: '100%' }} />)}
         </Form.Item>
-        <Form.Item label="通信Token">
+        <Form.Item label="超时提醒（日）">
           {getFieldDecorator('agentToken', {
             initialValue: agentToken,
-          })(<Input placeholder="请输入" />)}
-        </Form.Item>
-        <Form.Item label="agent类型">
-          {getFieldDecorator('agentType', {
-            initialValue: agentType,
-          })(<Input placeholder="请输入" />)}
-        </Form.Item>
-        <Form.Item label="备注">
-          {getFieldDecorator('agentRemarks', {
-            initialValue: agentRemarks,
-          })(<TextArea placeholder="请输入" autoSize={{ minRows: 3 }} allowClear />)}
+          })(<InputNumber min={1} max={31} style={{ width: '100%' }} />)}
         </Form.Item>
       </Form>
 
@@ -114,7 +102,7 @@ function agentDrawer(props) {
 }
 
 agentDrawer.defaultProps = {
-  record: { id: '', agentName: '', agentHost: '', agentHyper: '', agentPort: '', agentToken: '', agentType: '', agentRemarks: '', },
+  record: { id: '', releaseType: '', releaseStatus: '', agentHyper: '', agentPort: '', agentToken: '', },
 };
 
 export default Form.create()(agentDrawer);

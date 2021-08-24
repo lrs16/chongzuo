@@ -41,6 +41,7 @@ function EditeTable(props) {
   const [orderFilters, setOrderFilters] = useState([]);    // 所属工单筛选项
   const [filteredInfo, setFilteredInfo] = useState({})     // 已选择的筛选项
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 2 });
+  const [releaseNo, setReleaseNo] = useState({ releaseNo: '', processInstanceId: '' });
   const { ChangeButtype, taskId, ChangeaddAttaches } = useContext(UserContext);
 
   const listTypeFilter = [{ text: '计划', value: '计划' }, { text: '临时添加', value: '临时添加' }]
@@ -176,7 +177,6 @@ function EditeTable(props) {
     setNewButton(false)
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData) || {};
-    console.log()
     if (taskName === '业务验证') {
       if (!target.module || !target.abilityType || !target.module || !target.appName || !target.problemType || !target.testMenu || !target.testResult || !target.testStep || !target.developer) {
         message.error('请填写完整的发布清单信息');
@@ -828,7 +828,7 @@ function EditeTable(props) {
           </div>
         )
       }
-      return <a onClick={() => setDrawerVisible(true)}>{text}</a>
+      return <a onClick={() => { setReleaseNo({ releaseNo: record.releaseNo, processInstanceId: record.mainId }); setDrawerVisible(true) }}>{text}</a>
     },
     sorter: (a, b) => a.releaseNo.localeCompare(b.releaseNo),
     filters: orderFilters,
@@ -1008,7 +1008,7 @@ function EditeTable(props) {
       <UserContext.Provider value={{ setChoiceUser, uservisible, setUserVisible, title: '分派' }}>
         <CheckOneUser userlist={userlist} />
       </UserContext.Provider>
-      <OrderContent visible={drawervisible} handleChange={v => setDrawerVisible(v)} />
+      <OrderContent data={releaseNo} visible={drawervisible} handleChange={v => setDrawerVisible(v)} />
     </>
   );
 }

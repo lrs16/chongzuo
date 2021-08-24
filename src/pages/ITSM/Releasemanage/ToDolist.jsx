@@ -395,7 +395,7 @@ function ToDolist(props) {
         < Table
           loading={loading}
           columns={columns}
-          dataSource={list.rows}
+          dataSource={list.records}
           pagination={pagination}
           rowSelection={rowSelection}
           rowKey={(_, index) => index.toString()}

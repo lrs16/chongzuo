@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'dva';
 import { Card, Steps } from 'antd';
 import styles from './index.less';

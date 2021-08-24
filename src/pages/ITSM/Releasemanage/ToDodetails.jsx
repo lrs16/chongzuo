@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
+import router from 'umi/router';
 import { Button, Spin, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SubmitTypeContext from '@/layouts/MenuContext';              // 引用上下文管理组件
@@ -31,8 +32,14 @@ function ToDodetails(props) {
   };
 
   const deleteflow = () => {
+    const tabid = sessionStorage.getItem('tabid');
     deleteFlow({ releaseNo: Id }).then(res => {
       if (res.code === 200) {
+        router.push({
+          pathname: `/ITSM/releasemanage/to-do`,
+          query: { pathpush: true },
+          state: { cach: false, closetabid: tabid }
+        });
         message.success(res.msg)
       } else {
         message.error(res.msg)
@@ -146,7 +153,7 @@ function ToDodetails(props) {
       <PageHeaderWrapper
         title={taskName}
         extra={operations}
-        tabList={taskName === '版本管理员审批' ? editiontabList : tabList}
+        tabList={taskName === '版本管理员审核' ? editiontabList : tabList}
         tabActiveKey={tabActivekey}
         onTabChange={handleTabChange}
       >

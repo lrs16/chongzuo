@@ -112,8 +112,8 @@ export default {
           message.success('保存成功')
         };
         yield put({
-          type: 'saveinfo',
-          payload: { info: response.data.saveRegister, currentTaskStatus: response.data.currentTaskStatus, tasklinks: response.data.tasklinks },
+          type: 'updateinfo',
+          payload: { info: response.data.saveRegister, currentTaskStatus: response.data.currentTaskStatus, },
         });
       } else {
         message.error('操作失败');
@@ -133,8 +133,8 @@ export default {
       });
       if (response.code === 200) {
         yield put({
-          type: 'saveinfo',
-          payload: { info: response.data.savePlatformValid, currentTaskStatus: response.data.currentTaskStatus, tasklinks: response.data.tasklinks },
+          type: 'updateinfo',
+          payload: { info: response.data.savePlatformValid, currentTaskStatus: response.data.currentTaskStatus, },
         });
         if (buttype === 'save') {
           message.success('保存成功');
@@ -175,7 +175,7 @@ export default {
       });
       if (response.code === 200) {
         yield put({
-          type: 'saveinfo',
+          type: 'updateinfo',
           payload: { info: response.data.saveBizValid, currentTaskStatus: response.data.currentTaskStatus },
         });
         if (buttype === 'save') {
@@ -220,8 +220,8 @@ export default {
           message.success('保存成功');
         };
         yield put({
-          type: 'saveinfo',
-          payload: { info: response.data.practicePreParam, currentTaskStatus: response.data.currentTaskStatus, tasklinks: response.data.tasklinks },
+          type: 'updateinfo',
+          payload: { info: response.data.practicePreParam, currentTaskStatus: response.data.currentTaskStatus, },
         });
       } else {
         message.error('操作失败');
@@ -237,8 +237,8 @@ export default {
         const openres = yield call(openFlow, releaseNo);
         if (openres.code === 200) {
           yield put({
-            type: 'saveinfo',
-            payload: { info: openres.data.bizValidateParam, currentTaskStatus: openres.data.currentTaskStatus, tasklinks: openres.data.tasklinks },
+            type: 'updateinfo',
+            payload: { info: openres.data.bizValidateParam, currentTaskStatus: openres.data.currentTaskStatus, },
           });
         } else {
           message.error(openres.msg)
@@ -255,8 +255,8 @@ export default {
         const openres = yield call(openFlow, flowId);
         if (openres.code === 200) {
           yield put({
-            type: 'saveinfo',
-            payload: { info: openres.data.checkVersionParam, currentTaskStatus: openres.data.currentTaskStatus, tasklinks: openres.data.tasklinks },
+            type: 'updateinfo',
+            payload: { info: openres.data.checkVersionParam, currentTaskStatus: openres.data.currentTaskStatus, },
           });
         } else {
           message.error(openres.msg)
@@ -337,8 +337,8 @@ export default {
                 ['中心领导审核', openres.data.checkLeaderParam],
               ]);
               yield put({
-                type: 'saveinfo',
-                payload: { info: infomap.get(openres.data.currentTaskStatus.taskName), currentTaskStatus: openres.data.currentTaskStatus, tasklinks: openres.data.tasklinks },
+                type: 'updateinfo',
+                payload: { info: infomap.get(openres.data.currentTaskStatus.taskName), currentTaskStatus: openres.data.currentTaskStatus, },
               });
             } else {
               message.error(openres.msg)
@@ -384,8 +384,8 @@ export default {
           message.success('保存成功');
         };
         yield put({
-          type: 'saveinfo',
-          payload: { info: response.data.saveRegister, currentTaskStatus: response.data.currentTaskStatus, tasklinks: response.data.tasklinks },
+          type: 'updateinfo',
+          payload: { info: response.data.saveRegister, currentTaskStatus: response.data.currentTaskStatus, },
         });
       } else {
         message.error(response.msg)
@@ -405,8 +405,8 @@ export default {
       });
       if (response.code === 200) {
         yield put({
-          type: 'saveinfo',
-          payload: { info: response.data.bizCheckParam, currentTaskStatus: response.data.currentTaskStatus, tasklinks: response.data.tasklinks },
+          type: 'updateinfo',
+          payload: { info: response.data.bizCheckParam, currentTaskStatus: response.data.currentTaskStatus, },
         });
         if (buttype === 'save') {
           message.success('保存成功');
@@ -458,6 +458,13 @@ export default {
         info: action.payload.info || {},
         currentTaskStatus: action.payload.currentTaskStatus || {},
         tasklinks: action.payload.tasklinks || [],
+      };
+    },
+    updateinfo(state, action) {
+      return {
+        ...state,
+        info: action.payload.info || {},
+        currentTaskStatus: action.payload.currentTaskStatus || {},
       };
     },
     savestatuse(state, action) {
