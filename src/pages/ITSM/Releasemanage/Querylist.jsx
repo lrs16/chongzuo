@@ -6,10 +6,8 @@ import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, message
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
-import { mergeOrders } from './services/api';
 
 const { Option } = Select;
-const { RangePicker } = DatePicker;
 
 const formItemLayout = {
   labelCol: {
@@ -22,7 +20,7 @@ const formItemLayout = {
   },
 };
 
-function ToDolist(props) {
+function Querylist(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, resetFields, validateFields, getFieldsValue },
@@ -40,7 +38,7 @@ function ToDolist(props) {
   // 查询
   const searchdata = (values, page, size) => {
     dispatch({
-      type: 'releasetodo/fetchlist',
+      type: 'releaseview/fetchlist',
       payload: {
         ...values,
         benginTime: values.benginTime ? moment(values.benginTime).format('YYYY-MM-DD HH:mm:ss') : '',
@@ -132,46 +130,6 @@ function ToDolist(props) {
     resetFields();
   };
 
-  const handleApproval = () => {
-    if (selectedRecords.length === 0 || selectedRecords.length === 1) {
-      message.error('请选择多条数据')
-    } else {
-      const target = selectedRecords.filter(item => item.taskName === '版本管理员审核' && item.releaseType === '计划发布');
-      if (target.length > 0) {
-        const releaseNos = target.map((obj) => {
-          return obj.releaseNo;
-        });
-        if (releaseNos.length > 1) {
-          mergeOrders({ releaseNo: releaseNos.toString() }).then(res => {
-            if (res.code === 200) {
-              message.success('工单合并成功');
-              // const values = getFieldsValue();
-              // searchdata(values, paginations.current, paginations.pageSize);
-              router.push({
-                pathname: `/ITSM/releasemanage/to-do/record`,
-                query: {
-                  taskName: '版本管理员审核',
-                  Id: target[0].releaseNo,
-                  taskId: target[0].taskId,
-                },
-                state: {
-                  dynamicpath: true,
-                  menuDesc: '发布工单',
-                }
-              });
-            }
-          })
-        } else {
-          message.error('请选择多条当前处理环节为‘版本管理员审核’且发布类型为‘计划发布’的工单')
-        }
-      } else {
-        message.error('请选择当前处理环节为‘版本管理员审核’且发布类型为‘计划发布’的工单')
-      }
-    };
-    setSelectedRowKeys([]);
-    setSelectedRecords([]);
-  }
-
   const getTypebyId = key => {
     if (selectdata.ischange) {
       return selectdata.arr.filter(item => item.key === key)[0].children;
@@ -192,16 +150,13 @@ function ToDolist(props) {
       render: (text, record) => {
         const handleClick = () => {
           router.push({
-            pathname: `/ITSM/releasemanage/to-do/record`,
+            pathname: `/ITSM/releasemanage/query/details`,
             query: {
-              taskName: record.taskName,
               Id: record.releaseNo,
-              taskId: record.taskId,
-              releaseType: record.releaseType,
             },
             state: {
               dynamicpath: true,
-              menuDesc: '发布工单',
+              menuDesc: '发布工单详情',
             }
           });
         };
@@ -390,12 +345,11 @@ function ToDolist(props) {
         </Row>
         <div style={{ marginBottom: 24 }}>
           <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>导出数据</Button >
-          <Button type="primary" onClick={() => handleApproval()} >版本管理员合并审核</Button >
         </div>
         < Table
           loading={loading}
           columns={columns}
-          dataSource={list.rows}
+          dataSource={list.records}
           pagination={pagination}
           rowSelection={rowSelection}
           rowKey={(_, index) => index.toString()}
@@ -406,8 +360,8 @@ function ToDolist(props) {
 }
 
 export default Form.create({})(
-  connect(({ releasetodo, loading }) => ({
-    list: releasetodo.list,
-    loading: loading.models.releasetodo,
-  }))(ToDolist),
+  connect(({ releaseview, loading }) => ({
+    list: releaseview.list,
+    loading: loading.models.releaseview,
+  }))(Querylist),
 );

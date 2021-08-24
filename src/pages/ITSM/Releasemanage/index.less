@@ -95,12 +95,80 @@
   vertical-align: middle;
 }
 
+
+.collapsetimeout {
+  :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header) {
+    font-weight: 900;
+    font-size: 1.1em;
+    border-bottom: 1px solid #e8e8e8;
+  }
+}
+
+.collapsetimeout {
+  :global(.ant-collapse) {
+    border-radius: 0;
+  }
+}
+
+.collapsetimeout {
+  :global(.ant-collapse-item:last-child > .ant-collapse-content) {
+    border-radius: 0;
+  }
+}
+
+.collapsetimeout {
+  :global(.ant-collapse-borderless > .ant-collapse-item) {
+    border: 1px solid #e8e8e8;
+    margin-top: 24px;
+    background: #f6ffed;
+  }
+}
+
+.collapsetimeout {
+  :global(.ant-collapse-content-box) {
+    background: #fff;
+    padding: 24px;
+  }
+}
+
+.collapsetimeout {
+  :global(.ant-collapse-borderless) {
+    background: none;
+  }
+}
+
+.timeout {
+  background: #fff1f0;
+}
+
+.timeout {
+  :global(.ant-collapse-header) {
+    border: 1px solid #e8e8e8;
+    margin-top: 0;
+    background: #fff1f0;
+  }
+}
+
 .stepDescription {
   position: relative;
   left: 0px;
   padding-top: 8px;
   font-size: 14px;
   text-align: left;
+
+  >div {
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+}
+
+.timeoutstep {
+  position: relative;
+  left: 0px;
+  padding-top: 8px;
+  font-size: 14px;
+  text-align: left;
+  color: #ff4d4f;
 
   >div {
     margin-top: 0px;
@@ -125,7 +193,7 @@
 }
 
 .blobimg img {
-  height: 220px;
+  width: calc(100vw - 600px);
 }
 
 .disableuser span {

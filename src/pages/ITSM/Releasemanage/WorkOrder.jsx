@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Collapse, Steps, Spin, message } from 'antd';
+import { Collapse, message } from 'antd';
 import SubmitTypeContext from '@/layouts/MenuContext';
 import DictLower from '@/components/SysDict/DictLower';
 import User from '@/components/SelectUser/User';
@@ -10,14 +10,15 @@ import ImplementationPre from './components/ImplementationPre';
 import VersionAudit from './components/VersionAudit';
 import Implementation from './components/Implementation';
 import BusinessReview from './components/BusinessReview';
+import TaskLinks from './components/TaskLinks';
+import HistoryOrderInfo from './components/HistoryOrderInfo';
 import styles from './index.less';
 
 const { Panel } = Collapse;
-const { Step } = Steps;
 
 function WorkOrder(props) {
-  const { location, dispatch, userinfo, info, currentTaskStatus, buttype, ChangeSaved, statuse } = props;
-  const { taskName, Id } = location.query;
+  const { location, dispatch, userinfo, info, currentTaskStatus, buttype, statuse, tasklinks, historyinfo } = props;
+  const { taskName, Id, } = location.query;
   const [activeKey, setActiveKey] = useState(['form']);
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
   const [uservisible, setUserVisible] = useState(false);        // 是否显示选人组件
@@ -440,11 +441,19 @@ function WorkOrder(props) {
   // 打开待办
   useEffect(() => {
     if (Id) {
+      // 打开待办
       dispatch({
         type: 'releasetodo/openflow',
         payload: {
           releaseNo: Id,
           taskName
+        },
+      });
+      // 获取工单历史信息
+      dispatch({
+        type: 'releaseview/fetchview',
+        payload: {
+          releaseNo: Id,
         },
       });
     }
@@ -464,13 +473,6 @@ function WorkOrder(props) {
       };
     }
   }, [location.state]);
-
-  // 将保存状态返回到父级
-  useEffect(() => {
-    if (currentTaskStatus) {
-      ChangeSaved(currentTaskStatus.saved)
-    }
-  }, [currentTaskStatus])
 
   // 点击按钮
   useEffect(() => {
@@ -534,140 +536,133 @@ function WorkOrder(props) {
   }, [userchoice])
 
   return (
-    <div className={styles.collapse}>
-      <DictLower
-        typeid="1379323239808897026"
-        ChangeSelectdata={newvalue => setSelectData(newvalue)}
-        style={{ display: 'none' }}
-      />
-      <Collapse
-        expandIconPosition="right"
-        activeKey={activeKey}
-        bordered={false}
-        onChange={callback}
-      >
-        {taskName === '出厂测试' && info && info.releaseRegister && (
-          <Panel header={taskName} key="form">
-            <div style={{ marginTop: 12 }}>
-              <Registrat
-                wrappedComponentRef={RegistratRef}
-                selectdata={selectdata}
-                isEdit
-                taskName='出厂测试'
-                info={info}
-                userinfo={userinfo}
-              />
-            </div>
-          </Panel>
-        )}
-        {taskName === '平台验证' && info && info.platformValid && (
-          <Panel header={taskName} key="form">
-            <div style={{ marginTop: 12 }}>
-              <Registrat
-                wrappedComponentRef={RegistratRef}
-                selectdata={selectdata}
-                isEdit
-                taskName='平台验证'
-                info={info}
-                userinfo={userinfo}
-              />
-            </div>
-          </Panel>
-        )}
-        {taskName === '业务验证' && info && info.releaseBizValid && (
-          <Panel header={taskName} key="form">
-            <div style={{ marginTop: 12 }}>
-              <Registrat
-                wrappedComponentRef={RegistratRef}
-                selectdata={selectdata}
-                isEdit
-                taskName='业务验证'
-                info={info}
-                userinfo={userinfo}
-              />
-            </div>
-          </Panel>
-        )}
-        {taskName === '发布实施准备' && info && info.releaseAttaches && (
-          <Panel header={taskName} key="form">
-            <div style={{ marginTop: 12 }}>
-              <ImplementationPre
-                wrappedComponentRef={ImplementationPreRef}
+    <>
+      <div className={styles.collapse}>
+        <DictLower
+          typeid="1379323239808897026"
+          ChangeSelectdata={newvalue => setSelectData(newvalue)}
+          style={{ display: 'none' }}
+        />
+        <TaskLinks records={tasklinks || []} />
+        <Collapse
+          expandIconPosition="right"
+          activeKey={activeKey}
+          bordered={false}
+          onChange={callback}
+        >
+          {taskName === '出厂测试' && info && info.releaseRegister && (
+            <Panel header={taskName} key="form">
+              <div style={{ marginTop: 12 }}>
+                <Registrat
+                  wrappedComponentRef={RegistratRef}
+                  selectdata={selectdata}
+                  isEdit
+                  taskName='出厂测试'
+                  info={info}
+                  userinfo={userinfo}
+                />
+              </div>
+            </Panel>
+          )}
+          {taskName === '平台验证' && info && info.platformValid && (
+            <Panel header={taskName} key="form">
+              <div style={{ marginTop: 12 }}>
+                <Registrat
+                  wrappedComponentRef={RegistratRef}
+                  selectdata={selectdata}
+                  isEdit
+                  taskName='平台验证'
+                  info={info}
+                  userinfo={userinfo}
+                />
+              </div>
+            </Panel>
+          )}
+          {taskName === '业务验证' && info && info.releaseBizValid && (
+            <Panel header={taskName} key="form">
+              <div style={{ marginTop: 12 }}>
+                <Registrat
+                  wrappedComponentRef={RegistratRef}
+                  selectdata={selectdata}
+                  isEdit
+                  taskName='业务验证'
+                  info={info}
+                  userinfo={userinfo}
+                />
+              </div>
+            </Panel>
+          )}
+          {taskName === '发布实施准备' && info && info.releaseAttaches && (
+            <Panel header={taskName} key="form">
+              <div style={{ marginTop: 12 }}>
+                <ImplementationPre
+                  wrappedComponentRef={ImplementationPreRef}
+                  selectdata={selectdata}
+                  isEdit
+                  taskName={taskName}
+                  info={info}
+                  userinfo={userinfo}
+                />
+              </div>
+            </Panel>
+          )}
+          {taskName === '版本管理员审核' && info && info.mergeOrder && (
+            <Panel header={taskName} key="form">
+              <div style={{ marginTop: 12 }}>
+                <VersionAudit
+                  wrappedComponentRef={VersionAuditRef}
+                  selectdata={selectdata}
+                  isEdit
+                  taskName={taskName}
+                  info={info}
+                  userinfo={userinfo}
+                />
+              </div>
+            </Panel>
+          )}
+          {(taskName === '科室负责人审核' || taskName === '中心领导审核') && info && info.checkMerge && (
+            <Panel header={taskName} key="form">
+              <div style={{ marginTop: 12 }}>
+                <VersionAudit
+                  wrappedComponentRef={VersionAuditRef}
+                  selectdata={selectdata}
+                  isEdit
+                  taskName={taskName}
+                  info={info}
+                  userinfo={userinfo}
+                />
+              </div>
+            </Panel>
+          )}
+          {taskName === '发布实施' && info && info.practiceDone && (
+            <Panel header={taskName} key="form">
+              <div style={{ marginTop: 12 }}>
+                <Implementation
+                  wrappedComponentRef={ImplementationRef}
+                  selectdata={selectdata}
+                  isEdit
+                  taskName={taskName}
+                  info={info}
+                  userinfo={userinfo}
+                />
+              </div>
+            </Panel>
+          )}
+          {taskName === '业务复核' && info && info.releaseAttaches && (
+            <Panel header={taskName} key="form">
+              <BusinessReview
+                wrappedComponentRef={BusinessReviewRef}
                 selectdata={selectdata}
                 isEdit
                 taskName={taskName}
                 info={info}
                 userinfo={userinfo}
               />
-            </div>
-          </Panel>
-        )}
-        {taskName === '版本管理员审核' && info && info.mergeOrder && (
-          <Panel header={taskName} key="form">
-            <div style={{ marginTop: 12 }}>
-              <VersionAudit
-                wrappedComponentRef={VersionAuditRef}
-                selectdata={selectdata}
-                isEdit
-                taskName={taskName}
-                info={info}
-                userinfo={userinfo}
-              />
-            </div>
-          </Panel>
-        )}
-        {(taskName === '科室负责人审核' || taskName === '中心领导审核') && info && info.checkMerge && (
-          <Panel header={taskName} key="form">
-            <div style={{ marginTop: 12 }}>
-              <VersionAudit
-                wrappedComponentRef={VersionAuditRef}
-                selectdata={selectdata}
-                isEdit
-                taskName={taskName}
-                info={info}
-                userinfo={userinfo}
-              />
-            </div>
-          </Panel>
-        )}
-        {taskName === '发布实施' && info && info.practiceDone && (
-          <Panel header={taskName} key="form">
-            <div style={{ marginTop: 12 }}>
-              <Implementation
-                wrappedComponentRef={ImplementationRef}
-                selectdata={selectdata}
-                isEdit
-                taskName={taskName}
-                info={info}
-                userinfo={userinfo}
-              />
-            </div>
-          </Panel>
-        )}
-        {taskName === '业务复核' && info && info.releaseAttaches && (
-          <Panel header={taskName} key="form">
-            <BusinessReview
-              wrappedComponentRef={BusinessReviewRef}
-              selectdata={selectdata}
-              isEdit
-              taskName={taskName}
-              info={info}
-              userinfo={userinfo}
-            />
-          </Panel>
-        )}
-        {/* <Panel header='发布登记' key="1">
-          <Registrat
-            wrappedComponentRef={RegistratRef}
-            files={[]}
-            ChangeFiles={() => 0}
-            selectdata={selectdata}
-            isEdit={false}
-            taskName='发布登记'
-            mainId={Id}
-          />
-        </Panel> */}
-      </Collapse>
+            </Panel>
+          )}
+        </Collapse>
+      </div>
+      {historyinfo && <HistoryOrderInfo records={historyinfo} selectdata={selectdata} />}
       {currentTaskStatus && currentTaskStatus.taskId && (
         <User
           taskId={currentTaskStatus.taskId}
@@ -678,14 +673,16 @@ function WorkOrder(props) {
           ChangeType={v => (v)}                        //  取消，重置按钮类型         
         />
       )}
-    </div>
+    </>
   );
 }
 
-export default connect(({ releasetodo, itsmuser, loading }) => ({
+export default connect(({ releasetodo, releaseview, itsmuser, loading }) => ({
   info: releasetodo.info,
   currentTaskStatus: releasetodo.currentTaskStatus,
+  tasklinks: releasetodo.tasklinks,
   statuse: releasetodo.statuse,
+  historyinfo: releaseview.historyinfo,
   userinfo: itsmuser.userinfo,
   loading: loading.models.releasetodo,
 }))(WorkOrder);

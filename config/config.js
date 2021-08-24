@@ -539,6 +539,18 @@ export default {
                           component: './ITSM/Releasemanage/BusinessDetail',
                         },
                         {
+                          path: '/ITSM/releasemanage/query',
+                          name: '发布查询',
+                          icon: 'control',
+                          component: './ITSM/Releasemanage/Querylist',
+                        },
+                        {
+                          path: '/ITSM/releasemanage/query/details',
+                          name: '发布工单详情',
+                          icon: 'control',
+                          component: './ITSM/Releasemanage/Details',
+                        },
+                        {
                           path: '/ITSM/releasemanage/library',
                           name: '发布库',
                           icon: 'control',

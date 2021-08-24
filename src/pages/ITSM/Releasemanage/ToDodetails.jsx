@@ -5,12 +5,12 @@ import { Button, Spin, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SubmitTypeContext from '@/layouts/MenuContext';              // 引用上下文管理组件
 import { expPracticePre, deleteFlow } from './services/api';
-
 import WorkOrder from './WorkOrder';
+import Process from './Process';
 
 function ToDodetails(props) {
-  const { location, dispatch, loading, loadingopen, allloading } = props;
-  const { taskName, taskId, releaseType, Id } = location.query;
+  const { location, dispatch, loading, loadingopen, allloading, tasklinks, currentTaskStatus } = props;
+  const { taskName, taskId, releaseType, Id, } = location.query;
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [buttype, setButtype] = useState('');                    // 点击的按钮类型
   const [submittype, setSubmitType] = useState(1);
@@ -128,6 +128,19 @@ function ToDodetails(props) {
     setButtype('');
   }, [allloading])
 
+  useEffect(() => {
+    if (currentTaskStatus) {
+      setSaved(currentTaskStatus.saved);
+      // 获取流程图
+      dispatch({
+        type: 'releaseview/flowimg',
+        payload: {
+          processInstanceId: currentTaskStatus.processInstanceId,
+        },
+      });
+    }
+  }, [currentTaskStatus])
+
   return (
     <Spin tip="正在加载数据..." spinning={!!loading || !!loadingopen}>
       <PageHeaderWrapper
@@ -149,16 +162,19 @@ function ToDodetails(props) {
             saved,
             releaseType,
           }}>
-            <WorkOrder location={location} buttype={buttype} ChangeSaved={(v) => setSaved(v)} />
+            <WorkOrder location={location} buttype={buttype} />
           </SubmitTypeContext.Provider>
         )}
+        {tabActivekey === 'process' && (<Process />)}
       </PageHeaderWrapper>
     </Spin>
   );
 }
 
-export default connect(({ itsmuser, loading }) => ({
+export default connect(({ itsmuser, releasetodo, loading }) => ({
   userinfo: itsmuser.userinfo,
+  tasklinks: releasetodo.tasklinks,
+  currentTaskStatus: releasetodo.currentTaskStatus,
   loading: loading.effects['releasetodo/releaseflow'],
   loadingopen: loading.effects['releasetodo/openflow'],
   // loadingcheckrelese: loading.effects['releasetodo/checkversion'],

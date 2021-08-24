@@ -4,8 +4,8 @@ import request from '@/utils/request';
 export async function queryTodoList(params) {
   return request(`/release/from/findTodoList`, {
     method: 'POST',
-    data: params,
-    requestType: 'form',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
   });
 }
 // export async function queryTodoList() {
@@ -246,5 +246,29 @@ export async function deleteFlow(params) {
     method: 'POST',
     data: params,
     requestType: 'form',
+  });
+}
+
+// 获取工单历史信息 /release/flow/orderInfo?releaseNo=FB202108230006
+export async function orderInfo(releaseNo) {
+  return request(`/release/flow/orderInfo?releaseNo=${releaseNo}`, {
+    method: 'GET',
+  });
+}
+
+// 流程图 /release/flow/image?processInstanceId=742501
+export async function orderImg(processInstanceId) {
+  return request(`/release/flow/image?processInstanceId=${processInstanceId}`, {
+    method: 'GET',
+    responseType: 'blob',
+  });
+}
+
+// 发布查询 /release/flow/image?processInstanceId=742501
+export async function searchOrder(params) {
+  return request(`/release/from/searchOrder`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
   });
 }
