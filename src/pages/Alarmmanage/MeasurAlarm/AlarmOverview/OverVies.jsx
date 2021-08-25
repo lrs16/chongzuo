@@ -283,7 +283,7 @@ function OverVies(props) {
             <Spin spinning={false} style={{ background: '#ffffff' }}>
               {Donutdata === undefined && <Empty style={{ height: '250px' }} />}
               {Donutdata !== undefined && (
-                <DonutPCT data={Donutdata} cols={cols} height={350} padding={[40, 40, 60, 40]} />
+                <DonutPCT data={Donutdata} cols={cols} height={350} padding={[40, 40, 60, 40]} onGetVal={() => { }} />
               )}
             </Spin>
           </ChartCard>
@@ -303,7 +303,7 @@ function OverVies(props) {
             <Spin spinning={false} style={{ background: '#ffffff' }}>
               {Smoothdata === undefined && <Empty style={{ height: '250px' }} />}
               {Smoothdata !== undefined && (
-                <SmoothLine data={Smoothdata} height={350} padding={[30, 0, 50, 60]} />
+                <SmoothLine data={Smoothdata} height={350} padding={[30, 0, 50, 60]} onGetVal={() => { }} />
               )}
             </Spin>
           </ChartCard>

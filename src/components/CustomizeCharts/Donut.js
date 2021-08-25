@@ -55,7 +55,7 @@ class Donut extends Component {
             }}  
         >
           <Legend visible={false} />
-          <View data={dv.rows} animate>
+          <View data={dv.rows}>
             <Legend visible={false} />
             <Tooltip shared showTitle={false} />
             <Coordinate type="theta" radius={0.88} innerRadius={0.99} />
@@ -78,7 +78,6 @@ class Donut extends Component {
                 },
               ]}
             />
-            <Interaction type="element-single-selected" />
             <Annotation.Text
               position={['50%', '50%']}
               content={`合计:${total}`}
@@ -89,8 +88,9 @@ class Donut extends Component {
                 textAlign: 'center',
               }}
             />
+            <Interaction type="element-single-selected" />
           </View>
-          <View data={dv.rows} animate>
+          <View data={dv.rows}>
             <Coordinate type="theta" radius={0.88} innerRadius={0.65} />
             <Interval
               position="percent"

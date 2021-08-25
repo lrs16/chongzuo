@@ -562,7 +562,23 @@ export default {
                           icon: 'control',
                           component: './ITSM/Releasemanage/BusinessDetail',
                         },
-
+                        {
+                          path: '/ITSM/releasemanage/statistics',
+                          name: '发布统计',
+                          icon: 'control',
+                          routes: [
+                            {
+                              path: '/ITSM/releasemanage/statistics',
+                              redirect: '/ITSM/releasemanage/statistics/analysis',
+                            },
+                            {
+                              path: '/ITSM/releasemanage/statistics/analysis',
+                              name: '发布统计分析',
+                              icon: 'control',
+                              component: './ITSM/Releasemanage/Statistics/Analysis',
+                            },
+                          ]
+                        },
                       ],
                     },
                     {

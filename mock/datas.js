@@ -406,7 +406,7 @@ function mocktypedonut(key) {
       for (let i = 0; i < 7; i += 1) {
         list.push({
           type: ['业务指标', '终端在线和入库', '接口数据', 'KAFKA中间件', '主站系统运行'][i % 5],
-          count: Random.integer(100, 1000),
+          value: Random.integer(100, 1000),
         });
       }
       break;
@@ -416,7 +416,7 @@ function mocktypedonut(key) {
           type: ['终端覆盖率', '完整率', '自动抄表率', '关口0点采集', '关口整点采集', '售电量分析'][
             i % 6
           ],
-          count: Random.integer(100, 1000),
+          value: Random.integer(100, 1000),
         });
       }
       break;
@@ -424,7 +424,7 @@ function mocktypedonut(key) {
       for (let i = 0; i < 3; i += 1) {
         list.push({
           type: ['终端在线率', '入库数量（整点）', '入库数量（0-7点）'][i % 3],
-          count: Random.integer(100, 1000),
+          value: Random.integer(100, 1000),
         });
       }
       break;
@@ -438,7 +438,7 @@ function mocktypedonut(key) {
             '费控指令-kafa指令超时',
             '档案同步接口',
           ][i % 5],
-          count: Random.integer(100, 1000),
+          value: Random.integer(100, 1000),
         });
       }
       break;
@@ -456,7 +456,7 @@ function mocktypedonut(key) {
             '上行主题-广西102关口方面二区和安全接入区',
             '上行主题-广西102档案下发（关口相关）',
           ][i % 9],
-          count: Random.integer(100, 1000),
+          value: Random.integer(100, 1000),
         });
       }
       break;
@@ -474,7 +474,7 @@ function mocktypedonut(key) {
             '上行主题-广西102关口方面二区和安全接入区',
             '上行主题-广西102档案下发（关口相关）',
           ][i % 9],
-          count: Random.integer(100, 1000),
+          value: Random.integer(100, 1000),
         });
       }
       break;
@@ -482,7 +482,7 @@ function mocktypedonut(key) {
       for (let i = 0; i < 4; i += 1) {
         list.push({
           type: ['登录检测', '数据召测-低压', '数据召测-负控配变', '数据召测-厂站'][i % 4],
-          count: Random.integer(100, 1000),
+          value: Random.integer(100, 1000),
         });
       }
       break;
@@ -624,6 +624,20 @@ function mocktypeline(key) {
               '数据召测-负控配变',
               '数据召测-厂站',
             ][i % 6],
+            value: Random.integer(0, 60),
+          });
+        }
+      }
+      break;
+    case 'function':
+      for (let i = 0; i < 2; i += 1) {
+        for (let j = 1; j <= count; j += 1) {
+          list.push({
+            date: `${j}`,
+            name: [
+              '功能开发',
+              '软件运维',
+            ][i % 2],
             value: Random.integer(0, 60),
           });
         }

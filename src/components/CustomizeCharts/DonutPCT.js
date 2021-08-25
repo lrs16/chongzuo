@@ -1,53 +1,65 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
-import { Chart, Interval, Tooltip, Coordinate, Interaction } from 'bizcharts';
-import DataSet from '@antv/data-set';
+import {
+  Chart,
+  registerShape,
+  Axis,
+  Tooltip,
+  Interval,
+  Interaction,
+  Coordinate,
+} from "bizcharts";
 
-// const data = [
-//   { type: '处理中', count: 40},
-//   { type: '已处理', count: 21},
-//   { type: '待处理', count: 17},
-// ];
+const sliceNumber = 0.01; // 自定义 other 的图形，增加两条线
+
+registerShape("interval", "sliceShape", {
+  draw(cfg, container) {
+    const { points } = cfg;
+    let path = [];
+    path.push(["M", points[0].x, points[0].y]);
+    path.push(["L", points[1].x, points[1].y - sliceNumber]);
+    path.push(["L", points[2].x, points[2].y - sliceNumber]);
+    path.push(["L", points[3].x, points[3].y]);
+    path.push("Z");
+    path = this.parsePath(path);
+    return container.addShape("path", {
+      attrs: {
+        fill: cfg.color,
+        path
+      }
+    });
+  }
+});
 
 class DonutPCT extends Component {
   render() {
-    const { DataView } = DataSet;
-    const { data, height, padding } = this.props;
-    const dv = new DataView();
-    dv.source(data).transform({
-      type: 'percent',
-      field: 'count',
-      dimension: 'type',
-      as: 'percent',
-    });
-    const cols = {
-      percent: {
-        formatter: val => {
-          return `${(val * 100).toFixed(2)}%`;
-        },
-      },
-    };
+    const { data, total, totaltitle, height, padding, onGetVal } = this.props;
 
     return (
       <div>
-        <Chart height={height} data={dv.rows} scale={cols} padding={padding} autoFit>
-          <Tooltip shared showTitle={false} />
-          <Coordinate type="theta" radius={0.88} innerRadius={0.7} />
+        <div style={{ position: 'absolute', left: '50%', top: '42%', width: 100, textAlign: 'center', marginLeft: '-50px' }} >
+          <span style={{ fontSize: 24, fontWeight: 700 }}>{total}</span><br />
+          <span>{totaltitle}</span>
+        </div>
+        <Chart height={height} data={data} padding={padding} autoFit onClick={ev => {
+          const linkdata = ev.data;
+          if (linkdata) {
+            onGetVal(linkdata.type)
+          }
+        }}>
+          <Coordinate type="theta" radius={0.8} innerRadius={0.7} />
+          <Axis visible={false} />
+          <Tooltip showTitle={false} />
           <Interval
-            position="percent"
+            position="value"
             adjust="stack"
             color="type"
             shape="sliceShape"
-            style={{
-              stroke: '#fff',
-              lineWidth: 1,
-            }}
-            tooltip={false}
             label={[
-              'count',
+              'value',
               {
-                content: data => {
-                  return `${data.type}: ${(data.percent * 100).toFixed(0)}%`;
+                content: picdata => {
+                  return `${picdata.type}: ${(picdata.value / total * 100).toFixed(0)}%`;
                 },
                 offset: '25',
               },
