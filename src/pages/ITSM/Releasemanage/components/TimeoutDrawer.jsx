@@ -1,5 +1,7 @@
 import React from 'react';
-import { Drawer, Button, Form, Input, InputNumber } from 'antd';
+import { Drawer, Button, Form, Input, InputNumber, Select } from 'antd';
+
+const { Option } = Select;
 
 const formItemLayout = {
   labelCol: {
@@ -14,10 +16,10 @@ const formItemLayout = {
 };
 
 function agentDrawer(props) {
-  const { visible, ChangeVisible, title, handleSubmit } = props;
+  const { visible, ChangeVisible, title, selectdata, handleSubmit, savetype } = props;
   const { getFieldDecorator, validateFields } = props.form;
   const required = true;
-  const { id, releaseType, releaseStatus, agentHyper, agentPort, agentToken, } = props.record;
+  const { id, releaseType, taskName, beginDay, endDay, remindDay, } = props.record;
 
   const hanldleCancel = () => {
     ChangeVisible(false);
@@ -35,6 +37,15 @@ function agentDrawer(props) {
     });
   };
 
+  const getTypebyId = key => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.key === key)[0].children;
+    }
+    return [];
+  };
+
+  const typemap = getTypebyId('1384055209809940482');       // 发布类型
+  const statumap = getTypebyId('1385066256880635905');       // 处理环节
 
   return (
     <Drawer
@@ -53,27 +64,47 @@ function agentDrawer(props) {
         </Form.Item>
         <Form.Item label="发布类型">
           {getFieldDecorator('releaseType', {
+            rules: [{ required, message: `请选择发布类型` }],
             initialValue: releaseType,
-          })(<Input placeholder="请输入" />)}
+          })(
+            <Select placeholder="请选择" allowClear disabled={savetype === 'update'}>
+              {typemap.map(obj => (
+                <Option key={obj.key} value={obj.title}>
+                  {obj.title}
+                </Option>
+              ))}
+            </Select>)}
         </Form.Item>
         <Form.Item label="环节名称">
-          {getFieldDecorator('releaseStatus', {
-            initialValue: releaseStatus,
-          })(<Input placeholder="请输入" />)}
+          {getFieldDecorator('taskName', {
+            rules: [{ required, message: `请选择环节名称` }],
+            initialValue: taskName,
+          })(
+            <Select placeholder="请选择" allowClear disabled={savetype === 'update'}>
+              {statumap.map(obj => (
+                <Option key={obj.key} value={obj.title}>
+                  {obj.title}
+                </Option>
+              ))}
+            </Select>
+          )}
         </Form.Item>
         <Form.Item label="操作开始时间（日）">
-          {getFieldDecorator('agentHyper', {
-            initialValue: agentHyper,
+          {getFieldDecorator('beginDay', {
+            rules: [{ required, message: `请填写操作开始时间` }],
+            initialValue: beginDay,
           })(<InputNumber min={1} max={31} style={{ width: '100%' }} />)}
         </Form.Item>
         <Form.Item label="操作结束时间（日）">
-          {getFieldDecorator('agentPort', {
-            initialValue: agentPort,
+          {getFieldDecorator('endDay', {
+            rules: [{ required, message: `请填写操作结束时间` }],
+            initialValue: endDay,
           })(<InputNumber min={1} max={31} style={{ width: '100%' }} />)}
         </Form.Item>
         <Form.Item label="超时提醒（日）">
-          {getFieldDecorator('agentToken', {
-            initialValue: agentToken,
+          {getFieldDecorator('remindDay', {
+            rules: [{ required, message: `请填写超时提醒` }],
+            initialValue: remindDay,
           })(<InputNumber min={1} max={31} style={{ width: '100%' }} />)}
         </Form.Item>
       </Form>
@@ -102,7 +133,7 @@ function agentDrawer(props) {
 }
 
 agentDrawer.defaultProps = {
-  record: { id: '', releaseType: '', releaseStatus: '', agentHyper: '', agentPort: '', agentToken: '', },
+  record: { id: '', releaseType: '', taskName: '', beginDay: '1', endDay: '1', remindDay: '1', },
 };
 
 export default Form.create()(agentDrawer);

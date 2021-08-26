@@ -136,12 +136,13 @@ function Registration(props) {
           pathname: `/ITSM/releasemanage/to-do/record`,
           query: {
             Id: response.data.saveRegister.releaseMain.releaseNo,
+            taskId: response.data.saveRegister.releaseMain.taskId,
             taskName: '出厂测试'
           },
           state: {
             runpath: `/ITSM/releasemanage/to-do`,
             dynamicpath: true,
-            menuDesc: '出厂测试',
+            menuDesc: '发布工单',
           },
         });
       } else {

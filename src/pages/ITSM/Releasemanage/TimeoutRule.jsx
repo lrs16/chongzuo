@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Table, Card, Divider, Button, Message, Popconfirm, Form, Input, Select, Row, Col, DatePicker } from 'antd';
+import { Table, Card, Divider, Button, Message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import DictLower from '@/components/SysDict/DictLower';
 import TimeoutDrawer from './components/TimeoutDrawer';
@@ -19,17 +19,19 @@ function TimeoutRule(props) {
 
   const searchdata = (page, size) => {
     dispatch({
-      type: 'agentmanage/query',
+      type: 'releasetimeout/fetchlist',
       payload: {
-        pageNum: page,
+        pageIndex: page,
         pageSize: size,
+        releaseType: '',
+        taskName: '',
       },
     });
   };
 
-  // useEffect(() => {
-  //   searchdata(1, 30);
-  // }, [location]);
+  useEffect(() => {
+    searchdata(1, 30);
+  }, [location]);
 
   const handleShowDrawer = (drwertitle, type, record) => {
     setVisible(!visible);
@@ -41,7 +43,7 @@ function TimeoutRule(props) {
   // 提交
   const handleSubmit = values => {
     dispatch({
-      type: 'agentmanage/update',
+      type: 'releasetimeout/update',
       payload: {
         ...values,
       },
@@ -49,6 +51,25 @@ function TimeoutRule(props) {
       if (res.code === 200) {
         Message.success(res.msg);
         searchdata(1, 30);
+      } else {
+        Message.error(res.msg);
+      }
+    });
+  };
+
+  // 删除
+  const handleDelete = id => {
+    dispatch({
+      type: 'releasetimeout/delete',
+      payload: {
+        id,
+      },
+    }).then(res => {
+      if (res.code === 200) {
+        Message.success(res.msg);
+        searchdata(1, 30);
+      } else {
+        Message.error(res.msg);
       }
     });
   };
@@ -57,28 +78,31 @@ function TimeoutRule(props) {
   const columns = [
     {
       title: '发布类型',
-      dataIndex: 'agentName',
-      key: 'agentName',
+      dataIndex: 'releaseType',
+      key: 'releaseType',
+      sorter: (a, b) => a.taskName.localeCompare(b.releaseType),
     },
     {
       title: '环节名称',
-      dataIndex: 'agentHost',
-      key: 'agentHost',
+      dataIndex: 'taskName',
+      key: 'taskName',
+      sorter: (a, b) => a.taskName.localeCompare(b.taskName),
     },
     {
       title: '操作开始日期（日）',
-      dataIndex: 'agentHyper',
-      key: 'agentHyper',
+      dataIndex: 'beginDay',
+      key: 'beginDay',
+
     },
     {
       title: '操作结束日期（日）',
-      dataIndex: 'agentPort',
-      key: 'agentPort',
+      dataIndex: 'endDay',
+      key: 'endDay',
     },
     {
       title: '超时提醒（日）',
-      dataIndex: 'agentZone',
-      key: 'agentZone',
+      dataIndex: 'remindDay',
+      key: 'remindDay',
     },
     {
       title: '操作',
@@ -91,7 +115,8 @@ function TimeoutRule(props) {
             <a type="link" onClick={() => handleShowDrawer('编辑超时规则', 'update', record)}>
               编辑
             </a>
-            <a type="link" onClick={() => handleShowDrawer('编辑超时规则', 'update', record)}>
+            <Divider type="vertical" />
+            <a type="link" onClick={() => handleDelete(record.id)}>
               删除
             </a>
           </div>
@@ -118,10 +143,10 @@ function TimeoutRule(props) {
         </Button>
         <Table
           columns={columns}
-          dataSource={[]}
+          dataSource={list.records}
+          pagination={false}
           loading={loading}
           rowKey={(_, index) => index.toString()}
-          scroll={{ x: 1300 }}
         />
       </Card>
       {/* 抽屉 */}
@@ -132,14 +157,14 @@ function TimeoutRule(props) {
         handleSubmit={newvalue => handleSubmit(newvalue)}
         record={data}
         selectdata={selectdata}
+        savetype={savetype}
         destroyOnClose
       />
     </PageHeaderWrapper>
   );
 }
 
-export default connect(({ releasetodo, releaseview, loading }) => ({
-  info: releasetodo.info,
-  currentTaskStatus: releasetodo.currentTaskStatus,
-  loading: loading.models.releasetodo,
+export default connect(({ releasetimeout, loading }) => ({
+  list: releasetimeout.list,
+  loading: loading.models.releasetimeout,
 }))(TimeoutRule);

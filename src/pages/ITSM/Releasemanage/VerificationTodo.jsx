@@ -8,7 +8,6 @@ import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
 
 const { Option } = Select;
-const { TextArea } = Input;
 const InputGroup = Input.Group;
 
 const formItemLayout = {
@@ -25,7 +24,7 @@ const formItemLayout = {
 function VerificationTodo(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, resetFields, validateFields },
+    form: { getFieldDecorator, resetFields, validateFields, getFieldsValue },
     loading,
     list,
     totals,
@@ -43,17 +42,14 @@ function VerificationTodo(props) {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
 
   useEffect(() => {
-    validateFields((err, values) => {
-      if (!err) {
-        dispatch({
-          type: 'releaseverificat/fetchlist',
-          payload: {
-            ...values,
-            pageIndex: paginations.current,
-            pageSize: paginations.pageSize,
-          },
-        });
-      }
+    const values = getFieldsValue();
+    dispatch({
+      type: 'releaseverificat/fetchlist',
+      payload: {
+        ...values,
+        pageIndex: paginations.current,
+        pageSize: paginations.pageSize,
+      },
     });
     return () => {
       setSelectData([]);
@@ -381,7 +377,7 @@ function VerificationTodo(props) {
             <Col span={8}>
               <Form.Item label="状态">
                 {getFieldDecorator('eventStatus', {
-                  initialValue: '',
+                  initialValue: '待验证',
                 })(
                   <Select placeholder="请选择" allowClear>
                     {checkstatusmap.map(obj => (

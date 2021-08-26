@@ -108,17 +108,20 @@ function DocumentAtt(props) {
       newData[dataSource.length - 3].editable = true;
       newData[dataSource.length - 4].editable = true;
       newData[dataSource.length - 5].editable = true;
-
     };
     setData(newData);
-    ChangeValue(newData)
+    ChangeValue(newData);
+    ChangeaddAttaches('');
   }
 
+  // useEffect(() => {
+  //   if (rowkey && dataSource && dataSource.length > 0) { attList() }
+  // }, [rowkey])
+
   useEffect(() => {
-    if (rowkey && dataSource.length > 0) { attList() }
-  }, [rowkey])
-  useEffect(() => {
-    if (rowkey && dataSource.length > 0) { attList() }
+    if (rowkey && dataSource && dataSource.length > 0) {
+      attList()
+    }
   }, [dataSource])
 
   useEffect(() => {
@@ -128,7 +131,7 @@ function DocumentAtt(props) {
   }, [Unit.dutyUnit])
 
   useEffect(() => {
-    if (addAttaches === 'add') {
+    if (addAttaches === 'add' && dataSource && dataSource.length > 0) {
       const lastattname = dataSource.slice(-1)[0].docName;
       if (rowkey === '2' && lastattname !== '功能出厂测试报告') {
         const newarr = Attaches.slice(0, 1);
@@ -149,8 +152,8 @@ function DocumentAtt(props) {
         ChangeValue(newdata)
       };
     };
-    if (addAttaches === 'delete') {
-      const lastattname = dataSource && dataSource.length > 0 && dataSource.slice(-1)[0].docName;
+    if (addAttaches === 'delete' && dataSource && dataSource.length > 0) {
+      const lastattname = dataSource.slice(-1)[0].docName;
       if (rowkey === '2' && lastattname === '功能出厂测试报告') {
         const newdata = data.map(item => ({ ...item }));
         newdata.pop();
@@ -209,7 +212,18 @@ function DocumentAtt(props) {
       key: 'attachFile',
       width: 300,
       render: (text, record) => {
-        if (isEdit && record.editable && record.key !== '9') {
+        if (record.key === '9') {
+          return (
+            <div style={{ width: 300, marginTop: 12 }} onMouseDown={() => ChangeButtype('')}>
+              <FilesContext.Provider value={{
+                files: JSON.parse(text),
+                ChangeFiles: (v => handleFieldChange(JSON.stringify(v), 'attachFile', record.key)),
+              }}>
+                <SysUpload key={record.id || record.key} />
+              </FilesContext.Provider>
+            </div>
+          )
+        } if (isEdit && record.editable) {
           return (
             <>
               <div style={{ width: 300 }} onMouseDown={() => ChangeButtype('')}>
@@ -217,37 +231,10 @@ function DocumentAtt(props) {
                   files: JSON.parse(text),
                   ChangeFiles: (v => handleFieldChange(JSON.stringify(v), 'attachFile', record.key)),
                 }}>
-                  <SysUpload />
+                  <SysUpload key={record.id || record.key} />
                 </FilesContext.Provider>
               </div>
               {check && text === '[]' && (<div style={{ color: '#f5222d' }}>请上传{record.docName}</div>)}
-            </>
-          )
-        } if (record.key === '9') {
-          return (
-            <>
-              {/* {text !== '[]'&& (
-                <div className={styles.greylink}>
-                  {JSON.parse(text).map((obj, index) => {
-                    return (
-                      <div key={index.toString()} style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', width: 280, overflow: 'hidden' }}>
-                        <PaperClipOutlined
-                          style={{ marginRight: 8, fontSize: 11, color: 'rgba(0, 0, 0, 0.45)', }}
-                        />
-                        <a onClick={() => handledownload(obj)}>{obj.name}</a>
-                      </div>
-                    );
-                  })}
-                </div>
-              )} */}
-              <div style={{ width: 300, marginTop: 12 }} onMouseDown={() => ChangeButtype('')}>
-                <FilesContext.Provider value={{
-                  files: JSON.parse(text),
-                  ChangeFiles: (v => handleFieldChange(JSON.stringify(v), 'attachFile', record.key)),
-                }}>
-                  <SysUpload />
-                </FilesContext.Provider>
-              </div>
             </>
           )
         }

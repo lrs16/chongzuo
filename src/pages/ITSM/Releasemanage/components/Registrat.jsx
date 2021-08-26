@@ -110,7 +110,7 @@ function Registrat(props, ref) {
   };
 
   useEffect(() => {
-    if (info && info.platformValid && info.platformValid.validResult) {
+    if (info && info.platformValid && info.platformValid.validResult && isEdit) {
       setAdopt(info.platformValid.validResult);
       if (info.platformValid.validResult === '通过') {
         ChangeSubmitType(1)
@@ -119,7 +119,7 @@ function Registrat(props, ref) {
         ChangeSubmitType(0)
       }
     };
-    if (info && info.releaseBizValid && info.releaseBizValid.validResult) {
+    if (info && info.releaseBizValid && info.releaseBizValid.validResult && isEdit) {
       setAdopt(info.releaseBizValid.validResult);
       if (info.releaseBizValid.validResult === '通过') {
         ChangeSubmitType(1)
@@ -354,7 +354,7 @@ function Registrat(props, ref) {
               ChangeValue={(v, files) => changeatt(v, files)}
               check={check}
             />
-            <Form.Item wrapperCol={{ span: 24 }} style={{ display: 'none' }}>
+            <Form.Item wrapperCol={{ span: 24 }} >
               {getFieldDecorator('releaseAttaches', {
                 rules: [{ required, message: '请上传附件' }, {
                   validator: handleAttValidator

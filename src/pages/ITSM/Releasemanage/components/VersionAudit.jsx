@@ -50,6 +50,7 @@ function VersionAudit(props, ref) {
   const [activeKey, setActiveKey] = useState('');
   const [adopt, setAdopt] = useState('通过');
   const [rowkey, setRowKey] = useState('0');
+  const [newList, setNewList] = useState(false);
   const { ChangeSubmitType, ChangeButtype, releaseType } = useContext(SubmitTypeContext);
   const required = true;
 
@@ -98,9 +99,8 @@ function VersionAudit(props, ref) {
 
   const changeatt = (v, files) => {
     setFieldsValue({ releaseAttaches: v });
-    const key = '5';
-    const target = v.filter(item => item.key === key)[0];
-    if (target && target.attachFile !== '[]') {
+    const target = v.filter(item => item.key !== '9' && item.editable && item.attachFile === '[]');
+    if (target.length === 0) {
       setCheck(false);
     };
     if (files === 'files') {
@@ -152,28 +152,21 @@ function VersionAudit(props, ref) {
       const TabKeys = tabKeyObject.map((item) => {                              // 提醒哪个页签未添加附件
         return item.releaseNo
       });
-      const flowId = getQueryVariable("Id");
-      if (TabKeys.indexOf(flowId) !== -1 && tabKeyObject.length > 0) {
-        handleTabChange(TabKeys[0]);
-      } else {
-        handleTabChange(flowId);
-      };
+      // const flowId = getQueryVariable("Id");
+      // if (TabKeys.indexOf(flowId) !== -1 && tabKeyObject.length > 0) {
+      //   handleTabChange(TabKeys[0]);
+      // } else {
+      //   handleTabChange(flowId);
+      // };
       if (target.length > 0) {
         setCheck(true);
-        callback(`页签${JSON.stringify(TabKeys)}有附件未上传`);
+        callback(`工单${JSON.stringify(TabKeys)}有附件未上传`);
       } else {
         callback()
       }
     } else {
       callback()
     }
-  }
-  // 校验发布清单
-  const handleListValidator = (rule, value, callback) => {
-    if (value === '' || value.length === 0) {
-      callback()
-    }
-    callback()
   }
 
 
@@ -187,8 +180,7 @@ function VersionAudit(props, ref) {
   const functionmap = getTypebyId('1384052503909240833');   // 功能类型
   const modulamap = getTypebyId('1384430921586839554');     // 模块
   const grademap = getTypebyId('1387229272208314369');      // 发布等级
-  const reasonmap = getTypebyId('1387231433545748481');     // 发布变更原因
-  const contentmap = getTypebyId('1387231738408734721');    // 发布变更内容
+
 
   // 复选框
   const onCheckboxChange = (checkds) => {
@@ -356,16 +348,19 @@ function VersionAudit(props, ref) {
               releaseMains={info.releaseListClassify.releaseMains}                // 已合并工单
               dutyUnitList={info.releaseListClassify.dutyUnitList}                // 公司清单
               ChangeAttActiveKey={(v) => handleTabChange(v)}                      // 选择所属工单对应的附件页签切换
+              orderNos={orderkeys}
+              ChangeTabdisabled={v => setNewList(v)}
             />
           </Col>
           <Col span={24} style={{ marginBottom: 24 }}>
-            {info.releaseMains && info.releaseMains.length > 1 && (<Tabs type='card' onChange={handleTabChange} activeKey={activeKey}>
-              {orderkeys.length > 1 && orderkeys.map((obj) => {
-                return [
-                  <TabPane key={obj} tab={obj} />,
-                ]
-              })}
-            </Tabs>)}
+            {info.releaseMains && info.releaseMains.length > 1 && (
+              <Tabs type='card' onChange={handleTabChange} activeKey={activeKey}>
+                {orderkeys.length > 1 && orderkeys.map((obj) => {
+                  return [
+                    <TabPane key={obj} tab={obj} disabled={newList} />,
+                  ]
+                })}
+              </Tabs>)}
             <DocumentAtt
               rowkey={rowkey}
               isEdit={isEdit}

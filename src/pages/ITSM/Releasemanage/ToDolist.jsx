@@ -9,7 +9,6 @@ import DictLower from '@/components/SysDict/DictLower';
 import { mergeOrders } from './services/api';
 
 const { Option } = Select;
-const { RangePicker } = DatePicker;
 
 const formItemLayout = {
   labelCol: {
@@ -153,6 +152,7 @@ function ToDolist(props) {
                   taskName: '版本管理员审核',
                   Id: target[0].releaseNo,
                   taskId: target[0].taskId,
+                  releaseType: target[0].releaseType,
                 },
                 state: {
                   dynamicpath: true,

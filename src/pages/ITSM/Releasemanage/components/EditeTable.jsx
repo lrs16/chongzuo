@@ -6,7 +6,7 @@ import CheckOneUser from '@/components/SelectUser/CheckOneUser';
 import { dispatchBizUsers } from '@/services/user';
 import styles from '../index.less';
 import OrderContent from './OrderContent';
-import { releaseListEdit, releaseListDel } from '../services/api';                   // 版本管理员审批清单添加编辑
+import { releaseListEdit, releaseListDel, classifyList } from '../services/api';                   // 版本管理员审批清单添加编辑
 
 const { TextArea } = Input;
 const InputGroup = Input.Group;
@@ -26,7 +26,7 @@ function getQueryVariable(variable) {
 
 function EditeTable(props) {
   const { title, functionmap, modulamap, isEdit, taskName, dataSource, ChangeValue,
-    dispatch, dutyUnits, dutyUnitListMsg, dutyUnitTotalMsg, dutyUnitList, ChangeAttActiveKey, saved } = props;
+    dispatch, dutyUnits, dutyUnitListMsg, dutyUnitTotalMsg, dutyUnitList, ChangeAttActiveKey, orderNos, ChangeTabdisabled } = props;
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -41,15 +41,37 @@ function EditeTable(props) {
   const [orderFilters, setOrderFilters] = useState([]);    // 所属工单筛选项
   const [filteredInfo, setFilteredInfo] = useState({})     // 已选择的筛选项
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 2 });
-  const [releaseNo, setReleaseNo] = useState({ releaseNo: '', processInstanceId: '' });
+  const [releaseNoandId, setReleaseNo] = useState({ releaseNo: '', processInstanceId: '' });
+  const [classify, setClassify] = useState('');
   const { ChangeButtype, taskId, ChangeaddAttaches } = useContext(UserContext);
 
   const listTypeFilter = [{ text: '计划', value: '计划' }, { text: '临时添加', value: '临时添加' }]
+
+  // 数组去重
+  const uniqueNo = (arr) => {
+    const res = new Map();
+    return arr.filter((item) => !res.has(item.releaseNo) && res.set(item.releaseNo, 1))
+  }
+
+  // 版本管理员审核点击新增时先判断该责任单位多少个工单
+  const checknewpre = (newData) => {
+    const releaseNoList = uniqueNo(newData);
+    const orderkeys = releaseNoList.map((item) => {
+      return item.releaseNo
+    })
+    if (orderkeys.length === 1) {
+      ChangeAttActiveKey(orderkeys[0])
+    }
+  }
 
   // 新增一条记录
   const newMember = () => {
     setPageinations({ current: 1, pageSize: 1 });
     const newData = data.map(item => ({ ...item }));
+    if (taskName === '版本管理员审核') {
+      checknewpre(newData);
+      ChangeTabdisabled(true);
+    };
     newData.unshift({
       key: data.length + 1,
       listType: (taskName === '新建' || taskName === '出厂测试') ? '计划' : '临时添加',
@@ -75,13 +97,9 @@ function EditeTable(props) {
     });
     setData(newData);
     setNewButton(true);
+    ChangeaddAttaches('');
   };
 
-  // 数组去重
-  const uniqueNo = (arr) => {
-    const res = new Map();
-    return arr.filter((item) => !res.has(item.releaseNo) && res.set(item.releaseNo, 1))
-  }
   const onSelectChange = (RowKeys, record) => {
     setDeletBut(false)
     setSelectedRowKeys(RowKeys);
@@ -97,8 +115,11 @@ function EditeTable(props) {
           setDeletBut(true)
         };
         if (releaseNos.length === 1) {
-          ChangeAttActiveKey(releaseNos[0])
+          ChangeAttActiveKey(releaseNos[0]);
+          ChangeTabdisabled(true);
         }
+      } else {
+        ChangeTabdisabled(false);
       }
     }
   };
@@ -241,6 +262,7 @@ function EditeTable(props) {
       releaseListEdit(target).then(res => {
         if (res.code === 200) {
           ChangeButtype('save');
+          ChangeTabdisabled(false);
         } else {
           message.error(res.msg)
         }
@@ -263,6 +285,9 @@ function EditeTable(props) {
     const newArr = newData.filter(item => item.key !== target.key);
     setData(newArr);
     setNewButton(false);
+    if (taskName === '版本管理员审核') {
+      ChangeTabdisabled(false)
+    }
   };
   // 编辑、验证取消
   const cancel = (e, key) => {
@@ -278,20 +303,6 @@ function EditeTable(props) {
       setNewButton(false);
     };
   };
-
-  // 验证按钮
-  const verificationRow = (e, key) => {
-    setNewButton(true)
-    e.preventDefault();
-    const newData = data.map(item => ({ ...item }));
-    const target = getRowByKey(key, newData);
-    if (target) {
-      target.verification = true;
-      target.options = sessionStorage.getItem('userName');
-      target.optionsId = sessionStorage.getItem('userauthorityid');
-      setData(newData);
-    }
-  }
 
   // 移除按钮,新建的时候
   const handleDelete = () => {
@@ -358,12 +369,12 @@ function EditeTable(props) {
       } else {
         const newArr = data.filter((x) => !selectedRecords.some((item) => item.taskId === item.addStatus && x.id === item.id));
         setData(newArr);
-        // 清单中是否还包含本节点添加的数据，如果已不含，附件列表清除补充的文档行
-        const deleteAtt = newArr.filter(item => item.taskId === item.addStatus);
+        // 清单中是否还包含本工单本节点添加的数据，如果已不含，附件列表清除补充的文档行
+        const deleteAtt = newArr.filter(item => item.taskId === item.addStatus && item.taskId === selectedRecords[0].taskId);
         if (deleteAtt.length === 0) {
           ChangeaddAttaches('delete');
         };
-        const listIds = newSelectds.map((item) => {                              // 取出发布工单号组成新的数组
+        const listIds = newSelectds.map((item) => {                              // 取出发布清单编号组成新的数组
           return item.id
         });
         if (listIds.length > 0) {
@@ -425,6 +436,15 @@ function EditeTable(props) {
       }));
       setData(newData);
       setNewButton(false);
+      setSelectedRowKeys([]);
+      setSelectedRecords([]);
+      if (taskName !== '新建') {
+        classifyList(getQueryVariable("taskId")).then(res => {
+          if (res.code === 200) {
+            setClassify(res.data.classifyList.dutyUnitTotalMsg);
+          }
+        })
+      }
     };
     if (dataSource && dataSource.length === 0) {
       newMember()
@@ -482,9 +502,6 @@ function EditeTable(props) {
       key: 'key',
       width: 50,
       align: 'center',
-      // render: (text, record, index) => {
-      //   return <>{`${index + 1}`}</>;
-      // },
     },
     {
       title: '清单类型',
@@ -601,7 +618,7 @@ function EditeTable(props) {
                   <TextArea
                     defaultValue={record.testMenu}
                     autoSize
-                    style={{ width: 320 }}
+                    style={{ width: 310 }}
                     onChange={e => handleFieldChange(e.target.value, 'testMenu', record.key)}
                   />
                 </InputGroup>
@@ -612,7 +629,7 @@ function EditeTable(props) {
                   <TextArea
                     defaultValue={record.testResult}
                     autoSize
-                    style={{ width: 320 }}
+                    style={{ width: 310 }}
                     onChange={e => handleFieldChange(e.target.value, 'testResult', record.key)}
                   />
                 </InputGroup>
@@ -623,7 +640,7 @@ function EditeTable(props) {
                   <TextArea
                     defaultValue={record.testStep}
                     autoSize
-                    style={{ width: 320 }}
+                    style={{ width: 310 }}
                     onChange={e => handleFieldChange(e.target.value, 'testStep', record.key)}
                   />
                 </InputGroup>
@@ -635,17 +652,17 @@ function EditeTable(props) {
           <>
             <InputGroup compact>
               <span style={{ width: 70, textAlign: 'right' }}>功能菜单：</span>
-              <span style={{ width: 320 }} dangerouslySetInnerHTML={{ __html: record.testMenu?.replace(/[\n]/g, '<br/>') }} />
+              <span style={{ width: 310 }} dangerouslySetInnerHTML={{ __html: record.testMenu?.replace(/[\n]/g, '<br/>') }} />
             </InputGroup>
             <Divider type='horizontal' style={{ margin: '6px 0' }} />
             <InputGroup compact>
               <span style={{ width: 70, textAlign: 'right' }}>预期效果：</span>
-              <span style={{ width: 320 }} dangerouslySetInnerHTML={{ __html: record.testResult?.replace(/[\n]/g, '<br/>') }} />
+              <span style={{ width: 310 }} dangerouslySetInnerHTML={{ __html: record.testResult?.replace(/[\n]/g, '<br/>') }} />
             </InputGroup>
             <Divider type='horizontal' style={{ margin: '6px 0' }} />
             <InputGroup compact>
               <span style={{ width: 70, textAlign: 'right' }}>验证步骤：</span>
-              <span style={{ width: 320 }} dangerouslySetInnerHTML={{ __html: record.testStep?.replace(/[\n]/g, '<br/>') }} />
+              <span style={{ width: 310 }} dangerouslySetInnerHTML={{ __html: record.testStep?.replace(/[\n]/g, '<br/>') }} />
             </InputGroup>
           </>
         );
@@ -807,7 +824,9 @@ function EditeTable(props) {
     render: (text, record) => {
       if ((record.isNew || record.editable) && taskName === '版本管理员审核') {
         const newData = data.map(item => ({ ...item }));
-        newData.shift()
+        if (record.isNew) {
+          newData.shift()
+        }
         const releaseNoList = uniqueNo(newData);
         const orderkeys = releaseNoList.map((item) => {
           return item.releaseNo
@@ -841,7 +860,7 @@ function EditeTable(props) {
       const newarr = arr;
       newarr.splice(-3, 0, verifyStatus)
       return newarr
-    } if ((taskName === '版本管理员审核' || taskName === '科室负责人审核') && dutyUnits && dutyUnits.length > 1) {
+    } if ((taskName === '版本管理员审核' || taskName === '科室负责人审核' || taskName === '中心领导审核') && orderNos && orderNos.length > 1) {
       const newarr = arr;
       newarr.splice(-1, 0, orderid);
       return newarr
@@ -866,6 +885,9 @@ function EditeTable(props) {
   const handleTabChange = key => {
     settabActivekey(key);
     setFilteredInfo({});
+    setSelectedRowKeys([]);
+    setSelectedRecords([]);
+    ChangeTabdisabled(false);
     if (dutyUnitList && dutyUnitList[key]) {
       const newData = dutyUnitList[key].map((item, index) => ({
         ...item,
@@ -919,6 +941,7 @@ function EditeTable(props) {
           {dutyUnitTotalMsg && (
             <span key={tabActivekey} style={{ paddingBottom: 12 }}>{tabActivekey}：{dutyUnitListMsg[tabActivekey]}</span>
           )}
+          {(((taskName === '出厂测试' || taskName === '平台验证' || taskName === '业务验证') && isEdit) || taskName === '发布实施准备') && (<span key={tabActivekey} style={{ paddingBottom: 12 }}>{classify}</span>)}
         </Col>
 
         <Col span={8} style={{ textAlign: 'right' }}>
@@ -962,7 +985,8 @@ function EditeTable(props) {
                   type='danger'
                   style={{ marginRight: 8 }}
                   ghost
-                  onMouseDown={() => { ChangeButtype('') }} onClick={() => ortherDelete()}
+                  onMouseDown={() => { ChangeButtype(''); ChangeaddAttaches(''); }}
+                  onClick={() => ortherDelete()}
                 >
                   移除
                 </Button>
@@ -973,7 +997,8 @@ function EditeTable(props) {
                     type='danger'
                     style={{ marginRight: 8 }}
                     ghost
-                    onMouseDown={() => { ChangeButtype('') }} onClick={() => checkDelete()}
+                    onMouseDown={() => { ChangeButtype(''); ChangeaddAttaches(''); }}
+                    onClick={() => checkDelete()}
                     disabled={deletebut}
                   >
                     移除
@@ -1008,7 +1033,7 @@ function EditeTable(props) {
       <UserContext.Provider value={{ setChoiceUser, uservisible, setUserVisible, title: '分派' }}>
         <CheckOneUser userlist={userlist} />
       </UserContext.Provider>
-      <OrderContent data={releaseNo} visible={drawervisible} handleChange={v => setDrawerVisible(v)} />
+      <OrderContent data={releaseNoandId} visible={drawervisible} handleChange={v => setDrawerVisible(v)} />
     </>
   );
 }

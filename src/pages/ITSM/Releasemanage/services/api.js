@@ -272,3 +272,30 @@ export async function searchOrder(params) {
     requestType: 'formjosn',
   });
 }
+
+// 发布超时管理列表/release/timeout/configList
+export async function TimeoutconfigList(params) {
+  return request(`/release/timeout/configList`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}
+
+// 发布超时管理删除
+export async function TimeoutdelConfig(params) {
+  return request(`/release/timeout/delConfig`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 发布超时管理新增编辑
+export async function TimeoutsaveConfig(params) {
+  return request(`/release/timeout/saveConfig`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}
