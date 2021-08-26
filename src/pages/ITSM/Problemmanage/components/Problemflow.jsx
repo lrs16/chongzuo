@@ -28,6 +28,9 @@ function Problemflow(props) {
     document.getElementById('divimg').appendChild(img);
   };
 
+
+  console.log(imageSource,'imageSource')
+
   useEffect(() => {
     if (imageSource !== '' && document.getElementsByTagName('img').length < 2) {
       imgsrc();

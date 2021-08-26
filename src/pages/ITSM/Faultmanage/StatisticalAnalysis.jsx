@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import {
   Row,
   Col,
-  Card
+  Card,
+  Icon
 } from 'antd';
 
 import { ChartCard } from '@/components/Charts';
@@ -10,7 +11,12 @@ import Barchart from '@/components/CustomizeCharts/Barchart';
 import Donut from '@/components/CustomizeCharts/Donut';
 import OrdinaryLine from '@/components/CustomizeCharts/OrdinaryLine';
 import StatisticsModal from './components/StatisticsModal';
+import iconfontUrl from '@/utils/iconfont';
 
+
+const IconFont = Icon.createFromIconfontCN({
+  scriptUrl: iconfontUrl,
+});
 function StatisticalAnalysis(props) {
   const [barChartparams, setBarChartparams] = useState('');
   const [visible, setVisible] = useState(false);
@@ -42,53 +48,136 @@ function StatisticalAnalysis(props) {
 
   const showDetaillist = (params, type) => {
     console.log('params: ', params);
-    if (type === 'line') {
-      const { mappingData } = params;
-      const selextX = params.x;
-      const selextY = params.y;
-      const reuslt = mappingData.filter(value => {
-        const { x, y, _origin } = value;
-        console.log('_origin: ', _origin);
-        if (selextX === x && selextY === y) {
-          return _origin
+    switch (type) {
+      case 'line': {
+        const { mappingData } = params;
+        const selextX = params.x;
+        const selextY = params.y;
+        const reuslt = mappingData.filter(value => {
+          const { x, y, _origin } = value;
+          console.log('_origin: ', _origin);
+          if (selextX === x && selextY === y) {
+            return _origin
+          }
         }
+        )
+        setVisible(true);
+        setTitle(reuslt[0]["_origin"].city)
+        break;
       }
-      )
-      console.log(reuslt[0]["_origin"].city, 'reuslt')
-      setVisible(true);
-      setTitle(reuslt[0]["_origin"].city)
+
+      case 'barchart': {
+        const { data } = params;
+        setVisible(true);
+        setTitle(data.country);
+        break;
+      }
+
+      default:
+        break;
     }
   }
   return (
     <>
-      <Card
+      {/* <Card
         title='故障责任单位情况'
         bordered={false}
         style={{ backgroundColor: 'white' }}
-      >
+      > */}
+
+      <Row style={{ marginBottom: 10 }}>
+        <Col span={8}>
+          <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: 'white', marginRight: 10 }}>
+            <div>
+              <span style={{display:'inline-block',height:40,width:40,backgroundColor: '#0366C3',textAlign:'center',borderRadius:'50%',padding:5}}>
+                <IconFont
+                  type="iconziyuanldpi"
+                  style={{ fontSize: '1.5em' }}
+                />
+              </span>
+
+              <span style={{fontSize:18,color:'#0366C3',marginLeft:10,fontWeight:'bolder'}}>故障工单情况</span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+              <div>
+                <p>故障总数:</p>
+                <p>555单</p>
+                <p>环比上月</p>
+                {/* <p style={{height:'100%',width:2,}}>11</p> */}
+              </div>
+              <div>
+                <p>已处理:</p>
+                <p>555单</p>
+                <p>环比上月</p>
+              </div>
+              <div>
+                <p>解决率:</p>
+                <p>555单</p>
+                <p>环比上月</p>
+              </div>
+            </div>
+          </div>
+
+        </Col>
+        <Col span={8}>
+          <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: 'white', marginRight: 10 }}>
+            <div>故障工单情况</div>
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+              <div>
+                <p>故障总数:</p>
+                <p>555单</p>
+                <p>环比上月</p>
+              </div>
+            </div>
+          </div>
+
+        </Col>
+        <Col span={8} style={{ backgroundColor: 'white' }}>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div>故障工单情况</div>
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+              <div>
+                <p>故障总数:</p>
+                <p>555单</p>
+                <p>环比上月</p>
+              </div>
+            </div>
+          </div>
+        </Col>
+      </Row>
+
+
+
+      <div style={{ backgroundColor: 'white' }}>
         <Row gutter={16}>
+          <Col span={24}><p>故障责任单位情况</p></Col>
           <Col span={12}>
-            <ChartCard title="工单量">
-              <Donut
-                data={Donutdata}
-                height={315}
-                total="1161"
-                padding={[0, 0, 0, 0]}
-                detailParams={newdata => { showDetaillist(newdata) }}
-              />
-            </ChartCard>
+            {/* <ChartCard title="工单量"> */}
+            <Donut
+              data={Donutdata}
+              height={315}
+              total="1161"
+              padding={[0, 0, 0, 0]}
+              detailParams={newdata => { showDetaillist(newdata) }}
+            />
+            {/* </ChartCard> */}
           </Col>
           <Col span={12}>
-            <ChartCard title="事件工单情况">
-              <OrdinaryLine
-                height={315}
-                detailParams={newdata => { showDetaillist(newdata, 'line') }}
-              />
-            </ChartCard>
+            {/* <ChartCard title="事件工单情况"> */}
+            <OrdinaryLine
+              height={315}
+              detailParams={newdata => { showDetaillist(newdata, 'line') }}
+            />
+            {/* </ChartCard> */}
           </Col>
         </Row>
-      </Card>
 
+      </div>
+
+      {/* </Card> */}
+
+
+      {/* 
       <Card
         title='故障类型统计分析'
         bordered={false}
@@ -148,7 +237,7 @@ function StatisticalAnalysis(props) {
             <ChartCard title="软件故障趋势分析">
               <Barchart
                 // height={315}
-                detailParams={newdata => { showDetaillist(newdata, 'Barchart') }}
+                detailParams={newdata => { showDetaillist(newdata, 'barchart') }}
               />
             </ChartCard>
           </Col>
@@ -203,7 +292,7 @@ function StatisticalAnalysis(props) {
             />
           </ChartCard>
         </Col>
-      </Row>
+      </Row> */}
 
       <StatisticsModal
         visible={visible}

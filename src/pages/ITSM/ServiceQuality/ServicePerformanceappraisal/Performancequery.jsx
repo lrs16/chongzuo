@@ -46,30 +46,16 @@ const columns = [
     width: 200,
     render: (text, record) => {
       const todetail = () => {
-        if(record.currentTaskName === '服务绩效考核确认') {
-          router.push({
-            pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/performancequerydetail',
-            query: {
-              assessNo: record.assessNo,
-              mainId: record.instanceId,
-              taskId: record.currentTaskId,
-              orderNo: text,
-              myOrder:true
-            }
-          })
-        } else {
-          router.push({
-            pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
-            query: {
-              assessNo: record.assessNo,
-              mainId: record.instanceId,
-              taskId: record.currentTaskId,
-              orderNo: text,
-              myOrder:true
-            }
-          })
-        }
-        
+        router.push({
+          pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/performancequerydetail',
+          query: {
+            assessNo: record.assessNo,
+            mainId: record.instanceId,
+            taskId: record.currentTaskId,
+            orderNo: text,
+            search:true
+          }
+        })
       };
       return <a onClick={todetail}>{text}</a>
     }
@@ -312,15 +298,15 @@ const columns = [
     width: 180,
   },
 ]
-function Assessment(props) {
+function Performancequery(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, validateFields, setFieldsValue, resetFields },
     tobeDealtarr,
-    assessmyAssessarr,
     target1,
     target2,
     userinfo,
+    assessSearcharr,
     dispatch,
     location,
     loading
@@ -545,7 +531,7 @@ function Assessment(props) {
     }
 
     dispatch({
-      type: 'performanceappraisal/assessmyAssess',
+      type: 'performanceappraisal/assessSearch',
       payload: {
         ...newvalues,
         pageNum: page,
@@ -597,7 +583,6 @@ function Assessment(props) {
   };
 
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
-  console.log('cacheinfo: ', cacheinfo);
 
   useEffect(() => {
     if (location.state) {
@@ -658,7 +643,6 @@ function Assessment(props) {
   useEffect(() => {
     if (cacheinfo !== undefined) {
       validateFields((err, values) => {
-        console.log('values: ', values);
         if (!err) {
           if (values.providerId) {
             getContrractname(values.providerId)
@@ -714,7 +698,7 @@ function Assessment(props) {
     onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    total: assessmyAssessarr.total,
+    total: assessSearcharr.total,
     showTotal: total => `总共  ${total}  条记录`,
     onChange: (page) => changePage(page),
   };
@@ -806,7 +790,6 @@ function Assessment(props) {
   }
 
   const selectOnchange = (value, option, type) => {
-    console.log('value: ', value);
     const { props: { children } } = option;
     switch (type) {
       case 'director':
@@ -837,7 +820,7 @@ function Assessment(props) {
   const download = () => {
     validateFields((err, values) => {
       dispatch({
-        type: 'performanceappraisal/exportmyAssess',
+        type: 'performanceappraisal/exportSearch',
         payload: {
           ...values,
           assessBeginTime: values.timeoccurrence?.length ? moment(values.timeoccurrence[0]).format('YYYY-MM-DD HH:mm:ss') : '',
@@ -874,8 +857,6 @@ function Assessment(props) {
       })
     })
   }
-
-
 
   const extra = (
     <>
@@ -1645,7 +1626,7 @@ function Assessment(props) {
         <Table
           loading={loading}
           columns={columns}
-          dataSource={assessmyAssessarr.records}
+          dataSource={assessSearcharr.records}
           scroll={{ x: 1500, y: 700 }}
           rowKey={record => record.id}
           pagination={pagination}
@@ -1659,10 +1640,10 @@ function Assessment(props) {
 export default Form.create({})(
   connect(({ performanceappraisal, qualityassessment, itsmuser, loading }) => ({
     tobeDealtarr: performanceappraisal.tobeDealtarr,
-    assessmyAssessarr: performanceappraisal.assessmyAssessarr,
+    assessSearcharr: performanceappraisal.assessSearcharr,
     target2: qualityassessment.target2,
     target1: qualityassessment.target1,
     loading: loading.models.performanceappraisal
-  }))(Assessment)
+  }))(Performancequery)
 )
 

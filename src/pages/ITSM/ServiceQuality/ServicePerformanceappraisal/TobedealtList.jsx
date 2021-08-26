@@ -46,6 +46,7 @@ const columns = [
     width: 200,
     render: (text, record) => {
       const todetail = () => {
+        console.log('record: ', record);
         router.push({
           pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
           query: {
@@ -53,6 +54,7 @@ const columns = [
             mainId: record.instanceId,
             taskId: record.currentTaskId,
             orderNo: text,
+            tobelist: true
           }
         })
       };
@@ -153,67 +155,76 @@ const columns = [
     title: '业务负责人审核结果',
     dataIndex: 'directorVerifyValue',
     key: 'directorVerifyValue',
-    width: 150,
+    width: 180,
+    render: (text, record) => {
+      return <span>{text === '1' ? '通过' : text === '0' ? '不通过' : ''}</span>
+    }
   },
   {
     title: '业务负责人审核说明',
     dataIndex: 'directorVerifyContent',
     key: 'directorVerifyContent',
-    width: 150,
+    width: 180,
   },
   {
     title: '业务负责人审核状态',
     dataIndex: 'directorVerifyStatus',
     key: 'directorVerifyStatus',
-    width: 150,
+    width: 180,
   },
   {
     title: '业务负责人审核人',
     dataIndex: 'directorVerifier',
     key: 'directorVerifier',
-    width: 150,
+    width: 180,
   },
   {
     title: '业务负责人审核时间',
     dataIndex: 'directorVerifyTime',
     key: 'directorVerifyTime',
-    width: 150,
+    width: 180,
   },
   {
     title: '自动化科专责审核结果',
     dataIndex: 'expertVerifyValue',
     key: 'expertVerifyValue',
-    width: 150,
+    width: 180,
+    render: (text, record) => {
+      return <span>{text === '1' ? '通过' : text === '0' ? '不通过' : ''}</span>
+    }
   },
   {
     title: '自动化科专责审核说明',
     dataIndex: 'expertVerifyContent',
     key: 'expertVerifyContent',
-    width: 150,
+    width: 180,
   },
   {
     title: '自动化科专责审核状态',
     dataIndex: 'expertVerifyStatus',
     key: 'expertVerifyStatus',
-    width: 150,
+    width: 180,
   },
   {
     title: '自动化科专责审核人',
     dataIndex: 'expertVerifier',
     key: 'expertVerifier',
-    width: 150,
+    width: 180,
   },
   {
     title: '自动化科专责审核时间',
     dataIndex: 'expertVerifyTime',
     key: 'expertVerifyTime',
-    width: 150,
+    width: 180,
   },
   {
     title: '是否申诉',
     dataIndex: 'isAppeal',
     key: 'isAppeal',
     width: 150,
+    render: (text, record) => {
+      return <span>{text === '1' ? '是' : text === '0' ? '否' : ''}</span>
+    }
   },
   {
     title: '申诉内容',
@@ -223,8 +234,8 @@ const columns = [
   },
   {
     title: '服务商确认人',
-    dataIndex: 'providerConfirmer',
-    key: 'providerConfirmer',
+    dataIndex: 'providerConfirmerName',
+    key: 'providerConfirmerName',
     width: 150,
   },
   {
@@ -237,49 +248,55 @@ const columns = [
     title: '业务负责人复核结果',
     dataIndex: 'directorReviewValue',
     key: 'directorReviewValue',
-    width: 150,
+    width: 180,
+    render: (text, record) => {
+      return <span>{text === '1' ? '通过' : text === '0' ? '不通过' : ''}</span>
+    }
   },
   {
     title: '业务负责人复核说明',
     dataIndex: 'directorReviewContent',
     key: 'directorReviewContent',
-    width: 150,
+    width: 180,
   },
   {
     title: '业务负责人复核人',
     dataIndex: 'directorReviewer',
     key: 'directorReviewer',
-    width: 150,
+    width: 180,
   },
   {
     title: '业务负责人复核时间',
     dataIndex: 'directorReviewTime',
     key: 'directorReviewTime',
-    width: 150,
+    width: 180,
   },
   {
     title: '服务绩效考核确认结果',
     dataIndex: 'finallyConfirmValue',
     key: 'finallyConfirmValue',
-    width: 150,
+    width: 180,
+    render: (text, record) => {
+      return <span>{text === '1' ? '确认考核' : text === '0' ? '取消考核' : ''}</span>
+    }
   },
   {
     title: '服务绩效考核确认说明',
     dataIndex: 'finallyConfirmContent',
     key: 'finallyConfirmContent',
-    width: 150,
+    width: 180,
   },
   {
     title: '服务绩效考核确认人',
-    dataIndex: 'finallyConfirmer',
-    key: 'finallyConfirmer',
-    width: 150,
+    dataIndex: 'finallyConfirmerName',
+    key: 'finallyConfirmerName',
+    width: 180,
   },
   {
     title: '服务绩效考核确认时间',
     dataIndex: 'finallyConfirmTime',
     key: 'finallyConfirmTime',
-    width: 150,
+    width: 180,
   },
 ]
 function TobedealtList(props) {
@@ -291,6 +308,7 @@ function TobedealtList(props) {
     target2,
     userinfo,
     dispatch,
+    location,
     loading
   } = props;
   const [performanceLeader, setPerformanceLeader] = useState('')
@@ -307,17 +325,7 @@ function TobedealtList(props) {
   const [target1Type, setTarget1Type] = useState('功能开发'); //  设置指标类型
   const [target2Type, setTarget2Type] = useState('');
   const [spinloading, setSpinLoading] = useState(true);
-
-  const searchdata = (values, page, pageSize) => {
-    dispatch({
-      type: 'performanceappraisal/tobeDealtdata',
-      payload: {
-        ...values,
-        pageNum: page,
-        pageSize
-      }
-    })
-  }
+  const [tabrecord, setTabRecord] = useState({});
 
   const getPerformanceleader = () => {
     operationPerson().then(res => {
@@ -328,56 +336,6 @@ function TobedealtList(props) {
         }
       })
       setPerformanceLeader(result)
-    })
-  }
-
-
-
-  useEffect(() => {
-    getPerformanceleader();
-    validateFields((err, value) => {
-      searchdata(value, 1, 15)
-    })
-  }, [])
-
-  const onShowSizeChange = (page, pageSize) => {
-    validateFields((err, values) => {
-      if (!err) {
-        searchdata(values, page, pageSize);
-      }
-    });
-    setPageinations({
-      ...paginations,
-      pageSize,
-    });
-  };
-
-  const changePage = (page) => {
-    validateFields((err, values) => {
-      if (!err) {
-        searchdata(values, page, paginations.pageSize);
-      }
-    });
-    setPageinations({
-      ...paginations,
-      current: page,
-    });
-  };
-
-
-  const pagination = {
-    showSizeChanger: true,
-    onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
-    current: paginations.current,
-    pageSize: paginations.pageSize,
-    total: tobeDealtarr.total,
-    showTotal: total => `总共  ${total}  条记录`,
-    onChange: (page) => changePage(page),
-  };
-
-  const handleSearch = () => {
-    validateFields((err, value) => {
-      searchdata(value, 1, paginations.pageSize)
     })
   }
 
@@ -546,6 +504,216 @@ function TobedealtList(props) {
     }
   };
 
+  const searchdata = (values, page, pageSize) => {
+    const newvalues = {
+      ...values,
+      assessBeginTime: values.timeoccurrence?.length ? moment(values.timeoccurrence[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      assessEndTime: values.timeoccurrence?.length ? moment(values.timeoccurrence[1]).format('YYYY-MM-DD HH:mm:ss') : '', // 发生时间
+      timeoccurrence: '',
+      applyBeginTime: values.applyTime?.length ? moment(values.applyTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      applyEndTime: values.applyTime?.length ? moment(values.applyTime[1]).format('YYYY-MM-DD HH:mm:ss') : '', // 登记时间
+      applyTime: '',
+      directorVerifyBeginTime: values.directorVerifyTime?.length ? moment(values.directorVerifyTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      directorVerifyEndTime: values.directorVerifyTime?.length ? moment(values.directorVerifyTime[1]).format('YYYY-MM-DD HH:mm:ss') : '', // 业务负责人审核时间
+      directorVerifyTime: '',
+      expertVerifyBeginTime: values.expertVerifyTime?.length ? moment(values.expertVerifyTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      expertVerifyEndTime: values.expertVerifyTime?.length ? moment(values.expertVerifyTime[1]).format('YYYY-MM-DD HH:mm:ss') : '', // 自动化科专责审核时间
+      expertVerifyTime: '',
+      providerConfirmBeginTime: values.providerConfirmTime?.length ? moment(values.providerConfirmTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      providerConfirmEndTime: values.providerConfirmTime?.length ? moment(values.providerConfirmTime[1]).format('YYYY-MM-DD HH:mm:ss') : '', // 服务商确认时间
+      providerConfirmTime: '',
+      directorReviewBeginTime: values.directorReviewTime?.length ? moment(values.directorReviewTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      directorReviewEndTime: values.directorReviewTime?.length ? moment(values.directorReviewTime[1]).format('YYYY-MM-DD HH:mm:ss') : '', // 业务负责人复核时间
+      directorReviewTime: '',
+      finallyConfirmBeginTime: values.finallyConfirmTime?.length ? moment(values.finallyConfirmTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      finallyConfirmEndTime: values.finallyConfirmTime?.length ? moment(values.finallyConfirmTime[1]).format('YYYY-MM-DD HH:mm:ss') : '', // 服务绩效考核确认时间
+      finallyConfirmTime: '',
+    }
+
+    console.log(newvalues, 'newvalues')
+    dispatch({
+      type: 'performanceappraisal/tobeDealtdata',
+      payload: {
+        ...newvalues,
+        pageNum: page,
+        pageSize
+      }
+    })
+    setTabRecord({ ...newvalues });
+  }
+
+  const record = {
+    assessNo: '',
+    currentTaskName: '',
+    provider: '',
+    contractName: '',
+    contractId: '',
+    directorId: '',
+    directorName: '',
+    assessType: '',
+    target1Name: '',
+    assessContent: '',
+    target1Id: '',
+    target2Name: '',
+    target2Id: '',
+    detailed: '',
+    assessValue: '',
+    register: '',
+    directorVerifyValue: '',
+    directorVerifyContent: '',
+    directorVerifyStatus: '',
+    directorVerifier: '',
+    expertVerifyValue: '',
+    expertVerifyContent: '',
+    expertVerifyStatus: '',
+    expertVerifier: '',
+    isAppeal: '',
+    appealContent: '',
+    providerConfirmerName: '',
+    providerConfirmer: '',
+    directorReviewValue: '',
+    directorReviewContent: '',
+    directorReviewer: '',
+    finallyConfirmContent: '',
+    finallyConfirmValue: '',
+    finallyConfirmerName: '',
+    finallyConfirmer: '',
+    finallyConfirmTime: '',
+    providerId: '',
+    paginations,
+  };
+
+  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+  console.log('cacheinfo: ', cacheinfo);
+
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              // registerTime: '',
+              paginations,
+              expand,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新,并获取数据
+      if (location.state.reset) {
+        handleReset();
+        setExpand(false);;
+      };
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        const {
+          applyBeginTime,
+          applyEndTime,
+          directorVerifyBeginTime,
+          directorVerifyEndTime,
+          assessBeginTime,
+          assessEndTime,
+          expertVerifyBeginTime,
+          expertVerifyEndTime,
+          providerConfirmBeginTime,
+          providerConfirmEndTime,
+          directorReviewBeginTime,
+          directorReviewEndTime,
+          finallyConfirmBeginTime,
+          finallyConfirmEndTime
+        } = location.state.cacheinfo;
+        setExpand(location.state.cacheinfo.expand);
+        setPageinations({ ...paginations, current, pageSize });
+        setFieldsValue({
+          applyTime: applyBeginTime ? [moment(applyBeginTime), moment(applyEndTime)] : '',
+          directorVerifyTime: applyBeginTime ? [moment(directorVerifyBeginTime), moment(directorVerifyEndTime)] : '',
+          timeoccurrence: applyBeginTime ? [moment(assessBeginTime), moment(assessEndTime)] : '',
+          expertVerifyTime: applyBeginTime ? [moment(expertVerifyBeginTime), moment(expertVerifyEndTime)] : '',
+          providerConfirmTime: applyBeginTime ? [moment(providerConfirmBeginTime), moment(providerConfirmEndTime)] : '',
+          directorReviewTime: applyBeginTime ? [moment(directorReviewBeginTime), moment(directorReviewEndTime)] : '',
+          finallyConfirmTime: applyBeginTime ? [moment(finallyConfirmBeginTime), moment(finallyConfirmEndTime)] : '',
+        })
+      };
+    }
+  }, [location.state]);
+
+  // 获取数据
+  useEffect(() => {
+    if (cacheinfo !== undefined) {
+      validateFields((err, values) => {
+        console.log('values: ', values);
+        if (!err) {
+          if (values.providerId) {
+            getContrractname(values.providerId)
+          }
+
+          if (values.assessType) {
+            getTarget1(values.assessType)
+          }
+
+          if (values.target1Id) {
+            getTarget2(values.target1Id)
+          }
+          searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize)
+        }
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    getPerformanceleader();
+    validateFields((err, value) => {
+      searchdata(value, 1, 15)
+    })
+  }, [])
+
+  const onShowSizeChange = (page, pageSize) => {
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, page, pageSize);
+      }
+    });
+    setPageinations({
+      ...paginations,
+      pageSize,
+    });
+  };
+
+  const changePage = (page) => {
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, page, paginations.pageSize);
+      }
+    });
+    setPageinations({
+      ...paginations,
+      current: page,
+    });
+  };
+
+
+  const pagination = {
+    showSizeChanger: true,
+    onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
+    current: paginations.current,
+    pageSize: paginations.pageSize,
+    total: tobeDealtarr.total,
+    showTotal: total => `总共  ${total}  条记录`,
+    onChange: (page) => changePage(page),
+  };
+
+  const handleSearch = () => {
+    validateFields((err, value) => {
+      searchdata(value, 1, paginations.pageSize)
+    })
+  }
+
+
+
   const handleFocus = (params) => {
     switch (params) {
       case 'one':
@@ -578,7 +746,7 @@ function TobedealtList(props) {
           target2Name: '',
           target2Id: ''
         })
-        getTarget1(value);
+        getTarget1(key);
         break;
       case 'target1Name':
         setFieldsValue({
@@ -602,6 +770,12 @@ function TobedealtList(props) {
           clauseId: key
         })
         break;
+      case 'contractId':
+        setFieldsValue({
+          contractId: value,
+          contractName: key
+        })
+        break;
 
       default:
         break;
@@ -609,16 +783,83 @@ function TobedealtList(props) {
   }
 
   const handleReset = () => {
-    resetFields()
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: {}
+    });
+    resetFields();
+    searchdata({}, 1, 15)
   }
 
-  const selectOnchange = (value, option) => {
+  const selectOnchange = (value, option, type) => {
     console.log('value: ', value);
     const { props: { children } } = option;
-    setFieldsValue({
-      directorName: children,
-      directorId: value
-    });
+    switch (type) {
+      case 'director':
+        setFieldsValue({
+          directorName: children,
+          directorId: value
+        });
+        break;
+      case 'providerConfirmer':
+        setFieldsValue({
+          providerConfirmerName: children,
+          providerConfirmer: value
+        });
+        break;
+      case 'finallyConfirmerName':
+        setFieldsValue({
+          finallyConfirmerName: children,
+          finallyConfirmer: value
+        });
+        break;
+
+      default:
+        break;
+    }
+
+  }
+
+  const download = () => {
+    validateFields((err, values) => {
+      dispatch({
+        type: 'performanceappraisal/exportTodolist',
+        payload: {
+          ...values,
+          assessBeginTime: values.timeoccurrence?.length ? moment(values.timeoccurrence[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          assessEndTime: values.timeoccurrence?.length ? moment(values.timeoccurrence[1]).format('YYYY-MM-DD HH:mm:ss') : '', // 发生时间
+          timeoccurrence: '',
+          applyBeginTime: values.applyTime?.length ? moment(values.applyTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          applyEndTime: values.applyTime?.length ? moment(values.applyTime[1]).format('YYYY-MM-DD HH:mm:ss') : '', // 登记时间
+          applyTime: '',
+          directorVerifyBeginTime: values.directorVerifyTime?.length ? moment(values.directorVerifyTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          directorVerifyEndTime: values.directorVerifyTime?.length ? moment(values.directorVerifyTime[1]).format('YYYY-MM-DD HH:mm:ss') : '', // 业务负责人审核时间
+          directorVerifyTime: '',
+          expertVerifyBeginTime: values.expertVerifyTime?.length ? moment(values.expertVerifyTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          expertVerifyEndTime: values.expertVerifyTime?.length ? moment(values.expertVerifyTime[1]).format('YYYY-MM-DD HH:mm:ss') : '', // 自动化科专责审核时间
+          expertVerifyTime: '',
+          providerConfirmBeginTime: values.providerConfirmTime?.length ? moment(values.providerConfirmTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          providerConfirmEndTime: values.providerConfirmTime?.length ? moment(values.providerConfirmTime[1]).format('YYYY-MM-DD HH:mm:ss') : '', // 服务商确认时间
+          providerConfirmTime: '',
+          directorReviewBeginTime: values.directorReviewTime?.length ? moment(values.directorReviewTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          directorReviewEndTime: values.directorReviewTime?.length ? moment(values.directorReviewTime[1]).format('YYYY-MM-DD HH:mm:ss') : '', // 业务负责人复核时间
+          directorReviewTime: '',
+          finallyConfirmBeginTime: values.finallyConfirmTime?.length ? moment(values.finallyConfirmTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          finallyConfirmEndTime: values.finallyConfirmTime?.length ? moment(values.finallyConfirmTime[1]).format('YYYY-MM-DD HH:mm:ss') : '', // 服务绩效考核确认时间
+          finallyConfirmTime: '',
+        }
+      }).then(res => {
+        const filename = `服务绩效待办_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+        const blob = new Blob([res]);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
+    })
   }
 
 
@@ -646,43 +887,51 @@ function TobedealtList(props) {
             <Col span={8}>
               <Form.Item label='考核编号'>
                 {
-                  getFieldDecorator('assessNo', {})
+                  getFieldDecorator('assessNo', {
+                    initialValue: cacheinfo.assessNo,
+                  })
                     (<Input />)
                 }
               </Form.Item>
             </Col>
 
-            <Col span={8}>
+            {/* <Col span={8}>
               <Form.Item label='考核状态'>
                 {
                   getFieldDecorator('assessStatus', {})
                     (<Input />)
                 }
               </Form.Item>
+            </Col> */}
+
+            <Col span={8}>
+              <Form.Item label='当前处理环节'
+              >
+                {
+                  getFieldDecorator('currentTaskName', {
+                    initialValue: cacheinfo.currentTaskName,
+                  })
+                    (
+                      <Select>
+                        <Option key='服务绩效考核登记' value='服务绩效考核登记'>服务绩效考核登记</Option>
+                        <Option key='业务负责人审核' value='业务负责人审核'>业务负责人审核</Option>
+                        <Option key='自动化科专责审核' value='自动化科专责审核'>自动化科专责审核</Option>
+                        <Option key='服务商确认' value='服务商确认'>服务商确认</Option>
+                        <Option key='服务绩效考核确认' value='服务绩效考核确认'>服务绩效考核确认</Option>
+                      </Select>
+                    )
+                }
+              </Form.Item>
             </Col>
 
             <div style={{ display: expand ? 'block' : 'none' }}>
-              <Col span={8}>
-                <Form.Item label='当前处理环节'
-                >
-                  {
-                    getFieldDecorator('currentTaskName', {})
-                      (
-                        <Select>
-                          <Option key='服务绩效考核登记' value='服务绩效考核登记'>服务绩效考核登记</Option>
-                          <Option key='业务负责人审核' value='业务负责人审核'>业务负责人审核</Option>
-                          <Option key='自动化科专责审核' value='自动化科专责审核'>自动化科专责审核</Option>
-                          <Option key='服务商确认' value='服务商确认'>服务商确认</Option>
-                          <Option key='服务绩效考核确认' value='服务绩效考核确认'>服务绩效考核确认</Option>
-                        </Select>
-                      )
-                  }
-                </Form.Item>
-              </Col>
+
               <Col span={8}>
                 <Form.Item label='发生时间'>
                   {
-                    getFieldDecorator('timeoccurrence', {})
+                    getFieldDecorator('timeoccurrence', {
+                      initialValue: '',
+                    })
                       (
                         <RangePicker
                           showTime={{
@@ -703,6 +952,7 @@ function TobedealtList(props) {
                 <Form.Item label='服务商'>
                   {
                     getFieldDecorator('provider', {
+                      initialValue: cacheinfo.provider,
                     })
                       (
                         <AutoComplete
@@ -722,16 +972,25 @@ function TobedealtList(props) {
                 </Form.Item>
               </Col>
 
+              <Col style={{ display: 'none' }}>
+                {
+                  getFieldDecorator('providerId', {
+                    initialValue: cacheinfo.providerId,
+                  })(<Input />)
+                }
+              </Col>
+
               <Col span={8}>
                 <Form.Item label='关联合同名称'>
                   {
-                    getFieldDecorator('contract', {
+                    getFieldDecorator('contractId', {
+                      initialValue: cacheinfo.contractId,
                     })
                       (
                         <Select
                           placeholder='请选择'
                           allowClear
-                          onChange={(value, option) => handleChange(value, option, 'contract')}
+                          onChange={(value, option) => handleChange(value, option, 'contractId')}
                           onFocus={() => handleFocus('contract')}
                         >
                           {contractArr.map(obj => [
@@ -748,14 +1007,23 @@ function TobedealtList(props) {
                 </Form.Item>
               </Col>
 
+              <Col style={{ display: 'none' }}>
+                {
+                  getFieldDecorator('contractName', {
+                    initialValue: cacheinfo.contractName,
+                  })(<Input />)
+                }
+              </Col>
+
               {performanceLeader && performanceLeader.length && (
                 <Col span={8}>
                   <Form.Item label='责任人'>
                     {
                       getFieldDecorator('directorId', {
+                        initialValue: cacheinfo.directorId,
                       })
                         (
-                          <Select onSelect={selectOnchange}>
+                          <Select onSelect={(value, option) => selectOnchange(value, option, 'director')}>
                             {performanceLeader.map(obj => [
                               <Option key={obj.key} value={obj.key}>
                                 {obj.value}
@@ -773,6 +1041,7 @@ function TobedealtList(props) {
                 <Form.Item label='责任人id'>
                   {
                     getFieldDecorator('directorName', {
+                      initialValue: cacheinfo.directorName,
                     })
                       (<Input />)
                   }
@@ -782,13 +1051,15 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label='考核类型'>
                   {
-                    getFieldDecorator('assessType', {})
+                    getFieldDecorator('assessType', {
+                      initialValue: cacheinfo.assessType,
+                    })
                       (
                         <Select
                           onChange={(value, option) => handleChange(value, option, 'assessType')}
                         >
-                          <Option key='1' value='1'>功能开发</Option>
-                          <Option key='2' value='2'>系统运维</Option>
+                          <Option key='1' value='功能开发'>功能开发</Option>
+                          <Option key='2' value='系统运维'>系统运维</Option>
                         </Select>
                       )
                   }
@@ -798,7 +1069,9 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label='考核内容说明'>
                   {
-                    getFieldDecorator('assessContent', {})
+                    getFieldDecorator('assessContent', {
+                      initialValue: cacheinfo.assessContent,
+                    })
                       (<Input />)
                   }
                 </Form.Item>
@@ -808,6 +1081,7 @@ function TobedealtList(props) {
                 <Form.Item label='一级指标'>
                   {
                     getFieldDecorator('target1Name', {
+                      initialValue: cacheinfo.target1Name,
                     })
                       (
                         <Select
@@ -830,6 +1104,7 @@ function TobedealtList(props) {
                 <Form.Item label='一级指标id'>
                   {
                     getFieldDecorator('target1Id', {
+                      initialValue: cacheinfo.target1Id,
                     })
                       (
                         <Input />
@@ -842,6 +1117,7 @@ function TobedealtList(props) {
                 <Form.Item label='二级指标'>
                   {
                     getFieldDecorator('target2Name', {
+                      initialValue: cacheinfo.target2Name,
                     })
                       (
                         <Select
@@ -864,7 +1140,7 @@ function TobedealtList(props) {
                 <Form.Item label=' 二级指标'>
                   {
                     getFieldDecorator('target2Id', {
-                      // initialValue: register.target2Id
+                      initialValue: cacheinfo.target2Id
                     })
                       (
                         <Input />
@@ -876,7 +1152,9 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label='详细条款'>
                   {
-                    getFieldDecorator('detailed', {})
+                    getFieldDecorator('detailed', {
+                      initialValue: cacheinfo.detailed
+                    })
                       (<Input />)
                   }
                 </Form.Item>
@@ -885,16 +1163,52 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label='得分'>
                   {
-                    getFieldDecorator('assessValue', {})
+                    getFieldDecorator('assessValue', {
+                      initialValue: cacheinfo.assessValue
+                    })
                       (<Input />)
                   }
                 </Form.Item>
               </Col>
 
+              {/* {performanceLeader && performanceLeader.length && (
+          <Col span={8}>
+            <Form.Item label='登记人'>
+              {
+                getFieldDecorator('register', {
+                })
+                  (
+                    <Select onSelect={selectOnchange}>
+                      {performanceLeader.map(obj => [
+                        <Option key={obj.key} value={obj.key}>
+                          {obj.value}
+                        </Option>
+                      ])}
+
+                    </Select>
+                  )
+              }
+            </Form.Item>
+          </Col>
+        )}
+
+
+        <Col span={8} style={{ display: 'none' }}>
+          <Form.Item label='登记人id'>
+            {
+              getFieldDecorator('register', {
+              })
+                (<Input />)
+            }
+          </Form.Item>
+        </Col> */}
+
               <Col span={8}>
                 <Form.Item label='登记人'>
                   {
-                    getFieldDecorator('register', {})
+                    getFieldDecorator('register', {
+                      initialValue: cacheinfo.register,
+                    })
                       (<Input />)
                   }
                 </Form.Item>
@@ -903,7 +1217,9 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label='登记时间'>
                   {
-                    getFieldDecorator('applyTime', {})
+                    getFieldDecorator('applyTime', {
+                      initialValue: ''
+                    })
                       (
                         <RangePicker
                           showTime={{
@@ -923,7 +1239,9 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label='业务负责人审核结果'>
                   {
-                    getFieldDecorator('directorVerifyValue', {})
+                    getFieldDecorator('directorVerifyValue', {
+                      initialValue: cacheinfo.directorVerifyValue,
+                    })
                       (
                         <Select>
                           <Option key='1' value='1'>通过</Option>
@@ -938,7 +1256,9 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label='业务负责人审核说明'>
                   {
-                    getFieldDecorator('directorVerifyContent', {})
+                    getFieldDecorator('directorVerifyContent', {
+                      initialValue: cacheinfo.directorVerifyContent,
+                    })
                       (<Input />)
                   }
                 </Form.Item>
@@ -947,7 +1267,9 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label='业务负责人审核状态'>
                   {
-                    getFieldDecorator('directorVerifyStatus', {})
+                    getFieldDecorator('directorVerifyStatus', {
+                      initialValue: cacheinfo.directorVerifyStatus,
+                    })
                       (<Input />)
                   }
                 </Form.Item>
@@ -956,7 +1278,9 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label='业务负责审核人'>
                   {
-                    getFieldDecorator('directorVerifier', {})
+                    getFieldDecorator('directorVerifier', {
+                      initialValue: cacheinfo.directorVerifier,
+                    })
                       (<Input />)
                   }
                 </Form.Item>
@@ -965,7 +1289,9 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label='业务负责人审核时间'>
                   {
-                    getFieldDecorator('directorVerifyTime', {})
+                    getFieldDecorator('directorVerifyTime', {
+                      initialValue: cacheinfo.directorVerifyTime,
+                    })
                       (
                         <RangePicker
                           showTime={{
@@ -985,7 +1311,9 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label='自动化科专责审核结果'>
                   {
-                    getFieldDecorator('expertVerifyValue', {})
+                    getFieldDecorator('expertVerifyValue', {
+                      initialValue: cacheinfo.expertVerifyValue,
+                    })
                       (
                         <Select>
                           <Option key='待审核' value='待审核'>待审核</Option>
@@ -999,7 +1327,9 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label='自动化科专责审核说明'>
                   {
-                    getFieldDecorator('expertVerifyContent', {})
+                    getFieldDecorator('expertVerifyContent', {
+                      initialValue: cacheinfo.expertVerifyContent,
+                    })
                       (<Input />)
                   }
                 </Form.Item>
@@ -1008,7 +1338,9 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label='自动化科专责审核状态'>
                   {
-                    getFieldDecorator('expertVerifyStatus', {})
+                    getFieldDecorator('expertVerifyStatus', {
+                      initialValue: cacheinfo.expertVerifyStatus,
+                    })
                       (<Select>
                         <Option key='待审核' value='待审核'>待审核</Option>
                         <Option key='已审核' value='已审核'>已审核</Option>
@@ -1020,7 +1352,9 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label='自动化科专责审核人'>
                   {
-                    getFieldDecorator('expertVerifier', {})
+                    getFieldDecorator('expertVerifier', {
+                      initialValue: cacheinfo.expertVerifier,
+                    })
                       (<Input />)
                   }
                 </Form.Item>
@@ -1029,7 +1363,9 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label='自动化科专责审核时间'>
                   {
-                    getFieldDecorator('expertVerifyTime', {})
+                    getFieldDecorator('expertVerifyTime', {
+                      initialValue: ''
+                    })
                       (
                         <RangePicker
                           showTime={{
@@ -1049,7 +1385,9 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label='是否申诉'>
                   {
-                    getFieldDecorator('isAppeal', {})
+                    getFieldDecorator('isAppeal', {
+                      initialValue: cacheinfo.isAppeal
+                    })
                       (
                         <Select>
                           <Option key='1' value='1'>是</Option>
@@ -1063,16 +1401,43 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label='申诉内容'>
                   {
-                    getFieldDecorator('appealContent', {})
+                    getFieldDecorator('appealContent', {
+                      initialValue: cacheinfo.appealContent
+                    })
                       (<Input />)
                   }
                 </Form.Item>
               </Col>
 
-              <Col span={8}>
-                <Form.Item label='服务商确认人'>
+              {performanceLeader && performanceLeader.length && (
+                <Col span={8}>
+                  <Form.Item label='服务商确认人'>
+                    {
+                      getFieldDecorator('providerConfirmer', {
+                        initialValue: cacheinfo.providerConfirmer,
+                      })
+                        (
+                          <Select onSelect={(value, option) => selectOnchange(value, option, 'providerConfirmer')}>
+                            {performanceLeader.map(obj => [
+                              <Option key={obj.key} value={obj.key}>
+                                {obj.value}
+                              </Option>
+                            ])}
+
+                          </Select>
+                        )
+                    }
+                  </Form.Item>
+                </Col>
+              )}
+
+
+              <Col span={8} style={{ display: 'none' }}>
+                <Form.Item label='服务商确认人id'>
                   {
-                    getFieldDecorator('providerConfirmer', {})
+                    getFieldDecorator('providerConfirmerName', {
+                      initialValue: cacheinfo.providerConfirmerName,
+                    })
                       (<Input />)
                   }
                 </Form.Item>
@@ -1081,7 +1446,9 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label='服务商确认时间'>
                   {
-                    getFieldDecorator('providerConfirmTime', {})
+                    getFieldDecorator('providerConfirmTime', {
+                      initialValue: '',
+                    })
                       (
                         <RangePicker
                           showTime={{
@@ -1101,7 +1468,9 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label='业务负责人复核结果'>
                   {
-                    getFieldDecorator('directorReviewValue', {})
+                    getFieldDecorator('directorReviewValue', {
+                      initialValue: cacheinfo.directorReviewValue,
+                    })
                       (
                         <Select>
                           <Option key='1' value='1'>同意</Option>
@@ -1115,7 +1484,9 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label='业务负责人复核说明'>
                   {
-                    getFieldDecorator('directorReviewContent', {})
+                    getFieldDecorator('directorReviewContent', {
+                      initialValue: cacheinfo.directorReviewContent,
+                    })
                       (<Input />)
                   }
                 </Form.Item>
@@ -1124,7 +1495,9 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label='业务负责人复核人'>
                   {
-                    getFieldDecorator('directorReviewer', {})
+                    getFieldDecorator('directorReviewer', {
+                      initialValue: cacheinfo.directorReviewer,
+                    })
                       (<Input />)
                   }
                 </Form.Item>
@@ -1133,7 +1506,9 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label='业务负责人复核时间'>
                   {
-                    getFieldDecorator('directorReviewTime', {})
+                    getFieldDecorator('directorReviewTime', {
+                      initialValue: ''
+                    })
                       (
                         <RangePicker
                           showTime={{
@@ -1153,7 +1528,9 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label='服务绩效考核确认结果'>
                   {
-                    getFieldDecorator('finallyConfirmValue', {})
+                    getFieldDecorator('finallyConfirmValue', {
+                      initialValue: cacheinfo.finallyConfirmValue,
+                    })
                       (
                         <Select>
                           <Option key='完成' value='完成'>完成</Option>
@@ -1167,25 +1544,63 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label='服务绩效考核确认说明'>
                   {
-                    getFieldDecorator('finallyConfirmContent', {})
+                    getFieldDecorator('finallyConfirmContent', {
+                      initialValue: cacheinfo.finallyConfirmContent,
+                    })
                       (<Input />)
                   }
                 </Form.Item>
               </Col>
 
-              <Col span={8}>
+
+              {performanceLeader && performanceLeader.length && (
+                <Col span={8}>
+                  <Form.Item label='服务绩效考核确认人'>
+                    {
+                      getFieldDecorator('finallyConfirmerName', {
+                        initialValue: cacheinfo.finallyConfirmerName,
+                      })
+                        (
+                          <Select onSelect={(value, option) => selectOnchange(value, option, 'finallyConfirmerName')}>
+                            {performanceLeader.map(obj => [
+                              <Option key={obj.key} value={obj.key}>
+                                {obj.value}
+                              </Option>
+                            ])}
+
+                          </Select>
+                        )
+                    }
+                  </Form.Item>
+                </Col>
+              )}
+
+              <Col span={8} style={{ display: 'none' }}>
+                <Form.Item label='服务商确认人id'>
+                  {
+                    getFieldDecorator('finallyConfirmer', {
+                      initialValue: cacheinfo.finallyConfirmer,
+                    })
+                      (<Input />)
+                  }
+                </Form.Item>
+              </Col>
+
+              {/* <Col span={8}>
                 <Form.Item label='服务绩效考核确认人'>
                   {
                     getFieldDecorator('finallyConfirmer', {})
                       (<Input />)
                   }
                 </Form.Item>
-              </Col>
+              </Col> */}
 
               <Col span={8}>
                 <Form.Item label='服务绩效考核确认时间'>
                   {
-                    getFieldDecorator('finallyConfirmTime', {})
+                    getFieldDecorator('finallyConfirmTime', {
+                      initialValue: '',
+                    })
                       (
                         <RangePicker
                           showTime={{
@@ -1201,16 +1616,6 @@ function TobedealtList(props) {
                   }
                 </Form.Item>
               </Col>
-
-              <Col span={8}>
-                <Form.Item label='业务负责人复核人'>
-                  {
-                    getFieldDecorator('directorReviewer', {})
-                      (<Input />)
-                  }
-                </Form.Item>
-              </Col>
-
             </div>
 
             {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
@@ -1218,11 +1623,17 @@ function TobedealtList(props) {
           </Form>
         </Row>
 
+        <div style={{ marginBottom: 24 }}>
+          <Button
+            type="primary"
+            onClick={() => download()}
+          >导出数据</Button>
+        </div>
         <Table
           loading={loading}
           columns={columns}
           dataSource={tobeDealtarr.records}
-          scroll={{ x: 1500 }}
+          scroll={{ x: 1500, y: 700 }}
           rowKey={record => record.id}
           pagination={pagination}
         />

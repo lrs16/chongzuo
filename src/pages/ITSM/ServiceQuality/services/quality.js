@@ -152,3 +152,13 @@ export async function providerExport(params) {
     body:JSON.stringify(params)
   })
 }
+
+
+//  导出评分细则
+export async function scoreExport(params) {
+  return request(`/quality/score/export`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+    responseType: 'blob',
+  });
+}

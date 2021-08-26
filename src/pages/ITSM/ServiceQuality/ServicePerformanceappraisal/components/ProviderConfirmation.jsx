@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, useRef, useState,useEffect } from 'react';
+import React, { useImperativeHandle, useRef, useState, useEffect } from 'react';
 import {
   Form,
   Input,
@@ -9,8 +9,10 @@ import {
 } from 'antd';
 import moment from 'moment';
 import SysUpload from '@/components/SysUpload';
+import Downloadfile from '@/components/SysUpload/Downloadfile';
 
 const { TextArea } = Input;
+
 
 const ProviderConfirmation = React.forwardRef((props, ref) => {
   const {
@@ -20,7 +22,9 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
     userinfo,
     providerConfirmation,
     noEdit,
-    selectPersonstate
+    selectPersonstate,
+    files,
+    ChangeFiles,
   } = props;
 
   const [showContent, setShowContent] = useState('1');
@@ -29,6 +33,9 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
 
   const required = true;
   const attRef = useRef();
+  useEffect(() => {
+    ChangeFiles(fileslist);
+  }, [fileslist]);
   useImperativeHandle(
     ref,
     () => ({
@@ -38,9 +45,9 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
   )
 
   useEffect(() => {
-    selectPersonstate(providerConfirmation.isAppeal)
-  },[])
-  
+    selectPersonstate(providerConfirmation.isAppeal === null ? '1' : providerConfirmation.isAppeal)
+  }, [])
+
 
   const handleChange = (e) => {
     setShowContent(e.target.value);
@@ -124,30 +131,36 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
           )
         }
 
-        {/* <Col span={24}>
-          <Form.Item label='上传附件'  {...forminladeLayout}>
-            {
-              getFieldDecorator('annex', {
-                rules: [
-                  {
-                    required,
-                    message: '请上传附件'
-                  }
-                ],
-                initialValue: providerConfirmation.annex
-              })
-              (
-                <div>
-                  <SysUpload
-                    fileslist={[]}
-                    ChangeFileslist={newvalue => setFilesList(newvalue)}
-                   />
-                </div>
-              )
-            }
+        {
+          !noEdit && (
+            <Col span={24}>
+              <Form.Item label='上传附件'  {...forminladeLayout}>
+                {
+                  getFieldDecorator('annex', {
+                    initialValue: providerConfirmation.annex
+                  })
+                    (
+                      <div>
+                        <SysUpload
+                          fileslist={files}
+                          ChangeFileslist={newvalue => setFilesList(newvalue)}
+                        />
+                      </div>
+                    )
+                }
 
-          </Form.Item>
-        </Col> */}
+              </Form.Item>
+            </Col>
+          )
+        }
+
+        {noEdit && (
+          <Col span={24}>
+            <Form.Item label="附件" {...forminladeLayout}>
+              {providerConfirmation.annex && <Downloadfile files={providerConfirmation.annex} />}
+            </Form.Item>
+          </Col>
+        )}
 
         <Col span={8}>
           <Form.Item label='确认人'>
@@ -161,7 +174,7 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
                 ],
                 initialValue: userinfo.userName
               })
-                (<Input  disabled={noEdit}/>)
+                (<Input disabled={noEdit} />)
             }
 
           </Form.Item>
@@ -178,7 +191,7 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
                 ],
                 initialValue: providerConfirmation.confirmTime ? moment(providerConfirmation.confirmTime) : moment(new Date())
               })
-                (<DatePicker disabled={noEdit}/>)
+                (<DatePicker disabled={noEdit} />)
             }
 
           </Form.Item>

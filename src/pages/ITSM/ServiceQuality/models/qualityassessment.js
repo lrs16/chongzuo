@@ -24,7 +24,8 @@ import {
   getTargetValue,
   scorecardlistPage,
   updateRemark,
-  providerExport
+  providerExport,
+  scoreExport
 } from '../services/quality';
 
 import {
@@ -257,6 +258,11 @@ export default {
   //  导出服务商
   *providerExport({ payload }, { call, put }) {
     return yield call(providerExport,payload)
+  },
+
+  *scoreExport({ payload }, { call, put }) {
+    console.log('payload: ', payload);
+    return yield call(scoreExport,payload)
   },
   
   },

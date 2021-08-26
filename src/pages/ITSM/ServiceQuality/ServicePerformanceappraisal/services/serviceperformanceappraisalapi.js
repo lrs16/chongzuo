@@ -6,7 +6,6 @@ export async function maintenanceList () {
 
 //  待办列表
 export async function tobeDealtdata (params) {
-  console.log('params: ', params);
   return request(`/quality/assess/todolist/${params.pageNum}/${params.pageSize}`,{
     method:'POST',
     body:JSON.stringify(params)
@@ -134,7 +133,9 @@ export async function hisTask(instanceId) {
 }
 
 //  删除工单
-// export async function 
+export async function assessDelete(assessNo) {
+  return request(`/quality/assess/delete?assessNo=${assessNo}`)
+}
 
 //  回退
 export async function rollback(taskId) {
@@ -147,6 +148,49 @@ export async function rollback(taskId) {
 export async function readResource(processInstanceId) {
   return request(`/activiti/process/readResource/${processInstanceId}`,{
     method:'GET',
-    responseType:'blob'
+    responseType: 'blob',
   })
 }
+
+//  下载服务绩效待办
+export async function exportTodolist(params) {
+  return request(`/quality/assess/export/todolist`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+    responseType: 'blob',
+  });
+}
+
+//  服务绩效查询
+export async function assessSearch(params) {
+  return request(`/quality/assess/search/${params.pageNum}/${params.pageSize}`,{
+    method:'POST',
+    body:JSON.stringify(params)
+  })
+}
+
+//  我的服务绩效查询
+export async function assessmyAssess(params) {
+  return request(`/quality/assess/myAssess/${params.pageNum}/${params.pageSize}`,{
+    method:'POST',
+    body:JSON.stringify(params)
+  })
+}
+
+//  导出服务绩效查询
+export async function exportSearch(params) {
+  return request(`/quality/assess/export/search`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+    responseType: 'blob',
+  });
+}
+//  导出我的服务绩效
+export async function exportmyAssess(params) {
+  return request(`/quality/assess/export/myAssess`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+    responseType: 'blob',
+  });
+}
+

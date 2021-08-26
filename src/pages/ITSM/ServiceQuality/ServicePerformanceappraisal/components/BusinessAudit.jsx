@@ -38,8 +38,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
   )
 
   useEffect(() => {
-    console.log(11)
-    selectPersonstate(businessAudit.verifyValue)
+    selectPersonstate(businessAudit.verifyValue === null ?'1':businessAudit.verifyValue)
   }, [])
 
   const handleChange = (e) => {

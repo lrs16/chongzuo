@@ -21,7 +21,14 @@ import {
   saveFinallyConfirm,
   hisTask,
   rollback,
-  readResource
+  readResource,
+  exportTodolist,
+  assessDelete,
+  assessSearch,
+  assessmyAssess,
+  exportSearch,
+  exportmyAssess,
+ 
 } from '../services/serviceperformanceappraisalapi';
 
 export default {
@@ -33,11 +40,13 @@ export default {
     searchProviderobj:{},
     target1:[],
     target2:[],
-    taskData:[],
+    taskData:'',
     scorecardetail:[],
     scorecardArr:[],
     hisTaskArr:[],
-    readResourceImg:[]
+    imageSource:[],
+    assessSearcharr:[],
+    assessmyAssessarr:[]
   },
 
   effects: {
@@ -78,10 +87,12 @@ export default {
         }
       });
       const { data: { taskId,assessNo,instanceId,taskName } } = response;
-      router.push({
-        pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform`,
-        query: { assessNo, mainId: instanceId, taskId:instanceId, orderNo: '', }  // 这里要加mainId
-      });
+      if(assessNo) {
+        router.push({
+          pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform`,
+          query: { assessNo, mainId: instanceId, taskId, orderNo: '', tobelist:true }  // 这里要加mainId
+        });
+      }
     }
   },
 
@@ -118,6 +129,7 @@ export default {
 
   //  流转
   *assessComplete({ payload }, { call, put }) {
+    console.log('payload: ', payload);
     return yield call(assessComplete,payload)
   },
 
@@ -202,10 +214,51 @@ export default {
   *readResource({ payload }, { call, put }) {
     const response =  yield call(readResource,payload);
     yield put ({
-      type:'readResourceImg',
+      type:'imageSource',
       payload: response
     })
-  }
+  },
+
+  //  下载服务绩效待办
+  *exportTodolist({ payload }, { call, put }) {
+    return yield call(exportTodolist,payload)
+  },
+
+  //  清空流程下拉值props数据带来的残留
+  // *clearDrop({ payload }, { call, put }) {
+  //   yield put({
+  //     type:'clearDrop'
+  //   })
+  // },
+
+  //  删除
+  *assessDelete({ payload }, { call, put }) {
+    return yield call(assessDelete,payload)
+  },
+
+  *assessSearch({ payload }, { call, put }) {
+    const response =  yield call(assessSearch,payload);
+    yield put ({
+      type:'assessSearcharr',
+      payload: response
+    })
+  },
+
+  *assessmyAssess({ payload }, { call, put }) {
+    const response =  yield call(assessmyAssess,payload);
+    yield put ({
+      type:'assessmyAssessarr',
+      payload: response
+    })
+  },
+  
+  *exportSearch({ payload }, { call, put }) {
+    return yield call(exportSearch,payload)
+  },
+
+  *exportmyAssess({ payload }, { call, put }) {
+    return yield call(exportmyAssess,payload)
+  },
 
   },
 
@@ -259,17 +312,34 @@ export default {
       }
     },
 
-    readResourceImg(state,action) {
+    imageSource(state,action) {
       return {
         ...state,
-        readResourceImg:action.payload
+        imageSource:action.payload
       }
     },
 
+    assessSearcharr(state,action) {
+      return {
+        ...state,
+        assessSearcharr:action.payload.data
+      }
+    },
 
+    assessmyAssessarr(state,action) {
+      return {
+        ...state,
+        assessmyAssessarr:action.payload.data
+      }
+    },
 
-
-
+    // clearDrop(state,action) {
+    //   return {
+    //     ...state,
+    //     target1:[],
+    //     target2:[]
+    //   }
+    // }
  
   }
 }

@@ -138,7 +138,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                     initialValue: assessmentConfirmation.confirmValue || '1'
                   })
                     (
-                      <Radio.Group>
+                      <Radio.Group disabled={editSign === 1 ? false: true}>
                         <Radio value='1'>确认考核</Radio>
                         <Radio value='0'>取消考核</Radio>
                       </Radio.Group>
@@ -155,6 +155,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                   })
                     (
                       <TextArea
+                        disabled={editSign === 1 ? false: true}
                         autosize={{ minRows: 3 }}
                         placeholder='请输入确认说明'
                       />)
@@ -170,7 +171,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                   })
                     (
                       <Select
-                        disabled={noEdit || editSign}
+                        disabled={editSign}
                         onChange={(value, option) => handleChange(value, option, 'assessType')}>
                         <Option key='功能开发' value='1'>功能开发</Option>
                         <Option key='系统运维' value='2'>系统运维</Option>
@@ -188,7 +189,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                   })
                     (
                       <TextArea
-                      disabled={noEdit || editSign}
+                        disabled={editSign}
                         autosize={{ minRows: 3 }}
                         placeholder='请输入考核内容说明'
                       />)
@@ -210,7 +211,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                   })
                     (
                       <Select
-                      disabled={noEdit || editSign}
+                        disabled={editSign}
                         onChange={(value, option) => handleChange(value, option, 'target1Name')}
                         // onFocus={() => handleFocus('one')}
                         placeholder='请选择'
@@ -253,7 +254,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                   })
                     (
                       <Select
-                      disabled={noEdit || editSign}
+                        disabled={editSign}
                         onChange={(value, option) => handleChange(value, option, 'target2Name')}
                         // onFocus={() => handleFocus('two')}
                         placeholder='请选择'
@@ -288,7 +289,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                   getFieldDecorator('assessValue', {
                     initialValue: assessmentConfirmation.assessValue
                   })
-                    (<Input disabled={noEdit || editSign}/>)
+                    (<Input disabled={editSign} />)
                 }
               </Form.Item>
             </Col>
@@ -300,7 +301,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                     initialValue: assessmentConfirmation.taskName
                   })
                     (
-                      <Select disabled={noEdit || editSign}>
+                      <Select disabled={editSign}>
                         {appraisalStatus.map(obj => [
                           <Option key={obj.key} value={obj.title}>
                             {obj.title}
@@ -327,7 +328,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                   })
                     (
                       <Select
-                      disabled={noEdit || editSign}
+                        disabled={editSign}
                         onChange={(value, option) => handleChange(value, option, 'clause')}
                       // onFocus={() => handleFocus('clause')}
                       >
@@ -355,7 +356,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                     initialValue: assessmentConfirmation.clauseId
                   })
                     (
-                      <Input disabled={noEdit || editSign}
+                      <Input disabled={editSign}
                       />)
                 }
               </Form.Item>
@@ -367,7 +368,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                   getFieldDecorator('assessValue', {
                     initialValue: assessmentConfirmation.assessValue
                   })
-                    (<Input disabled={noEdit || editSign}/>)
+                    (<Input disabled={editSign} />)
                 }
               </Form.Item>
             </Col>
@@ -378,7 +379,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                   getFieldDecorator('confirmer', {
                     initialValue: userinfo.userName
                   })
-                    (<Input disabled={noEdit || editSign}/>)
+                    (<Input disabled={editSign} />)
                 }
               </Form.Item>
             </Col>
@@ -391,7 +392,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                   })
                     (
                       <DatePicker
-                      disabled={noEdit || editSign}
+                        disabled={editSign}
                         format='YYYY-MM-DD HH-MM'
                       />)
                 }

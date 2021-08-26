@@ -75,6 +75,26 @@ function ScoringRulesmaintenance(props) {
     })
   }
 
+  const download = () => {
+    validateFields((err, value) => {
+      dispatch({
+        type: 'qualityassessment/scoreExport',
+        payload: {
+          ...value
+        }
+      }).then(res => {
+        const filename = '下载.xls';
+        const blob = new Blob([res]);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url)
+      })
+    })
+  }
+
   const columns = [
     {
       title: '评分细则编号',
@@ -138,16 +158,16 @@ function ScoringRulesmaintenance(props) {
   }
 
   useEffect(() => {
-    validateFields((err,value) => {
+    validateFields((err, value) => {
       searchdata(value, paginations.current, paginations.pageSize)
     })
   }, [])
 
   const handleReset = () => {
     router.push({
-      pathname:location.pathname,
-      query:{},
-      state:{}
+      pathname: location.pathname,
+      query: {},
+      state: {}
     });
     resetFields();
     searchdata({}, 1, 15)
@@ -301,9 +321,9 @@ function ScoringRulesmaintenance(props) {
             </Button>
           </Col>
 
-          <Col span={8}>
-            <Button type='primary'>导出数据</Button>
-          </Col>
+          {/* <Col span={8}> */}
+            <Button type='primary' onClick={() => download()}>导出数据</Button>
+          {/* </Col> */}
         </Row>
 
         <Button

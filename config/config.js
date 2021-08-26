@@ -1044,7 +1044,13 @@ export default {
                               path: '/ITSM/servicequalityassessment/serviceperformanceappraisal/search',
                               name: '服务绩效考核查询',
                               icon: 'fork',
-                              component: './ITSM/ServiceQuality/ServicePerformanceappraisal/Search'
+                              component: './ITSM/ServiceQuality/ServicePerformanceappraisal/Performancequery'
+                            },
+                            {
+                              path: '/ITSM/servicequalityassessment/serviceperformanceappraisal/performancequerydetail',
+                              name: '服务绩效考核查询详情页',
+                              icon: 'fork',
+                              component: './ITSM/ServiceQuality/ServicePerformanceappraisal/Performancequerydetail'
                             },
                             {
                               path: '/ITSM/servicequalityassessment/serviceperformanceappraisal/assessment',
@@ -1061,7 +1067,7 @@ export default {
                           routes: [
                             {
                               path: '/ITSM/servicequalityassessment/creditcard/creditcardregister',
-                              name: '记分卡登记',
+                              name: '计分卡登记',
                               icon: 'fork',
                               component: './ITSM/ServiceQuality/CreditCard/CreditCardRegister'
                             },

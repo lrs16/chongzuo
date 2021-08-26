@@ -19,6 +19,7 @@ import { operationPerson } from '@/services/common';
 import { providerList, scoreListpage, contractProvider, clauseListpage } from '../../services/quality';
 import SysDict from '@/components/SysDict';
 import styles from '../index.less';
+import Downloadfile from '@/components/SysUpload/Downloadfile';
 
 const { TextArea, Search } = Input;
 const { Option } = Select;
@@ -78,10 +79,8 @@ const Register = React.forwardRef((props, ref) => {
     switch (params) {
       case 'contract':
         setFieldsValue({
-          contract: key,
+          contractName: key,
           contractId: value,
-          target1Name: '',
-          target1Id: ''
         })
         break;
       case 'target1Name':
@@ -254,7 +253,7 @@ const Register = React.forwardRef((props, ref) => {
         setFieldsValue({
           provider: providerName,         // 服务商
           providerId: id,         // 服务商id
-          contract: '',
+          contractName: '',
           contractId: ''
         });
         // contractProvider(id).then(res => {
@@ -284,7 +283,9 @@ const Register = React.forwardRef((props, ref) => {
           target1Name: '',
           target1Id: '',
           target2Name: '',
-          target2Id: ''
+          target2Id: '',
+          clause: '',
+          clauseId: ''
         });
         setScoreId(id)
         getTarget1(assessType === '功能开发' ? '1' : '2')
@@ -304,7 +305,7 @@ const Register = React.forwardRef((props, ref) => {
 
   const selectOnchange = (value, option) => {
     console.log('value: ', value);
-    const { props:{children }} = option;
+    const { props: { children } } = option;
     setFieldsValue({
       directorName: children,
       directorId: value
@@ -428,11 +429,11 @@ const Register = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label='关联合同名称'>
             {
-              getFieldDecorator('contract', {
+              getFieldDecorator('contractId', {
                 rules: [
                   {
                     required,
-                    message: '请输入关联合同名称'
+                    message: '请选择关联合同名称'
                   }
                 ],
                 initialValue: register.contractId
@@ -462,8 +463,8 @@ const Register = React.forwardRef((props, ref) => {
         <Col span={8} style={{ display: 'none' }}>
           <Form.Item label='关联合同名称'>
             {
-              getFieldDecorator('contractId', {
-                initialValue: register.contractId
+              getFieldDecorator('contractName', {
+                initialValue: register.contractName
               })
                 (
                   <Input />
@@ -580,6 +581,7 @@ const Register = React.forwardRef((props, ref) => {
                 initialValue: register.assessContent
               })
                 (<TextArea
+                  disabled={noEdit}
                   autoSize={{ minRows: 3 }}
                   placeholder='请控制字数在500字以内'
                   maxLength='500'
@@ -678,7 +680,7 @@ const Register = React.forwardRef((props, ref) => {
         <Col span={24}>
           <Form.Item label='详细条款' {...forminladeLayout}>
             {
-              getFieldDecorator('clause', {
+              getFieldDecorator('clauseName', {
                 rules: [
                   {
                     required,
@@ -689,6 +691,7 @@ const Register = React.forwardRef((props, ref) => {
               })
                 (
                   <Select
+                    disabled={noEdit}
                     onChange={(value, option) => handleChange(value, option, 'clause')}
                     onFocus={() => handleFocus('clause')}
                   >
@@ -744,7 +747,7 @@ const Register = React.forwardRef((props, ref) => {
               getFieldDecorator('status', {
                 initialValue: register.status
               })
-                (<Input disabled={noEdit} />)
+                (<Input disabled='true' />)
             }
           </Form.Item>
         </Col>
@@ -760,21 +763,34 @@ const Register = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-        <Col span={24}>
-          <Form.Item label='上传附件' {...forminladeLayout}>
-            {
-              getFieldDecorator('attachment', {
-                initialValue: register.attachment
-              })
-                (<div style={{ width: 400 }}>
-                  <SysUpload
-                    fileslist={files}
-                    ChangeFileslist={newvalue => setFilesList(newvalue)}
-                  />
-                </div>)
-            }
-          </Form.Item>
-        </Col>
+        {
+          !noEdit && (
+            <Col span={24}>
+              <Form.Item label='上传附件' {...forminladeLayout}>
+                {
+                  getFieldDecorator('attachment', {
+                    initialValue: register.attachment
+                  })
+                    (<div style={{ width: 400 }}>
+                      <SysUpload
+                        fileslist={files}
+                        ChangeFileslist={newvalue => setFilesList(newvalue)}
+                      />
+                    </div>)
+                }
+              </Form.Item>
+            </Col>
+          )
+        }
+
+        {noEdit && (
+          <Col span={24}>
+            <Form.Item label="附件" {...forminladeLayout}>
+              {register.attachment && <Downloadfile files={register.attachment} />}
+            </Form.Item>
+          </Col>
+        )}
+
 
         <Col span={8}>
           <Form.Item label='登记人'>

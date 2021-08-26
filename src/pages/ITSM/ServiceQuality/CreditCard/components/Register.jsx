@@ -387,7 +387,6 @@ const Register = React.forwardRef((props, ref) => {
                 )
               }
 
-
               <Col span={8} style={{ display: 'none' }}>
                 <Form.Item label='关联合同名称'>
                   {
@@ -506,31 +505,29 @@ const Register = React.forwardRef((props, ref) => {
 
               </Col>
 
-              {/* <Col span={8}>
-                <Form.Item label='评价区间'>
-                  {
-                    getFieldDecorator('cardSeason', {
-                      initialValue: register.cardSeason
-                    })
-                      (
-                        <Input disabled={search} />
-                      )
-                  }
-                </Form.Item>
-
-              </Col>
               <Col span={8}>
                 <Form.Item label='评价区间'>
                   {
-                    getFieldDecorator('cardYear', {
-                      initialValue: register.cardYear
+                    getFieldDecorator('evaluationInterval', {
+                      initialValue: register.beginTime ? [moment(register.beginTime),moment(register.endTime)] :''
                     })
                       (
-                        <Input disabled={search} />
+                        <RangePicker
+                          disabled={search}
+                          showTime={{
+                            hideDisabledOptions: true,
+                            defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                          }}
+                          format="YYYY-MM-DD HH:mm:ss"
+                          style={{ width: '100%' }}
+                          placeholder="请选择"
+                          allowClear
+                        />
                       )
                   }
                 </Form.Item>
-              </Col> */}
+              </Col>
+
 
               {
                 id && (
