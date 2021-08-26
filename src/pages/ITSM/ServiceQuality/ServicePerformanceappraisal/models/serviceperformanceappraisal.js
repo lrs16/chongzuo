@@ -143,15 +143,18 @@ export default {
           closecurrent: true,
         }
       });
-      const { id } = response.data;
-      router.push({
-        pathname:'/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail',
-        query:{
-          id,
-          mainId:id,
-          orderNo:id,
-        }
-      })
+      const { id,cardNo } = response.data;
+      if(cardNo) {
+        router.push({
+          pathname:'/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail',
+          query:{
+            id,
+            mainId:cardNo,
+            orderNo:cardNo,
+          }
+        })
+      }
+      
     } else {
       message.error(response.msg)
     }

@@ -12,6 +12,7 @@ import {
   Divider,
   Radio
 } from 'antd';
+import ContractList from './components/ContractList';
 import { operationPerson } from '@/services/common';
 import moment from 'moment';
 import { connect } from 'dva';
@@ -57,7 +58,7 @@ function ProviderMaintenance(props) {
         pageSize
       }
     });
-    setTabRecord({...values})
+    setTabRecord({ ...values })
   }
 
   const handlesearch = () => {
@@ -113,7 +114,14 @@ function ProviderMaintenance(props) {
     {
       title: '合同数量',
       dataIndex: 'contractNum',
-      key: 'contractNum'
+      key: 'contractNum',
+      render:(text,record) => {
+        return (
+          <ContractList id={record.id}>
+            <a type='link'>{text}</a>
+          </ContractList>
+        )
+      }
     },
     {
       title: '负责人',
@@ -126,6 +134,21 @@ function ProviderMaintenance(props) {
       key: 'directorPhone'
     },
     {
+      title: '状态',
+      dataIndex: 'status',
+      key: 'status',
+      render: (text, record) => {
+        if(record.isEdit === '1') {
+          return (
+            <Radio.Group disabled='true' value={text}>
+              <Radio value='1'>启用</Radio>
+              <Radio value='0'>禁用</Radio>
+            </Radio.Group>
+          )
+        }
+      }
+    },
+    {
       title: '操作',
       dataIndex: 'action',
       fixed: 'right',
@@ -136,6 +159,7 @@ function ProviderMaintenance(props) {
             pathname: '/ITSM/servicequalityassessment/addserviceprovidermaintenance',
             query: {
               id: record.id,
+              No: record.providerNo,
               providerStatus: record.isEdit
             }
           })
@@ -162,11 +186,12 @@ function ProviderMaintenance(props) {
     },
   ]
 
+
   const download = () => {
-    validateFields((err,value) => {
+    validateFields((err, value) => {
       dispatch({
-        type:'qualityassessment/providerExport',
-        payload:{
+        type: 'qualityassessment/providerExport',
+        payload: {
           ...value
         }
       }).then(res => {
@@ -194,8 +219,8 @@ function ProviderMaintenance(props) {
   const handleReset = () => {
     router.push({
       pathname: location.pathname,
-      query:{},
-      state:{}
+      query: {},
+      state: {}
     });
     resetFields();
     searchdata({}, 1, 15)

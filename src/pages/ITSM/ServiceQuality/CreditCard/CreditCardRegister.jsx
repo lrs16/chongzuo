@@ -52,18 +52,6 @@ function CreditCardRegister(props) {
   // const [providerId, setProviderId] = useState(''); //  设置服务商的id
   // const [scoreId, setScoreId] = useState(''); //  设置服务商的id
 
-  useEffect(() => {
-    dispatch({
-      type: 'eventstatistics/fetchMaintenancelist',
-      payload: {
-        tabActiveKey: 'week',
-        startTime: '2021-06-28',
-        endTime: '2021-07-04'
-      }
-    })
-  }, [])
-
-
   const handlePrint = () => {
     window.document.body.innerHTML = window.document.getElementById('alldom').innerHTML;
     // window.print();

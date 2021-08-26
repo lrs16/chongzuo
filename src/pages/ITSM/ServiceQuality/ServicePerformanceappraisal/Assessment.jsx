@@ -46,7 +46,7 @@ const columns = [
     width: 200,
     render: (text, record) => {
       const todetail = () => {
-        if(record.currentTaskName === '服务绩效考核确认') {
+        if (record.currentTaskName === '服务绩效考核确认') {
           router.push({
             pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/performancequerydetail',
             query: {
@@ -54,7 +54,7 @@ const columns = [
               mainId: record.instanceId,
               taskId: record.currentTaskId,
               orderNo: text,
-              myOrder:true
+              myOrder: true
             }
           })
         } else {
@@ -65,11 +65,11 @@ const columns = [
               mainId: record.instanceId,
               taskId: record.currentTaskId,
               orderNo: text,
-              myOrder:true
+              myOrder: true
             }
           })
         }
-        
+
       };
       return <a onClick={todetail}>{text}</a>
     }
@@ -169,9 +169,9 @@ const columns = [
     dataIndex: 'directorVerifyValue',
     key: 'directorVerifyValue',
     width: 180,
-    render: (text, record) => {
-      return <span>{text === '1' ? '通过' : text === '0' ? '不通过' : ''}</span>
-    }
+    // render: (text, record) => {
+    //   return <span>{text === '1' ? '通过' : text === '0' ? '不通过' : ''}</span>
+    // }
   },
   {
     title: '业务负责人审核说明',
@@ -202,9 +202,9 @@ const columns = [
     dataIndex: 'expertVerifyValue',
     key: 'expertVerifyValue',
     width: 180,
-    render: (text, record) => {
-      return <span>{text === '1' ? '通过' : text === '0' ? '不通过' : ''}</span>
-    }
+    // render: (text, record) => {
+    //   return <span>{text === '1' ? '通过' : text === '0' ? '不通过' : ''}</span>
+    // }
   },
   {
     title: '自动化科专责审核说明',
@@ -235,9 +235,9 @@ const columns = [
     dataIndex: 'isAppeal',
     key: 'isAppeal',
     width: 150,
-    render: (text, record) => {
-      return <span>{text === '1' ? '是' : text === '0' ? '否' : ''}</span>
-    }
+    // render: (text, record) => {
+    //   return <span>{text === '1' ? '是' : text === '0' ? '否' : ''}</span>
+    // }
   },
   {
     title: '申诉内容',
@@ -262,9 +262,9 @@ const columns = [
     dataIndex: 'directorReviewValue',
     key: 'directorReviewValue',
     width: 180,
-    render: (text, record) => {
-      return <span>{text === '1' ? '通过' : text === '0' ? '不通过' : ''}</span>
-    }
+    // render: (text, record) => {
+    //   return <span>{text === '1' ? '通过' : text === '0' ? '不通过' : ''}</span>
+    // }
   },
   {
     title: '业务负责人复核说明',
@@ -289,9 +289,9 @@ const columns = [
     dataIndex: 'finallyConfirmValue',
     key: 'finallyConfirmValue',
     width: 180,
-    render: (text, record) => {
-      return <span>{text === '1' ? '确认考核' : text === '0' ? '取消考核' : ''}</span>
-    }
+    // render: (text, record) => {
+    //   return <span>{text === '1' ? '确认考核' : text === '0' ? '取消考核' : ''}</span>
+    // }
   },
   {
     title: '服务绩效考核确认说明',
@@ -786,7 +786,7 @@ function Assessment(props) {
       case 'contractId':
         setFieldsValue({
           contractId: value,
-          contractName:key
+          contractName: key
         })
         break;
 
@@ -943,7 +943,7 @@ function Assessment(props) {
                 <Form.Item label='发生时间'>
                   {
                     getFieldDecorator('timeoccurrence', {
-                      initialValue: '',
+                      initialValue: cacheinfo.beginTime ? [moment(cacheinfo.assessBeginTime), moment(cacheinfo.assessEndTime)] : '',
                     })
                       (
                         <RangePicker
@@ -1231,7 +1231,7 @@ function Assessment(props) {
                 <Form.Item label='登记时间'>
                   {
                     getFieldDecorator('applyTime', {
-                      initialValue: ''
+                      initialValue: cacheinfo.applyBeginTime ? [moment(cacheinfo.applyBeginTime), moment(cacheinfo.applyEndTime)] : ''
                     })
                       (
                         <RangePicker
@@ -1303,7 +1303,7 @@ function Assessment(props) {
                 <Form.Item label='业务负责人审核时间'>
                   {
                     getFieldDecorator('directorVerifyTime', {
-                      initialValue: cacheinfo.directorVerifyTime,
+                      initialValue: cacheinfo.directorVerifyBeginTime ? [moment(cacheinfo.directorVerifyBeginTime), moment(cacheinfo.directorVerifyEndTime)] : ''
                     })
                       (
                         <RangePicker
@@ -1377,7 +1377,7 @@ function Assessment(props) {
                 <Form.Item label='自动化科专责审核时间'>
                   {
                     getFieldDecorator('expertVerifyTime', {
-                      initialValue: ''
+                      initialValue: cacheinfo.expertVerifyBeginTime ? [moment(cacheinfo.expertVerifyBeginTime), moment(cacheinfo.expertVerifyEndTime)] : ''
                     })
                       (
                         <RangePicker
@@ -1460,7 +1460,7 @@ function Assessment(props) {
                 <Form.Item label='服务商确认时间'>
                   {
                     getFieldDecorator('providerConfirmTime', {
-                      initialValue: '',
+                      initialValue: cacheinfo.providerConfirmBeginTime ? [moment(cacheinfo.providerConfirmBeginTime), moment(cacheinfo.providerConfirmEndTime)] : ''
                     })
                       (
                         <RangePicker
@@ -1520,7 +1520,7 @@ function Assessment(props) {
                 <Form.Item label='业务负责人复核时间'>
                   {
                     getFieldDecorator('directorReviewTime', {
-                      initialValue: ''
+                      initialValue: cacheinfo.directorReviewBeginTime ? [moment(cacheinfo.directorReviewBeginTime), moment(cacheinfo.directorReviewEndTime)] : ''
                     })
                       (
                         <RangePicker
@@ -1612,7 +1612,7 @@ function Assessment(props) {
                 <Form.Item label='服务绩效考核确认时间'>
                   {
                     getFieldDecorator('finallyConfirmTime', {
-                      initialValue: '',
+                      initialValue: cacheinfo.finallyConfirmBeginTime ? [moment(cacheinfo.finallyConfirmBeginTime), moment(cacheinfo.finallyConfirmEndTime)] : ''
                     })
                       (
                         <RangePicker

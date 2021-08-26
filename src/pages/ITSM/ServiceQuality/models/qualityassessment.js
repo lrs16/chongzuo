@@ -25,7 +25,9 @@ import {
   scorecardlistPage,
   updateRemark,
   providerExport,
-  scoreExport
+  scoreExport,
+  clauseUpd,
+  clauseDel
 } from '../services/quality';
 
 import {
@@ -85,15 +87,18 @@ export default {
           closecurrent: true,
         }
       });
-      const { id } = response.data;
-      router.push({
-        pathname:'/ITSM/servicequalityassessment/detailserviceprovidermaintenance',
-        query:{
-          id,
-          mainId:id,
-          orderNo:id,
-        }
-      })
+      const { id,providerNo } = response.data;
+      if(providerNo) {
+        router.push({
+          pathname:'/ITSM/servicequalityassessment/detailserviceprovidermaintenance',
+          query:{
+            id,
+            mainId:providerNo,
+            orderNo:providerNo,
+          }
+        })
+      }
+   
     }
   },
 
@@ -152,15 +157,18 @@ export default {
           closecurrent: true,
         }
       });
-      const { id } = response.data;
-      router.push({
-        pathname:'/ITSM/servicequalityassessment/detailscoringrulesmaintenance',
-        query: {
-          id,
-          mainId:id,
-          orderNo:''
-        }
-      })
+      const { id,scoreNo } = response.data;
+      if(scoreNo) {
+        router.push({
+          pathname:'/ITSM/servicequalityassessment/detailscoringrulesmaintenance',
+          query: {
+            id,
+            mainId:scoreNo,
+            orderNo:scoreNo
+          }
+        })
+      }
+    
     } else {
       message.info(response.msg)
     }
@@ -263,6 +271,14 @@ export default {
   *scoreExport({ payload }, { call, put }) {
     console.log('payload: ', payload);
     return yield call(scoreExport,payload)
+  },
+  //  更新条款
+  *clauseUpd({ payload }, { call, put }) {
+    return yield call(clauseUpd,payload)
+  },
+  //  删除条款
+  *clauseDel({ payload }, { call, put }) {
+    return yield call(clauseDel,payload)
   },
   
   },

@@ -122,6 +122,7 @@ function ScoringRulesmaintenance(props) {
             pathname: '/ITSM/servicequalityassessment/detailscoringrulesmaintenance',
             query: {
               id: record.id,
+              No: record.scoreNo,
             }
           })
         }
@@ -200,7 +201,10 @@ function ScoringRulesmaintenance(props) {
 
   const newScoringrules = () => {
     router.push({
-      pathname: '/ITSM/servicequalityassessment/addscoringrulesmaintenance'
+      pathname: '/ITSM/servicequalityassessment/addscoringrulesmaintenance',
+      query: {
+        addtab: true,
+      },
     })
   }
 

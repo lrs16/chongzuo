@@ -68,7 +68,6 @@ function TobedealtForm(props) {
     loading,
     dispatch,
   } = props;
-  console.log('props: ', props);
 
   const formRef = useRef();
   const [noselect, setNoselect] = useState('1');
@@ -278,7 +277,6 @@ function TobedealtForm(props) {
         obj["verifier"] = values.verifier;
         obj["verifyTime"] = moment(values.verifyTime).format('YYYY-MM-DD HH:mm:ss');
       }
-      console.log(obj, 'obj')
       if (!err) {
         return dispatch({
           type: requestUrl,
@@ -638,8 +636,6 @@ function TobedealtForm(props) {
             )
           }
 
-
-
           <Button type='default' onClick={handleBack}>
             {/* <Link
               to={{
@@ -661,7 +657,7 @@ function TobedealtForm(props) {
     >
 
       {
-        loading === false && hisTaskArr && hisTaskArr.length > 0 && (
+        loading === false && tabActiveKey === 'workorder' && hisTaskArr && hisTaskArr.length > 0 &&  (
           <div className={styles.collapse}>
             {
               hisTaskArr && (

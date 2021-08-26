@@ -251,7 +251,7 @@ const Register = React.forwardRef((props, ref) => {
     switch (type) {
       case 'provider':
         setFieldsValue({
-          provider: providerName,         // 服务商
+          providerName,         // 服务商
           providerId: id,         // 服务商id
           contractName: '',
           contractId: ''
@@ -379,7 +379,7 @@ const Register = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label='服务商'>
             {
-              getFieldDecorator('provider', {
+              getFieldDecorator('providerName', {
                 rules: [
                   {
                     required,

@@ -112,8 +112,10 @@ export async function scorecardSubmit(cardId) {
 
 //  计分卡导出
 export async function scorecardExport(params) {
-  return request(`/quality/scorecard/export?pageNum=${params.pageNum}&pageSize=${params.pageSize}`,{
-    method:'POST'
+  return request(`/quality/scorecard/export`,{
+    method:'POST',
+    data:JSON.stringify(params),
+    responseType:'blob',
   })
 }
 

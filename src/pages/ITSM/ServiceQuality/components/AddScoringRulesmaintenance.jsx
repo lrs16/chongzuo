@@ -36,9 +36,6 @@ const { Search } = Input;
 const { Sider, Content } = Layout;
 const { TreeNode } = Tree;
 const { Option } = Select;
-
-
-
 function AddScoringRulesmaintenance(props) {
   const pagetitle = props.route.name;
   const {
@@ -61,7 +58,7 @@ function AddScoringRulesmaintenance(props) {
   const [selectdata, setSelectData] = useState('');
   const [selectId, setSelectId] = useState('')
 
-  const getlist = () => {
+  const getlist = (selectedKeys) => {
     validateFields((err, value) => {
       const { detailed } = value;
       dispatch({
@@ -71,7 +68,7 @@ function AddScoringRulesmaintenance(props) {
           pageNum: 1,
           pageSize: 15,
           scoreId: id,
-          targetId: selectId,
+          targetId: selectedKeys || selectId,
         },
       });
     })
@@ -132,13 +129,11 @@ function AddScoringRulesmaintenance(props) {
           type: 'qualityassessment/getTargetValue',
           payload: selectedKeys[0]
         })
-        getlist(selectedKeys);
+        getlist(selectedKeys[0]);
         setSelectId(selectedKeys[0])
       }
     }
   }
-
-  console.log(selectId, 'selectId')
 
   const onSearch = (value) => {
   }
@@ -190,7 +185,7 @@ function AddScoringRulesmaintenance(props) {
 
   const submitClause = (clauseData) => {
     return dispatch({
-      type: 'qualityassessment/clauseAdd',
+      type: `${clauseData.title === '编辑详细条款' ? 'qualityassessment/clauseUpd' : 'qualityassessment/clauseAdd'}`,
       payload: {
         ...clauseData,
         scoreId: id,
@@ -205,8 +200,18 @@ function AddScoringRulesmaintenance(props) {
     })
   }
 
-  const handleDelete = (key) => {
-
+  const handleDelete = (deleteid) => {
+    return dispatch({
+      type: 'qualityassessment/clauseDel',
+      payload: deleteid
+    }).then(res => {
+      if (res.code === 200) {
+        getlist();
+        message.info(res.msg);
+      } else {
+        message.error(res.msg);
+      }
+    })
   }
 
   const columns = [
@@ -246,25 +251,33 @@ function AddScoringRulesmaintenance(props) {
       key: 'action',
       fixed: 'right',
       width: 150,
-      render: (text, record) => (
-        <div>
-          <Clause
-            id={id}
-            selectId={selectId}
-            formItemLayout={formItemLayout}
-            submitClause={newdata => submitClause(newdata)}
-            title="编辑详细条款"
-            clause={record}
-            pidkey={record.pid}
-          >
-            <a type="link">编辑</a>
-          </Clause>
-          <Divider type="vertical" />
-          <Popconfirm title="确定删除此菜单吗？" onConfirm={() => handleDelete(record.id)}>
-            <a type="link">删除</a>
-          </Popconfirm>
-        </div>
-      ),
+      render: (text, record) => {
+        if (!scoreSearch) {
+          return (
+            <div>
+              <Clause
+                id={id}
+                selectId={selectId}
+                formItemLayout={formItemLayout}
+                submitClause={newdata => submitClause(newdata)}
+                title="编辑详细条款"
+                clause={record}
+                pidkey={record.pid}
+              >
+                <a type="link">编辑</a>
+              </Clause>
+              <Divider type="vertical" />
+              <Popconfirm
+                title="确定删除此菜单吗？"
+                onConfirm={() => handleDelete(record.id)}
+              >
+                <a type="link">删除</a>
+              </Popconfirm>
+            </div>
+          )
+        }
+
+      },
     },
   ];
 
@@ -431,6 +444,7 @@ function AddScoringRulesmaintenance(props) {
 
               </Form>
             </Row>
+
             <Layout className={styles.headcolor}>
               <Card title='指标明细' >
                 <Sider theme="light">
@@ -547,7 +561,7 @@ function AddScoringRulesmaintenance(props) {
                   )}
 
                   <Table
-                    dataSource={clauseList.records || []}
+                    dataSource={clauseList.records}
                     columns={columns}
                     rowKey={record => record.id}
                     pagination={pagination}

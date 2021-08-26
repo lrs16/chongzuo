@@ -148,8 +148,8 @@ export async function updateRemark(id,remark) {
 export async function providerExport(params) {
   return request(`/quality/provider/export`,{
     method:'POST',
+    body:JSON.stringify(params),
     responseType:'blob',
-    body:JSON.stringify(params)
   })
 }
 
@@ -161,4 +161,19 @@ export async function scoreExport(params) {
     body: JSON.stringify(params),
     responseType: 'blob',
   });
+}
+
+//  更新条款
+export async function clauseUpd(params) {
+  return request(`/quality/clause/upd`,{
+    method:'POST',
+    body:JSON.stringify(params)
+  })
+}
+
+//  删除条款
+export async function clauseDel(id) {
+  return request(`/quality/clause/del/${id}`,{
+    method:'POST',
+  })
 }

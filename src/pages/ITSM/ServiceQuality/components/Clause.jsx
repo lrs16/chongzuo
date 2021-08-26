@@ -31,21 +31,25 @@ function Clause(props) {
     add
   } = props;
   const required = true;
-  
-  const handleopenClick = () => {
-    if(selectId && id ) {
-      setVisible(true);
-    } 
 
-    if( selectId && !id) {
+  const handleopenClick = () => {
+    if (selectId && id) {
+      setVisible(true);
+    }
+
+    if (selectId && !id) {
       message.error('请先保存评分细则才能新增详细条款哦！')
     }
 
-    if( !selectId && id ) {
-      message.error('请选中二级指标才能新增详细条款哦！')
+    if (!selectId && id) {
+      message.error(`请选中二级指标才能${title}哦！`)
     }
-  
-  
+
+    if (!selectId && !id) {
+      message.error('请保存评分细则并且选中二级指标才能新增详细条款哦！')
+    }
+
+
   }
 
   const handleCancel = () => {
@@ -63,12 +67,14 @@ function Clause(props) {
   const handleOk = () => {
     props.form.validateFields((err, values) => {
       if (!err) {
-        if(values.score > 5) {
+        if (values.score > 5) {
           message.info('分值不可超过二级指标满分分值')
         }
 
         const submitData = {
           ...values,
+          id: clause.id,
+          title,
           score: scoreVisible ? values.score : `-${values.score}`
         }
 
@@ -109,7 +115,7 @@ function Clause(props) {
                   message: '请选择评价类型'
                 }
               ],
-              initialValue:clause.calc
+              initialValue: clause.calc
             })
               (
                 <Select onChange={selectChange}>
@@ -128,7 +134,7 @@ function Clause(props) {
                   message: '请输入详细条款'
                 }
               ],
-              initialValue:clause.detailed
+              initialValue: clause.detailed
             })
               (<Input />)
             }
@@ -179,9 +185,9 @@ function Clause(props) {
 
           <Form.Item label='数据来源'>
             {getFieldDecorator('sources', {
-               initialValue: clause.sources
+              initialValue: clause.sources
             })
-              (<TextArea rows={4}/>)
+              (<TextArea rows={4} />)
             }
           </Form.Item>
 
@@ -189,7 +195,7 @@ function Clause(props) {
             {getFieldDecorator('remark', {
               initialValue: clause.remark
             })
-              (<TextArea rows={4}/>)
+              (<TextArea rows={4} />)
             }
           </Form.Item>
         </Form>

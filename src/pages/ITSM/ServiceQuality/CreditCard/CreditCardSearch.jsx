@@ -13,7 +13,8 @@ import {
   Radio,
   AutoComplete,
   Select,
-  Spin
+  Spin,
+  DatePicker
 } from 'antd';
 import { contractProvider, providerList, scoreListpage } from '../services/quality';
 import moment from 'moment';
@@ -36,6 +37,7 @@ const formItemLayout = {
 
 const { Search } = Input;
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 
 
 function ServiceProvidersearch(props) {
@@ -57,15 +59,25 @@ function ServiceProvidersearch(props) {
   const [tabrecord, setTabRecord] = useState({});
 
   const searchdata = (values, page, pageSize) => {
+    console.log('values: ', values);
+    const newValue = {
+      ...values,
+        beginTime: values.evaluationInterval?.length ? moment(values.evaluationInterval[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        endTime: values.evaluationInterval?.length ? moment(values.evaluationInterval[1]).format('YYYY-MM-DD HH:mm:ss') : '', // 发生时间
+        evaluationInterval: '',
+    }
     dispatch({
       type: 'performanceappraisal/getscorecardlistPage',
       payload: {
         ...values,
+        beginTime: values.evaluationInterval?.length ? moment(values.evaluationInterval[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        endTime: values.evaluationInterval?.length ? moment(values.evaluationInterval[1]).format('YYYY-MM-DD HH:mm:ss') : '', // 发生时间
+        evaluationInterval: '',
         pageNum: page,
         pageSize
       }
     });
-    setTabRecord({...values})
+    setTabRecord({ ...newValue })
   }
 
   const handlesearch = () => {
@@ -96,49 +108,64 @@ function ServiceProvidersearch(props) {
 
   const columns = [
     {
-      title:'记分卡编号',
-      dataIndex:'cardNo',
-      key:'cardNo'
+      title: '记分卡编号',
+      dataIndex: 'cardNo',
+      key: 'cardNo',
+      width: 200,
     },
     {
       title: '服务商',
       dataIndex: 'providerName',
       key: 'providerName',
+      width: 150,
     },
     {
       title: '合同名称',
       dataIndex: 'contractName',
-      key: 'contractName'
+      key: 'contractName',
+      width: 150,
     },
     {
       title: '考核类型',
       dataIndex: 'assessType',
-      key: 'assessType'
+      key: 'assessType',
+      width: 150,
     },
     {
       title: '评价计分卡名称',
       dataIndex: 'cardName',
-      key: 'cardName'
+      key: 'cardName',
+      width: 200,
     },
     {
       title: '评分细则名称',
       dataIndex: 'scoreName',
-      key: 'scoreName'
+      key: 'scoreName',
+      width: 200,
     },
     {
       title: '版本号',
       dataIndex: 'version',
-      key: 'version'
+      key: 'version',
+      width: 150,
     },
     {
       title: '专业部门',
       dataIndex: 'deptName',
-      key: 'deptName'
+      key: 'deptName',
+      width: 150,
     },
     {
-      title: '评价区间',
-      dataIndex: 'cardSeason',
-      key: 'cardSeason'
+      title: '评价开始时间',
+      dataIndex: 'beginTime',
+      key: 'beginTime',
+      width:180
+    },
+    {
+      title: '评价结束时间',
+      dataIndex: 'endTime',
+      key: 'endTime',
+      width:180
     },
     {
       title: '操作',
@@ -151,8 +178,9 @@ function ServiceProvidersearch(props) {
             pathname: '/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail',
             query: {
               id: record.id,
+              No: record.cardNo,
               scorecardStatus: record.isEdit,
-              search:true
+              search: true
             }
           })
         }
@@ -179,8 +207,8 @@ function ServiceProvidersearch(props) {
   const handleReset = () => {
     router.push({
       pathname: location.pathname,
-      query:{},
-      state:{}
+      query: {},
+      state: {}
     });
     resetFields();
     searchdata({}, 1, 15)
@@ -215,10 +243,10 @@ function ServiceProvidersearch(props) {
     validateFields((err, values) => {
       dispatch({
         type: 'performanceappraisal/scorecardExport',
-        payload:{
+        payload: {
           ...values,
-          pageNum:paginations.current,
-          pageSize:paginations.pageSize
+          pageNum: paginations.current,
+          pageSize: paginations.pageSize
         }
       }).then(res => {
         const filename = '下载.xls';
@@ -245,15 +273,17 @@ function ServiceProvidersearch(props) {
   }
 
   const record = {
-    cardNo:'',
-    cardName:'',
-    scoreName:'',
-    assessType:'',
-    version:'',
-    deptName:'',
-    cardSeason:'',
-    providerName:'',
-    contractName:'',
+    cardNo: '',
+    cardName: '',
+    scoreName: '',
+    assessType: '',
+    version: '',
+    deptName: '',
+    cardSeason: '',
+    providerName: '',
+    contractName: '',
+    beginTime:'',
+    endTime:''
   }
 
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
@@ -278,6 +308,15 @@ function ServiceProvidersearch(props) {
         handleReset();
         // setExpand(false);
       };
+      if(location.state.cacheinfo) {
+        const {
+          beginTime,
+          endTime
+        } = location.state.cacheinfo;
+        setFieldsValue({
+          evaluationInterval:beginTime ? [moment(beginTime),moment(endTime)] :''
+        })
+      }
     }
   }, [location.state]);
 
@@ -290,7 +329,7 @@ function ServiceProvidersearch(props) {
             <Col span={8}>
               <Form.Item label='计分卡编号'>
                 {
-                  getFieldDecorator('cardNo',{
+                  getFieldDecorator('cardNo', {
                     initialValue: cacheinfo.cardNo
                   })
                     (<Input />)
@@ -301,7 +340,7 @@ function ServiceProvidersearch(props) {
             <Col span={8}>
               <Form.Item label='评价计分卡名称'>
                 {
-                  getFieldDecorator('cardName',{
+                  getFieldDecorator('cardName', {
                     initialValue: cacheinfo.cardName
                   })
                     (<Input />)
@@ -326,7 +365,7 @@ function ServiceProvidersearch(props) {
             <Col span={8}>
               <Form.Item label='考核类型'>
                 {
-                  getFieldDecorator('assessType',{
+                  getFieldDecorator('assessType', {
                     initialValue: cacheinfo.assessType
                   })
                     (<Input />)
@@ -336,7 +375,7 @@ function ServiceProvidersearch(props) {
             <Col span={8}>
               <Form.Item label='版本号'>
                 {
-                  getFieldDecorator('version',{
+                  getFieldDecorator('version', {
                     initialValue: cacheinfo.version
                   })
                     (<Input />)
@@ -346,7 +385,7 @@ function ServiceProvidersearch(props) {
             <Col span={8}>
               <Form.Item label='专业部门'>
                 {
-                  getFieldDecorator('deptName',{
+                  getFieldDecorator('deptName', {
                     initialValue: cacheinfo.deptName
                   })
                     (<Input />)
@@ -356,10 +395,19 @@ function ServiceProvidersearch(props) {
             <Col span={8}>
               <Form.Item label='评价区间'>
                 {
-                  getFieldDecorator('cardSeason',{
-                    initialValue: cacheinfo.cardSeason
+                  getFieldDecorator('evaluationInterval', {
+                    initialValue: cacheinfo.beginTime ? [moment(cacheinfo.beginTime),moment(cacheinfo.endTime)] :''
                   })
-                    (<Input />)
+                    (<RangePicker
+                      showTime={{
+                        hideDisabledOptions: true,
+                        defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                      }}
+                      format="YYYY-MM-DD HH:mm:ss"
+                      style={{ width: '100%' }}
+                      placeholder="请选择"
+                      allowClear
+                    />)
                 }
               </Form.Item>
             </Col>
@@ -413,6 +461,7 @@ function ServiceProvidersearch(props) {
           loading={loading}
           columns={columns}
           dataSource={scorecardArr.records}
+          scroll={{ x: 1500, y: 700 }}
           pagination={pagination}
         />
       </Card>

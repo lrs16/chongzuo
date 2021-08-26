@@ -12,6 +12,7 @@ import {
   Divider,
   Radio
 } from 'antd';
+import ContractList from './components/ContractList';
 import moment from 'moment';
 import { connect } from 'dva';
 import router from 'umi/router';
@@ -47,6 +48,7 @@ function ServiceProvidersearch(props) {
   const [tabrecord, setTabRecord] = useState({});
 
   const searchdata = (values, page, pageSize) => {
+    console.log('values: ', values);
     dispatch({
       type: 'qualityassessment/providerList',
       payload: {
@@ -92,8 +94,9 @@ function ServiceProvidersearch(props) {
       render: (text, record) => {
         const togoDetail = () => {
           router.push({
-            pathname: '/ITSM/servicequalityassessment/addserviceprovidermaintenance',
+            pathname: '/ITSM/servicequalityassessment/detailserviceprovidermaintenance',
             query: {
+              No: text,
               id: record.id,
               providerStatus: record.isEdit,
               providerSearch:true
@@ -111,7 +114,14 @@ function ServiceProvidersearch(props) {
     {
       title: '合同数量',
       dataIndex: 'contractNum',
-      key: 'contractNum'
+      key: 'contractNum',
+      render:(text,record) => {
+        return (
+          <ContractList id={record.id}>
+            <a type='link'>{text}</a>
+          </ContractList>
+        )
+      }
     },
     {
       title: '负责人',
@@ -123,6 +133,21 @@ function ServiceProvidersearch(props) {
       dataIndex: 'directorPhone',
       key: 'directorPhone'
     },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      key: 'status',
+      render: (text, record) => {
+        if(record.isEdit === '1') {
+          return (
+            <Radio.Group disabled='true' value={text}>
+              <Radio value='1'>启用</Radio>
+              <Radio value='0'>禁用</Radio>
+            </Radio.Group>
+          )
+        }
+      }
+    },
   ]
 
   const newProvider = () => {
@@ -130,6 +155,27 @@ function ServiceProvidersearch(props) {
       pathname: '/ITSM/servicequalityassessment/addserviceprovidermaintenance'
     })
   }
+
+  const download = () => {
+    validateFields((err, value) => {
+      dispatch({
+        type: 'qualityassessment/providerExport',
+        payload: {
+          ...value
+        }
+      }).then(res => {
+        const filename = '下载.xls';
+        const blob = new Blob([res]);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url)
+      })
+    })
+  }
+
 
   const handleReset = () => {
     router.push({
@@ -273,7 +319,7 @@ function ServiceProvidersearch(props) {
           </Form>
         </Row>
 
-        <Button type='primary'>导出数据</Button>
+        <Button type='primary' onClick={() => download()}>导出数据</Button>
 
         <Table
           loading={loading}

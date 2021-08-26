@@ -24,6 +24,11 @@ const alonepath = [
   { path: '/ITSM/knowledgemanage/:id/operation' },
   { path: '/ITSM/servicequalityassessment/detailserviceprovidermaintenance' },
   { path: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform' },
+  { path: '/ITSM/servicequalityassessment/addserviceprovidermaintenance' },
+  { path: '/ITSM/servicequalityassessment/detailserviceprovidermaintenance' },
+  { path: '/ITSM/servicequalityassessment/detailscoringrulesmaintenance' },
+  { path: '/ITSM/servicequalityassessment/detailscoringrulesmaintenance' },
+  { path: '/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail' },
 ];
 
 // 登记或新建
@@ -44,6 +49,8 @@ const multiplepath = [
   { path: '/ITSM/knowledgemanage/myknowledge/new', type: 'knowledge' },
   { path: '/ITSM/releasemanage/registration', type: 'release' },
   { path: '/ITSM/servicequalityassessment/addserviceprovidermaintenance', type: 'addscoringrulesmaintenance' },
+  { path: '/ITSM/servicequalityassessment/creditcard/creditcardregister', type: 'creditcardregister' },
+  { path: '/ITSM/servicequalityassessment/addscoringrulesmaintenance', type: 'addscoringrulesmaintenance' },
   { path: '/ITSM/servicequalityassessment/creditcard/creditcardregister', type: 'creditcardregister' },
 ]
 function Tabrouters(props) {
