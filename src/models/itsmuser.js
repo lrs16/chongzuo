@@ -19,7 +19,7 @@ export default {
     userlist: '',
     problemlist: '',
     tasklist: '',
-    achievementlist:''
+    achievementlist: ''
   },
 
   effects: {
@@ -81,7 +81,7 @@ export default {
       const response = yield call(releaseUserList, taskId, type);
       yield put({
         type: 'savelist',
-        payload: response.data,
+        payload: response.data.userList,
       });
     },
     // 加载绩效下一环节处理人

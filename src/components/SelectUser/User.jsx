@@ -139,10 +139,10 @@ const User = props => {
         break;
       case 'release':
         dispatch({
-          type: 'itsmuser/taskuserlist',
+          type: 'itsmuser/releaseuserlist',
           payload: {
             taskId,
-            type: sessionStorage.getItem('flowtype'),
+            type: '1',
           },
         });
         break;

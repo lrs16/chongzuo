@@ -9,6 +9,7 @@ import DictLower from '@/components/SysDict/DictLower';
 import KeyVal from '@/components/SysDict/KeyVal';
 import TableColumns from '@/components/TableColumns';
 import AdminAuth from '@/components/AdminAuth';
+import { querkeyVal } from '@/services/api';
 import { DemandDlete } from './services/api';
 
 const { Option } = Select;
@@ -52,8 +53,22 @@ function QueryList(props) {
   const [tabrecord, setTabRecord] = useState({});
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [username, setUserName] = useState('');
-  const [tabColumns, setColumns] = useState([]);
+  const [tabColumns, setColumns] = useState({});
+  const [defaultColumns, setDefaultColumns] = useState({})
   const [visible, setVisible] = useState(false);
+  console.log(defaultColumns)
+
+  dispatch({
+    type: 'dicttree/keyval',
+    payload: {
+      dictModule,
+      dictType,
+    },
+  }).then(res => {
+    if (res.code === 200 && !doCancel) {
+      ChangeSelectdata(res.data);
+    }
+  });
 
   const searchdata = (values, page, size) => {
     const newvalues = {
@@ -324,8 +339,6 @@ function QueryList(props) {
   const statemap = getTypebyId('1398105664881954817');
   const modulemap = getTypebyId('1352070663392727041');
   // const columnsmap = getTypebyId('1431057154650308609');
-  console.log(tabColumns)
-  console.log(selectdata)
 
   // 管理员账号删除工单
   // 行选择
@@ -365,7 +378,7 @@ function QueryList(props) {
 
   const content = (
     <div style={{ width: 750, height: 400, overflow: 'scroll' }}>
-      <TableColumns records={tabColumns.columns} />
+      <TableColumns records={tabColumns.columns} defaultVal={defaultColumns.defaultcolumns} />
     </div>
   );
 

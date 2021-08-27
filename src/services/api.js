@@ -172,6 +172,7 @@ export async function queryChildDictLower(params) {
   return request(`/sys/dict/queryChildDictLower`, {
     method: 'POST',
     body: JSON.stringify(params),
+    requestType: 'jsonform',
   });
 }
 
