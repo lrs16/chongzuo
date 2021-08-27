@@ -374,6 +374,20 @@ const Registrat = React.forwardRef((props, ref) => {
             </Form.Item>
           </Col>
 
+          <Col span={8}>
+            <Form.Item label="开发负责人">
+              {getFieldDecorator('developmentLead', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入开发负责人',
+                  },
+                ],
+                initialValue: register ? register.developmentLead : '',
+              })(<Input placeholder="请输入" />)}
+            </Form.Item>
+          </Col>
+
           <Col span={24}>
             <Form.Item label="问题标题" {...forminladeLayout}>
               {getFieldDecorator('title', {
@@ -488,6 +502,7 @@ Registrat.defaultProps = {
   },
   register: {
     complainUser: '',
+    developmentLead:''
   },
   useInfo: {
     userName: '',

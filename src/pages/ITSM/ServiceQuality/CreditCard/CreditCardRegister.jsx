@@ -203,7 +203,7 @@ function CreditCardRegister(props) {
           } */}
           {
             search && (
-              <Button type='primary' onClick={handleSubmit}>打印</Button>
+              <Button type='primary' onClick={handleSubmit}>下载</Button>
             )
           }
 
