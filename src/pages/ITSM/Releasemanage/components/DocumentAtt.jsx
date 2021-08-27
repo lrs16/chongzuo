@@ -111,7 +111,7 @@ function DocumentAtt(props) {
     };
     setData(newData);
     ChangeValue(newData);
-    ChangeaddAttaches('');
+
   }
 
   // useEffect(() => {
@@ -120,7 +120,10 @@ function DocumentAtt(props) {
 
   useEffect(() => {
     if (rowkey && dataSource && dataSource.length > 0) {
-      attList()
+      attList();
+      if (isEdit) {
+        ChangeaddAttaches('');
+      }
     }
   }, [dataSource])
 

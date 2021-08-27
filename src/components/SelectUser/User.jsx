@@ -213,8 +213,6 @@ const User = props => {
 
   const nextflowuser =
     changorder !== undefined ? changorder : sessionStorage.getItem('Nextflowmane');
-
-    console.log(nextflowuser,'nextflowuser')
   return (
     <>
       <Modal title="选择下一环节处理人" visible={visible} onOk={handleOk} onCancel={handleCancel}>
