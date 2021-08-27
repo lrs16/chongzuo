@@ -82,7 +82,6 @@ function TobedealtForm(props) {
   const [modalrollback, setModalRollBack] = useState(false);   // 回退信息modle
 
   sessionStorage.setItem('Processtype', 'achievements');
-
   const getUserinfo = () => {
     dispatch({
       type: 'itsmuser/fetchuser'
@@ -255,6 +254,7 @@ function TobedealtForm(props) {
       }
     })
   }
+
 
   //  审核保存流转
   const auditSave = (flowType, circulation) => {
@@ -637,15 +637,6 @@ function TobedealtForm(props) {
           }
 
           <Button type='default' onClick={handleBack}>
-            {/* <Link
-              to={{
-                pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtlist',
-                query: { pathpush: true },
-                state: { cache: false }
-              }}
-            >
-              返回
-            </Link> */}
             返回
           </Button>
 

@@ -52,7 +52,7 @@ const { RangePicker } = DatePicker;
 
 function QueryList(props) {
   const pagetitle = props.route.name;
-  const [columns, setColumns] = useState([]);
+
 
   const {
     form: { getFieldDecorator, resetFields, validateFields, setFieldsValue, getFieldsValue },
@@ -79,6 +79,7 @@ function QueryList(props) {
   // const [selectedRow, setSelectedRow] = useState([]);
   const [selectdata, setSelectData] = useState([]);
   const [tabrecord, setTabRecord] = useState({});
+  const [columns, setColumns] = useState([]);
 
   let formThead;
 
@@ -100,6 +101,27 @@ function QueryList(props) {
     })
   }
 
+  const gotoDetail = (text, record) => {
+    dispatch({
+      type: 'viewcache/gettabstate',
+      payload: {
+        cacheinfo: {
+          ...tabrecord,
+          paginations,
+          expand,
+        },
+        tabid: sessionStorage.getItem('tabid')
+      },
+    });
+    router.push({
+      pathname: `/ITSM/faultmanage/querylist/record`,
+      query: {
+        id: record.id,
+        No: text,
+      },
+    });
+  }
+
   const initialColumns = [
     {
       title: '故障编号',
@@ -107,27 +129,7 @@ function QueryList(props) {
       key: 'no',
       width: 150,
       render: (text, record) => {
-        const handleClick = () => {
-          dispatch({
-            type: 'viewcache/gettabstate',
-            payload: {
-              cacheinfo: {
-                ...tabrecord,
-                paginations,
-                expand,
-              },
-              tabid: sessionStorage.getItem('tabid')
-            },
-          });
-          router.push({
-            pathname: `/ITSM/faultmanage/querylist/record`,
-            query: {
-              id: record.id,
-              No: text,
-            },
-          });
-        };
-        return <a onClick={handleClick}>{text}</a>;
+        return <a onClick={() => gotoDetail(text, record)}>{text}</a>;
       },
     },
     {
@@ -697,55 +699,6 @@ function QueryList(props) {
     titleParams = '故障查询'
   }
 
-  const getinitiaQuerylists = (values, page) => {
-    // 列表 列表接口
-    dispatch({
-      type: 'fault/getfaultQueryList',
-      payload: {
-        ...values,
-        registerTimeBegin: values.registerTime?.length ? moment(values.registerTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-        registerTimeEnd: values.registerTime?.length ? moment(values.registerTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        registerTime: '',
-        handleStartTimeBegin: values.handleTime?.length ? moment(values.handleTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-        handleStartTimeEnd: values.handleTime?.length ? moment(values.handleTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        handleTime: '',
-        registerOccurTimeBegin: values.registerOccurTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
-        type: values.type ? (values.type).slice(-1)[0] : '',
-        addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-        addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        createTime: '',
-        pageNum: page,
-        pageSize: paginations.pageSize,
-      },
-    });
-    setTabRecord({
-      ...values,
-      sendTime: '',
-      registerOccurTimeBegin: values.registerOccurTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
-      registerTimeBegin: values.registerTimeBegin ? values.registerTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
-      handleStartTimeBegin: values.handleStartTimeBegin ? values.handleStartTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
-      handleStartTimeEnd: values.handleStartTimeEnd ? values.handleStartTimeEnd.format('YYYY-MM-DD HH:mm:ss') : '',
-      createTime: values.createTime?.length ? [moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
-      registerTime: values.registerTime?.length ? [moment(values.registerTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.registerTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
-    })
-  };
-
-  const getFaultlist = () => {
-    validateFields((err, values) => {
-      dispatch({
-        type: 'fault/getfaultQueryList',
-        payload: {
-          ...values,
-          type: values.type ? (values.type).slice(-1)[0] : '',
-          pageNum: 1,
-          pageSize: paginations.pageSize,
-          addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-          addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        },
-      });
-    });
-  }
-
   useEffect(() => {
     if (type) {
       setFieldsValue({
@@ -861,7 +814,6 @@ function QueryList(props) {
       }
     })
     validateFields((err, values) => {
-      console.log(values, 'values')
       if (!err) {
         dispatch({
           type: 'fault/faultQuerydownload',
@@ -1020,12 +972,35 @@ function QueryList(props) {
   // 获取数据
   useEffect(() => {
     validateFields((err, values) => searchdata(values, paginations.current, paginations.pageSize),)
-     const controlTable = [
+    const controlTable = [
       {
         title: '故障编号',
         dataIndex: 'no',
         key: 'no',
         width: 150,
+        render: (text, record) => {
+          const handleClick = () => {
+            dispatch({
+              type: 'viewcache/gettabstate',
+              payload: {
+                cacheinfo: {
+                  ...tabrecord,
+                  paginations,
+                  expand,
+                },
+                tabid: sessionStorage.getItem('tabid')
+              },
+            });
+            router.push({
+              pathname: `/ITSM/faultmanage/querylist/record`,
+              query: {
+                id: record.id,
+                No: text,
+              },
+            });
+          };
+          return <a onClick={handleClick}>{text}</a>;
+        },
       },
       {
         title: '日期',
@@ -1111,7 +1086,7 @@ function QueryList(props) {
         key: 'finishRequiredTime',
         width: 200,
       },
-     ]
+    ]
     setColumns(controlTable)
   }, [])
 
@@ -1126,9 +1101,9 @@ function QueryList(props) {
         width: 150
       };
       if (key === 0) {
-        obj.render = (text, record) => {
+        obj.render = (text, records) => {
           return (
-            <a onClick={() => gotoDetail(record)}>{text}</a>
+            <a onClick={() => gotoDetail(text,records)}>{text}</a>
           )
         }
         obj.fixed = 'left'
@@ -1144,6 +1119,7 @@ function QueryList(props) {
   };
 
   const onCheck = (checkedValues) => {
+    console.log('checkedValues: ', checkedValues);
     formThead = initialColumns.filter(i =>
       checkedValues.indexOf(i.title) >= 0
     );
@@ -1542,7 +1518,7 @@ function QueryList(props) {
                   onChange={onCheck}
                   value={defaultAllkey}
                   defaultValue={columns}
-                  style={{overflowY:'auto',height:800}}
+                  style={{ overflowY: 'auto', height: 800 }}
                 >
                   {initialColumns.map(item => (
                     <Col key={`item_${item.key}`} style={{ marginBottom: '8px' }}>
@@ -1567,8 +1543,6 @@ function QueryList(props) {
               <Icon type="setting" theme="filled" style={{ fontSize: '14px' }} />
             </Button>
           </Popover>
-
-
         </div>
         <div />
 
@@ -1578,7 +1552,7 @@ function QueryList(props) {
           dataSource={faultQueryList.rows}
           rowKey={r => r.id}
           pagination={pagination}
-          scroll={{ x: 800,y: 700 }}
+          scroll={{ x: 800, y: 700 }}
         />
       </Card>
     </PageHeaderWrapper>

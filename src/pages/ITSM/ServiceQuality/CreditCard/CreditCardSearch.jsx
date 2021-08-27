@@ -59,7 +59,6 @@ function ServiceProvidersearch(props) {
   const [tabrecord, setTabRecord] = useState({});
 
   const searchdata = (values, page, pageSize) => {
-    console.log('values: ', values);
     const newValue = {
       ...values,
         beginTime: values.evaluationInterval?.length ? moment(values.evaluationInterval[0]).format('YYYY-MM-DD HH:mm:ss') : '',

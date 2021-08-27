@@ -13,8 +13,10 @@ function RelevancyOrder(props) {
     dispatch,
     relation,
     statuscode,
-    orderId
+    orderId,
+    search
   } = props;
+
   const [activeKey, setActiveKey] = useState('trouble');
   const [visible, setVisible] = useState(false);
   const [title, setTitle] = useState('');
@@ -145,21 +147,31 @@ function RelevancyOrder(props) {
       {activeKey === 'trouble' && (
         <Row>
           <Col span={8}>
-            <Input onChange={e => setSearchKey(e.target.value)} placeholder="请输入故障单号" allowClear />
+            <Input
+              onChange={e => setSearchKey(e.target.value)}
+              placeholder="请输入故障单号"
+              allowClear
+              disabled={search}
+            />
           </Col>
-          <Col span={8}>
-            <Button type="primary" style={{ marginLeft: 16 }} onClick={() => handleSearch()} >本页查询</Button>
-            <Button style={{ marginLeft: 16 }} onClick={() => setSearchRow(undefined)} >重 置</Button>
-            {relation && (
-              <Button
-                type="primary"
-                style={{ marginLeft: 8 }}
-                onClick={() => { setVisible(true); setTitle('故障'); }}
-              >
-                关联工单
-              </Button>
-            )}
-          </Col>
+          {
+            !search && (
+              <Col span={8}>
+                <Button type="primary" style={{ marginLeft: 16 }} onClick={() => handleSearch()} >本页查询</Button>
+                <Button style={{ marginLeft: 16 }} onClick={() => setSearchRow(undefined)} >重 置</Button>
+                {relation && (
+                  <Button
+                    type="primary"
+                    style={{ marginLeft: 8 }}
+                    onClick={() => { setVisible(true); setTitle('故障'); }}
+                  >
+                    关联工单
+                  </Button>
+                )}
+              </Col>
+            )
+          }
+
         </Row>
       )}
       {activeKey === 'release' && (

@@ -28,7 +28,7 @@ import {
   assessmyAssess,
   exportSearch,
   exportmyAssess,
- 
+  scorecardPrint
 } from '../services/serviceperformanceappraisalapi';
 
 export default {
@@ -261,6 +261,10 @@ export default {
 
   *exportmyAssess({ payload }, { call, put }) {
     return yield call(exportmyAssess,payload)
+  },
+  
+  *scorecardPrint({ payload }, { call, put }) {
+    return yield call(scorecardPrint,payload)
   },
 
   },

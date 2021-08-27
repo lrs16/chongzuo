@@ -170,6 +170,7 @@ export async function transferOrder() {
 export async function querydownload(params) {
   return request(`/problem/flow/expExcelOrderList`, {
     method: 'POST',
+    responseType: 'blob',
     body: JSON.stringify(params),
   });
 }

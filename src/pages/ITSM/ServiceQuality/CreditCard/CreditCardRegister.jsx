@@ -91,15 +91,18 @@ function CreditCardRegister(props) {
   }
 
   const handleSubmit = () => {
-    return dispatch({
-      type: 'performanceappraisal/scorecardSubmit',
+    dispatch({
+      type: 'performanceappraisal/scorecardPrint',
       payload: id
     }).then(res => {
-      if (res.code === 200) {
-        message.info(res.msg);
-      } else {
-        message.error(res.msg);
-      }
+      const filename = '下载.doc';
+      const blob = new Blob([res]);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url)
     })
   }
 
@@ -181,17 +184,17 @@ function CreditCardRegister(props) {
       extra={
         <>
 
-        {!search && (
-          <>
-          <Button type='primary' onClick={handleSave}>保存</Button>
-          {
-            id && (
-              <Button type='primary' onClick={handleSubmit}>提交</Button>
-            )
-          }
-          </>
-        )}
-          
+          {!search && (
+            <>
+              <Button type='primary' onClick={handleSave}>保存</Button>
+              {
+                id && (
+                  <Button type='primary' onClick={handleSubmit}>提交</Button>
+                )
+              }
+            </>
+          )}
+
 
           {/* {
             search && (

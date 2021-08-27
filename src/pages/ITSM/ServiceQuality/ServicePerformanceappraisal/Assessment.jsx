@@ -46,7 +46,7 @@ const columns = [
     width: 200,
     render: (text, record) => {
       const todetail = () => {
-        if (record.currentTaskName === '服务绩效考核确认') {
+        if (record.status === '完成') {
           router.push({
             pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/performancequerydetail',
             query: {

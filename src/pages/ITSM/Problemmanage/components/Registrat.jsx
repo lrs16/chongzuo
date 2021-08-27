@@ -261,8 +261,7 @@ const Registrat = React.forwardRef((props, ref) => {
                     message: '请输入问题分类',
                   },
                 ],
-                initialValue: main.type?((main.type).split(',')) : [''],
-                // initialValue:['001','001004']
+                initialValue: main.type ? (main.type).split(',') : '',
               })(
                 <Cascader
                   fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
@@ -485,6 +484,7 @@ Registrat.defaultProps = {
     no: '',
     title: '',
     content: '',
+    type:''
   },
   register: {
     complainUser: '',

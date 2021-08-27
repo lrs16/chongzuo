@@ -46,7 +46,6 @@ const columns = [
     width: 200,
     render: (text, record) => {
       const todetail = () => {
-        console.log('record: ', record);
         router.push({
           pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
           query: {
@@ -530,7 +529,6 @@ function TobedealtList(props) {
       finallyConfirmTime: '',
     }
 
-    console.log(newvalues, 'newvalues')
     dispatch({
       type: 'performanceappraisal/tobeDealtdata',
       payload: {
@@ -584,7 +582,6 @@ function TobedealtList(props) {
   };
 
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
-  console.log('cacheinfo: ', cacheinfo);
 
   useEffect(() => {
     if (location.state) {
@@ -645,7 +642,6 @@ function TobedealtList(props) {
   useEffect(() => {
     if (cacheinfo !== undefined) {
       validateFields((err, values) => {
-        console.log('values: ', values);
         if (!err) {
           if (values.providerId) {
             getContrractname(values.providerId)
@@ -793,7 +789,6 @@ function TobedealtList(props) {
   }
 
   const selectOnchange = (value, option, type) => {
-    console.log('value: ', value);
     const { props: { children } } = option;
     switch (type) {
       case 'director':

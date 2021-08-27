@@ -1083,7 +1083,7 @@ export default {
                             },
                             {
                               path: '/ITSM/servicequalityassessment/serviceperformanceappraisal/performancequerydetail',
-                              name: '服务绩效考核查询详情页',
+                              name: '服务绩效考核详情页',
                               icon: 'fork',
                               component: './ITSM/ServiceQuality/ServicePerformanceappraisal/Performancequerydetail'
                             },

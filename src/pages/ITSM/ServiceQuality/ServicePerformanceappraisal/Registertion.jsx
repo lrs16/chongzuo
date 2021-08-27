@@ -53,6 +53,7 @@ function Registertion(props) {
     clauseList,
     loading
   } = props;
+  console.log('props: ', props);
   const RegistratRef = useRef();
   const [contractArr, setContractArr] = useState([]);
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表

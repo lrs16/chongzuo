@@ -196,3 +196,9 @@ export async function exportmyAssess(params) {
   });
 }
 
+//  打印
+export async function scorecardPrint(id) {
+  return request(`/quality/scorecard/print?id=${id}`,{
+    responseType:'blob'
+  })
+}

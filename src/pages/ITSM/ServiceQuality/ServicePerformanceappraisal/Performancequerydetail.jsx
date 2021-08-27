@@ -284,6 +284,7 @@ function Performancequerydetail(props) {
           <Relatedorder
             orderId={mainId}
             location={location}
+            search={search}
             relation
           />
         )

@@ -79,6 +79,7 @@ function ScoringRulesssearch(props) {
       title: '评分细则编号',
       dataIndex: 'scoreNo',
       key: 'scoreNo',
+      width:200,
       render: (text, record) => {
         const gotoDetail = () => {
           router.push({
@@ -97,12 +98,14 @@ function ScoringRulesssearch(props) {
     {
       title: '评分细则名称',
       dataIndex: 'scoreName',
-      key: 'scoreName'
+      key: 'scoreName',
+      width:150
     },
     {
       title: '考核类型',
       dataIndex: 'assessType',
-      key: 'assessType'
+      key: 'assessType',
+      width:150
     },
   ]
   const getTypebyTitle = title => {
@@ -289,6 +292,7 @@ function ScoringRulesssearch(props) {
           columns={columns}
           dataSource={scoreList.records}
           pagination={pagination}
+          scroll={{ x: 800,y: 700 }}
         />
       </Card>
     </PageHeaderWrapper>

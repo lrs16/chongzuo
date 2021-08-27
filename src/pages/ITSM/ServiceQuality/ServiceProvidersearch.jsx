@@ -48,7 +48,6 @@ function ServiceProvidersearch(props) {
   const [tabrecord, setTabRecord] = useState({});
 
   const searchdata = (values, page, pageSize) => {
-    console.log('values: ', values);
     dispatch({
       type: 'qualityassessment/providerList',
       payload: {
@@ -91,6 +90,7 @@ function ServiceProvidersearch(props) {
       title: '服务商编号',
       dataIndex: 'providerNo',
       key: 'providerNo',
+      width:200,
       render: (text, record) => {
         const togoDetail = () => {
           router.push({
@@ -109,12 +109,14 @@ function ServiceProvidersearch(props) {
     {
       title: '服务商名称',
       dataIndex: 'providerName',
-      key: 'providerName'
+      key: 'providerName',
+      width:150
     },
     {
       title: '合同数量',
       dataIndex: 'contractNum',
       key: 'contractNum',
+      width:150,
       render:(text,record) => {
         return (
           <ContractList id={record.id}>
@@ -126,12 +128,14 @@ function ServiceProvidersearch(props) {
     {
       title: '负责人',
       dataIndex: 'creator',
-      key: 'creator'
+      key: 'creator',
+      width:150
     },
     {
       title: '负责人手机号',
       dataIndex: 'directorPhone',
-      key: 'directorPhone'
+      key: 'directorPhone',
+      width:200
     },
     {
       title: '状态',
@@ -326,6 +330,7 @@ function ServiceProvidersearch(props) {
           columns={columns}
           dataSource={providerArr.records}
           pagination={pagination}
+          scroll={{ x: 800,y: 700 }}
         />
       </Card>
     </PageHeaderWrapper>

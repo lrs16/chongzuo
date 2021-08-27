@@ -105,16 +105,19 @@ function ProviderMaintenance(props) {
       title: '服务商编号',
       dataIndex: 'providerNo',
       key: 'providerNo',
+      width:200
     },
     {
       title: '服务商名称',
       dataIndex: 'providerName',
-      key: 'providerName'
+      key: 'providerName',
+      width:150
     },
     {
       title: '合同数量',
       dataIndex: 'contractNum',
       key: 'contractNum',
+      width:150,
       render:(text,record) => {
         return (
           <ContractList id={record.id}>
@@ -126,12 +129,14 @@ function ProviderMaintenance(props) {
     {
       title: '负责人',
       dataIndex: 'creator',
-      key: 'creator'
+      key: 'creator',
+      width:150
     },
     {
       title: '负责人手机号',
       dataIndex: 'directorPhone',
-      key: 'directorPhone'
+      key: 'directorPhone',
+      width:200
     },
     {
       title: '状态',
@@ -384,6 +389,7 @@ function ProviderMaintenance(props) {
           columns={columns}
           dataSource={providerArr.records}
           pagination={pagination}
+          scroll={{ x: 800,y: 700 }}
         />
 
 

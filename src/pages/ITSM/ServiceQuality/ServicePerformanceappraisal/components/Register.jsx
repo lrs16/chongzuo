@@ -47,6 +47,7 @@ const Register = React.forwardRef((props, ref) => {
     noEdit,
     loading
   } = props;
+  console.log('props: ', props);
   const [performanceLeader, setPerformanceLeader] = useState('')
   const [fileslist, setFilesList] = useState([]);
   const [selectdata, setSelectData] = useState('');
