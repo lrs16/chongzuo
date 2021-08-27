@@ -38,11 +38,9 @@ const Registrat = forwardRef((props, ref) => {
     ChangeCheck,
     ChangeActiveKey,
     // ChangeFlowtype,
-    changeDefaultvalue,
     info,
     main,
     userinfo,
-    sethandlevalue,
     location,
     files,
     ChangeFiles,
@@ -89,8 +87,6 @@ const Registrat = forwardRef((props, ref) => {
     geteventObject: props.form.validateFields,
   }), []);
 
-  const gethandelvalue = getFieldsValue(['main_eventType', 'main_eventObject']);
-
   const routerRefresh = () => {
     if (orderNo) {
       router.push({
@@ -105,8 +101,6 @@ const Registrat = forwardRef((props, ref) => {
       });
     }
   };
-
-  // console.log(location.query)
 
   useEffect(() => {
     if (main.revisitWay === '002') {
@@ -132,9 +126,6 @@ const Registrat = forwardRef((props, ref) => {
   const handleself = e => {
     ChangeShow(e.target.checked);
     ChangeActiveKey(['registratform', 'handleform']);
-    if (sethandlevalue === 'true') {
-      changeDefaultvalue(gethandelvalue);
-    }
   };
 
   // 事件分类005，007，008时走审核
@@ -151,9 +142,6 @@ const Registrat = forwardRef((props, ref) => {
       //  ChangeFlowtype('1');
       sessionStorage.setItem('Nextflowmane', '处理');
       sessionStorage.setItem('flowtype', '1');
-    }
-    if (sethandlevalue === 'true') {
-      changeDefaultvalue(gethandelvalue);
     }
     routerRefresh();
   };
@@ -172,11 +160,6 @@ const Registrat = forwardRef((props, ref) => {
     }
   };
 
-  const changeHandlevalue = () => {
-    if (sethandlevalue === 'true') {
-      changeDefaultvalue(gethandelvalue);
-    }
-  };
 
   const displayRender = label => {
     return label[label.length - 1];
@@ -786,7 +769,7 @@ const Registrat = forwardRef((props, ref) => {
                 <Cascader
                   fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
                   options={objectmap}
-                  onChange={() => handlobjectChange()}
+                  onChange={handlobjectChange}
                   placeholder="请选择"
                   expandTrigger="hover"
                   displayRender={displayRender}
@@ -816,7 +799,7 @@ const Registrat = forwardRef((props, ref) => {
                 rules: [{ required, message: '请选择影响度' }],
                 initialValue: main.eventEffect,
               })(
-                <Select placeholder="请选择" onChange={changeHandlevalue}>
+                <Select placeholder="请选择">
                   {effectmap.map(obj => (
                     <Option key={obj.key} value={obj.dict_code}>
                       {obj.title}
@@ -832,7 +815,7 @@ const Registrat = forwardRef((props, ref) => {
                 rules: [{ required, message: '请选择紧急度' }],
                 initialValue: main.eventEmergent,
               })(
-                <Select placeholder="请选择" onChange={changeHandlevalue}>
+                <Select placeholder="请选择">
                   {emergentmap.map(obj => (
                     <Option key={obj.key} value={obj.dict_code}>
                       {obj.title}
@@ -848,7 +831,7 @@ const Registrat = forwardRef((props, ref) => {
                 rules: [{ required, message: '请选择优先级' }],
                 initialValue: main.eventPrior,
               })(
-                <Select placeholder="请选择" onChange={changeHandlevalue}>
+                <Select placeholder="请选择">
                   {priormap.map(obj => (
                     <Option key={obj.key} value={obj.dict_code}>
                       {obj.title}

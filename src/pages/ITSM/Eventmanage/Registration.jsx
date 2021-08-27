@@ -44,7 +44,7 @@ function Registration(props) {
   const [check, setCheck] = useState(false); // 审批
   const [ischeck, setIscheck] = useState({ save: false, flow: false }); // 是否在校验状态
   const [activeKey, setActiveKey] = useState(['registratform']);
-  const [defaultvalue, setDefaultvalue] = useState('');
+  const [defaultvalue, setDefaultvalue] = useState({});
   const [registratfiles, setRegistratFiles] = useState({ arr: [], ischange: false }); // 登记上传
   const [handlefiles, setHandleFiles] = useState({ arr: [], ischange: false }); // 处理上传
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
@@ -138,7 +138,6 @@ function Registration(props) {
         const val = HandleRef.current?.getVal();
         setFormhandle({
           ...val,
-          main_eventObject: val.main_eventObject?.slice(-1)[0],
           handle_endTime: moment(val.handle_endTime).format('YYYY-MM-DD HH:mm:ss'),
           handle_fileIds: JSON.stringify(handlefiles.arr),
         });
@@ -359,7 +358,6 @@ function Registration(props) {
                 show={show}
                 wrappedComponentRef={RegistratRef}
                 userinfo={userinfo}
-                sethandlevalue="true"
                 location={location}
                 files={registratfiles.arr}
                 selectdata={selectdata}

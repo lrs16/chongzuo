@@ -82,7 +82,6 @@ function WorkOrder2(props) {
   const [ischeck, setIscheck] = useState(false); // 是否在校验状态
   const [show, setShow] = useState(false); // 是否自行处理
   const [check, setCheck] = useState(false); // 事件分类是否权限账号
-  const [defaultvalue, setDefaultvalue] = useState(''); // 自行处理后处理表单回填信息
   const [activeKey, setActiveKey] = useState([]);
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
 
@@ -277,7 +276,6 @@ function WorkOrder2(props) {
         const values = HandleRef.current.getVal();
         setFormhandle({
           ...values,
-          main_eventObject: values.main_eventObject?.slice(-1)[0],
           handle_endTime: moment(values.handle_endTime).format('YYYY-MM-DD HH:mm:ss'),
           handle_fileIds: JSON.stringify(files.arr),
         });
@@ -591,7 +589,6 @@ function WorkOrder2(props) {
                     ChangeShow={isshow => setShow(isshow)}
                     ChangeCheck={checked => setCheck(checked)}
                     ChangeActiveKey={keys => setActiveKey(keys)}
-                    changeDefaultvalue={values => setDefaultvalue(values)}
                     ChangeFiles={newvalue => {
                       setRegistratFiles(newvalue);
                     }}
@@ -602,7 +599,6 @@ function WorkOrder2(props) {
                     info={edit}
                     main={main}
                     userinfo={userinfo}
-                    sethandlevalue="true"
                     location={location}
                     files={edit.register.fileIds === '[]' ? [] : JSON.parse(edit.register.fileIds)}
                     selectdata={selectdata}
@@ -617,7 +613,6 @@ function WorkOrder2(props) {
                     wrappedComponentRef={HandleRef}
                     main={main}
                     userinfo={userinfo}
-                    defaultvalue={defaultvalue}
                     location={location}
                     ChangeFiles={newvalue => {
                       setFiles(newvalue);
@@ -672,7 +667,6 @@ function WorkOrder2(props) {
                     wrappedComponentRef={HandleRef}
                     main={main}
                     userinfo={userinfo}
-                    defaultvalue={defaultvalue}
                     location={location}
                     ChangeFiles={newvalue => {
                       setFiles(newvalue);
@@ -693,7 +687,6 @@ function WorkOrder2(props) {
                     info={edit === null ? undefined : edit}
                     main={main}
                     userinfo={userinfo}
-                    defaultvalue={defaultvalue}
                     location={location}
                     ChangeFiles={newvalue => {
                       setFiles(newvalue);

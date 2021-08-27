@@ -14,7 +14,6 @@ const Handle = React.forwardRef((props, ref) => {
     info,
     main,
     userinfo,
-    defaultvalue,
     files,
     ChangeFiles,
     show,
@@ -27,6 +26,7 @@ const Handle = React.forwardRef((props, ref) => {
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
   const [knowledgecontent, setKonwledgeContent] = useState('');    // 知识内容
   const [valuealready, setValuealready] = useState(false)          // 告知知识子组件可以走接口了
+
   // 获取知识数据
   const getContent = () => {
     const values = getFieldsValue(['handle_content'])
@@ -56,8 +56,8 @@ const Handle = React.forwardRef((props, ref) => {
     sessionStorage.setItem('Nextflowmane', '确认');
   }, []);
 
-  const eventObject = main.eventObject.split();
-  if (main.eventObject.length === 6) {
+  const eventObject = main && main.eventObject && main.eventObject.split();
+  if (main && main.eventObject && main.eventObject.length === 6) {
     eventObject.unshift(main.eventObject.slice(0, 3));
   }
 
@@ -143,46 +143,8 @@ const Handle = React.forwardRef((props, ref) => {
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
           </Col>
-          {/* 自行处理 */}
-          {defaultvalue !== '' && defaultvalue !== undefined && (
-            <>
-              <Col span={8}>
-                <Form.Item label="事件分类">
-                  {getFieldDecorator('main_eventType', {
-                    rules: [{ required, message: '请选择事件分类' }],
-                    initialValue: defaultvalue.main_eventType,
-                  })(
-                    <Select placeholder="请选择">
-                      {typemaps.map(obj => [
-                        <Option key={obj.key} value={obj.dict_code} disabled={obj.disabled}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="事件对象">
-                  {getFieldDecorator('main_eventObject', {
-                    rules: [{ required, message: '请选择事件对象' }],
-                    initialValue: defaultvalue.main_eventObject,
-                  })(
-                    <Cascader
-                      fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
-                      options={objectmap}
-                      onChange={handlcheckChange}
-                      placeholder="请选择"
-                      expandTrigger="hover"
-                      displayRender={displayRender}
-                    />,
-                  )}
-                </Form.Item>
-              </Col>
-            </>
-          )}
           {/* 事件处理 */}
-          {(defaultvalue === '' || defaultvalue === undefined) && (
+          {!show && (
             <>
               <Col span={8}>
                 <Form.Item label="事件分类">

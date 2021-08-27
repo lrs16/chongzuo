@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
-import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Cascader, message } from 'antd';
+import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Cascader, message, Popover } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
+import KeyVal from '@/components/SysDict/KeyVal';
+import TableColumns from '@/components/TableColumns';
 import AdminAuth from '@/components/AdminAuth';
 import { DemandDlete } from './services/api';
 
@@ -50,6 +52,8 @@ function QueryList(props) {
   const [tabrecord, setTabRecord] = useState({});
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [username, setUserName] = useState('');
+  const [tabColumns, setColumns] = useState([]);
+  const [visible, setVisible] = useState(false);
 
   const searchdata = (values, page, size) => {
     const newvalues = {
@@ -319,6 +323,9 @@ function QueryList(props) {
   const demandtype = getTypebyId('1352069854860939266');
   const statemap = getTypebyId('1398105664881954817');
   const modulemap = getTypebyId('1352070663392727041');
+  // const columnsmap = getTypebyId('1431057154650308609');
+  console.log(tabColumns)
+  console.log(selectdata)
 
   // 管理员账号删除工单
   // 行选择
@@ -356,12 +363,24 @@ function QueryList(props) {
     setSelectedRowKeys([]);
   }
 
+  const content = (
+    <div style={{ width: 750, height: 400, overflow: 'scroll' }}>
+      <TableColumns records={tabColumns.columns} />
+    </div>
+  );
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       <DictLower
         typeid="1354274450639425537"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
+      />
+      <KeyVal
+        style={{ display: 'none' }}
+        dictModule="demand"
+        dictType="columns"
+        ChangeSelectdata={v => setColumns(v)}
       />
       <Card>
         <Row gutter={24}>
@@ -442,7 +461,7 @@ function QueryList(props) {
                 )}
               </Form.Item>
             </Col>
-            <Col span={16}>
+            <Col span={8}>
               <Form.Item label="建单时间" {...form10ladeLayout}>
                 {getFieldDecorator('createTime', {
                   initialValue: '',
@@ -456,7 +475,7 @@ function QueryList(props) {
                 />)}
               </Form.Item>
             </Col>
-            <Col span={24} style={{ textAlign: 'right' }}>
+            <Col span={8} style={{ textAlign: 'right' }}>
               <Button type="primary" onClick={handleSearch}>
                 查 询
               </Button>
@@ -475,15 +494,27 @@ function QueryList(props) {
             </Col>
           </Form>
         </Row>
-        <div style={{ marginBottom: 24 }}>
-          <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>
-            导出数据
-          </Button>
-          <AdminAuth getAuth={v => setUserName(v)} />
-          {username === 'admin' && (
-            <Button type="danger" ghost onClick={() => deleteorder()}>删 除</Button>
-          )}
-        </div>
+        <Row>
+          <Col span={12}>
+            <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>
+              导出数据
+            </Button>
+            <AdminAuth getAuth={v => setUserName(v)} />
+            {username === 'admin' && (
+              <Button type="danger" ghost onClick={() => deleteorder()}>删 除</Button>
+            )}
+          </Col>
+          <Col span={12} style={{ textAlign: 'right' }}>
+            <Popover
+              content={content}
+              trigger="click"
+              visible={visible}
+              onVisibleChange={v => setVisible(v)}
+            >
+              <Button icon="setting" />
+            </Popover>
+          </Col>
+        </Row>
         <Table
           loading={loading}
           columns={columns}
@@ -493,6 +524,7 @@ function QueryList(props) {
           rowSelection={rowSelection}
           scroll={{ x: 1500 }}
         />
+        <TableColumns records={tabColumns.columns} />
       </Card>
     </PageHeaderWrapper>
   );
