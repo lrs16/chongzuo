@@ -133,19 +133,19 @@ function QueryList(props) {
       },
     },
     {
-      title: '日期',
+      title: '故障发生时间',
       dataIndex: 'registerOccurTime',
       key: 'registerOccurTime',
       width: 200,
     },
     {
-      title: '故障问题及现象',
+      title: '故障概要',
       dataIndex: 'content',
       key: 'content',
       width: 150,
     },
     {
-      title: '事件详细经过',
+      title: '故障详细描述',
       dataIndex: 'handleContent',
       key: 'handleContent',
       width: 150,
@@ -163,55 +163,55 @@ function QueryList(props) {
       width: 150,
     },
     {
-      title: '故障分类',
+      title: '故障类型',
       dataIndex: 'type',
       key: 'type',
       width: 150,
     },
     {
-      title: '改进措施及建议',
+      title: '故障措施或建议',
       dataIndex: 'handleAdvise',
       key: 'handleAdvise',
       width: 150,
     },
     {
-      title: '是否提交故障报告/时间',
+      title: '是否需要提供故障报告',
       dataIndex: 'checkOneReportSign',
       key: 'checkOneReportSign',
       width: 200,
     },
     {
-      title: '故障报告提交人',
+      title: '系统运维商确认总结人',
       dataIndex: 'confirmUser',
       key: 'confirmUser',
       width: 150,
     },
     {
-      title: '故障处理记录表（2天内提交）',
+      title: '是否已提交故障处理记录表',
       dataIndex: 'checkTwoReportSign',
       key: 'checkTwoReportSign',
       width: 250,
     },
     {
-      title: '故障记录表提交人',
+      title: '系统运维商处理人',
       dataIndex: 'handler',
       key: 'handler',
       width: 150,
     },
     {
-      title: '故障责任单位',
+      title: '责任单位',
       dataIndex: 'checkTwoBlame',
       key: 'checkTwoBlame',
       width: 150,
     },
     {
-      title: '是否已发布处理结果',
+      title: '系统运维商处理结果',
       dataIndex: 'confirmResult',
       key: 'confirmResult',
       width: 180,
     },
     {
-      title: '提交故障报告截止时间',
+      title: '故障报告要求上传时间',
       dataIndex: 'finishRequiredTime',
       key: 'finishRequiredTime',
       width: 200,
@@ -673,12 +673,6 @@ function QueryList(props) {
       width: 150,
     },
     {
-      title: '数据来源',
-      dataIndex: 'dataSource',
-      key: 'dataSource',
-      width: 150,
-    },
-    {
       title: '操作',
       dataIndex: 'action',
       key: 'action',
@@ -1003,19 +997,19 @@ function QueryList(props) {
         },
       },
       {
-        title: '日期',
+        title: '故障发生时间',
         dataIndex: 'registerOccurTime',
         key: 'registerOccurTime',
         width: 200,
       },
       {
-        title: '故障问题及现象',
+        title: '故障概要',
         dataIndex: 'content',
         key: 'content',
         width: 150,
       },
       {
-        title: '事件详细经过',
+        title: '故障详细描述',
         dataIndex: 'handleContent',
         key: 'handleContent',
         width: 150,
@@ -1033,55 +1027,55 @@ function QueryList(props) {
         width: 150,
       },
       {
-        title: '故障分类',
+        title: '故障类型',
         dataIndex: 'type',
         key: 'type',
         width: 150,
       },
       {
-        title: '改进措施及建议',
+        title: '故障措施或建议',
         dataIndex: 'handleAdvise',
         key: 'handleAdvise',
         width: 150,
       },
       {
-        title: '是否提交故障报告/时间',
+        title: '是否需要提供故障报告',
         dataIndex: 'checkOneReportSign',
         key: 'checkOneReportSign',
         width: 200,
       },
       {
-        title: '故障报告提交人',
+        title: '系统运维商确认总结人',
         dataIndex: 'confirmUser',
         key: 'confirmUser',
         width: 150,
       },
       {
-        title: '故障处理记录表（2天内提交）',
+        title: '是否已提交故障处理记录表',
         dataIndex: 'checkTwoReportSign',
         key: 'checkTwoReportSign',
         width: 250,
       },
       {
-        title: '故障记录表提交人',
+        title: '系统运维商处理人',
         dataIndex: 'handler',
         key: 'handler',
         width: 150,
       },
       {
-        title: '故障责任单位',
+        title: '责任单位',
         dataIndex: 'checkTwoBlame',
         key: 'checkTwoBlame',
         width: 150,
       },
       {
-        title: '是否已发布处理结果',
+        title: '系统运维商处理结果',
         dataIndex: 'confirmResult',
         key: 'confirmResult',
         width: 180,
       },
       {
-        title: '提交故障报告截止时间',
+        title: '故障报告要求上传时间',
         dataIndex: 'finishRequiredTime',
         key: 'finishRequiredTime',
         width: 200,
@@ -1094,19 +1088,28 @@ function QueryList(props) {
     // columns
     initialColumns.length = 0;
     formThead.map((val, key) => {
+      console.log('val: ', val);
       const obj = {
         key: val.key,
         title: val.title,
         dataIndex: val.key,
         width: 150
       };
-      if (key === 0) {
+      if (key === 0 && val.title !== '操作') {
         obj.render = (text, records) => {
           return (
-            <a onClick={() => gotoDetail(text,records)}>{text}</a>
+            <a onClick={() => gotoDetail(text, records)}>{text}</a>
           )
         }
         obj.fixed = 'left'
+      }
+      if (val.title === '操作') {
+        obj.render = (text, records) => {
+          return (
+            <a type="link" onClick={() => handledownFileToZip(record.id, record.no)}>
+              附件下载
+            </a>)
+        }
       }
       initialColumns.push(obj);
       setColumns(initialColumns);
@@ -1133,6 +1136,9 @@ function QueryList(props) {
   const defaultAllkey = columns.map(item => {
     return item.title
   });
+
+  const rowSelection = {
+  };
 
   return (
     <PageHeaderWrapper title={titleParams}>
@@ -1552,6 +1558,7 @@ function QueryList(props) {
           dataSource={faultQueryList.rows}
           rowKey={r => r.id}
           pagination={pagination}
+          rowSelection={rowSelection}
           scroll={{ x: 800, y: 700 }}
         />
       </Card>

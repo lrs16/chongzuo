@@ -57,7 +57,6 @@ const ConfirmChild = React.forwardRef((props, ref) => {
   };
 
   const responsible = getTypebyTitle('故障责任方');
-  console.log('responsible: ', responsible);
 
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>
@@ -98,25 +97,16 @@ const ConfirmChild = React.forwardRef((props, ref) => {
                 },
               ],
               initialValue: main ? main.blame : ''
-            })(<Input />)}
+            })(
+              <Select placeholder="请选择" allowClear>
+                {responsible.map(obj => [
+                  <Option key={obj.key} value={obj.dict_code}>
+                    {obj.title}
+                  </Option>,
+                ])}
+              </Select>)}
           </Form.Item>
         </Col>
-
-        <Col span={8}>
-              <Form.Item label="故障责任方">
-                {getFieldDecorator('confirmBlame', {
-                  initialValue:  main ? main.blame : ''
-                })(
-                  <Select placeholder="请选择" allowClear>
-                    {responsible.map(obj => [
-                      <Option key={obj.key} value={obj.dict_code}>
-                        {obj.title}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
 
         <Col span={8}>
           <Form.Item label="确认时间">

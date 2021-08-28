@@ -78,82 +78,87 @@ function Besolved(props) {
       },
     },
     {
-      title: '子系统/模块/功能',
+      title: '问题分类',
       dataIndex: 'typecn',
       key: 'typecn',
+      width: 150,
+    },
+    {
+      title: '问题描述',
+      dataIndex: 'handleContent',
+      key: 'handleContent',
       width: 200,
     },
     {
-      title: '问题/需求描述，与分析',
-      dataIndex: 'content',
-      key: 'content',
-      width: 200,
-    },
-    {
-      title: '提出人/来源',
+      title: '问题申报人',
       dataIndex: 'complainUser',
       key: 'complainUser',
-      width: 150,
-    },
-    {
-      title: '负责人',
-      dataIndex: 'complainUser',
-      key: 'complainUser',
-      width: 150,
-    },
-    {
-      title: '问题类型',
-      dataIndex: 'typecn',
-      key: 'typecn',
-      width: 150,
-    },
-    {
-      title: '提出日期',
-      dataIndex: 'typecn',
-      key: 'typecn',
-      width: 150,
-    },
-    {
-      title: '是否已解决（运维商验证）',
-      dataIndex: 'confirmResult',
-      key: 'confirmResult',
       width: 200,
     },
-
     {
-      title: '总体完成时间',
-      dataIndex: 'planEndTime',
-      key: 'planEndTime',
-      width: 150,
+      title: '开发负责人',
+      dataIndex: 'developmentLead',
+      key: 'developmentLead',
+      width: 120,
+    },
+    // {
+    //   title: '问题类型',
+    //   dataIndex: 'typecn',
+    //   key: 'typecn',
+    //   width: 120,
+    // },
+    {
+      title: '申请时间',
+      dataIndex: 'registerTime',
+      key: 'registerTime',
+      width: 120,
     },
     {
-      title: '开发对应人',
+      title: '系统运维商确认结果',
+      dataIndex: 'confirmOneResult',
+      key: 'confirmOneResult',
+      width: 200
+    },
+    {
+      title: '处理完成时间',
+      dataIndex: 'handleTime',
+      key: 'handleTime',
+      width: 150
+    },
+    {
+      title: '系统开发商处理人',
       dataIndex: 'handler',
       key: 'handler',
       width: 150,
     },
     {
-      title: '开发计划完成时间/版本提交时间',
+      title: '计划完成时间',
       dataIndex: 'planEndTime',
       key: 'planEndTime',
-      width: 250,
+      width: 150,
     },
     {
-      title: '完成进度及结果反馈（开发商）',
+      title: '处理解决方案',
+      dataIndex: 'handleContent',
+      key: 'handleContent',
+      width: 150,
+    },
+    {
+      title: '系统开发商处理结果',
       dataIndex: 'handleResult',
       key: 'handleResult',
       width: 250,
     },
     {
-      title: '整改进度和验证情况（计量中心）',
-      dataIndex: 'confirmResult',
-      key: 'confirmResult',
+      title: '问题登记人员确认结果',
+      dataIndex: 'confirmThreeResult',
+      key: 'confirmThreeResult',
       width: 250,
     },
     {
-      title: '计量中心对接负责人',
-      dataIndex: 'confirmResult',
-      key: 'confirmResult',
+      title: '问题登记人员确认人',
+      dataIndex: 'confirmThreeUser',
+      key: 'confirmThreeUser',
       width: 200,
     },
   ];
@@ -538,7 +543,7 @@ function Besolved(props) {
           dataSource={besolveList.rows}
           rowKey={r => r.id}
           pagination={pagination}
-          scroll={{ x:1500}}
+          scroll={{ x: 1500 }}
         />
       </Card>
 

@@ -6,11 +6,14 @@ import {
   Col,
   Input,
   DatePicker,
-  Radio
+  Radio,
+  Select
 } from 'antd';
 import SysUpload from '@/components/SysUpload'; // 附件下载组件
+import SysDict from '@/components/SysDict';
 
 const { TextArea } = Input;
+const { Option } = Select;
 
 const ExamineSecondChild = React.forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout, check, curruserinfo, ChangeFiles, ChangeResult } = props;
@@ -18,6 +21,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
   const attRef = useRef();
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
   const [adopt, setAdopt] = useState('1');
+  const [selectdata, setSelectData] = useState([]);
 
   useEffect(() => {
     ChangeFiles(fileslist);
@@ -47,8 +51,23 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
     ChangeResult(e.target.value);
   }
 
+  const getTypebyTitle = title => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.title === title)[0].children;
+    }
+    return [];
+  };
+
+  const responsible = getTypebyTitle('故障责任方');
+
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>
+      <SysDict
+        typeid="1354278126724583426"
+        commonid="1354288354950123522"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'none' }}
+      />
       <Form {...formItemLayout}>
         <Col span={8}>
           <Form.Item label="审核结果">
@@ -74,7 +93,15 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
                 },
               ],
               initialValue: check.checkBlame
-            })(<Input />)}
+            })( 
+            <Select placeholder="请选择" allowClear>
+            {responsible.map(obj => [
+              <Option key={obj.key} value={obj.dict_code}>
+                {obj.title}
+              </Option>,
+            ])}
+          </Select>
+          )}
           </Form.Item>
         </Col>
 
@@ -162,7 +189,7 @@ ExamineSecondChild.defaultProps = {
     checkOpinion: '',
     checkResult: '1',
     checkTime: moment().format(),
-    checkBlame:''
+    checkBlame: ''
   },
   curruserinfo: {
     deptName: '',

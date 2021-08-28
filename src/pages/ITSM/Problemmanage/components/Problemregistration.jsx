@@ -64,6 +64,11 @@ function Problemregistration(props) {
             <Input defaultValue={info.registerUserPhone} disabled />
           </Form.Item>
         </Col>
+        <Col span={8}>
+          <Form.Item label="开发负责人">
+            <Input defaultValue={info.developmentLead} disabled />
+          </Form.Item>
+        </Col>
         <Col span={24} >
           <Form.Item label="问题标题" {...forminladeLayout}>
             <Input defaultValue={main.title} disabled />
