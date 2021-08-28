@@ -703,7 +703,7 @@ function EditeTable(props) {
       fixed: 'right',
       width: 100,
       render: (text, record) => {
-        if (record.isNew || record.editable || record.verification) {
+        if ((record.isNew || record.editable || record.verification) && isEdit) {
           return (
             <>
               <RadioGroup value={text || '通过'} onChange={e => handleFieldChange(e.target.value, 'passTest', record.key)}>
@@ -724,7 +724,7 @@ function EditeTable(props) {
       align: 'center',
       width: 120,
       render: (text, record) => {
-        if (record.isNew || record.editable || record.verification) {
+        if ((record.isNew || record.editable || record.verification) && isEdit) {
           return (
             <div className={text === '' ? styles.requiredselect : ''} onMouseDown={() => getUserList()}>
               {taskName !== '业务验证' && (

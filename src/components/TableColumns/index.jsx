@@ -13,7 +13,8 @@ function TableColumns(props) {
   });
 
   const onChange = (val) => {
-    ChangeSelectVal(val)
+    const newArr = records.filter((x) => val.some((item) => x.key === item));
+    ChangeSelectVal(newArr)
   }
 
   const handleSearch = () => {

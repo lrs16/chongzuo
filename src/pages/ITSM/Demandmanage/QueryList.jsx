@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
-import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Cascader, message, Popover } from 'antd';
+import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Cascader, message, Popover, Tooltip } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
@@ -156,6 +156,7 @@ function QueryList(props) {
     },
   ];
 
+  // 自定义表头
   const tableColumns = (tablecolumns) => {
     const newArr = [];
     if (!Array.isArray(tablecolumns)) {
@@ -163,9 +164,37 @@ function QueryList(props) {
     }
     for (let i = 0; i < tablecolumns.length; i += 1) {
       const vote = {};
-      vote.title = tablecolumns[i].title;
+      vote.title = tablecolumns[i].val;
       vote.dataIndex = tablecolumns[i].key;
       vote.key = tablecolumns[i].key;
+      vote.width = 150;
+      if (tablecolumns[i].key === 'demandId') {
+        vote.render = (text, record) => {
+          const handleClick = () => {
+            dispatch({
+              type: 'viewcache/gettabstate',
+              payload: {
+                cacheinfo: {
+                  ...tabrecord,
+                  paginations,
+                  expand,
+                },
+                tabid: sessionStorage.getItem('tabid')
+              },
+            });
+            router.push({
+              pathname: `/ITSM/demandmanage/query/details`,
+              query: {
+                taskId: record.taskId,
+                mainId: record.processInstanceId,
+                taskName: record.taskName,
+                No: text,
+              },
+            });
+          };
+          return <a onClick={handleClick}>{text}</a>;
+        }
+      }
       newArr.push(vote);
     };
     return newArr;
@@ -233,12 +262,28 @@ function QueryList(props) {
     setPageinations({ current: 1, pageSize: 15 });
   };
 
+  const downloadColumns = (data) => {
+    const newArr = [];
+    if (!Array.isArray(data)) {
+      return newArr;
+    }
+    for (let i = 0; i < data.length; i += 1) {
+      const vote = {};
+      vote.field = data[i].val;
+      vote.column = data[i].key;
+      newArr.push(vote)
+    }
+    return newArr
+  }
+
   const download = () => {
     validateFields((err, values) => {
+      const tablecol = downloadColumns(defaultColumns);
       dispatch({
         type: 'demandquery/download',
         payload: {
           ...values,
+          columns: JSON.stringify(tablecol),
           module: values.module === [] ? '' : values.module.join('/'),
           startTime: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD 00:00:00') : '',
           endTime: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD 23:59:59') : '',
@@ -528,15 +573,17 @@ function QueryList(props) {
               trigger="click"
               visible={visible}
               onVisibleChange={v => setVisible(v)}
-              placement="leftTop"
+              placement="left"
             >
-              <Button icon="setting" style={{ background: '#e1e1e1' }} />
+              <Tooltip title="自定义表头">
+                <Button icon="setting" style={{ background: '#e1e1e1' }} />
+              </Tooltip>
             </Popover>
           </Col>
         </Row>
         <Table
           loading={loading}
-          columns={defaultColumns && defaultColumns.length > 0 ? columns : columns}
+          columns={defaultColumns && defaultColumns.length > 0 ? tableColumns(defaultColumns) : columns}
           dataSource={list.rows}
           rowKey={r => r.processInstanceId}
           pagination={pagination}
