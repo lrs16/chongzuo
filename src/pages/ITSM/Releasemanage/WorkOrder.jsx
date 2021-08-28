@@ -198,7 +198,7 @@ function WorkOrder(props) {
             const releaseStatus = values.releaseLists.map(item => {
               return item.verifyStatus;
             });
-            if (releaseStatus.includes('已转出') || releaseStatus.includes(null)) {
+            if (releaseStatus.includes('已转出') || releaseStatus.includes(null) || releaseStatus.includes('')) {
               message.error('发布清单还未全部验证，无法流转')
             } else {
               savebizValidate();
@@ -217,7 +217,7 @@ function WorkOrder(props) {
             const releaseStatus = values.releaseLists.map(item => {
               return item.verifyStatus;
             });
-            if (releaseStatus.includes('已转出') || releaseStatus.includes(null)) {
+            if (releaseStatus.includes('已转出') || releaseStatus.includes(null) || releaseStatus.includes('')) {
               message.error('发布清单还未全部验证，无法流转')
             } else {
               savebizValidate();
@@ -410,7 +410,7 @@ function WorkOrder(props) {
             const releaseStatus = values.releaseLists.map(item => {
               return item.verifyStatus;
             });
-            if (releaseStatus.includes('已转出') || releaseStatus.includes(null)) {
+            if (releaseStatus.includes('已转出') || releaseStatus.includes(null) || releaseStatus.includes('')) {
               message.error('发布清单还未全部复核，无法流转')
             } else {
               savebusinessReview();

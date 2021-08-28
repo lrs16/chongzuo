@@ -6,7 +6,6 @@ import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Cascade
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
-import KeyVal from '@/components/SysDict/KeyVal';
 import TableColumns from '@/components/TableColumns';
 import AdminAuth from '@/components/AdminAuth';
 import { querkeyVal } from '@/services/api';
@@ -54,21 +53,8 @@ function QueryList(props) {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [username, setUserName] = useState('');
   const [tabColumns, setColumns] = useState({});
-  const [defaultColumns, setDefaultColumns] = useState({})
+  const [defaultColumns, setDefaultColumns] = useState([])
   const [visible, setVisible] = useState(false);
-  console.log(defaultColumns)
-
-  dispatch({
-    type: 'dicttree/keyval',
-    payload: {
-      dictModule,
-      dictType,
-    },
-  }).then(res => {
-    if (res.code === 200 && !doCancel) {
-      ChangeSelectdata(res.data);
-    }
-  });
 
   const searchdata = (values, page, size) => {
     const newvalues = {
@@ -169,6 +155,21 @@ function QueryList(props) {
       with: 80,
     },
   ];
+
+  const tableColumns = (tablecolumns) => {
+    const newArr = [];
+    if (!Array.isArray(tablecolumns)) {
+      return newArr;
+    }
+    for (let i = 0; i < tablecolumns.length; i += 1) {
+      const vote = {};
+      vote.title = tablecolumns[i].title;
+      vote.dataIndex = tablecolumns[i].key;
+      vote.key = tablecolumns[i].key;
+      newArr.push(vote);
+    };
+    return newArr;
+  };
 
   const onShowSizeChange = (page, size) => {
     validateFields((err, values) => {
@@ -325,6 +326,16 @@ function QueryList(props) {
         }
       });
     }
+    querkeyVal('demand', 'columns').then(res => {
+      if (res.code === 200) {
+        setColumns(res.data.columns)
+      }
+    });
+    querkeyVal('demand', 'defaultcolumns').then(res => {
+      if (res.code === 200) {
+        setDefaultColumns(res.data.defaultcolumns)
+      }
+    })
   }, []);
 
   const getTypebyId = key => {
@@ -378,7 +389,7 @@ function QueryList(props) {
 
   const content = (
     <div style={{ width: 750, height: 400, overflow: 'scroll' }}>
-      <TableColumns records={tabColumns.columns} defaultVal={defaultColumns.defaultcolumns} />
+      <TableColumns defaultVal={defaultColumns} records={tabColumns} ChangeSelectVal={v => setDefaultColumns(v)} />
     </div>
   );
 
@@ -388,12 +399,6 @@ function QueryList(props) {
         typeid="1354274450639425537"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
-      />
-      <KeyVal
-        style={{ display: 'none' }}
-        dictModule="demand"
-        dictType="columns"
-        ChangeSelectdata={v => setColumns(v)}
       />
       <Card>
         <Row gutter={24}>
@@ -523,21 +528,21 @@ function QueryList(props) {
               trigger="click"
               visible={visible}
               onVisibleChange={v => setVisible(v)}
+              placement="leftTop"
             >
-              <Button icon="setting" />
+              <Button icon="setting" style={{ background: '#e1e1e1' }} />
             </Popover>
           </Col>
         </Row>
         <Table
           loading={loading}
-          columns={columns}
+          columns={defaultColumns && defaultColumns.length > 0 ? columns : columns}
           dataSource={list.rows}
           rowKey={r => r.processInstanceId}
           pagination={pagination}
           rowSelection={rowSelection}
           scroll={{ x: 1500 }}
         />
-        <TableColumns records={tabColumns.columns} />
       </Card>
     </PageHeaderWrapper>
   );
