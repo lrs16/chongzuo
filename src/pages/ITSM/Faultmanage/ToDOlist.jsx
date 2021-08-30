@@ -199,6 +199,7 @@ function ToDOlist(props) {
   //  下载 /导出功能
   const download = (page, pageSize) => {
     validateFields((err, values) => {
+      console.log('values: ', values);
       if (!err) {
         dispatch({
           type: 'fault/faultTododownload',
@@ -208,6 +209,7 @@ function ToDOlist(props) {
             addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
             addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
             createTime: '',
+            type:values.type.toString(),
             pageSize,
             pageNum: page,
           },
@@ -435,18 +437,18 @@ function ToDOlist(props) {
             )}
           </Form>
         </Row>
-        <div style={{ marginBottom: 24 }}>
+        {/* <div style={{ marginBottom: 24 }}>
           <Popconfirm title="确定导出数据？" onConfirm={() => download()}>
             <Button type="primary">导出数据</Button>
           </Popconfirm>
-        </div>
+        </div> */}
         <Table
           loading={loading}
           columns={columns.filter(item => item.title !== 'id' || item.key !== 'id')}
           dataSource={faultTodoList.rows}
           rowKey={r => r.id}
           pagination={pagination}
-          rowSelection={rowSelection}
+          // rowSelection={rowSelection}
         />
       </Card>
     </PageHeaderWrapper>

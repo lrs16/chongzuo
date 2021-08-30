@@ -113,7 +113,6 @@ export async function querydownload(values) {
     },
     body: JSON.stringify(values),
     responseType: 'blob',
-   
   });
 }
 
