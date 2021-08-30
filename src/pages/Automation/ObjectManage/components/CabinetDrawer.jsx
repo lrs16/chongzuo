@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Drawer, Button, Form, Input, Select, InputNumber } from 'antd';
+import DictLower from '@/components/SysDict/DictLower';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -15,14 +16,6 @@ const formItemLayout = {
   },
   colon: false,
 };
-
-const zonemap = [
-  { key: '0', title: '一区' },
-  { key: '1', title: '二区' },
-  { key: '2', title: '三区' },
-  { key: '3', title: '安全接入区' },
-];
-
 function CabinetDrawer(props) {
   const { visible, ChangeVisible, title, handleSubmit } = props;
   const { getFieldDecorator, validateFields } = props.form;
@@ -40,6 +33,8 @@ function CabinetDrawer(props) {
     cabinetRemarks,
   } = props.record;
 
+  const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
+
   const hanldleCancel = () => {
     ChangeVisible(false);
   };
@@ -56,6 +51,15 @@ function CabinetDrawer(props) {
     });
   };
 
+  // 数据字典取下拉值
+  const getTypebyId = key => {
+    if (selectdata.ischange) {
+      return selectdata.arr[0].children.filter(item => item.key === key)[0].children;
+    }
+    return [];
+  };
+
+  const zonemap = getTypebyId('1428182995477942274'); // 区域
 
   return (
     <Drawer
@@ -66,6 +70,11 @@ function CabinetDrawer(props) {
       bodyStyle={{ paddingBottom: 60 }}
       destroyOnClose
     >
+      <DictLower
+        typeid="1428178684907835393"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'none' }}
+      />
       <Form {...formItemLayout} onSubmit={handleOk}>
         <Form.Item label="Id">
           {getFieldDecorator('id', {
@@ -83,7 +92,7 @@ function CabinetDrawer(props) {
             initialValue: cabinetZoneId,
           })(<Select placeholder="请选择" allowClear>
             {zonemap.map(obj => (
-              <Option key={obj.key} value={obj.key}>
+              <Option key={obj.key} value={obj.title}>
                 {obj.title}
               </Option>
             ))}

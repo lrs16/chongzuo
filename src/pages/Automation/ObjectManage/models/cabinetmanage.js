@@ -13,8 +13,8 @@ export default {
 
   effects: {
     // 获取机柜列表
-    *findCabinetList({ payload }, { call, put }) {
-      const response = yield call(CabinetList, payload);
+    *findCabinetList({ payload: { values, pageNum, pageSize } }, { call, put }) {
+      const response = yield call(CabinetList, values, pageNum, pageSize);
       yield put({
         type: 'cabinetList',
         payload: response.data,

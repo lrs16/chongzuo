@@ -2,8 +2,9 @@ import React, {
   useState
 } from 'react';
 // import { connect } from 'dva';
+import moment from 'moment';
 import DictLower from '@/components/SysDict/DictLower';
-import { Drawer, Button, Form, Input, Select, InputNumber } from 'antd';
+import { Drawer, Button, Form, Input, Select, InputNumber, DatePicker } from 'antd';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -27,11 +28,10 @@ const directormap = [
   { key: '3', title: '赵六' },
 ];
 function EquipDrawer(props) {
-  const { visible, ChangeVisible, title, handleSubmit, dispatch } = props;
+  const { visible, ChangeVisible, title, handleSubmit, dispatch, savetype } = props;
   const { getFieldDecorator, validateFields } = props.form;
   const required = true;
   const {
-    // id,
     hostZoneId,
     hostName,
     hostIp,
@@ -47,6 +47,7 @@ function EquipDrawer(props) {
     positionChange,
     enployU,
     deployChange,
+    uposition
   } = props.record;
 
   const [equipCabinet, setEquipCabinet] = useState([]);
@@ -77,6 +78,10 @@ function EquipDrawer(props) {
     });
   };
 
+  const handleOnchange = v => { // 是否物理机
+    console.log(v,'vvv')
+  }
+
   // 数据字典取下拉值
   const getTypebyId = key => {
     if (selectdata.ischange) {
@@ -95,7 +100,7 @@ function EquipDrawer(props) {
   return (
     <Drawer
       title={title}
-      width={600}
+      width={665}
       onClose={hanldleCancel}
       visible={visible}
       bodyStyle={{ paddingBottom: 60 }}
@@ -107,12 +112,12 @@ function EquipDrawer(props) {
         style={{ display: 'none' }}
       />
       <Form {...formItemLayout} onSubmit={handleOk}>
-        {/* <Form.Item label="Id">
-          {getFieldDecorator('id', {
-            initialValue: id,
-          })(<Input disabled />)}
-        </Form.Item> */}
-        <Form.Item label="区域">
+        <Form.Item label="设备编号">
+          {getFieldDecorator('hostAssets', {
+            initialValue: '',
+          })(<Input placeholder="请输入" />)}
+        </Form.Item>
+        <Form.Item label="设备区域">
           {getFieldDecorator('hostZoneId', {
             rules: [
               {
@@ -163,10 +168,6 @@ function EquipDrawer(props) {
             ],
             initialValue: hostStatus,
           })(
-            // <Radio.Group>
-            //   <Radio value="1">在用</Radio>
-            //   <Radio value="0">停用</Radio>
-            // </Radio.Group>
             <Select placeholder="请选择" allowClear>
               {hoststatusmap.map(obj => (
                 <Option key={obj.key} value={obj.title}>
@@ -231,7 +232,7 @@ function EquipDrawer(props) {
           {getFieldDecorator('hostPhysicId', {
             rules: [{ required }],
             initialValue: hostPhysicId,
-          })(<Select placeholder="请选择" allowClear>
+          })(<Select placeholder="请选择" allowClear  onChange={v => handleOnchange(v)}>
             {hostphysicmap.map(obj => (
               <Option key={obj.key} value={obj.title}>
                 {obj.title}
@@ -247,17 +248,28 @@ function EquipDrawer(props) {
                 message: '请选择',
               },
             ],
-            initialValue: hostCabinetId,
-            // initialValue: (equipCabinet && equipCabinet[0]) ? equipCabinet[0].tital : hostCabinetId,
+            // initialValue: hostCabinetId,
+            initialValue: (equipCabinet && equipCabinet[0] && savetype === 'update') ? equipCabinet[0].tital : hostCabinetId,
           })(
             <Select placeholder="请选择" allowClear>
-              {equipCabinet.map(obj => (
+              {equipCabinet !== undefined && equipCabinet.map(obj => (
                 <Option key={obj.key} value={obj.key}>
                   {obj.tital}
                 </Option>
               ))}
             </Select>
           )}
+        </Form.Item>
+        <Form.Item label="所在U位">
+          {getFieldDecorator('uposition', {
+            rules: [
+              {
+                required,
+                message: '请输入',
+              },
+            ],
+            initialValue: uposition,
+          })(<Input placeholder="请输入" />)}
         </Form.Item>
         <Form.Item label="占用U位">
           {getFieldDecorator('enployU', {
@@ -272,6 +284,12 @@ function EquipDrawer(props) {
         </Form.Item>
         <Form.Item label="负责人">
           {getFieldDecorator('director', {
+            rules: [
+              {
+                required,
+                message: '请选择',
+              },
+            ],
             initialValue: director,
           })(<Select placeholder="请选择" allowClear>
             {directormap.map(obj => (
@@ -280,6 +298,23 @@ function EquipDrawer(props) {
               </Option>
             ))}
           </Select>)}
+        </Form.Item>
+        <Form.Item label="维保结束时间">
+          {getFieldDecorator('maintainEndTime', {
+            rules: [{ required }],
+            initialValue: moment(new Date()),
+          })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
+        </Form.Item>
+        <Form.Item label="设备排序">
+          {getFieldDecorator('hostSorts', {
+            rules: [
+              {
+                required,
+                message: '请输入数字',
+              },
+            ],
+            initialValue: hostSorts,
+          })(<InputNumber style={{ width: '100%' }} placeholder="请输入数字..." />)}
         </Form.Item>
         <Form.Item label="位置变更">
           {getFieldDecorator('positionChange', {
@@ -290,11 +325,6 @@ function EquipDrawer(props) {
           {getFieldDecorator('deployChange', {
             initialValue: deployChange,
           })(<Input placeholder="请输入" />)}
-        </Form.Item>
-        <Form.Item label="设备排序">
-          {getFieldDecorator('hostSorts', {
-            initialValue: hostSorts,
-          })(<InputNumber style={{ width: '100%' }} placeholder="请输入数字..." />)}
         </Form.Item>
         <Form.Item label="设备备注">
           {getFieldDecorator('hostRemarks', {
@@ -328,7 +358,6 @@ function EquipDrawer(props) {
 
 EquipDrawer.defaultProps = {
   record: {
-    // id: '',
     hostZoneId: '',
     hostName: '',
     hostIp: '',
@@ -344,6 +373,8 @@ EquipDrawer.defaultProps = {
     positionChange: '',
     deployChange: '',
     enployU: '',
+    uposition: '',
+    maintainEndTime: new Date(),
   },
 };
 

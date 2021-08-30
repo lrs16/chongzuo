@@ -3,7 +3,7 @@ import React, {
   useEffect
 } from 'react';
 import { connect } from 'dva';
-// import router from 'umi/router';
+import Link from 'umi/link';
 import {
   Card, Row, Col, Form, Input, Select, Button, Table, message, Divider, Switch,
   // Popconfirm,
@@ -14,6 +14,7 @@ import {
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 // import DictLower from '@/components/SysDict/DictLower';
 import TaskModal from './components/TaskModal';
+import TaskjoblogModal from './components/TaskjoblogModal';
 
 const { Option } = Select;
 
@@ -161,7 +162,7 @@ function TimedTask(props) {
         }
       });
     }
-  }
+  };
 
   const handleSearch = () => {
     setPageinations({
@@ -225,15 +226,29 @@ function TimedTask(props) {
         jobId: id,
       },
     }).then(res => {
-      message.success(res.msg);
       if (res.code === 200) {
+        message.success(res.msg);
         searchdata(1, 15);
+      } else {
+        message.error(res.msg);
       }
     });
   };
 
-  const handletoRun = (v) => { // 立即执行一次
-    console.log(v,'v')
+  const handletoRun = record => { // 立即执行一次
+    dispatch({
+      type: 'timedtaskmodel/torunqrtzJob',
+      payload: {
+        jobId: record.jobId,
+      },
+    }).then(res => {
+      if (res.code === 200) {
+        message.success(res.msg);
+        searchdata(1, 15);
+      } else {
+        message.error(res.msg);
+      }
+    });
   };
 
   // 查询
@@ -242,37 +257,34 @@ function TimedTask(props) {
     <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button></>
   );
 
-  const itemMenu = (
-    <Menu>
-      <Menu.Item
-        onClick={(v) => handletoRun(v)}
-      >
-        <span>
-          <Icon type="caret-right" />
-          执行一次
-        </span>
-      </Menu.Item>
-      <Menu.Item
-      // onClick={() => {
+  const itemMenu = (record) => { // >更多
+    return (
+      <Menu>
+        <Menu.Item
+          key="1"
+          onClick={() => handletoRun(record)}
+        >
+          <span><Icon type="caret-right" />执行一次</span>
+        </Menu.Item>
+        <Menu.Item
+          key="2"
+        > <TaskjoblogModal record={record}>
+            <span>
+              <Icon type="eye" />
+              任务详细
+            </span></TaskjoblogModal>
+        </Menu.Item><Menu.Item
+          key="3"
+        >
 
-      // }}
-      >
-        <span>
-          <Icon type="eye" />
-          任务详细
-        </span>
-      </Menu.Item><Menu.Item
-      // onClick={() => {
-
-      // }}
-      >
-        <span>
-          <Icon type="bars" />
-          调度日志
-        </span>
-      </Menu.Item>
-    </Menu>
-  );
+          <span>
+            <Icon type="bars" />
+            <Link to={`/sysmanage/timedtask/schedultasklog/${record.jobId}`}>调度日志</Link>
+          </span>
+        </Menu.Item>
+      </Menu>
+    )
+  };
 
   const columns = [
     {
@@ -394,8 +406,10 @@ function TimedTask(props) {
             </a>
             <Divider type="vertical" />
             <Dropdown
-              overlay={itemMenu}
+              // overlay={itemMenu}
+              overlay={() => itemMenu(record)}
               placement="bottomRight"
+              record={record}
             >
               <a type="link">
                 &gt;更多
@@ -498,7 +512,9 @@ function TimedTask(props) {
           <Button type="primary" style={{ marginRight: 8 }}>
             导出数据
           </Button>
-          <Button type="primary" style={{ marginRight: 8 }}>日 志</Button>
+          <Link to="/sysmanage/timedtask/schedultasklog/0">
+            <Button type="primary" style={{ marginRight: 8 }}>日 志</Button>
+          </Link>
         </div>
         < Table
           loading={loading}

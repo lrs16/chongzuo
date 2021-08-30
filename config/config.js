@@ -1214,7 +1214,8 @@ export default {
                   routes: [
                     {
                       path: '/automation',
-                      redirect: '/automation/STT/hostlist',
+                      // redirect: '/automation/STT/hostlist',
+                      redirect: '/automation/automatedjob/jobmanagement/jobconfig'
                     },
                     // {
                     //   path: '/automation/monitor',
@@ -1341,6 +1342,76 @@ export default {
                           icon: 'cloud-server',
                           component: './Automation/ObjectManage/agentManage',
                         },
+                        {
+                          path: '/automation/objectmanage/software',
+                          name: '软件管理',
+                          icon: 'cloud-server',
+                          component: './Automation/ObjectManage/softwareManage',
+                        },
+                        {
+                          path: '/automation/objectmanage/softwareconfig',
+                          name: '软件配置',
+                          icon: 'cloud-server',
+                          component: './Automation/ObjectManage/softwareConfig',
+                        },
+                        {
+                          path: '/automation/objectmanage/scriptconfig',
+                          name: '脚本配置',
+                          icon: 'cloud-server',
+                          component: './Automation/ObjectManage/scriptConfig',
+                        },
+                      ]
+                    },
+                    {
+                      path: '/automation/automatedjob',
+                      name: '自动化作业',
+                      icon: 'database',
+                      routes: [
+                        {
+                          path: '/automation/automatedjob',
+                          redirect: '/automation/automatedjob/jobmanagement'
+                        },
+                        {
+                          path: '/automation/automatedjob/softstartandstop',
+                          name: '软件启停',
+                          icon: 'cloud-server',
+                          routes: [
+                            {
+                              path: '/automation/automatedjob/softstartandstop',
+                              redirect: '/automation/automatedjob/softstartandstop/softregister'
+                            },
+                            {
+                              path: '/automation/automatedjob/softstartandstop/softregister',
+                              name: '启停登记',
+                              icon: 'fork',
+                              component: './Automation/AutomatedJob/SoftTTManagement/SoftTTRegister'
+                            }
+                          ]
+                        },
+                        {
+                          path: '/automation/automatedjob/jobmanagement',
+                          name: '作业管理',
+                          icon: 'cloud-server',
+                          routes: [
+                            {
+                              path: '/automation/automatedjob/jobmanagement',
+                              redirect: '/automation/automatedjob/jobmanagement/jobconfig'
+                            },
+                            {
+                              path: '/automation/automatedjob/jobmanagement/jobconfig',
+                              name: '作业配置',
+                              icon: 'fork',
+                              component: './Automation/AutomatedJob/JobManagement/JobConfig',
+                            },
+                            {
+                              path: '/automation/automatedjob/jobmanagement/jobconfig/new',
+                              name: '新增作业配置',
+                              icon: 'fork',
+                              component: './Automation/AutomatedJob/JobManagement/New',
+                            }
+                          ]
+                        },
+
                       ]
                     },
                   ],
@@ -1689,7 +1760,7 @@ export default {
                         {
                           path: '/sysmanage/processmanagement/modeledit/:id',
                           name: '编辑模型',
-                          icon: 'smile',
+                          icon: 'smile',                      
                           component: './SysManage/ProcessManagement/ModelEdit',
                         },
                         {
@@ -1700,11 +1771,17 @@ export default {
                         },
                       ],
                     },
-                    {
+                    {  
                       path: '/sysmanage/timedtask',
                       icon: 'cluster',
                       name: '定时任务',
                       component: './SysManage/TimedTask',
+                    },
+                    {
+                      path: '/sysmanage/timedtask/schedultasklog/:joblogid',
+                      name: '调度日志',
+                      hideInMenu: true,
+                      component: './SysManage/SchedultaskLog'
                     },
                     {
                       path: '/sysmanage/expressionsmanage',

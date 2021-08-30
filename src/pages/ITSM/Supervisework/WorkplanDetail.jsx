@@ -431,15 +431,16 @@ function WorkplanDetail(props) {
     };
 
     useEffect(() => {
+        if(main){
         if (!delay && flowNodeName === '工作执行' && (workUser && workUser.split(",").length > 1 && main && main.responseStatus === '0')) {
             message.info('请接单..', 1);
             setShow(false);
         }
-        if (!delay && flowNodeName === '工作执行' && (main && main.responseStatus === '1' || workUser && workUser.split(",").length === 1)) {
+        if (!delay && flowNodeName === '工作执行' && (main && main.responseStatus === '1')) {
             setShow(true);
         }
-
-    }, [location])
+    }
+    }, [main])
 
     const responseaccpt = () => { // 接单
         return dispatch({
@@ -449,8 +450,8 @@ function WorkplanDetail(props) {
             }
         }).then(res => {
             if (res.code === 200) {
-                setShow(true);
                 getInformation();
+                setShow(true);
                 message.success(res.msg);
             } else {
                 message.error(res.msg);

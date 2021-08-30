@@ -1,0 +1,89 @@
+import {
+    // 系统脚本
+    systemScriptList,
+    systemscriptaddOrEdit,
+    deletesystemScript,
+    recellScript,
+    // 本地脚本
+    localScriptList,
+    localscriptadd,
+    localscriptedit,
+    deletelocalScript,
+
+} from '../services/api';
+
+export default {
+    namespace: 'scriptconfig',
+
+    state: {
+        systemscriptlist: {},
+        localscriptlist: {},
+    },
+
+    effects: {
+        // 系统脚本
+        // 获取脚本配置系统脚本列表
+        *findSystemScriptList({ payload: { values, pageNum, pageSize } }, { call, put }) {
+            const response = yield call(systemScriptList, values, pageNum, pageSize);
+            yield put({
+                type: 'systemscriptlist',
+                payload: response.data,
+            });
+        },
+
+        // 获取脚本配置系统脚本列表
+        *toupdatesystemScript({ payload }, { call }) {
+            return yield call(systemscriptaddOrEdit, payload);
+        },
+
+        // 删除系统脚本列表数据
+        *toDeletesystemScript({ payload }, { call }) {
+            return yield call(deletesystemScript, payload);
+        },
+        
+        // 撤回
+        *torecellScript({ payload: { Ids } }, { call }) {
+            return yield call(recellScript, Ids);
+        },
+
+        // 本地脚本
+        // 获取脚本配置本地脚本列表
+        *findLocalScriptList({ payload: { values, pageNum, pageSize } }, { call, put }) {
+            const response = yield call(localScriptList, values, pageNum, pageSize);
+            yield put({
+                type: 'localscriptlist',
+                payload: response.data,
+            });
+        },
+
+        // 添加
+        *toaddlocalScript({ payload }, { call }) {
+            return yield call(localscriptadd, payload);
+        },
+
+        // 编辑
+        *toeditlocalScript({ payload }, { call }) {
+            return yield call(localscriptedit, payload);
+        },
+
+        // 删除本地脚本列表数据
+        *toDeletelocalScript({ payload }, { call }) {
+            return yield call(deletelocalScript, payload);
+        },
+    },
+
+    reducers: {
+        systemscriptlist(state, action) {
+            return {
+                ...state,
+                systemscriptlist: action.payload,
+            };
+        },
+        localscriptlist(state, action) {
+            return {
+                ...state,
+                localscriptlist: action.payload,
+            };
+        },
+    },
+};

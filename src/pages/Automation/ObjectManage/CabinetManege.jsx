@@ -20,8 +20,6 @@ const formItemLayout = {
     },
 };
 
-const cabinetZoneMap = ['一区', '二区',  '三区', '安全接入区'];
-
 function CabinetManege(props) {
     const pagetitle = props.route.name;
     const {
@@ -46,23 +44,16 @@ function CabinetManege(props) {
 
     const searchdata = (page, size) => {
         const values = getFieldsValue();
-        const newvalues = {
-            ...values,
-            pageIndex: page,
-            pageSize: size,
-            createTime1: values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '',
-            createTime2: values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '',
-            updateTime1: values.time3 ? moment(values.time3).format('YYYY-MM-DD HH:mm:ss') : '',
-            updateTime2: values.time4 ? moment(values.time4).format('YYYY-MM-DD HH:mm:ss') : ''
-        }
-        // values.createTime1 = values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '';
-        // values.createTime2 = values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '';
-        // values.updateTime1 = values.time3 ? moment(values.time3).format('YYYY-MM-DD HH:mm:ss') : '';
-        // values.updateTime2 = values.time4 ? moment(values.time4).format('YYYY-MM-DD HH:mm:ss') : '';
+        values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
+        values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
+        values.startUpdateTime = values.startUpdateTime ? moment(values.startUpdateTime).format('YYYY-MM-DD HH:mm:ss') : '';
+        values.endUpdateTime = values.endUpdateTime ? moment(values.endUpdateTime).format('YYYY-MM-DD HH:mm:ss') : '';
         dispatch({
             type: 'cabinetmanage/findCabinetList',
             payload: {
-                ...newvalues,
+                values,
+                pageNum: page,
+                pageSize: size,
             },
         });
     };
@@ -155,9 +146,6 @@ function CabinetManege(props) {
             dataIndex: 'cabinetZoneId',
             key: 'cabinetZoneId',
             width: 120,
-            render: (record) => {
-               return <span>{cabinetZoneMap[record.cabinetZoneId]}</span>;
-            },
         },
         {
             title: '机柜名称',
@@ -268,27 +256,20 @@ function CabinetManege(props) {
         </Button></>
     )
 
-    const zonemap = [
-        { key: '1', title: '一区' },
-        { key: '2', title: '二区' },
-        { key: '3', title: '三区' },
-        { key: '4', title: '安全接入区' },
-    ];
-
     // 数据字典取下拉值
-    // const getTypebyId = key => {
-    //     if (selectdata.ischange) {
-    //         return selectdata.arr[0].children.filter(item => item.key === key)[0].children;
-    //     }
-    //     return [];
-    // };
+    const getTypebyId = key => {
+        if (selectdata.ischange) {
+            return selectdata.arr[0].children.filter(item => item.key === key)[0].children;
+        }
+        return [];
+    };
 
-    // const zonemap = getTypebyId('');         // 区域
+    const zonemap = getTypebyId('1428182995477942274'); // 区域
 
     return (
         <PageHeaderWrapper title={pagetitle}>
             <DictLower
-                typeid="100000000000001001"
+                typeid="1428178684907835393"
                 ChangeSelectdata={newvalue => setSelectData(newvalue)}
                 style={{ display: 'none' }}
             />
@@ -302,7 +283,7 @@ function CabinetManege(props) {
                                 })(
                                     <Select placeholder="请选择" allowClear>
                                         {zonemap.map(obj => (
-                                            <Option key={obj.key} value={obj.key}>
+                                            <Option key={obj.key} value={obj.title}>
                                                 {obj.title}
                                             </Option>
                                         ))}
@@ -357,8 +338,7 @@ function CabinetManege(props) {
                             <Form.Item label="创建时间">
                                 <Row>
                                     <Col span={11}>
-                                        {getFieldDecorator('time1', {
-                                            // initialValue: '',
+                                        {getFieldDecorator('startTime', {
                                         })(
                                             <DatePicker
                                                 showTime={{
@@ -373,8 +353,7 @@ function CabinetManege(props) {
                                     </Col>
                                     <Col span={2} style={{ textAlign: 'center' }}>-</Col>
                                     <Col span={11}>
-                                        {getFieldDecorator('time2', {
-                                            // initialValue: '',
+                                        {getFieldDecorator('endTime', {
                                         })(
                                             <DatePicker
                                                 showTime={{
@@ -401,8 +380,7 @@ function CabinetManege(props) {
                             <Form.Item label="更新时间">
                                 <Row>
                                     <Col span={11}>
-                                        {getFieldDecorator('time3', {
-                                            // initialValue: '',
+                                        {getFieldDecorator('startUpdateTime', {
                                         })(
                                             <DatePicker
                                                 showTime={{
@@ -417,8 +395,7 @@ function CabinetManege(props) {
                                     </Col>
                                     <Col span={2} style={{ textAlign: 'center' }}>-</Col>
                                     <Col span={11}>
-                                        {getFieldDecorator('time4', {
-                                            // initialValue: '',
+                                        {getFieldDecorator('endUpdateTime', {
                                         })(
                                             <DatePicker
                                                 showTime={{

@@ -424,3 +424,37 @@ export async function changeStatus(params) {
     data: JSON.stringify(params),
   });
 }
+
+// /job/qrtzjob/run/{jobId}  任务调度执行一次
+export async function qrtzjobRun(jobId) {
+  return request(`/job/qrtzjob/run/${jobId}`);
+}
+
+// 根据jobLogId查询任务调度日志数据
+export async function qrtzjobloglistdata(jobLogId) {
+  return request(`/job/qrtzjoblog/${jobLogId}`);
+}
+
+// 删除调度日志
+export async function qrtzjoblogDelete(jobLogId) {
+  return request(`/job/qrtzjoblog/${jobLogId}`, {
+    method: 'DELETE',
+    requestType: 'form',
+  });
+}
+
+// /job/qrtzjoblog/clean 清除调度日志
+export async function qrtzjoblogClean(params) {
+  return request(`/job/qrtzjoblog/clean`, {
+    method: 'DELETE',
+    data: JSON.stringify(params),
+  });
+}
+
+// /job/qrtzjoblog/listPage/{pageNum}/{pageSize} 分页查询日志信息
+export async function qrtzjoblogList(pageNum, pageSize, bodyParams) {
+  return request(`/job/qrtzjoblog/listPage/${pageNum}/${pageSize}`, {
+    method: 'POST',
+    body: JSON.stringify(bodyParams),
+  });
+}
