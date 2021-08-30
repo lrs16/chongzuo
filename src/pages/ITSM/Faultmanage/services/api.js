@@ -105,17 +105,15 @@ export async function querySearchfaultTodoList1(params) {
 // }
 
 // 故障待办列表  导出下载/trouble/flow/expExcelWaitDoList
-export async function querydownload(current, pageSize, values) {
-  const params = values;
-  params.pageNum = current; // 当前页
-  params.pageSize = pageSize; // 页码
+export async function querydownload(values) {
   return request(`/trouble/flow/expExcelWaitDoList`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
     },
+    body: JSON.stringify(values),
     responseType: 'blob',
-    body: JSON.stringify(params),
+   
   });
 }
 

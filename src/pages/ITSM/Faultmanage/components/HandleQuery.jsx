@@ -63,9 +63,13 @@ function HandleQuery(props) {
               <Input defaultValue={info.handleResult || ''} disabled />
             </Form.Item>
           </Col>
-          <Col span={8}>
-            <Form.Item label="处理过程">
-              <Input defaultValue={info.handleProcess || ''} disabled />
+          <Col span={24}>
+            <Form.Item label="处理过程" {...forminladeLayout}>
+              <TextArea
+                autoSize={{ minRows: 3 }}
+                defaultValue={info.handleProcess || ''}
+                disabled
+              />
             </Form.Item>
           </Col>
 

@@ -80,6 +80,8 @@ function QueryList(props) {
   const [selectdata, setSelectData] = useState([]);
   const [tabrecord, setTabRecord] = useState({});
   const [columns, setColumns] = useState([]);
+  const [selectedKeys, setSelectedKeys] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
 
   let formThead;
 
@@ -813,6 +815,7 @@ function QueryList(props) {
           type: 'fault/faultQuerydownload',
           payload: {
             columns: JSON.stringify(exportColumns),
+            ids: selectedKeys.toString(),
             ...values,
             sendTime: '',
             registerOccurTimeBegin: values.registerOccurTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
@@ -1138,7 +1141,11 @@ function QueryList(props) {
   });
 
   const rowSelection = {
-  };
+    onChange: (index, handleSelect) => {
+      setSelectedKeys([...index])
+      setSelectedRows([...handleSelect])
+    }
+  }
 
   return (
     <PageHeaderWrapper title={titleParams}>

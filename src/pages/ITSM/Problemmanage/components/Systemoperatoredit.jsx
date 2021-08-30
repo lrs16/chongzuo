@@ -98,7 +98,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
                   message: '请输入审核时间'
                 }
               ],
-              initialValue: moment(check.checkTime),
+              initialValue: check.checkTime ? moment(check.checkTime):moment(Date.now()),
             })(<DatePicker
               showTime
               format="YYYY-MM-DD HH:mm:ss"
@@ -235,7 +235,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
 Systemoperatoredit.defaultProps = {
   check: {
     checkOpinion: '',
-    checkTime: moment().format(),
+    // checkTime: moment().format(),
     checkResult: '1',
     checkAttachments: ''
   },

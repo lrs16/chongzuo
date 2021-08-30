@@ -47,6 +47,8 @@ function Besolved(props) {
   const [selectdata, setSelectData] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [tabrecord, setTabRecord] = useState({});
+  const [selectedKeys, setSelectedKeys] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
 
   const columns = [
     // {
@@ -78,89 +80,36 @@ function Besolved(props) {
       },
     },
     {
+      title: '问题标题',
+      dataIndex: 'title',
+      key: 'title',
+    },
+    {
+      title: '问题来源',
+      dataIndex: 'sourcecn',
+      key: 'sourcecn',
+    },
+    {
       title: '问题分类',
       dataIndex: 'typecn',
       key: 'typecn',
-      width: 150,
     },
     {
-      title: '问题描述',
-      dataIndex: 'handleContent',
-      key: 'handleContent',
-      width: 200,
+      title: '当前处理环节',
+      dataIndex: 'currentNode',
+      key: 'currentNode',
     },
     {
-      title: '问题申报人',
-      dataIndex: 'complainUser',
-      key: 'complainUser',
-      width: 200,
+      title: '发送时间',
+      dataIndex: 'createTime',
+      key: 'createTime',
     },
     {
-      title: '开发负责人',
-      dataIndex: 'developmentLead',
-      key: 'developmentLead',
-      width: 120,
+      title: '重要程度',
+      dataIndex: 'importancecn',
+      key: 'importancecn',
     },
-    // {
-    //   title: '问题类型',
-    //   dataIndex: 'typecn',
-    //   key: 'typecn',
-    //   width: 120,
-    // },
-    {
-      title: '申请时间',
-      dataIndex: 'registerTime',
-      key: 'registerTime',
-      width: 120,
-    },
-    {
-      title: '系统运维商确认结果',
-      dataIndex: 'confirmOneResult',
-      key: 'confirmOneResult',
-      width: 200
-    },
-    {
-      title: '处理完成时间',
-      dataIndex: 'handleTime',
-      key: 'handleTime',
-      width: 150
-    },
-    {
-      title: '系统开发商处理人',
-      dataIndex: 'handler',
-      key: 'handler',
-      width: 150,
-    },
-    {
-      title: '计划完成时间',
-      dataIndex: 'planEndTime',
-      key: 'planEndTime',
-      width: 150,
-    },
-    {
-      title: '处理解决方案',
-      dataIndex: 'handleContent',
-      key: 'handleContent',
-      width: 150,
-    },
-    {
-      title: '系统开发商处理结果',
-      dataIndex: 'handleResult',
-      key: 'handleResult',
-      width: 250,
-    },
-    {
-      title: '问题登记人员确认结果',
-      dataIndex: 'confirmThreeResult',
-      key: 'confirmThreeResult',
-      width: 250,
-    },
-    {
-      title: '问题登记人员确认人',
-      dataIndex: 'confirmThreeUser',
-      key: 'confirmThreeUser',
-      width: 200,
-    },
+
   ];
 
   const getTobolist = () => {
@@ -270,6 +219,7 @@ function Besolved(props) {
         dispatch({
           type: 'problemmanage/besolvedownload',
           payload: {
+            ids: selectedKeys.toString(),
             ...values,
             createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
             createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
@@ -360,6 +310,13 @@ function Besolved(props) {
       });
     }
   }, []);
+
+  const rowSelection = {
+    onChange: (index, handleSelect) => {
+      setSelectedKeys([...index])
+      setSelectedRows([...handleSelect])
+    }
+  }
 
   // 不要用查询标题的方式，人家改了名字就查不到了，用id
   const getTypebyTitle = title => {
@@ -543,6 +500,7 @@ function Besolved(props) {
           dataSource={besolveList.rows}
           rowKey={r => r.id}
           pagination={pagination}
+          rowSelection={rowSelection}
           scroll={{ x: 1500 }}
         />
       </Card>

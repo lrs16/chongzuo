@@ -67,7 +67,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
                 </Col>
 
                 <Col span={24}>
-                    <Form.Item label="审核时间" {...forminladeLayout}>
+                    <Form.Item label="审核时间22" {...forminladeLayout}>
                         {getFieldDecorator('checkTime', {
                             rules: [
                                 {
@@ -75,7 +75,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
                                     message: '请选择时间',
                                 },
                             ],
-                            initialValue: check ? moment(check.checkTime) : moment(Date.now())
+                            initialValue: check.checkTime ? moment(check.checkTime) : moment(Date.now())
                         })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
                     </Form.Item>
                 </Col>
@@ -158,7 +158,6 @@ ExamineChild.defaultProps = {
         checkReportSign: 0,
         checkOpinion: '',
         checkResult: '1',
-        checkTime: moment().format()
     },
     curruserinfo: {
         deptName: '',

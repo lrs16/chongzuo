@@ -91,7 +91,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
                   message: '请选择时间',
                 },
               ],
-              initialValue: moment(finish.finishTime)
+              initialValue: finish.finishTime ? moment(finish.finishTime) :moment(Date.now())
             })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
           </Form.Item>
         </Col>
@@ -219,7 +219,6 @@ const SummaryChild = React.forwardRef((props, ref) => {
 SummaryChild.defaultProps = {
   finish: {
     finishContent: '',
-    finishTime: moment().format()
   },
   curruserinfo: {
     deptName: '',

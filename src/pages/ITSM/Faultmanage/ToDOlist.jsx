@@ -14,6 +14,7 @@ import {
   Icon,
   Table,
   Cascader,
+  Popconfirm
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
@@ -57,6 +58,8 @@ function ToDOlist(props) {
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 }); // 分页state
   const [selectdata, setSelectData] = useState('');
   const [tabrecord, setTabRecord] = useState({});
+  const [selectedKeys, setSelectedKeys] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
 
   const columns = [
     // {
@@ -186,11 +189,12 @@ function ToDOlist(props) {
     onChange: page => changePage(page),
   };
 
-  // const rowSelection = {
-  //   onChange: (selectedRows) => {
-  //     setSelectedRow(selectedRows);
-  //   },
-  // };
+  const rowSelection = {
+    onChange: (index, handleSelect) => {
+      setSelectedKeys([...index])
+      setSelectedRows([...handleSelect])
+    }
+  }
 
   //  下载 /导出功能
   const download = (page, pageSize) => {
@@ -199,14 +203,16 @@ function ToDOlist(props) {
         dispatch({
           type: 'fault/faultTododownload',
           payload: {
-            values,
+            ...values,
+            ids: selectedKeys.toString(),
             addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
             addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
             createTime: '',
             pageSize,
-            current: page,
+            pageNum: page,
           },
         }).then(res => {
+          console.log('res: ', res);
           const filename = `下载.xls`;
           const url = window.URL.createObjectURL(res);
           const a = document.createElement('a');
@@ -429,18 +435,18 @@ function ToDOlist(props) {
             )}
           </Form>
         </Row>
-        {/* <div style={{ marginBottom: 24 }}>
+        <div style={{ marginBottom: 24 }}>
           <Popconfirm title="确定导出数据？" onConfirm={() => download()}>
             <Button type="primary">导出数据</Button>
           </Popconfirm>
-        </div> */}
+        </div>
         <Table
           loading={loading}
           columns={columns.filter(item => item.title !== 'id' || item.key !== 'id')}
           dataSource={faultTodoList.rows}
           rowKey={r => r.id}
           pagination={pagination}
-        // rowSelection={rowSelection}
+          rowSelection={rowSelection}
         />
       </Card>
     </PageHeaderWrapper>

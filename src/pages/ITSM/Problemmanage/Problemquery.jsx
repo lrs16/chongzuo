@@ -69,6 +69,7 @@ function Besolved(props) {
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectdata, setSelectData] = useState('');
   const [columns, setColumns] = useState([]);
+  const [selectedKeys, setSelectedKeys] = useState([]);
 
   let operationPersonSelect;
   let formThead;
@@ -849,6 +850,7 @@ function Besolved(props) {
           type: 'problemmanage/eventdownload',
           payload: {
             columns: JSON.stringify(exportColumns),
+            ids: selectedKeys.toString(),
             ...values,
             addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
             addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
@@ -1196,6 +1198,13 @@ function Besolved(props) {
   const defaultAllkey = columns.map(item => {
     return item.title
   });
+
+  const rowSelection = {
+    onChange: (index, handleSelect) => {
+      setSelectedKeys([...index])
+      setSelectedRows([...handleSelect])
+    }
+  }
 
   return (
     <PageHeaderWrapper title={differentTitle}>
@@ -1593,6 +1602,7 @@ function Besolved(props) {
           dataSource={queryArr.rows}
           rowKey={record => record.id}
           pagination={pagination}
+          rowSelection={rowSelection}
           scroll={{ x: 800, y: 700 }}
         />
       </Card>

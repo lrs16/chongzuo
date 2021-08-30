@@ -89,6 +89,8 @@ function TaskSearch(props) {
   const [selectdata, setSelectData] = useState('');
   const [selectedRows, setSelectedRows] = useState([]);
   const [columns, setColumns] = useState([]);
+  const [selectedKeys, setSelectedKeys] = useState([]);
+  
   let formThead;
 
 
@@ -526,6 +528,7 @@ function TaskSearch(props) {
         type: 'processmodel/downloadQueryExcel',
         payload: {
           columns: JSON.stringify(exportColumns),
+          ids: selectedKeys.toString(),
           ...values,
           time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
           time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
@@ -564,6 +567,7 @@ function TaskSearch(props) {
 
   const rowSelection = {
     onChange: (index, handleSelect) => {
+      setSelectedKeys([...index])
       setSelectedRows([...handleSelect])
     }
   }

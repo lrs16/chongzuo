@@ -100,7 +100,7 @@ const ConfirmChild = React.forwardRef((props, ref) => {
             })(
               <Select placeholder="请选择" allowClear>
                 {responsible.map(obj => [
-                  <Option key={obj.key} value={obj.dict_code}>
+                  <Option key={obj.key} value={obj.title}>
                     {obj.title}
                   </Option>,
                 ])}

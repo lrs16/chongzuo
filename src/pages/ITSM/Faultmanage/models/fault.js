@@ -176,8 +176,8 @@ export default {
     },
 
     // 故障待办列表数据 下载
-    *faultTododownload({ payload: { current, pageSize, values } }, { call }) {
-      return yield call(querydownload, current, pageSize, values);
+    *faultTododownload({ payload }, { call }) {
+      return yield call(querydownload, payload);
     },
 
     // 故障查询列表数据 下载
