@@ -215,7 +215,7 @@ function DocumentAtt(props) {
       key: 'attachFile',
       width: 300,
       render: (text, record) => {
-        if (record.key === '9') {
+        if (record.key === '9' && isEdit) {
           return (
             <div style={{ width: 300, marginTop: 12 }} onMouseDown={() => ChangeButtype('')}>
               <FilesContext.Provider value={{

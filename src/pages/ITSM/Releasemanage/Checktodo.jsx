@@ -232,11 +232,11 @@ function Checktodo(props) {
       key: 'verifyStatus',
     },
     {
-      title: '发布清单',
+      title: '发布单号',
       dataIndex: 'releaseNo',
       key: 'releaseNo',
       render: (text, record) => {
-        return <Tooltip title="点击行查看清单">查看清单</Tooltip>;
+        return <Tooltip title="点击行查看清单">{text}</Tooltip>;
       },
     },
     {

@@ -40,6 +40,13 @@ function Examinedes(props) {
               {info.result === 3 && <><Checkbox defaultChecked disabled />市场部领导审核</>}
             </Form.Item>
           </Col>
+          {info.developmentLead && (
+            <Col span={24}>
+              <Form.Item label='开发负责人'  {...forminladeLayout}>
+                <Input defaultValue={info.developmentLead} disabled />
+              </Form.Item>
+            </Col>
+          )}
           <Col span={24}>
             <Form.Item label={`${text}意见`}  {...forminladeLayout}>
               <TextArea autoSize={{ minRows: 3 }} defaultValue={info.opinion} disabled />

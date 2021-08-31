@@ -7,7 +7,7 @@ export default {
 
   state: {
     list: [],
-    info: '',
+    info: undefined,
   },
 
   effects: {
@@ -21,6 +21,9 @@ export default {
     },
     // 查询详情
     *detail({ payload: { processInstanceId } }, { call, put }) {
+      yield put({
+        type: 'clearcache',
+      });
       const response = yield call(QueryDetail, processInstanceId);
       yield put({
         type: 'saveinfo',
@@ -34,6 +37,12 @@ export default {
   },
 
   reducers: {
+    clearcache(state) {
+      return {
+        ...state,
+        info: undefined,
+      };
+    },
     save(state, action) {
       return {
         ...state,

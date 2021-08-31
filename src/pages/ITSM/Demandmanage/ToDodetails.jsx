@@ -11,7 +11,7 @@ import TimeoutModal from '../components/TimeoutModal';
 import { judgeTimeoutStatus, saveTimeoutMsg } from '../services/api';
 
 function ToDoregist(props) {
-  const { location, dispatch } = props;
+  const { location, dispatch, workLoad } = props;
   const { taskName, taskId, result, mainId } = location.query;
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [buttontype, setButtonType] = useState('');
@@ -25,8 +25,10 @@ function ToDoregist(props) {
   const [butandorder, setButandOrder] = useState('');    // 暂存按钮类型
   const [modalvisible, setModalVisible] = useState(false);
 
+  console.log(workLoad)
+
   const handleHold = (type) => {
-    setUserChoice(false)
+    setUserChoice(false);
     setButtonType(type);
   };
   const handleclose = () => {
@@ -59,12 +61,13 @@ function ToDoregist(props) {
 
   // 点击流转，审核，转回访，回退按钮
   const handleClick = (type, order) => {
-    setUserChoice(false)
+    setUserChoice(false);
+    sessionStorage.removeItem('NextflowUserId');
     judgeTimeoutStatus(taskId).then(res => {
       if (res.code === 200 && res.status === 'yes' && res.timeoutMsg === '') {
         message.info('该需求单已超时，请填写超时原因...')
         setModalVisible(true);
-        setButtonType('goback');
+        // setButtonType('goback');
         setButandOrder({ type, order });
       };
       if (res.code === 200 && ((res.status === 'yes' && res.timeoutMsg !== '') || res.status === 'no')) {
@@ -160,7 +163,7 @@ function ToDoregist(props) {
           )}
           {(taskName === '业务科室领导审核' ||
             taskName === '系统开发商审核' ||
-            taskName === '自动化科负责人确认' ||
+            taskName === '自动化科业务人员确认' ||
             taskName === '需求登记人员确认') && histroytaskid !== null && (
               <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleGoback()}>
                 回退
@@ -173,7 +176,8 @@ function ToDoregist(props) {
           )}
           {((result !== '0' &&
             taskName !== '自动化科业务人员审核' &&
-            taskName !== '自动化科负责人确认' &&
+            taskName !== '自动化科业务人员确认' &&
+            taskName !== '自动化科专责审核' &&
             taskName !== '需求登记人员确认') ||
             taskName === '系统开发商处理') && (
               <Button
@@ -183,22 +187,32 @@ function ToDoregist(props) {
                 流转
               </Button>
             )}
+          {taskName === '自动化科专责审核' && workLoad && ((workLoad === '一般' && result !== 0 && result !== 1) || (workLoad === '严重' && (result === 3 || result === 5 || result === 8))) && (
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleClick('flow'); setButandOrder('flow') }}>
+              1流转
+            </Button>
+          )}
+          {result === '1' && ((taskName === '自动化科专责审核' && workLoad === '一般') || taskName === '市场部领导审核' || taskName === '科室领导审核' || taskName === '中心领导审核') && (
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleClick('toflow') }}>
+              2流转
+            </Button>
+          )}
           {result === '1' && taskName === '自动化科业务人员审核' && (
             <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('flow')}>
               流转
             </Button>
           )}
-          {result === '1' && taskName === '自动化科负责人确认' && (
+          {result === '1' && taskName === '自动化科业务人员确认' && (
             <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('confirm')}>
               登记人确认
             </Button>
           )}
-          {result === '0' && (taskName === '自动化科负责人确认' || taskName === '需求登记人员确认') && (
+          {result === '0' && (taskName === '自动化科业务人员确认' || taskName === '需求登记人员确认') && (
             <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleClick('flow'); setButandOrder('flow') }}>
               重新处理
             </Button>
           )}
-          {((result === '2' && taskName === '自动化科负责人确认') ||
+          {((result === '2' && taskName === '自动化科业务人员确认') ||
             (result === '1' && taskName === '需求登记人员确认')) && (
               <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('over')}>
                 结束
@@ -289,6 +303,6 @@ function ToDoregist(props) {
 }
 
 export default connect(({ demandtodo, loading }) => ({
-  demandtodo,
+  workLoad: demandtodo.workLoad,
   loading: loading.models.demandtodo,
 }))(ToDoregist);

@@ -369,7 +369,7 @@ function Implementationsteps(props) {
     <div className={styles.pretable}>
       <Row style={{ marginBottom: 8 }}>
         <Col span={8}><h4 style={{ float: 'left' }}><span style={{ color: '#f5222d', marginRight: 4, fontWeight: 'normal' }}>*</span>{title}</h4></Col>
-        <Col span={16} style={{ textAlign: 'right' }}>
+        {isEdit && (<Col span={16} style={{ textAlign: 'right' }}>
           <Dropdown overlay={menu} disabled={newbutton}>
             <Button type='primary'>
               新增 <Icon type="down" />
@@ -377,6 +377,7 @@ function Implementationsteps(props) {
           </Dropdown>
           <Button type='danger' style={{ marginLeft: 8 }} ghost onClick={() => handleDelete()}>移除</Button>
         </Col>
+        )}
       </Row>
       <Checkbox.Group style={{ width: '100%' }} onChange={handleCheck} value={selectedRowKeys} >
         <Table

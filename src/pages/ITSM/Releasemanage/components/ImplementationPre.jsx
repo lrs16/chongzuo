@@ -64,6 +64,8 @@ function ImplementationPre(props, ref) {
   const { ChangeButtype } = useContext(SubmitTypeContext);
   const required = true;
 
+  console.log(info)
+
   const formRef = useRef();
   useImperativeHandle(ref, () => ({
     getVal: () => getFieldsValue(),
@@ -380,9 +382,9 @@ function ImplementationPre(props, ref) {
         </Col>
         <Col span={8}>
           <Form.Item label="登记人" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-            {getFieldDecorator('registerUser', {
+            {getFieldDecorator('register', {
               rules: [{ required, message: `请输入登记人` }],
-              initialValue: userinfo ? userinfo.userName : '',
+              initialValue: userinfo ? userinfo.userName : info.practicePre.register,
             })(<Input disabled />)}
           </Form.Item>
           {/* <Form.Item label="登记人Id" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} style={{ display: 'none' }}>
@@ -405,7 +407,7 @@ function ImplementationPre(props, ref) {
           <Form.Item label="登记单位" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
             {getFieldDecorator('registerUnit', {
               rules: [{ required, message: `请选择登记单位` }],
-              initialValue: userinfo ? userinfo.unitName : '',
+              initialValue: userinfo ? userinfo.unitName : info.practicePre.unitName,
             })(<Input disabled />)}
           </Form.Item>
           {/* <Form.Item label="登记单位Id" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} style={{ display: 'none' }}>

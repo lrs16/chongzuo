@@ -99,7 +99,7 @@ function TestingFacility(props) {
       dataIndex: 'deviceName',
       key: 'deviceName',
       render: (text, record) => {
-        if (record.isNew) {
+        if (record.isNew && isEdit) {
           return (
             <>
               <Select placeholder="请选择" onChange={v => handleChange(v, record.key)} value={text}>

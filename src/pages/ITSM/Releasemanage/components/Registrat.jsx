@@ -162,7 +162,7 @@ function Registrat(props, ref) {
   const typemap = getTypebyId('1384055209809940482');       // 发布类型
   const unitmap = getTypebyId('1384056290929545218');       // 责任单位
   const functionmap = getTypebyId('1384052503909240833');   // 功能类型
-  const modulamap = getTypebyId('1384430921586839554');  // 模块
+  const modulamap = getTypebyId('1384430921586839554');     // 模块
 
   return (
     <>
@@ -308,7 +308,7 @@ function Registrat(props, ref) {
                   {getFieldDecorator('validResult', {
                     rules: [{ required, message: '请选择验证结果' }],
                     initialValue: formmap.get(taskName).validResult || '通过',
-                  })(<RadioGroup onChange={handleAdopt}>
+                  })(<RadioGroup onChange={handleAdopt} disabled={!isEdit}>
                     <Radio value='通过'>通过</Radio>
                     <Radio value='不通过'>不通过</Radio>
                   </RadioGroup>
@@ -364,12 +364,30 @@ function Registrat(props, ref) {
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="登记人" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-              {getFieldDecorator('registerUser', {
-                rules: [{ required, message: `请输入登记人` }],
-                initialValue: userinfo ? userinfo.userName : formmap.get(taskName).userName,
-              })(<Input disabled />)}
-            </Form.Item>
+            {info.releaseRegister && (
+              <Form.Item label="登记人" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+                {getFieldDecorator('registerUser', {
+                  rules: [{ required, message: `请输入登记人` }],
+                  initialValue: userinfo ? userinfo.userName : info.releaseRegister.registerUser,
+                })(<Input disabled />)}
+              </Form.Item>
+            )}
+            {info.platformValid && (
+              <Form.Item label="登记人" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+                {getFieldDecorator('registerUser', {
+                  rules: [{ required, message: `请输入登记人` }],
+                  initialValue: userinfo ? userinfo.userName : info.platformValid.register,
+                })(<Input disabled />)}
+              </Form.Item>
+            )}
+            {info.releaseBizValid && (
+              <Form.Item label="登记人" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+                {getFieldDecorator('registerUser', {
+                  rules: [{ required, message: `请输入登记人` }],
+                  initialValue: userinfo ? userinfo.userName : info.releaseBizValid.register,
+                })(<Input disabled />)}
+              </Form.Item>
+            )}
             {/* <Form.Item label="登记人Id" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} style={{ display: 'none' }}>
               {getFieldDecorator('registerUserId', {
                 rules: [{ required, message: `请输入登记人` }],
@@ -390,7 +408,7 @@ function Registrat(props, ref) {
             <Form.Item label="登记单位" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               {getFieldDecorator('registerUnit', {
                 rules: [{ required, message: `请选择登记单位` }],
-                initialValue: userinfo ? userinfo.unitName : formmap.get(taskName).unitName,
+                initialValue: userinfo ? userinfo.unitName : formmap.get(taskName).registerUnit,
               })(<Input disabled />)}
             </Form.Item>
             {/* <Form.Item label="登记单位Id" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} style={{ display: 'none' }}>

@@ -3,6 +3,7 @@ import router from 'umi/router';
 import moment from 'moment';
 import { Row, Col, Form, Input, Radio, DatePicker, Select, Checkbox } from 'antd';
 import SysUpload from '@/components/SysUpload';
+import { querkeyVal } from '@/services/api';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -19,16 +20,31 @@ const newLayout = {
 };
 
 const options = [
-  { label: '科室领导审核', value: 4 },
   { label: '市场部领导审核', value: 3 },
+  { label: '科室领导审核', value: 4 },
+  { label: '中心领导审核', value: 5 },
 ];
 
 const resultmap = new Map([
   [0, []],
   [1, []],
-  [2, [3, 4]],
+  [2, [3, 4, 5]],
   [3, [3]],
   [4, [4]],
+  [5, [5]],
+  [6, [3, 4]],
+  [7, [4, 5]],
+  [8, [3, 5]],
+]);
+
+const resulttype = new Map([
+  ['"3,4,5"', 2],
+  ['"3"', 3],
+  ['"4"', 4],
+  ['"5"', 5],
+  ['"3,4"', 6],
+  ['"4,5"', 7],
+  ['"3,5"', 8],
 ]);
 
 const Examine = forwardRef((props, ref) => {
@@ -48,6 +64,8 @@ const Examine = forwardRef((props, ref) => {
 
   // 附件历史
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
+  const [selectdata, setSelectData] = useState([]); // 下拉值
+
   useEffect(() => {
     if (fileslist.ischange) {
       ChangeFiles(fileslist);
@@ -84,6 +102,11 @@ const Examine = forwardRef((props, ref) => {
     sessionStorage.setItem('flowtype', info[0].result);
     setAdopt(info[0].result);
     routerRefresh();
+    querkeyVal('public', 'devdirector').then(res => {
+      if (res.code === 200) {
+        setSelectData(res.data.devdirector)
+      }
+    });
     return () => {
       setAdopt(1);
     };
@@ -97,26 +120,10 @@ const Examine = forwardRef((props, ref) => {
   };
 
   const handleChangeresult = values => {
-    if (values.length === 2) {
-      setAdopt(2);
-      setFieldsValue({ result: 2 }, () => { });
-      sessionStorage.setItem('flowtype', 2);
-    }
-    if (values.length === 1 && values[0] === 3) {
-      setAdopt(3);
-      setFieldsValue({ result: 3 }, () => { });
-      sessionStorage.setItem('flowtype', 3);
-    }
-    if (values.length === 1 && values[0] === 4) {
-      setAdopt(4);
-      setFieldsValue({ result: 4 }, () => { });
-      sessionStorage.setItem('flowtype', 4);
-    }
-    if (values.length === 0) {
-      setAdopt(1);
-      setFieldsValue({ result: 1 }, () => { });
-      sessionStorage.setItem('flowtype', 1);
-    }
+    const resultflow = resulttype.get(JSON.stringify(values.toString()));
+    setAdopt(resultflow);
+    setFieldsValue({ result: resultflow }, () => { });
+    sessionStorage.setItem('flowtype', resultflow);
     routerRefresh();
   };
 
@@ -124,25 +131,22 @@ const Examine = forwardRef((props, ref) => {
     <>
       <Form {...formItemLayout}>
         <Row gutter={24} style={{ paddingTop: 24 }}>
-          {taskName !== '自动化科负责人确认' && (
+          {taskName !== '自动化科业务人员确认' ? (
             <Col span={8}>
               <Form.Item label={`${text}结果`}>
                 {getFieldDecorator('result', {
                   rules: [{ required: true, message: `请选择${text}结果` }],
-                  initialValue: info[0].result,
+                  initialValue: info[0].result || 1,
                 })(
                   <Radio.Group onChange={handleAdopt}>
                     {(adopt === 1 || adopt === 0) && <Radio value={1}>通过</Radio>}
-                    {adopt === 2 && <Radio value={2}>通过</Radio>}
-                    {adopt === 3 && <Radio value={3}>通过</Radio>}
-                    {adopt === 4 && <Radio value={4}>通过</Radio>}
+                    {adopt !== 1 && adopt !== 0 && <Radio value={adopt}>通过</Radio>}
                     <Radio value={0}>不通过</Radio>
                   </Radio.Group>,
                 )}
               </Form.Item>
             </Col>
-          )}
-          {taskName === '自动化科负责人确认' && (
+          ) : (
             <Col span={12}>
               <Form.Item label={`${text}结果`} {...newLayout}>
                 {getFieldDecorator('result', {
@@ -158,7 +162,6 @@ const Examine = forwardRef((props, ref) => {
               </Form.Item>
             </Col>
           )}
-
           <Col span={8}>
             <Form.Item label={`${text}时间`}>
               {getFieldDecorator('reviewTime', {
@@ -175,6 +178,24 @@ const Examine = forwardRef((props, ref) => {
                   options={options}
                   onChange={values => handleChangeresult(values)}
                 />
+              </Form.Item>
+            </Col>
+          )}
+          {taskName === '系统开发商审核' && selectdata && selectdata.length > 0 && (
+            <Col span={24}>
+              <Form.Item label='开发负责人' {...forminladeLayout}>
+                {getFieldDecorator('developmentLead', {
+                  rules: [{ required: true, message: '请选择开发负责人' }],
+                  initialValue: info[0].developmentLead,
+                })(
+                  <Select placeholder="请选择" mode="multiple">
+                    {selectdata.map(obj => [
+                      <Option key={obj.key} value={obj.val}>
+                        {obj.val}
+                      </Option>,
+                    ])}
+                  </Select>
+                )}
               </Form.Item>
             </Col>
           )}

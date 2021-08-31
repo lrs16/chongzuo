@@ -56,9 +56,7 @@ function WorkOrder(props) {
   //  const [ischeck, setIscheck] = useState(false); // 是否在校验状态
   const [tracklength, setTrackLength] = useState(0);
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  const [isnew, setIsNew] = useState(false); // 组件重新加载
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
-
 
   // 初始化用户信息，流程类型
   useEffect(() => {
@@ -69,11 +67,11 @@ function WorkOrder(props) {
   }, [mainId]);
   // 回调用户ID
   useEffect(() => {
-    if (info !== '' && info !== undefined) {
+    if (info) {
       changRegisterId(info.demandForm.id); // formid
       if ((taskName === '业务科室领导审核' ||
         taskName === '系统开发商审核' ||
-        taskName === '自动化科负责人确认' ||
+        taskName === '自动化科业务人员确认' ||
         taskName === '需求登记人员确认') && info.historys.length > 0) {
         ChangeHistroyTaskId(info.historys?.slice(-1)[0].taskId);
       }
@@ -142,11 +140,7 @@ function WorkOrder(props) {
 
   // 监听info是否已更新
   useEffect(() => {
-    if (loading) {
-      setIsNew(true);
-    }
     return () => {
-      setIsNew(false);
       ChangeChoice(false);
       ChangeUserVisible(false);
     };
@@ -232,6 +226,7 @@ function WorkOrder(props) {
       business: Number(values.business),
       releases: Number(values.releases),
       attachment: JSON.stringify(files.arr),
+      developmentLead: values.developmentLead && values.developmentLead.length > 0 ? values.developmentLead.toString() : '',
       registerId: info.demandForm.id,
       id,
       taskName: info.taskName,
@@ -252,7 +247,7 @@ function WorkOrder(props) {
           if (err) {
             formerr();
             ChangeType('');
-          } else if (!userchoice) {
+          } if (!userchoice) {
             ChangeUserVisible(true);
             ChangeType('');
           } else {
@@ -267,7 +262,24 @@ function WorkOrder(props) {
             });
           }
         })
-
+        break;
+      case 'toflow':
+        ExamineRef.current.Forms((err) => {
+          if (err) {
+            formerr();
+            ChangeType('');
+          } else {
+            dispatch({
+              type: 'demandtodo/demandnextstep',
+              payload: {
+                ...formvalue,
+                nextUserIds: [{ nodeName: '', userIds: [] }],
+                taskId,
+                mainId,
+              },
+            });
+          }
+        })
         break;
       case 'regist':
         ExamineRef.current.Forms((err) => {
@@ -431,7 +443,8 @@ function WorkOrder(props) {
       case '自动化科专责审核':
       case '市场部领导审核':
       case '科室领导审核':
-      case '自动化科负责人确认':
+      case '中心领导审核':
+      case '自动化科业务人员确认':
       case '需求登记人员确认':
         getdemandexamine();
         break;
@@ -484,6 +497,7 @@ function WorkOrder(props) {
       doCancel = true;
     };
   }, [mainId]);
+
 
   // 保存删除附件驱动表单保存
   useEffect(() => {
@@ -569,7 +583,7 @@ function WorkOrder(props) {
         </Steps>
       )}
       <Spin spinning={loading}>
-        {loading === false && info !== '' && info !== {} && (
+        {loading === false && info && (
           <Collapse
             expandIconPosition="right"
             activeKey={activeKey}
@@ -630,6 +644,7 @@ function WorkOrder(props) {
                 info.taskName === '自动化科专责审核' ||
                 info.taskName === '自动化科业务人员审核' ||
                 info.taskName === '科室领导审核' ||
+                info.taskName === '中心领导审核' ||
                 info.taskName === '市场部领导审核') && (
                   <Examine
                     wrappedComponentRef={ExamineRef}
@@ -654,7 +669,7 @@ function WorkOrder(props) {
                     }}
                   />
                 )}
-              {taskName === '系统开发商处理' && info.taskName === '系统开发商处理' && info.taskName !== undefined && (
+              {taskName === '系统开发商处理' && info.taskName === '系统开发商处理' && (
                 <Track
                   userinfo={userinfo}
                   taskName={info.taskName}
@@ -669,7 +684,7 @@ function WorkOrder(props) {
                   ChangeTrackLength={newvalue => setTrackLength(newvalue)}
                 />
               )}
-              {(info.taskName === '自动化科负责人确认' || info.taskName === '需求登记人员确认') && (
+              {(info.taskName === '自动化科业务人员确认' || info.taskName === '需求登记人员确认') && info.historys && info.historys.length > 0 && (
                 <Examine
                   wrappedComponentRef={ExamineRef}
                   location={location}
@@ -699,7 +714,7 @@ function WorkOrder(props) {
               <Registratdes info={info.demandForm} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />
             </Panel>
 
-            {info.historys.map((obj, index) => {
+            {info && info.historys.length > 0 && info.historys.map((obj, index) => {
               // panel详情组件
               if (obj.taskName !== '系统开发商处理')
                 return (

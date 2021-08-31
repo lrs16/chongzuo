@@ -146,7 +146,7 @@ function Details(props) {
             </Steps>
           )}
           <Spin spinning={loading}>
-            {loading === false && info !== '' && (
+            {info && (
               <Collapse
                 expandIconPosition="right"
                 activeKey={activeKey}

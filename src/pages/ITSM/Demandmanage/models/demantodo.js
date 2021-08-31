@@ -21,8 +21,9 @@ export default {
     list: [],
     imgblob: '',
     records: [],
-    info: '',
+    info: undefined,
     processs: '',
+    workLoad: undefined,
   },
 
   effects: {
@@ -66,10 +67,13 @@ export default {
     },
     // 打开编辑
     *demandopenflow({ payload: { processInstanceId, taskId } }, { call, put }) {
+      yield put({
+        type: 'clearcache',
+      });
       const response = yield call(DemandOpenFlow, processInstanceId, taskId);
       yield put({
         type: 'saveinfo',
-        payload: response.data,
+        payload: { data: response.data, workLoad: response.workLoad },
       });
     },
     // 登记编辑保存
@@ -157,6 +161,13 @@ export default {
   },
 
   reducers: {
+    clearcache(state) {
+      return {
+        ...state,
+        info: undefined,
+        workLoad: undefined,
+      };
+    },
     save(state, action) {
       return {
         ...state,
@@ -184,7 +195,8 @@ export default {
     saveinfo(state, action) {
       return {
         ...state,
-        info: action.payload,
+        info: action.payload.data,
+        workLoad: action.payload.workLoad,
       };
     },
     clear(state) {

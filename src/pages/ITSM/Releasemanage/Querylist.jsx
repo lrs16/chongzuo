@@ -169,7 +169,7 @@ function Querylist(props) {
       dataIndex: 'mergeNo',
       key: 'mergeNo',
       render: (text, record) => {
-        return (<>{record.taskName === '版本管理员审核' ? text : ''}</>)
+        return (<>{(record.taskName === '版本管理员审核' || record.taskName === '科室负责人审核' || record.taskName === '中心领导审核') ? text : ''}</>)
       }
     },
     {

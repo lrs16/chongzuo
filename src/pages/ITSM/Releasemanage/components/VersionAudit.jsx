@@ -217,10 +217,10 @@ function VersionAudit(props, ref) {
   // 选择通过不通过改变流转类型
   const handleAdopt = value => {
     setAdopt(value);
-    if (value === '通过') {
+    if (value === '通过' && isEdit) {
       ChangeSubmitType(1)
     };
-    if (value === '不通过') {
+    if (value === '不通过' && isEdit) {
       ChangeSubmitType(0)
     }
   };
@@ -338,7 +338,7 @@ function VersionAudit(props, ref) {
               title='功能验证表'
               functionmap={functionmap}
               modulamap={modulamap}
-              isEdit={taskName === '版本管理员审核'}
+              isEdit={taskName === '版本管理员审核' && isEdit}
               taskName={taskName}
               dataSource={undefined}
               ChangeValue={v => { setFieldsValue({ releaseLists: v }); }}

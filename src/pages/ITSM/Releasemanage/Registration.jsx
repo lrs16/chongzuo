@@ -103,6 +103,13 @@ function Registration(props) {
     })
   };
 
+  const handleclose = () => {
+    router.push({
+      pathname: `/ITSM/releasemanage/registration`,
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true, }
+    });
+  };
+
   const tosubmit = () => {
     dispatch({
       type: 'releaseregistra/fetchsubmit',
@@ -199,7 +206,7 @@ function Registration(props) {
       <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSubmit()}>
         流转
       </Button>
-      <Button type="default">关闭</Button>
+      <Button type="default" onClick={() => handleclose()}>关闭</Button>
     </>
   );
 

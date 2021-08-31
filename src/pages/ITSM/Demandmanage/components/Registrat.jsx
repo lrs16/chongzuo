@@ -19,6 +19,7 @@ import { getAndField } from '@/pages/SysManage/services/api';
 import { queryDisableduserByUser, queryUnitList, queryDeptList } from '@/services/common';
 import DeptSlectId from '@/components/DeptTree/SelectID';
 import { CaretRightOutlined } from '@ant-design/icons';
+import { querkeyVal } from '@/services/api';
 import styles from './style.less';
 
 const InputGroup = Input.Group;
@@ -64,6 +65,7 @@ const Registrat = forwardRef((props, ref) => {
   const [deptdata, setDeptdata] = useState([]); // 自动完成部门下拉表
   const [unitopen, setUnitopen] = useState(false);
   const [deptopen, setDeptopen] = useState(false);
+  const [workload, setWorkLoad] = useState(false);
 
   useEffect(() => {
     if (fileslist.ischange) {
@@ -275,6 +277,11 @@ const Registrat = forwardRef((props, ref) => {
   useEffect(() => {
     handletitleSearch({ module: '需求单', field: '标题', key: '' });
     handledesSearch({ module: '需求单', field: '描述', key: '' });
+    querkeyVal('demand', 'workload').then(res => {
+      if (res.code === 200) {
+        setWorkLoad(res.data.workload)
+      }
+    });
   }, []);
 
   const getTypebyTitle = key => {
@@ -288,6 +295,7 @@ const Registrat = forwardRef((props, ref) => {
   const prioritymap = getTypebyTitle('1352166246400921601');
   const projectmap = getTypebyTitle('1354241446307172354');
   const modulemap = getTypebyTitle('1352070663392727041');
+  // const workloadmap = getTypebyTitle('1432137738533371906');
 
   const disabledDate = (current) => {
     return current && current < moment().add(45, 'days').endOf('day');
@@ -311,6 +319,22 @@ const Registrat = forwardRef((props, ref) => {
               {getFieldDecorator('demandId', {
                 initialValue: register.demandId,
               })(<Input disabled />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="开发工作量">
+              {getFieldDecorator('workLoad', {
+                rules: [{ required, message: '请选择开发工作量' }],
+                initialValue: register.workLoad,
+              })(
+                <Select placeholder="请选择">
+                  {workload.length > 0 && workload.map(obj => [
+                    <Option key={obj.key} value={obj.val}>
+                      {obj.val}
+                    </Option>,
+                  ])}
+                </Select>
+              )}
             </Form.Item>
           </Col>
         </Row>

@@ -100,7 +100,7 @@ function QueryList(props) {
             pathname: `/ITSM/demandmanage/query/details`,
             query: {
               taskId: record.taskId,
-              mainId: record.processInstanceId,
+              mainId: record.processId,
               taskName: record.taskName,
               No: text,
             },
@@ -186,7 +186,7 @@ function QueryList(props) {
               pathname: `/ITSM/demandmanage/query/details`,
               query: {
                 taskId: record.taskId,
-                mainId: record.processInstanceId,
+                mainId: record.processId,
                 taskName: record.taskName,
                 No: text,
               },

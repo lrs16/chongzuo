@@ -36,7 +36,7 @@ function BusinessDetail(props) {
       if (res.code === 200) {
         message.success(res.msg);
         router.push({
-          pathname: `/ITSM/releasemanage/verificationtodo`,
+          pathname: runpath,
           query: { pathpush: true },
           state: { cache: false, closetabid: Id }
         });
