@@ -562,7 +562,7 @@ function QueryList(props) {
             <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>
               导出数据
             </Button>
-            <AdminAuth getAuth={v => setUserName(v)} />
+            <AdminAuth getAuth={v => setUserName(v)} code='admin' />
             {username === 'admin' && (
               <Button type="danger" ghost onClick={() => deleteorder()}>删 除</Button>
             )}

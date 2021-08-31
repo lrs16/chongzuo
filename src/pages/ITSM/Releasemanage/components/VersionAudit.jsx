@@ -133,12 +133,11 @@ function VersionAudit(props, ref) {
   const handleAttValidator = (rule, value, callback) => {
     if (info && info.releaseAttaches) {
       const releaseNos = Object.keys(info.releaseAttaches);
-      console.log(releaseNos)
       const checkList = releaseNos.map(key => {
         const releaseNo = key;
         const values = info.releaseAttaches[key];
         const endatt = values[values.length - 1].docName;
-        const checkAtt = values[5];
+        const checkAtt = values[rowkey - 1];
         if (endatt === '发布实施方案') {
           const replenishAtt = values.slice(-5);
           replenishAtt.unshift(checkAtt);
@@ -153,8 +152,6 @@ function VersionAudit(props, ref) {
       const TabKeys = tabKeyObject.map((item) => {                              // 提醒哪个页签未添加附件
         return item.releaseNo
       });
-      console.log(checkList)
-      console.log(target)
       // const flowId = getQueryVariable("Id");
       // if (TabKeys.indexOf(flowId) !== -1 && tabKeyObject.length > 0) {
       //   handleTabChange(TabKeys[0]);
@@ -278,16 +275,16 @@ function VersionAudit(props, ref) {
               <Form.Item label="发布开始时间">
                 {getFieldDecorator('releaseBeginTime', {
                   rules: [{ required, message: `请选择发布开始时间` }],
-                  initialValue: moment(info.mergeOrder && info.mergeOrder.releaseBeginTime ? info.mergeOrder.releaseBeginTime : undefined).format('YYYY-MM-DD HH:mm:ss'),
-                })(<Input disabled={!isEdit} />)}
+                  initialValue: moment(info.mergeOrder && info.mergeOrder.releaseBeginTime ? info.mergeOrder.releaseBeginTime : undefined),
+                })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
               </Form.Item>
             </Col>
             <Col span={8}>
               <Form.Item label="发布结束时间">
                 {getFieldDecorator('releaseEndTime', {
                   rules: [{ required, message: `请选择发布结束时间` }],
-                  initialValue: moment(info.mergeOrder && info.mergeOrder.releaseEndTime ? info.mergeOrder.releaseEndTime : undefined).format('YYYY-MM-DD HH:mm:ss'),
-                })(<Input disabled={!isEdit} />)}
+                  initialValue: moment(info.mergeOrder && info.mergeOrder.releaseEndTime ? info.mergeOrder.releaseEndTime : undefined),
+                })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
               </Form.Item>
             </Col>
             <Col span={8}>

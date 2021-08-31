@@ -295,7 +295,12 @@ function WorkOrder(props) {
     dispatch({
       type: 'releasetodo/checkversion',
       payload: {
-        values: { ...values, releaseNo: Id },
+        values: {
+          ...values,
+          releaseNo: Id,
+          releaseBeginTime: values.releaseBeginTime ? moment(values.releaseBeginTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          releaseEndTime: values.releaseBeginTime ? moment(values.releaseEndTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        },
         releaseAttaches: { mainId: values.releaseAttaches[0].mainId, taskId: values.releaseAttaches[0].taskId, releaseAttaches: values.releaseAttaches },
         releaseNo: Id,
         buttype,
@@ -314,7 +319,7 @@ function WorkOrder(props) {
         VersionAuditRef.current.Forms((err) => {
           if (err) {
             message.error('请将信息填写完整')
-          } if (taskName !== '中心领导审核') {
+          } else if (taskName !== '中心领导审核') {
             saveVersionAudit();
             sessionStorage.setItem('flowtype', '1');
             setUserVisible(true);

@@ -5,6 +5,7 @@ import router from 'umi/router';
 import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import AdminAuth from '@/components/AdminAuth';
 import DictLower from '@/components/SysDict/DictLower';
 import { mergeOrders } from './services/api';
 
@@ -35,6 +36,7 @@ function ToDolist(props) {
   const [selectdata, setSelectData] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRecords, setSelectedRecords] = useState([]);
+  const [username, setUserName] = useState('');
 
   // 查询
   const searchdata = (values, page, size) => {
@@ -390,7 +392,11 @@ function ToDolist(props) {
         </Row>
         <div style={{ marginBottom: 24 }}>
           <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>导出数据</Button >
-          <Button type="primary" onClick={() => handleApproval()} >版本管理员合并审核</Button >
+          <AdminAuth getAuth={v => setUserName(v)} code='sixteen' />
+          {username === 'sixteen' && (
+            <Button type="primary" onClick={() => handleApproval()} >版本管理员合并审核</Button >
+          )}
+
         </div>
         < Table
           loading={loading}

@@ -2,9 +2,9 @@ import { useEffect } from 'react';
 import { queryCurrent } from '@/services/user';
 
 function AdminAuth(props) {
-  const { getAuth } = props;
+  const { getAuth, code } = props;
   const getroleCode = (data) => {
-    return data.filter(item => item.roleCode === 'admin')[0];
+    return data.filter(item => item.roleCode === code)[0];
   };
   useEffect(() => {
     queryCurrent().then(res => {
