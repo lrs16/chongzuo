@@ -149,7 +149,9 @@ export default {
   //  新增评分细则
   *scoreAdd({ payload }, { call, put }) {
     const response = yield call(scoreAdd,payload);
-    if(response.code === 200) {
+    if(response.code === 200 && response.data && response.data.scoreNo) {
+      console.log('response.data: ', response.data);
+      console.log('response.data.scoreNo: ', response.data.scoreNo);
       router.push({
         pathname:'/ITSM/servicequalityassessment/addscoringrulesmaintenance',
         query: {
@@ -168,7 +170,6 @@ export default {
           }
         })
       }
-    
     } else {
       message.info(response.msg)
     }

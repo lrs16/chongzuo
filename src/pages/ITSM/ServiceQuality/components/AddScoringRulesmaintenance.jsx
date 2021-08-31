@@ -90,7 +90,7 @@ function AddScoringRulesmaintenance(props) {
       getalldata()
     } else {
       dispatch({
-        type:'qualityassessment/clearclauseList'
+        type: 'qualityassessment/clearclauseList'
       }
       )
     }
@@ -384,7 +384,7 @@ function AddScoringRulesmaintenance(props) {
         style={{ display: 'none' }}
       />
       {
-        (id ? loading === false : true)&& assessmentType && assessmentType.length > 0 && (
+        assessmentType && assessmentType.length > 0 && (
           <Card>
             <Row>
               <Form {...formItemLayout}>

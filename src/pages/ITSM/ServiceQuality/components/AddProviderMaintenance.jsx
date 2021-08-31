@@ -401,6 +401,7 @@ function AddProviderMaintenance(props) {
           id && !providerSearch && (
             <Contract
               title='新增合同'
+              Contract=''
               formItemLayout={formItemLayout}
               onSumit={values => handleonSumit(values)}
             >
