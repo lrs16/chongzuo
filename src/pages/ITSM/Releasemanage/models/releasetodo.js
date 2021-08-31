@@ -419,7 +419,7 @@ export default {
           };
           const subres = yield call(flowSubmit, nopasspayload);
           if (subres.code === 200) {
-            message.success(subres.msg);
+            message.success('操作成功');
             router.push({
               pathname: `/ITSM/releasemanage/to-do`,
               query: { pathpush: true },

@@ -383,7 +383,7 @@ function VersionAudit(props, ref) {
             <Form.Item label="审核人" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               {getFieldDecorator('checkUser', {
                 rules: [{ required, message: `请选择审批人` }],
-                initialValue: userinfo ? userinfo.userName : formmap.get(taskName).userName,
+                initialValue: userinfo ? userinfo.userName : formmap.get(taskName).checkUser,
               })(<Input disabled />)}
             </Form.Item>
           </Col>
@@ -399,7 +399,7 @@ function VersionAudit(props, ref) {
             <Form.Item label="审核单位" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               {getFieldDecorator('checkUnit', {
                 rules: [{ required, message: `请选择审批单位` }],
-                initialValue: userinfo ? userinfo.unitName : formmap.get(taskName).unitName,
+                initialValue: userinfo ? userinfo.unitName : formmap.get(taskName).checkUnit,
               })(<Input disabled />)}
             </Form.Item>
           </Col>
@@ -414,14 +414,6 @@ const WrappedForm = Form.create({ name: 'form' })(forwardRef(VersionAudit));
 WrappedForm.defaultProps = {
   register: {
     creationTime: undefined,
-  },
-  userinfo: {
-    deptName: '',
-    deptId: '',
-    unitName: '',
-    unitId: '',
-    userName: '',
-    userId: '',
   },
 };
 
