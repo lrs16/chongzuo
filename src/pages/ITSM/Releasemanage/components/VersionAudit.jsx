@@ -133,6 +133,7 @@ function VersionAudit(props, ref) {
   const handleAttValidator = (rule, value, callback) => {
     if (info && info.releaseAttaches) {
       const releaseNos = Object.keys(info.releaseAttaches);
+      console.log(releaseNos)
       const checkList = releaseNos.map(key => {
         const releaseNo = key;
         const values = info.releaseAttaches[key];

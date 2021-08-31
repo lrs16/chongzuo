@@ -38,6 +38,7 @@ const resultmap = new Map([
 ]);
 
 const resulttype = new Map([
+  ['""', 1],
   ['"3,4,5"', 2],
   ['"3"', 3],
   ['"4"', 4],
@@ -120,6 +121,7 @@ const Examine = forwardRef((props, ref) => {
   };
 
   const handleChangeresult = values => {
+    console.log(JSON.stringify(values.toString()))
     const resultflow = resulttype.get(JSON.stringify(values.toString()));
     setAdopt(resultflow);
     setFieldsValue({ result: resultflow }, () => { });
