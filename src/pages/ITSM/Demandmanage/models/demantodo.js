@@ -84,7 +84,7 @@ export default {
         const resopen = yield call(DemandOpenFlow, processInstanceId, taskId);
         yield put({
           type: 'saveinfo',
-          payload: resopen.data,
+          payload: { data: resopen.data, workLoad: resopen.workLoad },
         });
       } if (response.code === -1) {
         message.error(response.msg, 5);
@@ -112,7 +112,7 @@ export default {
         const openres = yield call(DemandOpenFlow, processInstanceId, taskId);
         yield put({
           type: 'saveinfo',
-          payload: openres.data,
+          payload: { data: openres.data, workLoad: openres.workLoad },
         });
       }
     },

@@ -314,10 +314,13 @@ function WorkOrder(props) {
         VersionAuditRef.current.Forms((err) => {
           if (err) {
             message.error('请将信息填写完整')
-          } else {
+          } if (taskName !== '中心领导审核') {
             saveVersionAudit();
             sessionStorage.setItem('flowtype', '1');
             setUserVisible(true);
+          } else {
+            sessionStorage.setItem('flowtype', '1');
+            saveVersionAudit();
           }
         })
         break;

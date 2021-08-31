@@ -232,7 +232,7 @@ export default {
     // 分派，重分派
     * listassign({ payload: { values, releaseNo } }, { call, put }) {
       const response = yield call(releaseListAssign, values);
-      if (response.code === 200) {
+      if (response.code === 200 && response.data && response.data.todo && response.data.todo.todoCode) {
         message.success('分派成功')
         const openres = yield call(openFlow, releaseNo);
         if (openres.code === 200) {
@@ -304,7 +304,7 @@ export default {
     //   }
     // },
 
-    // 版本管理员审核，科室负责人审核
+    // 版本管理员审核，科室负责人审核,中心领导审核
     * checkversion({ payload: { values, releaseAttaches, buttype, releaseNo, taskName, } }, { call, put }) {
       yield put({
         type: 'savestatuse',
@@ -321,6 +321,22 @@ export default {
         };
         if (taskName === '中心领导审核') {
           response = yield call(saveCheckLeader, values);        // 再保存表单
+          const tabid = sessionStorage.getItem('tabid');
+          const nopasspayload = {
+            taskId: response.data.currentTaskStatus.taskId,
+            type: 1,
+          };
+          const subres = yield call(flowSubmit, nopasspayload);
+          if (subres.code === 200) {
+            message.success('操作成功');
+            router.push({
+              pathname: `/ITSM/releasemanage/to-do`,
+              query: { pathpush: true },
+              state: { cach: false, closetabid: tabid }
+            });
+          } else {
+            message.error('操作失败');
+          }
         };
         yield put({
           type: 'savestatuse',

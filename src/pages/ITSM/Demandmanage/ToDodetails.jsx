@@ -25,8 +25,6 @@ function ToDoregist(props) {
   const [butandorder, setButandOrder] = useState('');    // 暂存按钮类型
   const [modalvisible, setModalVisible] = useState(false);
 
-  console.log(workLoad)
-
   const handleHold = (type) => {
     setUserChoice(false);
     setButtonType(type);
@@ -187,14 +185,14 @@ function ToDoregist(props) {
                 流转
               </Button>
             )}
-          {taskName === '自动化科专责审核' && workLoad && ((workLoad === '一般' && result !== 0 && result !== 1) || (workLoad === '严重' && (result === 3 || result === 5 || result === 8))) && (
+          {taskName === '自动化科专责审核' && result !== '0' && result !== '1' && workLoad && (workLoad === '一般' || (workLoad === '重大' && result !== '4')) && (
             <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleClick('flow'); setButandOrder('flow') }}>
-              1流转
+              流转
             </Button>
           )}
           {result === '1' && ((taskName === '自动化科专责审核' && workLoad === '一般') || taskName === '市场部领导审核' || taskName === '科室领导审核' || taskName === '中心领导审核') && (
             <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleClick('toflow') }}>
-              2流转
+              流转
             </Button>
           )}
           {result === '1' && taskName === '自动化科业务人员审核' && (

@@ -152,6 +152,8 @@ function VersionAudit(props, ref) {
       const TabKeys = tabKeyObject.map((item) => {                              // 提醒哪个页签未添加附件
         return item.releaseNo
       });
+      console.log(checkList)
+      console.log(target)
       // const flowId = getQueryVariable("Id");
       // if (TabKeys.indexOf(flowId) !== -1 && tabKeyObject.length > 0) {
       //   handleTabChange(TabKeys[0]);

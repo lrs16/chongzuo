@@ -17,6 +17,11 @@ function Registratdes(props) {
             </Form.Item>
           </Col>
           <Col span={8}>
+            <Form.Item label='开发工作量'>
+              <Input defaultValue={info.workLoad} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={8} style={{ clear: 'both' }}>
             <Form.Item label='建单时间'>
               <Input defaultValue={info.creationTime} disabled />
             </Form.Item>
