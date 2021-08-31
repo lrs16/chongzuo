@@ -197,7 +197,8 @@ const Register = React.forwardRef((props, ref) => {
     const requestData = {
       value,
       pageNum: 1,
-      pageSize: 1000
+      pageSize: 1000,
+      status:'1'
     }
     switch (type) {
       case 'provider':

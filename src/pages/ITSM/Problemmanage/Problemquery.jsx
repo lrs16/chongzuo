@@ -98,14 +98,14 @@ function Besolved(props) {
     },
     {
       title: '问题分类',
-      dataIndex: 'typecn',
-      key: 'typecn',
+      dataIndex: 'type',
+      key: 'type',
       width: 150,
     },
     {
       title: '问题描述',
-      dataIndex: 'handleContent',
-      key: 'handleContent',
+      dataIndex: 'content',
+      key: 'content',
       width: 200,
     },
     {
@@ -120,14 +120,14 @@ function Besolved(props) {
       key: 'developmentLead',
       width: 120,
     },
-    // {
-    //   title: '问题类型',
-    //   dataIndex: 'typecn',
-    //   key: 'typecn',
-    //   width: 120,
-    // },
     {
-      title: '申请时间',
+      title: '问题类型',
+      dataIndex: 'source',
+      key: 'source',
+      width: 120,
+    },
+    {
+      title: '登记时间',
       dataIndex: 'registerTime',
       key: 'registerTime',
       width: 120,
@@ -288,12 +288,12 @@ function Besolved(props) {
       key: 'registerUserPhone',
       width: 150,
     },
-    {
-      title: '登记时间',
-      dataIndex: 'registerTime',
-      key: 'registerTime',
-      width: 150,
-    },
+    // {
+    //   title: '登记时间',
+    //   dataIndex: 'registerTime',
+    //   key: 'registerTime',
+    //   width: 150,
+    // },
     {
       title: '登记状态',
       dataIndex: 'registerStatus',
@@ -469,12 +469,6 @@ function Besolved(props) {
       width: 150,
     },
     {
-      title: '计划完成时间',
-      dataIndex: 'planEndTime',
-      key: 'planEndTime',
-      width: 150,
-    },
-    {
       title: '处理流程节点实例ids',
       dataIndex: 'handleFlowNodeInstanceIds',
       key: 'handleFlowNodeInstanceIds',
@@ -485,12 +479,6 @@ function Besolved(props) {
       dataIndex: 'confirmOneId',
       key: 'confirmOneId',
       width: 150,
-    },
-    {
-      title: '系统运维商确认结果',
-      dataIndex: 'confirmOneResult',
-      key: 'confirmOneResult',
-      width: 200,
     },
     {
       title: '系统运维商确认说明',
@@ -601,12 +589,6 @@ function Besolved(props) {
       width: 200,
     },
     {
-      title: '问题登记人员确认结果',
-      dataIndex: 'confirmThreeResult',
-      key: 'confirmThreeResult',
-      width: 250,
-    },
-    {
       title: '问题登记人员确认说明',
       dataIndex: 'confirmThreeContent',
       key: 'confirmThreeContent',
@@ -622,12 +604,6 @@ function Besolved(props) {
       title: '问题登记人员确认人部门',
       dataIndex: 'confirmThreeDept',
       key: 'confirmThreeDept',
-      width: 250,
-    },
-    {
-      title: '问题登记人员确认人',
-      dataIndex: 'confirmThreeUser',
-      key: 'confirmThreeUser',
       width: 250,
     },
     {
@@ -693,27 +669,6 @@ function Besolved(props) {
     differentTitle = '问题查询'
   }
 
-  const getinitiaQuery = () => {
-    // console.log(1)
-    validateFields((err, values) => {
-      const newvalues = {
-        ...values,
-        addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-        addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        createTime: values.createTime?.length ? [moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
-        pageNum: paginations.current,
-        pageSize: paginations.pageSize,
-      }
-      dispatch({
-        type: 'problemmanage/queryList',
-        payload: {
-          ...newvalues
-        },
-      });
-      setTabRecord({ ...newvalues });
-    })
-  }
-
   // const aaa = 002;
   // 设置初始值
   const record = {
@@ -747,12 +702,9 @@ function Besolved(props) {
 
   const handleReset = () => {
     resetFields();
-    // queryParams = false;
   };
 
-
   const searchdata = (values, page, pageSize, search) => {
-    // if (queryParams) {
     dispatch({
       type: 'problemmanage/queryList',
       payload: {
@@ -774,14 +726,6 @@ function Besolved(props) {
     }
     setTabRecord({ ...newvalues });
   };
-
-
-
-  // useEffect(() => {
-  //   // console.log(5)
-  //   getinitiaQuery();
-  // }, [location])
-
 
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
@@ -834,7 +778,6 @@ function Besolved(props) {
       }
       searchdata(obj, 1, paginations.pageSize, search);
     });
-
   };
 
   const download = () => {
@@ -933,117 +876,6 @@ function Besolved(props) {
   }, [location.state]);
 
 
-  useEffect(() => {
-    if (cacheinfo !== undefined) {
-      validateFields((err, values) => searchdata(values, paginations.current, paginations.pageSize));
-      const controlTable = [
-        {
-          title: '问题编号',
-          dataIndex: 'no',
-          key: 'no',
-          width: 150,
-          render: (text, records) => {
-            const handleClick = () => {
-              router.push({
-                pathname: `/ITSM/problemmanage/problemquery/detail`,
-                query: {
-                  id: records.id,
-                  taskName: records.statuscn,
-                  No: text,
-                },
-              });
-            };
-            return <a onClick={handleClick}>{text}</a>;
-          },
-        },
-        {
-          title: '问题分类',
-          dataIndex: 'typecn',
-          key: 'typecn',
-          width: 150,
-        },
-        {
-          title: '问题描述',
-          dataIndex: 'handleContent',
-          key: 'handleContent',
-          width: 200,
-        },
-        {
-          title: '问题申报人',
-          dataIndex: 'complainUser',
-          key: 'complainUser',
-          width: 200,
-        },
-        {
-          title: '开发负责人',
-          dataIndex: 'developmentLead',
-          key: 'developmentLead',
-          width: 120,
-        },
-        // {
-        //   title: '问题类型',
-        //   dataIndex: 'typecn',
-        //   key: 'typecn',
-        //   width: 120,
-        // },
-        {
-          title: '申请时间',
-          dataIndex: 'registerTime',
-          key: 'registerTime',
-          width: 120,
-        },
-        {
-          title: '系统运维商确认结果',
-          dataIndex: 'confirmOneResult',
-          key: 'confirmOneResult',
-          width: 200
-        },
-        {
-          title: '处理完成时间',
-          dataIndex: 'handleTime',
-          key: 'handleTime',
-          width: 150
-        },
-        {
-          title: '系统开发商处理人',
-          dataIndex: 'handler',
-          key: 'handler',
-          width: 150,
-        },
-        {
-          title: '计划完成时间',
-          dataIndex: 'planEndTime',
-          key: 'planEndTime',
-          width: 150,
-        },
-        {
-          title: '处理解决方案',
-          dataIndex: 'handleContent',
-          key: 'handleContent',
-          width: 150,
-        },
-        {
-          title: '系统开发商处理结果',
-          dataIndex: 'handleResult',
-          key: 'handleResult',
-          width: 250,
-        },
-        {
-          title: '问题登记人员确认结果',
-          dataIndex: 'confirmThreeResult',
-          key: 'confirmThreeResult',
-          width: 250,
-        },
-        {
-          title: '问题登记人员确认人',
-          dataIndex: 'confirmThreeUser',
-          key: 'confirmThreeUser',
-          width: 200,
-        },
-      ]
-      setColumns(controlTable)
-    }
-  }, []);
 
   // 获取数据
   useEffect(() => {
@@ -1070,14 +902,14 @@ function Besolved(props) {
       },
       {
         title: '问题分类',
-        dataIndex: 'typecn',
-        key: 'typecn',
+        dataIndex: 'type',
+        key: 'type',
         width: 150,
       },
       {
         title: '问题描述',
-        dataIndex: 'handleContent',
-        key: 'handleContent',
+        dataIndex: 'content',
+        key: 'content',
         width: 200,
       },
       {
@@ -1092,14 +924,14 @@ function Besolved(props) {
         key: 'developmentLead',
         width: 120,
       },
-      // {
-      //   title: '问题类型',
-      //   dataIndex: 'typecn',
-      //   key: 'typecn',
-      //   width: 120,
-      // },
       {
-        title: '申请时间',
+        title: '问题类型',
+        dataIndex: 'source',
+        key: 'source',
+        width: 120,
+      },
+      {
+        title: '登记时间',
         dataIndex: 'registerTime',
         key: 'registerTime',
         width: 120,
@@ -1199,6 +1031,7 @@ function Besolved(props) {
     return item.title
   });
 
+  console.log(defaultAllkey, 'defaultAllkey');
   const rowSelection = {
     onChange: (index, handleSelect) => {
       setSelectedKeys([...index])
@@ -1217,7 +1050,6 @@ function Besolved(props) {
       <Card>
         <Row gutter={16}>
           <Form {...formItemLayout}>
-
             <>
               <Col span={8}>
                 <Form.Item label="问题编号">

@@ -58,6 +58,8 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
     return [];
   };
 
+  console.log(check.checkTime,'check.checkTime')
+
   const responsible = getTypebyTitle('故障责任方');
 
   return (
@@ -115,7 +117,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
                   message: '请选择时间',
                 },
               ],
-              initialValue: check ? moment(check.checkTime) : moment(Date.now())
+              initialValue: check.checkTime ? moment(check.checkTime) : moment(new Date())
             })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
           </Form.Item>
         </Col>
@@ -188,7 +190,7 @@ ExamineSecondChild.defaultProps = {
     checkReportSign: '',
     checkOpinion: '',
     checkResult: '1',
-    checkTime: moment().format(),
+    checkTime: '',
     checkBlame: ''
   },
   curruserinfo: {

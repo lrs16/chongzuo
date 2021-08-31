@@ -107,7 +107,7 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
                     message: '请输入审核时间'
                   }
                 ],
-                initialValue: moment(confirm.confirmTime)
+                initialValue: confirm.confirmTime ? moment(confirm.confirmTime) : moment(new Date())
               })(
                 <DatePicker
                   showTime
@@ -249,7 +249,7 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
 Operatorconfirmaedit.defaultProps = {
   confirm: {
     confirmResult: '1',
-    confirmTime: moment().format(),
+    confirmTime: '',
     confirmContent: '',
   },
 

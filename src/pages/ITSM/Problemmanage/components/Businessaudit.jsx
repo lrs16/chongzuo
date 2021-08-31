@@ -69,7 +69,7 @@ const Businessaudit = React.forwardRef((props, ref) => {
                   message: '请输入审核时间'
                 }
               ],
-              initialValue: check ? moment(check.checkTime) : moment(new Date()),
+              initialValue: check.checkTime ? moment(check.checkTime) : moment(new Date()),
             })(<DatePicker
               showTime
               format="YYYY-MM-DD HH:mm:ss"

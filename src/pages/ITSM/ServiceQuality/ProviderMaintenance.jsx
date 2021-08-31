@@ -128,8 +128,8 @@ function ProviderMaintenance(props) {
     },
     {
       title: '负责人',
-      dataIndex: 'creator',
-      key: 'creator',
+      dataIndex: 'director',
+      key: 'director',
       width:150
     },
     {

@@ -448,6 +448,7 @@ function ToDOlist(props) {
           dataSource={faultTodoList.rows}
           rowKey={r => r.id}
           pagination={pagination}
+          scroll={{ x: 800, y: 700 }}
           // rowSelection={rowSelection}
         />
       </Card>

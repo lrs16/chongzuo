@@ -127,8 +127,8 @@ function ServiceProvidersearch(props) {
     },
     {
       title: '负责人',
-      dataIndex: 'creator',
-      key: 'creator',
+      dataIndex: 'director',
+      key: 'director',
       width:150
     },
     {
@@ -229,7 +229,7 @@ function ServiceProvidersearch(props) {
   const record = {
     providerNo:'',
     providerName:'',
-    creator:'',
+    director:'',
     directorPhone:'',
   }
 
@@ -289,8 +289,8 @@ function ServiceProvidersearch(props) {
             <Col span={8}>
               <Form.Item label='负责人'>
                 {
-                  getFieldDecorator('creator',{
-                    initialValue: cacheinfo.creator
+                  getFieldDecorator('director',{
+                    initialValue: cacheinfo.director
                   })
                     (<Input />)
                 }

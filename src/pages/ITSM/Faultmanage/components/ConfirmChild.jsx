@@ -117,7 +117,7 @@ const ConfirmChild = React.forwardRef((props, ref) => {
                   message: '请选择时间',
                 },
               ],
-              initialValue: confirm ? moment(confirm.confirmTime) : moment(Date.now())
+              initialValue: confirm.confirmTime ? moment(confirm.confirmTime) : moment(new Date())
             })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
           </Form.Item>
         </Col>
@@ -189,7 +189,7 @@ ConfirmChild.defaultProps = {
     confirmAttachments: '',
     confirmContent: '',
     confirmResult: '1',
-    confirmTime: moment().format(),
+    confirmTime: '',
     // blame:''
   },
   curruserinfo: {

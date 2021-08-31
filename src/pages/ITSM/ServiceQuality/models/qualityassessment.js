@@ -93,8 +93,8 @@ export default {
           pathname:'/ITSM/servicequalityassessment/detailserviceprovidermaintenance',
           query:{
             id,
-            mainId:providerNo,
-            orderNo:providerNo,
+            mainId:providerNo || '',
+            orderNo:providerNo || '',
           }
         })
       }
@@ -158,7 +158,7 @@ export default {
         }
       });
       const { id,scoreNo } = response.data;
-      if(scoreNo) {
+      if(scoreNo && id) {
         router.push({
           pathname:'/ITSM/servicequalityassessment/detailscoringrulesmaintenance',
           query: {
@@ -280,6 +280,13 @@ export default {
   *clauseDel({ payload }, { call, put }) {
     return yield call(clauseDel,payload)
   },
+  //  清楚评分细则数据
+  *clearClause({ payload }, { call, put }) {
+    yield put ({
+      type:'clearclauseList',
+      payload: []
+    })
+  }
   
   },
 
@@ -357,6 +364,12 @@ export default {
       return {
         ...state,
         target2: action.payload.data
+      }
+    },
+    clearclauseList(state,action) {
+      return {
+        ...state,
+        clauseList: []
       }
     },
 

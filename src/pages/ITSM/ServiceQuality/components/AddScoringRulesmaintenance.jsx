@@ -89,7 +89,10 @@ function AddScoringRulesmaintenance(props) {
       getlist();
       getalldata()
     } else {
-
+      dispatch({
+        type:'qualityassessment/clearclauseList'
+      }
+      )
     }
   }, [id]);
 
@@ -162,7 +165,7 @@ function AddScoringRulesmaintenance(props) {
           type: 'qualityassessment/scoreAdd',
           payload: {
             ...value,
-            assessType: value.assessType === '1' ? '功能开发' : '系统运维'
+            // assessType: value.assessType === '1' ? '功能开发' : '系统运维'
           }
         })
       }
@@ -381,7 +384,7 @@ function AddScoringRulesmaintenance(props) {
         style={{ display: 'none' }}
       />
       {
-        assessmentType && assessmentType.length > 0 && (
+        (id ? loading === false : true)&& assessmentType && assessmentType.length > 0 && (
           <Card>
             <Row>
               <Form {...formItemLayout}>

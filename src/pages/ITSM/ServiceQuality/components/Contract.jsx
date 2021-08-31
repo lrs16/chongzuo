@@ -5,7 +5,8 @@ import {
   Input,
   Button,
   DatePicker,
-  Select
+  Select,
+  message
 } from 'antd';
 import moment from 'moment';
 
@@ -20,6 +21,9 @@ const formItemLayout = {
   }
 }
 
+let startTime;
+let endTime;
+let endOpen = false;
 const { Option } = Select;
 
 const withClick = (element, handleClick = () => { }) => {
@@ -30,7 +34,7 @@ const withClick = (element, handleClick = () => { }) => {
 function Contract(props) {
   const [visible, setVisible] = useState(false);
   const {
-    form: { getFieldDecorator, validateFields },
+    form: { getFieldDecorator, validateFields, setFieldsValue },
     children,
     contract,
     title,
@@ -46,19 +50,70 @@ function Contract(props) {
 
   const handleOk = () => {
     props.form.validateFields((err, values) => {
+      console.log('values: ', values);
       if (!err) {
         const submitData = {
           ...values,
           id: contract.id || ''
         };
-        onSumit(submitData);
-        setVisible(false)
+
+        if(moment(values.signTime).format('YYYY-MM-DD') === moment(values.dueTime).format('YYYY-MM-DD')) {
+          message.error('签订日期必须小于到期日期哦')
+        } else {
+          onSumit(submitData);
+          setVisible(false)
+        }
+     
       }
     })
   }
 
   const handleCancel = () => {
+    startTime = '';
+    endTime = '';
     setVisible(false)
+  }
+
+  // const startdisabledDate = (current) => {
+  //   return current > moment().subtract('days', 6)
+  // }
+
+  // const enddisabledDate = (current) => {
+  //   return current > moment().endOf('day')
+  // }
+
+
+  const startdisabledDate = (current) => {
+    if (endTime) {
+      return current > moment(endTime)
+    }
+
+    if (!endTime && contract.dueTime) {
+      return current > moment(contract.dueTime)
+    }
+  }
+
+  const enddisabledDate = (current) => {
+    if (startTime) {
+      return current < moment(startTime)
+    }
+
+    // if (!startTime) {
+    //   return current > moment(new Date())
+    // }
+  }
+
+
+  const onChange = (date, dateString) => {
+    startTime = dateString;
+    setFieldsValue({signTime:moment(dateString)})
+    enddisabledDate(dateString, startTime)
+  }
+
+  const endonChange = (date, dateString) => {
+    endTime = dateString;
+    setFieldsValue({dueTime:moment(dateString)})
+    startdisabledDate(dateString, startTime)
   }
 
   return (
@@ -70,7 +125,7 @@ function Contract(props) {
         width={720}
         centered='true'
         maskClosable='true'
-        destroyOnClose={true}
+        destroyOnClose='true'
         onClose={handleCancel}
       >
         <Form {...formItemLayout}>
@@ -104,12 +159,20 @@ function Contract(props) {
                   message: '请输入签订日期'
                 }
               ],
-              initialValue: moment(contract.signTime)
+              initialValue: contract.signTime ? moment(contract.signTime) : moment(new Date())
             })
-              (<DatePicker
-                disabled={isEdit}
-                format='YYYY-MM-DD HH:mm:ss'
-              />)
+              (
+                <div>
+                  <DatePicker
+                    defaultValue={moment(startTime || contract.signTime)}
+                    disabled={isEdit}
+                    format='YYYY-MM-DD HH:mm:ss'
+                    disabledDate={startdisabledDate}
+                    onChange={onChange}
+                  />
+                </div>
+
+              )
             }
           </Form.Item>
 
@@ -121,12 +184,19 @@ function Contract(props) {
                   message: '请输入到期日期'
                 }
               ],
-              initialValue: moment(contract.dueTime)
+              initialValue: contract.dueTime ? moment(contract.dueTime) : moment(new Date())
             })
-              (<DatePicker
-                disabled={isEdit}
-                format='YYYY-MM-DD HH:mm:ss'
-              />)
+              (
+                <div>
+                  <DatePicker
+                    defaultValue={moment(endTime || contract.dueTime)}
+                    disabled={isEdit}
+                    format='YYYY-MM-DD HH:mm:ss'
+                    disabledDate={enddisabledDate}
+                    onChange={endonChange}
+                  />
+                </div>
+              )
             }
           </Form.Item>
 
@@ -181,8 +251,8 @@ Contract.defaultProps = {
   contract: {
     no: '',
     name: '',
-    data: new Date(),
-    enddata: new Date(),
+    // data: new Date(),
+    // enddata: new Date(),
     status: '0',
   }
 }

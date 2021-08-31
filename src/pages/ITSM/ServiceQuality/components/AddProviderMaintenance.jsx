@@ -54,8 +54,6 @@ function AddProviderMaintenance(props) {
 
   const statueContent = ['在用', '停用', '过期'];
 
-  console.log(providerStatus, 'providerStatus')
-
   //  服务商详情页
   const providerDetail = () => {
     dispatch({
@@ -172,29 +170,33 @@ function AddProviderMaintenance(props) {
       title: '操作',
       dataIndex: 'action',
       render: (text, record) => {
-        return (
-          <span disabled={providerSearch}>
-            <Contract
-              contract={record}
-              isEdit={providerSearch}
-              title='编辑合同'
-              formItemLayout={formItemLayout}
-              onSumit={values => handleonSumit(values)}
-            >
-              <a>
-                编辑合同
-              </a>
-            </Contract>
-            <Divider type="vertical" />
-            <Popconfirm
-              title='是否要删除此行？'
-              onConfirm={() => handleDelete(record.id)}
-              disabled={providerSearch}
-            >
-              <a>删除合同</a>
-            </Popconfirm>
-          </span>
-        )
+        if(!providerSearch) {
+          return (
+            <span disabled={providerSearch}>
+              <Contract
+                contract={record}
+                isEdit={providerSearch}
+                title='编辑合同'
+                formItemLayout={formItemLayout}
+                onSumit={values => handleonSumit(values)}
+              >
+                <a>
+                  编辑合同
+                </a>
+              </Contract>
+              <Divider type="vertical" />
+              <Popconfirm
+                title='是否要删除此行？'
+                onConfirm={() => handleDelete(record.id)}
+                disabled={providerSearch}
+              >
+                <a>删除合同</a>
+              </Popconfirm>
+            </span>
+          )
+        }
+        return null
+       
       }
     },
   ]
@@ -222,8 +224,6 @@ function AddProviderMaintenance(props) {
     }
     getPerformanceleader();
   }, [id])
-
-  console.log(searchProviderobj, 'searchProviderobj')
 
   const handleBack = () => {
     if (providerSearch) {
@@ -285,103 +285,103 @@ function AddProviderMaintenance(props) {
       }
     >
       <Card>
-        <Row>
-          <Form {...formItemLayout}>
-            <Col span={8}>
-              <Form.Item label='服务商编号'>
-                {getFieldDecorator('providerNo', {
-                  initialValue: searchProviderobj.providerNo
-                })
-                  (<Input disabled='true' />)
-                }
-              </Form.Item>
-            </Col>
-
-            <Col span={8}>
-              <Form.Item label='服务商名称'>
-                {getFieldDecorator('providerName', {
-                  rules: [
-                    {
-                      required,
-                      message: '请输入服务商名称'
+        {
+          (id ? loading === false : true) && (
+            <Row>
+              <Form {...formItemLayout}>
+                <Col span={8}>
+                  <Form.Item label='服务商编号'>
+                    {getFieldDecorator('providerNo', {
+                      initialValue: searchProviderobj.providerNo
+                    })
+                      (<Input disabled='true' />)
                     }
-                  ],
-                  initialValue: searchProviderobj.providerName
-                })
-                  (<Input disabled={providerSearch} />)
-                }
-              </Form.Item>
-            </Col>
+                  </Form.Item>
+                </Col>
 
-            {/* {performanceLeader && performanceLeader.length && (
-              <Col span={8}>
-                <Form.Item label='负责人'>
-                  {
-                    getFieldDecorator('directorName', {
+                <Col span={8}>
+                  <Form.Item label='服务商名称'>
+                    {getFieldDecorator('providerName', {
                       rules: [
                         {
                           required,
-                          message: '请输入责任人'
+                          message: '请输入服务商名称'
+                        }
+                      ],
+                      initialValue: searchProviderobj.providerName
+                    })
+                      (<Input disabled={providerSearch} />)
+                    }
+                  </Form.Item>
+                </Col>
+
+                {/* {performanceLeader && performanceLeader.length && (
+                <Col span={8}>
+                  <Form.Item label='负责人'>
+                    {
+                      getFieldDecorator('directorName', {
+                        rules: [
+                          {
+                            required,
+                            message: '请输入责任人'
+                          }
+                        ],
+                        initialValue: searchProviderobj.director
+                      })
+                        (
+                          <Select onChange={selectOnchange} >
+                            {performanceLeader.map(obj => [
+                              <Option key={obj.key} value={obj.value}>
+                                {obj.value}
+                              </Option>
+                            ])}
+  
+                          </Select>
+                        )
+                    }
+                  </Form.Item>
+                </Col>
+              )} */}
+
+                <Col span={8}>
+                  <Form.Item label='负责人'>
+                    {getFieldDecorator('director', {
+                      rules: [
+                        {
+                          required,
+                          message: '请输入负责人'
                         }
                       ],
                       initialValue: searchProviderobj.director
                     })
-                      (
-                        <Select onChange={selectOnchange} >
-                          {performanceLeader.map(obj => [
-                            <Option key={obj.key} value={obj.value}>
-                              {obj.value}
-                            </Option>
-                          ])}
-
-                        </Select>
-                      )
-                  }
-                </Form.Item>
-              </Col>
-            )} */}
-
-            <Col span={8}>
-              <Form.Item label='负责人'>
-                {getFieldDecorator('director', {
-                  rules: [
-                    {
-                      required,
-                      message: '请输入负责人'
+                      (<Input disabled={providerSearch} />)
                     }
-                  ],
-                  initialValue: searchProviderobj.director
-                })
-                  (<Input disabled={providerSearch} />)
-                }
-              </Form.Item>
-            </Col>
+                  </Form.Item>
+                </Col>
 
-            <Col span={8}>
-              <Form.Item label='负责人手机号'>
-                {getFieldDecorator('directorPhone', {
-                  rules: [
-                    {
-                      required,
-                      len: 11,
-                      validator: phone_reg,
-                      message: '请输入正确的手机号'
+                <Col span={8}>
+                  <Form.Item label='负责人手机号'>
+                    {getFieldDecorator('directorPhone', {
+                      rules: [
+                        {
+                          required,
+                          len: 11,
+                          validator: phone_reg,
+                          message: '请输入正确的手机号'
+                        }
+                      ],
+                      initialValue: searchProviderobj.directorPhone
+                    })
+                      (<Input disabled={providerSearch} />)
                     }
-                  ],
-                  initialValue: searchProviderobj.directorPhone
-                })
-                  (<Input disabled={providerSearch} />)
-                }
-              </Form.Item>
-            </Col>
+                  </Form.Item>
+                </Col>
 
-            {
-              providerStatus === '1' && (
                 <Col span={8}>
                   <Form.Item label='状态'>
                     {
                       getFieldDecorator('status', {
-                        initialValue: searchProviderobj.status
+                        initialValue: searchProviderobj.status || '1'
                       })(
                         <Radio.Group disabled={providerSearch}>
                           <Radio value='1'>启用</Radio>
@@ -391,11 +391,11 @@ function AddProviderMaintenance(props) {
                     }
                   </Form.Item>
                 </Col>
-              )
-            }
+              </Form>
+            </Row>
 
-          </Form>
-        </Row>
+          )
+        }
 
         {
           id && !providerSearch && (

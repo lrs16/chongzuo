@@ -184,14 +184,14 @@ function QueryList(props) {
     },
     {
       title: '系统运维商确认总结人',
-      dataIndex: 'confirmUser',
-      key: 'confirmUser',
-      width: 150,
+      dataIndex: 'finishUser',
+      key: 'finishUser',
+      width: 200,
     },
     {
       title: '是否已提交故障处理记录表',
-      dataIndex: 'checkTwoReportSign',
-      key: 'checkTwoReportSign',
+      dataIndex: 'handleReport',
+      key: 'handleReport',
       width: 250,
     },
     {
@@ -208,8 +208,8 @@ function QueryList(props) {
     },
     {
       title: '系统运维商处理结果',
-      dataIndex: 'confirmResult',
-      key: 'confirmResult',
+      dataIndex: 'handleResult',
+      key: 'handleResult',
       width: 180,
     },
     {
@@ -1049,14 +1049,14 @@ function QueryList(props) {
       },
       {
         title: '系统运维商确认总结人',
-        dataIndex: 'confirmUser',
-        key: 'confirmUser',
-        width: 150,
+        dataIndex: 'finishUser',
+        key: 'finishUser',
+        width: 200,
       },
       {
         title: '是否已提交故障处理记录表',
-        dataIndex: 'checkTwoReportSign',
-        key: 'checkTwoReportSign',
+        dataIndex: 'handleReport',
+        key: 'handleReport',
         width: 250,
       },
       {
@@ -1073,8 +1073,8 @@ function QueryList(props) {
       },
       {
         title: '系统运维商处理结果',
-        dataIndex: 'confirmResult',
-        key: 'confirmResult',
+        dataIndex: 'handleResult',
+        key: 'handleResult',
         width: 180,
       },
       {
@@ -1091,7 +1091,6 @@ function QueryList(props) {
     // columns
     initialColumns.length = 0;
     formThead.map((val, key) => {
-      console.log('val: ', val);
       const obj = {
         key: val.key,
         title: val.title,
@@ -1125,7 +1124,6 @@ function QueryList(props) {
   };
 
   const onCheck = (checkedValues) => {
-    console.log('checkedValues: ', checkedValues);
     formThead = initialColumns.filter(i =>
       checkedValues.indexOf(i.title) >= 0
     );

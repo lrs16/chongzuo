@@ -500,8 +500,8 @@ function Besolved(props) {
           dataSource={besolveList.rows}
           rowKey={r => r.id}
           pagination={pagination}
-          rowSelection={rowSelection}
-          scroll={{ x: 1500 }}
+          // rowSelection={rowSelection}
+          scroll={{ x: 800, y: 700 }}
         />
       </Card>
 

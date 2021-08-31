@@ -12,7 +12,7 @@ function SummaryQuery(props) {
       <Row gutter={24} style={{ marginTop: 24 }}>
         <Form {...formItemLayout}>
           <Col span={8}>
-            <Form.Item label="总结时间11">
+            <Form.Item label="总结时间">
               <Input defaultValue={info.finishTime || ''} disabled />
             </Form.Item>
           </Col>
