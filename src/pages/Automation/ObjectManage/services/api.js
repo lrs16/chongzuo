@@ -89,6 +89,23 @@ export async function deleteCabinet(cabinetIds) {
   })
 }
 
+// 机柜-导出
+export async function CabinetqueryExport(params) {
+  return request(`/assets/cabinet/downloadCabinetExcel`, {
+    method: 'POST',
+    responseType: 'blob',
+    body: JSON.stringify(params),
+  });
+}
+
+// 机柜-下载导入模板
+export async function downloadCabinetTemplate() {
+  return request(`/assets/cabinet/downloadTemplate`, {
+    method: 'POST',
+    responseType: 'blob'
+  });
+}
+
 // /assets/cabinet/getCabinetMsg 根据区域编号获取机柜信息
 export async function getCabinetMsg(params) {
   return request(`/assets/cabinet/getCabinetMsg`, {
@@ -176,9 +193,17 @@ export async function systemScriptList(params, pageNum, pageSize) {
   });
 }
 
-// 添加、编辑
+// 添加、编辑（保存）
 export async function systemscriptaddOrEdit(params) {
   return request(`/assets/script/addOrEdit`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+  });
+}
+
+// 提交
+export async function systemscriptSubmit(params) {
+  return request(`/assets/script/submit`, {
     method: 'POST',
     data: JSON.stringify(params),
   });
@@ -198,7 +223,7 @@ export async function recellScript(Ids) {
   return request(`/assets/script/recellScript`, {
     method: 'POST',
     data: {Ids},
-    // body: JSON.stringify(Ids),
+    requestType: 'form',
   })
 }
 

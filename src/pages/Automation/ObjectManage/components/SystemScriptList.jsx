@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import { connect } from 'dva';
-import { Table, Card, Button, Form, Input, Select, Row, Col, DatePicker, Divider, message } from 'antd';
+import { Table, Card, Button, Form, Input, Select, Row, Col, DatePicker, Divider, message, Popconfirm } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import SystemScriptDrawer from './SystemScriptDrawer';
 import SysViewDrawer from './SysViewDrawer';
@@ -40,6 +40,7 @@ function SystemScriptList(props) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
     const [data, setData] = useState('');
+    const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
 
     const onSelectChange = (RowKeys, Rows) => {
         setSelectedRowKeys(RowKeys);
@@ -71,11 +72,22 @@ function SystemScriptList(props) {
         searchdata(1, 15);
     }, [location]);
 
+    // 上传删除附件触发保存
+    useEffect(() => {
+        if (files.ischange) {
+            searchdata(1, 15);
+        }
+    }, [files]);
+
     const handleShowDrawer = (drwertitle, type, record) => {
         setVisible(!visible);
         setTitle(drwertitle);
         setSaveType(type);
-        setData(record);
+        if (type === 'update') {
+            setData(record);
+        } else {
+            setData({});
+        }
     };
 
     const Handlerecall = () => { // 撤回
@@ -102,19 +114,40 @@ function SystemScriptList(props) {
 
     // 提交
     const handleSubmit = values => {
-        dispatch({
-            type: 'scriptconfig/toupdatesystemScript',
-            payload: {
-                ...values,
-            },
-        }).then(res => {
-            if (res.code === 200) {
-                message.success(res.msg);
-                searchdata(1, 15);
-            } else {
-                message.error(res.msg);
+        if (files.ischange) {
+            const newvalues = {
+                scriptSize: files.arr?.length || values.upload ? files.arr[0].size : '',
+                fileId: files.arr?.length || values.upload ? files.arr[0].uid : '',
             }
-        });
+            dispatch({
+                type: 'scriptconfig/toupdatesystemScript',
+                payload: {
+                    ...newvalues,
+                    ...values,
+                },
+            }).then(res => {
+                if (res.code === 200) {
+                    message.success(res.msg);
+                    searchdata(1, 15);
+                } else {
+                    message.error(res.msg);
+                }
+            });
+        } else {
+            dispatch({
+                type: 'scriptconfig/toupdatesystemScript',
+                payload: {
+                    ...values,
+                },
+            }).then(res => {
+                if (res.code === 200) {
+                    message.success(res.msg);
+                    searchdata(1, 15);
+                } else {
+                    message.error(res.msg);
+                }
+            });
+        }
     };
 
     const handleDelete = id => { // 删除
@@ -123,7 +156,7 @@ function SystemScriptList(props) {
             payload: { Ids: id },
         }).then(res => {
             if (res.code === 200) {
-                message.success('删除成功');
+                message.success(res.msg || '删除脚本成功');
                 searchdata(1, 15);
             } else {
                 message.error(res.msg);
@@ -272,7 +305,9 @@ function SystemScriptList(props) {
                         >
                             编辑脚本</a>
                         <Divider type="vertical" />
-                        <a type="link" style={{ color: 'red' }} onClick={() => handleDelete(record.id)}>删除脚本</a>
+                        <Popconfirm title="确定删除此脚本吗？" onConfirm={() => handleDelete(record.id)}>
+                            <a type="link" style={{ color: 'red' }}>删除脚本</a>
+                        </Popconfirm>
                     </div>
                 );
             },
@@ -457,6 +492,7 @@ function SystemScriptList(props) {
                     scroll={{ x: 1300 }}
                     paginations={pagination}
                     rowSelection={rowSelection}
+                    dispatch={dispatch}
                 />
             </Card>
             {/* 抽屉 */}
@@ -471,6 +507,9 @@ function SystemScriptList(props) {
                 savetype={savetype}
                 scriptsourcemap={scriptsourcemap}
                 scripttypemap={scripttypemap}
+                files={files.arr}
+                ChangeFiles={newvalue => { setFiles(newvalue) }}
+                onChangeList={() => searchdata(1, 15)}
             />
         </>
     );

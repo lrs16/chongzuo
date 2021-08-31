@@ -1385,6 +1385,18 @@ export default {
                               name: '启停登记',
                               icon: 'fork',
                               component: './Automation/AutomatedJob/SoftTTManagement/SoftTTRegister'
+                            },
+                            {
+                              path: '/automation/automatedjob/softstartandstop/softexecute',
+                              name: '启停执行',
+                              icon: 'fork',
+                              component: './Automation/AutomatedJob/SoftTTManagement/SoftTTExecute'
+                            },
+                            {
+                              path: '/automation/automatedjob/softstartandstop/softregister/newregist',
+                              name: '登记',
+                              icon: 'fork',
+                              component: './Automation/AutomatedJob/SoftTTManagement/Newregist'
                             }
                           ]
                         },
@@ -1402,6 +1414,18 @@ export default {
                               name: '作业配置',
                               icon: 'fork',
                               component: './Automation/AutomatedJob/JobManagement/JobConfig',
+                            },
+                            {
+                              path: '/automation/automatedjob/jobmanagement/jobcheck',
+                              name: '作业审批',
+                              icon: 'fork',
+                              component: './Automation/AutomatedJob/JobManagement/JobCheck',
+                            },
+                            {
+                              path: '/automation/automatedjob/jobmanagement/jobexecute',
+                              name: '作业执行',
+                              icon: 'fork',
+                              component: './Automation/AutomatedJob/JobManagement/JobExecute',
                             },
                             {
                               path: '/automation/automatedjob/jobmanagement/jobconfig/new',

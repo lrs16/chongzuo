@@ -59,23 +59,23 @@ function LocalViewDrawer(props) {
                     </Form.Item>
                     <Form.Item label="脚本类型">
                         <Radio.Group value={record.scriptType} disabled>
-                            <Radio value='shell'>shell</Radio>
+                            <Radio value={record.scriptType}>{record.scriptType}</Radio>
                         </Radio.Group>
                     </Form.Item>
                     <Form.Item label="脚本内容">
                         <TextArea autoSize={{ minRows: 10 }} defaultValue={record.scriptCont} disabled />
                     </Form.Item>
-                    <Form.Item label="脚本参数">
+                    <Form.Item label="脚本备注">
+                        <TextArea autoSize={{ minRows: 3 }} defaultValue={record.scriptCont} disabled />
+                    </Form.Item>
+                    <Form.Item label="脚本文件大小">
                         <Input defaultValue={record.scriptArgs} disabled />
                     </Form.Item>
-                    <Form.Item label="负责人">
+                    <Form.Item label="上传时间">
                         <Input defaultValue={record.director} disabled />
                     </Form.Item>
-                    <Form.Item label="脚本排序">
+                    <Form.Item label="上传人">
                         <Input defaultValue={record.scriptSorts} disabled />
-                    </Form.Item>
-                    <Form.Item label="脚本备注">
-                        <TextArea autoSize={{ minRows: 3 }} defaultValue={record.scriptRemarks} disabled />
                     </Form.Item>
                 </Form>
             </Drawer>

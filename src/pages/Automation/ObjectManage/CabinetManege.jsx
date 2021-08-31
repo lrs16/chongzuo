@@ -6,6 +6,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
 import CabinetDrawer from './components/CabinetDrawer';
+import SysLeadinCabinet from './components/SysLeadinCabinet';
 
 const { Option } = Select;
 
@@ -41,6 +42,7 @@ function CabinetManege(props) {
     const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
     const [data, setData] = useState('');
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+    const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
 
     const searchdata = (page, size) => {
         const values = getFieldsValue();
@@ -61,6 +63,13 @@ function CabinetManege(props) {
     useEffect(() => {
         searchdata(1, 15);
     }, [location]);
+
+    // 上传删除附件触发保存
+    useEffect(() => {
+        if (files.ischange) {
+            searchdata(1, 15);
+        }
+    }, [files]);
 
     const handleShowDrawer = (drwertitle, type, record) => {
         setVisible(!visible);
@@ -176,6 +185,7 @@ function CabinetManege(props) {
             dataIndex: 'cabinetResidueU',
             key: 'cabinetResidueU',
             width: 120,
+            sorter: (a, b) => a.cabinetResidueU - b.cabinetResidueU,
         },
         {
             title: '负责人',
@@ -254,7 +264,49 @@ function CabinetManege(props) {
         >
             {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
         </Button></>
-    )
+    );
+
+    // 导出
+    const download = () => {
+        const values = getFieldsValue();
+        dispatch({
+            type: 'cabinetmanage/download',
+            payload: {
+                ...values,
+                startTime: values.startTime?.length ? moment(values.startTime).format('YYYY-MM-DD 00:00:00') : '',
+                endTime: values.endTime?.length ? moment(values.endTime).format('YYYY-MM-DD 23:59:59') : '',
+                startUpdateTime: values.startUpdateTime?.length ? moment(values.startUpdateTime).format('YYYY-MM-DD 23:59:59') : '',
+                endUpdateTime: values.endUpdateTime?.length ? moment(values.endUpdateTime).format('YYYY-MM-DD 23:59:59') : '',
+                starMaintainTime: values.starMaintainTime?.length ? moment(values.starMaintainTime).format('YYYY-MM-DD 23:59:59') : '',
+                endMaintainTime: values.endMaintainTime?.length ? moment(values.endMaintainTime).format('YYYY-MM-DD 23:59:59') : '',
+            }
+        }).then(res => {
+            const filename = `机柜导出_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+            const blob = new Blob([res]);
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        });
+    };
+
+    // 下载导入模板
+    const downloadTemplate = () => {
+        dispatch({
+            type: 'cabinetmanage/downloadTemplate',
+        }).then(res => {
+            const filename = `设机柜导入模板_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+            const blob = new Blob([res]);
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        })
+    };
 
     // 数据字典取下拉值
     const getTypebyId = key => {
@@ -416,11 +468,16 @@ function CabinetManege(props) {
                         {expand ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '5.666667%' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
                     </Form>
                 </Row>
-                <div style={{ marginBottom: 8 }}>
+                <div style={{ marginBottom: 8, display: 'flex' }}>
                     <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleShowDrawer('新增机柜', 'add',)}>新增</Button>
-                    <Button type="primary" style={{ marginRight: 8 }}>导入</Button>
-                    <Button type="primary" style={{ marginRight: 8 }}>导出</Button>
-                    <Button type="primary" style={{ marginRight: 8 }}>下载导入模板</Button>
+                    <div>
+                        <SysLeadinCabinet
+                            fileslist={[]}
+                            ChangeFileslist={newvalue => setFiles(newvalue)}
+                        />
+                    </div>
+                    <Button type="primary" style={{ marginRight: 8 }} onClick={() => download()}>导出</Button>
+                    <Button type="primary" style={{ marginRight: 8 }} onClick={() => downloadTemplate()}>下载导入模板</Button>
                 </div>
                 <Table
                     columns={columns}

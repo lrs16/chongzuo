@@ -35,7 +35,6 @@ const tabList = [
 function scriptConfig(props) {
     const pagetitle = props.route.name;
     const {
-        loading,
         dispatch,
         location,
     } = props;

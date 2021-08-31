@@ -5,7 +5,7 @@ import React, {
 } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Table, Card, Button, Form, Input, Select, Row, Col } from 'antd';
+import { Table, Card, Button, Form, Input, Select, Row, Col, Divider } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
@@ -159,11 +159,17 @@ function softwareConfig(props) {
             width: 150,
         },
         {
+            title: '获取时间',
+            dataIndex: 'gettime',
+            key: 'gettime',
+            width: 150,
+        },
+        {
             title: '操作',
             dataIndex: 'action',
             key: 'action',
             fixed: 'right',
-            width: 120,
+            width: 200,
             render: (text, record) => {
                 return (
                     <div>
@@ -172,6 +178,13 @@ function softwareConfig(props) {
                             text={text}
                         >
                             编辑版本号
+                        </a>
+                        <Divider type="vertical"/>
+                        <a type="link"
+                            record={record}
+                            text={text}
+                        >
+                            历史版本
                         </a>
                     </div>
                 );
@@ -272,7 +285,9 @@ function softwareConfig(props) {
                 </Row>
                 <div style={{ marginBottom: 8 }}>
                     <Button type="primary" style={{ marginRight: 8 }}
-                    >备份</Button>
+                    >获取文件</Button>
+                    <Button type="primary" style={{ marginRight: 8 }}
+                    >备份文件</Button>
                 </div>
                 <Table
                     columns={columns}
@@ -280,7 +295,7 @@ function softwareConfig(props) {
                     loading={loading}
                     rowKey={(_, index) => index.toString()}
                     pagination={pagination}
-                    scroll={{ x: 1300 }}
+                    scroll={{ x: 1600 }}
                 />
             </Card>
         </PageHeaderWrapper>

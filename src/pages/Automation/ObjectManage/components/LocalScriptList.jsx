@@ -4,10 +4,11 @@ import React, {
 } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Table, Card, Button, Form, Input, Select, Row, Col, DatePicker, Divider } from 'antd';
+import { Table, Card, Button, Form, Input, Select, Row, Col, DatePicker, Divider, message, Popconfirm } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
-// import DictLower from '@/components/SysDict/DictLower';
+import DictLower from '@/components/SysDict/DictLower';
 import LocalScriptDrawer from './LocalScriptDrawer';
+import LocalViewDrawer from './LocalViewDrawer';
 
 const { Option } = Select;
 
@@ -20,14 +21,15 @@ function LocalScriptList(props) {
     formItemLayout,
     dispatch,
     localscriptlist,
+    userinfo,
     form: {
       getFieldDecorator,
       getFieldsValue,
       resetFields,
     }, } = props;
-  // console.log(props, 'props')
 
   const [expand, setExpand] = useState(false);
+  const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
   // const [selectedRows, setSelectedRows] = useState([]);
   // const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
@@ -36,6 +38,147 @@ function LocalScriptList(props) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
   const [data, setData] = useState('');
+  const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
+
+  const searchdata = (page, size) => {
+    const values = getFieldsValue();
+    values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
+    values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
+    dispatch({
+      type: 'scriptconfig/findLocalScriptList',
+      payload: {
+        values,
+        pageNum: page,
+        pageSize: size,
+      },
+    });
+  };
+
+
+  useEffect(() => {
+    searchdata(1, 15);
+  }, [location]);
+
+  // 上传删除附件触发保存
+  useEffect(() => {
+    if (files.ischange) {
+      searchdata(1, 15);
+    }
+  }, [files]);
+
+  useEffect(() => {
+    dispatch({
+      type: 'itsmuser/fetchuser',
+    });
+  }, []);
+
+  const handleShowDrawer = (drwertitle, type, record) => {
+    setVisible(!visible);
+    setTitle(drwertitle);
+    setSaveType(type);
+    if (type === 'update') {
+      setData(record);
+    } else {
+      setData({});
+    }
+  };
+
+  // 提交
+  const handleSubmit = values => {
+    if (files.ischange) {
+      const newvalues = {
+        scriptSize: files.arr?.length || values.upload ? files.arr[0].size : '',
+        fileId: files.arr?.length || values.upload ? files.arr[0].uid : '',
+      }
+      if (savetype === '' || savetype === 'add') {
+        dispatch({
+          type: 'scriptconfig/toaddlocalScript',
+          payload: {
+            ...values,
+            ...newvalues,
+          },
+        }).then(res => {
+          if (res.code === 200) {
+            message.success(res.msg);
+            searchdata(1, 15);
+          } else {
+            message.error(res.msg);
+          }
+        });
+      }
+      if (savetype === 'update') {
+        dispatch({
+          type: 'scriptconfig/toeditlocalScript',
+          payload: {
+            ...values,
+            ...newvalues,
+          },
+        }).then(res => {
+          if (res.code === 200) {
+            message.success(res.msg);
+            searchdata(1, 15);
+          } else {
+            message.error(res.msg);
+          }
+        });
+      }
+    }
+  };
+
+
+  const handleReset = () => {
+    resetFields();
+    searchdata(1, 15)
+    setPageinations({ current: 1, pageSize: 15 });
+  };
+
+  const onShowSizeChange = (page, size) => {
+    searchdata(page, size);
+    setPageinations({
+      ...paginations,
+      pageSize: size,
+    });
+  };
+
+  const changePage = page => {
+    searchdata(page, paginations.pageSize);
+    setPageinations({
+      ...paginations,
+      current: page,
+    });
+  };
+
+  const pagination = {
+    showSizeChanger: true,
+    onShowSizeChange: (page, size) => onShowSizeChange(page, size),
+    current: paginations.current,
+    pageSize: paginations.pageSize,
+    total: localscriptlist.total,
+    showTotal: total => `总共  ${total}  条记录`,
+    onChange: page => changePage(page),
+  };
+
+  const handleSearch = () => {
+    setPageinations({
+      ...paginations,
+      current: 1,
+    });
+    searchdata(1, paginations.pageSize);
+  };
+
+  const handleDelete = id => { // 删除
+    dispatch({
+      type: 'scriptconfig/toDeletelocalScript',
+      payload: { Ids: id },
+    }).then(res => {
+      if (res.code === 200) {
+        message.success(res.msg || '删除脚本成功');
+        searchdata(1, 15);
+      } else {
+        message.error(res.msg);
+      }
+    });
+  };
 
   const columns = [
     {
@@ -43,6 +186,13 @@ function LocalScriptList(props) {
       dataIndex: 'id',
       key: 'id',
       width: 200,
+      render: (text, record) => {
+        return (
+          <LocalViewDrawer record={record}>
+            <a type="link">{text}</a>
+          </LocalViewDrawer>
+        );
+      },
     },
     {
       title: '区域',
@@ -85,6 +235,7 @@ function LocalScriptList(props) {
       dataIndex: 'scriptCont',
       key: 'scriptCont',
       width: 300,
+      ellipsis: 'true',
     },
     {
       title: '脚本来源',
@@ -125,115 +276,16 @@ function LocalScriptList(props) {
       render: (text, record) => {
         return (
           <div>
-            <a type="link">编辑脚本</a>
+            <a type="link" onClick={() => handleShowDrawer('编辑本地脚本', 'update', record)}>编辑脚本</a>
             <Divider type="vertical" />
-            <a type="link" style={{ color: 'red' }}>删除脚本</a>
+            <Popconfirm title="确定删除此脚本吗？" onConfirm={() => handleDelete(record.id)}>
+              <a type="link" style={{ color: 'red' }}>删除脚本</a>
+            </Popconfirm>
           </div>
         );
       },
     },
   ];
-
-  const searchdata = (page, size) => {
-    const values = getFieldsValue();
-    values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
-    values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
-    dispatch({
-      type: 'scriptconfig/findLocalScriptList',
-      payload: {
-        values,
-        pageNum: page,
-        pageSize: size,
-      },
-    });
-  };
-
-
-  useEffect(() => {
-    searchdata(1, 15);
-  }, [location]);
-
-  const handleShowDrawer = (drwertitle, type, record) => {
-    setVisible(!visible);
-    setTitle(drwertitle);
-    setSaveType(type);
-    setData(record);
-  };
-
-  // 提交
-  const handleSubmit = values => {
-    //   if (savetype === '' || savetype === 'add') {
-    //     dispatch({
-    //         type: '',
-    //         payload: {
-    //             ...values,
-    //         },
-    //     }).then(res => {
-    //         if (res.code === 200) {
-    //             message.success(res.msg);
-    //             searchdata(1, 15);
-    //         } else {
-    //             message.error(res.msg);
-    //         }
-    //     });
-    // }
-    // if (savetype === 'update') {
-    //     dispatch({
-    //         type: '',
-    //         payload: {
-    //             ...values,
-    //         },
-    //     }).then(res => {
-    //         if (res.code === 200) {
-    //             message.success(res.msg);
-    //             searchdata(1, 15);
-    //         } else {
-    //             message.error(res.msg);
-    //         }
-    //     });
-    // }
-  };
-
-
-  const handleReset = () => {
-    resetFields();
-    searchdata(1, 15)
-    // setPageinations({ current: 1, pageSize: 15 });
-  };
-
-  // const onShowSizeChange = (page, size) => {
-  //   searchdata(page, size);
-  //   setPageinations({
-  //     ...paginations,
-  //     pageSize: size,
-  //   });
-  // };
-
-  // const changePage = page => {
-  //   searchdata(page, paginations.pageSize);
-  //   setPageinations({
-  //     ...paginations,
-  //     current: page,
-  //   });
-  // };
-
-  // const pagination = {
-  //   showSizeChanger: true,
-  //   onShowSizeChange: (page, size) => onShowSizeChange(page, size),
-  //   current: paginations.current,
-  //   pageSize: paginations.pageSize,
-  //   total: localscriptlist.total,
-  //   showTotal: total => `总共  ${total}  条记录`,
-  //   onChange: page => changePage(page),
-  // };
-
-  const handleSearch = () => {
-    // setPageinations({
-    //   ...paginations,
-    //   current: 1,
-    // });
-    searchdata(1, paginations.pageSize);
-  };
 
   // 查询
   const extra = (<>
@@ -251,23 +303,23 @@ function LocalScriptList(props) {
   )
 
   // 数据字典取下拉值
-  // const getTypebyId = key => {
-  //   if (selectdata.ischange) {
-  //     return selectdata.arr[0].children.filter(item => item.key === key)[0].children;
-  //   }
-  //   return [];
-  // };
+  const getTypebyId = key => {
+    if (selectdata.ischange) {
+      return selectdata.arr[0].children.filter(item => item.key === key)[0].children;
+    }
+    return [];
+  };
 
-  // const zonemap = getTypebyId('1428182995477942274'); // 区域
-  const zonemap = [];
+  const zonemap = getTypebyId('1428182995477942274'); // 主机区域
+
   return (
     <>
       <Card>
-        {/* <DictLower
+        <DictLower
           typeid="1428178684907835393"
           ChangeSelectdata={newvalue => setSelectData(newvalue)}
           style={{ display: 'none' }}
-        /> */}
+        />
         <Row gutter={16}>
           <Form {...formItemLayout}>
             <Col span={8}>
@@ -390,9 +442,11 @@ function LocalScriptList(props) {
           >新增</Button>
         </div>
         <Table
-          // dataSource={localscriptlist.rows}
+          dataSource={localscriptlist.rows}
           rowKey={record => record.id}
+          scroll={{ x: 1300 }}
           columns={columns}
+          paginations={pagination}
           loading={loading} />
       </Card>
       {/* 抽屉 */}
@@ -407,14 +461,18 @@ function LocalScriptList(props) {
         savetype={savetype}
         scriptsourcemap={scriptsourcemap}
         scripttypemap={scripttypemap}
+        userinfo={userinfo}
+        files={files.arr}
+        ChangeFiles={newvalue => { setFiles(newvalue) }}
       />
     </>
   );
 }
 
 export default Form.create({})(
-  connect(({ scriptconfig, loading }) => ({
+  connect(({ scriptconfig, itsmuser, loading }) => ({
     localscriptlist: scriptconfig.localscriptlist,
+    userinfo: itsmuser.userinfo,
     loading: loading.models.scriptconfig,
   }))(LocalScriptList),
 );

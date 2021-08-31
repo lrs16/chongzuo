@@ -1,7 +1,8 @@
 import {
     // 系统脚本
     systemScriptList,
-    systemscriptaddOrEdit,
+    systemscriptaddOrEdit, // 添加编辑（保存）
+    systemscriptSubmit, // 提交
     deletesystemScript,
     recellScript,
     // 本地脚本
@@ -31,9 +32,14 @@ export default {
             });
         },
 
-        // 获取脚本配置系统脚本列表
+        // 添加编辑（保存）
         *toupdatesystemScript({ payload }, { call }) {
             return yield call(systemscriptaddOrEdit, payload);
+        },
+
+        // 提交
+        *tosubmitsystemScript({ payload }, { call }) {
+            return yield call(systemscriptSubmit, payload);
         },
 
         // 删除系统脚本列表数据

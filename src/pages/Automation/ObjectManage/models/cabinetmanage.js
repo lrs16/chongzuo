@@ -2,6 +2,8 @@ import {
   CabinetList,
   updateCabinet,
   deleteCabinet,
+  CabinetqueryExport,
+  downloadCabinetTemplate, // 下载导入模板
 } from '../services/api';
 
 export default {
@@ -30,6 +32,16 @@ export default {
     *toDeleteCabinet({ payload }, { call }) {
       return yield call(deleteCabinet, payload);
     },
+
+    // 机柜-导出
+    *download({ payload }, { call }) {
+      return yield call(CabinetqueryExport, payload);
+    },
+
+    // 机柜-下载导入模板
+    *downloadTemplate(_, { call }) {
+      return yield call(downloadCabinetTemplate)
+    }
   },
 
   reducers: {

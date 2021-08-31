@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Drawer, Button, Form, Input, Radio, Select } from 'antd';
 import DictLower from '@/components/SysDict/DictLower';
 import moment from 'moment';
+import SysUpload from './SysUpload/Upload';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -19,8 +20,13 @@ const formItemLayout = {
 };
 
 function LocalScriptDrawer(props) {
-  const { visible, ChangeVisible, title, handleSubmit, scriptsourcemap, scripttypemap, dispatch } = props;
-  const { getFieldDecorator, validateFields } = props.form;
+  const { visible, ChangeVisible, title, handleSubmit,
+    scriptsourcemap, scripttypemap, dispatch, userinfo, savetype,
+    files,
+    ChangeFiles,
+  } = props;
+
+  const { getFieldDecorator, validateFields,resetFields } = props.form;
   const required = true;
   const {
     id,
@@ -33,17 +39,28 @@ function LocalScriptDrawer(props) {
     scriptCont,
     scriptRemarks,
     scriptSize,
-    createBy,
+    // createBy,
     hostZoneId,
   } = props.record;
 
   const [findhostname, setFindhostName] = useState([]); // 区域查询主机名称
-  const [findhostip, setFindhostIp] = useState([]); // 主机名称查询主机IP
+  const [findhostip, setFindhostIp] = useState({}); // 主机名称查询主机IP
+  const [showElem, setshowElem] = useState('none');
+  // const [toshowElem, settoshowElem] = useState('block');
+  const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 附件上传下载
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
 
   const hanldleCancel = () => {
+    resetFields();
     ChangeVisible(false);
   };
+
+  useEffect(() => {
+    if (fileslist.ischange) {
+      ChangeFiles(fileslist);
+    }
+  }, [fileslist]);
+
   const handleOk = () => {
     validateFields((err, values) => {
       if (!err) {
@@ -60,8 +77,19 @@ function LocalScriptDrawer(props) {
   useEffect(() => {
     return () => {
       setSelectData([]);
+      setFindhostIp({});
     };
   }, []);
+
+  useEffect(() => {
+    if (scriptSource === '本地上传') {
+      setshowElem('block');
+      // settoshowElem('none');
+    }else {
+      setshowElem('none');
+      // settoshowElem('block');
+    }
+  }, [scriptSource]);
 
   const handleChange = v => {
     dispatch({
@@ -69,7 +97,25 @@ function LocalScriptDrawer(props) {
       payload: { cabinetZoneId: v },
     }).then(res => {
       setFindhostName(res.data);
-      setFindhostIp(res.data);
+    });
+  };
+
+  const handletoChange = e => {
+    if (e.target.value === '本地上传') {
+      setshowElem('block');
+      // settoshowElem('none');
+    } else {
+      setshowElem('none');
+      // settoshowElem('block');
+    }
+  };
+
+  const handlehostNameChange = v => {
+    dispatch({
+      type: 'softwaremanage/tofindCascade',
+      payload: { hostName: v },
+    }).then(res => {
+      setFindhostIp(res.data[0]);
     });
   };
 
@@ -98,11 +144,24 @@ function LocalScriptDrawer(props) {
         style={{ display: 'none' }}
       />
       <Form {...formItemLayout} onSubmit={handleOk}>
-        <Form.Item label="Id">
-          {getFieldDecorator('id', {
-            initialValue: id,
-          })(<Input disabled />)}
-        </Form.Item>
+        {
+          (savetype === 'add' || savetype === '') && (
+            <Form.Item label="hostId" style={{ display: 'none' }}>
+              {getFieldDecorator('hostId', {
+                initialValue: findhostip.Id || '',
+              })(<Input disabled />)}
+            </Form.Item>
+          )
+        }
+        {
+          savetype === 'update' && (
+            <Form.Item label="id">
+              {getFieldDecorator('id', {
+                initialValue: id,
+              })(<Input disabled />)}
+            </Form.Item>
+          )
+        }
         <Form.Item label="区域">
           {getFieldDecorator('hostZoneId', {
             rules: [
@@ -130,7 +189,7 @@ function LocalScriptDrawer(props) {
                 message: '请输入 '
               },
             ],
-          })(<Select placeholder="请选择" allowClear>
+          })(<Select placeholder="请选择" allowClear onChange={v => handlehostNameChange(v)}>
             {findhostname !== undefined && findhostname.map(obj => (
               <Option key={obj.Id} value={obj.hostName}>
                 {obj.hostName}
@@ -146,14 +205,8 @@ function LocalScriptDrawer(props) {
                 message: '请输入 '
               },
             ],
-            initialValue: hostIp,
-          })(<Select placeholder="请选择" allowClear>
-            {findhostip !== undefined && findhostip.map(obj => (
-              <Option key={obj.Id} value={obj.hostIp}>
-                {obj.hostIp}
-              </Option>
-            ))}
-          </Select>)}
+            initialValue: findhostip.hostIp || hostIp,
+          })(<Input allowClear />)}
         </Form.Item>
         <Form.Item label="脚本名称">
           {getFieldDecorator('scriptName', {
@@ -186,13 +239,20 @@ function LocalScriptDrawer(props) {
               },
             ],
             initialValue: scriptSource || '手动输入',
-          })(<Radio.Group>
+          })(<Radio.Group onChange={v => handletoChange(v)}>
             {scriptsourcemap.map(obj => (
               <Radio key={obj.key} value={obj.title}>
                 {obj.title}
               </Radio>
             ))}
           </Radio.Group>)}
+        </Form.Item>
+        <Form.Item label="上传" style={{ display: showElem }}>
+          {getFieldDecorator('upload')(
+            <div style={{ width: 400 }}>
+              <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+            </div>,
+          )}
         </Form.Item>
         <Form.Item label="脚本类型">
           {getFieldDecorator('scriptType', {
@@ -206,17 +266,19 @@ function LocalScriptDrawer(props) {
             ))}
           </Radio.Group>)}
         </Form.Item>
+        {showElem==='none'&&(
         <Form.Item label="脚本内容">
           {getFieldDecorator('scriptCont', {
-            rules: [
-              {
-                required,
-                message: '请输入 '
-              },
-            ],
+            rules: [{ required, message: '请输入 ' }],
             initialValue: scriptCont,
           })(<TextArea placeholder="请输入" autoSize={{ minRows: 10 }} allowClear />)}
         </Form.Item>
+        )}
+        {/* <Form.Item label="*脚本内容" style={{ display: toshowElem }}>
+          {getFieldDecorator('scriptCont', {
+            initialValue: scriptCont,
+          })(<TextArea placeholder="请输入" autoSize={{ minRows: 10 }} allowClear />)}
+        </Form.Item> */}
         <Form.Item label="脚本备注">
           {getFieldDecorator('scriptRemarks', {
             initialValue: scriptRemarks,
@@ -229,12 +291,12 @@ function LocalScriptDrawer(props) {
         </Form.Item>
         <Form.Item label="上传时间">
           {getFieldDecorator('createTime', {
-            initialValue: moment(new Date()).format('YY-MM-DD: HH:mm:ss'),
+            initialValue: moment(new Date()).format('YY-MM-DD HH:mm:ss'),
           })(<Input disabled />)}
         </Form.Item>
         <Form.Item label="上传人">
           {getFieldDecorator('createBy', {
-            initialValue: createBy,
+            initialValue: userinfo.userName,
           })(<Input disabled />)}
         </Form.Item>
       </Form>
@@ -253,9 +315,6 @@ function LocalScriptDrawer(props) {
       >
         <Button onClick={hanldleCancel} style={{ marginRight: 8 }}>
           取消
-        </Button>
-        <Button style={{ marginRight: 8 }}>
-          保存
         </Button>
         <Button onClick={handleOk} type="primary">
           提交
@@ -280,6 +339,10 @@ LocalScriptDrawer.defaultProps = {
     scriptSize: '',
     createTime: '',
     createBy: '',
+  },
+  userinfo: {
+    userName: '',
+    userId: '',
   },
 };
 

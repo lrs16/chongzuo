@@ -1,8 +1,10 @@
-import React from 'react';
-import { Drawer, Button, Form, Input, InputNumber, Radio, Select } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Drawer, Button, Form, Input, InputNumber, Radio, Select, message } from 'antd';
+import SysUpload from './SysUpload/Upload';
 
 const { TextArea } = Input;
 const { Option } = Select;
+const RadioGroup = Radio.Group;
 
 const formItemLayout = {
   labelCol: {
@@ -23,7 +25,14 @@ const directormap = [
   { key: '3', title: '赵六' },
 ];
 function SystemScriptDrawer(props) {
-  const { visible, ChangeVisible, title, handleSubmit, scriptsourcemap, scripttypemap } = props;
+  const { visible, ChangeVisible, title, handleSubmit, dispatch,
+    // scriptsourcemap, 
+    scripttypemap,
+    files,
+    ChangeFiles,
+    onChangeList,
+  } = props;
+
   const { getFieldDecorator, validateFields } = props.form;
   const required = true;
   const {
@@ -38,9 +47,35 @@ function SystemScriptDrawer(props) {
     scriptRemarks,
   } = props.record;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [showElem, setshowElem] = useState('none');
+  // const [toshowElem, settoshowElem] = useState('block');
+  const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 附件上传下载
+
   const hanldleCancel = () => {
     ChangeVisible(false);
   };
+
+  useEffect(() => {
+    if (fileslist.ischange) {
+      ChangeFiles(fileslist);
+    }
+  }, [fileslist]);
+
+  useEffect(() => {
+    if (scriptSource === '本地上传') {
+      setshowElem('block');
+      // settoshowElem('none');
+    }else {
+      setshowElem('none');
+      // settoshowElem('block');
+    }
+  }, [scriptSource]);
+
+  useEffect(() => {
+    setFilesList({ ...fileslist, arr: files });
+  }, []);
+
   const handleOk = () => {
     validateFields((err, values) => {
       if (!err) {
@@ -52,6 +87,38 @@ function SystemScriptDrawer(props) {
         ChangeVisible(false);
       }
     });
+  };
+
+  const handletosave = () => {
+    validateFields((err, values) => {
+      if (!err) {
+        dispatch({
+          type: 'scriptconfig/tosubmitsystemScript',
+          payload: {
+            ...values,
+          },
+        }).then(res => {
+          if (res.code === 200) {
+            message.success(res.msg);
+            onChangeList();
+          } else {
+            message.error(res.msg);
+          }
+        });
+        hanldleCancel();
+        props.form.resetFields();
+      }
+    });
+  };
+
+  const handletoChange = e => {
+    if (e.target.value === '本地上传') {
+      setshowElem('block');
+      // settoshowElem('none');
+    } else {
+      setshowElem('none');
+      // settoshowElem('block');
+    }
   };
 
   return (
@@ -80,7 +147,7 @@ function SystemScriptDrawer(props) {
             initialValue: scriptName,
           })(<Input placeholder="请输入" />)}
         </Form.Item>
-        <Form.Item label="脚本来源">
+        <Form.Item label="脚本来源" span={12}>
           {getFieldDecorator('scriptSource', {
             rules: [
               {
@@ -88,14 +155,18 @@ function SystemScriptDrawer(props) {
                 message: '请选择'
               },
             ],
-            initialValue: scriptSource || '本地上传',
-          })(<Radio.Group>
-            {scriptsourcemap.map(obj => (
-              <Radio key={obj.key} value={obj.title}>
-                {obj.title}
-              </Radio>
-            ))}
-          </Radio.Group>)}
+            initialValue: scriptSource || '手动输入',
+          })(<RadioGroup onChange={v => handletoChange(v)}>
+            <Radio value="手动输入">手动输入</Radio>
+            <Radio value="本地上传">本地上传</Radio>
+          </RadioGroup>)}
+        </Form.Item>
+        <Form.Item label="上传" style={{ display: showElem }}>
+          {getFieldDecorator('upload')(
+            <div style={{ width: 400 }}>
+              <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+            </div>,
+          )}
         </Form.Item>
         <Form.Item label="脚本类型">
           {getFieldDecorator('scriptType', {
@@ -109,25 +180,16 @@ function SystemScriptDrawer(props) {
             ))}
           </Radio.Group>)}
         </Form.Item>
+        {showElem==='none'&&(
         <Form.Item label="脚本内容">
           {getFieldDecorator('scriptCont', {
-            rules: [
-              {
-                required,
-                message: '请输入 '
-              },
-            ],
+            rules: [{ required,message: '请输入 ' }],
             initialValue: scriptCont,
           })(<TextArea placeholder="请输入" autoSize={{ minRows: 10 }} allowClear />)}
         </Form.Item>
+        )}
         <Form.Item label="脚本参数">
           {getFieldDecorator('scriptArgs', {
-            rules: [
-              {
-                required,
-                message: '请输入 '
-              },
-            ],
             initialValue: scriptArgs,
           })(<Input placeholder="请输入" />)}
         </Form.Item>
@@ -141,12 +203,12 @@ function SystemScriptDrawer(props) {
             ],
             initialValue: director,
           })(<Select placeholder="请选择" allowClear>
-          {directormap.map(obj => (
+            {directormap.map(obj => (
               <Option key={obj.key} value={obj.title}>
-                  {obj.title}
+                {obj.title}
               </Option>
-          ))}
-      </Select>)}
+            ))}
+          </Select>)}
         </Form.Item>
         <Form.Item label="脚本排序">
           {getFieldDecorator('scriptSorts', {
@@ -175,10 +237,10 @@ function SystemScriptDrawer(props) {
         <Button onClick={hanldleCancel} style={{ marginRight: 8 }}>
           取消
         </Button>
-        <Button style={{ marginRight: 8 }}>
+        <Button style={{ marginRight: 8 }} onClick={handleOk} >
           保存
         </Button>
-        <Button onClick={handleOk} type="primary">
+        <Button onClick={handletosave} type="primary">
           提交
         </Button>
       </div>

@@ -115,6 +115,7 @@ function softwareManage(props) {
                 type: 'softwaremanage/toeditSoft',
                 payload: {
                     ...values,
+                    id: data.id,
                 },
             }).then(res => {
                 if (res.code === 200) {
