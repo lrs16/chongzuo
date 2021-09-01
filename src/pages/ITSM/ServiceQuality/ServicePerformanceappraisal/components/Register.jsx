@@ -195,10 +195,10 @@ const Register = React.forwardRef((props, ref) => {
   // 请求服务商
   const SearchDisableduser = (value, type) => {
     const requestData = {
-      value,
+      providerName: value,
       pageNum: 1,
       pageSize: 1000,
-      status:'1'
+      status: '1'
     }
     switch (type) {
       case 'provider':
@@ -225,7 +225,11 @@ const Register = React.forwardRef((props, ref) => {
 
         break;
       case 'score':
-        scoreListpage({ ...requestData }).then(res => {
+        scoreListpage({
+          scoreName: value,
+          pageNum: 1,
+          pageSize: 1000
+        }).then(res => {
           if (res) {
             const arr = [...(res.data.records)];
             setSpinLoading(false);
@@ -399,7 +403,7 @@ const Register = React.forwardRef((props, ref) => {
                     onSelect={(v, opt) => handleDisableduser(v, opt, 'provider')}
                   >
                     <Search
-                      placeholder="可输入姓名搜索"
+                      placeholder="可输入服务商名称搜索"
                       onSearch={values => SearchDisableduser(values, 'provider')}
                       allowClear
                     />
@@ -536,7 +540,7 @@ const Register = React.forwardRef((props, ref) => {
                     onSelect={(v, opt) => handleDisableduser(v, opt, 'score')}
                   >
                     <Search
-                      placeholder="可输入姓名搜索"
+                      placeholder="可输入评分细则名称搜索"
                       onSearch={values => SearchDisableduser(values, 'score')}
                       allowClear
                     />
