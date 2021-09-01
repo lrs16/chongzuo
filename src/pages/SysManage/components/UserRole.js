@@ -4,7 +4,7 @@ import { Drawer, Button, Message } from 'antd';
 import RoleTransfer from './RoleTransfer';
 
 // 克隆子元素按钮，并添加事件
-const withClick = (element, showDrawer = () => {}) => {
+const withClick = (element, showDrawer = () => { }) => {
   return <element.type {...element.props} onClick={showDrawer} />;
 };
 @connect(({ userrole, loading }) => ({
@@ -79,7 +79,7 @@ class UserRole extends Component {
       userrole: { sysrole, userrole },
     } = this.props;
 
-    //  console.log(sysrole,userrole);
+    // console.log(sysrole, userrole);
     return (
       <>
         {withClick(children, this.showDrawer)}

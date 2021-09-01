@@ -81,7 +81,7 @@ class RoleTransfer extends Component {
           render={this.renderItem}
           listStyle={{
             height: 'calc(100vh - 150px)',
-            width: 315,
+            width: 300,
             overflow: 'auto',
           }}
         />

@@ -572,6 +572,12 @@ export default {
                               redirect: '/ITSM/releasemanage/statistics/analysis',
                             },
                             {
+                              path: '/ITSM/releasemanage/statistics/index',
+                              name: '发布统计',
+                              icon: 'control',
+                              component: './ITSM/Releasemanage/Statistics',
+                            },
+                            {
                               path: '/ITSM/releasemanage/statistics/analysis',
                               name: '发布统计分析',
                               icon: 'control',
@@ -1784,7 +1790,7 @@ export default {
                         {
                           path: '/sysmanage/processmanagement/modeledit/:id',
                           name: '编辑模型',
-                          icon: 'smile',                      
+                          icon: 'smile',
                           component: './SysManage/ProcessManagement/ModelEdit',
                         },
                         {
@@ -1795,7 +1801,7 @@ export default {
                         },
                       ],
                     },
-                    {  
+                    {
                       path: '/sysmanage/timedtask',
                       icon: 'cluster',
                       name: '定时任务',

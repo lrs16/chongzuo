@@ -279,26 +279,45 @@ function QueryList(props) {
   const download = () => {
     validateFields((err, values) => {
       const tablecol = downloadColumns(defaultColumns);
-      dispatch({
-        type: 'demandquery/download',
-        payload: {
-          ...values,
-          columns: JSON.stringify(tablecol),
-          module: values.module === [] ? '' : values.module.join('/'),
-          startTime: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD 00:00:00') : '',
-          endTime: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD 23:59:59') : '',
-          createTime: ''
-        }
-      }).then(res => {
-        const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
-        const blob = new Blob([res]);
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        a.click();
-        window.URL.revokeObjectURL(url);
-      });
+      if (selectedRowKeys && selectedRowKeys.length > 0) {
+        dispatch({
+          type: 'demandquery/download',
+          payload: {
+            columns: JSON.stringify(tablecol),
+            ids: selectedRowKeys.toString()
+          }
+        }).then(res => {
+          const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+      } else {
+        dispatch({
+          type: 'demandquery/download',
+          payload: {
+            ...values,
+            columns: JSON.stringify(tablecol),
+            module: values.module === [] ? '' : values.module.join('/'),
+            startTime: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD 00:00:00') : '',
+            endTime: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD 23:59:59') : '',
+            createTime: ''
+          }
+        }).then(res => {
+          const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+      }
     })
   };
 
