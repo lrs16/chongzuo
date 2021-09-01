@@ -42,6 +42,13 @@ function Examinedes(props) {
           </Col>
           {info.developmentLead && (
             <Col span={24}>
+              <Form.Item label='开发负责人' {...forminladeLayout}>
+                <Input defaultValue={info.developmentLead} disabled />
+              </Form.Item>
+            </Col>
+          )}
+          {info.developmentLead && (
+            <Col span={24}>
               <Form.Item label='开发负责人'  {...forminladeLayout}>
                 <Input defaultValue={info.developmentLead} disabled />
               </Form.Item>
