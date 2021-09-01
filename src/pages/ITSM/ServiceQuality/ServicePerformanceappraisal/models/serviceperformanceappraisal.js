@@ -78,7 +78,7 @@ export default {
   //  登记
   *assessRegister({ payload }, { call, put }) {
     const response = yield call(assessRegister,payload);
-    if(response.code === 200) {
+    if(response.code === 200 && response && response.data && response.data.assessNo) {
       router.push({
         pathname:'/ITSM/servicequalityassessment/serviceperformanceappraisal/register',
         query: {
@@ -90,7 +90,13 @@ export default {
       if(assessNo) {
         router.push({
           pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform`,
-          query: { assessNo, mainId: instanceId, taskId, orderNo: '', tobelist:true }  // 这里要加mainId
+          query: { 
+            assessNo,
+            mainId: instanceId,
+            taskId,
+            orderNo: assessNo,
+            tobelist:true
+               }  // 这里要加mainId
         });
       }
     }

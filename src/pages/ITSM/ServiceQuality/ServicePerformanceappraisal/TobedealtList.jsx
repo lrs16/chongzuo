@@ -698,7 +698,7 @@ function TobedealtList(props) {
     onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    total: tobeDealtarr.total,
+    total: tobeDealtarr.total || '',
     showTotal: total => `总共  ${total}  条记录`,
     onChange: (page) => changePage(page),
   };

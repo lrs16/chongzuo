@@ -78,15 +78,17 @@ function AddScoringRulesmaintenance(props) {
   const getalldata = () => {
     dispatch({
       type: 'qualityassessment/getTypeTree',
-      payload: type || (scoreDetail && scoreDetail.assessType === '功能开发' ? '1' : '2')
+      payload: type || scoreDetail.assessType
     }).then(res => {
       setTreeData(res.data)
     })
   }
 
   useEffect(() => {
-    getalldata()
-  }, []);
+    if(scoreDetail && scoreDetail.assessType) {
+      getalldata()
+    }
+  }, [scoreDetail]);
 
   console.log(treeData, 'treeData')
 

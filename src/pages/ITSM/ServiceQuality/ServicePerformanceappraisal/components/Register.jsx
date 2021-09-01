@@ -77,6 +77,7 @@ const Register = React.forwardRef((props, ref) => {
 
   const handleChange = (values, option, params) => {
     const { key, props: { value } } = option;
+    console.log('key: ', key);
     switch (params) {
       case 'contract':
         setFieldsValue({
