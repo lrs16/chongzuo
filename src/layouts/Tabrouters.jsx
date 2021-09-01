@@ -27,7 +27,6 @@ const alonepath = [
   { path: '/ITSM/servicequalityassessment/addserviceprovidermaintenance' },
   { path: '/ITSM/servicequalityassessment/detailserviceprovidermaintenance' },
   { path: '/ITSM/servicequalityassessment/detailscoringrulesmaintenance' },
-  { path: '/ITSM/servicequalityassessment/detailscoringrulesmaintenance' },
   { path: '/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail' },
 ];
 

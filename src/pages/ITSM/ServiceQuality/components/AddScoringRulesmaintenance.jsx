@@ -85,16 +85,21 @@ function AddScoringRulesmaintenance(props) {
   }
 
   useEffect(() => {
-    if (id) {
-      getlist();
-      getalldata()
+    getalldata()
+  }, []);
+
+  console.log(treeData, 'treeData')
+
+  useEffect(() => {
+    if (id && treeData && treeData.length) {
+      getlist(treeData[0].id);
     } else {
       dispatch({
         type: 'qualityassessment/clearclauseList'
       }
       )
     }
-  }, [id]);
+  }, [id, treeData]);
 
   //  渲染树结构
   const renderTreeNodes = data =>
@@ -454,12 +459,12 @@ function AddScoringRulesmaintenance(props) {
                   <Search
                     style={{ marginBottom: 8 }}
                     placeholder="Search"
-                    disabled={scoreSearch}
+                    // disabled={scoreSearch}
                     onSearch={onSearch} />
                   <Tree
-                    // loadData={onLoadData}
+                    defaultSelectedKeys={['1417307840400809985']}
+                    defaultExpandAll
                     onSelect={handleClick}
-                    disabled={scoreSearch}
                   >
                     {renderTreeNodes(treeData)}
                   </Tree>
@@ -522,7 +527,7 @@ function AddScoringRulesmaintenance(props) {
                           getFieldDecorator('detailed', {
 
                           })
-                            (<Input disabled={scoreSearch} />)
+                            (<Input />)
                         }
                       </Form.Item>
                     </Col>
@@ -531,13 +536,11 @@ function AddScoringRulesmaintenance(props) {
                       <Button
                         type='primary'
                         style={{ marginRight: 8 }}
-                        disabled={scoreSearch}
                         onClick={() => getlist(selectId)}
                       >
                         查询
                       </Button>
                       <Button
-                        disabled={scoreSearch}
                         onClick={handleReset}
                       >
                         重置

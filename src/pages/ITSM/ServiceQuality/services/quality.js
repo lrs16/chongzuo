@@ -177,3 +177,4 @@ export async function clauseDel(id) {
     method:'POST',
   })
 }
+

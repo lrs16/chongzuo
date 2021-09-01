@@ -1031,11 +1031,9 @@ function Besolved(props) {
     return item.title
   });
 
-  console.log(defaultAllkey, 'defaultAllkey');
   const rowSelection = {
     onChange: (index, handleSelect) => {
       setSelectedKeys([...index])
-      setSelectedRows([...handleSelect])
     }
   }
 
@@ -1432,7 +1430,7 @@ function Besolved(props) {
           loading={loading}
           columns={columns}
           dataSource={queryArr.rows}
-          rowKey={record => record.id}
+          rowKey={records => records.id}
           pagination={pagination}
           rowSelection={rowSelection}
           scroll={{ x: 800, y: 700 }}

@@ -6,6 +6,7 @@ import { getAndField } from '@/pages/SysManage/services/api';
 import { queryDisableduserByUser } from '@/services/common';
 import styles from '../index.less';
 import SysDict from '@/components/SysDict';
+import { querkeyVal } from '@/services/api';
 
 const { Option } = Select;
 const { TextArea, Search } = Input;
@@ -21,6 +22,7 @@ const Registrat = React.forwardRef((props, ref) => {
   const [desautodata, setDestoData] = useState([]);
   const [disablelist, setDisabledList] = useState([]); // 自动完成下拉列表
   const [spinloading, setSpinLoading] = useState(true); // 自动完成加载
+  const [persondata, setPersondata] = useState('');
   const [selectdata, setSelectData] = useState('');
 
   useEffect(() => {
@@ -74,6 +76,11 @@ const Registrat = React.forwardRef((props, ref) => {
   useEffect(() => {
     handletitleSearch({ module: '问题单', field: '标题', key: '' });
     handledesSearch({ module: '问题单', field: '描述', key: '' });
+    querkeyVal('public', 'devdirector').then(res => {
+      if (res.code === 200) {
+        setPersondata(res.data.devdirector)
+      }
+    });
   }, []);
 
   // 自动完成报障用户
@@ -100,6 +107,8 @@ const Registrat = React.forwardRef((props, ref) => {
       }
     });
   };
+
+  console.log(register.developmentLead, 'register.developmentLead')
 
   // 选择报障用户，信息回填
   const handleDisableduser = (v, opt) => {
@@ -374,19 +383,30 @@ const Registrat = React.forwardRef((props, ref) => {
             </Form.Item>
           </Col>
 
-          <Col span={8}>
-            <Form.Item label="开发负责人">
-              {getFieldDecorator('developmentLead', {
-                rules: [
-                  {
-                    required,
-                    message: '请输入开发负责人',
-                  },
-                ],
-                initialValue: register ? register.developmentLead : '',
-              })(<Input placeholder="请输入" />)}
-            </Form.Item>
-          </Col>
+          {persondata && persondata.length > 0 && (
+            <Col span={8}>
+              <Form.Item label="开发负责人">
+                {getFieldDecorator('developmentLead', {
+                  rules: [
+                    {
+                      required,
+                      message: '请输入开发负责人',
+                    },
+                  ],
+                  initialValue: register.developmentLead || undefined,
+                })(
+                  <Select placeholder="请选择" mode="multiple">
+                    {(persondata).map(obj => [
+                      <Option key={obj.key} value={obj.val}>
+                        {obj.val}
+                      </Option>,
+                    ])}
+                  </Select>
+                )}
+              </Form.Item>
+            </Col>
+          )}
+
 
           <Col span={24}>
             <Form.Item label="问题标题" {...forminladeLayout}>
@@ -498,11 +518,11 @@ Registrat.defaultProps = {
     no: '',
     title: '',
     content: '',
-    type:''
+    type: ''
   },
   register: {
     complainUser: '',
-    developmentLead:''
+    developmentLead: undefined
   },
   useInfo: {
     userName: '',

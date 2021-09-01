@@ -340,7 +340,8 @@ function Assessment(props) {
   const [target2Type, setTarget2Type] = useState('');
   const [spinloading, setSpinLoading] = useState(true);
   const [tabrecord, setTabRecord] = useState({});
-
+  const [selectedKeys, setSelectedKeys] = useState([]);
+  
   const getPerformanceleader = () => {
     operationPerson().then(res => {
       const result = (res.data).map(item => {
@@ -873,6 +874,12 @@ function Assessment(props) {
         window.URL.revokeObjectURL(url);
       })
     })
+  }
+
+  const rowSelection = {
+    onChange: (index, handleSelect) => {
+      setSelectedKeys([...index])
+    }
   }
 
 
@@ -1647,7 +1654,8 @@ function Assessment(props) {
           columns={columns}
           dataSource={assessmyAssessarr.records}
           scroll={{ x: 1500, y: 700 }}
-          rowKey={record => record.id}
+          rowKey={records => records.id}
+          rowSelection={rowSelection}
           pagination={pagination}
         />
       </Card>

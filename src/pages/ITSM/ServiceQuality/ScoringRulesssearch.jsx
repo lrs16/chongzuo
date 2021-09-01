@@ -47,6 +47,8 @@ function ScoringRulesssearch(props) {
   const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 })
   const [selectdata, setSelectData] = useState('');
   const [tabrecord, setTabRecord] = useState({});
+  const [selectedKeys, setSelectedKeys] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
 
   const searchdata = (values, page, pageSize) => {
     dispatch({
@@ -86,6 +88,7 @@ function ScoringRulesssearch(props) {
             pathname: '/ITSM/servicequalityassessment/detailscoringrulesmaintenance',
             query: {
               id: record.id,
+              No: record.scoreNo,
               scoreSearch:true
             }
           })
@@ -114,6 +117,27 @@ function ScoringRulesssearch(props) {
         item => item.title === title)[0].children;
     }
     return []
+  }
+
+  const download = () => {
+    validateFields((err, value) => {
+      dispatch({
+        type: 'qualityassessment/scoreExport',
+        payload: {
+          ids: selectedKeys.toString(),
+          ...value
+        }
+      }).then(res => {
+        const filename = '下载.xls';
+        const blob = new Blob([res]);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url)
+      })
+    })
   }
 
 
@@ -187,6 +211,13 @@ function ScoringRulesssearch(props) {
     assessType:'',
   }
 
+  const rowSelection = {
+    onChange: (index, handleSelect) => {
+      setSelectedKeys([...index])
+      setSelectedRows([...handleSelect])
+    }
+  }
+
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
 
   useEffect(() => {
@@ -257,7 +288,7 @@ function ScoringRulesssearch(props) {
                     (
                       <Select placeholder='请选择' allowClear>
                         {assessmentType.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
+                          <Option key={obj.key} value={obj.dict_code}>
                             {obj.title}
                           </Option>
                         ])}
@@ -283,7 +314,7 @@ function ScoringRulesssearch(props) {
           </Col>
 
           <Col span={8}>
-            <Button type='primary'>导出数据</Button>
+            <Button type='primary'  onClick={() => download()}>导出数据</Button>
           </Col>
         </Row>
 
@@ -292,6 +323,7 @@ function ScoringRulesssearch(props) {
           columns={columns}
           dataSource={scoreList.records}
           pagination={pagination}
+          rowSelection={rowSelection}
           scroll={{ x: 800,y: 700 }}
         />
       </Card>

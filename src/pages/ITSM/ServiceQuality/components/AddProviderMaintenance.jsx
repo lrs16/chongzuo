@@ -170,7 +170,7 @@ function AddProviderMaintenance(props) {
       title: '操作',
       dataIndex: 'action',
       render: (text, record) => {
-        if(!providerSearch) {
+        if (!providerSearch) {
           return (
             <span disabled={providerSearch}>
               <Contract
@@ -196,7 +196,7 @@ function AddProviderMaintenance(props) {
           )
         }
         return null
-       
+
       }
     },
   ]
@@ -277,8 +277,11 @@ function AddProviderMaintenance(props) {
       title={id ? '服务商维护详情' : pagetitle}
       extra={
         <>
-          <Button type='primary' onClick={handleSaveForm}>保存</Button>
-
+          {
+            !providerSearch && (
+              <Button type='primary' onClick={handleSaveForm}>保存</Button>
+            )
+          }
 
           <Button onClick={handleBack}>返回</Button>
         </>

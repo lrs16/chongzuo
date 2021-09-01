@@ -103,7 +103,6 @@ function Registration(props) {
   //  点击保存触发事件
   const handlesubmit = () => {
     RegistratRef.current.validateFields((_, values) => {
-      console.log('values: ', values);
       dispatch({
         type: 'problemmanage/getAddid',
         payload: {
@@ -114,6 +113,7 @@ function Registration(props) {
           registerAttachments: files.ischange ? JSON.stringify(files.arr) : null,
           importance: Number(values.importance) ? values.importance : '001',
           type: (values.type).toString(),
+          developmentLead:(values.developmentLead).toString(),
           editState: 'add'
         },
       });

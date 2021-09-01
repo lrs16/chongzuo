@@ -46,7 +46,8 @@ function ServiceProvidersearch(props) {
   const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 });
   const [data, setData] = useState([]);
   const [tabrecord, setTabRecord] = useState({});
-
+  const [selectedKeys, setSelectedKeys] = useState([]);
+  
   const searchdata = (values, page, pageSize) => {
     dispatch({
       type: 'qualityassessment/providerList',
@@ -178,6 +179,12 @@ function ServiceProvidersearch(props) {
         window.URL.revokeObjectURL(url)
       })
     })
+  }
+
+  const rowSelection = {
+    onChange: (index, handleSelect) => {
+      setSelectedKeys([...index])
+    }
   }
 
 
@@ -329,7 +336,9 @@ function ServiceProvidersearch(props) {
           loading={loading}
           columns={columns}
           dataSource={providerArr.records}
+          rowKey={records => records.id}
           pagination={pagination}
+          rowSelection={rowSelection}
           scroll={{ x: 800,y: 700 }}
         />
       </Card>

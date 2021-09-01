@@ -325,6 +325,7 @@ function TobedealtList(props) {
   const [target2Type, setTarget2Type] = useState('');
   const [spinloading, setSpinLoading] = useState(true);
   const [tabrecord, setTabRecord] = useState({});
+  const [selectedKeys, setSelectedKeys] = useState([]);
 
   const getPerformanceleader = () => {
     operationPerson().then(res => {
@@ -822,6 +823,7 @@ function TobedealtList(props) {
         type: 'performanceappraisal/exportTodolist',
         payload: {
           ...values,
+          ids: selectedKeys.toString(),
           assessBeginTime: values.timeoccurrence?.length ? moment(values.timeoccurrence[0]).format('YYYY-MM-DD HH:mm:ss') : '',
           assessEndTime: values.timeoccurrence?.length ? moment(values.timeoccurrence[1]).format('YYYY-MM-DD HH:mm:ss') : '', // 发生时间
           timeoccurrence: '',
@@ -857,7 +859,11 @@ function TobedealtList(props) {
     })
   }
 
-
+  const rowSelection = {
+    onChange: (index, handleSelect) => {
+      setSelectedKeys([...index])
+    }
+  }
 
   const extra = (
     <>
@@ -1629,7 +1635,8 @@ function TobedealtList(props) {
           columns={columns}
           dataSource={tobeDealtarr.records}
           scroll={{ x: 1500, y: 700 }}
-          rowKey={record => record.id}
+          rowKey={records => records.id}
+          rowSelection={rowSelection}
           pagination={pagination}
         />
       </Card>

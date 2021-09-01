@@ -48,6 +48,7 @@ function ProviderMaintenance(props) {
   const [data, setData] = useState([]);
   const [performanceLeader, setPerformanceLeader] = useState('')
   const [tabrecord, setTabRecord] = useState({});
+  const [selectedKeys, setSelectedKeys] = useState([]);
 
   const searchdata = (values, page, pageSize) => {
     dispatch({
@@ -197,6 +198,7 @@ function ProviderMaintenance(props) {
       dispatch({
         type: 'qualityassessment/providerExport',
         payload: {
+          ids: selectedKeys.toString(),
           ...value
         }
       }).then(res => {
@@ -254,6 +256,12 @@ function ProviderMaintenance(props) {
       ...paginations,
       current: page
     })
+  }
+
+  const rowSelection = {
+    onChange: (index, handleSelect) => {
+      setSelectedKeys([...index])
+    }
   }
 
   const pagination = {
@@ -389,6 +397,7 @@ function ProviderMaintenance(props) {
           columns={columns}
           dataSource={providerArr.records}
           pagination={pagination}
+          rowSelection={rowSelection}
           scroll={{ x: 800,y: 700 }}
         />
 

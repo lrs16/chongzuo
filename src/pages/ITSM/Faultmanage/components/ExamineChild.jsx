@@ -67,7 +67,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
                 </Col>
 
                 <Col span={24}>
-                    <Form.Item label="审核时间22" {...forminladeLayout}>
+                    <Form.Item label="审核时间" {...forminladeLayout}>
                         {getFieldDecorator('checkTime', {
                             rules: [
                                 {

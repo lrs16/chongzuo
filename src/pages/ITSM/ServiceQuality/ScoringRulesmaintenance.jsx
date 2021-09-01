@@ -47,6 +47,8 @@ function ScoringRulesmaintenance(props) {
   const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 })
   const [selectdata, setSelectData] = useState('');
   const [tabrecord, setTabRecord] = useState({});
+  const [selectedKeys, setSelectedKeys] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
 
 
   const searchdata = (values, page, pageSize) => {
@@ -80,6 +82,7 @@ function ScoringRulesmaintenance(props) {
       dispatch({
         type: 'qualityassessment/scoreExport',
         payload: {
+          ids: selectedKeys.toString(),
           ...value
         }
       }).then(res => {
@@ -217,6 +220,14 @@ function ScoringRulesmaintenance(props) {
     })
   }
 
+  const rowSelection = {
+    onChange: (index, handleSelect) => {
+      console.log('index, handleSelect: ', index, handleSelect);
+      setSelectedKeys([...index])
+      setSelectedRows([...handleSelect])
+    }
+  }
+
   const pagination = {
     showSizeChanger: true,
     onShowSizeChange: (page, pagesize) => onShowSizeChange(page, pagesize),
@@ -303,7 +314,7 @@ function ScoringRulesmaintenance(props) {
                     (
                       <Select placeholder='请选择' allowClear>
                         {assessmentType.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
+                          <Option key={obj.key} value={obj.dict_code}>
                             {obj.title}
                           </Option>
                         ])}
@@ -345,7 +356,9 @@ function ScoringRulesmaintenance(props) {
           loading={loading}
           columns={columns}
           dataSource={scoreList.records}
+          rowKey={records => records.id}
           pagination={pagination}
+          rowSelection={rowSelection}
           scroll={{ x: 800,y: 700 }}
         />
       </Card>

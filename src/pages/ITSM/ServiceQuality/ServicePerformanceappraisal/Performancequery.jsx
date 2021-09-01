@@ -53,7 +53,7 @@ const columns = [
             mainId: record.instanceId,
             taskId: record.currentTaskId,
             orderNo: text,
-            search:true
+            search: true
           }
         })
       };
@@ -326,6 +326,7 @@ function Performancequery(props) {
   const [target2Type, setTarget2Type] = useState('');
   const [spinloading, setSpinLoading] = useState(true);
   const [tabrecord, setTabRecord] = useState({});
+  const [selectedKeys, setSelectedKeys] = useState([]);
 
   const getPerformanceleader = () => {
     operationPerson().then(res => {
@@ -770,7 +771,7 @@ function Performancequery(props) {
       case 'contractId':
         setFieldsValue({
           contractId: value,
-          contractName:key
+          contractName: key
         })
         break;
 
@@ -858,6 +859,12 @@ function Performancequery(props) {
     })
   }
 
+  const rowSelection = {
+    onChange: (index, handleSelect) => {
+      setSelectedKeys([...index])
+    }
+  }
+
   const extra = (
     <>
       <Button type='primary' style={{ marginLeft: 8 }} onClick={handleSearch}>查询</Button>
@@ -876,7 +883,7 @@ function Performancequery(props) {
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
-      <Row gutter={16}>
+        <Row gutter={16}>
           <Form {...formItemLayout}>
             <Col span={8}>
               <Form.Item label='考核编号'>
@@ -924,7 +931,7 @@ function Performancequery(props) {
                 <Form.Item label='发生时间'>
                   {
                     getFieldDecorator('timeoccurrence', {
-                      initialValue: cacheinfo.beginTime ? [moment(cacheinfo.assessBeginTime),moment(cacheinfo.assessEndTime)] :'',
+                      initialValue: cacheinfo.beginTime ? [moment(cacheinfo.assessBeginTime), moment(cacheinfo.assessEndTime)] : '',
                     })
                       (
                         <RangePicker
@@ -1212,7 +1219,7 @@ function Performancequery(props) {
                 <Form.Item label='登记时间'>
                   {
                     getFieldDecorator('applyTime', {
-                      initialValue: cacheinfo.applyBeginTime ? [moment(cacheinfo.applyBeginTime),moment(cacheinfo.applyEndTime)] :''
+                      initialValue: cacheinfo.applyBeginTime ? [moment(cacheinfo.applyBeginTime), moment(cacheinfo.applyEndTime)] : ''
                     })
                       (
                         <RangePicker
@@ -1284,7 +1291,7 @@ function Performancequery(props) {
                 <Form.Item label='业务负责人审核时间'>
                   {
                     getFieldDecorator('directorVerifyTime', {
-                      initialValue: cacheinfo.directorVerifyBeginTime ? [moment(cacheinfo.directorVerifyBeginTime),moment(cacheinfo.directorVerifyEndTime)] :''
+                      initialValue: cacheinfo.directorVerifyBeginTime ? [moment(cacheinfo.directorVerifyBeginTime), moment(cacheinfo.directorVerifyEndTime)] : ''
                     })
                       (
                         <RangePicker
@@ -1358,7 +1365,7 @@ function Performancequery(props) {
                 <Form.Item label='自动化科专责审核时间'>
                   {
                     getFieldDecorator('expertVerifyTime', {
-                      initialValue: cacheinfo.expertVerifyBeginTime ? [moment(cacheinfo.expertVerifyBeginTime),moment(cacheinfo.expertVerifyEndTime)] :''
+                      initialValue: cacheinfo.expertVerifyBeginTime ? [moment(cacheinfo.expertVerifyBeginTime), moment(cacheinfo.expertVerifyEndTime)] : ''
                     })
                       (
                         <RangePicker
@@ -1441,7 +1448,7 @@ function Performancequery(props) {
                 <Form.Item label='服务商确认时间'>
                   {
                     getFieldDecorator('providerConfirmTime', {
-                      initialValue: cacheinfo.providerConfirmBeginTime ? [moment(cacheinfo.providerConfirmBeginTime),moment(cacheinfo.providerConfirmEndTime)] :''
+                      initialValue: cacheinfo.providerConfirmBeginTime ? [moment(cacheinfo.providerConfirmBeginTime), moment(cacheinfo.providerConfirmEndTime)] : ''
                     })
                       (
                         <RangePicker
@@ -1501,7 +1508,7 @@ function Performancequery(props) {
                 <Form.Item label='业务负责人复核时间'>
                   {
                     getFieldDecorator('directorReviewTime', {
-                      initialValue: cacheinfo.directorReviewBeginTime ? [moment(cacheinfo.directorReviewBeginTime),moment(cacheinfo.directorReviewEndTime)] :''
+                      initialValue: cacheinfo.directorReviewBeginTime ? [moment(cacheinfo.directorReviewBeginTime), moment(cacheinfo.directorReviewEndTime)] : ''
                     })
                       (
                         <RangePicker
@@ -1593,7 +1600,7 @@ function Performancequery(props) {
                 <Form.Item label='服务绩效考核确认时间'>
                   {
                     getFieldDecorator('finallyConfirmTime', {
-                      initialValue: cacheinfo.finallyConfirmBeginTime ? [moment(cacheinfo.finallyConfirmBeginTime),moment(cacheinfo.finallyConfirmEndTime)] :''
+                      initialValue: cacheinfo.finallyConfirmBeginTime ? [moment(cacheinfo.finallyConfirmBeginTime), moment(cacheinfo.finallyConfirmEndTime)] : ''
                     })
                       (
                         <RangePicker
@@ -1628,7 +1635,8 @@ function Performancequery(props) {
           columns={columns}
           dataSource={assessSearcharr.records}
           scroll={{ x: 1500, y: 700 }}
-          rowKey={record => record.id}
+          rowKey={records => records.id}
+          rowSelection={rowSelection}
           pagination={pagination}
         />
       </Card>

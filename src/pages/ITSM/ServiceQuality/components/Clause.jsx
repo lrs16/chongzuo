@@ -136,7 +136,7 @@ function Clause(props) {
               ],
               initialValue: clause.detailed
             })
-              (<Input />)
+              (<TextArea rows={4} />)
             }
           </Form.Item>
           {/* 

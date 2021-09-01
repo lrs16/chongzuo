@@ -202,8 +202,8 @@ function QueryList(props) {
     },
     {
       title: '责任单位',
-      dataIndex: 'checkTwoBlame',
-      key: 'checkTwoBlame',
+      dataIndex: 'confirmBlame',
+      key: 'confirmBlame',
       width: 150,
     },
     {
@@ -1067,8 +1067,8 @@ function QueryList(props) {
       },
       {
         title: '责任单位',
-        dataIndex: 'checkTwoBlame',
-        key: 'checkTwoBlame',
+        dataIndex: 'confirmBlame',
+        key: 'confirmBlame',
         width: 150,
       },
       {

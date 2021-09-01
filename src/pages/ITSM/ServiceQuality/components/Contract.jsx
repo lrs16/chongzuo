@@ -56,13 +56,13 @@ function Contract(props) {
           id: contract.id || ''
         };
 
-        if(moment(values.signTime).format('YYYY-MM-DD') === moment(values.dueTime).format('YYYY-MM-DD')) {
+        if (moment(values.signTime).format('YYYY-MM-DD') === moment(values.dueTime).format('YYYY-MM-DD')) {
           message.error('签订日期必须小于到期日期哦')
         } else {
           onSumit(submitData);
           setVisible(false)
         }
-     
+
       }
     })
   }
@@ -83,14 +83,11 @@ function Contract(props) {
 
 
   const startdisabledDate = (current) => {
-    console.log(endTime,'endTime')
     if (endTime) {
-      console.log(1)
       return current > moment(endTime)
     }
 
     if (!endTime && contract.dueTime) {
-      console.log(2)
       return current > moment(contract.dueTime)
     }
   }
@@ -100,18 +97,22 @@ function Contract(props) {
     if (startTime) {
       return current < moment(startTime)
     }
+
+    if (!startTime && contract.signTime) {
+      return current < moment(contract.signTime)
+    }
   }
 
 
   const onChange = (date, dateString) => {
     startTime = dateString;
-    setFieldsValue({signTime:moment(dateString)})
+    setFieldsValue({ signTime: moment(dateString) })
     enddisabledDate(startTime)
   }
 
   const endonChange = (date, dateString) => {
     endTime = dateString;
-    setFieldsValue({dueTime:moment(dateString)})
+    setFieldsValue({ dueTime: moment(dateString) })
     startdisabledDate(endTime)
   }
 
@@ -158,12 +159,12 @@ function Contract(props) {
                   message: '请输入签订日期'
                 }
               ],
-              initialValue:  moment(contract.signTime)
+              initialValue: moment(contract.signTime)
             })
               (
                 <div>
                   <DatePicker
-                    defaultValue={(startTime || contract.signTime) ? moment(startTime || contract.signTime) :''}
+                    defaultValue={(startTime || contract.signTime) ? moment(startTime || contract.signTime) : ''}
                     disabled={isEdit}
                     format='YYYY-MM-DD'
                     disabledDate={startdisabledDate}
@@ -183,12 +184,12 @@ function Contract(props) {
                   message: '请输入到期日期'
                 }
               ],
-              initialValue:  moment(contract.dueTime)
+              initialValue: moment(contract.dueTime)
             })
               (
                 <div>
                   <DatePicker
-                    defaultValue={(endTime || contract.dueTime) ? moment(endTime || contract.dueTime) :''}
+                    defaultValue={(endTime || contract.dueTime) ? moment(endTime || contract.dueTime) : ''}
                     disabled={isEdit}
                     format='YYYY-MM-DD'
                     disabledDate={enddisabledDate}
@@ -250,8 +251,8 @@ Contract.defaultProps = {
   contract: {
     no: '',
     name: '',
-    signTime:'',
-    dueTime:'',
+    signTime: '',
+    dueTime: '',
     // data: new Date(),
     // enddata: new Date(),
     status: '0',

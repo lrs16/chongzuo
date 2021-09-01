@@ -3,9 +3,11 @@ import {
   Row,
   Col,
   Card,
-  Icon
+  Icon,
+  Tag,
+  DatePicker
 } from 'antd';
-
+import StatisticsCard from '@/components/StatisticsCard';
 import { ChartCard } from '@/components/Charts';
 import Barchart from '@/components/CustomizeCharts/Barchart';
 import Donut from '@/components/CustomizeCharts/Donut';
@@ -17,11 +19,20 @@ import iconfontUrl from '@/utils/iconfont';
 const IconFont = Icon.createFromIconfontCN({
   scriptUrl: iconfontUrl,
 });
+
+const { CheckableTag } = Tag;
+const tagsFromServer = [{ name: '本日', key: '1' }, { name: '本月', key: '2' }];
 function StatisticalAnalysis(props) {
   const [barChartparams, setBarChartparams] = useState('');
   const [visible, setVisible] = useState(false);
   const [title, setTitle] = useState('');
+  const [selectedTags, setSelectedTags] = useState([])
 
+  const handleChang = (tag, checked) => {
+    if (checked) {
+      setSelectedTags([tag])
+    }
+  }
   // 饼图数据
   const Donutdata = [
     {
@@ -78,75 +89,28 @@ function StatisticalAnalysis(props) {
     }
   }
   return (
-    <>
-      {/* <Card
-        title='故障责任单位情况'
-        bordered={false}
-        style={{ backgroundColor: 'white' }}
-      > */}
+    <div>
+      <Card>
+        {tagsFromServer.map(obj => (
+          <CheckableTag
+            key={obj.key}
+            checked={selectedTags.indexOf(obj) > -1}
+            onChange={checked => handleChang(obj, checked)}
+          >
+            {obj.name}
+          </CheckableTag>
+        ))}
 
-      <Row style={{ marginBottom: 10 }}>
-        <Col span={8}>
-          <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: 'white', marginRight: 10 }}>
-            <div>
-              <span style={{display:'inline-block',height:40,width:40,backgroundColor: '#0366C3',textAlign:'center',borderRadius:'50%',padding:5}}>
-                <IconFont
-                  type="iconziyuanldpi"
-                  style={{ fontSize: '1.5em' }}
-                />
-              </span>
+        <DatePicker placeholder="开始时间" />
+        <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
+        <DatePicker placeholder="结束时间" />
 
-              <span style={{fontSize:18,color:'#0366C3',marginLeft:10,fontWeight:'bolder'}}>故障工单情况</span>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-              <div>
-                <p>故障总数:</p>
-                <p>555单</p>
-                <p>环比上月</p>
-                {/* <p style={{height:'100%',width:2,}}>11</p> */}
-              </div>
-              <div>
-                <p>已处理:</p>
-                <p>555单</p>
-                <p>环比上月</p>
-              </div>
-              <div>
-                <p>解决率:</p>
-                <p>555单</p>
-                <p>环比上月</p>
-              </div>
-            </div>
-          </div>
-
-        </Col>
-        <Col span={8}>
-          <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: 'white', marginRight: 10 }}>
-            <div>故障工单情况</div>
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
-              <div>
-                <p>故障总数:</p>
-                <p>555单</p>
-                <p>环比上月</p>
-              </div>
-            </div>
-          </div>
-
-        </Col>
-        <Col span={8} style={{ backgroundColor: 'white' }}>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div>故障工单情况</div>
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
-              <div>
-                <p>故障总数:</p>
-                <p>555单</p>
-                <p>环比上月</p>
-              </div>
-            </div>
-          </div>
-        </Col>
-      </Row>
-
-
+           {/* <StatisticsModal
+        visible={visible}
+        title={title}
+        handleCancel={() => setVisible(false)}
+      /> */}
+      </Card>
 
       <div style={{ backgroundColor: 'white' }}>
         <Row gutter={16}>
@@ -294,12 +258,8 @@ function StatisticalAnalysis(props) {
         </Col>
       </Row> */}
 
-      <StatisticsModal
-        visible={visible}
-        title={title}
-        handleCancel={() => setVisible(false)}
-      />
-    </>
+   
+    </div>
   )
 
 }

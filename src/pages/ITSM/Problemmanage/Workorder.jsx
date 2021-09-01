@@ -294,7 +294,8 @@ function Workorder(props) {
             type: (values.type).toString(),
             editState: todoDetail.editState === 'edit' ? 'edit' : 'add',
             registerId: todoDetail.editState === 'edit' ? todoDetail.register.id : todoDetail.editGuid,
-            registerAttachments: files.ischange ? JSON.stringify(files.arr) : null
+            registerAttachments: files.ischange ? JSON.stringify(files.arr) : null,
+            developmentLead:(values.developmentLead).toString(),
           },
         }).then(res => {
           if (res.code === 200) {
