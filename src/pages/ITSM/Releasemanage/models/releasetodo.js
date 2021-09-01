@@ -82,6 +82,7 @@ export default {
       const tabid = sessionStorage.getItem('tabid');
       const subres = yield call(flowSubmit, payload);
       if (subres.code === 200) {
+        message.success('操作成功');
         router.push({
           pathname: `/ITSM/releasemanage/registration`,
           query: { tabid, closecurrent: true }
@@ -96,7 +97,7 @@ export default {
       }
     },
 
-    // 出厂测试保存
+    // 出厂测试保存,结束
     * factorytest({ payload: { register, buttype } }, { call, put }) {
       yield put({
         type: 'savestatuse',
@@ -111,6 +112,24 @@ export default {
         if (buttype === 'save') {
           message.success('保存成功')
         };
+        if (buttype === 'over') {
+          const tabid = sessionStorage.getItem('tabid');
+          const overpayload = {
+            taskId: response.data.currentTaskStatus.taskId,
+            type: 4,
+          };
+          const subres = yield call(flowSubmit, overpayload);
+          if (subres.code === 200) {
+            message.success('操作成功');
+            router.push({
+              pathname: `/ITSM/releasemanage/to-do`,
+              query: { pathpush: true },
+              state: { cach: false, closetabid: tabid }
+            });
+          } else {
+            message.error('操作失败');
+          }
+        }
         yield put({
           type: 'updateinfo',
           payload: { info: response.data.saveRegister, currentTaskStatus: response.data.currentTaskStatus, },
@@ -147,7 +166,7 @@ export default {
           };
           const subres = yield call(flowSubmit, nopasspayload);
           if (subres.code === 200) {
-            message.success(subres.msg);
+            message.success('操作成功');
             router.push({
               pathname: `/ITSM/releasemanage/to-do`,
               query: { pathpush: true },
@@ -189,7 +208,7 @@ export default {
           };
           const subres = yield call(flowSubmit, nopasspayload);
           if (subres.code === 200) {
-            message.success(subres.msg);
+            message.success('操作成功');
             router.push({
               pathname: `/ITSM/releasemanage/to-do`,
               query: { pathpush: true },
@@ -321,22 +340,6 @@ export default {
         };
         if (taskName === '中心领导审核') {
           response = yield call(saveCheckLeader, values);        // 再保存表单
-          const tabid = sessionStorage.getItem('tabid');
-          const nopasspayload = {
-            taskId: response.data.currentTaskStatus.taskId,
-            type: 1,
-          };
-          const subres = yield call(flowSubmit, nopasspayload);
-          if (subres.code === 200) {
-            message.success('操作成功');
-            router.push({
-              pathname: `/ITSM/releasemanage/to-do`,
-              query: { pathpush: true },
-              state: { cach: false, closetabid: tabid }
-            });
-          } else {
-            message.error('操作失败');
-          }
         };
         yield put({
           type: 'savestatuse',
@@ -368,7 +371,25 @@ export default {
             };
             const subres = yield call(flowSubmit, nopasspayload);
             if (subres.code === 200) {
-              message.success(subres.msg);
+              message.success('操作成功');
+              router.push({
+                pathname: `/ITSM/releasemanage/to-do`,
+                query: { pathpush: true },
+                state: { cach: false, closetabid: tabid }
+              });
+            } else {
+              message.error('操作失败');
+            }
+          };
+          if (buttype === 'flow' && taskName === '中心领导审核') {
+            const tabid = sessionStorage.getItem('tabid');
+            const nopasspayload = {
+              taskId: response.data.currentTaskStatus.taskId,
+              type: 1,
+            };
+            const subres = yield call(flowSubmit, nopasspayload);
+            if (subres.code === 200) {
+              message.success('操作成功');
               router.push({
                 pathname: `/ITSM/releasemanage/to-do`,
                 query: { pathpush: true },

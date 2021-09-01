@@ -81,7 +81,7 @@ function WorkOrder(props) {
   };
   // 出厂测试保存流转
   const FactorytestSubmit = () => {
-    if (buttype === 'save') {
+    if (buttype === 'save' || buttype === 'over') {
       const register = getregistratformvalues();
       dispatch({
         type: 'releasetodo/factorytest',

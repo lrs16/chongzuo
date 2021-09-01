@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import {
@@ -11,16 +11,36 @@ import {
   Divider,
   Popconfirm,
   message,
+  Row,
+  Col,
+  Form,
+  Radio
 } from 'antd';
 import { DownloadOutlined, PaperClipOutlined } from '@ant-design/icons';
 import KeyVal from '@/components/SysDict/KeyVal';
 import { getFileSecuritySuffix } from '@/services/upload';
+import EditContext from '@/layouts/MenuContext';
+import { demandToRelease } from '../services/api';
 import styles from './style.less';
+
 
 const { Option } = Select;
 
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 8 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 16 },
+  },
+};
+
 function Track(props) {
   const { dispatch, userinfo, demandId, loading, ChangeTrackLength } = props;
+  const { getFieldDecorator, setFieldsValue, validateFields, setFields, getFieldsValue, resetFields, } = props.form;
+  const required = true;
   const [data, setData] = useState([]);
   const [cacheOriginData, setcacheOriginData] = useState({});
   const [uploadkey, setKeyUpload] = useState('');
@@ -29,6 +49,8 @@ function Track(props) {
   const [selectdata, setSelectData] = useState(undefined);
   const [trackslist, setTracksList] = useState('');
   const [filetype, setFileType] = useState('');
+  const [status, setStatus] = useState('open');
+  const { ChangeReleaseTaskName } = useContext(EditContext);
 
   // 加载列表
   const getlistdata = () => {
@@ -43,6 +65,8 @@ function Track(props) {
           return Object.assign(item, { key: index });
         });
         setData(newarr);
+        setStatus(res.status);
+        ChangeReleaseTaskName(res.status);
         ChangeTrackLength(res.data.length);
         setNewButton(false);
       }
@@ -51,6 +75,7 @@ function Track(props) {
 
   // 提交保存数据
   const savedata = (target, id) => {
+    const timevals = getFieldsValue();
     dispatch({
       type: 'chacklist/tracksave',
       payload: {
@@ -60,6 +85,8 @@ function Track(props) {
         stalker: userinfo.userName,
         trackDepartment: userinfo.deptName,
         trackUnit: userinfo.unitName,
+        releaseTime: timevals.releaseTime ? timevals.releaseTime.format('YYYY-MM-DD HH:mm:ss') : '',
+        devFinishTime: timevals.devFinishTime ? timevals.devFinishTime.format('YYYY-MM-DD HH:mm:ss') : '',
       },
     }).then(res => {
       if (res.code === 200) {
@@ -70,6 +97,7 @@ function Track(props) {
   };
 
   useEffect(() => {
+    ChangeReleaseTaskName('open')
     getlistdata();
     sessionStorage.setItem('flowtype', '1');
     return () => {
@@ -158,7 +186,7 @@ function Track(props) {
   };
 
   // 编辑记录
-  const toggleEditable = (e, key,record) => {
+  const toggleEditable = (e, key, record) => {
     e.preventDefault();
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData);
@@ -290,6 +318,18 @@ function Track(props) {
       });
     },
   };
+
+  const torelease = () => {
+    demandToRelease(demandId).then(res => {
+      if (res.code === 200) {
+        message.success('发布流程启动成功')
+        setStatus(res.data.taskName);
+        ChangeReleaseTaskName(res.data.taskName);
+      } else {
+        message.error(res.msg)
+      }
+    })
+  }
 
   const columns = [
     {
@@ -479,12 +519,12 @@ function Track(props) {
             </span>
           );
         }
-        
+
         return (
           <span>
             <a
               onClick={e => {
-                toggleEditable(e, record.key,record);
+                toggleEditable(e, record.key, record);
                 handlefileedit(record.key, record.attachment);
               }}
             >
@@ -508,6 +548,31 @@ function Track(props) {
         dictType="schedule"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
       />
+      <Form {...formItemLayout}>
+        <Row gutter={24}>
+          <Col span={8}>
+            <Form.Item label="预计开发完成时间">
+              {getFieldDecorator('devFinishTime', {
+                rules: [{ required, message: '请选择预计开发完成时间' }],
+                initialValue: moment(data.length > 0 && data[data.length - 1].devFinishTime ? data[data.length - 1].devFinishTime : undefined),
+              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="预计发布时间">
+              {getFieldDecorator('releaseTime', {
+                rules: [{ required, message: '请选择预计发布时间' }],
+                initialValue: moment(data.length > 0 && data[data.length - 1].releaseTime ? data[data.length - 1].releaseTime : undefined),
+              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
+            </Form.Item>
+          </Col>
+          <Col span={8} style={{ paddingTop: 4 }}>
+            {status === '' ? (
+              <Button type='primary' onClick={() => torelease()}>启动发布</Button>
+            ) : <Radio checked style={{ marginTop: 8 }}>已启动发布流程</Radio>}
+          </Col>
+        </Row>
+      </Form>
       <Table
         columns={columns}
         scroll={{ x: 1400 }}
@@ -531,7 +596,7 @@ function Track(props) {
   );
 }
 
-export default connect(({ chacklist, loading }) => ({
+export default Form.create()(connect(({ chacklist, loading }) => ({
   trackslist: chacklist.trackslist,
   loading: loading.models.chacklist,
-}))(Track);
+}))(Track));

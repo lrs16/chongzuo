@@ -585,7 +585,7 @@ function QueryList(props) {
           loading={loading}
           columns={defaultColumns && defaultColumns.length > 0 ? tableColumns(defaultColumns) : columns}
           dataSource={list.rows}
-          rowKey={r => r.processInstanceId}
+          rowKey={r => r.processId}
           pagination={pagination}
           rowSelection={rowSelection}
           scroll={{ x: 1500 }}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
+import router from 'umi/router';
 import { Button, Spin, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import DictLower from '@/components/SysDict/DictLower';
@@ -34,7 +35,14 @@ function Details(props) {
     },
   ];
 
-  const operations = (<Button >返回</Button>)
+  const handleClose = () => {
+    router.push({
+      pathname: `/ITSM/releasemanage/query`,
+      query: { pathpush: true },
+      state: { cach: false }
+    });
+  }
+  const operations = (<Button onClick={() => handleClose()}>返回</Button>)
 
   useEffect(() => {
     if (location.state) {

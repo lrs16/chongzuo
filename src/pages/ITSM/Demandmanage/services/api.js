@@ -153,3 +153,10 @@ export async function RegisterClose(taskId, userId) {
     method: 'GET',
   });
 }
+
+// 需求转发布
+export async function demandToRelease(demandId) {
+  return request(`/demand/todo/demandToRelease/${demandId}`, {
+    method: 'POST',
+  });
+}

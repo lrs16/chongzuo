@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import router from 'umi/router';
 import { connect } from 'dva';
-import { Button, Popover, message } from 'antd';
+import { Button, Popover, message, Spin } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import User from '@/components/SelectUser/User';
+import EditContext from '@/layouts/MenuContext';
 import WorkOrder from './WorkOrder';
 import Process from './Process';
 import Backoff from './components/Backoff';
@@ -11,7 +12,7 @@ import TimeoutModal from '../components/TimeoutModal';
 import { judgeTimeoutStatus, saveTimeoutMsg } from '../services/api';
 
 function ToDoregist(props) {
-  const { location, dispatch, workLoad } = props;
+  const { location, dispatch, workLoad, loading } = props;
   const { taskName, taskId, result, mainId } = location.query;
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [buttontype, setButtonType] = useState('');
@@ -24,6 +25,11 @@ function ToDoregist(props) {
   const [iscolse, setIsClose] = useState('');
   const [butandorder, setButandOrder] = useState('');    // 暂存按钮类型
   const [modalvisible, setModalVisible] = useState(false);
+  const [releaseTaskName, setReleaseTaskName] = useState('');
+
+  const ChangeReleaseTaskName = (v) => {
+    setReleaseTaskName(v)
+  }
 
   const handleHold = (type) => {
     setUserChoice(false);
@@ -172,12 +178,12 @@ function ToDoregist(props) {
               保存
             </Button>
           )}
-          {((result !== '0' &&
+          {result !== '0' &&
             taskName !== '自动化科业务人员审核' &&
             taskName !== '自动化科业务人员确认' &&
             taskName !== '自动化科专责审核' &&
-            taskName !== '需求登记人员确认') ||
-            taskName === '系统开发商处理') && (
+            taskName !== '需求登记人员确认' &&
+            taskName !== '系统开发商处理' && (
               <Button
                 type="primary"
                 style={{ marginRight: 8 }}
@@ -185,6 +191,16 @@ function ToDoregist(props) {
                 流转
               </Button>
             )}
+          {result === '1' && taskName === '系统开发商处理' && (
+            <Button
+              type="primary"
+              style={{ marginRight: 8 }}
+              onClick={() => { handleClick('flow'); setButandOrder('flow') }}
+              disabled={releaseTaskName !== '结束' && releaseTaskName !== ''}
+            >
+              流转
+            </Button>
+          )}
           {taskName === '自动化科专责审核' && result !== '0' && result !== '1' && workLoad && (workLoad === '一般' || (workLoad === '重大' && result !== '4')) && (
             <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleClick('flow'); setButandOrder('flow') }}>
               流转
@@ -256,51 +272,58 @@ function ToDoregist(props) {
     },
   ];
   return (
-    <PageHeaderWrapper
-      title={taskName}
-      extra={operations}
-      tabList={tabList}
-      tabActiveKey={tabActivekey}
-      onTabChange={handleTabChange}
-    >
-      {tabActivekey === 'workorder' && (
-        <WorkOrder
-          location={location}
-          type={buttontype}
-          ChangeType={newvalue => setButtonType(newvalue)}
-          changRegisterId={newvalue => setRegisterId(newvalue)}
-          ChangeHistroyTaskId={newvalue => setHistroyTaskId(newvalue)}
-          ChangeISClose={v => setIsClose(v)}
-          userchoice={userchoice}
-          ChangeChoice={v => setUserChoice(v)}
+    <Spin tip="正在加载数据..." spinning={!!loading}>
+      <PageHeaderWrapper
+        title={taskName}
+        extra={operations}
+        tabList={tabList}
+        tabActiveKey={tabActivekey}
+        onTabChange={handleTabChange}
+      >
+        {tabActivekey === 'workorder' && (
+          <EditContext.Provider value={{
+            ChangeReleaseTaskName,
+          }}>
+            <WorkOrder
+              location={location}
+              type={buttontype}
+              ChangeType={newvalue => setButtonType(newvalue)}
+              changRegisterId={newvalue => setRegisterId(newvalue)}
+              ChangeHistroyTaskId={newvalue => setHistroyTaskId(newvalue)}
+              ChangeISClose={v => setIsClose(v)}
+              userchoice={userchoice}
+              ChangeChoice={v => setUserChoice(v)}
+              ChangeUserVisible={v => setUserVisible(v)}
+            />
+          </EditContext.Provider>
+        )}
+        {tabActivekey === 'process' && <Process location={location} />}
+        <User
+          taskId={taskId}
+          visible={uservisible}
           ChangeUserVisible={v => setUserVisible(v)}
+          changorder={changorder}
+          ChangeChoice={v => selectChoice(v)}
+          ChangeType={v => setButtonType(v)}
         />
-      )}
-      {tabActivekey === 'process' && <Process location={location} />}
-      <User
-        taskId={taskId}
-        visible={uservisible}
-        ChangeUserVisible={v => setUserVisible(v)}
-        changorder={changorder}
-        ChangeChoice={v => selectChoice(v)}
-        ChangeType={v => setButtonType(v)}
-      />
-      <TimeoutModal
-        modalvisible={modalvisible}
-        ChangeModalVisible={v => setModalVisible(v)}
-        ChangeTimeOutMsg={v => postTimeOutMsg(v)}
-      />
-      <Backoff
-        title="填写回退意见"
-        visible={Popvisible}
-        ChangeVisible={v => setVisible(v)}
-        rollbackSubmit={v => postRollBackmsg(v)}
-      />
-    </PageHeaderWrapper>
+        <TimeoutModal
+          modalvisible={modalvisible}
+          ChangeModalVisible={v => setModalVisible(v)}
+          ChangeTimeOutMsg={v => postTimeOutMsg(v)}
+        />
+        <Backoff
+          title="填写回退意见"
+          visible={Popvisible}
+          ChangeVisible={v => setVisible(v)}
+          rollbackSubmit={v => postRollBackmsg(v)}
+        />
+
+      </PageHeaderWrapper>
+    </Spin>
   );
 }
 
 export default connect(({ demandtodo, loading }) => ({
   workLoad: demandtodo.workLoad,
-  loading: loading.models.demandtodo,
+  loading: loading.effects['demandtodo/demandopenflow'],
 }))(ToDoregist);

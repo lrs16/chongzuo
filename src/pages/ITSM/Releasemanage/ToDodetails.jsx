@@ -58,6 +58,14 @@ function ToDodetails(props) {
     });
   }
 
+  const handleClose = () => {
+    router.push({
+      pathname: `/ITSM/releasemanage/to-do`,
+      query: { pathpush: true },
+      state: { cach: false }
+    });
+  }
+
   const handleTabChange = key => {
     settabActivekey(key)
   };
@@ -106,6 +114,11 @@ function ToDodetails(props) {
           {taskName === '业务复核' ? '结束' : '流转'}
         </Button>
       )}
+      {taskName === '出厂测试' && (
+        <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('over')} >
+          结束
+        </Button>
+      )}
       {submittype === 0 && (taskName === '平台验证' || taskName === '业务验证') && (
         <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('noPass')} >
           出厂测试
@@ -116,7 +129,7 @@ function ToDodetails(props) {
           版本管理员审核
         </Button>
       )}
-      <Button >返回</Button>
+      <Button onClick={() => handleClose()}>返回</Button>
     </>
   )
 

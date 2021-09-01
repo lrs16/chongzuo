@@ -188,7 +188,7 @@ const Examine = forwardRef((props, ref) => {
               <Form.Item label='开发负责人' {...forminladeLayout}>
                 {getFieldDecorator('developmentLead', {
                   rules: [{ required: true, message: '请选择开发负责人' }],
-                  initialValue: info[0].developmentLead,
+                  initialValue: info[0].developmentLead ? info[0].developmentLead.split(',') : [],
                 })(
                   <Select placeholder="请选择" mode="multiple">
                     {selectdata.map(obj => [
