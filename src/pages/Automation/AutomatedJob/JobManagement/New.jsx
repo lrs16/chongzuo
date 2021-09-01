@@ -1,7 +1,7 @@
 import React, {  useEffect, useRef } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
-import { Button, Card } from 'antd';
+import { Button, Card, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import EditContext from '@/layouts/MenuContext';
 import Content from './components/Content';
@@ -18,21 +18,19 @@ function New(props) {
   const ContentRef = useRef(null);
 
   const handleClick = () => { // 保存添加
-    // ContentRef.current.Forms((err, values) => {
-    //   if (err) {
-    //     message.error('请将信息填写完整')
-    //   } else {
-    //     dispatch({
-    //       type: 'knowledg/add',
-    //       payload: {
-    //         payvalue: { ...values },
-    //         buttype,
-    //         // userId: choiceUser.users,
-    //         menuDes,
-    //       },
-    //     });
-    //   }
-    // })
+    ContentRef.current.Forms((err, values) => {
+      console.log(values, 'values')
+      // if (err) {
+      //   message.error('请将信息填写完整')
+      // } else {
+      //   dispatch({
+      //     type: 'autotask/toaddTask',
+      //     payload: {
+      //       ...values,
+      //     },
+      //   });
+      // }
+    })
   }
 
   const handleSubmit = () => { // 提交
@@ -88,7 +86,7 @@ function New(props) {
         type="danger"
         ghost
         style={{ marginRight: 8 }}
-        onClick={() => handleClick('delete')}
+        // onClick={() => handleClick('delete')}
       >
         删除
       </Button>

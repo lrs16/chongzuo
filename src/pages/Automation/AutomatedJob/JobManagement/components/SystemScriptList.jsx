@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import moment from 'moment';
 // import { connect } from 'dva';
-import { Table, Button, Form, Input, Row, Col, DatePicker } from 'antd';
+import { Table, Button, Form, Input, Row, Col, DatePicker, Alert } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 // import SystemScriptDrawer from './SystemScriptDrawer';
 // import SysViewDrawer from './SysViewDrawer';
@@ -406,6 +406,7 @@ function SystemScriptList(props) {
                     )}
                     {expand ? (<Col span={24} style={{ marginTop: 4, textAlign: 'right' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
                 </Form>
+                <Col span={24}><Alert message="已选择【】个agent" type="info" style={{marginBottom: 5, marginLeft: 48, width: '96.6%'}}/></Col>
             </Row>
             <Table
                 style={{ marginLeft: 118 }}

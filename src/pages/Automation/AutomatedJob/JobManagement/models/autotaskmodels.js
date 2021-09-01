@@ -8,7 +8,7 @@ import {
   } from '../services/api';
   
   export default {
-    namespace: 'taskmanage',
+    namespace: 'autotask',
   
     state: {
         autotasklist: {},

@@ -59,21 +59,6 @@ const Content = forwardRef((props, ref) => {
     setselectAdopt(e.target.value);
   };
 
-  // const columns = [
-  //   {
-  //     title: '作业名称',
-  //     dataIndex: 'taskName',
-  //     key: 'taskName',
-  //     width: 200,
-  //   },
-  //   {
-  //     title: '作业状态',
-  //     dataIndex: 'taskStatus',
-  //     key: 'taskStatus',
-  //     width: 150,
-  //   }
-  // ];
-
   return (
     <div>
       <Form {...formItemLayout} >
@@ -93,8 +78,9 @@ const Content = forwardRef((props, ref) => {
           {getFieldDecorator('taskScriptNum', {
             rules: [{ required, message: '请选择作业脚本' }],
             initialValue: formrecord.taskScriptNum,
-          })(<Button block onClick={() => {setshowExpand(!showexpand);
-        }}>+作业脚本</Button>)}
+          })(<Button block onClick={() => {
+            setshowExpand(!showexpand);
+          }}>+作业脚本</Button>)}
         </Form.Item>
         {showexpand && (<Form.Item span={24} {...formItemLayout444} >
           <SystemScriptList />

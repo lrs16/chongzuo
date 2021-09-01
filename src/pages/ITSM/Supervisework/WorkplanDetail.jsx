@@ -439,6 +439,9 @@ function WorkplanDetail(props) {
         if (!delay && flowNodeName === '工作执行' && (main && main.responseStatus === '1')) {
             setShow(true);
         }
+        if (!delay && flowNodeName === '工作执行' && (workUser && workUser.split(",").length === 1 && main && main.responseStatus === '0')) {
+            setShow(true);
+        }
     }
     }, [main])
 
