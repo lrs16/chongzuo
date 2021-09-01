@@ -51,6 +51,7 @@ function QueryList(props) {
   const [selectdata, setSelectData] = useState('');
   const [tabrecord, setTabRecord] = useState({});
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [selectedRowRecord, setSelectedRowRecord] = useState([]);
   const [username, setUserName] = useState('');
   const [tabColumns, setColumns] = useState({});
   const [defaultColumns, setDefaultColumns] = useState([])
@@ -280,11 +281,13 @@ function QueryList(props) {
     validateFields((err, values) => {
       const tablecol = downloadColumns(defaultColumns);
       if (selectedRowKeys && selectedRowKeys.length > 0) {
+        const ids = selectedRowRecord.map(item => {
+          return item.id
+        });
         dispatch({
           type: 'demandquery/download',
           payload: {
-            columns: JSON.stringify(tablecol),
-            ids: selectedRowKeys.toString()
+            ids: ids.toString()
           }
         }).then(res => {
           const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
@@ -417,8 +420,9 @@ function QueryList(props) {
 
   // 管理员账号删除工单
   // 行选择
-  const onSelectChange = RowKeys => {
+  const onSelectChange = (RowKeys, RowRecord) => {
     setSelectedRowKeys(RowKeys);
+    setSelectedRowRecord(RowRecord);
   };
 
   const rowSelection = {
