@@ -25,6 +25,9 @@ const BusinessAudit = React.forwardRef((props, ref) => {
     noEdit
   } = props;
 
+  console.log(businessAudit,'businessAudit')
+  console.log((businessAudit.checktime || businessAudit.reviewTime) ? moment(businessAudit.checktime || businessAudit.reviewTime) : '555')
+
   const [showContent, setShowContent] = useState('1');
 
   const required = true;
@@ -163,7 +166,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
                     message: '请选择审核时间'
                   }
                 ],
-                initialValue: businessAudit.checktime ? moment(businessAudit.checktime) : moment(businessAudit.reviewTime || new Date())
+                initialValue: (businessAudit.checktime || businessAudit.reviewTime) ? moment(businessAudit.checktime || businessAudit.reviewTime) : moment(new Date())
               })
                 (
                   <DatePicker
@@ -189,7 +192,7 @@ BusinessAudit.defaultProps = {
     verifier: '',
     verifyTime: '',
     reviewContent: '',
-    checktime: new Date(),
+    checktime: '',
   }
 }
 

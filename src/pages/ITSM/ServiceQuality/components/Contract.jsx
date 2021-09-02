@@ -53,13 +53,29 @@ function Contract(props) {
       if (!err) {
         const submitData = {
           ...values,
-          id: contract.id || ''
+          id: contract.id || '',
         };
+
+        switch (submitData.status) {
+          case '在用':
+            submitData.status = '1'
+            break;
+          case '停用':
+            submitData.status = '0'
+            break;
+          case '过期':
+            submitData.status = '2'
+            break;
+          default:
+            break;
+        }
 
         if (moment(values.signTime).format('YYYY-MM-DD') === moment(values.dueTime).format('YYYY-MM-DD')) {
           message.error('签订日期必须小于到期日期哦')
         } else {
           onSumit(submitData);
+          startTime = '';
+          endTime = '';
           setVisible(false)
         }
 
@@ -93,12 +109,13 @@ function Contract(props) {
   }
 
   const enddisabledDate = (current) => {
-    console.log(startTime)
     if (startTime) {
       return current < moment(startTime)
     }
 
     if (!startTime && contract.signTime) {
+      console.log(2)
+      console.log(contract.signTime,'contract.signTime')
       return current < moment(contract.signTime)
     }
   }
@@ -159,7 +176,7 @@ function Contract(props) {
                   message: '请输入签订日期'
                 }
               ],
-              initialValue: moment(contract.signTime)
+              initialValue: contract.signTime ? moment(contract.signTime) :''
             })
               (
                 <div>
@@ -171,7 +188,6 @@ function Contract(props) {
                     onChange={onChange}
                   />
                 </div>
-
               )
             }
           </Form.Item>
@@ -184,7 +200,7 @@ function Contract(props) {
                   message: '请输入到期日期'
                 }
               ],
-              initialValue: moment(contract.dueTime)
+              initialValue: contract.dueTime ? moment(contract.dueTime) :''
             })
               (
                 <div>
@@ -212,9 +228,9 @@ function Contract(props) {
             })
               (
                 <Select disabled={isEdit}>
-                  <Option key='0' value='0'>在用</Option>
-                  <Option key='1' value='1'>停用</Option>
-                  <Option key='2' value='2'>过期</Option>
+                  <Option key='1' value='在用'>在用</Option>
+                  <Option key='0' value='停用'>停用</Option>
+                  <Option key='2' value='过期'>过期</Option>
                 </Select>
               )
             }
@@ -255,7 +271,7 @@ Contract.defaultProps = {
     dueTime: '',
     // data: new Date(),
     // enddata: new Date(),
-    status: '0',
+    status: '',
   }
 }
 export default Form.create({})(Contract)

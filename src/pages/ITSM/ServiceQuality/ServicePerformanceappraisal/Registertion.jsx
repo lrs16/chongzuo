@@ -72,12 +72,12 @@ function Registertion(props) {
 
   const handleSubmit = (params) => {
     RegistratRef.current.validateFields((err, values) => {
+      console.log(moment(values.assessTime).format('YYYY-MM-DD HH:mm:ss'))
+      console.log('values: ', values);
       if (params ? !err : true) {
         const submitIfnfo = values;
         delete submitIfnfo.provider;
-        // delete submitIfnfo.clause;
         delete submitIfnfo.score;
-        // delete submitIfnfo.contract;
         dispatch({
           type: 'performanceappraisal/assessRegister',
           payload: {

@@ -86,6 +86,7 @@ function QueryList(props) {
   let formThead;
 
   const handledownFileToZip = (id, no) => {
+    console.log('id: ', id);
     dispatch({
       type: 'fault/downloadzip',
       payload: {
@@ -1108,7 +1109,7 @@ function QueryList(props) {
       if (val.title === '操作') {
         obj.render = (text, records) => {
           return (
-            <a type="link" onClick={() => handledownFileToZip(record.id, record.no)}>
+            <a type="link" onClick={() => handledownFileToZip(records.id, records.no)}>
               附件下载
             </a>)
         }

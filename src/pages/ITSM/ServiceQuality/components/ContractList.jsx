@@ -26,27 +26,32 @@ const culumns = [
   {
     title: '合同编号',
     dataIndex: 'contractNo',
-    key: 'contractNo'
+    key: 'contractNo',
+    width:200
   },
   {
     title: '合同名称',
     dataIndex: 'contractName',
-    key: 'contractName'
+    key: 'contractName',
+    width:150
   },
   {
     title: '签订日期',
     dataIndex: 'signTime',
-    key: 'signTime'
+    key: 'signTime',
+    width:150
   },
   {
     title: '到期日期',
     dataIndex: 'dueTime',
-    key: 'dueTime'
+    key: 'dueTime',
+    width:150
   },
   {
     title: '状态',
     dataIndex: 'status',
-    key: 'status'
+    key: 'status',
+    width:150
   },
 ]
 
@@ -103,7 +108,7 @@ function ContractList(props) {
       <Drawer
         title={title}
         visible={visible}
-        width={720}
+        width={800}
         centered='true'
         maskClosable='true'
         destroyOnClose={true}

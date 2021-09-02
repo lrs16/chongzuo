@@ -20,6 +20,7 @@ import { providerList, scoreListpage, contractProvider, clauseListpage } from '.
 import SysDict from '@/components/SysDict';
 import styles from '../index.less';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
+import DatabaseChart from '@/pages/Monitormanage/BasicMonitor/components/DatabaseChart';
 
 const { TextArea, Search } = Input;
 const { Option } = Select;
@@ -47,7 +48,6 @@ const Register = React.forwardRef((props, ref) => {
     noEdit,
     loading
   } = props;
-  console.log('props: ', props);
   const [performanceLeader, setPerformanceLeader] = useState('')
   const [fileslist, setFilesList] = useState([]);
   const [selectdata, setSelectData] = useState('');
@@ -104,7 +104,8 @@ const Register = React.forwardRef((props, ref) => {
         break;
       case 'clause':
         setFieldsValue({
-          clauseId: key
+          clauseId: key,
+          assessValue:value
         })
         break;
 
@@ -342,6 +343,8 @@ const Register = React.forwardRef((props, ref) => {
 
   // },[register])
 
+  const assessmentObject = getTypebyTitle('考核对象');
+
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>
       <SysDict
@@ -372,7 +375,7 @@ const Register = React.forwardRef((props, ref) => {
                     message: '请选择发生时间'
                   }
                 ],
-                initialValue: moment(register.assessTime)
+                initialValue: moment(register.assessTime || new Date())
               })
                 (<DatePicker
                   disabled={noEdit}
@@ -571,6 +574,31 @@ const Register = React.forwardRef((props, ref) => {
                 initialValue: register.assessType
               })
                 (<Input disabled='true' />)
+            }
+          </Form.Item>
+        </Col>
+
+        <Col span={8}>
+          <Form.Item label='考核对象'>
+            {
+              getFieldDecorator('assessObject', {
+                initialValue: register.assessObject
+              })
+                (
+                  <Select
+                    placeholder='请选择'
+                    disabled={noEdit}
+                  >
+                    {
+                      (assessmentObject || []).map(obj => [
+                        <Option key={obj.dict_code} value={obj.dict_code}>
+                          {obj.title}
+                        </Option>
+                      ])
+                    }
+
+                  </Select>
+                )
             }
           </Form.Item>
         </Col>
@@ -814,9 +842,14 @@ const Register = React.forwardRef((props, ref) => {
           <Form.Item label='登记时间'>
             {
               getFieldDecorator('applyTime', {
-                initialValue: moment(register.applyTime)
+                initialValue: moment(register.applyTime || new Date())
               })
-                (<DatePicker disabled={noEdit} />)
+                (
+                  <DatePicker
+                    disabled={noEdit}
+                    showTime
+                    format="YYYY-MM-DD HH:mm:ss"
+                  />)
             }
           </Form.Item>
         </Col>
@@ -828,8 +861,8 @@ const Register = React.forwardRef((props, ref) => {
 Register.defaultProps = {
   register: {
     assessNo: '',
-    assessTime: new Date(),
-    applyTime: new Date(),
+    assessTime: '',
+    applyTime: '',
     provider: '',
     providerId: '',
     target1Name: '',

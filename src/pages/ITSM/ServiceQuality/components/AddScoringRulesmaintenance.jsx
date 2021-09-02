@@ -56,7 +56,7 @@ function AddScoringRulesmaintenance(props) {
   const [treeData, setTreeData] = useState([]);
   const [type, setType] = useState('')
   const [selectdata, setSelectData] = useState('');
-  const [selectId, setSelectId] = useState('')
+  const [selectId, setSelectId] = useState('');
 
   const getlist = (selectedKeys) => {
     validateFields((err, value) => {
@@ -85,16 +85,10 @@ function AddScoringRulesmaintenance(props) {
   }
 
   useEffect(() => {
-    if(scoreDetail && scoreDetail.assessType) {
-      getalldata()
-    }
-  }, [scoreDetail]);
-
-  console.log(treeData, 'treeData')
-
-  useEffect(() => {
-    if (id && treeData && treeData.length) {
-      getlist(treeData[0].id);
+    
+    if (id && treeData && treeData[0] && treeData[0].children ) {
+      console.log(treeData[0].children[0].id)
+      getlist(treeData[0].children[0].id);
     } else {
       dispatch({
         type: 'qualityassessment/clearclauseList'
@@ -131,7 +125,6 @@ function AddScoringRulesmaintenance(props) {
 
   //  点击节点
   const handleClick = (selectedKeys, event) => {
-    console.log('selectedKeys: ', selectedKeys);
     const { props: { title } } = event.node;
     if (selectedKeys && selectedKeys.length > 0) {
       if (title !== ('1项目管理' && '2服务质量' && '3项目产品质量' && '4安全管理' && '5加分项')) {
@@ -153,9 +146,15 @@ function AddScoringRulesmaintenance(props) {
   }
 
   useEffect(() => {
-    if (type) {
+    if (scoreDetail && scoreDetail.assessType) {
       getalldata();
+      setType(scoreDetail.assessType)
     }
+  }, [scoreDetail])
+
+
+  useEffect(() => {
+    getalldata();
   }, [type])
 
   const getTypebyTitle = title => {
@@ -456,22 +455,26 @@ function AddScoringRulesmaintenance(props) {
             </Row>
 
             <Layout className={styles.headcolor}>
+
               <Card title='指标明细' >
+
                 <Sider theme="light">
                   <Search
                     style={{ marginBottom: 8 }}
                     placeholder="Search"
-                    // disabled={scoreSearch}
                     onSearch={onSearch} />
                   <Tree
-                    defaultSelectedKeys={['1417307840400809985']}
+                    defaultSelectedKeys={(scoreDetail && (type) === '1') ? ['1417306125605756929'] : ['1417307840400809985']}
                     defaultExpandAll
                     onSelect={handleClick}
                   >
                     {renderTreeNodes(treeData)}
                   </Tree>
                 </Sider>
+
+
               </Card>
+
 
               <Content style={{ marginLeft: 10 }}>
                 <Card title='编辑指标'>
@@ -523,6 +526,7 @@ function AddScoringRulesmaintenance(props) {
                         }
                       </Form.Item>
                     </Col>
+
                     <Col span={13}>
                       <Form.Item label='详细条款'>
                         {
@@ -548,6 +552,7 @@ function AddScoringRulesmaintenance(props) {
                         重置
                       </Button>
                     </Col>
+
                   </Form>
 
                   {!scoreSearch && (
@@ -568,13 +573,17 @@ function AddScoringRulesmaintenance(props) {
                     </Clause>
                   )}
 
-                  <Table
-                    dataSource={clauseList.records}
-                    columns={columns}
-                    rowKey={record => record.id}
-                    pagination={pagination}
-                    scroll={{ x: 1300 }}
-                  />
+
+                  <Col span={24}>
+                    <Table
+                      dataSource={clauseList.records}
+                      columns={columns}
+                      rowKey={record => record.id}
+                      pagination={pagination}
+                      scroll={{ x: 1300 }}
+                    />
+                  </Col>
+
                 </Card>
               </Content>
             </Layout>

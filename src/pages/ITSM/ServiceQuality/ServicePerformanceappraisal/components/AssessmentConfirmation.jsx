@@ -388,7 +388,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
               <Form.Item label='确认时间'>
                 {
                   getFieldDecorator('confirmTime', {
-                    initialValue: moment(assessmentConfirmation.confirmationtime)
+                    initialValue: moment(assessmentConfirmation.confirmationtime || new Date())
                   })
                     (
                       <DatePicker
@@ -423,7 +423,7 @@ AssessmentConfirmation.defaultProps = {
     clause: '',
     clauseId: '',
     confirmer: '',
-    confirmTime: new Date(),
+    confirmTime: '',
   }
 }
 

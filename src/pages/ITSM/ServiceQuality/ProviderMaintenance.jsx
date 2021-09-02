@@ -143,6 +143,7 @@ function ProviderMaintenance(props) {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
+      width:150,
       render: (text, record) => {
         if(record.isEdit === '1') {
           return (

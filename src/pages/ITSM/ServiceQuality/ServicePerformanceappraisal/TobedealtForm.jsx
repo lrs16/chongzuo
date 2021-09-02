@@ -236,7 +236,7 @@ function TobedealtForm(props) {
             taskId,
             assessTime: moment(values.assessTime).format('YYYY-MM-DD HH:mm:ss'),
             applyTime: moment(values.applyTime).format('YYYY-MM-DD HH:mm:ss'),
-            attachment: files.ischange ? JSON.stringify(files.arr) : ''
+            attachment: files.ischange ? JSON.stringify(files.arr) : values.attachment
           }
         }).then(res => {
           if (res.code === 200) {
@@ -324,7 +324,7 @@ function TobedealtForm(props) {
             taskId,
             ...values,
             confirmTime: moment(values.confirmTime).format('YYYY-MM-DD HH:mm:ss'),
-            annex: files.ischange ? JSON.stringify(files.arr) : ''
+            annex: files.ischange ? JSON.stringify(files.arr) : values.annex
           }
         }).then(res => {
           if (res.code === 200) {

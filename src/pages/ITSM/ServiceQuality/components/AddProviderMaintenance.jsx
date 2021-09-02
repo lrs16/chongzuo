@@ -77,8 +77,8 @@ function AddProviderMaintenance(props) {
         type: 'qualityassessment/contractUpd',
         payload: {
           ...values,
-          signTime: moment(values.signTime).format('YYYY-MM-DD HH:mm:ss'),
-          dueTime: moment(values.dueTime).format('YYYY-MM-DD HH:mm:ss'),
+          signTime: moment(values.signTime).format('YYYY-MM-DD'),
+          dueTime: moment(values.dueTime).format('YYYY-MM-DD'),
           // id,
           providerId: id
         }
@@ -97,8 +97,8 @@ function AddProviderMaintenance(props) {
         type: 'qualityassessment/contractAdd',
         payload: {
           ...values,
-          signTime: moment(values.signTime).format('YYYY-MM-DD HH:mm:ss'),
-          dueTime: moment(values.dueTime).format('YYYY-MM-DD HH:mm:ss'),
+          signTime: moment(values.signTime).format('YYYY-MM-DD'),
+          dueTime: moment(values.dueTime).format('YYYY-MM-DD'),
           providerId: id
         }
       }).then(res => {
@@ -162,9 +162,6 @@ function AddProviderMaintenance(props) {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      render: (text, record) => {
-        return <p>{statueContent[text]}</p>
-      }
     },
     {
       title: '操作',
