@@ -86,7 +86,6 @@ function QueryList(props) {
   let formThead;
 
   const handledownFileToZip = (id, no) => {
-    console.log('id: ', id);
     dispatch({
       type: 'fault/downloadzip',
       payload: {
@@ -804,7 +803,11 @@ function QueryList(props) {
 
   //  下载 /导出功能
   const download = (page, pageSize) => {
-    const exportColumns = columns.map(item => {
+    const filterColumns = columns.filter((currentValue) => {
+      return currentValue.title !== '操作'
+    })
+
+    const exportColumns = filterColumns.map(item => {
       return {
         column: item.dataIndex,
         field: item.title
@@ -1083,6 +1086,19 @@ function QueryList(props) {
         dataIndex: 'finishRequiredTime',
         key: 'finishRequiredTime',
         width: 200,
+      },
+      {
+        title: '操作',
+        dataIndex: 'action',
+        key: 'action',
+        fixed: 'right',
+        width: 100,
+        render: (text, record) => {
+          return (
+            <a type="link" onClick={() => handledownFileToZip(record.id, record.no)}>
+              附件下载
+            </a>)
+        },
       },
     ]
     setColumns(controlTable)

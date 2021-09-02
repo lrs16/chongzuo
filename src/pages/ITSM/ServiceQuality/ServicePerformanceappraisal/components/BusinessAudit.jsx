@@ -172,7 +172,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
                   <DatePicker
                     disabled={noEdit}
                     showTime
-                    format='YYYY-MM-DD HH:MM'
+                    format='YYYY-MM-DD HH:mm:ss'
                   />)
             }
           </Form.Item>
