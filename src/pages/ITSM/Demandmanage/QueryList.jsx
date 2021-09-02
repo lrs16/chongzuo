@@ -287,6 +287,7 @@ function QueryList(props) {
         dispatch({
           type: 'demandquery/download',
           payload: {
+            columns: JSON.stringify(tablecol),
             ids: ids.toString()
           }
         }).then(res => {

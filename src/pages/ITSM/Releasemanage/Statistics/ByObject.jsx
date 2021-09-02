@@ -25,7 +25,7 @@ function ByObject(props) {
   const {
     dispatch,
     form: { getFieldDecorator, resetFields, getFieldsValue }, loading,
-    objectsumlist, objeclist,
+    objectsumlist, objectlist,
   } = props;
   const [selectdata, setSelectData] = useState('');
   const [expand, setExpand] = useState(false);
@@ -68,7 +68,7 @@ function ByObject(props) {
   const unitmap = getTypebyId('1384056290929545218');       // 责任单位
   const functionmap = getTypebyId('1384052503909240833');   // 功能类型
 
-  console.log(objeclist)
+  console.log(objectlist)
 
   // 合并一级，二级对象相同的行
   const temp = {};
@@ -149,6 +149,7 @@ function ByObject(props) {
               ...val
             },
           });
+          setExpand(true)
         };
         return (<a onClick={handleClick}>{text}</a>);
       },
@@ -257,7 +258,7 @@ function ByObject(props) {
 export default Form.create({})(
   connect(({ releasestatistics, loading }) => ({
     objectsumlist: releasestatistics.objectsum,
-    objeclis: releasestatistics.objeclist,
+    objectlist: releasestatistics.objectlist,
     loading: loading.models.releasestatistics,
   }))(ByObject),
 );

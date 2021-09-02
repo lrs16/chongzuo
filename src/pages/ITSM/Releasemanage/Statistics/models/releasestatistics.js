@@ -8,7 +8,7 @@ export default {
     successrate: undefined,
     tasksum: undefined,
     objectsum: undefined,
-    objeclist: undefined,
+    objectlist: undefined,
   },
 
   effects: {
@@ -70,9 +70,10 @@ export default {
       };
     },
     saveobjectlist(state, action) {
+      console.log(action)
       return {
         ...state,
-        objeclist: action.payload,
+        objectlist: action.payload.records,
       };
     },
   },
