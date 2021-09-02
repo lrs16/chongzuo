@@ -25,9 +25,6 @@ const BusinessAudit = React.forwardRef((props, ref) => {
     noEdit
   } = props;
 
-  console.log(businessAudit,'businessAudit')
-  console.log((businessAudit.checktime || businessAudit.reviewTime) ? moment(businessAudit.checktime || businessAudit.reviewTime) : '555')
-
   const [showContent, setShowContent] = useState('1');
 
   const required = true;
@@ -149,7 +146,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
           <Form.Item label='审核人'>
             {
               getFieldDecorator('verifier', {
-                initialValue: userinfo.userName
+                initialValue: (businessAudit.verifierName) || userinfo.userName
               })
                 (<Input disabled={noEdit} />)
             }

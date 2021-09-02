@@ -56,7 +56,7 @@ const { Step } = Steps;
 function TobedealtForm(props) {
   const pagetitle = props.route.name;
   const {
-    location: { query: { taskId, assessNo, mainId, search,myOrder,tobelist } },
+    
     location,
     target1,
     target2,
@@ -81,6 +81,8 @@ function TobedealtForm(props) {
   const [modalvisible, setModalVisible] = useState(false);
   const [modalrollback, setModalRollBack] = useState(false);   // 回退信息modle
 
+  const { taskId, assessNo, mainId, search, myOrder, tobelist } = props.location.query;
+  
   sessionStorage.setItem('Processtype', 'achievements');
   const getUserinfo = () => {
     dispatch({
@@ -166,22 +168,28 @@ function TobedealtForm(props) {
   }
 
   useEffect(() => {
-    getUserinfo();
-    openFlow();
-    gethisTask();
+    
+      getUserinfo();
+      openFlow();
+      gethisTask();
   }, [assessNo]);
 
 
   useEffect(() => {
-    if (taskData && currentTask) {
+    if ((taskData && currentTask) || hisTasks) {
       const { providerId, scoreId, target1Id, target2Id, assessType } = currentTask;
       let comfirmScoreid;
       if (taskData && taskData.clause && taskData.clause.scoreId) {
         comfirmScoreid = taskData.clause.scoreId;
       }
 
-      if (providerId) {
-        getContrractname(providerId);
+      let noeditProviderid;
+      if (hisTasks && hisTasks[0]) {
+        noeditProviderid = hisTasks[0]['服务绩效考核登记'].providerId
+      }
+
+      if (providerId || noeditProviderid) {
+        getContrractname(providerId || noeditProviderid);
       }
 
       if (scoreId || assessType) {
@@ -197,7 +205,7 @@ function TobedealtForm(props) {
       }
     }
 
-  }, [taskData]);
+  }, [taskData, hisTasks]);
 
   const tabList = [
     {
@@ -532,7 +540,7 @@ function TobedealtForm(props) {
   }
 
   const handleBack = () => {
-    if(search) {
+    if (search) {
       router.push({
         pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/search',
         query: { pathpush: true },
@@ -541,7 +549,7 @@ function TobedealtForm(props) {
       );
     }
 
-    if(myOrder) {
+    if (myOrder) {
       router.push({
         pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/assessment',
         query: { pathpush: true },
@@ -550,7 +558,7 @@ function TobedealtForm(props) {
       );
     }
 
-    if(tobelist) {
+    if (tobelist) {
       router.push({
         pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtlist',
         query: { pathpush: true },
@@ -558,9 +566,12 @@ function TobedealtForm(props) {
       }
       );
     }
-
-    
   }
+
+  console.log(taskData,'taskData')
+  console.log(hisTasks,'hisTasks');
+  console.log(currentTask.taskName,'name')
+  console.log(assessNo,'assessNo')
 
   return (
     <PageHeaderWrapper
@@ -611,7 +622,7 @@ function TobedealtForm(props) {
                 {
                   (taskName === '自动化科专责审核' || taskName === '服务绩效考核确认') && (
                     <Button type='primary' onClick={() => onClickSubmit(taskName, '流转不选人')}>
-                      {taskName === '服务绩效考核确认'? '确认考核':'流转'}
+                      {taskName === '服务绩效考核确认' ? '确认考核' : '流转'}
                     </Button>
                   )
                 }
@@ -648,7 +659,7 @@ function TobedealtForm(props) {
     >
 
       {
-        loading === false && tabActiveKey === 'workorder' && hisTaskArr && hisTaskArr.length > 0 &&  (
+        loading === false && tabActiveKey === 'workorder' && hisTaskArr && hisTaskArr.length > 0 && (
           <div className={styles.collapse}>
             {
               hisTaskArr && (
@@ -839,7 +850,7 @@ function TobedealtForm(props) {
             }
 
             {
-              hisTasks && hisTasks.length > 0 && (
+              loading === false && hisTasks && hisTasks.length > 0 && (
                 <div className={styles.collapse}>
                   <Collapse
                     expandIconPosition="right"
@@ -900,6 +911,11 @@ function TobedealtForm(props) {
                             formItemLayout={formItemLayout}
                             forminladeLayout={forminladeLayout}
                             userinfo={userinfo}
+                            selectPersonstate={newvalue => setNoselect(newvalue)}
+                            files={currentTask.annex ? JSON.parse(currentTask.annex) : []}
+                            ChangeFiles={newvalue => {
+                              setFiles(newvalue);
+                            }}
                             noEdit='true'
                           />],
                         ]);

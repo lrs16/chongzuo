@@ -48,6 +48,7 @@ const Register = React.forwardRef((props, ref) => {
     noEdit,
     loading
   } = props;
+
   const [performanceLeader, setPerformanceLeader] = useState('')
   const [fileslist, setFilesList] = useState([]);
   const [selectdata, setSelectData] = useState('');
@@ -77,7 +78,6 @@ const Register = React.forwardRef((props, ref) => {
 
   const handleChange = (values, option, params) => {
     const { key, props: { value } } = option;
-    console.log('key: ', key);
     switch (params) {
       case 'contract':
         setFieldsValue({
@@ -99,13 +99,15 @@ const Register = React.forwardRef((props, ref) => {
         getclausedetail(key, scoreId);
         setFieldsValue({
           target2Name: value,
-          target2Id: key
+          target2Id: key,
+          clauseName:''
         })
         break;
       case 'clause':
+        const {  props: { children:{props:{children} } }} = option;
         setFieldsValue({
           clauseId: key,
-          assessValue:value
+          assessValue:children[3].props.children
         })
         break;
 
@@ -312,7 +314,6 @@ const Register = React.forwardRef((props, ref) => {
   }
 
   const selectOnchange = (value, option) => {
-    console.log('value: ', value);
     const { props: { children } } = option;
     setFieldsValue({
       directorName: children,
@@ -771,7 +772,7 @@ const Register = React.forwardRef((props, ref) => {
                 ],
                 initialValue: register.assessValue
               })
-                (<Input disabled={noEdit} />)
+                (<Input disabled={noEdit} type='number'/>)
             }
           </Form.Item>
         </Col>
@@ -831,7 +832,7 @@ const Register = React.forwardRef((props, ref) => {
           <Form.Item label='登记人'>
             {
               getFieldDecorator('register', {
-                initialValue: userinfo.userName
+                initialValue: register.registerName || userinfo.userName
               })
                 (<Input disabled={noEdit} />)
             }
@@ -882,7 +883,8 @@ Register.defaultProps = {
     assessValue: '',
     status: '',
     remark: '',
-    attachment: ''
+    attachment: '',
+    registerName:''
   }
 }
 

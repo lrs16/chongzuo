@@ -54,6 +54,8 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
     selectPersonstate(e.target.value)
   }
 
+  console.log(providerConfirmation.confirmerName,'providerConfirmation')
+
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>
       <Form {...formItemLayout}>
@@ -172,7 +174,7 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
                     message: '请输入确认人'
                   }
                 ],
-                initialValue: userinfo.userName
+                initialValue: providerConfirmation.confirmerName || userinfo.userName
               })
                 (<Input disabled={noEdit} />)
             }
@@ -191,7 +193,10 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
                 ],
                 initialValue: providerConfirmation.confirmTime ? moment(providerConfirmation.confirmTime) : moment(new Date())
               })
-                (<DatePicker disabled={noEdit} />)
+                (<DatePicker
+                  showTime
+                  format='YYYY-MM-DD HH:mm:ss'
+                  disabled={noEdit} />)
             }
 
           </Form.Item>
@@ -207,7 +212,8 @@ ProviderConfirmation.defaultProps = {
     appealContent: '',
     annex: [],
     confirmer: '',
-    confirmTime: new Date(),
+    confirmTime: '',
+    confirmerName:''
   }
 }
 

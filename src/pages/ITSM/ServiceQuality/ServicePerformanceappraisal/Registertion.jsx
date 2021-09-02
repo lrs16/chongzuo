@@ -72,8 +72,6 @@ function Registertion(props) {
 
   const handleSubmit = (params) => {
     RegistratRef.current.validateFields((err, values) => {
-      console.log(moment(values.assessTime).format('YYYY-MM-DD HH:mm:ss'))
-      console.log('values: ', values);
       if (params ? !err : true) {
         const submitIfnfo = values;
         delete submitIfnfo.provider;

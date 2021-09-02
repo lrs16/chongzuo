@@ -112,8 +112,9 @@ function Workorder(props) {
     }
   }
 
+  
   const { id, taskName, mainId } = props.location.query;
-
+  console.log(mainId,'mainId')
   const { problemFlowLogs, problemFlowNodeRows } = todoDetail;
 
   const selectNextflow = () => {

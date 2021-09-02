@@ -63,7 +63,7 @@ function Performancequerydetail(props) {
     clauseList,
     userinfo,
     taskData,
-    taskData: { hisTasks, },
+    taskData: { hisTasks, currentTask },
     hisTaskArr,
     loading,
     dispatch,
@@ -104,6 +104,29 @@ function Performancequerydetail(props) {
     gethisTask();
   }, [assessNo]);
 
+  const getContrractname = (providerId) => {
+    console.log('providerId: ', providerId);
+    
+    contractProvider(providerId).then(res => {
+      if (res) {
+        const arr = [...(res.data)];
+        setContractArr(arr);
+      }
+    });
+  }
+
+  useEffect(() => {
+    if((currentTask && currentTask.taskName === '服务绩效考核登记') || (hisTasks && hisTasks.length > 0 &&  hisTasks[0]['服务绩效考核登记'] && hisTasks[0]['服务绩效考核登记'].providerId)) {
+      let detailId;
+      if(hisTasks && hisTasks[0] && hisTasks[0]['服务绩效考核登记'] && (hisTasks[0] ['服务绩效考核登记']).providerId) {
+        detailId = hisTasks[0]['服务绩效考核登记'].providerId;
+        console.log('detailId: ', detailId);
+      }
+      getContrractname( (currentTask && currentTask.providerId) || detailId);
+    }
+  },[taskData])
+
+  console.log(contractArr,'contractArr')
 
   const tabList = [
     {
@@ -196,7 +219,7 @@ function Performancequerydetail(props) {
                             // getclausedetail={getclausedetail}
                             clauseList={[]}
                             register={Object.values(obj)[0]}
-                            contractArr={[]}
+                            contractArr={contractArr}
                             // getContrractname={getContrractname}
                             // files={currentTask.attachment ? JSON.parse(currentTask.attachment) : []}
                             ChangeFiles={newvalue => {
@@ -250,7 +273,6 @@ function Performancequerydetail(props) {
                             target1={[]}
                             target2={[]}
                             clauseList={clauseList}
-                            editSign={true}
                             selectPersonstate={newvalue => setNoselect(newvalue)}
                             editSign='true'
                           />],
@@ -262,6 +284,43 @@ function Performancequerydetail(props) {
                         )
                       })
                     }
+                  </Collapse>
+                </div>
+              )
+            }
+
+            {
+              hisTasks && hisTasks.length === 0 && (
+                <div className={styles.collapse}>
+                  <Collapse
+                    expandIconPosition="right"
+                    bordered={false}
+                    defaultActiveKey={['0']}
+                  >
+                    <Panel Panel header='服务绩效考核登记'>
+                      <Register
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
+                        userinfo={userinfo}
+                        // getTarget1={getTarget1}
+                        // getTarget2={getTarget2}
+                        target1={[]}
+                        target2={[]}
+                        // getclausedetail={getclausedetail}
+                        clauseList={[]}
+                        register={currentTask}
+                        contractArr={contractArr}
+                        // getContrractname={getContrractname}
+                        // files={currentTask.attachment ? JSON.parse(currentTask.attachment) : []}
+                        ChangeFiles={newvalue => {
+                          setFiles(newvalue);
+                        }}
+                        loading={loading}
+                        key='0'
+                        noEdit='true'
+                      />
+                    </Panel>
+
                   </Collapse>
                 </div>
               )

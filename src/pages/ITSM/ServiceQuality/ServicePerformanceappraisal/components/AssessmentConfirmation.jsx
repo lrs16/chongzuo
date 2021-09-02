@@ -377,7 +377,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
               <Form.Item label='确认人'>
                 {
                   getFieldDecorator('confirmer', {
-                    initialValue: userinfo.userName
+                    initialValue: assessmentConfirmation.confirmerName || userinfo.userName
                   })
                     (<Input disabled={editSign} />)
                 }
@@ -424,6 +424,7 @@ AssessmentConfirmation.defaultProps = {
     clauseId: '',
     confirmer: '',
     confirmTime: '',
+    confirmerName:''
   }
 }
 

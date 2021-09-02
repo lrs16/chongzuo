@@ -5,7 +5,8 @@ import {
   Card,
   Icon,
   Tag,
-  DatePicker
+  DatePicker,
+  Avatar
 } from 'antd';
 import StatisticsCard from '@/components/StatisticsCard';
 import { ChartCard } from '@/components/Charts';
@@ -15,6 +16,7 @@ import OrdinaryLine from '@/components/CustomizeCharts/OrdinaryLine';
 import StatisticsModal from './components/StatisticsModal';
 import iconfontUrl from '@/utils/iconfont';
 
+import styles from './index.less'
 
 const IconFont = Icon.createFromIconfontCN({
   scriptUrl: iconfontUrl,
@@ -105,38 +107,45 @@ function StatisticalAnalysis(props) {
         <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
         <DatePicker placeholder="结束时间" />
 
-           {/* <StatisticsModal
+        {/* <StatisticsModal
         visible={visible}
         title={title}
         handleCancel={() => setVisible(false)}
       /> */}
       </Card>
 
-      <div style={{ backgroundColor: 'white' }}>
-        <Row gutter={16}>
-          <Col span={24}><p>故障责任单位情况</p></Col>
-          <Col span={12}>
-            {/* <ChartCard title="工单量"> */}
-            <Donut
-              data={Donutdata}
-              height={315}
-              total="1161"
-              padding={[0, 0, 0, 0]}
-              detailParams={newdata => { showDetaillist(newdata) }}
-            />
-            {/* </ChartCard> */}
-          </Col>
-          <Col span={12}>
-            {/* <ChartCard title="事件工单情况"> */}
-            <OrdinaryLine
-              height={315}
-              detailParams={newdata => { showDetaillist(newdata, 'line') }}
-            />
-            {/* </ChartCard> */}
-          </Col>
-        </Row>
+      <Row style={{ marginTop:24 }}>
+        <div className={styles.StatisticsCard}>
+          <Avatar icon='desktop'/>
+          <b>故障责任单位情况</b>
+        </div>
+        
+        <Col span={6}>
+          <StatisticsCard title='故障工单情况' value={1128} suffix='单' des='环比上月'  desval='50%' type='up' />
+        </Col>
 
-      </div>
+        <Col span={24}><p>故障责任单位情况</p></Col>
+        <Col span={12}>
+          {/* <ChartCard title="工单量"> */}
+          <Donut
+            data={Donutdata}
+            height={315}
+            total="1161"
+            padding={[0, 0, 0, 0]}
+            detailParams={newdata => { showDetaillist(newdata) }}
+          />
+          {/* </ChartCard> */}
+        </Col>
+        <Col span={12}>
+          {/* <ChartCard title="事件工单情况"> */}
+          <OrdinaryLine
+            height={315}
+            detailParams={newdata => { showDetaillist(newdata, 'line') }}
+          />
+          {/* </ChartCard> */}
+        </Col>
+      </Row>
+
 
       {/* </Card> */}
 
@@ -258,7 +267,7 @@ function StatisticalAnalysis(props) {
         </Col>
       </Row> */}
 
-   
+
     </div>
   )
 

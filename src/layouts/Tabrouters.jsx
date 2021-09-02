@@ -28,6 +28,7 @@ const alonepath = [
   { path: '/ITSM/servicequalityassessment/detailserviceprovidermaintenance' },
   { path: '/ITSM/servicequalityassessment/detailscoringrulesmaintenance' },
   { path: '/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail' },
+  { path: '/ITSM/servicequalityassessment/serviceperformanceappraisal/performancequerydetail' },
 ];
 
 // 登记或新建
