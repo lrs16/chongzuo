@@ -121,12 +121,6 @@ function Besolved(props) {
       width: 120,
     },
     {
-      title: '问题类型',
-      dataIndex: 'source',
-      key: 'source',
-      width: 120,
-    },
-    {
       title: '登记时间',
       dataIndex: 'registerTime',
       key: 'registerTime',
@@ -922,12 +916,6 @@ function Besolved(props) {
         title: '开发负责人',
         dataIndex: 'developmentLead',
         key: 'developmentLead',
-        width: 120,
-      },
-      {
-        title: '问题类型',
-        dataIndex: 'source',
-        key: 'source',
         width: 120,
       },
       {

@@ -56,7 +56,6 @@ const { Step } = Steps;
 function TobedealtForm(props) {
   const pagetitle = props.route.name;
   const {
-    
     location,
     target1,
     target2,
@@ -82,7 +81,7 @@ function TobedealtForm(props) {
   const [modalrollback, setModalRollBack] = useState(false);   // 回退信息modle
 
   const { taskId, assessNo, mainId, search, myOrder, tobelist } = props.location.query;
-  
+
   sessionStorage.setItem('Processtype', 'achievements');
   const getUserinfo = () => {
     dispatch({
@@ -93,7 +92,7 @@ function TobedealtForm(props) {
   const openFlow = () => {
     dispatch({
       type: 'performanceappraisal/getTaskData',
-      payload: assessNo
+      payload: { assessNo }
     })
   }
 
@@ -168,12 +167,10 @@ function TobedealtForm(props) {
   }
 
   useEffect(() => {
-    
-      getUserinfo();
-      openFlow();
-      gethisTask();
+    getUserinfo();
+    openFlow();
+    gethisTask();
   }, [assessNo]);
-
 
   useEffect(() => {
     if ((taskData && currentTask) || hisTasks) {
@@ -262,7 +259,6 @@ function TobedealtForm(props) {
       }
     })
   }
-
 
   //  审核保存流转
   const auditSave = (flowType, circulation) => {
@@ -568,10 +564,11 @@ function TobedealtForm(props) {
     }
   }
 
-  console.log(taskData,'taskData')
-  console.log(hisTasks,'hisTasks');
-  console.log(currentTask.taskName,'name')
-  console.log(assessNo,'assessNo')
+  // console.log(assessNo,'assessNo')
+  // console.log(taskData,'taskData')
+  // console.log(hisTasks,'hisTasks');
+  // console.log(currentTask.taskName,'name')
+
 
   return (
     <PageHeaderWrapper

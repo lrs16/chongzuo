@@ -117,12 +117,6 @@ const columns = [
     width: 150,
   },
   {
-    title: '考核得分',
-    dataIndex: 'assessValue',
-    key: 'assessValue',
-    width: 150,
-  },
-  {
     title: '发生时间',
     dataIndex: 'assessTime',
     key: 'assessTime',

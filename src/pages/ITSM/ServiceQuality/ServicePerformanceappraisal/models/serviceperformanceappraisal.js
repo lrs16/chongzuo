@@ -78,9 +78,10 @@ export default {
   //  登记
   *assessRegister({ payload }, { call, put }) {
     const response = yield call(assessRegister,payload);
-    if(response.code === 200 && response.data) {
+    if(response.code === 200) {
+      message.success(response.msg);
       router.push({
-        pathname:'/ITSM/servicequalityassessment/serviceperformanceappraisal/register',
+        pathname:'/ITSM/faultmanage/registration',
         query: {
           tabid: sessionStorage.getItem('tabid'),
           closecurrent: true,
@@ -123,8 +124,9 @@ export default {
   },
 
   //  获取环节数据
-  *getTaskData({ payload }, { call, put }) {
-    const response = yield call(getTaskData,payload);
+  *getTaskData({ payload:{ assessNo } }, { call, put }) {
+    const response = yield call(getTaskData,assessNo);
+    console.log('response: ', response);
     yield put({
       type:'taskData',
       payload:response
@@ -133,7 +135,6 @@ export default {
 
   //  流转
   *assessComplete({ payload }, { call, put }) {
-    console.log('payload: ', payload);
     return yield call(assessComplete,payload)
   },
 

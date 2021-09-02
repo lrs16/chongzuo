@@ -115,12 +115,6 @@ const columns = [
     width: 150,
   },
   {
-    title: '考核得分',
-    dataIndex: 'assessValue',
-    key: 'assessValue',
-    width: 150,
-  },
-  {
     title: '当前处理环节',
     dataIndex: 'currentTaskName',
     key: 'currentTaskName',

@@ -196,7 +196,9 @@ export default {
 
     //  待办详情页
     *ToDodetails({ payload: { id } }, { call, put }) {
+      console.log('id: ', id);
       const response = yield call(todoInformation, id);
+      console.log('response: ', response);
       yield put({
         type: 'details',
         payload: response,

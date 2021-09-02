@@ -583,6 +583,12 @@ const Register = React.forwardRef((props, ref) => {
           <Form.Item label='考核对象'>
             {
               getFieldDecorator('assessObject', {
+                rules: [
+                  {
+                    required,
+                    message: '请选择考核对象'
+                  }
+                ],
                 initialValue: register.assessObject
               })
                 (
