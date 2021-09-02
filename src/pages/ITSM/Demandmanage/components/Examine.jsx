@@ -121,7 +121,6 @@ const Examine = forwardRef((props, ref) => {
   };
 
   const handleChangeresult = values => {
-    console.log(JSON.stringify(values.toString()))
     const resultflow = resulttype.get(JSON.stringify(values.toString()));
     setAdopt(resultflow);
     setFieldsValue({ result: resultflow }, () => { });

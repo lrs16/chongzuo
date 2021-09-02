@@ -40,16 +40,9 @@ function Examinedes(props) {
               {info.result === 3 && <><Checkbox defaultChecked disabled />市场部领导审核</>}
             </Form.Item>
           </Col>
-          {info.developmentLead && (
+          {info.taskName === '系统开发商审核' && (
             <Col span={24}>
               <Form.Item label='开发负责人' {...forminladeLayout}>
-                <Input defaultValue={info.developmentLead} disabled />
-              </Form.Item>
-            </Col>
-          )}
-          {info.developmentLead && (
-            <Col span={24}>
-              <Form.Item label='开发负责人'  {...forminladeLayout}>
                 <Input defaultValue={info.developmentLead} disabled />
               </Form.Item>
             </Col>

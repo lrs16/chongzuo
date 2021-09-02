@@ -181,6 +181,7 @@ function ToDoregist(props) {
           {result !== '0' &&
             taskName !== '自动化科业务人员审核' &&
             taskName !== '自动化科业务人员确认' &&
+            taskName !== '市场部领导审核' &&
             taskName !== '自动化科专责审核' &&
             taskName !== '需求登记人员确认' &&
             taskName !== '系统开发商处理' && (

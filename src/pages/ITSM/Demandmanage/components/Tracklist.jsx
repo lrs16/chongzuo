@@ -1,12 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
-import { Table } from 'antd';
+import { Table, Row, Col, Form, Radio, Input } from 'antd';
 import { PaperClipOutlined } from '@ant-design/icons';
 import styles from './style.less';
+
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 8 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 16 },
+  },
+};
 
 function Tracklist(props) {
   const { dispatch, demandId, trackslist, loading } = props;
   const [data, setData] = useState([]);
+  const [status, setStatus] = useState('open');
 
   const getlistdata = () => {
     dispatch({
@@ -20,6 +32,7 @@ function Tracklist(props) {
           return Object.assign(item, { key: index });
         });
         setData(newarr);
+        setStatus(res.status);
       }
     });
   };
@@ -123,13 +136,32 @@ function Tracklist(props) {
   ];
 
   return (
-    <Table
-      pagination={false}
-      columns={columns}
-      scroll={{ x: 1400 }}
-      dataSource={data}
-      loading={loading}
-    />
+    <>
+      <Row gutter={24}>
+        <Form {...formItemLayout}>
+          <Col span={8}>
+            <Form.Item label="预计开发完成时间">
+              <Input disabled value={data.length > 0 ? data[data.length - 1].devFinishTime : ''} />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="预计发布时间">
+              <Input disabled value={data.length > 0 ? data[data.length - 1].releaseTime : ''} />
+            </Form.Item>
+          </Col>
+          <Col span={8} style={{ paddingTop: 4 }}>
+            {status !== '' && (<Radio checked style={{ marginTop: 8 }}>已启动发布流程</Radio>)}
+          </Col>
+        </Form>
+      </Row>
+      <Table
+        pagination={false}
+        columns={columns}
+        scroll={{ x: 1400 }}
+        dataSource={data}
+        loading={loading}
+      />
+    </>
   );
 }
 
