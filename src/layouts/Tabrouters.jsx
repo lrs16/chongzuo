@@ -51,6 +51,7 @@ const multiplepath = [
   { path: '/ITSM/servicequalityassessment/creditcard/creditcardregister', type: 'creditcardregister' },
   { path: '/ITSM/servicequalityassessment/addscoringrulesmaintenance', type: 'addscoringrulesmaintenance' },
   { path: '/ITSM/servicequalityassessment/creditcard/creditcardregister', type: 'creditcardregister' },
+  { path: '/automation/automatedjob/jobmanagement/jobconfig/new', type: 'automatedjob' },
 ]
 function Tabrouters(props) {
   const { Changealonepath, Changemultiple } = props;

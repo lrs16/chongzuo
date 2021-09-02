@@ -282,6 +282,43 @@ function softwareManage(props) {
             key: 'softSorts',
             width: 120,
         },
+
+        {
+            title: '启动脚本路径',
+            dataIndex: 'startupScriptPath',
+            key: 'startupScriptPath',
+            width: 200,
+        },
+        {
+            title: '停止脚本路径',
+            dataIndex: 'stopScriptPath',
+            key: 'stopScriptPath',
+            width: 200,
+        },
+        {
+            title: '启动参数',
+            dataIndex: 'startupScriptArgs',
+            key: 'startupScriptArgs',
+            width: 120,
+        },
+        {
+            title: '停止参数',
+            dataIndex: 'stopScriptArgs',
+            key: 'stopScriptArgs',
+            width: 180,
+        },
+        {
+            title: '是否巡检',
+            dataIndex: 'monitor',
+            key: 'monitor',
+            width: 120,
+        },
+        {
+            title: '是否监控',
+            dataIndex: 'patrolInspection',
+            key: 'patrolInspection',
+            width: 120,
+        },
         {
             title: '软件备注',
             dataIndex: 'softRemarks',

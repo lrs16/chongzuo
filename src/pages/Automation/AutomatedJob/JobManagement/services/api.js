@@ -14,8 +14,9 @@ export async function autotaskList(params, pageNum, pageSize) {
 export async function taskObjectList(params, pageNum, pageSize, taskId) {
     return request(`/auto/target/listPageTaskObject/${pageNum}/${pageSize}/${taskId}`, {
         method: 'POST',
-        data: JSON.stringify(params),
-        requestType: 'formjosn',
+        data: { params, pageNum, pageSize, taskId },
+        // requestType: 'formjosn',
+        body: JSON.stringify(taskId),
     });
 }
 
@@ -23,8 +24,9 @@ export async function taskObjectList(params, pageNum, pageSize, taskId) {
 export async function taskScriptList(params, pageNum, pageSize, taskId) {
     return request(`/auto/target/listPageTaskScript/${pageNum}/${pageSize}/${taskId}`, {
         method: 'POST',
-        data: JSON.stringify(params),
-        requestType: 'formjosn',
+        data: { params, pageNum, pageSize, taskId },
+        // requestType: 'formjosn',
+        body: JSON.stringify(taskId),
     });
 }
 
@@ -48,5 +50,6 @@ export async function editTask(params) {
 export async function deleteTask(taskId) {
     return request(`/auto/target/delAutoTask/${taskId}`, {
         method: 'DELETE',
+        // data: { taskId },
     })
 }

@@ -1,16 +1,12 @@
-import React
-, {
-    // useEffect,
-    useState
-}
-    from 'react';
-// import { connect } from 'dva';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
-import { Table, Card, Divider, Button, Form, Input, Select, Row, Col, DatePicker } from 'antd';
+import { Table, Card, Divider, Button, Form, Input, Select, Row, Col, DatePicker, Popconfirm, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
+import TaskObjectModel from './components/TaskObjectModel';
 
 const { Option } = Select;
 
@@ -28,12 +24,13 @@ const formItemLayout = {
 function JobConfig(props) {
     const pagetitle = props.route.name;
     const {
-        // loading,
-        // dispatch,
-        // location,
+        loading,
+        dispatch,
+        location,
+        autotasklist,
         form: {
             getFieldDecorator,
-            // getFieldsValue,
+            getFieldsValue,
             resetFields,
         },
     } = props;
@@ -44,27 +41,27 @@ function JobConfig(props) {
     // const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
     // const [data, setData] = useState('');
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
-    //   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+    const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
 
-    // const searchdata = (page, size) => {
-    //     const values = getFieldsValue();
-    //     //   values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
-    //     //   values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
-    //     //   values.startUpdateTime = values.startUpdateTime ? moment(values.startUpdateTime).format('YYYY-MM-DD HH:mm:ss') : '';
-    //     //   values.endUpdateTime = values.endUpdateTime ? moment(values.endUpdateTime).format('YYYY-MM-DD HH:mm:ss') : '';
-    //     dispatch({
-    //         type: '',
-    //         payload: {
-    //             values,
-    //             pageNum: page,
-    //             pageSize: size,
-    //         },
-    //     });
-    // };
+    const searchdata = (page, size) => {
+        const values = getFieldsValue();
+        values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
+        values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
+        //   values.startUpdateTime = values.startUpdateTime ? moment(values.startUpdateTime).format('YYYY-MM-DD HH:mm:ss') : '';
+        //   values.endUpdateTime = values.endUpdateTime ? moment(values.endUpdateTime).format('YYYY-MM-DD HH:mm:ss') : '';
+        dispatch({
+            type: 'autotask/findautotaskList',
+            payload: {
+                values,
+                pageNum: page,
+                pageSize: size,
+            },
+        });
+    };
 
-    //   useEffect(() => {
-    //       searchdata(1, 15);
-    //   }, [location]);
+    useEffect(() => {
+        searchdata(1, 15);
+    }, [location]);
 
     //   const handleShowDrawer = (drwertitle, type, record) => {
     //       setVisible(!visible);
@@ -109,80 +106,79 @@ function JobConfig(props) {
 
     const handleReset = () => {
         resetFields();
-        //   searchdata(1, 15)
-        //   setPageinations({ current: 1, pageSize: 15 });
+        searchdata(1, 15)
+        setPageinations({ current: 1, pageSize: 15 });
     };
 
-    const newjobconfig = (edittype) => {
+    const newjobconfig = (edittype, record) => {
         if (edittype === 'edit') {
             router.push({
-                pathname: '/automation/automatedjob/jobmanagement/jobconfig/new',
+                pathname: '/automation/automatedjob/jobmanagement/jobconfig/edit',
                 query: {
-                    addtab: true,
-                    menuDes: '编辑作业配置',
+                    Id: record.id,
                 },
+                state: {
+                    dynamicpath: true,
+                    menuDesc: '编辑作业配置',
+                }
             })
         } else {
             router.push({
                 pathname: '/automation/automatedjob/jobmanagement/jobconfig/new',
                 query: {
                     addtab: true,
-                },
-                state: {
-                    dynamicpath: true,
                     menuDesc: '添加作业配置',
-                }
+                },
             })
         }
     }
 
-    //   const onShowSizeChange = (page, size) => {
-    //       searchdata(page, size);
-    //       setPageinations({
-    //           ...paginations,
-    //           pageSize: size,
-    //       });
-    //   };
+    const onShowSizeChange = (page, size) => {
+        searchdata(page, size);
+        setPageinations({
+            ...paginations,
+            pageSize: size,
+        });
+    };
 
-    //   const changePage = page => {
-    //       searchdata(page, paginations.pageSize);
-    //       setPageinations({
-    //           ...paginations,
-    //           current: page,
-    //       });
-    //   };
+    const changePage = page => {
+        searchdata(page, paginations.pageSize);
+        setPageinations({
+            ...paginations,
+            current: page,
+        });
+    };
 
-    //   const pagination = {
-    //       showSizeChanger: true,
-    //       onShowSizeChange: (page, size) => onShowSizeChange(page, size),
-    //       current: paginations.current,
-    //       pageSize: paginations.pageSize,
-    //       total: softList.total,
-    //       showTotal: total => `总共  ${total}  条记录`,
-    //       onChange: page => changePage(page),
-    //   };
+    const pagination = {
+        showSizeChanger: true,
+        onShowSizeChange: (page, size) => onShowSizeChange(page, size),
+        current: paginations.current,
+        pageSize: paginations.pageSize,
+        total: autotasklist.total,
+        showTotal: total => `总共  ${total}  条记录`,
+        onChange: page => changePage(page),
+    };
 
     const handleSearch = () => {
-        //   setPageinations({
-        //       ...paginations,
-        //       current: 1,
-        //   });
-        //   searchdata(1, paginations.pageSize);
+        setPageinations({
+            ...paginations,
+            current: 1,
+        });
+        searchdata(1, paginations.pageSize);
     };
 
     const handleDelete = id => { // 删除
-        console.log(id)
-        //   dispatch({
-        //       type: '',
-        //       payload: { Ids: id },
-        //   }).then(res => {
-        //       if (res.code === 200) {
-        //           message.success('删除成功');
-        //           searchdata(1, 15);
-        //       } else {
-        //           message.error(res.msg);
-        //       }
-        //   });
+        dispatch({
+            type: 'autotask/todeleteTask',
+            payload: { taskId: id },
+        }).then(res => {
+            if (res.code === 200) {
+                message.success('删除成功');
+                searchdata(1, 15);
+            } else {
+                message.error(res.msg);
+            }
+        });
     };
 
     // 查询
@@ -236,6 +232,13 @@ function JobConfig(props) {
             dataIndex: 'taskObjectNum',
             key: 'taskObjectNum',
             width: 150,
+            render: (text, record) => {
+                return (
+                  <TaskObjectModel record={record}>
+                    <a type="link">{text}</a>
+                  </TaskObjectModel>
+                );
+              },
         },
         {
             title: '作业脚本',
@@ -257,8 +260,8 @@ function JobConfig(props) {
         },
         {
             title: '创建人',
-            dataIndex: 'createByNameExt',
-            key: 'createByNameExt',
+            dataIndex: 'createBy',
+            key: 'createBy',
             width: 120,
         },
         {
@@ -269,8 +272,8 @@ function JobConfig(props) {
         },
         {
             title: '更新人',
-            dataIndex: 'updateByNameExt',
-            key: 'updateByNameExt',
+            dataIndex: 'updateBy',
+            key: 'updateBy',
             width: 120,
         },
         {
@@ -307,13 +310,14 @@ function JobConfig(props) {
                 return (
                     <div>
                         <a type="link"
+                            onClick={() => newjobconfig('edit', record)}
                         >
                             编辑
                         </a>
                         <Divider type="vertical" />
-                        <a type="link" style={{ color: 'red' }} onClick={() => handleDelete(record.id)}>
-                            删除
-                        </a>
+                        <Popconfirm title="确定删除吗？" onConfirm={() => handleDelete(record.id)}>
+                            <a type="link" style={{ color: 'red' }}>删除</a>
+                        </Popconfirm>
                     </div>
                 );
             },
@@ -513,8 +517,10 @@ function JobConfig(props) {
                 </div>
                 <Table
                     columns={columns}
-                    rowKey={(_, index) => index.toString()}
-                    //   pagination={pagination}
+                    loading={loading}
+                    dataSource={autotasklist.rows}
+                    rowKey={record => record.id}
+                    pagination={pagination}
                     scroll={{ x: 1300 }}
                 />
             </Card>
@@ -522,4 +528,9 @@ function JobConfig(props) {
     );
 }
 
-export default Form.create({})(JobConfig);
+export default Form.create({})(
+    connect(({ autotask, loading }) => ({
+        autotasklist: autotask.autotasklist,
+        loading: loading.models.autotask,
+    }))(JobConfig),
+);

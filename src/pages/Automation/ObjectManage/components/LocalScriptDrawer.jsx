@@ -26,7 +26,7 @@ function LocalScriptDrawer(props) {
     ChangeFiles,
   } = props;
 
-  const { getFieldDecorator, validateFields,resetFields } = props.form;
+  const { getFieldDecorator, validateFields, resetFields } = props.form;
   const required = true;
   const {
     id,
@@ -46,7 +46,6 @@ function LocalScriptDrawer(props) {
   const [findhostname, setFindhostName] = useState([]); // 区域查询主机名称
   const [findhostip, setFindhostIp] = useState({}); // 主机名称查询主机IP
   const [showElem, setshowElem] = useState('none');
-  // const [toshowElem, settoshowElem] = useState('block');
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 附件上传下载
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
 
@@ -75,19 +74,10 @@ function LocalScriptDrawer(props) {
   };
 
   useEffect(() => {
-    return () => {
-      setSelectData([]);
-      setFindhostIp({});
-    };
-  }, []);
-
-  useEffect(() => {
     if (scriptSource === '本地上传') {
       setshowElem('block');
-      // settoshowElem('none');
-    }else {
+    } else {
       setshowElem('none');
-      // settoshowElem('block');
     }
   }, [scriptSource]);
 
@@ -103,10 +93,8 @@ function LocalScriptDrawer(props) {
   const handletoChange = e => {
     if (e.target.value === '本地上传') {
       setshowElem('block');
-      // settoshowElem('none');
     } else {
       setshowElem('none');
-      // settoshowElem('block');
     }
   };
 
@@ -118,6 +106,17 @@ function LocalScriptDrawer(props) {
       setFindhostIp(res.data[0]);
     });
   };
+
+  useEffect(() => {
+    return () => {
+      setSelectData([]);
+      setFindhostIp({});
+    };
+  }, []);
+
+  // useEffect(() => {
+  //   setFindhostIp({});
+  // }, [hostIp === undefined]);
 
   // 数据字典取下拉值
   const getTypebyId = key => {
@@ -205,7 +204,7 @@ function LocalScriptDrawer(props) {
                 message: '请输入 '
               },
             ],
-            initialValue: findhostip.hostIp || hostIp,
+            initialValue: savetype === 'update' && hostIp === undefined ?  hostIp : findhostip.hostIp
           })(<Input allowClear />)}
         </Form.Item>
         <Form.Item label="脚本名称">
@@ -266,19 +265,13 @@ function LocalScriptDrawer(props) {
             ))}
           </Radio.Group>)}
         </Form.Item>
-        {showElem==='none'&&(
         <Form.Item label="脚本内容">
           {getFieldDecorator('scriptCont', {
             rules: [{ required, message: '请输入 ' }],
-            initialValue: scriptCont,
+            // initialValue: scriptCont,
+            initialValue: fileslist.ischange && files.length > 0 && files[0] && savetype !== 'update'? files[0].resInfo : scriptCont,
           })(<TextArea placeholder="请输入" autoSize={{ minRows: 10 }} allowClear />)}
         </Form.Item>
-        )}
-        {/* <Form.Item label="*脚本内容" style={{ display: toshowElem }}>
-          {getFieldDecorator('scriptCont', {
-            initialValue: scriptCont,
-          })(<TextArea placeholder="请输入" autoSize={{ minRows: 10 }} allowClear />)}
-        </Form.Item> */}
         <Form.Item label="脚本备注">
           {getFieldDecorator('scriptRemarks', {
             initialValue: scriptRemarks,
@@ -286,12 +279,13 @@ function LocalScriptDrawer(props) {
         </Form.Item>
         <Form.Item label="脚本文件大小">
           {getFieldDecorator('scriptSize', {
-            initialValue: scriptSize,
+            // initialValue: scriptSize,
+            initialValue: fileslist.ischange && files.length > 0 && files[0] ? files[0].size : scriptSize,
           })(<Input style={{ width: '100%' }} placeholder="请输入" disabled />)}
         </Form.Item>
         <Form.Item label="上传时间">
           {getFieldDecorator('createTime', {
-            initialValue: moment(new Date()).format('YY-MM-DD HH:mm:ss'),
+            initialValue: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
           })(<Input disabled />)}
         </Form.Item>
         <Form.Item label="上传人">

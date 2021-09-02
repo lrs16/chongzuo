@@ -114,40 +114,20 @@ function SystemScriptList(props) {
 
     // 提交
     const handleSubmit = values => {
-        if (files.ischange) {
-            const newvalues = {
-                scriptSize: files.arr?.length || values.upload ? files.arr[0].size : '',
-                fileId: files.arr?.length || values.upload ? files.arr[0].uid : '',
+        console.log(values,'values')
+        dispatch({
+            type: 'scriptconfig/toupdatesystemScript',
+            payload: {
+                ...values,
+            },
+        }).then(res => {
+            if (res.code === 200) {
+                message.success(res.msg);
+                searchdata(1, 15);
+            } else {
+                message.error(res.msg);
             }
-            dispatch({
-                type: 'scriptconfig/toupdatesystemScript',
-                payload: {
-                    ...newvalues,
-                    ...values,
-                },
-            }).then(res => {
-                if (res.code === 200) {
-                    message.success(res.msg);
-                    searchdata(1, 15);
-                } else {
-                    message.error(res.msg);
-                }
-            });
-        } else {
-            dispatch({
-                type: 'scriptconfig/toupdatesystemScript',
-                payload: {
-                    ...values,
-                },
-            }).then(res => {
-                if (res.code === 200) {
-                    message.success(res.msg);
-                    searchdata(1, 15);
-                } else {
-                    message.error(res.msg);
-                }
-            });
-        }
+        });
     };
 
     const handleDelete = id => { // 删除

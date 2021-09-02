@@ -49,7 +49,6 @@ function SystemScriptDrawer(props) {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [showElem, setshowElem] = useState('none');
-  // const [toshowElem, settoshowElem] = useState('block');
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 附件上传下载
 
   const hanldleCancel = () => {
@@ -59,16 +58,17 @@ function SystemScriptDrawer(props) {
   useEffect(() => {
     if (fileslist.ischange) {
       ChangeFiles(fileslist);
+      // if(files && files.length > 0) {
+      //   setFieldsValue({ scriptCont: files[0].resInfo })
+      // }
     }
   }, [fileslist]);
 
   useEffect(() => {
     if (scriptSource === '本地上传') {
       setshowElem('block');
-      // settoshowElem('none');
     }else {
       setshowElem('none');
-      // settoshowElem('block');
     }
   }, [scriptSource]);
 
@@ -114,10 +114,8 @@ function SystemScriptDrawer(props) {
   const handletoChange = e => {
     if (e.target.value === '本地上传') {
       setshowElem('block');
-      // settoshowElem('none');
     } else {
       setshowElem('none');
-      // settoshowElem('block');
     }
   };
 
@@ -180,16 +178,15 @@ function SystemScriptDrawer(props) {
             ))}
           </Radio.Group>)}
         </Form.Item>
-        {showElem==='none'&&(
         <Form.Item label="脚本内容">
           {getFieldDecorator('scriptCont', {
             rules: [{ required,message: '请输入 ' }],
-            initialValue: scriptCont,
+            initialValue: fileslist.ischange && files.length > 0 && files[0] ? files[0].resInfo : scriptCont,
           })(<TextArea placeholder="请输入" autoSize={{ minRows: 10 }} allowClear />)}
         </Form.Item>
-        )}
-        <Form.Item label="脚本参数">
+        <Form.Item label="脚本参数" extra="多个参数以 ; 符号分割 如 aaa;bbb;cccc">
           {getFieldDecorator('scriptArgs', {
+            // initialValue: scriptArgs.join(';'), extra="多个参数以 ; 符号分割 如 aaa;bbb;cccc"
             initialValue: scriptArgs,
           })(<Input placeholder="请输入" />)}
         </Form.Item>

@@ -1438,6 +1438,12 @@ export default {
                               name: '新增作业配置',
                               icon: 'fork',
                               component: './Automation/AutomatedJob/JobManagement/New',
+                            },
+                            {
+                              path: '/automation/automatedjob/jobmanagement/jobconfig/edit',
+                              name: '编辑作业配置',
+                              icon: 'fork',
+                              component: './Automation/AutomatedJob/JobManagement/New',
                             }
                           ]
                         },

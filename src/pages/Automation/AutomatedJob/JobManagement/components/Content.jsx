@@ -2,6 +2,7 @@ import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { Select, Form, Input, Radio, DatePicker, Button } from 'antd';
 import moment from 'moment';
 import SystemScriptList from './SystemScriptList';
+import TaskObjectList from './TaskObjectList';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -43,11 +44,13 @@ const formItemLayout444 = {
 const Content = forwardRef((props, ref) => {
   const {
     formrecord,
-    form: { getFieldDecorator, getFieldsValue, resetFields }
+    form: { getFieldDecorator, getFieldsValue, resetFields,setFieldsValue }
   } = props;
+
   const required = true;
   const [selectadopt, setselectAdopt] = useState('手动');
   const [showexpand, setshowExpand] = useState(false);
+  const [showexpand1, setshowExpand1] = useState(false);
 
   useImperativeHandle(ref, () => ({
     getVal: () => getFieldsValue(),
@@ -69,14 +72,21 @@ const Content = forwardRef((props, ref) => {
           })(<Input />)}
         </Form.Item>
         <Form.Item label="作业对象" {...formItemLayout1}>
-          {getFieldDecorator('taskObjectNum', {
-            rules: [{ required, message: '请选择作业对象' }],
-            initialValue: formrecord.taskObjectNum,
-          })(<Button block>+作业对象</Button>)}
+          {getFieldDecorator('agentIds', {
+            // rules: [{ required, message: '请选择作业对象' }],
+            initialValue: formrecord.agentIds,
+          })(<Button block onClick={() => {
+            setshowExpand1(!showexpand1);
+          }}>+作业对象</Button>)}
         </Form.Item>
+        {showexpand1 && (
+        <Form.Item span={24} {...formItemLayout444} >
+          <TaskObjectList GetData={(v)=>{setFieldsValue({ agentIds: v });}} />
+        </Form.Item>
+        )}
         <Form.Item label="作业脚本"  {...formItemLayout1}>
           {getFieldDecorator('taskScriptNum', {
-            rules: [{ required, message: '请选择作业脚本' }],
+            // rules: [{ required, message: '请选择作业脚本' }],
             initialValue: formrecord.taskScriptNum,
           })(<Button block onClick={() => {
             setshowExpand(!showexpand);

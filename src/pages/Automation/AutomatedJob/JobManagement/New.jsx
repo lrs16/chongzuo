@@ -1,4 +1,6 @@
-import React, {  useEffect, useRef } from 'react';
+import React, {  useEffect, useRef,
+  // useContext 
+} from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import { Button, Card, message } from 'antd';
@@ -11,6 +13,11 @@ function New(props) {
   const {
     dispatch,
     location,
+    // location: {
+    //   query: {
+    //     menuDes
+    //   }
+    // },
     tabnew,
     tabdata,
   } = props;
@@ -19,17 +26,28 @@ function New(props) {
 
   const handleClick = () => { // 保存添加
     ContentRef.current.Forms((err, values) => {
-      console.log(values, 'values')
-      // if (err) {
-      //   message.error('请将信息填写完整')
-      // } else {
-      //   dispatch({
-      //     type: 'autotask/toaddTask',
-      //     payload: {
-      //       ...values,
-      //     },
-      //   });
-      // }
+      // console.log(values, 'values')
+      if (err) {
+        message.error('请将信息填写完整')
+      } else {
+        dispatch({
+          type: 'autotask/toaddTask',
+          payload: {
+            ...values,
+          },
+        }).then(res => {
+          if (res.code === 200) {
+            message.success(res.msg);
+            router.push({
+              pathname: `/automation/automatedjob/jobmanagement/jobconfig`,
+              query: { pathpush: true },
+              state: { cache: false }
+            });
+          } else {
+            message.error(res.msg);
+          }
+        })
+      }
     })
   }
 
@@ -83,24 +101,16 @@ function New(props) {
   const operations = (
     <>
       <Button
-        type="danger"
-        ghost
-        style={{ marginRight: 8 }}
-        // onClick={() => handleClick('delete')}
-      >
-        删除
-      </Button>
-      <Button
         type="primary"
         style={{ marginRight: 8 }}
-        onClick={() => handleClick('save')}
+        onClick={() => handleClick()}
       >
         保存
       </Button>
       <Button
         type="primary"
         style={{ marginRight: 8 }}
-        onClick={() => { handleSubmit() }}
+        onClick={() => handleSubmit()}
       >
         提交
       </Button>

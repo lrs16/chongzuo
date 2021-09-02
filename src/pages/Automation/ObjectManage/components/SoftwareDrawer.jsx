@@ -2,10 +2,11 @@ import React, {
     useState
 } from 'react';
 import DictLower from '@/components/SysDict/DictLower';
-import { Drawer, Button, Form, Input, Select, InputNumber, } from 'antd';
+import { Drawer, Button, Form, Input, Select, InputNumber, Radio} from 'antd';
 
 const { TextArea } = Input;
 const { Option } = Select;
+const RadioGroup = Radio.Group;
 
 const formItemLayout = {
     labelCol: {
@@ -42,6 +43,12 @@ function SoftwareDrawer(props) {
         softPath,
         softPort,
         softName,
+        startupScriptPath, 
+        stopScriptPath, 
+        startupScriptArgs, 
+        stopScriptArgs,
+        monitor,
+        patrolInspection
     } = props.record;
 
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
@@ -84,6 +91,7 @@ function SoftwareDrawer(props) {
 
     const zonemap = getTypebyId('1428182995477942274'); // 主机区域
     const hoststatusmap = getTypebyId('1428184619231432705'); // 软件状态
+    // const whethermap = getTypebyId('1428185541785374722'); // 是否是否
 
     return (
         <Drawer
@@ -186,12 +194,12 @@ function SoftwareDrawer(props) {
                 </Form.Item>
                 <Form.Item label="软件版本号">
                     {getFieldDecorator('softVersion', {
-                        rules: [
-                            {
-                                required,
-                                message: '请输入',
-                            },
-                        ],
+                        // rules: [
+                        //     {
+                        //         required,
+                        //         message: '请输入',
+                        //     },
+                        // ],
                         initialValue: softVersion,
                     })(<Input placeholder="请输入" />)}
                 </Form.Item>
@@ -233,14 +241,50 @@ function SoftwareDrawer(props) {
                 </Form.Item>
                 <Form.Item label="软件排序">
                     {getFieldDecorator('softSorts', {
-                        rules: [
-                            {
-                                required,
-                                message: '请输入数字',
-                            },
-                        ],
                         initialValue: softSorts,
                     })(<InputNumber style={{ width: '100%' }} placeholder="请输入数字..." />)}
+                </Form.Item>
+                <Form.Item label="启动脚本路径">
+                    {getFieldDecorator('startupScriptPath', {
+                        initialValue: startupScriptPath,
+                    })(<Input placeholder="请输入" />)}
+                </Form.Item>
+                <Form.Item label="停止脚本路径">
+                    {getFieldDecorator('stopScriptPath', {
+                        initialValue: stopScriptPath,
+                    })(<Input placeholder="请输入" />)}
+                </Form.Item>
+                <Form.Item label="启动参数">
+                    {getFieldDecorator('startupScriptArgs', {
+                        initialValue: startupScriptArgs,
+                    })(<Input placeholder="请输入" />)}
+                </Form.Item>
+                <Form.Item label="停止参数">
+                    {getFieldDecorator('stopScriptArgs', {
+                        initialValue: stopScriptArgs,
+                    })(<Input placeholder="请输入" />)}
+                </Form.Item>
+                <Form.Item label="是否巡检">
+                    {getFieldDecorator('monitor', {
+                        rules: [{ required, message: `请选择` }],
+                        initialValue: monitor || '是',
+                    })(
+                        <RadioGroup>
+                            <Radio value="是">是</Radio>
+                            <Radio value="否">否</Radio>
+                        </RadioGroup>
+                    )}
+                </Form.Item>
+                <Form.Item label="是否监控"> 
+                    {getFieldDecorator('patrolInspection', {
+                        rules: [{ required, message: `请选择` }],
+                        initialValue: patrolInspection || '是',
+                    })(
+                        <RadioGroup>
+                            <Radio value="是">是</Radio>
+                            <Radio value="否">否</Radio>
+                        </RadioGroup>
+                    )}
                 </Form.Item>
                 <Form.Item label="软件用途">
                     {getFieldDecorator('softUse', {
@@ -291,6 +335,12 @@ SoftwareDrawer.defaultProps = {
         softPath: '',
         softPort: '',
         softName: '',
+        startupScriptPath: '', 
+        stopScriptPath: '', 
+        startupScriptArgs: '', 
+        stopScriptArgs: '',
+        patrolInspection: '',
+        monitor: '',
     },
 };
 

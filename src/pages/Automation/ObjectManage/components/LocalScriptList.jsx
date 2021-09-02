@@ -85,43 +85,35 @@ function LocalScriptList(props) {
 
   // 提交
   const handleSubmit = values => {
-    if (files.ischange) {
-      const newvalues = {
-        scriptSize: files.arr?.length || values.upload ? files.arr[0].size : '',
-        fileId: files.arr?.length || values.upload ? files.arr[0].uid : '',
-      }
-      if (savetype === '' || savetype === 'add') {
-        dispatch({
-          type: 'scriptconfig/toaddlocalScript',
-          payload: {
-            ...values,
-            ...newvalues,
-          },
-        }).then(res => {
-          if (res.code === 200) {
-            message.success(res.msg);
-            searchdata(1, 15);
-          } else {
-            message.error(res.msg);
-          }
-        });
-      }
-      if (savetype === 'update') {
-        dispatch({
-          type: 'scriptconfig/toeditlocalScript',
-          payload: {
-            ...values,
-            ...newvalues,
-          },
-        }).then(res => {
-          if (res.code === 200) {
-            message.success(res.msg);
-            searchdata(1, 15);
-          } else {
-            message.error(res.msg);
-          }
-        });
-      }
+    if (savetype === '' || savetype === 'add') {
+      dispatch({
+        type: 'scriptconfig/toaddlocalScript',
+        payload: {
+          ...values,
+        },
+      }).then(res => {
+        if (res.code === 200) {
+          message.success(res.msg);
+          searchdata(1, 15);
+        } else {
+          message.error(res.msg);
+        }
+      });
+    }
+    if (savetype === 'update') {
+      dispatch({
+        type: 'scriptconfig/toeditlocalScript',
+        payload: {
+          ...values,
+        },
+      }).then(res => {
+        if (res.code === 200) {
+          message.success(res.msg);
+          searchdata(1, 15);
+        } else {
+          message.error(res.msg);
+        }
+      });
     }
   };
 

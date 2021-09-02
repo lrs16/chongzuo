@@ -1,7 +1,7 @@
 /* eslint-disable import/no-unresolved */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import moment from 'moment';
-// import { connect } from 'dva';
+import { connect } from 'dva';
 import { Table, Button, Form, Input, Row, Col, DatePicker, Alert } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 // import SystemScriptDrawer from './SystemScriptDrawer';
@@ -33,18 +33,19 @@ function SystemScriptList(props) {
         // scriptstatusmap,
         // scripttypemap,
         // formItemLayout,
-        // location,
-        // dispatch,
+        location,
+        dispatch,
         // systemscriptlist,
         form: {
             getFieldDecorator,
-            // getFieldsValue,
+            getFieldsValue,
             // resetFields,
         } } = props;
 
     const [expand, setExpand] = useState(false);
-    // const [selectedRows, setSelectedRows] = useState([]);
-    // const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [selectedRows, setSelectedRows] = useState([]);
+    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     // const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
     // const [visible, setVisible] = useState(false); // 抽屉是否显示
     // const [title, setTitle] = useState('');
@@ -52,35 +53,36 @@ function SystemScriptList(props) {
     // const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
     // const [data, setData] = useState('');
 
-    // const onSelectChange = (RowKeys, Rows) => {
-    //     setSelectedRowKeys(RowKeys);
-    //     setSelectedRows(Rows);
-    // };
+    const onSelectChange = (RowKeys, Rows) => {
+        setSelectedRowKeys(RowKeys);
+        setSelectedRows(Rows);
+    };
 
-    // const rowSelection = {
-    //     selectedRowKeys,
-    //     onChange: onSelectChange,
-    // };
+    const rowSelection = {
+        selectedRowKeys,
+        onChange: onSelectChange,
+    };
 
-    // const searchdata = (page, size) => {
-    //     const values = getFieldsValue();
-    //     values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
-    //     values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
-    //     values.startUpdateTime = values.startUpdateTime ? moment(values.startUpdateTime).format('YYYY-MM-DD HH:mm:ss') : '';
-    //     values.endUpdateTime = values.endUpdateTime ? moment(values.endUpdateTime).format('YYYY-MM-DD HH:mm:ss') : '';
-    //     dispatch({
-    //         type: 'scriptconfig/findSystemScriptList',
-    //         payload: {
-    //             values,
-    //             pageNum: page,
-    //             pageSize: size,
-    //         },
-    //     });
-    // };
+    const searchdata = (page, size) => {
+        const values = getFieldsValue();
+        // values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
+        // values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
+        // values.startUpdateTime = values.startUpdateTime ? moment(values.startUpdateTime).format('YYYY-MM-DD HH:mm:ss') : '';
+        // values.endUpdateTime = values.endUpdateTime ? moment(values.endUpdateTime).format('YYYY-MM-DD HH:mm:ss') : '';
+        dispatch({
+            type: 'autotask/findtaskScriptList',
+            payload: {
+                values,
+                pageNum: page,
+                pageSize: size,
+                taskId: undefined
+            },
+        });
+    };
 
-    // useEffect(() => {
-    //     searchdata(1, 15);
-    // }, [location]);
+    useEffect(() => {
+        searchdata(1, 15, undefined);
+    }, [location]);
 
     // const handleShowDrawer = (drwertitle, type, record) => {
     //     setVisible(!visible);
@@ -413,9 +415,16 @@ function SystemScriptList(props) {
                 columns={columns}
                 rowKey={record => record.id}
                 scroll={{ x: 1300 }}
+                rowSelection={rowSelection}
             />
         </>
     );
 }
 
-export default Form.create({})(SystemScriptList);
+// export default Form.create({})(SystemScriptList);
+export default Form.create({})(
+    connect(({ autotask, loading }) => ({
+      taskscriptlist: autotask.taskscriptlist,
+      loading: loading.models.autotask,
+    }))(SystemScriptList),
+  );

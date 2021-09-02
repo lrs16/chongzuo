@@ -6,6 +6,7 @@ import { getFileSecuritySuffix } from '@/services/upload';
 
 function SysUpload(props) {
   const { dispatch, fileslist, ChangeFileslist } = props;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [uploadfiles, setUploadFiles] = useState([]);
   const [filetype, setFileType] = useState('');
 
@@ -52,7 +53,8 @@ function SysUpload(props) {
 
   const uploadprops = {
     name: 'file',
-    action: '/sys/file/upload',
+    action: '/assets/script/upload',
+    // action: '/sys/file/upload',
     method: 'POST',
     headers: {
       Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
@@ -81,18 +83,19 @@ function SysUpload(props) {
         const newarr = [];
         for (let i = 0; i < arr.length; i += 1) {
           const vote = {};
-          vote.uid =
-            arr[i]?.response?.data[0]?.id !== undefined
-              ? arr[i]?.response?.data[0]?.id
-              : arr[i].uid;
+          vote.uid = arr[i].uid;
+            // arr[i]?.response?.data[0]?.id !== undefined
+            //   ? arr[i]?.response?.data[0]?.id
+            //   : arr[i].uid;
           vote.name = arr[i].name;
-          vote.nowtime =
-            arr[i]?.response?.data[0]?.createTime !== undefined
-              ? arr[i]?.response?.data[0]?.createTime
-              : arr[i].createTime;
+          // vote.nowtime =
+          //   arr[i]?.response?.data[0]?.createTime !== undefined
+          //     ? arr[i]?.response?.data[0]?.createTime
+          //     : arr[i].createTime;
           vote.fileUrl = '';
           vote.status = arr[i].status;
           vote.size = arr[i].size;
+          vote.resInfo = arr[i].response.scriptCont;
           newarr.push(vote);
         }
         setUploadFiles([...newarr]);

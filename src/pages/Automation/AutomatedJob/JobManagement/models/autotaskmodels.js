@@ -27,8 +27,8 @@ import {
       },
 
       // 获取作业对象数据
-      *findtaskObjectList({ payload: { values, pageNum, pageSize } }, { call, put }) {
-        const response = yield call(taskObjectList, values, pageNum, pageSize);
+      *findtaskObjectList({ payload: { values, pageNum, pageSize, taskId } }, { call, put }) {
+        const response = yield call(taskObjectList, values, pageNum, pageSize, taskId);
         yield put({
           type: 'taskobjectlist',
           payload: response.data,
@@ -36,8 +36,8 @@ import {
       },
 
       // 获取作业脚本数据
-      *findtaskScriptList({ payload: { values, pageNum, pageSize } }, { call, put }) {
-        const response = yield call(taskScriptList, values, pageNum, pageSize);
+      *findtaskScriptList({ payload: { values, pageNum, pageSize, taskId } }, { call, put }) {
+        const response = yield call(taskScriptList, values, pageNum, pageSize, taskId );
         yield put({
           type: 'taskscriptlist',
           payload: response.data,
