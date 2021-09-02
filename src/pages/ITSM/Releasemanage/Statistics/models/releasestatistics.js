@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import { successRate, taskSum } from '../services/api';
+import { successRate, taskSum, objSum, objSumList } from '../services/api';
 
 export default {
   namespace: 'releasestatistics',
@@ -7,6 +7,8 @@ export default {
   state: {
     successrate: undefined,
     tasksum: undefined,
+    objectsum: undefined,
+    objeclist: undefined,
   },
 
   effects: {
@@ -25,7 +27,20 @@ export default {
         payload: response.data,
       });
     },
-
+    *fetchobjectsum({ payload }, { call, put }) {
+      const response = yield call(objSum, payload);
+      yield put({
+        type: 'saveobjectsum',
+        payload: response.data,
+      });
+    },
+    *fetchobjectlist({ payload }, { call, put }) {
+      const response = yield call(objSumList, payload);
+      yield put({
+        type: 'saveobjectlist',
+        payload: response.data,
+      });
+    },
   },
 
   reducers: {
@@ -46,6 +61,18 @@ export default {
       return {
         ...state,
         tasksum: action.payload,
+      };
+    },
+    saveobjectsum(state, action) {
+      return {
+        ...state,
+        objectsum: action.payload,
+      };
+    },
+    saveobjectlist(state, action) {
+      return {
+        ...state,
+        objeclist: action.payload,
       };
     },
   },

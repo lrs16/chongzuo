@@ -1,6 +1,7 @@
 import React from 'react';
 import { Drawer, Button, Form, Input, InputNumber, Select } from 'antd';
 
+const InputGroup = Input.Group;
 const { Option } = Select;
 
 const formItemLayout = {
@@ -19,7 +20,7 @@ function agentDrawer(props) {
   const { visible, ChangeVisible, title, selectdata, handleSubmit, savetype } = props;
   const { getFieldDecorator, validateFields } = props.form;
   const required = true;
-  const { id, releaseType, taskName, beginDay, endDay, remindDay, } = props.record;
+  const { id, releaseType, taskName, beginDay, endDay, remindDay, beginMonth, endMonth } = props.record;
 
   const hanldleCancel = () => {
     ChangeVisible(false);
@@ -46,6 +47,7 @@ function agentDrawer(props) {
 
   const typemap = getTypebyId('1384055209809940482');       // 发布类型
   const statumap = getTypebyId('1385066256880635905');       // 处理环节
+  // const mothumap = getTypebyId('1433245640232996865');       // 本月下月 数据字典有误
 
   return (
     <Drawer
@@ -90,16 +92,38 @@ function agentDrawer(props) {
           )}
         </Form.Item>
         <Form.Item label="操作开始时间（日）">
-          {getFieldDecorator('beginDay', {
-            rules: [{ required, message: `请填写操作开始时间` }],
-            initialValue: beginDay,
-          })(<InputNumber min={1} max={31} style={{ width: '100%' }} />)}
+          <InputGroup compact>
+            {getFieldDecorator('beginMonth', {
+              rules: [{ required, message: `请选择` }],
+              initialValue: beginMonth,
+            })(
+              <Select style={{ width: '30%' }} >
+                <Option value="本月">本月</Option>
+                <Option value="下月">下月</Option>
+              </Select>
+            )}
+            {getFieldDecorator('beginDay', {
+              rules: [{ required, message: `请填写操作开始时间` }],
+              initialValue: beginDay,
+            })(<InputNumber min={1} max={31} style={{ width: '70%' }} />)}
+          </InputGroup>
         </Form.Item>
         <Form.Item label="操作结束时间（日）">
-          {getFieldDecorator('endDay', {
-            rules: [{ required, message: `请填写操作结束时间` }],
-            initialValue: endDay,
-          })(<InputNumber min={1} max={31} style={{ width: '100%' }} />)}
+          <InputGroup compact>
+            {getFieldDecorator('endMonth', {
+              rules: [{ required, message: `请选择` }],
+              initialValue: endMonth,
+            })(
+              <Select style={{ width: '30%' }} >
+                <Option value="本月">本月</Option>
+                <Option value="下月">下月</Option>
+              </Select>
+            )}
+            {getFieldDecorator('endDay', {
+              rules: [{ required, message: `请填写操作结束时间` }],
+              initialValue: endDay,
+            })(<InputNumber min={1} max={31} style={{ width: '70%' }} />)}
+          </InputGroup>
         </Form.Item>
         <Form.Item label="超时提醒（日）">
           {getFieldDecorator('remindDay', {

@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
-import { Card, Row, Col, Form, DatePicker, Select, Button, Table } from 'antd';
+import { Card, Row, Col, Form, DatePicker, Select, Button, Table, Layout, Cascader } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import DictLower from '@/components/SysDict/DictLower';
-import { querkeyVal } from '@/services/api';
 
 const { Option } = Select;
+const { Sider, Content } = Layout;
 
 const formItemLayout = {
   labelCol: {
@@ -20,16 +20,15 @@ const formItemLayout = {
   },
 };
 
-function Statistics(props) {
+function ByObject(props) {
   const pagetitle = props.route.name;
   const {
     dispatch,
     form: { getFieldDecorator, resetFields, getFieldsValue }, loading,
-    successratelist, tasksumlist,
+    objectsumlist, objeclist,
   } = props;
-  const [tabActivekey, settabActivekey] = useState('successrate'); // 打开标签
   const [selectdata, setSelectData] = useState('');
-  const [tabColumns, setColumns] = useState('');
+  const [expand, setExpand] = useState(false);
 
   const handleSearch = () => {
     const values = getFieldsValue();
@@ -37,25 +36,16 @@ function Statistics(props) {
       ...values,
       beginTime: values.beginTime ? moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
       endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      releaseObj: values.releaseObj ? values.releaseObj.join('/') : '',
       pageIndex: 1,
       pageSize: 100,
-    }
-    if (tabActivekey === 'successrate') {
-      dispatch({
-        type: 'releasestatistics/fetchsuccessrate',
-        payload: {
-          ...val
-        },
-      });
     };
-    if (tabActivekey === 'process') {
-      dispatch({
-        type: 'releasestatistics/fetchtasksum',
-        payload: {
-          ...val
-        },
-      });
-    }
+    dispatch({
+      type: 'releasestatistics/fetchobjectsum',
+      payload: {
+        ...val
+      },
+    });
   };
 
   const handleReset = () => {
@@ -64,31 +54,9 @@ function Statistics(props) {
   }
 
   useEffect(() => {
-    querkeyVal('release', 'successrate').then(res => {
-      if (res.code === 200) {
-        setColumns(res.data.successrate)
-      }
-    });
+    handleSearch()
   }, []);
 
-  useEffect(() => {
-    handleSearch()
-  }, [tabActivekey]);
-
-  const handleTabChange = key => {
-    settabActivekey(key);
-    resetFields();
-  };
-  const tabList = [
-    {
-      key: 'successrate',
-      tab: '发布成功率统计',
-    },
-    {
-      key: 'process',
-      tab: '发布环节统计',
-    },
-  ];
 
   const getTypebyId = key => {
     if (selectdata.ischange) {
@@ -97,38 +65,71 @@ function Statistics(props) {
     return [];
   };
 
-  const typemap = getTypebyId('1384055209809940482');       // 发布类型
   const unitmap = getTypebyId('1384056290929545218');       // 责任单位
+  const functionmap = getTypebyId('1384052503909240833');   // 功能类型
 
+  console.log(objeclist)
 
-  // 发布成功率表头
-  const tableColumns = (tablecolumns) => {
-    const newArr = [];
-    if (!Array.isArray(tablecolumns)) {
-      return newArr;
+  // 合并一级，二级对象相同的行
+  const temp = {};
+  const mergeCells = (text, array, columns, unit) => {
+    let i = 0;
+    if (text !== temp[columns]) {
+      temp[columns] = text;
+      if (unit) {
+        array.forEach((item) => {
+          if (item[columns] === temp[columns] && item[unit] === temp[unit]) {
+            i += 1;
+          }
+        });
+      } else {
+        array.forEach((item) => {
+          if (item[columns] === temp[columns]) {
+            i += 1;
+          }
+        });
+      }
     }
-    for (let i = 0; i < tablecolumns.length; i += 1) {
-      const vote = {};
-      vote.title = tablecolumns[i].val;
-      vote.dataIndex = tablecolumns[i].key;
-      vote.key = tablecolumns[i].key;
-      vote.width = 150;
-      vote.align = 'center';
-      newArr.push(vote);
-    };
-    return newArr;
+    return i;
   };
-
   // 发布环节统计表头
   const columns = [
     {
-      title: '环节名称',
-      dataIndex: 'taskName',
-      key: 'taskName',
-      width: 300
+      title: '责任单位',
+      dataIndex: 'dutyUnit',
+      key: 'dutyUnit',
+      align: 'center',
+      render: (text, record) => {
+        const obj = {
+          children: text,
+          props: {},
+        };
+        obj.props.rowSpan = mergeCells(record.dutyUnit, objectsumlist, 'dutyUnit');
+        return obj;
+      },
     },
     {
-      title: '工单数',
+      title: '一级功能',
+      dataIndex: 'firstObj',
+      key: 'firstObj',
+      align: 'center',
+      render: (text, record) => {
+        const obj = {
+          children: text,
+          props: {},
+        };
+        obj.props.rowSpan = mergeCells(record.firstObj, objectsumlist, 'firstObj', 'dutyUnit');
+        return obj;
+      },
+    },
+    {
+      title: '二级功能',
+      dataIndex: 'secondObj',
+      key: 'secondObj',
+      align: 'center',
+    },
+    {
+      title: '功能项',
       dataIndex: 'count',
       key: 'count',
       render: (text, record) => {
@@ -136,14 +137,17 @@ function Statistics(props) {
           const values = getFieldsValue();
           const val = {
             ...values,
-            beginTime: values.beginTime ? moment(values.beginTime).format('X') : '',
-            endTime: values.endTime ? moment(values.endTime).format('X') : '',
-            taskName: record.taskName,
-          }
-          router.push({
-            pathname: `/ITSM/releasemanage/query`,
-            query: { pathpush: true, ...val },
-            state: { cach: false, }
+            beginTime: values.beginTime ? moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
+            endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+            releaseObj: `${record.firstObj}/${record.secondObj}`,
+            pageIndex: 1,
+            pageSize: 100,
+          };
+          dispatch({
+            type: 'releasestatistics/fetchobjectlist',
+            payload: {
+              ...val
+            },
           });
         };
         return (<a onClick={handleClick}>{text}</a>);
@@ -154,9 +158,6 @@ function Statistics(props) {
   return (
     <PageHeaderWrapper
       title={pagetitle}
-      tabList={tabList}
-      tabActiveKey={tabActivekey}
-      onTabChange={handleTabChange}
     >
       <DictLower
         typeid="1379323239808897026"
@@ -201,24 +202,19 @@ function Statistics(props) {
                 </Form.Item>
               </Form.Item>
             </Col>
-            {tabActivekey === 'process' && (
-              <Col span={6}>
-                <Form.Item label="发布类型">
-                  {getFieldDecorator('releaseType', {
-                    initialValue: '',
-                  })(
-                    <Select placeholder="请选择" allowClear>
-                      {typemap.map(obj => (
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>
-                      ))}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-            )}
-            <Col span={tabActivekey === 'process' ? 6 : 8}>
+            <Col span={6}>
+              <Form.Item label="功能类型">
+                {getFieldDecorator('releaseObj', {
+                  initialValue: '',
+                })(
+                  <Cascader
+                    fieldNames={{ label: 'title', value: 'title', children: 'children' }}
+                    options={functionmap}
+                  />,
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={6}>
               <Form.Item label="责任单位">
                 {getFieldDecorator('dutyUnit', {
                   initialValue: '',
@@ -233,28 +229,26 @@ function Statistics(props) {
                 )}
               </Form.Item>
             </Col>
-            <Col span={tabActivekey === 'process' ? 4 : 8} style={{ padding: '4px 0 0 48px' }}>
+            <Col span={4} style={{ padding: '4px 0 0 48px' }}>
               <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
               <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
             </Col>
           </Row>
         </Form>
-        {tabActivekey === 'successrate' && (<Table
-          loading={loading}
-          columns={tabColumns && tabColumns.length > 0 ? tableColumns(tabColumns) : []}
-          dataSource={successratelist || []}
-          rowKey={(_, index) => index.toString()}
-          pagination={false}
-          scroll={{ x: 1500 }}
-        />)}
-        {tabActivekey === 'process' && (<Table
-          loading={loading}
-          columns={columns}
-          dataSource={tasksumlist || []}
-          rowKey={(_, index) => index.toString()}
-          pagination={false}
-          scroll={{ x: 1500 }}
-        />)}
+        <Layout style={{ background: '#fff' }}>
+          <Content>
+            <Table
+              loading={loading}
+              columns={columns}
+              dataSource={objectsumlist || []}
+              rowKey={(_, index) => index.toString()}
+              pagination={false}
+              bordered
+            />
+          </Content>
+          {expand && (<Sider>Sider</Sider>)}
+        </Layout>
+
       </Card>
     </PageHeaderWrapper>
   );
@@ -262,8 +256,8 @@ function Statistics(props) {
 
 export default Form.create({})(
   connect(({ releasestatistics, loading }) => ({
-    successratelist: releasestatistics.successrate,
-    tasksumlist: releasestatistics.tasksum,
+    objectsumlist: releasestatistics.objectsum,
+    objeclis: releasestatistics.objeclist,
     loading: loading.models.releasestatistics,
-  }))(Statistics),
+  }))(ByObject),
 );

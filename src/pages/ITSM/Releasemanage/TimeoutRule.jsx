@@ -80,6 +80,7 @@ function TimeoutRule(props) {
       title: '发布类型',
       dataIndex: 'releaseType',
       key: 'releaseType',
+      align: 'center',
       sorter: (a, b) => a.taskName.localeCompare(b.releaseType),
     },
     {
@@ -90,25 +91,43 @@ function TimeoutRule(props) {
     },
     {
       title: '操作开始日期（日）',
+      dataIndex: 'beginMonth',
+      key: 'beginMonth',
+      colSpan: 2,
+      align: 'center',
+    },
+    {
+      title: '操作开始日期（日）',
       dataIndex: 'beginDay',
       key: 'beginDay',
-
+      colSpan: 0,
+      align: 'center',
+    },
+    {
+      title: '操作结束日期（日）',
+      dataIndex: 'endMonth',
+      key: 'endMonth',
+      colSpan: 2,
+      align: 'center',
     },
     {
       title: '操作结束日期（日）',
       dataIndex: 'endDay',
       key: 'endDay',
+      align: 'center',
+      colSpan: 0,
     },
     {
       title: '超时提醒（日）',
       dataIndex: 'remindDay',
       key: 'remindDay',
+      align: 'center',
     },
     {
       title: '操作',
       dataIndex: 'action',
       key: 'action',
-      fixed: 'right',
+      align: 'center',
       render: (text, record) => {
         return (
           <div>
@@ -147,6 +166,7 @@ function TimeoutRule(props) {
           pagination={false}
           loading={loading}
           rowKey={(_, index) => index.toString()}
+          bordered
         />
       </Card>
       {/* 抽屉 */}

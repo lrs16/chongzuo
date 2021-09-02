@@ -23,7 +23,7 @@ const formItemLayout = {
 function Querylist(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, resetFields, validateFields, getFieldsValue },
+    form: { getFieldDecorator, resetFields, setFieldsValue, getFieldsValue },
     loading,
     list,
     dispatch,
@@ -34,6 +34,7 @@ function Querylist(props) {
   const [selectdata, setSelectData] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRecords, setSelectedRecords] = useState([]);
+  const { beginTime, endTime, dutyUnit, releaseType, taskName } = location.query;
 
   // 查询
   const searchdata = (values, page, size) => {
@@ -41,7 +42,7 @@ function Querylist(props) {
       type: 'releaseview/fetchlist',
       payload: {
         ...values,
-        benginTime: values.benginTime ? moment(values.benginTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        beginTime: values.beginTime ? moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
         endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
         pageSize: size,
         pageIndex: page,
@@ -56,7 +57,8 @@ function Querylist(props) {
       setSelectData([]);
       setExpand(false);
     };
-  }, [location]);
+  }, [location.query]);
+
 
   //  下载
   const download = () => {
@@ -245,7 +247,7 @@ function Querylist(props) {
             <Col span={8}>
               <Form.Item label="当前处理环节">
                 {getFieldDecorator('releaseStatus', {
-                  initialValue: '',
+                  initialValue: taskName || '',
                 })(
                   <Select placeholder="请选择" allowClear>
                     {statumap.map(obj => (
@@ -257,12 +259,12 @@ function Querylist(props) {
                 )}
               </Form.Item>
             </Col>
-            {expand && (
+            {(expand || taskName) && (
               <>
                 <Col span={8}>
                   <Form.Item label="责任单位">
                     {getFieldDecorator('dutyUnit', {
-                      initialValue: '',
+                      initialValue: dutyUnit || '',
                     })(
                       <Select placeholder="请选择" allowClear>
                         {unitmap.map(obj => (
@@ -277,7 +279,7 @@ function Querylist(props) {
                 <Col span={8}>
                   <Form.Item label="发布类型">
                     {getFieldDecorator('releaseType', {
-                      initialValue: '',
+                      initialValue: releaseType || '',
                     })(
                       <Select placeholder="请选择" allowClear>
                         {typemap.map(obj => (
@@ -307,7 +309,7 @@ function Querylist(props) {
                   <Form.Item label="发送时间">
                     <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                       {getFieldDecorator('beginTime', {
-                        initialValue: '',
+                        initialValue: beginTime ? moment(beginTime * 1000) : '',
                       })(
                         <DatePicker
                           showTime={{
@@ -323,7 +325,7 @@ function Querylist(props) {
                     <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
                     <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                       {getFieldDecorator('endTime', {
-                        initialValue: '',
+                        initialValue: endTime ? moment(endTime * 1000) : '',
                       })(
                         <DatePicker
                           showTime={{

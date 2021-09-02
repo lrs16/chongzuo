@@ -578,6 +578,12 @@ export default {
                               component: './ITSM/Releasemanage/Statistics',
                             },
                             {
+                              path: '/ITSM/releasemanage/statistics/object',
+                              name: '发布对象统计',
+                              icon: 'control',
+                              component: './ITSM/Releasemanage/Statistics/ByObject',
+                            },
+                            {
                               path: '/ITSM/releasemanage/statistics/analysis',
                               name: '发布统计分析',
                               icon: 'control',

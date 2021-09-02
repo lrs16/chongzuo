@@ -68,7 +68,7 @@ function WorkOrder(props) {
   // 回调用户ID
   useEffect(() => {
     if (info) {
-      changRegisterId(info.demandForm.id); // formid
+      changRegisterId(info.demandForm.id); //  
       if ((taskName === '业务科室领导审核' ||
         taskName === '系统开发商审核' ||
         taskName === '自动化科业务人员确认' ||
@@ -247,7 +247,7 @@ function WorkOrder(props) {
           if (err) {
             formerr();
             ChangeType('');
-          } if (!userchoice) {
+          } else if (!userchoice) {
             ChangeUserVisible(true);
             ChangeType('');
           } else {

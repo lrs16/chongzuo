@@ -44,7 +44,7 @@ function ToDolist(props) {
       type: 'releasetodo/fetchlist',
       payload: {
         ...values,
-        benginTime: values.benginTime ? moment(values.benginTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        beginTime: values.beginTime ? moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
         endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
         pageSize: size,
         pageIndex: page,
