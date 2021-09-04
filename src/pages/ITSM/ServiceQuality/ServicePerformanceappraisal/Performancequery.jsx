@@ -11,7 +11,8 @@ import {
   Select,
   AutoComplete,
   message,
-  Spin
+  Spin,
+  Tooltip
 } from 'antd';
 import moment from 'moment';
 import router from 'umi/router';
@@ -77,6 +78,12 @@ const columns = [
     dataIndex: 'assessContent',
     key: 'assessContent',
     width: 150,
+    ellipsis:true,
+    render:(text,record) => {
+      return (
+        <Tooltip title={text}><span>{text}</span></Tooltip>
+      )
+    }
   },
   {
     title: '考核类型',
@@ -167,8 +174,8 @@ const columns = [
   },
   {
     title: '业务负责人审核人',
-    dataIndex: 'directorVerifier',
-    key: 'directorVerifier',
+    dataIndex: 'directorName',
+    key: 'directorName',
     width: 180,
   },
   {
@@ -818,6 +825,7 @@ function Performancequery(props) {
         type: 'performanceappraisal/exportSearch',
         payload: {
           ...values,
+          assessNo:selectedKeys.toString(),
           assessBeginTime: values.timeoccurrence?.length ? moment(values.timeoccurrence[0]).format('YYYY-MM-DD HH:mm:ss') : '',
           assessEndTime: values.timeoccurrence?.length ? moment(values.timeoccurrence[1]).format('YYYY-MM-DD HH:mm:ss') : '', // 发生时间
           timeoccurrence: '',
@@ -1629,7 +1637,7 @@ function Performancequery(props) {
           columns={columns}
           dataSource={assessSearcharr.records}
           scroll={{ x: 1500, y: 700 }}
-          rowKey={records => records.id}
+          rowKey={records => records.assessNo}
           rowSelection={rowSelection}
           pagination={pagination}
         />

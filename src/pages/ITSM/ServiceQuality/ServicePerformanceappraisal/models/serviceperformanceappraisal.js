@@ -126,7 +126,6 @@ export default {
   //  获取环节数据
   *getTaskData({ payload:{ assessNo } }, { call, put }) {
     const response = yield call(getTaskData,assessNo);
-    console.log('response: ', response);
     yield put({
       type:'taskData',
       payload:response

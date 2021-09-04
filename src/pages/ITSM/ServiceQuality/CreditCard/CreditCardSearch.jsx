@@ -111,6 +111,22 @@ function ServiceProvidersearch(props) {
       dataIndex: 'cardNo',
       key: 'cardNo',
       width: 200,
+      render:(text,record) => {
+        const gotoDetail = () => {
+          router.push({
+            pathname: '/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail',
+            query: {
+              id: record.id,
+              No: record.cardNo,
+              scorecardStatus: record.isEdit,
+              search: true
+            }
+          })
+        } 
+        return (
+          <a  type='link' onClick={gotoDetail}>{text}</a>
+        )
+      }
     },
     {
       title: '服务商',
@@ -170,7 +186,7 @@ function ServiceProvidersearch(props) {
       title: '操作',
       dataIndex: 'action',
       fixed: 'right',
-      width: 150,
+      width: 100,
       render: (text, record) => {
         const gotoDetail = () => {
           router.push({
@@ -185,16 +201,15 @@ function ServiceProvidersearch(props) {
         }
         return (
           <span>
-            <a onClick={() => gotoDetail()}>编辑</a>
+            {/* <a onClick={() => gotoDetail()}>查看</a> */}
             <>
-              <Divider type='vertical' />
+              {/* <Divider type='vertical' /> */}
               <Popconfirm
                 title='是否要删除此行？'
                 onConfirm={() => handleDelete(record.id)}
               >
                 <a>删除</a>
               </Popconfirm>
-              <Divider type='vertical' />
             </>
           </span>
         )

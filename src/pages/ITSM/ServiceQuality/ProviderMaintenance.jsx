@@ -106,20 +106,20 @@ function ProviderMaintenance(props) {
       title: '服务商编号',
       dataIndex: 'providerNo',
       key: 'providerNo',
-      width:200
+      width: 200
     },
     {
       title: '服务商名称',
       dataIndex: 'providerName',
       key: 'providerName',
-      width:150
+      width: 150
     },
     {
       title: '合同数量',
       dataIndex: 'contractNum',
       key: 'contractNum',
-      width:150,
-      render:(text,record) => {
+      width: 150,
+      render: (text, record) => {
         return (
           <ContractList id={record.id}>
             <a type='link'>{text}</a>
@@ -131,28 +131,26 @@ function ProviderMaintenance(props) {
       title: '负责人',
       dataIndex: 'director',
       key: 'director',
-      width:150
+      width: 150
     },
     {
       title: '负责人手机号',
       dataIndex: 'directorPhone',
       key: 'directorPhone',
-      width:200
+      width: 200
     },
     {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      width:150,
+      width: 150,
       render: (text, record) => {
-        if(record.isEdit === '1') {
-          return (
-            <Radio.Group disabled='true' value={text}>
-              <Radio value='1'>启用</Radio>
-              <Radio value='0'>禁用</Radio>
-            </Radio.Group>
-          )
-        }
+        return (
+          <Radio.Group disabled='true' value={text}>
+            <Radio value='1'>启用</Radio>
+            <Radio value='0'>禁用</Radio>
+          </Radio.Group>
+        )
       }
     },
     {
@@ -199,7 +197,7 @@ function ProviderMaintenance(props) {
       dispatch({
         type: 'qualityassessment/providerExport',
         payload: {
-          ids: selectedKeys.toString(),
+          id: selectedKeys.toString(),
           ...value
         }
       }).then(res => {
@@ -397,9 +395,10 @@ function ProviderMaintenance(props) {
           loading={loading}
           columns={columns}
           dataSource={providerArr.records}
+          rowKey={records => records.id}
           pagination={pagination}
           rowSelection={rowSelection}
-          scroll={{ x: 800,y: 700 }}
+          scroll={{ x: 800, y: 700 }}
         />
 
 

@@ -46,6 +46,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
     selectPersonstate(e.target.value)
   }
 
+
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>
       <Form {...formItemLayout}>
@@ -135,7 +136,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
                   getFieldDecorator('verifyStatus', {
                     initialValue: businessAudit.verifyStatus
                   })
-                    (<Tag color="blue">{businessAudit.verifyValue === ('1' || '0') ? '已审核':'待审核'}</Tag>)
+                    (<Tag color="blue">{businessAudit.verifyStatus || businessAudit.reviewStatus}</Tag>)
                 }
               </Form.Item>
             </Col>
@@ -146,7 +147,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
           <Form.Item label='审核人'>
             {
               getFieldDecorator('verifier', {
-                initialValue: (businessAudit.verifierName) || userinfo.userName
+                initialValue: (businessAudit.verifierName || businessAudit.verifierName || businessAudit.reviewerName) || userinfo.userName
               })
                 (<Input disabled={noEdit} />)
             }
@@ -163,7 +164,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
                     message: '请选择审核时间'
                   }
                 ],
-                initialValue: (businessAudit.checktime || businessAudit.reviewTime) ? moment(businessAudit.checktime || businessAudit.reviewTime) : moment(new Date())
+                initialValue: (businessAudit.checktime || businessAudit.reviewTime || businessAudit.verifyTime) ? moment(businessAudit.checktime || businessAudit.reviewTime || businessAudit.verifyTime) : moment(new Date())
               })
                 (
                   <DatePicker

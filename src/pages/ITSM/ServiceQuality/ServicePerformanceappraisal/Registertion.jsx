@@ -72,7 +72,7 @@ function Registertion(props) {
 
   const handleSubmit = (params) => {
     RegistratRef.current.validateFields((err, values) => {
-      if (params ? !err : true) {
+      if (!err) {
         const submitIfnfo = values;
         delete submitIfnfo.provider;
         delete submitIfnfo.score;
@@ -124,8 +124,8 @@ function Registertion(props) {
   }
 
   //  获取合同名称
-  const getContrractname = (providerId) => {
-    contractProvider(providerId).then(res => {
+  const getContrractname = (id) => {
+    contractProvider({id,status:'1'}).then(res => {
       if (res) {
         const arr = [...(res.data)];
         setContractArr(arr);

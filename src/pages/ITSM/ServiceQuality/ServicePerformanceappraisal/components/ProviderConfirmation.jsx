@@ -176,7 +176,7 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
                 ],
                 initialValue: providerConfirmation.confirmerName || userinfo.userName
               })
-                (<Input disabled={noEdit} />)
+                (<Input disabled='true' />)
             }
 
           </Form.Item>
@@ -196,7 +196,7 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
                 (<DatePicker
                   showTime
                   format='YYYY-MM-DD HH:mm:ss'
-                  disabled={noEdit} />)
+                  disabled='true' />)
             }
 
           </Form.Item>

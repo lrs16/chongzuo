@@ -95,7 +95,7 @@ function Performancequerydetail(props) {
   const openFlow = () => {
     dispatch({
       type: 'performanceappraisal/getTaskData',
-      payload: assessNo
+      payload: {assessNo}
     })
   }
 
@@ -116,7 +116,7 @@ function Performancequerydetail(props) {
   }
 
   useEffect(() => {
-    if((currentTask && currentTask.taskName === '服务绩效考核登记') || (hisTasks && hisTasks.length > 0 &&  hisTasks[0]['服务绩效考核登记'] && hisTasks[0]['服务绩效考核登记'].providerId)) {
+    if(( loading === false && currentTask && currentTask.taskName && currentTask.taskName === '服务绩效考核登记') || (hisTasks && hisTasks.length > 0 &&  hisTasks[0]['服务绩效考核登记'] && hisTasks[0]['服务绩效考核登记'].providerId)) {
       let detailId;
       if(hisTasks && hisTasks[0] && hisTasks[0]['服务绩效考核登记'] && (hisTasks[0] ['服务绩效考核登记']).providerId) {
         detailId = hisTasks[0]['服务绩效考核登记'].providerId;
@@ -126,7 +126,7 @@ function Performancequerydetail(props) {
     }
   },[taskData])
 
-  console.log(contractArr,'contractArr')
+  console.log(taskData,'taskData')
 
   const tabList = [
     {
@@ -275,6 +275,7 @@ function Performancequerydetail(props) {
                             clauseList={clauseList}
                             selectPersonstate={newvalue => setNoselect(newvalue)}
                             editSign='true'
+                            noEdit={search}
                           />],
                         ]);
                         return (

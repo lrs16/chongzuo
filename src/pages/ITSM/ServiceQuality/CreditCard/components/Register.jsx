@@ -271,6 +271,8 @@ const Register = React.forwardRef((props, ref) => {
     }
   }
 
+  console.log(contractArr,'contractArr')
+
   return (
     <>
       {

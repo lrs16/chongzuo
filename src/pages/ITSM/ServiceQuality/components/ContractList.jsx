@@ -80,7 +80,7 @@ function ContractList(props) {
   const handleopenClick = () => {
     dispatch({
       type: 'qualityassessment/contractProvider',
-      payload: id
+      payload: {id}
     })
     setVisible(true)
   }

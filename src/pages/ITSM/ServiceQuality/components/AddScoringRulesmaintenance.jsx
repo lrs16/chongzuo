@@ -54,9 +54,10 @@ function AddScoringRulesmaintenance(props) {
   const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 });
   const [treeInformation, setTreeInformation] = useState({ pid: '', queKey: '' })
   const [treeData, setTreeData] = useState([]);
-  const [type, setType] = useState('')
+  const [type, setType] = useState('1')
   const [selectdata, setSelectData] = useState('');
   const [selectId, setSelectId] = useState('');
+  const [spin, setSpin] = useState(false);
 
   const getlist = (selectedKeys) => {
     validateFields((err, value) => {
@@ -80,14 +81,13 @@ function AddScoringRulesmaintenance(props) {
       type: 'qualityassessment/getTypeTree',
       payload: type || scoreDetail.assessType
     }).then(res => {
+      setSpin(true);
       setTreeData(res.data)
     })
   }
 
   useEffect(() => {
-    
-    if (id && treeData && treeData[0] && treeData[0].children ) {
-      console.log(treeData[0].children[0].id)
+    if (id && treeData && treeData[0] && treeData[0].children) {
       getlist(treeData[0].children[0].id);
     } else {
       dispatch({
@@ -123,11 +123,13 @@ function AddScoringRulesmaintenance(props) {
     return result[0];
   }
 
+  console.log(id ? ((treeData && treeData[0] && treeData[0].children[0] && treeData[0].children[0].id) ? treeData[0].children[0].id : '22') : '33')
+
   //  点击节点
   const handleClick = (selectedKeys, event) => {
     const { props: { title } } = event.node;
     if (selectedKeys && selectedKeys.length > 0) {
-      if (title !== ('1项目管理' && '2服务质量' && '3项目产品质量' && '4安全管理' && '5加分项')) {
+      if (title !== ('1项目管理' && '2服务质量' && '3项目产品质量' && '4安全管理' && '5加分项') && id) {
         dispatch({
           type: 'qualityassessment/getTargetValue',
           payload: selectedKeys[0]
@@ -136,9 +138,6 @@ function AddScoringRulesmaintenance(props) {
         setSelectId(selectedKeys[0])
       }
     }
-  }
-
-  const onSearch = (value) => {
   }
 
   const handleChange = (key) => {
@@ -157,6 +156,15 @@ function AddScoringRulesmaintenance(props) {
     getalldata();
   }, [type])
 
+  useEffect(() => {
+    if (treeData && treeData.length && treeData[0].children[0] && treeData[0].children[0].id) {
+      dispatch({
+        type: 'qualityassessment/getTargetValue',
+        payload: treeData[0].children[0].id
+      })
+    }
+  }, [treeData])
+
   const getTypebyTitle = title => {
     if (selectdata.ischange) {
       return selectdata.arr.filter(item => item.title === title)[0].children;
@@ -171,17 +179,11 @@ function AddScoringRulesmaintenance(props) {
           type: 'qualityassessment/scoreAdd',
           payload: {
             ...value,
+            id
             // assessType: value.assessType === '1' ? '功能开发' : '系统运维'
           }
         })
       }
-    })
-  }
-
-  const getclausedetail = () => {
-    dispatch({
-      type: 'qualityassessment/clauseId',
-      payload: id
     })
   }
 
@@ -357,6 +359,8 @@ function AddScoringRulesmaintenance(props) {
     onChange: (page) => changePage(page)
   }
 
+  console.log(id ? ((scoreDetail && (type) === '1') ? ['1417306125605756929'] : ['1417307840400809985']) : '')
+
   // const functionDevelopment = getTypebyTitle('功能开发');
   const assessmentType = getTypebyTitle('考核类型');
 
@@ -389,9 +393,9 @@ function AddScoringRulesmaintenance(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      {
-        assessmentType && assessmentType.length > 0 && (
-          <Card>
+      <Card>
+        {
+          assessmentType && assessmentType.length > 0 && (
             <Row>
               <Form {...formItemLayout}>
                 <Col span={8}>
@@ -432,7 +436,7 @@ function AddScoringRulesmaintenance(props) {
                             message: '请选择考核类型'
                           }
                         ],
-                        initialValue: scoreDetail.assessType
+                        initialValue: scoreDetail.assessType || '1'
                       })
                         (
                           <Select
@@ -453,144 +457,142 @@ function AddScoringRulesmaintenance(props) {
 
               </Form>
             </Row>
+          )
+        }
 
-            <Layout className={styles.headcolor}>
-
-              <Card title='指标明细' >
-
-                <Sider theme="light">
-                  <Search
-                    style={{ marginBottom: 8 }}
-                    placeholder="Search"
-                    onSearch={onSearch} />
+        <Layout className={styles.headcolor}>
+          <Card title='指标明细' >
+            <Sider theme="light">
+              {/* <Search
+                style={{ marginBottom: 8 }}
+                placeholder="Search"
+                onSearch={onSearch} /> */}
+              {
+                treeData && treeData.length > 0 && (
                   <Tree
-                    defaultSelectedKeys={(scoreDetail && (type) === '1') ? ['1417306125605756929'] : ['1417307840400809985']}
-                    defaultExpandAll
+                    // defaultSelectedKeys={id ? ((treeData && treeData[0] && treeData[0].children[0] &&  treeData[0].children[0].id)?treeData[0].children[0].id:''):'' }
+                    defaultSelectedKeys={id ? ((scoreDetail && (type) === '1') ? ['1417306125605756929'] : ['1417307840400809985']) : ''}
                     onSelect={handleClick}
+                    expandedKeys={type === '1' ? ['1417297419388280834', '1417297717850759169', '1417297850927636481', '1417298312565317634', '1417298438939697154'] : ['1417301701483257858', '1417303445722324993', '1417305500021121026', '1417305681030504450', '1417305832876892162']}
                   >
                     {renderTreeNodes(treeData)}
                   </Tree>
-                </Sider>
-
-
-              </Card>
-
-
-              <Content style={{ marginLeft: 10 }}>
-                <Card title='编辑指标'>
-                  <Form {...formItemLayout}>
-                    <Col span={13}>
-                      <Form.Item label='一级指标'>
-                        {
-                          getFieldDecorator('target1Name', {
-                            initialValue: treeForm.target1
-                          })
-                            (
-                              <Input disabled='true' />
-                            )
-                        }
-                      </Form.Item>
-                    </Col>
-
-                    <Col span={13}>
-                      <Form.Item label='一级指标满分'>
-                        {
-                          getFieldDecorator('value1', {
-                            initialValue: treeForm.value1
-                          })
-                            (<Input disabled='true' />)
-                        }
-                      </Form.Item>
-                    </Col>
-
-                    <Col span={13}>
-                      <Form.Item label='二级指标'>
-                        {
-                          getFieldDecorator('target2Name', {
-                            initialValue: treeForm.target2
-                          })
-                            (
-                              <Input disabled='true' />
-                            )
-                        }
-                      </Form.Item>
-                    </Col>
-
-                    <Col span={13}>
-                      <Form.Item label='二级指标满分'>
-                        {
-                          getFieldDecorator('value2', {
-                            initialValue: treeForm.value2
-                          })
-                            (<Input disabled='true' />)
-                        }
-                      </Form.Item>
-                    </Col>
-
-                    <Col span={13}>
-                      <Form.Item label='详细条款'>
-                        {
-                          getFieldDecorator('detailed', {
-
-                          })
-                            (<Input />)
-                        }
-                      </Form.Item>
-                    </Col>
-
-                    <Col span={13} style={{ textAlign: 'right' }}>
-                      <Button
-                        type='primary'
-                        style={{ marginRight: 8 }}
-                        onClick={() => getlist(selectId)}
-                      >
-                        查询
-                      </Button>
-                      <Button
-                        onClick={handleReset}
-                      >
-                        重置
-                      </Button>
-                    </Col>
-
-                  </Form>
-
-                  {!scoreSearch && (
-                    <Clause
-                      id={id}
-                      selectId={selectId}
-                      title='添加详细条款'
-                      formItemLayout={formItemLayout}
-                      submitClause={newdata => submitClause(newdata)}
-                    >
-                      <Button
-                        style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-                        type="dashed"
-                        icon='plus'
-                      >
-                        新增详细条款
-                      </Button>
-                    </Clause>
-                  )}
-
-
-                  <Col span={24}>
-                    <Table
-                      dataSource={clauseList.records}
-                      columns={columns}
-                      rowKey={record => record.id}
-                      pagination={pagination}
-                      scroll={{ x: 1300 }}
-                    />
-                  </Col>
-
-                </Card>
-              </Content>
-            </Layout>
+                )
+              }
+            </Sider>
           </Card>
-        )
-      }
 
+          <Content style={{ marginLeft: 10 }}>
+            <Card title='编辑指标'>
+              <Form {...formItemLayout}>
+                <Col span={13}>
+                  <Form.Item label='一级指标'>
+                    {
+                      getFieldDecorator('target1Name', {
+                        initialValue: treeForm.target1
+                      })
+                        (
+                          <Input disabled='true' />
+                        )
+                    }
+                  </Form.Item>
+                </Col>
+
+                <Col span={13}>
+                  <Form.Item label='一级指标满分'>
+                    {
+                      getFieldDecorator('value1', {
+                        initialValue: treeForm.value1
+                      })
+                        (<Input disabled='true' />)
+                    }
+                  </Form.Item>
+                </Col>
+
+                <Col span={13}>
+                  <Form.Item label='二级指标'>
+                    {
+                      getFieldDecorator('target2Name', {
+                        initialValue: treeForm.target2
+                      })
+                        (
+                          <Input disabled='true' />
+                        )
+                    }
+                  </Form.Item>
+                </Col>
+
+                <Col span={13}>
+                  <Form.Item label='二级指标满分'>
+                    {
+                      getFieldDecorator('value2', {
+                        initialValue: treeForm.value2
+                      })
+                        (<Input disabled='true' />)
+                    }
+                  </Form.Item>
+                </Col>
+
+                <Col span={13}>
+                  <Form.Item label='详细条款'>
+                    {
+                      getFieldDecorator('detailed', {
+
+                      })
+                        (<Input />)
+                    }
+                  </Form.Item>
+                </Col>
+
+                <Col span={13} style={{ textAlign: 'right' }}>
+                  <Button
+                    type='primary'
+                    style={{ marginRight: 8 }}
+                    onClick={() => getlist(selectId)}
+                  >
+                    查询
+                  </Button>
+                  <Button
+                    onClick={handleReset}
+                  >
+                    重置
+                  </Button>
+                </Col>
+
+              </Form>
+
+              {!scoreSearch && (
+                <Clause
+                  id={id}
+                  selectId={selectId}
+                  title='添加详细条款'
+                  formItemLayout={formItemLayout}
+                  submitClause={newdata => submitClause(newdata)}
+                >
+                  <Button
+                    style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+                    type="dashed"
+                    icon='plus'
+                  >
+                    新增详细条款
+                  </Button>
+                </Clause>
+              )}
+
+              <Col span={24}>
+                <Table
+                  dataSource={clauseList.records}
+                  columns={columns}
+                  rowKey={record => record.id}
+                  pagination={pagination}
+                  scroll={{ x: 1300 }}
+                />
+              </Col>
+
+            </Card>
+          </Content>
+        </Layout>
+      </Card>
     </PageHeaderWrapper>
   )
 }

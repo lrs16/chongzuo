@@ -47,7 +47,7 @@ function ServiceProvidersearch(props) {
   const [data, setData] = useState([]);
   const [tabrecord, setTabRecord] = useState({});
   const [selectedKeys, setSelectedKeys] = useState([]);
-  
+
   const searchdata = (values, page, pageSize) => {
     dispatch({
       type: 'qualityassessment/providerList',
@@ -57,7 +57,7 @@ function ServiceProvidersearch(props) {
         pageSize
       }
     });
-    setTabRecord({...values})
+    setTabRecord({ ...values })
   }
 
   const handlesearch = () => {
@@ -91,7 +91,7 @@ function ServiceProvidersearch(props) {
       title: '服务商编号',
       dataIndex: 'providerNo',
       key: 'providerNo',
-      width:200,
+      width: 200,
       render: (text, record) => {
         const togoDetail = () => {
           router.push({
@@ -100,7 +100,7 @@ function ServiceProvidersearch(props) {
               No: text,
               id: record.id,
               providerStatus: record.isEdit,
-              providerSearch:true
+              providerSearch: true
             }
           })
         }
@@ -111,14 +111,14 @@ function ServiceProvidersearch(props) {
       title: '服务商名称',
       dataIndex: 'providerName',
       key: 'providerName',
-      width:150
+      width: 150
     },
     {
       title: '合同数量',
       dataIndex: 'contractNum',
       key: 'contractNum',
-      width:150,
-      render:(text,record) => {
+      width: 150,
+      render: (text, record) => {
         return (
           <ContractList id={record.id}>
             <a type='link'>{text}</a>
@@ -130,27 +130,25 @@ function ServiceProvidersearch(props) {
       title: '负责人',
       dataIndex: 'director',
       key: 'director',
-      width:150
+      width: 150
     },
     {
       title: '负责人手机号',
       dataIndex: 'directorPhone',
       key: 'directorPhone',
-      width:200
+      width: 200
     },
     {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
       render: (text, record) => {
-        if(record.isEdit === '1') {
-          return (
-            <Radio.Group disabled='true' value={text}>
-              <Radio value='1'>启用</Radio>
-              <Radio value='0'>禁用</Radio>
-            </Radio.Group>
-          )
-        }
+        return (
+          <Radio.Group disabled='true' value={text}>
+            <Radio value='1'>启用</Radio>
+            <Radio value='0'>禁用</Radio>
+          </Radio.Group>
+        )
       }
     },
   ]
@@ -166,6 +164,7 @@ function ServiceProvidersearch(props) {
       dispatch({
         type: 'qualityassessment/providerExport',
         payload: {
+          id:selectedKeys.toString(),
           ...value
         }
       }).then(res => {
@@ -190,9 +189,9 @@ function ServiceProvidersearch(props) {
 
   const handleReset = () => {
     router.push({
-      pathname:location.pathname,
-      query:{},
-      state:{}
+      pathname: location.pathname,
+      query: {},
+      state: {}
     });
     resetFields();
     searchdata({}, 1, 15)
@@ -234,10 +233,10 @@ function ServiceProvidersearch(props) {
   }
 
   const record = {
-    providerNo:'',
-    providerName:'',
-    director:'',
-    directorPhone:'',
+    providerNo: '',
+    providerName: '',
+    director: '',
+    directorPhone: '',
   }
 
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
@@ -273,7 +272,7 @@ function ServiceProvidersearch(props) {
             <Col span={8}>
               <Form.Item label='服务商编号'>
                 {
-                  getFieldDecorator('providerNo',{
+                  getFieldDecorator('providerNo', {
                     initialValue: cacheinfo.providerNo
                   })
                     (<Input />)
@@ -296,7 +295,7 @@ function ServiceProvidersearch(props) {
             <Col span={8}>
               <Form.Item label='负责人'>
                 {
-                  getFieldDecorator('director',{
+                  getFieldDecorator('director', {
                     initialValue: cacheinfo.director
                   })
                     (<Input />)
@@ -307,7 +306,7 @@ function ServiceProvidersearch(props) {
             <Col span={8}>
               <Form.Item label='负责人手机号'>
                 {
-                  getFieldDecorator('directorPhone',{
+                  getFieldDecorator('directorPhone', {
                     initialValue: cacheinfo.directorPhone
                   })
                     (<Input />)
@@ -339,7 +338,7 @@ function ServiceProvidersearch(props) {
           rowKey={records => records.id}
           pagination={pagination}
           rowSelection={rowSelection}
-          scroll={{ x: 800,y: 700 }}
+          scroll={{ x: 800, y: 700 }}
         />
       </Card>
     </PageHeaderWrapper>

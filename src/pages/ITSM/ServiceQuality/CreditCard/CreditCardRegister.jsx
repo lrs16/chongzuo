@@ -107,7 +107,6 @@ function CreditCardRegister(props) {
   }
 
   const scorecardUpdateRemark = (editid, remark) => {
-    console.log('remark: ', remark);
     dispatch({
       type: 'qualityassessment/updateRemark',
       payload: {
@@ -129,17 +128,24 @@ function CreditCardRegister(props) {
   }
 
   useEffect(() => {
-    const { providerId } = scorecardetail;
+  
     if (id) {
       registerDetail();
-      getContrractname(providerId);
-      setEditTablesource(scorecardetail.details)
+      
     } else {
       dispatch({
         type: 'performanceappraisal/clear'
       })
     }
   }, [id]);
+
+  useEffect(() => {
+    const { providerId } = scorecardetail;
+    if(providerId) {
+      getContrractname(providerId);
+      setEditTablesource(scorecardetail.details)
+    }
+  },[scorecardetail])
 
 
   //  重置表单信息

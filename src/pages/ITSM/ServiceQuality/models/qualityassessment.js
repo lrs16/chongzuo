@@ -370,7 +370,8 @@ export default {
     clearclauseList(state,action) {
       return {
         ...state,
-        clauseList: []
+        clauseList: [],
+        treeForm:{}
       }
     },
 

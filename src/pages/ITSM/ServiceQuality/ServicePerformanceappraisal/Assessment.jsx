@@ -11,7 +11,8 @@ import {
   Select,
   AutoComplete,
   message,
-  Spin
+  Spin,
+  Tooltip
 } from 'antd';
 import moment from 'moment';
 import router from 'umi/router';
@@ -91,6 +92,12 @@ const columns = [
     dataIndex: 'assessContent',
     key: 'assessContent',
     width: 150,
+    ellipsis:true,
+    render:(text,record) => {
+      return (
+        <Tooltip title={text}><span>{text}</span></Tooltip>
+      )
+    }
   },
   {
     title: '考核类型',
@@ -181,8 +188,8 @@ const columns = [
   },
   {
     title: '业务负责人审核人',
-    dataIndex: 'directorVerifier',
-    key: 'directorVerifier',
+    dataIndex: 'directorName',
+    key: 'directorName',
     width: 180,
   },
   {
@@ -592,7 +599,6 @@ function Assessment(props) {
   };
 
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
-  console.log('cacheinfo: ', cacheinfo);
 
   useEffect(() => {
     if (location.state) {
@@ -835,6 +841,7 @@ function Assessment(props) {
         type: 'performanceappraisal/exportmyAssess',
         payload: {
           ...values,
+          assessNo: selectedKeys.toString(),
           assessBeginTime: values.timeoccurrence?.length ? moment(values.timeoccurrence[0]).format('YYYY-MM-DD HH:mm:ss') : '',
           assessEndTime: values.timeoccurrence?.length ? moment(values.timeoccurrence[1]).format('YYYY-MM-DD HH:mm:ss') : '', // 发生时间
           timeoccurrence: '',
@@ -1648,7 +1655,7 @@ function Assessment(props) {
           columns={columns}
           dataSource={assessmyAssessarr.records}
           scroll={{ x: 1500, y: 700 }}
-          rowKey={records => records.id}
+          rowKey={records => records.assessNo}
           rowSelection={rowSelection}
           pagination={pagination}
         />

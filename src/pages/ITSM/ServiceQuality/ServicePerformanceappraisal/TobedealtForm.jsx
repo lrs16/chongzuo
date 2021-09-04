@@ -151,7 +151,7 @@ function TobedealtForm(props) {
       sessionStorage.setItem('Nextflowmane', '自动化科专责审核');
       break;
     case '自动化科专责审核':
-      sessionStorage.setItem('Nextflowmane', '系统开发商处理');
+      sessionStorage.setItem('Nextflowmane', '服务商确认');
       break;
     case '服务商确认':
       sessionStorage.setItem('Nextflowmane', `${noselect === '0' ? '服务绩效考核确认' : '业务负责人复核'}`);
@@ -535,6 +535,8 @@ function TobedealtForm(props) {
     })
   }
 
+  console.log(taskData,'taskData')
+
   const handleBack = () => {
     if (search) {
       router.push({
@@ -544,6 +546,8 @@ function TobedealtForm(props) {
       }
       );
     }
+
+
 
     if (myOrder) {
       router.push({
@@ -601,7 +605,7 @@ function TobedealtForm(props) {
                 <Button type='primary' onClick={() => onClickSubmit(taskName)}>保存</Button>
 
                 {
-                  (noselect === '1') && taskName !== '自动化科专责审核' && taskName !== '服务绩效考核确认' && taskName !== '业务负责人复核' && (
+                  (noselect === '1') && taskName !== '服务绩效考核确认' && taskName !== '业务负责人复核' && (
                     <Button type='primary' onClick={() => onClickSubmit(taskName, 'circula')}>
                       {taskName === '业务负责人复核' ? '确认复核' : '流转'}
                     </Button>
@@ -609,7 +613,7 @@ function TobedealtForm(props) {
                 }
 
                 {
-                  (noselect === '0' && taskName !== '业务负责人复核' && taskName !== '服务商确认') && (taskName === '业务负责人审核' || taskName === '服务绩效考核确认') && (
+                  (noselect === '0' && taskName !== '业务负责人复核' && taskName !== '服务商确认' && taskName !== '服务绩效考核确认') && (taskName === '业务负责人审核' || taskName === '自动化科专责审核' || taskName === '服务绩效考核确认') && (
                     <Button type='primary' onClick={() => onClickSubmit(taskName, '流转不选人')}>
                       {buttonContent}
                     </Button>
@@ -617,9 +621,9 @@ function TobedealtForm(props) {
                 }
 
                 {
-                  (taskName === '自动化科专责审核' || taskName === '服务绩效考核确认') && (
+                  ( taskName === '服务绩效考核确认') && (
                     <Button type='primary' onClick={() => onClickSubmit(taskName, '流转不选人')}>
-                      {taskName === '服务绩效考核确认' ? '确认考核' : '流转'}
+                     确认考核
                     </Button>
                   )
                 }
@@ -835,7 +839,7 @@ function TobedealtForm(props) {
                             target1={target1}
                             target2={target2}
                             clauseList={clauseList}
-                            editSign={Number(currentTask.isEdit)}
+                            editSign={(currentTask.isEdit) === '0' ? true: false}
                           />
                         </Panel>
                       )

@@ -85,6 +85,8 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
   }
 
 
+  console.log(noEdit,'noEdit')
+
   const appraisalStatus = getTypebyTitle('考核状态');
 
   return (
@@ -138,7 +140,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                     initialValue: assessmentConfirmation.confirmValue || '1'
                   })
                     (
-                      <Radio.Group disabled={editSign === 1 ? false: true}>
+                      <Radio.Group disabled={noEdit}>
                         <Radio value='1'>确认考核</Radio>
                         <Radio value='0'>取消考核</Radio>
                       </Radio.Group>
@@ -155,7 +157,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                   })
                     (
                       <TextArea
-                        disabled={editSign === 1 ? false: true}
+                        disabled={noEdit}
                         autosize={{ minRows: 3 }}
                         placeholder='请输入确认说明'
                       />)
@@ -424,7 +426,7 @@ AssessmentConfirmation.defaultProps = {
     clauseId: '',
     confirmer: '',
     confirmTime: '',
-    confirmerName:''
+    confirmerName: ''
   }
 }
 
