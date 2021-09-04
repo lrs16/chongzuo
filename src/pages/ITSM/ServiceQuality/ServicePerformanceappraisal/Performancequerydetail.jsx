@@ -193,7 +193,7 @@ function Performancequerydetail(props) {
     >
 
       {
-        loading === false && taskData && tabActiveKey === 'workorder' && (
+        loading === false && taskData && taskData.hisTasks  && tabActiveKey === 'workorder' && (
           <>
             {
               hisTasks && hisTasks.length > 0 && (
@@ -329,7 +329,7 @@ function Performancequerydetail(props) {
       }
 
       {
-        tabActiveKey === 'process' && (
+        loading === false && hisTaskArr && tabActiveKey === 'process' && (
           <Achievementsflow
             taskId={mainId}
             flowhisTaskArr={hisTaskArr}

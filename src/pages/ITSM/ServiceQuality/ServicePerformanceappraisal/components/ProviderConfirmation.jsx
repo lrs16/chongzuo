@@ -27,6 +27,8 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
     ChangeFiles,
   } = props;
 
+  console.log(providerConfirmation,'providerConfirmation')
+
   const [showContent, setShowContent] = useState('1');
   const [fileslist, setFilesList] = useState([]);
   const [selectdata, setSelectData] = useState('');

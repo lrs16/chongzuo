@@ -161,7 +161,7 @@ function ProviderMaintenance(props) {
       render: (text, record) => {
         const gotoDetail = () => {
           router.push({
-            pathname: '/ITSM/servicequalityassessment/addserviceprovidermaintenance',
+            pathname: '/ITSM/servicequalityassessment/detailserviceprovidermaintenance',
             query: {
               id: record.id,
               No: record.providerNo,

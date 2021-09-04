@@ -82,7 +82,7 @@ function ScoringRulesmaintenance(props) {
       dispatch({
         type: 'qualityassessment/scoreExport',
         payload: {
-          ids: selectedKeys.toString(),
+          id: selectedKeys.toString(),
           ...value
         }
       }).then(res => {

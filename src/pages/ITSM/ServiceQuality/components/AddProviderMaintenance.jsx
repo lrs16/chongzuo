@@ -66,7 +66,7 @@ function AddProviderMaintenance(props) {
   const contractProviderdata = () => {
     dispatch({
       type: 'qualityassessment/contractProvider',
-      payload: id
+      payload: {id}
     })
   }
 
@@ -128,13 +128,6 @@ function AddProviderMaintenance(props) {
 
     })
 
-  }
-
-  const selectOnchange = (value, option) => {
-    setFieldsValue({
-      directorName: value,
-      directorId: option.key
-    });
   }
 
   const columns = [

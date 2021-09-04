@@ -125,6 +125,11 @@ export default {
 
   //  获取环节数据
   *getTaskData({ payload:{ assessNo } }, { call, put }) {
+    yield put({
+      type:'cleartaskData',
+      payload:[]
+    })
+    console.log(2)
     const response = yield call(getTaskData,assessNo);
     yield put({
       type:'taskData',
@@ -292,6 +297,14 @@ export default {
       return {
         ...state,
         taskData: action.payload.data
+      }
+    },
+
+    cleartaskData(state,action) {
+      console.log(1)
+      return {
+        ...state,
+        taskData: { currentTask: { taskName: '', id: '', instanceId: '' }, hisTasks: [] },
       }
     },
 

@@ -89,8 +89,6 @@ function TobedealtForm(props) {
     })
   }
 
-  console.log(contractArr,'contractArr')
-
   const openFlow = () => {
     dispatch({
       type: 'performanceappraisal/getTaskData',
@@ -433,6 +431,8 @@ function TobedealtForm(props) {
     })
   }
 
+  console.log(taskData,'taskData')
+
   useEffect(() => {
     if (userchoice || butandorder) {
       gotoCirapi();
@@ -584,11 +584,11 @@ function TobedealtForm(props) {
 
   return (
     <PageHeaderWrapper
-      title={taskName || ''}
+      title={ (loading === false && taskData && taskData.currentTask && taskData.currentTask.taskName) || ''}
       extra={
         <>
           {
-            !search && (
+            loading === false && taskData.currentTask &&  taskData.currentTask.taskName && !search && (
               <>
                 {
                   taskName === '服务绩效考核登记' && hisTasks && hisTasks.length <= 3 && (
@@ -668,7 +668,7 @@ function TobedealtForm(props) {
     >
 
       {
-        loading === false && tabActiveKey === 'workorder' && hisTaskArr && hisTaskArr.length > 0 && (
+        loading === false &&  tabActiveKey === 'workorder' && hisTaskArr && hisTaskArr.length > 0 && (
           <div className={styles.collapse}>
             {
               hisTaskArr && (
@@ -701,7 +701,7 @@ function TobedealtForm(props) {
       }
 
       {
-        loading === false && taskData && tabActiveKey === 'workorder' && (
+        loading === false && taskData && taskData.currentTask &&  taskData.currentTask.taskName && tabActiveKey === 'workorder' && (
           <>
             {
               taskData && currentTask && (
@@ -915,8 +915,8 @@ function TobedealtForm(props) {
                             noEdit='true'
                           />],
                           [`服务商确认`, <ProviderConfirmation
-                            businessAudit={Object.values(obj)[0]}
-                            providerConfirmation={currentTask}
+                            providerConfirmation={Object.values(obj)[0]}
+                            // providerConfirmation={currentTask}
                             formItemLayout={formItemLayout}
                             forminladeLayout={forminladeLayout}
                             userinfo={userinfo}

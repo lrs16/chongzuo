@@ -150,11 +150,11 @@ function CreditCardRegister(props) {
 
 
   //  重置表单信息
-  useEffect(() => {
-    if (tabnew) {
-      RegistratRef.current.resetFields()
-    }
-  }, [tabnew])
+  // useEffect(() => {
+  //   if (tabnew) {
+  //     RegistratRef.current.resetFields()
+  //   }
+  // }, [tabnew])
 
   console.log(tabdata, 'tabdata')
 
