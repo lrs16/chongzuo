@@ -25,7 +25,7 @@ function getQueryVariable(variable) {
 }
 
 function EditeTable(props) {
-  const { title, functionmap, modulamap, isEdit, taskName, dataSource, ChangeValue,
+  const { title, functionmap, modulamap, isEdit, taskName, dataSource, ChangeValue, listmsg,
     dispatch, dutyUnits, dutyUnitListMsg, dutyUnitTotalMsg, dutyUnitList, ChangeAttActiveKey, orderNos, ChangeTabdisabled } = props;
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
@@ -446,7 +446,7 @@ function EditeTable(props) {
         })
       }
     };
-    if (dataSource && dataSource.length === 0) {
+    if (isEdit && dataSource && dataSource.length === 0) {
       newMember()
     };
   }, [dataSource])
@@ -924,10 +924,10 @@ function EditeTable(props) {
         )}
         {title}
       </h4>
-      {(taskName === '版本管理员审核' || taskName === '科室负责人审核' || taskName === '中心领导审核' || taskName === '业务复核') && dutyUnitListMsg && dutyUnits && dutyUnits.length > 1 && (
+      {isEdit && (taskName === '版本管理员审核' || taskName === '科室负责人审核' || taskName === '中心领导审核' || taskName === '业务复核') && dutyUnitListMsg && dutyUnits && dutyUnits.length > 1 && (
         <div style={{ paddingBottom: 12 }}>{dutyUnitTotalMsg}</div>
       )}
-      {(taskName === '版本管理员审核' || taskName === '科室负责人审核' || taskName === '中心领导审核' || taskName === '业务复核') && dutyUnits && dutyUnits.length > 1 && (
+      {isEdit && (taskName === '版本管理员审核' || taskName === '科室负责人审核' || taskName === '中心领导审核' || taskName === '业务复核') && dutyUnits && dutyUnits.length > 1 && (
         <Tabs type='card' onClick={() => setPageinations({ current: 1, pageSize: 2 })} onChange={handleTabChange} activeKey={tabActivekey}>
           {dutyUnits.map((obj) => {
             return [
@@ -936,12 +936,14 @@ function EditeTable(props) {
           })}
         </Tabs>
       )}
+
       <Row style={{ marginBottom: 8 }} type='flex' align='bottom' >
         <Col span={16}>
-          {dutyUnitTotalMsg && (
+          {dutyUnitTotalMsg && isEdit && (
             <span key={tabActivekey} style={{ paddingBottom: 12 }}>{tabActivekey}：{dutyUnitListMsg[tabActivekey]}</span>
           )}
-          {(((taskName === '出厂测试' || taskName === '平台验证' || taskName === '业务验证') && isEdit) || taskName === '发布实施准备') && (<span key={tabActivekey} style={{ paddingBottom: 12 }}>{classify}</span>)}
+          {((taskName === '出厂测试' || taskName === '平台验证' || taskName === '业务验证' || taskName === '发布实施准备') && isEdit) && (<span key={tabActivekey} style={{ paddingBottom: 12 }}>{classify}</span>)}
+          {!isEdit && listmsg && (<span style={{ paddingBottom: 12 }}>{Object.values(listmsg)[0]}</span>)}
         </Col>
 
         <Col span={8} style={{ textAlign: 'right' }}>

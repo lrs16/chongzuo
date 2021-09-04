@@ -29,7 +29,7 @@ const formuintLayout = {
 };
 
 function BusinessReview(props, ref) {
-  const { userinfo, selectdata, isEdit, info } = props;
+  const { userinfo, selectdata, isEdit, info, listmsg } = props;
   const { getFieldDecorator, getFieldsValue, resetFields, setFieldsValue } = props.form;
   const required = true;
 
@@ -84,6 +84,7 @@ function BusinessReview(props, ref) {
           <ReleseList
             title='发布清单'
             dataSource={info.releaseLists}
+            listmsg={listmsg}
           />
           <Form.Item wrapperCol={{ span: 24 }} style={{ display: 'none' }}>
             {getFieldDecorator('releaseLists', {

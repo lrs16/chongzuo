@@ -92,7 +92,7 @@ function DocumentAtt(props) {
       editable: false,                  // 可上传附件
       key: (index + 1).toString(),
     }));
-    newData[8].editable = true;         // 其它附件都可以上传附件
+    if (newData.length > 8) { newData[8].editable = true; }         // 其它附件都可以上传附件
     if (Number(rowkey) !== 0) {
       newData[rowkey - 1].editable = true;
       newData[rowkey - 1].dutyUnit = newData[rowkey - 1].dutyUnit || newData[0].dutyUnit;

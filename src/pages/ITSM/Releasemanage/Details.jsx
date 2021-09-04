@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import moment from 'moment';
 import router from 'umi/router';
-import { Button, Spin, message } from 'antd';
+import { Button, Spin } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import SubmitTypeContext from '@/layouts/MenuContext';
 import DictLower from '@/components/SysDict/DictLower';
 import HistoryOrderInfo from './components/HistoryOrderInfo';
 import Process from './Process';
@@ -96,7 +96,12 @@ function Details(props) {
             <div className={styles.collapse}>
               <TaskLinks records={tasklinks || []} />
             </div>
-            <HistoryOrderInfo records={historyinfo} selectdata={selectdata} view />
+            <SubmitTypeContext.Provider value={{
+              addAttaches: '',                                   // 清单临时添加，fasle文档列表不需要加列，true文档列表需要加列
+              ChangeaddAttaches: (v => { }),
+            }}>
+              <HistoryOrderInfo records={historyinfo} selectdata={selectdata} view />
+            </SubmitTypeContext.Provider>
           </>
         )}
         {tabActivekey === 'process' && (<Process />)}

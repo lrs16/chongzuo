@@ -30,6 +30,8 @@ export default {
     currentTaskStatus: undefined,
     tasklinks: undefined,
     statuse: -1,
+    relationCount: undefined,
+    submitTimes: undefined,
   },
 
   effects: {
@@ -70,7 +72,13 @@ export default {
         ]);
         yield put({
           type: 'saveinfo',
-          payload: { info: infomap.get(taskName), currentTaskStatus: response.data.currentTaskStatus, tasklinks: response.data.tasklinks },
+          payload: {
+            info: infomap.get(taskName),
+            currentTaskStatus: response.data.currentTaskStatus,
+            tasklinks: response.data.tasklinks,
+            relationCount: response.data.relationCount,
+            submitTimes: response.data.submitTimes,
+          },
         });
       } else {
         message.error(response.msg)
@@ -481,6 +489,8 @@ export default {
         currentTaskStatus: undefined,
         tasklinks: undefined,
         statuse: -1,
+        relationCount: undefined,
+        submitTimes: undefined,
       };
     },
     save(state, action) {
@@ -495,6 +505,8 @@ export default {
         info: action.payload.info || {},
         currentTaskStatus: action.payload.currentTaskStatus || {},
         tasklinks: action.payload.tasklinks || [],
+        relationCount: action.payload.relationCount,
+        submitTimes: action.payload.submitTimes,
       };
     },
     updateinfo(state, action) {

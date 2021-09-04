@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Input, Divider, Table } from 'antd';
+import { Input, Divider, Table, Row, Col, Button } from 'antd';
 import { classifyList } from '../services/api';
 
 const InputGroup = Input.Group;
@@ -15,13 +15,13 @@ function getQueryVariable(variable) {
 }
 
 function ReleseList(props) {
-  const { dataSource } = props;
+  const { dataSource, listmsg } = props;
   const [classify, setClassify] = useState('');
   useEffect(() => {
     if (dataSource) {
       classifyList(getQueryVariable("taskId")).then(res => {
         if (res.code === 200) {
-          setClassify(res.data.classifyList.dutyUnitTotalMsg)
+          setClassify(res.data.classifyList.dutyUnitListMsg);
         }
       })
     }
@@ -124,7 +124,13 @@ function ReleseList(props) {
   ];
   return (
     <>
-      <span style={{ paddingBottom: 12 }}>{classify}</span>
+      <Row>
+        <Col span={20}>
+          <span >{listmsg ? Object.values(listmsg)[0] : Object.values(classify)[0]}</span>
+        </Col>
+        <Col span={4} style={{ textAlign: 'right' }}><Button type='primary' >导出清单</Button></Col>
+      </Row>
+
       <Table
         columns={columns}
         bordered
@@ -132,6 +138,7 @@ function ReleseList(props) {
         dataSource={dataSource}
         pagination={false}
         rowKey={(_, index) => index.toString()}
+        style={{ marginTop: 12 }}
       />
     </>
   );

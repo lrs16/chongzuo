@@ -59,7 +59,7 @@ const statumap = new Map([
 ]);
 
 function Registrat(props, ref) {
-  const { taskName, info, userinfo, selectdata, isEdit } = props;
+  const { taskName, info, userinfo, selectdata, isEdit, listmsg } = props;
   const { getFieldDecorator, getFieldsValue, resetFields, setFieldsValue } = props.form;
   const required = true;
 
@@ -301,6 +301,7 @@ function Registrat(props, ref) {
               taskName={taskName}
               dataSource={info.releaseLists}
               ChangeValue={v => { setFieldsValue({ releaseLists: v }); }}
+              listmsg={listmsg}
             />
             <Form.Item wrapperCol={{ span: 24 }}>
               {getFieldDecorator('releaseLists', {
@@ -348,9 +349,9 @@ function Registrat(props, ref) {
           )}
           {taskName !== '业务验证' && (
             <Col span={24}>
-              <Form.Item label={`${taskName}结论`} {...forminladeLayout} labelAlign='left'>
+              <Form.Item label={taskName === '新建' ? `出厂测试结论` : `${taskName}结论`} {...forminladeLayout} labelAlign='left'>
                 {getFieldDecorator('testResult', {
-                  rules: [{ required, message: `请填写${taskName}结论` }],
+                  rules: [{ required, message: taskName === '新建' ? `请填写出厂测试结论` : `请填写${taskName}结论` }],
                   initialValue: formmap.get(taskName).testResult,
                 })(<TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />)}
               </Form.Item>

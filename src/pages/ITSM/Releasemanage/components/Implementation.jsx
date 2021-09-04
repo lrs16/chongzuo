@@ -29,7 +29,7 @@ const formuintLayout = {
 };
 
 function Implementation(props, ref) {
-  const { taskName, userinfo, register, selectdata, isEdit, info } = props;
+  const { taskName, userinfo, register, selectdata, isEdit, info, listmsg } = props;
   const { getFieldDecorator, setFieldsValue, getFieldsValue, resetFields } = props.form;
   const required = true;
   const [alertvisible, setAlertVisible] = useState(false);  // 超时告警是否显示
@@ -147,6 +147,7 @@ function Implementation(props, ref) {
               ChangeValue={v => { setFieldsValue({ releaseLists: v }); }}
               scroll={{ x: 1740 }}
               isEdit={isEdit}
+              listmsg={listmsg}
             />
             <Form.Item wrapperCol={{ span: 24 }}>
               {getFieldDecorator('releaseLists', {

@@ -57,7 +57,7 @@ const inplementrisk = [
 const inplementrisknew = { riskAnaly: '', resolve: '', remarks: '无' };
 
 function ImplementationPre(props, ref) {
-  const { taskName, userinfo, selectdata, isEdit, info } = props;
+  const { taskName, userinfo, selectdata, isEdit, info, listmsg } = props;
   const { getFieldDecorator, setFieldsValue, getFieldsValue, resetFields } = props.form;
   const [check, setCheck] = useState(false);
   const [stopVisit, setStopVisit] = useState('否');
@@ -339,6 +339,7 @@ function ImplementationPre(props, ref) {
             taskName={taskName}
             dataSource={info.releaseLists}
             ChangeValue={v => { setFieldsValue({ releaseLists: v }); }}
+            listmsg={listmsg}
           />
           <Form.Item wrapperCol={{ span: 24 }} >
             {getFieldDecorator('releaseLists', {

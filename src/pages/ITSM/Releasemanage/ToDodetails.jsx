@@ -10,7 +10,7 @@ import WorkOrder from './WorkOrder';
 import Process from './Process';
 
 function ToDodetails(props) {
-  const { location, dispatch, loading, loadingopen, allloading, currentTaskStatus, info } = props;
+  const { location, dispatch, loading, loadingopen, allloading, currentTaskStatus, relationCount, submitTimes } = props;
   const { taskName, taskId, releaseType, Id, } = location.query;
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [buttype, setButtype] = useState('');                    // 点击的按钮类型
@@ -91,7 +91,7 @@ function ToDodetails(props) {
   ];
   const operations = (
     <>
-      {taskName === '出厂测试' && info && info.submitTimes === 0 && info.relationCount === 0 && (
+      {taskName === '出厂测试' && relationCount === 0 && submitTimes === 0 && (
         <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => deleteflow()}>
           删除
         </Button>
@@ -114,7 +114,7 @@ function ToDodetails(props) {
           {taskName === '业务复核' ? '结束' : '流转'}
         </Button>
       )}
-      {taskName === '出厂测试' && info && info.submitTimes !== 0 && (
+      {taskName === '出厂测试' && submitTimes !== undefined && submitTimes !== 0 && (
         <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('over')} >
           结束
         </Button>
@@ -194,7 +194,8 @@ function ToDodetails(props) {
 export default connect(({ itsmuser, releasetodo, loading }) => ({
   userinfo: itsmuser.userinfo,
   tasklinks: releasetodo.tasklinks,
-  info: releasetodo.info,
+  relationCount: releasetodo.relationCount,
+  submitTimes: releasetodo.submitTimes,
   currentTaskStatus: releasetodo.currentTaskStatus,
   loading: loading.effects['releasetodo/releaseflow'],
   loadingopen: loading.effects['releasetodo/openflow'],

@@ -26,6 +26,7 @@ function HistoryOrderInfo(props) {
   const { records, selectdata, view } = props;
 
   const [activeKey, setActiveKey] = useState([]);
+  const [todoRecords, setTodoRecords] = useState([]);
 
   const callback = key => {
     setActiveKey(key);
@@ -33,9 +34,22 @@ function HistoryOrderInfo(props) {
 
   useEffect(() => {
     if (view) {
-      setActiveKey(['0'])
+      setActiveKey(['0']);
+    };
+  }, [view]);
+
+  useEffect(() => {
+    if (view) {
+      const newdata = records.map(item => ({ ...item }));
+      setTodoRecords(newdata)
+    };
+    if (!view) {
+      const newdata = records.map(item => ({ ...item }));
+      newdata.pop();
+      setTodoRecords(newdata)
     }
-  }, [view])
+  }, [records])
+
   return (
     <div className={styles.collapsetimeout}>
       <Collapse
@@ -44,28 +58,26 @@ function HistoryOrderInfo(props) {
         bordered={false}
         onChange={callback}
       >
-        {records.map((obj, index) => {
+        {todoRecords.map((obj, index) => {
           // panel详情组件
           const taskIdandkey = Object.keys(obj)[1];
           const key = taskIdandkey.split('-')[1];
           const Paneldesmap = new Map([
-            ['register', <Registrat info={Object.values(obj)[1]} selectdata={selectdata} isEdit={false} taskName='出厂测试' />],
-            ['platformValida', <Registrat info={Object.values(obj)[1]} selectdata={selectdata} isEdit={false} taskName='平台验证' />],
-            ['bizValid', <Registrat info={Object.values(obj)[1]} selectdata={selectdata} isEdit={false} taskName='业务验证' />],
-            ['practicePre', <ImplementationPre info={Object.values(obj)[1]} selectdata={selectdata} isEdit={false} taskName='发布实施准备' />],
-            ['checkVersion', <VersionAudit info={Object.values(obj)[1]} selectdata={selectdata} isEdit={false} taskName='版本管理员审核' />],
-            ['checkDirector', <VersionAudit info={Object.values(obj)[1]} selectdata={selectdata} isEdit={false} taskName='科室负责人审核' />],
-            ['checkLeader', <VersionAudit info={Object.values(obj)[1]} selectdata={selectdata} isEdit={false} taskName='中心领导审核' />],
-            ['practiceDone', <Implementation info={Object.values(obj)[1]} selectdata={selectdata} isEdit={false} taskName='发布实施' />],
-            ['bizCheck', <BusinessReview info={Object.values(obj)[1]} selectdata={selectdata} isEdit={false} taskName='业务复核' />],
+            ['register', <Registrat info={Object.values(obj)[1]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='出厂测试' />],
+            ['platformValida', <Registrat info={Object.values(obj)[1]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='平台验证' />],
+            ['bizValid', <Registrat info={Object.values(obj)[1]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='业务验证' />],
+            ['practicePre', <ImplementationPre info={Object.values(obj)[1]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='发布实施准备' />],
+            ['checkVersion', <VersionAudit info={Object.values(obj)[1]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='版本管理员审核' />],
+            ['checkDirector', <VersionAudit info={Object.values(obj)[1]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='科室负责人审核' />],
+            ['checkLeader', <VersionAudit info={Object.values(obj)[1]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='中心领导审核' />],
+            ['practiceDone', <Implementation info={Object.values(obj)[1]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='发布实施' />],
+            ['bizCheck', <BusinessReview info={Object.values(obj)[1]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='业务复核' />],
           ]);
-
-          if (index < records.length - 1)
-            return (
-              <Panel header={Panelheadermap.get(key)} key={index.toString()} className={Object.values(obj)[0] ? styles.timeout : ''} >
-                {Paneldesmap.get(key)}
-              </Panel>
-            );
+          return (
+            <Panel header={Panelheadermap.get(key)} key={index.toString()} className={Object.values(obj)[0] ? styles.timeout : ''} >
+              {Paneldesmap.get(key)}
+            </Panel>
+          );
         })}
       </Collapse>
     </div>

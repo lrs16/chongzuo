@@ -1,15 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Input, Radio, Divider, } from 'antd';
-import { releaseListEdit } from '../services/api'
+import { Table, Input, Radio, Divider, Row, Col, Button } from 'antd';
+import { releaseListEdit, classifyList } from '../services/api'
 import styles from '../index.less';
 
 const { TextArea } = Input;
 const InputGroup = Input.Group;
 const RadioGroup = Radio.Group;
 
+function getQueryVariable(variable) {
+  const query = window.location.search.substring(1);
+  const vars = query.split("&");
+  for (let i = 0; i < vars.length; i += 1) {
+    const pair = vars[i].split("=");
+    if (pair[0] === variable) { return pair[1]; }
+  }
+  return (false);
+}
+
 function BusinessEditTable(props) {
-  const { title, dataSource, type, ChangeValue, loading, isEdit } = props;
+  const { title, dataSource, type, ChangeValue, loading, isEdit, listmsg } = props;
   const [data, setData] = useState([]);
+  const [classify, setClassify] = useState('');
 
   useEffect(() => {
     if (dataSource && dataSource.length > 0) {
@@ -19,6 +30,11 @@ function BusinessEditTable(props) {
         key: (index + 1).toString(),
       }));
       setData(newData);
+      classifyList(getQueryVariable("taskId")).then(res => {
+        if (res.code === 200) {
+          setClassify(res.data.classifyList.dutyUnitListMsg);
+        }
+      })
     };
     if (dataSource && dataSource.length === 0) {
       setData(dataSource);
@@ -190,6 +206,14 @@ function BusinessEditTable(props) {
         <span style={{ color: '#f5222d', marginRight: 4, fontWeight: 'normal' }}>*</span>
         {title}
       </h4>
+      <Row>
+        <Col span={20}>
+          {classify && isEdit && (<div>{Object.values(classify)[0]}</div>)}
+          {listmsg && (<div>{Object.values(listmsg)[0]}</div>)}
+        </Col>
+        <Col span={4} style={{ textAlign: 'right' }}><Button type='primary' >导出清单</Button></Col>
+      </Row>
+
       <Table
         columns={type === '发布实施' ? practicedonecolumns : columns}
         dataSource={data}
@@ -199,6 +223,7 @@ function BusinessEditTable(props) {
         pagination={false}
         scroll={{ x: 1700 }}
         loading={loading}
+        style={{ marginTop: 12 }}
       />
     </>
   );

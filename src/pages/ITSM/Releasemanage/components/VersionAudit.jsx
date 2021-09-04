@@ -42,7 +42,7 @@ function getQueryVariable(variable) {
 }
 
 function VersionAudit(props, ref) {
-  const { dispatch, taskName, userinfo, register, selectdata, isEdit, info } = props;
+  const { dispatch, taskName, userinfo, register, selectdata, isEdit, info, listmsg } = props;
   const { getFieldDecorator, setFieldsValue, getFieldsValue, resetFields } = props.form;
   const [check, setCheck] = useState(false);
   const [mergeNo, setMergeNo] = useState('');
@@ -308,7 +308,7 @@ function VersionAudit(props, ref) {
                   {getFieldDecorator('checkResult', {
                     rules: [{ required, message: '请选择验证结果' }],
                     initialValue: formmap.get(taskName).checkResult || '通过',
-                  })(<RadioGroup onChange={(e) => handleAdopt(e.target.value)}>
+                  })(<RadioGroup onChange={(e) => handleAdopt(e.target.value)} disabled={!isEdit}>
                     <Radio value='通过'>通过</Radio>
                     <Radio value='不通过'>不通过</Radio>
                   </RadioGroup>
@@ -350,6 +350,7 @@ function VersionAudit(props, ref) {
               ChangeAttActiveKey={(v) => handleTabChange(v)}                      // 选择所属工单对应的附件页签切换
               orderNos={orderkeys}
               ChangeTabdisabled={v => setNewList(v)}
+              listmsg={listmsg}
             />
           </Col>
           <Col span={24} style={{ marginBottom: 24 }}>

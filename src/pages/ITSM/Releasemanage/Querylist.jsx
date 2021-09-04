@@ -166,14 +166,14 @@ function Querylist(props) {
       },
       sorter: (a, b) => a.releaseNo.localeCompare(b.releaseNo),
     },
-    {
-      title: '合并单号',
-      dataIndex: 'mergeNo',
-      key: 'mergeNo',
-      render: (text, record) => {
-        return (<>{(record.taskName === '版本管理员审核' || record.taskName === '科室负责人审核' || record.taskName === '中心领导审核') ? text : ''}</>)
-      }
-    },
+    // {
+    //   title: '合并单号',
+    //   dataIndex: 'mergeNo',
+    //   key: 'mergeNo',
+    //   render: (text, record) => {
+    //     return (<>{(record.taskName === '版本管理员审核' || record.taskName === '科室负责人审核' || record.taskName === '中心领导审核') ? text : ''}</>)
+    //   }
+    // },
     {
       title: '当前处理环节',
       dataIndex: 'taskName',
