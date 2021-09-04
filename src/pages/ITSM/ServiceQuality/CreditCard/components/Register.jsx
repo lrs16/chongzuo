@@ -33,6 +33,7 @@ const Register = React.forwardRef((props, ref) => {
     loading
   } = props;
   console.log(contractArr, 'contractArr')
+  console.log(register, 'register')
 
   const required = true;
 

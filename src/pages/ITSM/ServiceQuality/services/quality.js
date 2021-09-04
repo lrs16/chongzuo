@@ -32,7 +32,16 @@ export async function searchProvider(id) {
 
 //  根据服务商ID查询合同数据
 export async function contractProvider(params) {
-  return request(`/quality/contract/provider/${params.id}?status=${params.status}`)
+  if(params.status) {
+    return request(`/quality/contract/provider/${params.id}?status=${params.status}`)
+  }
+
+  if(!params.status) {
+    return request(`/quality/contract/provider/${params.id}`)
+  }
+
+  return null
+  
 }
 
 //  更新合同

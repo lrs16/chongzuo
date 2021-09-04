@@ -61,7 +61,7 @@ function CreditCardRegister(props) {
 
   //  获取合同名称
   const getContrractname = (providerId) => {
-    contractProvider(providerId).then(res => {
+    contractProvider({id:providerId,status:'1'}).then(res => {
       if (res) {
         const arr = [...(res.data)];
         setContractArr(arr);
@@ -71,6 +71,7 @@ function CreditCardRegister(props) {
 
   const handleSave = () => {
     RegistratRef.current.validateFields((err, values) => {
+      console.log('values: ', values);
       if (!err) {
         dispatch({
           type: 'performanceappraisal/scorecardSave',
