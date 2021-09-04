@@ -369,8 +369,8 @@ function TobedealtList(props) {
   }
 
   //  获取合同名称
-  const getContrractname = (providerId) => {
-    contractProvider(providerId).then(res => {
+  const getContrractname = (id) => {
+    contractProvider({id}).then(res => {
       if (res) {
         const arr = [...(res.data)];
         setContractArr(arr);
