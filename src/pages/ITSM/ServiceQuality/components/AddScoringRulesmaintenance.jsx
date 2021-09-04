@@ -468,7 +468,7 @@ function AddScoringRulesmaintenance(props) {
                 placeholder="Search"
                 onSearch={onSearch} /> */}
               {
-                treeData && treeData.length > 0 && (
+                loading === false && treeData && treeData.length > 0 && (
                   <Tree
                     // defaultSelectedKeys={id ? ((treeData && treeData[0] && treeData[0].children[0] &&  treeData[0].children[0].id)?treeData[0].children[0].id:''):'' }
                     defaultSelectedKeys={id ? ((scoreDetail && (type) === '1') ? ['1417306125605756929'] : ['1417307840400809985']) : ''}

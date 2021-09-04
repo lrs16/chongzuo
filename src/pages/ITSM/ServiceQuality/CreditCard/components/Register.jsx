@@ -463,7 +463,7 @@ const Register = React.forwardRef((props, ref) => {
                 <Form.Item label='考核类型'>
                   {
                     getFieldDecorator('assessType', {
-                      initialValue: register.assessType
+                      initialValue: register.assessType === '1' ? '功能开发':'系统运维'
                     })
                       (<Input disabled='true' />)
                   }
