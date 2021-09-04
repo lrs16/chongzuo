@@ -19,7 +19,8 @@ export default {
     userlist: '',
     problemlist: '',
     tasklist: '',
-    achievementlist: ''
+    achievementlist: '',
+    describe: '',
   },
 
   effects: {
@@ -80,8 +81,8 @@ export default {
     *releaseuserlist({ payload: { taskId, type } }, { call, put }) {
       const response = yield call(releaseUserList, taskId, type);
       yield put({
-        type: 'savelist',
-        payload: response.data.userList,
+        type: 'savereleaselist',
+        payload: { userlist: response.data.userList, describe: response.data.describe },
       });
     },
     // 加载绩效下一环节处理人
@@ -127,6 +128,14 @@ export default {
       return {
         ...state,
         userlist: action.payload,
+      };
+    },
+
+    savereleaselist(state, action) {
+      return {
+        ...state,
+        userlist: action.payload.userlist,
+        describe: action.payload.describe,
       };
     },
   },

@@ -352,6 +352,7 @@ function VerificationTodo(props) {
     if (expanded) {
       const arr = [record.todoCode];
       setExpandedRowKeys(arr);
+      getViewList(record.todoCode);
     } else {
       setExpandedRowKeys([]);
     }

@@ -68,9 +68,7 @@ function ByObject(props) {
   const unitmap = getTypebyId('1384056290929545218');       // 责任单位
   const functionmap = getTypebyId('1384052503909240833');   // 功能类型
 
-  console.log(objectlist)
-
-  // 合并一级，二级对象相同的行
+  // 合并一级相同的行
   const temp = {};
   const mergeCells = (text, array, columns, unit) => {
     let i = 0;
@@ -118,7 +116,7 @@ function ByObject(props) {
           children: text,
           props: {},
         };
-        obj.props.rowSpan = mergeCells(record.firstObj, objectsumlist, 'firstObj', 'dutyUnit');
+        if (objectsumlist.length !== 2) { obj.props.rowSpan = mergeCells(record.firstObj, objectsumlist, 'firstObj', 'dutyUnit') };
         return obj;
       },
     },
@@ -136,12 +134,12 @@ function ByObject(props) {
         const handleClick = () => {
           const values = getFieldsValue();
           const val = {
-            ...values,
             beginTime: values.beginTime ? moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
             endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
             releaseObj: `${record.firstObj}/${record.secondObj}`,
+            dutyUnit: record.dutyUnit,
             pageIndex: 1,
-            pageSize: 100,
+            pageSize: 15,
           };
           dispatch({
             type: 'releasestatistics/fetchobjectlist',
@@ -247,7 +245,7 @@ function ByObject(props) {
               bordered
             />
           </Content>
-          {expand && (<Sider>Sider</Sider>)}
+          {expand && (<Sider width='400'>Sider</Sider>)}
         </Layout>
 
       </Card>

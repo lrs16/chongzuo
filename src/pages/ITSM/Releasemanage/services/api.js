@@ -161,6 +161,14 @@ export async function expPracticePre(taskId) {
   });
 }
 
+// 文件下载-发布附件模板下载
+export async function downloadAttachTemplate(fileName) {
+  return request(`/release/fileProc/downloadAttachTemplate?fileName=${fileName}`, {
+    method: 'GET',
+    responseType: 'blob',
+  });
+}
+
 // 版本管理员合并工单/release/flow/mergeOrders
 export async function mergeOrders(params) {
   return request(`/release/flow/mergeOrders`, {

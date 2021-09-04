@@ -206,7 +206,7 @@ function VersionAudit(props, ref) {
           {orderkeys.map((obj) => {
             const flowId = getQueryVariable("Id");
             return [
-              <Checkbox value={obj} disabled={taskName === '版本管理员审核' && obj === flowId}>{obj}</Checkbox>,
+              <Checkbox key={obj} value={obj} disabled={taskName === '版本管理员审核' && obj === flowId}>{obj}</Checkbox>,
             ]
           })}
         </Checkbox.Group>

@@ -10,6 +10,18 @@ const { TextArea } = Input;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
 
+const Attaches = [
+  { docName: '功能出厂测试报告', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '' },
+  { docName: '平台验证测试报告', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '' },
+  { docName: '业务功能测试报告', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '' },
+  { docName: '功能清单终稿', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '' },
+  { docName: '发布实施方案', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '' },
+  { docName: '计划发布申请审批表', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '' },
+  { docName: '临时发布申请审批表', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '' },
+  { docName: '功能发布报告', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '' },
+  { docName: '其它附件', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '' },
+];
+
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -349,7 +361,7 @@ function Registrat(props, ref) {
               rowkey={statumap.get(taskName)}
               isEdit={isEdit}
               unitmap={unitmap}
-              dataSource={info && info.releaseAttaches ? info.releaseAttaches : []}
+              dataSource={info && info.releaseAttaches && info.releaseAttaches.length > 0 ? info.releaseAttaches : Attaches}
               Unit={getFieldsValue(['dutyUnit'])}
               ChangeValue={(v, files) => changeatt(v, files)}
               check={check}

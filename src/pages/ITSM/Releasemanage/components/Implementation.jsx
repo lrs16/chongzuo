@@ -146,6 +146,7 @@ function Implementation(props, ref) {
               dataSource={info.releaseLists || []}
               ChangeValue={v => { setFieldsValue({ releaseLists: v }); }}
               scroll={{ x: 1740 }}
+              isEdit={isEdit}
             />
             <Form.Item wrapperCol={{ span: 24 }}>
               {getFieldDecorator('releaseLists', {

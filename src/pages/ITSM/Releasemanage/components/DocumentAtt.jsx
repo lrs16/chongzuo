@@ -5,16 +5,28 @@ import SysUpload from '@/components/SysUpload/Upload';
 import { PaperClipOutlined } from '@ant-design/icons';
 import FilesContext from '@/layouts/MenuContext';              // 引用上下文管理组件
 import styles from '../index.less';
+import { downloadAttachTemplate } from '../services/api';
 
 // rowkey：1  出厂测试必填
 // rowkey: 2  平台验证必填
 // rowkey: 3  业务功能测试报告，功能清单终稿必填
 // rowkey: 4  发布实施方案必填
-
-
+// rowkey: 6  计划发布申请审批表必填
+// rowkey: 7  临时发布申请审批表必填
 
 const { TextArea } = Input;
 const { Option } = Select;
+
+const downloadmap = new Map([
+  ['功能出厂测试报告', 'register'],
+  ['平台验证测试报告', 'platformValid'],
+  ['业务功能测试报告', 'funcTesting'],
+  ['功能清单终稿', 'funcListFinal'],
+  ['发布实施方案', 'practice'],
+  ['计划发布申请审批表', 'planApply'],
+  ['临时发布申请审批表', 'temporaryApply'],
+  ['功能发布报告', 'funcReport'],
+]);
 
 function DocumentAtt(props) {
   const { dispatch, rowkey, unitmap, isEdit, dataSource, Unit, check, ChangeValue } = props;
@@ -32,6 +44,7 @@ function DocumentAtt(props) {
     { docName: '功能发布报告', attachFile: '[]', dutyUnit, docTemplate: '', remarks: '', editable: true, },
     { docName: '其它附件', attachFile: '[]', dutyUnit, docTemplate: '', remarks: '', editable: true, },
   ];
+
 
   // 获取行
   const getRowByKey = (key, newData) => {
@@ -82,16 +95,11 @@ function DocumentAtt(props) {
     newData[8].editable = true;         // 其它附件都可以上传附件
     if (Number(rowkey) !== 0) {
       newData[rowkey - 1].editable = true;
-      if (Unit && Unit.dutyUnit) {
-        newData[rowkey - 1].dutyUnit = Unit.dutyUnit;
-      };
-      if (rowkey > 1) {
-        newData[rowkey - 1].dutyUnit = dutyUnit;
-      }
+      newData[rowkey - 1].dutyUnit = newData[rowkey - 1].dutyUnit || newData[0].dutyUnit;
     };
     if (rowkey === '3') {
       newData[3].editable = true;
-      newData[3].dutyUnit = dutyUnit;
+      newData[3].dutyUnit = newData[3].dutyUnit || newData[0].dutyUnit;
     };
     // 补充的材料必填
     const endAtt = dataSource[dataSource.length - 1];
@@ -127,8 +135,9 @@ function DocumentAtt(props) {
     }
   }, [dataSource])
 
+  // 出厂测试出具文档责任单位为空，表单有选择责任单位时修改列表值
   useEffect(() => {
-    if (Unit && Unit.dutyUnit) {
+    if (Unit && Unit.dutyUnit && rowkey === '1' && dataSource && dataSource.length > 0 && dataSource[0].dutyUnit === '') {
       handleFieldChange(Unit.dutyUnit, 'dutyUnit', rowkey)
     };
   }, [Unit.dutyUnit])
@@ -272,9 +281,9 @@ function DocumentAtt(props) {
           return (
             <Select
               placeholder="请选择"
-              defaultValue={Unit.dutyUnit || data[0].dutyUnit}
-              key={Unit.dutyUnit}
-              onChange={e => { handleFieldChange(e, 'dutyUint', record.key) }}
+              defaultValue={text || Unit.dutyUnit || data[0].dutyUnit}
+              key={text || Unit.dutyUnit}
+              onChange={e => { handleFieldChange(e, 'dutyUnit', record.key) }}
             >
               {unitmap.map(obj => [
                 <Option key={obj.key} value={obj.title}>
@@ -294,10 +303,22 @@ function DocumentAtt(props) {
       with: 80,
       align: 'center',
       render: (text, record) => {
+        const dowload = () => {
+          downloadAttachTemplate(downloadmap.get(record.docName)).then(res => {
+            const filename = `${record.docName}.docx`;
+            const blob = new Blob([res], { type: 'application/octet-stream' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+          })
+        };
         if (record.key === '9') {
           return null;
         }
-        return <><Button type='link'><Icon type='download' />下载</Button></>;
+        return <><Button type='link' onClick={() => dowload()}><Icon type='download' />下载</Button></>;
       },
     },
     {
@@ -305,7 +326,7 @@ function DocumentAtt(props) {
       dataIndex: 'remarks',
       key: 'remarks',
       render: (text, record) => {
-        if (isEdit && record.editable && (record.key === rowkey || record.key === '9' || rowkey === '3')) {
+        if (isEdit && record.editable) {
           return (
             <TextArea
               defaultValue={text}
@@ -318,21 +339,6 @@ function DocumentAtt(props) {
         return text;
       }
     },
-    // {
-    //   title: '操作',
-    //   key: 'action',
-    //   fixed: 'right',
-    //   width: 100,
-    //   align: 'center',
-    //   render: (text, record) => {
-    //     if (record.editable) {
-    //       return (
-    //         <Button type='link' onClick={e => saveRow(e, record.key)}>保存</Button>
-    //       );
-    //     }
-    //     return null;
-    //   },
-    // },
   ];
   return (
     <Table

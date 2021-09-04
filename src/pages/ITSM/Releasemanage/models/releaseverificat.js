@@ -11,7 +11,8 @@ export default {
     checktotals: 0,
     info: [],
     viewlist: {},
-    viewmsg: ''
+    viewmsg: '',
+    taskName: undefined,
   },
 
   effects: {
@@ -42,7 +43,7 @@ export default {
       if (response.code === 200) {
         yield put({
           type: 'saveinfo',
-          payload: response.data,
+          payload: { info: response.data, taskName: response.taskName },
         });
       } else {
         message.error(response.msg)
@@ -86,7 +87,8 @@ export default {
     saveinfo(state, action) {
       return {
         ...state,
-        info: action.payload || [],
+        info: action.payload.info || [],
+        taskName: action.payload.taskName
       };
     },
     saveview(state, action) {

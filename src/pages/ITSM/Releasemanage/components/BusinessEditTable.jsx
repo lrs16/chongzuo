@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Card, Row, Button, Col, Cascader, Input, Radio, message, Divider, Select, Tabs, Alert } from 'antd';
+import { Table, Input, Radio, Divider, } from 'antd';
 import { releaseListEdit } from '../services/api'
 import styles from '../index.less';
 
@@ -8,7 +8,7 @@ const InputGroup = Input.Group;
 const RadioGroup = Radio.Group;
 
 function BusinessEditTable(props) {
-  const { title, dataSource, type, ChangeValue, loading } = props;
+  const { title, dataSource, type, ChangeValue, loading, isEdit } = props;
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -141,10 +141,12 @@ function BusinessEditTable(props) {
       render: (text, record) => {
         return (
           <>
-            <RadioGroup value={text || '通过'} onChange={e => handleFieldChange(e.target.value, 'passTest', record.key)}>
-              <Radio value='通过'>通过</Radio>
-              <Radio value='不通过'>不通过</Radio>
-            </RadioGroup>
+            {isEdit ? (
+              <RadioGroup value={text || '通过'} onChange={e => handleFieldChange(e.target.value, 'passTest', record.key)}>
+                <Radio value='通过'>通过</Radio>
+                <Radio value='不通过'>不通过</Radio>
+              </RadioGroup>
+            ) : <>{text}</>}
           </>
         )
       }
@@ -157,14 +159,18 @@ function BusinessEditTable(props) {
       width: 200,
       render: (text, record) => {
         return (
-          <div className={text === null && record.passTest === '不通过' ? styles.requiredform : ''}>
-            <TextArea
-              value={text}
-              autoSize={{ minRows: 4 }}
-              placeholder="请输入"
-              onChange={e => handleFieldChange(e.target.value, 'verifyComment', record.key)}
-            />
-          </div>
+          <>
+            {isEdit ? (
+              <div className={text === null && record.passTest === '不通过' ? styles.requiredform : ''}>
+                <TextArea
+                  value={text}
+                  autoSize={{ minRows: 4 }}
+                  placeholder="请输入"
+                  onChange={e => handleFieldChange(e.target.value, 'verifyComment', record.key)}
+                />
+              </div >
+            ) : (<>{text}</>)}
+          </>
         )
       }
     },

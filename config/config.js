@@ -1120,7 +1120,7 @@ export default {
                             },
                             {
                               path: '/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail',
-                              name: '记分卡登记详情页',
+                              name: '计分卡登记详情页',
                               icon: 'fork',
                               component: './ITSM/ServiceQuality/CreditCard/CreditCardRegister'
                             },

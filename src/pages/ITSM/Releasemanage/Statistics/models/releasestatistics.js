@@ -70,7 +70,6 @@ export default {
       };
     },
     saveobjectlist(state, action) {
-      console.log(action)
       return {
         ...state,
         objectlist: action.payload.records,

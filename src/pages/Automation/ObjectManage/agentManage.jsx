@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Table, Card, Divider, Button, Message, Popconfirm, Form, Input, Select, Row, Col, DatePicker } from 'antd';
+import { Table, Card, Divider, Button, Message, Tooltip, Form, Input, Select, Row, Col, DatePicker } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
@@ -119,13 +119,13 @@ function TestEnvironmentManage(props) {
       title: '名称',
       dataIndex: 'agentName',
       key: 'agentName',
-      width: 180,
+      width: 300,
     },
     {
       title: 'IP地址',
       dataIndex: 'agentHost',
       key: 'agentHost',
-      width: 200,
+      width: 150,
     },
     {
       title: '协议',
@@ -161,7 +161,19 @@ function TestEnvironmentManage(props) {
       title: '目录',
       dataIndex: 'agentDeploy',
       key: 'agentDeploy',
-      width: 200,
+      width: 250,
+      onCell: () => {
+        return {
+          style: {
+            maxWidth: 250,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            cursor: 'pointer'
+          }
+        }
+      },
+      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
     {
       title: '状态',

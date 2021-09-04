@@ -8,7 +8,8 @@ import BusinessEditTable from './components/BusinessEditTable';
 import { completeVerify } from './services/api';
 
 function BusinessDetail(props) {
-  const { dispatch, info, loading } = props;
+  const { dispatch, info, loading, taskName, location } = props;
+  const { titletype } = location.query;
   const { Id, releaseNo } = props.location.query;
   const pagetitle = props.route.name;
   const [runpath, setRunpath] = useState('');
@@ -59,9 +60,11 @@ function BusinessDetail(props) {
 
   const operations = (
     <>
-      <Button type="primary" style={{ marginRight: 8 }} onClick={() => handlecompleteverify()}>
-        验证完成
-      </Button>
+      {titletype === taskName && (
+        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handlecompleteverify()}>
+          验证完成
+        </Button>
+      )}
       <Button onClick={handleclose} >返回</Button>
     </>
   )
@@ -76,6 +79,7 @@ function BusinessDetail(props) {
           ChangeValue={() => { }}
           scroll={{ x: 1740 }}
           loading={loading}
+          isEdit={titletype === taskName}
         />
       </Card>
     </PageHeaderWrapper>
@@ -84,5 +88,6 @@ function BusinessDetail(props) {
 
 export default connect(({ releaseverificat, loading }) => ({
   info: releaseverificat.info,
+  taskName: releaseverificat.taskName,
   loading: loading.models.releaseverificat,
 }))(BusinessDetail);

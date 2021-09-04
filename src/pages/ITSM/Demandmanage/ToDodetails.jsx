@@ -178,7 +178,7 @@ function ToDoregist(props) {
               保存
             </Button>
           )}
-          {result === '1' && (taskName !== '需求登记' || taskName !== '系统开发商审核') && (
+          {result === '1' && (taskName === '需求登记' || taskName === '业务科室领导审核' || taskName === '系统开发商审核') && (
             <Button
               type="primary"
               style={{ marginRight: 8 }}

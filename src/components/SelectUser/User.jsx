@@ -16,6 +16,7 @@ const User = props => {
     ChangeUserVisible,
     ChangeChoice,
     ChangeType,
+    describe
   } = props;
   const [isnew, setIsNew] = useState(false);
   const [demandvalue, setDemandValue] = useState([])
@@ -219,7 +220,7 @@ const User = props => {
         <Spin tip="正在加载数据..." spinning={Boolean(loading)}>
           {loading === false && isnew && type !== 'demand' && (
             <>
-              <div>{nextflowuser}人员</div>
+              {describe ? <div>{describe}</div> : <div>{nextflowuser}人员</div>}
               <div style={{ marginTop: 12 }} className={styles.useritem}>
                 <Checkbox.Group
                   defaultValue={defaultvalue}
@@ -262,5 +263,6 @@ User.defaultProps = {
 
 export default connect(({ itsmuser, loading }) => ({
   userlist: itsmuser.userlist,
+  describe: itsmuser.describe,
   loading: loading.models.itsmuser,
 }))(User);

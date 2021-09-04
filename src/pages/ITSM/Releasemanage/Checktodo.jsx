@@ -40,6 +40,7 @@ function Checktodo(props) {
   const [selectdata, setSelectData] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRecords, setSelectedRecords] = useState([]);
+  const [expandedRowKeys, setExpandedRowKeys] = useState([]);
 
   useEffect(() => {
     validateFields((err, values) => {
@@ -170,6 +171,16 @@ function Checktodo(props) {
   const handleReset = () => {
     resetFields();
   };
+
+  const changeRowsKey = (expanded, record) => {
+    if (expanded) {
+      const arr = [record.todoCode];
+      setExpandedRowKeys(arr);
+      getViewList(record.todoCode);
+    } else {
+      setExpandedRowKeys([]);
+    }
+  }
 
   const getTypebyId = key => {
     if (selectdata.ischange) {
@@ -446,13 +457,15 @@ function Checktodo(props) {
         <Table
           loading={loading}
           columns={columns}
-          expandedRowRender={expandedRowRender}
+          expandedRowKeys={expandedRowKeys}            // 默认展开的行
+          expandedRowRender={expandedRowRender}        // 展开的内容
           expandRowByClick
           onRow={record => {
             return {
               onClick: e => { e.preventDefault(); getViewList(record.todoCode) },
             };
           }}
+          onExpand={(expanded, record) => changeRowsKey(expanded, record)}
           dataSource={checklist}
           pagination={pagination}
           rowSelection={rowSelection}
