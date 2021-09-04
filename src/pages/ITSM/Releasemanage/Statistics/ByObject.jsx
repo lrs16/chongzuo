@@ -29,6 +29,7 @@ function ByObject(props) {
   } = props;
   const [selectdata, setSelectData] = useState('');
   const [expand, setExpand] = useState(false);
+  const [title, setTitle] = useState('');
 
   const handleSearch = () => {
     const values = getFieldsValue();
@@ -130,6 +131,7 @@ function ByObject(props) {
       title: '功能项',
       dataIndex: 'count',
       key: 'count',
+      align: 'center',
       render: (text, record) => {
         const handleClick = () => {
           const values = getFieldsValue();
@@ -147,7 +149,8 @@ function ByObject(props) {
               ...val
             },
           });
-          setExpand(true)
+          setExpand(true);
+          setTitle(`责任单位:${record.dutyUnit}，功能：${record.firstObj}/${record.secondObj}`)
         };
         return (<a onClick={handleClick}>{text}</a>);
       },
@@ -245,7 +248,9 @@ function ByObject(props) {
               bordered
             />
           </Content>
-          {expand && (<Sider width='400'>Sider</Sider>)}
+          {expand && (<Sider width='800' style={{ background: '#fff' }}>
+            <Card style={{ marginLeft: 24 }} >Sider</Card>
+          </Sider>)}
         </Layout>
 
       </Card>

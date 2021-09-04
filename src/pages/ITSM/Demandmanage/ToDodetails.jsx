@@ -127,7 +127,7 @@ function ToDoregist(props) {
   const handleGoback = () => {
     judgeTimeoutStatus(taskId).then(res => {
       if (res.code === 200 && res.status === 'yes' && res.timeoutMsg === '') {
-        message.info('该事件单已超时，请填写超时原因...')
+        message.info('该需求单已超时，请填写超时原因...')
         setModalVisible(true);
         setButtonType('goback');
         setUserVisible(false);

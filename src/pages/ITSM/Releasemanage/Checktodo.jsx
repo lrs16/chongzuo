@@ -469,7 +469,7 @@ function Checktodo(props) {
           dataSource={checklist}
           pagination={pagination}
           rowSelection={rowSelection}
-          rowKey={(_, index) => index.toString()}
+          rowKey={(record) => record.todoCode}
         />
       </Card>
     </PageHeaderWrapper>
