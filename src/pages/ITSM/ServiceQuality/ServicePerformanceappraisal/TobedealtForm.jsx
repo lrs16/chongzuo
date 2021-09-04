@@ -89,6 +89,8 @@ function TobedealtForm(props) {
     })
   }
 
+  console.log(contractArr,'contractArr')
+
   const openFlow = () => {
     dispatch({
       type: 'performanceappraisal/getTaskData',
@@ -126,7 +128,7 @@ function TobedealtForm(props) {
   }
 
   const getContrractname = (providerId) => {
-    contractProvider(providerId).then(res => {
+    contractProvider({id:providerId,status:'1'}).then(res => {
       if (res) {
         const arr = [...(res.data)];
         setContractArr(arr);
@@ -143,28 +145,32 @@ function TobedealtForm(props) {
     })
   }
 
-  switch (taskName) {
-    case '服务绩效考核登记':
-      sessionStorage.setItem('Nextflowmane', '业务负责人审核人');
-      break;
-    case '业务负责人审核':
-      sessionStorage.setItem('Nextflowmane', '自动化科专责审核');
-      break;
-    case '自动化科专责审核':
-      sessionStorage.setItem('Nextflowmane', '服务商确认');
-      break;
-    case '服务商确认':
-      sessionStorage.setItem('Nextflowmane', `${noselect === '0' ? '服务绩效考核确认' : '业务负责人复核'}`);
-      break;
-    case '业务负责人复核':
-      sessionStorage.setItem('Nextflowmane', '服务绩效考核确认人');
-      break;
-    case '自动化科业务负责人确认':
-      sessionStorage.setItem('Nextflowmane', '问题登记人员确认');
-      break;
-    default:
-      break;
+  if (loading === false && taskData && taskData.currentTask && taskData.currentTask.taskName) {
+    switch (taskName) {
+      case '服务绩效考核登记':
+        sessionStorage.setItem('Nextflowmane', '业务负责人审核人');
+        break;
+      case '业务负责人审核':
+        sessionStorage.setItem('Nextflowmane', '自动化科专责审核');
+        break;
+      case '自动化科专责审核':
+        sessionStorage.setItem('Nextflowmane', '服务商确认');
+        break;
+      case '服务商确认':
+        sessionStorage.setItem('Nextflowmane', `${noselect === '0' ? '服务绩效考核确认' : '业务负责人复核'}`);
+        break;
+      case '业务负责人复核':
+        sessionStorage.setItem('Nextflowmane', '服务绩效考核确认人');
+        break;
+      case '自动化科业务负责人确认':
+        sessionStorage.setItem('Nextflowmane', '问题登记人员确认');
+        break;
+      default:
+        break;
+    }
+
   }
+
 
   useEffect(() => {
     getUserinfo();
@@ -173,7 +179,7 @@ function TobedealtForm(props) {
   }, [assessNo]);
 
   useEffect(() => {
-    if ((taskData && currentTask) || hisTasks) {
+    if ((taskData && taskData.currentTask) || hisTasks) {
       const { providerId, scoreId, target1Id, target2Id, assessType } = currentTask;
       let comfirmScoreid;
       if (taskData && taskData.clause && taskData.clause.scoreId) {
@@ -184,6 +190,8 @@ function TobedealtForm(props) {
       if (hisTasks && hisTasks[0]) {
         noeditProviderid = hisTasks[0]['服务绩效考核登记'].providerId
       }
+
+      console.log(providerId,noeditProviderid,'lplp')
 
       if (providerId || noeditProviderid) {
         getContrractname(providerId || noeditProviderid);
@@ -460,7 +468,7 @@ function TobedealtForm(props) {
   }, [files])
 
   let buttonContent;
-  if (taskName) {
+  if (loading === false && taskData.currentTask && taskData.currentTask.taskName) {
     switch (taskName) {
       case '服务绩效考核确认':
         buttonContent = '确认考核';
@@ -535,7 +543,7 @@ function TobedealtForm(props) {
     })
   }
 
-  console.log(taskData,'taskData')
+  console.log(taskData, 'taskData')
 
   const handleBack = () => {
     if (search) {
@@ -576,7 +584,7 @@ function TobedealtForm(props) {
 
   return (
     <PageHeaderWrapper
-      title={taskName}
+      title={taskName || ''}
       extra={
         <>
           {
@@ -621,9 +629,9 @@ function TobedealtForm(props) {
                 }
 
                 {
-                  ( taskName === '服务绩效考核确认') && (
+                  (taskName === '服务绩效考核确认') && (
                     <Button type='primary' onClick={() => onClickSubmit(taskName, '流转不选人')}>
-                     确认考核
+                      确认考核
                     </Button>
                   )
                 }
@@ -839,7 +847,7 @@ function TobedealtForm(props) {
                             target1={target1}
                             target2={target2}
                             clauseList={clauseList}
-                            editSign={(currentTask.isEdit) === '0' ? true: false}
+                            editSign={(currentTask.isEdit) === '0' ? true : false}
                           />
                         </Panel>
                       )

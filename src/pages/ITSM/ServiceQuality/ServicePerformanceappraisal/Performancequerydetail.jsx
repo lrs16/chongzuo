@@ -105,9 +105,7 @@ function Performancequerydetail(props) {
   }, [assessNo]);
 
   const getContrractname = (providerId) => {
-    console.log('providerId: ', providerId);
-    
-    contractProvider(providerId).then(res => {
+    contractProvider({id:providerId,status:'1'}).then(res => {
       if (res) {
         const arr = [...(res.data)];
         setContractArr(arr);

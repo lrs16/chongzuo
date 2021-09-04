@@ -1161,6 +1161,12 @@ export default {
                               component: './ITSM/Dutymanage/DutyConfiguration/NewClasses'
                             },
                             {
+                              path: '/ITSM/dutymanage/dutyconfiguration/dutyclassessetting/holidaysetting',
+                              name: '节假日设置',
+                              icon: 'fork',
+                              component: './ITSM/Dutymanage/DutyConfiguration/HolidaySetting'
+                            },
+                            {
                               path: '/ITSM/dutymanage/dutyconfiguration/dutypersonnelsetting',
                               name: '值班人员设置',
                               icon: 'fork',
