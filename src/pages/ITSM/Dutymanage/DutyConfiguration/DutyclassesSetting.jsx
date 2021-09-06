@@ -41,12 +41,12 @@ const enableStatus = [
 
 const dataSource = [
   {
-    'No':'No',
-    't1':'t1',
-    't2':'t2',
-    't3':'t3',
-    't4':'t4',
-    't5':'t5',
+    'No': 'No',
+    't1': 't1',
+    't2': 't2',
+    't3': 't3',
+    't4': 't4',
+    't5': 't5',
   }
 ]
 
@@ -106,6 +106,10 @@ function DutyclassesSetting(props) {
     <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button></>
   )
 
+  const handleSubmit = (submitdata) => {
+
+  }
+
   const handleDelete = (deleteId) => {
 
 
@@ -115,18 +119,7 @@ function DutyclassesSetting(props) {
     {
       title: '班次编号',
       dataIndex: 'No',
-      key: 'No',
-      // render: (text, record) => {
-      //   const handleClick = () => {
-      //     router.push({
-      //       pathname: ``,
-      //       query: {
-      //         record
-      //       },
-      //     });
-      //   };
-      //   return <a onClick={handleClick}>{text}</a>;
-      // },
+      key: 'No'
     },
     {
       title: '创建时间',
@@ -161,18 +154,22 @@ function DutyclassesSetting(props) {
       render: (text, record) => {
         return (
           <>
-            <AddDutyclassesSetting>
+            <AddDutyclassesSetting
+              id={record.No}
+              title='编辑班次'
+              onSubmit={(submitdata => handleSubmit(submitdata))}
+              onDelete={(id) => {handleDelete(id)}}
+            >
+
               <a
-                title='编辑班次'
-                style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-                onsubmit={(submitdata => handleSubmit(submitdata))}
+
               >
                 编辑
               </a>
             </AddDutyclassesSetting>
             <Divider type='vertical' />
             <Popconfirm
-              title='是否要删除该条数据' 
+              title='是否要删除该条数据'
               onConfirm={() => handleDelete(record.id)}
             >
               <a>删除</a>
@@ -183,9 +180,7 @@ function DutyclassesSetting(props) {
     }
   ];
 
-  const handleSubmit = (submitdata) => {
-
-  }
+ 
 
   return (
     <PageHeaderWrapper title={pagetitle}>

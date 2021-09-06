@@ -3,7 +3,10 @@ import {
   Drawer,
   Form,
   Input,
-  Button
+  Button,
+  TimePicker,
+  DatePicker,
+  Switch
 } from 'antd';
 import moment from 'moment';
 
@@ -18,6 +21,9 @@ const formItemLayout = {
   }
 }
 
+let startTime;
+let endTime;
+
 const withClick = (element, handleClick = () => { }) => {
   return <element.type {...element.props} onClick={handleClick} />
 }
@@ -25,11 +31,12 @@ const withClick = (element, handleClick = () => { }) => {
 function AddDutyclassesSetting(props) {
   const [visble, setVisble] = useState(false);
   const {
-    form: { getFieldDecorator,validateFields },
+    form: { getFieldDecorator, validateFields },
     title,
     children,
-    onsubmit,
-    id
+    onSubmit,
+    id,
+    onDelete
   } = props;
 
   const required = true;
@@ -43,15 +50,54 @@ function AddDutyclassesSetting(props) {
   }
 
   const handleOk = () => {
-    validateFields((err,values) => {
-      if(!err) {
-        onsubmit(values);
+    validateFields((err, values) => {
+      if (!err) {
+        onSubmit(values);
         setVisble(false)
       }
     })
   }
 
-  const handleDelete = () => {
+  const handleDelete = (id) => {
+    onDelete(id)
+  }
+
+  const startOnchange = (time, timeString) => {
+    startTime = timeString
+    console.log('timeString: ', timeString);
+  }
+
+  const endOnchange = (time, timeString) => {
+    endTime = timeString
+  }
+
+  const disabledHours = (time1, time2, time3) => {
+    if(startTime) {
+      const hours = startTime.split(':');
+      const nums = [];
+      for (let i = 0; i < hours[0] - 1; i += 1) {
+        nums.push(i + 1);
+      }
+      return nums;
+    }
+  
+  }
+
+  const startdisabledHours = () => {
+    if(endTime) {
+      const hours = endTime.split(':');
+      console.log('hours: ', hours);
+      const nums = [];
+      for (let i = 0; i < 24 - hours[0]; i += 1) {
+        nums.push(Number(hours[0]) + i);
+      }
+
+      console.log(nums,'nums')
+      return nums;
+    }
+  }
+
+  const disabledMinutes = (time1, time2, time3) => {
 
   }
 
@@ -60,13 +106,15 @@ function AddDutyclassesSetting(props) {
       {withClick(children, handleopenClick)}
       <Drawer
         visible={visble}
+        title={title}
         width={720}
+        centered='true'
       >
         <Form {...formItemLayout}>
           <Form.Item label='班次编号'>
             {
               getFieldDecorator('NO', {}
-              )(<Input />)
+              )(<Input disabled />)
             }
 
           </Form.Item>
@@ -82,7 +130,21 @@ function AddDutyclassesSetting(props) {
           <Form.Item label='值班时段'>
             {
               getFieldDecorator('time', {}
-              )(<Input />)
+              )(
+                <div>
+                  <TimePicker
+                    disabledHours={startdisabledHours}
+                    format='HH:mm'
+                    onChange={startOnchange}
+                  />
+                  <span style={{ margin: 'auto 3px' }}>-</span>
+                  <TimePicker
+                    disabledHours={disabledHours}
+                    onChange={endOnchange}
+                    format='HH:mm' />
+                </div>
+
+              )
             }
 
           </Form.Item>
@@ -90,7 +152,7 @@ function AddDutyclassesSetting(props) {
           <Form.Item label='启用状态'>
             {
               getFieldDecorator('status', {}
-              )(<Input />)
+              )(<Switch />)
             }
 
           </Form.Item>
@@ -106,7 +168,7 @@ function AddDutyclassesSetting(props) {
           <Form.Item label='创建时间'>
             {
               getFieldDecorator('time', {}
-              )(<Input />)
+              )(<DatePicker />)
             }
           </Form.Item>
 
@@ -128,20 +190,20 @@ function AddDutyclassesSetting(props) {
             取消
           </Button>
 
-          <Button onClick={handleOk} type='primary'>
+          <Button onClick={handleOk} type='primary' style={{ marginRight: 8 }}>
             确定
           </Button>
-          
+
           {
             id && (
               <Button onClick={handleDelete} type='danger' ghost>
-              删除
-            </Button>
+                删除
+              </Button>
             )
           }
-        
 
-          
+
+
 
         </div>
       </Drawer>

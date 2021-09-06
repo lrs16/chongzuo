@@ -75,8 +75,10 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
         getTarget2(key)
         break;
       case 'clause':
+        const {  props: { children:{props:{children} } }} = option;
         setFieldsValue({
-          clauseId: key
+          clauseId: key,
+          assessValue:children[3].props.children
         })
         break;
       default:
@@ -286,17 +288,6 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
             </Col>
 
             <Col span={8}>
-              <Form.Item label='考核得分'>
-                {
-                  getFieldDecorator('assessValue', {
-                    initialValue: assessmentConfirmation.assessValue
-                  })
-                    (<Input disabled={editSign} />)
-                }
-              </Form.Item>
-            </Col>
-
-            <Col span={8}>
               <Form.Item label='考核状态'>
                 {
                   getFieldDecorator('taskName', {
@@ -403,7 +394,6 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
           </Form>
         )
       }
-
     </Row>
   )
 })
