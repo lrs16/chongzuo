@@ -138,12 +138,13 @@ function Statistics(props) {
             ...values,
             beginTime: values.beginTime ? moment(values.beginTime).format('X') : '',
             endTime: values.endTime ? moment(values.endTime).format('X') : '',
-            taskName: record.taskName,
+            releaseStatus: record.taskName,
+            paginations: { current: 1, pageSize: 15 }
           }
           router.push({
             pathname: `/ITSM/releasemanage/query`,
-            query: { pathpush: true, ...val },
-            state: { cach: false, }
+            query: { pathpush: true },
+            state: { cach: false, cacheinfo: val }
           });
         };
         return (<a onClick={handleClick}>{text}</a>);

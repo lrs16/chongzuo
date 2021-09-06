@@ -552,9 +552,9 @@ export default {
                         },
                         {
                           path: '/ITSM/releasemanage/library',
-                          name: '发布库',
+                          name: '发布功能统计结果',
                           icon: 'control',
-                          component: './ITSM/Releasemanage/BusinessDetail',
+                          component: './ITSM/Releasemanage/LibraryList',
                         },
                         {
                           path: '/ITSM/releasemanage/statistics',
@@ -573,7 +573,7 @@ export default {
                             },
                             {
                               path: '/ITSM/releasemanage/statistics/object',
-                              name: '发布对象统计',
+                              name: '发布功能统计',
                               icon: 'control',
                               component: './ITSM/Releasemanage/Statistics/ByObject',
                             },

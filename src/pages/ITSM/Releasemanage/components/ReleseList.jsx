@@ -15,7 +15,7 @@ function getQueryVariable(variable) {
 }
 
 function ReleseList(props) {
-  const { dataSource, listmsg } = props;
+  const { dataSource, listmsg, statistics } = props;
   const [classify, setClassify] = useState('');
   useEffect(() => {
     if (dataSource) {
@@ -124,13 +124,13 @@ function ReleseList(props) {
   ];
   return (
     <>
-      <Row>
+      {statistics === undefined && (<Row>
         <Col span={20}>
           <span >{listmsg ? Object.values(listmsg)[0] : Object.values(classify)[0]}</span>
         </Col>
         <Col span={4} style={{ textAlign: 'right' }}><Button type='primary' >导出清单</Button></Col>
       </Row>
-
+      )}
       <Table
         columns={columns}
         bordered

@@ -38,6 +38,11 @@ function ToDolist(props) {
   const [selectedRecords, setSelectedRecords] = useState([]);
   const [username, setUserName] = useState('');
 
+  // 缓存页签查询条件
+  const [tabrecord, setTabRecord] = useState({});
+  const searchrecord = { releaseNo: '', releaseStatus: '' };
+  const cacheinfo = location.state && location.state.cacheinfo ? location.state.cacheinfo : searchrecord;
+
   // 查询
   const searchdata = (values, page, size) => {
     dispatch({
@@ -50,16 +55,66 @@ function ToDolist(props) {
         pageIndex: page,
       },
     });
+    setTabRecord({
+      ...values,
+      beginTime: values.beginTime ? moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+    });
+  };
+
+  const handleSearch = () => {
+    setPageinations({
+      ...paginations,
+      current: 1,
+    });
+    const values = getFieldsValue();
+    searchdata(values, paginations.current, paginations.pageSize);
+  };
+
+  const handleReset = () => {
+    resetFields();
+    handleSearch();
   };
 
   useEffect(() => {
-    const values = getFieldsValue();
-    searchdata(values, paginations.current, paginations.pageSize);
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+              expand,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新
+      if (location.state.reset) {
+        handleReset()
+      };
+      // 标签切回设置初始值
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        setExpand(location.state.cacheinfo.expand);
+        setPageinations({ ...paginations, current, pageSize })
+      };
+    }
+  }, [location.state]);
+
+  useEffect(() => {
+    if (cacheinfo) {
+      const values = getFieldsValue();
+      searchdata(values, paginations.current, paginations.pageSize);
+    };
     return () => {
       setSelectData([]);
       setExpand(false);
     };
-  }, [location]);
+  }, []);
 
   //  下载
   const download = () => {
@@ -118,19 +173,6 @@ function ToDolist(props) {
   const rowSelection = {
     selectedRowKeys,
     onChange: (key, record) => onSelectChange(key, record),
-  };
-
-  const handleSearch = () => {
-    setPageinations({
-      ...paginations,
-      current: 1,
-    });
-    const values = getFieldsValue();
-    searchdata(values, paginations.current, paginations.pageSize);
-  };
-
-  const handleReset = () => {
-    resetFields();
   };
 
   const handleApproval = () => {
@@ -304,7 +346,7 @@ function ToDolist(props) {
                 )}
               </Form.Item>
             </Col>
-            {expand && (
+            {(expand || (location.state && location.state.cacheinfo)) && (
               <>
                 <Col span={8}>
                   <Form.Item label="责任单位">
@@ -387,7 +429,7 @@ function ToDolist(props) {
                 </Col>
               </>
             )}
-            {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
+            <Col span={8} style={{ marginTop: 4, paddingLeft: 48 }}>{extra}</Col>
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>

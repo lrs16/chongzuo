@@ -34,7 +34,11 @@ function Querylist(props) {
   const [selectdata, setSelectData] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRecords, setSelectedRecords] = useState([]);
-  const { beginTime, endTime, dutyUnit, releaseType, taskName } = location.query;
+
+  // 缓存页签查询条件
+  const [tabrecord, setTabRecord] = useState({});
+  const searchrecord = { releaseNo: '', releaseStatus: '' };
+  const cacheinfo = location.state && location.state.cacheinfo ? location.state.cacheinfo : searchrecord;
 
   // 查询
   const searchdata = (values, page, size) => {
@@ -48,17 +52,69 @@ function Querylist(props) {
         pageIndex: page,
       },
     });
+    setTabRecord({
+      ...values,
+      beginTime: values.beginTime ? moment(values.beginTime).format('X') : '',
+      endTime: values.endTime ? moment(values.endTime).format('X') : '',
+    });
+  };
+
+
+  const handleSearch = () => {
+    setPageinations({
+      ...paginations,
+      current: 1,
+    });
+    const values = getFieldsValue();
+    searchdata(values, paginations.current, paginations.pageSize);
+  };
+
+  // 重置
+  const handleReset = () => {
+    resetFields();
+    handleSearch();
   };
 
   useEffect(() => {
-    const values = getFieldsValue();
-    searchdata(values, paginations.current, paginations.pageSize);
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+              expand,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新
+      if (location.state.reset) {
+        handleReset()
+      };
+      // 标签切回设置初始值
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        setExpand(location.state.cacheinfo.expand);
+        setPageinations({ ...paginations, current, pageSize })
+      };
+    }
+  }, [location.state]);
+
+  // 获取数据
+  useEffect(() => {
+    if (cacheinfo) {
+      const values = getFieldsValue();
+      searchdata(values, paginations.current, paginations.pageSize);
+    }
     return () => {
       setSelectData([]);
       setExpand(false);
     };
-  }, [location.query]);
-
+  }, []);
 
   //  下载
   const download = () => {
@@ -117,19 +173,6 @@ function Querylist(props) {
   const rowSelection = {
     selectedRowKeys,
     onChange: (key, record) => onSelectChange(key, record),
-  };
-
-  const handleSearch = () => {
-    setPageinations({
-      ...paginations,
-      current: 1,
-    });
-    const values = getFieldsValue();
-    searchdata(values, paginations.current, paginations.pageSize);
-  };
-
-  const handleReset = () => {
-    resetFields();
   };
 
   const getTypebyId = key => {
@@ -240,14 +283,14 @@ function Querylist(props) {
             <Col span={8}>
               <Form.Item label="发布编号">
                 {getFieldDecorator('releaseNo', {
-                  initialValue: '',
+                  initialValue: cacheinfo.releaseNo,
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
             <Col span={8}>
               <Form.Item label="当前处理环节">
                 {getFieldDecorator('releaseStatus', {
-                  initialValue: taskName || '',
+                  initialValue: cacheinfo.releaseStatus,
                 })(
                   <Select placeholder="请选择" allowClear>
                     {statumap.map(obj => (
@@ -259,12 +302,12 @@ function Querylist(props) {
                 )}
               </Form.Item>
             </Col>
-            {(expand || taskName) && (
+            {(expand || (location.state && location.state.cacheinfo && location.state.cacheinfo.releaseStatus)) && (
               <>
                 <Col span={8}>
                   <Form.Item label="责任单位">
                     {getFieldDecorator('dutyUnit', {
-                      initialValue: dutyUnit || '',
+                      initialValue: cacheinfo.dutyUnit,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {unitmap.map(obj => (
@@ -279,7 +322,7 @@ function Querylist(props) {
                 <Col span={8}>
                   <Form.Item label="发布类型">
                     {getFieldDecorator('releaseType', {
-                      initialValue: releaseType || '',
+                      initialValue: cacheinfo.releaseType,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {typemap.map(obj => (
@@ -294,7 +337,7 @@ function Querylist(props) {
                 <Col span={8}>
                   <Form.Item label="出厂测试登记人">
                     {getFieldDecorator('register', {
-                      initialValue: '',
+                      initialValue: cacheinfo.register,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
@@ -309,7 +352,7 @@ function Querylist(props) {
                   <Form.Item label="发送时间">
                     <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                       {getFieldDecorator('beginTime', {
-                        initialValue: beginTime ? moment(beginTime * 1000) : '',
+                        initialValue: cacheinfo.beginTime ? moment(cacheinfo.beginTime * 1000) : '',
                       })(
                         <DatePicker
                           showTime={{
@@ -325,7 +368,7 @@ function Querylist(props) {
                     <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
                     <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                       {getFieldDecorator('endTime', {
-                        initialValue: endTime ? moment(endTime * 1000) : '',
+                        initialValue: cacheinfo.endTime ? moment(cacheinfo.endTime * 1000) : '',
                       })(
                         <DatePicker
                           showTime={{
@@ -342,7 +385,7 @@ function Querylist(props) {
                 </Col>
               </>
             )}
-            {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
+            <Col span={8} style={{ marginTop: 4, paddingLeft: 48 }}>{extra}</Col>
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>

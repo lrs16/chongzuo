@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table } from 'antd';
+import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Divider } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
-import EditeTable from './components/EditeTable';
+
+
+const InputGroup = Input.Group;
 
 const { Option } = Select;
 
@@ -36,55 +38,98 @@ function LibraryList(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, resetFields, getFieldsValue },
-    loading,
-    list,
-    dispatch,
+    loading, list, dispatch, location, objectlist, objtotal
   } = props;
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRecords, setSelectedRecords] = useState([]);
+  // 缓存页签查询条件
+  const [tabrecord, setTabRecord] = useState({});
+  const searchrecord = { releaseNo: '', releaseStatus: '' };
+  const cacheinfo = location.state && location.state.cacheinfo ? location.state.cacheinfo : searchrecord;
+  console.log(cacheinfo)
 
   // 查询
   const searchdata = (values, page, size) => {
     dispatch({
-      type: 'releasetodo/fetchlist',
+      type: 'releasestatistics/fetchobjectlist',
       payload: {
         ...values,
-        time1: values.time1 === undefined ? '' : moment(values.time1).format('YYYY-MM-DD HH:mm:ss'),
-        time2: values.time2 === undefined ? '' : moment(values.time2).format('YYYY-MM-DD HH:mm:ss'),
-        eventObject: values.eventObject?.slice(-1)[0],
+        beginTime: values.beginTime ? moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        releaseObj: values.releaseObj && values.releaseObj.length > 0 ? values.releaseObj.join('/') : '',
         pageSize: size,
         pageIndex: page,
       },
     });
-  };
-
-  //  下载
-  const download = () => {
-    const values = getFieldsValue();
-    dispatch({
-      type: 'releasetodo/eventdownload',
-      payload: {
-        values,
-        ids: selectedRowKeys.toString(),
-      },
-    }).then(res => {
-      const filename = `事件待办_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
-      const blob = new Blob([res]);
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.click();
-      window.URL.revokeObjectURL(url);
+    setTabRecord({
+      ...values,
+      beginTime: values.beginTime ? moment(values.beginTime).format('X') : '',
+      endTime: values.endTime ? moment(values.endTime).format('X') : '',
     });
   };
 
+  const handleSearch = () => {
+    setPageinations({
+      ...paginations,
+      current: 1,
+    });
+    // const values = getFieldsValue();
+    searchdata(cacheinfo, paginations.current, paginations.pageSize);
+  };
+
+  // 重置
+  const handleReset = () => {
+    resetFields();
+    handleSearch();
+  };
+
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+              expand,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新
+      if (location.state.reset) {
+        handleReset()
+      };
+      // 标签切回设置初始值
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        setExpand(location.state.cacheinfo.expand);
+        setPageinations({ ...paginations, current, pageSize })
+      };
+    }
+  }, [location.state]);
+
+  // 获取数据
+  useEffect(() => {
+    if (cacheinfo) {
+      // const values = getFieldsValue();
+      handleSearch();
+    }
+    return () => {
+      setSelectData([]);
+      setExpand(false);
+    };
+  }, []);
+
   const onShowSizeChange = (page, size) => {
-    const values = getFieldsValue();
-    searchdata(values, page, size);
+    // const values = getFieldsValue();
+    searchdata(cacheinfo, page, size);
     setPageinations({
       ...paginations,
       pageSize: size,
@@ -92,8 +137,8 @@ function LibraryList(props) {
   };
 
   const changePage = page => {
-    const values = getFieldsValue();
-    searchdata(values, page, paginations.pageSize);
+    // const values = getFieldsValue();
+    searchdata(cacheinfo, page, paginations.pageSize);
     setPageinations({
       ...paginations,
       current: page,
@@ -105,7 +150,7 @@ function LibraryList(props) {
     onShowSizeChange: (page, size) => onShowSizeChange(page, size),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    total: list.total,
+    total: objtotal,
     showTotal: total => `总共  ${total}  条记录`,
     onChange: page => changePage(page),
   };
@@ -120,29 +165,6 @@ function LibraryList(props) {
     onChange: (key, record) => onSelectChange(key, record),
   };
 
-  const handleSearch = () => {
-    setPageinations({
-      ...paginations,
-      current: 1,
-    });
-    const values = getFieldsValue();
-    searchdata(values, paginations.current, paginations.pageSize);
-  };
-
-  const handleReset = () => {
-    resetFields();
-  };
-
-  const handleApproval = () => {
-    const newselectds = selectedRecords.filter(item => item.t1 === '版本管理员审批' && item.t2 === '计划发布');
-    console.log(newselectds)
-  }
-
-  useEffect(() => {
-    const values = getFieldsValue();
-    searchdata(values, paginations.curren, paginations.pageSize);
-  }, []);
-
   const getTypebyId = key => {
     if (selectdata.ischange) {
       return selectdata.arr.filter(item => item.key === key)[0].children;
@@ -153,8 +175,6 @@ function LibraryList(props) {
   const typemap = getTypebyId('1384055209809940482');       // 发布类型
   const unitmap = getTypebyId('1384056290929545218');       // 责任单位
   const statumap = getTypebyId('1385066256880635905');       // 处理环节
-  const functionmap = getTypebyId('1384052503909240833');   // 功能类型
-  const modulamap = getTypebyId('1384430921586839554');  // 模块
 
   const extra = (<>
     <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
@@ -172,54 +192,89 @@ function LibraryList(props) {
 
   const columns = [
     {
-      title: '发布编号',
-      dataIndex: 'No',
-      key: 'No',
+      title: '功能类型',
+      dataIndex: 'abilityType',
+      key: 'abilityType',
+      width: 150,
     },
     {
-      title: '发布来源',
-      dataIndex: 't1',
-      key: 't1',
+      title: '模块',
+      dataIndex: 'module',
+      key: 'module',
+      width: 120,
     },
     {
-      title: '发布类型',
-      dataIndex: 't2',
-      key: 't2',
-      width: 200,
+      title: '功能名称',
+      dataIndex: 'appName',
+      key: 'appName',
+      width: 150,
     },
     {
-      title: '发布状态',
-      dataIndex: 't3',
-      key: 't3',
+      title: '问题类型',
+      dataIndex: 'problemType',
+      key: 'problemType',
+      width: 150,
     },
     {
-      title: '发布结果',
-      dataIndex: 't4',
-      key: 't4',
-    },
-    {
-      title: '出厂测试登记人',
+      title: '测试内容及预期效果',
       dataIndex: 't5',
       key: 't5',
+      width: 300,
+      render: (text, record) => {
+        return (
+          <>
+            <InputGroup compact>
+              <span style={{ width: 70, textAlign: 'right' }}>功能菜单：</span>
+              <span style={{ width: 210 }}>{record.testMenu}</span>
+            </InputGroup>
+            <Divider type='horizontal' style={{ margin: '6px 0' }} />
+            <InputGroup compact>
+              <span style={{ width: 70, textAlign: 'right' }}>预期效果：</span>
+              <span style={{ width: 210 }}>{record.testResult}</span>
+            </InputGroup>
+            <Divider type='horizontal' style={{ margin: '6px 0' }} />
+            <InputGroup compact>
+              <span style={{ width: 70, textAlign: 'right' }}>验证步骤：</span>
+              <span style={{ width: 210 }}>{record.testStep}</span>
+            </InputGroup>
+          </>
+        );
+      }
     },
+    // {
+    //   title: '状态',
+    //   dataIndex: 'verifyStatus',
+    //   key: 'verifyStatus',
+    //   align: 'center',
+    //   width: 100,
+    // },
+    // {
+    //   title: '是否通过',
+    //   dataIndex: 'passTest',
+    //   key: 'passTest',
+    //   align: 'center',
+    //   width: 100,
+    // },
+    // {
+    //   title: '业务负责人',
+    //   dataIndex: 'responsible',
+    //   key: 'responsible',
+    //   width: 100,
+    // },
     {
-      title: '出厂测试登记时间',
-      dataIndex: 't6',
-      key: 't6',
+      title: '开发人员',
+      dataIndex: 'developer',
+      key: 'developer',
+      width: 100,
     },
+    // {
+    //   title: '操作人员',
+    //   dataIndex: 'operator',
+    //   key: 'operator',
+    //   align: 'center',
+    //   width: 100,
+    // },
   ];
-
-  const expandedRowRender = () => {
-    return <EditeTable
-      title='发布清单'
-      functionmap={functionmap}
-      modulamap={modulamap}
-      isEdit={false}
-      taskName='出厂测试'
-      mainId={undefined}
-    />;
-  };
-
   return (
     <PageHeaderWrapper title={pagetitle}>
       <DictLower
@@ -228,15 +283,8 @@ function LibraryList(props) {
         style={{ display: 'none' }}
       />
       <Card>
-        <Row gutter={8}>
+        {/* <Row gutter={8}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
-            <Col span={8}>
-              <Form.Item label="发布编号">
-                {getFieldDecorator('release7', {
-                  initialValue: '',
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
             <Col span={8}>
               <Form.Item label="发布来源">
                 {getFieldDecorator('release1', {
@@ -259,48 +307,55 @@ function LibraryList(props) {
                 )}
               </Form.Item>
             </Col>
-            {expand && (
-              <>
-                <Col span={8}>
-                  <Form.Item label="发布类型">
-                    {getFieldDecorator('release3', {
-                      initialValue: '',
-                    })(
-                      <Select placeholder="请选择" allowClear>
-                        {unitmap.map(obj => (
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>
-                        ))}
-                      </Select>
-                    )}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="发布结果">
-                    {getFieldDecorator('release4', {
-                      initialValue: '',
-                    })(
-                      <Select placeholder="请选择" allowClear>
-                        {typemap.map(obj => (
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>
-                        ))}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="出厂测试登记人">
-                    {getFieldDecorator('release5', {
-                      initialValue: '',
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-                <Col span={16}>
-                  <Form.Item label="出厂测试登记时间" {...forminladeLayout}>
-                    {getFieldDecorator('time1', {
+            <>
+              <Col span={8}>
+                <Form.Item label="发布类型">
+                  {getFieldDecorator('release3', {
+                    initialValue: '',
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {unitmap.map(obj => (
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>
+                      ))}
+                    </Select>
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="发布结果">
+                  {getFieldDecorator('release4', {
+                    initialValue: '',
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {typemap.map(obj => (
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>
+                      ))}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="发布编号">
+                  {getFieldDecorator('release0', {
+                    initialValue: '',
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="出厂测试登记人">
+                  {getFieldDecorator('release5', {
+                    initialValue: '',
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="出厂测试登记时间">
+                  <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                    {getFieldDecorator('beginTime', {
                       initialValue: '',
                     })(
                       <DatePicker
@@ -309,10 +364,14 @@ function LibraryList(props) {
                           defaultValue: moment('00:00:00', 'HH:mm:ss'),
                         }}
                         placeholder="开始时间"
-                        format='YYYY-MM-DD HH:mm:ss' />
+                        format='YYYY-MM-DD HH:mm:ss'
+                        style={{ minWidth: 120, width: '100%' }}
+                      />
                     )}
-                    <span style={{ padding: '0 10px' }}>-</span>
-                    {getFieldDecorator('time2', {
+                  </Form.Item>
+                  <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
+                  <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                    {getFieldDecorator('endTime', {
                       initialValue: '',
                     })(
                       <DatePicker
@@ -321,28 +380,29 @@ function LibraryList(props) {
                           defaultValue: moment('23:59:59', 'HH:mm:ss'),
                         }}
                         placeholder="结束时间"
-                        format='YYYY-MM-DD HH:mm:ss' />
+                        format='YYYY-MM-DD HH:mm:ss'
+                        style={{ minWidth: 120, width: '100%' }}
+                      />
                     )}
                   </Form.Item>
-                </Col>
-
-              </>
-            )}
-            <Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>
+                </Form.Item>
+              </Col>
+            </>
+            <Col span={8} style={{ paddingLeft: 48, paddingTop: 4 }}>{extra}</Col>
           </Form>
-        </Row>
-        <div style={{ marginBottom: 24 }}>
-          <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>导出数据</Button >
-          <Button type="primary" onClick={() => handleApproval()} >版本管理员合并审批</Button >
-        </div>
-        < Table
-          loading={loading}
+        </Row> */}
+        {/* <div style={{ marginBottom: 24 }}>
+          <Button type="danger" ghost style={{ marginRight: 8 }}>删除</Button >
+        </div> */}
+        <Table
           columns={columns}
-          dataSource={list.rows}
+          bordered
+          size='middle'
+          // rowSelection={rowSelection}
+          dataSource={objectlist}
           pagination={pagination}
-          rowSelection={rowSelection}
-          rowKey={r => r.No}
-          expandedRowRender={expandedRowRender}
+          rowKey={(_, index) => index.toString()}
+          style={{ marginTop: 12 }}
         />
       </Card>
     </PageHeaderWrapper>
@@ -350,8 +410,9 @@ function LibraryList(props) {
 }
 
 export default Form.create({})(
-  connect(({ releasetodo, loading }) => ({
-    list: releasetodo.list,
-    loading: loading.models.releasetodo,
+  connect(({ releasestatistics, loading }) => ({
+    objectlist: releasestatistics.objectlist,
+    objtotal: releasestatistics.objtotal,
+    loading: loading.models.releasestatistics,
   }))(LibraryList),
 );

@@ -9,6 +9,7 @@ export default {
     tasksum: undefined,
     objectsum: undefined,
     objectlist: undefined,
+    objtotal: 0,
   },
 
   effects: {
@@ -73,6 +74,7 @@ export default {
       return {
         ...state,
         objectlist: action.payload.records,
+        objtotal: action.payload.total,
       };
     },
   },

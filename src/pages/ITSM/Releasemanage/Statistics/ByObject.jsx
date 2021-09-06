@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
-import { Card, Row, Col, Form, DatePicker, Select, Button, Table, Layout, Cascader } from 'antd';
+import { Card, Row, Col, Form, DatePicker, Select, Button, Table, Cascader } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import DictLower from '@/components/SysDict/DictLower';
+import ReleseList from '../components/ReleseList';
 
 const { Option } = Select;
-const { Sider, Content } = Layout;
 
 const formItemLayout = {
   labelCol: {
@@ -24,12 +24,9 @@ function ByObject(props) {
   const pagetitle = props.route.name;
   const {
     dispatch,
-    form: { getFieldDecorator, resetFields, getFieldsValue }, loading,
-    objectsumlist, objectlist,
+    form: { getFieldDecorator, resetFields, getFieldsValue }, loading, objectsumlist
   } = props;
   const [selectdata, setSelectData] = useState('');
-  const [expand, setExpand] = useState(false);
-  const [title, setTitle] = useState('');
 
   const handleSearch = () => {
     const values = getFieldsValue();
@@ -136,26 +133,24 @@ function ByObject(props) {
         const handleClick = () => {
           const values = getFieldsValue();
           const val = {
-            beginTime: values.beginTime ? moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
-            endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
-            releaseObj: `${record.firstObj}/${record.secondObj}`,
+            beginTime: values.beginTime ? moment(values.beginTime).format('X') : '',
+            endTime: values.endTime ? moment(values.endTime).format('X') : '',
+            releaseObj: [record.firstObj, record.secondObj],
             dutyUnit: record.dutyUnit,
-            pageIndex: 1,
-            pageSize: 15,
+            paginations: { current: 1, pageSize: 15 }
           };
-          dispatch({
-            type: 'releasestatistics/fetchobjectlist',
-            payload: {
-              ...val
-            },
+          router.push({
+            pathname: `/ITSM/releasemanage/library`,
+            query: { pathpush: true },
+            state: { cach: false, cacheinfo: val }
           });
-          setExpand(true);
-          setTitle(`责任单位:${record.dutyUnit}，功能：${record.firstObj}/${record.secondObj}`)
         };
         return (<a onClick={handleClick}>{text}</a>);
       },
     },
   ]
+
+  //
 
   return (
     <PageHeaderWrapper
@@ -170,7 +165,7 @@ function ByObject(props) {
         <Form {...formItemLayout}>
           <Row>
             <Col span={8}>
-              <Form.Item label="起始时间">
+              <Form.Item label="出厂测试登记时间">
                 <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                   {getFieldDecorator('beginTime', {
                     initialValue: '',
@@ -237,22 +232,14 @@ function ByObject(props) {
             </Col>
           </Row>
         </Form>
-        <Layout style={{ background: '#fff' }}>
-          <Content>
-            <Table
-              loading={loading}
-              columns={columns}
-              dataSource={objectsumlist || []}
-              rowKey={(_, index) => index.toString()}
-              pagination={false}
-              bordered
-            />
-          </Content>
-          {expand && (<Sider width='800' style={{ background: '#fff' }}>
-            <Card style={{ marginLeft: 24 }} >Sider</Card>
-          </Sider>)}
-        </Layout>
-
+        <Table
+          loading={loading}
+          columns={columns}
+          dataSource={objectsumlist || []}
+          rowKey={(_, index) => index.toString()}
+          pagination={false}
+          bordered
+        />
       </Card>
     </PageHeaderWrapper>
   );
