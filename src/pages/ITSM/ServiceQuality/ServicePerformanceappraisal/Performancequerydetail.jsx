@@ -95,7 +95,7 @@ function Performancequerydetail(props) {
   const openFlow = () => {
     dispatch({
       type: 'performanceappraisal/getTaskData',
-      payload: {assessNo}
+      payload: { assessNo }
     })
   }
 
@@ -105,7 +105,7 @@ function Performancequerydetail(props) {
   }, [assessNo]);
 
   const getContrractname = (providerId) => {
-    contractProvider({id:providerId,status:'1'}).then(res => {
+    contractProvider({ id: providerId, status: '1' }).then(res => {
       if (res) {
         const arr = [...(res.data)];
         setContractArr(arr);
@@ -114,17 +114,17 @@ function Performancequerydetail(props) {
   }
 
   useEffect(() => {
-    if(( loading === false && currentTask && currentTask.taskName && currentTask.taskName === '服务绩效考核登记') || (hisTasks && hisTasks.length > 0 &&  hisTasks[0]['服务绩效考核登记'] && hisTasks[0]['服务绩效考核登记'].providerId)) {
+    if ((loading === false && currentTask && currentTask.taskName && currentTask.taskName === '服务绩效考核登记') || (hisTasks && hisTasks.length > 0 && hisTasks[0]['服务绩效考核登记'] && hisTasks[0]['服务绩效考核登记'].providerId)) {
       let detailId;
-      if(hisTasks && hisTasks[0] && hisTasks[0]['服务绩效考核登记'] && (hisTasks[0] ['服务绩效考核登记']).providerId) {
+      if (hisTasks && hisTasks[0] && hisTasks[0]['服务绩效考核登记'] && (hisTasks[0]['服务绩效考核登记']).providerId) {
         detailId = hisTasks[0]['服务绩效考核登记'].providerId;
         console.log('detailId: ', detailId);
       }
-      getContrractname( (currentTask && currentTask.providerId) || detailId);
+      getContrractname((currentTask && currentTask.providerId) || detailId);
     }
-  },[taskData])
+  }, [taskData])
 
-  console.log(taskData,'taskData')
+  console.log(taskData, 'taskData')
 
   const tabList = [
     {
@@ -193,7 +193,7 @@ function Performancequerydetail(props) {
     >
 
       {
-        loading === false && taskData && taskData.hisTasks  && tabActiveKey === 'workorder' && (
+        loading === false && taskData && taskData.hisTasks && tabActiveKey === 'workorder' && (
           <>
             {
               hisTasks && hisTasks.length > 0 && (
@@ -329,7 +329,7 @@ function Performancequerydetail(props) {
       }
 
       {
-        loading === false && hisTaskArr && tabActiveKey === 'process' && (
+        hisTaskArr && tabActiveKey === 'process' && (
           <Achievementsflow
             taskId={mainId}
             flowhisTaskArr={hisTaskArr}

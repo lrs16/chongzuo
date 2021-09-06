@@ -93,6 +93,29 @@ function CreditCardRegister(props) {
   }
 
   const handleSubmit = () => {
+    return dispatch({
+      type:'performanceappraisal/scorecardSubmit',
+      payload:id
+    }).then(res => {
+      if(res.code === 200) {
+        router.push({
+          pathname: `/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail`,
+          query: {
+            mainId:id,
+            closetab: true,
+          }
+        });
+
+        router.push({
+          pathname: `/ITSM/servicequalityassessment/creditcard/creditcardsearch`,
+          query: { pathpush: true },
+          state: { cache: false }
+        })
+      }
+    })
+  }
+
+  const download = () => {
     dispatch({
       type: 'performanceappraisal/scorecardPrint',
       payload: id
@@ -203,15 +226,9 @@ function CreditCardRegister(props) {
             </>
           )}
 
-
-          {/* {
-            search && (
-              
-            )
-          } */}
           {
             search && (
-              <Button type='primary' onClick={handleSubmit}>下载</Button>
+              <Button type='primary' onClick={download}>下载</Button>
             )
           }
 

@@ -166,9 +166,7 @@ function TobedealtForm(props) {
       default:
         break;
     }
-
   }
-
 
   useEffect(() => {
     getUserinfo();
@@ -177,7 +175,7 @@ function TobedealtForm(props) {
   }, [assessNo]);
 
   useEffect(() => {
-    if ((taskData && taskData.currentTask) || hisTasks) {
+    if ((loading === false && taskData && taskData.currentTask) || hisTasks) {
       const { providerId, scoreId, target1Id, target2Id, assessType } = currentTask;
       let comfirmScoreid;
       if (taskData && taskData.clause && taskData.clause.scoreId) {
@@ -188,8 +186,6 @@ function TobedealtForm(props) {
       if (hisTasks && hisTasks[0]) {
         noeditProviderid = hisTasks[0]['服务绩效考核登记'].providerId
       }
-
-      console.log(providerId,noeditProviderid,'lplp')
 
       if (providerId || noeditProviderid) {
         getContrractname(providerId || noeditProviderid);
@@ -430,7 +426,6 @@ function TobedealtForm(props) {
       }
     })
   }
-
   console.log(taskData,'taskData')
 
   useEffect(() => {
@@ -506,18 +501,6 @@ function TobedealtForm(props) {
     })
   }
 
-  const backProcess = () => {
-    return dispatch({
-      type: 'performanceappraisal/rollback'
-    }).then(res => {
-      if (res.code === 200) {
-        message.info(res.msg);
-      } else {
-        message.error('回退失败')
-      }
-    })
-  }
-
   const handleBacksubmit = () => {
     judgeTimeoutStatus(taskId).then(res => {
       if (res.code === 200 && res.status === 'yes' && res.timeoutMsg === '') {
@@ -543,8 +526,6 @@ function TobedealtForm(props) {
     })
   }
 
-  console.log(taskData, 'taskData')
-
   const handleBack = () => {
     if (search) {
       router.push({
@@ -554,8 +535,6 @@ function TobedealtForm(props) {
       }
       );
     }
-
-
 
     if (myOrder) {
       router.push({
@@ -575,12 +554,6 @@ function TobedealtForm(props) {
       );
     }
   }
-
-  // console.log(assessNo,'assessNo')
-  // console.log(taskData,'taskData')
-  // console.log(hisTasks,'hisTasks');
-  // console.log(currentTask.taskName,'name')
-
 
   return (
     <PageHeaderWrapper

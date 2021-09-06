@@ -198,7 +198,8 @@ const Register = React.forwardRef((props, ref) => {
     const requestData = {
       ...value,
       pageNum: 1,
-      pageSize: 1000
+      pageSize: 1000,
+      status:'1'
     }
     switch (type) {
       case 'provider':
@@ -214,7 +215,7 @@ const Register = React.forwardRef((props, ref) => {
         if (!providerId) {
           message.error('请先选择服务商哦')
         } else {
-          contractProvider(providerId).then(res => {
+          contractProvider({id:providerId,status:'1'}).then(res => {
             if (res) {
               const arr = [...(res.data)];
               setSpinLoading(false);

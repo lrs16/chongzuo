@@ -55,7 +55,8 @@ const columns = [
               mainId: record.instanceId,
               taskId: record.currentTaskId,
               orderNo: text,
-              myOrder: true
+              myOrder: true,
+              search: true
             }
           })
         } else {
@@ -70,7 +71,6 @@ const columns = [
             }
           })
         }
-
       };
       return <a onClick={todetail}>{text}</a>
     }
@@ -92,10 +92,12 @@ const columns = [
     dataIndex: 'assessContent',
     key: 'assessContent',
     width: 150,
-    ellipsis:true,
-    render:(text,record) => {
+    ellipsis: true,
+    render: (text, record) => {
       return (
-        <Tooltip title={text}><span>{text}</span></Tooltip>
+        <Tooltip placement="topLeft" title={text}>
+          <span>{text}</span>
+        </Tooltip>
       )
     }
   },
@@ -122,6 +124,18 @@ const columns = [
     dataIndex: 'clauseName',
     key: 'clauseName',
     width: 150,
+    ellipsis: true,
+    render: (text, record) => {
+      return (
+        <Tooltip
+          title={text}
+          placement="topLeft"
+        >
+          <span>
+            {text}
+          </span></Tooltip>
+      )
+    }
   },
   {
     title: '发生时间',
@@ -221,8 +235,8 @@ const columns = [
   },
   {
     title: '自动化科专责审核人',
-    dataIndex: 'expertVerifier',
-    key: 'expertVerifier',
+    dataIndex: 'expertVerifierName',
+    key: 'expertVerifierName',
     width: 180,
   },
   {
@@ -245,6 +259,18 @@ const columns = [
     dataIndex: 'appealContent',
     key: 'appealContent',
     width: 150,
+    render: (text, record) => {
+      return (
+        <Tooltip
+          title={text}
+          placement="topLeft"
+          >
+          <span>
+            {text}
+          </span>
+        </Tooltip>
+      )
+    }
   },
   {
     title: '服务商确认人',
@@ -272,11 +298,30 @@ const columns = [
     dataIndex: 'directorReviewContent',
     key: 'directorReviewContent',
     width: 180,
+    ellipsis: true,
+    render: (text, record) => {
+      return (
+        <Tooltip
+          title={text}
+          placement="topLeft"
+          >
+          <span>
+            {text}
+          </span>
+        </Tooltip>
+      )
+    }
   },
   {
     title: '业务负责人复核人',
-    dataIndex: 'directorReviewer',
-    key: 'directorReviewer',
+    dataIndex: 'directorReviewerName',
+    key: 'directorReviewerName',
+    width: 180,
+  },
+  {
+    title: '业务负责审核人',
+    dataIndex: 'directorVerifierName',
+    key: 'directorVerifierName',
     width: 180,
   },
   {
@@ -299,6 +344,19 @@ const columns = [
     dataIndex: 'finallyConfirmContent',
     key: 'finallyConfirmContent',
     width: 180,
+    ellipsis: true,
+    render: (text, record) => {
+      return (
+        <Tooltip
+          title={text}
+          placement="topLeft"
+          >
+          <span>
+            {text}
+          </span>
+        </Tooltip>
+      )
+    }
   },
   {
     title: '服务绩效考核确认人',
@@ -342,7 +400,7 @@ function Assessment(props) {
   const [spinloading, setSpinLoading] = useState(true);
   const [tabrecord, setTabRecord] = useState({});
   const [selectedKeys, setSelectedKeys] = useState([]);
-  
+
   const getPerformanceleader = () => {
     operationPerson().then(res => {
       const result = (res.data).map(item => {
@@ -385,7 +443,7 @@ function Assessment(props) {
 
   //  获取合同名称
   const getContrractname = (id) => {
-    contractProvider({id}).then(res => {
+    contractProvider({ id }).then(res => {
       if (res) {
         const arr = [...(res.data)];
         setContractArr(arr);
@@ -437,7 +495,8 @@ function Assessment(props) {
     const requestData = {
       value,
       pageNum: 1,
-      pageSize: 1000
+      pageSize: 1000,
+      status: '1'
     }
     switch (type) {
       case 'provider':
@@ -453,7 +512,7 @@ function Assessment(props) {
         if (!providerId) {
           message.error('请先选择服务商哦')
         } else {
-          contractProvider(providerId).then(res => {
+          contractProvider({ id: providerId, status: '1' }).then(res => {
             if (res) {
               const arr = [...(res.data)];
               setSpinLoading(false);

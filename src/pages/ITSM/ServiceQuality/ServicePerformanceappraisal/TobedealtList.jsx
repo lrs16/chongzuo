@@ -12,7 +12,7 @@ import {
   AutoComplete,
   message,
   Spin,
-  Tooltip 
+  Tooltip
 } from 'antd';
 import moment from 'moment';
 import router from 'umi/router';
@@ -78,10 +78,12 @@ const columns = [
     dataIndex: 'assessContent',
     key: 'assessContent',
     width: 150,
-    ellipsis:true,
-    render:(text,record) => {
+    ellipsis: true,
+    render: (text, record) => {
       return (
-        <Tooltip title={text}><span style={{overflow:'hidden',textOverflow:'ellipsis'}}>{text}</span></Tooltip>
+        <Tooltip placement="topLeft" title={text}>
+          <span>{text}</span>
+        </Tooltip>
       )
     }
   },
@@ -108,6 +110,18 @@ const columns = [
     dataIndex: 'clauseName',
     key: 'clauseName',
     width: 150,
+    ellipsis: true,
+    render: (text, record) => {
+      return (
+        <Tooltip
+          title={text}
+          placement="topLeft"
+        >
+          <span>
+            {text}
+          </span></Tooltip>
+      )
+    }
   },
   {
     title: '发生时间',
@@ -207,8 +221,8 @@ const columns = [
   },
   {
     title: '自动化科专责审核人',
-    dataIndex: 'expertVerifier',
-    key: 'expertVerifier',
+    dataIndex: 'expertVerifierName',
+    key: 'expertVerifierName',
     width: 180,
   },
   {
@@ -231,6 +245,19 @@ const columns = [
     dataIndex: 'appealContent',
     key: 'appealContent',
     width: 150,
+    ellipsis: true,
+    render: (text, record) => {
+      return (
+        <Tooltip
+          title={text}
+          placement="topLeft"
+          >
+          <span>
+            {text}
+          </span>
+        </Tooltip>
+      )
+    }
   },
   {
     title: '服务商确认人',
@@ -258,11 +285,30 @@ const columns = [
     dataIndex: 'directorReviewContent',
     key: 'directorReviewContent',
     width: 180,
+    ellipsis: true,
+    render: (text, record) => {
+      return (
+        <Tooltip
+          title={text}
+          placement="topLeft"
+          >
+          <span>
+            {text}
+          </span>
+        </Tooltip>
+      )
+    }
   },
   {
     title: '业务负责人复核人',
-    dataIndex: 'directorReviewer',
-    key: 'directorReviewer',
+    dataIndex: 'directorReviewerName',
+    key: 'directorReviewerName',
+    width: 180,
+  },
+  {
+    title: '业务负责审核人',
+    dataIndex: 'directorVerifierName',
+    key: 'directorVerifierName',
     width: 180,
   },
   {
@@ -285,6 +331,19 @@ const columns = [
     dataIndex: 'finallyConfirmContent',
     key: 'finallyConfirmContent',
     width: 180,
+    ellipsis: true,
+    render: (text, record) => {
+      return (
+        <Tooltip
+          title={text}
+          placement="topLeft"
+          >
+          <span>
+            {text}
+          </span>
+        </Tooltip>
+      )
+    }
   },
   {
     title: '服务绩效考核确认人',
@@ -299,6 +358,7 @@ const columns = [
     width: 180,
   },
 ]
+
 function TobedealtList(props) {
   const pagetitle = props.route.name;
   const {
@@ -370,7 +430,7 @@ function TobedealtList(props) {
 
   //  获取合同名称
   const getContrractname = (id) => {
-    contractProvider({id}).then(res => {
+    contractProvider({ id }).then(res => {
       if (res) {
         const arr = [...(res.data)];
         setContractArr(arr);
@@ -422,7 +482,8 @@ function TobedealtList(props) {
     const requestData = {
       value,
       pageNum: 1,
-      pageSize: 1000
+      pageSize: 1000,
+      status: '1'
     }
     switch (type) {
       case 'provider':
@@ -438,7 +499,7 @@ function TobedealtList(props) {
         if (!providerId) {
           message.error('请先选择服务商哦')
         } else {
-          contractProvider(providerId).then(res => {
+          contractProvider({ id: providerId, status: '1' }).then(res => {
             if (res) {
               const arr = [...(res.data)];
               setSpinLoading(false);
@@ -562,7 +623,7 @@ function TobedealtList(props) {
     directorVerifyValue: '',
     directorVerifyContent: '',
     directorVerifyStatus: '',
-    directorVerifier: '',
+    directorVerifierName: '',
     expertVerifyValue: '',
     expertVerifyContent: '',
     expertVerifyStatus: '',
@@ -581,6 +642,7 @@ function TobedealtList(props) {
     finallyConfirmTime: '',
     providerId: '',
     paginations,
+    directorReviewerName: ''
   };
 
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
@@ -932,7 +994,7 @@ function TobedealtList(props) {
                 <Form.Item label='发生时间'>
                   {
                     getFieldDecorator('timeoccurrence', {
-                      initialValue: cacheinfo.beginTime ? [moment(cacheinfo.assessBeginTime),moment(cacheinfo.assessEndTime)] :'',
+                      initialValue: cacheinfo.beginTime ? [moment(cacheinfo.assessBeginTime), moment(cacheinfo.assessEndTime)] : '',
                     })
                       (
                         <RangePicker
@@ -1220,7 +1282,7 @@ function TobedealtList(props) {
                 <Form.Item label='登记时间'>
                   {
                     getFieldDecorator('applyTime', {
-                      initialValue: cacheinfo.applyBeginTime ? [moment(cacheinfo.applyBeginTime),moment(cacheinfo.applyEndTime)] :''
+                      initialValue: cacheinfo.applyBeginTime ? [moment(cacheinfo.applyBeginTime), moment(cacheinfo.applyEndTime)] : ''
                     })
                       (
                         <RangePicker
@@ -1280,8 +1342,8 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label='业务负责审核人'>
                   {
-                    getFieldDecorator('directorVerifier', {
-                      initialValue: cacheinfo.directorVerifier,
+                    getFieldDecorator('directorVerifierName', {
+                      initialValue: cacheinfo.directorVerifierName,
                     })
                       (<Input />)
                   }
@@ -1292,7 +1354,7 @@ function TobedealtList(props) {
                 <Form.Item label='业务负责人审核时间'>
                   {
                     getFieldDecorator('directorVerifyTime', {
-                      initialValue: cacheinfo.directorVerifyBeginTime ? [moment(cacheinfo.directorVerifyBeginTime),moment(cacheinfo.directorVerifyEndTime)] :''
+                      initialValue: cacheinfo.directorVerifyBeginTime ? [moment(cacheinfo.directorVerifyBeginTime), moment(cacheinfo.directorVerifyEndTime)] : ''
                     })
                       (
                         <RangePicker
@@ -1366,7 +1428,7 @@ function TobedealtList(props) {
                 <Form.Item label='自动化科专责审核时间'>
                   {
                     getFieldDecorator('expertVerifyTime', {
-                      initialValue: cacheinfo.expertVerifyBeginTime ? [moment(cacheinfo.expertVerifyBeginTime),moment(cacheinfo.expertVerifyEndTime)] :''
+                      initialValue: cacheinfo.expertVerifyBeginTime ? [moment(cacheinfo.expertVerifyBeginTime), moment(cacheinfo.expertVerifyEndTime)] : ''
                     })
                       (
                         <RangePicker
@@ -1449,7 +1511,7 @@ function TobedealtList(props) {
                 <Form.Item label='服务商确认时间'>
                   {
                     getFieldDecorator('providerConfirmTime', {
-                      initialValue: cacheinfo.providerConfirmBeginTime ? [moment(cacheinfo.providerConfirmBeginTime),moment(cacheinfo.providerConfirmEndTime)] :''
+                      initialValue: cacheinfo.providerConfirmBeginTime ? [moment(cacheinfo.providerConfirmBeginTime), moment(cacheinfo.providerConfirmEndTime)] : ''
                     })
                       (
                         <RangePicker
@@ -1497,8 +1559,8 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label='业务负责人复核人'>
                   {
-                    getFieldDecorator('directorReviewer', {
-                      initialValue: cacheinfo.directorReviewer,
+                    getFieldDecorator('directorReviewerName', {
+                      initialValue: cacheinfo.directorReviewerName,
                     })
                       (<Input />)
                   }
@@ -1509,7 +1571,7 @@ function TobedealtList(props) {
                 <Form.Item label='业务负责人复核时间'>
                   {
                     getFieldDecorator('directorReviewTime', {
-                      initialValue: cacheinfo.directorReviewBeginTime ? [moment(cacheinfo.directorReviewBeginTime),moment(cacheinfo.directorReviewEndTime)] :''
+                      initialValue: cacheinfo.directorReviewBeginTime ? [moment(cacheinfo.directorReviewBeginTime), moment(cacheinfo.directorReviewEndTime)] : ''
                     })
                       (
                         <RangePicker
@@ -1601,7 +1663,7 @@ function TobedealtList(props) {
                 <Form.Item label='服务绩效考核确认时间'>
                   {
                     getFieldDecorator('finallyConfirmTime', {
-                      initialValue: cacheinfo.finallyConfirmBeginTime ? [moment(cacheinfo.finallyConfirmBeginTime),moment(cacheinfo.finallyConfirmEndTime)] :''
+                      initialValue: cacheinfo.finallyConfirmBeginTime ? [moment(cacheinfo.finallyConfirmBeginTime), moment(cacheinfo.finallyConfirmEndTime)] : ''
                     })
                       (
                         <RangePicker

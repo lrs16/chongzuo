@@ -57,7 +57,6 @@ function AddScoringRulesmaintenance(props) {
   const [type, setType] = useState('1')
   const [selectdata, setSelectData] = useState('');
   const [selectId, setSelectId] = useState('');
-  const [spin, setSpin] = useState(false);
 
   const getlist = (selectedKeys) => {
     validateFields((err, value) => {
@@ -75,15 +74,15 @@ function AddScoringRulesmaintenance(props) {
     })
   };
 
+  console.log(loading,'loading')
+
   //  按需加载树节点
   const getalldata = () => {
     dispatch({
-      type: 'qualityassessment/getTypeTree',
+      type: 'performanceappraisal/getTypeTree',
       payload: type || scoreDetail.assessType
-    }).then(res => {
-      setSpin(true);
-      setTreeData(res.data)
     })
+
   }
 
   useEffect(() => {
@@ -109,21 +108,6 @@ function AddScoringRulesmaintenance(props) {
       }
       return <TreeNode key={item.id} {...item} dataRef={item} />;
     });
-
-  const getAllLeaf = (data) => {
-    const result = [];
-    const getLeaf = data => {
-      if (data[0].children.length === 1) {
-        getLeaf(data[0].children);
-      } else {
-        result.push(data[0].children)
-      }
-    }
-    getLeaf(data);
-    return result[0];
-  }
-
-  console.log(id ? ((treeData && treeData[0] && treeData[0].children[0] && treeData[0].children[0].id) ? treeData[0].children[0].id : '22') : '33')
 
   //  点击节点
   const handleClick = (selectedKeys, event) => {
@@ -151,13 +135,19 @@ function AddScoringRulesmaintenance(props) {
     }
   }, [scoreDetail])
 
+  useEffect(() => {
+    setTreeData(treeArr)
+  },[loading]);
+
+  console.log(treeData,'tree')
+
 
   useEffect(() => {
     getalldata();
   }, [type])
 
   useEffect(() => {
-    if (treeData && treeData.length && treeData[0].children[0] && treeData[0].children[0].id) {
+    if (loading === false && treeData && treeData.length && treeData[0].children[0] && treeData[0].children[0].id) {
       dispatch({
         type: 'qualityassessment/getTargetValue',
         payload: treeData[0].children[0].id
@@ -359,9 +349,6 @@ function AddScoringRulesmaintenance(props) {
     onChange: (page) => changePage(page)
   }
 
-  console.log(id ? ((scoreDetail && (type) === '1') ? ['1417306125605756929'] : ['1417307840400809985']) : '')
-
-  // const functionDevelopment = getTypebyTitle('功能开发');
   const assessmentType = getTypebyTitle('考核类型');
 
   return (
@@ -470,10 +457,11 @@ function AddScoringRulesmaintenance(props) {
               {
                 loading === false && treeData && treeData.length > 0 && (
                   <Tree
-                    // defaultSelectedKeys={id ? ((treeData && treeData[0] && treeData[0].children[0] &&  treeData[0].children[0].id)?treeData[0].children[0].id:''):'' }
-                    defaultSelectedKeys={id ? ((scoreDetail && (type) === '1') ? ['1417306125605756929'] : ['1417307840400809985']) : ''}
+                    // defaultSelectedKeys={id ? ((scoreDetail && (type) === '1') ? ['1417306125605756929'] : ['1417307840400809985']) : ''}
+                    defaultSelectedKeys={type === '1' ? ['1417306125605756929'] : ['1417307840400809985']}
                     onSelect={handleClick}
-                    expandedKeys={type === '1' ? ['1417297419388280834', '1417297717850759169', '1417297850927636481', '1417298312565317634', '1417298438939697154'] : ['1417301701483257858', '1417303445722324993', '1417305500021121026', '1417305681030504450', '1417305832876892162']}
+                    defaultExpandAll
+                    // expandedKeys={type === '1' ? ['1417297419388280834', '1417297717850759169', '1417297850927636481', '1417298312565317634', '1417298438939697154'] : ['1417301701483257858', '1417303445722324993', '1417305500021121026', '1417305681030504450', '1417305832876892162']}
                   >
                     {renderTreeNodes(treeData)}
                   </Tree>
@@ -611,14 +599,14 @@ AddScoringRulesmaintenance.defaultProps = {
 
 
 export default Form.create({})(
-  connect(({ qualityassessment, upmsmenu, itsmuser, loading }) => ({
+  connect(({ qualityassessment,performanceappraisal, upmsmenu, itsmuser, loading }) => ({
     show: upmsmenu.show,
     scoreDetail: qualityassessment.scoreDetail,
     clauseDetail: qualityassessment.clauseDetail,
     clauseList: qualityassessment.clauseList,
-    treeArr: qualityassessment.treeArr,
+    treeArr: performanceappraisal.treeArr,
     treeForm: qualityassessment.treeForm,
     userinfo: itsmuser.userinfo,
-    loading: loading.models.qualityassessment
+    loading: loading.models.performanceappraisal
   }))(AddScoringRulesmaintenance)
 )

@@ -28,7 +28,8 @@ import {
   assessmyAssess,
   exportSearch,
   exportmyAssess,
-  scorecardPrint
+  scorecardPrint,
+  getTypeTree,
 } from '../services/serviceperformanceappraisalapi';
 
 export default {
@@ -46,7 +47,8 @@ export default {
     hisTaskArr:[],
     imageSource:[],
     assessSearcharr:[],
-    assessmyAssessarr:[]
+    assessmyAssessarr:[],
+    treeArr:[]
   },
 
   effects: {
@@ -125,11 +127,6 @@ export default {
 
   //  获取环节数据
   *getTaskData({ payload:{ assessNo } }, { call, put }) {
-    yield put({
-      type:'cleartaskData',
-      payload:[]
-    })
-    console.log(2)
     const response = yield call(getTaskData,assessNo);
     yield put({
       type:'taskData',
@@ -275,7 +272,27 @@ export default {
   *scorecardPrint({ payload }, { call, put }) {
     return yield call(scorecardPrint,payload)
   },
+     //  根据考核类型查询指标明细的树
+  *getTypeTree({ payload }, { call, put }) {
+    yield put ({
+      type:'clearTreearr',
+      payload: []
+    })
+    const response = yield call(getTypeTree,payload);
+    console.log('response: ', response);
+    yield put ({
+      type:'treeArr',
+      payload:response
+    })
+  },
 
+  // *clearTreearr({ payload }, { call, put }) {
+  //   yield put ({
+  //     type:'clearTreearr',
+  //     payload: []
+  //   })
+  // }
+  
   },
 
   reducers: {
@@ -297,14 +314,6 @@ export default {
       return {
         ...state,
         taskData: action.payload.data
-      }
-    },
-
-    cleartaskData(state,action) {
-      console.log(1)
-      return {
-        ...state,
-        taskData: { currentTask: { taskName: '', id: '', instanceId: '' }, hisTasks: [] },
       }
     },
 
@@ -357,13 +366,19 @@ export default {
       }
     },
 
-    // clearDrop(state,action) {
-    //   return {
-    //     ...state,
-    //     target1:[],
-    //     target2:[]
-    //   }
-    // }
+    treeArr(state,action) {
+      return {
+        ...state,
+        treeArr:action.payload.data
+      }
+    },
+
+    clearTreearr(state,action) {
+      return {
+        ...state,
+        treeArr:[]
+      }
+    },
  
   }
 }

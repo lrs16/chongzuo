@@ -386,7 +386,6 @@ function AddProviderMaintenance(props) {
                 </Col>
               </Form>
             </Row>
-
           )
         }
 
@@ -407,7 +406,6 @@ function AddProviderMaintenance(props) {
             </Contract>
           )
         }
-
 
         {
           loading === false && (

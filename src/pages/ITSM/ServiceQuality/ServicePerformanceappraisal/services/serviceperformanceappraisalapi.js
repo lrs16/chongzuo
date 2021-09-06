@@ -202,3 +202,8 @@ export async function scorecardPrint(id) {
     responseType:'blob'
   })
 }
+
+//  根据考核类型查询指标明细的树
+export async function getTypeTree(type) {
+  return request(`/quality/score/getTypeTree?type=${type}`)
+}

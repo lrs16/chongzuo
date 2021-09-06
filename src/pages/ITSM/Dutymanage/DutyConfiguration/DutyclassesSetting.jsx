@@ -5,9 +5,21 @@ import React, {
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
-import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, } from 'antd';
+import {
+  Card,
+  Row,
+  Col,
+  Form,
+  Input,
+  Select,
+  Button,
+  DatePicker,
+  Table,
+  Divider,
+  Popconfirm
+} from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-// import DictLower from '@/components/SysDict/DictLower';
+import AddDutyclassesSetting from './components/AddDutyclassesSetting';
 
 const { Option } = Select;
 
@@ -27,12 +39,23 @@ const enableStatus = [
   { key: '1', title: '停用' },
 ];
 
+const dataSource = [
+  {
+    'No':'No',
+    't1':'t1',
+    't2':'t2',
+    't3':'t3',
+    't4':'t4',
+    't5':'t5',
+  }
+]
+
 function DutyclassesSetting(props) {
   const pagetitle = props.route.name;
   const {
     form: {
       getFieldDecorator,
-      resetFields, 
+      resetFields,
       // getFieldsValue 
     },
     // dispatch,
@@ -83,23 +106,27 @@ function DutyclassesSetting(props) {
     <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button></>
   )
 
+  const handleDelete = (deleteId) => {
+
+
+  }
+
   const columns = [
     {
       title: '班次编号',
       dataIndex: 'No',
       key: 'No',
-      fixed: 'left',
-      render: (text, record) => {
-        const handleClick = () => {
-          router.push({
-            pathname: ``,
-            query: {
-              record
-            },
-          });
-        };
-        return <a onClick={handleClick}>{text}</a>;
-      },
+      // render: (text, record) => {
+      //   const handleClick = () => {
+      //     router.push({
+      //       pathname: ``,
+      //       query: {
+      //         record
+      //       },
+      //     });
+      //   };
+      //   return <a onClick={handleClick}>{text}</a>;
+      // },
     },
     {
       title: '创建时间',
@@ -126,8 +153,39 @@ function DutyclassesSetting(props) {
       title: '启用状态',
       dataIndex: 't5',
       key: 't5',
+    },
+    {
+      title: '操作',
+      dataIndex: 'opertator',
+      key: 'opertator',
+      render: (text, record) => {
+        return (
+          <>
+            <AddDutyclassesSetting>
+              <a
+                title='编辑班次'
+                style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+                onsubmit={(submitdata => handleSubmit(submitdata))}
+              >
+                编辑
+              </a>
+            </AddDutyclassesSetting>
+            <Divider type='vertical' />
+            <Popconfirm
+              title='是否要删除该条数据' 
+              onConfirm={() => handleDelete(record.id)}
+            >
+              <a>删除</a>
+            </Popconfirm>
+          </>
+        )
+      }
     }
   ];
+
+  const handleSubmit = (submitdata) => {
+
+  }
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -248,14 +306,24 @@ function DutyclassesSetting(props) {
           </Form>
         </Row>
 
-        <div style={{ marginBottom: 24 }}>
-          <Button type="primary" style={{ marginRight: 8 }} onClick={() => newclasses()}>新增</Button >
-          <Button type="danger" ghost style={{ marginRight: 8 }}>删除</Button >
-        </div>
+        {/* <div style={{ marginBottom: 24 }}>
+          {/* <Button type="primary" style={{ marginRight: 8 }} onClick={() => newclasses()}>新增</Button > */}
+        {/* <Button type="danger" ghost style={{ marginRight: 8 }}>删除</Button >
+        </div> */}
+
+        <AddDutyclassesSetting>
+          <Button
+            style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+            icon='plus'
+            onsubmit={(submitdata => handleSubmit(submitdata))}
+          >
+            新增
+          </Button>
+        </AddDutyclassesSetting>
         < Table
           // loading={loading}
           columns={columns}
-          // dataSource={list.rows}
+          dataSource={dataSource}
           //  pagination={pagination}
           rowSelection={rowSelection}
           rowKey={r => r.No}

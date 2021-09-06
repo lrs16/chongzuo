@@ -112,7 +112,6 @@ export default {
   },
   //  根据服务商id查询合同数据
   *contractProvider({ payload }, { call, put }) {
-    console.log('payload: ', payload);
     const response = yield call(contractProvider,payload);
     yield put({
       type:'contractProviderobj',
@@ -150,8 +149,6 @@ export default {
   *scoreAdd({ payload }, { call, put }) {
     const response = yield call(scoreAdd,payload);
     if(response.code === 200 && response.data && response.data.scoreNo) {
-      console.log('response.data: ', response.data);
-      console.log('response.data.scoreNo: ', response.data.scoreNo);
       router.push({
         pathname:'/ITSM/servicequalityassessment/addscoringrulesmaintenance',
         query: {
