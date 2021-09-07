@@ -284,13 +284,6 @@ export default {
       payload:response
     })
   },
-
-  // *clearTreearr({ payload }, { call, put }) {
-  //   yield put ({
-  //     type:'clearTreearr',
-  //     payload: []
-  //   })
-  // }
   
   },
 

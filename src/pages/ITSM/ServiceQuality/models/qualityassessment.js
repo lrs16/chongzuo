@@ -284,6 +284,13 @@ export default {
       type:'clearclauseList',
       payload: []
     })
+  },
+  
+  *clearDrop({ payload }, { call, put }) {
+    yield put ({
+      type:'clearListDrop',
+      payload:[]
+    })
   }
   
   },
@@ -379,6 +386,16 @@ export default {
         searchProviderobj: [],
         contractProviderobj:[],
         scoreDetail:[]
+      }
+    },
+//  清除一二级
+    clearListDrop(state,action) {
+      console.log('lplp')
+      return {
+        ...state,
+        clauseList:[],
+        target2:[],
+        target1:[]
       }
     },
   }

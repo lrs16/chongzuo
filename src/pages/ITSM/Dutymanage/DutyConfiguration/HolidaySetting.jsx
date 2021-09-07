@@ -5,6 +5,7 @@ import {
   Card,
   Switch
 } from 'antd';
+import AddholidaySetting from './components/AddholidaySetting';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 const columns = [
@@ -17,7 +18,7 @@ const columns = [
     title: '启动方案',
     dataIndex: 'start',
     key: 'start',
-    render:(text,record) => {
+    render: (text, record) => {
       return (
         <Switch />
       )
@@ -41,12 +42,15 @@ function HolidaySetting(props) {
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
-        <Button
-          style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-          icon='plus'
-        >
-          新建节假日
-        </Button>
+        <AddholidaySetting>
+          <Button
+            style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+            icon='plus'
+          >
+            新建节假日
+          </Button>
+        </AddholidaySetting>
+
 
         <Table
           columns={columns}

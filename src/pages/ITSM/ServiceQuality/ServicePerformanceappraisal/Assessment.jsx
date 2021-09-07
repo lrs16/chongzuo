@@ -35,6 +35,17 @@ const formItemLayout = {
   },
 };
 
+const forminladeLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 4 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 20 },
+  },
+}
+
 const { MonthPicker, RangePicker } = DatePicker;
 const { Option } = Select;
 const { Search } = Input;
@@ -264,7 +275,7 @@ const columns = [
         <Tooltip
           title={text}
           placement="topLeft"
-          >
+        >
           <span>
             {text}
           </span>
@@ -304,7 +315,7 @@ const columns = [
         <Tooltip
           title={text}
           placement="topLeft"
-          >
+        >
           <span>
             {text}
           </span>
@@ -350,7 +361,7 @@ const columns = [
         <Tooltip
           title={text}
           placement="topLeft"
-          >
+        >
           <span>
             {text}
           </span>
@@ -379,6 +390,7 @@ function Assessment(props) {
     assessmyAssessarr,
     target1,
     target2,
+    clauseList,
     userinfo,
     dispatch,
     location,
@@ -716,6 +728,10 @@ function Assessment(props) {
 
   // 获取数据
   useEffect(() => {
+    //  清除数据
+    dispatch({
+      type: 'qualityassessment/clearDrop'
+    })
     if (cacheinfo !== undefined) {
       validateFields((err, values) => {
         console.log('values: ', values);
@@ -804,6 +820,11 @@ function Assessment(props) {
           message.error('请选择有效的服务商')
         }
         break;
+      case 'clause':
+        if (loading !== true && clauseList && clauseList.length === 0) {
+          message.error('请选择有效的二级指标')
+        }
+        break;
       default:
         break;
     }
@@ -832,11 +853,12 @@ function Assessment(props) {
         setTarget2Type(key)
         break;
       case 'target2Name':
-        getclausedetail(key, scoreId);
         setFieldsValue({
           target2Name: value,
-          target2Id: key
+          target2Id: key,
+          clauseName:''
         })
+        getclausedetail(key, scoreId);
         break;
       case 'clause':
         setFieldsValue({
@@ -1229,13 +1251,30 @@ function Assessment(props) {
                 </Form.Item>
               </Col>
 
-              <Col span={8}>
-                <Form.Item label='详细条款'>
+              <Col span={16}>
+                <Form.Item label='详细条款' {...forminladeLayout}>
                   {
-                    getFieldDecorator('detailed', {
-                      initialValue: cacheinfo.detailed
+                    getFieldDecorator('clauseName', {
+                      initialValue: cacheinfo.clauseName
                     })
-                      (<Input />)
+                      (
+                        <Select
+                          onChange={(value, option) => handleChange(value, option, 'clause')}
+                          onFocus={() => handleFocus('clause')}
+                        >
+                          {(clauseList.records || []).map(obj => [
+                            <Option key={obj.id} value={obj.detailed}>
+                              <div className={styles.disableuser}>
+                                <span>{obj.orderNo}</span>
+                                <span>{obj.detailed}</span>
+                                <span>{obj.calc}</span>
+                                <span>{obj.scoreValue}</span>
+                                <span>{obj.sources}</span>
+                              </div>
+                            </Option>
+                          ])}
+                        </Select>
+                      )
                   }
                 </Form.Item>
               </Col>
