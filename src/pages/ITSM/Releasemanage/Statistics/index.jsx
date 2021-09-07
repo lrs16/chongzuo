@@ -139,7 +139,8 @@ function Statistics(props) {
             beginTime: values.beginTime ? moment(values.beginTime).format('X') : '',
             endTime: values.endTime ? moment(values.endTime).format('X') : '',
             releaseStatus: record.taskName,
-            paginations: { current: 1, pageSize: 15 }
+            paginations: { current: 1, pageSize: 15 },
+            expand: true
           }
           router.push({
             pathname: `/ITSM/releasemanage/query`,
@@ -168,7 +169,7 @@ function Statistics(props) {
         <Form {...formItemLayout}>
           <Row>
             <Col span={8}>
-              <Form.Item label="起始时间">
+              <Form.Item label="出厂测试登记时间">
                 <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                   {getFieldDecorator('beginTime', {
                     initialValue: '',

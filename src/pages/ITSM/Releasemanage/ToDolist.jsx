@@ -346,7 +346,7 @@ function ToDolist(props) {
                 )}
               </Form.Item>
             </Col>
-            {(expand || (location.state && location.state.cacheinfo)) && (
+            {expand && (
               <>
                 <Col span={8}>
                   <Form.Item label="责任单位">

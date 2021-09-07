@@ -38,7 +38,8 @@ function Querylist(props) {
   // 缓存页签查询条件
   const [tabrecord, setTabRecord] = useState({});
   const searchrecord = { releaseNo: '', releaseStatus: '' };
-  const cacheinfo = location.state && location.state.cacheinfo ? location.state.cacheinfo : searchrecord;
+  let cacheinfo = {};
+  cacheinfo = location.state && location.state.cacheinfo ? location.state.cacheinfo : searchrecord;
 
   // 查询
   const searchdata = (values, page, size) => {
@@ -71,8 +72,13 @@ function Querylist(props) {
 
   // 重置
   const handleReset = () => {
+    router.push({
+      pathname: `/ITSM/releasemanage/query`,
+      query: { pathpush: true },
+      state: { cach: false, }
+    });
     resetFields();
-    handleSearch();
+    searchdata(searchrecord, 1, 15);
   };
 
   useEffect(() => {
@@ -265,6 +271,7 @@ function Querylist(props) {
       type="link"
       onClick={() => {
         setExpand(!expand);
+        cacheinfo.expand = !expand;
       }}
     >
       {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
@@ -303,7 +310,7 @@ function Querylist(props) {
                 )}
               </Form.Item>
             </Col>
-            {(expand || (location.state && location.state.cacheinfo && location.state.cacheinfo.releaseStatus)) && (
+            {(expand || cacheinfo.expand) && (
               <>
                 <Col span={8}>
                   <Form.Item label="责任单位">
