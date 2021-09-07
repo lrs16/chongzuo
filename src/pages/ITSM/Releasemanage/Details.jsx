@@ -100,7 +100,7 @@ function Details(props) {
               addAttaches: '',                                   // 清单临时添加，fasle文档列表不需要加列，true文档列表需要加列
               ChangeaddAttaches: (v => { }),
             }}>
-              <HistoryOrderInfo records={historyinfo} selectdata={selectdata} view />
+              <HistoryOrderInfo records={historyinfo} selectdata={selectdata} view taskName={taskName} />
             </SubmitTypeContext.Provider>
           </>
         )}

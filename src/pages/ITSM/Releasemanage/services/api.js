@@ -307,3 +307,21 @@ export async function TimeoutsaveConfig(params) {
     requestType: 'formjosn',
   });
 }
+
+// 回退信息
+export async function saveGobackMsg(params) {
+  return request(`/common/msg/save`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 超时接口/release/timeout/getTimeoutInfo?taskId=1245429
+export async function getTimeoutInfo(params) {
+  return request(`/release/timeout/getTimeoutInfo`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}

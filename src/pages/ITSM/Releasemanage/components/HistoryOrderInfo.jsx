@@ -23,7 +23,7 @@ const Panelheadermap = new Map([
 ]);
 
 function HistoryOrderInfo(props) {
-  const { records, selectdata, view } = props;
+  const { records, selectdata, view, taskName } = props;
 
   const [activeKey, setActiveKey] = useState([]);
   const [todoRecords, setTodoRecords] = useState([]);
@@ -41,7 +41,13 @@ function HistoryOrderInfo(props) {
   useEffect(() => {
     if (view) {
       const newdata = records.map(item => ({ ...item }));
-      setTodoRecords(newdata)
+      if (newdata)
+        if (taskName === '结束') {
+          setTodoRecords(newdata)
+        } else {
+          newdata.pop();
+          setTodoRecords(newdata)
+        }
     };
     if (!view) {
       const newdata = records.map(item => ({ ...item }));

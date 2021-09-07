@@ -198,6 +198,7 @@ function Querylist(props) {
             pathname: `/ITSM/releasemanage/query/details`,
             query: {
               Id: record.releaseNo,
+              taskName: record.taskName,
             },
             state: {
               dynamicpath: true,

@@ -5,18 +5,24 @@ import router from 'umi/router';
 import { Button, Spin, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SubmitTypeContext from '@/layouts/MenuContext';              // 引用上下文管理组件
-import { expPracticePre, deleteFlow } from './services/api';
+import { expPracticePre, deleteFlow, saveGobackMsg, getTimeoutInfo } from './services/api';
+import TimeoutModal from '../components/TimeoutModal';
 import WorkOrder from './WorkOrder';
 import Process from './Process';
+import Backoff from './components/Backoff';
+import { saveTimeoutMsg } from '../services/api';
 
 function ToDodetails(props) {
   const { location, dispatch, loading, loadingopen, allloading, currentTaskStatus, relationCount, submitTimes } = props;
   const { taskName, taskId, releaseType, Id, } = location.query;
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [buttype, setButtype] = useState('');                    // 点击的按钮类型
-  const [submittype, setSubmitType] = useState(1);
+  const [submittype, setSubmitType] = useState(1);               // 流转类型
   const [addAttaches, setAddAttaches] = useState('');
   const [saved, setSaved] = useState(false);                    // 工单保存状态
+  const [Popvisible, setVisible] = useState(false);
+  const [modalvisible, setModalVisible] = useState(false);
+  const [butandorder, setButandOrder] = useState('');
 
   const dowloadPre = () => {
     expPracticePre(taskId).then(res => {
@@ -46,18 +52,6 @@ function ToDodetails(props) {
       }
     })
   }
-
-  const flowGoback = () => {
-    dispatch({
-      type: 'releasetodo/releaseflow',
-      payload: {
-        taskId,
-        type: 2,
-        userIds: '',
-      },
-    });
-  }
-
   const handleClose = () => {
     router.push({
       pathname: `/ITSM/releasemanage/to-do`,
@@ -65,6 +59,123 @@ function ToDodetails(props) {
       state: { cach: false }
     });
   }
+
+  useEffect(() => {
+    if (location.state) {
+      // 点击菜单刷新,并获取数据
+      if (location.state.reset) {
+        settabActivekey('workorder');
+        setButtype('');
+        setSubmitType(1)
+      };
+    }
+  }, [location.state]);
+
+  useEffect(() => {
+    setButtype('');
+  }, [allloading])
+
+  useEffect(() => {
+    if (currentTaskStatus) {
+      setSaved(currentTaskStatus.saved);
+      // 获取流程图
+      dispatch({
+        type: 'releaseview/flowimg',
+        payload: {
+          processInstanceId: currentTaskStatus.processInstanceId,
+        },
+      });
+    }
+  }, [currentTaskStatus]);
+
+  // 点击流转，出厂测试，版本管理员审核，结束
+  const handleClick = (type) => {
+    getTimeoutInfo({ taskId }).then(res => {
+      if (res.code === 200) {
+        if (res.data.timeout && !res.data.reason) {
+          message.info(res.data.msg)
+          setModalVisible(true);
+          setButandOrder(type);
+        };
+        if ((res.data.timeout && res.data.reason) || !res.data.timeout) {
+          setButtype(type);
+        };
+      } else {
+        message.error(res.msg)
+      };
+    })
+  };
+
+
+  // 保存超时信息,成功校验表单
+  const postTimeOutMsg = (v) => {
+    if (currentTaskStatus && currentTaskStatus.processInstanceId) {
+      saveTimeoutMsg({
+        taskId,
+        msgType: 'timeout',
+        orderId: currentTaskStatus.processInstanceId,
+        orderType: 'release',
+        ...v
+      }).then(res => {
+        switch (butandorder) {
+          case 'goback':
+            // 填写超时信息后，如果是回退弹出回退信息框
+            setVisible(true);
+            break;
+          case 'save':
+            break;
+          default:
+            if (res.code === 200) {
+              setButtype(butandorder)
+            }
+            break;
+        }
+      });
+    }
+  }
+
+  // 点击回退按钮
+  const handleGoback = () => {
+    getTimeoutInfo({ taskId }).then(res => {
+      if (res.code === 200) {
+        if (res.data.timeout && !res.data.reason) {
+          message.info('该发布单已超时，请填写超时原因...')
+          setModalVisible(true);
+          setButandOrder('goback');
+        };
+        if ((res.timeout && res.data.reason) || !res.timeout) {
+          setVisible(true);
+        }
+      } else {
+        message.error(res.msg)
+      }
+    })
+  };
+
+  // 向接口保存回退原因
+  const postRollBackmsg = (values) => {
+    saveGobackMsg({
+      ...values,
+      taskId,
+      msgType: 'fallback',
+      orderId: currentTaskStatus.processInstanceId,
+      orderType: 'release',
+
+    }).then(res => {
+      if (res.code === 200) {
+        dispatch({
+          type: 'releasetodo/releaseflow',
+          payload: {
+            taskId,
+            type: 2,
+            userIds: '',
+          },
+        });
+      } else {
+        message.error(res.msg);
+      }
+    })
+  };
 
   const handleTabChange = key => {
     settabActivekey(key)
@@ -97,7 +208,7 @@ function ToDodetails(props) {
         </Button>
       )}
       {!saved && taskName !== '出厂测试' && taskName !== '发布实施准备' && taskName !== '发布实施' && (
-        <Button type="danger" ghost style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => { flowGoback() }} >
+        <Button type="danger" ghost style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => { handleGoback() }} >
           回退
         </Button>
       )}
@@ -110,7 +221,7 @@ function ToDodetails(props) {
         保存
       </Button>
       {submittype === 1 && (
-        <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('flow')} >
+        <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => handleClick('flow')} >
           {taskName === '业务复核' ? '结束' : '流转'}
         </Button>
       )}
@@ -132,34 +243,6 @@ function ToDodetails(props) {
       <Button onClick={() => handleClose()}>返回</Button>
     </>
   )
-
-  useEffect(() => {
-    if (location.state) {
-      // 点击菜单刷新,并获取数据
-      if (location.state.reset) {
-        settabActivekey('workorder');
-        setButtype('');
-        setSubmitType(1)
-      };
-    }
-  }, [location.state]);
-
-  useEffect(() => {
-    setButtype('');
-  }, [allloading])
-
-  useEffect(() => {
-    if (currentTaskStatus) {
-      setSaved(currentTaskStatus.saved);
-      // 获取流程图
-      dispatch({
-        type: 'releaseview/flowimg',
-        payload: {
-          processInstanceId: currentTaskStatus.processInstanceId,
-        },
-      });
-    }
-  }, [currentTaskStatus])
 
   return (
     <Spin tip="正在加载数据..." spinning={!!loading || !!loadingopen}>
@@ -187,6 +270,17 @@ function ToDodetails(props) {
         )}
         {tabActivekey === 'process' && (<Process />)}
       </PageHeaderWrapper>
+      <TimeoutModal
+        modalvisible={modalvisible}
+        ChangeModalVisible={v => setModalVisible(v)}
+        ChangeTimeOutMsg={v => postTimeOutMsg(v)}
+      />
+      <Backoff
+        title="填写回退意见"
+        visible={Popvisible}
+        ChangeVisible={v => setVisible(v)}
+        rollbackSubmit={v => postRollBackmsg(v)}
+      />
     </Spin>
   );
 }
