@@ -42,7 +42,7 @@ function HistoryOrderInfo(props) {
     if (view) {
       const newdata = records.map(item => ({ ...item }));
       if (newdata)
-        if (taskName === '结束') {
+        if (taskName === '结束' || (taskName === '出厂测试' && newdata.length === 1)) {
           setTodoRecords(newdata)
         } else {
           newdata.pop();
