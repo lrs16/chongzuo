@@ -35,7 +35,7 @@ function HistoryOrderInfo(props) {
   useEffect(() => {
     if (view) {
       setActiveKey(['0']);
-    };
+    }
   }, [view]);
 
   useEffect(() => {
@@ -50,6 +50,7 @@ function HistoryOrderInfo(props) {
         }
     };
     if (!view) {
+      setActiveKey([]);
       const newdata = records.map(item => ({ ...item }));
       newdata.pop();
       setTodoRecords(newdata)
@@ -69,19 +70,21 @@ function HistoryOrderInfo(props) {
           const taskIdandkey = Object.keys(obj)[1];
           const key = taskIdandkey.split('-')[1];
           const Paneldesmap = new Map([
-            ['register', <Registrat info={Object.values(obj)[1]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='出厂测试' />],
-            ['platformValida', <Registrat info={Object.values(obj)[1]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='平台验证' />],
-            ['bizValid', <Registrat info={Object.values(obj)[1]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='业务验证' />],
-            ['practicePre', <ImplementationPre info={Object.values(obj)[1]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='发布实施准备' />],
-            ['checkVersion', <VersionAudit info={Object.values(obj)[1]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='版本管理员审核' />],
-            ['checkDirector', <VersionAudit info={Object.values(obj)[1]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='科室负责人审核' />],
-            ['checkLeader', <VersionAudit info={Object.values(obj)[1]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='中心领导审核' />],
-            ['practiceDone', <Implementation info={Object.values(obj)[1]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='发布实施' />],
-            ['bizCheck', <BusinessReview info={Object.values(obj)[1]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='业务复核' />],
+            ['register', <Registrat info={Object.values(obj)[1]} timeoutinfo={Object.values(obj)[0]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='出厂测试' />],
+            ['platformValida', <Registrat info={Object.values(obj)[1]} timeoutinfo={Object.values(obj)[0]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='平台验证' />],
+            ['bizValid', <Registrat info={Object.values(obj)[1]} timeoutinfo={Object.values(obj)[0]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='业务验证' />],
+            ['practicePre', <ImplementationPre info={Object.values(obj)[1]} timeoutinfo={Object.values(obj)[0]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='发布实施准备' />],
+            ['checkVersion', <VersionAudit info={Object.values(obj)[1]} timeoutinfo={Object.values(obj)[0]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='版本管理员审核' />],
+            ['checkDirector', <VersionAudit info={Object.values(obj)[1]} timeoutinfo={Object.values(obj)[0]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='科室负责人审核' />],
+            ['checkLeader', <VersionAudit info={Object.values(obj)[1]} timeoutinfo={Object.values(obj)[0]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='中心领导审核' />],
+            ['practiceDone', <Implementation info={Object.values(obj)[1]} timeoutinfo={Object.values(obj)[0]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='发布实施' />],
+            ['bizCheck', <BusinessReview info={Object.values(obj)[1]} timeoutinfo={Object.values(obj)[0]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='业务复核' />],
           ]);
           return (
             <Panel header={Panelheadermap.get(key)} key={index.toString()} className={Object.values(obj)[0] ? styles.timeout : ''} >
-              {Paneldesmap.get(key)}
+              <div style={{ marginTop: 12 }}>
+                {Paneldesmap.get(key)}
+              </div>
             </Panel>
           );
         })}

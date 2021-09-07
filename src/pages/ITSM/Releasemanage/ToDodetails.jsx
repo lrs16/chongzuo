@@ -5,12 +5,12 @@ import router from 'umi/router';
 import { Button, Spin, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SubmitTypeContext from '@/layouts/MenuContext';              // 引用上下文管理组件
-import { expPracticePre, deleteFlow, saveGobackMsg, getTimeoutInfo } from './services/api';
+import { expPracticePre, deleteFlow, saveGobackMsg, getTimeoutInfo, } from './services/api';
 import TimeoutModal from '../components/TimeoutModal';
 import WorkOrder from './WorkOrder';
 import Process from './Process';
 import Backoff from './components/Backoff';
-import { saveTimeoutMsg } from '../services/api';
+import { saveTimeoutMsg, saveReleaseTimeoutMsg } from '../services/api';
 
 function ToDodetails(props) {
   const { location, dispatch, loading, loadingopen, allloading, currentTaskStatus, relationCount, submitTimes } = props;
@@ -110,7 +110,7 @@ function ToDodetails(props) {
   // 保存超时信息,成功校验表单
   const postTimeOutMsg = (v) => {
     if (currentTaskStatus && currentTaskStatus.processInstanceId) {
-      saveTimeoutMsg({
+      saveReleaseTimeoutMsg({
         taskId,
         msgType: 'timeout',
         orderId: currentTaskStatus.processInstanceId,
@@ -226,17 +226,17 @@ function ToDodetails(props) {
         </Button>
       )}
       {taskName === '出厂测试' && submitTimes !== undefined && submitTimes !== 0 && (
-        <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('over')} >
+        <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => handleClick('over')} >
           结束
         </Button>
       )}
       {submittype === 0 && (taskName === '平台验证' || taskName === '业务验证') && (
-        <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('noPass')} >
+        <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => handleClick('noPass')} >
           出厂测试
         </Button>
       )}
       {submittype === 0 && (taskName === '科室负责人审核' || taskName === '中心领导审核') && (
-        <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('noPass')} >
+        <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => handleClick('noPass')} >
           版本管理员审核
         </Button>
       )}

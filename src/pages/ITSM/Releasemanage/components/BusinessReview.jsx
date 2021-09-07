@@ -1,6 +1,6 @@
-import React, { useRef, useImperativeHandle, forwardRef, useState, useContext } from 'react';
+import React, { useRef, useImperativeHandle, forwardRef, useState, useContext, useEffect } from 'react';
 import moment from 'moment';
-import { Row, Col, Form, Input, Button, Select, Radio } from 'antd';
+import { Row, Col, Form, Input, Button, Select, Radio, Alert } from 'antd';
 import SubmitTypeContext from '@/layouts/MenuContext';
 import DocumentAtt from './DocumentAtt';
 import ReleseList from './ReleseList';
@@ -29,11 +29,14 @@ const formuintLayout = {
 };
 
 function BusinessReview(props, ref) {
-  const { userinfo, selectdata, isEdit, info, listmsg } = props;
+  const { userinfo, selectdata, isEdit, info, listmsg, timeoutinfo, taskName } = props;
   const { getFieldDecorator, getFieldsValue, resetFields, setFieldsValue } = props.form;
   const required = true;
 
   const [check, setCheck] = useState(false);
+  const [alertvisible, setAlertVisible] = useState(false);  // 超时告警是否显示
+  const [alertmessage, setAlertMessage] = useState('');
+
   const { ChangeSubmitType, ChangeButtype } = useContext(SubmitTypeContext);
 
   const formRef = useRef();
@@ -42,6 +45,17 @@ function BusinessReview(props, ref) {
     resetVal: () => resetFields(),
     Forms: props.form.validateFieldsAndScroll,
   }), []);
+
+  useEffect(() => {
+    if (isEdit && timeoutinfo) {
+      setAlertVisible(true);
+      setAlertMessage({ mes: `${taskName}超时，${taskName}${timeoutinfo}`, des: `` });
+    };
+    if (!isEdit && timeoutinfo) {
+      setAlertVisible(true);
+      setAlertMessage({ mes: `超时原因：${timeoutinfo}`, des: `` });
+    };
+  }, [timeoutinfo])
 
   const changeatt = (v, files) => {
     setFieldsValue({ releaseAttaches: v });
@@ -65,6 +79,7 @@ function BusinessReview(props, ref) {
 
   return (
     <Row gutter={12} style={{ paddingTop: 24, }}>
+      {alertvisible && (<Alert message={alertmessage.mes} type='warning' showIcon style={{ marginBottom: 12 }} />)}
       <Form ref={formRef} {...formItemLayout}>
         <Col span={24}>
           <h4>发布结论：</h4>

@@ -211,7 +211,7 @@ function BusinessEditTable(props) {
           {classify && isEdit && (<div>{Object.values(classify)[0]}</div>)}
           {listmsg && (<div>{Object.values(listmsg)[0]}</div>)}
         </Col>
-        <Col span={4} style={{ textAlign: 'right' }}><Button type='primary' >导出清单</Button></Col>
+        {type === '发布实施' && (<Col span={4} style={{ textAlign: 'right' }}><Button type='primary' >导出清单</Button></Col>)}
       </Row>
 
       <Table

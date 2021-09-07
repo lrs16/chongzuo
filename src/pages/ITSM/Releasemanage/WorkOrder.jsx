@@ -17,8 +17,8 @@ import styles from './index.less';
 const { Panel } = Collapse;
 
 function WorkOrder(props) {
-  const { location, dispatch, userinfo, info, currentTaskStatus, buttype, statuse, tasklinks, historyinfo } = props;
-  const { taskName, Id, } = location.query;
+  const { location, dispatch, userinfo, info, currentTaskStatus, buttype, statuse, tasklinks, historyinfo, timeoutinfo } = props;
+  const { taskName, Id } = location.query;
   const [activeKey, setActiveKey] = useState(['form']);
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
   const [uservisible, setUserVisible] = useState(false);        // 是否显示选人组件
@@ -464,6 +464,13 @@ function WorkOrder(props) {
           releaseNo: Id,
         },
       });
+      // 获取超时信息
+      dispatch({
+        type: 'releasetodo/gettimeoutinfo',
+        payload: {
+          taskId: location.query.taskId,
+        },
+      });
     }
   }, [Id])
 
@@ -568,6 +575,7 @@ function WorkOrder(props) {
                   taskName='出厂测试'
                   info={info}
                   userinfo={userinfo}
+                  timeoutinfo={timeoutinfo}
                 />
               </div>
             </Panel>
@@ -582,6 +590,7 @@ function WorkOrder(props) {
                   taskName='平台验证'
                   info={info}
                   userinfo={userinfo}
+                  timeoutinfo={timeoutinfo}
                 />
               </div>
             </Panel>
@@ -596,6 +605,7 @@ function WorkOrder(props) {
                   taskName='业务验证'
                   info={info}
                   userinfo={userinfo}
+                  timeoutinfo={timeoutinfo}
                 />
               </div>
             </Panel>
@@ -610,6 +620,7 @@ function WorkOrder(props) {
                   taskName={taskName}
                   info={info}
                   userinfo={userinfo}
+                  timeoutinfo={timeoutinfo}
                 />
               </div>
             </Panel>
@@ -624,6 +635,7 @@ function WorkOrder(props) {
                   taskName={taskName}
                   info={info}
                   userinfo={userinfo}
+                  timeoutinfo={timeoutinfo}
                 />
               </div>
             </Panel>
@@ -638,6 +650,7 @@ function WorkOrder(props) {
                   taskName={taskName}
                   info={info}
                   userinfo={userinfo}
+                  timeoutinfo={timeoutinfo}
                 />
               </div>
             </Panel>
@@ -652,6 +665,7 @@ function WorkOrder(props) {
                   taskName={taskName}
                   info={info}
                   userinfo={userinfo}
+                  timeoutinfo={timeoutinfo}
                 />
               </div>
             </Panel>
@@ -665,6 +679,7 @@ function WorkOrder(props) {
                 taskName={taskName}
                 info={info}
                 userinfo={userinfo}
+                timeoutinfo={timeoutinfo}
               />
             </Panel>
           )}
@@ -689,6 +704,7 @@ export default connect(({ releasetodo, releaseview, itsmuser, loading }) => ({
   info: releasetodo.info,
   currentTaskStatus: releasetodo.currentTaskStatus,
   tasklinks: releasetodo.tasklinks,
+  timeoutinfo: releasetodo.timeoutinfo,
   statuse: releasetodo.statuse,
   historyinfo: releaseview.historyinfo,
   userinfo: itsmuser.userinfo,

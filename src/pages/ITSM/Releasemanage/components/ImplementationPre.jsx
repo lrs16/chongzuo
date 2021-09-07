@@ -57,10 +57,12 @@ const inplementrisk = [
 const inplementrisknew = { riskAnaly: '', resolve: '', remarks: '无' };
 
 function ImplementationPre(props, ref) {
-  const { taskName, userinfo, selectdata, isEdit, info, listmsg } = props;
+  const { taskName, userinfo, selectdata, isEdit, info, listmsg, timeoutinfo } = props;
   const { getFieldDecorator, setFieldsValue, getFieldsValue, resetFields } = props.form;
   const [check, setCheck] = useState(false);
   const [stopVisit, setStopVisit] = useState('否');
+  const [alertvisible, setAlertVisible] = useState(false);  // 超时告警是否显示
+  const [alertmessage, setAlertMessage] = useState('');
   const { ChangeButtype } = useContext(SubmitTypeContext);
   const required = true;
 
@@ -111,6 +113,17 @@ function ImplementationPre(props, ref) {
     }
   }, [info])
 
+  useEffect(() => {
+    if (isEdit && timeoutinfo) {
+      setAlertVisible(true);
+      setAlertMessage({ mes: `${taskName}超时，${taskName}${timeoutinfo}`, des: `` });
+    };
+    if (!isEdit && timeoutinfo) {
+      setAlertVisible(true);
+      setAlertMessage({ mes: `超时原因：${timeoutinfo}`, des: `` });
+    };
+  }, [timeoutinfo])
+
 
   // 校验文档
   const handleAttValidator = (rule, value, callback) => {
@@ -144,293 +157,286 @@ function ImplementationPre(props, ref) {
   const modulamap = getTypebyId('1384430921586839554');  // 模块
 
   return (
-    <Row gutter={12}>
-      <Form ref={formRef}>
-        <Col span={24}>
-          <Form.Item label="总述" {...forminladeLayout} labelAlign='left'>
-            {getFieldDecorator('summary', {
-              rules: [{ required, message: `请填写总述` }],
-              initialValue: info.practicePre ? info.practicePre.summary : '',
-            })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
-          </Form.Item>
-        </Col>
-        <Col span={24}>
-          <ImplementationEditTalbe
-            title='实施涉及系统（设备）'
-            isEdit={isEdit}
-            tablecolumns={implementequipment}
-            newkeys={implementequipmentnew}
-            dataSource={info && info.practiceDevices ? info.practiceDevices : []}
-            ChangeValue={v => { setFieldsValue({ practiceDevices: v }); }}
-          />
-          <Form.Item wrapperCol={{ span: 24 }} extra="点击行编辑表格信息，整行信息填写完整鼠标移开保存信息">
-            {getFieldDecorator('practiceDevices', {
-              rules: [{ required, message: '请填写实施涉及系统（设备）' }, {
-                validator: handleListValidator
-              }],
-              initialValue: info.practiceDevices,
-            })(<></>)}
-          </Form.Item>
-        </Col>
-        <Col span={24}>
-          <Form.Item label="系统（设备）运行方式调整" {...forminladeLayout} labelAlign='left'>
-            {getFieldDecorator('adjustRunMode', {
-              rules: [{ required, message: `请填写系统（设备）运行方式调整` }],
-              initialValue: info.practicePre ? info.practicePre.adjustRunMode : '',
-            })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
-          </Form.Item>
-        </Col>
-        <Col span={24}>
-          <Form.Item label="涉级功能模块" {...forminladeLayout} labelAlign='left'>
-            {getFieldDecorator('appModule', {
-              rules: [{ required, message: `请填写涉级功能模块` }],
-              initialValue: info.practicePre ? info.practicePre.appModule : '',
-            })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
-          </Form.Item>
-        </Col>
-        <Col span={24}>
-          <ImplementationEditTalbe
-            title='实施人员'
-            isEdit={isEdit}
-            tablecolumns={inplementers}
-            newkeys={inplementersnew}
-            dataSource={info.practicePersonList ? info.practicePersonList : []}
-            ChangeValue={v => { setFieldsValue({ practicePersonList: v }); }}
-          />
-          <Form.Item wrapperCol={{ span: 24 }} extra="点击行编辑表格信息，整行信息填写完整鼠标移开保存信息">
-            {getFieldDecorator('practicePersonList', {
-              rules: [{ required, message: '请填写实施人员信息' }, {
-                validator: handleListValidator
-              }],
-              initialValue: info.practicePersonList,
-            })(<></>)}
-          </Form.Item>
-        </Col>
-        <Col span={8} style={{ marginTop: 24 }}>
-          <Form.Item label="实施计划开始时间">
-            {getFieldDecorator('beginPlanTime', {
-              rules: [{ required, message: `请选择实施计划开始时间` }],
-              initialValue: moment(info.practicePre && info.practicePre.beginPlanTime ? info.practicePre.beginPlanTime : undefined),
-            })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
-          </Form.Item>
-        </Col>
-        <Col span={8} style={{ marginTop: 24 }}>
-          <Form.Item label="实施计划结束时间" >
-            {getFieldDecorator('endPlanTime', {
-              rules: [{ required, message: `请选择实施计划结束时间` }],
-              initialValue: moment(info.practicePre && info.practicePre.endPlanTime ? info.practicePre.endPlanTime : undefined),
-            })(
-              <DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />
-            )}
-          </Form.Item>
-        </Col>
-        <Col span={24}>
-          <Form.Item label="影响业务范围" {...forminladeLayout} labelAlign='left'>
-            {getFieldDecorator('affectBiz', {
-              rules: [{ required, message: `请填写影响范围` }],
-              initialValue: info.practicePre ? info.practicePre.affectBiz : '',
-            })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
-          </Form.Item>
-        </Col>
-        <Col span={24}>
-          <Form.Item label="影响用户范围" {...forminladeLayout} labelAlign='left'>
-            {getFieldDecorator('affectUser', {
-              rules: [{ required, message: `请填写影响范围` }],
-              initialValue: info.practicePre ? info.practicePre.affectUser : '',
-            })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="停止业务访问" >
-            {getFieldDecorator('bizStopVisit', {
-              rules: [{ required, message: `请选择实停止业务访问` }],
-              initialValue: info.practicePre ? info.practicePre.bizStopVisit : '否',
-            })(
-              <RadioGroup disabled={!isEdit} onChange={handleStopVisit}>
-                <Radio value='是'>是</Radio>
-                <Radio value='否'>否</Radio>
-              </RadioGroup>
-            )}
-          </Form.Item>
-        </Col>
-        {stopVisit === '是' && (
-          <>
-            <Col span={8}>
-              <Form.Item label="中断开始时间" >
-                {getFieldDecorator('bizStopBegin', {
-                  rules: [{ required, message: `请选择中断开始时间` }],
-                  initialValue: moment(info.practicePre && info.practicePre.bizStopBegin ? info.practicePre.bizStopBegin : undefined),
-                })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="中断结束时间">
-                {getFieldDecorator('bizStopEnd', {
-                  rules: [{ required, message: `请选择中断结束时间` }],
-                  initialValue: moment(info.practicePre && info.practicePre.bizStopEnd ? info.practicePre.bizStopEnd : undefined),
-                })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
-              </Form.Item>
-            </Col>
-          </>
-        )}
-        <Col span={24}>
-          <Form.Item label="数据同步影响情况" {...forminladeLayout} labelAlign='left'>
-            {getFieldDecorator('syncData', {
-              rules: [{ required, message: `请填写数据同步影响情况` }],
-              initialValue: info.practicePre ? info.practicePre.syncData : '',
-            })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
-          </Form.Item>
-        </Col>
-        <Col span={24}>
-          <Implementationsteps
-            title='实施步骤'
-            isEdit={isEdit}
-            dataSource={info.practiceSteps ? info.practiceSteps : []}
-            ChangeValue={v => { setFieldsValue({ practiceSteps: v }); }}
-          />
-          <Form.Item wrapperCol={{ span: 24 }}>
-            {getFieldDecorator('practiceSteps', {
-              rules: [{ required, message: '请填写实施步骤' }, {
-                validator: practiceStepsValidator
-              }],
-              initialValue: info.practiceSteps,
-            })(<></>)}
-          </Form.Item>
-        </Col>
-        <Col span={24} style={{ marginTop: 24 }}>
-          <ImplementationEditTalbe
-            title='主要风险分析与应对措施'
-            isEdit={isEdit}
-            tablecolumns={inplementrisk}
-            newkeys={inplementrisknew}
-            dataSource={info.practiceRisks ? info.practiceRisks : []}
-            ChangeValue={v => { setFieldsValue({ practiceRisks: v }); }}
-          />
-          <Form.Item wrapperCol={{ span: 24 }} extra="点击行编辑表格信息，整行信息填写完整鼠标移开保存信息">
-            {getFieldDecorator('practiceRisks', {
-              rules: [{ required, message: '请填写主要风险分析与应对措施' }, {
-                validator: handleListValidator
-              }],
-              initialValue: info.practiceRisks,
-            })(<></>)}
-          </Form.Item>
-        </Col>
-        <Col span={24}>
-          <Form.Item label="特殊要求" {...forminladeLayout} labelAlign='left'>
-            {getFieldDecorator('specialRequest', {
-              initialValue: info.practicePre ? info.practicePre.specialRequest : '',
-            })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
-          </Form.Item>
-        </Col>
-        <Col span={24}>
-          <Form.Item label="回退方案" {...forminladeLayout} labelAlign='left'>
-            {getFieldDecorator('rollbackPaln', {
-              rules: [{ required, message: `请填写回退方案` }],
-              initialValue: info.practicePre ? info.practicePre.rollbackPaln : '',
-            })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
-          </Form.Item>
-        </Col>
-        <Col span={24}>
-          <EditeTable
-            title='功能验证表'
-            functionmap={functionmap}
-            modulamap={modulamap}
-            isEdit={false}
-            taskName={taskName}
-            dataSource={info.releaseLists}
-            ChangeValue={v => { setFieldsValue({ releaseLists: v }); }}
-            listmsg={listmsg}
-          />
-          <Form.Item wrapperCol={{ span: 24 }} >
-            {getFieldDecorator('releaseLists', {
-              rules: [{ required, message: '请填写发布清单' }, {
-                validator: handleListValidator
-              }],
-              initialValue: info.releaseLists,
-            })(
-              <></>
-            )}
-          </Form.Item>
-        </Col>
-        <Col span={24}>
-          <Form.Item label="系统平台检查" {...forminladeLayout} labelAlign='left'>
-            {getFieldDecorator('platformCheck', {
-              rules: [{ required, message: `请填写系统平台检查` }],
-              initialValue: info.practicePre ? info.practicePre.platformCheck : '',
-            })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
-          </Form.Item>
-        </Col>
-        <Col span={24} style={{ marginBottom: 24 }}>
-          <DocumentAtt
-            rowkey='5'
-            isEdit={isEdit}
-            unitmap={unitmap}
-            dataSource={info && info.releaseAttaches ? info.releaseAttaches : []}
-            Unit={{ dutyUnit: undefined }}
-            ChangeValue={(v, files) => changeatt(v, files)}
-            check={check}
-          />
-          <Form.Item wrapperCol={{ span: 24 }} style={{ display: 'none' }}>
-            {getFieldDecorator('releaseAttaches', {
-              rules: [{ required, message: '请上传附件' }, {
-                validator: handleAttValidator
-              }],
-              initialValue: info.releaseAttaches,
-            })(<></>)}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="登记人" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-            {getFieldDecorator('register', {
-              rules: [{ required, message: `请输入登记人` }],
-              initialValue: userinfo ? userinfo.userName : info.practicePre.register,
-            })(<Input disabled />)}
-          </Form.Item>
-          {/* <Form.Item label="登记人Id" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} style={{ display: 'none' }}>
+    <>
+      {alertvisible && (<Alert message={alertmessage.mes} type='warning' showIcon />)}
+      <Row gutter={12} style={{ paddingTop: 24, }}>
+        <Form ref={formRef}>
+          <Col span={24}>
+            <Form.Item label="总述" {...forminladeLayout} labelAlign='left'>
+              {getFieldDecorator('summary', {
+                rules: [{ required, message: `请填写总述` }],
+                initialValue: info.practicePre ? info.practicePre.summary : '',
+              })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <ImplementationEditTalbe
+              title='实施涉及系统（设备）'
+              isEdit={isEdit}
+              tablecolumns={implementequipment}
+              newkeys={implementequipmentnew}
+              dataSource={info && info.practiceDevices ? info.practiceDevices : []}
+              ChangeValue={v => { setFieldsValue({ practiceDevices: v }); }}
+            />
+            <Form.Item wrapperCol={{ span: 24 }} extra="点击行编辑表格信息，整行信息填写完整鼠标移开保存信息">
+              {getFieldDecorator('practiceDevices', {
+                rules: [{ required, message: '请填写实施涉及系统（设备）' }, {
+                  validator: handleListValidator
+                }],
+                initialValue: info.practiceDevices,
+              })(<></>)}
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item label="系统（设备）运行方式调整" {...forminladeLayout} labelAlign='left'>
+              {getFieldDecorator('adjustRunMode', {
+                rules: [{ required, message: `请填写系统（设备）运行方式调整` }],
+                initialValue: info.practicePre ? info.practicePre.adjustRunMode : '',
+              })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item label="涉级功能模块" {...forminladeLayout} labelAlign='left'>
+              {getFieldDecorator('appModule', {
+                rules: [{ required, message: `请填写涉级功能模块` }],
+                initialValue: info.practicePre ? info.practicePre.appModule : '',
+              })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <ImplementationEditTalbe
+              title='实施人员'
+              isEdit={isEdit}
+              tablecolumns={inplementers}
+              newkeys={inplementersnew}
+              dataSource={info.practicePersonList ? info.practicePersonList : []}
+              ChangeValue={v => { setFieldsValue({ practicePersonList: v }); }}
+            />
+            <Form.Item wrapperCol={{ span: 24 }} extra="点击行编辑表格信息，整行信息填写完整鼠标移开保存信息">
+              {getFieldDecorator('practicePersonList', {
+                rules: [{ required, message: '请填写实施人员信息' }, {
+                  validator: handleListValidator
+                }],
+                initialValue: info.practicePersonList,
+              })(<></>)}
+            </Form.Item>
+          </Col>
+          <Col span={8} style={{ marginTop: 24 }}>
+            <Form.Item label="实施计划开始时间">
+              {getFieldDecorator('beginPlanTime', {
+                rules: [{ required, message: `请选择实施计划开始时间` }],
+                initialValue: moment(info.practicePre && info.practicePre.beginPlanTime ? info.practicePre.beginPlanTime : undefined),
+              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
+            </Form.Item>
+          </Col>
+          <Col span={8} style={{ marginTop: 24 }}>
+            <Form.Item label="实施计划结束时间" >
+              {getFieldDecorator('endPlanTime', {
+                rules: [{ required, message: `请选择实施计划结束时间` }],
+                initialValue: moment(info.practicePre && info.practicePre.endPlanTime ? info.practicePre.endPlanTime : undefined),
+              })(
+                <DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item label="影响业务范围" {...forminladeLayout} labelAlign='left'>
+              {getFieldDecorator('affectBiz', {
+                rules: [{ required, message: `请填写影响范围` }],
+                initialValue: info.practicePre ? info.practicePre.affectBiz : '',
+              })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item label="影响用户范围" {...forminladeLayout} labelAlign='left'>
+              {getFieldDecorator('affectUser', {
+                rules: [{ required, message: `请填写影响范围` }],
+                initialValue: info.practicePre ? info.practicePre.affectUser : '',
+              })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="停止业务访问" >
+              {getFieldDecorator('bizStopVisit', {
+                rules: [{ required, message: `请选择实停止业务访问` }],
+                initialValue: info.practicePre ? info.practicePre.bizStopVisit : '否',
+              })(
+                <RadioGroup disabled={!isEdit} onChange={handleStopVisit}>
+                  <Radio value='是'>是</Radio>
+                  <Radio value='否'>否</Radio>
+                </RadioGroup>
+              )}
+            </Form.Item>
+          </Col>
+          {stopVisit === '是' && (
+            <>
+              <Col span={8}>
+                <Form.Item label="中断开始时间" >
+                  {getFieldDecorator('bizStopBegin', {
+                    rules: [{ required, message: `请选择中断开始时间` }],
+                    initialValue: moment(info.practicePre && info.practicePre.bizStopBegin ? info.practicePre.bizStopBegin : undefined),
+                  })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="中断结束时间">
+                  {getFieldDecorator('bizStopEnd', {
+                    rules: [{ required, message: `请选择中断结束时间` }],
+                    initialValue: moment(info.practicePre && info.practicePre.bizStopEnd ? info.practicePre.bizStopEnd : undefined),
+                  })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
+                </Form.Item>
+              </Col>
+            </>
+          )}
+          <Col span={24}>
+            <Form.Item label="数据同步影响情况" {...forminladeLayout} labelAlign='left'>
+              {getFieldDecorator('syncData', {
+                rules: [{ required, message: `请填写数据同步影响情况` }],
+                initialValue: info.practicePre ? info.practicePre.syncData : '',
+              })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Implementationsteps
+              title='实施步骤'
+              isEdit={isEdit}
+              dataSource={info.practiceSteps ? info.practiceSteps : []}
+              ChangeValue={v => { setFieldsValue({ practiceSteps: v }); }}
+            />
+            <Form.Item wrapperCol={{ span: 24 }}>
+              {getFieldDecorator('practiceSteps', {
+                rules: [{ required, message: '请填写实施步骤' }, {
+                  validator: practiceStepsValidator
+                }],
+                initialValue: info.practiceSteps,
+              })(<></>)}
+            </Form.Item>
+          </Col>
+          <Col span={24} style={{ marginTop: 24 }}>
+            <ImplementationEditTalbe
+              title='主要风险分析与应对措施'
+              isEdit={isEdit}
+              tablecolumns={inplementrisk}
+              newkeys={inplementrisknew}
+              dataSource={info.practiceRisks ? info.practiceRisks : []}
+              ChangeValue={v => { setFieldsValue({ practiceRisks: v }); }}
+            />
+            <Form.Item wrapperCol={{ span: 24 }} extra="点击行编辑表格信息，整行信息填写完整鼠标移开保存信息">
+              {getFieldDecorator('practiceRisks', {
+                rules: [{ required, message: '请填写主要风险分析与应对措施' }, {
+                  validator: handleListValidator
+                }],
+                initialValue: info.practiceRisks,
+              })(<></>)}
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item label="特殊要求" {...forminladeLayout} labelAlign='left'>
+              {getFieldDecorator('specialRequest', {
+                initialValue: info.practicePre ? info.practicePre.specialRequest : '',
+              })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item label="回退方案" {...forminladeLayout} labelAlign='left'>
+              {getFieldDecorator('rollbackPaln', {
+                rules: [{ required, message: `请填写回退方案` }],
+                initialValue: info.practicePre ? info.practicePre.rollbackPaln : '',
+              })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <EditeTable
+              title='功能验证表'
+              functionmap={functionmap}
+              modulamap={modulamap}
+              isEdit={false}
+              taskName={taskName}
+              dataSource={info.releaseLists}
+              ChangeValue={v => { setFieldsValue({ releaseLists: v }); }}
+              listmsg={listmsg}
+            />
+            <Form.Item wrapperCol={{ span: 24 }} >
+              {getFieldDecorator('releaseLists', {
+                rules: [{ required, message: '请填写发布清单' }, {
+                  validator: handleListValidator
+                }],
+                initialValue: info.releaseLists,
+              })(
+                <></>
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item label="系统平台检查" {...forminladeLayout} labelAlign='left'>
+              {getFieldDecorator('platformCheck', {
+                rules: [{ required, message: `请填写系统平台检查` }],
+                initialValue: info.practicePre ? info.practicePre.platformCheck : '',
+              })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
+            </Form.Item>
+          </Col>
+          <Col span={24} style={{ marginBottom: 24 }}>
+            <DocumentAtt
+              rowkey='5'
+              isEdit={isEdit}
+              unitmap={unitmap}
+              dataSource={info && info.releaseAttaches ? info.releaseAttaches : []}
+              Unit={{ dutyUnit: undefined }}
+              ChangeValue={(v, files) => changeatt(v, files)}
+              check={check}
+            />
+            <Form.Item wrapperCol={{ span: 24 }} style={{ display: 'none' }}>
+              {getFieldDecorator('releaseAttaches', {
+                rules: [{ required, message: '请上传附件' }, {
+                  validator: handleAttValidator
+                }],
+                initialValue: info.releaseAttaches,
+              })(<></>)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="登记人" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+              {getFieldDecorator('register', {
+                rules: [{ required, message: `请输入登记人` }],
+                initialValue: userinfo ? userinfo.userName : info.practicePre.register,
+              })(<Input disabled />)}
+            </Form.Item>
+            {/* <Form.Item label="登记人Id" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} style={{ display: 'none' }}>
               {getFieldDecorator('registerUserId', {
                 rules: [{ required, message: `请输入登记人` }],
                 initialValue: userinfo ? userinfo.userId : info.releaseRegister.userId,
               })(<Input disabled />)}
             </Form.Item> */}
-        </Col>
+          </Col>
 
-        <Col span={8}>
-          <Form.Item label="登记时间" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-            {getFieldDecorator('registerTime', {
-              rules: [{ required, message: `请选择登记时间` }],
-              initialValue: moment(info.practicePre ? info.practicePre.registerTime : undefined).format('YYYY-MM-DD HH:mm:ss'),
-            })(<Input disabled />)}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="登记单位" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-            {getFieldDecorator('registerUnit', {
-              rules: [{ required, message: `请选择登记单位` }],
-              initialValue: userinfo ? userinfo.unitName : info.practicePre.registeUnit,
-            })(<Input disabled />)}
-          </Form.Item>
-          {/* <Form.Item label="登记单位Id" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} style={{ display: 'none' }}>
+          <Col span={8}>
+            <Form.Item label="登记时间" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+              {getFieldDecorator('registerTime', {
+                rules: [{ required, message: `请选择登记时间` }],
+                initialValue: moment(info.practicePre ? info.practicePre.registerTime : undefined).format('YYYY-MM-DD HH:mm:ss'),
+              })(<Input disabled />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="登记单位" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+              {getFieldDecorator('registerUnit', {
+                rules: [{ required, message: `请选择登记单位` }],
+                initialValue: userinfo ? userinfo.unitName : info.practicePre.registeUnit,
+              })(<Input disabled />)}
+            </Form.Item>
+            {/* <Form.Item label="登记单位Id" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} style={{ display: 'none' }}>
               {getFieldDecorator('registerUnitId', {
                 rules: [{ required, message: `请选择登记单位` }],
                 initialValue: userinfo ? userinfo.unitId : info.releaseRegister.registerUnitId,
               })(<Input disabled />)}
             </Form.Item> */}
-        </Col>
-      </Form>
-    </Row>
+          </Col>
+        </Form>
+      </Row>
+    </>
   );
 }
 
 const WrappedForm = Form.create({ name: 'form' })(forwardRef(ImplementationPre));
 
-WrappedForm.defaultProps = {
-  register: {
-    form4: undefined,
-    form5: undefined,
-    form6: '001',
-    form60: `影响业务范围：\n\n影响用户范围：`,
-    form7: undefined,
-    form8: undefined,
-  }
-};
 export default WrappedForm;

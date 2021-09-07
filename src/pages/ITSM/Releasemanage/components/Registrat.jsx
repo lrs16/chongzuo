@@ -59,7 +59,7 @@ const statumap = new Map([
 ]);
 
 function Registrat(props, ref) {
-  const { taskName, info, userinfo, selectdata, isEdit, listmsg } = props;
+  const { taskName, info, userinfo, selectdata, isEdit, listmsg, timeoutinfo } = props;
   const { getFieldDecorator, getFieldsValue, resetFields, setFieldsValue } = props.form;
   const required = true;
 
@@ -150,19 +150,15 @@ function Registrat(props, ref) {
   }), []);
 
   useEffect(() => {
-    if (isEdit && taskName === '出厂测试' && moment(info.creationTime).format('DD') > 25) {
+    if (isEdit && timeoutinfo) {
       setAlertVisible(true);
-      setAlertMessage({ mes: `${taskName}超时,${taskName}的登记时间为每月1日至25日之间`, des: `` });
+      setAlertMessage({ mes: `${taskName}超时，${taskName}${timeoutinfo}`, des: `` });
     };
-    if (isEdit && taskName === '平台验证' && moment(info.creationTime).format('DD') > 28) {
+    if (!isEdit && timeoutinfo) {
       setAlertVisible(true);
-      setAlertMessage({ mes: `${taskName}超时,${taskName}的登记时间为每月1日至28日之间`, des: `` });
-    }
-    if (isEdit && taskName === '业务验证' && (moment(info.creationTime).format('DD') > 29 || moment(info.creationTime).format('DD') < 7)) {
-      setAlertVisible(true);
-      setAlertMessage({ mes: `${taskName}超时,${taskName}的登记时间为每月7日至28日之间`, des: `` });
-    }
-  }, [info])
+      setAlertMessage({ mes: `超时原因：${timeoutinfo}`, des: `` });
+    };
+  }, [timeoutinfo])
 
   const getTypebyId = key => {
     if (selectdata.ischange) {
@@ -179,7 +175,7 @@ function Registrat(props, ref) {
   return (
     <>
       {alertvisible && (<Alert message={alertmessage.mes} type='warning' showIcon />)}
-      <Row gutter={12} style={{ paddingTop: 24, }}>
+      <Row gutter={12} style={{ marginTop: 24, }}>
         <Form ref={formRef} {...formItemLayout}>
           {(taskName === '出厂测试' || taskName === '新建') && (
             <>

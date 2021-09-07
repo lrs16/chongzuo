@@ -42,7 +42,7 @@ function getQueryVariable(variable) {
 }
 
 function VersionAudit(props, ref) {
-  const { dispatch, taskName, userinfo, register, selectdata, isEdit, info, listmsg } = props;
+  const { dispatch, taskName, userinfo, selectdata, isEdit, info, listmsg, timeoutinfo } = props;
   const { getFieldDecorator, setFieldsValue, getFieldsValue, resetFields } = props.form;
   const [check, setCheck] = useState(false);
   const [mergeNo, setMergeNo] = useState('');
@@ -51,10 +51,10 @@ function VersionAudit(props, ref) {
   const [adopt, setAdopt] = useState('通过');
   const [rowkey, setRowKey] = useState('0');
   const [newList, setNewList] = useState(false);
+  const [alertvisible, setAlertVisible] = useState(false);  // 超时告警是否显示
+  const [alertmessage, setAlertMessage] = useState('');
   const { ChangeSubmitType, ChangeButtype, releaseType } = useContext(SubmitTypeContext);
   const required = true;
-
-  const [alertvisible, setAlertVisible] = useState(false);  // 超时告警是否显示
 
   const formmap = new Map([
     ['版本管理员审核', info.mergeOrder],
@@ -74,10 +74,15 @@ function VersionAudit(props, ref) {
   }), []);
 
   useEffect(() => {
-    if (isEdit && (moment(register.creationTime).format('DD') > 15 || moment(register.creationTime).format('DD') < 11)) {
+    if (isEdit && timeoutinfo) {
       setAlertVisible(true);
+      setAlertMessage({ mes: `${taskName}超时，${taskName}${timeoutinfo}`, des: `` });
     };
-  }, [register])
+    if (!isEdit && timeoutinfo) {
+      setAlertVisible(true);
+      setAlertMessage({ mes: `超时原因：${timeoutinfo}`, des: `` });
+    };
+  }, [timeoutinfo])
 
 
   // 切换附件
@@ -244,15 +249,11 @@ function VersionAudit(props, ref) {
 
   return (
     <>
-      {alertvisible && (<Alert
-        message={`${taskName}超时,${taskName}时间在每月11日至14日之间`}
-        type='warning'
-        showIcon style={{ marginBottom: 12 }}
-      />)}
+      {alertvisible && (<Alert message={alertmessage.mes} type='warning' showIcon style={{ marginBottom: 12 }} />)}
       {info.releaseMains && info.releaseMains.length > 1 && (
-        <Alert message='已合并工单' description={descriptionopion} type='info' style={{ marginBottom: 24, }} />
+        <Alert message='已合并工单' description={descriptionopion} type='info' />
       )}
-      <Row gutter={12}>
+      <Row gutter={12} style={{ paddingTop: 24, }}>
         <Form ref={formRef} {...formItemLayout}>
           {taskName === '版本管理员审核' && (<>
             <Col span={8} >

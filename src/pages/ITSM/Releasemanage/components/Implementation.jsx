@@ -29,10 +29,11 @@ const formuintLayout = {
 };
 
 function Implementation(props, ref) {
-  const { taskName, userinfo, register, selectdata, isEdit, info, listmsg } = props;
+  const { taskName, userinfo, selectdata, isEdit, info, listmsg, timeoutinfo } = props;
   const { getFieldDecorator, setFieldsValue, getFieldsValue, resetFields } = props.form;
   const required = true;
   const [alertvisible, setAlertVisible] = useState(false);  // 超时告警是否显示
+  const [alertmessage, setAlertMessage] = useState('');
   const [check, setCheck] = useState(false);
   const { ChangeSubmitType, ChangeButtype } = useContext(SubmitTypeContext);
 
@@ -70,10 +71,15 @@ function Implementation(props, ref) {
   }
 
   useEffect(() => {
-    if (isEdit && (moment(register.creationTime).format('DD') > 20 || moment(register.creationTime).format('DD') < 15)) {
+    if (isEdit && timeoutinfo) {
       setAlertVisible(true);
+      setAlertMessage({ mes: `${taskName}超时，${taskName}${timeoutinfo}`, des: `` });
     };
-  }, [register])
+    if (!isEdit && timeoutinfo) {
+      setAlertVisible(true);
+      setAlertMessage({ mes: `超时原因：${timeoutinfo}`, des: `` });
+    };
+  }, [timeoutinfo])
 
   const getTypebyId = key => {
     if (selectdata.ischange) {
@@ -84,12 +90,8 @@ function Implementation(props, ref) {
   const unitmap = getTypebyId('1384056290929545218');       // 责任单位
   return (
     <>
-      {alertvisible && (<Alert
-        message={`${taskName}超时,${taskName}时间在每月15日至20日之间`}
-        type='warning'
-        showIcon style={{ marginBottom: 12 }}
-      />)}
-      <Row gutter={12} >
+      {alertvisible && (<Alert message={alertmessage.mes} type='warning' showIcon />)}
+      <Row gutter={12} style={{ marginTop: 24 }} >
         <Form ref={formRef} {...formItemLayout}>
           <Col span={8}>
             <Form.Item label="发布实施时间" >

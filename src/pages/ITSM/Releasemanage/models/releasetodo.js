@@ -19,6 +19,7 @@ import {
   savePracticeDone,
   saveBizCheck,
   attachBatchEdit,
+  getTimeoutInfo,
 } from '../services/api';
 
 export default {
@@ -32,6 +33,7 @@ export default {
     statuse: -1,
     relationCount: undefined,
     submitTimes: undefined,
+    timeoutinfo: undefined,
   },
 
   effects: {
@@ -478,6 +480,18 @@ export default {
         message.error(response.msg)
       }
     },
+    // 获取超时信息
+    * gettimeoutinfo({ payload }, { call, put }) {
+      const response = yield call(getTimeoutInfo, payload);
+      if (response.code === 200) {
+        yield put({
+          type: 'savetimeoutinfo',
+          payload: response.data.msg,
+        });
+      } else {
+        message.error(response.msg)
+      }
+    },
   },
 
   reducers: {
@@ -491,6 +505,7 @@ export default {
         statuse: -1,
         relationCount: undefined,
         submitTimes: undefined,
+        timeoutinfo: undefined,
       };
     },
     save(state, action) {
@@ -520,6 +535,12 @@ export default {
       return {
         ...state,
         statuse: action.payload.statuse,
+      };
+    },
+    savetimeoutinfo(state, action) {
+      return {
+        ...state,
+        timeoutinfo: action.payload,
       };
     },
 
