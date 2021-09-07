@@ -22,10 +22,9 @@ function TestEnvironmentManage(props) {
 
   const getdatas = () => {
     dispatch({
-      type: 'disabledusermanage/query',
+      type: 'testenvironment/query',
       payload: {
-        user: '',
-        pageIndex: paginations.current - 1,
+        pageIndex: paginations.current,
         pageSize: paginations.pageSize,
       },
     });

@@ -458,3 +458,12 @@ export async function qrtzjoblogList(pageNum, pageSize, bodyParams) {
     body: JSON.stringify(bodyParams),
   });
 }
+
+// 测试环境 /release/env/configList
+export async function releaseConfigList(params) {
+  return request(`/release/env/configList`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}

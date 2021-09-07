@@ -83,8 +83,7 @@ function BusinessReview(props, ref) {
       <Form ref={formRef} {...formItemLayout}>
         <Col span={24}>
           <h4>发布结论：</h4>
-          <p style={{ marginBottom: 0 }}>本次升级发布共计发布功能【N】个，通过【N】个，不通过【N】个。发布成功率 【N】%。</p>
-          <p>其中【A公司】共计发布功能【N】个，通过【N】个，不通过【N】个。发布成功率 【N】%，【B公司】共计发布功能【】个，通过【】个，不通过【】个。发布成功率 【100】%</p>
+          <p>{info.releaseBizCheck.checkResult}</p>
         </Col>
         <Col span={24}>
           <Form.Item label="复核说明" {...formuintLayout} labelAlign='left'>

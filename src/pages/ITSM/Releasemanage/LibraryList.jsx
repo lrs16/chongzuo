@@ -49,7 +49,6 @@ function LibraryList(props) {
   const [tabrecord, setTabRecord] = useState({});
   const searchrecord = { releaseNo: '', releaseStatus: '' };
   const cacheinfo = location.state && location.state.cacheinfo ? location.state.cacheinfo : searchrecord;
-  console.log(cacheinfo)
 
   // 查询
   const searchdata = (values, page, size) => {
@@ -57,8 +56,8 @@ function LibraryList(props) {
       type: 'releasestatistics/fetchobjectlist',
       payload: {
         ...values,
-        beginTime: values.beginTime ? moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        beginTime: values.beginTime ? moment(values.beginTime * 1000).format('YYYY-MM-DD HH:mm:ss') : '',
+        endTime: values.endTime ? moment(values.endTime * 1000).format('YYYY-MM-DD HH:mm:ss') : '',
         releaseObj: values.releaseObj && values.releaseObj.length > 0 ? values.releaseObj.join('/') : '',
         pageSize: size,
         pageIndex: page,
