@@ -279,7 +279,6 @@ export default {
       payload: []
     })
     const response = yield call(getTypeTree,payload);
-    console.log('response: ', response);
     yield put ({
       type:'treeArr',
       payload:response

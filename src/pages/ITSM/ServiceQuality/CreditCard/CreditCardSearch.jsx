@@ -57,6 +57,7 @@ function ServiceProvidersearch(props) {
   } = props;
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
   const [tabrecord, setTabRecord] = useState({});
+  const [selectedKeys, setSelectedKeys] = useState([]);
 
   const searchdata = (values, page, pageSize) => {
     const newValue = {
@@ -259,6 +260,7 @@ function ServiceProvidersearch(props) {
         type: 'performanceappraisal/scorecardExport',
         payload: {
           ...values,
+          id:selectedKeys.toString(),
           pageNum: paginations.current,
           pageSize: paginations.pageSize
         }
@@ -333,6 +335,12 @@ function ServiceProvidersearch(props) {
       }
     }
   }, [location.state]);
+
+  const rowSelection = {
+    onChange: (index, handleSelect) => {
+      setSelectedKeys([...index])
+    }
+  }
 
 
   return (
@@ -475,8 +483,11 @@ function ServiceProvidersearch(props) {
           loading={loading}
           columns={columns}
           dataSource={scorecardArr.records}
+          rowKey={records => records.id}
           scroll={{ x: 1500, y: 700 }}
+          rowSelection={rowSelection}
           pagination={pagination}
+
         />
       </Card>
     </PageHeaderWrapper>

@@ -10,6 +10,7 @@ const withClick = (element, handleClick = () => {}) => {
 function AddHolidaySetting(props) {
   const [visible,setVisible] = useState(false);
   const {
-    
-  }
+    title,
+  } = props;
 }
+

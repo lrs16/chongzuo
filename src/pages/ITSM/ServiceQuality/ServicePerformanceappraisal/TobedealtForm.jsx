@@ -583,10 +583,14 @@ function TobedealtForm(props) {
                   )
                 }
 
-                <Button type='primary' onClick={() => onClickSubmit(taskName)}>保存</Button>
+                {
+                  loading === false && taskData.currentTask &&  taskData.currentTask.taskName  && (
+                    <Button type='primary' onClick={() => onClickSubmit(taskName)}>保存</Button>
+                  )
+                }
 
                 {
-                  (noselect === '1') && taskName !== '服务绩效考核确认' && taskName !== '业务负责人复核' && (
+                  loading === false && taskData.currentTask &&  taskData.currentTask.taskName && taskName !== '服务绩效考核确认' && taskName !== '业务负责人复核' && (noselect === '1') &&  (
                     <Button type='primary' onClick={() => onClickSubmit(taskName, 'circula')}>
                       {taskName === '业务负责人复核' ? '确认复核' : '流转'}
                     </Button>
@@ -594,7 +598,7 @@ function TobedealtForm(props) {
                 }
 
                 {
-                  (noselect === '0' && taskName !== '业务负责人复核' && taskName !== '服务商确认' && taskName !== '服务绩效考核确认') && (taskName === '业务负责人审核' || taskName === '自动化科专责审核' || taskName === '服务绩效考核确认') && (
+                   loading === false && taskData.currentTask &&  taskData.currentTask.taskName && (noselect === '0' && taskName !== '业务负责人复核' && taskName !== '服务商确认' && taskName !== '服务绩效考核确认') && (taskName === '业务负责人审核' || taskName === '自动化科专责审核' || taskName === '服务绩效考核确认') && (
                     <Button type='primary' onClick={() => onClickSubmit(taskName, '流转不选人')}>
                       {buttonContent}
                     </Button>
@@ -602,7 +606,7 @@ function TobedealtForm(props) {
                 }
 
                 {
-                  (taskName === '服务绩效考核确认') && (
+                  loading === false && taskData.currentTask &&  taskData.currentTask.taskName && (taskName === '服务绩效考核确认') && (
                     <Button type='primary' onClick={() => onClickSubmit(taskName, '流转不选人')}>
                       确认考核
                     </Button>
@@ -610,7 +614,7 @@ function TobedealtForm(props) {
                 }
 
                 {
-                  taskName === '业务负责人复核' && (
+                  loading === false && taskData.currentTask &&  taskData.currentTask.taskName && taskName === '业务负责人复核' && (
                     <Button type='primary' onClick={() => onClickSubmit(taskName, 'circula')}>
                       确认复核
                     </Button>
@@ -618,7 +622,7 @@ function TobedealtForm(props) {
                 }
 
                 {
-                  (noselect === '0' && taskName === '服务商确认') && (
+                 loading === false && taskData.currentTask &&  taskData.currentTask.taskName &&  (noselect === '0' && taskName === '服务商确认') && (
                     <Button type='primary' onClick={() => onClickSubmit(taskName, 'circula')}>
                       流转
                     </Button>
