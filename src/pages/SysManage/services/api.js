@@ -463,6 +463,24 @@ export async function qrtzjoblogList(pageNum, pageSize, bodyParams) {
 export async function releaseConfigList(params) {
   return request(`/release/env/configList`, {
     method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 测试环境/release/env/saveConfig
+export async function releasesaveConfig(params) {
+  return request(`/release/env/saveConfig`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}
+
+// 测试环境/release/env/delConfig
+export async function releasedelConfig(params) {
+  return request(`/release/env/delConfig`, {
+    method: 'POST',
     data: JSON.stringify(params),
     requestType: 'formjosn',
   });

@@ -138,7 +138,7 @@ function Statistics(props) {
             ...values,
             beginTime: values.beginTime ? moment(values.beginTime).format('X') : '',
             endTime: values.endTime ? moment(values.endTime).format('X') : '',
-            releaseStatus: record.taskName,
+            releaseStatus: record.taskName === '合计' ? '' : record.taskName,
             paginations: { current: 1, pageSize: 15 },
             expand: true
           }

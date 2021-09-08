@@ -1,16 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { connect } from 'dva';
 import { Table, Row, Button, Select, Input } from 'antd';
 
 const { Option } = Select;
 
-const typedata = [
-  { key: '1', name: '测试环境', type: 'dell', app: '计量运维辅助平台' },
-  { key: '2', name: '开发环境', type: 'hp', app: '计量运维辅助平台' },
-  { key: '3', name: 'Ⅲ区数据库服务器', type: '型号：曙光I620-G20 配置：CPU:2路12核 Xeon处理器；内存：256G DDR4内存；硬盘：4×240GB SSD硬盘8×1200GB HDD硬盘 操作系统：Red Hat 7.3', app: '3oracle数据库' },
-];
-
 function TestingFacility(props) {
-  const { title, isEdit, dataSource, ChangeValue } = props;
+  const { title, isEdit, dataSource, ChangeValue, dispatch, statusY } = props;
   const [data, setData] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRowrecord, setSelectedRowRecord] = useState([]);
@@ -33,9 +28,9 @@ function TestingFacility(props) {
   const handleChange = (value, key) => {
     const rowdata = JSON.parse(value);
     const newdata = [...data];
-    newdata[key - 1].deviceName = rowdata.name;
-    newdata[key - 1].deviceConfig = rowdata.type;
-    newdata[key - 1].deployApp = rowdata.app;
+    newdata[key - 1].deviceName = rowdata.deviceName;
+    newdata[key - 1].deviceConfig = rowdata.deviceConfig;
+    newdata[key - 1].deployApp = rowdata.deployApp;
     setData(newdata);
     ChangeValue(newdata);
   }
@@ -68,6 +63,17 @@ function TestingFacility(props) {
     selectedRowKeys,
     onChange: onSelectChange,
   };
+
+  useEffect(() => {
+    dispatch({
+      type: 'testenvironment/querystatusY',
+      payload: {
+        useStatus: 'Y',
+        pageIndex: 1,
+        pageSize: 200,
+      },
+    });
+  }, [])
 
   useEffect(() => {
     if (dataSource && dataSource.length && dataSource.length > 0) {
@@ -103,9 +109,9 @@ function TestingFacility(props) {
           return (
             <>
               <Select placeholder="请选择" onChange={v => handleChange(v, record.key)} value={text}>
-                {typedata.map(obj => [
-                  <Option key={obj.key} value={JSON.stringify(obj)}>
-                    {obj.name}
+                {statusY && statusY.map(obj => [
+                  <Option key={obj.id} value={JSON.stringify(obj)}>
+                    {obj.deviceName}
                   </Option>,
                 ])}
               </Select>
@@ -119,11 +125,17 @@ function TestingFacility(props) {
       title: '设备型号配置',
       dataIndex: 'deviceConfig',
       key: 'deviceConfig',
+      render: (text) => {
+        return (<span dangerouslySetInnerHTML={{ __html: text?.replace(/[\n]/g, '<br/>') }} />)
+      }
     },
     {
       title: '部署应用',
       dataIndex: 'deployApp',
       key: 'deployApp',
+      render: (text) => {
+        return (<span dangerouslySetInnerHTML={{ __html: text?.replace(/[\n]/g, '<br/>') }} />)
+      }
     },
   ];
 
@@ -156,4 +168,7 @@ function TestingFacility(props) {
   );
 }
 
-export default TestingFacility;
+export default connect(({ testenvironment, loading }) => ({
+  statusY: testenvironment.statusY,
+  loading: loading.models.testenvironment,
+}))(TestingFacility);

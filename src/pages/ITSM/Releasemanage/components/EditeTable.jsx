@@ -239,9 +239,13 @@ function EditeTable(props) {
   // 版本管理员审核保存
   const checsaveRow = (e, key) => {
     e.preventDefault();
-    setNewButton(false);
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData) || {};
+    if (!target.module || !target.abilityType || !target.module || !target.appName || !target.problemType || !target.testMenu || !target.testResult || !target.testStep || !target.developer || !target.responsible) {
+      message.error('请填写完整的发布清单信息');
+      e.target.focus();
+      return;
+    };
     const taskIdtarget = data.filter(item => item.releaseNo === target.releaseNo);
     if (target) {
       if (target.releaseNo) {
@@ -267,6 +271,7 @@ function EditeTable(props) {
           message.error(res.msg)
         }
       });
+      setNewButton(false);
       // dispatch({
       //   type: 'releasetodo/checkaddlist',
       //   payload: {
@@ -441,7 +446,7 @@ function EditeTable(props) {
       if (taskName !== '新建') {
         classifyList(getQueryVariable("taskId")).then(res => {
           if (res.code === 200) {
-            setClassify(res.data.classifyList.dutyUnitTotalMsg);
+            setClassify(res.data.classifyList.dutyUnitListMsg);
           }
         })
       }
@@ -916,6 +921,11 @@ function EditeTable(props) {
     }
   }, [dutyUnitList]);
 
+  // 清单导出
+  const handleDlownd = () => {
+    console.log(selectedRowKeys)
+  }
+
   return (
     <>
       <h4 style={{ fontSize: '1.1em' }}>
@@ -942,7 +952,8 @@ function EditeTable(props) {
           {dutyUnitTotalMsg && isEdit && (
             <span key={tabActivekey} style={{ paddingBottom: 12 }}>{tabActivekey}：{dutyUnitListMsg[tabActivekey]}</span>
           )}
-          {((taskName === '出厂测试' || taskName === '平台验证' || taskName === '业务验证' || taskName === '发布实施准备') && isEdit) && (<span key={tabActivekey} style={{ paddingBottom: 12 }}>{classify}</span>)}
+          {((taskName === '出厂测试' || taskName === '平台验证' || taskName === '业务验证') && isEdit) && (<span style={{ paddingBottom: 12 }}>{listmsg ? Object.values(listmsg)[0] : Object.values(classify)[0]}</span>)}
+          {taskName === '发布实施准备' && (<span style={{ paddingBottom: 12 }}>{listmsg ? Object.values(listmsg)[0] : Object.values(classify)[0]}</span>)}
           {!isEdit && listmsg && (<span style={{ paddingBottom: 12 }}>{Object.values(listmsg)[0]}</span>)}
         </Col>
 
@@ -1009,7 +1020,7 @@ function EditeTable(props) {
               )}
             </>
           )}
-          <Button type='primary' >导出清单</Button>
+          {taskName !== '新建' && (<Button type='primary' onClick={() => handleDlownd()}>导出清单</Button>)}
         </Col>
       </Row>
       <div id='list'>

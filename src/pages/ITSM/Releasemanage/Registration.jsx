@@ -142,8 +142,8 @@ function Registration(props) {
         router.push({
           pathname: `/ITSM/releasemanage/to-do/record`,
           query: {
-            Id: response.data.saveRegister.releaseMain.releaseNo,
-            taskId: response.data.saveRegister.releaseMain.taskId,
+            Id: response.data.currentTaskStatus.businessKey,
+            taskId: response.data.currentTaskStatus.taskId,
             taskName: '出厂测试'
           },
           state: {

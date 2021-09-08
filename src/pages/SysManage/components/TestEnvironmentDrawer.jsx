@@ -1,14 +1,16 @@
 import React from 'react';
-import { Drawer, Button, Form, Input } from 'antd';
+import { Drawer, Button, Form, Input, Radio } from 'antd';
+
+const { TextArea } = Input;
 
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 4 },
+    sm: { span: 6 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 20 },
+    sm: { span: 18 },
   },
   colon: false,
 };
@@ -17,7 +19,7 @@ function TestEnvironmentDrawer(props) {
   const { visible, ChangeVisible, title, handleSubmit } = props;
   const { getFieldDecorator, validateFields } = props.form;
   const required = true;
-  const { id, name, model, deployapplication, } = props.record;
+  const { id, deviceName, deviceConfig, deployApp, useStatus } = props.record;
 
   const hanldleCancel = () => {
     ChangeVisible(false);
@@ -52,37 +54,53 @@ function TestEnvironmentDrawer(props) {
           })(<Input placeholder="系统生成" disabled />)}
         </Form.Item>
         <Form.Item label="设备名称及用途">
-          {getFieldDecorator('name', {
+          {getFieldDecorator('deviceName', {
             rules: [
               {
                 required,
                 message: '请输入设备名称及用途',
               },
             ],
-            initialValue: name,
+            initialValue: deviceName,
           })(<Input placeholder="请输入" />)}
         </Form.Item>
         <Form.Item label="设备型号配置">
-          {getFieldDecorator('model', {
+          {getFieldDecorator('deviceConfig', {
             rules: [
               {
                 required,
                 message: '请输入设备型号配置"',
               },
             ],
-            initialValue: model,
-          })(<Input placeholder="部署应用" />)}
+            initialValue: deviceConfig,
+          })(<TextArea autoSize={{ minRows: 10 }} />)}
         </Form.Item>
         <Form.Item label="部署应用">
-          {getFieldDecorator('deployapplication', {
+          {getFieldDecorator('deployApp', {
             rules: [
               {
                 required,
                 message: '请输入部署应用',
               },
             ],
-            initialValue: deployapplication,
-          })(<Input placeholder="请输入" />)}
+            initialValue: deployApp,
+          })(<TextArea autoSize={{ minRows: 10 }} />)}
+        </Form.Item>
+        <Form.Item label="是否启用">
+          {getFieldDecorator('useStatus', {
+            rules: [
+              {
+                required,
+                message: '请选择是否启用',
+              },
+            ],
+            initialValue: useStatus || 'Y',
+          })(
+            <Radio.Group >
+              <Radio value='Y'>启用</Radio>
+              <Radio value='N'>停用</Radio>
+            </Radio.Group>
+          )}
         </Form.Item>
       </Form>
 
@@ -110,7 +128,7 @@ function TestEnvironmentDrawer(props) {
 }
 
 TestEnvironmentDrawer.defaultProps = {
-  record: { id: '', name: '', model: '', deployapplication: '' },
+  record: {},
 };
 
 export default Form.create()(TestEnvironmentDrawer);

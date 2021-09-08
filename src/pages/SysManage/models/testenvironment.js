@@ -1,11 +1,11 @@
-import { releaseConfigList, saveTimetable, updateTimetable, deleteTimetable } from '../services/api';
+import { releaseConfigList, releasesaveConfig, releasedelConfig } from '../services/api';
 
 export default {
   namespace: 'testenvironment',
 
   state: {
-    total: '',
-    list: [],
+    list: {},
+    statusY: undefined,
   },
 
   effects: {
@@ -14,23 +14,26 @@ export default {
       const response = yield call(releaseConfigList, payload);
       yield put({
         type: 'show',
-        payload: response,
+        payload: response.data,
+      });
+    },
+
+    *querystatusY({ payload }, { call, put }) {
+      const response = yield call(releaseConfigList, payload);
+      yield put({
+        type: 'savestatus',
+        payload: response.data,
       });
     },
 
     // 保存
     *save({ payload }, { call }) {
-      return yield call(saveTimetable, payload);
-    },
-
-    // 更新
-    *update({ payload }, { call }) {
-      return yield call(updateTimetable, payload);
+      return yield call(releasesaveConfig, payload);
     },
 
     // 删除
     *delete({ payload }, { call }) {
-      return yield call(deleteTimetable, payload);
+      return yield call(releasedelConfig, payload);
     },
   },
 
@@ -38,8 +41,13 @@ export default {
     show(state, action) {
       return {
         ...state,
-        list: action.payload.data.rows,
-        total: action.payload.data.total,
+        list: { data: action.payload.records, total: action.payload.total, },
+      };
+    },
+    savestatus(state, action) {
+      return {
+        ...state,
+        statusY: action.payload.records,
       };
     },
   },

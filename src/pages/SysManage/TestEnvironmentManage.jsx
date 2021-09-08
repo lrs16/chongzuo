@@ -1,18 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
-import { Table, Card, Divider, Button, Message, Popconfirm, Form, Input } from 'antd';
+import { Table, Card, Divider, Button, Message, Popconfirm, Form, Input, Col, Row, Switch, Select } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import TestEnvironmentDrawer from './components/TestEnvironmentDrawer';
 
-const { Search } = Input;
+const { Option } = Select;
+
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 8 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 16 },
+  },
+};
 
 function TestEnvironmentManage(props) {
   const pagetitle = props.route.name;
-  const {
-    dispatch,
-    list,
-    loading,
-    form: { getFieldDecorator, validateFields },
+  const { dispatch, list, loading,
+    form: { getFieldDecorator, validateFields, resetFields },
   } = props;
   const [visible, setVisible] = useState(false); // 抽屉是否显示
   const [title, setTitle] = useState('');
@@ -24,8 +32,11 @@ function TestEnvironmentManage(props) {
     dispatch({
       type: 'testenvironment/query',
       payload: {
-        pageIndex: paginations.current,
-        pageSize: paginations.pageSize,
+        deployApp: '',
+        deviceConfig: '',
+        deviceName: '',
+        pageIndex: 1,
+        pageSize: 15,
       },
     });
   };
@@ -33,6 +44,17 @@ function TestEnvironmentManage(props) {
   useEffect(() => {
     getdatas();
   }, []);
+
+  const searchdata = (values, page, size) => {
+    dispatch({
+      type: 'testenvironment/query',
+      payload: {
+        ...values,
+        pageIndex: page,
+        pageSize: size,
+      },
+    });
+  };
 
   const handleShowDrawer = (drwertitle, type, record) => {
     setVisible(!visible);
@@ -43,61 +65,57 @@ function TestEnvironmentManage(props) {
 
   // 提交
   const handleSubmit = values => {
-    if (savetype === 'save') {
-      dispatch({
-        type: 'disabledusermanage/save',
-        payload: {
-          ...values,
-          dept: values.dept !== '' ? values.dept : values.unit,
-          deptId: values.deptId !== '' ? values.deptId : values.unitId,
-        },
-      }).then(res => {
+    dispatch({
+      type: 'testenvironment/save',
+      payload: {
+        ...values,
+      },
+    }).then(res => {
+      if (res.code === 200) {
         Message.success(res.msg);
-        if (res.code === 200) {
-          getdatas();
-        }
-      });
-    }
-    if (savetype === 'update') {
-      dispatch({
-        type: 'disabledusermanage/update',
-        payload: {
-          ...values,
-          dept: values.dept !== '' ? values.dept : values.unit,
-          deptId: values.deptId !== '' ? values.deptId : values.unitId,
-        },
-      }).then(res => {
-        Message.success(res.msg);
-        if (res.code === 200) {
-          getdatas();
-        }
-      });
-    }
+        getdatas();
+      } else {
+        Message.error(res.msg);
+      }
+    });
   };
 
   // 删除
   const handleDelete = ids => {
     dispatch({
-      type: 'disabledusermanage/delete',
+      type: 'testenvironment/delete',
       payload: { ids },
     }).then(res => {
-      Message.success(res.msg);
       if (res.code === 200) {
+        Message.success(res.msg);
         getdatas();
+      } else {
+        Message.error(res.msg);
       }
     });
   };
 
-  const searchdata = (values, page, size) => {
+  const handleSwitch = (checked, values) => {
     dispatch({
-      type: 'disabledusermanage/query',
+      type: 'testenvironment/save',
       payload: {
         ...values,
-        pageIndex: page - 1,
-        pageSize: size,
+        useStatus: checked ? 'Y' : 'N',
       },
+    }).then(res => {
+      if (res.code === 200) {
+        Message.success(res.msg);
+        validateFields((err, val) => {
+          if (!err) {
+            searchdata(val, paginations.current, paginations.pageSize);
+          }
+        });
+      } else {
+        Message.error(res.msg);
+      }
     });
-  };
+  }
+
 
   const onShowSizeChange = (page, size) => {
     validateFields((err, values) => {
@@ -139,10 +157,7 @@ function TestEnvironmentManage(props) {
       current: 1,
     });
     validateFields((err, values) => {
-      if (err) {
-        return;
-      }
-      searchdata(values, paginations.current, paginations.pageSize);
+      searchdata(values, 1, 15);
     });
   };
 
@@ -151,50 +166,54 @@ function TestEnvironmentManage(props) {
       title: 'Id',
       dataIndex: 'id',
       key: 'id',
-      width: 180,
     },
     {
-      title: '姓名',
-      dataIndex: 'user',
-      key: 'user',
-      width: 80,
+      title: '设备名称及用途',
+      dataIndex: 'deviceName',
+      key: 'deviceName',
     },
     {
-      title: '电话',
-      dataIndex: 'phone',
-      key: 'phone',
-      width: 120,
+      title: '设备型号配置',
+      dataIndex: 'deviceConfig',
+      key: 'deviceConfig',
+      render: (text) => {
+        return (<span dangerouslySetInnerHTML={{ __html: text?.replace(/[\n]/g, '<br/>') }} />)
+      }
     },
     {
-      title: '手机',
-      dataIndex: 'mobile',
-      key: 'mobile',
-      width: 120,
+      title: '部署应用',
+      dataIndex: 'deployApp',
+      key: 'deployApp',
+      render: (text) => {
+        return (<span dangerouslySetInnerHTML={{ __html: text?.replace(/[\n]/g, '<br/>') }} />)
+      }
     },
     {
-      title: '公司',
-      dataIndex: 'unit',
-      key: 'unit',
-    },
-    {
-      title: '部门',
-      dataIndex: 'dept',
-      key: 'dept',
+      title: '启用状态',
+      dataIndex: 'useStatus',
+      key: 'useStatus',
+      render: (text, r) => {
+        const statumap = new Map([
+          ['Y', '启用'],
+          ['N', '停用'],
+        ]);
+        return (<Switch checkedChildren={statumap.get(text)} unCheckedChildren="停用" defaultChecked onChange={(v) => { handleSwitch(v, r) }} />)
+      }
     },
     {
       title: '操作',
       dataIndex: 'action',
       key: 'action',
       fixed: 'right',
-      width: 150,
+      width: 200,
       render: (text, record) => {
         return (
           <div>
-            <a type="link" onClick={() => handleShowDrawer('编辑报障用户', 'update', record)}>
+            <a type="link" onClick={() => handleShowDrawer('编辑测试环境', 'update', record)}>
               编辑
             </a>
             <Divider type="vertical" />
-            <Popconfirm title="确定删除该报障用户吗？" onConfirm={() => handleDelete(record.id)}>
+            <Popconfirm title="确定删除该测试环境吗？" onConfirm={() => handleDelete(record.id)}>
               <a type="link">删除</a>
             </Popconfirm>
           </div>
@@ -206,12 +225,45 @@ function TestEnvironmentManage(props) {
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
-        <Form style={{ float: 'right', width: '30%' }}>
-          {getFieldDecorator(
-            'user', {
-            initialValue: '',
-          }
-          )(<Search placeholder="请输入姓名查询" onSearch={values => handleSearch(values)} />)}
+        <Form {...formItemLayout}>
+          <Row>
+            <Col span={7}>
+              <Form.Item label="设备名称及用途">
+                {getFieldDecorator('deviceName', {
+                  initialValue: '',
+                })(<Input placeholder="请输入" allowClear />)}
+              </Form.Item>
+            </Col>
+            <Col span={7}>
+              <Form.Item label="设备型号配置">
+                {getFieldDecorator('deviceConfig', {
+                  initialValue: '',
+                })(<Input placeholder="请输入" allowClear />)}
+              </Form.Item>
+            </Col>
+            <Col span={7}>
+              <Form.Item label="部署应用">
+                {getFieldDecorator('deployApp', {
+                  initialValue: '',
+                })(<Input placeholder="请输入" allowClear />)}
+              </Form.Item>
+            </Col>
+            <Col span={7}>
+              <Form.Item label="是否启用">
+                {getFieldDecorator('deployApp', {
+                  initialValue: '',
+                })(
+                  <Select allowClear>
+                    <Option value="Y">启用</Option>
+                    <Option value="U">停用</Option>
+                  </Select>)}
+              </Form.Item>
+            </Col>
+            <Col span={3} style={{ paddingTop: 4, textAlign: 'right' }}>
+              <Button type='primary' style={{ marginRight: 8 }} onClick={() => handleSearch()}>查询</Button>
+              <Button>重置</Button>
+            </Col>
+          </Row>
         </Form>
         <Button
           style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
@@ -223,7 +275,7 @@ function TestEnvironmentManage(props) {
         </Button>
         <Table
           columns={columns}
-          dataSource={list.rows}
+          dataSource={list.data}
           loading={loading}
           rowKey={(_, index) => index.toString()}
           pagination={pagination}
@@ -243,8 +295,8 @@ function TestEnvironmentManage(props) {
 }
 
 export default Form.create({})(
-  connect(({ disabledusermanage, loading }) => ({
-    list: disabledusermanage.list,
-    loading: loading.models.disabledusermanage,
+  connect(({ testenvironment, loading }) => ({
+    list: testenvironment.list,
+    loading: loading.models.testenvironment,
   }))(TestEnvironmentManage),
 );
