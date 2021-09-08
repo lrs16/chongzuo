@@ -325,3 +325,13 @@ export async function getTimeoutInfo(params) {
     requestType: 'form',
   });
 }
+
+// 清单导出
+export async function releaseListsDownload(params) {
+  return request(`/release/fileProc/exportList`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+    responseType: 'blob',
+  });
+}

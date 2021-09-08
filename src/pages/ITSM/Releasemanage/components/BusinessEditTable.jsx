@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import moment from 'moment';
 import { Table, Input, Radio, Divider, Row, Col, Button } from 'antd';
-import { releaseListEdit, classifyList } from '../services/api'
+import { releaseListEdit, classifyList, releaseListsDownload } from '../services/api'
 import styles from '../index.less';
 
 const { TextArea } = Input;
@@ -21,6 +22,8 @@ function BusinessEditTable(props) {
   const { title, dataSource, type, ChangeValue, loading, isEdit, listmsg } = props;
   const [data, setData] = useState([]);
   const [classify, setClassify] = useState('');
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [selectedRecords, setSelectedRecords] = useState([]);
 
   useEffect(() => {
     if (dataSource && dataSource.length > 0) {
@@ -59,6 +62,42 @@ function BusinessEditTable(props) {
       }
 
     }
+  };
+
+  const onSelectChange = (RowKeys, record) => {
+    setSelectedRowKeys(RowKeys);
+    setSelectedRecords(record);
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+
+  // 清单导出
+  const handleDlownd = () => {
+    let ids = []
+    if (selectedRowKeys.length > 0) {
+      ids = selectedRecords.map(item => {
+        return item.id
+      });
+    } else {
+      ids = data.map(item => {
+        return item.id
+      });
+    };
+    releaseListsDownload({ listIds: ids.toString() }).then(res => {
+      if (res) {
+        const filename = `发布清单${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+        const blob = new Blob([res], { type: 'application/octet-stream' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      }
+    })
   };
 
   const columns = [
@@ -211,10 +250,14 @@ function BusinessEditTable(props) {
           {classify && isEdit && (<div>{Object.values(classify)[0]}</div>)}
           {listmsg && (<div>{Object.values(listmsg)[0]}</div>)}
         </Col>
-        {type === '发布实施' && (<Col span={4} style={{ textAlign: 'right' }}><Button type='primary' >导出清单</Button></Col>)}
+        {type === '发布实施' && (
+          <Col span={4} style={{ textAlign: 'right' }}>
+            <Button type='primary' onClick={() => { handleDlownd() }}>导出清单</Button>
+          </Col>)}
       </Row>
 
       <Table
+        rowSelection={type === '发布实施' ? rowSelection : null}
         columns={type === '发布实施' ? practicedonecolumns : columns}
         dataSource={data}
         bordered

@@ -5,7 +5,6 @@ import moment from 'moment';
 import { Card, Row, Col, Form, DatePicker, Select, Button, Table, Cascader } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import DictLower from '@/components/SysDict/DictLower';
-import ReleseList from '../components/ReleseList';
 
 const { Option } = Select;
 

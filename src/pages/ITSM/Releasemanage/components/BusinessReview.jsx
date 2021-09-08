@@ -6,8 +6,6 @@ import DocumentAtt from './DocumentAtt';
 import ReleseList from './ReleseList';
 
 const { TextArea } = Input;
-const { Option } = Select;
-const RadioGroup = Radio.Group;
 
 const formItemLayout = {
   labelCol: {
@@ -37,7 +35,7 @@ function BusinessReview(props, ref) {
   const [alertvisible, setAlertVisible] = useState(false);  // 超时告警是否显示
   const [alertmessage, setAlertMessage] = useState('');
 
-  const { ChangeSubmitType, ChangeButtype } = useContext(SubmitTypeContext);
+  const { ChangeButtype } = useContext(SubmitTypeContext);
 
   const formRef = useRef();
   useImperativeHandle(ref, () => ({

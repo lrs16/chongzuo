@@ -151,7 +151,6 @@ function TestingFacility(props) {
             onClick={() => newMember()}
           >新增</Button>
           <Button type='danger' style={{ marginRight: 8 }} ghost onClick={() => handelDelete()}>移除</Button>
-          <Button type='primary' >导出清单</Button>
         </div>
         )}
       </Row>

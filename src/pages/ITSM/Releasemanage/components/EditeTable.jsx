@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 import { Table, Row, Button, Col, Cascader, Input, Radio, message, Divider, Select, Tabs, Alert, Tooltip } from 'antd';
 import UserContext from '@/layouts/MenuContext';
 import CheckOneUser from '@/components/SelectUser/CheckOneUser';
 import { dispatchBizUsers } from '@/services/user';
 import styles from '../index.less';
 import OrderContent from './OrderContent';
-import { releaseListEdit, releaseListDel, classifyList } from '../services/api';                   // 版本管理员审批清单添加编辑
+import { releaseListEdit, releaseListDel, classifyList, releaseListsDownload } from '../services/api';                   // 版本管理员审批清单添加编辑
 
 const { TextArea } = Input;
 const InputGroup = Input.Group;
@@ -923,9 +924,29 @@ function EditeTable(props) {
 
   // 清单导出
   const handleDlownd = () => {
-    console.log(selectedRowKeys)
+    let ids = []
+    if (selectedRowKeys.length > 0) {
+      ids = selectedRecords.map(item => {
+        return item.id
+      });
+    } else {
+      ids = data.map(item => {
+        return item.id
+      });
+    };
+    releaseListsDownload({ listIds: ids.toString() }).then(res => {
+      if (res) {
+        const filename = `发布清单${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+        const blob = new Blob([res], { type: 'application/octet-stream' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      }
+    })
   }
-
   return (
     <>
       <h4 style={{ fontSize: '1.1em' }}>
@@ -934,10 +955,10 @@ function EditeTable(props) {
         )}
         {title}
       </h4>
-      {isEdit && (taskName === '版本管理员审核' || taskName === '科室负责人审核' || taskName === '中心领导审核' || taskName === '业务复核') && dutyUnitListMsg && dutyUnits && dutyUnits.length > 1 && (
+      {(taskName === '版本管理员审核' || taskName === '科室负责人审核' || taskName === '中心领导审核') && dutyUnitListMsg && dutyUnits && dutyUnits.length > 1 && (
         <div style={{ paddingBottom: 12 }}>{dutyUnitTotalMsg}</div>
       )}
-      {isEdit && (taskName === '版本管理员审核' || taskName === '科室负责人审核' || taskName === '中心领导审核' || taskName === '业务复核') && dutyUnits && dutyUnits.length > 1 && (
+      {(taskName === '版本管理员审核' || taskName === '科室负责人审核' || taskName === '中心领导审核') && dutyUnits && dutyUnits.length > 1 && (
         <Tabs type='card' onClick={() => setPageinations({ current: 1, pageSize: 2 })} onChange={handleTabChange} activeKey={tabActivekey}>
           {dutyUnits.map((obj) => {
             return [
@@ -949,14 +970,13 @@ function EditeTable(props) {
 
       <Row style={{ marginBottom: 8 }} type='flex' align='bottom' >
         <Col span={16}>
-          {dutyUnitTotalMsg && isEdit && (
+          {dutyUnitTotalMsg && (
             <span key={tabActivekey} style={{ paddingBottom: 12 }}>{tabActivekey}：{dutyUnitListMsg[tabActivekey]}</span>
           )}
           {((taskName === '出厂测试' || taskName === '平台验证' || taskName === '业务验证') && isEdit) && (<span style={{ paddingBottom: 12 }}>{listmsg ? Object.values(listmsg)[0] : Object.values(classify)[0]}</span>)}
           {taskName === '发布实施准备' && (<span style={{ paddingBottom: 12 }}>{listmsg ? Object.values(listmsg)[0] : Object.values(classify)[0]}</span>)}
           {!isEdit && listmsg && (<span style={{ paddingBottom: 12 }}>{Object.values(listmsg)[0]}</span>)}
         </Col>
-
         <Col span={8} style={{ textAlign: 'right' }}>
           {isEdit && (
             <>
@@ -1020,7 +1040,7 @@ function EditeTable(props) {
               )}
             </>
           )}
-          {taskName !== '新建' && (<Button type='primary' onClick={() => handleDlownd()}>导出清单</Button>)}
+          {taskName !== '新建' && (<Button type='primary' disabled={newbutton} onClick={() => handleDlownd()}>导出清单</Button>)}
         </Col>
       </Row>
       <div id='list'>

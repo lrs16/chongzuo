@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import moment from 'moment';
 import { Input, Divider, Table, Row, Col, Button } from 'antd';
-import { classifyList } from '../services/api';
+import { classifyList, releaseListsDownload } from '../services/api';
 
 const InputGroup = Input.Group;
 
@@ -17,6 +18,44 @@ function getQueryVariable(variable) {
 function ReleseList(props) {
   const { dataSource, listmsg, statistics } = props;
   const [classify, setClassify] = useState('');
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [selectedRecords, setSelectedRecords] = useState([]);
+
+  const onSelectChange = (RowKeys, record) => {
+    setSelectedRowKeys(RowKeys);
+    setSelectedRecords(record);
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+  // 清单导出
+  const handleDlownd = () => {
+    let ids = []
+    if (selectedRowKeys.length > 0) {
+      ids = selectedRecords.map(item => {
+        return item.id
+      });
+    } else {
+      ids = dataSource.map(item => {
+        return item.id
+      });
+    };
+    releaseListsDownload({ listIds: ids.toString() }).then(res => {
+      if (res) {
+        const filename = `发布清单${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+        const blob = new Blob([res], { type: 'application/octet-stream' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      }
+    })
+  };
+
   useEffect(() => {
     if (dataSource) {
       classifyList(getQueryVariable("taskId")).then(res => {
@@ -128,11 +167,12 @@ function ReleseList(props) {
         <Col span={20}>
           <span >{listmsg ? Object.values(listmsg)[0] : Object.values(classify)[0]}</span>
         </Col>
-        <Col span={4} style={{ textAlign: 'right' }}><Button type='primary' >导出清单</Button></Col>
+        <Col span={4} style={{ textAlign: 'right' }}><Button type='primary' onClick={() => { handleDlownd() }}  >导出清单</Button></Col>
       </Row>
       )}
       <Table
         columns={columns}
+        rowSelection={rowSelection}
         bordered
         size='middle'
         dataSource={dataSource}
