@@ -20,6 +20,7 @@ function ReleseList(props) {
   const [classify, setClassify] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRecords, setSelectedRecords] = useState([]);
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 2 });
 
   const onSelectChange = (RowKeys, record) => {
     setSelectedRowKeys(RowKeys);
@@ -54,6 +55,32 @@ function ReleseList(props) {
         window.URL.revokeObjectURL(url);
       }
     })
+  };
+
+  // 分页
+  const onShowSizeChange = (page, size) => {
+    setPageinations({
+      ...paginations,
+      pageSize: size,
+    });
+  };
+
+  const changePage = page => {
+    setPageinations({
+      ...paginations,
+      current: page,
+    });
+  };
+
+  const pagination = {
+    showSizeChanger: true,
+    onShowSizeChange: (page, size) => onShowSizeChange(page, size),
+    current: paginations.current,
+    pageSize: paginations.pageSize,
+    pageSizeOptions: ['2', '5', '10', '20', '30', '40', '50'],
+    total: dataSource.length,
+    showTotal: total => `总共  ${total}  条记录`,
+    onChange: page => changePage(page),
   };
 
   useEffect(() => {
@@ -173,10 +200,10 @@ function ReleseList(props) {
       <Table
         columns={columns}
         rowSelection={rowSelection}
+        pagination={pagination}
         bordered
         size='middle'
         dataSource={dataSource}
-        pagination={false}
         rowKey={(_, index) => index.toString()}
         style={{ marginTop: 12 }}
       />

@@ -7,8 +7,10 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SubmitTypeContext from '@/layouts/MenuContext';              // 引用上下文管理组件
 import DictLower from '@/components/SysDict/DictLower';
 import User from '@/components/SelectUser/User';
+import TimeoutModal from '../components/TimeoutModal';
 import Registrat from './components/Registrat';
-import { saveRegister } from './services/api';
+import { saveRegister, getTimeoutInfo } from './services/api';
+import { saveTimeoutMsg, saveReleaseTimeoutMsg } from '../services/api';
 
 
 const Attaches = [
@@ -31,6 +33,8 @@ function Registration(props) {
   const [uservisible, setUserVisible] = useState(false);        // 是否显示选人组件
   const [userchoice, setUserChoice] = useState(false);          // 已经选择人员   
   const [taskId, setTaskId] = useState('');
+  const [orderId, setOrderId] = useState('');
+  const [modalvisible, setModalVisible] = useState(false);
   const [indexvalue, setIndexValue] = useState({ releaseMain: {}, releaseRegister: {}, releaseEnvs: [], releaseLists: [], releaseAttaches: Attaches });
   // 初始化用户信息，流程类型
   useEffect(() => {
@@ -82,6 +86,24 @@ function Registration(props) {
     return register
   };
 
+
+  // 保存超时信息,成功校验表单
+  const postTimeOutMsg = (v) => {
+    if (taskId) {
+      saveReleaseTimeoutMsg({
+        taskId,
+        msgType: 'timeout',
+        orderId,
+        orderType: 'release',
+        ...v
+      }).then(res => {
+        if (res.code === 200) {
+          setUserVisible(true);
+        }
+      });
+    }
+  }
+
   const handleSubmit = () => {
     setUserChoice(false);
     sessionStorage.removeItem('NextflowUserId');
@@ -93,8 +115,21 @@ function Registration(props) {
         saveRegister(register).then(res => {
           if (res.code === 200) {
             sessionStorage.setItem('flowtype', '1');
-            setTaskId(res.data.saveRegister.releaseRegister.taskId);
-            setUserVisible(true);
+            setTaskId(res.data.currentTaskStatus.taskId);
+            setOrderId(res.data.currentTaskStatus.processInstanceId)
+            getTimeoutInfo({ taskId: res.data.currentTaskStatus.taskId }).then(timeoutres => {
+              if (timeoutres.code === 200) {
+                if (timeoutres.data.timeout && !timeoutres.data.reason) {
+                  message.info(timeoutres.data.msg);
+                  setModalVisible(true);
+                };
+                if ((timeoutres.data.timeout && res.data.reason) || !timeoutres.data.timeout) {
+                  setUserVisible(true);
+                };
+              } else {
+                message.error(res.msg)
+              };
+            })
           } else {
             message.error(res.msg)
           }
@@ -242,6 +277,11 @@ function Registration(props) {
           changorder='平台验证'                         //  下一环节名
           ChangeChoice={v => setUserChoice(v)}         //  选人完成返回状态true，通过true判读，进行
           ChangeType={v => (v)}                        //  取消，重置按钮类型         
+        />
+        <TimeoutModal
+          modalvisible={modalvisible}
+          ChangeModalVisible={v => setModalVisible(v)}
+          ChangeTimeOutMsg={v => postTimeOutMsg(v)}
         />
       </PageHeaderWrapper>
     </Spin>

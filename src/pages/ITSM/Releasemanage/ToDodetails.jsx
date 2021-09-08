@@ -118,11 +118,10 @@ function ToDodetails(props) {
         ...v
       }).then(res => {
         switch (butandorder) {
-          case 'goback':
-            // 填写超时信息后，如果是回退弹出回退信息框
-            setVisible(true);
-            break;
           case 'save':
+            break;
+          case 'goback':
+            setVisible(true);
             break;
           default:
             if (res.code === 200) {
@@ -143,7 +142,7 @@ function ToDodetails(props) {
           setModalVisible(true);
           setButandOrder('goback');
         };
-        if ((res.timeout && res.data.reason) || !res.timeout) {
+        if ((res.data.timeout && res.data.reason) || !res.data.timeout) {
           setVisible(true);
         }
       } else {
