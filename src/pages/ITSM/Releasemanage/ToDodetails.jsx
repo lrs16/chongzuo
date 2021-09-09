@@ -13,7 +13,7 @@ import Backoff from './components/Backoff';
 import { saveTimeoutMsg, saveReleaseTimeoutMsg } from '../services/api';
 
 function ToDodetails(props) {
-  const { location, dispatch, loading, loadingopen, allloading, currentTaskStatus, relationCount, submitTimes } = props;
+  const { location, dispatch, loading, loadingopen, allloading, currentTaskStatus, relationCount, submitTimes, info } = props;
   const { taskName, taskId, releaseType, Id, } = location.query;
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [buttype, setButtype] = useState('');                    // 点击的按钮类型
@@ -135,20 +135,29 @@ function ToDodetails(props) {
 
   // 点击回退按钮
   const handleGoback = () => {
-    getTimeoutInfo({ taskId }).then(res => {
-      if (res.code === 200) {
-        if (res.data.timeout && !res.data.reason) {
-          message.info('该发布单已超时，请填写超时原因...')
-          setModalVisible(true);
-          setButandOrder('goback');
-        };
-        if ((res.data.timeout && res.data.reason) || !res.data.timeout) {
-          setVisible(true);
-        }
+    if (taskName === '版本管理员审核' || taskName === '科室负责人审核' || taskName === '中心领导审核') {
+      const orderkeyAndTimeout = info && info.releaseMains && info.releaseMains.filter(item => item.timeoutResult && item.timeoutResult.timeout && !item.timeoutResult.reason);
+      if (orderkeyAndTimeout.length > 0) {
+        message.error('有工单已超时且没有填写超时原因')
       } else {
-        message.error(res.msg)
+        setVisible(true);
       }
-    })
+    } else {
+      getTimeoutInfo({ taskId }).then(res => {
+        if (res.code === 200) {
+          if (res.data.timeout && !res.data.reason) {
+            message.info('该发布单已超时，请填写超时原因...')
+            setModalVisible(true);
+            setButandOrder('goback');
+          };
+          if ((res.data.timeout && res.data.reason) || !res.data.timeout) {
+            setVisible(true);
+          }
+        } else {
+          message.error(res.msg)
+        }
+      })
+    }
   };
 
   // 向接口保存回退原因
@@ -207,7 +216,7 @@ function ToDodetails(props) {
         </Button>
       )}
       {!saved && taskName !== '出厂测试' && taskName !== '发布实施准备' && taskName !== '发布实施' && (
-        <Button type="danger" ghost style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => { handleGoback() }} >
+        <Button type="danger" ghost style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => { handleGoback() }}>
           回退
         </Button>
       )}
@@ -220,9 +229,16 @@ function ToDodetails(props) {
         保存
       </Button>
       {submittype === 1 && (
-        <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => handleClick('flow')} >
-          {taskName === '业务复核' ? '结束' : '流转'}
-        </Button>
+        <>{(taskName === '版本管理员审核' || taskName === '科室负责人审核' || taskName === '中心领导审核') ? (
+          <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('flow')} >
+            流转
+          </Button>
+        ) : (
+          <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => handleClick('flow')} >
+            {taskName === '业务复核' ? '结束' : '流转'}
+          </Button>
+        )}
+        </>
       )}
       {taskName === '出厂测试' && submitTimes !== undefined && submitTimes !== 0 && (
         <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => handleClick('over')} >
@@ -284,8 +300,8 @@ function ToDodetails(props) {
   );
 }
 
-export default connect(({ itsmuser, releasetodo, loading }) => ({
-  userinfo: itsmuser.userinfo,
+export default connect(({ releasetodo, loading }) => ({
+  info: releasetodo.info,
   tasklinks: releasetodo.tasklinks,
   relationCount: releasetodo.relationCount,
   submitTimes: releasetodo.submitTimes,

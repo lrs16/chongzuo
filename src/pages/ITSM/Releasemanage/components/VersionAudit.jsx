@@ -1,10 +1,12 @@
 import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect, useContext } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Row, Col, Form, Input, Alert, DatePicker, Select, Checkbox, Button, Radio, Tabs } from 'antd';
+import { Row, Col, Form, Input, Alert, DatePicker, Select, Checkbox, Button, Radio, Tabs, message } from 'antd';
 import SubmitTypeContext from '@/layouts/MenuContext';
 import DocumentAtt from './DocumentAtt';
 import EditeTable from './EditeTable';
+import TimeoutModal from '../../components/TimeoutModal';
+import { saveTimeoutMsg, saveReleaseTimeoutMsg } from '../../services/api';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -53,6 +55,8 @@ function VersionAudit(props, ref) {
   const [newList, setNewList] = useState(false);
   const [alertvisible, setAlertVisible] = useState(false);  // 超时告警是否显示
   const [alertmessage, setAlertMessage] = useState('');
+  const [modalvisible, setModalVisible] = useState(false);
+  const [timeoutPost, setTimeoutPost] = useState({});
   const { ChangeSubmitType, ChangeButtype, releaseType } = useContext(SubmitTypeContext);
   const required = true;
 
@@ -62,10 +66,14 @@ function VersionAudit(props, ref) {
     ['中心领导审核', info.checkMerge],
   ])
 
-  // 已合并工单
+  // 已合并工单,获取工单号生成数组
   const orderkeys = info.releaseMains && info.releaseMains.map((item) => {
     return item.releaseNo
   })
+
+  // 已合并工单,已超时且未填写超时原因的工单
+  const orderkeyAndTimeout = info.releaseMains && info.releaseMains.filter(item => item.timeoutResult && item.timeoutResult.timeout && !item.timeoutResult.reason);
+
   const formRef = useRef();
   useImperativeHandle(ref, () => ({
     getVal: () => getFieldsValue(),
@@ -190,6 +198,12 @@ function VersionAudit(props, ref) {
   // 复选框
   const onCheckboxChange = (checkds) => {
     setMergeNo(checkds.toString())
+    if (checkds.length === 1) {
+      const target = info.releaseMains.filter(item => item.releaseNo === checkds[0])[0];
+      if (target) {
+        setTimeoutPost(target)
+      }
+    }
   }
 
   // 取消合并
@@ -202,21 +216,55 @@ function VersionAudit(props, ref) {
         flowId,
       },
     });
+  };
+
+  // 填写超时原因
+  const handleTimeoutMsg = () => {
+    if (mergeNo.split(',').length !== 1) {
+      message.error('请选择一条工单填写超时原因')
+    } else {
+      setModalVisible(true);
+    }
+  }
+
+  // 保存超时信息,成功校验表单
+  const postTimeOutMsg = (v) => {
+    saveReleaseTimeoutMsg({
+      taskId: timeoutPost.taskId,
+      orderId: timeoutPost.id,
+      msgType: 'timeout',
+      orderType: 'release',
+      ...v
+    }).then(res => {
+      if (res.code === 200) {
+        const releaseNo = getQueryVariable("Id");
+        dispatch({
+          type: 'releasetodo/openflow',
+          payload: { releaseNo, taskName },
+        });
+      }
+    });
   }
 
   const descriptionopion = (
     <>
       {info.releaseMains && (
         <Checkbox.Group onChange={onCheckboxChange}>
-          {orderkeys.map((obj) => {
-            const flowId = getQueryVariable("Id");
+          {info.releaseMains.map((obj) => {
             return [
-              <Checkbox key={obj} value={obj} disabled={taskName === '版本管理员审核' && obj === flowId}>{obj}</Checkbox>,
+              <Checkbox
+                key={obj.releaseNo}
+                value={obj.releaseNo}
+              // disabled={taskName === '版本管理员审核' && obj === flowId}
+              >
+                <span style={{ color: `${obj.timeoutResult.timeout && !obj.timeoutResult.reason ? '#f00' : ''}` }}>{`${obj.releaseNo}${obj.timeoutResult.timeout && !obj.timeoutResult.reason ? '（超时未填写超时原因）' : ''}`}</span>
+              </Checkbox>,
             ]
           })}
         </Checkbox.Group>
       )}
       {taskName === '版本管理员审核' && (<Button style={{ marginLeft: 30 }} type='link' onClick={() => cancelMerge()}>取消合并</Button>)}
+      {orderkeyAndTimeout.length > 0 && (<Button style={{ marginLeft: 12 }} type='link' onClick={() => handleTimeoutMsg()}>填写超时原因</Button>)}
     </>
   )
   // 选择通过不通过改变流转类型
@@ -407,6 +455,11 @@ function VersionAudit(props, ref) {
           </Col>
         </Form>
       </Row>
+      <TimeoutModal
+        modalvisible={modalvisible}
+        ChangeModalVisible={v => setModalVisible(v)}
+        ChangeTimeOutMsg={v => postTimeOutMsg(v)}
+      />
     </>
   );
 }

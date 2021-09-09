@@ -313,21 +313,27 @@ function WorkOrder(props) {
       case 'save':
         saveVersionAudit()
         break;
-      case 'flow':
+      case 'flow': {
         setUserChoice(false);
         sessionStorage.removeItem('NextflowUserId');
-        VersionAuditRef.current.Forms((err) => {
-          if (err) {
-            message.error('请将信息填写完整')
-          } else if (taskName !== '中心领导审核') {
-            saveVersionAudit();
-            sessionStorage.setItem('flowtype', '1');
-            setUserVisible(true);
-          } else {
-            sessionStorage.setItem('flowtype', '1');
-            saveVersionAudit();
-          }
-        })
+        const orderkeyAndTimeout = info && info.releaseMains && info.releaseMains.filter(item => item.timeoutResult && item.timeoutResult.timeout && !item.timeoutResult.reason);
+        if (orderkeyAndTimeout.length > 0) {
+          message.error('有工单已超时且没有填写超时原因')
+        } else {
+          VersionAuditRef.current.Forms((err) => {
+            if (err) {
+              message.error('请将信息填写完整')
+            } else if (taskName !== '中心领导审核') {
+              saveVersionAudit();
+              sessionStorage.setItem('flowtype', '1');
+              setUserVisible(true);
+            } else {
+              sessionStorage.setItem('flowtype', '1');
+              saveVersionAudit();
+            }
+          })
+        }
+      }
         break;
       case 'noPass':
         sessionStorage.removeItem('NextflowUserId');
