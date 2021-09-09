@@ -40,7 +40,7 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 
-function ServiceProvidersearch(props) {
+function CreditcardTobe(props) {
   const pagetitle = props.route.name;
   const {
     form: {
@@ -62,10 +62,10 @@ function ServiceProvidersearch(props) {
   const searchdata = (values, page, pageSize) => {
     const newValue = {
       ...values,
-        beginTime: values.evaluationInterval?.length ? moment(values.evaluationInterval[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-        endTime: values.evaluationInterval?.length ? moment(values.evaluationInterval[1]).format('YYYY-MM-DD HH:mm:ss') : '', // 发生时间
-        evaluationInterval: '',
-        locked:'1'
+      beginTime: values.evaluationInterval?.length ? moment(values.evaluationInterval[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      endTime: values.evaluationInterval?.length ? moment(values.evaluationInterval[1]).format('YYYY-MM-DD HH:mm:ss') : '', // 发生时间
+      evaluationInterval: '',
+      locked: '0'
     }
     dispatch({
       type: 'performanceappraisal/getscorecardlistPage',
@@ -76,7 +76,7 @@ function ServiceProvidersearch(props) {
         evaluationInterval: '',
         pageNum: page,
         pageSize,
-        locked:'1'
+        locked: '0'
       }
     });
     setTabRecord({ ...newValue })
@@ -114,14 +114,15 @@ function ServiceProvidersearch(props) {
       dataIndex: 'cardNo',
       key: 'cardNo',
       width: 200,
-      render:(text,record) => {
+      render: (text, record) => {
         const gotoDetail = () => {
           router.push({
             pathname: '/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail',
             query: {
               Id: record.cardNo,
-              paramId: record.id,
-              search: true
+              paramId: record.id
+              // paramId:record.id,
+    
             },
             state:{
               dynamicpath: true,
@@ -181,47 +182,47 @@ function ServiceProvidersearch(props) {
       title: '评价开始时间',
       dataIndex: 'beginTime',
       key: 'beginTime',
-      width:180
+      width: 180
     },
     {
       title: '评价结束时间',
       dataIndex: 'endTime',
       key: 'endTime',
-      width:180
+      width: 180
     },
-    // {
-    //   title: '操作',
-    //   dataIndex: 'action',
-    //   fixed: 'right',
-    //   width: 100,
-    //   render: (text, record) => {
-    //     const gotoDetail = () => {
-    //       router.push({
-    //         pathname: '/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail',
-    //         query: {
-    //           id: record.id,
-    //           No: record.cardNo,
-    //           scorecardStatus: record.isEdit,
-    //           search: true
-    //         }
-    //       })
-    //     }
-    //     return (
-    //       <span>
-    //         {/* <a onClick={() => gotoDetail()}>查看</a> */}
-    //         <>
-    //           {/* <Divider type='vertical' /> */}
-    //           <Popconfirm
-    //             title='是否要删除此行？'
-    //             onConfirm={() => handleDelete(record.id)}
-    //           >
-    //             <a>删除</a>
-    //           </Popconfirm>
-    //         </>
-    //       </span>
-    //     )
-    //   }
-    // },
+    {
+      title: '操作',
+      dataIndex: 'action',
+      fixed: 'right',
+      width: 100,
+      render: (text, record) => {
+        const gotoDetail = () => {
+          router.push({
+            pathname: '/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail',
+            query: {
+              id: record.id,
+              No: record.cardNo,
+              scorecardStatus: record.isEdit,
+              search: true
+            }
+          })
+        }
+        return (
+          <span>
+            {/* <a onClick={() => gotoDetail()}>查看</a> */}
+            <>
+              {/* <Divider type='vertical' /> */}
+              <Popconfirm
+                title='是否要删除此行？'
+                onConfirm={() => handleDelete(record.id)}
+              >
+                <a>删除</a>
+              </Popconfirm>
+            </>
+          </span>
+        )
+      }
+    },
   ]
 
 
@@ -266,7 +267,7 @@ function ServiceProvidersearch(props) {
         type: 'performanceappraisal/scorecardExport',
         payload: {
           ...values,
-          id:selectedKeys.toString(),
+          id: selectedKeys.toString(),
           pageNum: paginations.current,
           pageSize: paginations.pageSize
         }
@@ -304,8 +305,8 @@ function ServiceProvidersearch(props) {
     cardSeason: '',
     providerName: '',
     contractName: '',
-    beginTime:'',
-    endTime:''
+    beginTime: '',
+    endTime: ''
   }
 
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
@@ -330,13 +331,13 @@ function ServiceProvidersearch(props) {
         handleReset();
         // setExpand(false);
       };
-      if(location.state.cacheinfo) {
+      if (location.state.cacheinfo) {
         const {
           beginTime,
           endTime
         } = location.state.cacheinfo;
         setFieldsValue({
-          evaluationInterval:beginTime ? [moment(beginTime),moment(endTime)] :''
+          evaluationInterval: beginTime ? [moment(beginTime), moment(endTime)] : ''
         })
       }
     }
@@ -424,7 +425,7 @@ function ServiceProvidersearch(props) {
               <Form.Item label='评价区间'>
                 {
                   getFieldDecorator('evaluationInterval', {
-                    initialValue: cacheinfo.beginTime ? [moment(cacheinfo.beginTime),moment(cacheinfo.endTime)] :''
+                    initialValue: cacheinfo.beginTime ? [moment(cacheinfo.beginTime), moment(cacheinfo.endTime)] : ''
                   })
                     (<RangePicker
                       showTime={{
@@ -504,5 +505,5 @@ export default Form.create({})(
   connect(({ performanceappraisal, loading }) => ({
     scorecardArr: performanceappraisal.scorecardArr,
     loading: loading.models.performanceappraisal
-  }))(ServiceProvidersearch)
+  }))(CreditcardTobe)
 )

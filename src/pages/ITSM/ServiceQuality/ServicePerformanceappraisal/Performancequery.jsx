@@ -1258,7 +1258,7 @@ function Performancequery(props) {
                           onChange={(value, option) => handleChange(value, option, 'clause')}
                           onFocus={() => handleFocus('clause')}
                         >
-                          {(clauseList.records || []).map(obj => [
+                          {((clauseList && clauseList.records) || []).map(obj => [
                             <Option key={obj.id} value={obj.detailed}>
                               <div className={styles.disableuser}>
                                 <span>{obj.orderNo}</span>

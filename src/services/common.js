@@ -62,6 +62,15 @@ export async function getDemandList(params) {
   });
 }
 
+// 关联工单 发布
+export async function getReleaseList(params) {
+  return request(`/common/relation/getDemandList`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
 // 关联工单列表
 export async function queryOrderRelationList(params) {
   return request(`/common/relation/queryOrderRelationList`, {

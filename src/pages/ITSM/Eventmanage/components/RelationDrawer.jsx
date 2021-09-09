@@ -38,6 +38,7 @@ function RelationDrawer(props) {
     }, } = props;
   const [troublestatus, setTroublestatus] = useState([]);
   const [problemstatus, setproblemstatus] = useState([]);
+  const [releasestatus, setReleasestatus] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [collapsed, setCollapsed] = useState(false);
@@ -79,6 +80,13 @@ function RelationDrawer(props) {
     if (orderTypeSuf === 'problem') {
       dispatch({
         type: 'relationorder/fetchproblem',
+        payload: { no, status, pageIndex, pageSize },
+      })
+    }
+
+    if (orderTypeSuf === 'release') {
+      dispatch({
+        type: 'relationorder/fetchrelease',
         payload: { no, status, pageIndex, pageSize },
       })
     }
@@ -130,6 +138,11 @@ function RelationDrawer(props) {
     querkeyVal('problem', 'status').then(res => {
       if (res.code === 200) {
         setproblemstatus(res.data.status)
+      }
+    })
+    querkeyVal('release', 'status').then(res => {
+      if (res.code === 200) {
+        setReleasestatus(res.data.status)
       }
     })
   }, [])

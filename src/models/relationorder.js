@@ -1,4 +1,11 @@
-import { getEventList, getTroubleList, getProblemList, queryOrderRelationList, saveRelation } from '@/services/common';
+import { 
+  getEventList,
+  getTroubleList,
+  getProblemList,
+  queryOrderRelationList,
+  saveRelation,
+  getReleaseList
+     } from '@/services/common';
 import { message } from 'antd';
 
 export default {
@@ -49,6 +56,14 @@ export default {
 
     * fetchproblem({ payload }, { put, call }) {
       const response = yield call(getProblemList, payload);
+      yield put({
+        type: "saveorder",
+        payload: response.data
+      })
+    },
+
+    * fetchrelease({ payload }, { put, call }) {
+      const response = yield call(getReleaseList, payload);
       yield put({
         type: "saveorder",
         payload: response.data

@@ -32,8 +32,6 @@ const Register = React.forwardRef((props, ref) => {
     search,
     loading
   } = props;
-  console.log(contractArr, 'contractArr')
-  console.log(register, 'register')
 
   const required = true;
 
@@ -79,6 +77,9 @@ const Register = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     handleTabledata()
+    // if(register && register.beginTime) {
+    //   setFieldsValue({evaluationInterval:[moment(register.beginTime),moment(register.endTime)]})
+    // }
   }, [register])
 
   const columns = [
@@ -199,7 +200,7 @@ const Register = React.forwardRef((props, ref) => {
       ...value,
       pageNum: 1,
       pageSize: 1000,
-      status:'1'
+      status: '1'
     }
     switch (type) {
       case 'provider':
@@ -215,7 +216,7 @@ const Register = React.forwardRef((props, ref) => {
         if (!providerId) {
           message.error('请先选择服务商哦')
         } else {
-          contractProvider({id:providerId,status:'1'}).then(res => {
+          contractProvider({ id: providerId, status: '1' }).then(res => {
             if (res) {
               const arr = [...(res.data)];
               setSpinLoading(false);
@@ -273,7 +274,6 @@ const Register = React.forwardRef((props, ref) => {
     }
   }
 
-  console.log(contractArr,'contractArr')
 
   return (
     <>
@@ -464,7 +464,7 @@ const Register = React.forwardRef((props, ref) => {
                 <Form.Item label='考核类型'>
                   {
                     getFieldDecorator('assessType', {
-                      initialValue: (register.assessType === '1') ? '功能开发': (register.assessType === '2') ?'系统运维':''
+                      initialValue: (register.assessType === '1') ? '功能开发' : (register.assessType === '2') ? '系统运维' : ''
                     })
                       (<Input disabled='true' />)
                   }
@@ -513,7 +513,8 @@ const Register = React.forwardRef((props, ref) => {
                 <Form.Item label='评价区间'>
                   {
                     getFieldDecorator('evaluationInterval', {
-                      initialValue: register.beginTime ? [moment(register.beginTime),moment(register.endTime)] :''
+                      initialValue: (register && register.beginTime) ? [moment(register.beginTime), moment(register.endTime)] : ''
+
                     })
                       (
                         <RangePicker
@@ -527,6 +528,7 @@ const Register = React.forwardRef((props, ref) => {
                           placeholder="请选择"
                           allowClear
                         />
+
                       )
                   }
                 </Form.Item>

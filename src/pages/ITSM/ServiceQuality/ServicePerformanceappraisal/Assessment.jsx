@@ -442,6 +442,7 @@ function Assessment(props) {
 
   //  获取详细条款数据
   const getclausedetail = (targetId, scoreId) => {
+    console.log(11)
     dispatch({
       type: 'qualityassessment/clauseListpage',
       payload: {
@@ -856,7 +857,7 @@ function Assessment(props) {
         setFieldsValue({
           target2Name: value,
           target2Id: key,
-          clauseName:''
+          clauseName: ''
         })
         getclausedetail(key, scoreId);
         break;
@@ -963,6 +964,8 @@ function Assessment(props) {
       setSelectedKeys([...index])
     }
   }
+
+  console.log(clauseList, 'clauseList')
 
 
 
@@ -1262,7 +1265,7 @@ function Assessment(props) {
                           onChange={(value, option) => handleChange(value, option, 'clause')}
                           onFocus={() => handleFocus('clause')}
                         >
-                          {(clauseList.records || []).map(obj => [
+                          {((clauseList && clauseList.records) || []).map(obj => [
                             <Option key={obj.id} value={obj.detailed}>
                               <div className={styles.disableuser}>
                                 <span>{obj.orderNo}</span>
@@ -1766,6 +1769,7 @@ function Assessment(props) {
 export default Form.create({})(
   connect(({ performanceappraisal, qualityassessment, itsmuser, loading }) => ({
     tobeDealtarr: performanceappraisal.tobeDealtarr,
+    clauseList: qualityassessment.clauseList,
     assessmyAssessarr: performanceappraisal.assessmyAssessarr,
     target2: qualityassessment.target2,
     target1: qualityassessment.target1,

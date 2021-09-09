@@ -87,6 +87,7 @@ function ProviderMaintenance(props) {
     getPerformanceleader();
   }, [])
 
+
   const handleDelete = (id) => {
     return dispatch({
       type: 'qualityassessment/providerDel',

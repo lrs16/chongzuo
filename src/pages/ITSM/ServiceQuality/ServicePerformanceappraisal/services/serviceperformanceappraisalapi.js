@@ -105,7 +105,9 @@ export async function scorecardDel(id) {
 export async function scorecardSubmit(cardId) {
   return request(`/quality/scorecard/submit`,{
     method:'POST',
-    data:JSON.stringify(cardId)
+    data:{id:cardId},
+    requestType:'form'
+    
   })
 }
 

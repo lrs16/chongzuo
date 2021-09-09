@@ -1119,6 +1119,12 @@ export default {
                               component: './ITSM/ServiceQuality/CreditCard/CreditCardRegister'
                             },
                             {
+                              path: '/ITSM/servicequalityassessment/creditcard/creditcardtobe',
+                              name: '计分卡待办',
+                              icon: 'fork',
+                              component: './ITSM/ServiceQuality/CreditCard/CreditcardTobe'
+                            },
+                            {
                               path: '/ITSM/servicequalityassessment/creditcard/creditcardsearch',
                               name: '计分卡查询',
                               icon: 'fork',

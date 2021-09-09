@@ -27,7 +27,7 @@ import {
   providerExport,
   scoreExport,
   clauseUpd,
-  clauseDel
+  clauseDel,
 } from '../services/quality';
 
 import {
@@ -259,6 +259,7 @@ export default {
     type:'target2',
     payload: response
   })
+  
 },
 
   //  导出服务商

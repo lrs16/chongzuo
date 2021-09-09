@@ -28,7 +28,7 @@ const withClick = (element, handleClick = () => { }) => {
   return <element.type {...element.props} onClick={handleClick} />
 }
 
-function AddDutyclassesSetting(props) {
+function AdddutyPersonnelSetting(props) {
   const [visible, setVisible] = useState(false);
   const {
     form: { getFieldDecorator, validateFields },
@@ -72,7 +72,7 @@ function AddDutyclassesSetting(props) {
   }
 
   const disabledHours = (time1, time2, time3) => {
-    if(startTime) {
+    if (startTime) {
       const hours = startTime.split(':');
       const nums = [];
       for (let i = 0; i < hours[0] - 1; i += 1) {
@@ -80,11 +80,11 @@ function AddDutyclassesSetting(props) {
       }
       return nums;
     }
-  
+
   }
 
   const startdisabledHours = () => {
-    if(endTime) {
+    if (endTime) {
       const hours = endTime.split(':');
       console.log('hours: ', hours);
       const nums = [];
@@ -92,7 +92,7 @@ function AddDutyclassesSetting(props) {
         nums.push(Number(hours[0]) + i);
       }
 
-      console.log(nums,'nums')
+      console.log(nums, 'nums')
       return nums;
     }
   }
@@ -111,69 +111,72 @@ function AddDutyclassesSetting(props) {
         centered='true'
       >
         <Form {...formItemLayout}>
-          <Form.Item label='班次编号'>
+          <Form.Item label='值班人员'>
             {
-              getFieldDecorator('NO', {}
-              )(<Input disabled />)
+              getFieldDecorator('person', {
+                rules: [
+                  {
+                    required,
+                    message: '请选择值班人员'
+                  }
+                ]
+              })(<Input />)
+            }
+          </Form.Item>
+
+          <Form.Item label='所属部门'>
+            {
+              getFieldDecorator('unit', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入所属部门'
+                  }
+                ]
+              })(<Input />)
             }
 
           </Form.Item>
 
-          <Form.Item label='班次名称'>
+          <Form.Item label='所属岗位'>
             {
-              getFieldDecorator('name', {}
-              )(<Input />)
+              getFieldDecorator('position', {
+                rules: [
+                  {
+                    required,
+                    message: '请选择所属岗位'
+                  }
+                ]
+              })(<Input />)
             }
 
           </Form.Item>
-
-          <Form.Item label='值班时段'>
+          <Form.Item label='所属班组'>
             {
-              getFieldDecorator('time', {}
-              )(
-                <div>
-                  <TimePicker
-                    disabledHours={startdisabledHours}
-                    format='HH:mm'
-                    onChange={startOnchange}
-                  />
-                  <span style={{ margin: 'auto 3px' }}>-</span>
-                  <TimePicker
-                    disabledHours={disabledHours}
-                    onChange={endOnchange}
-                    format='HH:mm' />
-                </div>
-
-              )
+              getFieldDecorator('Team', {
+                rules: [
+                  {
+                    required,
+                    message: '请选择所属班组'
+                  }
+                ]
+              })(<Input />)
             }
 
           </Form.Item>
-
-          <Form.Item label='启用状态'>
+          <Form.Item label='联系电话'>
             {
-              getFieldDecorator('status', {}
-              )(<Switch />)
-            }
-
-          </Form.Item>
-
-          <Form.Item label='创建人'>
-            {
-              getFieldDecorator('person', {}
-              )(<Input />)
-            }
-
-          </Form.Item>
-
-          <Form.Item label='创建时间'>
-            {
-              getFieldDecorator('time', {}
-              )(<DatePicker />)
+              getFieldDecorator('iphone', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入联系电话'
+                  }
+                ]
+              })(<Input />)
             }
           </Form.Item>
-
         </Form>
-
         <div
           style={{
             position: 'absolute',
@@ -211,4 +214,4 @@ function AddDutyclassesSetting(props) {
   )
 }
 
-export default Form.create({})(AddDutyclassesSetting)
+export default Form.create({})(AdddutyPersonnelSetting)

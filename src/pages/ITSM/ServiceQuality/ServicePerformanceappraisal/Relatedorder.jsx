@@ -142,7 +142,7 @@ function RelevancyOrder(props) {
     <Card>
       <Tabs onChange={callback} activeKey={activeKey}>
         <TabPane tab="故障单" key="trouble" />
-        {/* <TabPane tab="发布单" key="release" /> */}
+        <TabPane tab="发布单" key="release" />
       </Tabs>
       {activeKey === 'trouble' && (
         <Row>

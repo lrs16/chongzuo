@@ -3,7 +3,18 @@ import React, {
   // useEffect 
 } from 'react';
 import { connect } from 'dva';
-import { Card, Row, Col, Form, Input, Button, Table, AutoComplete, Select } from 'antd';
+import AdddutyPersonnelSetting from './components/AdddutyPersonnelSetting';
+import {
+  Card,
+  Row,
+  Col,
+  Form,
+  Input,
+  Button,
+  Table,
+  AutoComplete,
+  Select
+} from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 const { Search } = Input;
@@ -255,34 +266,29 @@ function DutypersonnelSetting(props) {
               </Form.Item>
             </Col>
             <Col span={24} style={{ textAlign: 'right', paddingTop: 4, marginBottom: 24 }}>{extra}</Col>
-            <Col span={24}>
-              <>
-                <Row style={{ marginBottom: 24 }}>
-                  <h4 style={{ float: 'left' }}><span style={{ color: '#f5222d', marginRight: 4, fontWeight: 'normal' }}>*</span>值班人员</h4>
-                  <div style={{ float: 'right' }}>
-                    <Button type='primary' style={{ marginRight: 8 }}>保存</Button>
-                    <Button
-                      type='primary'
-                      style={{ marginRight: 8 }}
-                    // onClick={() => newMember()}
-                    // disabled={newbutton}
-                    >+添加</Button>
-                    <Button type='danger' ghost>移除</Button>
-                  </div>
-                </Row>
-                <Table
-                  columns={columns}
-                  // dataSource={}
-                  bordered
-                  size='middle'
-                  rowKey={(_, index) => index.toString()}
-                  pagination={false}
-                  rowSelection={rowSelection}
-                />
-              </>
-            </Col>
           </Form>
         </Row>
+
+        <AdddutyPersonnelSetting
+          title='新建值班人员设置'
+        >
+          <Button
+            style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+            icon='plus'
+          >
+            新建值班人员设置
+          </Button>
+        </AdddutyPersonnelSetting>
+
+        <Table
+          columns={columns}
+          // dataSource={}
+          bordered
+          size='middle'
+          rowKey={(_, index) => index.toString()}
+          pagination={false}
+          rowSelection={rowSelection}
+        />
       </Card>
     </PageHeaderWrapper >
   );

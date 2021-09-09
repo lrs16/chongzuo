@@ -25,9 +25,8 @@ const alonepath = [
   { path: '/ITSM/servicequalityassessment/detailserviceprovidermaintenance' },
   { path: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform' },
   { path: '/ITSM/servicequalityassessment/addserviceprovidermaintenance' },
-  { path: '/ITSM/servicequalityassessment/detailserviceprovidermaintenance' },
   { path: '/ITSM/servicequalityassessment/detailscoringrulesmaintenance' },
-  { path: '/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail' },
+  // { path: '/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail' },
   { path: '/ITSM/servicequalityassessment/serviceperformanceappraisal/performancequerydetail' },
 ];
 
@@ -51,7 +50,6 @@ const multiplepath = [
   { path: '/ITSM/servicequalityassessment/addserviceprovidermaintenance', type: 'addscoringrulesmaintenance' },
   { path: '/ITSM/servicequalityassessment/creditcard/creditcardregister', type: 'creditcardregister' },
   { path: '/ITSM/servicequalityassessment/addscoringrulesmaintenance', type: 'addscoringrulesmaintenance' },
-  { path: '/ITSM/servicequalityassessment/creditcard/creditcardregister', type: 'creditcardregister' },
   { path: '/automation/automatedjob/jobmanagement/jobconfig/new', type: 'automatedjob' },
 ]
 function Tabrouters(props) {

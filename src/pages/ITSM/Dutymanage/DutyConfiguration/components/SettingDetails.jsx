@@ -28,20 +28,23 @@ const withClick = (element, handleClick = () => { }) => {
   return <element.type {...element.props} onClick={handleClick} />
 }
 
-function AddDutyclassesSetting(props) {
+function SettingDetails(props) {
   const [visible, setVisible] = useState(false);
   const {
-    form: { getFieldDecorator, validateFields },
+    form: { getFieldDecorator, validateFields,setFieldsValue },
     title,
     children,
     onSubmit,
     id,
-    onDelete
+    onDelete,
+    settingDetailsparams
   } = props;
+
 
   const required = true;
 
   const handleopenClick = () => {
+    console.log(settingDetailsparams, 'settingDetailsparams')
     setVisible(true)
   }
 
@@ -72,7 +75,7 @@ function AddDutyclassesSetting(props) {
   }
 
   const disabledHours = (time1, time2, time3) => {
-    if(startTime) {
+    if (startTime) {
       const hours = startTime.split(':');
       const nums = [];
       for (let i = 0; i < hours[0] - 1; i += 1) {
@@ -80,11 +83,11 @@ function AddDutyclassesSetting(props) {
       }
       return nums;
     }
-  
+
   }
 
   const startdisabledHours = () => {
-    if(endTime) {
+    if (endTime) {
       const hours = endTime.split(':');
       console.log('hours: ', hours);
       const nums = [];
@@ -92,13 +95,17 @@ function AddDutyclassesSetting(props) {
         nums.push(Number(hours[0]) + i);
       }
 
-      console.log(nums,'nums')
+      console.log(nums, 'nums')
       return nums;
     }
   }
 
   const disabledMinutes = (time1, time2, time3) => {
 
+  }
+
+  const handleSelecttime = (value) => {
+    setFieldsValue({week:moment(value).format('dddd')})
   }
 
   return (
@@ -109,9 +116,10 @@ function AddDutyclassesSetting(props) {
         title={title}
         width={720}
         centered='true'
+        maskClosable='true'
       >
         <Form {...formItemLayout}>
-          <Form.Item label='班次编号'>
+          <Form.Item label='值班人'>
             {
               getFieldDecorator('NO', {}
               )(<Input disabled />)
@@ -119,15 +127,15 @@ function AddDutyclassesSetting(props) {
 
           </Form.Item>
 
-          <Form.Item label='班次名称'>
+          <Form.Item label='联系电话'>
             {
               getFieldDecorator('name', {}
-              )(<Input />)
+              )(<Input disabled/>)
             }
 
           </Form.Item>
 
-          <Form.Item label='值班时段'>
+          <Form.Item label='班次名称'>
             {
               getFieldDecorator('time', {}
               )(
@@ -149,23 +157,27 @@ function AddDutyclassesSetting(props) {
 
           </Form.Item>
 
-          <Form.Item label='启用状态'>
+          <Form.Item label='值班日期'>
             {
               getFieldDecorator('status', {}
-              )(<Switch />)
+              )(
+                <DatePicker
+                  showTime
+                  onOk={handleSelecttime}
+                />)
             }
 
           </Form.Item>
 
-          <Form.Item label='创建人'>
+          <Form.Item label='值班星期'>
             {
-              getFieldDecorator('person', {}
-              )(<Input />)
+              getFieldDecorator('week', {}
+              )(<Input disabled/>)
             }
 
           </Form.Item>
 
-          <Form.Item label='创建时间'>
+          <Form.Item label='值班时段'>
             {
               getFieldDecorator('time', {}
               )(<DatePicker />)
@@ -211,4 +223,4 @@ function AddDutyclassesSetting(props) {
   )
 }
 
-export default Form.create({})(AddDutyclassesSetting)
+export default Form.create({})(SettingDetails)

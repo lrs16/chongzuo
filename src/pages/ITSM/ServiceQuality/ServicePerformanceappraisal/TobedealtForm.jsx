@@ -426,8 +426,7 @@ function TobedealtForm(props) {
       }
     })
   }
-  console.log(taskData,'taskData')
-
+  
   useEffect(() => {
     if (userchoice || butandorder) {
       gotoCirapi();

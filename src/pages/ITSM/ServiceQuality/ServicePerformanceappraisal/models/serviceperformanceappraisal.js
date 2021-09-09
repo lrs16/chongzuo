@@ -140,34 +140,46 @@ export default {
   },
 
   *scorecardSave({ payload }, { call, put }) {
-    const response = yield call(scorecardSave,payload);
-    if(response.code === 200) {
-      router.push({
-        pathname:'/ITSM/servicequalityassessment/creditcard/creditcardregister',
-        query:{
-          tabid: sessionStorage.getItem('tabid'),
-          closecurrent: true,
-        }
-      });
-      const { id,cardNo } = response.data;
-      if(cardNo) {
-        router.push({
-          pathname:'/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail',
-          query:{
-            id,
-            mainId:cardNo,
-            orderNo:cardNo,
+      if(payload.id) {
+        return yield call(scorecardSave,payload);
+      } 
+
+      if(!payload.id) {
+        const response = yield call(scorecardSave,payload);
+        if(response.code === 200 && response.data && response.data.id) {
+          router.push({
+            pathname:'/ITSM/faultmanage/registration',
+            query:{
+              tabid: sessionStorage.getItem('tabid'),
+              closecurrent: true,
+            }
+          });
+          const { id,cardNo } = response.data;
+          if(cardNo) {
+            router.push({
+              pathname:'/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail',
+              query:{
+                paramId:id,
+                Id:cardNo,
+              },
+              state:{
+                dynamicpath: true,
+                menuDesc: '记分详情页',
+                // status: record.status,
+              }
+            })
           }
-        })
+        } else {
+          message.error('保存失败')
+        }
       }
+
+      return null;
       
-    } else {
-      message.error(response.msg)
-    }
   },
 
-  *getScorecardetail({ payload }, { call, put }) {
-    const response = yield call(scorecardId,payload);
+  *getScorecardetail({ payload:{id} }, { call, put }) {
+    const response = yield call(scorecardId,id);
     yield put ({
       type:'scorecardetail',
       payload:response
