@@ -93,7 +93,7 @@ function ToDodetails(props) {
     getTimeoutInfo({ taskId }).then(res => {
       if (res.code === 200) {
         if (res.data.timeout && !res.data.reason) {
-          message.info(res.data.msg)
+          message.info(res.data.msg);
           setModalVisible(true);
           setButandOrder(type);
         };
@@ -135,7 +135,7 @@ function ToDodetails(props) {
 
   // 点击回退按钮
   const handleGoback = () => {
-    if (taskName === '版本管理员审核' || taskName === '科室负责人审核' || taskName === '中心领导审核') {
+    if ((taskName === '版本管理员审核' || taskName === '科室负责人审核' || taskName === '中心领导审核') && info && info.releaseMains && info.releaseMains.length > 1) {
       const orderkeyAndTimeout = info && info.releaseMains && info.releaseMains.filter(item => item.timeoutResult && item.timeoutResult.timeout && !item.timeoutResult.reason);
       if (orderkeyAndTimeout.length > 0) {
         message.error('有工单已超时且没有填写超时原因')
@@ -146,7 +146,7 @@ function ToDodetails(props) {
       getTimeoutInfo({ taskId }).then(res => {
         if (res.code === 200) {
           if (res.data.timeout && !res.data.reason) {
-            message.info('该发布单已超时，请填写超时原因...')
+            message.info(res.data.msg);
             setModalVisible(true);
             setButandOrder('goback');
           };
@@ -229,7 +229,7 @@ function ToDodetails(props) {
         保存
       </Button>
       {submittype === 1 && (
-        <>{(taskName === '版本管理员审核' || taskName === '科室负责人审核' || taskName === '中心领导审核') ? (
+        <>{(taskName === '版本管理员审核' || taskName === '科室负责人审核' || taskName === '中心领导审核') && info && info.releaseMains && info.releaseMains.length > 1 ? (
           <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('flow')} >
             流转
           </Button>
