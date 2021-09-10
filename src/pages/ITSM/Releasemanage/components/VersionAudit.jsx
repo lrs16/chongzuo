@@ -252,7 +252,7 @@ function VersionAudit(props, ref) {
 
   const descriptionopion = (
     <>
-      {info.releaseMains && (
+      {info.releaseMains && isEdit && (
         <Checkbox.Group onChange={onCheckboxChange}>
           {info.releaseMains.map((obj) => {
             return [

@@ -20,7 +20,8 @@ import { DownOutlined } from '@ant-design/icons';
 import { ChartCard } from '@/components/Charts';
 import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
 import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
-// import FromOverVies from './FromOverVies';
+import TypeContext from '@/layouts/MenuContext';
+import FromOverVies from './FromOverVies';
 
 const { TabPane } = Tabs;
 
@@ -162,37 +163,33 @@ const DropdownMenu = props => {
   );
 };
 
-// export const FromContext = createContext();
-
 function OverVies(props) {
-  const { loading, dispatch, list, Donutdata, Smoothdata, match } = props;
+  const { loading, dispatch, list, Donutdata, Smoothdata, activeTabInfo } = props;
   // const Donuttitle = props.route.name;
   const Linetitle = '趋势';
   const dataSource = list.data;
-  const { path } = match;
-  const pagename = path.substring(path.lastIndexOf('/') + 1);
-  const pagetype = keysmap.get(pagename);
   const [querykeys, setQueryKeys] = useState({ type: '', configstatus: '', elimination: '' });
   const [selectedRowKeys, setSelectionRow] = useState([]);
   const [selectRowdata, setSelectdata] = useState([]);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
+
   const getdatas = () => {
     dispatch({
-      type: 'alarmovervies/fetchoverdonut',
-      payload: { key: pagename },
+      type: 'measuralarm/fetchoverdonut',
+      payload: { key: activeTabInfo.tab },
     });
     dispatch({
-      type: 'alarmovervies/fetchoversmooth',
-      payload: { key: pagename },
+      type: 'measuralarm/fetchoversmooth',
+      payload: { key: activeTabInfo.tab },
     });
   };
 
   const searchdata = (values, page, size) => {
     dispatch({
-      type: 'alarmovervies/fetchlist',
+      type: 'measuralarm/fetchlist',
       payload: {
         ...values,
-        type: pagetype,
+        type: activeTabInfo.tab,
         pageSize: size,
         current: page,
       },
@@ -222,9 +219,11 @@ function OverVies(props) {
   };
 
   useEffect(() => {
-    getdatas();
-    setQueryKeys(querykeys);
-  }, [path]);
+    if (activeTabInfo) {
+      getdatas();
+      setQueryKeys(querykeys);
+    }
+  }, [activeTabInfo]);
 
   useEffect(() => {
     searchdata(querykeys, paginations.current, paginations.pageSize);
@@ -310,15 +309,15 @@ function OverVies(props) {
         </Col>
       </Row>
       <Card style={{ marginTop: 24 }}>
-        {/* <FromContext.Provider value={{ setQueryKeys }}>
+        <TypeContext.Provider value={{ setQueryKeys }}>
           <FromOverVies />
-        </FromContext.Provider> */}
+        </TypeContext.Provider>
         <div style={{ margin: '10px 0 24px 0' }}>
           <Button type="primary" style={{ marginRight: 8 }} onClick={handleConfig}>
             确认告警
           </Button>
           <Button style={{ marginRight: 8 }}>取消确认</Button>
-          <DropdownMenu selectedRowKeys={selectedRowKeys} match={match} datas={selectRowdata} />
+          <DropdownMenu selectedRowKeys={selectedRowKeys} datas={selectRowdata} />
           <Button type="danger" ghost style={{ marginRight: 8 }}>
             手工消除
           </Button>
@@ -351,9 +350,9 @@ function OverVies(props) {
   );
 }
 
-export default connect(({ alarmovervies, loading }) => ({
-  list: alarmovervies.list,
-  Donutdata: alarmovervies.Donutdata,
-  Smoothdata: alarmovervies.Smoothdata,
-  loading: loading.models.alarmovervies,
+export default connect(({ measuralarm, loading }) => ({
+  list: measuralarm.list,
+  Donutdata: measuralarm.Donutdata,
+  Smoothdata: measuralarm.Smoothdata,
+  loading: loading.models.measuralarm,
 }))(OverVies);

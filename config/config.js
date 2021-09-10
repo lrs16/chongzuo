@@ -1477,7 +1477,7 @@ export default {
                             },
                           ]
                         },
-                        
+
                       ]
                     },
                     {
@@ -1632,161 +1632,13 @@ export default {
                   routes: [
                     {
                       path: '/alarmmanage',
-                      redirect: '/alarmmanage/measuralarmnew',
-                    },
-                    {
-                      path: '/alarmmanage/measuralarmnew',
-                      name: '计量业务告警',
-                      icon: 'interaction',
-                      component: './Alarmmanage/MeasurAlarmNew',
+                      redirect: '/alarmmanage/measuralarm',
                     },
                     {
                       path: '/alarmmanage/measuralarm',
-                      name: '计量业务告警旧',
+                      name: '计量业务告警',
                       icon: 'interaction',
-                      routes: [
-                        {
-                          path: '/alarmmanage/measuralarm',
-                          redirect: '/alarmmanage/measuralarm/alarmoverview',
-                        },
-                        {
-                          path: '/alarmmanage/measuralarm/alarmoverview',
-                          name: '告警概览',
-                          icon: 'cloud-server',
-                          component: './Alarmmanage/MeasurAlarm/AlarmOverview',
-                          routes: [
-                            {
-                              path: '/alarmmanage/measuralarm/alarmoverview',
-                              redirect: '/alarmmanage/measuralarm/alarmoverview/overview',
-                            },
-                            {
-                              path: '/alarmmanage/measuralarm/alarmoverview/overview',
-                              name: '告警概览',
-                              component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
-                            },
-                            {
-                              path: '/alarmmanage/measuralarm/alarmoverview/overview/workorder',
-                              name: '派发工单',
-                              component: './Alarmmanage/MeasurAlarm/AlarmOverview/WorkOrder',
-                            },
-                            {
-                              path: '/alarmmanage/measuralarm/alarmoverview/quotas',
-                              name: '业务指标告警',
-                              component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
-                            },
-                            {
-                              path: '/alarmmanage/measuralarm/alarmoverview/databaseterminal',
-                              name: '终端在线和入库告警',
-                              component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
-                            },
-                            {
-                              path: '/alarmmanage/measuralarm/alarmoverview/connector',
-                              name: '接口数据核查告警',
-                              component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
-                            },
-                            {
-                              path: '/alarmmanage/measuralarm/alarmoverview/KAFKA',
-                              name: 'KAFKA消费告警',
-                              component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
-                            },
-                            {
-                              path: '/alarmmanage/measuralarm/alarmoverview/KAFKA0',
-                              name: 'KAFKA消费（凌晨）告警',
-                              component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
-                            },
-                            {
-                              path: '/alarmmanage/measuralarm/alarmoverview/sysrun',
-                              name: '主站系统运行告警',
-                              component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
-                            },
-                          ],
-                        },
-                        {
-                          path: '/alarmmanage/measuralarm/details',
-                          name: '告警明细信息',
-                          icon: 'cloud-server',
-                          component: './Alarmmanage/MeasurAlarm/Details',
-                        },
-                        {
-                          path: '/alarmmanage/measuralarm/details/detailview/:detailsid',
-                          name: '告警详细信息',
-                          icon: 'cloud-server',
-                          hideInMenu: true,
-                          component: './Alarmmanage/MeasurAlarm/DetailView',
-                        },
-                        {
-                          path: '/alarmmanage/measuralarm/syssetting',
-                          icon: 'cloud-server',
-                          name: '系统警告设定',
-                          component: './Alarmmanage/MeasurAlarm/SysSetting/index',
-                        },
-                        {
-                          path: '/alarmmanage/measuralarm/noticesetting',
-                          icon: 'cloud-server',
-                          name: '告警通知设置',
-                          component: './Alarmmanage/MeasurAlarm/NoticeSetting',
-                          routes: [
-                            {
-                              path: '/alarmmanage/measuralarm/noticesetting',
-                              redirect: '/alarmmanage/measuralarm/noticesetting/notifygroup',
-                            },
-                            {
-                              path: '/alarmmanage/measuralarm/noticesetting/notifygroup',
-                              name: '告警通知组设置',
-                              component: './Alarmmanage/MeasurAlarm/NotifyGroup',
-                            },
-                            {
-                              path: '/alarmmanage/measuralarm/noticesetting/notifyperson',
-                              name: '告警联系人设置',
-                              component: './Alarmmanage/MeasurAlarm/NotifyPerson',
-                            },
-                          ],
-                        },
-                      ],
-                    },
-                    {
-                      path: '/alarmmanage/basicalarm',
-                      icon: 'cloud-server',
-                      name: '基础平台告警',
-                      routes: [
-                        {
-                          path: '/alarmmanage/basicalarm',
-                          redirect: '/alarmmanage/basicalarm/currentalarm',
-                        },
-                        {
-                          path: '/alarmmanage/basicalarm/currentalarm',
-                          name: '当前告警',
-                          component: './Alarmmanage/BasicAlarm/CurrentAlarm',
-                        },
-                        {
-                          path: '/alarmmanage/basicalarm/historicalalarm',
-                          name: '历史告警',
-                          component: './Alarmmanage/BasicAlarm/HistoricalAlarm',
-                        },
-                        {
-                          path: '/alarmmanage/basicalarm/alarmstrategy',
-                          name: '告警策略',
-                          component: './Alarmmanage/BasicAlarm/AlarmStrategy',
-                        },
-                        {
-                          path: '/alarmmanage/basicalarm/maintenanceplan',
-                          name: '维护计划',
-                          component: './Alarmmanage/BasicAlarm/MaintenancePlan',
-                        },
-                        {
-                          path: '/alarmmanage/basicalarm/alarmstrategy/strategydetail/:detailsid',
-                          name: '告警策略详细信息',
-                          icon: 'cloud-server',
-                          hideInMenu: true,
-                          component: './Alarmmanage/BasicAlarm/StrategyDetail',
-                        },
-                        {
-                          path: '/alarmmanage/basicalarm/alarmstrategy/strategyadd',
-                          name: '新增策略',
-                          hideInMenu: true,
-                          component: './Alarmmanage/BasicAlarm/StrategyAddEdit',
-                        },
-                      ],
+                      component: './Alarmmanage/MeasurAlarm',
                     },
                   ],
                 },

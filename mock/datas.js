@@ -402,15 +402,15 @@ const overDonut = [
 function mocktypedonut(key) {
   const list = [];
   switch (key) {
-    case 'overview':
-      for (let i = 0; i < 7; i += 1) {
+    case '告警概览':
+      for (let i = 0; i < 5; i += 1) {
         list.push({
           type: ['业务指标', '终端在线和入库', '接口数据', 'KAFKA中间件', '主站系统运行'][i % 5],
           value: Random.integer(100, 1000),
         });
       }
       break;
-    case 'quotas':
+    case '业务指标监控告警':
       for (let i = 0; i < 6; i += 1) {
         list.push({
           type: ['终端覆盖率', '完整率', '自动抄表率', '关口0点采集', '关口整点采集', '售电量分析'][
@@ -420,7 +420,7 @@ function mocktypedonut(key) {
         });
       }
       break;
-    case 'databaseterminal':
+    case '终端在线和入库告警':
       for (let i = 0; i < 3; i += 1) {
         list.push({
           type: ['终端在线率', '入库数量（整点）', '入库数量（0-7点）'][i % 3],
@@ -428,7 +428,7 @@ function mocktypedonut(key) {
         });
       }
       break;
-    case 'connector':
+    case '接口数据核查告警':
       for (let i = 0; i < 5; i += 1) {
         list.push({
           type: [
@@ -442,7 +442,7 @@ function mocktypedonut(key) {
         });
       }
       break;
-    case 'KAFKA':
+    case 'KAFKA消费告警':
       for (let i = 0; i < 9; i += 1) {
         list.push({
           type: [
@@ -460,25 +460,7 @@ function mocktypedonut(key) {
         });
       }
       break;
-    case 'KAFKA0':
-      for (let i = 0; i < 9; i += 1) {
-        list.push({
-          type: [
-            'kafka节点监控',
-            '下行主题-低压相关',
-            '下行主题-其他回复接口',
-            '下行主题-广西102关口方面二区和安全接入区',
-            '下行主题-广西102档案下发（关口相关）',
-            '上行主题-低压相关',
-            '上行主题-其他回复接口',
-            '上行主题-广西102关口方面二区和安全接入区',
-            '上行主题-广西102档案下发（关口相关）',
-          ][i % 9],
-          value: Random.integer(100, 1000),
-        });
-      }
-      break;
-    case 'sysrun':
+    case '主站系统运行告警':
       for (let i = 0; i < 4; i += 1) {
         list.push({
           type: ['登录检测', '数据召测-低压', '数据召测-负控配变', '数据召测-厂站'][i % 4],
@@ -496,7 +478,7 @@ function mocktypeline(key) {
   const count = moment().format('DD');
   const list = [];
   switch (key) {
-    case 'overview':
+    case '告警概览':
       for (let i = 0; i < 7; i += 1) {
         for (let j = 1; j <= count; j += 1) {
           list.push({
@@ -515,7 +497,7 @@ function mocktypeline(key) {
         }
       }
       break;
-    case 'quotas':
+    case '业务指标监控告警':
       for (let i = 0; i < 7; i += 1) {
         for (let j = 1; j <= count; j += 1) {
           list.push({
@@ -534,7 +516,7 @@ function mocktypeline(key) {
         }
       }
       break;
-    case 'databaseterminal':
+    case '终端在线和入库告警':
       for (let i = 0; i < 4; i += 1) {
         for (let j = 1; j <= count; j += 1) {
           list.push({
@@ -550,7 +532,7 @@ function mocktypeline(key) {
         }
       }
       break;
-    case 'connector':
+    case '接口数据核查告警':
       for (let i = 0; i < 6; i += 1) {
         for (let j = 1; j <= count; j += 1) {
           list.push({
@@ -568,7 +550,7 @@ function mocktypeline(key) {
         }
       }
       break;
-    case 'KAFKA':
+    case 'KAFKA消费告警':
       for (let i = 0; i < 10; i += 1) {
         for (let j = 1; j <= count; j += 1) {
           list.push({
@@ -590,29 +572,7 @@ function mocktypeline(key) {
         }
       }
       break;
-    case 'KAFKA0':
-      for (let i = 0; i < 10; i += 1) {
-        for (let j = 1; j <= count; j += 1) {
-          list.push({
-            date: `${j}`,
-            name: [
-              '月度KAFKA消费告警总数',
-              'kafka节点监控',
-              '下行主题-低压相关',
-              '下行主题-其他回复接口',
-              '下行主题-广西102关口方面二区和安全接入区',
-              '下行主题-广西102档案下发（关口相关）',
-              '上行主题-低压相关',
-              '上行主题-其他回复接口',
-              '上行主题-广西102关口方面二区和安全接入区',
-              '上行主题-广西102档案下发（关口相关）',
-            ][i % 6],
-            value: Random.integer(0, 60),
-          });
-        }
-      }
-      break;
-    case 'sysrun':
+    case '主站系统运行告警':
       for (let i = 0; i < 5; i += 1) {
         for (let j = 1; j <= count; j += 1) {
           list.push({

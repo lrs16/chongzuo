@@ -9,6 +9,7 @@ import {
   Interaction,
   Coordinate,
 } from "bizcharts";
+import DataSet from '@antv/data-set';
 
 const sliceNumber = 0.01; // 自定义 other 的图形，增加两条线
 
@@ -34,7 +35,17 @@ registerShape("interval", "sliceShape", {
 class DonutPCT extends Component {
   render() {
     const { data, total, totaltitle, height, padding, onGetVal } = this.props;
-
+    const { DataView } = DataSet;
+    // const dv = new DataView();
+    // dv.source(data).transform({
+    //   type: 'proportion',
+    //   field: 'value',
+    //   dimension: 'type',
+    //   groupBy: ['type'],
+    //   as: 'proportion',
+    // });
+    // console.log(data)
+    // console.log(dv.rows)
     return (
       <div>
         <div style={{ position: 'absolute', left: '50%', top: '42%', width: 100, textAlign: 'center', marginLeft: '-50px' }} >

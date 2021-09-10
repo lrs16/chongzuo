@@ -3,7 +3,6 @@ import request from '@/utils/request';
 
 // 告警概览:列表
 export async function queryAlarmList(params) {
-  console.log(JSON.stringify(params));
   return request(`/api/alarmmanage/overview`, {
     method: 'POST',
     body: JSON.stringify(params),

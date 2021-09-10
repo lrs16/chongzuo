@@ -24,6 +24,7 @@ function BusinessEditTable(props) {
   const [classify, setClassify] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRecords, setSelectedRecords] = useState([]);
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 2 });
 
   useEffect(() => {
     if (dataSource && dataSource.length > 0) {
@@ -60,7 +61,6 @@ function BusinessEditTable(props) {
       } else {
         releaseListEdit(target);
       }
-
     }
   };
 
@@ -98,6 +98,33 @@ function BusinessEditTable(props) {
         window.URL.revokeObjectURL(url);
       }
     })
+  };
+
+
+  // 分页
+  const onShowSizeChange = (page, size) => {
+    setPageinations({
+      ...paginations,
+      pageSize: size,
+    });
+  };
+
+  const changePage = page => {
+    setPageinations({
+      ...paginations,
+      current: page,
+    });
+  };
+
+  const pagination = {
+    showSizeChanger: true,
+    onShowSizeChange: (page, size) => onShowSizeChange(page, size),
+    current: paginations.current,
+    pageSize: paginations.pageSize,
+    pageSizeOptions: ['2', '5', '10', '20', '30', '40', '50'],
+    total: data.length,
+    showTotal: total => `总共  ${total}  条记录`,
+    onChange: page => changePage(page),
   };
 
   const columns = [
@@ -263,7 +290,7 @@ function BusinessEditTable(props) {
         bordered
         size='middle'
         rowKey={(_, index) => index.toString()}
-        pagination={false}
+        pagination={type === '发布实施' ? pagination : false}
         scroll={{ x: 1700 }}
         loading={loading}
         style={{ marginTop: 12 }}

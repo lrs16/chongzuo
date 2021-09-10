@@ -28,7 +28,7 @@ function MeasurAlarm(props) {
       tabActiveKey={tabActivekey}
       onTabChange={handleTabChange}
     >
-      {tabActivekey === 'today' && (<Today />)}
+      {tabActivekey === 'today' && (<Today match={props.match} />)}
       {tabActivekey === 'all' && (<All />)}
     </PageHeaderWrapper >
   );

@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Row, Col, Form, Input, Select, Button, DatePicker } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
-import { FromContext } from '../OverVies';
+import TypeContext from '@/layouts/MenuContext';
 
 const { Option } = Select;
 
@@ -85,7 +85,7 @@ const formItemLayout = {
 
 function FromOverVies(props) {
   const { getFieldDecorator, resetFields, validateFields } = props.form;
-  const { setQueryKeys } = useContext(FromContext);
+  const { setQueryKeys } = useContext(TypeContext);
   const [expand, setExpand] = useState(false);
   const [monitorcontent, setMonitorContent] = useState(monitormap[0]);
 
@@ -224,10 +224,10 @@ function FromOverVies(props) {
         )}
         {expand === true && (
           <Col span={24} style={{ textAlign: 'right' }}>
-            <Button type="primary" onClick={handleSearch}>
+            <Button type="primary" onClick={() => handleSearch()}>
               查 询
             </Button>
-            <Button style={{ marginLeft: 8 }} onClick={handleReset}>
+            <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>
               重 置
             </Button>
             <Button
