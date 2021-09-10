@@ -368,7 +368,6 @@ function Performancequery(props) {
     loading,
   } = props;
 
-  console.log(clauseList, 'clauseList');
   const [performanceLeader, setPerformanceLeader] = useState('');
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [contractArr, setContractArr] = useState([]);
@@ -400,7 +399,6 @@ function Performancequery(props) {
 
   //  根据考核类型查询一级指标
   const getTarget1 = type => {
-    console.log(1);
     dispatch({
       type: 'qualityassessment/scoreGetTarget1',
       payload: type || '',
@@ -408,7 +406,6 @@ function Performancequery(props) {
   };
   //  根据考核类型查询二级指标
   const getTarget2 = id => {
-    console.log(2);
     dispatch({
       type: 'qualityassessment/scoreGetTarget2',
       payload: id,
@@ -1009,9 +1006,6 @@ function Performancequery(props) {
       setSelectedKeys([...index]);
     },
   };
-
-  console.log(target1, 'target1');
-  console.log(target2, 'target2');
 
   const extra = (
     <>

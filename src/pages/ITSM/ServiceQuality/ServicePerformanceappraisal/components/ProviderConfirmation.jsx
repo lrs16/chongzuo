@@ -27,8 +27,6 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
     ChangeFiles,
   } = props;
 
-  console.log(providerConfirmation,'providerConfirmation')
-
   const [showContent, setShowContent] = useState('1');
   const [fileslist, setFilesList] = useState([]);
   const [selectdata, setSelectData] = useState('');
@@ -55,8 +53,6 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
     setShowContent(e.target.value);
     selectPersonstate(e.target.value)
   }
-
-  console.log(providerConfirmation.confirmerName,'providerConfirmation')
 
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>

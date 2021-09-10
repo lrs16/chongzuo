@@ -253,7 +253,6 @@ const Register = React.forwardRef((props, ref) => {
       case 'director':
         searchUsers({ userName: value }).then(res => {
           if (res) {
-            console.log('res: ', res);
             const arr = [...res.data];
             setSpinLoading(false);
             setDirectorlist(arr);
@@ -268,8 +267,6 @@ const Register = React.forwardRef((props, ref) => {
   // 选择下拉值，信息回填
   const handleDisableduser = (v, opt, type) => {
     const { id, providerName, scoreName, assessType, userName } = opt.props.disableuser;
-    console.log('userName: ', userName);
-    console.log('id: ', id);
     switch (type) {
       case 'provider':
         setFieldsValue({

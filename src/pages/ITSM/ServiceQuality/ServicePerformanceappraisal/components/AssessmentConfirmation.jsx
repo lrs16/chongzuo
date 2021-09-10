@@ -86,8 +86,6 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
     }
   };
 
-  console.log(noEdit, 'noEdit');
-
   const appraisalStatus = getTypebyTitle('考核状态');
 
   return (

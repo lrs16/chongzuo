@@ -124,13 +124,10 @@ function Performancequerydetail(props) {
         hisTasks[0]['服务绩效考核登记'].providerId
       ) {
         detailId = hisTasks[0]['服务绩效考核登记'].providerId;
-        console.log('detailId: ', detailId);
       }
       getContrractname((currentTask && currentTask.providerId) || detailId);
     }
   }, [taskData]);
-
-  console.log(taskData, 'taskData');
 
   const tabList = [
     {

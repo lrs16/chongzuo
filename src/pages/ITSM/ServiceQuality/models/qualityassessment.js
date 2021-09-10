@@ -268,7 +268,6 @@ export default {
   },
 
   *scoreExport({ payload }, { call, put }) {
-    console.log('payload: ', payload);
     return yield call(scoreExport,payload)
   },
   //  更新条款
@@ -391,7 +390,6 @@ export default {
     },
 //  清除一二级
     clearListDrop(state,action) {
-      console.log('lplp')
       return {
         ...state,
         clauseList:[],

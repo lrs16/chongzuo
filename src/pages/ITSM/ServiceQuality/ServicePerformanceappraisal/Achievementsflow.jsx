@@ -25,15 +25,11 @@ function Achievementsflow(props) {
 
   const imgsrc = () => {
     const img = document.createElement('img');
-    console.log('img: ', img);
     if(img){
       img.src = window.URL.createObjectURL(imageSource);
       document.getElementById('divimg').appendChild(img);
     }
   };
-
-
-  console.log(imageSource.type, 'imageSource')
 
   useEffect(() => {
     if (imageSource !== '' && imageSource.type && document.getElementsByTagName('img').length < 2) {

@@ -114,8 +114,6 @@ function Contract(props) {
     }
 
     if (!startTime && contract.signTime) {
-      console.log(2)
-      console.log(contract.signTime,'contract.signTime')
       return current < moment(contract.signTime)
     }
   }

@@ -222,7 +222,6 @@ function ScoringRulesmaintenance(props) {
 
   const rowSelection = {
     onChange: (index, handleSelect) => {
-      console.log('index, handleSelect: ', index, handleSelect);
       setSelectedKeys([...index])
       setSelectedRows([...handleSelect])
     }

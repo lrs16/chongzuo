@@ -185,7 +185,6 @@ function TobedealtForm(props) {
       taskData.currentTask &&
       taskData.hisTasks
     ) {
-      console.log(currentTask, 'currentTask');
       const { providerId, scoreId, target1Id, target2Id, assessType } = currentTask;
       let comfirmScoreid;
       if (taskData && taskData.clause && taskData.clause.scoreId) {
@@ -196,8 +195,6 @@ function TobedealtForm(props) {
       if (hisTasks && hisTasks[0] && hisTasks[0]['服务绩效考核登记']) {
         noeditProviderid = hisTasks[0]['服务绩效考核登记'].providerId;
       }
-
-      console.log(noeditProviderid, 'noeditProviderid');
 
       if (providerId || noeditProviderid) {
         getContrractname(providerId || noeditProviderid);

@@ -74,8 +74,6 @@ function AddScoringRulesmaintenance(props) {
     })
   };
 
-  console.log(loading,'loading')
-
   //  按需加载树节点
   const getalldata = () => {
     dispatch({
@@ -138,8 +136,6 @@ function AddScoringRulesmaintenance(props) {
   useEffect(() => {
     setTreeData(treeArr)
   },[loading]);
-
-  console.log(treeData,'tree')
 
 
   useEffect(() => {

@@ -428,7 +428,6 @@ function Assessment(props) {
 
   //  获取详细条款数据
   const getclausedetail = (targetId, scoreId) => {
-    console.log(11);
     dispatch({
       type: 'qualityassessment/clauseListpage',
       payload: {
@@ -766,7 +765,6 @@ function Assessment(props) {
     });
     if (cacheinfo !== undefined) {
       validateFields((err, values) => {
-        console.log('values: ', values);
         if (!err) {
           if (values.providerId) {
             getContrractname(values.providerId);
@@ -920,7 +918,6 @@ function Assessment(props) {
   };
 
   const selectOnchange = (value, option, type) => {
-    console.log('value: ', value);
     const {
       props: { children },
     } = option;
@@ -1024,8 +1021,6 @@ function Assessment(props) {
       setSelectedKeys([...index]);
     },
   };
-
-  console.log(clauseList, 'clauseList');
 
   const extra = (
     <>
