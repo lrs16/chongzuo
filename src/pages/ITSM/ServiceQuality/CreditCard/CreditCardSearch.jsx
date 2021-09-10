@@ -16,6 +16,7 @@ import {
   Spin,
   DatePicker
 } from 'antd';
+import SysDict from '@/components/SysDict';
 import { contractProvider, providerList, scoreListpage } from '../services/quality';
 import moment from 'moment';
 import { connect } from 'dva';
@@ -58,14 +59,15 @@ function ServiceProvidersearch(props) {
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
   const [tabrecord, setTabRecord] = useState({});
   const [selectedKeys, setSelectedKeys] = useState([]);
+  const [selectdata, setSelectData] = useState('');
 
   const searchdata = (values, page, pageSize) => {
     const newValue = {
       ...values,
-        beginTime: values.evaluationInterval?.length ? moment(values.evaluationInterval[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-        endTime: values.evaluationInterval?.length ? moment(values.evaluationInterval[1]).format('YYYY-MM-DD HH:mm:ss') : '', // 发生时间
-        evaluationInterval: '',
-        locked:'1'
+      beginTime: values.evaluationInterval?.length ? moment(values.evaluationInterval[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      endTime: values.evaluationInterval?.length ? moment(values.evaluationInterval[1]).format('YYYY-MM-DD HH:mm:ss') : '', // 发生时间
+      evaluationInterval: '',
+      locked: '1'
     }
     dispatch({
       type: 'performanceappraisal/getscorecardlistPage',
@@ -76,7 +78,7 @@ function ServiceProvidersearch(props) {
         evaluationInterval: '',
         pageNum: page,
         pageSize,
-        locked:'1'
+        locked: '1'
       }
     });
     setTabRecord({ ...newValue })
@@ -114,7 +116,7 @@ function ServiceProvidersearch(props) {
       dataIndex: 'cardNo',
       key: 'cardNo',
       width: 200,
-      render:(text,record) => {
+      render: (text, record) => {
         const gotoDetail = () => {
           router.push({
             pathname: '/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail',
@@ -123,15 +125,15 @@ function ServiceProvidersearch(props) {
               paramId: record.id,
               search: true
             },
-            state:{
+            state: {
               dynamicpath: true,
               menuDesc: '记分详情页',
               // status: record.status,
             }
           })
-        } 
+        }
         return (
-          <a  type='link' onClick={gotoDetail}>{text}</a>
+          <a type='link' onClick={gotoDetail}>{text}</a>
         )
       }
     },
@@ -181,13 +183,13 @@ function ServiceProvidersearch(props) {
       title: '评价开始时间',
       dataIndex: 'beginTime',
       key: 'beginTime',
-      width:180
+      width: 180
     },
     {
       title: '评价结束时间',
       dataIndex: 'endTime',
       key: 'endTime',
-      width:180
+      width: 180
     },
     // {
     //   title: '操作',
@@ -266,7 +268,7 @@ function ServiceProvidersearch(props) {
         type: 'performanceappraisal/scorecardExport',
         payload: {
           ...values,
-          id:selectedKeys.toString(),
+          id: selectedKeys.toString(),
           pageNum: paginations.current,
           pageSize: paginations.pageSize
         }
@@ -304,8 +306,8 @@ function ServiceProvidersearch(props) {
     cardSeason: '',
     providerName: '',
     contractName: '',
-    beginTime:'',
-    endTime:''
+    beginTime: '',
+    endTime: ''
   }
 
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
@@ -330,13 +332,13 @@ function ServiceProvidersearch(props) {
         handleReset();
         // setExpand(false);
       };
-      if(location.state.cacheinfo) {
+      if (location.state.cacheinfo) {
         const {
           beginTime,
           endTime
         } = location.state.cacheinfo;
         setFieldsValue({
-          evaluationInterval:beginTime ? [moment(beginTime),moment(endTime)] :''
+          evaluationInterval: beginTime ? [moment(beginTime), moment(endTime)] : ''
         })
       }
     }
@@ -348,10 +350,25 @@ function ServiceProvidersearch(props) {
     }
   }
 
+  const getTypebyTitle = title => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.title === title)[0].children;
+    }
+    return [];
+  }
+
+  const assessmentType = getTypebyTitle('考核类型');
+
 
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
+        <SysDict
+          typeid='1410413049587699713'
+          commonid="1354288354950123522"
+          ChangeSelectdata={newvalue => setSelectData(newvalue)}
+          style={{ display: 'none' }}
+        />
         <Row>
           <Form {...formItemLayout}>
             <Col span={8}>
@@ -396,10 +413,21 @@ function ServiceProvidersearch(props) {
                   getFieldDecorator('assessType', {
                     initialValue: cacheinfo.assessType
                   })
-                    (<Input />)
+                    (
+                      <Select
+                        placeholder="请选择"
+                      >
+                        {(assessmentType || []).map(obj => [
+                          <Option key={obj.dict_code} value={obj.dict_code}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )
                 }
               </Form.Item>
             </Col>
+            
             <Col span={8}>
               <Form.Item label='版本号'>
                 {
@@ -424,7 +452,7 @@ function ServiceProvidersearch(props) {
               <Form.Item label='评价区间'>
                 {
                   getFieldDecorator('evaluationInterval', {
-                    initialValue: cacheinfo.beginTime ? [moment(cacheinfo.beginTime),moment(cacheinfo.endTime)] :''
+                    initialValue: cacheinfo.beginTime ? [moment(cacheinfo.beginTime), moment(cacheinfo.endTime)] : ''
                   })
                     (<RangePicker
                       showTime={{

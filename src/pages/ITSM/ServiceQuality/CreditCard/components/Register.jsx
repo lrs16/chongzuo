@@ -431,7 +431,7 @@ const Register = React.forwardRef((props, ref) => {
                           onSelect={(v, opt) => handleDisableduser(v, opt, 'score')}
                         >
                           <Search
-                            placeholder="可输入姓名搜索"
+                            placeholder="请输入评分细则名称"
                             onSearch={values => SearchDisableduser(values, 'score')}
                             allowClear
                           />

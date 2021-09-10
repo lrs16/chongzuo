@@ -10,20 +10,27 @@ const calenData = [
   [
     { type: 'warning', content: '张三(早班)', params1: 1, params2: 2, params3: 3 },
     { type: 'success', content: '李四(中班)' },
+    { type: 'success', content: '王五(夜班)' },
+    { type: 'success', content: '小明(行政班班)' },
   ],
 
   [
-    { type: 'warning', content: '小红(晚班)' },
-    { type: 'success', content: '小明(行政班)' },
-    { type: 'error', content: '小蓝(早班)' },
+    { type: 'warning', content: '张三(早班)', params1: 1, params2: 2, params3: 3 },
+    { type: 'success', content: '李四(中班)' },
+    { type: 'success', content: '王五(夜班)' },
+    { type: 'success', content: '小明(行政班班)' },
   ],
   [
-    { type: 'warning', content: '小绿(中班)' },
-    { type: 'success', content: '美团(行政班)' },
-    { type: 'error', content: '支付宝(早班)' },
-    { type: 'error', content: '微信(晚班)' },
-    { type: 'error', content: '花呗(行政班)' },
-    { type: 'error', content: '余额宝(早班)' },
+    { type: 'warning', content: '张三(早班)', params1: 1, params2: 2, params3: 3 },
+    { type: 'success', content: '李四(中班)' },
+    { type: 'success', content: '王五(夜班)' },
+    { type: 'success', content: '小明(行政班班)' },
+    // { type: 'warning', content: '小绿(早班)' },
+    // { type: 'success', content: '美团(中班)' },
+    // { type: 'error', content: '支付宝(夜班)' },
+    // { type: 'error', content: '微信(行政班班)' },
+    // { type: 'error', content: '花呗(行政班班)' },
+    // { type: 'error', content: '余额宝(行政班班)' },
   ],
 ];
 
@@ -37,6 +44,7 @@ function DutyaccordingSetting(props) {
       .split('-')[1],
   );
   const [currentTime, setCurrentTime] = useState('');
+
   const getListData = value => {
     let result;
     const getCurrentmonth = moment(value)
@@ -64,20 +72,16 @@ function DutyaccordingSetting(props) {
 
   //  年月日面板的切换
   const onPanelChange = (value, mode) => {
-    console.log(moment(value).format('YYYY-MM'));
-    const changeMonth = moment(value)
-      .format('YYYY-MM')
-      .split('-')[1];
-    setCurrentmonth(changeMonth);
+    if (mode === 'month') { // 只有月支持渲染
+      const changeMonth = moment(value)
+        .format('YYYY-MM')
+        .split('-')[1];
+      //  去请求接口
+      setCurrentmonth(changeMonth);
+    }
   };
 
-  const getdetail = (params1, params2, params3) => {
-    console.log('params1,params2,params3: ', params1, params2, params3);
-  };
 
-  const toggleHover = () => {
-    setInitialhover(!initialhover);
-  };
 
   const handleSelect = value => {
     console.log('value: ', value);
@@ -88,8 +92,9 @@ function DutyaccordingSetting(props) {
     const listData = getListData(value);
     return (
       <ul className="events">
-        {listData.map(item => (
+        {(listData || []).map(item => (
           <SettingDetails
+            key={item.content}
             settingDetailsparams={{
               params1: item.params1,
               params2: item.params2,
@@ -97,7 +102,9 @@ function DutyaccordingSetting(props) {
             }}
           >
             <li key={item.content}>
-              <Badge status={item.type} text={item.content} />
+           
+              {/* <Badge status={item.type} text={item.content} /> */}
+              <span>{item.content}</span>
             </li>
           </SettingDetails>
         ))}

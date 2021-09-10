@@ -16,6 +16,7 @@ import {
   Spin,
   DatePicker,
 } from 'antd';
+import SysDict from '@/components/SysDict';
 import { contractProvider, providerList, scoreListpage } from '../services/quality';
 import moment from 'moment';
 import { connect } from 'dva';
@@ -52,6 +53,7 @@ function CreditcardTobe(props) {
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
   const [tabrecord, setTabRecord] = useState({});
   const [selectedKeys, setSelectedKeys] = useState([]);
+  const [selectdata, setSelectData] = useState('');
 
   const searchdata = (values, page, pageSize) => {
     const newValue = {
@@ -354,9 +356,24 @@ function CreditcardTobe(props) {
     });
   };
 
+  const getTypebyTitle = title => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.title === title)[0].children;
+    }
+    return [];
+  }
+
+  const assessmentType = getTypebyTitle('考核类型');
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
+        <SysDict
+          typeid='1410413049587699713'
+          commonid="1354288354950123522"
+          ChangeSelectdata={newvalue => setSelectData(newvalue)}
+          style={{ display: 'none' }}
+        />
         <Row>
           <Form {...formItemLayout}>
             <Col span={8}>
@@ -383,13 +400,28 @@ function CreditcardTobe(props) {
               </Form.Item>
             </Col>
 
+
             <Col span={8}>
-              <Form.Item label="考核类型">
-                {getFieldDecorator('assessType', {
-                  initialValue: cacheinfo.assessType,
-                })(<Input />)}
+              <Form.Item label='考核类型'>
+                {
+                  getFieldDecorator('assessType', {
+                    initialValue: cacheinfo.assessType
+                  })
+                    (
+                      <Select
+                        placeholder="请选择"
+                      >
+                        {(assessmentType || []).map(obj => [
+                          <Option key={obj.dict_code} value={obj.dict_code}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )
+                }
               </Form.Item>
             </Col>
+
             <Col span={8}>
               <Form.Item label="版本号">
                 {getFieldDecorator('version', {
