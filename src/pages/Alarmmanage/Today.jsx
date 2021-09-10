@@ -31,18 +31,21 @@ const tabListNoTitle = [
 ];
 
 function Today(props) {
+
+  const [activeTabKey, setActiveTabKey] = useState('');
+
   return (
     <>
       <TotalInfo />
-      {/* <Card
+      <Card
         tabList={tabList}
-        activeTabKey={this.state.key}
+        activeTabKey={activeTabKey}
         onTabChange={key => {
-          onTabChange(key);
+          setActiveTabKey(key)
         }}
       >
         <OverVies />
-      </Card> */}
+      </Card>
     </>
   );
 }

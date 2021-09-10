@@ -261,7 +261,9 @@ function VersionAudit(props, ref) {
                 value={obj.releaseNo}
               // disabled={taskName === '版本管理员审核' && obj === flowId}
               >
-                <span style={{ color: `${obj.timeoutResult.timeout && !obj.timeoutResult.reason ? '#f00' : ''}` }}>{`${obj.releaseNo}${obj.timeoutResult.timeout && !obj.timeoutResult.reason ? '（超时未填写超时原因）' : ''}`}</span>
+                <span style={{ color: `${obj.timeoutResult.timeout && !obj.timeoutResult.reason ? '#f00' : ''}` }}>
+                  {`${obj.releaseNo}${obj.timeoutResult.timeout && !obj.timeoutResult.reason ? `${obj.timeoutResult.msg}，未填写超时原因` : (obj.timeoutResult.msg || '')}`}
+                </span>
               </Checkbox>,
             ]
           })}
@@ -301,7 +303,7 @@ function VersionAudit(props, ref) {
 
   return (
     <>
-      {alertvisible && (<Alert message={alertmessage.mes} type='warning' showIcon style={{ marginBottom: 12 }} />)}
+      {info.releaseMains && info.releaseMains.length === 1 && alertvisible && (<Alert message={alertmessage.mes} type='warning' showIcon style={{ marginBottom: 12 }} />)}
       {info.releaseMains && info.releaseMains.length > 1 && (
         <Alert message='已合并工单' description={descriptionopion} type='info' />
       )}
