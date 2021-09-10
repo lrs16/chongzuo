@@ -14,7 +14,7 @@ import {
   Icon,
   Table,
   Popconfirm,
-  // message,
+  message,
   Cascader,
   Popover,
   Checkbox,
@@ -92,14 +92,18 @@ function QueryList(props) {
         id,
       },
     }).then(res => {
-      const filename = `${no}_附件.zip`;
-      const blob = new Blob([res]);
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.click();
-      window.URL.revokeObjectURL(url);
+      if (res.size === 0 || res.type === 'text/html') {
+        message.error('该工单没有上传附件，下载失败');
+      } else {
+        const filename = `${no}_附件.zip`;
+        const blob = new Blob([res]);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      }
     })
   }
 

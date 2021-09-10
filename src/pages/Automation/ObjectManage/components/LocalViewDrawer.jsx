@@ -44,7 +44,7 @@ function LocalViewDrawer(props) {
                 onClose={() => handleCancel()}
                 footer={null}
                 visible={visible}
-                width={600}
+                width={1000}
                 destroyOnClose
             >
                 <Form {...formItemLayout}>
@@ -63,7 +63,7 @@ function LocalViewDrawer(props) {
                         </Radio.Group>
                     </Form.Item>
                     <Form.Item label="脚本内容">
-                        <TextArea autoSize={{ minRows: 10 }} defaultValue={record.scriptCont} disabled />
+                        <TextArea autoSize={{ minRows: 30 }} defaultValue={record.scriptCont} disabled />
                     </Form.Item>
                     <Form.Item label="脚本备注">
                         <TextArea autoSize={{ minRows: 3 }} defaultValue={record.scriptCont} disabled />

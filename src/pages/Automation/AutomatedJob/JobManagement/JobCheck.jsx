@@ -1,16 +1,12 @@
-import React
-, {
-    // useEffect,
-    useState
-}
-    from 'react';
-// import { connect } from 'dva';
-// import router from 'umi/router';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'dva';
+import router from 'umi/router';
 import moment from 'moment';
-import { Table, Card, Button, Form, Input, Select, Row, Col, DatePicker } from 'antd';
+import { Table, Card, Button, Form, Input, Select, Row, Col, DatePicker, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
+import TaskObjectModel from './components/TaskObjectModel';
 
 const { Option } = Select;
 
@@ -28,146 +24,131 @@ const formItemLayout = {
 function JobCheck(props) {
     const pagetitle = props.route.name;
     const {
-        // loading,
-        // dispatch,
-        // location,
+        loading,
+        dispatch,
+        location,
+        autotasklist,
         form: {
             getFieldDecorator,
-            // getFieldsValue,
+            getFieldsValue,
             resetFields,
         },
     } = props;
 
     const [expand, setExpand] = useState(false);
-    // const [visible, setVisible] = useState(false); // 抽屉是否显示
-    // const [title, setTitle] = useState('');
-    // const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
-    // const [data, setData] = useState('');
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
-    //   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+    const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+    const [selectedRows, setSelectedRows] = useState([]);
 
-    // const searchdata = (page, size) => {
-    //     const values = getFieldsValue();
-    //     //   values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
-    //     //   values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
-    //     //   values.startUpdateTime = values.startUpdateTime ? moment(values.startUpdateTime).format('YYYY-MM-DD HH:mm:ss') : '';
-    //     //   values.endUpdateTime = values.endUpdateTime ? moment(values.endUpdateTime).format('YYYY-MM-DD HH:mm:ss') : '';
-    //     dispatch({
-    //         type: '',
-    //         payload: {
-    //             values,
-    //             pageNum: page,
-    //             pageSize: size,
-    //         },
-    //     });
-    // };
+    const onSelectChange = (RowKeys, Rows) => {
+        setSelectedRowKeys(RowKeys);
+        setSelectedRows(Rows);
+    };
 
-    //   useEffect(() => {
-    //       searchdata(1, 15);
-    //   }, [location]);
+    const rowSelection = {
+        selectedRowKeys,
+        onChange: onSelectChange,
+    };
 
-    //   const handleShowDrawer = (drwertitle, type, record) => {
-    //       setVisible(!visible);
-    //       setTitle(drwertitle);
-    //       setSaveType(type);
-    //       setData(record);
-    //   };
+    const searchdata = (page, size) => {
+        const values = getFieldsValue();
+        values.taskStatus = '2';
+        values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
+        values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
+        values.startUpdateTime = values.startUpdateTime ? moment(values.startUpdateTime).format('YYYY-MM-DD HH:mm:ss') : '';
+        values.endUpdateTime = values.endUpdateTime ? moment(values.endUpdateTime).format('YYYY-MM-DD HH:mm:ss') : '';
+        dispatch({
+            type: 'autotask/findautotaskList',
+            payload: {
+                values,
+                pageNum: page,
+                pageSize: size,
+            },
+        });
+    };
 
-    // 提交
-    //   const handleSubmit = values => {
-    //       if (savetype === '' || savetype === 'add') {
-    //           dispatch({
-    //               type: 'JobConfig/toaddSoft',
-    //               payload: {
-    //                   ...values,
-    //               },
-    //           }).then(res => {
-    //               if (res.code === 200) {
-    //                   message.success(res.msg);
-    //                   searchdata(1, 15);
-    //               } else {
-    //                   message.error(res.msg);
-    //               }
-    //           });
-    //       }
-    //       if (savetype === 'update') {
-    //           dispatch({
-    //               type: 'JobConfig/toeditSoft',
-    //               payload: {
-    //                   ...values,
-    //               },
-    //           }).then(res => {
-    //               if (res.code === 200) {
-    //                   message.success(res.msg);
-    //                   searchdata(1, 15);
-    //               } else {
-    //                   message.error(res.msg);
-    //               }
-    //           });
-    //       }
-    //   };
+    useEffect(() => {
+        searchdata(1, 15);
+    }, [location]);
 
     const handleReset = () => {
         resetFields();
-        //   searchdata(1, 15)
-        //   setPageinations({ current: 1, pageSize: 15 });
+        searchdata(1, 15)
+        setPageinations({ current: 1, pageSize: 15 });
     };
 
-    // const newjobconfig = (edittype) => {
-    //     if (edittype === 'edit') {
-    //         router.push({
-    //             pathname: '/automation/automatedjob/jobmanagement/jobconfig/new',
-    //             query: {
-    //                 addtab: true,
-    //                 menuDes: '编辑作业配置',
-    //             },
-    //         })
-    //     } else {
-    //         router.push({
-    //             pathname: '/automation/automatedjob/jobmanagement/jobconfig/new',
-    //             query: {
-    //                 addtab: true,
-    //             },
-    //             state: {
-    //                 dynamicpath: true,
-    //                 menuDesc: '添加作业配置',
-    //             }
-    //         })
-    //     }
-    // }
+    const tonewcheck = () => { // 去审核
+        const len = selectedRowKeys.length;
+        if (len === 1) { // 单条数据
+            // if (selectedRows[0].taskStatus === '待审核') {
+            //     router.push({
+            //         pathname: '/automation/automatedjob/jobmanagement/jobcheck/tocheck',
+            //         query: {
+            //             Id: selectedRows[0].id,
+            //             addtab: true,
+            //             menuDesc: '作业任务审批',
+            //         },
+            //     })
+            // } else {
+            //     message.info('审核的条件: 只有待审核的数据才可以去审核');
+            //     setSelectedRowKeys([]);
+            //     setSelectedRows([]);
+            //     return false;
+            // }
+            router.push({
+                pathname: '/automation/automatedjob/jobmanagement/jobcheck/tocheck',
+                query: {
+                    Id: selectedRows[0].id,
+                    addtab: true,
+                    menuDesc: '作业任务审批',
+                },
+                state: {
+                    selectedRows,
+                }
+            })
+        } else if (len > 1) {
+            message.info('只能选择一条数据');
+        } else {
+            message.info('请选择一条数据');
+        }
+        setSelectedRowKeys([]);
+        setSelectedRows([]);
+        return null;
+    };
 
-    //   const onShowSizeChange = (page, size) => {
-    //       searchdata(page, size);
-    //       setPageinations({
-    //           ...paginations,
-    //           pageSize: size,
-    //       });
-    //   };
+    const onShowSizeChange = (page, size) => {
+        searchdata(page, size);
+        setPageinations({
+            ...paginations,
+            pageSize: size,
+        });
+    };
 
-    //   const changePage = page => {
-    //       searchdata(page, paginations.pageSize);
-    //       setPageinations({
-    //           ...paginations,
-    //           current: page,
-    //       });
-    //   };
+    const changePage = page => {
+        searchdata(page, paginations.pageSize);
+        setPageinations({
+            ...paginations,
+            current: page,
+        });
+    };
 
-    //   const pagination = {
-    //       showSizeChanger: true,
-    //       onShowSizeChange: (page, size) => onShowSizeChange(page, size),
-    //       current: paginations.current,
-    //       pageSize: paginations.pageSize,
-    //       total: softList.total,
-    //       showTotal: total => `总共  ${total}  条记录`,
-    //       onChange: page => changePage(page),
-    //   };
+    const pagination = {
+        showSizeChanger: true,
+        onShowSizeChange: (page, size) => onShowSizeChange(page, size),
+        current: paginations.current,
+        pageSize: paginations.pageSize,
+        total: autotasklist.total,
+        showTotal: total => `总共  ${total}  条记录`,
+        onChange: page => changePage(page),
+    };
 
     const handleSearch = () => {
-        //   setPageinations({
-        //       ...paginations,
-        //       current: 1,
-        //   });
-        //   searchdata(1, paginations.pageSize);
+        setPageinations({
+            ...paginations,
+            current: 1,
+        });
+        searchdata(1, paginations.pageSize);
     };
 
     // 查询
@@ -212,8 +193,8 @@ function JobCheck(props) {
         },
         {
             title: '审核结果',
-            dataIndex: 'examineResults',
-            key: 'examineResults',
+            dataIndex: 'examineStatus',
+            key: 'examineStatus',
             width: 150,
         },
         {
@@ -221,6 +202,13 @@ function JobCheck(props) {
             dataIndex: 'taskObjectNum',
             key: 'taskObjectNum',
             width: 150,
+            render: (text, record) => {
+                return (
+                    <TaskObjectModel record={record} dispatch={dispatch}>
+                        <a type="link">{text}</a>
+                    </TaskObjectModel>
+                );
+            },
         },
         {
             title: '作业脚本',
@@ -242,8 +230,8 @@ function JobCheck(props) {
         },
         {
             title: '创建人',
-            dataIndex: 'createByNameExt',
-            key: 'createByNameExt',
+            dataIndex: 'createBy',
+            key: 'createBy',
             width: 120,
         },
         {
@@ -254,8 +242,8 @@ function JobCheck(props) {
         },
         {
             title: '更新人',
-            dataIndex: 'updateByNameExt',
-            key: 'updateByNameExt',
+            dataIndex: 'updateBy',
+            key: 'updateBy',
             width: 120,
         },
         {
@@ -472,13 +460,16 @@ function JobCheck(props) {
                 </Row>
                 <div style={{ marginBottom: 8 }}>
                     <Button type="primary" style={{ marginRight: 8 }}
-                        // onClick={() => newjobconfig()}
+                        onClick={() => tonewcheck()}
                     >审核</Button>
                 </div>
                 <Table
                     columns={columns}
-                    rowKey={(_, index) => index.toString()}
-                    //   pagination={pagination}
+                    loading={loading}
+                    dataSource={autotasklist.rows}
+                    rowKey={record => record.id}
+                    pagination={pagination}
+                    rowSelection={rowSelection}
                     scroll={{ x: 1300 }}
                 />
             </Card>
@@ -486,4 +477,9 @@ function JobCheck(props) {
     );
 }
 
-export default Form.create({})(JobCheck);
+export default Form.create({})(
+    connect(({ autotask, loading }) => ({
+        autotasklist: autotask.autotasklist,
+        loading: loading.models.autotask,
+    }))(JobCheck),
+);

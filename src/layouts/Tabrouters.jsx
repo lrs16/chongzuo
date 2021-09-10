@@ -51,6 +51,9 @@ const multiplepath = [
   { path: '/ITSM/servicequalityassessment/creditcard/creditcardregister', type: 'creditcardregister' },
   { path: '/ITSM/servicequalityassessment/addscoringrulesmaintenance', type: 'addscoringrulesmaintenance' },
   { path: '/automation/automatedjob/jobmanagement/jobconfig/new', type: 'automatedjob' },
+  { path: '/automation/automatedjob/jobmanagement/jobcheck/tocheck', type: 'automatedjobtocheck'},
+  { path: '/automation/automatedjob/jobmanagement/jobexecute/manualexecutionlog', type: 'automatedmanualexecutionlog'},
+  { path: '/automation/automatedjob/softstartandstop/softregister/newregist', type: 'automatedjobnewregist'},
 ]
 function Tabrouters(props) {
   const { Changealonepath, Changemultiple } = props;

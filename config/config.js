@@ -1412,7 +1412,7 @@ export default {
                             },
                             {
                               path: '/automation/automatedjob/softstartandstop/softregister/newregist',
-                              name: '登记',
+                              name: '启停登记',
                               icon: 'fork',
                               component: './Automation/AutomatedJob/SoftTTManagement/Newregist'
                             }
@@ -1440,6 +1440,12 @@ export default {
                               component: './Automation/AutomatedJob/JobManagement/JobCheck',
                             },
                             {
+                              path: '/automation/automatedjob/jobmanagement/jobcheck/tocheck',
+                              name: '作业任务审批',
+                              icon: 'fork',
+                              component: './Automation/AutomatedJob/JobManagement/ToCheck',
+                            },
+                            {
                               path: '/automation/automatedjob/jobmanagement/jobexecute',
                               name: '作业执行',
                               icon: 'fork',
@@ -1456,10 +1462,51 @@ export default {
                               name: '编辑作业配置',
                               icon: 'fork',
                               component: './Automation/AutomatedJob/JobManagement/New',
-                            }
+                            },
+                            {
+                              path: '/automation/automatedjob/jobmanagement/jobexecute/manualexecutionlog',
+                              name: '手动执行日志',
+                              icon: 'fork',
+                              component: './Automation/AutomatedJob/JobManagement/ManualLog',
+                            },
+                            {
+                              path: '/automation/automatedjob/jobmanagement/jobexecute/scheduledexecutionlog',
+                              name: '定时执行日志',
+                              icon: 'fork',
+                              component: './Automation/AutomatedJob/JobManagement/ScheduleLog',
+                            },
                           ]
                         },
-
+                        
+                      ]
+                    },
+                    {
+                      path: '/automation/automaticinspection',
+                      name: '自动化巡检',
+                      icon: 'database',
+                      routes: [
+                        {
+                          path: '/automation/automaticinspection',
+                          redirect: '/automation/automaticinspection/hostpatrol',
+                        },
+                        {
+                          path: '/automation/automaticinspection/hostpatrol',
+                          name: '主机巡检',
+                          icon: 'cloud-server',
+                          component: './Automation/AutomaticInspection/HostPatrol',
+                        },
+                        {
+                          path: '/automation/automaticinspection/softwarepatrol',
+                          name: '软件巡检',
+                          icon: 'cloud-server',
+                          component: './Automation/AutomaticInspection/SoftwarePatrol',
+                        },
+                        {
+                          path: '/automation/automaticinspection/clockpatrol',
+                          name: '时钟巡检',
+                          icon: 'cloud-server',
+                          component: './Automation/AutomaticInspection/ClockPatrol',
+                        },
                       ]
                     },
                   ],

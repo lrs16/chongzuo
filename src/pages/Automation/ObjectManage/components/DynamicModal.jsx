@@ -188,7 +188,7 @@ function DynamicModal(props) {
                             onChange={e => handleFieldChange(e, 'dynamicName', record.key)}
                             style={{ width: '100%' }}
                         >
-                            {selectdata.assets_dynamic.map(obj => [
+                            {selectdata.assets_dynamic_id.map(obj => [
                                 <Option key={obj.key} value={obj.val}>
                                     {obj.val}
                                 </Option>,
@@ -313,7 +313,7 @@ function DynamicModal(props) {
                 <KeyVal
                     style={{ display: 'none' }}
                     dictModule="assets"
-                    dictType="assets_dynamic"
+                    dictType="assets_dynamic_id"
                     ChangeSelectdata={newvalue => setSelectData(newvalue)}
                 />
                 <Table

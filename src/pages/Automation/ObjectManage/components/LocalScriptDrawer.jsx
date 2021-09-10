@@ -84,7 +84,7 @@ function LocalScriptDrawer(props) {
   const handleChange = v => {
     dispatch({
       type: 'softwaremanage/tofindCascade',
-      payload: { cabinetZoneId: v },
+      payload: { hostZoneId: v },
     }).then(res => {
       setFindhostName(res.data);
     });
@@ -127,11 +127,11 @@ function LocalScriptDrawer(props) {
   };
 
   const zonemap = getTypebyId('1428182995477942274'); // 区域
-
+  
   return (
     <Drawer
       title={title}
-      width={600}
+      width={1000}
       onClose={hanldleCancel}
       visible={visible}
       bodyStyle={{ paddingBottom: 60 }}
@@ -269,8 +269,8 @@ function LocalScriptDrawer(props) {
           {getFieldDecorator('scriptCont', {
             rules: [{ required, message: '请输入 ' }],
             // initialValue: scriptCont,
-            initialValue: fileslist.ischange && files.length > 0 && files[0] && savetype !== 'update'? files[0].resInfo : scriptCont,
-          })(<TextArea placeholder="请输入" autoSize={{ minRows: 10 }} allowClear />)}
+            initialValue: fileslist.ischange && files.length > 0 && files[0] && savetype !== 'update'? files[0].scriptCont : scriptCont,
+          })(<TextArea placeholder="请输入" autoSize={{ minRows: 30 }} allowClear />)}
         </Form.Item>
         <Form.Item label="脚本备注">
           {getFieldDecorator('scriptRemarks', {
@@ -280,7 +280,7 @@ function LocalScriptDrawer(props) {
         <Form.Item label="脚本文件大小">
           {getFieldDecorator('scriptSize', {
             // initialValue: scriptSize,
-            initialValue: fileslist.ischange && files.length > 0 && files[0] ? files[0].size : scriptSize,
+            initialValue: fileslist.ischange && files.length > 0 && files[0] && savetype !== 'update'? files[0].fileSize : scriptSize,
           })(<Input style={{ width: '100%' }} placeholder="请输入" disabled />)}
         </Form.Item>
         <Form.Item label="上传时间">

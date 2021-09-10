@@ -122,14 +122,14 @@ function SystemScriptDrawer(props) {
   return (
     <Drawer
       title={title}
-      width={600}
+      width={1000}
       onClose={hanldleCancel}
       visible={visible}
       bodyStyle={{ paddingBottom: 60 }}
       destroyOnClose
     >
       <Form {...formItemLayout} onSubmit={handleOk}>
-        <Form.Item label="Id">
+        <Form.Item label="Id" style={{display: 'none'}}>
           {getFieldDecorator('id', {
             initialValue: id,
           })(<Input disabled />)}
@@ -181,10 +181,10 @@ function SystemScriptDrawer(props) {
         <Form.Item label="脚本内容">
           {getFieldDecorator('scriptCont', {
             rules: [{ required,message: '请输入 ' }],
-            initialValue: fileslist.ischange && files.length > 0 && files[0] ? files[0].resInfo : scriptCont,
-          })(<TextArea placeholder="请输入" autoSize={{ minRows: 10 }} allowClear />)}
+            initialValue: fileslist.ischange && files.length > 0 && files[0] ? files[0].scriptCont : scriptCont,
+          })(<TextArea placeholder="请输入" autoSize={{ minRows: 30 }} allowClear />)}
         </Form.Item>
-        <Form.Item label="脚本参数" extra="多个参数以 ; 符号分割 如 aaa;bbb;cccc">
+        <Form.Item label="脚本参数" extra="多个参数以 ; 符号分割 如 xxx;xxx;xxx">
           {getFieldDecorator('scriptArgs', {
             // initialValue: scriptArgs.join(';'), extra="多个参数以 ; 符号分割 如 aaa;bbb;cccc"
             initialValue: scriptArgs,
@@ -234,7 +234,7 @@ function SystemScriptDrawer(props) {
         <Button onClick={hanldleCancel} style={{ marginRight: 8 }}>
           取消
         </Button>
-        <Button style={{ marginRight: 8 }} onClick={handleOk} >
+        <Button style={{ marginRight: 8 }} onClick={handleOk} type="primary">
           保存
         </Button>
         <Button onClick={handletosave} type="primary">

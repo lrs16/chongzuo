@@ -178,14 +178,15 @@ function CabinetManege(props) {
             title: '机柜容量',
             dataIndex: 'cabinetU',
             key: 'cabinetU',
-            width: 180,
+            width: 120,
+            sorter: (a, b) => a.cabinetU.substring(0, a.cabinetU.length -1) - b.cabinetU.substring(0, b.cabinetU.length -1)
         },
         {
             title: '剩余容量',
             dataIndex: 'cabinetResidueU',
             key: 'cabinetResidueU',
             width: 120,
-            sorter: (a, b) => a.cabinetResidueU - b.cabinetResidueU,
+            sorter: (a, b) => a.cabinetResidueU.substring(0, a.cabinetResidueU.length -1) - b.cabinetResidueU.substring(0, b.cabinetResidueU.length -1)
         },
         {
             title: '负责人',

@@ -28,6 +28,10 @@ export default {
       });
     },
 
+    *findSoftList1({ payload: { values, pageNum, pageSize } }, { call }) {
+      return yield call(SoftList, values, pageNum, pageSize);
+    },
+
     // 关联查询区域，查询主机名称，查询主机ip
     *tofindCascade({ payload }, { call }) {
       return yield call(getfindCascade, payload);
@@ -55,7 +59,7 @@ export default {
     *todeleteDynamic({ payload }, { call }) { // 删除
       return yield call(deleteDynamic, payload);
     },
-    *tofindDynamic({ payload: { softId, pageNum, pageSize } }, { call, put }) { // 获取软件下的所有属性配置
+    *tofindDynamic({ payload: { softId, pageNum, pageSize } }, { call }) { // 获取软件下的所有属性配置
       return yield call(findDynamic, softId, pageNum, pageSize);
       // yield put({
       //   type: 'dynamicList',

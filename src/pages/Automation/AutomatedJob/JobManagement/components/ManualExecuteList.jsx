@@ -1,11 +1,6 @@
-import React
-    // , {
-    //     // useEffect,
-    //     // useState
-    // }
-    from 'react';
-// import { connect } from 'dva';
-// import router from 'umi/router';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'dva';
+import router from 'umi/router';
 import moment from 'moment';
 import { Table, Card, Button, Form, Input, Row, Col, DatePicker, Divider } from 'antd';
 
@@ -22,12 +17,13 @@ const formItemLayout = {
 
 function ManualExecuteList(props) {
     const {
-        // loading,
-        // dispatch,
-        // location,
+        loading,
+        dispatch,
+        location,
+        autotasklist,
         form: {
             getFieldDecorator,
-            // getFieldsValue,
+            getFieldsValue,
             resetFields,
         },
     } = props;
@@ -36,27 +32,26 @@ function ManualExecuteList(props) {
     // const [title, setTitle] = useState('');
     // const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
     // const [data, setData] = useState('');
-    // const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+    const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
 
-    // const searchdata = (page, size) => {
-    //     const values = getFieldsValue();
-    //     //   values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
-    //     //   values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
-    //     //   values.startUpdateTime = values.startUpdateTime ? moment(values.startUpdateTime).format('YYYY-MM-DD HH:mm:ss') : '';
-    //     //   values.endUpdateTime = values.endUpdateTime ? moment(values.endUpdateTime).format('YYYY-MM-DD HH:mm:ss') : '';
-    //     dispatch({
-    //         type: '',
-    //         payload: {
-    //             values,
-    //             pageNum: page,
-    //             pageSize: size,
-    //         },
-    //     });
-    // };
+    const searchdata = (page, size) => {
+        const values = getFieldsValue();
+        values.taskStatus = '3';
+        values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
+        values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
+        dispatch({
+            type: 'autotask/findautotaskList',
+            payload: {
+                values,
+                pageNum: page,
+                pageSize: size,
+            },
+        });
+    };
 
-    //   useEffect(() => {
-    //       searchdata(1, 15);
-    //   }, [location]);
+    useEffect(() => {
+        searchdata(1, 15);
+    }, [location]);
 
     //   const handleShowDrawer = (drwertitle, type, record) => {
     //       setVisible(!visible);
@@ -101,65 +96,53 @@ function ManualExecuteList(props) {
 
     const handleReset = () => {
         resetFields();
-        //   searchdata(1, 15)
-        //   setPageinations({ current: 1, pageSize: 15 });
+        searchdata(1, 15)
+        setPageinations({ current: 1, pageSize: 15 });
     };
 
-    // const newjobconfig = (edittype) => {
-    //     if (edittype === 'edit') {
-    //         router.push({
-    //             pathname: '/automation/automatedjob/jobmanagement/jobconfig/new',
-    //             query: {
-    //                 addtab: true,
-    //                 menuDes: '编辑作业配置',
-    //             },
-    //         })
-    //     } else {
-    //         router.push({
-    //             pathname: '/automation/automatedjob/jobmanagement/jobconfig/new',
-    //             query: {
-    //                 addtab: true,
-    //             },
-    //             state: {
-    //                 dynamicpath: true,
-    //                 menuDesc: '添加作业配置',
-    //             }
-    //         })
-    //     }
-    // }
+    const newpagetolog = (id) => {
+        router.push({
+            pathname: '/automation/automatedjob/jobmanagement/jobexecute/manualexecutionlog',
+            query: {
+                Id: id,
+                addtab: true,
+                menuDes: '手动执行日志',
+            },
+        })
+    }
 
-    //   const onShowSizeChange = (page, size) => {
-    //       searchdata(page, size);
-    //       setPageinations({
-    //           ...paginations,
-    //           pageSize: size,
-    //       });
-    //   };
+    const onShowSizeChange = (page, size) => {
+        searchdata(page, size);
+        setPageinations({
+            ...paginations,
+            pageSize: size,
+        });
+    };
 
-    //   const changePage = page => {
-    //       searchdata(page, paginations.pageSize);
-    //       setPageinations({
-    //           ...paginations,
-    //           current: page,
-    //       });
-    //   };
+    const changePage = page => {
+        searchdata(page, paginations.pageSize);
+        setPageinations({
+            ...paginations,
+            current: page,
+        });
+    };
 
-    //   const pagination = {
-    //       showSizeChanger: true,
-    //       onShowSizeChange: (page, size) => onShowSizeChange(page, size),
-    //       current: paginations.current,
-    //       pageSize: paginations.pageSize,
-    //       total: softList.total,
-    //       showTotal: total => `总共  ${total}  条记录`,
-    //       onChange: page => changePage(page),
-    //   };
+    const pagination = {
+        showSizeChanger: true,
+        onShowSizeChange: (page, size) => onShowSizeChange(page, size),
+        current: paginations.current,
+        pageSize: paginations.pageSize,
+        total: autotasklist.total,
+        showTotal: total => `总共  ${total}  条记录`,
+        onChange: page => changePage(page),
+    };
 
     const handleSearch = () => {
-        //   setPageinations({
-        //       ...paginations,
-        //       current: 1,
-        //   });
-        //   searchdata(1, paginations.pageSize);
+        setPageinations({
+            ...paginations,
+            current: 1,
+        });
+        searchdata(1, paginations.pageSize);
     };
 
     // 查询
@@ -201,8 +184,8 @@ function ManualExecuteList(props) {
         },
         {
             title: '创建人',
-            dataIndex: 'createByNameExt',
-            key: 'createByNameExt',
+            dataIndex: 'createBy',
+            key: 'createBy',
             width: 120,
         },
         {
@@ -213,8 +196,8 @@ function ManualExecuteList(props) {
         },
         {
             title: '更新人',
-            dataIndex: 'updateByNameExt',
-            key: 'updateByNameExt',
+            dataIndex: 'updateBy',
+            key: 'updateBy',
             width: 120,
         },
         {
@@ -228,7 +211,7 @@ function ManualExecuteList(props) {
             dataIndex: 'action',
             key: 'action',
             fixed: 'right',
-            width: 200,
+            width: 150,
             render: () => {
                 return (
                     <div>
@@ -237,7 +220,7 @@ function ManualExecuteList(props) {
                             执行
                         </a>
                         <Divider type="vertical" />
-                        <a type="link">
+                        <a type="link" onClick={record => newpagetolog(record.id)}>
                             执行日志
                         </a>
                     </div>
@@ -303,8 +286,10 @@ function ManualExecuteList(props) {
                 </Row>
                 <Table
                     columns={columns}
-                    rowKey={(_, index) => index.toString()}
-                    //   pagination={pagination}
+                    rowKey={record => record.id}
+                    dataSource={autotasklist.rows}
+                    pagination={pagination}
+                    loading={loading}
                     scroll={{ x: 1300 }}
                 />
             </Card>
@@ -312,4 +297,9 @@ function ManualExecuteList(props) {
     );
 }
 
-export default Form.create({})(ManualExecuteList);
+export default Form.create({})(
+    connect(({ autotask, loading }) => ({
+        autotasklist: autotask.autotasklist,
+        loading: loading.models.autotask,
+    }))(ManualExecuteList),
+);

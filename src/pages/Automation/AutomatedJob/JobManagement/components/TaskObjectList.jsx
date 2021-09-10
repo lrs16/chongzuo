@@ -1,20 +1,15 @@
 /* eslint-disable import/no-unresolved */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 // import moment from 'moment';
 import { connect } from 'dva';
-import { Table, Button, Form, Input, Row, Col, Select, Alert, Tag } from 'antd';
+import { Table, Button, Form, Input, Row, Col, Select, Alert, Tag, message, Badge, } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
+import EditContext from '@/layouts/MenuContext';
 // import SystemScriptDrawer from './SystemScriptDrawer';
 // import SysViewDrawer from './SysViewDrawer';
 
 const { Option } = Select;
-// const directormap = [
-//     { key: '1', title: '张三' },
-//     { key: '2', title: '李四' },
-//     { key: '3', title: '王五' },
-//     { key: '3', title: '赵六' },
-// ];
 
 const formItemLayout = {
     labelCol: {
@@ -27,12 +22,18 @@ const formItemLayout = {
     },
 };
 
-function SystemScriptList(props) {
+const colormap = new Map([
+    ['离线', 'default'],
+    ['在线', 'success'],
+]);
+
+function TaskObjectList(props) {
     const {
         location,
         dispatch,
         taskobjectlist,
         GetData,
+        loading,
         form: {
             getFieldDecorator,
             getFieldsValue,
@@ -45,6 +46,7 @@ function SystemScriptList(props) {
     const [selectedRows, setSelectedRows] = useState([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+    const { taskId, buttype } = useContext(EditContext);
 
     const onSelectChange = (RowKeys, Rows) => {
         GetData(RowKeys)
@@ -59,20 +61,35 @@ function SystemScriptList(props) {
 
     const searchdata = (page, size) => {
         const values = getFieldsValue();
+        console.log(values)
         dispatch({
             type: 'autotask/findtaskObjectList',
             payload: {
-                ...values,
+                values,
                 pageNum: page,
                 pageSize: size,
-                taskId: undefined
+                id: undefined
             },
         });
     };
 
     useEffect(() => {
-        searchdata(1, 15, undefined);
+        searchdata(1, 15);
     }, [location]);
+
+    useEffect(() => {
+        dispatch({
+            type: 'autotask/togetUseTaskObjectandAgent',
+            payload: { taskId },
+        }).then(res => {
+            if (res.code === 200) {
+                GetData(res.useTaskObject);
+                setSelectedRowKeys(res.useTaskObject);
+            } else {
+                message.error(res.msg);
+            }
+        })
+    }, [taskId]);
 
     const handleSearch = () => {
         setPageinations({
@@ -114,6 +131,10 @@ function SystemScriptList(props) {
         onChange: page => changePage(page),
     };
 
+    const logcalcel = (e) => {
+        console.log(e)
+    };
+
     const columns = [
         {
             title: '区域',
@@ -125,7 +146,8 @@ function SystemScriptList(props) {
             title: '名称',
             dataIndex: 'agentName',
             key: 'agentName',
-            width: 180,
+            width: 250,
+            ellipsis: true,
         },
         {
             title: 'IP地址',
@@ -169,6 +191,11 @@ function SystemScriptList(props) {
             dataIndex: 'agentStatus',
             key: 'agentStatus',
             width: 80,
+            render: (text, record) => (
+                <span>
+                    <Badge status={colormap.get(record.agentStatus)} text={text} />
+                </span>
+            ),
         },
         {
             title: '节点地址',
@@ -301,10 +328,10 @@ function SystemScriptList(props) {
                     </Col>
                     <Col span={8} style={{ paddingLeft: expand ? '5.666667%' : '24px' }}>{extra}</Col>
                 </Form>
-                <Col span={24}>{selectedRows.map(item => (
-                    <Tag key={item.id} style={{ marginBottom: 5, marginLeft: 48, padding: 8 }} color="red" closable>{item.agentHost}</Tag>
+                <Col span={24} style={{ marginLeft: 48, padding: 8 }}>{selectedRows.map(item => (
+                    <Tag key={item.id} color="red" closable onClose={() => logcalcel()}>{item.agentHost}</Tag>
                 ))}</Col>
-                <Col span={24}><Alert message={`已选择【${selectedRows.length}】个agent`} type="info" style={{ marginBottom: 5, marginLeft: 48, width: '96.6%' }} /></Col>
+                <Col span={24}><Alert message={buttype === 'add' ? (`已选择【${selectedRows.length}】个agent` || `已选择【0】个agent`) : `已选择【${selectedRowKeys.length}】个agent`} type="info" style={{ marginBottom: 5, marginLeft: 48, width: '96.6%' }} /></Col>
             </Row>
             <Table
                 dataSource={taskobjectlist.rows}
@@ -314,6 +341,7 @@ function SystemScriptList(props) {
                 scroll={{ x: 1300 }}
                 rowSelection={rowSelection}
                 paginations={pagination}
+                loading={loading}
             />
         </>
     );
@@ -323,5 +351,5 @@ export default Form.create({})(
     connect(({ autotask, loading }) => ({
         taskobjectlist: autotask.taskobjectlist,
         loading: loading.models.autotask,
-    }))(SystemScriptList),
+    }))(TaskObjectList),
 );

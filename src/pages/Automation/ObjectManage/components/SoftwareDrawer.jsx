@@ -74,7 +74,7 @@ function SoftwareDrawer(props) {
     const handleChange = v => {
         dispatch({
             type: 'softwaremanage/tofindCascade',
-            payload: { cabinetZoneId: v },
+            payload: { hostZoneId: v },
         }).then(res => {
             setFindhostName(res.data);
             setFindhostIp(res.data);

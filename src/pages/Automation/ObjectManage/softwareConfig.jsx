@@ -5,7 +5,7 @@ import React, {
 } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Table, Card, Button, Form, Input, Select, Row, Col, Divider } from 'antd';
+import { Table, Card, Button, Form, Input, Select, Row, Col, Divider, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
@@ -40,6 +40,7 @@ function softwareConfig(props) {
     const [expand, setExpand] = useState(false);
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+    const [data, setData] = useState([]);
 
     const searchdata = (page, size) => {
         const values = getFieldsValue();
@@ -48,13 +49,20 @@ function softwareConfig(props) {
         values.updateTime1 = values.updateTime1 ? moment(values.updateTime1).format('YYYY-MM-DD HH:mm:ss') : '';
         values.updateTime2 = values.updateTime2 ? moment(values.updateTime2).format('YYYY-MM-DD HH:mm:ss') : '';
         dispatch({
-            type: 'softwaremanage/findSoftList',
+            type: 'softwaremanage/findSoftList1',
             payload: {
                 values,
                 pageNum: page,
                 pageSize: size,
             },
-        });
+        }).then(res => {
+            if (res.code === 200) {
+                const newarr = res.data.rows.map((item, index) => {
+                    return Object.assign(item, { key: index });
+                });
+                setData(newarr);
+            }
+        })
     };
 
 
@@ -65,7 +73,7 @@ function softwareConfig(props) {
 
     const handleReset = () => {
         resetFields();
-        searchdata(1, 15)
+        searchdata(1, 15);
         setPageinations({ current: 1, pageSize: 15 });
     };
 
@@ -101,6 +109,55 @@ function softwareConfig(props) {
             current: 1,
         });
         searchdata(1, paginations.pageSize);
+    };
+
+    // 提交保存数据
+    const savedata = (target, id) => {
+        dispatch({
+            type: 'softwaremanage/todynamicaddOrEdit',
+            payload: {
+                ...target,
+                id,
+            },
+        }).then(res => {
+            if (res.code === 200) {
+                message.success(res.msg);
+                searchdata(1, 15);
+            }
+        });
+    };
+
+    // 获取行
+    const getRowByKey = (key, newData) => {
+        return (newData || data).filter(item => item.key === key)[0];
+    };
+
+    // 更新表单信息
+    const handleFieldChange = (e, fieldName, key) => {
+        const newData = data.map(item => ({ ...item }));
+        const target = getRowByKey(key, newData);
+        if (target) {
+            target[fieldName] = e;
+            setData(newData);
+        }
+    };
+
+    const toggleEditable = (e, key) => {
+        e.preventDefault();
+        const newData = data.map(item => ({ ...item }));
+        const target = getRowByKey(key, newData);
+        if (target) {
+            target.editable = !target.editable;
+            setData(newData);
+        }
+    }
+
+    const saveRow = (e, key) => {
+        const target = getRowByKey(key) || {};
+        delete target.key;
+        target.editable = false;
+        const id = target.id === '' ? '' : target.id;
+        savedata(target, id);
     };
 
     const columns = [
@@ -157,6 +214,20 @@ function softwareConfig(props) {
             dataIndex: 'director',
             key: 'director',
             width: 150,
+            editable: true,
+            render: (text, record) => {
+                if (record.editable) {
+                    return (
+                        <Input
+                            type='text'
+                            placeholder="请输入"
+                            defaultValue={text}
+                            onChange={e => handleFieldChange(e.target.value, 'director', record.key)}
+                        />
+                    );
+                }
+                return text;
+            },
         },
         {
             title: '获取时间',
@@ -171,22 +242,37 @@ function softwareConfig(props) {
             fixed: 'right',
             width: 200,
             render: (text, record) => {
-                return (
-                    <div>
-                        <a type="link"
-                            record={record}
-                            text={text}
+                if (record.editable === '') {
+                    return null;
+                }
+                return record.editable ? (
+                    <span>
+                        <a
+                            onClick={e => saveRow(e, record.key)}
                         >
-                            编辑版本号
+                            保存
                         </a>
-                        <Divider type="vertical"/>
+                        <Divider type="vertical" />
                         <a type="link"
                             record={record}
                             text={text}
                         >
                             历史版本
                         </a>
-                    </div>
+                    </span>
+                ) : (
+                    <span>
+                        <a onClick={e => toggleEditable(e, record.key)}>
+                            编辑版本号
+                        </a>
+                        <Divider type="vertical" />
+                        <a type="link"
+                            record={record}
+                            text={text}
+                        >
+                            历史版本
+                        </a>
+                    </span>
                 );
             },
         },
@@ -291,7 +377,7 @@ function softwareConfig(props) {
                 </div>
                 <Table
                     columns={columns}
-                    dataSource={softList.rows}
+                    dataSource={data}
                     loading={loading}
                     rowKey={(_, index) => index.toString()}
                     pagination={pagination}

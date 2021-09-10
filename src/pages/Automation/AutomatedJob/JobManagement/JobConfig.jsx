@@ -7,6 +7,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
 import TaskObjectModel from './components/TaskObjectModel';
+import TaskScriptModel from './components/TaskScriptModel';
 
 const { Option } = Select;
 
@@ -36,15 +37,12 @@ function JobConfig(props) {
     } = props;
 
     const [expand, setExpand] = useState(false);
-    // const [visible, setVisible] = useState(false); // 抽屉是否显示
-    // const [title, setTitle] = useState('');
-    // const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
-    // const [data, setData] = useState('');
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
 
     const searchdata = (page, size) => {
         const values = getFieldsValue();
+        // values.taskStatus = '1';
         values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
         values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
         //   values.startUpdateTime = values.startUpdateTime ? moment(values.startUpdateTime).format('YYYY-MM-DD HH:mm:ss') : '';
@@ -63,63 +61,34 @@ function JobConfig(props) {
         searchdata(1, 15);
     }, [location]);
 
-    //   const handleShowDrawer = (drwertitle, type, record) => {
-    //       setVisible(!visible);
-    //       setTitle(drwertitle);
-    //       setSaveType(type);
-    //       setData(record);
-    //   };
-
-    // 提交
-    //   const handleSubmit = values => {
-    //       if (savetype === '' || savetype === 'add') {
-    //           dispatch({
-    //               type: 'JobConfig/toaddSoft',
-    //               payload: {
-    //                   ...values,
-    //               },
-    //           }).then(res => {
-    //               if (res.code === 200) {
-    //                   message.success(res.msg);
-    //                   searchdata(1, 15);
-    //               } else {
-    //                   message.error(res.msg);
-    //               }
-    //           });
-    //       }
-    //       if (savetype === 'update') {
-    //           dispatch({
-    //               type: 'JobConfig/toeditSoft',
-    //               payload: {
-    //                   ...values,
-    //               },
-    //           }).then(res => {
-    //               if (res.code === 200) {
-    //                   message.success(res.msg);
-    //                   searchdata(1, 15);
-    //               } else {
-    //                   message.error(res.msg);
-    //               }
-    //           });
-    //       }
-    //   };
-
     const handleReset = () => {
         resetFields();
         searchdata(1, 15)
         setPageinations({ current: 1, pageSize: 15 });
     };
 
-    const newjobconfig = (edittype, record) => {
-        if (edittype === 'edit') {
+    useEffect(() => {
+        if (location.state) {
+            // 点击菜单刷新,并获取数据
+            if (location.state.reset) {
+                handleReset()
+            };
+        }
+    }, [location.state]);
+
+    const newjobconfig = (buttype, record) => {
+        if (buttype === 'edit') {
             router.push({
                 pathname: '/automation/automatedjob/jobmanagement/jobconfig/edit',
                 query: {
                     Id: record.id,
+                    buttype: 'edit'
                 },
                 state: {
                     dynamicpath: true,
                     menuDesc: '编辑作业配置',
+                    status: record.taskStatus,
+                    buttype,
                 }
             })
         } else {
@@ -128,10 +97,14 @@ function JobConfig(props) {
                 query: {
                     addtab: true,
                     menuDesc: '添加作业配置',
+                    buttype: 'add'
                 },
+                state: {
+                    buttype,
+                }
             })
         }
-    }
+    };
 
     const onShowSizeChange = (page, size) => {
         searchdata(page, size);
@@ -194,7 +167,7 @@ function JobConfig(props) {
         >
             {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
         </Button></>
-    )
+    );
 
     // 数据字典取下拉值
     const getTypebyId = key => {
@@ -234,17 +207,24 @@ function JobConfig(props) {
             width: 150,
             render: (text, record) => {
                 return (
-                  <TaskObjectModel record={record}>
-                    <a type="link">{text}</a>
-                  </TaskObjectModel>
+                    <TaskObjectModel record={record} dispatch={dispatch}>
+                        <a type="link">{text}</a>
+                    </TaskObjectModel>
                 );
-              },
+            },
         },
         {
             title: '作业脚本',
             dataIndex: 'taskScriptNum',
             key: 'taskScriptNum',
             width: 150,
+            render: (text, record) => {
+                return (
+                    <TaskScriptModel record={record} dispatch={dispatch}>
+                        <a type="link">{text}</a>
+                    </TaskScriptModel>
+                );
+            },
         },
         {
             title: '作业备注',
@@ -512,7 +492,7 @@ function JobConfig(props) {
                 </Row>
                 <div style={{ marginBottom: 8 }}>
                     <Button type="primary" style={{ marginRight: 8 }}
-                        onClick={() => newjobconfig()}
+                        onClick={() => newjobconfig('add')}
                     >新增</Button>
                 </div>
                 <Table

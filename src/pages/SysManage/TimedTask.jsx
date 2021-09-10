@@ -305,7 +305,7 @@ function TimedTask(props) {
       title: '任务组名',
       dataIndex: 'jobGroup',
       key: 'jobGroup',
-      width: 100,
+      width: 250,
     },
     {
       title: '是否并发执行',
@@ -317,7 +317,8 @@ function TimedTask(props) {
       title: '调用目标字符串',
       dataIndex: 'invokeTarget',
       key: 'invokeTarget',
-      width: 250,
+      width: 300,
+      ellipsis: true,
     },
     {
       title: 'cron执行表达式',
@@ -362,7 +363,8 @@ function TimedTask(props) {
       title: '任务备注',
       dataIndex: 'remark',
       key: 'remark',
-      width: 250,
+      width: 300,
+      ellipsis: true,
     },
     {
       title: '创建人',

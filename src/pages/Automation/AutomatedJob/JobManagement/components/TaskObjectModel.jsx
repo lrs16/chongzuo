@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
-import { connect } from 'dva';
+// import { connect } from 'dva';
 import {
     Form,
     Modal,
     Table,
+    Badge,
 } from 'antd';
+
+const colormap = new Map([
+    ['离线', 'default'],
+    ['在线', 'success'],
+]);
 
 // 克隆子元素按钮，并添加事件
 const withClick = (element, handleClick = () => { }) => {
@@ -14,31 +20,28 @@ const withClick = (element, handleClick = () => { }) => {
 function TaskObjectModel(props) {
     const {
         children,
-        // dispatch,
-        // record,
-        // location,
-        // findtaskObjectList,
+        dispatch,
     } = props;
 
-    // console.log(findtaskObjectList)
-
+    const { id } = props.record;
     const [visible, setVisible] = useState(false);
+    const [data, setData] = useState([]);
 
     // 列表
-    // const getlistdata = (page, size) => {
-    //     dispatch({
-    //         type: 'autotask/findtaskObjectList',
-    //         payload: {
-    //             taskId: record.id,
-    //             pageNum: page,
-    //             pageSize: size,
-    //         },
-    //     })
-    // };
-
-    // useEffect(() => {
-    //     getlistdata(1,15);
-    // }, [location]);
+    const getlistdata = (page, size) => {
+        dispatch({
+            type: 'autotask/findtaskObjectList1',
+            payload: {
+                id,
+                pageNum: page,
+                pageSize: size,
+            },
+        }).then(res => {
+            if (res.code === 200) {
+                setData(res.data);
+            }
+        });
+    };
 
     const handleCancel = () => {
         setVisible(false);
@@ -46,6 +49,7 @@ function TaskObjectModel(props) {
 
     const handleopenClick = () => {
         setVisible(true);
+        getlistdata(1,15);
     };
 
     const columns = [
@@ -59,7 +63,8 @@ function TaskObjectModel(props) {
             title: '名称',
             dataIndex: 'agentName',
             key: 'agentName',
-            width: 180,
+            width: 250,
+            ellipsis: true,
         },
         {
             title: 'IP地址',
@@ -95,7 +100,7 @@ function TaskObjectModel(props) {
             title: '目录',
             dataIndex: 'agentDeploy',
             key: 'agentDeploy',
-            width: 200,
+            width: 400,
             ellipsis: true,
         },
         {
@@ -103,6 +108,11 @@ function TaskObjectModel(props) {
             dataIndex: 'agentStatus',
             key: 'agentStatus',
             width: 80,
+            render: (text, record) => (
+                <span>
+                    <Badge status={colormap.get(record.agentStatus)} text={text} />
+                </span>
+            ),
         },
         {
             title: '节点地址',
@@ -132,17 +142,16 @@ function TaskObjectModel(props) {
                 onCancel={() => handleCancel()}
                 footer={null}
                 visible={visible}
-                width={1160}
+                width="68%"
                 centered
                 maskClosable
                 closable
             >
                 <Table
-                    // dataSource={findtaskObjectList.rows}
-                    // loading={loading}
+                    dataSource={data.rows}
                     columns={columns}
-                    bordered
-                    // rowKey={record => record.id}
+                    scroll={{ x: 200 }}
+                    rowKey={record => record.id}
                     pagination={false}
                 />
             </Modal>
@@ -150,9 +159,4 @@ function TaskObjectModel(props) {
     );
 }
 
-export default Form.create({})(
-    connect(({ autotask, loading }) => ({
-        findtaskObjectList: autotask.findtaskObjectList,
-        loading: loading.models.autotask,
-    }))(TaskObjectModel),
-);
+export default Form.create({})(TaskObjectModel);

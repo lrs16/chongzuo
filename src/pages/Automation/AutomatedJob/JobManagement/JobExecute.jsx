@@ -72,8 +72,8 @@ function JobExecute(props) {
           {tabActivekey === 'manualexecute' && ( // 手动执行
               <ManualExecuteList
                   formItemLayout={formItemLayout}
-                  dispatch={dispatch}
-                  location={location}
+                //   dispatch={dispatch}
+                //   location={location}
               />
           )}
           {tabActivekey === 'timedexecute' && ( // 定时执行

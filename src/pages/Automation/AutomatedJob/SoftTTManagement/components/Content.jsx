@@ -1,25 +1,34 @@
-import React, { forwardRef, useImperativeHandle } from 'react';
-import { Form, Input, } from 'antd';
+import React, { 
+  // useState, useEffect, 
+  forwardRef, useImperativeHandle 
+} from 'react';
+// import moment from 'moment';
+import { Row, Col, Form, Input } from 'antd';
 
 const { TextArea } = Input;
 
-const formItemLayout = {
+const formallItemLayout = {
   labelCol: {
-    xs: { span: 24 },
-    sm: { span: 2 },
+    xs: { span: 6 },
   },
   wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 6 },
+    xs: { span: 18 },
+  },
+};
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 2 },
+  },
+  wrapperCol: {
+    xs: { span: 22 },
   },
 };
 
 const Content = forwardRef((props, ref) => {
   const {
-    formrecord,
+    userinfo,
     form: { getFieldDecorator, getFieldsValue, resetFields }
   } = props;
-
 
   useImperativeHandle(ref, () => ({
     getVal: () => getFieldsValue(),
@@ -27,50 +36,42 @@ const Content = forwardRef((props, ref) => {
     Forms: props.form.validateFieldsAndScroll,
   }), []);
 
-  // const columns = [
-  //   {
-  //     title: '作业名称',
-  //     dataIndex: 'taskName',
-  //     key: 'taskName',
-  //     width: 200,
-  //   },
-  //   {
-  //     title: '作业状态',
-  //     dataIndex: 'taskStatus',
-  //     key: 'taskStatus',
-  //     width: 150,
-  //   }
-  // ];
-
   return (
-    <div>
-      <Form {...formItemLayout} >
-        <Form.Item label="申请说明">
-          {getFieldDecorator('content', {
-            initialValue: formrecord.content,
-          })(<TextArea rows="6" />)}
-        </Form.Item>
-        <Form.Item label="申请人">
-          {getFieldDecorator('proposer', {
-            initialValue: formrecord.proposer,
-          })(<Input disabled />)}
-        </Form.Item>
-        <Form.Item label="申请单位">
-          {getFieldDecorator('proposingUnit', {
-            initialValue: formrecord.proposingUnit,
-          })(<Input disabled />)}
-        </Form.Item>
-      </Form>
+    <div style={{ marginRight: 24 }}>
+      <Row gutter={24}>
+        <Form {...formallItemLayout}>
+          <Col span={24}>
+            <Form.Item label="申请说明" {...formItemLayout}>
+              {getFieldDecorator('content1', {
+                rules: [{ required: true, message: '请输入审核说明' }],
+                initialValue: '',
+              })(<TextArea autoSize={{ minRows: 5 }} placeholder="请输入" />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="申请人">
+              {getFieldDecorator('checkUser', {
+                rules: [{ required: true }],
+                initialValue: userinfo.userName ? userinfo.userName : '',
+              })(<Input placeholder="请输入" disabled />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="申请人单位">
+              {getFieldDecorator('checkUnit', {
+                rules: [{ required: true }],
+                initialValue: userinfo.unitName ? userinfo.unitName : '',
+              })(<Input placeholder="请输入" disabled />)}
+            </Form.Item>
+          </Col>
+        </Form>
+      </Row>
     </div>
   );
 });
 
 Content.defaultProps = {
-  formrecord: {
-    content: '',
-    proposer: '',
-    proposingUnit: ''
-  }
+  userinfo: {}
 }
 
 export default Form.create()(Content);

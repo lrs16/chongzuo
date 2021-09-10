@@ -1,19 +1,11 @@
-/* eslint-disable import/no-unresolved */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import moment from 'moment';
 import { connect } from 'dva';
-import { Table, Button, Form, Input, Row, Col, DatePicker, Alert } from 'antd';
+import { Table, Button, Form, Input, Row, Col, DatePicker, Alert, message } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
-// import SystemScriptDrawer from './SystemScriptDrawer';
-// import SysViewDrawer from './SysViewDrawer';
+import EditContext from '@/layouts/MenuContext';
 
 // const { Option } = Select;
-// const directormap = [
-//     { key: '1', title: '张三' },
-//     { key: '2', title: '李四' },
-//     { key: '3', title: '王五' },
-//     { key: '3', title: '赵六' },
-// ];
 
 const formItemLayout = {
     labelCol: {
@@ -28,32 +20,25 @@ const formItemLayout = {
 
 function SystemScriptList(props) {
     const {
-        // loading,
-        // scriptsourcemap,
-        // scriptstatusmap,
-        // scripttypemap,
-        // formItemLayout,
+        GetData,
         location,
         dispatch,
-        // systemscriptlist,
+        loading,
+        taskscriptlist,
         form: {
             getFieldDecorator,
             getFieldsValue,
-            // resetFields,
+            resetFields,
         } } = props;
 
     const [expand, setExpand] = useState(false);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [selectedRows, setSelectedRows] = useState([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-    // const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
-    // const [visible, setVisible] = useState(false); // 抽屉是否显示
-    // const [title, setTitle] = useState('');
-    // // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    // const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
-    // const [data, setData] = useState('');
+    const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+    const { taskId, buttype } = useContext(EditContext);
 
     const onSelectChange = (RowKeys, Rows) => {
+        GetData(RowKeys)
         setSelectedRowKeys(RowKeys);
         setSelectedRows(Rows);
     };
@@ -65,6 +50,7 @@ function SystemScriptList(props) {
 
     const searchdata = (page, size) => {
         const values = getFieldsValue();
+        console.log(values)
         // values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
         // values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
         // values.startUpdateTime = values.startUpdateTime ? moment(values.startUpdateTime).format('YYYY-MM-DD HH:mm:ss') : '';
@@ -72,117 +58,75 @@ function SystemScriptList(props) {
         dispatch({
             type: 'autotask/findtaskScriptList',
             payload: {
-                values,
+                ...values,
                 pageNum: page,
                 pageSize: size,
-                taskId: undefined
+                id: undefined
             },
         });
     };
 
     useEffect(() => {
-        searchdata(1, 15, undefined);
+        searchdata(1, 15);
+        dispatch({
+            type: 'autotask/togetUseTaskObjectandAgent',
+            payload: { taskId },
+        }).then()
     }, [location]);
 
-    // const handleShowDrawer = (drwertitle, type, record) => {
-    //     setVisible(!visible);
-    //     setTitle(drwertitle);
-    //     setSaveType(type);
-    //     setData(record);
-    // };
+    useEffect(() => { // 获得用户已选择的对象数据 在表格打勾用户已选数据
+        dispatch({
+            type: 'autotask/togetUseTaskObjectandAgent',
+            payload: { taskId },
+        }).then(res => {
+            if (res.code === 200) {
+                GetData(res.useTaskScript);
+                setSelectedRowKeys(res.useTaskScript);
+            } else {
+                message.error(res.msg);
+            }
+        })
+    }, [taskId]);
 
-    // const Handlerecall = () => { // 撤回
-    //     const len = selectedRowKeys.length;
-    //     if (len === 0) {
-    //         message.info('至少选择一条数据');
-    //     } else {
-    //         const ids = selectedRows.map(item => { return item.id; });
-    //         dispatch({
-    //             type: 'scriptconfig/torecellScript',
-    //             payload: { Ids: ids.toString() },
-    //         }).then(res => {
-    //             if (res.code === 200) {
-    //                 message.success(res.msg);
-    //                 searchdata(1, 15);
-    //             } else {
-    //                 message.error(res.msg);
-    //             }
-    //         });
-    //     }
-    //     setSelectedRowKeys([]);
-    //     setSelectedRows([]);
-    // };
+    const handleSearch = () => {
+        setPageinations({
+            ...paginations,
+            current: 1,
+        });
+        searchdata(1, paginations.pageSize);
+    };
 
-    // // 提交
-    // const handleSubmit = values => {
-    //     dispatch({
-    //         type: 'scriptconfig/toupdatesystemScript',
-    //         payload: {
-    //             ...values,
-    //         },
-    //     }).then(res => {
-    //         if (res.code === 200) {
-    //             message.success(res.msg);
-    //             searchdata(1, 15);
-    //         } else {
-    //             message.error(res.msg);
-    //         }
-    //     });
-    // };
+    const handleReset = () => {
+        resetFields();
+        searchdata(1, 15);
+        setPageinations({ current: 1, pageSize: 15 });
+    };
 
-    // const handleDelete = id => { // 删除
-    //     dispatch({
-    //         type: 'scriptconfig/toDeletesystemScript',
-    //         payload: { Ids: id },
-    //     }).then(res => {
-    //         if (res.code === 200) {
-    //             message.success('删除成功');
-    //             searchdata(1, 15);
-    //         } else {
-    //             message.error(res.msg);
-    //         }
-    //     });
-    // };
+    const onShowSizeChange = (page, size) => {
+        searchdata(page, size);
+        setPageinations({
+            ...paginations,
+            pageSize: size,
+        });
+    };
 
-    // const handleSearch = () => {
-    //     setPageinations({
-    //         ...paginations,
-    //         current: 1,
-    //     });
-    //     searchdata(1, paginations.pageSize);
-    // };
+    const changePage = page => {
+        searchdata(page, paginations.pageSize);
+        setPageinations({
+            ...paginations,
+            current: page,
+        });
+    };
 
-    // const handleReset = () => {
-    //     resetFields();
-    //     searchdata(1, 15)
-    //     setPageinations({ current: 1, pageSize: 15 });
-    // };
-
-    // const onShowSizeChange = (page, size) => {
-    //     searchdata(page, size);
-    //     setPageinations({
-    //         ...paginations,
-    //         pageSize: size,
-    //     });
-    // };
-
-    // const changePage = page => {
-    //     searchdata(page, paginations.pageSize);
-    //     setPageinations({
-    //         ...paginations,
-    //         current: page,
-    //     });
-    // };
-
-    // const pagination = {
-    //     showSizeChanger: true,
-    //     onShowSizeChange: (page, size) => onShowSizeChange(page, size),
-    //     current: paginations.current,
-    //     pageSize: paginations.pageSize,
-    //     total: systemscriptlist.total,
-    //     showTotal: total => `总共  ${total}  条记录`,
-    //     onChange: page => changePage(page),
-    // };
+    const pagination = {
+        showSizeChanger: true,
+        onShowSizeChange: (page, size) => onShowSizeChange(page, size),
+        current: paginations.current,
+        pageSize: paginations.pageSize,
+        total: taskscriptlist.total,
+        showTotal: total => `总共  ${total}  条记录`,
+        onChange: page => changePage(page),
+    };
 
     const columns = [
         {
@@ -268,8 +212,8 @@ function SystemScriptList(props) {
 
     // 查询
     const extra = (<>
-        <Button type="primary">查 询</Button>
-        <Button style={{ marginLeft: 8 }}>重 置</Button>
+        <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
+        <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
         <Button
             style={{ marginLeft: 8, marginBottom: 20 }}
             type="link"
@@ -284,7 +228,7 @@ function SystemScriptList(props) {
     return (
         <>
             <Row style={{ marginLeft: 70 }}>
-                <Form {...formItemLayout}>
+                <Form {...formItemLayout} onSubmit={handleSearch}>
                     <Col span={8}>
                         <Form.Item label="脚本名称">
                             {getFieldDecorator('scriptName', {
@@ -300,131 +244,129 @@ function SystemScriptList(props) {
                                 <Input placeholder="请输入" allowClear />)}
                         </Form.Item>
                     </Col>
-                    {expand && (
-                        <>
-                            <Col span={8}>
-                                <Form.Item label="脚本来源">
-                                    {getFieldDecorator('scriptSource', {
-                                        initialValue: '',
-                                    })(
-                                        <Input placeholder="请输入" allowClear />)}
-                                </Form.Item>
-                            </Col>
-                            <Col span={8}>
-                                <Form.Item label="脚本内容">
-                                    {getFieldDecorator('scriptCont', {
-                                        initialValue: '',
-                                    })(<Input placeholder="请输入" allowClear />)}
-                                </Form.Item>
-                            </Col>
-                            <Col span={8}>
-                                <Form.Item label="负责人">
-                                    {getFieldDecorator('director', {
-                                        initialValue: '',
-                                    })(<Input placeholder="请输入" allowClear />)}
-                                </Form.Item>
-                            </Col>
-                            <Col span={8}>
-                                <Form.Item label="创建人">
-                                    {getFieldDecorator('createBy', {
-                                        initialValue: '',
-                                    })(<Input placeholder="请输入" allowClear />)}
-                                </Form.Item>
-                            </Col>
-                            <Col span={8}>
-                                <Form.Item label="创建时间">
-                                    <Row>
-                                        <Col span={11}>
-                                            {getFieldDecorator('startTime', {})(
-                                                <DatePicker
-                                                    showTime={{
-                                                        hideDisabledOptions: true,
-                                                        defaultValue: moment('00:00:00', 'HH:mm:ss'),
-                                                    }}
-                                                    placeholder="开始时间"
-                                                    format='YYYY-MM-DD HH:mm:ss'
-                                                    style={{ minWidth: 120, width: '100%' }}
-                                                />
-                                            )}
-                                        </Col>
-                                        <Col span={2} style={{ textAlign: 'center' }}>-</Col>
-                                        <Col span={11}>
-                                            {getFieldDecorator('endTime', {})(
-                                                <DatePicker
-                                                    showTime={{
-                                                        hideDisabledOptions: true,
-                                                        defaultValue: moment('23:59:59', 'HH:mm:ss'),
-                                                    }}
-                                                    placeholder="结束时间"
-                                                    format='YYYY-MM-DD HH:mm:ss'
-                                                    style={{ minWidth: 120, width: '100%' }}
-                                                />
-                                            )}
-                                        </Col>
-                                    </Row>
-                                </Form.Item>
-                            </Col>
-                            <Col span={8}>
-                                <Form.Item label="更新人">
-                                    {getFieldDecorator('updateBy', {
-                                        initialValue: '',
-                                    })(<Input placeholder="请输入" allowClear />)}
-                                </Form.Item>
-                            </Col>
-                            <Col span={8}>
-                                <Form.Item label="更新时间">
-                                    <Row>
-                                        <Col span={11}>
-                                            {getFieldDecorator('startUpdateTime', {})(
-                                                <DatePicker
-                                                    showTime={{
-                                                        hideDisabledOptions: true,
-                                                        defaultValue: moment('00:00:00', 'HH:mm:ss'),
-                                                    }}
-                                                    placeholder="开始时间"
-                                                    format='YYYY-MM-DD HH:mm:ss'
-                                                    style={{ minWidth: 120, width: '100%' }}
-                                                />
-                                            )}
-                                        </Col>
-                                        <Col span={2} style={{ textAlign: 'center' }}>-</Col>
-                                        <Col span={11}>
-                                            {getFieldDecorator('endUpdateTime', {})(
-                                                <DatePicker
-                                                    showTime={{
-                                                        hideDisabledOptions: true,
-                                                        defaultValue: moment('23:59:59', 'HH:mm:ss'),
-                                                    }}
-                                                    placeholder="结束时间"
-                                                    format='YYYY-MM-DD HH:mm:ss'
-                                                    style={{ minWidth: 120, width: '100%' }}
-                                                />
-                                            )}
-                                        </Col>
-                                    </Row>
-                                </Form.Item>
-                            </Col>
-                        </>
-                    )}
+                    <Col span={8}>
+                        <Form.Item label="脚本来源" style={{ display: expand ? 'block' : 'none' }}>
+                            {getFieldDecorator('scriptSource', {
+                                initialValue: '',
+                            })(
+                                <Input placeholder="请输入" allowClear />)}
+                        </Form.Item>
+                    </Col>
+                    <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                        <Form.Item label="脚本内容">
+                            {getFieldDecorator('scriptCont', {
+                                initialValue: '',
+                            })(<Input placeholder="请输入" allowClear />)}
+                        </Form.Item>
+                    </Col>
+                    <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                        <Form.Item label="负责人">
+                            {getFieldDecorator('director', {
+                                initialValue: '',
+                            })(<Input placeholder="请输入" allowClear />)}
+                        </Form.Item>
+                    </Col>
+                    <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                        <Form.Item label="创建人">
+                            {getFieldDecorator('createBy', {
+                                initialValue: '',
+                            })(<Input placeholder="请输入" allowClear />)}
+                        </Form.Item>
+                    </Col>
+                    <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                        <Form.Item label="创建时间">
+                            <Row>
+                                <Col span={11}>
+                                    {getFieldDecorator('startTime', {})(
+                                        <DatePicker
+                                            showTime={{
+                                                hideDisabledOptions: true,
+                                                defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                                            }}
+                                            placeholder="开始时间"
+                                            format='YYYY-MM-DD HH:mm:ss'
+                                            style={{ minWidth: 120, width: '100%' }}
+                                        />
+                                    )}
+                                </Col>
+                                <Col span={2} style={{ textAlign: 'center' }}>-</Col>
+                                <Col span={11}>
+                                    {getFieldDecorator('endTime', {})(
+                                        <DatePicker
+                                            showTime={{
+                                                hideDisabledOptions: true,
+                                                defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                                            }}
+                                            placeholder="结束时间"
+                                            format='YYYY-MM-DD HH:mm:ss'
+                                            style={{ minWidth: 120, width: '100%' }}
+                                        />
+                                    )}
+                                </Col>
+                            </Row>
+                        </Form.Item>
+                    </Col>
+                    <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                        <Form.Item label="更新人">
+                            {getFieldDecorator('updateBy', {
+                                initialValue: '',
+                            })(<Input placeholder="请输入" allowClear />)}
+                        </Form.Item>
+                    </Col>
+                    <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                        <Form.Item label="更新时间">
+                            <Row>
+                                <Col span={11}>
+                                    {getFieldDecorator('startUpdateTime', {})(
+                                        <DatePicker
+                                            showTime={{
+                                                hideDisabledOptions: true,
+                                                defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                                            }}
+                                            placeholder="开始时间"
+                                            format='YYYY-MM-DD HH:mm:ss'
+                                            style={{ minWidth: 120, width: '100%' }}
+                                        />
+                                    )}
+                                </Col>
+                                <Col span={2} style={{ textAlign: 'center' }}>-</Col>
+                                <Col span={11}>
+                                    {getFieldDecorator('endUpdateTime', {})(
+                                        <DatePicker
+                                            showTime={{
+                                                hideDisabledOptions: true,
+                                                defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                                            }}
+                                            placeholder="结束时间"
+                                            format='YYYY-MM-DD HH:mm:ss'
+                                            style={{ minWidth: 120, width: '100%' }}
+                                        />
+                                    )}
+                                </Col>
+                            </Row>
+                        </Form.Item>
+                    </Col>
                     {expand ? (<Col span={24} style={{ marginTop: 4, textAlign: 'right' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
                 </Form>
-                <Col span={24}><Alert message="已选择【】个agent" type="info" style={{marginBottom: 5, marginLeft: 48, width: '96.6%'}}/></Col>
+                <Col span={24}><Alert message={buttype === 'add' ? `已选择【${selectedRows.length}】个agent` : `已选择【${selectedRowKeys.length}】个agent`} type="info" style={{ marginBottom: 5, marginLeft: 48, width: '96.6%' }} /></Col>
             </Row>
             <Table
                 style={{ marginLeft: 118 }}
                 columns={columns}
+                dataSource={taskscriptlist.rows}
                 rowKey={record => record.id}
                 scroll={{ x: 1300 }}
+                paginations={pagination}
                 rowSelection={rowSelection}
+                loading={loading}
             />
         </>
     );
 }
 
-// export default Form.create({})(SystemScriptList);
 export default Form.create({})(
     connect(({ autotask, loading }) => ({
-      taskscriptlist: autotask.taskscriptlist,
-      loading: loading.models.autotask,
+        taskscriptlist: autotask.taskscriptlist,
+        loading: loading.models.autotask,
     }))(SystemScriptList),
-  );
+);

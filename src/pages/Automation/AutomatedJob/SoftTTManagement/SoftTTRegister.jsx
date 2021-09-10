@@ -3,6 +3,7 @@ import React, {
   useState
 } from 'react';
 // import { connect } from 'dva';
+import router from 'umi/router';
 import moment from 'moment';
 import { Table, Card, Button, Form, Input, Select, Row, Col, DatePicker, Badge } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -68,6 +69,29 @@ function SoftTTRegister(props) {
     searchdata(1, 15)
     setPageinations({ current: 1, pageSize: 15 });
   };
+
+  const newRegist = (edittype, record) => {
+    if (edittype === 'edit') {
+      router.push({
+        pathname: '/automation/automatedjob/softstartandstop/softregister/newregist',
+        query: {
+          Id: record.id,
+        },
+        state: {
+          dynamicpath: true,
+          menuDesc: '编辑启停登记',
+        }
+      })
+    } else {
+      router.push({
+        pathname: '/automation/automatedjob/softstartandstop/softregister/newregist',
+        query: {
+          addtab: true,
+          menuDesc: '启停登记',
+        },
+      })
+    }
+  }
 
   const onShowSizeChange = (page, size) => {
     searchdata(page, size);
@@ -437,6 +461,7 @@ function SoftTTRegister(props) {
         </Row>
         <div style={{ marginBottom: 8 }}>
           <Button type="primary" style={{ marginRight: 8 }}
+            onClick={() => newRegist()}
           >登记</Button>
         </div>
         <Table
