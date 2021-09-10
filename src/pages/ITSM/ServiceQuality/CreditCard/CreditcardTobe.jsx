@@ -14,7 +14,7 @@ import {
   AutoComplete,
   Select,
   Spin,
-  DatePicker
+  DatePicker,
 } from 'antd';
 import { contractProvider, providerList, scoreListpage } from '../services/quality';
 import moment from 'moment';
@@ -31,29 +31,23 @@ const formItemLayout = {
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 16 }
+    sm: { span: 16 },
   },
-}
+};
 
 const { Search } = Input;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-
 function CreditcardTobe(props) {
   const pagetitle = props.route.name;
   const {
-    form: {
-      getFieldDecorator,
-      validateFields,
-      resetFields,
-      setFieldsValue
-    },
+    form: { getFieldDecorator, validateFields, resetFields, setFieldsValue },
     providerArr,
     scorecardArr,
     dispatch,
     location,
-    loading
+    loading,
   } = props;
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
   const [tabrecord, setTabRecord] = useState({});
@@ -62,51 +56,59 @@ function CreditcardTobe(props) {
   const searchdata = (values, page, pageSize) => {
     const newValue = {
       ...values,
-      beginTime: values.evaluationInterval?.length ? moment(values.evaluationInterval[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      endTime: values.evaluationInterval?.length ? moment(values.evaluationInterval[1]).format('YYYY-MM-DD HH:mm:ss') : '', // 发生时间
+      beginTime: values.evaluationInterval?.length
+        ? moment(values.evaluationInterval[0]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      endTime: values.evaluationInterval?.length
+        ? moment(values.evaluationInterval[1]).format('YYYY-MM-DD HH:mm:ss')
+        : '', // 发生时间
       evaluationInterval: '',
-      locked: '0'
-    }
+      locked: '0',
+    };
     dispatch({
       type: 'performanceappraisal/getscorecardlistPage',
       payload: {
         ...values,
-        beginTime: values.evaluationInterval?.length ? moment(values.evaluationInterval[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-        endTime: values.evaluationInterval?.length ? moment(values.evaluationInterval[1]).format('YYYY-MM-DD HH:mm:ss') : '', // 发生时间
+        beginTime: values.evaluationInterval?.length
+          ? moment(values.evaluationInterval[0]).format('YYYY-MM-DD HH:mm:ss')
+          : '',
+        endTime: values.evaluationInterval?.length
+          ? moment(values.evaluationInterval[1]).format('YYYY-MM-DD HH:mm:ss')
+          : '', // 发生时间
         evaluationInterval: '',
         pageNum: page,
         pageSize,
-        locked: '0'
-      }
+        locked: '0',
+      },
     });
-    setTabRecord({ ...newValue })
-  }
+    setTabRecord({ ...newValue });
+  };
 
   const handlesearch = () => {
     validateFields((err, value) => {
-      searchdata(value, 1, 15)
-    })
-  }
+      searchdata(value, 1, 15);
+    });
+  };
 
   useEffect(() => {
     validateFields((err, value) => {
-      searchdata(value, paginations.current, paginations.pageSize)
-    })
-  }, [])
+      searchdata(value, paginations.current, paginations.pageSize);
+    });
+  }, []);
 
-  const handleDelete = (id) => {
+  const handleDelete = id => {
     return dispatch({
       type: 'performanceappraisal/scorecardDel',
-      payload: id
+      payload: id,
     }).then(res => {
       if (res.code === 200) {
         message.info(res.msg);
-        searchdata({}, 1, paginations.pageSize)
+        searchdata({}, 1, paginations.pageSize);
       } else {
         message.error(res.msg);
       }
-    })
-  }
+    });
+  };
 
   const columns = [
     {
@@ -120,21 +122,22 @@ function CreditcardTobe(props) {
             pathname: '/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail',
             query: {
               Id: record.cardNo,
-              paramId: record.id
+              paramId: record.id,
               // paramId:record.id,
-    
             },
-            state:{
+            state: {
               dynamicpath: true,
               menuDesc: '记分详情页',
               // status: record.status,
-            }
-          })
-        } 
+            },
+          });
+        };
         return (
-          <a  type='link' onClick={gotoDetail}>{text}</a>
-        )
-      }
+          <a type="link" onClick={gotoDetail}>
+            {text}
+          </a>
+        );
+      },
     },
     {
       title: '服务商',
@@ -182,13 +185,13 @@ function CreditcardTobe(props) {
       title: '评价开始时间',
       dataIndex: 'beginTime',
       key: 'beginTime',
-      width: 180
+      width: 180,
     },
     {
       title: '评价结束时间',
       dataIndex: 'endTime',
       key: 'endTime',
-      width: 180
+      width: 180,
     },
     {
       title: '操作',
@@ -203,63 +206,59 @@ function CreditcardTobe(props) {
               id: record.id,
               No: record.cardNo,
               scorecardStatus: record.isEdit,
-              search: true
-            }
-          })
-        }
+              search: true,
+            },
+          });
+        };
         return (
           <span>
             {/* <a onClick={() => gotoDetail()}>查看</a> */}
             <>
               {/* <Divider type='vertical' /> */}
-              <Popconfirm
-                title='是否要删除此行？'
-                onConfirm={() => handleDelete(record.id)}
-              >
+              <Popconfirm title="是否要删除此行？" onConfirm={() => handleDelete(record.id)}>
                 <a>删除</a>
               </Popconfirm>
             </>
           </span>
-        )
-      }
+        );
+      },
     },
-  ]
-
+  ];
 
   const handleReset = () => {
     router.push({
       pathname: location.pathname,
       query: {},
-      state: {}
+      state: {},
     });
     resetFields();
-    searchdata({}, 1, 15)
-  }
+    searchdata({}, 1, 15);
+  };
 
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
       if (!err) {
-        searchdata(values, page, pageSize)
+        searchdata(values, page, pageSize);
       }
-    })
+    });
     setPaginations({
       ...paginations,
-      pageSize
-    })
-  }
+      pageSize,
+    });
+  };
 
   const changePage = page => {
     validateFields((err, values) => {
       if (!err) {
-        searchdata(values, page, paginations.pageSize)
+        searchdata(values, page, paginations.pageSize);
       }
-    })
+    });
 
     setPaginations({
       ...paginations,
-      current: page
-    })
-  }
+      current: page,
+    });
+  };
 
   const exportDownload = () => {
     validateFields((err, values) => {
@@ -267,10 +266,11 @@ function CreditcardTobe(props) {
         type: 'performanceappraisal/scorecardExport',
         payload: {
           ...values,
+          locked: '0',
           id: selectedKeys.toString(),
           pageNum: paginations.current,
-          pageSize: paginations.pageSize
-        }
+          pageSize: paginations.pageSize,
+        },
       }).then(res => {
         const filename = '下载.xls';
         const blob = new Blob([res]);
@@ -279,11 +279,10 @@ function CreditcardTobe(props) {
         a.href = url;
         a.download = filename;
         a.click();
-        window.URL.revokeObjectURL(url)
-      })
-    })
-
-  }
+        window.URL.revokeObjectURL(url);
+      });
+    });
+  };
 
   const pagination = {
     showSizeChanger: true,
@@ -292,8 +291,8 @@ function CreditcardTobe(props) {
     pageSize: paginations.pageSize,
     total: scorecardArr.total,
     showTotal: total => `总共 ${total} 条记录`,
-    onChange: (page) => changePage(page)
-  }
+    onChange: page => changePage(page),
+  };
 
   const record = {
     cardNo: '',
@@ -306,8 +305,8 @@ function CreditcardTobe(props) {
     providerName: '',
     contractName: '',
     beginTime: '',
-    endTime: ''
-  }
+    endTime: '',
+  };
 
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
 
@@ -322,33 +321,38 @@ function CreditcardTobe(props) {
               ...tabrecord,
               paginations,
             },
-            tabid: sessionStorage.getItem('tabid')
+            tabid: sessionStorage.getItem('tabid'),
           },
         });
-      };
+      }
       // 点击菜单刷新,并获取数据
       if (location.state.reset) {
         handleReset();
         // setExpand(false);
-      };
+      }
       if (location.state.cacheinfo) {
-        const {
-          beginTime,
-          endTime
-        } = location.state.cacheinfo;
+        const { beginTime, endTime } = location.state.cacheinfo;
         setFieldsValue({
-          evaluationInterval: beginTime ? [moment(beginTime), moment(endTime)] : ''
-        })
+          evaluationInterval: beginTime ? [moment(beginTime), moment(endTime)] : '',
+        });
       }
     }
   }, [location.state]);
 
   const rowSelection = {
     onChange: (index, handleSelect) => {
-      setSelectedKeys([...index])
-    }
-  }
+      setSelectedKeys([...index]);
+    },
+  };
 
+  const handleAdd = () => {
+    router.push({
+      pathname: '/ITSM/servicequalityassessment/creditcard/creditcardregister',
+      query: {
+        addtab: true,
+      },
+    });
+  };
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -356,135 +360,106 @@ function CreditcardTobe(props) {
         <Row>
           <Form {...formItemLayout}>
             <Col span={8}>
-              <Form.Item label='计分卡编号'>
-                {
-                  getFieldDecorator('cardNo', {
-                    initialValue: cacheinfo.cardNo
-                  })
-                    (<Input />)
-                }
+              <Form.Item label="计分卡编号">
+                {getFieldDecorator('cardNo', {
+                  initialValue: cacheinfo.cardNo,
+                })(<Input />)}
               </Form.Item>
             </Col>
 
             <Col span={8}>
-              <Form.Item label='评价计分卡名称'>
-                {
-                  getFieldDecorator('cardName', {
-                    initialValue: cacheinfo.cardName
-                  })
-                    (<Input />)
-                }
-
+              <Form.Item label="评价计分卡名称">
+                {getFieldDecorator('cardName', {
+                  initialValue: cacheinfo.cardName,
+                })(<Input />)}
               </Form.Item>
             </Col>
 
             <Col span={8}>
-              <Form.Item label='评分细则名称'>
-                {
-                  getFieldDecorator('scoreName', {
-                    initialValue: cacheinfo.scoreName
-                  })
-                    (
-                      <Input />
-                    )
-                }
+              <Form.Item label="评分细则名称">
+                {getFieldDecorator('scoreName', {
+                  initialValue: cacheinfo.scoreName,
+                })(<Input />)}
               </Form.Item>
             </Col>
 
             <Col span={8}>
-              <Form.Item label='考核类型'>
-                {
-                  getFieldDecorator('assessType', {
-                    initialValue: cacheinfo.assessType
-                  })
-                    (<Input />)
-                }
+              <Form.Item label="考核类型">
+                {getFieldDecorator('assessType', {
+                  initialValue: cacheinfo.assessType,
+                })(<Input />)}
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item label='版本号'>
-                {
-                  getFieldDecorator('version', {
-                    initialValue: cacheinfo.version
-                  })
-                    (<Input />)
-                }
+              <Form.Item label="版本号">
+                {getFieldDecorator('version', {
+                  initialValue: cacheinfo.version,
+                })(<Input />)}
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item label='专业部门'>
-                {
-                  getFieldDecorator('deptName', {
-                    initialValue: cacheinfo.deptName
-                  })
-                    (<Input />)
-                }
+              <Form.Item label="专业部门">
+                {getFieldDecorator('deptName', {
+                  initialValue: cacheinfo.deptName,
+                })(<Input />)}
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item label='评价区间'>
-                {
-                  getFieldDecorator('evaluationInterval', {
-                    initialValue: cacheinfo.beginTime ? [moment(cacheinfo.beginTime), moment(cacheinfo.endTime)] : ''
-                  })
-                    (<RangePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                      }}
-                      format="YYYY-MM-DD HH:mm:ss"
-                      style={{ width: '100%' }}
-                      placeholder="请选择"
-                      allowClear
-                    />)
-                }
+              <Form.Item label="评价区间">
+                {getFieldDecorator('evaluationInterval', {
+                  initialValue: cacheinfo.beginTime
+                    ? [moment(cacheinfo.beginTime), moment(cacheinfo.endTime)]
+                    : '',
+                })(
+                  <RangePicker
+                    showTime={{
+                      hideDisabledOptions: true,
+                      defaultValue: [
+                        moment('00:00:00', 'HH:mm:ss'),
+                        moment('23:59:59', 'HH:mm:ss'),
+                      ],
+                    }}
+                    format="YYYY-MM-DD HH:mm:ss"
+                    style={{ width: '100%' }}
+                    placeholder="请选择"
+                    allowClear
+                  />,
+                )}
               </Form.Item>
             </Col>
 
             <Col span={8}>
-              <Form.Item label='服务商'>
-                {
-                  getFieldDecorator('providerName', {
-                    initialValue: cacheinfo.providerName
-                  })
-                    (
-                      <Input />
-                    )
-                }
+              <Form.Item label="服务商">
+                {getFieldDecorator('providerName', {
+                  initialValue: cacheinfo.providerName,
+                })(<Input />)}
               </Form.Item>
             </Col>
 
             <Col span={8}>
-              <Form.Item label='合同名称'>
-                {
-                  getFieldDecorator('contractName', {
-                    initialValue: cacheinfo.contractName
-                  })
-                    (
-                      <Input />
-                    )
-                }
+              <Form.Item label="合同名称">
+                {getFieldDecorator('contractName', {
+                  initialValue: cacheinfo.contractName,
+                })(<Input />)}
               </Form.Item>
             </Col>
-
 
             <Col span={24} style={{ textAlign: 'right' }}>
-              <Button
-                type='primary'
-                style={{ marginRight: 8 }}
-                onClick={handlesearch}
-              >
+              <Button type="primary" style={{ marginRight: 8 }} onClick={handlesearch}>
                 查询
               </Button>
 
               <Button onClick={handleReset}>重置</Button>
             </Col>
-
           </Form>
         </Row>
 
-        <Button type='primary' onClick={exportDownload}>导出数据</Button>
-
+        <Button type="primary" onClick={handleAdd} style={{ marginRight: 10 }}>
+          新建
+        </Button>
+        <Button type="primary" onClick={exportDownload}>
+          导出数据
+        </Button>
 
         <Table
           loading={loading}
@@ -494,16 +469,15 @@ function CreditcardTobe(props) {
           scroll={{ x: 1500, y: 700 }}
           rowSelection={rowSelection}
           pagination={pagination}
-
         />
       </Card>
     </PageHeaderWrapper>
-  )
+  );
 }
 
 export default Form.create({})(
   connect(({ performanceappraisal, loading }) => ({
     scorecardArr: performanceappraisal.scorecardArr,
-    loading: loading.models.performanceappraisal
-  }))(CreditcardTobe)
-)
+    loading: loading.models.performanceappraisal,
+  }))(CreditcardTobe),
+);

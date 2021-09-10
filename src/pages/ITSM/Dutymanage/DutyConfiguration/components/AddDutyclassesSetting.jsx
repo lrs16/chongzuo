@@ -1,13 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Drawer,
-  Form,
-  Input,
-  Button,
-  TimePicker,
-  DatePicker,
-  Switch
-} from 'antd';
+import { Drawer, Form, Input, Button, TimePicker, DatePicker, Switch } from 'antd';
 import moment from 'moment';
 
 const formItemLayout = {
@@ -17,16 +9,16 @@ const formItemLayout = {
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 18 }
-  }
-}
+    sm: { span: 18 },
+  },
+};
 
 let startTime;
 let endTime;
 
-const withClick = (element, handleClick = () => { }) => {
-  return <element.type {...element.props} onClick={handleClick} />
-}
+const withClick = (element, handleClick = () => {}) => {
+  return <element.type {...element.props} onClick={handleClick} />;
+};
 
 function AddDutyclassesSetting(props) {
   const [visible, setVisible] = useState(false);
@@ -36,43 +28,43 @@ function AddDutyclassesSetting(props) {
     children,
     onSubmit,
     id,
-    onDelete
+    onDelete,
   } = props;
 
   const required = true;
 
   const handleopenClick = () => {
-    setVisible(true)
-  }
+    setVisible(true);
+  };
 
   const handleCancel = () => {
-    setVisible(false)
-  }
+    setVisible(false);
+  };
 
   const handleOk = () => {
     validateFields((err, values) => {
       if (!err) {
         onSubmit(values);
-        setVisible(false)
+        setVisible(false);
       }
-    })
-  }
+    });
+  };
 
-  const handleDelete = (id) => {
-    onDelete(id)
-  }
+  const handleDelete = id => {
+    onDelete(id);
+  };
 
   const startOnchange = (time, timeString) => {
-    startTime = timeString
+    startTime = timeString;
     console.log('timeString: ', timeString);
-  }
+  };
 
   const endOnchange = (time, timeString) => {
-    endTime = timeString
-  }
+    endTime = timeString;
+  };
 
   const disabledHours = (time1, time2, time3) => {
-    if(startTime) {
+    if (startTime) {
       const hours = startTime.split(':');
       const nums = [];
       for (let i = 0; i < hours[0] - 1; i += 1) {
@@ -80,11 +72,10 @@ function AddDutyclassesSetting(props) {
       }
       return nums;
     }
-  
-  }
+  };
 
   const startdisabledHours = () => {
-    if(endTime) {
+    if (endTime) {
       const hours = endTime.split(':');
       console.log('hours: ', hours);
       const nums = [];
@@ -92,86 +83,44 @@ function AddDutyclassesSetting(props) {
         nums.push(Number(hours[0]) + i);
       }
 
-      console.log(nums,'nums')
+      console.log(nums, 'nums');
       return nums;
     }
-  }
+  };
 
-  const disabledMinutes = (time1, time2, time3) => {
-
-  }
+  const disabledMinutes = (time1, time2, time3) => {};
 
   return (
     <>
       {withClick(children, handleopenClick)}
-      <Drawer
-        visible={visible}
-        title={title}
-        width={720}
-        centered='true'
-      >
+      <Drawer visible={visible} title={title} width={720} centered="true">
         <Form {...formItemLayout}>
-          <Form.Item label='班次编号'>
-            {
-              getFieldDecorator('NO', {}
-              )(<Input disabled />)
-            }
+          <Form.Item label="班次编号">{getFieldDecorator('NO', {})(<Input disabled />)}</Form.Item>
 
+          <Form.Item label="班次名称">{getFieldDecorator('name', {})(<Input />)}</Form.Item>
+
+          <Form.Item label="值班时段">
+            {getFieldDecorator(
+              'time',
+              {},
+            )(
+              <div>
+                <TimePicker
+                  disabledHours={startdisabledHours}
+                  format="HH:mm"
+                  onChange={startOnchange}
+                />
+                <span style={{ margin: 'auto 3px' }}>-</span>
+                <TimePicker disabledHours={disabledHours} onChange={endOnchange} format="HH:mm" />
+              </div>,
+            )}
           </Form.Item>
 
-          <Form.Item label='班次名称'>
-            {
-              getFieldDecorator('name', {}
-              )(<Input />)
-            }
+          <Form.Item label="启用状态">{getFieldDecorator('status', {})(<Switch />)}</Form.Item>
 
-          </Form.Item>
+          <Form.Item label="创建人">{getFieldDecorator('person', {})(<Input />)}</Form.Item>
 
-          <Form.Item label='值班时段'>
-            {
-              getFieldDecorator('time', {}
-              )(
-                <div>
-                  <TimePicker
-                    disabledHours={startdisabledHours}
-                    format='HH:mm'
-                    onChange={startOnchange}
-                  />
-                  <span style={{ margin: 'auto 3px' }}>-</span>
-                  <TimePicker
-                    disabledHours={disabledHours}
-                    onChange={endOnchange}
-                    format='HH:mm' />
-                </div>
-
-              )
-            }
-
-          </Form.Item>
-
-          <Form.Item label='启用状态'>
-            {
-              getFieldDecorator('status', {}
-              )(<Switch />)
-            }
-
-          </Form.Item>
-
-          <Form.Item label='创建人'>
-            {
-              getFieldDecorator('person', {}
-              )(<Input />)
-            }
-
-          </Form.Item>
-
-          <Form.Item label='创建时间'>
-            {
-              getFieldDecorator('time', {}
-              )(<DatePicker />)
-            }
-          </Form.Item>
-
+          <Form.Item label="创建时间">{getFieldDecorator('time', {})(<DatePicker />)}</Form.Item>
         </Form>
 
         <div
@@ -190,25 +139,19 @@ function AddDutyclassesSetting(props) {
             取消
           </Button>
 
-          <Button onClick={handleOk} type='primary' style={{ marginRight: 8 }}>
+          <Button onClick={handleOk} type="primary" style={{ marginRight: 8 }}>
             确定
           </Button>
 
-          {
-            id && (
-              <Button onClick={handleDelete} type='danger' ghost>
-                删除
-              </Button>
-            )
-          }
-
-
-
-
+          {id && (
+            <Button onClick={handleDelete} type="danger" ghost>
+              删除
+            </Button>
+          )}
         </div>
       </Drawer>
     </>
-  )
+  );
 }
 
-export default Form.create({})(AddDutyclassesSetting)
+export default Form.create({})(AddDutyclassesSetting);

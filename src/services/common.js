@@ -101,3 +101,10 @@ export async function queryOrder(params) {
 export async function operationPerson() {
   return request(`/upms/user`);
 }
+
+export async function searchUsers(params) {
+  return request(`/upms/user/search`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+}

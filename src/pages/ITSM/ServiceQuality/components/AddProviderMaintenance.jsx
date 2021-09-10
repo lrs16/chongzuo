@@ -11,7 +11,7 @@ import {
   Divider,
   message,
   Radio,
-  Select
+  Select,
 } from 'antd';
 import { operationPerson } from '@/services/common';
 import { phone_reg } from '@/utils/Regexp';
@@ -21,7 +21,6 @@ import Contract from './Contract';
 import router from 'umi/router';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -29,27 +28,28 @@ const formItemLayout = {
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 16 }
-  }
-}
+    sm: { span: 16 },
+  },
+};
 
 const { Option } = Select;
-
 
 function AddProviderMaintenance(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, validateFields, setFieldsValue },
     maintenanceData,
-    location: { query: { id, providerStatus, providerSearch } },
+    location: {
+      query: { id, providerStatus, providerSearch },
+    },
     addProviderMaintenance,
     userinfo,
     searchProviderobj,
     contractProviderobj,
     dispatch,
-    loading
+    loading,
   } = props;
-  const [performanceLeader, setPerformanceLeader] = useState('')
+  const [performanceLeader, setPerformanceLeader] = useState('');
   const required = true;
 
   const statueContent = ['在用', '停用', '过期'];
@@ -58,20 +58,20 @@ function AddProviderMaintenance(props) {
   const providerDetail = () => {
     dispatch({
       type: 'qualityassessment/searchProvider',
-      payload: id
-    })
-  }
+      payload: id,
+    });
+  };
 
   //  服务商绑定的合同
   const contractProviderdata = () => {
     dispatch({
       type: 'qualityassessment/contractProvider',
-      payload: {id}
-    })
-  }
+      payload: { id },
+    });
+  };
 
   //  添加&&更新合同
-  const handleonSumit = (values) => {
+  const handleonSumit = values => {
     if (values.contractNo) {
       dispatch({
         type: 'qualityassessment/contractUpd',
@@ -80,18 +80,18 @@ function AddProviderMaintenance(props) {
           signTime: moment(values.signTime).format('YYYY-MM-DD'),
           dueTime: moment(values.dueTime).format('YYYY-MM-DD'),
           // id,
-          providerId: id
-        }
+          providerId: id,
+        },
       }).then(res => {
         if (res.code === 200) {
           if (!providerSearch) {
             message.info(res.msg);
           }
-          contractProviderdata()
+          contractProviderdata();
         } else {
-          message.error(res.msg)
+          message.error(res.msg);
         }
-      })
+      });
     } else {
       dispatch({
         type: 'qualityassessment/contractAdd',
@@ -99,57 +99,54 @@ function AddProviderMaintenance(props) {
           ...values,
           signTime: moment(values.signTime).format('YYYY-MM-DD'),
           dueTime: moment(values.dueTime).format('YYYY-MM-DD'),
-          providerId: id
-        }
+          providerId: id,
+        },
       }).then(res => {
         if (res.code === 200) {
           message.info(res.msg);
-          contractProviderdata()
+          contractProviderdata();
         } else {
-          message.error(res.msg)
+          message.error(res.msg);
         }
-      })
+      });
     }
-
-  }
+  };
 
   //  删除合同
-  const handleDelete = (contractId) => {
+  const handleDelete = contractId => {
     return dispatch({
       type: 'qualityassessment/contractDel',
-      payload: contractId
+      payload: contractId,
     }).then(res => {
       if (res.code === 200) {
         message.info(res.msg);
-        contractProviderdata()
+        contractProviderdata();
       } else {
-        message.error(res.msg)
+        message.error(res.msg);
       }
-
-    })
-
-  }
+    });
+  };
 
   const columns = [
     {
       title: '合同编号',
       dataIndex: 'contractNo',
-      key: 'contractNo'
+      key: 'contractNo',
     },
     {
       title: '合同名称',
       dataIndex: 'contractName',
-      key: 'contractName'
+      key: 'contractName',
     },
     {
       title: '签订日期',
       dataIndex: 'signTime',
-      key: 'signTime'
+      key: 'signTime',
     },
     {
       title: '到期日期',
       dataIndex: 'dueTime',
-      key: 'dueTime'
+      key: 'dueTime',
     },
     {
       title: '状态',
@@ -166,42 +163,39 @@ function AddProviderMaintenance(props) {
               <Contract
                 contract={record}
                 isEdit={providerSearch}
-                title='编辑合同'
+                title="编辑合同"
                 formItemLayout={formItemLayout}
                 onSumit={values => handleonSumit(values)}
               >
-                <a>
-                  编辑合同
-                </a>
+                <a>编辑合同</a>
               </Contract>
               <Divider type="vertical" />
               <Popconfirm
-                title='是否要删除此行？'
+                title="是否要删除此行？"
                 onConfirm={() => handleDelete(record.id)}
                 disabled={providerSearch}
               >
                 <a>删除合同</a>
               </Popconfirm>
             </span>
-          )
+          );
         }
-        return null
-
-      }
+        return null;
+      },
     },
-  ]
+  ];
 
   const getPerformanceleader = () => {
     operationPerson().then(res => {
-      const result = (res.data).map(item => {
+      const result = res.data.map(item => {
         return {
           key: item.id,
-          value: item.userName
-        }
-      })
-      setPerformanceLeader(result)
-    })
-  }
+          value: item.userName,
+        };
+      });
+      setPerformanceLeader(result);
+    });
+  };
 
   useEffect(() => {
     if (id) {
@@ -209,28 +203,27 @@ function AddProviderMaintenance(props) {
       contractProviderdata();
     } else {
       dispatch({
-        type: 'qualityassessment/clearProviderdata'
+        type: 'qualityassessment/clearProviderdata',
       });
     }
     getPerformanceleader();
-  }, [id])
+  }, []);
 
   const handleBack = () => {
     if (providerSearch) {
       router.push({
         pathname: `/ITSM/servicequalityassessment/serviceprovidersearch`,
         query: { pathpush: true },
-        state: { cache: false }
-      })
+        state: { cache: false },
+      });
     } else {
       router.push({
         pathname: `/ITSM/servicequalityassessment/serviceprovidermaintenance`,
         query: { pathpush: true },
-        state: { cache: false }
-      })
+        state: { cache: false },
+      });
     }
-
-  }
+  };
 
   const handleSaveForm = () => {
     if (id) {
@@ -239,76 +232,71 @@ function AddProviderMaintenance(props) {
           type: 'qualityassessment/providerUpd',
           payload: {
             ...value,
-            id
+            id,
           },
         }).then(res => {
           if (res.code === 200) {
             message.info(res.msg);
-            providerDetail()
+            providerDetail();
           } else {
-            message.error(res.msg)
+            message.error(res.msg);
           }
-        })
-      })
+        });
+      });
     } else {
       validateFields((err, value) => {
         if (!err) {
           dispatch({
             type: 'qualityassessment/providerAdd',
-            payload: value
-          })
+            payload: value,
+          });
         }
-      })
+      });
     }
-  }
+  };
 
   return (
     <PageHeaderWrapper
       title={id ? '服务商维护详情' : pagetitle}
       extra={
         <>
-          {
-            !providerSearch && (
-              <Button type='primary' onClick={handleSaveForm}>保存</Button>
-            )
-          }
+          {!providerSearch && (
+            <Button type="primary" onClick={handleSaveForm}>
+              保存
+            </Button>
+          )}
 
           <Button onClick={handleBack}>返回</Button>
         </>
       }
     >
       <Card>
-        {
-          (id ? loading === false : true) && (
-            <Row>
-              <Form {...formItemLayout}>
-                <Col span={8}>
-                  <Form.Item label='服务商编号'>
-                    {getFieldDecorator('providerNo', {
-                      initialValue: searchProviderobj.providerNo
-                    })
-                      (<Input disabled='true' />)
-                    }
-                  </Form.Item>
-                </Col>
+        {(id ? loading === false : true) && (
+          <Row>
+            <Form {...formItemLayout}>
+              <Col span={8}>
+                <Form.Item label="服务商编号">
+                  {getFieldDecorator('providerNo', {
+                    initialValue: searchProviderobj.providerNo,
+                  })(<Input disabled="true" />)}
+                </Form.Item>
+              </Col>
 
-                <Col span={8}>
-                  <Form.Item label='服务商名称'>
-                    {getFieldDecorator('providerName', {
-                      rules: [
-                        {
-                          required,
-                          message: '请输入服务商名称'
-                        }
-                      ],
-                      initialValue: searchProviderobj.providerName
-                    })
-                      (<Input disabled={providerSearch} />)
-                    }
-                  </Form.Item>
-                </Col>
+              <Col span={8}>
+                <Form.Item label="服务商名称">
+                  {getFieldDecorator('providerName', {
+                    rules: [
+                      {
+                        required,
+                        message: '请输入服务商名称',
+                      },
+                    ],
+                    initialValue: searchProviderobj.providerName,
+                  })(<Input disabled={providerSearch} />)}
+                </Form.Item>
+              </Col>
 
-                {/* {performanceLeader && performanceLeader.length && (
+              {/* {performanceLeader && performanceLeader.length && (
                 <Col span={8}>
                   <Form.Item label='负责人'>
                     {
@@ -336,90 +324,71 @@ function AddProviderMaintenance(props) {
                 </Col>
               )} */}
 
-                <Col span={8}>
-                  <Form.Item label='负责人'>
-                    {getFieldDecorator('director', {
-                      rules: [
-                        {
-                          required,
-                          message: '请输入负责人'
-                        }
-                      ],
-                      initialValue: searchProviderobj.director
-                    })
-                      (<Input disabled={providerSearch} />)
-                    }
-                  </Form.Item>
-                </Col>
+              <Col span={8}>
+                <Form.Item label="负责人">
+                  {getFieldDecorator('director', {
+                    rules: [
+                      {
+                        required,
+                        message: '请输入负责人',
+                      },
+                    ],
+                    initialValue: searchProviderobj.director,
+                  })(<Input disabled={providerSearch} />)}
+                </Form.Item>
+              </Col>
 
-                <Col span={8}>
-                  <Form.Item label='负责人手机号'>
-                    {getFieldDecorator('directorPhone', {
-                      rules: [
-                        {
-                          required,
-                          len: 11,
-                          validator: phone_reg,
-                          message: '请输入正确的手机号'
-                        }
-                      ],
-                      initialValue: searchProviderobj.directorPhone
-                    })
-                      (<Input disabled={providerSearch} />)
-                    }
-                  </Form.Item>
-                </Col>
+              <Col span={8}>
+                <Form.Item label="负责人手机号">
+                  {getFieldDecorator('directorPhone', {
+                    rules: [
+                      {
+                        required,
+                        len: 11,
+                        validator: phone_reg,
+                        message: '请输入正确的手机号',
+                      },
+                    ],
+                    initialValue: searchProviderobj.directorPhone,
+                  })(<Input disabled={providerSearch} />)}
+                </Form.Item>
+              </Col>
 
-                <Col span={8}>
-                  <Form.Item label='状态'>
-                    {
-                      getFieldDecorator('status', {
-                        initialValue: searchProviderobj.status || '1'
-                      })(
-                        <Radio.Group disabled={providerSearch}>
-                          <Radio value='1'>启用</Radio>
-                          <Radio value='0'>禁用</Radio>
-                        </Radio.Group>
-                      )
-                    }
-                  </Form.Item>
-                </Col>
-              </Form>
-            </Row>
-          )
-        }
+              <Col span={8}>
+                <Form.Item label="状态">
+                  {getFieldDecorator('status', {
+                    initialValue: searchProviderobj.status || '1',
+                  })(
+                    <Radio.Group disabled={providerSearch}>
+                      <Radio value="1">启用</Radio>
+                      <Radio value="0">禁用</Radio>
+                    </Radio.Group>,
+                  )}
+                </Form.Item>
+              </Col>
+            </Form>
+          </Row>
+        )}
 
-        {
-          id && !providerSearch && (
-            <Contract
-              title='新增合同'
-              Contract=''
-              formItemLayout={formItemLayout}
-              onSumit={values => handleonSumit(values)}
-            >
-              <Button
-                style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-                icon='plus'
-              >
-                添加合同
-              </Button>
-            </Contract>
-          )
-        }
+        {id && !providerSearch && (
+          <Contract
+            title="新增合同"
+            Contract=""
+            formItemLayout={formItemLayout}
+            onSumit={values => handleonSumit(values)}
+          >
+            <Button style={{ width: '100%', marginTop: 16, marginBottom: 8 }} icon="plus">
+              添加合同
+            </Button>
+          </Contract>
+        )}
 
-        {
-          loading === false && (
-            <Table
-              loading={loading}
-              columns={columns}
-              dataSource={contractProviderobj}
-            />
-          )
-        }
-
+        {loading === false && (
+          <Table loading={loading} columns={columns} dataSource={contractProviderobj} />
+        )}
       </Card>
     </PageHeaderWrapper>
-  )
+  );
 }
 
 AddProviderMaintenance.defaultProps = {
@@ -428,14 +397,14 @@ AddProviderMaintenance.defaultProps = {
     providerName: '',
     director: '',
     directorPhone: '',
-    status: ''
-  }
-}
+    status: '',
+  },
+};
 
 export default Form.create({})(
   connect(({ qualityassessment, loading }) => ({
     searchProviderobj: qualityassessment.searchProviderobj,
     contractProviderobj: qualityassessment.contractProviderobj,
-    loading: loading.models.qualityassessment
-  }))(AddProviderMaintenance)
-)
+    loading: loading.models.qualityassessment,
+  }))(AddProviderMaintenance),
+);
