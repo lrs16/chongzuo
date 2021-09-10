@@ -182,7 +182,7 @@ function TobedealtForm(props) {
         (hisTasks && hisTasks.length)) &&
       loading === false &&
       taskData &&
-      taskData.currentTask &&
+      taskData.currentTask && taskData.currentTask.id &&
       taskData.hisTasks
     ) {
       const { providerId, scoreId, target1Id, target2Id, assessType } = currentTask;

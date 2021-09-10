@@ -72,6 +72,8 @@ function DutyaccordingSetting(props) {
 
   //  年月日面板的切换
   const onPanelChange = (value, mode) => {
+    console.log(value.startOf('month').format('YYYY-MM-DD HH:mm:ss')); // 开始
+    console.log(value.endOf('month').format('YYYY-MM-DD HH:mm:ss')); // 开始
     if (mode === 'month') { // 只有月支持渲染
       const changeMonth = moment(value)
         .format('YYYY-MM')

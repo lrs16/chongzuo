@@ -96,7 +96,6 @@ function CreditCardRegister(props) {
         }
 
         if (!paramId) {
-          console.log(11);
           dispatch({
             type: 'performanceappraisal/scorecardSave',
             payload: {

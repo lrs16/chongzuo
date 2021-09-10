@@ -1120,7 +1120,7 @@ export default {
                             },
                             {
                               path: '/ITSM/servicequalityassessment/creditcard/creditcardtobe',
-                              name: '计分卡待办',
+                              name: '计分卡登记',
                               icon: 'fork',
                               component: './ITSM/ServiceQuality/CreditCard/CreditcardTobe'
                             },
