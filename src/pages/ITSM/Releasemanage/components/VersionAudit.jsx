@@ -222,8 +222,12 @@ function VersionAudit(props, ref) {
   const handleTimeoutMsg = () => {
     if (mergeNo.length === 0 || mergeNo.split(',').length !== 1) {
       message.error('请选择一条工单填写超时原因')
-    } else {
+    } else if (timeoutPost.timeoutResult && timeoutPost.timeoutResult.timeout && !timeoutPost.timeoutResult.reason) {
       setModalVisible(true);
+    } else if (timeoutPost.timeoutResult && !timeoutPost.timeoutResult.timeout) {
+      message.error('您选择的工单未超时')
+    } else if (timeoutPost.timeoutResult && timeoutPost.timeoutResult.timeout && timeoutPost.timeoutResult.reason) {
+      message.error('您选择的工单已填写超时原因')
     }
   }
 
