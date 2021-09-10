@@ -220,7 +220,7 @@ function VersionAudit(props, ref) {
 
   // 填写超时原因
   const handleTimeoutMsg = () => {
-    if (mergeNo.split(',').length !== 1) {
+    if (mergeNo.length === 0 || mergeNo.split(',').length !== 1) {
       message.error('请选择一条工单填写超时原因')
     } else {
       setModalVisible(true);

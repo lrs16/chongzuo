@@ -1632,11 +1632,17 @@ export default {
                   routes: [
                     {
                       path: '/alarmmanage',
-                      redirect: '/alarmmanage/measuralarm',
+                      redirect: '/alarmmanage/measuralarmnew',
+                    },
+                    {
+                      path: '/alarmmanage/measuralarmnew',
+                      name: '计量业务告警',
+                      icon: 'interaction',
+                      component: './Alarmmanage/MeasurAlarmNew',
                     },
                     {
                       path: '/alarmmanage/measuralarm',
-                      name: '计量业务告警',
+                      name: '计量业务告警旧',
                       icon: 'interaction',
                       routes: [
                         {
