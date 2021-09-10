@@ -13,6 +13,7 @@ import {
   addExamineTask, // 审批作业方案 接口增加记录
   updExamineTask, // 审批作业方案 接口编辑记录
   getexamineTaskList, // 审批作业方案历史表
+  queryrunTask, // 运行作业脚本
 } from '../services/api';
 
 export default {
@@ -44,12 +45,8 @@ export default {
     },
 
     // 获取作业对象全部数据
-    *findtaskObjectList({ payload: { payvalue, pageNum, pageSize, id } }, { call, put }) {
-      const newvalues = {
-        ...payvalue,
-        id,
-      };
-      const response = yield call(taskObjectList, newvalues, pageNum, pageSize);
+    *findtaskObjectList({ payload: { values, pageNum, pageSize, taskId } }, { call, put }) {
+      const response = yield call(taskObjectList, values, pageNum, pageSize, taskId);
       yield put({
         type: 'taskobjectlist',
         payload: response.data,
@@ -57,12 +54,8 @@ export default {
     },
 
     // 获取作业脚本全部数据
-    *findtaskScriptList({ payload: { payvalue, pageNum, pageSize, id } }, { call, put }) {
-      const newvalues = {
-        ...payvalue,
-        id,
-      };
-      const response = yield call(taskScriptList, newvalues, pageNum, pageSize);
+    *findtaskScriptList({ payload: { values, pageNum, pageSize, taskId } }, { call, put }) {
+      const response = yield call(taskScriptList, values, pageNum, pageSize, taskId);
       yield put({
         type: 'taskscriptlist',
         payload: response.data,
@@ -70,16 +63,23 @@ export default {
     },
 
     // 获取作业对象单个数据
-    *findtaskObjectList1({ payload: { payvalue, pageNum, pageSize, id } }, { call }) {
+    *findtaskObjectList1({ payload: { pageNum, pageSize, taskId } }, { call }) {
       const newvalues = {
-        ...payvalue,
-        id,
+        agentName: "",
+        agentZone: "",
+        agentType: "",
+        agentStatus: "",
+        agentHost: "",
+        nodeHost: "",
+        startTime: "",
+        endTime: "",
+        agentRemarks: "",
       };
-      return yield call(taskObjectList, newvalues, pageNum, pageSize);
+      return yield call(taskObjectList, newvalues, pageNum, pageSize, taskId);
     },
 
     // 获取作业脚本单个数据
-    *findtaskScriptList1({ payload: { pageNum, pageSize, id } }, { call }) {
+    *findtaskScriptList1({ payload: { pageNum, pageSize, taskId } }, { call }) {
       const newvalues = {
         scriptName: "",
         scriptType: "",
@@ -87,9 +87,8 @@ export default {
         scriptCont: "",
         scriptArgs: "",
         scriptStatus: "",
-        id,
       };
-      return yield call(taskScriptList, newvalues, pageNum, pageSize);
+      return yield call(taskScriptList, newvalues, pageNum, pageSize, taskId );
     },
 
     *togetUseTaskObjectandAgent({ payload: { taskId } }, { call }) {
@@ -213,6 +212,10 @@ export default {
         taskStatus,
       };
       return yield call(submitTask, values);
+    },
+
+    *toqueryrunTask({ payload: { taskId } }, { call }) {
+      return yield call(queryrunTask, taskId);
     },
   },
 

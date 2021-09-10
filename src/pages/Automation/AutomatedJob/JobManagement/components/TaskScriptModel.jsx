@@ -23,16 +23,6 @@ const formItemLayout = {
     },
     colon: false,
 };
-const tabList = [
-    {
-        key: 'script',
-        tab: '脚本一',
-    },
-    {
-        key: 'script1',
-        tab: '脚本二',
-    },
-];
 
 // 克隆子元素按钮，并添加事件
 const withClick = (element, handleClick = () => { }) => {
@@ -50,36 +40,25 @@ function TaskScriptModel(props) {
     // const [tabActivekey, settabActivekey] = useState('script'); // 打开标签
     const [data, setData] = useState([]);
 
-    // 列表
-    const getlistdata = (page, size) => {
-        dispatch({
-            type: 'autotask/findtaskScriptList1',
-            payload: {
-                id,
-                pageNum: page,
-                pageSize: size,
-            },
-        }).then(res => {
-            if (res.code === 200) {
-                setData(res.data);
-            }
-        });
-    };
-
     const handleCancel = () => {
         setVisible(false);
     };
 
     const handleopenClick = () => {
         setVisible(true);
-        getlistdata(1, 15);
+        dispatch({
+            type: 'autotask/findtaskScriptList1',
+            payload: {
+                taskId: id,
+                pageNum: 1,
+                pageSize: 15,
+            },
+        }).then(res => {
+            if (res.code === 200) {
+                setData(res.data.rows);
+            }
+        });
     };
-
-    // const handleTabChange = key => {
-    //     settabActivekey(key);
-    // };
-
-
 
     return (
         <>
@@ -90,38 +69,34 @@ function TaskScriptModel(props) {
                 footer={null}
                 visible={visible}
                 width={1000}
-                centered
-                maskClosable
-                closable
+                bodyStyle={{ overflow: 'hidden' }}
             >
                 <Tabs
                     className={styles.tabs}
-                // activeKey={tabActivekey}
-                // onTabChange={handleTabChange}
                 >
-                    {tabList.map(item => (
-                        <TabPane tab={item.tab} key={item.key} >
-                            <h4>脚本三【临时表空间文件Tomcat巡检】</h4>
-                            <Form {...formItemLayout} style={{ borderWidth: 1, borderStyle: 'solid', borderColor: 'rgba(233, 233, 233, 1)', marginTop: 40, padding: '20px 0 0 10px' }}>
+                    {data.map((item, index) => (
+                        <TabPane tab={`脚本${index + 1}`} key={item.id} style={{ marginTop: 15 }}>
+                            <h4 style={{ marginLeft: 50 }}>{`脚本${index + 1}【${item.scriptName}】`}</h4>
+                            <Form {...formItemLayout} style={{ borderWidth: 1, borderStyle: 'solid', borderColor: 'rgba(233, 233, 233, 1)', marginTop: 15, padding: '20px 0 0 10px' }}>
                                 <Form.Item label="脚本名称" >
-                                    <Input defaultValue="{record.scriptName}" disabled />
+                                    <Input defaultValue={item.scriptName} disabled />
                                 </Form.Item>
                                 <Form.Item label="脚本类型">
-                                    <Radio.Group value="{record.scriptType}" disabled>
+                                    <Radio.Group value={item.scriptType} disabled>
                                         <Radio value='shell'>shell</Radio>
                                     </Radio.Group>
                                 </Form.Item>
                                 <Form.Item label="脚本内容">
-                                    <TextArea autoSize={{ minRows: 30 }} defaultValue="{record.scriptCont}" disabled />
+                                    <TextArea autoSize={{ minRows: 30 }} defaultValue={item.scriptCont} disabled />
                                 </Form.Item>
                                 <Form.Item label="负责人">
-                                    <Input defaultValue="{record.director}" disabled />
+                                    <Input defaultValue={item.director} disabled />
                                 </Form.Item>
                                 <Form.Item label="脚本参数">
-                                    <Input defaultValue="{record.scriptArgs}" disabled />
+                                    <Input defaultValue={item.scriptArgs} disabled />
                                 </Form.Item>
                                 <Form.Item label="脚本备注">
-                                    <TextArea autoSize={{ minRows: 3 }} defaultValue="{record.scriptRemarks}" disabled />
+                                    <TextArea autoSize={{ minRows: 3 }} defaultValue={item.scriptRemarks} disabled />
                                 </Form.Item>
                             </Form>
                         </TabPane>

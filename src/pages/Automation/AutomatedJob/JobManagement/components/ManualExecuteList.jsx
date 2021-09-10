@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
-import { Table, Card, Button, Form, Input, Row, Col, DatePicker, Divider } from 'antd';
+import { Table, Card, Button, Form, Input, Row, Col, DatePicker, Divider, message } from 'antd';
+import TaskObjectModel from './TaskObjectModel';
+import TaskScriptModel from './TaskScriptModel';
 
 const formItemLayout = {
     labelCol: {
@@ -52,6 +54,22 @@ function ManualExecuteList(props) {
     useEffect(() => {
         searchdata(1, 15);
     }, [location]);
+
+    const handlerunTask = (id) => {
+        dispatch({
+            type: 'autotask/toqueryrunTask',
+            payload: {
+                taskId: id
+            },
+        }).then(res => {
+            if(res.code === 200) {
+                message.success(res.msg || '执行成功！');
+                searchdata(1, 15);
+            } else {
+                message.error(res.msg);
+            }
+        });
+    };
 
     //   const handleShowDrawer = (drwertitle, type, record) => {
     //       setVisible(!visible);
@@ -169,12 +187,26 @@ function ManualExecuteList(props) {
             dataIndex: 'taskObjectNum',
             key: 'taskObjectNum',
             width: 150,
+            render: (text, record) => {
+                return (
+                    <TaskObjectModel record={record} dispatch={dispatch}>
+                        <a type="link">{text}</a>
+                    </TaskObjectModel>
+                );
+            },
         },
         {
             title: '作业脚本',
             dataIndex: 'taskScriptNum',
             key: 'taskScriptNum',
             width: 150,
+            render: (text, record) => {
+                return (
+                    <TaskScriptModel record={record} dispatch={dispatch}>
+                        <a type="link">{text}</a>
+                    </TaskScriptModel>
+                );
+            },
         },
         {
             title: '作业备注',
@@ -212,18 +244,19 @@ function ManualExecuteList(props) {
             key: 'action',
             fixed: 'right',
             width: 150,
-            render: () => {
+            render: (text, record) => {
                 return (
-                    <div>
+                    <>
                         <a type="link"
+                          onClick={() => handlerunTask(record.id)}
                         >
                             执行
                         </a>
                         <Divider type="vertical" />
-                        <a type="link" onClick={record => newpagetolog(record.id)}>
+                        <a type="link" onClick={() => newpagetolog(record.id)}>
                             执行日志
                         </a>
-                    </div>
+                    </>
                 );
             },
         },

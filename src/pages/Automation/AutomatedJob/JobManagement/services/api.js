@@ -10,37 +10,19 @@ export async function autotaskList(params, pageNum, pageSize) {
     });
 }
 
-// // 根据查询条件显示作业对象数据 空--agent数据
-// export async function taskObjectList(params, pageNum, pageSize) {
-//     return request(`/auto/target/listPageTaskObject/${pageNum}/${pageSize}`, {
-//         method: 'POST',
-//         data: { params, pageNum, pageSize },
-//     });
-// }
-
-// // 根据查询条件显示脚本数据 空--全部数据
-// export async function taskScriptList(params, pageNum, pageSize) {
-//     return request(`/auto/target/listPageTaskScript/${pageNum}/${pageSize}`, {
-//         method: 'POST',
-//         data: { params, pageNum, pageSize },
-//     });
-// }
-
 // 根据查询条件显示作业对象数据 空--agent数据
-export async function taskObjectList(params, pageNum, pageSize) {
-    return request(`/auto/target/listPageTaskObject/${pageNum}/${pageSize}/${params.id}`, {
+export async function taskObjectList(params, pageNum, pageSize, taskId) {
+    return request(`/auto/target/listPageTaskObject/${pageNum}/${pageSize}/${taskId}`, {
         method: 'POST',
-        data: JSON.stringify(params),
-        requestType: 'formjosn',
+        body: JSON.stringify(params),
     });
 }
 
 // 根据查询条件显示脚本数据 空--全部数据
-export async function taskScriptList(params, pageNum, pageSize) {
-    return request(`/auto/target/listPageTaskScript/${pageNum}/${pageSize}/${params.id}`, {
+export async function taskScriptList(params, pageNum, pageSize, taskId) {
+    return request(`/auto/target/listPageTaskScript/${pageNum}/${pageSize}/${taskId}`, {
         method: 'POST',
-        data: JSON.stringify(params),
-        requestType: 'formjosn',
+        body: JSON.stringify(params),
     });
 }
 
@@ -113,5 +95,12 @@ export async function getexamineTaskList(taskId) {
     return request(`/auto/target/examineTaskList/${taskId}`, {
         method: 'GET',
         //   data: { taskId },
+    });
+}
+
+// 运行作业脚本 /auto/target/runTask/{taskId}
+export async function queryrunTask(taskId) {
+    return request(`/auto/target/runTask/${taskId}`, {
+        method: 'GET',
     });
 }

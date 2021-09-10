@@ -7,6 +7,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
 import TaskObjectModel from './components/TaskObjectModel';
+import TaskScriptModel from './components/TaskScriptModel';
 
 const { Option } = Select;
 
@@ -215,6 +216,13 @@ function JobCheck(props) {
             dataIndex: 'taskScriptNum',
             key: 'taskScriptNum',
             width: 150,
+            render: (text, record) => {
+                return (
+                    <TaskScriptModel record={record} dispatch={dispatch}>
+                        <a type="link">{text}</a>
+                    </TaskScriptModel>
+                );
+            },
         },
         {
             title: '作业备注',

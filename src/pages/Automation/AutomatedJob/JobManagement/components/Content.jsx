@@ -1,12 +1,13 @@
 import React, { useState, forwardRef, useImperativeHandle, useEffect } from 'react';
-import { Form, Input, Radio, Button } from 'antd';
+import { Form, Input, Radio, Button,} from 'antd';
 // import moment from 'moment'; DatePicker, 
+import DictLower from '@/components/SysDict/DictLower';
 import SystemScriptList from './SystemScriptList';
 import TaskObjectList from './TaskObjectList';
-import DictLower from '@/components/SysDict/DictLower';
+import CronExpression from './CronExpression';
 
 const { TextArea } = Input;
-// const { Option } = Select;  Select, 
+
 const RadioGroup = Radio.Group;
 // const { RangePicker } = DatePicker;
 const formItemLayout = {
@@ -108,7 +109,7 @@ const Content = forwardRef((props, ref) => {
         </Form.Item>
         {showexpand1 && (
           <Form.Item span={24} {...formItemLayout444} >
-            <TaskObjectList GetData={(v) => { setFieldsValue({ agentIds: v });}} />
+            <TaskObjectList GetData={(v) => { setFieldsValue({ agentIds: v }); }} />
           </Form.Item>
         )}
         <Form.Item label="作业脚本"  {...formItemLayout1}>
@@ -130,7 +131,7 @@ const Content = forwardRef((props, ref) => {
         <Form.Item label="执行方式">
           {getFieldDecorator('taskModes', {
             rules: [{ required }],
-            initialValue: formrecord.taskModes || '1',
+            initialValue: formrecord.taskModes || '0',
           })(<RadioGroup onChange={handleAdopt}>
             {taskmodesmap.map(obj => (
               <Radio key={obj.key} value={obj.dict_code}>
@@ -144,7 +145,9 @@ const Content = forwardRef((props, ref) => {
             {getFieldDecorator('taskCores', {
               rules: [{ required, message: '请输入core表达式' }],
               initialValue: formrecord.taskCores,
-            })(<Input />)}
+            })(
+              <CronExpression />
+            )}
           </Form.Item>)
         }
       </Form>

@@ -50,18 +50,17 @@ function SystemScriptList(props) {
 
     const searchdata = (page, size) => {
         const values = getFieldsValue();
-        console.log(values)
-        // values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
-        // values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
+        values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
+        values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
         // values.startUpdateTime = values.startUpdateTime ? moment(values.startUpdateTime).format('YYYY-MM-DD HH:mm:ss') : '';
         // values.endUpdateTime = values.endUpdateTime ? moment(values.endUpdateTime).format('YYYY-MM-DD HH:mm:ss') : '';
         dispatch({
             type: 'autotask/findtaskScriptList',
             payload: {
-                ...values,
+                values,
                 pageNum: page,
                 pageSize: size,
-                id: undefined
+                taskId: undefined
             },
         });
     };

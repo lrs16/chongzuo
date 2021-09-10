@@ -27,29 +27,24 @@ function TaskObjectModel(props) {
     const [visible, setVisible] = useState(false);
     const [data, setData] = useState([]);
 
-    // 列表
-    const getlistdata = (page, size) => {
-        dispatch({
-            type: 'autotask/findtaskObjectList1',
-            payload: {
-                id,
-                pageNum: page,
-                pageSize: size,
-            },
-        }).then(res => {
-            if (res.code === 200) {
-                setData(res.data);
-            }
-        });
-    };
-
     const handleCancel = () => {
         setVisible(false);
     };
 
     const handleopenClick = () => {
         setVisible(true);
-        getlistdata(1,15);
+        dispatch({
+            type: 'autotask/findtaskObjectList1',
+            payload: {
+                taskId: id,
+                pageNum: 1,
+                pageSize: 15,
+            },
+        }).then(res => {
+            if (res.code === 200) {
+                setData(res.data);
+            }
+        });
     };
 
     const columns = [

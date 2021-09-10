@@ -61,14 +61,13 @@ function TaskObjectList(props) {
 
     const searchdata = (page, size) => {
         const values = getFieldsValue();
-        console.log(values)
         dispatch({
             type: 'autotask/findtaskObjectList',
             payload: {
                 values,
                 pageNum: page,
                 pageSize: size,
-                id: undefined
+                taskId: undefined
             },
         });
     };

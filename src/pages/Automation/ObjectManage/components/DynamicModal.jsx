@@ -92,7 +92,7 @@ function DynamicModal(props) {
             key: data.length + 1,
             softId,
             dynamicName: '',
-            dynamicCode: '',
+            dynamicVal: '',
             dynamicSorts: '',
             dynamicRemarks: '',
             editable: true,
@@ -135,7 +135,7 @@ function DynamicModal(props) {
     // 保存记录
     const saveRow = (e, key) => {
         const target = getRowByKey(key) || {};
-        if (!target.dynamicCode || !target.dynamicSorts) {
+        if (!target.dynamicVal || !target.dynamicSorts) {
             message.error('请填写完整信息!');
             e.target.focus();
             return;
@@ -201,8 +201,8 @@ function DynamicModal(props) {
         },
         {
             title: '属性值',
-            dataIndex: 'dynamicCode',
-            key: 'dynamicCode',
+            dataIndex: 'dynamicVal',
+            key: 'dynamicVal',
             width: 300,
             render: (text, record) => {
                 if (record.editable) {
@@ -210,7 +210,7 @@ function DynamicModal(props) {
                         <Input
                             placeholder="请输入"
                             defaultValue={text}
-                            onChange={e => handleFieldChange(e.target.value, 'dynamicCode', record.key)}
+                            onChange={e => handleFieldChange(e.target.value, 'dynamicVal', record.key)}
                         />
                     );
                 }
@@ -228,7 +228,7 @@ function DynamicModal(props) {
                         <Input
                             type='number'
                             placeholder="请输入数字"
-                            defaultValue={text}
+                            defaultValue={text || 1}
                             onChange={e => handleFieldChange(e.target.value, 'dynamicSorts', record.key)}
                         />
                     );
