@@ -130,6 +130,7 @@ function Statistics(props) {
               data={Donutdata}
               height={300}
               totaltitle='发布总次数'
+              total='550'
               padding={[10, 30, 10, 30]}
               onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
             />

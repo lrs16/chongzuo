@@ -36,23 +36,21 @@ class DonutPCT extends Component {
   render() {
     const { data, total, totaltitle, height, padding, onGetVal } = this.props;
     const { DataView } = DataSet;
-    // const dv = new DataView();
-    // dv.source(data).transform({
-    //   type: 'proportion',
-    //   field: 'value',
-    //   dimension: 'type',
-    //   groupBy: ['type'],
-    //   as: 'proportion',
-    // });
-    // console.log(data)
-    // console.log(dv.rows)
+    const dv = new DataView();
+    dv.source(data).transform({
+      type: 'percent',
+      field: 'value',
+      dimension: 'type',
+      groupBy: ['category'],
+      as: 'percent',
+    });
     return (
       <div>
         <div style={{ position: 'absolute', left: '50%', top: '42%', width: 100, textAlign: 'center', marginLeft: '-50px' }} >
           <span style={{ fontSize: 24, fontWeight: 700 }}>{total}</span><br />
           <span>{totaltitle}</span>
         </div>
-        <Chart height={height} data={data} padding={padding} autoFit onClick={ev => {
+        <Chart height={height} data={dv.rows} padding={padding} autoFit onClick={ev => {
           const linkdata = ev.data;
           if (linkdata) {
             onGetVal(linkdata.type)
@@ -70,7 +68,7 @@ class DonutPCT extends Component {
               'value',
               {
                 content: picdata => {
-                  return `${picdata.type}: ${(picdata.value / total * 100).toFixed(0)}%`;
+                  return `${picdata.type}: ${(picdata.percent * 100).toFixed(0)}%`;
                 },
                 offset: '25',
               },

@@ -73,7 +73,11 @@ function TestEnvironmentManage(props) {
     }).then(res => {
       if (res.code === 200) {
         Message.success(res.msg);
-        getdatas();
+        validateFields((err, val) => {
+          if (!err) {
+            searchdata(val, paginations.current, paginations.pageSize);
+          }
+        });
       } else {
         Message.error(res.msg);
       }
@@ -88,7 +92,11 @@ function TestEnvironmentManage(props) {
     }).then(res => {
       if (res.code === 200) {
         Message.success(res.msg);
-        getdatas();
+        validateFields((err, val) => {
+          if (!err) {
+            searchdata(val, paginations.current, paginations.pageSize);
+          }
+        });
       } else {
         Message.error(res.msg);
       }
