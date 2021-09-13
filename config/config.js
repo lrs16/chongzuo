@@ -1638,7 +1638,36 @@ export default {
                       path: '/alarmmanage/measuralarm',
                       name: '计量业务告警',
                       icon: 'interaction',
-                      component: './Alarmmanage/MeasurAlarm',
+                      component: './Alarmmanage/AlarmView',
+                    },
+                    {
+                      path: '/alarmmanage/hostalarm',
+                      name: '四大区主机告警',
+                      icon: 'interaction',
+                      routes: [
+                        {
+                          path: '/alarmmanage/hostalarm',
+                          redirect: '/alarmmanage/hostalarm/',
+                        },
+                        {
+                          path: '/alarmmanage/hostalarm/hostinspection',
+                          name: '主机巡检告警',
+                          icon: 'interaction',
+                          component: './Alarmmanage/AlarmView',
+                        },
+                        {
+                          path: '/alarmmanage/hostalarm/softinspection',
+                          name: '软件巡检告警',
+                          icon: 'interaction',
+                          component: './Alarmmanage/AlarmView',
+                        },
+                        {
+                          path: '/alarmmanage/hostalarm/Appstatus',
+                          name: '应用程序运行状态告警',
+                          icon: 'interaction',
+                          component: './Alarmmanage/AlarmView',
+                        },
+                      ]
                     },
                   ],
                 },

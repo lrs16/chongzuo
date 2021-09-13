@@ -782,7 +782,7 @@ function QueryList(props) {
             </span>
             <Col span={8}>
               <Form.Item label="建单时间">
-                <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                   {getFieldDecorator('time1', {
                     initialValue: cacheinfo.time1 ? moment(cacheinfo.time1) : undefined,
                   })(
@@ -796,9 +796,9 @@ function QueryList(props) {
                       style={{ minWidth: 120, width: '100%' }}
                     />
                   )}
-                </Form.Item>
+                </div>
                 <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
-                <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                   {getFieldDecorator('time2', {
                     initialValue: cacheinfo.time2 ? moment(cacheinfo.time2) : undefined,
                   })(
@@ -812,7 +812,7 @@ function QueryList(props) {
                       style={{ minWidth: 120, width: '100%' }}
                     />
                   )}
-                </Form.Item>
+                </div>
               </Form.Item>
             </Col>
             <Col span={24} style={{ textAlign: 'right' }}>

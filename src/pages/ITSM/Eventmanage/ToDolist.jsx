@@ -394,7 +394,7 @@ function ToDolist(props) {
               </Col>
               <Col span={8}>
                 <Form.Item label="发送时间">
-                  <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                  <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                     {getFieldDecorator('time3', {
                       initialValue: cacheinfo.time3 ? moment(cacheinfo.time3) : undefined,
                     })(
@@ -408,9 +408,9 @@ function ToDolist(props) {
                         style={{ minWidth: 120, width: '100%' }}
                       />
                     )}
-                  </Form.Item>
+                  </div>
                   <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
-                  <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                  <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                     {getFieldDecorator('time4', {
                       initialValue: cacheinfo.time4 ? moment(cacheinfo.time4) : undefined,
                     })(
@@ -424,7 +424,7 @@ function ToDolist(props) {
                         style={{ minWidth: 120, width: '100%' }}
                       />
                     )}
-                  </Form.Item>
+                  </div>
                 </Form.Item>
               </Col>
             </span>

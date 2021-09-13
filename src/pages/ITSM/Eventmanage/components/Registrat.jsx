@@ -378,8 +378,6 @@ const Registrat = forwardRef((props, ref) => {
   const emergentmap = getTypebykey('482610561503199232'); // 紧急度
   const priormap = getTypebykey('482610561499004928'); // 优先级
 
-
-
   // 附件上传下载
 
   // 不允许上传类型

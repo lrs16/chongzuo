@@ -161,7 +161,7 @@ function Statistics(props) {
           <Form {...formItemLayout}>
             <Col span={12}>
               <Form.Item label="登记时间">
-                <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                   {getFieldDecorator('time1', {
                   })(
                     <DatePicker
@@ -174,9 +174,9 @@ function Statistics(props) {
                       style={{ minWidth: 120, width: '100%' }}
                     />
                   )}
-                </Form.Item>
+                </div>
                 <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
-                <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                   {getFieldDecorator('time2', {
                   })(
                     <DatePicker
@@ -189,7 +189,7 @@ function Statistics(props) {
                       style={{ minWidth: 120, width: '100%' }}
                     />
                   )}
-                </Form.Item>
+                </div>
               </Form.Item>
             </Col>
             <Col span={8} style={{ paddingTop: 4 }}>

@@ -170,7 +170,7 @@ function Statistics(props) {
           <Row>
             <Col span={8}>
               <Form.Item label="出厂测试登记时间">
-                <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                   {getFieldDecorator('beginTime', {
                     initialValue: '',
                   })(
@@ -184,9 +184,9 @@ function Statistics(props) {
                       style={{ minWidth: 120, width: '100%' }}
                     />
                   )}
-                </Form.Item>
+                </div>
                 <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
-                <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                   {getFieldDecorator('endTime', {
                     initialValue: '',
                   })(
@@ -200,7 +200,7 @@ function Statistics(props) {
                       style={{ minWidth: 120, width: '100%' }}
                     />
                   )}
-                </Form.Item>
+                </div>
               </Form.Item>
             </Col>
             {tabActivekey === 'process' && (

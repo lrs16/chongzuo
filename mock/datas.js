@@ -469,6 +469,12 @@ function mocktypedonut(key) {
       }
       break;
     default:
+      for (let i = 0; i < 4; i += 1) {
+        list.push({
+          type: ['安全接入区', '安全I区', '安全II区', '安全III区'][i % 4],
+          value: Random.integer(100, 1000),
+        });
+      }
       break;
   }
   return list;
@@ -604,6 +610,17 @@ function mocktypeline(key) {
       }
       break;
     default:
+      for (let i = 0; i < 4; i += 1) {
+        for (let j = 1; j <= count; j += 1) {
+          list.push({
+            date: `${j}`,
+            name: [
+              '安全接入区', '安全I区', '安全II区', '安全III区'
+            ][i % 4],
+            value: Random.integer(0, 60),
+          });
+        }
+      }
       break;
   }
   return list;
