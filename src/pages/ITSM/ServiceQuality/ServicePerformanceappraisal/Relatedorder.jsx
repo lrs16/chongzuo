@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
-import { Form, Card, Tabs, Input, Row, Col, Button, Table, } from 'antd';
-import RelationDrawer from '../../Eventmanage/components/RelationDrawer';
+import { Card, Tabs, Input, Row, Col, Button, Table, } from 'antd';
+import RelationDrawer from './components/RelationDrawer';
 
 const { TabPane } = Tabs;
 

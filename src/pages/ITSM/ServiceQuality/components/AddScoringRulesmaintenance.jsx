@@ -32,7 +32,6 @@ const formItemLayout = {
   }
 }
 
-const { Search } = Input;
 const { Sider, Content } = Layout;
 const { TreeNode } = Tree;
 const { Option } = Select;
@@ -41,9 +40,7 @@ function AddScoringRulesmaintenance(props) {
   const {
     form: { getFieldDecorator, validateFields, resetFields },
     location: { query: { id, scoreSearch } },
-    show,
     scoreDetail,
-    clauseDetail,
     treeArr,
     treeForm,
     dispatch,
@@ -51,14 +48,14 @@ function AddScoringRulesmaintenance(props) {
     loading
   } = props;
   const required = true;
-  const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 });
-  const [treeInformation, setTreeInformation] = useState({ pid: '', queKey: '' })
   const [treeData, setTreeData] = useState([]);
-  const [type, setType] = useState('1')
+  const [type, setType] = useState('')
   const [selectdata, setSelectData] = useState('');
   const [selectId, setSelectId] = useState('');
 
   const getlist = (selectedKeys) => {
+    console.log('selectedKeys: ', selectedKeys);
+    console.log('selectId: ', selectId);
     validateFields((err, value) => {
       const { detailed } = value;
       dispatch({
@@ -68,7 +65,7 @@ function AddScoringRulesmaintenance(props) {
           pageNum: 1,
           pageSize: 15,
           scoreId: id,
-          targetId: selectedKeys || selectId,
+          targetId: selectedKeys || selectId || (type === '1' ? '1417306125605756929' : '1417307840400809985'),
         },
       });
     })
@@ -166,7 +163,6 @@ function AddScoringRulesmaintenance(props) {
           payload: {
             ...value,
             id
-            // assessType: value.assessType === '1' ? '功能开发' : '系统运维'
           }
         })
       }
@@ -186,7 +182,7 @@ function AddScoringRulesmaintenance(props) {
       payload: {
         ...clauseData,
         scoreId: id,
-        targetId: selectId
+        targetId: selectId || (type === '1' ? '1417306125605756929' : '1417307840400809985')
       }
     }).then(res => {
       if (res.code === 200) {
@@ -273,6 +269,7 @@ function AddScoringRulesmaintenance(props) {
             </div>
           )
         }
+        return null;
 
       },
     },
@@ -281,7 +278,6 @@ function AddScoringRulesmaintenance(props) {
   useEffect(() => {
     if (id) {
       getscoredetail();
-      // getclausedetail()
       getlist()
     } else {
       dispatch({
@@ -308,41 +304,6 @@ function AddScoringRulesmaintenance(props) {
         state: { cache: false }
       })
     }
-  }
-
-  const onShowSizeChange = (page, pageSize) => {
-    validateFields((err, values) => {
-      if (!err) {
-        searchdata(values, page, pageSize)
-      }
-    })
-    setPaginations({
-      ...paginations,
-      pageSize
-    })
-  }
-
-  const changePage = page => {
-    validateFields((err, values) => {
-      if (!err) {
-        searchdata(values, page, paginations.pageSize)
-      }
-    })
-
-    setPaginations({
-      ...paginations,
-      current: page
-    })
-  }
-
-  const pagination = {
-    showSizeChanger: true,
-    onShowSizeChange: (page, pagesize) => onShowSizeChange(page, pagesize),
-    current: paginations.current,
-    pageSize: paginations.pageSize,
-    total: clauseList.total,
-    showTotal: total => `总共 ${total} 条记录`,
-    onChange: (page) => changePage(page)
   }
 
   const assessmentType = getTypebyTitle('考核类型');
@@ -453,11 +414,9 @@ function AddScoringRulesmaintenance(props) {
               {
                 loading === false && treeData && treeData.length > 0 && (
                   <Tree
-                    // defaultSelectedKeys={id ? ((scoreDetail && (type) === '1') ? ['1417306125605756929'] : ['1417307840400809985']) : ''}
                     defaultSelectedKeys={type === '1' ? ['1417306125605756929'] : ['1417307840400809985']}
                     onSelect={handleClick}
                     defaultExpandAll
-                    // expandedKeys={type === '1' ? ['1417297419388280834', '1417297717850759169', '1417297850927636481', '1417298312565317634', '1417298438939697154'] : ['1417301701483257858', '1417303445722324993', '1417305500021121026', '1417305681030504450', '1417305832876892162']}
                   >
                     {renderTreeNodes(treeData)}
                   </Tree>
@@ -549,6 +508,7 @@ function AddScoringRulesmaintenance(props) {
                 <Clause
                   id={id}
                   selectId={selectId}
+                  defaultSelect={type === '1' ? ['1417306125605756929'] : ['1417307840400809985']}
                   title='添加详细条款'
                   formItemLayout={formItemLayout}
                   submitClause={newdata => submitClause(newdata)}
@@ -568,7 +528,7 @@ function AddScoringRulesmaintenance(props) {
                   dataSource={clauseList.records}
                   columns={columns}
                   rowKey={record => record.id}
-                  pagination={pagination}
+                  // pagination={pagination}
                   scroll={{ x: 1300 }}
                 />
               </Col>

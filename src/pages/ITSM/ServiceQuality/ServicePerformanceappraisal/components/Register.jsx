@@ -32,7 +32,7 @@ const { Option } = Select;
 
 const Register = React.forwardRef((props, ref) => {
   const {
-    form: { getFieldDecorator, setFieldsValue, validateFields },
+    form: { getFieldDecorator, setFieldsValue, getFieldsValue },
     formItemLayout,
     forminladeLayout,
     userinfo,
@@ -76,6 +76,8 @@ const Register = React.forwardRef((props, ref) => {
     ref,
     () => ({
       attRef,
+      getVal: () => getFieldsValue(),
+      test:() => console.log(1)
     }),
     [],
   );
@@ -98,6 +100,7 @@ const Register = React.forwardRef((props, ref) => {
           target1Id: key,
           target2Name: '',
           target2Id: '',
+          clauseName:'',
         });
         getTarget2(key);
         setTarget2Type(key);
@@ -107,10 +110,11 @@ const Register = React.forwardRef((props, ref) => {
         setFieldsValue({
           target2Name: value,
           target2Id: key,
+          clauseId:'',
           clauseName: '',
         });
         break;
-      case 'clause':
+      case 'clause': {
         const {
           props: {
             children: {
@@ -119,11 +123,11 @@ const Register = React.forwardRef((props, ref) => {
           },
         } = option;
         setFieldsValue({
-          clauseId: key,
+          clauseId: value,
           assessValue: children[3].props.children,
         });
         break;
-
+      }
       default:
         break;
     }
@@ -175,10 +179,7 @@ const Register = React.forwardRef((props, ref) => {
     <Option key={opt.id} value={opt.id} disableuser={opt}>
       <Spin spinning={spinloading}>
         <div className={styles.disableuser}>
-          <span>{opt.loginCode}</span>
           <span>{opt.userName}</span>
-          <span>{opt.userMobile}</span>
-          <span>{opt.userEmail}</span>
         </div>
       </Spin>
     </Option>
@@ -288,8 +289,9 @@ const Register = React.forwardRef((props, ref) => {
           target1Id: '',
           target2Name: '',
           target2Id: '',
-          clause: '',
           clauseId: '',
+          clauseName:'',
+          assessValue:''
         });
         setScoreId(id);
         getTarget1(assessType === '功能开发' ? '1' : '2');
@@ -311,16 +313,7 @@ const Register = React.forwardRef((props, ref) => {
     if (selectdata.ischange) {
       return selectdata.arr.filter(item => item.title === title)[0].children;
     }
-  };
-
-  const selectOnchange = (value, option) => {
-    const {
-      props: { children },
-    } = option;
-    setFieldsValue({
-      directorName: children,
-      directorId: value,
-    });
+    return []
   };
 
   const getPerformanceleader = () => {
@@ -338,13 +331,6 @@ const Register = React.forwardRef((props, ref) => {
   useEffect(() => {
     getPerformanceleader();
   }, []);
-
-  // useEffect(() => {
-  //   setFieldsValue({
-  //     contract:register.contractId
-  //   })
-
-  // },[register])
 
   const assessmentObject = getTypebyTitle('考核对象');
 
@@ -660,14 +646,14 @@ const Register = React.forwardRef((props, ref) => {
 
         <Col span={24}>
           <Form.Item label="详细条款" {...forminladeLayout}>
-            {getFieldDecorator('clauseName', {
+            {getFieldDecorator('clauseId', {
               rules: [
                 {
                   required,
                   message: '请输入详细条款',
                 },
               ],
-              initialValue: register.clause?.detailed ? register.clause.detailed : register.clause,
+              initialValue: register.clauseId,
             })(
               <Select
                 disabled={noEdit}
@@ -675,7 +661,7 @@ const Register = React.forwardRef((props, ref) => {
                 onFocus={() => handleFocus('clause')}
               >
                 {(clauseList.records || []).map(obj => [
-                  <Option key={obj.id} value={obj.detailed}>
+                  <Option key={obj.detailed} value={obj.id}>
                     <div className={styles.disableuser}>
                       <span>{obj.orderNo}</span>
                       <span>{obj.detailed}</span>
@@ -692,8 +678,8 @@ const Register = React.forwardRef((props, ref) => {
 
         <Col span={24} style={{ display: 'none' }}>
           <Form.Item label="详细条款" {...forminladeLayout}>
-            {getFieldDecorator('clauseId', {
-              initialValue: register.clauseId,
+            {getFieldDecorator('clauseName', {
+              initialValue: register.clauseName,
             })(<Input />)}
           </Form.Item>
         </Col>
@@ -719,17 +705,6 @@ const Register = React.forwardRef((props, ref) => {
             })(<Input disabled="true" />)}
           </Form.Item>
         </Col>
-
-        {/* <Col span={24}>
-          <Form.Item label='备注' {...forminladeLayout}>
-            {
-              getFieldDecorator('remark', {
-                initialValue: register.remark
-              })
-                (<TextArea disabled={noEdit} autoSize={{ minRows: 3 }} placeholder='请输入' />)
-            }
-          </Form.Item>
-        </Col> */}
 
         {!noEdit && (
           <Col span={24}>
@@ -797,6 +772,7 @@ Register.defaultProps = {
     target1Id: '',
     target2Id: '',
     clauseId: '',
+    clauseName:'',
     assessValue: '',
     status: '',
     remark: '',

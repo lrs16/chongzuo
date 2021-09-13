@@ -20,36 +20,22 @@ function Clause(props) {
   const [visible, setVisible] = useState(false);
   const [scoreVisible, setScoreVisible] = useState(true);
   const {
-    form: { getFieldDecorator, validateFields, setFieldsValue, resetFields },
+    form: { getFieldDecorator},
     title,
     formItemLayout,
     clause,
     children,
     submitClause,
-    selectId,
     id,
-    add
   } = props;
   const required = true;
 
   const handleopenClick = () => {
-    if (selectId && id) {
+    if (id) {
       setVisible(true);
-    }
-
-    if (selectId && !id) {
+    } else {
       message.error('请先保存评分细则才能新增详细条款哦！')
     }
-
-    if (!selectId && id) {
-      message.error(`请选中二级指标才能${title}哦！`)
-    }
-
-    if (!selectId && !id) {
-      message.error('请保存评分细则并且选中二级指标才能新增详细条款哦！')
-    }
-
-
   }
 
   const handleCancel = () => {
@@ -84,15 +70,15 @@ function Clause(props) {
     })
   }
 
-  const negativeCheck = /[-]/;
-  const positivenumberCheck = /^\d*$/;
-  const validatorNegative = (rule, value, callback) => {
-    if (value && rule.pattern && !value.match(rule.pattern)) {
-      callback(rule.message);
-    } else {
-      callback()
-    }
-  }
+  // const negativeCheck = /[-]/;
+  // const positivenumberCheck = /^\d*$/;
+  // const validatorNegative = (rule, value, callback) => {
+  //   if (value && rule.pattern && !value.match(rule.pattern)) {
+  //     callback(rule.message);
+  //   } else {
+  //     callback()
+  //   }
+  // }
 
   return (
     <>

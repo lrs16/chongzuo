@@ -46,7 +46,7 @@ const forminladeLayout = {
   },
 };
 
-const { MonthPicker, RangePicker } = DatePicker;
+const { RangePicker } = DatePicker;
 const { Option } = Select;
 const { Search } = Input;
 
@@ -93,7 +93,7 @@ const columns = [
     key: 'assessContent',
     width: 150,
     ellipsis: true,
-    render: (text, record) => {
+    render: (text) => {
       return (
         <Tooltip placement="topLeft" title={text}>
           <span>{text}</span>
@@ -125,7 +125,7 @@ const columns = [
     key: 'clauseName',
     width: 150,
     ellipsis: true,
-    render: (text, record) => {
+    render: (text) => {
       return (
         <Tooltip title={text} placement="topLeft">
           <span>{text}</span>
@@ -246,9 +246,6 @@ const columns = [
     dataIndex: 'isAppeal',
     key: 'isAppeal',
     width: 150,
-    // render: (text, record) => {
-    //   return <span>{text === '1' ? '是' : text === '0' ? '否' : ''}</span>
-    // }
   },
   {
     title: '申诉内容',
@@ -256,7 +253,7 @@ const columns = [
     key: 'appealContent',
     width: 150,
     ellipsis: true,
-    render: (text, record) => {
+    render: (text) => {
       return (
         <Tooltip title={text} placement="topLeft">
           <span>{text}</span>
@@ -291,7 +288,7 @@ const columns = [
     key: 'directorReviewContent',
     width: 180,
     ellipsis: true,
-    render: (text, record) => {
+    render: (text) => {
       return (
         <Tooltip title={text} placement="topLeft">
           <span>{text}</span>
@@ -322,9 +319,6 @@ const columns = [
     dataIndex: 'finallyConfirmValue',
     key: 'finallyConfirmValue',
     width: 180,
-    // render: (text, record) => {
-    //   return <span>{text === '1' ? '确认考核' : text === '0' ? '取消考核' : ''}</span>
-    // }
   },
   {
     title: '服务绩效考核确认说明',
@@ -332,7 +326,7 @@ const columns = [
     key: 'finallyConfirmContent',
     width: 180,
     ellipsis: true,
-    render: (text, record) => {
+    render: (text) => {
       return (
         <Tooltip title={text} placement="topLeft">
           <span>{text}</span>
@@ -362,7 +356,6 @@ function TobedealtList(props) {
     target1,
     target2,
     clauseList,
-    userinfo,
     dispatch,
     location,
     loading,
@@ -371,14 +364,11 @@ function TobedealtList(props) {
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [contractArr, setContractArr] = useState([]);
   const [expand, setExpand] = useState(false);
-  const [fileslist, setFilesList] = useState([]);
   const [disablelist, setDisabledList] = useState([]); // 服务商
   const [contractlist, setContractlist] = useState([]); // 合同
   const [scorelist, setScorelist] = useState([]); // 评分细则
-  const [clauselist, setClauselist] = useState([]); // 详细条款
   const [providerId, setProviderId] = useState(''); //  设置服务商的id
   const [scoreId, setScoreId] = useState(''); //  设置服务商的id
-  const [target1Type, setTarget1Type] = useState('功能开发'); //  设置指标类型
   const [target2Type, setTarget2Type] = useState('');
   const [spinloading, setSpinLoading] = useState(true);
   const [tabrecord, setTabRecord] = useState({});
@@ -412,12 +402,12 @@ function TobedealtList(props) {
   };
 
   //  获取详细条款数据
-  const getclausedetail = (targetId, scoreId) => {
+  const getclausedetail = (targetId, scoreid) => {
     dispatch({
       type: 'qualityassessment/clauseListpage',
       payload: {
         targetId,
-        scoreId,
+        scoreId:scoreid,
         pageNum: 1,
         pageSize: 1000,
       },
@@ -508,9 +498,7 @@ function TobedealtList(props) {
       id,
       providerName,
       scoreName,
-      contractName,
       assessType,
-      clauseName,
     } = opt.props.disableuser;
     switch (type) {
       case 'provider':
@@ -652,6 +640,15 @@ function TobedealtList(props) {
 
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
 
+  const handleReset = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: {},
+    });
+    resetFields();
+    searchdata({}, 1, 15);
+  };
   useEffect(() => {
     if (location.state) {
       if (location.state.cache) {
@@ -661,7 +658,6 @@ function TobedealtList(props) {
           payload: {
             cacheinfo: {
               ...tabrecord,
-              // registerTime: '',
               paginations,
               expand,
             },
@@ -867,16 +863,6 @@ function TobedealtList(props) {
     }
   };
 
-  const handleReset = () => {
-    router.push({
-      pathname: location.pathname,
-      query: {},
-      state: {},
-    });
-    resetFields();
-    searchdata({}, 1, 15);
-  };
-
   const selectOnchange = (value, option, type) => {
     const {
       props: { children },
@@ -977,7 +963,7 @@ function TobedealtList(props) {
   };
 
   const rowSelection = {
-    onChange: (index, handleSelect) => {
+    onChange: (index) => {
       setSelectedKeys([...index]);
     },
   };
@@ -1022,15 +1008,6 @@ function TobedealtList(props) {
                 })(<Input />)}
               </Form.Item>
             </Col>
-
-            {/* <Col span={8}>
-              <Form.Item label='考核状态'>
-                {
-                  getFieldDecorator('assessStatus', {})
-                    (<Input />)
-                }
-              </Form.Item>
-            </Col> */}
 
             <Col span={8}>
               <Form.Item label="当前处理环节">
@@ -1689,15 +1666,6 @@ function TobedealtList(props) {
                   })(<Input />)}
                 </Form.Item>
               </Col>
-
-              {/* <Col span={8}>
-                <Form.Item label='服务绩效考核确认人'>
-                  {
-                    getFieldDecorator('finallyConfirmer', {})
-                      (<Input />)
-                  }
-                </Form.Item>
-              </Col> */}
 
               <Col span={8}>
                 <Form.Item label="服务绩效考核确认时间">

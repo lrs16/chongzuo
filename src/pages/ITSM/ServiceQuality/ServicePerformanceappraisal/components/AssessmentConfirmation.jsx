@@ -1,5 +1,5 @@
 import React, { useImperativeHandle, useRef, useState } from 'react';
-import { Form, Input, Radio, Row, Col, Tag, DatePicker, Select } from 'antd';
+import { Form, Input, Radio, Row, Col, DatePicker, Select } from 'antd';
 import moment from 'moment';
 import SysDict from '@/components/SysDict';
 
@@ -17,7 +17,6 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
     assessmentConfirmation,
     getTarget1,
     getTarget2,
-    getclausedetail,
     clauseList,
     target1,
     target2,
@@ -25,7 +24,6 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
     noEdit,
   } = props;
   const [selectdata, setSelectData] = useState('');
-  const [clauselist, setClauselist] = useState([]); // 详细条款
 
   const required = true;
   const attRef = useRef();
@@ -68,7 +66,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
         });
         getTarget2(key);
         break;
-      case 'clause':
+      case 'clause': {
         const {
           props: {
             children: {
@@ -80,6 +78,8 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
           clauseId: key,
           assessValue: children[3].props.children,
         });
+      }
+
         break;
       default:
         break;
@@ -141,7 +141,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
               })(
                 <TextArea
                   disabled={noEdit}
-                  // autosize={{ minRows: 3 }}
+                  autosize={{ minRows: 3 }}
                   placeholder="请输入确认说明"
                 />,
               )}
@@ -175,7 +175,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
               })(
                 <TextArea
                   disabled={editSign}
-                  // autosize={{ minRows: 3 }}
+                  autosize={{ minRows: 3 }}
                   placeholder="请输入考核内容说明"
                 />,
               )}
@@ -196,7 +196,6 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                 <Select
                   disabled={editSign}
                   onChange={(value, option) => handleChange(value, option, 'target1Name')}
-                  // onFocus={() => handleFocus('one')}
                   placeholder="请选择"
                   allowClear
                 >
@@ -232,7 +231,6 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                 <Select
                   disabled={editSign}
                   onChange={(value, option) => handleChange(value, option, 'target2Name')}
-                  // onFocus={() => handleFocus('two')}
                   placeholder="请选择"
                   allowClear
                 >
@@ -286,7 +284,6 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                 <Select
                   disabled={editSign}
                   onChange={(value, option) => handleChange(value, option, 'clause')}
-                  // onFocus={() => handleFocus('clause')}
                 >
                   {(clauseList.records || []).map(obj => [
                     <Option key={obj.id} value={obj.detailed}>

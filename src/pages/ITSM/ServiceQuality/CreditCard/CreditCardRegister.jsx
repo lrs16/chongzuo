@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Collapse, Button, message } from 'antd';
+import { Collapse, Button } from 'antd';
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
@@ -39,25 +39,13 @@ function CreditCardRegister(props) {
     location: {
       query: { paramId, search },
     },
-    location,
     scorecardetail,
     maintenanceArr,
-    tabnew,
-    // tabdata
   } = props;
 
   const RegistratRef = useRef();
   const [contractArr, setContractArr] = useState([]);
   const [editTablesource, setEditTablesource] = useState([]);
-  // const [providerId, setProviderId] = useState(''); //  设置服务商的id
-  // const [scoreId, setScoreId] = useState(''); //  设置服务商的id
-
-  const handlePrint = () => {
-    window.document.body.innerHTML = window.document.getElementById('alldom').innerHTML;
-    // window.print();
-    document.execCommand('print');
-    window.location.reload();
-  };
 
   //  获取合同名称
   const getContrractname = providerId => {
@@ -66,6 +54,14 @@ function CreditCardRegister(props) {
         const arr = [...res.data];
         setContractArr(arr);
       }
+    });
+  };
+
+  
+  const registerDetail = () => {
+    dispatch({
+      type: 'performanceappraisal/getScorecardetail',
+      payload: { id: paramId },
     });
   };
 
@@ -114,6 +110,7 @@ function CreditCardRegister(props) {
           });
         }
       }
+      return null;
     });
   };
 
@@ -166,12 +163,6 @@ function CreditCardRegister(props) {
     });
   };
 
-  const registerDetail = () => {
-    dispatch({
-      type: 'performanceappraisal/getScorecardetail',
-      payload: { id: paramId },
-    });
-  };
 
   const changeTablesource = (editid, target) => {
     scorecardUpdateRemark(editid, target);
@@ -196,33 +187,6 @@ function CreditCardRegister(props) {
       }
     }
   }, [loading]);
-
-  //  重置表单信息
-  // useEffect(() => {
-  //   if (tabnew) {
-  //     RegistratRef.current.resetFields()
-  //   }
-  // }, [tabnew])
-
-  //  获取页签信信息
-  // useEffect(() => {
-  //   if (location.state) {
-  //     if (location.state.cache) {
-  //       RegistratRef.current.validateFields((_, values) => {
-  //         dispatch({
-  //           type: 'viewcache/gettabstate',
-  //           payload: {
-  //             cacheinfo: {
-  //               ...values,
-  //             },
-  //             tabid: sessionStorage.getItem('tabid')
-  //           },
-  //         });
-  //       });
-  //       RegistratRef.current.resetFields();
-  //     }
-  //   }
-  // }, [location]);
 
   const handleClose = () => {
     router.push({

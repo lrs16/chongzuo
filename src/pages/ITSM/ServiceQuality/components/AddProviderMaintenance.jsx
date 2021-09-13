@@ -11,7 +11,6 @@ import {
   Divider,
   message,
   Radio,
-  Select,
 } from 'antd';
 import { operationPerson } from '@/services/common';
 import { phone_reg } from '@/utils/Regexp';
@@ -32,18 +31,13 @@ const formItemLayout = {
   },
 };
 
-const { Option } = Select;
-
 function AddProviderMaintenance(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, validateFields, setFieldsValue },
-    maintenanceData,
+    form: { getFieldDecorator, validateFields },
     location: {
-      query: { id, providerStatus, providerSearch },
+      query: { id, providerSearch },
     },
-    addProviderMaintenance,
-    userinfo,
     searchProviderobj,
     contractProviderobj,
     dispatch,
@@ -51,8 +45,6 @@ function AddProviderMaintenance(props) {
   } = props;
   const [performanceLeader, setPerformanceLeader] = useState('');
   const required = true;
-
-  const statueContent = ['在用', '停用', '过期'];
 
   //  服务商详情页
   const providerDetail = () => {
@@ -295,34 +287,6 @@ function AddProviderMaintenance(props) {
                   })(<Input disabled={providerSearch} />)}
                 </Form.Item>
               </Col>
-
-              {/* {performanceLeader && performanceLeader.length && (
-                <Col span={8}>
-                  <Form.Item label='负责人'>
-                    {
-                      getFieldDecorator('directorName', {
-                        rules: [
-                          {
-                            required,
-                            message: '请输入责任人'
-                          }
-                        ],
-                        initialValue: searchProviderobj.director
-                      })
-                        (
-                          <Select onChange={selectOnchange} >
-                            {performanceLeader.map(obj => [
-                              <Option key={obj.key} value={obj.value}>
-                                {obj.value}
-                              </Option>
-                            ])}
-  
-                          </Select>
-                        )
-                    }
-                  </Form.Item>
-                </Col>
-              )} */}
 
               <Col span={8}>
                 <Form.Item label="负责人">

@@ -11,11 +11,11 @@ import {
   message
 } from 'antd';
 import MergeTable from '@/components/MergeTable';
-import { providerList, contractProvider, scoreListpage, clauseListpage } from '../../services/quality';
+import { providerList, scoreListpage } from '../../services/quality';
 import moment from 'moment';
 import styles from '../../index.less';
 
-const { TextArea, Search } = Input;
+const { Search } = Input;
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 
@@ -38,11 +38,8 @@ const Register = React.forwardRef((props, ref) => {
   const attRef = useRef();
   const [data, setData] = useState([]);
   const [disablelist, setDisabledList] = useState([]); // 服务商
-  const [contractlist, setContractlist] = useState([]); // 合同
   const [scorelist, setScorelist] = useState([]); // 评分细则
-  const [clauselist, setClauselist] = useState([]); // 详细条款
   const [providerId, setProviderId] = useState(''); //  设置服务商的id
-  const [scoreId, setScoreId] = useState(''); //  设置服务商的id
   const [spinloading, setSpinLoading] = useState(true);
 
   useImperativeHandle(
@@ -77,9 +74,6 @@ const Register = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     handleTabledata()
-    // if(register && register.beginTime) {
-    //   setFieldsValue({evaluationInterval:[moment(register.beginTime),moment(register.endTime)]})
-    // }
   }, [register])
 
   const columns = [
@@ -168,7 +162,7 @@ const Register = React.forwardRef((props, ref) => {
 
   // 选择服务商，信息回填
   const handleDisableduser = (v, opt, type) => {
-    const { id, providerName, scoreName, contractName, assessType, clauseName } = opt.props.disableuser;
+    const {id, providerName, scoreName, contractName, assessType, clauseName } = opt.props.disableuser;
     switch (type) {
       case 'provider':
         setFieldsValue({
@@ -212,20 +206,7 @@ const Register = React.forwardRef((props, ref) => {
           }
         });
         break;
-      case 'contract':
-        if (!providerId) {
-          message.error('请先选择服务商哦')
-        } else {
-          contractProvider({ id: providerId, status: '1' }).then(res => {
-            if (res) {
-              const arr = [...(res.data)];
-              setSpinLoading(false);
-              setContractlist(arr);
-            }
-          });
-        }
 
-        break;
       case 'score':
         scoreListpage({ ...requestData }).then(res => {
           if (res) {
@@ -235,15 +216,7 @@ const Register = React.forwardRef((props, ref) => {
           }
         });
         break;
-      case 'clause':
-        clauseListpage({ ...requestData, scoreId, targetId: target2Type, }).then(res => {
-          if (res) {
-            const arr = [...(res.data.records)];
-            setSpinLoading(false);
-            setScorelist(arr);
-          }
-        });
-        break;
+
       default:
         break;
     }
@@ -260,7 +233,7 @@ const Register = React.forwardRef((props, ref) => {
     </Option>
   ));
 
-  const handleChange = (values, option, params) => {
+  const handleChange = (values, option) => {
     const { key, props: { value } } = option;
     setFieldsValue({
       contractName: key,
@@ -464,7 +437,8 @@ const Register = React.forwardRef((props, ref) => {
                 <Form.Item label='考核类型'>
                   {
                     getFieldDecorator('assessType', {
-                      initialValue: (register.assessType === '1') ? '功能开发' : (register.assessType === '2') ? '系统运维' : ''
+                      // initialValue: (register.assessType === '1') ? '功能开发' : (register.assessType === '2') ? '系统运维' : ''
+                      initialValue: (register.assessType === '1') ? '功能开发' : '系统运维'
                     })
                       (<Input disabled='true' />)
                   }

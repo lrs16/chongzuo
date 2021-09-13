@@ -14,7 +14,6 @@ import {
 } from 'antd';
 import ContractList from './components/ContractList';
 import { operationPerson } from '@/services/common';
-import moment from 'moment';
 import { connect } from 'dva';
 import router from 'umi/router';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -30,7 +29,6 @@ const formItemLayout = {
   },
 }
 
-
 function ProviderMaintenance(props) {
   const pagetitle = props.route.name;
   const {
@@ -45,7 +43,6 @@ function ProviderMaintenance(props) {
     loading
   } = props;
   const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 });
-  const [data, setData] = useState([]);
   const [performanceLeader, setPerformanceLeader] = useState('')
   const [tabrecord, setTabRecord] = useState({});
   const [selectedKeys, setSelectedKeys] = useState([]);
@@ -107,7 +104,29 @@ function ProviderMaintenance(props) {
       title: '服务商编号',
       dataIndex: 'providerNo',
       key: 'providerNo',
-      width: 200
+      width: 200,
+      render:(text,record) => {
+        const gotoDetail = () => {
+          router.push({
+            pathname: '/ITSM/servicequalityassessment/detailserviceprovidermaintenance',
+            query: {
+              id: record.id,
+              No: record.providerNo,
+              providerStatus: record.isEdit,
+              providerSearch: true
+            }
+          })
+        }
+
+        if(pagetitle === '服务商查询') {
+          return (
+            <a type='link' onClick={gotoDetail}>{text}</a>
+          )
+        }
+
+        return <span>{text}</span>
+
+      }
     },
     {
       title: '服务商名称',
@@ -145,9 +164,9 @@ function ProviderMaintenance(props) {
       dataIndex: 'status',
       key: 'status',
       width: 150,
-      render: (text, record) => {
+      render: (text) => {
         return (
-          <Radio.Group disabled='true' value={text}>
+          <Radio.Group disabled={true} value={text}>
             <Radio value='1'>启用</Radio>
             <Radio value='0'>禁用</Radio>
           </Radio.Group>
@@ -170,24 +189,29 @@ function ProviderMaintenance(props) {
             }
           })
         }
-        return (
-          <span>
-            <a onClick={() => gotoDetail()}>编辑</a>
+        if(pagetitle === '服务商维护') {
+          return (
+            <span>
+              <a onClick={() => gotoDetail()}>编辑</a>
+  
+              {record.isEdit === '1' && (
+                <>
+                  <Divider type='vertical' />
+                  <Popconfirm
+                    title='是否要删除此行？'
+                    onConfirm={() => handleDelete(record.id)}
+                  >
+                    <a>删除</a>
+                  </Popconfirm>
+                  <Divider type='vertical' />
+                </>
+              )}
+            </span>
+          )
+        }
 
-            {record.isEdit === '1' && (
-              <>
-                <Divider type='vertical' />
-                <Popconfirm
-                  title='是否要删除此行？'
-                  onConfirm={() => handleDelete(record.id)}
-                >
-                  <a>删除</a>
-                </Popconfirm>
-                <Divider type='vertical' />
-              </>
-            )}
-          </span>
-        )
+        return null;
+    
       }
     },
   ]
@@ -259,7 +283,7 @@ function ProviderMaintenance(props) {
   }
 
   const rowSelection = {
-    onChange: (index, handleSelect) => {
+    onChange: (index) => {
       setSelectedKeys([...index])
     }
   }
@@ -303,16 +327,6 @@ function ProviderMaintenance(props) {
       // 点击菜单刷新,并获取数据
       if (location.state.reset) {
         handleReset();
-        // setExpand(false);
-      };
-      if (location.state.cacheinfo) {
-        const { current, pageSize } = location.state.cacheinfo.paginations;
-        const { createTimeBegin, createTimeEnd } = location.state.cacheinfo;
-        // setExpand(location.state.cacheinfo.expand);
-        // setPaginations({ ...paginations, current, pageSize });
-        // setFieldsValue({
-        //   createTime: createTimeBegin ? [moment(createTimeBegin), moment(createTimeEnd)] : '',
-        // })
       };
     }
   }, [location.state]);
@@ -384,13 +398,17 @@ function ProviderMaintenance(props) {
 
         <Button type='primary' onClick={() => download()}>导出数据</Button>
 
-        <Button
-          style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-          onClick={newProvider}
-          icon='plus'
-        >
-          新增服务商
-        </Button>
+        {
+          pagetitle === '服务商维护' && (
+            <Button
+            style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+            onClick={newProvider}
+            icon='plus'
+          >
+            新增服务商
+          </Button>
+          )
+        }
 
         <Table
           loading={loading}

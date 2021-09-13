@@ -86,9 +86,16 @@ export async function scorecardId(id) {
   return request(`/quality/scorecard/${id}`)
 }
 
-//  积分卡列表
+//  积分卡查询列表
 export async function scorecardlistPage(params) {
   return request(`/quality/scorecard/listPage/${params.pageNum}/${params.pageSize}`,{
+    method:'POST',
+    body:JSON.stringify(params)
+  })
+}
+//  积分卡待办列表
+export async function getscorecardlistPagetobe(params) {
+  return request(`/quality/scorecard/mycard/${params.pageNum}/${params.pageSize}`,{
     method:'POST',
     body:JSON.stringify(params)
   })

@@ -6,14 +6,12 @@ import {
   Button,
   Popconfirm,
   message,
-  DatePicker,
   Row,
   Col,
   Card,
   Select,
   Divider,
 } from 'antd';
-import moment from 'moment';
 import { connect } from 'dva';
 import router from 'umi/router';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';

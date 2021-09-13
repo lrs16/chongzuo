@@ -46,7 +46,7 @@ const forminladeLayout = {
   },
 };
 
-const { MonthPicker, RangePicker } = DatePicker;
+const { RangePicker } = DatePicker;
 const { Option } = Select;
 const { Search } = Input;
 
@@ -109,7 +109,7 @@ const columns = [
     key: 'assessContent',
     width: 150,
     ellipsis: true,
-    render: (text, record) => {
+    render: (text) => {
       return (
         <Tooltip placement="topLeft" title={text}>
           <span>{text}</span>
@@ -141,7 +141,7 @@ const columns = [
     key: 'clauseName',
     width: 150,
     ellipsis: true,
-    render: (text, record) => {
+    render: (text) => {
       return (
         <Tooltip title={text} placement="topLeft">
           <span>{text}</span>
@@ -262,16 +262,13 @@ const columns = [
     dataIndex: 'isAppeal',
     key: 'isAppeal',
     width: 150,
-    // render: (text, record) => {
-    //   return <span>{text === '1' ? '是' : text === '0' ? '否' : ''}</span>
-    // }
   },
   {
     title: '申诉内容',
     dataIndex: 'appealContent',
     key: 'appealContent',
     width: 150,
-    render: (text, record) => {
+    render: (text) => {
       return (
         <Tooltip title={text} placement="topLeft">
           <span>{text}</span>
@@ -296,9 +293,6 @@ const columns = [
     dataIndex: 'directorReviewValue',
     key: 'directorReviewValue',
     width: 180,
-    // render: (text, record) => {
-    //   return <span>{text === '1' ? '通过' : text === '0' ? '不通过' : ''}</span>
-    // }
   },
   {
     title: '业务负责人复核说明',
@@ -306,7 +300,7 @@ const columns = [
     key: 'directorReviewContent',
     width: 180,
     ellipsis: true,
-    render: (text, record) => {
+    render: (text) => {
       return (
         <Tooltip title={text} placement="topLeft">
           <span>{text}</span>
@@ -347,7 +341,7 @@ const columns = [
     key: 'finallyConfirmContent',
     width: 180,
     ellipsis: true,
-    render: (text, record) => {
+    render: (text) => {
       return (
         <Tooltip title={text} placement="topLeft">
           <span>{text}</span>
@@ -372,12 +366,10 @@ function Assessment(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, validateFields, setFieldsValue, resetFields },
-    tobeDealtarr,
     assessmyAssessarr,
     target1,
     target2,
     clauseList,
-    userinfo,
     dispatch,
     location,
     loading,
@@ -386,14 +378,11 @@ function Assessment(props) {
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [contractArr, setContractArr] = useState([]);
   const [expand, setExpand] = useState(false);
-  const [fileslist, setFilesList] = useState([]);
   const [disablelist, setDisabledList] = useState([]); // 服务商
   const [contractlist, setContractlist] = useState([]); // 合同
   const [scorelist, setScorelist] = useState([]); // 评分细则
-  const [clauselist, setClauselist] = useState([]); // 详细条款
   const [providerId, setProviderId] = useState(''); //  设置服务商的id
   const [scoreId, setScoreId] = useState(''); //  设置服务商的id
-  const [target1Type, setTarget1Type] = useState('功能开发'); //  设置指标类型
   const [target2Type, setTarget2Type] = useState('');
   const [spinloading, setSpinLoading] = useState(true);
   const [tabrecord, setTabRecord] = useState({});
@@ -427,12 +416,12 @@ function Assessment(props) {
   };
 
   //  获取详细条款数据
-  const getclausedetail = (targetId, scoreId) => {
+  const getclausedetail = (targetId, scoreid) => {
     dispatch({
       type: 'qualityassessment/clauseListpage',
       payload: {
         targetId,
-        scoreId,
+        scoreId:scoreid,
         pageNum: 1,
         pageSize: 1000,
       },
@@ -457,32 +446,6 @@ function Assessment(props) {
           <span>{opt.providerNo}</span>
           <span>{opt.providerName}</span>
           <span>{opt.director}</span>
-        </div>
-      </Spin>
-    </Option>
-  ));
-
-  // 自动完成关联合同名称
-  const contractNamedata = contractlist.map((opt, index) => (
-    <Option key={opt.id} value={opt.id} disableuser={opt}>
-      <Spin spinning={spinloading}>
-        <div className={styles.disableuser}>
-          <span>{opt.contractNo}</span>
-          <span>{opt.contractName}</span>
-          <span>{opt.signTime}</span>
-          <span>{opt.dueTime}</span>
-        </div>
-      </Spin>
-    </Option>
-  ));
-
-  // 自动完成评分细则
-  const scorenameList = scorelist.map(opt => (
-    <Option key={opt.id} value={opt.id} disableuser={opt}>
-      <Spin spinning={spinloading}>
-        <div className={styles.disableuser}>
-          <span>{opt.scoreNo}</span>
-          <span>{opt.scoreName}</span>
         </div>
       </Spin>
     </Option>
@@ -549,9 +512,7 @@ function Assessment(props) {
       id,
       providerName,
       scoreName,
-      contractName,
       assessType,
-      clauseName,
     } = opt.props.disableuser;
     switch (type) {
       case 'provider':
@@ -701,7 +662,6 @@ function Assessment(props) {
           payload: {
             cacheinfo: {
               ...tabrecord,
-              // registerTime: '',
               paginations,
               expand,
             },
@@ -756,6 +716,16 @@ function Assessment(props) {
       }
     }
   }, [location.state]);
+
+  const handleReset = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: {},
+    });
+    resetFields();
+    searchdata({}, 1, 15);
+  };
 
   // 获取数据
   useEffect(() => {
@@ -907,15 +877,7 @@ function Assessment(props) {
     }
   };
 
-  const handleReset = () => {
-    router.push({
-      pathname: location.pathname,
-      query: {},
-      state: {},
-    });
-    resetFields();
-    searchdata({}, 1, 15);
-  };
+
 
   const selectOnchange = (value, option, type) => {
     const {
@@ -1323,38 +1285,6 @@ function Assessment(props) {
                   })(<Input />)}
                 </Form.Item>
               </Col>
-
-              {/* {performanceLeader && performanceLeader.length && (
-          <Col span={8}>
-            <Form.Item label='登记人'>
-              {
-                getFieldDecorator('register', {
-                })
-                  (
-                    <Select onSelect={selectOnchange}>
-                      {performanceLeader.map(obj => [
-                        <Option key={obj.key} value={obj.key}>
-                          {obj.value}
-                        </Option>
-                      ])}
-
-                    </Select>
-                  )
-              }
-            </Form.Item>
-          </Col>
-        )}
-
-
-        <Col span={8} style={{ display: 'none' }}>
-          <Form.Item label='登记人id'>
-            {
-              getFieldDecorator('register', {
-              })
-                (<Input />)
-            }
-          </Form.Item>
-        </Col> */}
 
               <Col span={8}>
                 <Form.Item label="登记人">

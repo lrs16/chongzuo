@@ -7,7 +7,7 @@ import router from 'umi/router';
 import { Button, Card } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import EditContext from '@/layouts/MenuContext';
-import Content from './components/Content';
+import Registrat from './components/Content';
 
 function NewHandover(props) {
     const pagetitle = props.route.name;
@@ -76,12 +76,7 @@ function NewHandover(props) {
     return (
         <PageHeaderWrapper title={pagetitle} extra={extrabutton}>
             <Card>
-                <EditContext.Provider value={{ editable: true, }}>
-                    <Content
-                        wrappedComponentRef={ContentRef}
-                        formrecord={tabdata === undefined ? {} : tabdata}
-                    />
-                </EditContext.Provider>
+              <Registrat />
             </Card>
         </PageHeaderWrapper>
     );

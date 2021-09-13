@@ -1032,7 +1032,7 @@ export default {
                           path: '/ITSM/servicequalityassessment/serviceprovidersearch',
                           name: '服务商查询',
                           icon: 'control',
-                          component: './ITSM/ServiceQuality/ServiceProvidersearch'
+                          component: './ITSM/ServiceQuality/ProviderMaintenance'
                         },
                         {
                           path: '/ITSM/servicequalityassessment/scoringrulesmaintenance',

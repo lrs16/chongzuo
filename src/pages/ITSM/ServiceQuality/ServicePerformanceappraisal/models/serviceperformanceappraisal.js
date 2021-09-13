@@ -28,6 +28,7 @@ import {
   exportmyAssess,
   scorecardPrint,
   getTypeTree,
+  getscorecardlistPagetobe
 } from '../services/serviceperformanceappraisalapi';
 
 export default {
@@ -42,6 +43,7 @@ export default {
     taskData: '',
     scorecardetail: [],
     scorecardArr: [],
+    listPagetobe: [],
     hisTaskArr: [],
     imageSource: [],
     assessSearcharr: [],
@@ -67,14 +69,6 @@ export default {
       });
     },
 
-    // 流转
-    *gotoNextprocess({ payload }, { call, put }) {
-      const response = yield call(maintenanceList, payload);
-      router.push({
-        pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
-      });
-    },
-
     //  登记
     *assessRegister({ payload }, { call, put }) {
       const response = yield call(assessRegister, payload);
@@ -87,7 +81,7 @@ export default {
             closecurrent: true,
           },
         });
-        const { taskId, assessNo, instanceId, taskName } = response.data;
+        const { taskId, assessNo, instanceId } = response.data;
         router.push({
           pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform`,
           query: {
@@ -165,7 +159,6 @@ export default {
               state: {
                 dynamicpath: true,
                 menuDesc: '记分详情页',
-                // status: record.status,
               },
             });
           }
@@ -192,6 +185,16 @@ export default {
         payload: response,
       });
     },
+
+    //  记分卡待办
+    *getMycardtobe({ payload }, { call, put }) {
+      const response = yield call(getscorecardlistPagetobe, payload);
+      yield put({
+        type: 'listPagetobe',
+        payload: response,
+      });
+    },
+
 
     *scorecardDel({ payload }, { call, put }) {
       return yield call(scorecardDel, payload);
@@ -243,13 +246,6 @@ export default {
     *exportTodolist({ payload }, { call, put }) {
       return yield call(exportTodolist, payload);
     },
-
-    //  清空流程下拉值props数据带来的残留
-    // *clearDrop({ payload }, { call, put }) {
-    //   yield put({
-    //     type:'clearDrop'
-    //   })
-    // },
 
     //  删除
     *assessDelete({ payload }, { call, put }) {

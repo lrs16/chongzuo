@@ -1,26 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { Card, Form, Steps, Divider } from 'antd';
+import { Card, Form, Steps } from 'antd';
 import styles from '../index.less';
 
 
 const { Step } = Steps;
 function Achievementsflow(props) {
-  const { id, taskId, imageSource, flowlog,flowhisTaskArr, dispatch } = props;
+  const { taskId, imageSource, flowlog,flowhisTaskArr, dispatch } = props;
   const list = [];
-  if (flowlog) {
-    flowlog.forEach(function (item) {
-      list.push(
+
+  if(flowlog) {
+    flowlog.forEach((item) => {
+          list.push(
         <Step
-          // key={item.id}
+          key={item.id}
           title={`处理人:${item.formHandler}`}
           description={`${item.startTime}`}
           subTitle={item.backReason}
         />
       )
-    });
+    })
   }
 
   const imgsrc = () => {
@@ -63,7 +63,7 @@ function Achievementsflow(props) {
             direction="vertical"
             style={{ background: '#fff', padding: 24 }}
           >
-            {flowhisTaskArr.map((obj, index) => {
+            {flowhisTaskArr.map((obj) => {
               const desc = (
                 <div>
                   <div>当前环节:{obj.name}</div>
@@ -78,8 +78,7 @@ function Achievementsflow(props) {
                   }
                 </div>
               );
-              // return <Step title={`${obj.nodeName}${backoff}`} description={desc} />;
-              return <Step description={desc} key={index} />;
+              return <Step description={desc} key={obj.id} />;
             })}
           </Steps>
         </div>

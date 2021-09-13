@@ -68,7 +68,7 @@ function CreditcardTobe(props) {
       locked: '0',
     };
     dispatch({
-      type: 'performanceappraisal/getscorecardlistPage',
+      type: 'performanceappraisal/getMycardtobe',
       payload: {
         ...values,
         beginTime: values.evaluationInterval?.length

@@ -1,18 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import {
-  Table,
   Form,
-  Input,
   Button,
-  Popconfirm,
-  message,
-  Card,
   Collapse
 } from 'antd';
 import moment from 'moment';
 import router from 'umi/router';
 import { contractProvider } from '../services/quality';
-import { operationPerson } from '@/services/common';
 import { connect } from 'dva';
 import Register from './components/Register';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -45,7 +39,6 @@ const { Panel } = Collapse;
 function Registertion(props) {
   const pagetitle = props.route.name;
   const {
-    location: { query: { taskId, assessNo, mainId } },
     userinfo,
     dispatch,
     target1,
@@ -68,7 +61,7 @@ function Registertion(props) {
     setActiveKey(key);
   };
 
-  const handleSubmit = (params) => {
+  const handleSubmit = () => {
     RegistratRef.current.validateFields((err, values) => {
       if (!err) {
         const submitIfnfo = values;
@@ -142,8 +135,6 @@ function Registertion(props) {
     }
   }, [files])
 
-
-
   return (
     <PageHeaderWrapper
       title={pagetitle}
@@ -165,8 +156,7 @@ function Registertion(props) {
         </>
       }
     >
-      {/* {
-        loading !== true && ( */}
+      
       <div className={styles.collapse}>
         <Collapse
           expandIconPosition='right'
@@ -200,8 +190,6 @@ function Registertion(props) {
           </Panel>
         </Collapse>
       </div>
-      {/* //   )
-      // } */}
 
     </PageHeaderWrapper>
   )

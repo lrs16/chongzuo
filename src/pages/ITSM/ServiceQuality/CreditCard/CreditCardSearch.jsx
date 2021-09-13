@@ -5,25 +5,16 @@ import {
   Input,
   Button,
   Card,
-  message,
   Row,
   Col,
-  Popconfirm,
-  Divider,
-  Radio,
-  AutoComplete,
   Select,
-  Spin,
   DatePicker
 } from 'antd';
 import SysDict from '@/components/SysDict';
-import { contractProvider, providerList, scoreListpage } from '../services/quality';
 import moment from 'moment';
 import { connect } from 'dva';
 import router from 'umi/router';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-
-import styles from '../index.less';
 
 const formItemLayout = {
   labelCol: {
@@ -36,7 +27,6 @@ const formItemLayout = {
   },
 }
 
-const { Search } = Input;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
@@ -50,7 +40,6 @@ function ServiceProvidersearch(props) {
       resetFields,
       setFieldsValue
     },
-    providerArr,
     scorecardArr,
     dispatch,
     location,
@@ -96,20 +85,6 @@ function ServiceProvidersearch(props) {
     })
   }, [])
 
-  const handleDelete = (id) => {
-    return dispatch({
-      type: 'performanceappraisal/scorecardDel',
-      payload: id
-    }).then(res => {
-      if (res.code === 200) {
-        message.info(res.msg);
-        searchdata({}, 1, paginations.pageSize)
-      } else {
-        message.error(res.msg);
-      }
-    })
-  }
-
   const columns = [
     {
       title: '记分卡编号',
@@ -128,7 +103,6 @@ function ServiceProvidersearch(props) {
             state: {
               dynamicpath: true,
               menuDesc: '记分详情页',
-              // status: record.status,
             }
           })
         }
@@ -191,39 +165,6 @@ function ServiceProvidersearch(props) {
       key: 'endTime',
       width: 180
     },
-    // {
-    //   title: '操作',
-    //   dataIndex: 'action',
-    //   fixed: 'right',
-    //   width: 100,
-    //   render: (text, record) => {
-    //     const gotoDetail = () => {
-    //       router.push({
-    //         pathname: '/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail',
-    //         query: {
-    //           id: record.id,
-    //           No: record.cardNo,
-    //           scorecardStatus: record.isEdit,
-    //           search: true
-    //         }
-    //       })
-    //     }
-    //     return (
-    //       <span>
-    //         {/* <a onClick={() => gotoDetail()}>查看</a> */}
-    //         <>
-    //           {/* <Divider type='vertical' /> */}
-    //           <Popconfirm
-    //             title='是否要删除此行？'
-    //             onConfirm={() => handleDelete(record.id)}
-    //           >
-    //             <a>删除</a>
-    //           </Popconfirm>
-    //         </>
-    //       </span>
-    //     )
-    //   }
-    // },
   ]
 
 
@@ -345,7 +286,7 @@ function ServiceProvidersearch(props) {
   }, [location.state]);
 
   const rowSelection = {
-    onChange: (index, handleSelect) => {
+    onChange: (index) => {
       setSelectedKeys([...index])
     }
   }

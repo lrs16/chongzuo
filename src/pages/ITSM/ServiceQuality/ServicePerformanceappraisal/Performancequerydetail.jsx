@@ -1,9 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Table, Form, Input, Button, Popconfirm, message, DatePicker, Collapse, Steps } from 'antd';
-import Link from 'umi/link';
-import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { Form, Button, Collapse } from 'antd';
 import router from 'umi/router';
-import User from '@/components/SelectUser/User';
 import { contractProvider } from '../services/quality';
 import { connect } from 'dva';
 import BusinessAudit from './components/BusinessAudit';
@@ -13,9 +10,6 @@ import AssessmentConfirmation from './components/AssessmentConfirmation';
 import Achievementsflow from './Achievementsflow';
 import Relatedorder from './Relatedorder';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { judgeTimeoutStatus, saveTimeoutMsg } from '../../services/api';
-import TimeoutModal from '../../components/TimeoutModal';
-import Reasonregression from '../../Problemmanage/components/Reasonregression';
 import styles from './index.less';
 
 const formItemLayout = {
@@ -41,17 +35,13 @@ const forminladeLayout = {
 };
 
 const { Panel } = Collapse;
-const { Step } = Steps;
 
 function Performancequerydetail(props) {
-  const pagetitle = props.route.name;
   const {
     location: {
-      query: { taskId, assessNo, mainId, search, myOrder, tobelist },
+      query: { assessNo, mainId, search, myOrder, tobelist },
     },
     location,
-    target1,
-    target2,
     clauseList,
     userinfo,
     taskData,
@@ -61,17 +51,10 @@ function Performancequerydetail(props) {
     dispatch,
   } = props;
   const { title } = props.route;
-  const formRef = useRef();
   const [noselect, setNoselect] = useState('1');
-  const [uservisible, setUserVisible] = useState(false);
   const [contractArr, setContractArr] = useState([]);
-  const [userchoice, setUserChoice] = useState(false); // 已经选择人员
-  const [butandorder, setButandOrder] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [tabActiveKey, setTabActiveKey] = useState('workorder');
-  const [buttontype, setButtonType] = useState('');
-  const [modalvisible, setModalVisible] = useState(false);
-  const [modalrollback, setModalRollBack] = useState(false); // 回退信息modle
 
   sessionStorage.setItem('Processtype', 'achievements');
 
@@ -198,30 +181,26 @@ function Performancequerydetail(props) {
                     [
                       '服务绩效考核登记',
                       <Register
+                        key={index}
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}
                         userinfo={userinfo}
-                        // getTarget1={getTarget1}
-                        // getTarget2={getTarget2}
                         target1={[]}
                         target2={[]}
-                        // getclausedetail={getclausedetail}
                         clauseList={[]}
                         register={Object.values(obj)[0]}
                         contractArr={contractArr}
-                        // getContrractname={getContrractname}
-                        // files={currentTask.attachment ? JSON.parse(currentTask.attachment) : []}
                         ChangeFiles={newvalue => {
                           setFiles(newvalue);
                         }}
                         loading={loading}
-                        key="0"
                         noEdit="true"
                       />,
                     ],
                     [
                       `业务负责人审核`,
                       <BusinessAudit
+                        key={index}
                         businessAudit={Object.values(obj)[0]}
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}
@@ -233,6 +212,7 @@ function Performancequerydetail(props) {
                     [
                       `自动化科专责审核`,
                       <BusinessAudit
+                        key={index}
                         businessAudit={Object.values(obj)[0]}
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}
@@ -244,6 +224,7 @@ function Performancequerydetail(props) {
                     [
                       `业务负责人复核`,
                       <BusinessAudit
+                        key={index}
                         businessAudit={Object.values(obj)[0]}
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}
@@ -255,6 +236,7 @@ function Performancequerydetail(props) {
                     [
                       `服务商确认`,
                       <ProviderConfirmation
+                        key={index}
                         providerConfirmation={Object.values(obj)[0]}
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}
@@ -269,6 +251,7 @@ function Performancequerydetail(props) {
                     [
                       `服务绩效考核确认`,
                       <AssessmentConfirmation
+                        key={index}
                         assessmentConfirmation={Object.values(obj)[0]}
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}
@@ -301,21 +284,16 @@ function Performancequerydetail(props) {
                     formItemLayout={formItemLayout}
                     forminladeLayout={forminladeLayout}
                     userinfo={userinfo}
-                    // getTarget1={getTarget1}
-                    // getTarget2={getTarget2}
                     target1={[]}
                     target2={[]}
-                    // getclausedetail={getclausedetail}
                     clauseList={[]}
                     register={currentTask}
                     contractArr={contractArr}
-                    // getContrractname={getContrractname}
-                    // files={currentTask.attachment ? JSON.parse(currentTask.attachment) : []}
                     ChangeFiles={newvalue => {
                       setFiles(newvalue);
                     }}
                     loading={loading}
-                    key="0"
+                    key='0'
                     noEdit="true"
                   />
                 </Panel>

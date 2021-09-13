@@ -1,5 +1,5 @@
 import React, { useImperativeHandle, useRef, useState, useEffect } from 'react';
-import { Form, Input, Radio, Row, Col, Card, Tag, DatePicker } from 'antd';
+import { Form, Input, Radio, Row, Col, Tag, DatePicker } from 'antd';
 import moment from 'moment';
 
 const { TextArea } = Input;
@@ -84,7 +84,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
               })(
                 <TextArea
                   disabled={noEdit}
-                  // autoSize={{ minRows: 3 }}
+                  autoSize={{ minRows: 3 }}
                   placeholder="请输入"
                 />,
               )}

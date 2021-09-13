@@ -23,7 +23,6 @@ const formItemLayout = {
 
 let startTime;
 let endTime;
-let endOpen = false;
 const { Option } = Select;
 
 const withClick = (element, handleClick = () => { }) => {
@@ -34,7 +33,7 @@ const withClick = (element, handleClick = () => { }) => {
 function Contract(props) {
   const [visible, setVisible] = useState(false);
   const {
-    form: { getFieldDecorator, validateFields, setFieldsValue },
+    form: { getFieldDecorator, setFieldsValue },
     children,
     contract,
     title,
@@ -89,15 +88,6 @@ function Contract(props) {
     setVisible(false)
   }
 
-  // const startdisabledDate = (current) => {
-  //   return current > moment().subtract('days', 6)
-  // }
-
-  // const enddisabledDate = (current) => {
-  //   return current > moment().endOf('day')
-  // }
-
-
   const startdisabledDate = (current) => {
     if (endTime) {
       return current > moment(endTime)
@@ -106,6 +96,8 @@ function Contract(props) {
     if (!endTime && contract.dueTime) {
       return current > moment(contract.dueTime)
     }
+
+    return null;
   }
 
   const enddisabledDate = (current) => {
@@ -116,6 +108,7 @@ function Contract(props) {
     if (!startTime && contract.signTime) {
       return current < moment(contract.signTime)
     }
+    return null;
   }
 
 
@@ -174,7 +167,7 @@ function Contract(props) {
                   message: '请输入签订日期'
                 }
               ],
-              initialValue: contract.signTime ? moment(contract.signTime) :''
+              initialValue: contract.signTime ? moment(contract.signTime) : ''
             })
               (
                 <div>
@@ -198,7 +191,7 @@ function Contract(props) {
                   message: '请输入到期日期'
                 }
               ],
-              initialValue: contract.dueTime ? moment(contract.dueTime) :''
+              initialValue: contract.dueTime ? moment(contract.dueTime) : ''
             })
               (
                 <div>

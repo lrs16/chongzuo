@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Table, Form, Input, Button, Popconfirm, message, DatePicker, Collapse, Steps } from 'antd';
-import Link from 'umi/link';
+import { Form, Button, message, Collapse, Steps } from 'antd';
 import moment from 'moment';
 import router from 'umi/router';
 import User from '@/components/SelectUser/User';
@@ -44,7 +43,6 @@ const { Panel } = Collapse;
 const { Step } = Steps;
 
 function TobedealtForm(props) {
-  const pagetitle = props.route.name;
   const {
     location,
     target1,
@@ -66,7 +64,6 @@ function TobedealtForm(props) {
   const [butandorder, setButandOrder] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [tabActiveKey, setTabActiveKey] = useState('workorder');
-  const [buttontype, setButtonType] = useState('');
   const [modalvisible, setModalVisible] = useState(false);
   const [modalrollback, setModalRollBack] = useState(false); // 回退信息modle
 
@@ -233,6 +230,32 @@ function TobedealtForm(props) {
     setTabActiveKey(key);
   };
 
+  const gotoCirapi = () => {
+    return dispatch({
+      type: 'performanceappraisal/assessComplete',
+      payload: {
+        taskId,
+        users: sessionStorage.getItem('NextflowUserId'),
+      },
+    }).then(res => {
+      if (res.code === 200) {
+        router.push({
+          pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform`,
+          query: {
+            mainId,
+            closetab: true,
+          },
+        });
+
+        router.push({
+          pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtlist`,
+          query: { pathpush: true },
+          state: { cache: false },
+        });
+      }
+    });
+  };
+
   //  登记保存流转
   const registerSubmit = circulation => {
     formRef.current.validateFields((err, values) => {
@@ -267,7 +290,9 @@ function TobedealtForm(props) {
           }
         });
       }
-    });
+      return null
+    }
+    );
   };
 
   //  审核保存流转
@@ -283,7 +308,7 @@ function TobedealtForm(props) {
     const obj = {};
     formRef.current.validateFields((err, values) => {
       if (taskName === '业务负责人复核') {
-        obj['reviewContent'] = values.verifyContent || values.verifyContent2 || '';
+        obj["reviewContent"] = values.verifyContent || values.verifyContent2 || '';
         obj['reviewer'] = values.verifier;
         obj['reviewTime'] = moment(values.verifyTime).format('YYYY-MM-DD HH:mm:ss');
       } else {
@@ -382,32 +407,6 @@ function TobedealtForm(props) {
           } else {
             message.error('保存失败');
           }
-        });
-      }
-    });
-  };
-
-  const gotoCirapi = () => {
-    return dispatch({
-      type: 'performanceappraisal/assessComplete',
-      payload: {
-        taskId,
-        users: sessionStorage.getItem('NextflowUserId'),
-      },
-    }).then(res => {
-      if (res.code === 200) {
-        router.push({
-          pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform`,
-          query: {
-            mainId,
-            closetab: true,
-          },
-        });
-
-        router.push({
-          pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtlist`,
-          query: { pathpush: true },
-          state: { cache: false },
         });
       }
     });
@@ -783,7 +782,7 @@ function TobedealtForm(props) {
                       target1={target1}
                       target2={target2}
                       clauseList={clauseList}
-                      editSign={currentTask.isEdit === '0' ? true : false}
+                      editSign={currentTask.isEdit === '0' ? 'true' : ''}
                     />
                   </Panel>
                 )}
@@ -823,6 +822,7 @@ function TobedealtForm(props) {
                     [
                       `业务负责人审核`,
                       <BusinessAudit
+                        key={index}
                         businessAudit={Object.values(obj)[0]}
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}
@@ -834,6 +834,7 @@ function TobedealtForm(props) {
                     [
                       `自动化科专责审核`,
                       <BusinessAudit
+                        key={index}
                         businessAudit={Object.values(obj)[0]}
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}
@@ -845,6 +846,7 @@ function TobedealtForm(props) {
                     [
                       `业务负责人复核`,
                       <BusinessAudit
+                        key={index}
                         businessAudit={Object.values(obj)[0]}
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}
@@ -856,8 +858,8 @@ function TobedealtForm(props) {
                     [
                       `服务商确认`,
                       <ProviderConfirmation
+                        key={index}
                         providerConfirmation={Object.values(obj)[0]}
-                        // providerConfirmation={currentTask}
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}
                         userinfo={userinfo}

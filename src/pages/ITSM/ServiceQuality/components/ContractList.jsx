@@ -1,26 +1,9 @@
 import React, { useState } from 'react';
 import {
   Drawer,
-  Form,
-  Input,
-  Button,
-  DatePicker,
-  Select,
   Table
 } from 'antd';
-import moment from 'moment';
 import { connect } from 'dva';
-
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 6 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 18 }
-  }
-}
 
 const culumns = [
   {
@@ -55,27 +38,19 @@ const culumns = [
   },
 ]
 
-const { Option } = Select;
-
 const withClick = (element, handleClick = () => { }) => {
   return <element.type {...element.props} onClick={handleClick} />
 }
-
 
 function ContractList(props) {
   const [visible, setVisible] = useState(false);
   const {
     id,
     children,
-    contract,
     title,
-    onSumit,
-    isEdit,
     dispatch,
     contractProviderobj
   } = props;
-
-  const required = true;
 
   const handleopenClick = () => {
     dispatch({
@@ -83,19 +58,6 @@ function ContractList(props) {
       payload: {id}
     })
     setVisible(true)
-  }
-
-  const handleOk = () => {
-    props.form.validateFields((err, values) => {
-      if (!err) {
-        const submitData = {
-          ...values,
-          id: contract.id || ''
-        };
-        onSumit(submitData);
-        setVisible(false)
-      }
-    })
   }
 
   const handleCancel = () => {
