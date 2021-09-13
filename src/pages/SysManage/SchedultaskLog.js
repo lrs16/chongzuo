@@ -1,6 +1,6 @@
 import React, { Component, } from 'react';
 import { connect } from 'dva';
-import { Card, Row, Col, Form, Input, Select, Button, Table, DatePicker, } from 'antd';
+import { Card, Row, Col, Form, Input, Select, Button, Table, DatePicker, message} from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import moment from 'moment';
 import Link from 'umi/link';
@@ -35,10 +35,16 @@ const taskName = [
   loading: loading.effects['timedtaskmodel/fetchbasic'],
 }))
 class $joblogid$ extends Component {
+
   constructor(props) {
     super(props);
     this.joblogid = props.match.params.joblogid;
   }
+
+  // state = {
+  //   current: 1,
+  //   pageSize: 15,
+  // };
 
   componentDidMount() {
     this.getqrtzjoblogData();
@@ -53,12 +59,14 @@ class $joblogid$ extends Component {
 
   render() {
     const { getFieldDecorator, getFieldsValue, resetFields } = this.props.form;
+    const { timedtaskmodel } = this.props;
+    const { qrtzjobloglist } = timedtaskmodel;
 
     const columns = [
       {
         title: '日志编号',
-        dataIndex: 'jobLogId ',
-        key: 'jobLogId ',
+        dataIndex: 'jobLogId',
+        key: 'jobLogId',
         width: 120,
         sorter: (a, b) => a.jobLogId - b.jobLogId,
       },
@@ -72,13 +80,15 @@ class $joblogid$ extends Component {
         title: '任务组名',
         dataIndex: 'jobGroup',
         key: 'jobGroup',
-        width: 100,
+        width: 250,
+        ellipsis: true,
       },
       {
         title: '调用目标字符串',
         dataIndex: 'invokeTarget',
         key: 'invokeTarget',
         width: 250,
+        ellipsis: true,
       },
       {
         title: '日志信息',
@@ -143,10 +153,32 @@ class $joblogid$ extends Component {
     //   onShowSizeChange: (page, size) => onShowSizeChange(page, size),
     //   current: paginations.current,
     //   pageSize: paginations.pageSize,
-    //   // total: qrtzjoblist.total,
+    //   // total: qrtzjobloglist.total,
     //   // showTotal: total => `总共  ${total}  条记录`,
     //   onChange: page => changePage(page),
     // };
+
+    // const handlelogDelete = () => { // 批量删除
+    //   const len = selectedRowKeys.length;
+    //   if (len === 0) {
+    //     message.info('至少选择一条数据');
+    //   } else {
+    //     const { jobId } = selectedRows[0];
+    //     dispatch({
+    //       type: 'timedtaskmodel/todeleteqrtzJob',
+    //       payload: { jobId: jobId.toString() },
+    //     }).then(res => {
+    //       if (res.code === 200) {
+    //         message.success('删除成功');
+    //         searchdata(1, 15);
+    //       } else {
+    //         message.error(res.msg);
+    //       }
+    //     });
+    //   }
+    // };
+
+
     // 查询
     const extra = (<>
       <Button type="primary" onClick={() => handleSearch()} style={{ marginLeft: 15 }}>查 询</Button>
@@ -216,6 +248,7 @@ class $joblogid$ extends Component {
           </Row>
 
           <div style={{ marginBottom: 24 }}>
+            {/*  onClick={() => handlelogDelete()} */}
             <Button type="danger" ghost style={{ marginRight: 8 }}>删 除</Button>
             <Button type="danger" ghost style={{ marginRight: 8 }}>清 空</Button>
             <Button type="primary" style={{ marginRight: 8 }}>导 出</Button>
@@ -224,7 +257,7 @@ class $joblogid$ extends Component {
           < Table
             // loading={loading}
             columns={columns}
-            // dataSource={qrtzjoblist.rows}
+            dataSource={qrtzjobloglist.rows}
             // pagination={pagination}
             // rowSelection={rowSelection}
             rowKey={r => r.jobLogId}

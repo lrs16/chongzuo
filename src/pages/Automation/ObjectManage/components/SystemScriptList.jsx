@@ -4,16 +4,11 @@ import moment from 'moment';
 import { connect } from 'dva';
 import { Table, Card, Button, Form, Input, Select, Row, Col, DatePicker, Divider, message, Popconfirm } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import { togetSearchUsers } from '../services/api';
 import SystemScriptDrawer from './SystemScriptDrawer';
 import SysViewDrawer from './SysViewDrawer';
 
 const { Option } = Select;
-const directormap = [
-    { key: '1', title: '张三' },
-    { key: '2', title: '李四' },
-    { key: '3', title: '王五' },
-    { key: '3', title: '赵六' },
-];
 
 function SystemScriptList(props) {
     const {
@@ -40,6 +35,7 @@ function SystemScriptList(props) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
     const [data, setData] = useState('');
+    const [allUserData, setallUserData] = useState([]);
     const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
 
     const onSelectChange = (RowKeys, Rows) => {
@@ -70,6 +66,18 @@ function SystemScriptList(props) {
 
     useEffect(() => {
         searchdata(1, 15);
+        togetSearchUsers({
+            queKey: '',
+            page: 1,
+            limit: 15,
+        }).then(res => {
+            if (res.code === 200) {
+                const newarr = res.data.rows.map((item, index) => {
+                    return Object.assign(item, { key: index, title: item.userName});
+                });
+                setallUserData(newarr);
+            }
+        });
     }, [location]);
 
     // 上传删除附件触发保存
@@ -114,7 +122,6 @@ function SystemScriptList(props) {
 
     // 提交
     const handleSubmit = values => {
-        console.log(values,'values')
         dispatch({
             type: 'scriptconfig/toupdatesystemScript',
             payload: {
@@ -363,7 +370,7 @@ function SystemScriptList(props) {
                                         {getFieldDecorator('director', {
                                             initialValue: '',
                                         })(<Select placeholder="请选择" allowClear>
-                                            {directormap.map(obj => (
+                                            {allUserData.map(obj => (
                                                 <Option key={obj.key} value={obj.title}>
                                                     {obj.title}
                                                 </Option>
@@ -483,13 +490,13 @@ function SystemScriptList(props) {
                 title={title}
                 handleSubmit={newvalue => handleSubmit(newvalue)}
                 record={data}
-                destroyOnClose
                 savetype={savetype}
                 scriptsourcemap={scriptsourcemap}
                 scripttypemap={scripttypemap}
                 files={files.arr}
                 ChangeFiles={newvalue => { setFiles(newvalue) }}
                 onChangeList={() => searchdata(1, 15)}
+                directormap={allUserData}
             />
         </>
     );

@@ -5,9 +5,10 @@ import React, {
 import { connect } from 'dva';
 import moment from 'moment';
 import { Table, Card, Divider, Button, Message, Form, Input, Select, Row, Col, DatePicker, Badge } from 'antd';
+import DictLower from '@/components/SysDict/DictLower';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined, DownloadOutlined } from '@ant-design/icons';
-import DictLower from '@/components/SysDict/DictLower';
+import { togetSearchUsers } from './services/api';
 import EquipDrawer from './components/EquipDrawer';
 import SysLeadin from './components/SysLeadin';
 
@@ -49,6 +50,7 @@ function EquipmentManege(props) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
     const [data, setData] = useState('');
+    const [allUserData, setallUserData] = useState([]);   
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
     const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
 
@@ -72,6 +74,18 @@ function EquipmentManege(props) {
 
     useEffect(() => {
         searchdata(1, 15);
+        togetSearchUsers({
+            queKey: '',
+            page: 1,
+            limit: 15,
+        }).then(res => {
+            if (res.code === 200) {
+                const newarr = res.data.rows.map((item, index) => {
+                    return Object.assign(item, { key: index, title: item.userName});
+                });
+                setallUserData(newarr);
+            }
+        });
     }, [location]);
 
     // 上传删除附件触发保存
@@ -181,6 +195,12 @@ function EquipmentManege(props) {
 
     const columns = [
         {
+            title: '设备编号',
+            dataIndex: 'hostAssets',
+            key: 'hostAssets',
+            width: 200,
+        },
+        {
             title: '区域',
             dataIndex: 'hostZoneId',
             key: 'hostZoneId',
@@ -289,8 +309,8 @@ function EquipmentManege(props) {
         },
         {
             title: '创建人',
-            dataIndex: 'createByNameExt',
-            key: 'createByNameExt',
+            dataIndex: 'createBy',
+            key: 'createBy',
             width: 120,
         },
         {
@@ -301,8 +321,8 @@ function EquipmentManege(props) {
         },
         {
             title: '更新人',
-            dataIndex: 'updateByNameExt',
-            key: 'updateByNameExt',
+            dataIndex: 'updateBy',
+            key: 'updateBy',
             width: 120,
         },
         {
@@ -695,6 +715,7 @@ function EquipmentManege(props) {
                 record={data}
                 destroyOnClose
                 savetype={savetype}
+                directormap={allUserData}
             />
         </PageHeaderWrapper>
     );

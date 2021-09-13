@@ -17,13 +17,6 @@ const formItemLayout = {
   },
   colon: false,
 };
-
-const directormap = [
-  { key: '1', title: '张三' },
-  { key: '2', title: '李四' },
-  { key: '3', title: '王五' },
-  { key: '3', title: '赵六' },
-];
 function SystemScriptDrawer(props) {
   const { visible, ChangeVisible, title, handleSubmit, dispatch,
     // scriptsourcemap, 
@@ -31,6 +24,7 @@ function SystemScriptDrawer(props) {
     files,
     ChangeFiles,
     onChangeList,
+    directormap
   } = props;
 
   const { getFieldDecorator, validateFields } = props.form;
@@ -55,6 +49,19 @@ function SystemScriptDrawer(props) {
     ChangeVisible(false);
   };
 
+  const handleOk = () => {
+    validateFields((err, values) => {
+      if (!err) {
+        // 关闭弹窗
+        hanldleCancel();
+        // 传数据
+        handleSubmit(values);
+        props.form.resetFields();
+        ChangeVisible(false);
+      }
+    });
+  };
+
   useEffect(() => {
     if (fileslist.ischange) {
       ChangeFiles(fileslist);
@@ -75,19 +82,6 @@ function SystemScriptDrawer(props) {
   useEffect(() => {
     setFilesList({ ...fileslist, arr: files });
   }, []);
-
-  const handleOk = () => {
-    validateFields((err, values) => {
-      if (!err) {
-        // 关闭弹窗
-        hanldleCancel();
-        // 传数据
-        handleSubmit(values);
-        props.form.resetFields();
-        ChangeVisible(false);
-      }
-    });
-  };
 
   const handletosave = () => {
     validateFields((err, values) => {
@@ -256,6 +250,7 @@ SystemScriptDrawer.defaultProps = {
     director: '',
     scriptSorts: '',
     scriptRemarks: '',
+    files: [],
   },
 };
 

@@ -1,5 +1,5 @@
 import React, {
-  useState
+  useState, useEffect
 } from 'react';
 // import { connect } from 'dva';
 import moment from 'moment';
@@ -20,15 +20,8 @@ const formItemLayout = {
   },
   colon: false,
 };
-
-const directormap = [
-  { key: '1', title: '张三' },
-  { key: '2', title: '李四' },
-  { key: '3', title: '王五' },
-  { key: '3', title: '赵六' },
-];
 function EquipDrawer(props) {
-  const { visible, ChangeVisible, title, handleSubmit, dispatch, savetype } = props;
+  const { visible, ChangeVisible, title, handleSubmit, dispatch, directormap, savetype } = props;
   const { getFieldDecorator, validateFields } = props.form;
   const required = true;
   const {
@@ -52,6 +45,17 @@ function EquipDrawer(props) {
 
   const [equipCabinet, setEquipCabinet] = useState([]);
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
+
+  useEffect(() => {
+    if (savetype !== '' && savetype !=='add' && (hostZoneId !== undefined || hostZoneId !== '')) {
+      dispatch({
+        type: 'equipmanage/getCabinetMsgs',
+        payload: { cabinetZoneId: hostZoneId },
+      }).then(res => {
+        setEquipCabinet(res.data);
+      });
+    }
+}, [savetype]);
 
   const hanldleCancel = () => {
     ChangeVisible(false);
@@ -249,7 +253,8 @@ function EquipDrawer(props) {
               },
             ],
             // initialValue: hostCabinetId,
-            initialValue: (equipCabinet && equipCabinet[0] && savetype === 'update') ? equipCabinet[0].tital : hostCabinetId,
+            // initialValue: (equipCabinet && equipCabinet[0] && savetype === 'add') ? equipCabinet[0].tital : hostCabinetId,
+            initialValue: (equipCabinet && equipCabinet[0]) ? equipCabinet[0].tital : hostCabinetId,
           })(
             <Select placeholder="请选择" allowClear>
               {equipCabinet !== undefined && equipCabinet.map(obj => (

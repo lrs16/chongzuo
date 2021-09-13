@@ -27,6 +27,9 @@ export default {
         *findSystemScriptList({ payload: { values, pageNum, pageSize } }, { call, put }) {
             const response = yield call(systemScriptList, values, pageNum, pageSize);
             yield put({
+                type: 'clearcache',
+            });
+            yield put({
                 type: 'systemscriptlist',
                 payload: response.data,
             });
@@ -46,7 +49,7 @@ export default {
         *toDeletesystemScript({ payload }, { call }) {
             return yield call(deletesystemScript, payload);
         },
-        
+
         // 撤回
         *torecellScript({ payload: { Ids } }, { call }) {
             return yield call(recellScript, Ids);
@@ -56,6 +59,9 @@ export default {
         // 获取脚本配置本地脚本列表
         *findLocalScriptList({ payload: { values, pageNum, pageSize } }, { call, put }) {
             const response = yield call(localScriptList, values, pageNum, pageSize);
+            yield put({
+                type: 'clearcache',
+            });
             yield put({
                 type: 'localscriptlist',
                 payload: response.data,
@@ -79,6 +85,14 @@ export default {
     },
 
     reducers: {
+        clearcache(state) {
+            return {
+                ...state,
+                localscriptlist: {},
+                systemscriptlist: {},
+            };
+        },
+
         systemscriptlist(state, action) {
             return {
                 ...state,

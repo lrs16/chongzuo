@@ -260,3 +260,11 @@ export async function deletelocalScript(Ids) {
     requestType: 'form',
   })
 }
+
+// 查询用户
+export async function togetSearchUsers(params) { // 获取所有用户
+  return request(`/upms/user/listPage`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+}

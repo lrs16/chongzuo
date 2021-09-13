@@ -144,81 +144,28 @@ function SoftTTRegister(props) {
 
   const columns = [
     {
-      title: '区域',
-      dataIndex: 'hostZoneId',
-      key: 'hostZoneId',
-      width: 120,
-    },
-    {
-      title: '主机名称',
-      dataIndex: 'hostName',
-      key: 'hostName',
-      width: 180,
-    },
-    {
-      title: '主机IP',
-      dataIndex: 'hostIp',
-      key: 'hostIp',
-      width: 200,
-    },
-    {
-      title: '软件名称',
-      dataIndex: 'softName',
-      key: 'softName',
-      width: 180,
-    },
-    {
-      title: '软件端口',
-      dataIndex: 'softPort',
-      key: 'softPort',
-      width: 180,
+      title: '启停申请说明',
+      dataIndex: 'content',
+      key: 'content',
+      width: 250,
     },
     {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      width: 180,
+      width: 150,
+    },
+    {
+      title: '启停对象',
+      dataIndex: 'object',
+      key: 'object',
+      width: 150,
     },
     {
       title: '审核结果',
-      dataIndex: 'checkResults',
-      key: 'checkResults',
-      width: 180,
-    },
-    {
-      title: '软件路径',
-      dataIndex: 'softPath',
-      key: 'softPath',
-      width: 180,
-    },
-    {
-      title: '软件版本号',
-      dataIndex: 'softVersion',
-      key: 'softVersion',
-      width: 180,
-    },
-    {
-      title: '软件状态',
-      dataIndex: 'softStatus',
-      key: 'softStatus',
-      width: 180,
-      render: (text, record) => (
-        <span>
-          <Badge status={colormap.get(record.softStatus)} text={text} />
-        </span>
-      ),
-    },
-    {
-      title: '软件备注',
-      dataIndex: 'softRemarks',
-      key: 'softRemarks',
-      width: 250,
-    },
-    {
-      title: '启停申请说明',
-      dataIndex: 'content',
-      key: 'content',
-      width: 250,
+      dataIndex: 'result',
+      key: 'result',
+      width: 150,
     },
     {
       title: '启停申请人',
@@ -267,7 +214,7 @@ function SoftTTRegister(props) {
           <div>
             <a type="link"
             >
-              编辑启停信息
+              编辑
             </a>
           </div>
         );

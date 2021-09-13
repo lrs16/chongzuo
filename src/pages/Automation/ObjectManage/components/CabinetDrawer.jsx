@@ -17,7 +17,7 @@ const formItemLayout = {
   colon: false,
 };
 function CabinetDrawer(props) {
-  const { visible, ChangeVisible, title, handleSubmit } = props;
+  const { visible, ChangeVisible, title, handleSubmit, directormap } = props;
   const { getFieldDecorator, validateFields } = props.form;
   const required = true;
   const {
@@ -151,7 +151,7 @@ function CabinetDrawer(props) {
               },
             ],
             initialValue: cabinetResidueU,
-          })(<Input placeholder="请输入" />)}
+          })(<Input placeholder="请输入" disabled/>)}
         </Form.Item>
         <Form.Item label="负责人">
           {getFieldDecorator('director', {
@@ -162,7 +162,13 @@ function CabinetDrawer(props) {
               },
             ],
             initialValue: director,
-          })(<Input placeholder="请输入" />)}
+          })(<Select placeholder="请选择" allowClear>
+          {directormap.map(obj => (
+            <Option key={obj.key} value={obj.title}>
+              {obj.title}
+            </Option>
+          ))}
+        </Select>)}
         </Form.Item>
         <Form.Item label="机柜排序">
           {getFieldDecorator('cabinetSorts', {

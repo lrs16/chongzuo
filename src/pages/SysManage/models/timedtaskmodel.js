@@ -17,7 +17,7 @@ export default {
     state: {
         qrtzjoblist: [],
         qrtzjobloglist: [],
-        getqrtzjoblogdata: []
+        getqrtzjoblogdata: {}
     },
 
     effects: {

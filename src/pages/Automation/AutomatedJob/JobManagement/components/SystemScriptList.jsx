@@ -238,7 +238,7 @@ function SystemScriptList(props) {
                     <Col span={8}>
                         <Form.Item label="脚本状态">
                             {getFieldDecorator('scriptStatus', {
-                                initialValue: '',
+                                initialValue: '已发布',
                             })(
                                 <Input placeholder="请输入" allowClear />)}
                         </Form.Item>

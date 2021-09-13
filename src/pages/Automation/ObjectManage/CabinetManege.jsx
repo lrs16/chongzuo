@@ -5,6 +5,7 @@ import { Table, Card, Divider, Button, Message, Form, Input, Select, Row, Col, D
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
+import { togetSearchUsers } from './services/api';
 import CabinetDrawer from './components/CabinetDrawer';
 import SysLeadinCabinet from './components/SysLeadinCabinet';
 
@@ -41,6 +42,7 @@ function CabinetManege(props) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
     const [data, setData] = useState('');
+    const [allUserData, setallUserData] = useState([]); 
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
     const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
 
@@ -76,6 +78,18 @@ function CabinetManege(props) {
         setTitle(drwertitle);
         setSaveType(type);
         setData(record);
+        togetSearchUsers({
+            queKey: '',
+            page: 1,
+            limit: 15,
+        }).then(res => {
+            if (res.code === 200) {
+                const newarr = res.data.rows.map((item, index) => {
+                    return Object.assign(item, { key: index, title: item.userName});
+                });
+                setallUserData(newarr);
+            }
+        });
     };
 
     // 提交
@@ -208,8 +222,8 @@ function CabinetManege(props) {
         },
         {
             title: '创建人',
-            dataIndex: 'createByNameExt',
-            key: 'createByNameExt',
+            dataIndex: 'createBy',
+            key: 'createBy',
             width: 120,
         },
         {
@@ -220,8 +234,8 @@ function CabinetManege(props) {
         },
         {
             title: '更新人',
-            dataIndex: 'updateByNameExt',
-            key: 'updateByNameExt',
+            dataIndex: 'updateBy',
+            key: 'updateBy',
             width: 120,
         },
         {
@@ -298,7 +312,7 @@ function CabinetManege(props) {
         dispatch({
             type: 'cabinetmanage/downloadTemplate',
         }).then(res => {
-            const filename = `设机柜导入模板_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+            const filename = `机柜导入模板_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
             const blob = new Blob([res]);
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -498,6 +512,7 @@ function CabinetManege(props) {
                 record={data}
                 // savetype={savetype}
                 destroyOnClose
+                directormap={allUserData}
             />
         </PageHeaderWrapper>
     );

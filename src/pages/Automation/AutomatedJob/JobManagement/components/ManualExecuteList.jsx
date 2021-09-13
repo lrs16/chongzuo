@@ -35,6 +35,19 @@ function ManualExecuteList(props) {
     // const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
     // const [data, setData] = useState('');
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [selectedRows, setSelectedRows] = useState([]);
+
+    const onSelectChange = (RowKeys, Rows) => {
+        setSelectedRowKeys(RowKeys);
+        setSelectedRows(Rows);
+    };
+
+    const rowSelection = {
+        selectedRowKeys,
+        onChange: onSelectChange,
+    };
 
     const searchdata = (page, size) => {
         const values = getFieldsValue();
@@ -55,14 +68,14 @@ function ManualExecuteList(props) {
         searchdata(1, 15);
     }, [location]);
 
-    const handlerunTask = (id) => {
+    const handlerunTask = id => { // 执行
         dispatch({
             type: 'autotask/toqueryrunTask',
             payload: {
                 taskId: id
             },
         }).then(res => {
-            if(res.code === 200) {
+            if (res.code === 200) {
                 message.success(res.msg || '执行成功！');
                 searchdata(1, 15);
             } else {
@@ -71,46 +84,113 @@ function ManualExecuteList(props) {
         });
     };
 
-    //   const handleShowDrawer = (drwertitle, type, record) => {
-    //       setVisible(!visible);
-    //       setTitle(drwertitle);
-    //       setSaveType(type);
-    //       setData(record);
-    //   };
+    const handleDelete = () => { // 删除
+        // const { id } = selectedRows[0];
+        const len = selectedRowKeys.length;
 
-    // 提交
-    //   const handleSubmit = values => {
-    //       if (savetype === '' || savetype === 'add') {
-    //           dispatch({
-    //               type: 'JobConfig/toaddSoft',
-    //               payload: {
-    //                   ...values,
-    //               },
-    //           }).then(res => {
-    //               if (res.code === 200) {
-    //                   message.success(res.msg);
-    //                   searchdata(1, 15);
-    //               } else {
-    //                   message.error(res.msg);
-    //               }
-    //           });
-    //       }
-    //       if (savetype === 'update') {
-    //           dispatch({
-    //               type: 'JobConfig/toeditSoft',
-    //               payload: {
-    //                   ...values,
-    //               },
-    //           }).then(res => {
-    //               if (res.code === 200) {
-    //                   message.success(res.msg);
-    //                   searchdata(1, 15);
-    //               } else {
-    //                   message.error(res.msg);
-    //               }
-    //           });
-    //       }
-    //   };
+        if (len === 1) { // 单条数据
+            alert("单条数据");
+            // dispatch({
+            //     type: '',
+            //     payload: {
+            //     }
+            // }).then(res => {
+            //     if (res.code === 200) {
+            //         message.success('删除成功');
+            //         searchdata(1, 15);
+            //     };
+            //     if (res.code === -1) {
+            //         message.error(res.msg);
+            //     };
+            // });
+        } else if (len > 1) { // 批量删除
+            // const registIds = selectedRows.map(item => {
+            //     return item.id;
+            // })
+
+            // dispatch({
+            //     type: 'apply/deleteApplyForms',
+            //     payload: { registIds: registIds.toString() },
+            // }).then(res => {
+            //     if (res.code === 200) {
+            //         message.success('删除成功');
+            //         searchdata(1, 15);
+            //     } else {
+            //         message.error(res.msg);
+            //     }
+            // });
+        } else {
+            message.error('您还没有选择数据')
+        }
+        setSelectedRowKeys([]);
+        setSelectedRows([]);
+    };
+
+    const handleClickRevoke = () => { // 撤销发布
+        // const newselectds = selectedRows.filter(item => item.taskStatus === '已审核'); 
+        // if (newselectds.length > 0) {
+        //   const mainIds = newselectds.map(item => {
+        //     return item.id;
+        //   });
+        //   revokekowledge({ mainIds, userId }).then(res => {
+        //     if (res.code === 200) {
+        //       message.success(res.msg)
+        //     } else {
+        //       message.error(res.msg)
+        //     };
+        //     handleSearch(1, 15);
+        //     setSelectedRowKeys([]);
+        //     setSelectedRecords([]);
+        //   })
+        // };
+        // if (selectedRows.length === 0) {
+        //   message.error('您还没有选择数据，请选择状态为‘已审核’的数据进行操作')
+        // };
+        // if (selectedRecords.length > 0 && newselectds.length === 0) {
+        //   message.error('请选择知识状态为‘已审核’的数据');
+        //   setSelectedRowKeys([]);
+        //   setSelectedRecords([]);
+        // }
+        // const { id } = selectedRows[0];
+        const len = selectedRowKeys.length;
+
+        if (len === 1) { // 单条数据
+            alert("单条数据");
+            // dispatch({
+            //     type: '',
+            //     payload: {
+            //     }
+            // }).then(res => {
+            //     if (res.code === 200) {
+            //         message.success('删除成功');
+            //         searchdata(1, 15);
+            //     };
+            //     if (res.code === -1) {
+            //         message.error(res.msg);
+            //     };
+            // });
+        } else if (len > 1) { // 多条数据
+            // const registIds = selectedRows.map(item => {
+            //     return item.id;
+            // })
+
+            // dispatch({
+            //     type: 'apply/deleteApplyForms',
+            //     payload: { registIds: registIds.toString() },
+            // }).then(res => {
+            //     if (res.code === 200) {
+            //         message.success('删除成功');
+            //         searchdata(1, 15);
+            //     } else {
+            //         message.error(res.msg);
+            //     }
+            // });
+        } else {
+            message.error('您还没有选择数据，请选择状态为‘已审核’的数据进行操作')
+        }
+        setSelectedRowKeys([]);
+        setSelectedRows([]);
+    };
 
     const handleReset = () => {
         resetFields();
@@ -118,13 +198,13 @@ function ManualExecuteList(props) {
         setPageinations({ current: 1, pageSize: 15 });
     };
 
-    const newpagetolog = (id) => {
+    const newpagetolog = id => {
         router.push({
             pathname: '/automation/automatedjob/jobmanagement/jobexecute/manualexecutionlog',
             query: {
                 Id: id,
                 addtab: true,
-                menuDes: '手动执行日志',
+                menuDesc: '手动执行日志',
             },
         })
     }
@@ -248,7 +328,7 @@ function ManualExecuteList(props) {
                 return (
                     <>
                         <a type="link"
-                          onClick={() => handlerunTask(record.id)}
+                            onClick={() => handlerunTask(record.id)}
                         >
                             执行
                         </a>
@@ -317,11 +397,23 @@ function ManualExecuteList(props) {
                         <Col span={6} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>
                     </Form>
                 </Row>
+                <div style={{ marginBottom: 8 }}>
+                    <Button type="danger" style={{ marginRight: 8 }}
+                    onClick={() => handleClickRevoke()}
+                    >撤销发布</Button >
+                    <Button type="danger" ghost style={{ marginRight: 8 }}
+                    // onClick={() => ClickBut('abolish')}
+                    >废止</Button >
+                    <Button type="danger" ghost style={{ marginRight: 8 }}
+                        onClick={() => handleDelete()}
+                    >删除</Button>
+                </div>
                 <Table
                     columns={columns}
                     rowKey={record => record.id}
                     dataSource={autotasklist.rows}
                     pagination={pagination}
+                    rowSelection={rowSelection}
                     loading={loading}
                     scroll={{ x: 1300 }}
                 />

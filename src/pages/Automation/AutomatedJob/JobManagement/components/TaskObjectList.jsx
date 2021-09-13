@@ -289,7 +289,7 @@ function TaskObjectList(props) {
                     <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
                         <Form.Item label="agent状态">
                             {getFieldDecorator('agentStatus', {
-                                initialValue: '',
+                                initialValue: '1',
                             })(
                                 <Select placeholder="请选择" allowClear>
                                     {statusmap.map(obj => (

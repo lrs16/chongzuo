@@ -67,8 +67,8 @@ function LocalScriptDrawer(props) {
         hanldleCancel();
         // 传数据
         handleSubmit(values);
-        props.form.resetFields();
         ChangeVisible(false);
+        props.form.resetFields();
       }
     });
   };

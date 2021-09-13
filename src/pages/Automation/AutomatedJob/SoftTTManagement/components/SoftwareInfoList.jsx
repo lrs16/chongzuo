@@ -141,7 +141,7 @@ function SoftwareInfoList(props) {
         <Card style={{ height: 'calc(100vh - 300px)' }}>
             <Table
                 columns={columns}
-                // bordered={false}
+                bordered={false}
                 pagination={false}
                 // dataSource={)
                 rowKey={record => record.id} />
