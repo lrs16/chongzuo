@@ -50,303 +50,7 @@ const { RangePicker } = DatePicker;
 const { Option } = Select;
 const { Search } = Input;
 
-const columns = [
-  {
-    title: '服务绩效编号',
-    dataIndex: 'assessNo',
-    key: 'assessNo',
-    width: 200,
-    render: (text, record) => {
-      const todetail = () => {
-        router.push({
-          pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
-          query: {
-            assessNo: record.assessNo,
-            mainId: record.instanceId,
-            taskId: record.currentTaskId,
-            instanceId: record.instanceId,
-            taskName: record.currentTaskName,
-            // providerId:record.providerId,rou
-            orderNo: text,
-            tobelist: true,
-          },
-        });
-      };
-      return <a onClick={todetail}>{text}</a>;
-    },
-  },
-  {
-    title: '服务商',
-    dataIndex: 'providerName',
-    key: 'providerName',
-    width: 150,
-  },
-  {
-    title: '责任人',
-    dataIndex: 'directorName',
-    key: 'directorName',
-    width: 150,
-  },
-  {
-    title: '考核内容说明',
-    dataIndex: 'assessContent',
-    key: 'assessContent',
-    width: 150,
-    ellipsis: true,
-    render: (text) => {
-      return (
-        <Tooltip placement="topLeft" title={text}>
-          <span>{text}</span>
-        </Tooltip>
-      );
-    },
-  },
-  {
-    title: '考核类型',
-    dataIndex: 'assessType',
-    key: 'assessType',
-    width: 150,
-  },
-  {
-    title: '一级指标',
-    dataIndex: 'target1Name',
-    key: 'target1Name',
-    width: 150,
-  },
-  {
-    title: '二级指标',
-    dataIndex: 'target2Name',
-    key: 'target2Name',
-    width: 150,
-  },
-  {
-    title: '详细条款',
-    dataIndex: 'clauseName',
-    key: 'clauseName',
-    width: 150,
-    ellipsis: true,
-    render: (text) => {
-      return (
-        <Tooltip title={text} placement="topLeft">
-          <span>{text}</span>
-        </Tooltip>
-      );
-    },
-  },
-  {
-    title: '发生时间',
-    dataIndex: 'assessTime',
-    key: 'assessTime',
-    width: 150,
-  },
-  {
-    title: '考核得分',
-    dataIndex: 'assessValue',
-    key: 'assessValue',
-    width: 150,
-  },
-  {
-    title: '当前处理环节',
-    dataIndex: 'currentTaskName',
-    key: 'currentTaskName',
-    width: 150,
-  },
-  {
-    title: '关联合同名称',
-    dataIndex: 'contractName',
-    key: 'contractName',
-    width: 150,
-  },
-  {
-    title: '考核状态',
-    dataIndex: 'assessStatus',
-    key: 'assessStatus',
-    width: 150,
-  },
-  {
-    title: '登记人',
-    dataIndex: 'register',
-    key: 'register',
-    width: 150,
-  },
-  {
-    title: '登记时间',
-    dataIndex: 'applyTime',
-    key: 'applyTime',
-    width: 150,
-  },
-  {
-    title: '业务负责人审核结果',
-    dataIndex: 'directorVerifyValue',
-    key: 'directorVerifyValue',
-    width: 180,
-    // render: (text, record) => {
-    //   return <span>{text === '1' ? '通过' : text === '0' ? '不通过' : ''}</span>
-    // }
-  },
-  {
-    title: '业务负责人审核说明',
-    dataIndex: 'directorVerifyContent',
-    key: 'directorVerifyContent',
-    width: 180,
-  },
-  {
-    title: '业务负责人审核状态',
-    dataIndex: 'directorVerifyStatus',
-    key: 'directorVerifyStatus',
-    width: 180,
-  },
-  {
-    title: '业务负责人审核人',
-    dataIndex: 'directorName',
-    key: 'directorName',
-    width: 180,
-  },
-  {
-    title: '业务负责人审核时间',
-    dataIndex: 'directorVerifyTime',
-    key: 'directorVerifyTime',
-    width: 180,
-  },
-  {
-    title: '自动化科专责审核结果',
-    dataIndex: 'expertVerifyValue',
-    key: 'expertVerifyValue',
-    width: 180,
-    // render: (text, record) => {
-    //   return <span>{text === '1' ? '通过' : text === '0' ? '不通过' : ''}</span>
-    // }
-  },
-  {
-    title: '自动化科专责审核说明',
-    dataIndex: 'expertVerifyContent',
-    key: 'expertVerifyContent',
-    width: 180,
-  },
-  {
-    title: '自动化科专责审核状态',
-    dataIndex: 'expertVerifyStatus',
-    key: 'expertVerifyStatus',
-    width: 180,
-  },
-  {
-    title: '自动化科专责审核人',
-    dataIndex: 'expertVerifierName',
-    key: 'expertVerifierName',
-    width: 180,
-  },
-  {
-    title: '自动化科专责审核时间',
-    dataIndex: 'expertVerifyTime',
-    key: 'expertVerifyTime',
-    width: 180,
-  },
-  {
-    title: '是否申诉',
-    dataIndex: 'isAppeal',
-    key: 'isAppeal',
-    width: 150,
-  },
-  {
-    title: '申诉内容',
-    dataIndex: 'appealContent',
-    key: 'appealContent',
-    width: 150,
-    ellipsis: true,
-    render: (text) => {
-      return (
-        <Tooltip title={text} placement="topLeft">
-          <span>{text}</span>
-        </Tooltip>
-      );
-    },
-  },
-  {
-    title: '服务商确认人',
-    dataIndex: 'providerConfirmerName',
-    key: 'providerConfirmerName',
-    width: 150,
-  },
-  {
-    title: '服务商确认时间',
-    dataIndex: 'providerConfirmTime',
-    key: 'providerConfirmTime',
-    width: 150,
-  },
-  {
-    title: '业务负责人复核结果',
-    dataIndex: 'directorReviewValue',
-    key: 'directorReviewValue',
-    width: 180,
-    // render: (text, record) => {
-    //   return <span>{text === '1' ? '通过' : text === '0' ? '不通过' : ''}</span>
-    // }
-  },
-  {
-    title: '业务负责人复核说明',
-    dataIndex: 'directorReviewContent',
-    key: 'directorReviewContent',
-    width: 180,
-    ellipsis: true,
-    render: (text) => {
-      return (
-        <Tooltip title={text} placement="topLeft">
-          <span>{text}</span>
-        </Tooltip>
-      );
-    },
-  },
-  {
-    title: '业务负责人复核人',
-    dataIndex: 'directorReviewerName',
-    key: 'directorReviewerName',
-    width: 180,
-  },
-  {
-    title: '业务负责审核人',
-    dataIndex: 'directorVerifierName',
-    key: 'directorVerifierName',
-    width: 180,
-  },
-  {
-    title: '业务负责人复核时间',
-    dataIndex: 'directorReviewTime',
-    key: 'directorReviewTime',
-    width: 180,
-  },
-  {
-    title: '服务绩效考核确认结果',
-    dataIndex: 'finallyConfirmValue',
-    key: 'finallyConfirmValue',
-    width: 180,
-  },
-  {
-    title: '服务绩效考核确认说明',
-    dataIndex: 'finallyConfirmContent',
-    key: 'finallyConfirmContent',
-    width: 180,
-    ellipsis: true,
-    render: (text) => {
-      return (
-        <Tooltip title={text} placement="topLeft">
-          <span>{text}</span>
-        </Tooltip>
-      );
-    },
-  },
-  {
-    title: '服务绩效考核确认人',
-    dataIndex: 'finallyConfirmerName',
-    key: 'finallyConfirmerName',
-    width: 180,
-  },
-  {
-    title: '服务绩效考核确认时间',
-    dataIndex: 'finallyConfirmTime',
-    key: 'finallyConfirmTime',
-    width: 180,
-  },
-];
+
 
 function TobedealtList(props) {
   const pagetitle = props.route.name;
@@ -374,6 +78,350 @@ function TobedealtList(props) {
   const [tabrecord, setTabRecord] = useState({});
   const [selectedKeys, setSelectedKeys] = useState([]);
 
+  const columns = [
+    {
+      title: '服务绩效编号',
+      dataIndex: 'assessNo',
+      key: 'assessNo',
+      width: 200,
+      render: (text, record) => {
+        const todetail = () => {
+          switch (pagetitle) {
+            case '服务绩效考核待办':
+              router.push({
+                pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
+                query: {
+                  assessNo: record.assessNo,
+                  mainId: record.instanceId,
+                  taskId: record.currentTaskId,
+                  instanceId: record.instanceId,
+                  taskName: record.currentTaskName,
+                  // providerId:record.providerId,rou
+                  orderNo: text,
+                  tobelist: true,
+                },
+              });
+              break;
+            case '服务绩效考核查询':
+              router.push({
+                pathname:
+                  '/ITSM/servicequalityassessment/serviceperformanceappraisal/performancequerydetail',
+                query: {
+                  assessNo: record.assessNo,
+                  mainId: record.instanceId,
+                  taskId: record.currentTaskId,
+                  instanceId: record.instanceId,
+                  taskName: record.currentTaskName,
+                  orderNo: text,
+                  search: true,
+                },
+              });
+              break;
+            case '我的服务绩效考核':
+              if (record.status === '完成') {
+                router.push({
+                  pathname:
+                    '/ITSM/servicequalityassessment/serviceperformanceappraisal/performancequerydetail',
+                  query: {
+                    assessNo: record.assessNo,
+                    mainId: record.instanceId,
+                    taskId: record.currentTaskId,
+                    instanceId: record.instanceId,
+                    taskName: record.currentTaskName,
+                    orderNo: text,
+                    myOrder: true,
+                    search: true,
+                  },
+                });
+              } else {
+                router.push({
+                  pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
+                  query: {
+                    assessNo: record.assessNo,
+                    mainId: record.instanceId,
+                    taskId: record.currentTaskId,
+                    instanceId: record.instanceId,
+                    taskName: record.currentTaskName,
+                    orderNo: text,
+                    myOrder: true,
+                  },
+                });
+              }
+              break;
+            default:
+              break;
+          }
+
+        };
+        return <a onClick={todetail}>{text}</a>;
+      },
+    },
+    {
+      title: '服务商',
+      dataIndex: 'providerName',
+      key: 'providerName',
+      width: 150,
+    },
+    {
+      title: '责任人',
+      dataIndex: 'directorName',
+      key: 'directorName',
+      width: 150,
+    },
+    {
+      title: '考核内容说明',
+      dataIndex: 'assessContent',
+      key: 'assessContent',
+      width: 150,
+      ellipsis: true,
+      render: (text) => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '考核类型',
+      dataIndex: 'assessType',
+      key: 'assessType',
+      width: 150,
+    },
+    {
+      title: '一级指标',
+      dataIndex: 'target1Name',
+      key: 'target1Name',
+      width: 150,
+    },
+    {
+      title: '二级指标',
+      dataIndex: 'target2Name',
+      key: 'target2Name',
+      width: 150,
+    },
+    {
+      title: '详细条款',
+      dataIndex: 'clauseName',
+      key: 'clauseName',
+      width: 150,
+      ellipsis: true,
+      render: (text) => {
+        return (
+          <Tooltip title={text} placement="topLeft">
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '发生时间',
+      dataIndex: 'assessTime',
+      key: 'assessTime',
+      width: 150,
+    },
+    {
+      title: '考核得分',
+      dataIndex: 'assessValue',
+      key: 'assessValue',
+      width: 150,
+    },
+    {
+      title: '当前处理环节',
+      dataIndex: 'currentTaskName',
+      key: 'currentTaskName',
+      width: 150,
+    },
+    {
+      title: '关联合同名称',
+      dataIndex: 'contractName',
+      key: 'contractName',
+      width: 150,
+    },
+    {
+      title: '考核状态',
+      dataIndex: 'assessStatus',
+      key: 'assessStatus',
+      width: 150,
+    },
+    {
+      title: '登记人',
+      dataIndex: 'register',
+      key: 'register',
+      width: 150,
+    },
+    {
+      title: '登记时间',
+      dataIndex: 'applyTime',
+      key: 'applyTime',
+      width: 150,
+    },
+    {
+      title: '业务负责人审核结果',
+      dataIndex: 'directorVerifyValue',
+      key: 'directorVerifyValue',
+      width: 180,
+      // render: (text, record) => {
+      //   return <span>{text === '1' ? '通过' : text === '0' ? '不通过' : ''}</span>
+      // }
+    },
+    {
+      title: '业务负责人审核说明',
+      dataIndex: 'directorVerifyContent',
+      key: 'directorVerifyContent',
+      width: 180,
+    },
+    {
+      title: '业务负责人审核状态',
+      dataIndex: 'directorVerifyStatus',
+      key: 'directorVerifyStatus',
+      width: 180,
+    },
+    {
+      title: '业务负责人审核人',
+      dataIndex: 'directorVerifierName',
+      key: 'directorVerifierName',
+      width: 180,
+    },
+    {
+      title: '业务负责人审核时间',
+      dataIndex: 'directorVerifyTime',
+      key: 'directorVerifyTime',
+      width: 180,
+    },
+    {
+      title: '自动化科专责审核结果',
+      dataIndex: 'expertVerifyValue',
+      key: 'expertVerifyValue',
+      width: 180,
+      // render: (text, record) => {
+      //   return <span>{text === '1' ? '通过' : text === '0' ? '不通过' : ''}</span>
+      // }
+    },
+    {
+      title: '自动化科专责审核说明',
+      dataIndex: 'expertVerifyContent',
+      key: 'expertVerifyContent',
+      width: 180,
+    },
+    {
+      title: '自动化科专责审核状态',
+      dataIndex: 'expertVerifyStatus',
+      key: 'expertVerifyStatus',
+      width: 180,
+    },
+    {
+      title: '自动化科专责审核人',
+      dataIndex: 'expertVerifierName',
+      key: 'expertVerifierName',
+      width: 180,
+    },
+    {
+      title: '自动化科专责审核时间',
+      dataIndex: 'expertVerifyTime',
+      key: 'expertVerifyTime',
+      width: 180,
+    },
+    {
+      title: '是否申诉',
+      dataIndex: 'isAppeal',
+      key: 'isAppeal',
+      width: 150,
+    },
+    {
+      title: '申诉内容',
+      dataIndex: 'appealContent',
+      key: 'appealContent',
+      width: 150,
+      ellipsis: true,
+      render: (text) => {
+        return (
+          <Tooltip title={text} placement="topLeft">
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '服务商确认人',
+      dataIndex: 'providerConfirmerName',
+      key: 'providerConfirmerName',
+      width: 150,
+    },
+    {
+      title: '服务商确认时间',
+      dataIndex: 'providerConfirmTime',
+      key: 'providerConfirmTime',
+      width: 150,
+    },
+    {
+      title: '业务负责人复核结果',
+      dataIndex: 'directorReviewValue',
+      key: 'directorReviewValue',
+      width: 180,
+      // render: (text, record) => {
+      //   return <span>{text === '1' ? '通过' : text === '0' ? '不通过' : ''}</span>
+      // }
+    },
+    {
+      title: '业务负责人复核说明',
+      dataIndex: 'directorReviewContent',
+      key: 'directorReviewContent',
+      width: 180,
+      ellipsis: true,
+      render: (text) => {
+        return (
+          <Tooltip title={text} placement="topLeft">
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '业务负责人复核人',
+      dataIndex: 'directorReviewerName',
+      key: 'directorReviewerName',
+      width: 180,
+    },
+    {
+      title: '业务负责人复核时间',
+      dataIndex: 'directorReviewTime',
+      key: 'directorReviewTime',
+      width: 180,
+    },
+    {
+      title: '服务绩效考核确认结果',
+      dataIndex: 'finallyConfirmValue',
+      key: 'finallyConfirmValue',
+      width: 180,
+    },
+    {
+      title: '服务绩效考核确认说明',
+      dataIndex: 'finallyConfirmContent',
+      key: 'finallyConfirmContent',
+      width: 180,
+      ellipsis: true,
+      render: (text) => {
+        return (
+          <Tooltip title={text} placement="topLeft">
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '服务绩效考核确认人',
+      dataIndex: 'finallyConfirmerName',
+      key: 'finallyConfirmerName',
+      width: 180,
+    },
+    {
+      title: '服务绩效考核确认时间',
+      dataIndex: 'finallyConfirmTime',
+      key: 'finallyConfirmTime',
+      width: 180,
+    },
+  ];
   const getPerformanceleader = () => {
     operationPerson().then(res => {
       const result = res.data.map(item => {
@@ -407,7 +455,7 @@ function TobedealtList(props) {
       type: 'qualityassessment/clauseListpage',
       payload: {
         targetId,
-        scoreId:scoreid,
+        scoreId: scoreid,
         pageNum: 1,
         pageSize: 1000,
       },
@@ -585,14 +633,41 @@ function TobedealtList(props) {
       finallyConfirmTime: '',
     };
 
-    dispatch({
-      type: 'performanceappraisal/tobeDealtdata',
-      payload: {
-        ...newvalues,
-        pageNum: page,
-        pageSize,
-      },
-    });
+    switch (pagetitle) {
+      case '服务绩效考核待办':
+        dispatch({
+          type: 'performanceappraisal/tobeDealtdata',
+          payload: {
+            ...newvalues,
+            pageNum: page,
+            pageSize,
+          },
+        });
+        break;
+      case '服务绩效考核查询':
+        dispatch({
+          type: 'performanceappraisal/assessSearch',
+          payload: {
+            ...newvalues,
+            pageNum: page,
+            pageSize,
+          },
+        });
+        break;
+      case '我的服务绩效考核':
+        dispatch({
+          type: 'performanceappraisal/assessmyAssess',
+          payload: {
+            ...newvalues,
+            pageNum: page,
+            pageSize,
+          },
+        });
+        break;
+      default:
+        break
+    }
+
     setTabRecord({ ...newvalues });
   };
 
@@ -894,71 +969,116 @@ function TobedealtList(props) {
 
   const download = () => {
     validateFields((err, values) => {
-      dispatch({
-        type: 'performanceappraisal/exportTodolist',
-        payload: {
-          ...values,
-          assessNo: selectedKeys.toString(),
-          assessBeginTime: values.timeoccurrence?.length
-            ? moment(values.timeoccurrence[0]).format('YYYY-MM-DD HH:mm:ss')
-            : '',
-          assessEndTime: values.timeoccurrence?.length
-            ? moment(values.timeoccurrence[1]).format('YYYY-MM-DD HH:mm:ss')
-            : '', // 发生时间
-          timeoccurrence: '',
-          applyBeginTime: values.applyTime?.length
-            ? moment(values.applyTime[0]).format('YYYY-MM-DD HH:mm:ss')
-            : '',
-          applyEndTime: values.applyTime?.length
-            ? moment(values.applyTime[1]).format('YYYY-MM-DD HH:mm:ss')
-            : '', // 登记时间
-          applyTime: '',
-          directorVerifyBeginTime: values.directorVerifyTime?.length
-            ? moment(values.directorVerifyTime[0]).format('YYYY-MM-DD HH:mm:ss')
-            : '',
-          directorVerifyEndTime: values.directorVerifyTime?.length
-            ? moment(values.directorVerifyTime[1]).format('YYYY-MM-DD HH:mm:ss')
-            : '', // 业务负责人审核时间
-          directorVerifyTime: '',
-          expertVerifyBeginTime: values.expertVerifyTime?.length
-            ? moment(values.expertVerifyTime[0]).format('YYYY-MM-DD HH:mm:ss')
-            : '',
-          expertVerifyEndTime: values.expertVerifyTime?.length
-            ? moment(values.expertVerifyTime[1]).format('YYYY-MM-DD HH:mm:ss')
-            : '', // 自动化科专责审核时间
-          expertVerifyTime: '',
-          providerConfirmBeginTime: values.providerConfirmTime?.length
-            ? moment(values.providerConfirmTime[0]).format('YYYY-MM-DD HH:mm:ss')
-            : '',
-          providerConfirmEndTime: values.providerConfirmTime?.length
-            ? moment(values.providerConfirmTime[1]).format('YYYY-MM-DD HH:mm:ss')
-            : '', // 服务商确认时间
-          providerConfirmTime: '',
-          directorReviewBeginTime: values.directorReviewTime?.length
-            ? moment(values.directorReviewTime[0]).format('YYYY-MM-DD HH:mm:ss')
-            : '',
-          directorReviewEndTime: values.directorReviewTime?.length
-            ? moment(values.directorReviewTime[1]).format('YYYY-MM-DD HH:mm:ss')
-            : '', // 业务负责人复核时间
-          directorReviewTime: '',
-          finallyConfirmBeginTime: values.finallyConfirmTime?.length
-            ? moment(values.finallyConfirmTime[0]).format('YYYY-MM-DD HH:mm:ss')
-            : '',
-          finallyConfirmEndTime: values.finallyConfirmTime?.length
-            ? moment(values.finallyConfirmTime[1]).format('YYYY-MM-DD HH:mm:ss')
-            : '', // 服务绩效考核确认时间
-          finallyConfirmTime: '',
-        },
-      }).then(res => {
-        const filename = `服务绩效待办_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
-        const blob = new Blob([res]);
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        a.click();
-        window.URL.revokeObjectURL(url);
-      });
+      const newValue = {
+        ...values,
+        assessNo: selectedKeys.toString(),
+        assessBeginTime: values.timeoccurrence?.length
+          ? moment(values.timeoccurrence[0]).format('YYYY-MM-DD HH:mm:ss')
+          : '',
+        assessEndTime: values.timeoccurrence?.length
+          ? moment(values.timeoccurrence[1]).format('YYYY-MM-DD HH:mm:ss')
+          : '', // 发生时间
+        timeoccurrence: '',
+        applyBeginTime: values.applyTime?.length
+          ? moment(values.applyTime[0]).format('YYYY-MM-DD HH:mm:ss')
+          : '',
+        applyEndTime: values.applyTime?.length
+          ? moment(values.applyTime[1]).format('YYYY-MM-DD HH:mm:ss')
+          : '', // 登记时间
+        applyTime: '',
+        directorVerifyBeginTime: values.directorVerifyTime?.length
+          ? moment(values.directorVerifyTime[0]).format('YYYY-MM-DD HH:mm:ss')
+          : '',
+        directorVerifyEndTime: values.directorVerifyTime?.length
+          ? moment(values.directorVerifyTime[1]).format('YYYY-MM-DD HH:mm:ss')
+          : '', // 业务负责人审核时间
+        directorVerifyTime: '',
+        expertVerifyBeginTime: values.expertVerifyTime?.length
+          ? moment(values.expertVerifyTime[0]).format('YYYY-MM-DD HH:mm:ss')
+          : '',
+        expertVerifyEndTime: values.expertVerifyTime?.length
+          ? moment(values.expertVerifyTime[1]).format('YYYY-MM-DD HH:mm:ss')
+          : '', // 自动化科专责审核时间
+        expertVerifyTime: '',
+        providerConfirmBeginTime: values.providerConfirmTime?.length
+          ? moment(values.providerConfirmTime[0]).format('YYYY-MM-DD HH:mm:ss')
+          : '',
+        providerConfirmEndTime: values.providerConfirmTime?.length
+          ? moment(values.providerConfirmTime[1]).format('YYYY-MM-DD HH:mm:ss')
+          : '', // 服务商确认时间
+        providerConfirmTime: '',
+        directorReviewBeginTime: values.directorReviewTime?.length
+          ? moment(values.directorReviewTime[0]).format('YYYY-MM-DD HH:mm:ss')
+          : '',
+        directorReviewEndTime: values.directorReviewTime?.length
+          ? moment(values.directorReviewTime[1]).format('YYYY-MM-DD HH:mm:ss')
+          : '', // 业务负责人复核时间
+        directorReviewTime: '',
+        finallyConfirmBeginTime: values.finallyConfirmTime?.length
+          ? moment(values.finallyConfirmTime[0]).format('YYYY-MM-DD HH:mm:ss')
+          : '',
+        finallyConfirmEndTime: values.finallyConfirmTime?.length
+          ? moment(values.finallyConfirmTime[1]).format('YYYY-MM-DD HH:mm:ss')
+          : '', // 服务绩效考核确认时间
+        finallyConfirmTime: '',
+      };
+      switch (pagetitle) {
+        case '服务绩效考核待办':
+          dispatch({
+            type: 'performanceappraisal/exportTodolist',
+            payload: {
+              ...newValue
+            },
+          }).then(res => {
+            const filename = `${pagetitle}_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+            const blob = new Blob([res]);
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+          });
+          break;
+        case '服务绩效考核查询':
+          dispatch({
+            type: 'performanceappraisal/exportSearch',
+            payload: {
+              ...newValue
+            },
+          }).then(res => {
+            const filename = `${pagetitle}_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+            const blob = new Blob([res]);
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+          });
+          break;
+        case '我的服务绩效考核':
+          dispatch({
+            type: 'performanceappraisal/exportmyAssess',
+            payload: {
+              ...newValue
+            },
+          }).then(res => {
+            const filename = `${pagetitle}_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+            const blob = new Blob([res]);
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+          });
+          break;
+        default:
+          break;
+
+      }
+     
     });
   };
 
@@ -1371,9 +1491,9 @@ function TobedealtList(props) {
                   {getFieldDecorator('directorVerifyTime', {
                     initialValue: cacheinfo.directorVerifyBeginTime
                       ? [
-                          moment(cacheinfo.directorVerifyBeginTime),
-                          moment(cacheinfo.directorVerifyEndTime),
-                        ]
+                        moment(cacheinfo.directorVerifyBeginTime),
+                        moment(cacheinfo.directorVerifyEndTime),
+                      ]
                       : '',
                   })(
                     <RangePicker
@@ -1448,9 +1568,9 @@ function TobedealtList(props) {
                   {getFieldDecorator('expertVerifyTime', {
                     initialValue: cacheinfo.expertVerifyBeginTime
                       ? [
-                          moment(cacheinfo.expertVerifyBeginTime),
-                          moment(cacheinfo.expertVerifyEndTime),
-                        ]
+                        moment(cacheinfo.expertVerifyBeginTime),
+                        moment(cacheinfo.expertVerifyEndTime),
+                      ]
                       : '',
                   })(
                     <RangePicker
@@ -1530,9 +1650,9 @@ function TobedealtList(props) {
                   {getFieldDecorator('providerConfirmTime', {
                     initialValue: cacheinfo.providerConfirmBeginTime
                       ? [
-                          moment(cacheinfo.providerConfirmBeginTime),
-                          moment(cacheinfo.providerConfirmEndTime),
-                        ]
+                        moment(cacheinfo.providerConfirmBeginTime),
+                        moment(cacheinfo.providerConfirmEndTime),
+                      ]
                       : '',
                   })(
                     <RangePicker
@@ -1590,9 +1710,9 @@ function TobedealtList(props) {
                   {getFieldDecorator('directorReviewTime', {
                     initialValue: cacheinfo.directorReviewBeginTime
                       ? [
-                          moment(cacheinfo.directorReviewBeginTime),
-                          moment(cacheinfo.directorReviewEndTime),
-                        ]
+                        moment(cacheinfo.directorReviewBeginTime),
+                        moment(cacheinfo.directorReviewEndTime),
+                      ]
                       : '',
                   })(
                     <RangePicker
@@ -1672,9 +1792,9 @@ function TobedealtList(props) {
                   {getFieldDecorator('finallyConfirmTime', {
                     initialValue: cacheinfo.finallyConfirmBeginTime
                       ? [
-                          moment(cacheinfo.finallyConfirmBeginTime),
-                          moment(cacheinfo.finallyConfirmEndTime),
-                        ]
+                        moment(cacheinfo.finallyConfirmBeginTime),
+                        moment(cacheinfo.finallyConfirmEndTime),
+                      ]
                       : '',
                   })(
                     <RangePicker

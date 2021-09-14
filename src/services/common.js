@@ -62,15 +62,6 @@ export async function getDemandList(params) {
   });
 }
 
-// 关联工单 发布
-export async function getReleaseList(params) {
-  return request(`/common/relation/getDemandList`, {
-    method: 'POST',
-    data: params,
-    requestType: 'form',
-  });
-}
-
 // 关联工单列表
 export async function queryOrderRelationList(params) {
   return request(`/common/relation/queryOrderRelationList`, {
@@ -86,6 +77,14 @@ export async function saveRelation(params) {
     method: 'POST',
     data: params,
     requestType: 'form',
+  });
+}
+
+//  关联发布保存
+export async function saveRelationrelease(params) {
+  return request(`/quality/relation/add`, {
+    method: 'POST',
+    body: JSON.stringify(params),
   });
 }
 
@@ -108,3 +107,17 @@ export async function searchUsers(params) {
     body: JSON.stringify(params),
   });
 }
+
+// 发布查询 /release/flow/image?processInstanceId=742501
+export async function getReleaseList(params) {
+  return request(`/release/from/searchOrder`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}
+
+export async function relationlist(params) {
+  return request(`/quality/relation/list?assessNo=${params.assessNo}&orderType=FB`);
+}
+

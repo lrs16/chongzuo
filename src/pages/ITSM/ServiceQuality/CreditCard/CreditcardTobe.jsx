@@ -9,15 +9,10 @@ import {
   Row,
   Col,
   Popconfirm,
-  Divider,
-  Radio,
-  AutoComplete,
   Select,
-  Spin,
   DatePicker,
 } from 'antd';
 import SysDict from '@/components/SysDict';
-import { contractProvider, providerList, scoreListpage } from '../services/quality';
 import moment from 'moment';
 import { connect } from 'dva';
 import router from 'umi/router';
@@ -36,7 +31,6 @@ const formItemLayout = {
   },
 };
 
-const { Search } = Input;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
@@ -44,7 +38,6 @@ function CreditcardTobe(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, validateFields, resetFields, setFieldsValue },
-    providerArr,
     scorecardArr,
     dispatch,
     location,
@@ -125,12 +118,11 @@ function CreditcardTobe(props) {
             query: {
               Id: record.cardNo,
               paramId: record.id,
-              // paramId:record.id,
+              search: pagetitle === '计分卡查询' ? true : ''
             },
             state: {
               dynamicpath: true,
               menuDesc: '记分详情页',
-              // status: record.status,
             },
           });
         };
@@ -201,28 +193,19 @@ function CreditcardTobe(props) {
       fixed: 'right',
       width: 100,
       render: (text, record) => {
-        const gotoDetail = () => {
-          router.push({
-            pathname: '/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail',
-            query: {
-              id: record.id,
-              No: record.cardNo,
-              scorecardStatus: record.isEdit,
-              search: true,
-            },
-          });
-        };
-        return (
-          <span>
-            {/* <a onClick={() => gotoDetail()}>查看</a> */}
-            <>
-              {/* <Divider type='vertical' /> */}
-              <Popconfirm title="是否要删除此行？" onConfirm={() => handleDelete(record.id)}>
-                <a>删除</a>
-              </Popconfirm>
-            </>
-          </span>
-        );
+        if (pagetitle === '计分卡登记') {
+          return (
+            <span>
+              <>
+                <Popconfirm title="是否要删除此行？" onConfirm={() => handleDelete(record.id)}>
+                  <a>删除</a>
+                </Popconfirm>
+              </>
+            </span>
+          );
+        }
+        return null;
+
       },
     },
   ];
@@ -486,9 +469,12 @@ function CreditcardTobe(props) {
           </Form>
         </Row>
 
-        <Button type="primary" onClick={handleAdd} style={{ marginRight: 10 }}>
-          新建
-        </Button>
+        {pagetitle === '计分卡登记' && (
+          <Button type="primary" onClick={handleAdd} style={{ marginRight: 10 }}>
+            新建
+          </Button>
+        )}
+
         <Button type="primary" onClick={exportDownload}>
           导出数据
         </Button>

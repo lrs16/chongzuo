@@ -1056,7 +1056,7 @@ export default {
                           path: '/ITSM/servicequalityassessment/scoringrulessearch',
                           name: '评分细则查询',
                           icon: 'control',
-                          component: './ITSM/ServiceQuality/ScoringRulesssearch'
+                          component: './ITSM/ServiceQuality/ScoringRulesmaintenance'
                         },
                         {
                           path: '/ITSM/servicequalityassessment/serviceperformanceappraisal',
@@ -1085,7 +1085,7 @@ export default {
                               path: '/ITSM/servicequalityassessment/serviceperformanceappraisal/search',
                               name: '服务绩效考核查询',
                               icon: 'fork',
-                              component: './ITSM/ServiceQuality/ServicePerformanceappraisal/Performancequery'
+                              component: './ITSM/ServiceQuality/ServicePerformanceappraisal/TobedealtList'
                             },
                             {
                               path: '/ITSM/servicequalityassessment/serviceperformanceappraisal/performancequerydetail',
@@ -1097,7 +1097,7 @@ export default {
                               path: '/ITSM/servicequalityassessment/serviceperformanceappraisal/assessment',
                               name: '我的服务绩效考核',
                               icon: 'fork',
-                              component: './ITSM/ServiceQuality/ServicePerformanceappraisal/Assessment'
+                              component: './ITSM/ServiceQuality/ServicePerformanceappraisal/TobedealtList'
                             }
                           ]
                         },
@@ -1128,7 +1128,7 @@ export default {
                               path: '/ITSM/servicequalityassessment/creditcard/creditcardsearch',
                               name: '计分卡查询',
                               icon: 'fork',
-                              component: './ITSM/ServiceQuality/CreditCard/CreditCardSearch'
+                              component: './ITSM/ServiceQuality/CreditCard/creditcardtobe'
                             },
                           ]
                         }

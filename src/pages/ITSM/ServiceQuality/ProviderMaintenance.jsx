@@ -111,9 +111,13 @@ function ProviderMaintenance(props) {
             pathname: '/ITSM/servicequalityassessment/detailserviceprovidermaintenance',
             query: {
               id: record.id,
-              No: record.providerNo,
+              Id: record.providerNo,
               providerStatus: record.isEdit,
               providerSearch: true
+            },
+            state:{
+              dynamicpath: true,
+              menuDesc: '服务运维商详情',
             }
           })
         }
@@ -184,8 +188,12 @@ function ProviderMaintenance(props) {
             pathname: '/ITSM/servicequalityassessment/detailserviceprovidermaintenance',
             query: {
               id: record.id,
-              No: record.providerNo,
+              Id: record.providerNo,
               providerStatus: record.isEdit
+            },
+            state:{
+              dynamicpath: true,
+              menuDesc: '服务运维商详情',
             }
           })
         }

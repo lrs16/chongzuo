@@ -167,10 +167,12 @@ function TobedealtForm(props) {
   }
 
   useEffect(() => {
-    getUserinfo();
-    openFlow();
-    gethisTask();
-  }, []);
+    if(assessNo) {
+      getUserinfo();
+      openFlow();
+      gethisTask();
+    }
+  }, [assessNo]);
 
   useEffect(() => {
     if (
@@ -889,7 +891,12 @@ function TobedealtForm(props) {
       )}
 
       {tabActiveKey === 'associatedWorkorder' && (
-        <Relatedorder orderId={mainId} location={location} relation />
+        <Relatedorder 
+        orderId={mainId}
+         location={location}
+         assessNo={assessNo}
+          relation
+           />
       )}
 
       <User

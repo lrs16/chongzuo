@@ -216,3 +216,4 @@ export async function scorecardPrint(id) {
 export async function getTypeTree(type) {
   return request(`/quality/score/getTypeTree?type=${type}`)
 }
+

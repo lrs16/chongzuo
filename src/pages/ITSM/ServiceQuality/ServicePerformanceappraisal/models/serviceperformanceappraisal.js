@@ -75,7 +75,7 @@ export default {
       if (response.code === 200) {
         message.success(response.msg);
         router.push({
-          pathname: '/ITSM/faultmanage/registration',
+          pathname: '/ITSM/problemmanage/besolved',
           query: {
             tabid: sessionStorage.getItem('tabid'),
             closecurrent: true,
@@ -190,7 +190,7 @@ export default {
     *getMycardtobe({ payload }, { call, put }) {
       const response = yield call(getscorecardlistPagetobe, payload);
       yield put({
-        type: 'listPagetobe',
+        type: 'scorecardArr',
         payload: response,
       });
     },
@@ -255,7 +255,7 @@ export default {
     *assessSearch({ payload }, { call, put }) {
       const response = yield call(assessSearch, payload);
       yield put({
-        type: 'assessSearcharr',
+        type: 'tobeDealtarr',
         payload: response,
       });
     },
@@ -263,7 +263,7 @@ export default {
     *assessmyAssess({ payload }, { call, put }) {
       const response = yield call(assessmyAssess, payload);
       yield put({
-        type: 'assessmyAssessarr',
+        type: 'tobeDealtarr',
         payload: response,
       });
     },
@@ -281,17 +281,23 @@ export default {
     },
     //  根据考核类型查询指标明细的树
     *getTypeTree({ payload }, { call, put }) {
-      yield put({
-        type: 'clearTreearr',
-        payload: [],
-      });
       const response = yield call(getTypeTree, payload);
       yield put({
         type: 'treeArr',
         payload: response,
       });
     },
+
+    *clearTree({ payload }, { call, put }) {
+      yield put({
+        type: 'clearTreearr',
+        payload: [],
+      });
+    }
+
   },
+
+
 
   reducers: {
     maintenanceData(state, action) {
@@ -372,6 +378,7 @@ export default {
     },
 
     clearTreearr(state, action) {
+      console.log(122)
       return {
         ...state,
         treeArr: [],

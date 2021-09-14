@@ -4,7 +4,9 @@ import {
   getProblemList,
   queryOrderRelationList,
   saveRelation,
-  getReleaseList
+  getReleaseList,
+  saveRelationrelease,
+  relationlist
      } from '@/services/common';
 import { message } from 'antd';
 
@@ -24,6 +26,13 @@ export default {
         payload: response.data
       })
     },
+    * relesefetcht({ payload }, { put, call }) {
+      const response = yield call(relationlist, payload);
+      yield put({
+        type: "save",
+        payload: response.data
+      })
+    },
 
     * saverelation({ payload }, { call, put }) {
       const response = yield call(saveRelation, payload);
@@ -37,6 +46,12 @@ export default {
         message.error(response.msg)
       }
     },
+
+    // 保存发布
+    * saveelease({ payload }, { put, call }) {
+     return yield call(saveRelationrelease, payload);
+    
+  },
 
     * fetchevent({ payload }, { put, call }) {
       const response = yield call(getEventList, payload);
@@ -62,12 +77,12 @@ export default {
       })
     },
 
-    * fetchrelease({ payload }, { put, call }) {
+    *fetchlist({ payload }, { call, put }) {
       const response = yield call(getReleaseList, payload);
       yield put({
-        type: "saveorder",
-        payload: response.data
-      })
+        type: 'saveorder',
+        payload: response.data,
+      });
     },
   },
 

@@ -40,6 +40,7 @@ function AddScoringRulesmaintenance(props) {
   const {
     form: { getFieldDecorator, validateFields, resetFields },
     location: { query: { id, scoreSearch } },
+    location,
     scoreDetail,
     treeArr,
     treeForm,
@@ -54,8 +55,6 @@ function AddScoringRulesmaintenance(props) {
   const [selectId, setSelectId] = useState('');
 
   const getlist = (selectedKeys) => {
-    console.log('selectedKeys: ', selectedKeys);
-    console.log('selectId: ', selectId);
     validateFields((err, value) => {
       const { detailed } = value;
       dispatch({
@@ -73,23 +72,35 @@ function AddScoringRulesmaintenance(props) {
 
   //  按需加载树节点
   const getalldata = () => {
-    dispatch({
-      type: 'performanceappraisal/getTypeTree',
-      payload: type || scoreDetail.assessType
-    })
-
+    if (id && scoreDetail.assessType) {
+      dispatch({
+        type: 'performanceappraisal/getTypeTree',
+        payload: type || scoreDetail.assessType
+      })
+    } else if (!id) {
+      dispatch({
+        type: 'performanceappraisal/getTypeTree',
+        payload: (type || 1)
+      })
+    }
   }
 
   useEffect(() => {
-    if (id && treeData && treeData[0] && treeData[0].children) {
-      getlist(treeData[0].children[0].id);
-    } else {
-      dispatch({
-        type: 'qualityassessment/clearclauseList'
-      }
-      )
+    dispatch({
+      type: 'qualityassessment/clearclauseList'
     }
-  }, [id, treeData]);
+    )
+
+    dispatch({
+      type: 'performanceappraisal/clearTree'
+    })
+  }, [])
+
+  useEffect(() => {
+    if (loading === false && id && treeData && treeData[0] && treeData[0].children) {
+      getlist(treeData[0].children[0].id);
+    }
+  }, [loading, treeData]);
 
   //  渲染树结构
   const renderTreeNodes = data =>
@@ -124,7 +135,7 @@ function AddScoringRulesmaintenance(props) {
   }
 
   useEffect(() => {
-    if (scoreDetail && scoreDetail.assessType) {
+    if (loading === false && scoreDetail && scoreDetail.assessType) {
       getalldata();
       setType(scoreDetail.assessType)
     }
@@ -132,10 +143,13 @@ function AddScoringRulesmaintenance(props) {
 
   useEffect(() => {
     setTreeData(treeArr)
-  },[loading]);
+  }, [loading]);
 
 
   useEffect(() => {
+    dispatch({
+      type: 'performanceappraisal/clearTree'
+    })
     getalldata();
   }, [type])
 
@@ -276,13 +290,23 @@ function AddScoringRulesmaintenance(props) {
   ];
 
   useEffect(() => {
+    dispatch({
+      type: 'qualityassessment/clearclauseList'
+    })
+
+    dispatch({
+      type: 'qualityassessment/cleardata'
+    })
+
+    dispatch({
+      type: 'performanceappraisal/clearTree'
+    })
+
+    setType('');
+    
     if (id) {
       getscoredetail();
       getlist()
-    } else {
-      dispatch({
-        type: 'qualityassessment/cleardata'
-      })
     }
   }, [id])
 
@@ -339,7 +363,7 @@ function AddScoringRulesmaintenance(props) {
       />
       <Card>
         {
-          assessmentType && assessmentType.length > 0 && (
+          (id ? loading === false : true) && assessmentType && assessmentType.length > 0 && (
             <Row>
               <Form {...formItemLayout}>
                 <Col span={8}>
@@ -348,7 +372,7 @@ function AddScoringRulesmaintenance(props) {
                       getFieldDecorator('scoreNo', {
                         initialValue: scoreDetail.scoreNo
                       })
-                        (<Input disabled='true' />)
+                        (<Input disabled={true} />)
                     }
                   </Form.Item>
                 </Col>
@@ -407,14 +431,10 @@ function AddScoringRulesmaintenance(props) {
         <Layout className={styles.headcolor}>
           <Card title='指标明细' >
             <Sider theme="light">
-              {/* <Search
-                style={{ marginBottom: 8 }}
-                placeholder="Search"
-                onSearch={onSearch} /> */}
               {
                 loading === false && treeData && treeData.length > 0 && (
                   <Tree
-                    defaultSelectedKeys={type === '1' ? ['1417306125605756929'] : ['1417307840400809985']}
+                    defaultSelectedKeys={((type === '1' || type === '') ? ['1417306125605756929'] : ['1417307840400809985'])}
                     onSelect={handleClick}
                     defaultExpandAll
                   >
@@ -435,7 +455,7 @@ function AddScoringRulesmaintenance(props) {
                         initialValue: treeForm.target1
                       })
                         (
-                          <Input disabled='true' />
+                          <Input disabled={true} />
                         )
                     }
                   </Form.Item>
@@ -447,7 +467,7 @@ function AddScoringRulesmaintenance(props) {
                       getFieldDecorator('value1', {
                         initialValue: treeForm.value1
                       })
-                        (<Input disabled='true' />)
+                        (<Input disabled={true} />)
                     }
                   </Form.Item>
                 </Col>
@@ -459,7 +479,7 @@ function AddScoringRulesmaintenance(props) {
                         initialValue: treeForm.target2
                       })
                         (
-                          <Input disabled='true' />
+                          <Input disabled={true} />
                         )
                     }
                   </Form.Item>
@@ -471,7 +491,7 @@ function AddScoringRulesmaintenance(props) {
                       getFieldDecorator('value2', {
                         initialValue: treeForm.value2
                       })
-                        (<Input disabled='true' />)
+                        (<Input disabled={true} />)
                     }
                   </Form.Item>
                 </Col>
@@ -555,7 +575,7 @@ AddScoringRulesmaintenance.defaultProps = {
 
 
 export default Form.create({})(
-  connect(({ qualityassessment,performanceappraisal, upmsmenu, itsmuser, loading }) => ({
+  connect(({ qualityassessment, performanceappraisal, upmsmenu, itsmuser, loading }) => ({
     show: upmsmenu.show,
     scoreDetail: qualityassessment.scoreDetail,
     clauseDetail: qualityassessment.clauseDetail,

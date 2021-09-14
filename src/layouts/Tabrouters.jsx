@@ -22,11 +22,8 @@ const alonepath = [
   { path: '/ITSM/operationreport/monthlyreport/monthdatabasereportdetail' },
   { path: '/ITSM/operationreport/monthlyreport/monthotherreportdetail' },
   { path: '/ITSM/knowledgemanage/:id/operation' },
-  { path: '/ITSM/servicequalityassessment/detailserviceprovidermaintenance' },
   { path: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform' },
   { path: '/ITSM/servicequalityassessment/addserviceprovidermaintenance' },
-  { path: '/ITSM/servicequalityassessment/detailscoringrulesmaintenance' },
-  // { path: '/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail' },
   { path: '/ITSM/servicequalityassessment/serviceperformanceappraisal/performancequerydetail' },
 ];
 

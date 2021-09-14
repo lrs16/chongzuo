@@ -75,9 +75,11 @@ function Performancequerydetail(props) {
   };
 
   useEffect(() => {
-    openFlow();
-    gethisTask();
-  }, []);
+    if(assessNo) {
+      openFlow();
+      gethisTask();
+    }
+  }, [assessNo]);
 
   const getContrractname = providerId => {
     contractProvider({ id: providerId, status: '1' }).then(res => {

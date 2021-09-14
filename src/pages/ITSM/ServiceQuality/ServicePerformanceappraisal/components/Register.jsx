@@ -20,12 +20,10 @@ import {
   providerList,
   scoreListpage,
   contractProvider,
-  clauseListpage,
 } from '../../services/quality';
 import SysDict from '@/components/SysDict';
 import styles from '../index.less';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
-import DatabaseChart from '@/pages/Monitormanage/BasicMonitor/components/DatabaseChart';
 
 const { TextArea, Search } = Input;
 const { Option } = Select;
@@ -43,7 +41,6 @@ const Register = React.forwardRef((props, ref) => {
     target2,
     getclausedetail,
     clauseList,
-    taskData,
     contractArr,
     getContrractname,
     files,
@@ -58,11 +55,9 @@ const Register = React.forwardRef((props, ref) => {
   const [disablelist, setDisabledList] = useState([]); // 服务商
   const [contractlist, setContractlist] = useState([]); // 合同
   const [scorelist, setScorelist] = useState([]); // 评分细则
-  const [clauselist, setClauselist] = useState([]); // 详细条款
   const [directorlist, setDirectorlist] = useState([]); // 详细条款
   const [providerId, setProviderId] = useState(''); //  设置服务商的id
   const [scoreId, setScoreId] = useState(''); //  设置服务商的id
-  const [target1Type, setTarget1Type] = useState('功能开发'); //  设置指标类型
   const [target2Type, setTarget2Type] = useState('');
   const [spinloading, setSpinLoading] = useState(true);
 
@@ -76,8 +71,6 @@ const Register = React.forwardRef((props, ref) => {
     ref,
     () => ({
       attRef,
-      getVal: () => getFieldsValue(),
-      test:() => console.log(1)
     }),
     [],
   );
@@ -347,7 +340,7 @@ const Register = React.forwardRef((props, ref) => {
           <Form.Item label="服务绩效编号">
             {getFieldDecorator('assessNo', {
               initialValue: register.assessNo,
-            })(<Input disabled="true" />)}
+            })(<Input disabled={true} />)}
           </Form.Item>
         </Col>
 
@@ -524,7 +517,7 @@ const Register = React.forwardRef((props, ref) => {
           <Form.Item label="考核类型">
             {getFieldDecorator('assessType', {
               initialValue: register.assessType,
-            })(<Input disabled="true" />)}
+            })(<Input disabled={true} />)}
           </Form.Item>
         </Col>
 

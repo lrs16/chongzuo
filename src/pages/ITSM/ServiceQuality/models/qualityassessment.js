@@ -22,7 +22,6 @@ import {
   getTypeTree,
   clauseListpage,
   getTargetValue,
-  scorecardlistPage,
   updateRemark,
   providerExport,
   scoreExport,
@@ -93,9 +92,12 @@ export default {
           pathname:'/ITSM/servicequalityassessment/detailserviceprovidermaintenance',
           query:{
             id,
-            mainId:providerNo || '',
-            orderNo:providerNo || '',
-          }
+            Id:providerNo,
+          },
+          state: {
+            dynamicpath: true,
+            menuDesc: '服务商详情页',
+          },
         })
       }
    
@@ -162,8 +164,11 @@ export default {
           pathname:'/ITSM/servicequalityassessment/detailscoringrulesmaintenance',
           query: {
             id,
-            mainId:scoreNo,
-            orderNo:scoreNo
+            Id: scoreNo,
+          },
+          state:{
+            dynamicpath: true,
+            menuDesc: '记分卡详情页',
           }
         })
       }

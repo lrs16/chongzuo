@@ -199,7 +199,7 @@ function AddProviderMaintenance(props) {
       });
     }
     getPerformanceleader();
-  }, []);
+  }, [id]);
 
   const handleBack = () => {
     if (providerSearch) {

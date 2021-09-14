@@ -14,7 +14,8 @@ function RelevancyOrder(props) {
     relation,
     statuscode,
     orderId,
-    search
+    search,
+    assessNo
   } = props;
 
   const [activeKey, setActiveKey] = useState('trouble');
@@ -22,23 +23,31 @@ function RelevancyOrder(props) {
   const [title, setTitle] = useState('');
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [searchkey, setSearchKey] = useState('');
-  const [searchrow, setSearchRow] = useState(undefined);
+  const [searchrow, setSearchRow] = useState([]);
 
   const callback = (key) => {
     setActiveKey(key)
   }
 
   const getlist = (pageIndex, pageSize) => {
-    dispatch({
-      type: 'relationorder/fetcht',
-      payload: {
-        orderId,
-        orderType: 'AssessNO',
-        pageIndex,
-        pageSize,
-        relationType: activeKey,
-      },
-    })
+    if (activeKey === 'trouble') {
+      dispatch({
+        type: 'relationorder/fetcht',
+        payload: {
+          orderId,
+          orderType: 'AssessNO',
+          pageIndex,
+          pageSize,
+          relationType: activeKey,
+        },
+      })
+    } else {
+      dispatch({
+        type: 'relationorder/relesefetcht',
+        payload: { assessNo, orderType: 'FB' }
+      })
+    }
+
   }
 
   const onShowSizeChange = (page, size) => {
@@ -68,10 +77,10 @@ function RelevancyOrder(props) {
   };
 
   const handleSearch = () => {
-    const { rows } = list;
-    const newArr = rows.filter(item => {
+    const newArr = (list.rows || list).filter(item => {
       return item.orderNo.includes(searchkey);
     });
+
     if (newArr.length > 0) {
       setSearchRow(newArr);
     } else {
@@ -80,6 +89,7 @@ function RelevancyOrder(props) {
   }
 
   useEffect(() => {
+    setSearchRow([]);
     getlist(paginations.current - 1, paginations.pageSize)
   }, [activeKey])
 
@@ -135,6 +145,9 @@ function RelevancyOrder(props) {
       title: '关联类型',
       dataIndex: 'relationType',
       key: 'relationType',
+      render: (text) => {
+        return <span>普通关联</span>
+      }
     },
   ];
 
@@ -177,7 +190,12 @@ function RelevancyOrder(props) {
       {activeKey === 'release' && (
         <Row>
           <Col span={8}>
-            <Input placeholder="请输入发布单号" allowClear />
+            <Input
+              onChange={e => setSearchKey(e.target.value)}
+              placeholder="请输入发布单号"
+              allowClear
+              disabled={search}
+            />
           </Col>
           <Col span={8}>
             <Button type="primary" style={{ marginLeft: 16 }} onClick={() => handleSearch()} >本页查询</Button>
@@ -197,13 +215,14 @@ function RelevancyOrder(props) {
       <Table
         style={{ marginTop: 16 }}
         columns={columns}
-        dataSource={searchrow === undefined ? list.rows : searchrow}
+        dataSource={(searchrow && searchrow.length) ? searchrow : (list.rows || list)}
         rowKey={r => r.id}
         pagination={pagination}
       />
       {relation && visible && (
         <RelationDrawer
           title={title}
+          assessNo={assessNo}
           visible={visible}
           orderIdPre={location.query.mainId}
           orderTypePre='AssessNO'

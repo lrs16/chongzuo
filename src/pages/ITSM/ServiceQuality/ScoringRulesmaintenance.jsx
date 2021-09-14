@@ -30,8 +30,6 @@ const formItemLayout = {
 
 const { Option } = Select;
 
-
-
 function ScoringRulesmaintenance(props) {
   const pagetitle = props.route.name;
   const {
@@ -101,19 +99,42 @@ function ScoringRulesmaintenance(props) {
       title: '评分细则编号',
       dataIndex: 'scoreNo',
       key: 'scoreNo',
-      width:200
+      width: 200,
+      render:(text,record) => {
+        const gotoDetail = () => {
+          router.push({
+            pathname: '/ITSM/servicequalityassessment/detailscoringrulesmaintenance',
+            query: {
+              Id: record.scoreNo,
+              id: record.id,
+              scoreSearch:true
+            },
+            state:{
+              dynamicpath: true,
+              menuDesc: '评分细则详情',
+            }
+          })
+        }
+        if(pagetitle === '评分细则查询') {
+          return (
+            <a onClick={() => gotoDetail()}>{text}</a>
+          )
+        }
+
+        return <span>{text}</span>
+      }
     },
     {
       title: '评分细则名称',
       dataIndex: 'scoreName',
       key: 'scoreName',
-      width:150
+      width: 150
     },
     {
       title: '考核类型',
       dataIndex: 'assessType',
       key: 'assessType',
-      width:150
+      width: 150
     },
     {
       title: '操作',
@@ -125,32 +146,35 @@ function ScoringRulesmaintenance(props) {
           router.push({
             pathname: '/ITSM/servicequalityassessment/detailscoringrulesmaintenance',
             query: {
+              Id: record.scoreNo,
               id: record.id,
-              No: record.scoreNo,
+            },
+            state:{
+              dynamicpath: true,
+              menuDesc: '评分细则详情',
             }
           })
         }
-        return (
-          <span>
-            <a onClick={() => gotoDetail()}>编辑</a>
-            {/* {
-              record.isEdit && ( */}
-            <>
-              <Divider type='vertical' />
-              <Popconfirm
-                title='是否要删除此行？'
-                onConfirm={() => handleDelete(record.id)}
-              >
-                <a>删除</a>
-              </Popconfirm>
-              <Divider type='vertical' />
-            </>
-            {/* //   )
-            // } */}
+        if (pagetitle === '评分细则维护') {
+          return (
+            <span>
+              <a onClick={() => gotoDetail()}>编辑</a>
+              <>
+                <Divider type='vertical' />
+                <Popconfirm
+                  title='是否要删除此行？'
+                  onConfirm={() => handleDelete(record.id)}
+                >
+                  <a>删除</a>
+                </Popconfirm>
+                <Divider type='vertical' />
+              </>
+            </span>
+          )
+        }
 
-            {/* <a>保存</a> */}
-          </span>
-        )
+        return null
+
       }
     }
   ]
@@ -224,6 +248,7 @@ function ScoringRulesmaintenance(props) {
       setSelectedRows([...handleSelect])
     }
   }
+
 
   const pagination = {
     showSizeChanger: true,
@@ -336,18 +361,20 @@ function ScoringRulesmaintenance(props) {
             </Button>
           </Col>
 
-          {/* <Col span={8}> */}
-            <Button type='primary' onClick={() => download()}>导出数据</Button>
-          {/* </Col> */}
+          <Button type='primary' onClick={() => download()}>导出数据</Button>
         </Row>
 
-        <Button
-          style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-          onClick={newScoringrules}
-          icon='plus'
-        >
-          新增评分细则
-        </Button>
+        {
+          pagetitle === '评分细则维护' && (
+            <Button
+            style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+            onClick={newScoringrules}
+            icon='plus'
+          >
+            新增评分细则
+          </Button>
+          )
+        }
 
         <Table
           loading={loading}
@@ -356,7 +383,7 @@ function ScoringRulesmaintenance(props) {
           rowKey={records => records.id}
           pagination={pagination}
           rowSelection={rowSelection}
-          scroll={{ x: 800,y: 700 }}
+          scroll={{ x: 800, y: 700 }}
         />
       </Card>
     </PageHeaderWrapper>
