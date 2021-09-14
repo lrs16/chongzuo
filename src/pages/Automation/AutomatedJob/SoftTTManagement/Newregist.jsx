@@ -11,7 +11,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import EditContext from '@/layouts/MenuContext'; // 引用上下文管理组件
 import Content from './components/Content';
 import Examine from './components/Examine';
-import SoftwareInfoList from './components/SoftwareInfoList';
+// import SoftwareInfoList from './components/SoftwareInfoList';
 import styles from './index.less';
 
 const { Panel } = Collapse;
@@ -85,6 +85,22 @@ function Newregist(props) {
     });
   };
 
+  const ChangeFiles = () => {
+    // ContentRef.current.Forms((err, values) => {
+    //   if (err) {
+    //     message.error('请将信息填写完整')
+    //   } else {
+    //     dispatch({
+    //       type: '',
+    //       payload: {
+    //         payvalue: { ...values, fileIds: v.length ? JSON.stringify(v) : null },
+    //         buttype: 'save',
+    //       },
+    //     });
+    //   }
+    // })
+  }
+
   // const handleSubmit = () => { // 审核提交 -- 状态变为已审核
   //   ContentRef.current.Forms((err) => {
   //     if (err) {
@@ -157,16 +173,16 @@ function Newregist(props) {
             <Panel header='启停登记' key="formpanel">
               <EditContext.Provider value={{
                 editable: true,
+                files: [],
+                ChangeFiles,
               }}>
                 <Content
                   wrappedComponentRef={ContentRef}
-                  formItemLayout={formItemLayout}
-                  forminladeLayout={forminladeLayout}
                   userinfo={userinfo}
                 />
               </EditContext.Provider>
             </Panel>
-            <Panel header='启停审核' key="formpanel">
+            <Panel header='启停审核' key="formpane2">
               <Examine
                 wrappedComponentRef={ExmaineRef}
                 check={[]}
@@ -175,9 +191,9 @@ function Newregist(props) {
                 userinfo={userinfo}
               />
             </Panel>
-            <Panel header="软件信息" key="formpanel">
+            {/* <Panel header="软件信息" key="formpane3">
               <SoftwareInfoList />
-            </Panel>
+            </Panel> */}
           </Collapse>
         </div >
         {/* </Spin> */}

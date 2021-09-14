@@ -168,13 +168,13 @@ function SoftTTRegister(props) {
       width: 150,
     },
     {
-      title: '启停申请人',
+      title: '申请人',
       dataIndex: 'person',
       key: 'person',
       width: 180,
     },
     {
-      title: '启停申请时间',
+      title: '申请时间',
       dataIndex: 'applyTime',
       key: 'applyTime',
       width: 250,
@@ -245,42 +245,47 @@ function SoftTTRegister(props) {
         <Row gutter={16}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>
-              <Form.Item label="区域">
-                {getFieldDecorator('hostZoneId', {
-                  initialValue: '',
-                })(
-                  <Select placeholder="请选择" allowClear>
-                    {zonemap.map(obj => (
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>
-                    ))}
-                  </Select>)}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="主机名称">
-                {getFieldDecorator('hostName', {
+              <Form.Item label="启停申请人">
+                {getFieldDecorator('person', {
                   initialValue: '',
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
+            <Col span={8}>
+              <Form.Item label="申请时间">
+                <Row>
+                  <Col span={11}>
+                    {getFieldDecorator('startApplyTime', {})(
+                      <DatePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                        }}
+                        placeholder="开始时间"
+                        format='YYYY-MM-DD HH:mm:ss'
+                        style={{ minWidth: 120, width: '100%' }}
+                      />
+                    )}
+                  </Col>
+                  <Col span={2} style={{ textAlign: 'center' }}>-</Col>
+                  <Col span={11}>
+                    {getFieldDecorator('endApplyTime', {})(
+                      <DatePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                        }}
+                        placeholder="结束时间"
+                        format='YYYY-MM-DD HH:mm:ss'
+                        style={{ minWidth: 120, width: '100%' }}
+                      />
+                    )}
+                  </Col>
+                </Row>
+              </Form.Item>
+            </Col>
             {expand && (
               <>
-                <Col span={8}>
-                  <Form.Item label="主机IP">
-                    {getFieldDecorator('hostIp', {
-                      initialValue: '',
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="软件名称">
-                    {getFieldDecorator('softName', {
-                      initialValue: '',
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
                 <Col span={8}>
                   <Form.Item label="状态">
                     {getFieldDecorator('status', {
@@ -292,20 +297,6 @@ function SoftTTRegister(props) {
                         </Option>
                       ))}
                     </Select>)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="软件端口">
-                    {getFieldDecorator('softPort', {
-                      initialValue: '',
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="软件路径">
-                    {getFieldDecorator('softPath', {
-                      initialValue: '',
-                    })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
@@ -347,46 +338,6 @@ function SoftTTRegister(props) {
                       <Col span={2} style={{ textAlign: 'center' }}>-</Col>
                       <Col span={11}>
                         {getFieldDecorator('endcheckTime', {})(
-                          <DatePicker
-                            showTime={{
-                              hideDisabledOptions: true,
-                              defaultValue: moment('23:59:59', 'HH:mm:ss'),
-                            }}
-                            placeholder="结束时间"
-                            format='YYYY-MM-DD HH:mm:ss'
-                            style={{ minWidth: 120, width: '100%' }}
-                          />
-                        )}
-                      </Col>
-                    </Row>
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="启停申请人">
-                    {getFieldDecorator('person', {
-                      initialValue: '',
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="启停申请时间">
-                    <Row>
-                      <Col span={11}>
-                        {getFieldDecorator('startApplyTime', {})(
-                          <DatePicker
-                            showTime={{
-                              hideDisabledOptions: true,
-                              defaultValue: moment('00:00:00', 'HH:mm:ss'),
-                            }}
-                            placeholder="开始时间"
-                            format='YYYY-MM-DD HH:mm:ss'
-                            style={{ minWidth: 120, width: '100%' }}
-                          />
-                        )}
-                      </Col>
-                      <Col span={2} style={{ textAlign: 'center' }}>-</Col>
-                      <Col span={11}>
-                        {getFieldDecorator('endApplyTime', {})(
                           <DatePicker
                             showTime={{
                               hideDisabledOptions: true,

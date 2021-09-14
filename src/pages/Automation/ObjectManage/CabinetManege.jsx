@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Table, Card, Divider, Button, Message, Form, Input, Select, Row, Col, DatePicker } from 'antd';
+import { Table, Card, Divider, Button, message, Form, Input, Select, Row, Col, DatePicker } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
@@ -78,17 +78,12 @@ function CabinetManege(props) {
         setTitle(drwertitle);
         setSaveType(type);
         setData(record);
-        togetSearchUsers({
-            queKey: '',
-            page: 1,
-            limit: 15,
-        }).then(res => {
+        togetSearchUsers().then(res => {
             if (res.code === 200) {
-                const newarr = res.data.rows.map((item, index) => {
-                    return Object.assign(item, { key: index, title: item.userName});
-                });
-                setallUserData(newarr);
-            }
+                setallUserData(res.data.userList);
+              } else {
+                message.error('获取负责人失败');
+              }
         });
     };
 
@@ -101,10 +96,10 @@ function CabinetManege(props) {
             },
         }).then(res => {
             if (res.code === 200) {
-                Message.success(res.msg);
+                message.success(res.msg);
                 searchdata(1, 15);
             } else {
-                Message.error(res.msg);
+                message.error(res.msg);
             }
         });
     };
@@ -155,10 +150,10 @@ function CabinetManege(props) {
             payload: { Ids: id },
         }).then(res => {
             if (res.code === 200) {
-                Message.success('删除成功');
+                message.success('删除成功');
                 searchdata(1, 15);
             } else {
-                Message.error(res.msg);
+                message.error(res.msg);
             }
         });
     };

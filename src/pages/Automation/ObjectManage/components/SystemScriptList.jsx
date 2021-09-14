@@ -66,17 +66,12 @@ function SystemScriptList(props) {
 
     useEffect(() => {
         searchdata(1, 15);
-        togetSearchUsers({
-            queKey: '',
-            page: 1,
-            limit: 15,
-        }).then(res => {
+        togetSearchUsers().then(res => {
             if (res.code === 200) {
-                const newarr = res.data.rows.map((item, index) => {
-                    return Object.assign(item, { key: index, title: item.userName});
-                });
-                setallUserData(newarr);
-            }
+                setallUserData(res.data.userList)
+              } else {
+                message.error('获取负责人失败')
+              }
         });
     }, [location]);
 
@@ -256,8 +251,8 @@ function SystemScriptList(props) {
         },
         {
             title: '创建人',
-            dataIndex: 'createByNameExt',
-            key: 'createByNameExt',
+            dataIndex: 'createBy',
+            key: 'createBy',
             width: 120,
         },
         {
@@ -268,8 +263,8 @@ function SystemScriptList(props) {
         },
         {
             title: '更新人',
-            dataIndex: 'updateByNameExt',
-            key: 'updateByNameExt',
+            dataIndex: 'updateBy',
+            key: 'updateBy',
             width: 120,
         },
         {
@@ -371,8 +366,8 @@ function SystemScriptList(props) {
                                             initialValue: '',
                                         })(<Select placeholder="请选择" allowClear>
                                             {allUserData.map(obj => (
-                                                <Option key={obj.key} value={obj.title}>
-                                                    {obj.title}
+                                                <Option key={obj.userId} value={obj.userName}>
+                                                    {obj.userName}
                                                 </Option>
                                             ))}
                                         </Select>)}

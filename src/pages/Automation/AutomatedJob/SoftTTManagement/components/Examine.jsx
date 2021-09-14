@@ -1,6 +1,6 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import moment from 'moment';
-import { Row, Col, Form, Input, Radio, DatePicker, Tag } from 'antd';
+import { Row, Col, Form, Input, Radio, DatePicker} from 'antd';
 
 const { TextArea } = Input;
 
@@ -45,7 +45,7 @@ const Examine = forwardRef((props, ref) => {
   }, [check]);
 
   return (
-    <div style={{ marginRight: 24 }}>
+    <div style={{ marginRight: 24, marginTop: 24 }}>
       <Row gutter={24}>
         <Form {...formallItemLayout}>
           <Col span={8} style={{ display: 'none' }}>
@@ -76,17 +76,12 @@ const Examine = forwardRef((props, ref) => {
               })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={Noediting} />)}
             </Form.Item>
           </Col>
-          <Col span={8} >
-            <Form.Item label="审核状态">
-              <Tag color="blue">{check.status}</Tag>
-            </Form.Item>
-          </Col>
           {adopt === '通过' ? (
             <Col span={24}>
               <Form.Item label="审核说明" {...formItemLayout}>
                 {getFieldDecorator('content', {
                   initialValue: check.content,
-                })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" disabled={Noediting} />)}
+                })(<TextArea autoSize={{ minRows: 5 }} placeholder="请输入" disabled={Noediting} />)}
               </Form.Item>
             </Col>) : (
             <Col span={24}>
@@ -94,7 +89,7 @@ const Examine = forwardRef((props, ref) => {
                 {getFieldDecorator('content1', {
                   rules: [{ required: true, message: '请输入审核说明' }],
                   initialValue: check.content,
-                })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" disabled={Noediting} />)}
+                })(<TextArea autoSize={{ minRows: 5 }} placeholder="请输入" disabled={Noediting} />)}
               </Form.Item>
             </Col>)}
           {/* <Col span={24}>

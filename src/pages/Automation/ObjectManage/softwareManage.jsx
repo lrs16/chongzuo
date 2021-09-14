@@ -9,6 +9,7 @@ import { Table, Card, Divider, Button, message, Form, Input, Select, Row, Col, D
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
+import { togetSearchUsers } from './services/api';
 import SoftwareDrawer from './components/SoftwareDrawer';
 import DynamicModal from './components/DynamicModal';
 
@@ -51,6 +52,7 @@ function softwareManage(props) {
     const [title, setTitle] = useState('');
     const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
     const [data, setData] = useState('');
+    const [allUserData, setallUserData] = useState([]);
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
 
@@ -83,7 +85,13 @@ function softwareManage(props) {
 
     useEffect(() => {
         searchdata(1, 15);
-        // getList(1, 15);
+        togetSearchUsers().then(res => {
+            if (res.code === 200) {
+                setallUserData(res.data.userList)
+              } else {
+                message.error('获取负责人失败')
+              }
+        });
     }, [location]);
 
     const handleShowDrawer = (drwertitle, type, record) => {
@@ -197,13 +205,6 @@ function softwareManage(props) {
         </Button></>
     )
 
-    const directormap = [
-        { key: '1', title: '张三' },
-        { key: '2', title: '李四' },
-        { key: '3', title: '王五' },
-        { key: '3', title: '赵六' },
-    ];
-
     // 数据字典取下拉值
     const getTypebyId = key => {
         if (selectdata.ischange) {
@@ -251,7 +252,8 @@ function softwareManage(props) {
             title: '软件路径',
             dataIndex: 'softPath',
             key: 'softPath',
-            width: 180,
+            width: 250,
+            ellipsis: true,
         },
         {
             title: '软件版本号',
@@ -327,9 +329,10 @@ function softwareManage(props) {
         },
         {
             title: '创建人',
-            dataIndex: 'createByNameExt',
-            key: 'createByNameExt',
-            width: 120,
+            dataIndex: 'createBy',
+            key: 'createBy',
+            width: 250,
+            ellipsis: true,
         },
         {
             title: '创建时间',
@@ -339,9 +342,10 @@ function softwareManage(props) {
         },
         {
             title: '更新人',
-            dataIndex: 'updateByNameExt',
-            key: 'updateByNameExt',
-            width: 120,
+            dataIndex: 'updateBy',
+            key: 'updateBy',
+            width: 250,
+            ellipsis: true,
         },
         {
             title: '更新时间',
@@ -473,9 +477,9 @@ function softwareManage(props) {
                                         {getFieldDecorator('director', {
                                             initialValue: '',
                                         })(<Select placeholder="请选择" allowClear>
-                                            {directormap.map(obj => (
-                                                <Option key={obj.key} value={obj.title}>
-                                                    {obj.title}
+                                            {allUserData.map(obj => (
+                                                <Option key={obj.userId} value={obj.userName}>
+                                                    {obj.userName}
                                                 </Option>
                                             ))}
                                         </Select>)}
@@ -590,6 +594,7 @@ function softwareManage(props) {
                 record={data}
                 savetype={savetype}
                 destroyOnClose
+                directormap={allUserData}
             />
         </PageHeaderWrapper>
     );

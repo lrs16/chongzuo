@@ -19,15 +19,8 @@ const formItemLayout = {
     },
     colon: false,
 };
-
-const directormap = [
-    { key: '1', title: '张三' },
-    { key: '2', title: '李四' },
-    { key: '3', title: '王五' },
-    { key: '3', title: '赵六' },
-];
 function SoftwareDrawer(props) {
-    const { visible, ChangeVisible, title, handleSubmit, dispatch } = props;
+    const { visible, ChangeVisible, title, handleSubmit, dispatch, directormap } = props;
     const { getFieldDecorator, validateFields } = props.form;
     const required = true;
     const {
@@ -233,8 +226,8 @@ function SoftwareDrawer(props) {
                         initialValue: director,
                     })(<Select placeholder="请选择" allowClear>
                         {directormap.map(obj => (
-                            <Option key={obj.key} value={obj.title}>
-                                {obj.title}
+                            <Option key={obj.userId} value={obj.userName}>
+                                {obj.userName}
                             </Option>
                         ))}
                     </Select>)}

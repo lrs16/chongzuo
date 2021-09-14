@@ -261,10 +261,9 @@ export async function deletelocalScript(Ids) {
   })
 }
 
-// 查询用户
-export async function togetSearchUsers(params) { // 获取所有用户
-  return request(`/upms/user/listPage`, {
-    method: 'POST',
-    body: JSON.stringify(params),
+// 获取权限菜单 （负责人）
+export async function togetSearchUsers() {
+  return request(`/release/from/getUserList?roleCodes=equipment_leader`, {
+    method: 'GET',
   });
 }

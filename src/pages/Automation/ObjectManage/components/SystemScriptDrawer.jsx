@@ -195,8 +195,8 @@ function SystemScriptDrawer(props) {
             initialValue: director,
           })(<Select placeholder="请选择" allowClear>
             {directormap.map(obj => (
-              <Option key={obj.key} value={obj.title}>
-                {obj.title}
+              <Option key={obj.userId} value={obj.userName}>
+                {obj.userName}
               </Option>
             ))}
           </Select>)}

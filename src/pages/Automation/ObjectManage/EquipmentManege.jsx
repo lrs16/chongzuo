@@ -74,17 +74,12 @@ function EquipmentManege(props) {
 
     useEffect(() => {
         searchdata(1, 15);
-        togetSearchUsers({
-            queKey: '',
-            page: 1,
-            limit: 15,
-        }).then(res => {
+        togetSearchUsers().then(res => {
             if (res.code === 200) {
-                const newarr = res.data.rows.map((item, index) => {
-                    return Object.assign(item, { key: index, title: item.userName});
-                });
-                setallUserData(newarr);
-            }
+                setallUserData(res.data.userList);
+              } else {
+                Message.error('获取负责人失败');
+              }
         });
     }, [location]);
 
@@ -281,7 +276,7 @@ function EquipmentManege(props) {
             title: '设备机柜',
             dataIndex: 'hostCabinetId',
             key: 'hostCabinetId',
-            width: 200,
+            width: 220,
         },
         {
             title: '所在U位',

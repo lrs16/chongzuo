@@ -212,9 +212,10 @@ function LocalScriptList(props) {
     },
     {
       title: '存放路径',
-      dataIndex: 'storagePath',
-      key: 'storagePath',
-      width: 250,
+      dataIndex: 'scriptPath',
+      key: 'scriptPath',
+      width: 300,
+      ellipsis: true,
     },
     {
       title: '脚本类型',

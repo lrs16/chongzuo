@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 // import { connect } from 'dva';
 // import router from 'umi/router';
 import moment from 'moment';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Table, Card, Button, Form, Input, Select, Row, Col, DatePicker } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { DownOutlined, UpOutlined } from '@ant-design/icons';
-import DictLower from '@/components/SysDict/DictLower';
+// import DictLower from '@/components/SysDict/DictLower';
 
-const { Option } = Select;
+// const { Option } = Select;
 
 const formItemLayout = {
     labelCol: {
@@ -25,7 +25,11 @@ function ManualLog(props) {
     const {
         // loading,
         // dispatch,
-        // location,
+        location: {
+            query: {
+                Id,
+            }
+        },
         // autotasklist,
         form: {
             getFieldDecorator,
@@ -34,8 +38,9 @@ function ManualLog(props) {
         },
     } = props;
 
-    const [expand, setExpand] = useState(false);
-    const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
+    console.log(Id, 'Id')
+
+    // const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
     // const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
 
     // const searchdata = (page, size) => {
@@ -99,36 +104,25 @@ function ManualLog(props) {
     // 查询
     const extra = (<>
         <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
-        <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
-        <Button
-            style={{ marginLeft: 8 }}
-            type="link"
-            onClick={() => {
-                setExpand(!expand);
-            }}
-        >
-            {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
-        </Button></>
+        <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button></>
     );
 
     // 数据字典取下拉值
-    const getTypebyId = key => {
-        if (selectdata.ischange) {
-            return selectdata.arr[0].children.filter(item => item.key === key)[0].children;
-        }
-        return [];
-    };
+    // const getTypebyId = key => {
+    //     if (selectdata.ischange) {
+    //         return selectdata.arr[0].children.filter(item => item.key === key)[0].children;
+    //     }
+    //     return [];
+    // };
 
-    const tsskstatusmap = getTypebyId('200000000000001002'); // 作业状态
-    const taskmodesmap = getTypebyId('200000000000001003'); // 作业方式
-    const examinestatusmap = getTypebyId('200000000000001005'); // 审批状态
+    // const tsskstatusmap = getTypebyId('200000000000001002'); // 执行结果
 
     const columns = [
         {
-            title: '作业名称',
+            title: '作业批次',
             dataIndex: 'taskName',
             key: 'taskName',
-            width: 200,
+            width: 150,
         },
         {
             title: '作业对象数',
@@ -140,25 +134,25 @@ function ManualLog(props) {
             title: '作业脚本',
             dataIndex: 'taskScriptNum',
             key: 'taskScriptNum',
-            width: 250,
+            width: 150,
         },
         {
             title: '执行结果',
             dataIndex: 'taskRemarks',
             key: 'taskRemarks',
-            width: 250,
+            width: 150,
         },
         {
             title: '执行返回',
             dataIndex: 'taskModes',
             key: 'taskModes',
-            width: 150,
+            width: 200,
         },
         {
             title: '执行时长',
             dataIndex: 'createTime',
             key: 'createTime',
-            width: 250,
+            width: 200,
         },
         {
             title: '执行人',
@@ -176,89 +170,63 @@ function ManualLog(props) {
 
     return (
         <PageHeaderWrapper title={pagetitle}>
-            <DictLower
+            {/* <DictLower
                 typeid="200000000000001001"
                 ChangeSelectdata={newvalue => setSelectData(newvalue)}
                 style={{ display: 'none' }}
-            />
+            /> */}
             <Card>
                 <Row gutter={16}>
                     <Form {...formItemLayout} onSubmit={handleSearch}>
-                        <Col span={8}>
-                            <Form.Item label="作业名称">
+                        <Col span={5}>
+                            <Form.Item label="执行结果">
                                 {getFieldDecorator('taskName', {
                                     initialValue: '',
                                 })(<Input placeholder="请输入" allowClear />)}
                             </Form.Item>
                         </Col>
-                        <Col span={8}>
-                            <Form.Item label="执行结果">
-                                {getFieldDecorator('examineResults', {
+                        <Col span={5}>
+                            <Form.Item label="执行人">
+                                {getFieldDecorator('createByNameExt', {
                                     initialValue: '',
-                                })(
-                                    <Select placeholder="请选择" allowClear>
-                                        {examinestatusmap.map(obj => (
-                                            <Option key={obj.key} value={obj.title}>
-                                                {obj.title}
-                                            </Option>
-                                        ))}
-                                    </Select>)}
+                                })(<Input placeholder="请输入" allowClear />)}
                             </Form.Item>
                         </Col>
-                        {expand && (
-                            <>
-                                <Col span={8}>
-                                    <Form.Item label="执行返回">
-                                        {getFieldDecorator('createByNameExt', {
-                                            initialValue: '',
-                                        })(<Input placeholder="请输入" allowClear />)}
-                                    </Form.Item>
-                                </Col>
-                                <Col span={8}>
-                                    <Form.Item label="执行人">
-                                        {getFieldDecorator('updateByNameExt', {
-                                            initialValue: '',
-                                        })(<Input placeholder="请输入" allowClear />)}
-                                    </Form.Item>
-                                </Col>
-                                <Col span={8}>
-                                    <Form.Item label="执行时间">
-                                        <Row>
-                                            <Col span={11}>
-                                                {getFieldDecorator('startTime', {})(
-                                                    <DatePicker
-                                                        showTime={{
-                                                            hideDisabledOptions: true,
-                                                            defaultValue: moment('00:00:00', 'HH:mm:ss'),
-                                                        }}
-                                                        placeholder="开始时间"
-                                                        format='YYYY-MM-DD HH:mm:ss'
-                                                        style={{ minWidth: 120, width: '100%' }}
-                                                    />
-                                                )}
-                                            </Col>
-                                            <Col span={2} style={{ textAlign: 'center' }}>-</Col>
-                                            <Col span={11}>
-                                                {getFieldDecorator('endTime', {})(
-                                                    <DatePicker
-                                                        showTime={{
-                                                            hideDisabledOptions: true,
-                                                            defaultValue: moment('23:59:59', 'HH:mm:ss'),
-                                                        }}
-                                                        placeholder="结束时间"
-                                                        format='YYYY-MM-DD HH:mm:ss'
-                                                        style={{ minWidth: 120, width: '100%' }}
-                                                    />
-                                                )}
-                                            </Col>
-                                        </Row>
-                                    </Form.Item>
-                                </Col>
-                            </>
-                        )}
-                        {expand ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '132px' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
-                    </Form>
-                </Row>
+                        <Col span={8}>
+                            <Form.Item label="执行时间">
+                                <Row>
+                                    <Col span={11}>
+                                        {getFieldDecorator('startTime', {})(
+                                            <DatePicker
+                                                showTime={{
+                                                    hideDisabledOptions: true,
+                                                    defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                                                }}
+                                                placeholder="开始时间"
+                                                format='YYYY-MM-DD HH:mm:ss'
+                                                style={{ minWidth: 120, width: '100%' }}
+                                            />
+                                        )}
+                                    </Col>
+                                    <Col span={2} style={{ textAlign: 'center' }}>-</Col>
+                                    <Col span={11}>
+                                        {getFieldDecorator('endTime', {})(
+                                            <DatePicker
+                                                showTime={{
+                                                    hideDisabledOptions: true,
+                                                    defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                                                }}
+                                                placeholder="结束时间"
+                                                format='YYYY-MM-DD HH:mm:ss'
+                                                style={{ minWidth: 120, width: '100%' }}
+                                            />
+                                        )}
+                                    </Col>
+                                </Row>
+                            </Form.Item>
+                        </Col>
+                        <Col span={6} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>
+                    </Form></Row>
                 <Table
                     columns={columns}
                     // loading={loading}

@@ -60,6 +60,18 @@ function LocalScriptDrawer(props) {
     }
   }, [fileslist]);
 
+//   useEffect(() => {
+//     if (savetype !== '' && savetype !=='add' && (hostName !== undefined || hostName !== '')) {
+//       dispatch({
+//         type: 'softwaremanage/tofindCascade',
+//         payload: { hostName },
+//       }).then(res => {
+//         console.log(res, 'res')
+//         // setFindhostIp(res.data[0]);
+//       });
+//     }
+// }, [savetype]);
+
   const handleOk = () => {
     validateFields((err, values) => {
       if (!err) {
@@ -107,12 +119,12 @@ function LocalScriptDrawer(props) {
     });
   };
 
-  useEffect(() => {
-    return () => {
-      setSelectData([]);
-      setFindhostIp({});
-    };
-  }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     setSelectData([]);
+  //     setFindhostIp({});
+  //   };
+  // }, []);
 
   // useEffect(() => {
   //   setFindhostIp({});
@@ -204,7 +216,7 @@ function LocalScriptDrawer(props) {
                 message: '请输入 '
               },
             ],
-            initialValue: savetype === 'update' && hostIp === undefined ?  hostIp : findhostip.hostIp
+            initialValue: savetype !== '' && savetype !=='add' && (hostName !== undefined || hostName !== '') ?  hostIp : findhostip.hostIp
           })(<Input allowClear />)}
         </Form.Item>
         <Form.Item label="脚本名称">

@@ -228,7 +228,7 @@ function DynamicModal(props) {
                         <Input
                             type='number'
                             placeholder="请输入数字"
-                            defaultValue={text || 1}
+                            defaultValue={text}
                             onChange={e => handleFieldChange(e.target.value, 'dynamicSorts', record.key)}
                         />
                     );
@@ -321,7 +321,7 @@ function DynamicModal(props) {
                     // loading={loading}
                     columns={columns}
                     bordered
-                    rowKey={record => record.id}
+                    rowKey={record => record.id || record.softId}
                     pagination={false}
                 />
                 <Button
