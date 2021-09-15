@@ -182,7 +182,7 @@ function TobedealtForm(props) {
       loading === false &&
       taskData &&
       taskData.currentTask && taskData.currentTask.id &&
-      taskData.hisTasks
+      taskData.hisTasks && uservisible === false
     ) {
       const { providerId, scoreId, target1Id, target2Id, assessType } = currentTask;
       let comfirmScoreid;

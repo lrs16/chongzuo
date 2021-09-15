@@ -23,7 +23,7 @@ function RelevancyOrder(props) {
   const [title, setTitle] = useState('');
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [searchkey, setSearchKey] = useState('');
-  const [searchrow, setSearchRow] = useState([]);
+  const [searchrow, setSearchRow] = useState(undefined);
 
   const callback = (key) => {
     setActiveKey(key)
@@ -58,6 +58,8 @@ function RelevancyOrder(props) {
     });
   };
 
+  console.log(searchrow, 'searchrow')
+
   const changePage = page => {
     getlist(page - 1, paginations.pageSize);
     setPageinations({
@@ -89,7 +91,7 @@ function RelevancyOrder(props) {
   }
 
   useEffect(() => {
-    setSearchRow([]);
+    setSearchRow(undefined);
     getlist(paginations.current - 1, paginations.pageSize)
   }, [activeKey])
 
@@ -117,12 +119,15 @@ function RelevancyOrder(props) {
           };
           if (activeKey === 'release') {
             router.push({
-              pathname: `/ITSM/problemmanage/problemquery/detail`,
+              pathname: `/ITSM/releasemanage/query/details`,
               query: {
-                id: record.mainId,
-                taskName: record.status,
-                No: text,
+                Id: record.orderNo,
+                taskName: record.taskName,
               },
+              state: {
+                dynamicpath: true,
+                menuDesc: '发布工单详情',
+              }
             });
 
           };
@@ -164,15 +169,17 @@ function RelevancyOrder(props) {
               onChange={e => setSearchKey(e.target.value)}
               placeholder="请输入故障单号"
               allowClear
-              disabled={search}
             />
           </Col>
+
+
           {
-            !search && (
+            (
               <Col span={8}>
                 <Button type="primary" style={{ marginLeft: 16 }} onClick={() => handleSearch()} >本页查询</Button>
                 <Button style={{ marginLeft: 16 }} onClick={() => setSearchRow(undefined)} >重 置</Button>
-                {relation && (
+
+                {relation && !search && (
                   <Button
                     type="primary"
                     style={{ marginLeft: 8 }}
@@ -194,13 +201,13 @@ function RelevancyOrder(props) {
               onChange={e => setSearchKey(e.target.value)}
               placeholder="请输入发布单号"
               allowClear
-              disabled={search}
             />
           </Col>
+
           <Col span={8}>
             <Button type="primary" style={{ marginLeft: 16 }} onClick={() => handleSearch()} >本页查询</Button>
             <Button style={{ marginLeft: 16 }} onClick={() => setSearchRow(undefined)} >重 置</Button>
-            {relation && (
+            {relation && !search && (
               <Button
                 type="primary"
                 style={{ marginLeft: 8 }}
@@ -215,7 +222,7 @@ function RelevancyOrder(props) {
       <Table
         style={{ marginTop: 16 }}
         columns={columns}
-        dataSource={(searchrow && searchrow.length) ? searchrow : (list.rows || list)}
+        dataSource={(searchrow === undefined) ? (list.rows || list) : searchrow}
         rowKey={r => r.id}
         pagination={pagination}
       />

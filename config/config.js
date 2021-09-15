@@ -1182,7 +1182,7 @@ export default {
                               path: '/ITSM/dutymanage/dutyconfiguration/dutyaccordingsearch',
                               name: '排班查询',
                               icon: 'fork',
-                              component: './ITSM/Dutymanage/DutyConfiguration/DutyaccordingSearch'
+                              component: './ITSM/Dutymanage/DutyConfiguration/DutyaccordingSetting'
                             },
                           ]
                         },
@@ -1211,7 +1211,7 @@ export default {
                               path: '/ITSM/dutymanage/dutyhandovermanage/mydutyhandoversearch',
                               name: '值班交接查询',
                               icon: 'fork',
-                              component: './ITSM/Dutymanage/DutyHandovermanage/MydutyHandoverSearch'
+                              component: './ITSM/Dutymanage/DutyHandovermanage/MydutyHandover'
                             },
                           ]
                         },

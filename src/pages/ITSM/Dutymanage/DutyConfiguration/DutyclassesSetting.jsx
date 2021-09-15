@@ -1,6 +1,5 @@
 import React, {
   useState,
-  // useEffect 
 } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
@@ -60,6 +59,17 @@ function DutyclassesSetting(props) {
     },
     // dispatch,
   } = props;
+  const [time, setTime] = useState({
+    startValue: null,
+    endValue: null,
+    endOpen: false,
+  })
+
+  const [dutytime, setDutytime] = useState({
+    startValue: null,
+    endValue: null,
+    endOpen: false,
+  })
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   // const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
@@ -158,11 +168,9 @@ function DutyclassesSetting(props) {
               id={record.No}
               title='编辑班次'
               onSubmit={(submitdata => handleSubmit(submitdata))}
-              onDelete={(id) => {handleDelete(id)}}
+              onDelete={(id) => { handleDelete(id) }}
             >
-
               <a
-
               >
                 编辑
               </a>
@@ -180,7 +188,117 @@ function DutyclassesSetting(props) {
     }
   ];
 
- 
+  //  设置时间的范围
+  const disabledStartDate = (startValue, type) => {
+    if (type === 'create') {
+      const { endValue } = time;
+      if (!startValue || !endValue) {
+        return false;
+      }
+      return startValue.valueOf() > endValue.valueOf()
+    }
+
+    if (type === 'duty') {
+      const { endValue } = dutytime;
+      if (!startValue || !endValue) {
+        return false;
+      }
+      return startValue.valueOf() > endValue.valueOf()
+    }
+
+  }
+
+  const disabledEndDate = (endValue, type) => {
+    if (type === 'create') {
+      const { startValue } = time;
+      if (!endValue || !startValue) {
+        return false;
+      }
+      return endValue.valueOf() <= startValue.valueOf();
+    }
+
+    if (type === 'duty') {
+      const { startValue } = dutytime;
+      if (!endValue || !startValue) {
+        return false;
+      }
+      return endValue.valueOf() <= startValue.valueOf();
+    }
+
+  };
+
+
+  const onChange = (field, value, type) => {
+    if (type === 'create') {
+      const obj = time;
+      switch (field) {
+        case 'startValue':
+          obj.startValue = value;
+          setTime(obj);
+          break;
+        case 'endValue':
+          obj.endValue = value;
+          setTime(obj);
+          break;
+        default:
+          break;
+      }
+    }
+
+    if (type === 'duty') {
+      const obj = dutytime;
+      switch (field) {
+        case 'startValue':
+          obj.startValue = value;
+          setDutytime(obj);
+          break;
+        case 'endValue':
+          obj.endValue = value;
+          setDutytime(obj);
+          break;
+        default:
+          break;
+      }
+    }
+
+  };
+  const onStartChange = (value, type) => {
+    onChange('startValue', value, type);
+  };
+
+  const onEndChange = (value, type) => {
+    onChange('endValue', value, type);
+  };
+
+  const handleEndOpenChange = (open, type) => {
+    if (type === 'create') {
+      const obj = time;
+      obj.endOpen = open
+      setTime(obj);
+    } else {
+      const obj = dutytime;
+      obj.endOpen = open
+      setDutytime(obj);
+    }
+
+
+
+  };
+
+  const handleStartOpenChange = (open, type) => {
+    if (!open && type === 'create') {
+      const obj = time;
+      obj.endOpen = true;
+      setTime(obj);
+    }
+
+    if (!open && type === 'duty') {
+      const obj = dutytime;
+      obj.endOpen = true;
+      setDutytime(obj);
+    }
+  };
+
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -202,6 +320,9 @@ function DutyclassesSetting(props) {
                       initialValue: undefined,
                     })(
                       <DatePicker
+                        disabledDate={(value) => disabledStartDate(value, 'create')}
+                        onChange={(value) => onStartChange(value, 'create')}
+                        onOpenChange={(value) => handleStartOpenChange(value, 'create')}
                         showTime={{
                           hideDisabledOptions: true,
                           defaultValue: moment('00:00:00', 'HH:mm:ss'),
@@ -218,6 +339,10 @@ function DutyclassesSetting(props) {
                       initialValue: undefined,
                     })(
                       <DatePicker
+                        disabledDate={(value) => disabledEndDate(value, 'create')}
+                        onChange={(value) => onEndChange(value, 'create')}
+                        open={time.endOpen}
+                        onOpenChange={(value) => handleEndOpenChange(value, 'create')}
                         showTime={{
                           hideDisabledOptions: true,
                           defaultValue: moment('23:59:59', 'HH:mm:ss'),
@@ -253,6 +378,9 @@ function DutyclassesSetting(props) {
                       initialValue: undefined,
                     })(
                       <DatePicker
+                        disabledDate={(value) => disabledStartDate(value, 'duty')}
+                        onChange={(value) => onStartChange(value, 'duty')}
+                        onOpenChange={(value) => handleStartOpenChange(value, 'duty')}
                         showTime={{
                           hideDisabledOptions: true,
                           defaultValue: moment('00:00:00', 'HH:mm:ss'),
@@ -269,6 +397,10 @@ function DutyclassesSetting(props) {
                       initialValue: undefined,
                     })(
                       <DatePicker
+                        disabledDate={(value) => disabledEndDate(value, 'duty')}
+                        onChange={(value) => onEndChange(value, 'duty')}
+                        open={dutytime.endOpen}
+                        onOpenChange={(value) => handleEndOpenChange(value, 'duty')}
                         showTime={{
                           hideDisabledOptions: true,
                           defaultValue: moment('23:59:59', 'HH:mm:ss'),

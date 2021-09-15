@@ -94,7 +94,7 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
                     rules: [
                       {
                         required,
-                        message: '请选择是否申诉'
+                        message: '请输入申诉内容'
                       }
                     ],
                     initialValue: providerConfirmation.appealContent

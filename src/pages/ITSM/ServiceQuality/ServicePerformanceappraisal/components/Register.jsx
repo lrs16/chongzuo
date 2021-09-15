@@ -1,10 +1,7 @@
 import React, { useImperativeHandle, useRef, useState, useEffect } from 'react';
 import {
-  Table,
   Form,
   Input,
-  Button,
-  Popconfirm,
   message,
   DatePicker,
   Row,
@@ -695,7 +692,7 @@ const Register = React.forwardRef((props, ref) => {
           <Form.Item label="考核状态">
             {getFieldDecorator('status', {
               initialValue: register.status,
-            })(<Input disabled="true" />)}
+            })(<Input disabled={true} />)}
           </Form.Item>
         </Col>
 

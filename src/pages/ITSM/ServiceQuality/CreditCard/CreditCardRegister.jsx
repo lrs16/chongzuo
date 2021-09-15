@@ -57,7 +57,7 @@ function CreditCardRegister(props) {
     });
   };
 
-  
+
   const registerDetail = () => {
     dispatch({
       type: 'performanceappraisal/getScorecardetail',
@@ -165,6 +165,25 @@ function CreditCardRegister(props) {
 
 
   const changeTablesource = (editid, target) => {
+    // let timeout = null
+    // // if (timeout) clearTimeout(timeout)
+    // // timeout = setTimeout(() => {
+    // //   console.log(11)
+    // //   //在这里调用请求的方法
+    // //   // scorecardUpdateRemark(editid, target);
+    // // }, 1000)
+    // return () => {
+    //   // clearTimeout(timeout)
+    //   // timeout = setTimeout(() => {
+    //   //   console.log(454)
+    //   //   // scorecardUpdateRemark(editid, target);
+    //   // }, 1000)
+    //   clearTimeout(timeout);
+    //   timeout = setTimeout(() => {
+    //   // func;
+    //   console.log(99)
+    // }, 1000);
+    // }
     scorecardUpdateRemark(editid, target);
   };
 

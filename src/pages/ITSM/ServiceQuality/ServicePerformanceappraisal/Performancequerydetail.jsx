@@ -75,7 +75,7 @@ function Performancequerydetail(props) {
   };
 
   useEffect(() => {
-    if(assessNo) {
+    if (assessNo) {
       openFlow();
       gethisTask();
     }
@@ -310,7 +310,13 @@ function Performancequerydetail(props) {
       )}
 
       {tabActiveKey === 'associatedWorkorder' && (
-        <Relatedorder orderId={mainId} location={location} search={search} relation />
+        <Relatedorder
+          orderId={mainId}
+          location={location}
+          search={search}
+          assessNo={assessNo}
+          relation
+        />
       )}
     </PageHeaderWrapper>
   );

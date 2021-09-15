@@ -13,6 +13,7 @@ import {
 import MergeTable from '@/components/MergeTable';
 import { providerList, scoreListpage } from '../../services/quality';
 import moment from 'moment';
+import SysDict from '@/components/SysDict';
 import styles from '../../index.less';
 
 const { Search } = Input;
@@ -41,6 +42,7 @@ const Register = React.forwardRef((props, ref) => {
   const [scorelist, setScorelist] = useState([]); // 评分细则
   const [providerId, setProviderId] = useState(''); //  设置服务商的id
   const [spinloading, setSpinLoading] = useState(true);
+  const [selectdata, setSelectData] = useState('');
 
   useImperativeHandle(
     ref,
@@ -63,6 +65,10 @@ const Register = React.forwardRef((props, ref) => {
       target[fieldName] = e;
       setData(newData);
     }
+  }
+
+  const test = (e) => {
+    changeTablesource(e, e)
   }
 
   const handleTabledata = () => {
@@ -122,12 +128,6 @@ const Register = React.forwardRef((props, ref) => {
       dataIndex: 'score',
       key: 'score',
       align: 'center',
-      // render: (text, record) => {
-      //   if (record.second_object === '合计') {
-      //     return <span style={{ fontWeight: 700 }}>{text}</span>
-      //   }
-      //   return <span>{text}</span>
-      // }
     },
     {
       title: '扣分说明',
@@ -162,7 +162,7 @@ const Register = React.forwardRef((props, ref) => {
 
   // 选择服务商，信息回填
   const handleDisableduser = (v, opt, type) => {
-    const {id, providerName, scoreName, contractName, assessType, clauseName } = opt.props.disableuser;
+    const { id, providerName, scoreName, contractName, assessType, clauseName } = opt.props.disableuser;
     switch (type) {
       case 'provider':
         setFieldsValue({
@@ -247,9 +247,23 @@ const Register = React.forwardRef((props, ref) => {
     }
   }
 
+  const getTypebyTitle = title => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.title === title)[0].children;
+    }
+    return []
+  };
+
+  const grade = getTypebyTitle('评价等级');
 
   return (
     <>
+      <SysDict
+        typeid="1410413049587699713"
+        commonid="1354288354950123522"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'none' }}
+      />
       {
         loading !== true && (
           <Row gutter={24} style={{ paddingTop: 24 }}>
@@ -440,7 +454,7 @@ const Register = React.forwardRef((props, ref) => {
                       // initialValue: (register.assessType === '1') ? '功能开发' : (register.assessType === '2') ? '系统运维' : ''
                       initialValue: (register.assessType === '1') ? '功能开发' : '系统运维'
                     })
-                      (<Input disabled='true' />)
+                      (<Input disabled={true} />)
                   }
                 </Form.Item>
               </Col>
@@ -552,31 +566,27 @@ const Register = React.forwardRef((props, ref) => {
                       </Form.Item>
                     </Col>
 
-                    <Col span={24} {...formItemdeLayout}>
-                      <div style={{ textIndent: '4em' }}>
-                        <p>注：1.评价等级：A: 【90-100）分、B：【80-90）分、C:【60-80）分、D：【0-60）</p>
-                        <p style={{ textIndent: '6em' }}>    2.每季度第一个月上旬开展评价；作为乙方单位合同履约评价的依据。</p>
-                      </div>
+                    {
+                      grade && grade.length && (
+                        <Col span={24} {...formItemdeLayout}>
+                          <div style={{ textIndent: '4em' }}>
+                            <p>注：{grade[0].title}</p>
+                            <p style={{ textIndent: '6em' }}>{grade[1].title} </p>
+                          </div>
+                        </Col>
+                      )
+                    }
 
-                    </Col>
+
+                    {/* <Input  onChange={e => test(e.target.value)}/> */}
 
                   </>
                 )
               }
-
-
-
-
-
             </Form>
           </Row>
         )
       }
-
-
-
-
-
     </>
   )
 })

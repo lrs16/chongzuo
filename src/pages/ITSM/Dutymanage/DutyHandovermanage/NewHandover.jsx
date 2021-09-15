@@ -7,8 +7,18 @@ import router from 'umi/router';
 import { Button, Card } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import EditContext from '@/layouts/MenuContext';
-import Registrat from './components/Content';
+import Registrat from './components/Registrat';
 
+const forminladeLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 2 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 22 },
+  },
+};
 function NewHandover(props) {
     const pagetitle = props.route.name;
     const {
@@ -18,7 +28,6 @@ function NewHandover(props) {
         tabdata
     } = props;
 
-    console.log(tabdata, 'tabdata')
 
     const ContentRef = useRef(null);
 
@@ -33,8 +42,7 @@ function NewHandover(props) {
     const handleclose = () => { // 返回
         router.push({
             pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover`,
-            query: { pathpush: true },
-            state: { cache: false }
+            query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true },
         });
     };
 
@@ -67,16 +75,30 @@ function NewHandover(props) {
                 style={{ marginRight: 8 }}
                 onClick={() => handleSave()}
             >
+                导出WORD
+            </Button>
+            <Button
+                type="primary"
+                style={{ marginRight: 8 }}
+                onClick={() => handleSave()}
+            >
                 保存
             </Button>
-            <Button onClick={handleclose}>返回</Button>
+            <Button
+                type="primary"
+                style={{ marginRight: 8 }}
+                onClick={() => handleSave()}
+            >
+                确认交班
+            </Button>
+            <Button onClick={handleclose}>关闭</Button>
         </>
     )
 
     return (
         <PageHeaderWrapper title={pagetitle} extra={extrabutton}>
             <Card>
-              <Registrat />
+              <Registrat forminladeLayout={forminladeLayout}/>
             </Card>
         </PageHeaderWrapper>
     );

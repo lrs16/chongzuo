@@ -75,7 +75,7 @@ export default {
       if (response.code === 200) {
         message.success(response.msg);
         router.push({
-          pathname: '/ITSM/problemmanage/besolved',
+          pathname: '/ITSM/problemmanage/registration',
           query: {
             tabid: sessionStorage.getItem('tabid'),
             closecurrent: true,

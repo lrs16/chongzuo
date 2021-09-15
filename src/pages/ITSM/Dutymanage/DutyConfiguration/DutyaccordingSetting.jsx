@@ -104,7 +104,7 @@ function DutyaccordingSetting(props) {
             }}
           >
             <li key={item.content}>
-           
+
               {/* <Badge status={item.type} text={item.content} /> */}
               <span>{item.content}</span>
             </li>
@@ -120,23 +120,27 @@ function DutyaccordingSetting(props) {
           <Sider theme="light">ff</Sider>
 
           <Content>
-            <div style={{ backgroundColor: 'white', paddingBottom: 7 }}>
-              <Button type="primary" style={{ marginRight: 8 }}>
-                新增
-              </Button>
-              <Button type="primary" style={{ marginRight: 8 }}>
-                下载导入模板
-              </Button>
-              <Button type="primary" style={{ marginRight: 8 }}>
-                导入
-              </Button>
-              <Button type="primary" style={{ marginRight: 8 }}>
-                导出
-              </Button>
-              <Button type="danger" ghost>
-                删除
-              </Button>
-            </div>
+            {
+              pagetitle === '排班设置' && (
+                <div style={{ backgroundColor: 'white', paddingBottom: 7 }}>
+                  <Button type="primary" style={{ marginRight: 8 }}>
+                    新增
+                  </Button>
+                  <Button type="primary" style={{ marginRight: 8 }}>
+                    下载导入模板
+                  </Button>
+                  <Button type="primary" style={{ marginRight: 8 }}>
+                    导入
+                  </Button>
+                  <Button type="primary" style={{ marginRight: 8 }}>
+                    导出
+                  </Button>
+                  <Button type="danger" ghost>
+                    删除
+                  </Button>
+                </div>
+              )
+            }
 
             <div style={{ backgroundColor: 'white' }}>
               行政班:（09:00-17:30 ） 早班:（ 09:00-16:00 ） 中班:（16:00-22:00）

@@ -1,6 +1,16 @@
 import React, { useState } from 'react';
-import { Drawer, Form, Input, Button, TimePicker, DatePicker, Switch } from 'antd';
+import {
+  Drawer,
+  Form,
+  Input,
+  Button,
+  TimePicker,
+  DatePicker,
+  Switch,
+  Select
+} from 'antd';
 import moment from 'moment';
+import SysDict from '@/components/SysDict';
 
 const formItemLayout = {
   labelCol: {
@@ -15,8 +25,15 @@ const formItemLayout = {
 
 let startTime;
 let endTime;
+let minuteStart;
+let minuteEnd;
 
-const withClick = (element, handleClick = () => {}) => {
+const { Option } = Select;
+const Hours = Array.from(Array(24), (v, k) => k);
+const Minutes = Array.from(Array(60), (v, k) => k);
+const Seconds = Array.from(Array(60), (v, k) => k);
+
+const withClick = (element, handleClick = () => { }) => {
   return <element.type {...element.props} onClick={handleClick} />;
 };
 
@@ -30,6 +47,7 @@ function AddDutyclassesSetting(props) {
     id,
     onDelete,
   } = props;
+  const [selectdata, setSelectData] = useState('');
 
   const required = true;
 
@@ -77,7 +95,6 @@ function AddDutyclassesSetting(props) {
   const startdisabledHours = () => {
     if (endTime) {
       const hours = endTime.split(':');
-      console.log('hours: ', hours);
       const nums = [];
       for (let i = 0; i < 24 - hours[0]; i += 1) {
         nums.push(Number(hours[0]) + i);
@@ -88,16 +105,56 @@ function AddDutyclassesSetting(props) {
     }
   };
 
-  const disabledMinutes = (time1, time2, time3) => {};
+  const disabledMinutes = (h, time2, time3) => { 
+    if (endTime) {
+      if (h < endTime.hour()) return [];
+      const m = endTime.minute();
+      return Minutes.slice(m, Minutes.length - 1);
+    }
+    return [];
+  };
 
+  const getTypebyTitle = title => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.title === title)[0].children;
+    }
+    return []
+  };
+
+  const teamname = getTypebyTitle('班组名称');
   return (
     <>
       {withClick(children, handleopenClick)}
+      <SysDict
+        typeid="1438058740916416514"
+        commonid="1354288354950123522"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'none' }}
+      />
       <Drawer visible={visible} title={title} width={720} centered="true">
         <Form {...formItemLayout}>
-          <Form.Item label="班次编号">{getFieldDecorator('NO', {})(<Input disabled />)}</Form.Item>
+          <Form.Item label="班次编号">
+            {getFieldDecorator('NO', {})(<Input disabled />)}
+          </Form.Item>
 
-          <Form.Item label="班次名称">{getFieldDecorator('name', {})(<Input />)}</Form.Item>
+          <Form.Item label="班组名称">
+            {getFieldDecorator('groupname', {})(
+              <Select placeholder="请选择">
+                {teamname.map(obj => [
+                  <Option
+                    key={obj.dict_code}
+                    values={obj.dict_code}
+                  >
+                    {obj.title}
+                  </Option>
+                ])}
+              </Select>
+            )}
+          </Form.Item>
+
+          <Form.Item label="班次名称">
+            {getFieldDecorator('name', {})(<Input />)}
+          </Form.Item>
 
           <Form.Item label="值班时段">
             {getFieldDecorator(
@@ -111,7 +168,12 @@ function AddDutyclassesSetting(props) {
                   onChange={startOnchange}
                 />
                 <span style={{ margin: 'auto 3px' }}>-</span>
-                <TimePicker disabledHours={disabledHours} onChange={endOnchange} format="HH:mm" />
+                <TimePicker
+                  disabledHours={disabledHours}
+                  // disabledMinutes={disabledMinutes}
+                  onChange={endOnchange}
+                  format="HH:mm"
+                />
               </div>,
             )}
           </Form.Item>

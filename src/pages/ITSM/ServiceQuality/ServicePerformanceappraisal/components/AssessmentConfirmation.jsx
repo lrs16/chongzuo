@@ -103,7 +103,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
               {getFieldDecorator('isAppeal', {
                 initialValue: assessmentConfirmation.isAppeal,
               })(
-                <Radio.Group disabled="true">
+                <Radio.Group disabled={true}>
                   <Radio value="1">是</Radio>
                   <Radio value="0">否</Radio>
                 </Radio.Group>,
@@ -116,7 +116,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
               {getFieldDecorator('appealContent', {
                 initialValue: assessmentConfirmation.appealContent,
               })(
-                <TextArea autosize={{ minRows: 3 }} disabled="true" placeholder="请输入申诉内容" />,
+                <TextArea autosize={{ minRows: 3 }} disabled={true} placeholder="请输入申诉内容" />,
               )}
             </Form.Item>
           </Col>

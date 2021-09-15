@@ -712,10 +712,20 @@ function MydutyHandover(props) {
         </Row>
 
         <div>
-          <Button type="primary" style={{ marginRight: 8 }} onClick={() => newhandover()}>新增</Button>
+          {
+            pagetitle === '我的值班交接' && (
+              <Button type="primary" style={{ marginRight: 8 }} onClick={() => newhandover()}>新增</Button>
+            )
+          }
+         
           <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleDelete()}>删除</Button>
           <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>导出数据</Button>
-          <Button type="primary">接班</Button>
+          {
+            pagetitle === '我的值班交接' && (
+              <Button type="primary">接班</Button>
+            )
+          }
+         
         </div>
         <div style={{ textAlign: 'right', marginBottom: 8 }}>
           <Popover

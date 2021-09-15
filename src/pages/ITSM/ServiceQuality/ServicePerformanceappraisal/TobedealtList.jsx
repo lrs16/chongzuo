@@ -551,9 +551,9 @@ function TobedealtList(props) {
     switch (type) {
       case 'provider':
         setFieldsValue({
-          provider: providerName, // 服务商
+          providerName, // 服务商
           providerId: id, // 服务商id
-          contract: '',
+          contractName:'',
           contractId: '',
         });
         getContrractname(id);
@@ -673,6 +673,8 @@ function TobedealtList(props) {
 
   const record = {
     assessNo: '',
+    providerId:'',
+    providerName:'',
     currentTaskName: '',
     provider: '',
     contractName: '',
@@ -681,6 +683,7 @@ function TobedealtList(props) {
     directorName: '',
     assessType: '',
     target1Name: '',
+    clauseId:'',
     assessContent: '',
     target1Id: '',
     target2Name: '',
@@ -708,7 +711,6 @@ function TobedealtList(props) {
     finallyConfirmerName: '',
     finallyConfirmer: '',
     finallyConfirmTime: '',
-    providerId: '',
     paginations,
     directorReviewerName: '',
   };
@@ -903,36 +905,46 @@ function TobedealtList(props) {
         });
         getTarget1(key);
         break;
+      case 'contract':
+        setFieldsValue({
+          contractName: key,
+          contractId: value,
+        });
+        break;
       case 'target1Name':
         setFieldsValue({
           target1Name: value,
           target1Id: key,
           target2Name: '',
           target2Id: '',
+          clauseName:'',
         });
         getTarget2(key);
         setTarget2Type(key);
         break;
       case 'target2Name':
+        getclausedetail(key, scoreId);
         setFieldsValue({
           target2Name: value,
           target2Id: key,
+          clauseId:'',
           clauseName: '',
         });
-        getclausedetail(key, scoreId);
         break;
-      case 'clause':
+      case 'clause': {
+        const {
+          props: {
+            children: {
+              props: { children },
+            },
+          },
+        } = option;
         setFieldsValue({
-          clauseId: key,
+          clauseId: value,
+          assessValue: children[3].props.children,
         });
         break;
-      case 'contractId':
-        setFieldsValue({
-          contractId: value,
-          contractName: key,
-        });
-        break;
-
+      }
       default:
         break;
     }
@@ -1182,8 +1194,8 @@ function TobedealtList(props) {
 
               <Col span={8}>
                 <Form.Item label="服务商">
-                  {getFieldDecorator('provider', {
-                    initialValue: cacheinfo.provider,
+                  {getFieldDecorator('providerName', {
+                    initialValue: cacheinfo.providerName,
                   })(
                     <AutoComplete
                       dataSource={disableduser}
@@ -1240,8 +1252,8 @@ function TobedealtList(props) {
               {performanceLeader && performanceLeader.length && (
                 <Col span={8}>
                   <Form.Item label="责任人">
-                    {getFieldDecorator('directorId', {
-                      initialValue: cacheinfo.directorId,
+                    {getFieldDecorator('directorName', {
+                      initialValue: cacheinfo.directorName,
                     })(
                       <Select
                         onSelect={(value, option) => selectOnchange(value, option, 'director')}
@@ -1259,8 +1271,8 @@ function TobedealtList(props) {
 
               <Col span={8} style={{ display: 'none' }}>
                 <Form.Item label="责任人id">
-                  {getFieldDecorator('directorName', {
-                    initialValue: cacheinfo.directorName,
+                  {getFieldDecorator('directorId', {
+                    initialValue: cacheinfo.directorId,
                   })(<Input />)}
                 </Form.Item>
               </Col>
@@ -1350,8 +1362,8 @@ function TobedealtList(props) {
 
               <Col span={16}>
                 <Form.Item label="详细条款" {...forminladeLayout}>
-                  {getFieldDecorator('clauseName', {
-                    initialValue: cacheinfo.clauseName,
+                  {getFieldDecorator('clauseId', {
+                    initialValue: cacheinfo.clauseId,
                   })(
                     <Select
                       onChange={(value, option) => handleChange(value, option, 'clause')}
@@ -1370,6 +1382,14 @@ function TobedealtList(props) {
                       ])}
                     </Select>,
                   )}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{display:'none'}}>
+              <Form.Item label="得分">
+                  {getFieldDecorator('clauseName', {
+                    initialValue: cacheinfo.clauseName,
+                  })(<Input />)}
                 </Form.Item>
               </Col>
 
