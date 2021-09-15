@@ -118,7 +118,7 @@ function SoftwareDrawer(props) {
                         ))}
                     </Select>)}
                 </Form.Item>
-                <Form.Item label="主机名称">
+                <Form.Item label="设备名称">
                     {getFieldDecorator('hostName', {
                         rules: [
                             {

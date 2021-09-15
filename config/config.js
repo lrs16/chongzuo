@@ -1233,7 +1233,8 @@ export default {
                     {
                       path: '/automation',
                       // redirect: '/automation/STT/hostlist',
-                      redirect: '/automation/automatedjob/jobmanagement/jobconfig'
+                      // redirect: '/automation/automatedjob/jobmanagement/jobconfig'
+                      redirect: '/automation/objectmanage/equip'
                     },
                     // {
                     //   path: '/automation/monitor',

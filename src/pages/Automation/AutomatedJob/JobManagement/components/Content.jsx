@@ -4,7 +4,7 @@ import { Form, Input, Radio, Button,} from 'antd';
 import DictLower from '@/components/SysDict/DictLower';
 import SystemScriptList from './SystemScriptList';
 import TaskObjectList from './TaskObjectList';
-import CronExpression from './CronExpression';
+import CronGenerator from './CronExpression';
 
 const { TextArea } = Input;
 
@@ -131,7 +131,7 @@ const Content = forwardRef((props, ref) => {
         <Form.Item label="执行方式">
           {getFieldDecorator('taskModes', {
             rules: [{ required }],
-            initialValue: formrecord.taskModes || '0',
+            initialValue: formrecord.taskModes || '1',
           })(<RadioGroup onChange={handleAdopt}>
             {taskmodesmap.map(obj => (
               <Radio key={obj.key} value={obj.dict_code}>
@@ -146,7 +146,8 @@ const Content = forwardRef((props, ref) => {
               rules: [{ required, message: '请输入core表达式' }],
               initialValue: formrecord.taskCores,
             })(
-              <CronExpression />
+              <CronGenerator GetCronData={(v) => { setFieldsValue({ taskCores: v }); console.log(v)}}
+              />
             )}
           </Form.Item>)
         }
@@ -161,7 +162,7 @@ Content.defaultProps = {
     scriptIds: [""],
     agentIds: [""],
     taskRemarks: '',
-    taskModes: '',
+    taskModes: '1',
     taskCores: ''
   }
 }

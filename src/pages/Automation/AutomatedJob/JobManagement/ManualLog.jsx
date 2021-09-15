@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
-// import { connect } from 'dva';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'dva';
 // import router from 'umi/router';
 import moment from 'moment';
+import Link from 'umi/link';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Table, Card, Button, Form, Input, Select, Row, Col, DatePicker } from 'antd';
+import { Table, Card, Button, Form, Input, Tooltip, Row, Col, DatePicker, Badge } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 // import DictLower from '@/components/SysDict/DictLower';
 
 // const { Option } = Select;
+const operations = <Button type="primary">
+    <Link to="/automation/automatedjob/jobmanagement/jobexecute">返回列表</Link>
+</Button>;
 
 const formItemLayout = {
     labelCol: {
@@ -20,85 +24,90 @@ const formItemLayout = {
     },
 };
 
+const colormap = new Map([
+    ['执行失败', 'error'],
+    ['执行成功', 'success'],
+]);
+
 function ManualLog(props) {
     const pagetitle = props.route.name;
     const {
-        // loading,
-        // dispatch,
+        loading,
+        dispatch,
+        location,
         location: {
             query: {
                 Id,
             }
         },
-        // autotasklist,
+        autotasklogslist,
         form: {
             getFieldDecorator,
-            // getFieldsValue,
+            getFieldsValue,
             resetFields,
         },
     } = props;
 
-    console.log(Id, 'Id')
-
     // const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
-    // const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+    const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
 
-    // const searchdata = (page, size) => {
-    //     const values = getFieldsValue();
-    //     values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
-    //     values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
-    //     dispatch({
-    //         type: 'autotask/findautotaskList',
-    //         payload: {
-    //             values,
-    //             pageNum: page,
-    //             pageSize: size,
-    //         },
-    //     });
-    // };
+    const searchdata = (page, size) => {
+        const values = getFieldsValue();
+        values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
+        values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
+        dispatch({
+            type: 'autotask/findlistPageAutoTaskLogs',
+            payload: {
+                values,
+                taskId: Id,
+                pageNum: page,
+                pageSize: size,
+            },
+        });
+    };
 
-    // useEffect(() => {
-    //     searchdata(1, 15);
-    // }, [location]);
+    useEffect(() => {
+        searchdata(1, 15);
+    }, [location]);
 
     const handleReset = () => {
         resetFields();
-        // searchdata(1, 15)
-        // setPageinations({ current: 1, pageSize: 15 });
+        searchdata(1, 15)
+        setPageinations({ current: 1, pageSize: 15 });
     };
 
-    // const onShowSizeChange = (page, size) => {
-    //     searchdata(page, size);
-    //     setPageinations({
-    //         ...paginations,
-    //         pageSize: size,
-    //     });
-    // };
+    const onShowSizeChange = (page, size) => {
+        searchdata(page, size);
+        setPageinations({
+            ...paginations,
+            pageSize: size,
+        });
+    };
 
-    // const changePage = page => {
-    //     searchdata(page, paginations.pageSize);
-    //     setPageinations({
-    //         ...paginations,
-    //         current: page,
-    //     });
-    // };
+    const changePage = page => {
+        searchdata(page, paginations.pageSize);
+        setPageinations({
+            ...paginations,
+            current: page,
+        });
+    };
 
-    // const pagination = {
-    //     showSizeChanger: true,
-    //     onShowSizeChange: (page, size) => onShowSizeChange(page, size),
-    //     current: paginations.current,
-    //     pageSize: paginations.pageSize,
-    //     total: autotasklist.total,
-    //     showTotal: total => `总共  ${total}  条记录`,
-    //     onChange: page => changePage(page),
-    // };
+    const pagination = {
+        showSizeChanger: true,
+        onShowSizeChange: (page, size) => onShowSizeChange(page, size),
+        current: paginations.current,
+        pageSize: paginations.pageSize,
+        total: autotasklogslist.total,
+        showTotal: total => `总共  ${total}  条记录`,
+        onChange: page => changePage(page),
+    };
 
     const handleSearch = () => {
-        // setPageinations({
-        //     ...paginations,
-        //     current: 1,
-        // });
-        // searchdata(1, paginations.pageSize);
+        setPageinations({
+            ...paginations,
+            current: 1,
+        });
+        searchdata(1, paginations.pageSize);
     };
 
     // 查询
@@ -119,57 +128,91 @@ function ManualLog(props) {
 
     const columns = [
         {
+            title: '序号',
+            dataIndex: 'key',
+            key: 'key',
+            width: 60,
+            render: (text, record, index) => {
+                return <>{`${index + 1}`}</>;
+            },
+        },
+        {
             title: '作业批次',
-            dataIndex: 'taskName',
-            key: 'taskName',
+            dataIndex: 'batchNum',
+            key: 'batchNum',
+            width: 200,
+        },
+        {
+            title: '区域',
+            dataIndex: 'agentZone',
+            key: 'agentZone',
             width: 150,
         },
         {
-            title: '作业对象数',
-            dataIndex: 'taskObjectNum',
-            key: 'taskObjectNum',
-            width: 150,
+            title: '设备名称',
+            dataIndex: 'hostName',
+            key: 'hostName',
+            width: 250,
         },
         {
-            title: '作业脚本',
-            dataIndex: 'taskScriptNum',
-            key: 'taskScriptNum',
-            width: 150,
+            title: '设备IP',
+            dataIndex: 'agentHost',
+            key: 'agentHost',
+            width: 200,
         },
         {
-            title: '执行结果',
-            dataIndex: 'taskRemarks',
-            key: 'taskRemarks',
+            title: '执行脚本',
+            dataIndex: 'scriptcont',
+            key: 'scriptcont',
             width: 150,
         },
         {
             title: '执行返回',
-            dataIndex: 'taskModes',
-            key: 'taskModes',
-            width: 200,
+            dataIndex: 'executeResult',
+            key: 'executeResult',
+            width: 250,
+            ellipsis: true,
+    render: (text) => {
+      return (
+        <Tooltip placement="topLeft" title={text}>
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
+        },
+        {
+            title: '执行结果',
+            dataIndex: 'executeStatus',
+            key: 'executeStatus',
+            width: 150,
+            render: (text, record) => (
+                <span>
+                    <Badge status={colormap.get(record.executeStatus)} text={text} />
+                </span>
+            ),
         },
         {
             title: '执行时长',
-            dataIndex: 'createTime',
-            key: 'createTime',
+            dataIndex: 'executeCompleteTime',
+            key: 'executeCompleteTime',
             width: 200,
         },
         {
             title: '执行人',
-            dataIndex: 'updateBy',
-            key: 'updateBy',
+            dataIndex: 'executeBy',
+            key: 'executeBy',
             width: 120,
         },
         {
             title: '执行时间',
-            dataIndex: 'updateTime',
-            key: 'updateTime',
+            dataIndex: 'executeIssueTime',
+            key: 'executeIssueTime',
             width: 250,
         }
     ];
 
     return (
-        <PageHeaderWrapper title={pagetitle}>
+        <PageHeaderWrapper title={pagetitle} extra={operations}>
             {/* <DictLower
                 typeid="200000000000001001"
                 ChangeSelectdata={newvalue => setSelectData(newvalue)}
@@ -178,16 +221,44 @@ function ManualLog(props) {
             <Card>
                 <Row gutter={16}>
                     <Form {...formItemLayout} onSubmit={handleSearch}>
-                        <Col span={5}>
-                            <Form.Item label="执行结果">
-                                {getFieldDecorator('taskName', {
+                        <Col span={8}>
+                            <Form.Item label="作业批次">
+                                {getFieldDecorator('batchNum', {
                                     initialValue: '',
                                 })(<Input placeholder="请输入" allowClear />)}
                             </Form.Item>
                         </Col>
-                        <Col span={5}>
+                        <Col span={8}>
+                            <Form.Item label="区域">
+                                {getFieldDecorator('agentZone', {
+                                    initialValue: '',
+                                })(<Input placeholder="请输入" allowClear />)}
+                            </Form.Item>
+                        </Col>
+                        <Col span={8}>
+                            <Form.Item label="设备名称">
+                                {getFieldDecorator('hostName', {
+                                    initialValue: '',
+                                })(<Input placeholder="请输入" allowClear />)}
+                            </Form.Item>
+                        </Col>
+                        <Col span={8}>
+                            <Form.Item label="主机IP">
+                                {getFieldDecorator('agentHost', {
+                                    initialValue: '',
+                                })(<Input placeholder="请输入" allowClear />)}
+                            </Form.Item>
+                        </Col>
+                        <Col span={8}>
+                            <Form.Item label="执行结果">
+                                {getFieldDecorator('executeResult', {
+                                    initialValue: '',
+                                })(<Input placeholder="请输入" allowClear />)}
+                            </Form.Item>
+                        </Col>
+                        <Col span={8}>
                             <Form.Item label="执行人">
-                                {getFieldDecorator('createByNameExt', {
+                                {getFieldDecorator('executeBy', {
                                     initialValue: '',
                                 })(<Input placeholder="请输入" allowClear />)}
                             </Form.Item>
@@ -225,14 +296,14 @@ function ManualLog(props) {
                                 </Row>
                             </Form.Item>
                         </Col>
-                        <Col span={6} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>
+                        <Col span={8} style={{ marginTop: 4, marginLeft: '8.1%' }}>{extra}</Col>
                     </Form></Row>
                 <Table
                     columns={columns}
-                    // loading={loading}
-                    // dataSource={autotasklist.rows}
+                    loading={loading}
+                    dataSource={autotasklogslist.rows}
                     rowKey={record => record.id}
-                    // pagination={pagination}
+                    pagination={pagination}
                     scroll={{ x: 1300 }}
                 />
             </Card>
@@ -240,10 +311,9 @@ function ManualLog(props) {
     );
 }
 
-export default Form.create({})(ManualLog);
-// (
-//     connect(({ autotask, loading }) => ({
-//         autotasklist: autotask.autotasklist,
-//         loading: loading.models.autotask,
-//     }))(ManualLog),
-// );
+export default Form.create({})(
+    connect(({ autotask, loading }) => ({
+        autotasklogslist: autotask.autotasklogslist,
+        loading: loading.models.autotask,
+    }))(ManualLog),
+);

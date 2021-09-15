@@ -126,13 +126,13 @@ function SoftTTExecute(props) {
       width: 120,
     },
     {
-      title: '主机名称',
+      title: '设备名称',
       dataIndex: 'hostName',
       key: 'hostName',
       width: 180,
     },
     {
-      title: 'IP地址',
+      title: '设备IP',
       dataIndex: 'hostIp',
       key: 'hostIp',
       width: 200,
@@ -284,7 +284,7 @@ function SoftTTExecute(props) {
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item label="主机名称">
+              <Form.Item label="设备名称">
                 {getFieldDecorator('hostName', {
                   initialValue: '',
                 })(<Input placeholder="请输入" allowClear />)}

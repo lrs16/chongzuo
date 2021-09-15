@@ -168,7 +168,7 @@ function softwareConfig(props) {
             width: 120,
         },
         {
-            title: '主机名称',
+            title: '设备名称',
             dataIndex: 'hostName',
             key: 'hostName',
             width: 180,
@@ -328,7 +328,7 @@ function softwareConfig(props) {
                             </Form.Item>
                         </Col>
                         <Col span={8}>
-                            <Form.Item label="主机名称">
+                            <Form.Item label="设备名称">
                                 {getFieldDecorator('hostName', {
                                     initialValue: '',
                                 })(<Input placeholder="请输入" allowClear />)}

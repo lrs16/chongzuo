@@ -155,7 +155,7 @@ class BatchAdd extends Component {
                     }
               </Form.Item>
               <Alert 
-                message={hostId?'主机提交格式：xxx(主机名称) , xxx(主机IP); xxx(主机名称) , xxx(主机IP);注:分号需在英文模式下':'进程提交格式:xxx(进程代码) , xxx(进程名称); xxx(进程代码) , xxx(进程名称);分号需在英文模式下'} 
+                message={hostId?'主机提交格式：xxx(设备名称) , xxx(主机IP); xxx(设备名称) , xxx(主机IP);注:分号需在英文模式下':'进程提交格式:xxx(进程代码) , xxx(进程名称); xxx(进程代码) , xxx(进程名称);分号需在英文模式下'} 
                 banner 
                 style={{width:'100%'}}
                 />    

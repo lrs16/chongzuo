@@ -14,6 +14,7 @@ import {
   updExamineTask, // 审批作业方案 接口编辑记录
   getexamineTaskList, // 审批作业方案历史表
   queryrunTask, // 运行作业脚本
+  querylistPageAutoTaskLogs, // 执行日志list分页展示数据
 } from '../services/api';
 
 export default {
@@ -25,6 +26,7 @@ export default {
     taskscriptlist: {},
     // getusetaskobjectandagentlist: [], // 获取选中的数据
     editinfo: {},
+    autotasklogslist: {},
   },
 
   effects: {
@@ -214,8 +216,23 @@ export default {
       return yield call(submitTask, values);
     },
 
-    *toqueryrunTask({ payload: { taskId } }, { call }) {
+    *toqueryrunTask({ payload: { taskId } }, { call }) { // 运行脚本
       return yield call(queryrunTask, taskId);
+    },
+
+    *findlistPageAutoTaskLogs({ payload: { values, pageNum, pageSize } }, { call, put }) { // 执行日志数据
+      const response = yield call(querylistPageAutoTaskLogs, values, pageNum, pageSize);
+      yield put({
+        type: 'clearcache',
+      });
+      if (response.code === 200) {
+        yield put({
+          type: 'autotasklogslist',
+          payload: response.data,
+        });
+      } else {
+        message.error(response.msg)
+      }
     },
   },
 
@@ -224,6 +241,7 @@ export default {
       return {
         ...state,
         autotasklist: {},
+        autotasklogslist: {},
         editinfo: {},
         editcheckinfo: {},
       };
@@ -268,6 +286,13 @@ export default {
       return {
         ...state,
         editcheckinfo: action.payload,
+      };
+    },
+
+    autotasklogslist(state, action) {
+      return {
+        ...state,
+        autotasklogslist: action.payload,
       };
     },
   },

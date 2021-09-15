@@ -165,7 +165,7 @@ class HostManage extends Component {
 
     const columns = [
       {
-        title: '主机名称',
+        title: '设备名称',
         dataIndex: 'hostsName',
         key: 'hostsName',
         width: 200,

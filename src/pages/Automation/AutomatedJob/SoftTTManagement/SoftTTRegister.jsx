@@ -1,14 +1,14 @@
 import React, {
-  // useEffect,
+  useEffect,
   useState
 } from 'react';
-// import { connect } from 'dva';
+import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
-import { Table, Card, Button, Form, Input, Select, Row, Col, DatePicker, Badge } from 'antd';
+import { Table, Card, Button, Form, Input, Select, Row, Col, DatePicker } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
-import DictLower from '@/components/SysDict/DictLower';
+// import DictLower from '@/components/SysDict/DictLower';
 
 const { Option } = Select;
 
@@ -23,16 +23,17 @@ const formItemLayout = {
   },
 };
 
-const colormap = new Map([
-  ['停用', 'error'],
-  ['在用', 'success'],
-]);
+// const colormap = new Map([
+//   ['停用', 'error'],
+//   ['在用', 'success'],
+// ]);
 
 function SoftTTRegister(props) {
   const pagetitle = props.route.name;
   const {
     dispatch,
-    // location,
+    location,
+    autosoftworklist,
     form: {
       getFieldDecorator,
       getFieldsValue,
@@ -41,17 +42,17 @@ function SoftTTRegister(props) {
   } = props;
 
   const [expand, setExpand] = useState(false);
-  const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
+  // const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
 
   const searchdata = (page, size) => {
     const values = getFieldsValue();
-    // values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
-    // values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
-    // values.startUpdateTime = values.startUpdateTime ? moment(values.startUpdateTime).format('YYYY-MM-DD HH:mm:ss') : '';
-    // values.endUpdateTime = values.endUpdateTime ? moment(values.endUpdateTime).format('YYYY-MM-DD HH:mm:ss') : '';
+    values.createStartTime = values.createStartTime ? moment(values.createStartTime).format('YYYY-MM-DD HH:mm:ss') : '';
+    values.createEndTime = values.createEndTime ? moment(values.createEndTime).format('YYYY-MM-DD HH:mm:ss') : '';
+    values.examineStartTime = values.examineStartTime ? moment(values.examineStartTime).format('YYYY-MM-DD HH:mm:ss') : '';
+    values.examineEndTime = values.examineEndTime ? moment(values.examineEndTime).format('YYYY-MM-DD HH:mm:ss') : '';
     dispatch({
-      type: 'xxx',
+      type: 'autosoftwork/findautosoftworkList',
       payload: {
         values,
         pageNum: page,
@@ -60,9 +61,9 @@ function SoftTTRegister(props) {
     });
   };
 
-  // useEffect(() => {
-  //   searchdata(1, 15);
-  // }, [location]);
+  useEffect(() => {
+    searchdata(1, 15);
+  }, [location]);
 
   const handleReset = () => {
     resetFields();
@@ -70,12 +71,13 @@ function SoftTTRegister(props) {
     setPageinations({ current: 1, pageSize: 15 });
   };
 
-  const newRegist = (edittype, record) => {
-    if (edittype === 'edit') {
+  const newRegist = (buttype, record) => {
+    if (buttype === 'edit') {
       router.push({
         pathname: '/automation/automatedjob/softstartandstop/softregister/newregist',
         query: {
           Id: record.id,
+          buttype: 'edit'
         },
         state: {
           dynamicpath: true,
@@ -88,6 +90,7 @@ function SoftTTRegister(props) {
         query: {
           addtab: true,
           menuDesc: '启停登记',
+          buttype: 'add'
         },
       })
     }
@@ -114,7 +117,7 @@ function SoftTTRegister(props) {
     onShowSizeChange: (page, size) => onShowSizeChange(page, size),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    total: 10,
+    total: autosoftworklist.total,
     showTotal: total => `总共  ${total}  条记录`,
     onChange: page => changePage(page),
   };
@@ -209,10 +212,11 @@ function SoftTTRegister(props) {
       key: 'action',
       fixed: 'right',
       width: 200,
-      render: () => {
+      render: (text, record) => {
         return (
           <div>
             <a type="link"
+              onClick={() => newRegist('edit', record)}
             >
               编辑
             </a>
@@ -223,30 +227,30 @@ function SoftTTRegister(props) {
   ];
 
   // 数据字典取下拉值
-  const getTypebyId = key => {
-    if (selectdata.ischange) {
-      return selectdata.arr[0].children.filter(item => item.key === key)[0].children;
-    }
-    return [];
-  };
+  // const getTypebyId = key => {
+  //   if (selectdata.ischange) {
+  //     return selectdata.arr[0].children.filter(item => item.key === key)[0].children;
+  //   }
+  //   return [];
+  // };
 
-  const zonemap = getTypebyId('1428182995477942274'); // 区域
+  // const zonemap = getTypebyId('1428182995477942274'); // 区域
   const statusmap = [];
   const checkresultsmap = [];
 
   return (
     <PageHeaderWrapper title={pagetitle}>
-      <DictLower
+      {/* <DictLower
         typeid="1428178684907835393"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
-      />
+      /> */}
       <Card>
         <Row gutter={16}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>
               <Form.Item label="启停申请人">
-                {getFieldDecorator('person', {
+                {getFieldDecorator('createBy', {
                   initialValue: '',
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
@@ -255,7 +259,7 @@ function SoftTTRegister(props) {
               <Form.Item label="申请时间">
                 <Row>
                   <Col span={11}>
-                    {getFieldDecorator('startApplyTime', {})(
+                    {getFieldDecorator('createStartTime', {})(
                       <DatePicker
                         showTime={{
                           hideDisabledOptions: true,
@@ -269,7 +273,7 @@ function SoftTTRegister(props) {
                   </Col>
                   <Col span={2} style={{ textAlign: 'center' }}>-</Col>
                   <Col span={11}>
-                    {getFieldDecorator('endApplyTime', {})(
+                    {getFieldDecorator('createEndTime', {})(
                       <DatePicker
                         showTime={{
                           hideDisabledOptions: true,
@@ -284,87 +288,83 @@ function SoftTTRegister(props) {
                 </Row>
               </Form.Item>
             </Col>
-            {expand && (
-              <>
-                <Col span={8}>
-                  <Form.Item label="状态">
-                    {getFieldDecorator('status', {
-                      initialValue: '',
-                    })(<Select placeholder="请选择" allowClear>
-                      {statusmap.map(obj => (
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>
-                      ))}
-                    </Select>)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="审核结果">
-                    {getFieldDecorator('checkResults', {
-                      initialValue: '',
-                    })(<Select placeholder="请选择" allowClear>
-                      {checkresultsmap.map(obj => (
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>
-                      ))}
-                    </Select>)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="审核人">
-                    {getFieldDecorator('checker', {
-                      initialValue: '',
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="审核时间">
-                    <Row>
-                      <Col span={11}>
-                        {getFieldDecorator('startcheckTime', {})(
-                          <DatePicker
-                            showTime={{
-                              hideDisabledOptions: true,
-                              defaultValue: moment('00:00:00', 'HH:mm:ss'),
-                            }}
-                            placeholder="开始时间"
-                            format='YYYY-MM-DD HH:mm:ss'
-                            style={{ minWidth: 120, width: '100%' }}
-                          />
-                        )}
-                      </Col>
-                      <Col span={2} style={{ textAlign: 'center' }}>-</Col>
-                      <Col span={11}>
-                        {getFieldDecorator('endcheckTime', {})(
-                          <DatePicker
-                            showTime={{
-                              hideDisabledOptions: true,
-                              defaultValue: moment('23:59:59', 'HH:mm:ss'),
-                            }}
-                            placeholder="结束时间"
-                            format='YYYY-MM-DD HH:mm:ss'
-                            style={{ minWidth: 120, width: '100%' }}
-                          />
-                        )}
-                      </Col>
-                    </Row>
-                  </Form.Item>
-                </Col>
-              </>
-            )}
+            <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+              <Form.Item label="状态">
+                {getFieldDecorator('examineStatus', {
+                  initialValue: '',
+                })(<Select placeholder="请选择" allowClear>
+                  {statusmap.map(obj => (
+                    <Option key={obj.key} value={obj.title}>
+                      {obj.title}
+                    </Option>
+                  ))}
+                </Select>)}
+              </Form.Item>
+            </Col>
+            <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+              <Form.Item label="审核结果">
+                {getFieldDecorator('checkResults', {
+                  initialValue: '',
+                })(<Select placeholder="请选择" allowClear>
+                  {checkresultsmap.map(obj => (
+                    <Option key={obj.key} value={obj.title}>
+                      {obj.title}
+                    </Option>
+                  ))}
+                </Select>)}
+              </Form.Item>
+            </Col>
+            <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+              <Form.Item label="审核人">
+                {getFieldDecorator('examineBy', {
+                  initialValue: '',
+                })(<Input placeholder="请输入" allowClear />)}
+              </Form.Item>
+            </Col>
+            <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+              <Form.Item label="审核时间">
+                <Row>
+                  <Col span={11}>
+                    {getFieldDecorator('examineStartTime', {})(
+                      <DatePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                        }}
+                        placeholder="开始时间"
+                        format='YYYY-MM-DD HH:mm:ss'
+                        style={{ minWidth: 120, width: '100%' }}
+                      />
+                    )}
+                  </Col>
+                  <Col span={2} style={{ textAlign: 'center' }}>-</Col>
+                  <Col span={11}>
+                    {getFieldDecorator('examineEndTime', {})(
+                      <DatePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                        }}
+                        placeholder="结束时间"
+                        format='YYYY-MM-DD HH:mm:ss'
+                        style={{ minWidth: 120, width: '100%' }}
+                      />
+                    )}
+                  </Col>
+                </Row>
+              </Form.Item>
+            </Col>
             {expand ? (<Col span={24} style={{ marginTop: 4, textAlign: 'right' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
           </Form>
         </Row>
         <div style={{ marginBottom: 8 }}>
           <Button type="primary" style={{ marginRight: 8 }}
-            onClick={() => newRegist()}
+            onClick={() => newRegist('add')}
           >登记</Button>
         </div>
         <Table
           columns={columns}
-          // dataSource={}
+          dataSource={autosoftworklist.rows}
           // loading={loading}
           rowKey={(_, index) => index.toString()}
           pagination={pagination}
@@ -375,4 +375,9 @@ function SoftTTRegister(props) {
   );
 }
 
-export default Form.create({})(SoftTTRegister);
+export default Form.create({})(
+  connect(({ autosoftwork, loading }) => ({
+    autosoftworklist: autosoftwork.autosoftworklist,
+    loading: loading.models.autosoftwork,
+  }))(SoftTTRegister),
+);

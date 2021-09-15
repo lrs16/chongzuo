@@ -11,7 +11,7 @@ function SoftwareInfoList(props) {
             width: 120,
         },
         {
-            title: '主机名称',
+            title: '设备名称',
             dataIndex: 'hostName',
             key: 'hostName',
             width: 180,

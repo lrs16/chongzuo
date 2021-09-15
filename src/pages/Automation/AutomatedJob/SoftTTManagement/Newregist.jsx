@@ -5,8 +5,8 @@ import React, {
 } from 'react';
 import router from 'umi/router';
 import { connect } from 'dva';
-// import moment from 'moment';
-import { Collapse, Button, } from 'antd';
+import moment from 'moment';
+import { Collapse, Button, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import EditContext from '@/layouts/MenuContext'; // 引用上下文管理组件
 import Content from './components/Content';
@@ -43,13 +43,57 @@ function Newregist(props) {
     userinfo,
     // location, 
     // loading, 
+    location: {
+      query: {
+        // Id,
+        buttype
+      }
+    },
   } = props;
   const [activeKey, setActiveKey] = useState(['formpanel']);
+  const [exeminefiles, setexemineFiles] = useState({ arr: [], ischange: false }); // 审核上传
   const ContentRef = useRef(null);
   const ExmaineRef = useRef(null);
+  const [formregistrat, setFormregistrat] = useState({});
+  const [formcheck, setFormcheck] = useState({});
+
+  console.log(formregistrat, formcheck, '11')
 
   const callback = key => {
     setActiveKey(key);
+  };
+
+  const handleSaveClick = (buttonype) => { // 保存添加
+    ContentRef.current.Forms((err) => {
+      const values = ContentRef.current?.getVal();
+      setFormregistrat({
+        ...values,
+        createTime: moment(values.createTime).format('YYYY-MM-DD HH:mm:ss'),
+      });
+      if (!err) {
+        ExmaineRef.current.Forms((error) => {
+          if (!error) {
+            const val = ExmaineRef.current?.getVal();
+            setFormcheck({
+              ...val,
+              examineTime: moment(val.examineTime).format('YYYY-MM-DD HH:mm:ss'),
+              examineFiles: JSON.stringify(exeminefiles.arr),
+            });
+            dispatch({
+              type: 'autosoftwork/toaddAutoSoftWork',
+              payload: {
+                autoSoftWork: formregistrat,
+                autoSoftWorkExamine: formcheck,
+              },
+            });
+          } else {
+            message.error('请将审核表单填写完整！');
+          }
+        });
+      } else {
+        message.error('请将登记表单填写完整！');
+      }
+    });
   };
 
   // const handleCheck = (buttype) => { // 审核
@@ -59,18 +103,9 @@ function Newregist(props) {
   //     } else {
   //       const values = ExmaineRef.current.getVal();
   //       dispatch({
-  //         type: 'knowledg/saveorcheck',
+  //         type: '',
   //         payload: {
-  //           values: {
-  //             ...values,
-  //             checkTime: moment(values.checkTime).format('YYYY-MM-DD HH:mm:ss'),
-  //             content: values.result === '通过' ? values.content : values.content1,
-  //           },
-  //           buttype,
-  //           mainId: mainId || info.data[0].main.id,
-  //           runpath,
-  //           editState: info.edit.check === '' ? 'add' : 'edit',
-  //           userId: sessionStorage.getItem('userauthorityid')
+  //           ...values,
   //         },
   //       })
   //     }
@@ -84,22 +119,6 @@ function Newregist(props) {
       state: { cache: false }
     });
   };
-
-  const ChangeFiles = () => {
-    // ContentRef.current.Forms((err, values) => {
-    //   if (err) {
-    //     message.error('请将信息填写完整')
-    //   } else {
-    //     dispatch({
-    //       type: '',
-    //       payload: {
-    //         payvalue: { ...values, fileIds: v.length ? JSON.stringify(v) : null },
-    //         buttype: 'save',
-    //       },
-    //     });
-    //   }
-    // })
-  }
 
   // const handleSubmit = () => { // 审核提交 -- 状态变为已审核
   //   ContentRef.current.Forms((err) => {
@@ -116,19 +135,6 @@ function Newregist(props) {
   //   })
   // };
 
-  // 默认展开的panel
-  // useEffect(() => {
-  //   if (menuDesc && menuDesc === '编辑知识') {
-  //     setActiveKey(['formpanel'])
-  //   };
-  //   if (menuDesc && menuDesc === '知识审核') {
-  //     setActiveKey(['formpanel', '1'])
-  //   };
-  //   if (menuDesc && menuDesc === '知识详情') {
-  //     setActiveKey(['1', '2'])
-  //   };
-  // }, [menuDesc])
-
 
   // 加载用户信息
   useEffect(() => {
@@ -142,7 +148,7 @@ function Newregist(props) {
       <Button
         type="primary"
         style={{ marginRight: 8 }}
-      // onClick={() => handleClick('save')}
+        onClick={() => handleSaveClick(buttype)}
       >
         保存
       </Button>
@@ -173,8 +179,6 @@ function Newregist(props) {
             <Panel header='启停登记' key="formpanel">
               <EditContext.Provider value={{
                 editable: true,
-                files: [],
-                ChangeFiles,
               }}>
                 <Content
                   wrappedComponentRef={ContentRef}
@@ -182,10 +186,12 @@ function Newregist(props) {
                 />
               </EditContext.Provider>
             </Panel>
-            <Panel header='启停审核' key="formpane2">
+            <Panel header='启停审核' key="formpanel2">
               <Examine
                 wrappedComponentRef={ExmaineRef}
                 check={[]}
+                ChangeFiles={newvalue => { setexemineFiles(newvalue) }}
+                files={[]}
                 formItemLayout={formItemLayout}
                 forminladeLayout={forminladeLayout}
                 userinfo={userinfo}

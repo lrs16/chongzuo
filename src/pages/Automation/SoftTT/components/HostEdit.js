@@ -124,7 +124,7 @@ class HostEdit extends Component {
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
 
-            <Form.Item label="主机名称">
+            <Form.Item label="设备名称">
               {getFieldDecorator('hostsName', {
                 rules: [
                   {
@@ -141,12 +141,12 @@ class HostEdit extends Component {
                 rules: [
                   {
                     required,
-                    message: 'IP地址不能为空',
+                    message: '设备IP不能为空',
                   },
                   {
                     pattern: ip_reg,
                     validator: this.validatorPwd,
-                    message: '请输入正确的IP地址',
+                    message: '请输入正确的设备IP',
                   },
                 ],
                 initialValue: hostsIp,

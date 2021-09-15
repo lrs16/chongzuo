@@ -43,8 +43,8 @@ function LocalScriptDrawer(props) {
     hostZoneId,
   } = props.record;
 
-  const [findhostname, setFindhostName] = useState([]); // 区域查询主机名称
-  const [findhostip, setFindhostIp] = useState({}); // 主机名称查询主机IP
+  const [findhostname, setFindhostName] = useState([]); // 区域查询设备名称
+  const [findhostip, setFindhostIp] = useState({}); // 设备名称查询主机IP
   const [showElem, setshowElem] = useState('none');
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 附件上传下载
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
@@ -191,7 +191,7 @@ function LocalScriptDrawer(props) {
               ))}
             </Select>)}
         </Form.Item>
-        <Form.Item label="主机名称">
+        <Form.Item label="设备名称">
           {getFieldDecorator('hostName', {
             initialValue: hostName,
             rules: [

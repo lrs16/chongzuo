@@ -149,7 +149,7 @@ function TaskObjectList(props) {
             ellipsis: true,
         },
         {
-            title: 'IP地址',
+            title: '设备IP',
             dataIndex: 'agentHost',
             key: 'agentHost',
             width: 200,
