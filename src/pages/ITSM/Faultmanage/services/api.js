@@ -46,7 +46,7 @@ export async function queryTroubleGetNewno() {
 
 // 获取登录用户信息
 export async function queryCurrUserInfo() {
-  return request('/auth/getCurrUserInfo');
+  return request('/upms/user/getCurrUserInfo');
 }
 
 // ITSM获取当前处理人信息

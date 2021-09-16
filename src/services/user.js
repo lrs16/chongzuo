@@ -15,7 +15,7 @@ export async function queryAllMenus() {
 
 // 根据token获取用户信息
 export async function queryCurrent() {
-  return request('/auth/getCurrUserInfo');
+  return request('/upms/user/getCurrUserInfo');
 }
 // 根据token获取用户权限菜单
 export async function queryMenus() {

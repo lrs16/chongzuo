@@ -7,7 +7,7 @@ export async function getFakeCaptcha(mobile) {
 
 // 登录请求
 export async function fakeAccountLogin(params) {
-  return request('/auth/doLogin', {
+  return request('/oauth/jwt/token', {
     method: 'POST',
     data: params,
     // body: JSON.stringify(params),
@@ -20,7 +20,7 @@ export async function fakeAccountLogin(params) {
 }
 // 退出登录请求
 export async function fakeLogout(access_token) {
-  return request('/auth/logout', {
+  return request('/upms/user/logout', {
     headers: {
       Authorization: `Bearer ${access_token}`,
     },

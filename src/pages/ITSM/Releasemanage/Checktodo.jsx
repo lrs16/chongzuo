@@ -67,10 +67,7 @@ function Checktodo(props) {
       type: 'releaseverificat/fetchchecklist',
       payload: {
         ...values,
-        createTime: '',
-        time1: values.createTime === undefined ? '' : moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
-        time2: values.createTime === undefined ? '' : moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
-        eventObject: values.eventObject?.slice(-1)[0],
+        abilityType: values.abilityType?.slice(-1)[0],
         pageSize: size,
         pageIndex: page,
       },
@@ -380,7 +377,7 @@ function Checktodo(props) {
             <Col span={8}>
               <Form.Item label="状态">
                 {getFieldDecorator('verifyStatus', {
-                  initialValue: '',
+                  initialValue: '待验证',
                 })(
                   <Select placeholder="请选择" allowClear>
                     {checkstatusmap.map(obj => (
@@ -392,6 +389,7 @@ function Checktodo(props) {
                 )}
               </Form.Item>
             </Col>
+
             {expand && (
               <>
                 <Col span={8}>
@@ -402,23 +400,17 @@ function Checktodo(props) {
                       <Cascader
                         fieldNames={{ label: 'title', value: 'title', children: 'children' }}
                         options={functionmap}
-
+                        changeOnSelect
                       />,
                     )}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
-                  <Form.Item label="发布类型">
-                    {getFieldDecorator('releaseType', {
+                  <Form.Item label="功能名称">
+                    {getFieldDecorator('appName', {
                       initialValue: '',
                     })(
-                      <Select placeholder="请选择" allowClear>
-                        {typemap.map(obj => (
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>
-                        ))}
-                      </Select>,
+                      <Input placeholder="请输入" allowClear />
                     )}
                   </Form.Item>
                 </Col>
@@ -450,9 +442,9 @@ function Checktodo(props) {
             </Col>
           </Form>
         </Row>
-        <div style={{ marginBottom: 24 }}>
+        {/* <div style={{ marginBottom: 24 }}>
           <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>导出数据</Button >
-        </div>
+        </div> */}
 
         <Table
           loading={loading}

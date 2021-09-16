@@ -1619,6 +1619,25 @@ export default {
                       ],
                     },
                     {
+                      path: '/monitormanage/other',
+                      name: '其它监测',
+                      icon: 'cloud-server',
+                      routes: [
+                        // {
+                        //   path: '/monitormanage/indicatorchain',
+                        //   name: '上下行报文页面检测',
+                        //   icon: 'cloud-server',
+                        //   component: './Monitormanage/IndicatorChain',
+                        // },
+                        {
+                          path: '/monitormanage/other/Apprunning',
+                          name: '应用程序运行状态监测',
+                          icon: 'cloud-server',
+                          component: './Monitormanage/Othermonitor/AppRunning',
+                        },
+                      ],
+                    },
+                    {
                       path: '/monitormanage/indicatorchain',
                       name: '指标环比数据',
                       icon: 'cloud-server',
@@ -1914,7 +1933,7 @@ export default {
     basePath: '/',
   },
   proxy: {
-    '/auth/': {
+    '/oauth/': {
       target: ' http://172.16.10.33:9901/', // 登录
       changeOrigin: true,
     },
