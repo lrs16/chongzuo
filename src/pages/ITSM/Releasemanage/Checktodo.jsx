@@ -372,14 +372,14 @@ function Checktodo(props) {
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>
               <Form.Item label="发布编号">
-                {getFieldDecorator('eventNo', {
+                {getFieldDecorator('releaseNo', {
                   initialValue: '',
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
             <Col span={8}>
               <Form.Item label="状态">
-                {getFieldDecorator('eventStatus', {
+                {getFieldDecorator('verifyStatus', {
                   initialValue: '',
                 })(
                   <Select placeholder="请选择" allowClear>
@@ -396,7 +396,7 @@ function Checktodo(props) {
               <>
                 <Col span={8}>
                   <Form.Item label="功能类型">
-                    {getFieldDecorator('functiontype', {
+                    {getFieldDecorator('abilityType', {
                       initialValue: '',
                     })(
                       <Cascader
@@ -409,7 +409,7 @@ function Checktodo(props) {
                 </Col>
                 <Col span={8}>
                   <Form.Item label="发布类型">
-                    {getFieldDecorator('eventSource', {
+                    {getFieldDecorator('releaseType', {
                       initialValue: '',
                     })(
                       <Select placeholder="请选择" allowClear>
@@ -424,7 +424,7 @@ function Checktodo(props) {
                 </Col>
                 <Col span={8}>
                   <Form.Item label="问题类型">
-                    {getFieldDecorator('registerUser', {
+                    {getFieldDecorator('problemType', {
                       initialValue: '',
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>

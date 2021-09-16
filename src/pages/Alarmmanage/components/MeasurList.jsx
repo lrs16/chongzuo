@@ -1,21 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import moment from 'moment';
-import {
-  Card,
-  Button,
-  Dropdown,
-  Menu,
-  Table,
-  Message,
-  Badge,
-  Tabs,
-  Row, Col, Form, Input, Select, DatePicker, Cascader
-} from 'antd';
 import router from 'umi/router';
+import { Card, Button, Table, Badge, Tabs, Row, Col, Form, Input, Select, DatePicker, Cascader, Tooltip } from 'antd';
 import { connect } from 'dva';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import TypeContext from '@/layouts/MenuContext';
-import DictLower from '@/components/SysDict/DictLower';
+import ButtonGroup from './ButtonGroup';
 
 const { TabPane } = Tabs;
 const { Option } = Select;
@@ -49,19 +39,55 @@ const columns = [
     title: '监控项',
     dataIndex: 'type',
     key: 'type',
-    width: 140,
+    width: 180,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 180,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
   },
   {
     title: '监控内容',
     dataIndex: 'monitorco',
     key: 'monitorco',
-    width: 200,
+    width: 180,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 180,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
   },
   {
     title: '监控子类',
     dataIndex: '1',
     key: '1',
-    width: 200,
+    width: 180,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 180,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
   },
   {
     title: '确认状态',
@@ -92,6 +118,36 @@ const columns = [
     title: '告警内容',
     dataIndex: 'content',
     key: 'content',
+    width: 300,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 300,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text, record) => {
+      const handleClick = () => {
+        router.push({
+          pathname: `/alarmmanage/measuralarm/details`,
+          query: {
+            Id: record.id,
+          },
+          state: {
+            dynamicpath: true,
+            menuDesc: '告警详细信息',
+          }
+        });
+      };
+      return (
+        <Tooltip placement='topLeft' title={text}>
+          <a onClick={handleClick}>{text}</a>
+        </Tooltip>)
+    }
   },
   {
     title: '确认告警时间',
@@ -112,47 +168,6 @@ const columns = [
     width: 180,
   },
 ];
-
-const DropdownMenu = props => {
-  const { selectedRowKeys, match, datas } = props;
-
-  const handleMenuClick = e => {
-    const alarmlist = datas.filter(obj => {
-      return obj.configstatus === '0' && obj.elimination === '1';
-    });
-    const { key } = e;
-    if (selectedRowKeys.length < 1) {
-      Message.error('至少选择一条告警记录');
-    } else {
-      router.push({
-        pathname: `${match.url}/workorder`,
-        query: {
-          id: selectedRowKeys,
-          datas: alarmlist,
-          key,
-        },
-      });
-    }
-  };
-
-  const menu = (
-    <Menu onClick={handleMenuClick}>
-      <Menu.Item key="0">事件工单</Menu.Item>
-      <Menu.Item key="1">问题工单</Menu.Item>
-      <Menu.Item key="2">变更工单</Menu.Item>
-      <Menu.Item key="3">发布工单</Menu.Item>
-    </Menu>
-  );
-
-  return (
-    <Dropdown overlay={menu}>
-      <Button type="primary" style={{ marginRight: 8 }}>
-        派发工单 <DownOutlined />
-      </Button>
-    </Dropdown>
-  );
-};
-
 function MeasurList(props) {
   const { loading, dispatch, list, activeTabInfo } = props;
   const { getFieldDecorator, resetFields, validateFields } = props.form;
@@ -162,8 +177,7 @@ function MeasurList(props) {
   const [selectRowdata, setSelectdata] = useState([]);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
   const [expand, setExpand] = useState(false);
-  const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
-  const { tabActivekey } = useContext(TypeContext);
+  const { tabActivekey, selectdata } = useContext(TypeContext);
 
 
   const handleSearch = () => {
@@ -234,19 +248,6 @@ function MeasurList(props) {
     },
   };
 
-  const handleConfig = () => {
-    if (selectedRowKeys.length === 0) {
-      Message.error('至少选择一条告警记录');
-    } else {
-      dispatch({
-        type: 'alarmovervies/alarmsconfig',
-        payload: {
-          selectedRowKeys,
-        },
-      });
-    }
-  };
-
   const onShowSizeChange = (page, size) => {
     searchdata(querykeys, page, size);
     setPageinations({
@@ -300,11 +301,6 @@ function MeasurList(props) {
   return (
     <>
       <Card>
-        <DictLower
-          typeid="1371645400838049793"
-          ChangeSelectdata={newvalue => setSelectData(newvalue)}
-          style={{ display: 'none' }}
-        />
         <Form {...formItemLayout} onSubmit={handleSearch}>
           <Row gutter={24}>
             <Col span={8}>
@@ -462,18 +458,7 @@ function MeasurList(props) {
             <Col span={8}><Form.Item>{extra}</Form.Item></Col>
           </Row>
         </Form>
-
-        <div style={{ margin: '10px 0 24px 0' }}>
-          <Button type="primary" style={{ marginRight: 8 }} onClick={handleConfig}>
-            确认告警
-          </Button>
-          <Button style={{ marginRight: 8 }}>取消确认</Button>
-          <DropdownMenu selectedRowKeys={selectedRowKeys} datas={selectRowdata} />
-          <Button type="danger" ghost style={{ marginRight: 8 }}>
-            手工消除
-          </Button>
-          <Button style={{ marginRight: 8 }}>导 出</Button>
-        </div>
+        <ButtonGroup selectedRowKeys={selectedRowKeys} selectRowdata={selectRowdata} />
         <Tabs defaultActiveKey="0" onChange={handleTabs}>
           {tabsmap.map(({ key, name, color, data }) => [
             <TabPane

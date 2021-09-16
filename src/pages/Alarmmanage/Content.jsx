@@ -7,13 +7,14 @@ import {
   Empty,
 } from 'antd';
 import { connect } from 'dva';
-import { querkeyVal } from '@/services/api';
 import TypeContext from '@/layouts/MenuContext';
 import { ChartCard } from '@/components/Charts';
 import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
 import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
 import MeasurList from './components/MeasurList';
 import HostList from './components/HostList';
+import ConfigurationFileList from './components/ConfigurationFileList';
+import ClockPatrolList from './components/ClockPatrolList';
 
 const cols = {
   value: {
@@ -30,9 +31,8 @@ const cols = {
 };
 
 function Today(props) {
-  const { match, distkey, Donutdata, Smoothdata, dispatch, loading } = props;
+  const { match, tabkeyDist, distkey, Donutdata, Smoothdata, dispatch, loading } = props;
   const [activeTabKey, setActiveTabKey] = useState('');
-  const [tabkeyDist, setTabkeyDist] = useState([]);
   const [activeTabInfo, setActiveTabInfo] = useState({});
   const { tabActivekey } = useContext(TypeContext);
 
@@ -47,18 +47,6 @@ function Today(props) {
     });
   };
 
-  useEffect(() => {
-    querkeyVal('tabkey', distkey).then(res => {
-      if (res.code === 200) {
-        const value = Object.values(res.data)[0];
-        const newData = value.map(item => {
-          return { key: item.key, tab: item.val }
-        })
-        setTabkeyDist(newData)
-      }
-    });
-  }, [match.path]);
-
   const handleTabChange = (key) => {
     setActiveTabKey(key);
     const target = tabkeyDist.filter(item => item.key === key)[0];
@@ -68,13 +56,13 @@ function Today(props) {
     }
   };
   useEffect(() => {
-    if (tabkeyDist.length > 0) {
+    if (tabkeyDist && tabkeyDist.length > 1) {
       handleTabChange(tabkeyDist[0].key);
     };
   }, [tabkeyDist]);
 
   useEffect(() => {
-    if (tabkeyDist.length > 0) {
+    if (tabkeyDist && tabkeyDist.length > 1) {
       handleTabChange(tabkeyDist[0].key);
     };
   }, [tabActivekey]);
@@ -85,9 +73,9 @@ function Today(props) {
         tabList={tabkeyDist}
         activeTabKey={activeTabKey}
         onTabChange={key => { handleTabChange(key) }}
-        style={{ marginTop: 24, marginBottom: `${activeTabKey === '001' ? '-50px' : '-1px'}` }}
+        style={{ marginTop: 24, marginBottom: `${tabActivekey === 'today' ? '-50px' : '-1px'}` }}
       >
-        {tabkeyDist && tabkeyDist.length > 0 && activeTabKey !== '001' && (
+        {tabActivekey === 'all' && (
           <Spin spinning={loading}>
             <Row gutter={24}>
               <Col span={12}>
@@ -113,10 +101,11 @@ function Today(props) {
             </Row>
           </Spin>
         )}
-
       </Card>
       {distkey === 'measuralarm' && (<MeasurList activeTabInfo={activeTabInfo} />)}
       {distkey === 'hostalarm' && (<HostList activeTabInfo={activeTabInfo} />)}
+      {distkey === 'configurationfile' && (<ConfigurationFileList activeTabInfo={activeTabInfo} />)}
+      {distkey === 'clockpatrol' && (<ClockPatrolList activeTabInfo={activeTabInfo} />)}
     </>
   );
 }

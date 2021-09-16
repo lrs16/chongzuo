@@ -115,6 +115,18 @@ function QueryList(props) {
       dataIndex: 'demandTitle',
       key: 'demandTitle',
       with: 250,
+      onCell: () => {
+        return {
+          style: {
+            maxWidth: 250,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            cursor: 'pointer'
+          }
+        }
+      },
+      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
     {
       title: '需求类型',
@@ -168,7 +180,7 @@ function QueryList(props) {
       vote.title = tablecolumns[i].val;
       vote.dataIndex = tablecolumns[i].key;
       vote.key = tablecolumns[i].key;
-      vote.width = 150;
+      vote.width = 180;
       if (tablecolumns[i].key === 'demandId') {
         vote.render = (text, record) => {
           const handleClick = () => {
@@ -195,6 +207,19 @@ function QueryList(props) {
           };
           return <a onClick={handleClick}>{text}</a>;
         }
+      } else {
+        vote.onCell = () => {
+          return {
+            style: {
+              maxWidth: 180,
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+              cursor: 'pointer'
+            }
+          }
+        };
+        vote.render = (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>;
       }
       newArr.push(vote);
     };
