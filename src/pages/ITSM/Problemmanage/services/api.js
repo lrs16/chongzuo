@@ -4,7 +4,7 @@ import request from '@/utils/request';
 //  问题登记信息
 // 登录用户信息
 export async function queryCurrent() {
-  return request('/upms/user/getCurrUserInfo');
+  return request('/auth/getCurrUserInfo');
 }
 
 //  获取新的问题编号

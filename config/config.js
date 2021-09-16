@@ -1933,7 +1933,7 @@ export default {
     basePath: '/',
   },
   proxy: {
-    '/oauth/': {
+    '/auth/': {
       target: ' http://172.16.10.33:9901/', // 登录
       changeOrigin: true,
     },
