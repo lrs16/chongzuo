@@ -7,18 +7,33 @@ import {
   Radio,
   Table,
   message,
-  Divider
+  Divider,
+  Row,
+  Col,
+  Button
 } from 'antd';
+import router from 'umi/router';
 import Configurationedit from './components/Configurationedit';
 import Monitoringinstruction from './components/Monitoringinstruction';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 8 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 16 },
+  },
+};
 
 function MonitorConfiguration(props) {
   const pagetitle = props.route.name;
   const {
     dispatch,
+    location,
+    form: { getFieldDecorator,resetFields,validateFields },
     configurationArr,
     loading
   } = props;
@@ -26,9 +41,9 @@ function MonitorConfiguration(props) {
   const [data, setData] = useState([]);
   const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
-  const [tabActiveKey,setTabActiveKey] = useState('configure');
- 
- 
+  const [tabActiveKey, setTabActiveKey] = useState('configure');
+  const [paginations,setPaginations] = useState({ current:0,pageSize:15});
+
 
   // 更新表单信息
   const handleFieldChange = (e, fieldName, key) => {
@@ -81,8 +96,28 @@ function MonitorConfiguration(props) {
     });
   };
 
+  const searchdata = (value,page,pageSize) => {
+    return dispatch({
+      type: 'monitorconfiguration/fetch',
+      payload:{
+        ...value,
+        page,
+        pageSize
+      }
+    }).then(res => {
+      if (res.code === 200) {
+        const newarr = (res.data).map((item, index) => {
+          return Object.assign(item, { editable: true, isNew: false, key: index })
+        })
+        setData(newarr);
+      }
+    });
+  }
+
   useEffect(() => {
-    getTobolist();
+    validateFields((err,value) => {
+      searchdata(value,paginations.current,paginations.pageSize)
+    })
   }, []);
 
   // 获取行
@@ -174,6 +209,22 @@ function MonitorConfiguration(props) {
       }
     },
     {
+      title: '监护间隔（分/次)',
+      dataIndex: 'cron',
+      key: 'cron',
+      render: (text, record) => {
+        if (record.isNew) {
+          return <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'sourcecn', record.key)}
+          />
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+      }
+    },
+    {
       title: '监控类型',
       dataIndex: 'type',
       key: 'tytypepecn',
@@ -182,7 +233,7 @@ function MonitorConfiguration(props) {
       title: '使用状态',
       dataIndex: 'useStatus',
       key: 'useStatus',
-      width:200,
+      width: 200,
       render: (text, record) => {
         if (record.isNew) {
           return (
@@ -208,7 +259,7 @@ function MonitorConfiguration(props) {
       title: '操作',
       dataIndex: '',
       key: '',
-      width:150,
+      width: 150,
       render: (text, record) => {
         if (record.editable) {
           if (record.isNew === true) {
@@ -246,52 +297,104 @@ function MonitorConfiguration(props) {
     },
   ];
 
-  const tabList = [
-    {
-      key:'configure',
-      tab:'监控配置'
-    },
-    {
-      key:'instructions',
-      tab:'监控指令'
-    },
-    // {
-    //   key:'networklevel',
-    //   tab:'网级配置'
-    // },
-  ]
 
-  const handleTabChange = (key) => {
-    setTabActiveKey(key);
+
+  const handleReset = () => {
+    router.push({
+      pathname:location.pathname,
+      query:{},
+      state:{}
+    })
+    resetFields();
+    
+  }
+
+  const onShowSizeChange = (page,pageSize) => {
+    validateFields((err,values) => {
+      if(!err) {
+        searchdata(values,page,pageSize)
+      }
+     })
+  }
+
+  const pagination = {
+    showSizeChanger:true,
+    onShowSizeChange:(page,pagesize) => onShowSizeChange(page,pagesize),
+    current:paginations.current,
+    pageSize:paginations.pageSize,
+    total: (data && data.length) || 0,
   }
 
 
   return (
-    <PageHeaderWrapper 
-    title={pagetitle}
-    tabList={tabList}
-    tabActiveKey={tabActiveKey}
-    onTabChange={handleTabChange}
+    <PageHeaderWrapper
+      title={pagetitle}
     >
-    <Card>
-      {
-        tabActiveKey === 'configure' && (
-          <Table
+      <Card>
+        {/* <Row>
+          <Form {...formItemLayout}>
+            <Col span={8}>
+              <Form.Item label='监控项'>
+                {
+                  getFieldDecorator('item', {
+
+                  })(<Input />)
+                }
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label='监控类型'>
+                {
+                  getFieldDecorator('type', {
+
+                  })(<Input />)
+                }
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label='描述'>
+                {
+                  getFieldDecorator('remark', {
+
+                  })(<Input />)
+                }
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label='频率'>
+                {
+                  getFieldDecorator('cron', {
+
+                  })(<Input />)
+                }
+              </Form.Item>
+            </Col>
+
+            <Col span={16} style={{ textAlign: 'right' }}>
+              <Button type='primary' style={{ marginRight: 8 }}>查 询</Button>
+              <Button onClick={handleReset}>重 置</Button>
+            </Col>
+          </Form>
+        </Row> */}
+
+
+
+
+        <Table
           loading={loading}
           columns={columns}
           dataSource={data}
+          pagination={false}
+          // pagination={pagination}
         // rowKey={record => record.id}
         />
-        )
-      }
-
-      {
+        {/* {
         tabActiveKey === 'instructions' && (
           <Monitoringinstruction />
         )
-      }
-   
-    </Card>
+      } */}
+
+      </Card>
     </PageHeaderWrapper>
   );
 }
@@ -299,5 +402,6 @@ function MonitorConfiguration(props) {
 export default Form.create({})(
   connect(({ monitorconfiguration, loading }) => ({
     configurationArr: monitorconfiguration.configurationArr,
+    loading: loading.models.monitorconfiguration
   }))(MonitorConfiguration),
 );

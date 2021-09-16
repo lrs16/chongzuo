@@ -27,6 +27,8 @@ import {
   scoreExport,
   clauseUpd,
   clauseDel,
+  statsRatio,
+  statsSum
 } from '../services/quality';
 
 import {
@@ -51,6 +53,8 @@ export default {
     scorecardArr:[],
     target1:[],
     target2:[],
+    statisticData:[],
+    statsSumdata:[],
   },
 
   effects: {
@@ -296,6 +300,24 @@ export default {
       type:'clearListDrop',
       payload:[]
     })
+  },
+
+  //  统计接口
+  *fetchstatsRatio({ payload }, { call, put }) {
+    const response = yield call(statsRatio,payload);
+    yield put({
+      type:'statisticData',
+      payload:response
+    })
+  },
+  
+  //  统计接口
+  *fetchstatsSum({ payload }, { call, put }) {
+    const response = yield call(statsSum,payload);
+    yield put({
+      type:'statsSumdata',
+      payload:response
+    })
   }
   
   },
@@ -400,6 +422,20 @@ export default {
         clauseList:[],
         target2:[],
         target1:[]
+      }
+    },
+
+    // 
+    statisticData(state,action) {
+      return {
+        ...state,
+        statisticData:action.payload.data
+      }
+    },
+    statsSumdata(state,action) {
+      return {
+        ...state,
+        statsSumdata:action.payload.data
       }
     },
   }

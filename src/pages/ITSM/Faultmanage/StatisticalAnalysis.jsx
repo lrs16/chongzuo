@@ -150,7 +150,7 @@ function StatisticalAnalysis(props) {
       {/* </Card> */}
 
 
-      {/* 
+      
       <Card
         title='故障类型统计分析'
         bordered={false}
@@ -265,7 +265,7 @@ function StatisticalAnalysis(props) {
             />
           </ChartCard>
         </Col>
-      </Row> */}
+      </Row>
 
 
     </div>

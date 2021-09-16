@@ -140,7 +140,9 @@ function MonitorConfiguration(props) {
       width:200,
       render: (text, record) => {
           return (
-            <Radio.Group defaultValue={record.sybz} onChange={e => handleFieldChange(e.target.value, 'sybz', record.key)}>
+            <Radio.Group 
+            defaultValue={record.sybz} 
+            onChange={e => handleFieldChange(e.target.value, 'sybz', record.key)}>
               <Radio value='Y'>启用</Radio>
               <Radio value='N'>停用</Radio>
             </Radio.Group>
@@ -152,7 +154,7 @@ function MonitorConfiguration(props) {
   // 获取行
   const getRowByKey = (key, newData) => {
     return (newData || data).filter(item =>
-      item.id === key)[0]
+      item.key === key)[0]
       ;
     // return (newData || data).filter(item =>console.log(item))
     ;
@@ -162,6 +164,7 @@ function MonitorConfiguration(props) {
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData);
+    console.log('target: ', target);
     if (target) {
       target[fieldName] = e;
       setData(newData);
@@ -185,14 +188,15 @@ function MonitorConfiguration(props) {
 
 
   const handleopenClick = () => {
+   
     const alarm = ['cjwzl', 'zdfgl', 'zdcbl', 'gkcj', 'sdl', 'gdl', 'cldzb', 'kafka', 'zdzxl', 'datb', 'gsdl'];
     const term = ['sjzc_dy', 'dazc', 'sjzc_fk', 'sjzc_cz'];
-    if (alarm.indexOf(code) != -1) {
+    if (alarm.indexOf(code) !== -1) {
       // 告警
       showAlarmDialog = true;
       title = '采集完整率配置';
       sign = true;
-    } else if (term.indexOf(code) != -1) {
+    } else if (term.indexOf(code) !== -1) {
       // 终端配置
       showTerminalDialog = true;
       title = '档案参数下发召测配置';
@@ -203,12 +207,11 @@ function MonitorConfiguration(props) {
       payload: { code,showAlarmDialog,showTerminalDialog }
     }).then(res => {
       if (res.code === 200) {
-        const tableArr = [];
-        (res.data).map((item, index) => {
-          tableArr.push(Object.assign({}, item, { key: index }))
+        const newarr = (res.data).map((item, index) => {
+          return (Object.assign(item, { key: index }))
         })
-        setState(true);
-        setData(tableArr);
+        setState(true)
+        setData(newarr);
       }
     })
   };
@@ -222,8 +225,7 @@ function MonitorConfiguration(props) {
   useEffect (() => {
     sign = false;
   },[])
-
-
+  
   return (
     <>
       {withClick(children, handleopenClick)}

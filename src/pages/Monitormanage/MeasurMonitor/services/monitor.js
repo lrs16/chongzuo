@@ -4,12 +4,14 @@ import request from '@/utils/request';
 
 // 计量业务监测配置列表
 export async function configurationList() {
-  return request(`/check/config/mainList`);
+  return request(`/warn/biz/config/mainList`,{
+    method:'POST',
+  });
 }
 
 //  保存计量业务监测配置
 export async function saveConfiguration(params) {
-  return request(`/check/config/saveConfigMain`,{
+  return request(`/warn/biz/config/saveConfigMain`,{
     method:'POST',
     data:params,
     requestType:'form'
@@ -19,7 +21,7 @@ export async function saveConfiguration(params) {
 export async function batchsaveConfiguration(params) {
   //  告警保存
   if(params.showAlarmDialog) {
-    return request(`/check/config/saveAlarmBatch`,{
+    return request(`/warn/biz/config/saveAlarmBatch`,{
       method:'POST',
       body:JSON.stringify(params.data),
       // requestType:'form'
@@ -27,7 +29,7 @@ export async function batchsaveConfiguration(params) {
   }
 //  终端保存
   if(params.showTerminalDialog) {
-    return request(`/check/config/saveTermConfigBatch`,{
+    return request(`/warn/biz/config/saveTermConfigBatch`,{
       method:'POST',
       body:JSON.stringify(params.data),
       // requestType:'form'
@@ -40,17 +42,17 @@ export async function batchsaveConfiguration(params) {
 // 计量业务监测配置详情
 export async function configurationDetail(code,showAlarmDialog,showTerminalDialog) {
   if(showAlarmDialog) {
-    return request(`/check/config/alarmList?code=${code}`);
+    return request(`/warn/biz/config/alarmList?code=${code}`);
   }
   if(showTerminalDialog) {
-    return request(`/check/config/terminalList?code=${code}`);
+    return request(`/warn/biz/config/terminalList?code=${code}`);
   }
   return [];
 }
 
 // 监控指令的表格接口
 export async function instructionList(params) {
-  return request(`/check/comm/commList`,{
+  return request(`/warn/biz/comm/commList`,{
     method:'POST',
     data:params,
     requestType:'form'
@@ -59,7 +61,7 @@ export async function instructionList(params) {
 
 //  监控指令搜索接口
 export async function instructionSearch(params) {
-  return request(`/check/comm/commList`,{
+  return request(`/warn/biz/comm/commList`,{
     method:'POST',
     data:params,
     requestType:'form'

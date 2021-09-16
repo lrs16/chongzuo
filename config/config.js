@@ -1128,9 +1128,15 @@ export default {
                               path: '/ITSM/servicequalityassessment/creditcard/creditcardsearch',
                               name: '计分卡查询',
                               icon: 'fork',
-                              component: './ITSM/ServiceQuality/CreditCard/creditcardtobe'
+                              component: './ITSM/ServiceQuality/CreditCard/CreditcardTobe'
                             },
                           ]
+                        },
+                        {
+                          path:'/ITSM/servicequalityassessment/performancestatistics',
+                          name:'服务绩效统计分析',
+                          icon:'control',
+                          component:'././ITSM/ServiceQuality/Statistics'
                         }
                       ]
                     },
@@ -2058,6 +2064,10 @@ export default {
     },
     '/quality/': {
       target: 'http://172.16.10.33:9901/',
+      changeOrigin: true
+    },
+    '/warn/': {
+      target: 'http://172.16.10.132:9901/',
       changeOrigin: true
     },
   },
