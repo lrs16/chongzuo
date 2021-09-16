@@ -1648,7 +1648,7 @@ export default {
                       routes: [
                         {
                           path: '/alarmmanage/hostalarm',
-                          redirect: '/alarmmanage/hostalarm/',
+                          redirect: '/alarmmanage/hostalarm/hostinspection',
                         },
                         {
                           path: '/alarmmanage/hostalarm/hostinspection',
@@ -1670,6 +1670,42 @@ export default {
                         },
                       ]
                     },
+                    {
+                      path: '/alarmmanage/otheralarm',
+                      name: '其它告警',
+                      icon: 'interaction',
+                      routes: [
+                        {
+                          path: '/alarmmanage/otheralarm',
+                          redirect: '/alarmmanage/otheralarm/configurationfile',
+                        },
+                        {
+                          path: '/alarmmanage/otheralarm/configurationfile',
+                          name: '配置文件变更告警',
+                          icon: 'interaction',
+                          component: './Alarmmanage/AlarmView',
+                        },
+                        {
+                          path: '/alarmmanage/otheralarm/clockpatrol',
+                          name: '时钟巡检告警',
+                          icon: 'interaction',
+                          component: './Alarmmanage/AlarmView',
+                        },
+                        {
+                          path: '/alarmmanage/otheralarm/messagespage',
+                          name: '上下行报文页面告警',
+                          icon: 'interaction',
+                          component: './Alarmmanage/AlarmView',
+                        },
+                      ]
+                    },
+                    {
+                      path: '/alarmmanage/:key/details',
+                      name: '告警详细信息',
+                      icon: 'cloud-server',
+                      component: './Alarmmanage/DetailView',
+                    },
+
                   ],
                 },
                 {
@@ -1878,7 +1914,7 @@ export default {
     basePath: '/',
   },
   proxy: {
-    '/oauth/': {
+    '/auth/': {
       target: ' http://172.16.10.33:9901/', // 登录
       changeOrigin: true,
     },
