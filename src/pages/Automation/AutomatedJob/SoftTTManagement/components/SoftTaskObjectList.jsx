@@ -139,7 +139,7 @@ function SoftTaskObjectList(props) {
 
     return (
         <div style={{ marginLeft: 125 }}>
-            {selectedrowsData && (
+            {selectrowsData && selectrowsData.length >= 1 && (
                 <><Alert message={`已选择【${selectedrowsData.length}】个agent`} style={{ marginBottom: 5 }} /><Table
                     dataSource={selectedrowsData}
                     columns={columns}

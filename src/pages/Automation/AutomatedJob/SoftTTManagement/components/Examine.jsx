@@ -1,6 +1,6 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import moment from 'moment';
-import { Row, Col, Form, Input, Radio, DatePicker} from 'antd';
+import { Row, Col, Form, Input, Radio, DatePicker } from 'antd';
 import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
@@ -29,7 +29,8 @@ const Examine = forwardRef((props, ref) => {
     files,
     ChangeFiles,
   } = props;
-  const [adopt, setAdopt] = useState('1');
+
+  const [adopt, setAdopt] = useState('0');
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
 
   useImperativeHandle(ref, () => ({
@@ -53,11 +54,18 @@ const Examine = forwardRef((props, ref) => {
     setAdopt(e.target.value);
   }
 
-  useEffect(() => {
-    if (check !== undefined) {
-      setAdopt(check.result);
+  // useEffect(() => {
+  //   if (check !== undefined) {
+  //     setAdopt(check.examineStatus);
+  //   }
+  // }, [check]);
+
+  const handleAttValidator = (rule, value, callback) => {
+    if (value === '') {
+      callback()
     }
-  }, [check]);
+    callback()
+  }
 
   return (
     <div style={{ marginRight: 24, marginTop: 24 }}>
@@ -72,9 +80,9 @@ const Examine = forwardRef((props, ref) => {
           </Col>
           <Col span={8} >
             <Form.Item label="审核结果">
-              {getFieldDecorator('result', {
+              {getFieldDecorator('examineStatus', {
                 rules: [{ required: true, message: '请选择审核结果' }],
-                initialValue: check.result || '1',
+                initialValue: check.examineStatus || '0',
               })(
                 <Radio.Group onChange={handleAdopt} disabled={Noediting}>
                   <Radio value="1">通过</Radio>
@@ -87,27 +95,34 @@ const Examine = forwardRef((props, ref) => {
             <Form.Item label="审核时间">
               {getFieldDecorator('examineTime', {
                 rules: [{ required: true }],
-                initialValue: moment(check.checkTime),
+                initialValue: moment(check.examineTime),
               })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={Noediting} />)}
             </Form.Item>
           </Col>
-          {adopt === '通过' ? (
-            <Col span={24}>
+          <Col span={24}>
+            <Form.Item label="审核说明" {...formItemLayout}>
+              {getFieldDecorator('examineRemarks', {
+                rules: [{ required: true, message: '请输入审核说明' }],
+                initialValue: check.examineRemarks,
+              })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+            </Form.Item>
+            {/* {adopt === '1' && (
               <Form.Item label="审核说明" {...formItemLayout}>
                 {getFieldDecorator('examineRemarks', {
-                  initialValue: check.content,
-                })(<TextArea autoSize={{ minRows: 5 }} placeholder="请输入" disabled={Noediting} />)}
+                  initialValue: check.examineRemarks,
+                })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
               </Form.Item>
-            </Col>) : (
-            <Col span={24}>
+            )}
+            {adopt === '0' && (
               <Form.Item label="审核说明" {...formItemLayout}>
-                {getFieldDecorator('examineRemarks1', {
+                {getFieldDecorator('examineRemarks', {
                   rules: [{ required: true, message: '请输入审核说明' }],
-                  initialValue: check.content,
-                })(<TextArea autoSize={{ minRows: 5 }} placeholder="请输入" disabled={Noediting} />)}
+                  initialValue: check.examineRemarks,
+                })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
               </Form.Item>
-            </Col>)}
-            <Col span={24} style={{}}>
+            )} */}
+          </Col>
+          {/* <Col span={24}>
             <Form.Item
               label='上传附件'
               {...formItemLayout}
@@ -117,23 +132,27 @@ const Examine = forwardRef((props, ref) => {
                 <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
               </div>
             </Form.Item>
-          </Col>
-          {/* <Col span={24}>
-            <Form.Item
-              label="上传附件"
-              {...forminladeLayout}
+          </Col> */}
+          <Col span={24} >
+            <Form.Item label="上传附件" {...formItemLayout}
             // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
-            >
+            >{getFieldDecorator('examineFiles', {
+              rules: [{ required: true, message: '请上传附件' }, {
+                validator: handleAttValidator
+              }],
+              initialValue: check && check.examineFiles && check.examineFiles !== '[]' ? check.examineFiles : '',
+            })(
               <div style={{ width: 400 }}>
                 <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
               </div>
+            )}
             </Form.Item>
-          </Col> */}
+          </Col>
           <Col span={8}>
             <Form.Item label="审核人">
               {getFieldDecorator('examineBy', {
                 rules: [{ required: true }],
-                initialValue: userinfo.userName ? userinfo.userName : check.checkUser,
+                initialValue: userinfo.userName ? userinfo.userName : check.examineBy,
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
           </Col>
@@ -141,7 +160,7 @@ const Examine = forwardRef((props, ref) => {
             <Form.Item label="审核人ID">
               {getFieldDecorator('examineById', {
                 rules: [{ required: true }],
-                initialValue: userinfo.userId ? userinfo.userId : check.checkUserId,
+                initialValue: userinfo.userId,
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
           </Col>
@@ -149,7 +168,7 @@ const Examine = forwardRef((props, ref) => {
             <Form.Item label="审核人单位">
               {getFieldDecorator('examineDept', {
                 rules: [{ required: true }],
-                initialValue: userinfo.unitName ? userinfo.unitName : check.checkUnit,
+                initialValue: userinfo.unitName ? userinfo.unitName : check.examineDept,
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
           </Col>
@@ -157,7 +176,7 @@ const Examine = forwardRef((props, ref) => {
             <Form.Item label="审核人单位ID">
               {getFieldDecorator('examineDeptId', {
                 rules: [{ required: true }],
-                initialValue: userinfo.unitId ? userinfo.unitId : check.checkUnitId,
+                initialValue: userinfo.unitId,
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
           </Col>
@@ -170,10 +189,9 @@ const Examine = forwardRef((props, ref) => {
 Examine.defaultProps = {
   check: {
     id: '',
-    result: '通过',
-    checkTime: undefined,
-    status: '待审核',
-    content: undefined,
+    examineStatus: '0',
+    checkTime: new Date(),
+    examineRemarks: '',
   },
   userinfo: {}
 }

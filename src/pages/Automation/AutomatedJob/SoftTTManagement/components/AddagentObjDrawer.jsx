@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { connect } from 'dva';
-import { Table, Drawer, Button, Form, Select, Row, Col, Input, Badge, } from 'antd';
+import { Table, Drawer, Button, Form, Select, Row, Col, Input, Badge, message} from 'antd';
 import DictLower from '@/components/SysDict/DictLower';
+import EditContext from '@/layouts/MenuContext';
 
 const { Option } = Select;
 
@@ -45,6 +46,7 @@ function AddagentObjDrawer(props) {
     const [selectedRows, setSelectedRows] = useState([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+    const { taskId, buttype } = useContext(EditContext);
 
     const hanldleCancel = () => {
         ChangeVisible(false);
@@ -89,6 +91,20 @@ function AddagentObjDrawer(props) {
     useEffect(() => {
         searchdata(1, 15);
     }, [location]);
+
+    // useEffect(() => {
+    //     dispatch({
+    //         type: 'autosoftwork/findautoSoftObjectList',
+    //         payload: { taskId },
+    //     }).then(res => {
+    //         if (res.code === 200) {
+    //             // GetData(res.useTaskObject);
+    //             // setSelectedRowKeys(res.useTaskObject);
+    //         } else {
+    //             message.error(res.msg);
+    //         }
+    //     })
+    // }, [taskId]);
 
     const handleSearch = () => {
         setPageinations({

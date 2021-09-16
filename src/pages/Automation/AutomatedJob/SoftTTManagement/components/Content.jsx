@@ -50,6 +50,7 @@ const formItemLayout444 = {
 const Content = forwardRef((props, ref) => {
   const {
     userinfo,
+    registrat,
     form: { getFieldDecorator, getFieldsValue, resetFields, setFieldsValue }
   } = props;
 
@@ -89,23 +90,34 @@ const Content = forwardRef((props, ref) => {
       <Row gutter={24}>
         <Form {...formallItemLayout}>
           <Col span={24} >
+            {
+              registrat.id && (
+                <Col span={8} style={{ display: 'none' }}>
+                  <Form.Item label="审核表单id">
+                    {getFieldDecorator('id', {
+                      initialValue: registrat.id,
+                    })(<Input placeholder="请输入" disabled />)}
+                  </Form.Item>
+                </Col>
+              )
+            }
             <Form.Item label="启停对象" {...formItemLayout1}>
               {getFieldDecorator('workSoftIds', {
                 rules: [{ required: true, message: '请选择作业对象' }],
-                initialValue: [""],
+                initialValue: [""] || registrat.workSoftIds,
               })(<Button block onClick={() => {
                 handleShowDrawer('添加作业对象');
               }}>+添加对象</Button>)}
             </Form.Item>
             <Form.Item span={24} {...formItemLayout444}>
-                <SoftTaskObjectList selectrowsData={rows} GetRowskeysData={(v) => { setFieldsValue({ workSoftIds: v });}}/>
-              </Form.Item>
+              <SoftTaskObjectList selectrowsData={rows} GetRowskeysData={(v) => { setFieldsValue({ workSoftIds: v }); }} />
+            </Form.Item>
           </Col>
           <Col span={24}>
             <Form.Item label="申请说明" {...formItemLayout} >
               {getFieldDecorator('workRemarks', {
                 rules: [{ required: true, message: '请输入审核说明' }],
-                initialValue: '',
+                initialValue: registrat.workRemarks || '',
               })(<TextArea autoSize={{ minRows: 5 }} placeholder="请输入" />)}
             </Form.Item>
           </Col>
@@ -113,7 +125,7 @@ const Content = forwardRef((props, ref) => {
             <Form.Item label="申请人">
               {getFieldDecorator('createBy', {
                 rules: [{ required: true }],
-                initialValue: userinfo.userName ? userinfo.userName : '',
+                initialValue: userinfo.userName ? userinfo.userName : registrat.createBy,
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
           </Col>
@@ -121,7 +133,7 @@ const Content = forwardRef((props, ref) => {
             <Form.Item label="申请人单位">
               {getFieldDecorator('createDept', {
                 rules: [{ required: true }],
-                initialValue: userinfo.unitName ? userinfo.unitName : '',
+                initialValue: userinfo.unitName ? userinfo.unitName : registrat.createDept,
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
           </Col>
@@ -129,26 +141,26 @@ const Content = forwardRef((props, ref) => {
             <Form.Item label="申请时间">
               {getFieldDecorator('createTime', {
                 rules: [{ required: true }],
-                initialValue: moment(new Date()),
+                initialValue: moment(registrat.createTime),
               })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled />)}
             </Form.Item>
           </Col>
-          {/* <Col span={8} style={{ display: 'none' }}>
-            <Form.Item label="审核人ID">
-              {getFieldDecorator('checkUserId', {
+          <Col span={8} style={{ display: 'none' }}>
+            <Form.Item label="申请人ID">
+              {getFieldDecorator('createById', {
                 rules: [{ required: true }],
-                initialValue: userinfo.userId ? userinfo.userId : check.checkUserId,
+                initialValue: userinfo.userId,
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
           </Col>
           <Col span={8} style={{ display: 'none' }}>
-            <Form.Item label="审核人单位ID">
-              {getFieldDecorator('checkUnitId', {
+            <Form.Item label="申请人单位ID">
+              {getFieldDecorator('createDeptId', {
                 rules: [{ required: true }],
-                initialValue: userinfo.unitId ? userinfo.unitId : check.checkUnitId,
+                initialValue: userinfo.unitId,
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
-          </Col> */}
+          </Col>
         </Form>
       </Row>
       {/* 抽屉 */}
@@ -159,7 +171,7 @@ const Content = forwardRef((props, ref) => {
         // handleSubmit={newvalue => handleSubmit(newvalue)}
         // record={data}
         GetRowsData={newvalue => setRows(newvalue)}
-        GetRowskeysData={(v) => { setFieldsValue({ workSoftIds: v });}}
+        GetRowskeysData={(v) => { setFieldsValue({ workSoftIds: v }); }}
         destroyOnClose
       />
     </div>
@@ -167,6 +179,11 @@ const Content = forwardRef((props, ref) => {
 });
 
 Content.defaultProps = {
+  registrat: {
+    workRemarks: '',
+    workSoftIds: [""],
+    createTime: new Date(),
+  },
   userinfo: {}
 }
 

@@ -40,7 +40,8 @@ function EquipDrawer(props) {
     positionChange,
     enployU,
     deployChange,
-    uposition
+    uposition,
+    hostAssets
   } = props.record;
 
   const [equipCabinet, setEquipCabinet] = useState([]);
@@ -118,7 +119,7 @@ function EquipDrawer(props) {
       <Form {...formItemLayout} onSubmit={handleOk}>
         <Form.Item label="设备编号">
           {getFieldDecorator('hostAssets', {
-            initialValue: '',
+            initialValue: hostAssets,
           })(<Input placeholder="请输入" />)}
         </Form.Item>
         <Form.Item label="设备区域">
@@ -379,6 +380,7 @@ EquipDrawer.defaultProps = {
     deployChange: '',
     enployU: '',
     uposition: '',
+    hostAssets: '',
     maintainEndTime: new Date(),
   },
 };

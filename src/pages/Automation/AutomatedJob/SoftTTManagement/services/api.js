@@ -18,9 +18,33 @@ export async function autoSoftObjectList(params, pageNum, pageSize, workId) {
 }
 
 // 添加软件启停方案数据
-export async function addAutoSoftWork(params, autoSoftWork, autoSoftWorkExamine) {
+export async function addAutoSoftWork(autoSoftWork, autoSoftWorkExamine) {
     return request(`/auto/soft/addAutoSoftWork`, {
         method: 'POST',
-        data: {params, autoSoftWork, autoSoftWorkExamine},
+        data: {autoSoftWork, autoSoftWorkExamine},
+    });
+}
+
+// /auto/soft/getAutoSoftWorkDtoById/{workId} 编辑获得作业方案数据
+export async function getAutoSoftWorkDtoById(workId) {
+    return request(`/auto/soft/getAutoSoftWorkDtoById/${workId}`, {
+        method: 'GET',
+    });
+}
+
+// 编辑
+export async function editAutoSoftWork(params) {
+    return request(`/auto/soft/updAutoSoftWork`, {
+        method: 'PUT',
+        data: JSON.stringify(params),
+    });
+}
+
+// 提交 /auto/soft/updAutoWorkStatus/{workId}/{workStatus} 更新启停工单的状态(提交/审批)
+export async function submitAutoSoftWork(params, autoSoftWork, autoSoftWorkExamine) {
+    return request(`/auto/soft/updAutoWorkStatus/${params.workId}/${params.workStatus}`, {
+        method: 'GET',
+        data: {autoSoftWork, autoSoftWorkExamine},
+        requestType: 'formjosn',
     });
 }

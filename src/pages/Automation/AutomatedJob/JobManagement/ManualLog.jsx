@@ -55,19 +55,32 @@ function ManualLog(props) {
         const values = getFieldsValue();
         values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
         values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
+        values.taskId = (Id !== '' || Id !== undefined) ? Id : '';
         dispatch({
             type: 'autotask/findlistPageAutoTaskLogs',
             payload: {
                 values,
-                taskId: Id,
                 pageNum: page,
                 pageSize: size,
             },
         });
     };
 
+    // const tosearchlog = (Id) => {
+    //     dispatch({
+    //         type: 'autotask/findlistPageAutoTaskLogs',
+    //         payload: {
+    //             taskId: Id,
+    //         },
+    //     });
+    // };
+
     useEffect(() => {
-        searchdata(1, 15);
+        // if(Id && (Id !== '' || Id !== undefined)) {
+        //     tosearchlog(Id);
+        // } else {
+            searchdata(1, 15);
+        // }
     }, [location]);
 
     const handleReset = () => {

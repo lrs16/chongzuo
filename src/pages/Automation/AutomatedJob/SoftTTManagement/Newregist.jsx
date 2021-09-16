@@ -45,72 +45,110 @@ function Newregist(props) {
     // loading, 
     location: {
       query: {
-        // Id,
+        Id,
         buttype
       }
     },
+    Info, // 获得作业方案数据
   } = props;
-  const [activeKey, setActiveKey] = useState(['formpanel']);
+
+  const [activeKey, setActiveKey] = useState(['formpanel', 'formpanel2']);
   const [exeminefiles, setexemineFiles] = useState({ arr: [], ischange: false }); // 审核上传
   const ContentRef = useRef(null);
   const ExmaineRef = useRef(null);
-  const [formregistrat, setFormregistrat] = useState({});
-  const [formcheck, setFormcheck] = useState({});
-
-  console.log(formregistrat, formcheck, '11')
 
   const callback = key => {
     setActiveKey(key);
   };
 
-  const handleSaveClick = (buttonype) => { // 保存添加
-    ContentRef.current.Forms((err) => {
-      const values = ContentRef.current?.getVal();
-      setFormregistrat({
-        ...values,
-        createTime: moment(values.createTime).format('YYYY-MM-DD HH:mm:ss'),
+  useEffect(() => {
+    if (Id && (Id !== '' || Id !== undefined)) {
+      dispatch({
+        type: 'autosoftwork/togetAutoSoftWorkDtoById',
+        payload: {
+          workId: Id,
+        },
       });
-      if (!err) {
-        ExmaineRef.current.Forms((error) => {
-          if (!error) {
-            const val = ExmaineRef.current?.getVal();
-            setFormcheck({
-              ...val,
-              examineTime: moment(val.examineTime).format('YYYY-MM-DD HH:mm:ss'),
-              examineFiles: JSON.stringify(exeminefiles.arr),
-            });
-            dispatch({
-              type: 'autosoftwork/toaddAutoSoftWork',
-              payload: {
-                autoSoftWork: formregistrat,
-                autoSoftWorkExamine: formcheck,
-              },
-            });
-          } else {
-            message.error('请将审核表单填写完整！');
-          }
-        });
-      } else {
-        message.error('请将登记表单填写完整！');
-      }
-    });
-  };
+    }
+  }, [Id]);
 
-  // const handleCheck = (buttype) => { // 审核
-  //   ExmaineRef.current.Forms((err) => {
-  //     if (err) {
-  //       message.error('请将信息填写完整')
-  //     } else {
-  //       const values = ExmaineRef.current.getVal();
-  //       dispatch({
-  //         type: '',
-  //         payload: {
-  //           ...values,
-  //         },
-  //       })
-  //     }
-  //   })
-  // };
+  const handleSaveClick = (buttonype) => { // 保存添加
+    if (activeKey.length === 2) {
+      ContentRef.current.Forms((err) => {
+        const values = ContentRef.current?.getVal();
+        if (!err) {
+          ExmaineRef.current.Forms((error) => {
+            if (!error) {
+              const val = ExmaineRef.current?.getVal();
+              if (buttonype === 'add') { // 添加
+                dispatch({
+                  type: 'autosoftwork/toaddAutoSoftWork',
+                  payload: {
+                    autoSoftWork: {
+                      ...values,
+                      createTime: moment(values.createTime).format('YYYY-MM-DD HH:mm:ss'),
+                      workStatus: '1',
+                    },
+                    autoSoftWorkExamine: {
+                      ...val,
+                      examineTime: moment(val.examineTime).format('YYYY-MM-DD HH:mm:ss'),
+                      examineFiles: JSON.stringify(exeminefiles.arr),
+                    }
+                  },
+                }).then(res => {
+                  if (res.code === 200) {
+                    message.success(res.msg);
+                    router.push({
+                      pathname: `/automation/automatedjob/softstartandstop/softregister`,
+                      query: { pathpush: true },
+                      state: { cache: false }
+                    });
+                  } else {
+                    message.error(res.msg);
+                  }
+                });
+              }
+              if (buttonype === 'edit') { // 编辑
+                dispatch({
+                  type: 'autosoftwork/toeditAutoSoftWork',
+                  payload: {
+                    autoSoftWork: {
+                      ...values,
+                      createTime: moment(values.createTime).format('YYYY-MM-DD HH:mm:ss'),
+                      workStatus: '1',
+                    },
+                    autoSoftWorkExamine: {
+                      ...val,
+                      examineTime: moment(val.examineTime).format('YYYY-MM-DD HH:mm:ss'),
+                      examineFiles: JSON.stringify(exeminefiles.arr),
+                      workId: Id,
+                    }
+                  },
+                }).then(res => {
+                  if (res.code === 200) {
+                    message.success(res.msg);
+                    router.push({
+                      pathname: `/automation/automatedjob/softstartandstop/softregister`,
+                      query: { pathpush: true },
+                      state: { cache: false }
+                    });
+                  } else {
+                    message.error(res.msg);
+                  }
+                });
+              }
+            } else {
+              message.error('请将审核信息填写完整');
+            }
+          });
+        } else {
+          message.error('请将登记信息填写完整');
+        }
+      });
+    } else {
+      message.error('请将折叠面板打开');
+    }
+  };
 
   const handleclose = () => {
     router.push({
@@ -120,19 +158,42 @@ function Newregist(props) {
     });
   };
 
-  // const handleSubmit = () => { // 审核提交 -- 状态变为已审核
-  //   ContentRef.current.Forms((err) => {
-  //     if (err) {
-  //       message.error('请将信息填写完整')
-  //     } else {
-  //       knowledgeCheckUserList().then(res => {
-  //         if (res.code === 200) {
-  //           setUserList(res.data);
-  //           setUserVisible(true)
-  //         }
-  //       })
-  //     }
-  //   })
+  // const handleSubmit = (buttonype) => { // 提交 
+  //   if (activeKey.length === 2) {
+  //     ContentRef.current.Forms((err) => {
+  //       const values = ContentRef.current?.getVal();
+  //       if (!err) {
+  //         ExmaineRef.current.Forms((error) => {
+  //           if (!error) {
+  //             const val = ExmaineRef.current?.getVal();
+  //             dispatch({
+  //               type: 'autosoftwork/tosubmitAutoSoftWork',
+  //               payload: {
+  //                 autoSoftWork: {
+  //                   ...values,
+  //                   createTime: moment(values.createTime).format('YYYY-MM-DD HH:mm:ss'),
+  //                   workStatus: '3',
+  //                 },
+  //                 autoSoftWorkExamine: {
+  //                   ...val,
+  //                   examineTime: moment(val.examineTime).format('YYYY-MM-DD HH:mm:ss'),
+  //                   examineFiles: JSON.stringify(exeminefiles.arr),
+  //                 },
+  //                 buttype: buttonype,
+  //                 workId: Id,
+  //               },
+  //             })
+  //           } else {
+  //             message.error('请将审核信息填写完整');
+  //           }
+  //         });
+  //       } else {
+  //         message.error('请将登记信息填写完整');
+  //       }
+  //     });
+  //   } else {
+  //     message.error('请将折叠面板打开');
+  //   }
   // };
 
 
@@ -155,7 +216,7 @@ function Newregist(props) {
       <Button
         type="primary"
         style={{ marginRight: 8 }}
-      // onClick={() => { handleSubmit() }}
+        // onClick={() => handleSubmit(buttype)}
       >
         提交
       </Button>
@@ -179,19 +240,22 @@ function Newregist(props) {
             <Panel header='启停登记' key="formpanel">
               <EditContext.Provider value={{
                 editable: true,
+                taskId: Id,
+                buttype
               }}>
                 <Content
                   wrappedComponentRef={ContentRef}
                   userinfo={userinfo}
+                  registrat={Info.autoSoftWork}
                 />
               </EditContext.Provider>
             </Panel>
             <Panel header='启停审核' key="formpanel2">
               <Examine
                 wrappedComponentRef={ExmaineRef}
-                check={[]}
+                check={Info.autoSoftWorkExamine}
                 ChangeFiles={newvalue => { setexemineFiles(newvalue) }}
-                files={[]}
+                files={exeminefiles.arr}
                 formItemLayout={formItemLayout}
                 forminladeLayout={forminladeLayout}
                 userinfo={userinfo}
@@ -208,6 +272,7 @@ function Newregist(props) {
   );
 }
 
-export default connect(({ itsmuser }) => ({
+export default connect(({ itsmuser, autosoftwork }) => ({
   userinfo: itsmuser.userinfo,
+  Info: autosoftwork.geteditinfo,
 }))(Newregist);
