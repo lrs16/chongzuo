@@ -335,3 +335,13 @@ export async function releaseListsDownload(params) {
     responseType: 'blob',
   });
 }
+
+// 发布查询导出/release/fileProc/exportReleaseOrder
+export async function exportReleaseOrder(params) {
+  return request(`/release/fileProc/exportReleaseOrder`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+    responseType: 'blob',
+  });
+}

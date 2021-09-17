@@ -6,6 +6,7 @@ import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, message
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
+import { exportReleaseOrder } from './services/api';
 
 const { Option } = Select;
 
@@ -124,22 +125,24 @@ function Querylist(props) {
 
   //  下载
   const download = () => {
-    const values = getFieldsValue();
-    dispatch({
-      type: 'releasetodo/eventdownload',
-      payload: {
-        values,
-        ids: selectedRowKeys.toString(),
-      },
-    }).then(res => {
-      const filename = `事件待办_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
-      const blob = new Blob([res]);
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.click();
-      window.URL.revokeObjectURL(url);
+    const val = getFieldsValue();
+    const releaseNos = selectedRecords.length > 0 && selectedRecords.map(item => {
+      return item.releaseNo
+    })
+    const values = { ...val, userid: '', releaseNos: releaseNos.length > 0 ? releaseNos.toString() : '' };
+    exportReleaseOrder(values).then(res => {
+      if (res) {
+        const filename = `发布查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+        const blob = new Blob([res]);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      } else {
+        message.error('下载失败')
+      }
     });
   };
 

@@ -1133,10 +1133,10 @@ export default {
                           ]
                         },
                         {
-                          path:'/ITSM/servicequalityassessment/performancestatistics',
-                          name:'服务绩效统计分析',
-                          icon:'control',
-                          component:'././ITSM/ServiceQuality/Statistics'
+                          path: '/ITSM/servicequalityassessment/performancestatistics',
+                          name: '服务绩效统计分析',
+                          icon: 'control',
+                          component: '././ITSM/ServiceQuality/Statistics'
                         }
                       ]
                     },
