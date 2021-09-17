@@ -1730,6 +1730,24 @@ export default {
                       icon: 'cloud-server',
                       component: './Alarmmanage/DetailView',
                     },
+                    {
+                      path: '/alarmmanage/alarmsetting',
+                      name: '告警设置',
+                      icon: 'interaction',
+                      routes: [
+                        {
+                          path: '/alarmmanage/alarmsetting',
+                          redirect: '/alarmmanage/alarmsetting/configuration',
+                        },
+                        {
+                          path:'/alarmmanage/alarmsetting/configuration',
+                          name:'计量业务告警配置',
+                          icon:'interaction',
+                          component:'./Alarmmanage/MonitorConfiguration'
+                        }
+                    
+                      ]
+                    }
 
                   ],
                 },

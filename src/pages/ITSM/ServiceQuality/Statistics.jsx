@@ -6,7 +6,8 @@ import {
   DatePicker,
   Avatar,
   Row,
-  Col
+  Col,
+  Button
 } from 'antd';
 import { connect } from 'dva';
 import moment from 'moment';
@@ -27,37 +28,100 @@ function Statistics(props) {
     dispatch
   } = props;
 
-  const [selectedTags, setSelectedTags] = useState([]);
-  const [selectTime, setSelectTime] = [{ start: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'), end: moment(new Date).format('YYYY-MM-DD 23:59:59') }]
+  const [selectedTags, setSelectedTags] = useState([{ name: '本日', key: '1' }]);
+  const [selectTime, setSelectTime] = [{ start: moment(new Date()).format('YYYY-MM-DD 00:00:00'), end: moment(new Date).format('YYYY-MM-DD 23:59:59') }]
+  const [time, setTime] = useState({
+    startValue: null,
+    endValue: null,
+    endOpen: false,
+  })
 
-  const handleChange = (tag, checked) => {
-    if (checked) {
-      setSelectedTags([tag])
-    }
-  }
-
-  console.log(statsSumdata, 'statsSumdata')
-
-  const getlist = () => {
+  const getlist = (obj) => {
     dispatch({
       type: 'qualityassessment/fetchstatsRatio',
       payload: {
-        beginTime: selectTime.start,
-        endTime: selectTime.end,
+        beginTime: (obj && obj.startValue) ? moment(obj.startValue).format('YYYY-MM-DD HH:mm:ss') : selectTime.start,
+        endTime: (obj && obj.endValue) ? moment(obj.endValue).format('YYYY-MM-DD HH:mm:ss') : selectTime.end,
         type: 'LIST'
       }
     })
   }
 
-  const projectAssessment = () => {
+  const projectAssessment = (obj) => {
     dispatch({
-      type:'qualityassessment/fetchstatsSum',
-      payload:{
-        beginTime: selectTime.start,
-        endTime: selectTime.end,
+      type: 'qualityassessment/fetchstatsSum',
+      payload: {
+        beginTime: (obj && obj.startValue) ? moment(obj.startValue).format('YYYY-MM-DD HH:mm:ss') : selectTime.start,
+        endTime: (obj && obj.endValue) ? moment(obj.endValue).format('YYYY-MM-DD HH:mm:ss') : selectTime.end,
       }
     })
   }
+
+  const handleChange = (tag, checked) => {
+    if (checked) {
+      const obj = {
+        startValue: tag.name === "本日" ? moment(new Date()).format('YYYY-MM-DD 00:00:00') : moment().startOf('month').format('YYYY-MM-DD 00:00:00'),
+        endValue: tag.name === "本月" ? moment().endOf('month').format('YYYY-MM-DD 23:59:59') : moment(new Date()).format('YYYY-MM-DD 23:59:59'),
+        endOpen: false,
+      }
+      getlist(obj)
+      projectAssessment(obj);
+      setSelectedTags([tag])
+    }
+  }
+
+  const disabledStartDate = startValue => {
+    const { endValue } = time;
+    if (!startValue || !endValue) {
+      return false;
+    }
+    return startValue.valueOf() > endValue.valueOf();
+  };
+
+  const disabledEndDate = endValue => {
+    const { startValue } = time;
+    if (!endValue || !startValue) {
+      return false;
+    }
+    return endValue.valueOf() <= startValue.valueOf();
+  };
+
+  const onChange = (field, value) => {
+    const obj = time;
+    switch (field) {
+      case 'startValue':
+        obj.startValue = value;
+        setTime(obj);
+        break;
+      case 'endValue':
+        obj.endValue = value;
+        setTime(obj);
+        break;
+      default:
+        break;
+    }
+  };
+  const onStartChange = value => {
+    onChange('startValue', value);
+  };
+
+  const onEndChange = value => {
+    onChange('endValue', value);
+  };
+
+  const handleEndOpenChange = open => {
+    const obj = time;
+    obj.endOpen = open
+    setTime(obj);
+  };
+
+  const handleStartOpenChange = open => {
+    if (!open) {
+      const obj = time;
+      obj.endOpen = true;
+      setTime(obj);
+    }
+  };
 
   useEffect(() => {
     getlist();
@@ -77,12 +141,42 @@ function Statistics(props) {
             >{obj.name}</CheckableTag>
           ))
         }
-        <DatePicker placeholder='开始时间' />
+        <DatePicker
+          disabledDate={disabledStartDate}
+          onChange={onStartChange}
+          onOpenChange={handleStartOpenChange}
+          showTime={{
+            hideDisabledOptions: true,
+            defaultValue: moment('00:00:00', 'HH:mm:ss'),
+          }}
+          value={time.startValue}
+          placeholder='开始时间'
+        />
         <span style={{ display: 'inline-block', width: 24, textAlign: 'center' }}>-</span>
-        <DatePicker placeholder='结束时间' />
+        <DatePicker
+          disabledDate={disabledEndDate}
+          onChange={onEndChange}
+          open={time.endOpen}
+          onOpenChange={handleEndOpenChange}
+          value={time.endValue}
+          showTime={{
+            hideDisabledOptions: true,
+            defaultValue: moment('23:59:59', 'HH:mm:ss'),
+          }}
+          format='YYYY-MM-DD HH:mm:ss'
+          placeholder='结束时间'
+        />
+
+        <Button
+          onClick={() => { getlist(time); projectAssessment(time) }}
+          type='primary'
+          style={{ marginLeft: 10 }}
+        >
+          查询
+        </Button>
       </Card>
 
-      {(statisticData || []).map((obj, index) => {
+      {(statisticData || []).map((obj) => {
         return (
           <Row key={obj.id} style={{ marginTop: 10 }}>
             <div className={styles.statisticscard}>
@@ -94,21 +188,26 @@ function Statistics(props) {
               <StatisticsCard title='累计扣分' value={obj.minusScore} suffix='累计扣分' des='环比上月' desval={obj.minusRatio} type={Number(obj.minusScore) > Number(obj.prevMinusScore) ? 'up' : 'down'} />
             </Col>
             <Col span={8}>
-              <StatisticsCard title='累计加分' value={obj.extraScore} suffix='累计加分' des='环比上月' desval={obj.extraRatio} type='up' />
+              <StatisticsCard title='累计加分' value={obj.extraScore} suffix='累计加分' des='环比上月' desval={obj.extraRatio} type={Number(obj.extraScore) > Number(obj.prevExtraScore) ? 'up' : 'down'} />
             </Col>
             <Col span={8}>
-              <StatisticsCard title='合计分值' value={obj.totalScore} suffix='合计分值' des='环比上月' desval={obj.totalRatio} type='up' />
+              <StatisticsCard title='合计分值' value={obj.totalScore} suffix='合计分值' des='环比上月' desval={obj.totalRatio} type={Number(obj.totalScore) > Number(obj.prevTotalScore) ? 'up' : 'down'} />
             </Col>
           </Row>
         )
       })}
 
-      <ChartCard title='项目考核情况'>
-        <Barchart
-          // height={315}
-          // detailParams={newdata => { showDetaillist(newdata, 'barchart') }}
-        />
-      </ChartCard>
+      {statsSumdata && statsSumdata.length >0  && (
+        <div style={{ marginTop: 20 }}>
+          <ChartCard title='项目考核情况'>
+            <Barchart
+              data={statsSumdata}
+            // height={315}
+            // detailParams={newdata => { showDetaillist(newdata, 'barchart') }}
+            />
+          </ChartCard>
+        </div>
+      )}
     </div >
 
   )
@@ -117,6 +216,6 @@ function Statistics(props) {
 export default (
   connect(({ qualityassessment, loading }) => ({
     statisticData: qualityassessment.statisticData,
-    statsSumdata:qualityassessment.statsSumdata
+    statsSumdata: qualityassessment.statsSumdata
   }))
 )(Statistics);

@@ -8,47 +8,33 @@ import {
   Table,
   message,
   Divider,
-  Row,
-  Col,
-  Button
 } from 'antd';
 import router from 'umi/router';
 import Configurationedit from './components/Configurationedit';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 8 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 16 },
-  },
-};
-
 function MonitorConfiguration(props) {
   const pagetitle = props.route.name;
   const {
     dispatch,
-    location,
-    form: { getFieldDecorator,resetFields,validateFields },
-    configurationArr,
+    form: { validateFields },
     loading
   } = props;
   const [cacheOriginData, setcacheOriginData] = useState({});
   const [data, setData] = useState([]);
-  const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
-  const [tabActiveKey, setTabActiveKey] = useState('configure');
-  const [paginations,setPaginations] = useState({ current:0,pageSize:15});
 
+  // 获取行
+  const getRowByKey = (key, newData) => {
+    return (newData || data).filter(item => item.key === key)[0];
+
+  };
 
   // 更新表单信息
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
+    console.log('newData: ', newData);
     const target = getRowByKey(key, newData);
-    // console.log('target: ', target);
     if (target) {
       target[fieldName] = e;
       setData(newData);
@@ -65,22 +51,11 @@ function MonitorConfiguration(props) {
       if (!target.editable) {
         setcacheOriginData({ key: { ...target } });
       }
-      // target.editable = !target.editable;
       target.isNew = true;
       setData(newData);
     }
   };
 
-
-  // 点击编辑生成filelist,
-  // const handlefileedit = (key, values) => {
-  //   // setKeyUpload(key);
-  //   if (!values) {
-  //     setFilesList([]);
-  //   } else {
-  //     setFilesList(JSON.parse(values));
-  //   }
-  // };
 
   const getTobolist = () => {
     return dispatch({
@@ -95,13 +70,11 @@ function MonitorConfiguration(props) {
     });
   };
 
-  const searchdata = (value,page,pageSize) => {
+  const searchdata = (value) => {
     return dispatch({
       type: 'monitorconfiguration/fetch',
-      payload:{
+      payload: {
         ...value,
-        page,
-        pageSize
       }
     }).then(res => {
       if (res.code === 200) {
@@ -114,16 +87,12 @@ function MonitorConfiguration(props) {
   }
 
   useEffect(() => {
-    validateFields((err,value) => {
-      searchdata(value,paginations.current,paginations.pageSize)
+    validateFields((err, value) => {
+      searchdata(value,)
     })
   }, []);
 
-  // 获取行
-  const getRowByKey = (key, newData) => {
-    return (newData || data).filter(item => item.key === key)[0];
 
-  };
 
   // 提交保存数据
   const savedata = (target, id) => {
@@ -161,12 +130,14 @@ function MonitorConfiguration(props) {
 
   // 取消按钮
   const cancel = (e, key) => {
-    e.preventDefault();
-    const newData = data.map(item => ({ ...item }));
-    const target = getRowByKey(key, newData);
-    const newArr = newData.filter(item => item.key !== target.key);
-    setData(newArr);
-    setNewButton(false);
+    searchdata({})
+    // e.preventDefault();
+    // const newData = data.map(item => ({ ...item }));
+    // const target = getRowByKey(key, newData);
+    // const newArr = newData.filter(item => item.key !== target.key);
+    // target.editable = false;
+    // setData(newArr);
+    // setNewButton(false);
   };
 
   const columns = [
@@ -189,6 +160,7 @@ function MonitorConfiguration(props) {
         if (record.isNew === false) {
           return <span>{text}</span>
         }
+        return null
       }
     },
     {
@@ -199,23 +171,43 @@ function MonitorConfiguration(props) {
         if (record.isNew) {
           return <Input
             defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'sourcecn', record.key)}
+            onChange={e => handleFieldChange(e.target.value, 'cron', record.key)}
           />
         }
         if (record.isNew === false) {
           return <span>{text}</span>
         }
+        return null;
       }
     },
     {
       title: '监护间隔（分/次)',
-      dataIndex: 'cron',
-      key: 'cron',
+      dataIndex: 'monitoringInterval',
+      key: 'monitoringInterval',
+      width: 150,
       render: (text, record) => {
         if (record.isNew) {
           return <Input
             defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'sourcecn', record.key)}
+            onChange={e => handleFieldChange(e.target.value, 'monitoringInterval', record.key)}
+          />
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+        return null;
+      }
+    },
+    {
+      title: '监护次数',
+      dataIndex: 'monitoringTimes',
+      key: 'monitoringTimes',
+      width: 150,
+      render: (text, record) => {
+        if (record.isNew) {
+          return <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'monitoringTimes', record.key)}
           />
         }
         if (record.isNew === false) {
@@ -226,7 +218,8 @@ function MonitorConfiguration(props) {
     {
       title: '监控类型',
       dataIndex: 'type',
-      key: 'tytypepecn',
+      key: 'type',
+      width: 150,
     },
     {
       title: '使用状态',
@@ -252,6 +245,8 @@ function MonitorConfiguration(props) {
           )
         }
 
+        return null;
+
       }
     },
     {
@@ -265,6 +260,8 @@ function MonitorConfiguration(props) {
             return (
               <span>
                 <a onClick={e => saveRow(e, record.key)}>保存</a>
+                <Divider type='vertical' />
+                <a onClick={(e) => cancel(e, record.key)}>取消</a>
                 <Divider type='vertical' />
                 <Configurationedit
                   code={record.code}
@@ -298,31 +295,31 @@ function MonitorConfiguration(props) {
 
 
 
-  const handleReset = () => {
-    router.push({
-      pathname:location.pathname,
-      query:{},
-      state:{}
-    })
-    resetFields();
-    
-  }
+  // const handleReset = () => {
+  //   router.push({
+  //     pathname: location.pathname,
+  //     query: {},
+  //     state: {}
+  //   })
+  //   resetFields();
 
-  const onShowSizeChange = (page,pageSize) => {
-    validateFields((err,values) => {
-      if(!err) {
-        searchdata(values,page,pageSize)
-      }
-     })
-  }
+  // }
 
-  const pagination = {
-    showSizeChanger:true,
-    onShowSizeChange:(page,pagesize) => onShowSizeChange(page,pagesize),
-    current:paginations.current,
-    pageSize:paginations.pageSize,
-    total: (data && data.length) || 0,
-  }
+  // const onShowSizeChange = (page, pageSize) => {
+  //   validateFields((err, values) => {
+  //     if (!err) {
+  //       searchdata(values, page, pageSize)
+  //     }
+  //   })
+  // }
+
+  // const pagination = {
+  //   showSizeChanger: true,
+  //   onShowSizeChange: (page, pagesize) => onShowSizeChange(page, pagesize),
+  //   current: paginations.current,
+  //   pageSize: paginations.pageSize,
+  //   total: (data && data.length) || 0,
+  // }
 
 
   return (
@@ -384,8 +381,9 @@ function MonitorConfiguration(props) {
           columns={columns}
           dataSource={data}
           pagination={false}
+          scroll={{ x: 1500 }}
           // pagination={pagination}
-        // rowKey={record => record.id}
+          rowKey={record => record.id}
         />
         {/* {
         tabActiveKey === 'instructions' && (
