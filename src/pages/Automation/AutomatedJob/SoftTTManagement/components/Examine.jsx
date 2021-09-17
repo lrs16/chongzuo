@@ -24,7 +24,7 @@ const formItemLayout = {
 
 const Examine = forwardRef((props, ref) => {
   const {
-    userinfo, check, Noediting,
+    userinfo, check, 
     form: { getFieldDecorator, getFieldsValue, resetFields },
     files,
     ChangeFiles,
@@ -54,11 +54,11 @@ const Examine = forwardRef((props, ref) => {
     setAdopt(e.target.value);
   }
 
-  // useEffect(() => {
-  //   if (check !== undefined) {
-  //     setAdopt(check.examineStatus);
-  //   }
-  // }, [check]);
+  useEffect(() => {
+    if (check !== undefined) {
+      setAdopt(check.examineStatus);
+    }
+  }, [check]);
 
   const handleAttValidator = (rule, value, callback) => {
     if (value === '') {
@@ -84,7 +84,7 @@ const Examine = forwardRef((props, ref) => {
                 rules: [{ required: true, message: '请选择审核结果' }],
                 initialValue: check.examineStatus || '0',
               })(
-                <Radio.Group onChange={handleAdopt} disabled={Noediting}>
+                <Radio.Group onChange={handleAdopt}>
                   <Radio value="1">通过</Radio>
                   <Radio value="0">不通过</Radio>
                 </Radio.Group>,
@@ -96,17 +96,11 @@ const Examine = forwardRef((props, ref) => {
               {getFieldDecorator('examineTime', {
                 rules: [{ required: true }],
                 initialValue: moment(check.examineTime),
-              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={Noediting} />)}
+              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item label="审核说明" {...formItemLayout}>
-              {getFieldDecorator('examineRemarks', {
-                rules: [{ required: true, message: '请输入审核说明' }],
-                initialValue: check.examineRemarks,
-              })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
-            </Form.Item>
-            {/* {adopt === '1' && (
+            {adopt === '1' && (
               <Form.Item label="审核说明" {...formItemLayout}>
                 {getFieldDecorator('examineRemarks', {
                   initialValue: check.examineRemarks,
@@ -120,7 +114,7 @@ const Examine = forwardRef((props, ref) => {
                   initialValue: check.examineRemarks,
                 })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
               </Form.Item>
-            )} */}
+            )}
           </Col>
           {/* <Col span={24}>
             <Form.Item

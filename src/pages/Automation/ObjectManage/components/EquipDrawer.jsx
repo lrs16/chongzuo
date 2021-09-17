@@ -255,7 +255,7 @@ function EquipDrawer(props) {
             ],
             // initialValue: hostCabinetId,
             // initialValue: (equipCabinet && equipCabinet[0] && savetype === 'add') ? equipCabinet[0].tital : hostCabinetId,
-            initialValue: (equipCabinet && equipCabinet[0]) ? equipCabinet[0].tital : hostCabinetId,
+            initialValue: (equipCabinet && equipCabinet[0]) ? equipCabinet[0].key : hostCabinetId,
           })(
             <Select placeholder="请选择" allowClear>
               {equipCabinet !== undefined && equipCabinet.map(obj => (

@@ -9,6 +9,16 @@ export async function listPageAutoSoftWord(params, pageNum, pageSize) {
     });
 }
 
+// /auto/soft/listPageSoftWorkLogs/{pageNum}/{pageSize} 分页查询 - 启停日志数据
+export async function listPageSoftWorkLogs(params, pageNum, pageSize) {
+    return request(`/auto/soft/listPageSoftWorkLogs/${pageNum}/${pageSize}`, {
+        method: 'POST',
+        data: JSON.stringify(params),
+        requestType: 'formjosn',
+    });
+}
+
+
 // /auto/soft/listPageSoftObject/{pageNum}/{pageSize}/{workId} 分页查询 - 软件对象数据(如果为空则显示全部软件数据)
 export async function autoSoftObjectList(params, pageNum, pageSize, workId) {
     return request(`/auto/soft/listPageSoftObject/${pageNum}/${pageSize}/${workId}`, {
@@ -41,10 +51,40 @@ export async function editAutoSoftWork(params) {
 }
 
 // 提交 /auto/soft/updAutoWorkStatus/{workId}/{workStatus} 更新启停工单的状态(提交/审批)
-export async function submitAutoSoftWork(params, autoSoftWork, autoSoftWorkExamine) {
-    return request(`/auto/soft/updAutoWorkStatus/${params.workId}/${params.workStatus}`, {
+// export async function submitAutoSoftWork(params, autoSoftWork, autoSoftWorkExamine) {
+//     return request(`/auto/soft/updAutoWorkStatus/${params.workId}/${params.workStatus}`, {
+//         method: 'GET',
+//         data: {autoSoftWork, autoSoftWorkExamine},
+//         requestType: 'formjosn',
+//     });
+// }
+
+export async function submitAutoSoftWork(params, workId, workStatus) { // 提交
+    return request(`/auto/soft/updAutoWorkStatus/${workId}/${workStatus}`, {
         method: 'GET',
-        data: {autoSoftWork, autoSoftWorkExamine},
+        data: {params},
         requestType: 'formjosn',
+    });
+}
+
+
+// /auto/soft/runAutoSoftWork/{workId} 执行软件启停操作
+export async function runAutoSoftWork(workId) {
+    return request(`/auto/soft/runAutoSoftWork/${workId}`, {
+        method: 'GET',
+    });
+}
+
+// /auto/soft/stopAutoSoftWork/{workId}停止软件启停操作
+export async function stopAutoSoftWork(workId) {
+    return request(`/auto/soft/stopAutoSoftWork/${workId}`, {
+        method: 'GET',
+    });
+}
+
+// /auto/soft/endAutoSoftWork/{workId} 结束软件启停操作
+export async function endAutoSoftWork(workId) {
+    return request(`/auto/soft/endAutoSoftWork/${workId}`, {
+        method: 'GET',
     });
 }

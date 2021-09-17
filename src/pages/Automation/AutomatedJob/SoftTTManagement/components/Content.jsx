@@ -71,20 +71,6 @@ const Content = forwardRef((props, ref) => {
     setTitle(drwertitle);
   };
 
-  // 确认提交
-  // const handleSubmit = values => {
-  //   dispatch({
-  //     type: '',
-  //     payload: {
-  //       ...values,
-  //     },
-  //   }).then(res => {
-  //     if (res.code === 200) {
-  //       message.success(res.msg);
-  //     }
-  //   });
-  // };
-
   return (
     <div style={{ marginRight: 24, marginTop: 24 }}>
       <Row gutter={24}>
@@ -110,7 +96,7 @@ const Content = forwardRef((props, ref) => {
               }}>+添加对象</Button>)}
             </Form.Item>
             <Form.Item span={24} {...formItemLayout444}>
-              <SoftTaskObjectList selectrowsData={rows} GetRowskeysData={(v) => { setFieldsValue({ workSoftIds: v }); }} />
+              <SoftTaskObjectList selectrowsData={rows} GetRowskeysData={ (v) => { setFieldsValue({ workSoftIds: v }); }} />
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -168,8 +154,6 @@ const Content = forwardRef((props, ref) => {
         visible={visible}
         ChangeVisible={newvalue => setVisible(newvalue)}
         title={title}
-        // handleSubmit={newvalue => handleSubmit(newvalue)}
-        // record={data}
         GetRowsData={newvalue => setRows(newvalue)}
         GetRowskeysData={(v) => { setFieldsValue({ workSoftIds: v }); }}
         destroyOnClose

@@ -13,6 +13,7 @@ import Content from './components/Content';
 import Examine from './components/Examine';
 // import SoftwareInfoList from './components/SoftwareInfoList';
 import styles from './index.less';
+import { addAutoSoftWork, editAutoSoftWork } from './services/api';
 
 const { Panel } = Collapse;
 
@@ -158,43 +159,135 @@ function Newregist(props) {
     });
   };
 
-  // const handleSubmit = (buttonype) => { // 提交 
-  //   if (activeKey.length === 2) {
-  //     ContentRef.current.Forms((err) => {
-  //       const values = ContentRef.current?.getVal();
-  //       if (!err) {
-  //         ExmaineRef.current.Forms((error) => {
-  //           if (!error) {
-  //             const val = ExmaineRef.current?.getVal();
-  //             dispatch({
-  //               type: 'autosoftwork/tosubmitAutoSoftWork',
-  //               payload: {
-  //                 autoSoftWork: {
-  //                   ...values,
-  //                   createTime: moment(values.createTime).format('YYYY-MM-DD HH:mm:ss'),
-  //                   workStatus: '3',
-  //                 },
-  //                 autoSoftWorkExamine: {
-  //                   ...val,
-  //                   examineTime: moment(val.examineTime).format('YYYY-MM-DD HH:mm:ss'),
-  //                   examineFiles: JSON.stringify(exeminefiles.arr),
-  //                 },
-  //                 buttype: buttonype,
-  //                 workId: Id,
-  //               },
-  //             })
-  //           } else {
-  //             message.error('请将审核信息填写完整');
-  //           }
-  //         });
-  //       } else {
-  //         message.error('请将登记信息填写完整');
-  //       }
-  //     });
-  //   } else {
-  //     message.error('请将折叠面板打开');
-  //   }
-  // };
+  const handleSubmit = (buttonype) => { // 提交 
+    if (activeKey.length === 2) {
+      ContentRef.current.Forms((err) => {
+        const values = ContentRef.current?.getVal();
+        if (!err) {
+          ExmaineRef.current.Forms((error) => {
+            if (!error) {
+              const val = ExmaineRef.current?.getVal();
+              if (buttonype === 'add') { // 登记提交(3：已审核)
+                const autoSoftWork = {
+                  ...values,
+                  createTime: moment(values.createTime).format('YYYY-MM-DD HH:mm:ss'),
+                  workStatus: '1',
+                };
+                const autoSoftWorkExamine = {
+                  ...val,
+                  examineTime: moment(val.examineTime).format('YYYY-MM-DD HH:mm:ss'),
+                  examineFiles: JSON.stringify(exeminefiles.arr),
+                };
+                if (val.examineStatus === '0') { // 添加审核不通过，保存不提交
+                  addAutoSoftWork(autoSoftWork, autoSoftWorkExamine).then(res => {
+                    if (res.code === 200) {
+                      message.success(res.msg);
+                      router.push({
+                        pathname: `/automation/automatedjob/softstartandstop/softregister`,
+                        query: { pathpush: true },
+                        state: { cache: false }
+                      });
+                    } else {
+                      message.error(res.msg);
+                    }
+                  })
+                }
+                if (val.examineStatus === '1') { // 添加审核通过，保存提交
+                  addAutoSoftWork(autoSoftWork, autoSoftWorkExamine).then(res => {
+                    if (res.code === 200) {
+                      dispatch({
+                        type: 'autosoftwork/tosubmitAutoSoftWork',
+                        payload: {
+                          autoSoftWork,
+                          autoSoftWorkExamine,
+                          workId: res.data.autoSoftWork.id,
+                          workStatus: '3',
+                        },
+                      }).then(respose => {
+                        if (respose.code === 200) {
+                          message.success(respose.msg);
+                          router.push({
+                            pathname: `/automation/automatedjob/softstartandstop/softregister`,
+                            query: { pathpush: true },
+                            state: { cache: false }
+                          });
+                        } else {
+                          message.error(respose.msg);
+                        }
+                      });
+                    } else {
+                      message.error(res.msg);
+                    }
+                  });
+                }
+              }
+              if (buttonype === 'edit') { // 编辑提交(3：已审核)
+                const autoSoftWork = {
+                  ...values,
+                  createTime: moment(values.createTime).format('YYYY-MM-DD HH:mm:ss'),
+                  workStatus: '1',
+                };
+                const autoSoftWorkExamine = {
+                  ...val,
+                  examineTime: moment(val.examineTime).format('YYYY-MM-DD HH:mm:ss'),
+                  examineFiles: JSON.stringify(exeminefiles.arr),
+                  workId: Id,
+                };
+                if (val.examineStatus === '0') { // 编辑审核不通过，保存不提交
+                  editAutoSoftWork({ autoSoftWork, autoSoftWorkExamine }).then(res => {
+                    if (res.code === 200) {
+                      message.success(res.msg);
+                      router.push({
+                        pathname: `/automation/automatedjob/softstartandstop/softregister`,
+                        query: { pathpush: true },
+                        state: { cache: false }
+                      });
+                    } else {
+                      message.error(res.msg);
+                    }
+                  })
+                }
+                if (val.examineStatus === '1') { // 编辑审核通过，保存提交
+                  editAutoSoftWork({ autoSoftWork, autoSoftWorkExamine }).then(res => {
+                    if (res.code === 200) {
+                      dispatch({
+                        type: 'autosoftwork/tosubmitAutoSoftWork',
+                        payload: {
+                          autoSoftWork,
+                          autoSoftWorkExamine,
+                          workId: Id,
+                          workStatus: '3',
+                        },
+                      }).then(respose => {
+                        if (respose.code === 200) {
+                          message.success(respose.msg);
+                          router.push({
+                            pathname: `/automation/automatedjob/softstartandstop/softregister`,
+                            query: { pathpush: true },
+                            state: { cache: false }
+                          });
+                        } else {
+                          message.error(respose.msg);
+                        }
+                      });
+                    } else {
+                      message.error(res.msg);
+                    }
+                  });
+                }
+              }
+            } else {
+              message.error('请将审核信息填写完整');
+            }
+          });
+        } else {
+          message.error('请将登记信息填写完整');
+        }
+      });
+    } else {
+      message.error('请将折叠面板打开');
+    }
+  };
 
 
   // 加载用户信息
@@ -216,7 +309,7 @@ function Newregist(props) {
       <Button
         type="primary"
         style={{ marginRight: 8 }}
-        // onClick={() => handleSubmit(buttype)}
+        onClick={() => handleSubmit(buttype)}
       >
         提交
       </Button>
@@ -240,7 +333,7 @@ function Newregist(props) {
             <Panel header='启停登记' key="formpanel">
               <EditContext.Provider value={{
                 editable: true,
-                taskId: Id,
+                workId: Id,
                 buttype
               }}>
                 <Content

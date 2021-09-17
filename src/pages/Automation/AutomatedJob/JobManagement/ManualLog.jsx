@@ -79,7 +79,7 @@ function ManualLog(props) {
         // if(Id && (Id !== '' || Id !== undefined)) {
         //     tosearchlog(Id);
         // } else {
-            searchdata(1, 15);
+        searchdata(1, 15);
         // }
     }, [location]);
 
@@ -185,13 +185,13 @@ function ManualLog(props) {
             key: 'executeResult',
             width: 250,
             ellipsis: true,
-    render: (text) => {
-      return (
-        <Tooltip placement="topLeft" title={text}>
-          <span>{text}</span>
-        </Tooltip>
-      );
-    },
+            render: (text) => {
+                return (
+                    <Tooltip placement="topLeft" title={text}>
+                        <span>{text}</span>
+                    </Tooltip>
+                );
+            },
         },
         {
             title: '执行结果',

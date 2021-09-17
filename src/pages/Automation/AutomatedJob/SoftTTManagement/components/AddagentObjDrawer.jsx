@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { connect } from 'dva';
-import { Table, Drawer, Button, Form, Select, Row, Col, Input, Badge, message} from 'antd';
+import { Table, Drawer, Button, Form, Select, Row, Col, Input, Badge, message } from 'antd';
 import DictLower from '@/components/SysDict/DictLower';
 import EditContext from '@/layouts/MenuContext';
 
@@ -46,12 +46,10 @@ function AddagentObjDrawer(props) {
     const [selectedRows, setSelectedRows] = useState([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
-    const { taskId, buttype } = useContext(EditContext);
+    const { workId, buttype } = useContext(EditContext);
 
     const hanldleCancel = () => {
         ChangeVisible(false);
-        // setSelectedRows([]);
-        // setSelectedRowKeys([]);
     };
     const handleOk = () => {
         GetRowsData(selectedRows); // 获取选中的行数据
@@ -61,8 +59,6 @@ function AddagentObjDrawer(props) {
         // 传数据
         // handleSubmit(values);
         ChangeVisible(false);
-        // setSelectedRows([]);
-        // setSelectedRowKeys([]);
     };
 
     const onSelectChange = (RowKeys, Rows) => {
@@ -85,26 +81,33 @@ function AddagentObjDrawer(props) {
                 pageSize: size,
                 workId: undefined
             },
-        });
+        })
     };
 
     useEffect(() => {
         searchdata(1, 15);
     }, [location]);
 
-    // useEffect(() => {
-    //     dispatch({
-    //         type: 'autosoftwork/findautoSoftObjectList',
-    //         payload: { taskId },
-    //     }).then(res => {
-    //         if (res.code === 200) {
-    //             // GetData(res.useTaskObject);
-    //             // setSelectedRowKeys(res.useTaskObject);
-    //         } else {
-    //             message.error(res.msg);
-    //         }
-    //     })
-    // }, [taskId]);
+    useEffect(() => {
+        const values = getFieldsValue();
+        dispatch({
+            type: 'autosoftwork/findautoSoftObjectList1',
+            payload: {
+                values,
+                pageNum: 1,
+                pageSize: 15,
+                workId
+            },
+        }).then(res => {
+            if (res.code === 200) {
+                const getrowkey = res.data.rows.map(item => {return item.id;})
+                GetRowsData(res.data.rows);
+                GetRowskeysData(getrowkey);
+            } else {
+                message.error(res.msg);
+            }
+        });
+    }, [workId && buttype === 'edit']);
 
     const handleSearch = () => {
         setPageinations({
@@ -256,7 +259,7 @@ function AddagentObjDrawer(props) {
         }
         return [];
     };
-    
+
     // const typemap = getTypebyId('100000000000001002');         // 类型
     const statusmap = getTypebyId('100000000000001003');       // 状态
     const zonemap = getTypebyId('100000000000001004');         // 区域

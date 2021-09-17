@@ -1,30 +1,52 @@
-import React, { useState, useEffect} from 'react';
-import { Table, Form, Alert, Badge, Popconfirm } from 'antd';
+import React, { useState } from 'react';
+// import { connect } from 'dva';
+import {
+    Form,
+    Modal,
+    Table,
+    Badge,
+} from 'antd';
 
 const colormap = new Map([
-    ['停用', 'default'],
-    ['在用', 'success'],
+    ['离线', 'default'],
+    ['在线', 'success'],
 ]);
 
-function SoftTaskObjectList(props) {
+// 克隆子元素按钮，并添加事件
+const withClick = (element, handleClick = () => { }) => {
+    return <element.type {...element.props} onClick={handleClick} />;
+};
+
+function TaskWorkObjectModel(props) {
     const {
-        selectrowsData,
-        GetRowskeysData
+        children,
+        dispatch,
+        values
     } = props;
 
-    const [selectedrowsData, setselectedrowsData] = useState([]);
+    const { id } = props.record;
+    const [visible, setVisible] = useState(false);
+    const [data, setData] = useState([]);
 
-    useEffect(() => {
-        if (selectrowsData && selectrowsData.length >= 1) {
-            setselectedrowsData(selectrowsData);
-        }
-    }, [selectrowsData]);
+    const handleCancel = () => {
+        setVisible(false);
+    };
 
-    const handleDelete = id => {
-        const deleteidrow = selectedrowsData.filter(item => item.id !== id);
-        const deleteidrowkey = deleteidrow.map(item => item.id)
-        setselectedrowsData(deleteidrow);
-        GetRowskeysData(deleteidrowkey);
+    const handleopenClick = () => {
+        setVisible(true);
+        dispatch({
+            type: 'autosoftwork/findautoSoftObjectList1',
+            payload: {
+                values,
+                workId: id,
+                pageNum: 1,
+                pageSize: 15,
+            },
+        }).then(res => {
+            if (res.code === 200) {
+                setData(res.data);
+            }
+        });
     };
 
     const columns = [
@@ -122,33 +144,31 @@ function SoftTaskObjectList(props) {
             key: 'softRemarks',
             width: 200,
         },
-        {
-            title: '操作',
-            dataIndex: 'action',
-            key: 'action',
-            fixed: 'right',
-            width: 50,
-            render: (text, record) =>
-                selectrowsData.length >= 1 ? (
-                    <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.id)}>
-                        <a style={{color: 'red'}}>移除</a>
-                    </Popconfirm>
-                ) : null,
-        },
     ];
 
     return (
-        <div style={{ marginLeft: 125 }}>
-            {selectrowsData && selectrowsData.length >= 1 && (
-                <><Alert message={`已选择【${selectedrowsData.length}】个agent`} style={{ marginBottom: 5 }} /><Table
-                    dataSource={selectedrowsData}
+        <>
+            {withClick(children, handleopenClick)}
+            <Modal
+                title='启停对象'
+                onCancel={() => handleCancel()}
+                footer={null}
+                visible={visible}
+                width="68%"
+                centered
+                maskClosable
+                closable
+            >
+                <Table
+                    dataSource={data.rows}
                     columns={columns}
+                    scroll={{ x: 200 }}
                     rowKey={record => record.id}
-                    scroll={{ x: 1300 }}
-                    pagination={false} /></>
-            )}
-        </div>
+                    pagination={false}
+                />
+            </Modal>
+        </>
     );
 }
 
-export default Form.create({})(SoftTaskObjectList);
+export default Form.create({})(TaskWorkObjectModel);

@@ -2,11 +2,12 @@ import { message } from 'antd';
 // import router from 'umi/router';
 import {
     listPageAutoSoftWord, // 启停列表
+    listPageSoftWorkLogs, // 启停日志列表
     autoSoftObjectList, // 添加对象的数据
     addAutoSoftWork, // 添加
     getAutoSoftWorkDtoById, // 获得作业方案数据
     editAutoSoftWork, // 编辑
-    // submitAutoSoftWork, // 提交
+    submitAutoSoftWork, // 提交
 } from '../services/api';
 
 export default {
@@ -14,6 +15,7 @@ export default {
 
     state: {
         autosoftworklist: {}, // 启停列表
+        autosoftworkloglist: {}, // 启停日志列表
         softobjectlist: {}, // 添加对象的数据
         geteditinfo: {}, // 获得作业方案数据
     },
@@ -35,6 +37,22 @@ export default {
             }
         },
 
+        // 启停日志列表
+        *findautosoftworklogsList({ payload: { values, pageNum, pageSize } }, { call, put }) {
+            const response = yield call(listPageSoftWorkLogs, values, pageNum, pageSize);
+            yield put({
+                type: 'clearcache',
+            });
+            if (response.code === 200) {
+                yield put({
+                    type: 'autosoftworkloglist',
+                    payload: response.data,
+                });
+            } else {
+                message.error(response.msg);
+            }
+        },
+
         // 获取添加对象的全部数据
         *findautoSoftObjectList({ payload: { values, pageNum, pageSize, workId } }, { call, put }) {
             const response = yield call(autoSoftObjectList, values, pageNum, pageSize, workId);
@@ -42,6 +60,11 @@ export default {
                 type: 'softobjectlist',
                 payload: response.data,
             });
+        },
+
+        // 获取作业对象单个数据
+        *findautoSoftObjectList1({ payload: { values, pageNum, pageSize, workId } }, { call }) {
+            return yield call(autoSoftObjectList, values, pageNum, pageSize, workId);
         },
 
         // 增加数据
@@ -52,7 +75,6 @@ export default {
         // 编辑获取作业方案数据
         *togetAutoSoftWorkDtoById({ payload: { workId } }, { call, put }) {
             const response = yield call(getAutoSoftWorkDtoById, workId);
-            console.log(response, 'response')
             yield put({
                 type: 'clearcache',
             });
@@ -72,57 +94,9 @@ export default {
         },
 
         // 提交
-        // *tosubmitAutoSoftWork({ payload: { payvalue, buttype, workId } }, { call }) {
-        //     console.log(payvalue, buttype, workId)
-        //     if (buttype === 'add') { // 新增的提交按钮
-        //         const addres = yield call(addAutoSoftWork, payvalue);
-        //         console.log(addres, 'addres')
-        //         // if (addres.code === 200) {
-        //         //     const values = {
-        //         //         workId: addres.data.id,
-        //         //         workStatus: '3',
-        //         //     };
-        //         //     const submitres = yield call(submitAutoSoftWork, values);
-        //         //     if (submitres.code === 200) {
-        //         //         router.push({
-        //         //             pathname: `/automation/automatedjob/softstartandstop/softregister`,
-        //         //             query: { pathpush: true },
-        //         //             state: { cache: false }
-        //         //         })
-        //         //     } else {
-        //         //         message.error(submitres.msg)
-        //         //     }
-        //         // } else {
-        //         //     message.error(addres.msg)
-        //         // }
-        //     }
-        //     // if (buttype === 'edit') { // 编辑的提交按钮
-        //     //     const newvalues = {
-        //     //         ...payvalue,
-        //     //         id: workId
-        //     //     };
-        //     //     const editres = yield call(submitAutoSoftWork, newvalues);
-        //     //     if (editres.code === 200) {
-        //     //         const values = {
-        //     //             workId,
-        //     //             taskStatus: '2',
-        //     //         };
-        //     //         const submitresaaa = yield call(submitAutoSoftWork, values);
-        //     //         if (submitresaaa.code === 200) {
-        //     //             router.push({
-        //     //                 pathname: `/automation/automatedjob/softstartandstop/softregister`,
-        //     //                 // query: { tabid, closecurrent: true }
-        //     //                 query: { pathpush: true },
-        //     //                 state: { cache: false }
-        //     //             })
-        //     //         } else {
-        //     //             message.error(submitresaaa.msg)
-        //     //         }
-        //     //     } else {
-        //     //         message.error(editres.msg)
-        //     //     }
-        //     // }
-        // },
+        *tosubmitAutoSoftWork({ payload: { values, workId, workStatus} }, { call }) {
+            return yield call(submitAutoSoftWork, values, workId, workStatus);
+        },
     },
 
     reducers: {
@@ -130,6 +104,7 @@ export default {
             return {
                 ...state,
                 autosoftworklist: {},
+                autosoftworkloglist: {},
                 geteditinfo: {},
             };
         },
@@ -138,6 +113,13 @@ export default {
             return {
                 ...state,
                 autosoftworklist: action.payload,
+            };
+        },
+
+        autosoftworkloglist(state, action) { // 启停日志列表
+            return {
+                ...state,
+                autosoftworkloglist: action.payload,
             };
         },
 
