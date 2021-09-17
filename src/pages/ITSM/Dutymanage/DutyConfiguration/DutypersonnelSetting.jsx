@@ -13,8 +13,10 @@ import {
   Button,
   Table,
   AutoComplete,
-  Select
+  Select,
+  Spin
 } from 'antd';
+import { operationPerson, searchUsers } from '@/services/common';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 const { Search } = Input;
@@ -59,6 +61,8 @@ function DutypersonnelSetting(props) {
     },
     // dispatch,
   } = props;
+  const [directorlist, setDirectorlist] = useState([]); // 详细条款
+  const [spinloading, setSpinLoading] = useState(true);
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   // const [newbutton, setNewButton] = useState(false);
@@ -99,6 +103,84 @@ function DutypersonnelSetting(props) {
   //   setData(newdata);
   //   setNewButton(false);
   // }
+
+  const directoruser = directorlist.map(opt => (
+    <Option key={opt.id} value={opt.id} disableuser={opt}>
+      <Spin spinning={spinloading}>
+        {/* <div className={styles.disableuser}> */}
+          <span>{opt.userName}</span>
+        {/* </div>s */}
+      </Spin>
+    </Option>
+  ));
+
+  //  请求选人
+  const SearchDisableduser = (value, type) => {
+    const requestData = {
+      providerName: value,
+      pageNum: 1,
+      pageSize: 1000,
+      status: '1',
+    };
+    switch (type) {
+      // case 'provider':
+      //   providerList({ ...requestData }).then(res => {
+      //     if (res) {
+      //       const arr = [...res.data.records];
+      //       setSpinLoading(false);
+      //       setDisabledList(arr);
+      //     }
+      //   });
+      //   break;
+      // case 'contract':
+      //   if (!providerId) {
+      //     message.error('请先选择服务商哦');
+      //   } else {
+      //     contractProvider(providerId).then(res => {
+      //       if (res) {
+      //         const arr = [...res.data];
+      //         setSpinLoading(false);
+      //         setContractlist(arr);
+      //       }
+      //     });
+      //   }
+
+      //   break;
+      // case 'score':
+      //   scoreListpage({
+      //     scoreName: value,
+      //     pageNum: 1,
+      //     pageSize: 1000,
+      //   }).then(res => {
+      //     if (res) {
+      //       const arr = [...res.data.records];
+      //       setSpinLoading(false);
+      //       setScorelist(arr);
+      //     }
+      //   });
+      //   break;
+      // case 'clause':
+      //   searchUsers({ ...requestData, scoreId, targetId: target2Type }).then(res => {
+      //     if (res) {
+      //       const arr = [...res.data.records];
+      //       setSpinLoading(false);
+      //       setScorelist(arr);
+      //     }
+      //   });
+      //   break;
+      case 'director':
+        searchUsers({ userName: value }).then(res => {
+          if (res) {
+            const arr = [...res.data];
+            setSpinLoading(false);
+            setDirectorlist(arr);
+          }
+        });
+        break;
+      default:
+        break;
+    }
+  };
 
   const onSelectChange = (RowKeys) => {
     setSelectedRowKeys(RowKeys);
@@ -265,6 +347,33 @@ function DutypersonnelSetting(props) {
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
+
+            <Col span={8}>
+          <Form.Item label="责任人">
+            {getFieldDecorator('directorName', {
+              // rules: [
+              //   {
+              //     required,
+              //     message: '请选择责任人',
+              //   },
+              // ],
+              // initialValue: register.directorName,
+            })(
+              <AutoComplete
+                dataSource={directoruser}
+                dropdownMatchSelectWidth={false}
+                dropdownStyle={{ width: 600 }}
+                onSelect={(v, opt) => handleDisableduser(v, opt, 'director')}
+              >
+                <Search
+                  placeholder="可输入人名称搜索"
+                  onSearch={values => SearchDisableduser(values, 'director')}
+                  allowClear
+                />
+              </AutoComplete>,
+            )}
+          </Form.Item>
+        </Col>
             <Col span={24} style={{ textAlign: 'right', paddingTop: 4, marginBottom: 24 }}>{extra}</Col>
           </Form>
         </Row>

@@ -214,7 +214,7 @@ function Statistics(props) {
 }
 
 export default (
-  connect(({ qualityassessment, loading }) => ({
+  connect(({ qualityassessment }) => ({
     statisticData: qualityassessment.statisticData,
     statsSumdata: qualityassessment.statsSumdata
   }))

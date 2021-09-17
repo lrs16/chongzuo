@@ -249,9 +249,7 @@ function MymonthlySearch(props) {
 
   const onChange = (date, dateString) => {
     starttime = date.startOf('month').format('YYYY-MM-DD');
-    console.log('starttime: ', starttime);
     endTime = date.endOf('month').format('YYYY-MM-DD');
-    console.log('endTime: ', endTime);
   }
 
   useEffect(() => {

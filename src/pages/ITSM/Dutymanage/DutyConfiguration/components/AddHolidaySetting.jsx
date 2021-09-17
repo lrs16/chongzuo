@@ -37,6 +37,8 @@ function AddholidaySetting(props) {
   const [visble, setVisble] = useState(false);
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
+  const [selectSwitch,setSelectSwitch] = useState(false);
+
   const {
     form: { getFieldDecorator, validateFields },
     title,
@@ -59,6 +61,13 @@ function AddholidaySetting(props) {
   const handleOk = () => {
     validateFields((err, values) => {
       if (!err) {
+        const result = {
+          name:values.name,
+          tableArr:data,
+          checked:selectSwitch
+        }
+
+        console.log(result,'result')
         // onSubmit(values);
         setVisble(false)
       }
@@ -124,12 +133,17 @@ function AddholidaySetting(props) {
   // 保存记录
   const saveRow = (e, key) => {
     const target = getRowByKey(key) || {};
-    console.log('target: ', target);
     if (!target.field1) {
       message.error('请填写完整信息。');
       e.target.focus();
       return;
     } 
+
+    if((target.field2).valueOf() >= (target.field3).valueOf()) {
+      message.error('开始时间必须小于结束时间');
+      e.target.focus();
+      return;
+    }
     // delete target.key;
     target.editable = false;
     // const id = target.id === '' ? '' : target.id;
@@ -260,6 +274,7 @@ function AddholidaySetting(props) {
 
   const onChange = (checked) => {
     console.log('checked: ', checked);
+    setSelectSwitch(checked)
   }
 
   return (
@@ -275,7 +290,6 @@ function AddholidaySetting(props) {
         onClose={handleCancel}
       >
         <Form {...formItemLayout}>
-          <Col span={24}>
             <Form.Item label='方案名称'>
               {getFieldDecorator('name', {
                 rules: [
@@ -288,7 +302,6 @@ function AddholidaySetting(props) {
                 (<Input />)
               }
             </Form.Item>
-          </Col>
 
         </Form>
 

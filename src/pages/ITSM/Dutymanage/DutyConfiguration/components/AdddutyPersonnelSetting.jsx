@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Drawer,
   Form,
   Input,
   Button,
-  TimePicker,
+  AutoComplete,
   DatePicker,
-  Switch
+  Switch,
+  Select,
+  Spin,
+  Col
 } from 'antd';
 import moment from 'moment';
+import { operationPerson, searchUsers } from '@/services/common';
+import styles from '../index.less';
+
+const { Search } = Input;
+const { Option } = Select;
 
 const formItemLayout = {
   labelCol: {
@@ -23,6 +31,7 @@ const formItemLayout = {
 
 let startTime;
 let endTime;
+let show = true;
 
 const withClick = (element, handleClick = () => { }) => {
   return <element.type {...element.props} onClick={handleClick} />
@@ -38,8 +47,95 @@ function AdddutyPersonnelSetting(props) {
     id,
     onDelete
   } = props;
-
+  const [directorlist, setDirectorlist] = useState([]); // 详细条款
+  const [spinloading, setSpinLoading] = useState(true);
+  const [select, setSelect] = useState([])
   const required = true;
+
+  console.log(directorlist, 'directorlist')
+  // 自动完成责任人
+  // 自动完成责任人
+  const directoruser = directorlist.map((opt, index) => (
+    show = true,
+    <Option key={opt.id} value={opt.id} disableuser={opt}>
+      <Spin spinning={spinloading}>
+        <div className={styles.disableuser}>
+          <span>{opt.userName}</span>
+        </div>
+      </Spin>
+    </Option>
+  ));
+
+  console.log(directoruser, 'directoruser')
+
+  //  请求选人
+  const SearchDisableduser = (value, type) => {
+    const requestData = {
+      providerName: value,
+      pageNum: 1,
+      pageSize: 1000,
+      status: '1',
+    };
+    switch (type) {
+      // case 'provider':
+      //   providerList({ ...requestData }).then(res => {
+      //     if (res) {
+      //       const arr = [...res.data.records];
+      //       setSpinLoading(false);
+      //       setDisabledList(arr);
+      //     }
+      //   });
+      //   break;
+      // case 'contract':
+      //   if (!providerId) {
+      //     message.error('请先选择服务商哦');
+      //   } else {
+      //     contractProvider(providerId).then(res => {
+      //       if (res) {
+      //         const arr = [...res.data];
+      //         setSpinLoading(false);
+      //         setContractlist(arr);
+      //       }
+      //     });
+      //   }
+
+      //   break;
+      // case 'score':
+      //   scoreListpage({
+      //     scoreName: value,
+      //     pageNum: 1,
+      //     pageSize: 1000,
+      //   }).then(res => {
+      //     if (res) {
+      //       const arr = [...res.data.records];
+      //       setSpinLoading(false);
+      //       setScorelist(arr);
+      //     }
+      //   });
+      //   break;
+      // case 'clause':
+      //   searchUsers({ ...requestData, scoreId, targetId: target2Type }).then(res => {
+      //     if (res) {
+      //       const arr = [...res.data.records];
+      //       setSpinLoading(false);
+      //       setScorelist(arr);
+      //     }
+      //   });
+      //   break;
+      case 'director':
+        searchUsers({ userName: value }).then(res => {
+          if (res) {
+            const arr = [...res.data];
+            show = false;
+            setSpinLoading(false);
+            setDirectorlist(arr);
+          }
+        });
+        break;
+      default:
+        break;
+    }
+  };
 
   const handleopenClick = () => {
     setVisible(true)
@@ -111,17 +207,17 @@ function AdddutyPersonnelSetting(props) {
         centered='true'
       >
         <Form {...formItemLayout}>
-          <Form.Item label='值班人员'>
-            {
-              getFieldDecorator('person', {
-                rules: [
-                  {
-                    required,
-                    message: '请选择值班人员'
-                  }
-                ]
-              })(<Input />)
-            }
+          <Form.Item label="责任人">
+            {getFieldDecorator('directorName', {
+              rules: [
+                {
+                  required,
+                  message: '请选择责任人',
+                },
+              ],
+            })(
+              <Input />
+            )}
           </Form.Item>
 
           <Form.Item label='所属部门'>
@@ -146,7 +242,8 @@ function AdddutyPersonnelSetting(props) {
                     required,
                     message: '请选择所属岗位'
                   }
-                ]
+                ],
+
               })(<Input />)
             }
 

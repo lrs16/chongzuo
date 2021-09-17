@@ -96,6 +96,7 @@ function DutyaccordingSetting(props) {
       <ul className="events">
         {(listData || []).map(item => (
           <SettingDetails
+            title='编辑排班信息'
             key={item.content}
             settingDetailsparams={{
               params1: item.params1,
@@ -123,9 +124,14 @@ function DutyaccordingSetting(props) {
             {
               pagetitle === '排班设置' && (
                 <div style={{ backgroundColor: 'white', paddingBottom: 7 }}>
-                  <Button type="primary" style={{ marginRight: 8 }}>
-                    新增
-                  </Button>
+                  <SettingDetails
+                    title='新增排班信息'
+                  >
+                    <Button type="primary" style={{ marginRight: 8 }}>
+                      新增
+                    </Button>
+                  </SettingDetails>
+
                   <Button type="primary" style={{ marginRight: 8 }}>
                     下载导入模板
                   </Button>
@@ -135,9 +141,9 @@ function DutyaccordingSetting(props) {
                   <Button type="primary" style={{ marginRight: 8 }}>
                     导出
                   </Button>
-                  <Button type="danger" ghost>
+                  {/* <Button type="danger" ghost>
                     删除
-                  </Button>
+                  </Button> */}
                 </div>
               )
             }

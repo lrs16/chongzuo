@@ -1221,6 +1221,19 @@ export default {
                             },
                           ]
                         },
+                        {
+                          path: '/ITSM/dutymanage/statistic',
+                          name: '值班工作统计',
+                          icon: 'cloud-server',
+                          routes:[
+                            {
+                              path: '/ITSM/dutymanage/statistic/totalstatistic',
+                              name: '值班工作统计',
+                              icon: 'fork',
+                              component: './ITSM/Dutymanage/Statistic'
+                            },
+                          ]
+                        }
 
                       ]
                     },
@@ -2085,7 +2098,7 @@ export default {
       changeOrigin: true
     },
     '/warn/': {
-      target: 'http://172.16.10.132:9901/',
+      target: 'http://172.16.10.33:9901/',
       changeOrigin: true
     },
   },

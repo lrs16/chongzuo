@@ -37,7 +37,8 @@ function SettingDetails(props) {
     onSubmit,
     id,
     onDelete,
-    settingDetailsparams
+    settingDetailsparams,
+    settingDetails
   } = props;
 
 
@@ -121,15 +122,25 @@ function SettingDetails(props) {
         <Form {...formItemLayout}>
           <Form.Item label='值班人'>
             {
-              getFieldDecorator('NO', {}
-              )(<Input disabled />)
+              getFieldDecorator('NO', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入值班人',
+                  },
+                ],
+                initialValue: settingDetails.NO,
+              }
+              )(<Input />)
             }
 
           </Form.Item>
 
           <Form.Item label='联系电话'>
             {
-              getFieldDecorator('name', {}
+              getFieldDecorator('name', {
+                initialValue: settingDetails.name,
+              }
               )(<Input disabled/>)
             }
 
@@ -137,21 +148,17 @@ function SettingDetails(props) {
 
           <Form.Item label='班次名称'>
             {
-              getFieldDecorator('time', {}
+              getFieldDecorator('time', {
+                rules: [
+                  {
+                    required,
+                    message: '请获取班次名称',
+                  },
+                ],
+                initialValue: settingDetails.time,
+              }
               )(
-                <div>
-                  <TimePicker
-                    disabledHours={startdisabledHours}
-                    format='HH:mm'
-                    onChange={startOnchange}
-                  />
-                  <span style={{ margin: 'auto 3px' }}>-</span>
-                  <TimePicker
-                    disabledHours={disabledHours}
-                    onChange={endOnchange}
-                    format='HH:mm' />
-                </div>
-
+                <Input />
               )
             }
 
@@ -159,10 +166,13 @@ function SettingDetails(props) {
 
           <Form.Item label='值班日期'>
             {
-              getFieldDecorator('status', {}
+              getFieldDecorator('status', {
+                initialValue: settingDetails.status || moment(new Date()),
+              }
               )(
                 <DatePicker
                   showTime
+                  format='YYYY-MM-DD'
                   onOk={handleSelecttime}
                 />)
             }
@@ -171,7 +181,9 @@ function SettingDetails(props) {
 
           <Form.Item label='值班星期'>
             {
-              getFieldDecorator('week', {}
+              getFieldDecorator('week', {
+                initialValue: settingDetails.week,
+              }
               )(<Input disabled/>)
             }
 
@@ -179,9 +191,35 @@ function SettingDetails(props) {
 
           <Form.Item label='值班时段'>
             {
-              getFieldDecorator('time', {}
-              )(<DatePicker />)
+              getFieldDecorator('time', {
+                initialValue: settingDetails.time || moment(new Date()),
+              }
+              )(<DatePicker 
+                format='HH:mm'
+                disabled/>)
             }
+          </Form.Item>
+
+          
+          <Form.Item label='创建人'>
+            {
+              getFieldDecorator('person', {
+                initialValue: settingDetails.time,
+              }
+              )(<Input disabled/>)
+            }
+
+          </Form.Item>
+
+          
+          <Form.Item label='创建时间'>
+            {
+              getFieldDecorator('createtime', {
+                initialValue: settingDetails.createtime || moment(new Date()),
+              }
+              )(<DatePicker disabled/>)
+            }
+
           </Form.Item>
 
         </Form>
@@ -206,13 +244,13 @@ function SettingDetails(props) {
             确定
           </Button>
 
-          {
-            id && (
+          {/* {
+            id && ( */}
               <Button onClick={handleDelete} type='danger' ghost>
                 删除
               </Button>
-            )
-          }
+          {/* //   )
+          // } */}
 
 
 
@@ -221,6 +259,18 @@ function SettingDetails(props) {
       </Drawer>
     </>
   )
+}
+
+SettingDetails.defaultProps = {
+  settingDetails : {
+    NO:'',
+    name:'',
+    time:'',
+    status:'',
+    week:'',
+    person:sessionStorage.getItem('useName'),
+    createtime:'',
+  }
 }
 
 export default Form.create({})(SettingDetails)
