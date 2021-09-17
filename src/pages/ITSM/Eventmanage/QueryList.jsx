@@ -16,6 +16,7 @@ import {
   // Tag,
   Cascader,
   message,
+  Tooltip,
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
@@ -133,6 +134,18 @@ function QueryList(props) {
       key: 'title',
       fixed: 'left',
       width: 250,
+      onCell: () => {
+        return {
+          style: {
+            maxWidth: 250,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            cursor: 'pointer'
+          }
+        }
+      },
+      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
     {
       title: '事件来源',
@@ -153,6 +166,18 @@ function QueryList(props) {
       dataIndex: 'applicationUnit',
       key: 'applicationUnit',
       width: 180,
+      onCell: () => {
+        return {
+          style: {
+            maxWidth: 180,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            cursor: 'pointer'
+          }
+        }
+      },
+      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
     {
       title: '申报人',
@@ -176,7 +201,7 @@ function QueryList(props) {
       title: '建单时间',
       dataIndex: 'addTime',
       key: 'addTime',
-      width: 120,
+      width: 200,
     },
     {
       title: '处理人',
@@ -195,6 +220,18 @@ function QueryList(props) {
       dataIndex: 'applicationDept',
       key: 'applicationDept',
       width: 270,
+      onCell: () => {
+        return {
+          style: {
+            maxWidth: 270,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            cursor: 'pointer'
+          }
+        }
+      },
+      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
 
     {

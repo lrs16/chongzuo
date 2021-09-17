@@ -1753,12 +1753,29 @@ export default {
                           redirect: '/alarmmanage/alarmsetting/configuration',
                         },
                         {
-                          path:'/alarmmanage/alarmsetting/configuration',
-                          name:'计量业务告警配置',
-                          icon:'interaction',
-                          component:'./Alarmmanage/MonitorConfiguration'
+                          path: '/alarmmanage/alarmsetting/configuration',
+                          name: '计量业务告警配置',
+                          icon: 'interaction',
+                          component: './Alarmmanage/MonitorConfiguration'
+                        },
+                        {
+                          path: '/alarmmanage/alarmsetting/host',
+                          name: '四大区主机告警配置',
+                          icon: 'interaction',
+                          component: './Alarmmanage/AlarmSetting'
+                        },
+                        {
+                          path: '/alarmmanage/alarmsetting/other',
+                          name: '其他告警配置',
+                          icon: 'interaction',
+                          component: './Alarmmanage/AlarmSetting'
+                        },
+                        {
+                          path: '/alarmmanage/alarmsetting/noticesetting',
+                          name: '告警通知对象',
+                          icon: 'interaction',
+                          component: './Alarmmanage/NoticeSetting'
                         }
-                    
                       ]
                     }
 
