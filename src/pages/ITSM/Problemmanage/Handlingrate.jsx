@@ -34,6 +34,7 @@ function Handlingrate(props) {
     form: { getFieldDecorator, resetFields },
     handlingratedata,
     dispatch,
+    location,
     loading
   } = props;
 
@@ -310,6 +311,22 @@ function Handlingrate(props) {
     [statTimeBegin, statTimeEnd] = dateString;
   }
 
+  const handleReset = () => {
+    resetFields();
+    statTimeBegin = '';
+    statTimeEnd = '';
+  }
+
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      handleReset();
+      dispatch({
+        type: 'problemstatistics/handleLists',
+        payload: { handleProcessGroupType: tabActiveKey, statTimeBegin, statTimeEnd }
+      })
+    }
+  }, [location.state]);
+
   const handleListdata = () => {
     search = true;
     dispatch({
@@ -334,11 +351,7 @@ function Handlingrate(props) {
     })
   }
 
-  const handleReset = () => {
-    resetFields();
-    statTimeBegin = '';
-    statTimeEnd = '';
-  }
+ 
 
   useEffect(() => {
     search = false;

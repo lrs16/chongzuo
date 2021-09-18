@@ -141,6 +141,13 @@ function Work(props) {
     })
   }
 
+  
+  useEffect(() => {
+    if (location.state && location.state.reset && mainId) {
+      getInformation()
+    }
+  }, [location.state]);
+
   const getTypebyTitle = title => {
     if (selectdata.ischange) {
       return selectdata.arr.filter(item => item.title === title)[0].children;

@@ -40,7 +40,7 @@ const withClick = (element, handleClick = () => { }) => {
 function AddDutyclassesSetting(props) {
   const [visible, setVisible] = useState(false);
   const {
-    form: { getFieldDecorator, validateFields },
+    form: { getFieldDecorator, validateFields,setFieldsValue },
     title,
     children,
     onSubmit,
@@ -65,12 +65,18 @@ function AddDutyclassesSetting(props) {
     validateFields((err, values) => {
       const defaultStart = moment(values.time1).format('YYYY-MM-DD HH:mm:ss');
       const defaultEnd = moment(values.time2).format('YYYY-MM-DD HH:mm:ss');
+      const newValue = {
+        ...values,
+        beginTime: moment(values.beginTime).format('HH:mm'),
+        endTime: moment(values.endTime).format('HH:mm'),
+        ctime: moment(values.ctime).format('YYYY-MM-DD HH:mm:ss')
+      }
 
       if (!err) {
         if ((compareEnd < compareStart) || (defaultStart === defaultEnd)) {
           message.info('开始时间必须小于结束时间')
         } else {
-          onSubmit(values);
+          onSubmit(newValue);
           setVisible(false);
         }
 
@@ -116,6 +122,19 @@ function AddDutyclassesSetting(props) {
     }
   };
 
+  const hancleChange = (value, option) => {
+    console.log('option: ', option);
+    console.log('value: ', value);
+    const { values } = option.props;
+    setFieldsValue(
+      {
+        groupId: values,
+      }
+    )
+
+  }
+
+
 
   const getTypebyTitle = title => {
     if (selectdata.ischange) {
@@ -133,13 +152,18 @@ function AddDutyclassesSetting(props) {
         commonid="1354288354950123522"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
+        centered="true"
+        maskClosable='true'
+        destroyOnClose='true'
+        onClose={handleCancel}
+
       />
-      <Drawer 
-      visible={visible}
-       title={title}
+      <Drawer
+        visible={visible}
+        title={title}
         width={720}
-         centered="true"
-         >
+        centered="true"
+      >
         <Row gutter={8}>
           <Form {...formItemLayout}>
             <Form.Item label="班次编号">
@@ -148,7 +172,7 @@ function AddDutyclassesSetting(props) {
               })(<Input disabled />)}
             </Form.Item>
 
-            <Form.Item label="班组名称">
+            <Form.Item>
               {getFieldDecorator('groupname', {
                 rules: [
                   {
@@ -156,13 +180,13 @@ function AddDutyclassesSetting(props) {
                     message: '请选择班组名称'
                   }
                 ],
-                initialValue: classSetting.groupname
+                initialValue: classSetting.groupName
               })(
-                <Select placeholder="请选择">
+                <Select placeholder="请选择" onChange={hancleChange}>
                   {teamname.map(obj => [
                     <Option
-                      key={obj.dict_code}
-                      values={obj.dict_code}
+                      key={obj.title}
+                      values={obj.key}
                     >
                       {obj.title}
                     </Option>
@@ -171,15 +195,50 @@ function AddDutyclassesSetting(props) {
               )}
             </Form.Item>
 
+            <Form.Item>
+              {getFieldDecorator('groupname', {
+                rules: [
+                  {
+                    required,
+                    message: '请选择班组名称'
+                  }
+                ],
+                initialValue: classSetting.groupName
+              })(
+                <Select placeholder="请选择" onChange={hancleChange}>
+                  {teamname.map(obj => [
+                    <Option
+                      key={obj.title}
+                      values={obj.key}
+                    >
+                      {obj.title}
+                    </Option>
+                  ])}
+                </Select>
+              )}
+            </Form.Item>
+
+
+            <Form.Item style={{ display: 'none' }}>
+              {getFieldDecorator('groupId', {
+                initialValue: classSetting.groupId
+              })(<Input />)}
+            </Form.Item>
+
+
+
+
+
+
             <Form.Item label="班次名称">
-              {getFieldDecorator('name', {
+              {getFieldDecorator('shiftName', {
                 rules: [
                   {
                     required,
                     message: '请输入班次名称',
                   },
                 ],
-                initialValue: classSetting.name
+                initialValue: classSetting.shiftName
               })(<Input />)}
             </Form.Item>
 
@@ -187,7 +246,7 @@ function AddDutyclassesSetting(props) {
               <Form.Item label="值班时段">
                 <Row>
                   <Col span={11}>
-                    {getFieldDecorator('time1',
+                    {getFieldDecorator('beginTime',
                       {
                         rules: [
                           {
@@ -210,7 +269,7 @@ function AddDutyclassesSetting(props) {
                   <Col span={2} style={{ textAlign: 'center' }}>-</Col>
                   <Col span={11}>
                     {getFieldDecorator(
-                      'time2',
+                      'endTime',
                       {
                         rules: [
                           {
@@ -245,14 +304,14 @@ function AddDutyclassesSetting(props) {
               initialValue: classSetting.status
             })(<Switch />)}</Form.Item>
 
-            <Form.Item label="创建人">{getFieldDecorator('person', {
-              initialValue: classSetting.person
+            <Form.Item label="创建人">{getFieldDecorator('creatorName', {
+              initialValue: classSetting.creatorName
             })(<Input />)}</Form.Item>
 
-            <Form.Item label="创建时间">{getFieldDecorator('time', {
-              initialValue: classSetting.time ? moment(classSetting.time) : moment(new Date())
-            })(<DatePicker 
-                  format='YYYY-DD-MM HH:mm'
+            <Form.Item label="创建时间">{getFieldDecorator('ctimes', {
+              initialValue: classSetting.ctime ? moment(classSetting.ctimes) : moment(new Date())
+            })(<DatePicker
+              format='YYYY-DD-MM HH:mm'
             />)}</Form.Item>
           </Form>
 
@@ -291,14 +350,14 @@ function AddDutyclassesSetting(props) {
 
 AddDutyclassesSetting.defaultProps = {
   classSetting: {
-    NO: '',
-    groupname: '',
-    name: '',
-    time1: '',
-    time2: '',
-    status: '',
-    person: sessionStorage.getItem('userName'),
-    time: ''
+    shiftNo: '',
+    shiftName: '',
+    beginTime: '',
+    endTime: '',
+    creatorName: sessionStorage.getItem('userName'),
+    ctime: '',
+    shiftType: '',
+    groupId: ''
   }
 }
 

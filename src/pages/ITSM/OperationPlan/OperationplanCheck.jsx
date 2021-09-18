@@ -295,6 +295,7 @@ function OperationplanCheck(props) {
     });
   };
 
+
   const searchdata = (values, page, pageSize) => {
     const newvalues = {
       ...values,
@@ -332,6 +333,12 @@ function OperationplanCheck(props) {
     });
   };
 
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      handleReset();
+      searchdata({}, 1, 15)
+    }
+  }, [location.state]);
   //  每页显示多少条
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {

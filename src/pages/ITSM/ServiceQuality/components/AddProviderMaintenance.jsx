@@ -41,6 +41,7 @@ function AddProviderMaintenance(props) {
     searchProviderobj,
     contractProviderobj,
     dispatch,
+    location,
     loading,
   } = props;
   const [performanceLeader, setPerformanceLeader] = useState('');
@@ -53,6 +54,13 @@ function AddProviderMaintenance(props) {
       payload: id,
     });
   };
+
+  useEffect(() => {
+    if (location.state && location.state.reset && id) {
+      providerDetail()
+    }
+  }, [location.state]);
+
 
   //  服务商绑定的合同
   const contractProviderdata = () => {

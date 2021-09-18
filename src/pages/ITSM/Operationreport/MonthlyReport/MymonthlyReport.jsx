@@ -41,8 +41,15 @@ let endTime = '';
 function MymonthlyReport(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
+    form: { 
+      getFieldDecorator,
+       resetFields,
+        validateFields,
+         setFieldsValue,
+         getFieldsValue
+         },
     queryOrderlist,
+    location,
     loading,
     dispatch,
   } = props;
@@ -355,6 +362,14 @@ function MymonthlyReport(props) {
       searchdata(value, 1, paginations.pageSize);
     })
   }, []);
+
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      handleReset();
+      const formdata = getFieldsValue()
+        searchdata(formdata, 1, 15)
+    }
+  }, [location.state]);
 
   const getTypebyTitle = title => {
     if (selectdata.ischange) {

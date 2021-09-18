@@ -38,11 +38,18 @@ let endTime;
 function OperationmyweeklyReport(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
+    form: {
+      getFieldDecorator,
+      resetFields,
+      validateFields,
+      setFieldsValue,
+      getFieldsValue
+    },
     queryOrderlist,
     openReportlist,
     dispatch,
-    loading
+    loading,
+    location
   } = props;
   const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 });
   const [selectdata, setSelectData] = useState('');
@@ -223,6 +230,14 @@ function OperationmyweeklyReport(props) {
       searchdata(value, 1, paginations.pageSize);
     })
   };
+
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      handleReset();
+      const formdata = getFieldsValue()
+      searchdata(formdata, 1, 15)
+    }
+  }, [location.state]);
 
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {

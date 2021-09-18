@@ -81,12 +81,35 @@ function Performancequerydetail(props) {
     }
   }, [assessNo]);
 
+  useEffect(() => {
+    if (location.state && location.state.reset && assessNo) {
+      openFlow();
+      gethisTask();
+      sessionStorage.setItem('Processtype', 'achievements');
+      setTabActiveKey('workorder');
+    }
+  }, [location.state])
+
+
   const getContrractname = providerId => {
     contractProvider({ id: providerId, status: '1' }).then(res => {
       if (res) {
         const arr = [...res.data];
         setContractArr(arr);
       }
+    });
+  };
+
+  //  获取详细条款数据
+  const getclausedetail = (targetId, scoreId) => {
+    dispatch({
+      type: 'qualityassessment/clauseListpage',
+      payload: {
+        targetId,
+        scoreId,
+        pageNum: 1,
+        pageSize: 1000,
+      },
     });
   };
 
@@ -102,6 +125,8 @@ function Performancequerydetail(props) {
         hisTasks[0]['服务绩效考核登记'].providerId)
     ) {
       let detailId;
+      let target2Id;
+      let scoreId;
       if (
         hisTasks &&
         hisTasks[0] &&
@@ -109,8 +134,11 @@ function Performancequerydetail(props) {
         hisTasks[0]['服务绩效考核登记'].providerId
       ) {
         detailId = hisTasks[0]['服务绩效考核登记'].providerId;
+        target2Id = hisTasks[0]['服务绩效考核登记'].target2Id;
+        scoreId = hisTasks[0]['服务绩效考核登记'].scoreId;
       }
       getContrractname((currentTask && currentTask.providerId) || detailId);
+      getclausedetail(target2Id, scoreId);
     }
   }, [taskData]);
 
@@ -189,7 +217,7 @@ function Performancequerydetail(props) {
                         userinfo={userinfo}
                         target1={[]}
                         target2={[]}
-                        clauseList={[]}
+                        clauseList={clauseList}
                         register={Object.values(obj)[0]}
                         contractArr={contractArr}
                         ChangeFiles={newvalue => {

@@ -47,9 +47,14 @@ const columns = [
 function Status(props) {
   const { pagetitle } = props.route.name;
   const {
-    form: { getFieldDecorator, setFieldsValue, validateFields },
+    form: {
+      getFieldDecorator,
+      validateFields,
+      resetFields
+    },
     operationStatusArr,
-    dispatch
+    dispatch,
+    location
   } = props;
 
   const handleListdata = () => {
@@ -102,6 +107,15 @@ function Status(props) {
     })
   }, [])
 
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      dispatch({
+        type: 'taskstatistics/operationStatus',
+        payload: { startTime, endTime }
+      })
+    }
+  }, [location.state]);
+
   return (
     <PageHeaderWrapper
       title={pagetitle}
@@ -126,7 +140,7 @@ function Status(props) {
                   onClick={() => handleListdata('search')}
                 >
                   查询
-                    </Button>
+                </Button>
               </Col>
             </>
 

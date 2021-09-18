@@ -38,7 +38,12 @@ const { Option } = Select;
 function AddScoringRulesmaintenance(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, validateFields, resetFields },
+    form: { 
+      getFieldDecorator,
+       validateFields,
+        resetFields,
+        setFieldsValue
+       },
     location: { query: { id, scoreSearch } },
     location,
     scoreDetail,
@@ -69,6 +74,16 @@ function AddScoringRulesmaintenance(props) {
       });
     })
   };
+
+  useEffect(() => {
+    if (location.state && location.state.reset && id) {
+      dispatch({
+        type: 'performanceappraisal/clearTree'
+      })
+      getlist();
+      getalldata()
+    }
+  }, [location.state]);
 
   //  按需加载树节点
   const getalldata = () => {
@@ -136,6 +151,7 @@ function AddScoringRulesmaintenance(props) {
 
   useEffect(() => {
     if (loading === false && scoreDetail && scoreDetail.assessType) {
+      setFieldsValue({assessType:scoreDetail.assessType})
       getalldata();
       setType(scoreDetail.assessType)
     }
@@ -303,7 +319,7 @@ function AddScoringRulesmaintenance(props) {
     })
 
     setType('');
-    
+
     if (id) {
       getscoredetail();
       getlist()
@@ -362,71 +378,74 @@ function AddScoringRulesmaintenance(props) {
         style={{ display: 'none' }}
       />
       <Card>
-        {
-          (id ? loading === false : true) && assessmentType && assessmentType.length > 0 && (
-            <Row>
-              <Form {...formItemLayout}>
-                <Col span={8}>
-                  <Form.Item label='评分细则编号'>
-                    {
-                      getFieldDecorator('scoreNo', {
-                        initialValue: scoreDetail.scoreNo
-                      })
-                        (<Input disabled={true} />)
-                    }
-                  </Form.Item>
-                </Col>
+        <Row>
+          <Form {...formItemLayout}>
+            {
+              (id ? loading === false : true) && assessmentType && assessmentType.length > 0 && (
+                <>
+                  <Col span={8}>
+                    <Form.Item label='评分细则编号'>
+                      {
+                        getFieldDecorator('scoreNo', {
+                          initialValue: scoreDetail.scoreNo
+                        })
+                          (<Input disabled={true} />)
+                      }
+                    </Form.Item>
+                  </Col>
 
-                <Col span={8}>
-                  <Form.Item label='评分细则名称'>
-                    {
-                      getFieldDecorator('scoreName', {
-                        rules: [
-                          {
-                            required,
-                            message: '请输入评分细则名称'
-                          }
-                        ],
-                        initialValue: scoreDetail.scoreName
-                      })
-                        (<Input disabled={scoreSearch} />)
-                    }
-                  </Form.Item>
-                </Col>
+                  <Col span={8}>
+                    <Form.Item label='评分细则名称'>
+                      {
+                        getFieldDecorator('scoreName', {
+                          rules: [
+                            {
+                              required,
+                              message: '请输入评分细则名称'
+                            }
+                          ],
+                          initialValue: scoreDetail.scoreName
+                        })
+                          (<Input disabled={scoreSearch} />)
+                      }
+                    </Form.Item>
+                  </Col>
+                </>
+              )
+            }
 
-                <Col span={8}>
-                  <Form.Item label='考核类型'>
-                    {
-                      getFieldDecorator('assessType', {
-                        rules: [
-                          {
-                            required,
-                            message: '请选择考核类型'
-                          }
-                        ],
-                        initialValue: scoreDetail.assessType || '1'
-                      })
-                        (
-                          <Select
-                            placeholder="请选择"
-                            onChange={handleChange}
-                            disabled={scoreSearch}
-                          >
-                            {assessmentType.map(obj => [
-                              <Option key={obj.dict_code} value={obj.dict_code}>
-                                {obj.title}
-                              </Option>,
-                            ])}
-                          </Select>,
-                        )
-                    }
-                  </Form.Item>
-                </Col>
+            <Col span={8}>
+              <Form.Item label='考核类型'>
+                {
+                  getFieldDecorator('assessType', {
+                    rules: [
+                      {
+                        required,
+                        message: '请选择考核类型'
+                      }
+                    ],
+                    initialValue: scoreDetail.assessType || '1'
+                  })
+                    (
+                      <Select
+                        placeholder="请选择"
+                        onChange={handleChange}
+                        disabled={scoreSearch}
+                      >
+                        {assessmentType.map(obj => [
+                          <Option key={obj.dict_code} value={obj.dict_code}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )
+                }
+              </Form.Item>
+            </Col>
 
-              </Form>
-            </Row>
-          )
-        }
+          </Form>
+        </Row>
+
 
         <Layout className={styles.headcolor}>
           <Card title='指标明细' >

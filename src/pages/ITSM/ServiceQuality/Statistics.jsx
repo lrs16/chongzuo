@@ -25,6 +25,7 @@ function Statistics(props) {
   const {
     statisticData,
     statsSumdata,
+    location,
     dispatch
   } = props;
 
@@ -127,6 +128,12 @@ function Statistics(props) {
     getlist();
     projectAssessment()
   }, [])
+
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      getlist()
+    }
+  }, [location.state]);
 
   return (
     <div>

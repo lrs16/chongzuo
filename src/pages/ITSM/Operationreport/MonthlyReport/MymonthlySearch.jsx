@@ -53,7 +53,13 @@ let endTime = '';
 function MymonthlySearch(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
+    form: {
+      getFieldDecorator,
+      resetFields,
+      validateFields,
+      getFieldsValue,
+    },
+    location,
     queryOrderlist,
     loading,
     dispatch,
@@ -166,6 +172,14 @@ function MymonthlySearch(props) {
       searchdata(value, 1, paginations.pageSize);
     })
   };
+
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      handleReset();
+      const formdata = getFieldsValue()
+      searchdata(formdata, 1, 15)
+    }
+  }, [location.state]);
 
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {

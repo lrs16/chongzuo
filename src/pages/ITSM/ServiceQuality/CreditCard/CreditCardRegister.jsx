@@ -36,6 +36,7 @@ function CreditCardRegister(props) {
     loading,
     dispatch,
     clauseList,
+    location,
     location: {
       query: { paramId, search },
     },
@@ -64,6 +65,13 @@ function CreditCardRegister(props) {
       payload: { id: paramId },
     });
   };
+
+  
+  useEffect(() => {
+    if (location.state && location.state.reset && paramId) {
+      registerDetail()
+    }
+  }, [location.state]);
 
   const handleSave = () => {
     RegistratRef.current.validateFields((err, values) => {

@@ -112,10 +112,13 @@ function Workorder(props) {
     }
   }
 
+
+
   
   const { id, taskName, mainId } = props.location.query;
   console.log(mainId,'mainId')
   const { problemFlowLogs, problemFlowNodeRows } = todoDetail;
+
 
   const selectNextflow = () => {
     switch (flowNodeName) {
@@ -186,6 +189,22 @@ function Workorder(props) {
   const formerr = () => {
     message.error('请将信息填写完整...');
   };
+  
+  const getUserinfo = () => {
+    dispatch({
+      type: 'problemmanage/fetchUseinfo',
+    });
+  };
+
+  useEffect(() => {
+    if (location.state && location.state.reset && mainId) {
+      getInformation();
+      getUserinfo(); // 获取登录用户信息
+      sessionStorage.setItem('Processtype', 'problem');
+      setTabActiveKey('workorder');
+    }
+  }, [location.state])
+  
 
 
   const gotoCirapi = (closessign) => {
@@ -507,11 +526,7 @@ function Workorder(props) {
   }, [files]);
 
 
-  const getUserinfo = () => {
-    dispatch({
-      type: 'problemmanage/fetchUseinfo',
-    });
-  };
+ 
 
   const gethandle = () => {
     const dictModule = 'problem';

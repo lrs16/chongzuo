@@ -33,7 +33,8 @@ function TimeoutStatistics(props) {
   const {
     form: { getFieldDecorator, resetFields },
     dispatch,
-    timeoutArr
+    timeoutArr,
+    location
   } = props;
 
   const columns = [
@@ -116,6 +117,16 @@ function TimeoutStatistics(props) {
     statTimeBegin = '';
     statTimeEnd = '';
   }
+
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      handleReset();
+      dispatch({
+        type: 'problemstatistics/timeoutLists',
+        payload: { statTimeBegin, statTimeEnd }
+      })
+    }
+  }, [location.state]);
 
   useEffect(() => {
     search = false;

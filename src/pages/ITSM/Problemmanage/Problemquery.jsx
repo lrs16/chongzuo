@@ -1025,6 +1025,13 @@ function Besolved(props) {
     }
   }
 
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      handleReset();
+      searchdata({},1)
+    }
+  }, [location.state]);
+
   return (
     <PageHeaderWrapper title={differentTitle}>
       <SysDict

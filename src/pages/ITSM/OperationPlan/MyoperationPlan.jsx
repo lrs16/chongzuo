@@ -298,6 +298,13 @@ function MyoperationPlan(props) {
     })
   };
 
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      handleReset();
+      getTobolist({}, 1, 15)
+    }
+  }, [location.state]);
+
   const searchdata = (values, page, pageSize) => {
     const newvalues = {
       ...values,

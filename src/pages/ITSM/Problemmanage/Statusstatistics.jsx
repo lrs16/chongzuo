@@ -37,7 +37,8 @@ function Statusstatistics(props) {
     form: { getFieldDecorator, resetFields },
     dispatch,
     statusArr,
-    loading
+    loading,
+    location
   } = props;
 
   const columns = [
@@ -59,9 +60,9 @@ function Statusstatistics(props) {
               query: {
                 problem: 'status',
                 // status: record.statCode,
-                addTimeBegin: search ? statTimeBegin:'',
-                addTimeEnd: search ? statTimeEnd:'',
-                currentNode:record.statCurrentNode,
+                addTimeBegin: search ? statTimeBegin : '',
+                addTimeEnd: search ? statTimeEnd : '',
+                currentNode: record.statCurrentNode,
                 pathpush: true
               },
               state: { cache: false, }
@@ -75,6 +76,22 @@ function Statusstatistics(props) {
       }
     },
   ]
+
+  const handleReset = () => {
+    resetFields();
+    statTimeBegin = '';
+    statTimeEnd = '';
+  }
+
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      handleReset();
+      dispatch({
+        type: 'problemstatistics/fetchstatusList',
+        payload: { statTimeBegin, statTimeEnd }
+      });
+    }
+  }, [location.state]);
 
   const statusList = () => {
     search = true;
@@ -114,11 +131,7 @@ function Statusstatistics(props) {
     [statTimeBegin, statTimeEnd] = dateString;
   }
 
-  const handleReset = () => {
-    resetFields();
-    statTimeBegin = '';
-    statTimeEnd = '';
-  }
+
 
 
   return (
@@ -160,7 +173,7 @@ function Statusstatistics(props) {
           </Button>
         </div>
 
-        <Table 
+        <Table
           columns={columns}
           dataSource={statusArr}
         />

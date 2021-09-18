@@ -146,11 +146,6 @@ function OperationplanCheckfillin(props) {
 
   }
 
-
-
-
-
-
   return (
     <PageHeaderWrapper
       title={status}

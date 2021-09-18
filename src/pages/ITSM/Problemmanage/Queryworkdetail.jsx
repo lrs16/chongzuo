@@ -82,6 +82,8 @@ function Queryworkdetail(props) {
   }, [location.state]);
 
 
+
+
   const tabList = [
     {
       key: 'workorder',
@@ -164,7 +166,9 @@ function Queryworkdetail(props) {
                   {problemFlowNodeRows.map((obj, index) => {
                     // panel详情组件
                     const Paneldesmap = new Map([
-                      ['问题登记', <Problemregistration info={obj}
+                      ['问题登记', <Problemregistration
+                        key={index}
+                        info={obj}
                         statue={currntStatus}
                         problemFlowNodeRows={problemFlowNodeRows}
                         main={main}
@@ -172,36 +176,42 @@ function Queryworkdetail(props) {
                         forminladeLayout={forminladeLayout}
                       />],
                       ['系统运维商审核', <Problemreview
+                        key={index}
                         info={obj}
                         main={main}
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}
                       />],
                       ['自动化科审核', <Problemreview
+                        key={index}
                         info={obj}
                         main={main}
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}
                       />],
                       ['系统开发商处理', <Problemsolving
+                        key={index}
                         info={obj}
                         main={main}
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}
                       />],
                       ['系统运维商确认', <Operatorconfirmades
+                        key={index}
                         info={obj}
                         main={main}
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}
                       />],
                       ['自动化科业务人员确认', <Operatorconfirmades
+                        key={index}
                         info={obj}
                         main={main}
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}
                       />],
                       ['问题登记人员确认', <Operatorconfirmades
+                        key={index}
                         info={obj}
                         main={main}
                         formItemLayout={formItemLayout}

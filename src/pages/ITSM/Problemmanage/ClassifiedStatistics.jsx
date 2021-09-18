@@ -68,6 +68,7 @@ function ClassifiedStatistics(props) {
   const {
     form: { getFieldDecorator, resetFields },
     dispatch,
+    location,
     classArr
   } = props;
 
@@ -98,6 +99,16 @@ function ClassifiedStatistics(props) {
     statTimeBegin = '';
     statTimeEnd = '';
   }
+
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      handleReset();
+      dispatch({
+        type: 'problemstatistics/fetchClasslist',
+        payload: { statTimeBegin, statTimeEnd, dictType: 'type' }
+      })
+    }
+  }, [location.state]);
 
   const download = () => {
     dispatch({

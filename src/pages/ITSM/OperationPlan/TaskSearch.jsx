@@ -322,22 +322,6 @@ function TaskSearch(props) {
     return item.title
   });
 
-  const getTobolist = () => {
-    validateFields((err, values) => {
-      dispatch({
-        type: 'processmodel/getOperationQueryList',
-        payload: {
-          ...values,
-          time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-          time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-          addTime: '',
-          pageIndex: paginations.current,
-          pageSize: paginations.pageSize,
-        },
-      });
-    })
-  };
-
   const searchdata = (values, page, pageSize) => {
     dispatch({
       type: 'processmodel/getOperationQueryList',
@@ -381,6 +365,13 @@ function TaskSearch(props) {
       pageSize
     })
   };
+
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      handleReset();
+      searchdata({}, 1, 15)
+    }
+  }, [location.state]);
 
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {

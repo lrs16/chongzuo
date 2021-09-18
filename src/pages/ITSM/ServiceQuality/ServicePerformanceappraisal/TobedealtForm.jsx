@@ -175,6 +175,17 @@ function TobedealtForm(props) {
   }, [assessNo]);
 
   useEffect(() => {
+    if (location.state && location.state.reset && assessNo) {
+      getUserinfo();
+      openFlow();
+      gethisTask();
+      sessionStorage.setItem('Processtype', 'achievements');
+      setTabActiveKey('workorder');
+    }
+  }, [location.state])
+  
+
+  useEffect(() => {
     if (
       (taskName === '服务绩效考核确认' ||
         taskName === '服务绩效考核登记' ||
@@ -208,7 +219,7 @@ function TobedealtForm(props) {
       }
 
       if (target2Id && (scoreId || comfirmScoreid)) {
-        getclausedetail(target2Id, scoreId || comfirmScoreid);
+        getclausedetail(target2Id, scoreId);
       }
     }
   }, [loading]);

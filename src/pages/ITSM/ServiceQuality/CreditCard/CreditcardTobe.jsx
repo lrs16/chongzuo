@@ -220,6 +220,13 @@ function CreditcardTobe(props) {
     searchdata({}, 1, 15);
   };
 
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      handleReset();
+      searchdata({}, 1, 15)
+    }
+  }, [location.state]);
+
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
       if (!err) {

@@ -40,10 +40,16 @@ function Work(props) {
     })
   }
 
-  // 初始化获取用户信息
   useEffect(() => {
     getInformation();
   }, [])
+
+  useEffect(() => {
+    if (location.state && location.state.reset && mainId) {
+      getInformation()
+    }
+  }, [location.state]);
+
 
   // 点击页签右键刷新
   useEffect(() => {
