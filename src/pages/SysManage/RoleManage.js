@@ -1,7 +1,8 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Card, Table, Popconfirm, Button, Message, Divider, Badge ,Form, Input } from 'antd';
+import router from 'umi/router';
+import { Card, Table, Popconfirm, Button, Message, Divider, Badge } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import RoleModal from './components/ReloModal';
 import RoleMenu from './components/RoleMenu';
@@ -14,16 +15,36 @@ const status = ['停用', '启用'];
   loading: loading.models.upmsrole,
 }))
 class RoleManage extends Component {
-  // state = {
-  //   current: 1,
-  //   pageSize: 10,
-  //   queKey: '',
-  // };
+  state = {
+    current: 1,
+    pageSize: 15,
+    // queKey: '',
+  };
 
   componentDidMount() {
     this.getlist();
   }
-// 查询接口报500
+
+  componentDidUpdate() {
+    const propsstate = this.props.location.state;
+    if (propsstate && propsstate.reset) {
+      this.resetquekey();
+      this.getlist()
+      router.push({
+        pathname: `/sysmanage/rolemanage`,
+        state: { cach: false, reset: false }
+      });
+    }
+  }
+
+  resetquekey = () => {
+    this.setState({
+      current: 1,
+      pageSize: 15,
+      // queKey: '',
+    })
+  }
+  // 查询接口报500
   // getlist = () => {
   //   const page = this.state.current;
   //   const limit = this.state.pageSize;
@@ -44,52 +65,7 @@ class RoleManage extends Component {
     });
   };
 
-  // handleSearch = values => {
-  //   const page = this.state.current;
-  //   const limit = this.state.pageSize;
-  //   this.setState({
-  //     queKey: values,
-  //   });
-  //   this.props.dispatch({
-  //     type: 'upmsrole/search',
-  //     payload: {
-  //       queKey: values,
-  //       page,
-  //       limit,
-  //     },
-  //   });
-  // };
-
-  // changePage = page => {
-  //   this.props.dispatch({
-  //     type: 'upmsrole/search',
-  //     payload: {
-  //       queKey: this.state.queKey,
-  //       page,
-  //       limit: this.state.pageSize,
-  //     },
-  //   });
-  //   setTimeout(() => {
-  //     this.setState({ current: page });
-  //   }, 0);
-  // };
-
-  // onShowSizeChange = (current, pageSize) => {
-  //   this.props.dispatch({
-  //     type: 'upmsrole/search',
-  //     payload: {
-  //       queKey: this.state.queKey,
-  //       page: current,
-  //       limit: pageSize,
-  //     },
-  //   });
-  //   setTimeout(() => {
-  //     this.setState({ pageSize });
-  //   }, 0);
-  // };
-
   render() {
-
     const handleUpdate = values => {
       const { dispatch } = this.props;
       return dispatch({
@@ -133,6 +109,18 @@ class RoleManage extends Component {
       });
     };
 
+
+    const onShowSizeChange = (current, pageSize) => {
+      setTimeout(() => {
+        this.setState({ pageSize });
+      }, 0);
+    };
+
+    const changePage = (page) => {
+      setTimeout(() => {
+        this.setState({ current: page });
+      }, 0);
+    }
 
     const columns = [
       {
@@ -185,16 +173,16 @@ class RoleManage extends Component {
       },
     ];
     const {
-      upmsrole: { data },
+      upmsrole: { data }, loading,
     } = this.props;
-    // const pagination = {
-    //   showSizeChanger: true,
-    //   onShowSizeChange: (current, pageSize) => this.onShowSizeChange(current, pageSize),
-    //   current: this.state.current,
-    //   pageSize: this.state.pageSize,
-    //   total: data.total,
-    //   onChange: page => this.changePage(page),
-    // };
+    const pagination = {
+      showSizeChanger: true,
+      onShowSizeChange: (current, pageSize) => onShowSizeChange(current, pageSize),
+      current: this.state.current,
+      pageSize: this.state.pageSize,
+      total: data.total,
+      onChange: page => changePage(page),
+    };
     const dataSource = [...data];
     return (
       <PageHeaderWrapper title="角色管理">
@@ -211,11 +199,12 @@ class RoleManage extends Component {
               新增角色
             </Button>
           </RoleModal>
-          <Table 
-          dataSource={dataSource} 
-          columns={columns} 
-          rowKey={record => record.id} 
-          // pagination={pagination}
+          <Table
+            dataSource={dataSource}
+            columns={columns}
+            rowKey={record => record.id}
+            pagination={pagination}
+            loading={loading}
           />
         </Card>
       </PageHeaderWrapper>

@@ -119,11 +119,16 @@ function ToDolist(props) {
   //  下载
   const download = () => {
     const val = getFieldsValue();
+    const formval = {
+      ...val,
+      beginTime: val.beginTime ? moment(val.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      endTime: val.endTime ? moment(val.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+    };
     const userid = sessionStorage.getItem('userauthorityid');
     const releaseNos = selectedRecords.length > 0 && selectedRecords.map(item => {
       return item.releaseNo
     });
-    const values = { ...val, userid, releaseNos: releaseNos.length > 0 ? releaseNos.toString() : '' };
+    const values = { ...formval, userid, releaseNos: releaseNos.length > 0 ? releaseNos.toString() : '' };
     exportReleaseOrder(values).then(res => {
       if (res) {
         const filename = `发布待办_${moment().format('YYYY-MM-DD HH:mm')}.xls`;

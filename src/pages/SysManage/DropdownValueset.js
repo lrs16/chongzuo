@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import router from 'umi/router';
 import moment from 'moment';
 import { Card, Table, Button, Message, Row, Col, Divider, Popconfirm } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -31,6 +32,52 @@ class DropdownValueset extends Component {
   componentDidMount() {
     this.getlist();
     this.getall();
+  }
+
+  componentDidUpdate() {
+    const propsstate = this.props.location.state;
+    if (propsstate && propsstate.reset) {
+      this.resetquekey();
+      this.props.dispatch({
+        type: 'umpsdropdown/getSearchDropdownValueList',
+        payload: {
+          page: 1,
+          limit: 15,
+          bodyParams: {
+            dictCode: '',
+            dictModule: '',
+            dictName: '',
+            dictRemarks: '',
+            dictState: '1',
+            dictType: '',
+            isModify: '',
+          },
+        },
+      });
+      this.getall();
+      router.push({
+        pathname: `/sysmanage/dropdownvalueset`,
+        state: { cach: false, reset: false }
+      });
+
+    }
+  }
+
+  resetquekey = () => {
+    this.setState({
+      current: 1,
+      pageSize: 15,
+      parentId: '0',
+      bodyParams: {
+        dictCode: '',
+        dictModule: '',
+        dictName: '',
+        dictRemarks: '',
+        dictState: '1',
+        dictType: '',
+        isModify: '',
+      },
+    })
   }
 
   getall = () => {
@@ -334,7 +381,9 @@ class DropdownValueset extends Component {
                 overflowY: 'auto',
               }}
             >
-              <DictTree toFatherValue={this.getChildValue} data={data} />
+              {(!this.props.location.state || (this.props.location.state && !this.props.location.state.reset)) && (
+                <DictTree toFatherValue={this.getChildValue} data={data} />
+              )}
             </Card>
           </Col>
           <Col span={19}>

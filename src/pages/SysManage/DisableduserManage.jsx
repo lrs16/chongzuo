@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
+import router from 'umi/router';
 import { Table, Card, Divider, Button, Switch, Message, Popconfirm, Form, Input } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import DisableduserDrawer from './components/DisableduserDrawer';
@@ -12,7 +13,8 @@ function DisableduserManage(props) {
     dispatch,
     list,
     loading,
-    form: { getFieldDecorator, validateFields },
+    form: { getFieldDecorator, validateFields, resetFields },
+    location
   } = props;
   const [visible, setVisible] = useState(false); // 抽屉是否显示
   const [title, setTitle] = useState('');
@@ -34,6 +36,31 @@ function DisableduserManage(props) {
   useEffect(() => {
     getdatas();
   }, []);
+
+  // 重置
+  const handleReset = () => {
+    router.push({
+      pathname: `/sysmanage/disabledusermanage`,
+      state: { cach: false, }
+    });
+    resetFields();
+    dispatch({
+      type: 'disabledusermanage/query',
+      payload: {
+        user: '',
+        pageIndex: 0,
+        pageSize: 15,
+      },
+    });
+    setPageinations({ current: 1, pageSize: 15 });
+  };
+
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      // 点击菜单刷新
+      handleReset()
+    }
+  }, [location.state]);
 
   const handleShowDrawer = (drwertitle, type, record) => {
     setVisible(!visible);

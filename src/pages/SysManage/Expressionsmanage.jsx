@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
+import router from 'umi/router';
 import {
   Table,
   Card,
@@ -40,6 +41,7 @@ function Expressions(props) {
     dispatch,
     list,
     loading,
+    location,
     form: { getFieldDecorator, resetFields, validateFields },
   } = props;
   const [visible, setVisible] = useState(false); // 抽屉是否显示
@@ -65,6 +67,33 @@ function Expressions(props) {
   useEffect(() => {
     getdatas();
   }, []);
+
+  // 重置
+  const handleReset = () => {
+    router.push({
+      pathname: `/sysmanage/expressionsmanage`,
+      state: { cach: false, }
+    });
+    resetFields();
+    dispatch({
+      type: 'expressionsmanage/query',
+      payload: {
+        field: '',
+        content: '',
+        status: '',
+        pageIndex: 0,
+        pageSize: 15,
+      },
+    });
+    setPageinations({ current: 1, pageSize: 15 });
+  };
+
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      // 点击菜单刷新
+      handleReset()
+    }
+  }, [location.state]);
 
   const handleShowDrawer = (drwertitle, type, record) => {
     setVisible(!visible);
@@ -191,10 +220,6 @@ function Expressions(props) {
       }
       searchdata(values, paginations.current, paginations.pageSize);
     });
-  };
-
-  const handleReset = () => {
-    resetFields();
   };
 
   const getTypebykey = key => {

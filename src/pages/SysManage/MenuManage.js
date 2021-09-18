@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import router from 'umi/router';
 import moment from 'moment';
 import {
   Card,
@@ -25,7 +26,6 @@ const { TreeNode } = Tree;
 function getAllLeaf(data) {
   const result = [];
   function getLeaf(data) {
-    console.log('data: ', data);
     if (data[0].children.length === 1) {
       getLeaf(data[0].children);
     } else {
@@ -55,6 +55,38 @@ class MenuManage extends Component {
     this.getalldata();
   }
 
+  componentDidUpdate() {
+    const propsstate = this.props.location.state;
+    if (propsstate && propsstate.reset) {
+      this.resetquekey();
+      this.props.dispatch({
+        type: 'upmsmenu/search',
+        payload: {
+          page: 1,
+          limit: 15,
+          queKey: '',
+          pid: '',
+        },
+      });
+      this.getalldata();
+      router.push({
+        pathname: `/sysmanage/menumanage`,
+        state: { cach: false, reset: false }
+      });
+
+    }
+  }
+
+  resetquekey = () => {
+    this.setState({
+      current: 1,
+      pageSize: 15,
+      queKey: '',
+      treeData: [],
+      pidkey: '',
+    })
+  }
+
   // 按需加载树节点
   getalldata = () => {
     this.props
@@ -63,8 +95,7 @@ class MenuManage extends Component {
         payload: {
           pid: '0',
         },
-      })
-      .then(res => {
+      }).then(res => {
         setTimeout(() => {
           this.setState({ treeData: res.data });
         }, 0);
@@ -101,8 +132,7 @@ class MenuManage extends Component {
           payload: {
             pid: treeNode.props.dataRef.key,
           },
-        })
-        .then(res => {
+        }).then(res => {
           if (res.data !== undefined) {
             const sontreedata = getAllLeaf(res.data);
             treeNode.props.dataRef.children = sontreedata;
@@ -309,7 +339,7 @@ class MenuManage extends Component {
       },
     ];
     const {
-      upmsmenu: { data },
+      upmsmenu: { data }, loading
     } = this.props;
     const dataSource = data.rows;
     const pagination = {
@@ -327,9 +357,11 @@ class MenuManage extends Component {
         <Card>
           <Layout>
             <Sider theme="light">
-              <Tree loadData={this.onLoadData} onCheck={this.onCheck} onSelect={this.handleClick}>
-                {this.renderTreeNodes(this.state.treeData)}
-              </Tree>
+              {(!this.props.location.state || (this.props.location.state && !this.props.location.state.reset)) && (
+                <Tree loadData={this.onLoadData} onCheck={this.onCheck} onSelect={this.handleClick}>
+                  {this.renderTreeNodes(this.state.treeData)}
+                </Tree>
+              )}
             </Sider>
             <Content style={{ background: '#fff' }}>
               <div>
@@ -337,6 +369,8 @@ class MenuManage extends Component {
                   <Search
                     placeholder="请输入关键字"
                     onSearch={values => this.handleSearch(values)}
+                    defaultValue={this.state.queKey}
+                    key={this.state.queKey}
                   />
                 </Form>
                 <MenuModal onSumit={handleUpdate} pidkey={this.state.pidkey}>
@@ -349,6 +383,7 @@ class MenuManage extends Component {
                   </Button>
                 </MenuModal>
                 <Table
+                  loading={loading}
                   dataSource={dataSource}
                   columns={columns}
                   rowKey={record => record.id}

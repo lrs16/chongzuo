@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
+import router from 'umi/router';
 import {
   Layout,
   Card,
@@ -44,6 +45,37 @@ class DeptManage extends Component {
   componentDidMount() {
     this.getlist();
     this.getdeptree('7AC3EF0F701402A2E0530A644F130365');
+  }
+
+  componentDidUpdate() {
+    const propsstate = this.props.location.state;
+    if (propsstate && propsstate.reset) {
+      this.resetquekey();
+      this.props.dispatch({
+        type: 'upmsdept/search',
+        payload: {
+          page: '',
+          limit: '',
+          queKey: '',
+          pid: '',
+        },
+      });
+      this.getdeptree('7AC3EF0F701402A2E0530A644F130365');
+      router.push({
+        pathname: `/sysmanage/deptmanage`,
+        state: { cach: false, reset: false }
+      });
+    }
+  }
+
+  resetquekey = () => {
+    this.setState({
+      current: 1,
+      pageSize: 15,
+      queKey: '',
+      treeData: [],
+      pidkey: '',
+    })
   }
 
   getlist = () => {
@@ -309,9 +341,11 @@ class DeptManage extends Component {
                 height: 'calc(100vh - 177px)',
               }}
             >
-              <Tree loadData={this.onLoadData} onSelect={this.handleClick}>
-                {this.renderTreeNodes(this.state.treeData)}
-              </Tree>
+              {(!this.props.location.state || (this.props.location.state && !this.props.location.state.reset)) && (
+                <Tree loadData={this.onLoadData} onSelect={this.handleClick}>
+                  {this.renderTreeNodes(this.state.treeData)}
+                </Tree>
+              )}
             </Sider>
             <Content
               style={{
@@ -325,6 +359,8 @@ class DeptManage extends Component {
                   <Search
                     placeholder="请输入关键字"
                     onSearch={values => this.handleSearch(values)}
+                    defaultValue={this.state.queKey}
+                    key={this.state.queKey}
                   />
                 </Form>
                 <DeptModal onSumit={this.handleUpdate} pidkey={this.state.pidkey}>

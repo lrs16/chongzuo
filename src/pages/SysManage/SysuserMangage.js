@@ -14,6 +14,7 @@ import {
   Form,
   // Pagination,
 } from 'antd';
+import router from 'umi/router';
 import {
   ToolOutlined,
   UnlockOutlined,
@@ -37,6 +38,7 @@ const status = ['停用', '启用', '临时'];
   loading: loading.models.usermanage,
 }))
 class SysuserMangage extends Component {
+
   state = {
     current: 1,
     pageSize: 15,
@@ -45,6 +47,33 @@ class SysuserMangage extends Component {
 
   componentDidMount() {
     this.getlist();
+  }
+
+  componentDidUpdate() {
+    const propsstate = this.props.location.state;
+    if (propsstate && propsstate.reset) {
+      this.resetquekey();
+      this.props.dispatch({
+        type: 'usermanage/search',
+        payload: {
+          page: 1,
+          limit: 15,
+          queKey: '',
+        },
+      });
+      router.push({
+        pathname: `/sysmanage/usersmanage`,
+        state: { cach: false, reset: false }
+      });
+    }
+  }
+
+  resetquekey = () => {
+    this.setState({
+      current: 1,
+      pageSize: 15,
+      queKey: '',
+    })
   }
 
   getlist = () => {
@@ -272,6 +301,7 @@ class SysuserMangage extends Component {
       usermanage: { data, depdata },
       loading,
     } = this.props;
+
     // 分页
     const pagination = {
       showSizeChanger: true,
@@ -282,12 +312,13 @@ class SysuserMangage extends Component {
       showTotal: total => `总共  ${total}  条记录`,
       onChange: page => this.changePage(page),
     };
+
     const dataSource = data.rows;
     return (
       <PageHeaderWrapper>
         <Card>
           <Form style={{ float: 'right', width: '30%' }}>
-            <Search placeholder="请输入关键字" onSearch={values => this.handleSearch(values)} />
+            <Search placeholder="请输入关键字" onSearch={values => this.handleSearch(values)} defaultValue={this.state.queKey} key={this.state.queKey} />
           </Form>
           <NewUser onSumit={handleUpdate} title="新建用户" depdatas={depdata} loading={loading}>
             <Button
