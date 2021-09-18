@@ -144,14 +144,14 @@ function CabinetDrawer(props) {
         </Form.Item>
         <Form.Item label="剩余容量">
           {getFieldDecorator('cabinetResidueU', {
-            rules: [
-              {
-                required,
-                message: '请输入 '
-              },
-            ],
+            // rules: [
+            //   {
+            //     required,
+            //     message: '请输入 '
+            //   },
+            // ],
             initialValue: cabinetResidueU,
-          })(<Input placeholder="请输入" disabled/>)}
+          })(<Input placeholder="请输入" />)}
         </Form.Item>
         <Form.Item label="负责人">
           {getFieldDecorator('director', {

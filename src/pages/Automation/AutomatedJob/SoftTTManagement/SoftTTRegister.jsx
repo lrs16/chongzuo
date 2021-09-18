@@ -5,10 +5,11 @@ import React, {
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
-import { Table, Card, Button, Form, Input, Select, Row, Col, DatePicker } from 'antd';
+import { Table, Card, Button, Form, Input, Select, Row, Col, Divider, Popconfirm, DatePicker, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 // import DictLower from '@/components/SysDict/DictLower';
+import { deleteAutoSoftWorkById } from './services/api';
 
 const { Option } = Select;
 
@@ -130,6 +131,17 @@ function SoftTTRegister(props) {
     searchdata(1, paginations.pageSize);
   };
 
+  const handleDelete = id => { // 删除
+    deleteAutoSoftWorkById(id).then(res => {
+      if (res.code === 200) {
+        message.success(res.msg || '删除成功');
+        searchdata(1, 15);
+      } else {
+        message.error(res.msg);
+      }
+    });
+  }
+
   // 查询
   const extra = (<>
     <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
@@ -211,15 +223,27 @@ function SoftTTRegister(props) {
       dataIndex: 'action',
       key: 'action',
       fixed: 'right',
-      width: 80,
+      width: 150,
       render: (text, record) => {
         return (
           <div>
-            <a type="link"
+            {(record.workStatus === '已审核' && record.examineStatus === '通过') ? <a type="link" disable
               onClick={() => newRegist('edit', record)}
             >
               编辑
-            </a>
+            </a> : <a type="link"
+              onClick={() => newRegist('edit', record)}
+            >
+              编辑
+            </a>}
+            <Divider type="vertical" />
+            <Popconfirm title="确定要删除吗？" onConfirm={() => handleDelete(record.id)}>
+              <a type="link"
+                style={{ color: 'red' }}
+              >
+                删除
+              </a>
+            </Popconfirm>
           </div>
         );
       },

@@ -50,6 +50,14 @@ export async function editAutoSoftWork(params) {
     });
 }
 
+// /auto/soft/deleteAutoSoftWorkById/{workId} 删除软件启停工单(已登记才可删除)
+export async function deleteAutoSoftWorkById(workId) {
+    return request(`/auto/soft/deleteAutoSoftWorkById/${workId}`, {
+        method: 'DELETE',
+        data: { workId },
+    })
+}
+
 // 提交 /auto/soft/updAutoWorkStatus/{workId}/{workStatus} 更新启停工单的状态(提交/审批)
 // export async function submitAutoSoftWork(params, autoSoftWork, autoSoftWorkExamine) {
 //     return request(`/auto/soft/updAutoWorkStatus/${params.workId}/${params.workStatus}`, {
