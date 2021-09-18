@@ -49,7 +49,7 @@ const formItemLayout444 = {
 
 const Content = forwardRef((props, ref) => {
   const {
-    userinfo,
+    userinfo, Noediting,
     registrat,
     form: { getFieldDecorator, getFieldsValue, resetFields, setFieldsValue }
   } = props;
@@ -93,10 +93,10 @@ const Content = forwardRef((props, ref) => {
                 initialValue: [""] || registrat.workSoftIds,
               })(<Button block onClick={() => {
                 handleShowDrawer('添加作业对象');
-              }}>+添加对象</Button>)}
+              }} disabled={Noediting}>+添加对象</Button>)}
             </Form.Item>
             <Form.Item span={24} {...formItemLayout444}>
-              <SoftTaskObjectList selectrowsData={rows} GetRowskeysData={ (v) => { setFieldsValue({ workSoftIds: v }); }} />
+              <SoftTaskObjectList selectrowsData={rows} GetRowskeysData={ (v) => { setFieldsValue({ workSoftIds: v }); }} Noediting={Noediting}/>
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -104,7 +104,7 @@ const Content = forwardRef((props, ref) => {
               {getFieldDecorator('workRemarks', {
                 rules: [{ required: true, message: '请输入审核说明' }],
                 initialValue: registrat.workRemarks || '',
-              })(<TextArea autoSize={{ minRows: 5 }} placeholder="请输入" />)}
+              })(<TextArea autoSize={{ minRows: 5 }} placeholder="请输入" disabled={Noediting}/>)}
             </Form.Item>
           </Col>
           <Col span={8}>

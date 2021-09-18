@@ -51,7 +51,7 @@ function SoftTTExecute(props) {
   const [visibledrawer, setVisibledrawer] = useState(false); // 抽屉是否显示
   const [titledrawer, setTitledrawer] = useState('');
   const [recordvalues, setRecordvalues] = useState({});
-  // const [disable, setdisable] = useState(true);
+  // const [disable, setdisable] = useState(false);
 
   const searchdata = (page, size) => {
     const values = getFieldsValue();
@@ -137,7 +137,7 @@ function SoftTTExecute(props) {
     endAutoSoftWork(id).then(res => {
       if (res.code === 200) {
         message.success(res.msg || '结束作业成功！');
-        // setdisable(false);
+        // setdisable(true);
       } else {
         message.error(res.msg);
       }
@@ -244,6 +244,7 @@ function SoftTTExecute(props) {
           <div>
             <Popconfirm title="是否确定启动软件？" onConfirm={() => torunAutoSoftWork(record.id)}>
               <a type="link"
+                // disabled={disable}
               >
                 启动
               </a>
@@ -251,6 +252,7 @@ function SoftTTExecute(props) {
             <Divider type="vertical" />
             <Popconfirm title="是否确定停止软件？" onConfirm={() => tostopAutoSoftWork(record.id)}>
               <a type="link"
+              // disabled={disable}
               >
                 停止
               </a>
@@ -258,7 +260,7 @@ function SoftTTExecute(props) {
             <Divider type="vertical" />
             <Popconfirm title="是否确定结束作业？" onConfirm={() => toendAutoSoftWork(record.id)}>
               <a type="link"
-              // disabled={disable}
+                // disabled={disable}
               >
                 结束作业
               </a>
@@ -420,7 +422,7 @@ function SoftTTExecute(props) {
         visibledrawer={visibledrawer}
         ChangeVisibledrawer={newvalue => setVisibledrawer(newvalue)}
         titledrawer={titledrawer}
-        dispatch={dispatch}
+        // dispatch={dispatch}
         recordvalues={recordvalues}
         destroyOnClose
       />

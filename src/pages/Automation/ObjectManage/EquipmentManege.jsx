@@ -193,7 +193,8 @@ function EquipmentManege(props) {
             title: '设备编号',
             dataIndex: 'hostAssets',
             key: 'hostAssets',
-            width: 200,
+            width: 250,
+            ellipsis: true,
         },
         {
             title: '区域',
@@ -205,7 +206,8 @@ function EquipmentManege(props) {
             title: '设备名称',
             dataIndex: 'hostName',
             key: 'hostName',
-            width: 180,
+            width: 200,
+            ellipsis: true,
         },
         {
             title: '设备IP',
@@ -277,6 +279,7 @@ function EquipmentManege(props) {
             dataIndex: 'hostCabinetId',
             key: 'hostCabinetId',
             width: 220,
+            ellipsis: true,
         },
         {
             title: '所在U位',

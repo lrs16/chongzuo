@@ -347,7 +347,7 @@ function SystemScriptList(props) {
                     </Col>
                     {expand ? (<Col span={24} style={{ marginTop: 4, textAlign: 'right' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
                 </Form>
-                <Col span={24}><Alert message={buttype === 'add' ? `已选择【${selectedRows.length}】个agent` : `已选择【${selectedRowKeys.length}】个agent`} type="info" style={{ marginBottom: 5, marginLeft: 48, width: '96.6%' }} /></Col>
+                <Col span={24}><Alert message={buttype === 'add' ? `已选择【${selectedRows.length}】个agent` : `已选择【${selectedRows.length}】个agent`} type="info" style={{ marginBottom: 5, marginLeft: 48, width: '96.6%' }} /></Col>
             </Row>
             <Table
                 style={{ marginLeft: 118 }}

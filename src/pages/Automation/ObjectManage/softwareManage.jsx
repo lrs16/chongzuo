@@ -229,6 +229,7 @@ function softwareManage(props) {
             dataIndex: 'hostName',
             key: 'hostName',
             width: 180,
+            ellipsis: true,
         },
         {
             title: '主机IP',
@@ -289,13 +290,15 @@ function softwareManage(props) {
             title: '启动脚本路径',
             dataIndex: 'startupScriptPath',
             key: 'startupScriptPath',
-            width: 200,
+            width: 250,
+            ellipsis: true,
         },
         {
             title: '停止脚本路径',
             dataIndex: 'stopScriptPath',
             key: 'stopScriptPath',
-            width: 200,
+            width: 250,
+            ellipsis: true,
         },
         {
             title: '启动参数',

@@ -74,6 +74,15 @@ function SoftwareDrawer(props) {
         });
     };
 
+    // const handleChange1 = v => {
+    //     dispatch({
+    //         type: 'softwaremanage/tofindCascade',
+    //         payload: { hostZoneId: v },
+    //     }).then(res => {
+    //         setFindhostIp(res.data);
+    //     });
+    // };
+
     // 数据字典取下拉值
     const getTypebyId = key => {
         if (selectdata.ischange) {
@@ -135,7 +144,7 @@ function SoftwareDrawer(props) {
                         ))}
                     </Select>)}
                 </Form.Item>
-                <Form.Item label="主机IP">
+                <Form.Item label="设备IP">
                     {getFieldDecorator('hostIp', {
                         rules: [
                             {

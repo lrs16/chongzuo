@@ -170,18 +170,21 @@ function CabinetManege(props) {
             dataIndex: 'cabinetName',
             key: 'cabinetName',
             width: 250,
+            ellipsis: true,
         },
         {
             title: '机柜编码',
             dataIndex: 'cabinetNo',
             key: 'cabinetNo',
             width: 200,
+            ellipsis: true,
         },
         {
             title: '机柜位置',
             dataIndex: 'cabinetSeat',
             key: 'cabinetSeat',
-            width: 200,
+            width: 250,
+            ellipsis: true,
         },
         {
             title: '机柜容量',
@@ -213,7 +216,8 @@ function CabinetManege(props) {
             title: '机柜备注',
             dataIndex: 'cabinetRemarks',
             key: 'cabinetRemarks',
-            width: 180,
+            width: 300,
+            ellipsis: true,
         },
         {
             title: '创建人',

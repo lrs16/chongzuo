@@ -330,7 +330,7 @@ function TaskObjectList(props) {
                 <Col span={24} style={{ marginLeft: 48, padding: 8 }}>{selectedRows.map(item => (
                     <Tag key={item.id} color="red" closable onClose={() => logcalcel()}>{item.agentHost}</Tag>
                 ))}</Col>
-                <Col span={24}><Alert message={buttype === 'add' ? (`已选择【${selectedRows.length}】个agent` || `已选择【0】个agent`) : `已选择【${selectedRowKeys.length}】个agent`} type="info" style={{ marginBottom: 5, marginLeft: 48, width: '96.6%' }} /></Col>
+                <Col span={24}><Alert message={buttype === 'add' ? (`已选择【${selectedRows.length}】个agent` || `已选择【0】个agent`) : `已选择【${selectedRows.length}】个agent`} type="info" style={{ marginBottom: 5, marginLeft: 48, width: '96.6%' }} /></Col>
             </Row>
             <Table
                 dataSource={taskobjectlist.rows}

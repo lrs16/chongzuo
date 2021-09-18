@@ -89,25 +89,27 @@ function AddagentObjDrawer(props) {
     }, [location]);
 
     useEffect(() => {
-        const values = getFieldsValue();
-        dispatch({
-            type: 'autosoftwork/findautoSoftObjectList1',
-            payload: {
-                values,
-                pageNum: 1,
-                pageSize: 15,
-                workId
-            },
-        }).then(res => {
-            if (res.code === 200) {
-                const getrowkey = res.data.rows.map(item => {return item.id;})
-                GetRowsData(res.data.rows);
-                GetRowskeysData(getrowkey);
-            } else {
-                message.error(res.msg);
-            }
-        });
-    }, [workId && buttype === 'edit']);
+        if (workId !== undefined && (buttype === 'edit' || buttype === 'detailsview') && buttype !== 'add' ) {
+            const values = getFieldsValue();
+            dispatch({
+                type: 'autosoftwork/findautoSoftObjectList1',
+                payload: {
+                    values,
+                    pageNum: 1,
+                    pageSize: 15,
+                    workId
+                },
+            }).then(res => {
+                if (res.code === 200) {
+                    const getrowkey = res.data.rows.map(item => { return item.id; })
+                    GetRowsData(res.data.rows);
+                    GetRowskeysData(getrowkey);
+                } else {
+                    message.error(res.msg);
+                }
+            });
+        }
+    }, [workId !== undefined && (buttype === 'edit' || buttype === 'detailsview') && buttype !== 'add']);
 
     const handleSearch = () => {
         setPageinations({

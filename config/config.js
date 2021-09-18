@@ -1425,6 +1425,12 @@ export default {
                               component: './Automation/AutomatedJob/SoftTTManagement/SoftTTRegister'
                             },
                             {
+                              path: '/automation/automatedjob/softstartandstop/softregister/details',
+                              name: '启停登记详情',
+                              icon: 'fork',
+                              component: './Automation/AutomatedJob/SoftTTManagement/SoftregisterView'
+                            },
+                            {
                               path: '/automation/automatedjob/softstartandstop/softexecute',
                               name: '启停执行',
                               icon: 'fork',

@@ -9,7 +9,8 @@ const colormap = new Map([
 function SoftTaskObjectList(props) {
     const {
         selectrowsData,
-        GetRowskeysData
+        GetRowskeysData,
+        Noediting
     } = props;
 
     const [selectedrowsData, setselectedrowsData] = useState([]);
@@ -142,7 +143,7 @@ function SoftTaskObjectList(props) {
             {selectrowsData && selectrowsData.length >= 1 && (
                 <><Alert message={`已选择【${selectedrowsData.length}】个agent`} style={{ marginBottom: 5 }} /><Table
                     dataSource={selectedrowsData}
-                    columns={columns}
+                    columns={Noediting ? columns.filter(item => item.title !== '操作') : columns}
                     rowKey={record => record.id}
                     scroll={{ x: 1300 }}
                     pagination={false} /></>

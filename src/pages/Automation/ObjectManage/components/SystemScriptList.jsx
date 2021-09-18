@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import { connect } from 'dva';
-import { Table, Card, Button, Form, Input, Select, Row, Col, DatePicker, Divider, message, Popconfirm } from 'antd';
+import { Table, Card, Button, Form, Tooltip, Input, Select, Row, Col, DatePicker, Divider, message, Popconfirm } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { togetSearchUsers } from '../services/api';
 import SystemScriptDrawer from './SystemScriptDrawer';
@@ -69,9 +69,9 @@ function SystemScriptList(props) {
         togetSearchUsers().then(res => {
             if (res.code === 200) {
                 setallUserData(res.data.userList)
-              } else {
+            } else {
                 message.error('获取负责人失败')
-              }
+            }
         });
     }, [location]);
 
@@ -205,6 +205,7 @@ function SystemScriptList(props) {
             dataIndex: 'scriptName',
             key: 'scriptName',
             width: 200,
+            ellipsis: true,
         },
         {
             title: '脚本类型',
@@ -217,7 +218,19 @@ function SystemScriptList(props) {
             dataIndex: 'scriptCont',
             key: 'scriptCont',
             width: 300,
-            ellipsis: true,
+            // ellipsis: true,
+            onCell: () => {
+                return {
+                    style: {
+                        maxWidth: 250,
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap',
+                        textOverflow: 'ellipsis',
+                        cursor: 'pointer'
+                    }
+                }
+            },
+            render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
         },
         {
             title: '脚本参数',

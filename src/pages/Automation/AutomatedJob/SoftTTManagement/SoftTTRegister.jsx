@@ -163,6 +163,26 @@ function SoftTTRegister(props) {
       dataIndex: 'workRemarks',
       key: 'workRemarks',
       width: 250,
+      render: (text, record) => {
+        const handledetailClick = () => {
+          router.push({
+            pathname: '/automation/automatedjob/softstartandstop/softregister/details',
+            query: {
+              Id: record.id,
+              workId: record.id,
+              buttype: 'detailsview'
+            },
+            state: {
+              runpath: location.pathname,
+              title: pagetitle,
+              dynamicpath: true,
+              menuDesc: '启停登记详情',
+              status: record.workStatus,
+            },
+          });
+        };
+        return <a onClick={handledetailClick}>{text}</a>;
+      },
     },
     {
       title: '状态',
@@ -227,8 +247,7 @@ function SoftTTRegister(props) {
       render: (text, record) => {
         return (
           <div>
-            {(record.workStatus === '已审核' && record.examineStatus === '通过') ? <a type="link" disable
-              onClick={() => newRegist('edit', record)}
+            {(record.workStatus === '已审核' && record.examineStatus === '通过') ? <a type="link" disabled
             >
               编辑
             </a> : <a type="link"

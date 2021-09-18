@@ -5,6 +5,7 @@ import moment from 'moment';
 import { Table, Card, Button, Form, Input, Row, Col, DatePicker, Divider, message } from 'antd';
 import TaskObjectModel from './TaskObjectModel';
 import TaskScriptModel from './TaskScriptModel';
+import { logicDelTask, deleteTask, submitTask } from '../services/api';
 
 const formItemLayout = {
     labelCol: {
@@ -84,110 +85,78 @@ function ManualExecuteList(props) {
         });
     };
 
-    const handleDelete = () => { // 删除
-        // const { id } = selectedRows[0];
-        const len = selectedRowKeys.length;
-
-        if (len === 1) { // 单条数据
-            alert("单条数据");
-            // dispatch({
-            //     type: '',
-            //     payload: {
-            //     }
-            // }).then(res => {
-            //     if (res.code === 200) {
-            //         message.success('删除成功');
-            //         searchdata(1, 15);
-            //     };
-            //     if (res.code === -1) {
-            //         message.error(res.msg);
-            //     };
-            // });
-        } else if (len > 1) { // 批量删除
-            // const registIds = selectedRows.map(item => {
-            //     return item.id;
-            // })
-
-            // dispatch({
-            //     type: 'apply/deleteApplyForms',
-            //     payload: { registIds: registIds.toString() },
-            // }).then(res => {
-            //     if (res.code === 200) {
-            //         message.success('删除成功');
-            //         searchdata(1, 15);
-            //     } else {
-            //         message.error(res.msg);
-            //     }
-            // });
-        } else {
+    const handleDelete = () => { // 删除 
+        if (selectedRows.length > 0) {
+            const ids = selectedRows.map(item => {
+                return item.id;
+            });
+            deleteTask(ids).then(res => {
+                if (res.code === 200) {
+                    message.success(res.msg);
+                    searchdata(1, 15);
+                } else {
+                    message.error(res.msg);
+                };
+                setSelectedRowKeys([]);
+                setSelectedRows([]);
+                setPageinations({ current: 1, pageSize: 15 })
+            })
+        };
+        if (selectedRows.length === 0) {
             message.error('您还没有选择数据')
-        }
+        };
         setSelectedRowKeys([]);
         setSelectedRows([]);
     };
 
     const handleClickRevoke = () => { // 撤销发布
-        // const newselectds = selectedRows.filter(item => item.taskStatus === '已审核'); 
-        // if (newselectds.length > 0) {
-        //   const mainIds = newselectds.map(item => {
-        //     return item.id;
-        //   });
-        //   revokekowledge({ mainIds, userId }).then(res => {
-        //     if (res.code === 200) {
-        //       message.success(res.msg)
-        //     } else {
-        //       message.error(res.msg)
-        //     };
-        //     handleSearch(1, 15);
-        //     setSelectedRowKeys([]);
-        //     setSelectedRecords([]);
-        //   })
-        // };
-        // if (selectedRows.length === 0) {
-        //   message.error('您还没有选择数据，请选择状态为‘已审核’的数据进行操作')
-        // };
-        // if (selectedRecords.length > 0 && newselectds.length === 0) {
-        //   message.error('请选择知识状态为‘已审核’的数据');
-        //   setSelectedRowKeys([]);
-        //   setSelectedRecords([]);
-        // }
-        // const { id } = selectedRows[0];
-        const len = selectedRowKeys.length;
+        if (selectedRows.length > 0) {
+            const ids = selectedRows.map(item => {
+                return item.id;
+            });
+            const newvalue = {
+                taskId: ids,
+                taskStatus: '1'
+            };
+            submitTask(newvalue).then(res => {
+                if (res.code === 200) {
+                    message.success(res.msg);
+                    searchdata(1, 15);
+                } else {
+                    message.error(res.msg);
+                };
+                setSelectedRowKeys([]);
+                setSelectedRows([]);
+                setPageinations({ current: 1, pageSize: 15 })
+            })
+        };
+        if (selectedRows.length === 0) {
+            message.error('您还没有选择数据')
+        };
+        setSelectedRowKeys([]);
+        setSelectedRows([]);
+    };
 
-        if (len === 1) { // 单条数据
-            alert("单条数据");
-            // dispatch({
-            //     type: '',
-            //     payload: {
-            //     }
-            // }).then(res => {
-            //     if (res.code === 200) {
-            //         message.success('删除成功');
-            //         searchdata(1, 15);
-            //     };
-            //     if (res.code === -1) {
-            //         message.error(res.msg);
-            //     };
-            // });
-        } else if (len > 1) { // 多条数据
-            // const registIds = selectedRows.map(item => {
-            //     return item.id;
-            // })
-
-            // dispatch({
-            //     type: 'apply/deleteApplyForms',
-            //     payload: { registIds: registIds.toString() },
-            // }).then(res => {
-            //     if (res.code === 200) {
-            //         message.success('删除成功');
-            //         searchdata(1, 15);
-            //     } else {
-            //         message.error(res.msg);
-            //     }
-            // });
-        } else {
-            message.error('您还没有选择数据，请选择状态为‘已审核’的数据进行操作')
-        }
+    const handleClickAbolish = () => { // 废止
+        if (selectedRows.length > 0) {
+            const ids = selectedRows.map(item => {
+                return item.id;
+            });
+            logicDelTask(ids).then(res => {
+                if (res.code === 200) {
+                    message.success(res.msg);
+                    searchdata(1, 15);
+                } else {
+                    message.error(res.msg);
+                };
+                setSelectedRowKeys([]);
+                setSelectedRows([]);
+                setPageinations({ current: 1, pageSize: 15 })
+            })
+        };
+        if (selectedRows.length === 0) {
+            message.error('您还没有选择数据')
+        };
         setSelectedRowKeys([]);
         setSelectedRows([]);
     };
@@ -399,10 +368,10 @@ function ManualExecuteList(props) {
                 </Row>
                 <div style={{ marginBottom: 8 }}>
                     <Button type="danger" style={{ marginRight: 8 }}
-                    onClick={() => handleClickRevoke()}
-                    >撤销发布</Button >
+                        onClick={() => handleClickRevoke()}
+                    >撤销作业</Button >
                     <Button type="danger" ghost style={{ marginRight: 8 }}
-                    // onClick={() => ClickBut('abolish')}
+                        onClick={() => handleClickAbolish()}
                     >废止</Button >
                     <Button type="danger" ghost style={{ marginRight: 8 }}
                         onClick={() => handleDelete()}

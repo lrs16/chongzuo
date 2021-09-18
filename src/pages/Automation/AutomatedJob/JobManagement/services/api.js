@@ -105,11 +105,28 @@ export async function queryrunTask(taskId) {
     });
 }
 
+// /auto/task/updAutoTaskQrtzJobStatus/{taskId}/{qrtzJobStatus}
+// 启动或暂停作业方案(定时任务使用)(状态 1启动 0暂停)
+export async function queryUpdAutoTaskQrtzJobStatus(params) {
+    return request(`/auto/task/updAutoTaskQrtzJobStatus/${params.taskId}/${params.qrtzJobStatus}`, {
+        method: 'GET',
+        data: JSON.stringify(params),
+        requestType: 'formjosn',
+    });
+}
+
 // http://172.16.10.33:9901/auto/task/listPageAutoTaskLogs/1/15 执行日志
 export async function querylistPageAutoTaskLogs(params, pageNum, pageSize) {
     return request(`/auto/task/listPageAutoTaskLogs/${pageNum}/${pageSize}`, {
         method: 'POST',
         data: JSON.stringify(params),
         requestType: 'formjosn',
+    });
+}
+
+// /auto/task/logicDelTask/{taskId} 作废作业方案(逻辑删除,作业状态变为 6.已作废 )
+export async function logicDelTask(taskId) {
+    return request(`/auto/task/logicDelTask/${taskId}`, {
+        method: 'GET',
     });
 }

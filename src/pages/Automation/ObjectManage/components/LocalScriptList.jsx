@@ -4,7 +4,7 @@ import React, {
 } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Table, Card, Button, Form, Input, Select, Row, Col, DatePicker, Divider, message, Popconfirm } from 'antd';
+import { Table, Card, Button, Form, Input, Select, Tooltip, Row, Col, DatePicker, Divider, message, Popconfirm } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
 import LocalScriptDrawer from './LocalScriptDrawer';
@@ -196,7 +196,8 @@ function LocalScriptList(props) {
       title: '设备名称',
       dataIndex: 'hostName',
       key: 'hostName',
-      width: 180,
+      width: 200,
+      ellipsis: true,
     },
     {
       title: '主机IP',
@@ -228,7 +229,18 @@ function LocalScriptList(props) {
       dataIndex: 'scriptCont',
       key: 'scriptCont',
       width: 300,
-      ellipsis: 'true',
+      onCell: () => {
+        return {
+          style: {
+            maxWidth: 250,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            cursor: 'pointer'
+          }
+        }
+      },
+      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
     {
       title: '脚本来源',

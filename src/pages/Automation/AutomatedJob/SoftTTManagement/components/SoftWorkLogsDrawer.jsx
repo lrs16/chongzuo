@@ -30,7 +30,7 @@ function SoftWorkLogsDrawer(props) {
         recordvalues,
         dispatch,
         loading,
-        // autosoftworkloglist,
+        autosoftworkloglist,
         form: {
             getFieldDecorator,
             getFieldsValue,
@@ -61,8 +61,10 @@ function SoftWorkLogsDrawer(props) {
     };
 
     useEffect(() => {
-        searchdata(1, 15);
-    }, [recordvalues && recordvalues.id]);
+        if (recordvalues && recordvalues.id) {
+            searchdata(1, 15);
+        }
+    }, []);
 
     const handleSearch = () => {
         setPageinations({
@@ -99,8 +101,8 @@ function SoftWorkLogsDrawer(props) {
         onShowSizeChange: (page, size) => onShowSizeChange(page, size),
         current: paginations.current,
         pageSize: paginations.pageSize,
-        // total: softobjectlist.total,
-        // showTotal: total => `总共  ${total}  条记录`,
+        total: autosoftworkloglist.total,
+        showTotal: total => `总共  ${total}  条记录`,
         onChange: page => changePage(page),
     };
 
@@ -248,19 +250,19 @@ function SoftWorkLogsDrawer(props) {
                 </Form>
             </Row>
             <div style={{ marginBottom: 8 }}>
-            <Button
-                type="primary"
-                style={{ marginLeft: 8 }}
-                onClick={() => { setVisible(true); setTitle('故障'); }}
-              >
-                一键关联故障单
-              </Button>
+                <Button
+                    type="primary"
+                    style={{ marginLeft: 8 }}
+                    onClick={() => { setVisible(true); setTitle('故障'); }}
+                >
+                    一键关联故障单
+                </Button>
                 {/* <Button type="primary" style={{ marginRight: 8 }}
                 // onClick={() => aa()}
                 >一键关联故障单</Button> */}
             </div>
             <Table
-                // dataSource={softobjectlist.rows}
+                dataSource={autosoftworkloglist.rows}
                 columns={columns}
                 rowKey={record => record.id}
                 scroll={{ x: 1300 }}
@@ -269,15 +271,15 @@ function SoftWorkLogsDrawer(props) {
                 footer={null}
             />
             {visible && (
-        <RelationDrawer
-          title={title}
-          visible={visible}
-        //   orderIdPre={location.query.mainId}
-        //   orderTypePre='event'
-          orderTypeSuf='problem'
-          ChangeVisible={(v) => setVisible(v)}
-        />
-      )}
+                <RelationDrawer
+                    title={title}
+                    visible={visible}
+                    //   orderIdPre={location.query.mainId}
+                    //   orderTypePre='event'
+                    orderTypeSuf='problem'
+                    ChangeVisible={(v) => setVisible(v)}
+                />
+            )}
         </Drawer>
     );
 }

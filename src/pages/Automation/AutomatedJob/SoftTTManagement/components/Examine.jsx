@@ -24,7 +24,7 @@ const formItemLayout = {
 
 const Examine = forwardRef((props, ref) => {
   const {
-    userinfo, check, 
+    userinfo, check, Noediting,
     form: { getFieldDecorator, getFieldsValue, resetFields },
     files,
     ChangeFiles,
@@ -65,7 +65,7 @@ const Examine = forwardRef((props, ref) => {
       callback()
     }
     callback()
-  }
+  };
 
   return (
     <div style={{ marginRight: 24, marginTop: 24 }}>
@@ -84,7 +84,7 @@ const Examine = forwardRef((props, ref) => {
                 rules: [{ required: true, message: '请选择审核结果' }],
                 initialValue: check.examineStatus || '0',
               })(
-                <Radio.Group onChange={handleAdopt}>
+                <Radio.Group onChange={handleAdopt} disabled={Noediting}>
                   <Radio value="1">通过</Radio>
                   <Radio value="0">不通过</Radio>
                 </Radio.Group>,
@@ -96,7 +96,7 @@ const Examine = forwardRef((props, ref) => {
               {getFieldDecorator('examineTime', {
                 rules: [{ required: true }],
                 initialValue: moment(check.examineTime),
-              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
+              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={Noediting} />)}
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -104,7 +104,7 @@ const Examine = forwardRef((props, ref) => {
               <Form.Item label="审核说明" {...formItemLayout}>
                 {getFieldDecorator('examineRemarks', {
                   initialValue: check.examineRemarks,
-                })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+                })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" disabled={Noediting} />)}
               </Form.Item>
             )}
             {adopt === '0' && (
@@ -112,24 +112,12 @@ const Examine = forwardRef((props, ref) => {
                 {getFieldDecorator('examineRemarks', {
                   rules: [{ required: true, message: '请输入审核说明' }],
                   initialValue: check.examineRemarks,
-                })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+                })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" disabled={Noediting} />)}
               </Form.Item>
             )}
           </Col>
-          {/* <Col span={24}>
-            <Form.Item
-              label='上传附件'
-              {...formItemLayout}
-            // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
-            >
-              <div style={{ width: 400 }}>
-                <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
-              </div>
-            </Form.Item>
-          </Col> */}
           <Col span={24} >
             <Form.Item label="上传附件" {...formItemLayout}
-            // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
             >{getFieldDecorator('examineFiles', {
               rules: [{ required: true, message: '请上传附件' }, {
                 validator: handleAttValidator
@@ -137,7 +125,7 @@ const Examine = forwardRef((props, ref) => {
               initialValue: check && check.examineFiles && check.examineFiles !== '[]' ? check.examineFiles : '',
             })(
               <div style={{ width: 400 }}>
-                <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} disabled={Noediting} />
               </div>
             )}
             </Form.Item>
