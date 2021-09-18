@@ -2118,5 +2118,9 @@ export default {
       target: 'http://172.16.10.33:9901/',
       changeOrigin: true
     },
+    '/duty/': {
+      target: 'http://172.16.10.33:9901/',
+      changeOrigin: true
+    },
   },
 };

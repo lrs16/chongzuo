@@ -13,6 +13,7 @@ import {
   message
 } from 'antd';
 import moment from 'moment';
+import { connect } from 'dva';
 import SysDict from '@/components/SysDict';
 
 const formItemLayout = {
@@ -40,7 +41,7 @@ const withClick = (element, handleClick = () => { }) => {
 function AddDutyclassesSetting(props) {
   const [visible, setVisible] = useState(false);
   const {
-    form: { getFieldDecorator, validateFields },
+    form: { getFieldDecorator, validateFields, setFieldsValue },
     title,
     children,
     onSubmit,
@@ -48,6 +49,7 @@ function AddDutyclassesSetting(props) {
     onDelete,
     classSetting
   } = props;
+  console.log(classSetting, 'classSetting')
   const [selectdata, setSelectData] = useState('');
 
 
@@ -63,16 +65,26 @@ function AddDutyclassesSetting(props) {
 
   const handleOk = () => {
     validateFields((err, values) => {
+      console.log('values: ', values);
       const defaultStart = moment(values.time1).format('YYYY-MM-DD HH:mm:ss');
       const defaultEnd = moment(values.time2).format('YYYY-MM-DD HH:mm:ss');
+      // console.log(defaultStart,'defaultStart')
+      const newValue = {
+        ...values,
+        beginTime: moment(values.beginTime).format('HH:mm'),
+        endTime: moment(values.endTime).format('HH:mm'),
+        ctime: moment(values.ctime).format('YYYY-MM-DD HH:mm:ss')
+      }
 
       if (!err) {
-        if ((compareEnd < compareStart) || (defaultStart === defaultEnd)) {
+        if (compareStart ? (compareEnd < compareStart) : (defaultStart === defaultEnd)) {
           message.info('开始时间必须小于结束时间')
         } else {
-          onSubmit(values);
+          onSubmit(newValue);
           setVisible(false);
         }
+
+
 
       }
     });
@@ -116,6 +128,19 @@ function AddDutyclassesSetting(props) {
     }
   };
 
+  const hancleChange = (value, option) => {
+    console.log('option: ', option);
+    console.log('value: ', value);
+    const { values } = option.props;
+    // console.log('children: ', children);
+    setFieldsValue(
+      {
+        groupId: values,
+      }
+    )
+
+  }
+
 
   const getTypebyTitle = title => {
     if (selectdata.ischange) {
@@ -125,6 +150,8 @@ function AddDutyclassesSetting(props) {
   };
 
   const teamname = getTypebyTitle('班组名称');
+  const shiftType = getTypebyTitle('班次类型');
+
   return (
     <>
       {withClick(children, handleopenClick)}
@@ -134,35 +161,67 @@ function AddDutyclassesSetting(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      <Drawer 
-      visible={visible}
-       title={title}
+      <Drawer
+        visible={visible}
+        title={title}
         width={720}
-         centered="true"
-         >
+        centered="true"
+        maskClosable='true'
+        destroyOnClose='true'
+        onClose={handleCancel}
+      >
         <Row gutter={8}>
           <Form {...formItemLayout}>
             <Form.Item label="班次编号">
-              {getFieldDecorator('NO', {
-                initialValue: classSetting.NO
+              {getFieldDecorator('shiftNo', {
+                initialValue: classSetting.shiftNo
               })(<Input disabled />)}
             </Form.Item>
 
             <Form.Item label="班组名称">
-              {getFieldDecorator('groupname', {
+              {getFieldDecorator('groupName', {
                 rules: [
                   {
                     required,
                     message: '请选择班组名称'
                   }
                 ],
-                initialValue: classSetting.groupname
+                initialValue: classSetting.groupName
               })(
-                <Select placeholder="请选择">
+                <Select placeholder="请选择" onChange={hancleChange}>
                   {teamname.map(obj => [
                     <Option
-                      key={obj.dict_code}
-                      values={obj.dict_code}
+                      key={obj.title}
+                      values={obj.key}
+                    >
+                      {obj.title}
+                    </Option>
+                  ])}
+                </Select>
+              )}
+            </Form.Item>
+
+            <Form.Item style={{ display: 'none' }}>
+              {getFieldDecorator('groupId', {
+                initialValue: classSetting.groupId
+              })(<Input />)}
+            </Form.Item>
+
+            <Form.Item label="班次类型">
+              {getFieldDecorator('shiftType', {
+                rules: [
+                  {
+                    required,
+                    message: '请选择班次类型'
+                  }
+                ],
+                initialValue: classSetting.shiftType
+              })(
+                <Select placeholder="请选择">
+                  {shiftType.map(obj => [
+                    <Option
+                      key={obj.title}
+                      values={obj.title}
                     >
                       {obj.title}
                     </Option>
@@ -172,14 +231,14 @@ function AddDutyclassesSetting(props) {
             </Form.Item>
 
             <Form.Item label="班次名称">
-              {getFieldDecorator('name', {
+              {getFieldDecorator('shiftName', {
                 rules: [
                   {
                     required,
                     message: '请输入班次名称',
                   },
                 ],
-                initialValue: classSetting.name
+                initialValue: classSetting.shiftName
               })(<Input />)}
             </Form.Item>
 
@@ -187,7 +246,7 @@ function AddDutyclassesSetting(props) {
               <Form.Item label="值班时段">
                 <Row>
                   <Col span={11}>
-                    {getFieldDecorator('time1',
+                    {getFieldDecorator('beginTime',
                       {
                         rules: [
                           {
@@ -195,7 +254,7 @@ function AddDutyclassesSetting(props) {
                             message: '请选择时间',
                           },
                         ],
-                        initialValue: classSetting.time1 ? moment(classSetting.time1) : moment(new Date())
+                        initialValue: classSetting.beginTime ? moment(classSetting.beginTime) : moment(new Date())
                       },
                     )(
                       <TimePicker
@@ -210,7 +269,7 @@ function AddDutyclassesSetting(props) {
                   <Col span={2} style={{ textAlign: 'center' }}>-</Col>
                   <Col span={11}>
                     {getFieldDecorator(
-                      'time2',
+                      'endTime',
                       {
                         rules: [
                           {
@@ -218,7 +277,7 @@ function AddDutyclassesSetting(props) {
                             message: '请选择时间',
                           },
                         ],
-                        initialValue: classSetting.time2 ? moment(classSetting.time2) : moment(new Date())
+                        initialValue: classSetting.endTime ? moment(classSetting.endTime) : moment(new Date())
                       },
                     )(
                       <TimePicker
@@ -235,24 +294,25 @@ function AddDutyclassesSetting(props) {
             </Col>
 
 
-            <Form.Item label="启用状态">{getFieldDecorator('status', {
-              rules: [
-                {
-                  required,
-                  message: '请输入启用状态',
-                },
-              ],
-              initialValue: classSetting.status
-            })(<Switch />)}</Form.Item>
+            <Form.Item label="启用状态">
+              {getFieldDecorator('status', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入启用状态',
+                  },
+                ],
+                initialValue: classSetting.status
+              })(<Switch />)}</Form.Item>
 
-            <Form.Item label="创建人">{getFieldDecorator('person', {
-              initialValue: classSetting.person
+            <Form.Item label="创建人">{getFieldDecorator('creatorName', {
+              initialValue: classSetting.creatorName
             })(<Input />)}</Form.Item>
 
-            <Form.Item label="创建时间">{getFieldDecorator('time', {
-              initialValue: classSetting.time ? moment(classSetting.time) : moment(new Date())
-            })(<DatePicker 
-                  format='YYYY-DD-MM HH:mm'
+            <Form.Item label="创建时间">{getFieldDecorator('ctime', {
+              initialValue: classSetting.ctime ? moment(classSetting.ctimes) : moment(new Date())
+            })(<DatePicker
+              format='YYYY-DD-MM HH:mm'
             />)}</Form.Item>
           </Form>
 
@@ -291,15 +351,17 @@ function AddDutyclassesSetting(props) {
 
 AddDutyclassesSetting.defaultProps = {
   classSetting: {
-    NO: '',
-    groupname: '',
-    name: '',
-    time1: '',
-    time2: '',
+    shiftNo: '',
+    shiftName: '',
+    beginTime: '',
+    endTime: '',
     status: '',
-    person: sessionStorage.getItem('userName'),
-    time: ''
+    creatorName: sessionStorage.getItem('userName'),
+    ctime: '',
+    shiftType: '',
+    groupId: ''
   }
 }
 
-export default Form.create({})(AddDutyclassesSetting);
+export default Form.create({})
+  (AddDutyclassesSetting);

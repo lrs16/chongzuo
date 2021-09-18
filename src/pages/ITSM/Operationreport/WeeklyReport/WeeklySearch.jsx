@@ -65,7 +65,7 @@ function WeeklySearch(props) {
 
   const columns = [
     {
-      title: '周报类型',
+      title: '周报类型33',
       dataIndex: 'type',
       key: 'type',
       render: (text, record) => {
@@ -73,11 +73,11 @@ function WeeklySearch(props) {
           switch (text) {
             case '软件运维周报':
               router.push({
-                pathname: `/ITSM/operationreport/weeklyreport/detailSoft/`,
+                pathname: `/ITSM/operationreport/weeklyreport/detailSoft`,
                 query: {
                   mainId: record.id,
                   reporttype: 'week',
-                  orderNo: '',
+                  orderNo: record.id,
                   reportSearch: true
                 },
               });
@@ -88,7 +88,7 @@ function WeeklySearch(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'week',
-                  orderNo: '',
+                  orderNo: record.id,
                   reportSearch: true
                 },
               });
@@ -99,7 +99,7 @@ function WeeklySearch(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'week',
-                  orderNo: '',
+                  orderNo: record.id,
                   reportSearch: true
                 },
               });
@@ -110,7 +110,7 @@ function WeeklySearch(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'week',
-                  orderNo: '',
+                  orderNo: record.id,
                   reportSearch: true
                 },
               });
