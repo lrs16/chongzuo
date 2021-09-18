@@ -22,7 +22,7 @@ const formItemLayout = {
 function ByObject(props) {
   const pagetitle = props.route.name;
   const {
-    dispatch,
+    dispatch, location,
     form: { getFieldDecorator, resetFields, getFieldsValue }, loading, objectsumlist
   } = props;
   const [selectdata, setSelectData] = useState('');
@@ -51,9 +51,14 @@ function ByObject(props) {
   }
 
   useEffect(() => {
+    if (location.state && location.state.reset) {
+      handleReset();
+    }
+  }, [location.state]);
+
+  useEffect(() => {
     handleSearch()
   }, []);
-
 
   const getTypebyId = key => {
     if (selectdata.ischange) {

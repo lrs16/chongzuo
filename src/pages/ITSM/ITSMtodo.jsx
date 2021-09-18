@@ -154,7 +154,7 @@ const columns = [
 ];
 
 function ITSMtodo(props) {
-  const { eventlist, loading } = props;
+  const { eventlist, loading, location } = props;
   const pagetitle = props.route.name;
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const { dispatch } = props;
@@ -207,6 +207,26 @@ function ITSMtodo(props) {
       },
     });
   }, []);
+
+  // 重置
+  const handleReset = () => {
+    dispatch({
+      type: 'global/fetchallevent',
+      payload: {
+        todoUserId: sessionStorage.getItem('userauthorityid'),
+        pageNum: 1,
+        pageSize: 15,
+      },
+    });
+    setPageinations({ current: 1, pageSize: 15 });
+  };
+
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      // 点击菜单刷新
+      handleReset()
+    }
+  }, [location.state]);
 
   return (
     <PageHeaderWrapper title={pagetitle}>

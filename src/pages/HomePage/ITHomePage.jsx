@@ -320,6 +320,7 @@ const demandcolumns = [
 
 function ITHomePage(props) {
   const {
+    location,
     dispatch,
     eventloading,
     faultloading,
@@ -482,7 +483,23 @@ function ITHomePage(props) {
 
   const handleReset = () => {
     resetFields();
+    setPageinations({ current: 1, pageSize: 10 });
+    setActiveKey('全部待办');
+    setOrderType('event');
+    validateFields((err, values) => {
+      if (err) {
+        return;
+      }
+      searchdata(values, 1, 15, 'event', '全部待办');
+    });
   };
+
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      // 点击菜单刷新
+      handleReset()
+    }
+  }, [location.state]);
 
   const handleTabs = key => {
     handleReset();
@@ -716,10 +733,10 @@ function ITHomePage(props) {
               </Form.Item>
             </Col>
             <Col span={4} style={{ paddingTop: 4 }}>
-              <Button type="primary" onClick={handleSearch}>
+              <Button type="primary" onClick={() => handleSearch()}>
                 查 询
               </Button>
-              <Button style={{ marginLeft: 8 }} onClick={handleReset}>
+              <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>
                 重 置
               </Button>
             </Col>

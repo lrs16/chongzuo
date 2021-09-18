@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import { connect } from 'dva';
+import router from 'umi/router';
 import { Card, Form, Button, TimePicker, Row, Col, Table, Divider, Popconfirm, Message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import styles from '../style.less';
@@ -26,7 +27,7 @@ const fromallItem = {
 
 function OrderDay(props) {
   const pagetitle = props.route.name;
-  const { dispatch, list, listtotal, loading } = props;
+  const { dispatch, list, listtotal, loading, location } = props;
   const { getFieldDecorator, validateFields } = props.form;
   const [visible, setVisible] = useState(false); // 抽屉是否显示
   const [title, setTitle] = useState('');
@@ -56,6 +57,7 @@ function OrderDay(props) {
   useEffect(() => {
     getdatas();
   }, []);
+
 
   const searchdata = (values, page, size) => {
     dispatch({
@@ -195,7 +197,31 @@ function OrderDay(props) {
       }
     })
 
-  }
+  };
+
+  // 重置
+  const handleReset = () => {
+    router.push({
+      pathname: `/sysmanage/timerule/orderday`,
+      state: { cach: false, }
+    });
+    dispatch({
+      type: 'timetable/query',
+      payload: {
+        pageIndex: 0,
+        pageSize: 15,
+      },
+    });
+    queryworktime();
+    setPageinations({ current: 1, pageSize: 15 });
+  };
+
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      // 点击菜单刷新
+      handleReset()
+    }
+  }, [location.state]);
 
   const columns = [
     {
@@ -269,36 +295,38 @@ function OrderDay(props) {
       <div className={styles.orderdaycardbody}>
         <Card style={{ paddingBottom: 0 }}>
           <Form {...formItemLayout}>
-            <Row>
-              <Col span={2}>
-                <Form.Item label="上班时间" {...fromallItem} />
-              </Col>
-              <Col span={9}>
-                <Form.Item label="上午">
-                  {getFieldDecorator('amstart', {
-                    initialValue: moment(worktime.ams, 'HH:mm'),
-                  })(<TimePicker format={format} minuteStep={10} />)}
-                  <span style={{ padding: '0 12px' }}>--</span>
-                  {getFieldDecorator('amend', {
-                    initialValue: moment(worktime.ame, 'HH:mm'),
-                  })(<TimePicker format={format} minuteStep={10} />)}
-                </Form.Item>
-              </Col>
-              <Col span={9}>
-                <Form.Item label="下午">
-                  {getFieldDecorator('pmstart', {
-                    initialValue: moment(worktime.pms, 'HH:mm'),
-                  })(<TimePicker format={format} minuteStep={10} />)}
-                  <span style={{ padding: '0 12px' }}>--</span>
-                  {getFieldDecorator('pmend', {
-                    initialValue: moment(worktime.pme, 'HH:mm'),
-                  })(<TimePicker format={format} minuteStep={10} />)}
-                </Form.Item>
-              </Col>
-              <Col span={4}>
-                <Button type='primary' style={{ marginTop: 4 }} onClick={changeWorkTime}>调整上班时间</Button>
-              </Col>
-            </Row>
+            {(!location.state || (location.state && !location.state.reset)) && (
+              <Row>
+                <Col span={2}>
+                  <Form.Item label="上班时间" {...fromallItem} />
+                </Col>
+                <Col span={9}>
+                  <Form.Item label="上午">
+                    {getFieldDecorator('amstart', {
+                      initialValue: moment(worktime.ams, 'HH:mm'),
+                    })(<TimePicker format={format} minuteStep={10} />)}
+                    <span style={{ padding: '0 12px' }}>--</span>
+                    {getFieldDecorator('amend', {
+                      initialValue: moment(worktime.ame, 'HH:mm'),
+                    })(<TimePicker format={format} minuteStep={10} />)}
+                  </Form.Item>
+                </Col>
+                <Col span={9}>
+                  <Form.Item label="下午">
+                    {getFieldDecorator('pmstart', {
+                      initialValue: moment(worktime.pms, 'HH:mm'),
+                    })(<TimePicker format={format} minuteStep={10} />)}
+                    <span style={{ padding: '0 12px' }}>--</span>
+                    {getFieldDecorator('pmend', {
+                      initialValue: moment(worktime.pme, 'HH:mm'),
+                    })(<TimePicker format={format} minuteStep={10} />)}
+                  </Form.Item>
+                </Col>
+                <Col span={4}>
+                  <Button type='primary' style={{ marginTop: 4 }} onClick={changeWorkTime}>调整上班时间</Button>
+                </Col>
+              </Row>
+            )}
           </Form>
         </Card>
       </div>

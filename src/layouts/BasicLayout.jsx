@@ -626,7 +626,7 @@ const BasicLayout = props => {
             onContextMenu={(e) => {
               e.preventDefault();
               if (e.button === 2) {
-                setTabMenu({ x: e.pageX - 350, y: e.pageY - 50, v: 'block' });
+                setTabMenu({ x: e.pageX - 50, y: e.pageY - 40, v: 'block' });
               }
             }}
           // style={{ position: 'fixed', top: 0, zIndex: 999 }}
@@ -707,7 +707,7 @@ const BasicLayout = props => {
           <List
             bordered
             style={{
-              position: 'absolute',
+              position: 'fixed',
               left: tabmenu.x,
               top: tabmenu.y,
               display: tabmenu.v,

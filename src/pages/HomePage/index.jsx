@@ -4,6 +4,7 @@ import ITHomePage from './ITHomePage';
 
 function HomePage(props) {
   const RadiaValue = props.route.name;
+  const { location } = props;
   return (
     <>
       <div style={{ margin: '-24px -24px 16px', padding: '24px', background: '#fff' }}>
@@ -12,7 +13,7 @@ function HomePage(props) {
           <Radio.Button value="b">监测告警监控台</Radio.Button>
         </Radio.Group>
       </div>
-      <ITHomePage />
+      <ITHomePage location={location} />
     </>
   );
 }

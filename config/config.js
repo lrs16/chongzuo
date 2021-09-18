@@ -1225,7 +1225,7 @@ export default {
                           path: '/ITSM/dutymanage/statistic',
                           name: '值班工作统计',
                           icon: 'cloud-server',
-                          routes:[
+                          routes: [
                             {
                               path: '/ITSM/dutymanage/statistic/totalstatistic',
                               name: '值班工作统计',
@@ -1889,7 +1889,7 @@ export default {
                     },
                     {
                       path: '/sysmanage/timerule',
-                      name: '短信维护',
+                      name: '超时管理',
                       icon: 'smile',
                       routes: [
                         {

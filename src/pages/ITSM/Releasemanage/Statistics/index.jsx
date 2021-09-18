@@ -23,7 +23,7 @@ const formItemLayout = {
 function Statistics(props) {
   const pagetitle = props.route.name;
   const {
-    dispatch,
+    dispatch, location,
     form: { getFieldDecorator, resetFields, getFieldsValue }, loading,
     successratelist, tasksumlist,
   } = props;
@@ -62,6 +62,14 @@ function Statistics(props) {
     resetFields();
     handleSearch();
   }
+
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      // 点击菜单刷新
+      settabActivekey('successrate');
+      handleReset();
+    }
+  }, [location.state]);
 
   useEffect(() => {
     querkeyVal('release', 'successrate').then(res => {

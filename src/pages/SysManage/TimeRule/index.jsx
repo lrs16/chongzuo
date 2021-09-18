@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
+import router from 'umi/router';
 import { Card, Form, Row, Col, Select, Button, Table, Message, Divider, Popconfirm } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { querkeyVal } from '@/services/api';
@@ -19,7 +20,7 @@ const formItemLayout = {
 
 function TimeRules(props) {
   const pagetitle = props.route.name;
-  const { dispatch, list, listtotal, loading } = props;
+  const { dispatch, list, listtotal, loading, location } = props;
   const { getFieldDecorator, resetFields, validateFields } = props.form;
   const [visible, setVisible] = useState(false); // 抽屉是否显示
   const [title, setTitle] = useState('');
@@ -56,6 +57,25 @@ function TimeRules(props) {
   useEffect(() => {
     getdatas();
   }, []);
+
+  // 重置
+  const handleReset = () => {
+    dispatch({
+      type: 'timerule/query',
+      payload: {
+        pageIndex: 0,
+        pageSize: 15,
+      },
+    });
+    setPageinations({ current: 1, pageSize: 15 });
+  };
+
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      // 点击菜单刷新
+      handleReset()
+    }
+  }, [location.state]);
 
   const handleShowDrawer = (drwertitle, type, record) => {
     setVisible(!visible);
