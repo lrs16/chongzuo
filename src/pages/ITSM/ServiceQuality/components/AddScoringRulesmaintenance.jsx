@@ -58,6 +58,7 @@ function AddScoringRulesmaintenance(props) {
   const [type, setType] = useState('')
   const [selectdata, setSelectData] = useState('');
   const [selectId, setSelectId] = useState('');
+  const [visible, setVisible] = useState(false);
 
   const getlist = (selectedKeys) => {
     validateFields((err, value) => {
@@ -217,6 +218,7 @@ function AddScoringRulesmaintenance(props) {
     }).then(res => {
       if (res.code === 200) {
         getlist()
+        setVisible(false)
       } else {
         message.error(res.msg);
       }

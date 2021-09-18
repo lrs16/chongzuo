@@ -114,6 +114,7 @@ const Register = React.forwardRef((props, ref) => {
         } = option;
         setFieldsValue({
           clauseId: value,
+          clauseName: children[4].props.children,
           assessValue: children[3].props.children,
         });
         break;

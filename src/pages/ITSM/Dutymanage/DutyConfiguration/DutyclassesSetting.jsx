@@ -194,20 +194,18 @@ function DutyclassesSetting(props) {
 
   }
 
-  const handleDelete = (deleteId) => {
-    const handleDelete = (id) => {
-      return dispatch({
-        type: 'shiftsandholidays/fetchshiftDel',
-        payload: id
-      }).then(res => {
-        if (res.code === 200) {
-          message.info(res.msg);
-          searchdata({}, 1, 15)
-        } else {
-          message.error(res.msg);
-        }
-      })
-    }
+  const handleDelete = (id) => {
+    return dispatch({
+      type: 'shiftsandholidays/fetchshiftDel',
+      payload: id
+    }).then(res => {
+      if (res.code === 200) {
+        message.info(res.msg);
+        searchdata({}, 1, 15)
+      } else {
+        message.error(res.msg);
+      }
+    })
   }
 
   const columns = [
@@ -451,71 +449,6 @@ function DutyclassesSetting(props) {
               </Form.Item>
             </Col>
 
-            <Col span={8}>
-              <Form.Item label="班次编号">
-                {getFieldDecorator('form1', {
-                  initialValue: '',
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="创建时间" >
-                <Row>
-                  <Col span={11}>
-                    {getFieldDecorator('time1', {
-                      initialValue: undefined,
-                    })(
-                      <DatePicker
-                        disabledDate={(value) => disabledStartDate(value, 'create')}
-                        onChange={(value) => onStartChange(value, 'create')}
-                        onOpenChange={(value) => handleStartOpenChange(value, 'create')}
-                        showTime={{
-                          hideDisabledOptions: true,
-                          defaultValue: moment('00:00:00', 'HH:mm:ss'),
-                        }}
-                        placeholder="开始时间"
-                        format='YYYY-MM-DD HH:mm:ss'
-                        style={{ minWidth: 120, width: '100%' }}
-                      />
-                    )}
-                  </Col>
-                  <Col span={2} style={{ textAlign: 'center' }}>-</Col>
-                  <Col span={11}>
-                    {getFieldDecorator('time2', {
-                      initialValue: undefined,
-                    })(
-                      <DatePicker
-                        disabledDate={(value) => disabledEndDate(value, 'create')}
-                        onChange={(value) => onEndChange(value, 'create')}
-                        open={time.endOpen}
-                        onOpenChange={(value) => handleEndOpenChange(value, 'create')}
-                        showTime={{
-                          hideDisabledOptions: true,
-                          defaultValue: moment('23:59:59', 'HH:mm:ss'),
-                        }}
-                        placeholder="结束时间"
-                        format='YYYY-MM-DD HH:mm:ss'
-                        style={{ minWidth: 120, width: '100%' }}
-                      />
-                    )}
-                  </Col>
-                </Row>
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="创建人">
-                {getFieldDecorator('form2', {
-                  initialValue: '',
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="班次名称">
-                {getFieldDecorator('form3', {
-                  initialValue: '',
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
             {/* <Col span={8}>
             <Form.Item label="值班时段" >
               <Row>
@@ -600,7 +533,7 @@ function DutyclassesSetting(props) {
           loading={loading}
           columns={columns}
           dataSource={shiftSearcharr.records}
-           pagination={pagination}
+          pagination={pagination}
           rowSelection={rowSelection}
           rowKey={r => r.No}
           scroll={{ x: 1300 }}
