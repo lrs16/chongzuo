@@ -25,3 +25,10 @@ export async function AlarmoverSmooth(key) {
 export async function configAlarmList(selectedRowKeys) {
   return request(`/api/alarmmanage/configalarm?keys=${selectedRowKeys}`);
 }
+
+// 计量业务告警统计
+export async function statisticsItems({ beginDate, endDate }) {
+  return request(`/warn/biz/statistics?beginDate=${beginDate}&endDate=${endDate}`, {
+    method: 'GET'
+  });
+}

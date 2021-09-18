@@ -481,7 +481,7 @@ export async function releasesaveConfig(params) {
 export async function releasedelConfig(params) {
   return request(`/release/env/delConfig`, {
     method: 'POST',
-    data: JSON.stringify(params),
-    requestType: 'formjosn',
+    data: params,
+    requestType: 'form',
   });
 }
