@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React, {
+  useState,
+  useEffect
+} from 'react';
 import {
   Table,
   Button,
@@ -9,6 +12,8 @@ import {
   Form,
   Popconfirm
 } from 'antd';
+import moment from 'moment';
+import router from 'umi/router';
 import { connect } from 'dva';
 import AddholidaySetting from './components/AddholidaySetting';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -25,51 +30,96 @@ function HolidaySetting(props) {
   const {
     loading,
     dispatch,
+    location,
+    holidaySearcharr,
     form: { getFieldsValue }
   } = props;
   const { pagetitle } = props.route.name;
-  const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 });
+  const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
   const [selectedKeys, setSelectedKeys] = useState([]);
+
+
+  const searchdata = (current, size) => {
+    const newdata = {
+      current,
+      size
+    }
+
+    dispatch({
+      type: 'shiftsandholidays/fetchholidaySearch',
+      payload: newdata
+    })
+  }
+
+  useEffect(() => {
+    searchdata(paginations.current, paginations.pageSize)
+  }, [])
 
   const handleDelete = (id) => {
     return dispatch({
-      type: 'qualityassessment/providerDel',
+      type: 'shiftsandholidays/fetchholidayDel',
       payload: id
     }).then(res => {
       if (res.code === 200) {
         message.info(res.msg);
-        searchdata({}, 1, paginations.pageSize)
+        searchdata(paginations.current, paginations.pageSize)
       } else {
         message.error(res.msg);
       }
     })
   }
 
-  const switchOnchange = (record,id) => {
+  const handleSubmit = (value) => {
+    return dispatch({
+      type: 'shiftsandholidays/fetchholidaySave',
+      payload: value
+    }).then(res => {
+      if (res.code === 200) {
+        message.info(res.msg)
+        searchdata(1, 15)
+      }
+    }
+    )
+  }
+
+  const switchOnchange = (record, id) => {
+    dispatch({
+      type: 'shiftsandholidays/fetchStart',
+      payload: id
+    }).then(res => {
+      if (res.code === 200) {
+        message.info(res.msg);
+        searchdata(1, 15)
+      } else {
+        message.error('操作失败')
+      }
+    })
   }
 
   const columns = [
     {
       title: '方案名称',
-      dataIndex: 'name',
-      key: 'name'
+      dataIndex: 'schemeName',
+      key: 'schemeName'
     },
     {
       title: '启动方案',
-      dataIndex: 'start',
-      key: 'start',
+      dataIndex: 'status',
+      key: 'status',
       render: (text, record) => {
+        console.log('record: ', record);
         return (
-          <Switch 
-            onChange={()=>switchOnchange(record,record.id)}
+          <Switch
+            defaultChecked={(record.status === '1') ? true : false}
+            onChange={() => switchOnchange(record, record.id)}
           />
         )
       }
     },
     {
       title: '创建时间',
-      dataIndex: 'time',
-      key: 'time'
+      dataIndex: 'ctime',
+      key: 'ctime'
     },
     {
       title: '操作',
@@ -79,6 +129,8 @@ function HolidaySetting(props) {
           <>
             <AddholidaySetting
               title='编辑节假日'
+              id={record.id}
+              onSubmit={handleSubmit}
             >
               <a>编辑</a>
             </AddholidaySetting>
@@ -97,8 +149,7 @@ function HolidaySetting(props) {
   ]
 
   const onShowSizeChange = (page, pageSize) => {
-    const formdata = getFieldsValue();
-    searchdata(formdata, page, pageSize)
+    searchdata(page, pageSize)
     setPaginations({
       ...paginations,
       pageSize
@@ -106,8 +157,7 @@ function HolidaySetting(props) {
   }
 
   const changePage = page => {
-    const formdata = getFieldsValue();
-    searchdata(formdata, page, paginations.pageSize)
+    searchdata(page, paginations.pageSize)
 
     setPaginations({
       ...paginations,
@@ -126,7 +176,7 @@ function HolidaySetting(props) {
     onShowSizeChange: (page, pagesize) => onShowSizeChange(page, pagesize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    // total: providerArr.total,
+    total: holidaySearcharr.total,
     showTotal: total => `总共 ${total} 条记录`,
     onChange: (page) => changePage(page)
   }
@@ -136,6 +186,8 @@ function HolidaySetting(props) {
       <Card>
         <AddholidaySetting
           title='新建节假日'
+          onSubmit={handleSubmit}
+          id=''
         >
           <Button
             style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
@@ -145,16 +197,20 @@ function HolidaySetting(props) {
           </Button>
         </AddholidaySetting>
 
+        {
+          loading === false && (
+            <Table
+              loading={loading}
+              columns={columns}
+              dataSource={holidaySearcharr.records}
+              rowKey={records => records.id}
+              pagination={pagination}
+              rowSelection={rowSelection}
+              scroll={{ x: 800, y: 700 }}
+            />
+          )
+        }
 
-        <Table
-          loading={loading}
-          columns={columns}
-          dataSource={dataSource}
-          rowKey={records => records.id}
-          pagination={paginations}
-          rowSelection={rowSelection}
-          scroll={{ x: 800, y: 700 }}
-        />
       </Card>
 
     </PageHeaderWrapper>
@@ -162,8 +218,8 @@ function HolidaySetting(props) {
 }
 
 export default Form.create({})(
-  connect(({ qualityassessment, loading }) => ({
-    providerArr: qualityassessment.providerArr,
-    loading: loading.models.qualityassessment
+  connect(({ shiftsandholidays, loading }) => ({
+    holidaySearcharr: shiftsandholidays.holidaySearcharr,
+    loading: loading.models.shiftsandholidays
   }))(HolidaySetting)
 )

@@ -13,7 +13,9 @@ import {
 } from 'antd';
 import moment from 'moment';
 import { operationPerson, searchUsers } from '@/services/common';
+import { connect } from 'dva';
 import styles from '../index.less';
+import SysDict from '@/components/SysDict';
 
 const { Search } = Input;
 const { Option } = Select;
@@ -40,33 +42,34 @@ const withClick = (element, handleClick = () => { }) => {
 function AdddutyPersonnelSetting(props) {
   const [visible, setVisible] = useState(false);
   const {
-    form: { getFieldDecorator, validateFields },
+    form: { getFieldDecorator, validateFields, setFieldsValue },
     title,
     children,
     onSubmit,
-    id,
-    onDelete
+    onDelete,
+    loading,
+    dispatch,
+    searchUsersarr,
+    personnelSetting
   } = props;
-  const [directorlist, setDirectorlist] = useState([]); // 详细条款
+  const [directorlist, setDirectorlist] = useState([]); 
   const [spinloading, setSpinLoading] = useState(true);
-  const [select, setSelect] = useState([])
+  const [select, setSelect] = useState([]);
+  const [selectdata, setSelectData] = useState('');
   const required = true;
 
-  console.log(directorlist, 'directorlist')
+  console.log(personnelSetting, 'personnelSetting')
   // 自动完成责任人
   // 自动完成责任人
   const directoruser = directorlist.map((opt, index) => (
-    show = true,
     <Option key={opt.id} value={opt.id} disableuser={opt}>
-      <Spin spinning={spinloading}>
-        <div className={styles.disableuser}>
-          <span>{opt.userName}</span>
-        </div>
-      </Spin>
+      {/* <Spin spinning={spinloading}> */}
+      <div className={styles.disableuser}>
+        <span>{opt.userName}</span>
+      </div>
+      {/* </Spin> */}
     </Option>
   ));
-
-  console.log(directoruser, 'directoruser')
 
   //  请求选人
   const SearchDisableduser = (value, type) => {
@@ -126,7 +129,6 @@ function AdddutyPersonnelSetting(props) {
         searchUsers({ userName: value }).then(res => {
           if (res) {
             const arr = [...res.data];
-            show = false;
             setSpinLoading(false);
             setDirectorlist(arr);
           }
@@ -147,8 +149,12 @@ function AdddutyPersonnelSetting(props) {
 
   const handleOk = () => {
     validateFields((err, values) => {
+      const newdata = {
+        id:personnelSetting.id || '',
+        ...values
+      }
       if (!err) {
-        onSubmit(values);
+        onSubmit(newdata);
         setVisible(false)
       }
     })
@@ -158,122 +164,211 @@ function AdddutyPersonnelSetting(props) {
     onDelete(id)
   }
 
-  const startOnchange = (time, timeString) => {
-    startTime = timeString
-    console.log('timeString: ', timeString);
-  }
-
-  const endOnchange = (time, timeString) => {
-    endTime = timeString
-  }
-
-  const disabledHours = (time1, time2, time3) => {
-    if (startTime) {
-      const hours = startTime.split(':');
-      const nums = [];
-      for (let i = 0; i < hours[0] - 1; i += 1) {
-        nums.push(i + 1);
-      }
-      return nums;
+  const handleChange = (value, option,type) => {
+    const { values } = option.props;
+    switch (type) {
+      case 'jobName':
+        setFieldsValue(
+          {
+            jobName: values,
+          }
+        )
+        break;
+      case 'group':
+        setFieldsValue(
+          {
+            groupName: values,
+          }
+        )
+        break;
+      default:
+        break;
     }
-
+ 
   }
 
-  const startdisabledHours = () => {
-    if (endTime) {
-      const hours = endTime.split(':');
-      console.log('hours: ', hours);
-      const nums = [];
-      for (let i = 0; i < 24 - hours[0]; i += 1) {
-        nums.push(Number(hours[0]) + i);
-      }
+  // 选择下拉值，信息回填
+  const handleDisableduser = (v, opt, type) => {
+    const { id, userMobile, deptNameExt, assessType, userName } = opt.props.disableuser;
+    switch (type) {
+      case 'director':
+        setFieldsValue({
+          staffName: userName, // 用户名称
+          directorId: id, // 用户id
+          deptName: deptNameExt,
+          phone: userMobile
+        });
+        break;
 
-      console.log(nums, 'nums')
-      return nums;
+      default:
+        break;
     }
-  }
+  };
 
-  const disabledMinutes = (time1, time2, time3) => {
+  const getTypebyTitle = title => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.title === title)[0].children;
+    }
+    return []
+  };
 
-  }
+  const teamname = getTypebyTitle('班组名称');
+  const teamjobName = getTypebyTitle('所属岗位');
+
 
   return (
     <>
+      <SysDict
+        typeid="1438058740916416514"
+        commonid="1354288354950123522"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'none' }}
+      />
       {withClick(children, handleopenClick)}
       <Drawer
         visible={visible}
         title={title}
         width={720}
+        getContainer={false}
         centered='true'
+        maskClosable='true'
+        onClose={handleCancel}
       >
         <Form {...formItemLayout}>
           <Form.Item label="责任人">
-            {getFieldDecorator('directorName', {
+            {getFieldDecorator('staffName', {
               rules: [
                 {
                   required,
                   message: '请选择责任人',
                 },
               ],
+              initialValue: personnelSetting.staffName,
             })(
-              <Input />
+              <AutoComplete
+                dataSource={directoruser}
+                dropdownMatchSelectWidth={false}
+                dropdownStyle={{ width: 600 }}
+                onSelect={(v, opt) => handleDisableduser(v, opt, 'director')}
+              >
+                <Search
+                  placeholder="可输入人名称搜索"
+                  onSearch={values => SearchDisableduser(values, 'director')}
+                  allowClear
+                />
+              </AutoComplete>,
             )}
+          </Form.Item>
+
+          <Form.Item style={{display:'none'}}>
+            {
+              getFieldDecorator('userId',{
+                initialValue:personnelSetting.userId
+              })
+            }
           </Form.Item>
 
           <Form.Item label='所属部门'>
             {
-              getFieldDecorator('unit', {
-                rules: [
-                  {
-                    required,
-                    message: '请输入所属部门'
-                  }
-                ]
-              })(<Input />)
+              getFieldDecorator('deptName', {
+                // rules: [
+                //   {
+                //     required,
+                //     message: '请输入所属部门'
+                //   }
+                // ],
+                initialValue: personnelSetting.deptName
+              })(<Input disabled />)
             }
 
           </Form.Item>
 
+          <Form.Item label='所属部门' style={{ display: 'none' }}>
+            {
+              getFieldDecorator('deptId', {
+                initialValue: personnelSetting.deptId
+              })(<Input />)
+            }
+          </Form.Item>
+
           <Form.Item label='所属岗位'>
             {
-              getFieldDecorator('position', {
+              getFieldDecorator('jobId', {
                 rules: [
                   {
                     required,
                     message: '请选择所属岗位'
                   }
                 ],
-
-              })(<Input />)
+                initialValue: personnelSetting.jobId
+              })(
+                <Select placeholder="请选择" onChange={(value, option)=>handleChange(value, option,'jobName')}>
+                  {teamjobName.map(obj => [
+                    <Option
+                      key={obj.key}
+                      values={obj.title}
+                    >
+                      {obj.title}
+                    </Option>
+                  ])}
+                </Select>
+              )
             }
-
           </Form.Item>
-          <Form.Item label='所属班组'>
+
+          <Form.Item label='' style={{ display: 'none' }}>
             {
-              getFieldDecorator('Team', {
-                rules: [
-                  {
-                    required,
-                    message: '请选择所属班组'
-                  }
-                ]
+              getFieldDecorator('jobName', {
+                initialValue: personnelSetting.jobName
               })(<Input />)
             }
-
           </Form.Item>
+
+
+
+          <Form.Item label='班组名称'>
+            {getFieldDecorator('groupId', {
+              rules: [
+                {
+                  required,
+                  message: '请选择班组名称'
+                }
+              ],
+              initialValue: personnelSetting.groupId
+            })(
+              <Select placeholder="请选择" onChange={(value, option)=>handleChange(value, option,'group')}>
+                {teamname.map(obj => [
+                  <Option
+                    key={obj.key}
+                    values={obj.title}
+                  >
+                    {obj.title}
+                  </Option>
+                ])}
+              </Select>
+            )}
+          </Form.Item>
+
+          <Form.Item style={{ display: 'none' }}>
+            {getFieldDecorator('groupName', {
+              initialValue: personnelSetting.groupName
+            })(<Input />)}
+          </Form.Item>
+
           <Form.Item label='联系电话'>
             {
-              getFieldDecorator('iphone', {
-                rules: [
-                  {
-                    required,
-                    message: '请输入联系电话'
-                  }
-                ]
-              })(<Input />)
+              getFieldDecorator('phone', {
+                // rules: [
+                //   {
+                //     required,
+                //     message: '请输入联系电话'
+                //   }
+                // ]
+              })(<Input disabled />)
             }
           </Form.Item>
         </Form>
+
         <div
           style={{
             position: 'absolute',
@@ -294,13 +389,13 @@ function AdddutyPersonnelSetting(props) {
             确定
           </Button>
 
-          {
+          {/* {
             id && (
               <Button onClick={handleDelete} type='danger' ghost>
                 删除
               </Button>
             )
-          }
+          } */}
 
 
 
@@ -310,5 +405,22 @@ function AdddutyPersonnelSetting(props) {
     </>
   )
 }
+AdddutyPersonnelSetting.defaultProps = {
+  personnelSetting: {
+    staffName: '',
+    userId:'',
+    deptName: '',
+    deptId: '',
+    groupId: '',
+    jobName: '',
+    jobId: ''
+  }
+}
 
-export default Form.create({})(AdddutyPersonnelSetting)
+
+export default Form.create({})(
+  connect(({ dutyandtypesetting, loading }) => ({
+    searchUsersarr: dutyandtypesetting.searchUsersarr,
+    loading: loading.models.dutyandtypesetting
+  }))(AdddutyPersonnelSetting)
+)

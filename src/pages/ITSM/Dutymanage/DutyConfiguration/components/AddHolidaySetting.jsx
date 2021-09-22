@@ -13,8 +13,10 @@ import {
   message,
   Row,
   Col,
+  Select
 } from 'antd';
 import moment from 'moment';
+import { connect } from 'dva';
 
 const formItemLayout = {
   labelCol: {
@@ -27,8 +29,8 @@ const formItemLayout = {
   }
 }
 
-let startTime;
-let endTime;
+const { Option } = Select;
+
 const withClick = (element, handleClick = () => { }) => {
   return <element.type {...element.props} onClick={handleClick} />
 }
@@ -37,21 +39,42 @@ function AddholidaySetting(props) {
   const [visble, setVisble] = useState(false);
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
-  const [selectSwitch,setSelectSwitch] = useState(false);
+  const [selectSwitch, setSelectSwitch] = useState(false);
+  const [formdata, setFormdata] = useState('');
 
+  console.log(data, 'data')
   const {
     form: { getFieldDecorator, validateFields },
+    dispatch,
     title,
     children,
     onSubmit,
     id,
-    onDelete
+    onDelete,
+    holidaySetting,
+    records,
   } = props;
 
   const required = true;
 
   const handleopenClick = () => {
-    setVisble(true)
+    if (id) {
+      dispatch({
+        type: 'dutyandtypesetting/fetchholidayId',
+        payload: id
+      }).then(res => {
+        if (res.code === 200) {
+          const newarr = (res.data.holidays).map((item,index) => {
+            return Object.assign(item,{editable:false, isNew:false, key:index})
+          })
+          setData(newarr);
+          setFormdata(res.data)
+          setVisble(true)
+        }
+      })
+    } else {
+      setVisble(true)
+    }
   }
 
   const handleCancel = () => {
@@ -62,13 +85,13 @@ function AddholidaySetting(props) {
     validateFields((err, values) => {
       if (!err) {
         const result = {
-          name:values.name,
-          tableArr:data,
-          checked:selectSwitch
+          id,
+          ...values,
+          holidays: data,
+          status: selectSwitch === true ? '1' : '0'
         }
 
-        console.log(result,'result')
-        // onSubmit(values);
+        onSubmit(result);
         setVisble(false)
       }
     })
@@ -83,9 +106,10 @@ function AddholidaySetting(props) {
     const newData = data.map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
-      field1: '',
-      field2: moment().format('YYYY-MM-DD HH:mm:ss'),
-      field3: moment().format('YYYY-MM-DD HH:mm:ss'),
+      holidayName: '',
+      dateType: '工作日',
+      beginDate: moment().format('YYYY-MM-DD HH:mm:ss'),
+      endDate: moment().format('YYYY-MM-DD HH:mm:ss'),
       editable: true,
     })
     setData(newData)
@@ -100,7 +124,6 @@ function AddholidaySetting(props) {
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData);
-    console.log('target: ', target);
     if (target) {
       target[fieldName] = e;
       setData(newData)
@@ -116,8 +139,8 @@ function AddholidaySetting(props) {
     const newarr = target.map((item, index) => {
       return Object.assign(item, { key: index })
     })
-
     setData(newarr);
+    setNewButton(false)
   }
 
   const toggleEditable = (e, key, record) => {
@@ -126,20 +149,21 @@ function AddholidaySetting(props) {
     const target = getRowByKey(key, newData);
     if (target) {
       target.editable = !target.editable;
-      setData(newData)
+      setData(newData);
+      setNewButton(true);
     }
   }
 
   // 保存记录
   const saveRow = (e, key) => {
     const target = getRowByKey(key) || {};
-    if (!target.field1) {
+    if (!target.holidayName || !target.dateType) {
       message.error('请填写完整信息。');
       e.target.focus();
       return;
-    } 
+    }
 
-    if((target.field2).valueOf() >= (target.field3).valueOf()) {
+    if ((target.beginDate).valueOf() >= (target.endDate).valueOf()) {
       message.error('开始时间必须小于结束时间');
       e.target.focus();
       return;
@@ -154,15 +178,15 @@ function AddholidaySetting(props) {
   const columns = [
     {
       title: '节日名称',
-      dataIndex: 'field1',
-      key: 'field1',
+      dataIndex: 'holidayName',
+      key: 'holidayName',
       render: (text, record) => {
         if (record.editable) {
           if (text === '') {
             return (
               <Input
                 defaultValue={text}
-                onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
+                onChange={e => handleFieldChange(e.target.value, 'holidayName', record.key)}
                 style={{ borderColor: '#ff4d4f' }}
               />
             )
@@ -172,7 +196,39 @@ function AddholidaySetting(props) {
             return (
               <Input
                 defaultValue={text}
-                onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
+                onChange={e => handleFieldChange(e.target.value, 'holidayName', record.key)}
+              />
+            )
+          }
+        }
+
+        return text
+
+      }
+    },
+    {
+      title: '类型',
+      dataIndex: 'dateType',
+      key: 'dateType',
+      width: 150,
+      render: (text, record) => {
+        if (record.editable) {
+          if (text === '') {
+            return (
+              <Select
+                placeholder="请选择"
+                style={{ width: '100%', borderColor: '#ff4d4f' }}>
+                <Option key='工作日' value='工作日'>工作日</Option>
+                <Option key='节假日' value='节假日'>节假日</Option>
+              </Select>
+            )
+          }
+
+          if (text) {
+            return (
+              <Input
+                defaultValue={text}
+                onChange={e => handleFieldChange(e.target.value, 'holidayName', record.key)}
               />
             )
           }
@@ -184,16 +240,17 @@ function AddholidaySetting(props) {
     },
     {
       title: '节日排期开始时间',
-      dataIndex: 'field2',
-      key: 'field2',
+      dataIndex: 'beginDate',
+      key: 'beginDate',
       render: (text, record) => {
         const dateFormat = 'YYYY-MM-DD HH:mm:ss';
         if (record.editable) {
           return (
             <div>
               <DatePicker
+                allowClear
                 defaultValue={moment(text, dateFormat)}
-                onChange={e => handleFieldChange(e.format('YYYY-MM-DD HH:mm:ss'), 'field2', record.key)}
+                onChange={e => handleFieldChange(e.format('YYYY-MM-DD HH:mm:ss'), 'beginDate', record.key)}
                 // disabledDate={this.disabledStartDate}
                 // showTime
                 // format="YYYY-MM-DD HH:mm:ss"
@@ -211,16 +268,17 @@ function AddholidaySetting(props) {
     },
     {
       title: '节日排期结束时间',
-      dataIndex: 'field3',
-      key: 'field3',
+      dataIndex: 'endDate',
+      key: 'endDate',
       render: (text, record) => {
         const dateFormat = 'YYYY-MM-DD HH:mm:ss';
         if (record.editable) {
           return (
             <div>
               <DatePicker
+                allowClear
                 defaultValue={moment(text, dateFormat)}
-                onChange={e => handleFieldChange(e.format('YYYY-MM-DD HH:mm:ss'), 'field3', record.key)}
+                onChange={e => handleFieldChange(e.format('YYYY-MM-DD HH:mm:ss'), 'endDate', record.key)}
                 // disabledDate={this.disabledStartDate}
                 // showTime
                 // format="YYYY-MM-DD HH:mm:ss"
@@ -290,18 +348,19 @@ function AddholidaySetting(props) {
         onClose={handleCancel}
       >
         <Form {...formItemLayout}>
-            <Form.Item label='方案名称'>
-              {getFieldDecorator('name', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请填写方案名称'
-                  }
-                ]
-              })
-                (<Input />)
-              }
-            </Form.Item>
+          <Form.Item label='方案名称'>
+            {getFieldDecorator('schemeName', {
+              rules: [
+                {
+                  required: true,
+                  message: '请填写方案名称'
+                }
+              ],
+              initialValue: formdata.schemeName
+            })
+              (<Input />)
+            }
+          </Form.Item>
 
         </Form>
 
@@ -324,7 +383,12 @@ function AddholidaySetting(props) {
 
         <div style={{ marginTop: 10 }}>
           <span>设为默认节假日方案：</span>
-          <Switch defaultChecked onChange={onChange} />
+          <Switch
+            checkedChildren='开启'
+            unCheckedChildren='关闭'
+            defaultChecked={Number(formdata.status)}
+            onChange={onChange}
+          />
         </div>
 
         <div
@@ -352,18 +416,29 @@ function AddholidaySetting(props) {
             保存
           </Button>
 
-          {
-            id && (
-              <Button onClick={handleDelete} type='danger' ghost>
-                删除
-              </Button>
-            )
-          }
-
         </div>
       </Drawer>
     </>
   )
 }
 
-export default Form.create({})(AddholidaySetting)
+AddholidaySetting.defaultProps = {
+  holidaySetting: {
+    schemeName: '',
+    shiftName: '',
+    beginTime: '',
+    endTime: '',
+    creatorName: sessionStorage.getItem('userName'),
+    ctime: '',
+    shiftType: '',
+    groupId: '',
+    groupName: '',
+    status: '0'
+  }
+}
+
+export default Form.create({})(
+  connect(({ dutyandtypesetting, loading }) => ({
+    loading: loading.models.dutyandtypesetting
+  }))(AddholidaySetting)
+)

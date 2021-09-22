@@ -16,7 +16,8 @@ import {
   DatePicker,
   Table,
   Divider,
-  Popconfirm
+  Popconfirm,
+  message
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import AddDutyclassesSetting from './components/AddDutyclassesSetting';
@@ -35,14 +36,15 @@ const formItemLayout = {
 };
 
 const enableStatus = [
-  { key: '0', title: '启用' },
-  { key: '1', title: '停用' },
+  { key: '1', title: '启用' },
+  { key: '0', title: '停用' },
 ];
 
 
 function DutyclassesSetting(props) {
   const pagetitle = props.route.name;
   const {
+    location,
     form: {
       getFieldDecorator,
       resetFields,
@@ -68,27 +70,24 @@ function DutyclassesSetting(props) {
   const [paginations, setPageinations] = useState({ current: 1, size: 15 });
 
 
-  const searchdata = (values, page, pageSize) => {
+  const searchdata = (values, current, size) => {
     const newdata = {
       ...values,
-      time1: values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '',
-      time2: values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '',
-      page,
-      pageSize
+      beginTime: values.beginTime ? moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      current,
+      size
     }
 
-    console.log(newdata, 'newdata')
     dispatch({
       type: 'shiftsandholidays/fetchshiftSearch',
-      payload: {
-        newdata
-      }
+      payload: newdata
     })
 
   }
 
   const handleSearch = () => {
-    const values = getFieldsValue()
+    const values = getFieldsValue();
     searchdata(values, 1, 15)
   }
   const handleReset = () => {
@@ -135,36 +134,28 @@ function DutyclassesSetting(props) {
     }
   };
 
-  const onShowSizeChange = (page, pageSize) => {
-    // validateFields((err, values) => {
-    //   if (!err) {
-    //     searchdata(values, page, pageSize);
-    //   }
-    // });
-    const values = getFieldsValue()
+  const onShowSizeChange = (page, size) => {
+    const values = getFieldsValue();
+    searchdata(values, paginations.page, size);
     setPageinations({
       ...paginations,
-      pageSize,
+      size,
     });
   };
 
   const changePage = page => {
-    // validateFields((err, values) => {
-    //   if (!err) {
-    //     searchdata(values, page, paginations.pageSize);
-    //   }
-    // });
+    const values = getFieldsValue();
+    searchdata(values, page, paginations.size);
     setPageinations({
       ...paginations,
       current: page,
     });
   };
-
   const pagination = {
     showSizeChanger: true,
-    onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
+    onShowSizeChange: (page, size) => onShowSizeChange(page, size),
     current: paginations.current,
-    pageSize: paginations.pageSize,
+    pageSize: paginations.size,
     total: shiftSearcharr.total || '',
     showTotal: total => `总共  ${total}  条记录`,
     onChange: page => changePage(page),
@@ -187,11 +178,10 @@ function DutyclassesSetting(props) {
       payload: submitdata
     }).then(res => {
       if (res.code === 200) {
-        message.info(res.msg)
+        message.info(res.msg);
+        searchdata({},1,15)
       }
     })
-
-
   }
 
   const handleDelete = (id) => {
@@ -264,6 +254,7 @@ function DutyclassesSetting(props) {
           <>
             <AddDutyclassesSetting
               classSetting={record}
+              searchdata={searchdata}
               id={record.No}
               title='编辑班次'
               onSubmit={submitdata => handleSubmit(submitdata)}
@@ -495,7 +486,7 @@ function DutyclassesSetting(props) {
           </Col> */}
             <Col span={8}>
               <Form.Item label="启用状态">
-                {getFieldDecorator('form4', {
+                {getFieldDecorator('status', {
                   initialValue: '',
                 })(
                   <Select placeholder="请选择" allowClear>
