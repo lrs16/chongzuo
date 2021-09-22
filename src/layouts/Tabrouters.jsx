@@ -47,6 +47,8 @@ const multiplepath = [
   { path: '/ITSM/servicequalityassessment/addserviceprovidermaintenance', type: 'addscoringrulesmaintenance' },
   { path: '/ITSM/servicequalityassessment/creditcard/creditcardregister', type: 'creditcardregister' },
   { path: '/ITSM/servicequalityassessment/addscoringrulesmaintenance', type: 'addscoringrulesmaintenance' },
+  { path: '/ITSM/operationplan/personaccessmanage/tocheck/newcheck', type: 'personaccessmanagetonewcheck' },
+  { path: '/ITSM/supervisework/mycreatework/taskworkfillin', type: 'supervisework' },
   { path: '/automation/automatedjob/jobmanagement/jobconfig/new', type: 'automatedjob' },
   { path: '/automation/automatedjob/jobmanagement/jobcheck/tocheck', type: 'automatedjobtocheck'},
   { path: '/automation/automatedjob/jobmanagement/jobexecute/manualexecutionlog', type: 'automatedmanualexecutionlog'},

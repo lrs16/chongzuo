@@ -36,7 +36,7 @@ const statusContent1 = ['计划中', '延期中', '已完成'];
 function MycreateWork(props) {
     const pagetitle = props.route.name;
     const {
-        // location,
+        location,
         loading,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
@@ -194,12 +194,21 @@ function MycreateWork(props) {
 
     const handleFillin = () => { // 工作任务填报
         router.push({
-            pathname: '/ITSM/supervisework/taskworkfillin',
+            pathname: '/ITSM/supervisework/mycreatework/taskworkfillin',
             query: {
                 addtab: true,
             },
         })
     };
+
+    useEffect(() => {
+        if (location.state) {
+          // 点击菜单刷新,并获取数据
+          if (location.state.reset) {
+            handleReset();
+          };
+        }
+      }, [location.state]);
 
     // 查询
     const extra = (<>

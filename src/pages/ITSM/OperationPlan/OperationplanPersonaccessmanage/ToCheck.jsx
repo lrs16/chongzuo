@@ -35,8 +35,9 @@ const { RangePicker } = DatePicker;
 function toCheck(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, resetFields, validateFields, setFieldsValue, getFieldsValue },
+    form: { getFieldDecorator, resetFields, validateFields, getFieldsValue },
     dispatch,
+    location,
     findChecklist,
     userinfo,
     loading
@@ -75,10 +76,16 @@ function toCheck(props) {
       render: (text, record) => {
         const handleClick = () => {
           router.push({
-            pathname: `/ITSM/operationplan/personaccessmanage/newcheck`,
+            pathname: `/ITSM/operationplan/personaccessmanage/tocheck/newcheck`,
             query: {
               selectedRows: [record],
-              userinfo
+              userinfo,
+              Id: record.registNo,
+              mainId: record.id
+            },
+            state: {
+              dynamicpath: true,
+              menuDesc: '作业计划审核',
             }
           });
         };
@@ -231,7 +238,7 @@ function toCheck(props) {
     }
     if (len === 1) { // 单条数据
       router.push({
-        pathname: '/ITSM/operationplan/personaccessmanage/newcheck',
+        pathname: '/ITSM/operationplan/personaccessmanage/tocheck/newcheck',
         query: {
           addtab: true,
           selectedRows,
@@ -378,6 +385,15 @@ function toCheck(props) {
       window.URL.revokeObjectURL(url);
     });
   }
+
+  useEffect(() => {
+    if (location.state) {
+      // 点击菜单刷新,并获取数据
+      if (location.state.reset) {
+        handleReset();
+      };
+    }
+  }, [location.state]);
 
   return (
     <PageHeaderWrapper title={pagetitle}>

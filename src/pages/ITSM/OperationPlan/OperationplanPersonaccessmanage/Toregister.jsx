@@ -61,6 +61,7 @@ function Toregister(props) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     form: { getFieldDecorator, resetFields, validateFields, getFieldsValue },
     dispatch,
+    location,
     findRegistlist,
     userinfo,
     loading
@@ -407,6 +408,15 @@ function Toregister(props) {
       searchdata(values, paginations.current, paginations.pageSize);
     });
   };
+
+  useEffect(() => {
+    if (location.state) {
+      // 点击菜单刷新,并获取数据
+      if (location.state.reset) {
+        handleReset();
+      };
+    }
+  }, [location.state]);
 
   // 设置展开收起
   const extra = (<>

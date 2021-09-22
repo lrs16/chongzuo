@@ -17,7 +17,7 @@ function Newcheck(props) {
 
     const ContentRef = useRef(null);
     const [result, setResult] = useState('0'); // 审核结果
-    const [activeKey, setActiveKey] = useState(['1']);
+    const [activeKey, setActiveKey] = useState(['1', '2']);
 
     const handleclose = () => { // 关闭返回
         router.push({

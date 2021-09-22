@@ -58,6 +58,7 @@ function Toregister(props) {
   const {
     form: { getFieldDecorator, resetFields, validateFields, getFieldsValue },
     dispatch,
+    location,
     findRegistlist,
     loading,
     userinfo,
@@ -95,7 +96,12 @@ function Toregister(props) {
               id: record.id,
               checkStatus: record.checkStatus,
               No: text,
+              Id: record.registNo,
             },
+            state: {
+              dynamicpath: true,
+              menuDesc: '人员进出查询详情',
+            }
           });
         };
         return <a onClick={handleClick}>{text}</a>;
@@ -367,6 +373,15 @@ function Toregister(props) {
       window.URL.revokeObjectURL(url);
     });
   }
+
+  useEffect(() => {
+    if (location.state) {
+      // 点击菜单刷新,并获取数据
+      if (location.state.reset) {
+        handleReset();
+      };
+    }
+  }, [location.state]);
 
   return (
     <PageHeaderWrapper title={pagetitle}>

@@ -36,6 +36,7 @@ const statusContent1 = ['计划中', '延期中', '已完成'];
 function MyresponWork(props) {
     const pagetitle = props.route.name;
     const {
+        location,
         loading,
         form: { getFieldDecorator, resetFields, validateFields },
         getWorkQueryLists,
@@ -199,6 +200,15 @@ function MyresponWork(props) {
             },
         })
     };
+
+    useEffect(() => {
+        if (location.state) {
+          // 点击菜单刷新,并获取数据
+          if (location.state.reset) {
+            handleReset();
+          };
+        }
+      }, [location.state]);
 
     const extra = (<>
         <Button type="primary" onClick={() => handleSearch()}>查 询</Button>

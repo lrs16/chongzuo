@@ -33,6 +33,7 @@ const statusContent = ['未超时', '即将超时', '已超时'];
 function TodelayExamine(props) {
     const pagetitle = props.route.name;
     const {
+        location,
         loading,
         form: { getFieldDecorator, resetFields, validateFields },
         getWorkQueryLists,
@@ -150,6 +151,15 @@ function TodelayExamine(props) {
             },
         })
     };
+
+    useEffect(() => {
+        if (location.state) {
+          // 点击菜单刷新,并获取数据
+          if (location.state.reset) {
+            handleReset();
+          };
+        }
+      }, [location.state]);
 
     // 查询
     const extra = (<>

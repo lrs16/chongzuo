@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
@@ -15,13 +15,15 @@ function Newcheck(props) {
     const pagetitle = props.route.name;
     const {
         dispatch,
+        location,
         location: { query },
     } = props;
+    const { mainId } = location.query;
 
     const ContentRef = useRef(null);
 
     const [result, setResult] = useState('0'); // 审核结果
-    const [activeKey, setActiveKey] = useState(['1']);
+    const [activeKey, setActiveKey] = useState(['1', '2']);
 
     const handleSave = () => { // 保存按钮
         const values = ContentRef.current.getVal();
@@ -91,6 +93,19 @@ function Newcheck(props) {
         // 激活tab
         setActiveKey(key);
     };
+
+    // 点击页签右键刷新
+  useEffect(() => {
+    if (location.state && location.state.reset && mainId) {
+      dispatch({
+        type: '/ITSM/operationplan/personaccessmanage/tocheck/newcheck',
+        payload: {
+          mainId,
+        },
+      });
+      setActiveKey(['1', '2']);
+    }
+  }, [location.state])
 
     const operations = (
         <>

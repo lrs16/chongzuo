@@ -909,12 +909,6 @@ export default {
                           icon: 'control',
                           routes: [
                             {
-                              path: '/ITSM/operationplan/personaccessmanage/newcheck',
-                              name: '人员进出审核',
-                              icon: 'fork',
-                              component: './ITSM/OperationPlan/OperationplanPersonaccessmanage/Newcheck',
-                            },
-                            {
                               path: '/ITSM/operationplan/personaccessmanage/toregister',
                               name: '人员进出登记',
                               icon: 'fork',
@@ -925,6 +919,12 @@ export default {
                               name: '人员进出审核',
                               icon: 'fork',
                               component: './ITSM/OperationPlan/OperationplanPersonaccessmanage/ToCheck',
+                            },
+                            {
+                              path: '/ITSM/operationplan/personaccessmanage/tocheck/newcheck',
+                              name: '人员进出审核',
+                              icon: 'fork',
+                              component: './ITSM/OperationPlan/OperationplanPersonaccessmanage/Newcheck',
                             },
                             {
                               path: '/ITSM/operationplan/personaccessmanage/toquery',
@@ -958,7 +958,7 @@ export default {
                           component: './ITSM/Supervisework/MycreateWork'
                         },
                         {
-                          path: '/ITSM/supervisework/taskworkfillin',
+                          path: '/ITSM/supervisework/mycreatework/taskworkfillin',
                           name: '工作任务填报',
                           icon: 'fork',
                           component: './ITSM/Supervisework/TaskworkFillin'
