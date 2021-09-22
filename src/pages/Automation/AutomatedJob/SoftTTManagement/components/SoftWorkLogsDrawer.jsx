@@ -40,7 +40,7 @@ function SoftWorkLogsDrawer(props) {
 
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false });
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
-    const [visible, setVisible] = useState(false);
+    const [visiblelog, setVisible] = useState(false);
     const [title, setTitle] = useState('');
 
     const hanldleCancel = () => {
@@ -64,7 +64,7 @@ function SoftWorkLogsDrawer(props) {
         if (recordvalues && recordvalues.id) {
             searchdata(1, 15);
         }
-    }, []);
+    }, [recordvalues.id]);
 
     const handleSearch = () => {
         setPageinations({
@@ -270,13 +270,13 @@ function SoftWorkLogsDrawer(props) {
                 loading={loading}
                 footer={null}
             />
-            {visible && (
+            {visiblelog && (
                 <RelationDrawer
                     title={title}
-                    visible={visible}
-                    //   orderIdPre={location.query.mainId}
-                    //   orderTypePre='event'
-                    orderTypeSuf='problem'
+                    visible={visiblelog}
+                    orderIdPre={recordvalues.id}
+                    orderTypePre='softwork'
+                    orderTypeSuf='trouble'
                     ChangeVisible={(v) => setVisible(v)}
                 />
             )}

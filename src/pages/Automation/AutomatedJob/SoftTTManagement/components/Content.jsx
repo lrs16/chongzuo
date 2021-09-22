@@ -36,16 +36,16 @@ const formItemLayout1 = {
   },
 };
 
-const formItemLayout444 = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 4 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 24 },
-  },
-};
+// const formItemLayout444 = {
+//   labelCol: {
+//     xs: { span: 2 },
+//     sm: { span: 1 },
+//   },
+//   wrapperCol: {
+//     xs: { span: 22 },
+//     sm: { span: 2 },
+//   },
+// };
 
 const Content = forwardRef((props, ref) => {
   const {
@@ -54,11 +54,9 @@ const Content = forwardRef((props, ref) => {
     form: { getFieldDecorator, getFieldsValue, resetFields, setFieldsValue }
   } = props;
 
-  // const [showexpand, setshowExpand] = useState(false);
   const [visible, setVisible] = useState(false); // 抽屉是否显示
   const [title, setTitle] = useState('');
   const [rows, setRows] = useState([]);
-  // const [rowkeys, setRowkeys] = useState([]);
 
   useImperativeHandle(ref, () => ({
     getVal: () => getFieldsValue(),
@@ -95,7 +93,7 @@ const Content = forwardRef((props, ref) => {
                 handleShowDrawer('添加作业对象');
               }} disabled={Noediting}>+添加对象</Button>)}
             </Form.Item>
-            <Form.Item span={24} {...formItemLayout444}>
+            <Form.Item span={24} {...formItemLayout}>
               <SoftTaskObjectList selectrowsData={rows} GetRowskeysData={ (v) => { setFieldsValue({ workSoftIds: v }); }} Noediting={Noediting}/>
             </Form.Item>
           </Col>

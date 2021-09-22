@@ -151,7 +151,7 @@ function CabinetDrawer(props) {
             //   },
             // ],
             initialValue: cabinetResidueU,
-          })(<Input placeholder="请输入" />)}
+          })(<Input placeholder="请输入" disabled/>)}
         </Form.Item>
         <Form.Item label="负责人">
           {getFieldDecorator('director', {

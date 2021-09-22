@@ -51,7 +51,7 @@ function ToCheck(props) {
     checkInfo,
   } = props;
 
-  const [activeKey, setActiveKey] = useState(['formpanel']);
+  const [activeKey, setActiveKey] = useState(['formpanel', 'formpanel1']);
   const ExmaineRef = useRef(null);
 
   const { selectedRows } = location.state;

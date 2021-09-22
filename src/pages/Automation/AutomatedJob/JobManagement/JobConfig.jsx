@@ -42,7 +42,7 @@ function JobConfig(props) {
 
     const searchdata = (page, size) => {
         const values = getFieldsValue();
-        // values.taskStatus = '1';
+        values.taskStatus = '1';
         values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
         values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
         //   values.startUpdateTime = values.startUpdateTime ? moment(values.startUpdateTime).format('YYYY-MM-DD HH:mm:ss') : '';

@@ -23,7 +23,6 @@ export default {
     effects: {
         // 启停列表
         *findautosoftworkList({ payload: { values, pageNum, pageSize } }, { call, put }) {
-            console.log('dva222');
             const response = yield call(listPageAutoSoftWord, values, pageNum, pageSize);
             yield put({
                 type: 'clearcache',
@@ -41,9 +40,9 @@ export default {
         // 启停日志列表
         *findautosoftworklogsList({ payload: { values, pageNum, pageSize } }, { call, put }) {
             const response = yield call(listPageSoftWorkLogs, values, pageNum, pageSize);
-            yield put({
-                type: 'clearcache',
-            });
+            // yield put({
+            //     type: 'clearcache',
+            // });
             if (response.code === 200) {
                 yield put({
                     type: 'saveautosoftworkloglist',
@@ -104,14 +103,13 @@ export default {
         clearcache(state) {
             return {
                 ...state,
-                autosoftworklist: {},
                 // autosoftworkloglist: {},
                 geteditinfo: {},
+                autosoftworklist: {},
             };
         },
 
         saveautosoftworklist(state, action) { // 启停列表
-            console.log(action.payload,'dva');
             return {
                 ...state,
                 autosoftworklist: action.payload,
@@ -119,7 +117,6 @@ export default {
         },
 
         saveautosoftworkloglist(state, action) { // 启停日志列表
-            console.log(action.payload,'dva2')
             return {
                 ...state,
                 autosoftworkloglist: action.payload,

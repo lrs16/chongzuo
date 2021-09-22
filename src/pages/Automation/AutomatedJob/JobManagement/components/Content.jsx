@@ -2,9 +2,11 @@ import React, { useState, forwardRef, useImperativeHandle, useEffect } from 'rea
 import { Form, Input, Radio, Button,} from 'antd';
 // import moment from 'moment'; DatePicker, 
 import DictLower from '@/components/SysDict/DictLower';
-import SystemScriptList from './SystemScriptList';
-import TaskObjectList from './TaskObjectList';
+import SystemScriptList1 from './SystemScriptList1';
+import TaskObjectList1 from './TaskObjectList1';
 import CronGenerator from './CronExpression';
+import AddagentObjDrawer from './AddagentObjDrawer';
+import AddsystermScriptDrawer from './AddsystermScriptDrawer';
 
 const { TextArea } = Input;
 
@@ -34,37 +36,37 @@ const formItemLayout1 = {
 
 const formItemLayout444 = {
   labelCol: {
-    xs: { span: 24 },
-    sm: { span: 4 },
+    xs: { span: 2 },
+    // sm: { span: 4 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 24 },
+    // sm: { span: 4 },
   },
 };
 
 const Content = forwardRef((props, ref) => {
   const {
     formrecord,
+    Noediting,
     form: { getFieldDecorator, getFieldsValue, resetFields, setFieldsValue }
   } = props;
 
   const required = true;
   const [selectadopt, setselectAdopt] = useState('');
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
-  const [showexpand, setshowExpand] = useState(false);
-  const [showexpand1, setshowExpand1] = useState(false);
+  const [visible, setVisible] = useState(false); // 抽屉是否显示
+  const [scriptvisible, setScriptVisible] = useState(false); // 抽屉是否显示
+  const [title, setTitle] = useState('');
+  const [scripttitle, setScriptTitle] = useState('');
+  const [rows, setRows] = useState([]);
+  const [scriptrows, setScriptRows] = useState([]);
 
   useImperativeHandle(ref, () => ({
     getVal: () => getFieldsValue(),
     resetVal: () => resetFields(),
     Forms: props.form.validateFieldsAndScroll,
   }), []);
-
-  useEffect(() => {
-    setshowExpand(true);
-    setshowExpand1(true);
-  }, [formrecord && formrecord !== {}])
 
   const handleAdopt = e => {
     setselectAdopt(e.target.value);
@@ -85,6 +87,16 @@ const Content = forwardRef((props, ref) => {
   };
   const taskmodesmap = getTypebyId('200000000000001003'); // 类型
 
+  const handleShowObjDrawer = (drwertitle) => {
+    setVisible(!visible);
+    setTitle(drwertitle);
+  };
+
+  const handleShowScriptDrawer = (scriptdrwertitle) => {
+    setScriptVisible(!scriptvisible);
+    setScriptTitle(scriptdrwertitle);
+  };
+
   return (
     <div>
       <Form {...formItemLayout} >
@@ -104,25 +116,23 @@ const Content = forwardRef((props, ref) => {
             rules: [{ required, message: '请选择作业对象' }],
             initialValue: [""] || formrecord.agentIds,
           })(<Button block onClick={() => {
-            setshowExpand1(!showexpand1);
+            handleShowObjDrawer('添加作业对象');
           }}>+作业对象</Button>)}
         </Form.Item>
-        {showexpand1 && (
-          <Form.Item span={24} {...formItemLayout444} >
-            <TaskObjectList GetData={(v) => { setFieldsValue({ agentIds: v }); }} />
-          </Form.Item>
-        )}
+        <Form.Item span={24} {...formItemLayout444}>
+          <TaskObjectList1 selectrowsData={rows} GetRowskeysData={ (v) => { setFieldsValue({ agentIds: v }); }} Noediting={Noediting}/>
+        </Form.Item>
         <Form.Item label="作业脚本"  {...formItemLayout1}>
           {getFieldDecorator('scriptIds', {
             rules: [{ required, message: '请选择作业脚本' }],
             initialValue: [""] || formrecord.scriptIds,
           })(<Button block onClick={() => {
-            setshowExpand(!showexpand);
+            handleShowScriptDrawer('添加作业脚本');
           }}>+作业脚本</Button>)}
         </Form.Item>
-        {showexpand && (<Form.Item span={24} {...formItemLayout444} >
-          <SystemScriptList GetData={(v) => { setFieldsValue({ scriptIds: v }); }} />
-        </Form.Item>)}
+        <Form.Item span={24} {...formItemLayout444}>
+          <SystemScriptList1 selectrowsData={scriptrows} GetRowskeysData={ (v) => { setFieldsValue({ scriptIds: v }); }} Noediting={Noediting}/>
+        </Form.Item>
         <Form.Item label="作业备注">
           {getFieldDecorator('taskRemarks', {
             initialValue: formrecord.taskRemarks,
@@ -152,6 +162,24 @@ const Content = forwardRef((props, ref) => {
           </Form.Item>)
         }
       </Form>
+      {/* 抽屉1 */}
+      <AddagentObjDrawer
+        visible={visible}
+        ChangeVisible={newvalue => setVisible(newvalue)}
+        title={title}
+        GetRowsData={newvalue => setRows(newvalue)}
+        GetRowskeysData={(v) => { setFieldsValue({ agentIds: v }); }}
+        destroyOnClose
+      />
+      {/* 抽屉2 */}
+      <AddsystermScriptDrawer
+        visible={scriptvisible}
+        ChangeVisible={newvalue => setScriptVisible(newvalue)}
+        title={scripttitle}
+        GetRowsData={newvalue => setScriptRows(newvalue)}
+        GetRowskeysData={(v) => { setFieldsValue({ scriptIds: v }); }}
+        destroyOnClose
+      />
     </div>
   );
 });

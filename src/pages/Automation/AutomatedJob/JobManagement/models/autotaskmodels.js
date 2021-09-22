@@ -55,6 +55,11 @@ export default {
       });
     },
 
+    // 获取作业对象单个数据
+    *findtaskObjectList2({ payload: { values, pageNum, pageSize, taskId } }, { call }) {
+      return yield call(taskObjectList, values, pageNum, pageSize, taskId);
+    },
+
     // 获取作业脚本全部数据
     *findtaskScriptList({ payload: { values, pageNum, pageSize, taskId } }, { call, put }) {
       const response = yield call(taskScriptList, values, pageNum, pageSize, taskId);
@@ -63,6 +68,12 @@ export default {
         payload: response.data,
       });
     },
+
+    // 获取作业脚本单个数据
+    *findtaskScriptList2({ payload: { values, pageNum, pageSize, taskId } }, { call }) {
+      return yield call(taskScriptList, values, pageNum, pageSize, taskId);
+    },
+
 
     // 获取作业对象单个数据
     *findtaskObjectList1({ payload: { pageNum, pageSize, taskId } }, { call }) {

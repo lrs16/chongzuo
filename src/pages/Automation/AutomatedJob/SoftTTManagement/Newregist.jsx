@@ -54,7 +54,6 @@ function Newregist(props) {
   } = props;
 
   const [activeKey, setActiveKey] = useState(['formpanel', 'formpanel2']);
-  const [exeminefiles, setexemineFiles] = useState({ arr: [], ischange: false }); // 审核上传
   const ContentRef = useRef(null);
   const ExmaineRef = useRef(null);
 
@@ -93,7 +92,6 @@ function Newregist(props) {
                     autoSoftWorkExamine: {
                       ...val,
                       examineTime: moment(val.examineTime).format('YYYY-MM-DD HH:mm:ss'),
-                      examineFiles: JSON.stringify(exeminefiles.arr),
                     }
                   },
                 }).then(res => {
@@ -121,7 +119,6 @@ function Newregist(props) {
                     autoSoftWorkExamine: {
                       ...val,
                       examineTime: moment(val.examineTime).format('YYYY-MM-DD HH:mm:ss'),
-                      examineFiles: JSON.stringify(exeminefiles.arr),
                       workId: Id,
                     }
                   },
@@ -176,7 +173,6 @@ function Newregist(props) {
                 const autoSoftWorkExamine = {
                   ...val,
                   examineTime: moment(val.examineTime).format('YYYY-MM-DD HH:mm:ss'),
-                  examineFiles: JSON.stringify(exeminefiles.arr),
                 };
                 if (val.examineStatus === '0') { // 添加审核不通过，保存不提交
                   addAutoSoftWork(autoSoftWork, autoSoftWorkExamine).then(res => {
@@ -230,7 +226,6 @@ function Newregist(props) {
                 const autoSoftWorkExamine = {
                   ...val,
                   examineTime: moment(val.examineTime).format('YYYY-MM-DD HH:mm:ss'),
-                  examineFiles: JSON.stringify(exeminefiles.arr),
                   workId: Id,
                 };
                 if (val.examineStatus === '0') { // 编辑审核不通过，保存不提交
@@ -344,15 +339,15 @@ function Newregist(props) {
               </EditContext.Provider>
             </Panel>
             <Panel header='启停审核' key="formpanel2">
-              <Examine
-                wrappedComponentRef={ExmaineRef}
-                check={Info.autoSoftWorkExamine}
-                ChangeFiles={newvalue => { setexemineFiles(newvalue) }}
-                files={exeminefiles.arr}
-                formItemLayout={formItemLayout}
-                forminladeLayout={forminladeLayout}
-                userinfo={userinfo}
-              />
+              {
+                Info.autoSoftWorkExamine && (<Examine
+                  wrappedComponentRef={ExmaineRef}
+                  check={Info.autoSoftWorkExamine}
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
+                  userinfo={userinfo}
+                />)
+              }
             </Panel>
             {/* <Panel header="软件信息" key="formpane3">
               <SoftwareInfoList />
