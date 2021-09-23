@@ -1522,10 +1522,22 @@ export default {
                           component: './Automation/AutomaticInspection/HostPatrol',
                         },
                         {
+                          path: '/automation/automaticinspection/hostpatrol/hostview',
+                          name: '查看巡检明细',
+                          icon: 'cloud-server',
+                          component: './Automation/AutomaticInspection/HostDetailView',
+                        },
+                        {
                           path: '/automation/automaticinspection/softwarepatrol',
                           name: '软件巡检',
                           icon: 'cloud-server',
                           component: './Automation/AutomaticInspection/SoftwarePatrol',
+                        },
+                        {
+                          path: '/automation/automaticinspection/softwarepatrol/softview',
+                          name: '查看巡检明细',
+                          icon: 'cloud-server',
+                          component: './Automation/AutomaticInspection/SoftDetailView',
                         },
                         {
                           path: '/automation/automaticinspection/clockpatrol',

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 // import { connect } from 'dva';
+import router from 'umi/router';
 import moment from 'moment';
 import { Card, Badge, Button, Table, Form, Input, Row, Col, DatePicker } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import PatrolconfigModal from './components/PatrolconfigModal';
 
 const formItemLayout = {
   labelCol: {
@@ -66,6 +68,39 @@ function SoftwarePatrol(props) {
   const handleReset = () => { resetFields(); };
 
   const handleSearch = () => { };
+
+  const newDetailView = () => {
+    router.push({
+      pathname: '/automation/automaticinspection/softwarepatrol/softview',
+      query: {
+        Id: Math.random(),
+        addtab: true,
+        menuDesc: '查看巡检明细',
+      },
+    })
+  };
+
+  // const handledownFileToZip = (id, no) => {
+  //   dispatch({
+  //     type: '',
+  //     payload: {
+  //       id,
+  //     },
+  //   }).then(res => {
+  //     if (res.size === 0 || res.type === 'text/html') {
+  //       message.error('下载失败');
+  //     } else {
+  //       const filename = `${no}_附件.zip`;
+  //       const blob = new Blob([res]);
+  //       const url = window.URL.createObjectURL(blob);
+  //       const a = document.createElement('a');
+  //       a.href = url;
+  //       a.download = filename;
+  //       a.click();
+  //       window.URL.revokeObjectURL(url);
+  //     }
+  //   })
+  // }
 
   // 查询
   const extra = (<>
@@ -205,8 +240,16 @@ function SoftwarePatrol(props) {
         <div style={{ marginBottom: 8 }}>
           <Button type="primary" style={{ marginRight: 8 }}
           >执行巡检</Button>
+          <PatrolconfigModal>
+            <Button type="primary" style={{ marginRight: 8 }}
+            >巡检配置</Button>
+          </PatrolconfigModal>
           <Button type="primary" style={{ marginRight: 8 }}
-          >巡检配置</Button>
+          // onClick={() => handledownFileToZip(record.id, record.no)}
+          >报告下载</Button>
+          <Button type="primary" style={{ marginRight: 8 }}
+            onClick={() => newDetailView()}
+          >查看明细</Button>
         </div>
         <Table
           // loading={loading}

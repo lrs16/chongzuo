@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 // import { connect } from 'dva';
 import moment from 'moment';
+import router from 'umi/router';
 import { Card, Badge, Button, Table, Form, Input, Row, Col, DatePicker } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import SysUpload from '@/components/SysUpload/Upload';
+import FilesContext from '@/layouts/MenuContext'; 
 import PatrolconfigModal from './components/PatrolconfigModal';
 import PatrolBriefDrawer from './components/PatrolBriefDrawer';
 
@@ -70,6 +73,39 @@ function HostPatrol(props) {
   const handleReset = () => { resetFields(); };
 
   const handleSearch = () => { };
+
+  const newDetailView = () => {
+    router.push({
+      pathname: '/automation/automaticinspection/hostpatrol/hostview',
+      query: {
+        Id: Math.random(),
+        addtab: true,
+        menuDesc: '查看巡检明细',
+      },
+    })
+  };
+
+  // const handledownFileToZip = (id, no) => {
+  //   dispatch({
+  //     type: '',
+  //     payload: {
+  //       id,
+  //     },
+  //   }).then(res => {
+  //     if (res.size === 0 || res.type === 'text/html') {
+  //       message.error('下载失败');
+  //     } else {
+  //       const filename = `${no}_附件.zip`;
+  //       const blob = new Blob([res]);
+  //       const url = window.URL.createObjectURL(blob);
+  //       const a = document.createElement('a');
+  //       a.href = url;
+  //       a.download = filename;
+  //       a.click();
+  //       window.URL.revokeObjectURL(url);
+  //     }
+  //   })
+  // }
 
   // 查询
   const extra = (<>
@@ -215,10 +251,11 @@ function HostPatrol(props) {
           <Button type="primary" style={{ marginRight: 8 }}
           >执行巡检</Button>
           <PatrolconfigModal>
-          <Button type="primary" style={{ marginRight: 8 }}
-          >巡检配置</Button>
+            <Button type="primary" style={{ marginRight: 8 }}
+            >巡检配置</Button>
           </PatrolconfigModal>
           <Button type="primary" style={{ marginRight: 8 }}
+          // onClick={() => handledownFileToZip(record.id, record.no)}
           >报告下载</Button>
           <Button type="primary" style={{ marginRight: 8 }}
             onClick={() => {
@@ -226,9 +263,14 @@ function HostPatrol(props) {
             }}
           >生成简报</Button>
           <Button type="primary" style={{ marginRight: 8 }}
+            onClick={() => newDetailView()}
           >查看明细</Button>
-          <Button type="primary" style={{ marginRight: 8 }}
-          >上传附件</Button>
+          <FilesContext.Provider value={{
+            files: [],
+            ChangeFiles: (v => { console.log(v); }),
+          }}>
+            <SysUpload />
+          </FilesContext.Provider>
         </div>
         <Table
           // loading={loading}
@@ -237,12 +279,12 @@ function HostPatrol(props) {
           // dataSource={list.records}
           pagination={pagination}
         />
-      <PatrolBriefDrawer
-        visible={visible}
-        ChangeVisible={newvalue => setVisible(newvalue)}
-        title={title}
-        destroyOnClose
-      />
+        <PatrolBriefDrawer
+          visible={visible}
+          ChangeVisible={newvalue => setVisible(newvalue)}
+          title={title}
+          destroyOnClose
+        />
       </Card>
     </PageHeaderWrapper>
   );

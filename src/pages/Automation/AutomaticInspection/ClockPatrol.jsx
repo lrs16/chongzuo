@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import moment from 'moment';
 import { Card, Badge, Button, Table, Form, Input, Row, Col, DatePicker } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import PatrolconfigModal from './components/PatrolconfigModal';
 
 const formItemLayout = {
   labelCol: {
@@ -205,8 +206,10 @@ function ClockPatrol(props) {
         <div style={{ marginBottom: 8 }}>
           <Button type="primary" style={{ marginRight: 8 }}
           >执行巡检</Button>
-          <Button type="primary" style={{ marginRight: 8 }}
-          >巡检配置</Button>
+          <PatrolconfigModal>
+            <Button type="primary" style={{ marginRight: 8 }}
+            >巡检配置</Button>
+          </PatrolconfigModal>
         </div>
         <Table
           // loading={loading}
