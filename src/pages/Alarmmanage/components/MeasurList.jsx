@@ -3,7 +3,6 @@ import moment from 'moment';
 import router from 'umi/router';
 import { Card, Button, Table, Badge, Tabs, Row, Col, Form, Input, Select, DatePicker, Cascader, Tooltip } from 'antd';
 import { connect } from 'dva';
-import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import TypeContext from '@/layouts/MenuContext';
 import ButtonGroup from './ButtonGroup';
 
@@ -170,8 +169,7 @@ function MeasurList(props) {
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
   const [searchdata, setSearchData] = useState({});
   const [activeKey, setActiveKey] = useState('');
-  const { tabActivekey, selectdata } = useContext(TypeContext);
-
+  const { tabActivekey, selectdata, tabdate } = useContext(TypeContext);
   const getvalues = () => {
     const val = getFieldsValue();
     const values = {
@@ -180,10 +178,10 @@ function MeasurList(props) {
       thirdClassify: val.Classify && val.Classify.length > 2 ? val.Classify[2] : '',
       beginClearTime: val.beginClearTime ? moment(val.beginClearTime).format('YYYY-MM-DD HH:mm:ss') : '',
       beginConfirmTime: val.beginConfirmTime ? moment(val.beginConfirmTime).format('YYYY-MM-DD HH:mm:ss') : '',
-      beginWarnTime: val.beginWarnTime ? moment(val.beginWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      beginWarnTime: tabdate.beginWarnTime ? moment(tabdate.beginWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
       endClearTime: val.endClearTime ? moment(val.endClearTime).format('YYYY-MM-DD HH:mm:ss') : '',
       endConfirmTime: val.endConfirmTime ? moment(val.endConfirmTime).format('YYYY-MM-DD HH:mm:ss') : '',
-      endWarnTime: val.endWarnTime ? moment(val.endWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      endWarnTime: tabdate.endWarnTime ? moment(tabdate.endWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
       warnContent: val.warnContent,
     };
     return values
@@ -248,12 +246,19 @@ function MeasurList(props) {
   }, [tabActivekey])
 
   useEffect(() => {
-    if (activeTabKey) {
+    if (activeTabKey && tabdate) {
       const key = activeTabKey === '告警概览' ? '' : activeTabKey.slice(0, -2);
       setClassifykey([key]);
       handleSearch(1, 10);
     }
   }, [activeTabKey]);
+
+  useEffect(() => {
+    if (tabdate) {
+      resetFields();
+      handleSearch(1, 10);
+    }
+  }, [tabdate])
 
   const rowSelection = {
     selectedRowKeys,
@@ -357,7 +362,7 @@ function MeasurList(props) {
                   <Input allowClear />
                 )}</Form.Item>
             </Col>
-            <Col span={8}>
+            {/* <Col span={8}>
               <Form.Item label="告警时间">
                 <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                   {getFieldDecorator('beginWarnTime', {
@@ -393,7 +398,7 @@ function MeasurList(props) {
                   )}
                 </div>
               </Form.Item>
-            </Col>
+            </Col> */}
             <Col span={8}>
               <Form.Item label="告警确认时间">
                 <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
