@@ -12,8 +12,9 @@ import All from './All';
 
 function MeasurAlarm(props) {
   const pagetitle = props.route.name;
-  const { dispatch, totalinfo } = props;
-  const [tabActivekey, settabActivekey] = useState('today'); // 打开标签
+  const { dispatch, totalinfo, match: { path } } = props;
+  const [tabActivekey, settabActivekey] = useState({}); // 打开标签
+  const [tabdate, setTabdate] = useState('');
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
   const [tabkeyDist, setTabkeyDist] = useState([{ key: 'index1', tab: '加载中' }]);
 
@@ -27,7 +28,13 @@ function MeasurAlarm(props) {
   ]);
 
   const handleTabChange = key => {
-    settabActivekey(key)
+    setTabdate({});
+    settabActivekey(key);
+    if (key === 'today') {
+      const beginWarnTime = moment().startOf('day').format('YYYY-MM-DD HH:mm:ss');
+      const endWarnTime = moment().format('YYYY-MM-DD HH:mm:ss');
+      setTabdate({ beginWarnTime, endWarnTime });
+    }
   };
   const tabList = [
     {
@@ -39,6 +46,12 @@ function MeasurAlarm(props) {
       tab: '全部告警',
     },
   ];
+
+  useEffect(() => {
+    if (path) {
+      handleTabChange('today')
+    };
+  }, [path])
 
   useEffect(() => {
     if (pagetitle !== '上下行报文页面告警') {
@@ -79,14 +92,18 @@ function MeasurAlarm(props) {
         style={{ display: 'none' }}
       />
       {tabActivekey === 'today' && (<TotalInfo infolist={totalinfo || []} />)}
-      {tabActivekey === 'all' && (<All />)}
+      {tabActivekey === 'all' && (<All ChangeDate={v => setTabdate(v)} />)}
       <TypeContext.Provider value={{
         tabActivekey,
         pagetitle,
         selectdata,
+        tabdate,
       }}>
-
-        {pagetitle === '上下行报文页面告警' ? <MessageContent tabActivekey={tabActivekey} /> : <Content match={props.match} tabkeyDist={tabkeyDist} distkey={pagetitlemap.get(pagetitle)} />}
+        {pagetitle === '上下行报文页面告警' ? (
+          <MessageContent tabActivekey={tabActivekey} />
+        ) : (
+          <Content match={props.match} tabkeyDist={tabkeyDist} distkey={pagetitlemap.get(pagetitle)} />
+        )}
       </TypeContext.Provider>
     </PageHeaderWrapper >
   );

@@ -7,6 +7,7 @@ import {
   Empty,
 } from 'antd';
 import { connect } from 'dva';
+import moment from 'moment';
 import TypeContext from '@/layouts/MenuContext';
 import { ChartCard } from '@/components/Charts';
 import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
@@ -34,24 +35,32 @@ function Today(props) {
   const { match, tabkeyDist, distkey, Donutdata, Smoothdata, dispatch, loading } = props;
   const [activeTabKey, setActiveTabKey] = useState('');
   // const [activeTabInfo, setActiveTabInfo] = useState({});
-  const { tabActivekey } = useContext(TypeContext);
+  const { tabActivekey, tabdate } = useContext(TypeContext);
 
-  const getdatas = (key) => {
+  const getdatas = () => {
+    const classify = activeTabKey === '告警概览' ? '告警概览' : activeTabKey.slice(0, -2);
     dispatch({
       type: 'measuralarm/fetchoverdonut',
-      payload: { key },
+      payload: {
+        beginDate: tabdate.beginWarnTime ? moment(tabdate.beginWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        endDate: tabdate.endWarnTime ? moment(tabdate.endWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        classify,
+      },
     });
     dispatch({
       type: 'measuralarm/fetchoversmooth',
-      payload: { key },
+      payload: {
+        beginDate: tabdate.beginWarnTime ? moment(tabdate.beginWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        endDate: tabdate.endWarnTime ? moment(tabdate.endWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        classify,
+      },
     });
   };
 
   const handleTabChange = (key) => {
     setActiveTabKey(key);
     const target = tabkeyDist.filter(item => item.key === key)[0];
-    if (target) {
-      // setActiveTabInfo(target);
+    if (target && key === 'all') {
       getdatas(target.tab);
     }
   };
@@ -67,6 +76,12 @@ function Today(props) {
     };
   }, [tabActivekey]);
 
+  useEffect(() => {
+    if (tabdate) {
+      getdatas()
+    }
+  }, [tabdate])
+
   return (
     <>
       <Card
@@ -81,20 +96,18 @@ function Today(props) {
               <Col span={12}>
                 <ChartCard title='告警概览'>
                   <Spin spinning={false} style={{ background: '#ffffff' }}>
-                    {Donutdata === undefined && <Empty style={{ height: '250px' }} />}
-                    {!Donutdata && (
+                    {Donutdata && Donutdata.length > 0 ? (
                       <DonutPCT data={Donutdata} cols={cols} height={350} padding={[40, 40, 60, 40]} onGetVal={() => { }} />
-                    )}
+                    ) : (<Empty style={{ height: '250px' }} />)}
                   </Spin>
                 </ChartCard>
               </Col>
               <Col span={12}>
                 <ChartCard title='告警趋势'>
                   <Spin spinning={false} style={{ background: '#ffffff' }}>
-                    {Smoothdata === undefined && <Empty style={{ height: '250px' }} />}
-                    {!Smoothdata && (
+                    {Smoothdata && Smoothdata.length > 0 ? (
                       <SmoothLine data={Smoothdata} height={350} padding={[30, 0, 50, 60]} onGetVal={() => { }} />
-                    )}
+                    ) : (<Empty style={{ height: '250px' }} />)}
                   </Spin>
                 </ChartCard>
               </Col>

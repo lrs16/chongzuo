@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import { Card, Tabs, Button } from 'antd';
+import RecordContext from '@/layouts/MenuContext';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import AlarmInfo from './components/AlarmInfo';
 import OperationRecord from './components/OperationRecord';
@@ -9,9 +10,10 @@ import AlarmHistory from './components/AlarmHistory';
 import NoticeHistory from './components/NoticeHistory';
 
 function DetailView(props) {
-  const { dispatch, location: { query: { Id } } } = props;
+  const { dispatch, location, location: { query: { Id } } } = props;
   const pagetitle = props.route.name;
   const [tabActivekey, settabActivekey] = useState('1'); // 打开标签
+  const { currenttab } = useContext(RecordContext);
 
   const getalarmdetailsdatas = () => {
     dispatch({
@@ -76,7 +78,7 @@ function DetailView(props) {
       extra={operations}
     >
       <Card>
-        {tabActivekey === '1' && (<AlarmInfo data={{}} />)}
+        {tabActivekey === '1' && (<AlarmInfo data={currenttab && currenttab.state && currenttab.state || {}} />)}
         {tabActivekey === '2' && (<OperationRecord data={[]} />)}
         {tabActivekey === '3' && (<AlarmHistory data={[]} />)}
         {tabActivekey === '4' && (<NoticeHistory data={[]} />)}

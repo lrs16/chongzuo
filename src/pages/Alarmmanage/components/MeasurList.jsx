@@ -132,6 +132,8 @@ const columns = [
           state: {
             dynamicpath: true,
             menuDesc: '告警详细信息',
+            record,
+            type: 'measuralarm',
           }
         });
       };
@@ -170,6 +172,7 @@ function MeasurList(props) {
   const [searchdata, setSearchData] = useState({});
   const [activeKey, setActiveKey] = useState('');
   const { tabActivekey, selectdata, tabdate } = useContext(TypeContext);
+
   const getvalues = () => {
     const val = getFieldsValue();
     const values = {

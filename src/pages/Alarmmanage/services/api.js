@@ -10,15 +10,21 @@ export async function queryAlarmList(params) {
 }
 
 // 告警概览:饼图
-export async function AlarmoverDonut(key) {
-  return request(`/api/alarmmanage/typedonut?key=${key}`, {
-    method: 'GET',
+export async function AlarmoverDonut(params) {
+  return request(`/warn/biz/pieChartData`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
   });
 }
 
 // 告警概览:曲线图
-export async function AlarmoverSmooth(key) {
-  return request(`/api/alarmmanage/overviewsmooth?key=${key}`);
+export async function AlarmoverSmooth(params) {
+  return request(`/warn/biz/lineChartData`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
 }
 
 // 确认告警

@@ -15,8 +15,8 @@ export default {
 
   state: {
     list: {},
-    Donutdata: [],
-    Smoothdata: [],
+    Donutdata: '',
+    Smoothdata: '',
     totalinfo: undefined,
     searchtab: [],
   },
@@ -49,19 +49,19 @@ export default {
       });
     },
     // 告警概览：饼图
-    *fetchoverdonut({ payload: { key } }, { call, put }) {
-      const response = yield call(AlarmoverDonut, key);
+    *fetchoverdonut({ payload }, { call, put }) {
+      const response = yield call(AlarmoverDonut, payload);
       yield put({
         type: 'savedonut',
-        payload: response.data,
+        payload: response.data.data,
       });
     },
     // 告警概览：曲线
-    *fetchoversmooth({ payload: { key } }, { call, put }) {
-      const response = yield call(AlarmoverSmooth, key);
+    *fetchoversmooth({ payload }, { call, put }) {
+      const response = yield call(AlarmoverSmooth, payload);
       yield put({
         type: 'savesmooth',
-        payload: response.data,
+        payload: response.data.data,
       });
     },
     // 修改确认告警状态
@@ -99,8 +99,8 @@ export default {
       return {
         ...state,
         list: {},
-        Donutdata: [],
-        Smoothdata: [],
+        Donutdata: '',
+        Smoothdata: '',
         totalinfo: undefined,
         searchtab: [],
       };
@@ -126,13 +126,13 @@ export default {
     savedonut(state, action) {
       return {
         ...state,
-        Donutdata: action.payload,
+        Donutdata: action.payload || [],
       };
     },
     savesmooth(state, action) {
       return {
         ...state,
-        Smoothdata: action.payload,
+        Smoothdata: action.payload || [],
       };
     },
   },
