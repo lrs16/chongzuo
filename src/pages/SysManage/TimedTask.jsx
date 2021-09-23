@@ -216,8 +216,8 @@ function TimedTask(props) {
 
   const handleUpdataStatus = (checked, id) => {   // 状态更改
     const statusmap = new Map([
-      [true, '0'],
-      [false, '1'],
+      [true, '1'],
+      [false, '0'],
     ]);
     dispatch({
       type: 'timedtaskmodel/tochangeStatus',
@@ -333,8 +333,8 @@ function TimedTask(props) {
       width: 100,
       render: (text, record) => {
         const statusmap = new Map([
-          ['0', true],
-          ['1', false],
+          ['1', true],
+          ['0', false],
         ]);
         return (
           // <Popconfirm title="确认要启用系统默认（无参）任务吗？" 

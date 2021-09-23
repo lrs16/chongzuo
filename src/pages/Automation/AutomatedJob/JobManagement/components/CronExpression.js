@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
     Input,
     InputNumber,
@@ -7,7 +7,7 @@ import {
     Checkbox,
     Row,
     Col
-} from 'antd'
+} from 'antd';
 
 /**
  *CRON表达式生成器
@@ -15,7 +15,7 @@ import {
  */
 export default class CronGenerator extends React.Component {
     state = {
-        cronText: '* * * * * *',
+        cronText: this.props.cronText || '* * * * * *',
         cronType: ['second', 'minute', 'hour', 'day', 'month', 'week'],
         radioValue: {
             second: 1,
@@ -64,12 +64,12 @@ export default class CronGenerator extends React.Component {
      * @returns {Promise<void>}
      */
     createCron = async () => {
-        let { cronType } = this.state
+        let { cronType } = this.state;
         for (let type of cronType) {
             await this.cronGenerator(type)
         }
         let { second, minute, hour, day, month, week } = this.state.cron
-        let cronText = second + ' ' + minute + ' ' + hour + ' ' + day + ' ' + month + ' ' + week
+        let cronText = second + ' ' + minute + ' ' + hour + ' ' + day + ' ' + month + ' ' + week;
         this.setState({
             cronText: cronText
         })
@@ -81,25 +81,25 @@ export default class CronGenerator extends React.Component {
      * @param type
      */
     cronGenerator = (type) => {
-        let srv = this.state.radioValue[type]
-        let period = this.state.periodValue[type]
-        let loop = this.state.loopValue[type]
-        let param = this.state.cronParams[type]
-        let data = ''
+        let srv = this.state.radioValue[type];
+        let period = this.state.periodValue[type];
+        let loop = this.state.loopValue[type];
+        let param = this.state.cronParams[type];
+        let data = '';
         switch (srv) {
-            case 1: data = '*'; break
-            case 2: data = '?'; break
+            case 1: data = '*'; break;
+            case 2: data = '?'; break;
             case 'point':
                 for (let v of param) {
                     data = data + v + ','
                 }
-                data = data.substring(0, data.length - 1); break
+                data = data.substring(0, data.length - 1); break;
             case 'period':
-                data = period.min + '-' + period.max; break
+                data = period.min + '-' + period.max; break;
             case 'loop':
-                data = loop.start + '/' + loop.end; break
+                data = loop.start + '/' + loop.end; break;
             default:
-                data = '*'
+                data = '*';
         }
         this.setState({
             cron: Object.assign({}, this.state.cron, this.cronItemGenerator(type, data))
@@ -205,11 +205,10 @@ export default class CronGenerator extends React.Component {
         const dayCheckbox = this.createCheckbox('day', 10, 1, 31)
         const monthCheckbox = this.createCheckbox('month', 10, 1, 12)
         const weekCheckbox = this.createCheckbox('week', 7, 1, 7)
-        console.log(secondCheckbox, 'secondCheckbox')
 
         return (
             <>
-                <Tabs type='card' style={{ height: '300px', marginTop: '6px' }}>
+                <Tabs type='card' style={{ height: '300px', marginTop: '6px', marginLeft: '110px' }}>
                     <TabPane tab='秒' key='1'>
                         <Radio.Group
                             onChange={e => this.handleRadioChange(e, 'second')}
@@ -513,7 +512,7 @@ export default class CronGenerator extends React.Component {
                 <Search
                     placeholder='生成Cron'
                     enterButton='生成'
-                    style={{ width: 400, margin: '20px 0 18px' }}
+                    style={{ width: 400,  marginLeft: 118}}
                     onSearch={this.createCron}
                     value={cronText}
                 />

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { connect } from 'dva';
 import {
     Modal,
-    Table, Button, Form, Input, Row, Col, Select, Alert, Tag
+    Table, Button, Form, Input, Row, Col, Select, Alert
 } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
@@ -29,7 +29,7 @@ function PatrolconfigModal(props) {
     const {
         children,
         dispatch,
-        taskobjectlist,
+        list,
         form: {
             getFieldDecorator,
             getFieldsValue,
@@ -58,9 +58,9 @@ function PatrolconfigModal(props) {
     const searchdata = (page, size) => {
         const values = getFieldsValue();
         dispatch({
-            type: 'autotask/findtaskObjectList',
+            type: 'automation/findtaskObjectList',
             payload: {
-                ...values,
+                values,
                 pageNum: page,
                 pageSize: size,
                 taskId: undefined
@@ -112,7 +112,7 @@ function PatrolconfigModal(props) {
         onShowSizeChange: (page, size) => onShowSizeChange(page, size),
         current: paginations.current,
         pageSize: paginations.pageSize,
-        total: taskobjectlist.total,
+        total: list.total,
         showTotal: total => `总共  ${total}  条记录`,
         onChange: page => changePage(page),
     };
@@ -228,9 +228,6 @@ function PatrolconfigModal(props) {
                 onCancel={() => handleCancel()}
                 visible={visible}
                 width={1160}
-                centered
-                maskClosable
-                closable
             >
                 <DictLower
                     typeid="100000000000001001"
@@ -315,13 +312,10 @@ function PatrolconfigModal(props) {
                         </Col>
                         <Col span={8} style={{ paddingLeft: expand ? '8.5%' : '24px' }}>{extra}</Col>
                     </Form>
-                    <Col span={24} style={{ marginLeft: 48, padding: 8 }}>{selectedRows.map(item => (
-                        <Tag key={item.id} color="red" closable>{item.agentHost}</Tag>
-                    ))}</Col>
                     <Col span={24}><Alert message={`已选择【${selectedRows.length}】个agent`} type="info" style={{ marginBottom: 5, width: '100%' }} /></Col>
                 </Row>
                 <Table
-                    dataSource={taskobjectlist.rows}
+                    dataSource={list.rows}
                     columns={columns}
                     rowKey={record => record.id}
                     scroll={{ x: 500 }}
@@ -334,8 +328,8 @@ function PatrolconfigModal(props) {
 }
 
 export default Form.create({})(
-    connect(({ autotask, loading }) => ({
-        taskobjectlist: autotask.taskobjectlist,
-        loading: loading.models.autotask,
+    connect(({ automation, loading }) => ({
+        list: automation.list,
+        loading: loading.models.automation,
     }))(PatrolconfigModal),
 );

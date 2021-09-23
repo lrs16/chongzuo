@@ -151,12 +151,13 @@ const Content = forwardRef((props, ref) => {
           </RadioGroup>)}
         </Form.Item>
         {
-          selectadopt === '0' && (<Form.Item label="core表达式">
+          selectadopt === '0' && (<Form.Item label="core表达式" span={24} {...formItemLayout444}>
             {getFieldDecorator('taskCores', {
               rules: [{ required, message: '请输入core表达式' }],
               initialValue: formrecord.taskCores,
             })(
-              <CronGenerator GetCronData={(v) => { setFieldsValue({ taskCores: v }); console.log(v)}}
+              <CronGenerator GetCronData={(v) => { setFieldsValue({ taskCores: v });}}
+                cronText={formrecord.taskCores}
               />
             )}
           </Form.Item>)

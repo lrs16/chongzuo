@@ -4,6 +4,7 @@ import moment from 'moment';
 import { Card, Badge, Button, Table, Form, Input, Row, Col, DatePicker } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import PatrolconfigModal from './components/PatrolconfigModal';
+import PatrolBriefDrawer from './components/PatrolBriefDrawer';
 
 const formItemLayout = {
   labelCol: {
@@ -31,6 +32,8 @@ function HostPatrol(props) {
   } = props;
 
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+  const [visible, setVisible] = useState(false); // 抽屉是否显示
+  const [title, setTitle] = useState('');
 
   // useEffect(() => {
   //   dispatch({
@@ -148,6 +151,11 @@ function HostPatrol(props) {
     },
   ];
 
+  const handleShowBrieDrawer = (drawtitle) => {
+    setTitle(drawtitle);
+    setVisible(!visible);
+  };
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
@@ -210,6 +218,17 @@ function HostPatrol(props) {
           <Button type="primary" style={{ marginRight: 8 }}
           >巡检配置</Button>
           </PatrolconfigModal>
+          <Button type="primary" style={{ marginRight: 8 }}
+          >报告下载</Button>
+          <Button type="primary" style={{ marginRight: 8 }}
+            onClick={() => {
+              handleShowBrieDrawer('巡检简报');
+            }}
+          >生成简报</Button>
+          <Button type="primary" style={{ marginRight: 8 }}
+          >查看明细</Button>
+          <Button type="primary" style={{ marginRight: 8 }}
+          >上传附件</Button>
         </div>
         <Table
           // loading={loading}
@@ -218,6 +237,12 @@ function HostPatrol(props) {
           // dataSource={list.records}
           pagination={pagination}
         />
+      <PatrolBriefDrawer
+        visible={visible}
+        ChangeVisible={newvalue => setVisible(newvalue)}
+        title={title}
+        destroyOnClose
+      />
       </Card>
     </PageHeaderWrapper>
   );
