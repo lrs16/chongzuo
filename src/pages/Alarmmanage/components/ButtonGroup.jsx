@@ -5,19 +5,60 @@ import { Button, Dropdown, Message, Menu } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 
 function ButtonGroup(props) {
-  const { selectedRowKeys, selectRowdata, dispatch } = props;
-  const handleConfig = () => {
+  const { selectedRowKeys, selectRowdata, values, ChangeSelects, dispatch } = props;
+
+  const handleConfig = (status, updatastatus) => {
     if (selectedRowKeys.length === 0) {
       Message.error('至少选择一条告警记录');
     } else {
-      dispatch({
-        type: 'alarmovervies/alarmsconfig',
-        payload: {
-          selectedRowKeys,
-        },
-      });
+      const target = selectRowdata.filter(item => item.confirmStatus === status);
+      if (target.length === 0) {
+        Message.error(`请选择确认状态为 ‘${status}’ 的数据`);
+        ChangeSelects([]);
+      } else {
+        ChangeSelects([]);
+        const ids = target.map(item => (item.id));
+        dispatch({
+          type: 'measuralarm/alarmsconfig',
+          payload: {
+            configval: {
+              ids: ids.toString(),
+              status: updatastatus,
+            },
+            values,
+          },
+        });
+      }
     }
   };
+
+  const handleClearConfig = () => {
+    if (selectedRowKeys.length === 0) {
+      Message.error('至少选择一条告警记录');
+    } else {
+      const target = selectRowdata.filter(item => item.confirmStatus === '已确认');
+      if (target.length === 0) {
+        Message.error('请选择确认状态为 ‘已确认’ 的数据');
+        ChangeSelects(false);
+      } else {
+        const ids = target.map(item => (item.id));
+        dispatch({
+          type: 'measuralarm/clearconfig',
+          payload: {
+            configval: {
+              ids: ids.toString(),
+              status: '已确认',
+            },
+            values: {
+              ...values,
+            }
+          },
+        });
+        ChangeSelects(false);
+      }
+
+    }
+  }
 
   const handleMenuClick = e => {
     const alarmlist = selectRowdata.filter(obj => {
@@ -48,16 +89,16 @@ function ButtonGroup(props) {
 
   return (
     <div style={{ margin: '10px 0 24px 0' }}>
-      <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleConfig()}>
+      <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleConfig('待确认', '已确认')}>
         确认告警
       </Button>
-      <Button style={{ marginRight: 8 }}>取消确认</Button>
+      <Button style={{ marginRight: 8 }} onClick={() => handleConfig('已确认', '待确认')}>取消确认</Button>
       <Dropdown overlay={menu}>
         <Button type="primary" style={{ marginRight: 8 }}>
           派发工单 <DownOutlined />
         </Button>
       </Dropdown>
-      <Button type="danger" ghost style={{ marginRight: 8 }}>
+      <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleClearConfig()}>
         手工消除
       </Button>
       <Button style={{ marginRight: 8 }}>导 出</Button>
@@ -65,4 +106,7 @@ function ButtonGroup(props) {
   );
 }
 
-export default ButtonGroup;
+export default connect(({ measuralarm, loading }) => ({
+  measuralarm,
+  loading: loading.models.measuralarm,
+}))(ButtonGroup);

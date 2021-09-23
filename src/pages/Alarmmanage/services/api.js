@@ -21,14 +21,47 @@ export async function AlarmoverSmooth(key) {
   return request(`/api/alarmmanage/overviewsmooth?key=${key}`);
 }
 
-// 告警概览：确认告警
-export async function configAlarmList(selectedRowKeys) {
-  return request(`/api/alarmmanage/configalarm?keys=${selectedRowKeys}`);
+// 确认告警
+export async function configStatus(params) {
+  return request(`/warn/biz/updateConfirmStatus`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
 }
 
 // 计量业务告警统计
-export async function statisticsItems({ beginDate, endDate }) {
-  return request(`/warn/biz/statistics?beginDate=${beginDate}&endDate=${endDate}`, {
-    method: 'GET'
+export async function statisticsItems(params) {
+  return request(`/warn/biz/statistics`, {
+    method: 'GET',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}
+
+// 计量业务告警查询列表
+export async function warmBizList(params) {
+  return request(`/warn/biz/list`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}
+
+// 计量业务告警带统计页签
+export async function bizlistStatistics(params) {
+  return request(`/warn/biz/listStatistics`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}
+
+// 人工消除告警updateClearStatus
+export async function updateClearStatus(params) {
+  return request(`/warn/biz/updateClearStatus`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
   });
 }

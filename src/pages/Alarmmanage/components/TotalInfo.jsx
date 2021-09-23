@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Row, Col } from 'antd';
+import { Card } from 'antd';
 import styles from '../index.less';
 
 function TotalInfo(props) {
@@ -15,13 +15,13 @@ function TotalInfo(props) {
   return (
     <div className={styles.standardList}>
       <Card bordered>
-        <Row>
+        <div>
           {infolist.map((obj, index) =>
             <div style={{ width: `${100 / infolist.length}%`, float: 'left' }}>
-              <Info key={obj.key} title={obj.title} value={obj.value} bordered={index !== infolist.length - 1} />
+              <Info key={index.toString()} title={obj.name} value={obj.total} bordered={index !== infolist.length - 1} />
             </div>
           )}
-        </Row>
+        </div>
       </Card>
     </div>
   );

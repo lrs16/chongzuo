@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'dva';
+import moment from 'moment';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import TypeContext from '@/layouts/MenuContext';
 import DictLower from '@/components/SysDict/DictLower';
@@ -8,17 +10,9 @@ import Content from './Content';
 import MessageContent from './MessageContent';
 import All from './All';
 
-const infolist = [
-  { title: '告警总数', value: 1988, key: '1' },
-  { title: '业务指标监控', value: 556, key: '2' },
-  { title: '终端在线和入库', value: 3855, key: '3' },
-  { title: '接口数据核查', value: 1, key: '4' },
-  { title: 'KAFKA消费', value: 520, key: '5' },
-  { title: '主站系统运维', value: 1, key: '6' },
-]
-
 function MeasurAlarm(props) {
   const pagetitle = props.route.name;
+  const { dispatch, totalinfo } = props;
   const [tabActivekey, settabActivekey] = useState('today'); // 打开标签
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
   const [tabkeyDist, setTabkeyDist] = useState([{ key: 'index1', tab: '加载中' }]);
@@ -52,7 +46,7 @@ function MeasurAlarm(props) {
         if (res.code === 200) {
           const value = Object.values(res.data)[0];
           const newData = value.map(item => {
-            return { key: item.key, tab: item.val }
+            return { key: item.val, tab: item.val }
           })
           setTabkeyDist(newData)
         }
@@ -61,6 +55,16 @@ function MeasurAlarm(props) {
       setTabkeyDist(null)
     }
   }, []);
+
+  useEffect(() => {
+    dispatch({
+      type: 'measuralarm/fetchtotalinfo',
+      payload: {
+        beginDate: moment().format('YYYY-MM-DD HH:mm:ss'),
+        endDate: moment().format('YYYY-MM-DD HH:mm:ss'),
+      },
+    });
+  }, [tabActivekey])
 
   return (
     <PageHeaderWrapper
@@ -74,7 +78,7 @@ function MeasurAlarm(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      {tabActivekey === 'today' && (<TotalInfo infolist={infolist} />)}
+      {tabActivekey === 'today' && (<TotalInfo infolist={totalinfo || []} />)}
       {tabActivekey === 'all' && (<All />)}
       <TypeContext.Provider value={{
         tabActivekey,
@@ -88,4 +92,8 @@ function MeasurAlarm(props) {
   );
 }
 
-export default MeasurAlarm;
+export default connect(({ measuralarm, loading }) => ({
+  Donutdata: measuralarm.Donutdata,
+  totalinfo: measuralarm.totalinfo,
+  loading: loading.models.measuralarm,
+}))(MeasurAlarm);

@@ -33,7 +33,7 @@ const cols = {
 function Today(props) {
   const { match, tabkeyDist, distkey, Donutdata, Smoothdata, dispatch, loading } = props;
   const [activeTabKey, setActiveTabKey] = useState('');
-  const [activeTabInfo, setActiveTabInfo] = useState({});
+  // const [activeTabInfo, setActiveTabInfo] = useState({});
   const { tabActivekey } = useContext(TypeContext);
 
   const getdatas = (key) => {
@@ -51,7 +51,7 @@ function Today(props) {
     setActiveTabKey(key);
     const target = tabkeyDist.filter(item => item.key === key)[0];
     if (target) {
-      setActiveTabInfo(target);
+      // setActiveTabInfo(target);
       getdatas(target.tab);
     }
   };
@@ -102,10 +102,10 @@ function Today(props) {
           </Spin>
         )}
       </Card>
-      {distkey === 'measuralarm' && (<MeasurList activeTabInfo={activeTabInfo} />)}
-      {distkey === 'hostalarm' && (<HostList activeTabInfo={activeTabInfo} />)}
-      {distkey === 'configurationfile' && (<ConfigurationFileList activeTabInfo={activeTabInfo} />)}
-      {distkey === 'clockpatrol' && (<ClockPatrolList activeTabInfo={activeTabInfo} />)}
+      {distkey === 'measuralarm' && (<MeasurList ChangeActiveTabKey={(v) => setActiveTabKey(v)} activeTabKey={activeTabKey} />)}
+      {distkey === 'hostalarm' && (<HostList activeTabInfo={activeTabKey} />)}
+      {distkey === 'configurationfile' && (<ConfigurationFileList activeTabInfo={activeTabKey} />)}
+      {distkey === 'clockpatrol' && (<ClockPatrolList activeTabInfo={activeTabKey} />)}
     </>
   );
 }
