@@ -705,7 +705,6 @@ function Besolved(props) {
   }
 
   const searchdata = (values, page, pageSize, search) => {
-    console.log('values: ', values);
     dispatch({
       type: 'problemmanage/queryList',
       payload: {
@@ -790,6 +789,7 @@ function Besolved(props) {
       }
     })
     validateFields((err, values) => {
+      console.log('values: ', (values.type)[1]);
       if (!err) {
         dispatch({
           type: 'problemmanage/eventdownload',
@@ -797,6 +797,7 @@ function Besolved(props) {
             columns: JSON.stringify(exportColumns),
             ids: selectedKeys.toString(),
             ...values,
+            type: values.type ? (values.type)[1].toString():'',
             addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
             addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
             createTime: '',
