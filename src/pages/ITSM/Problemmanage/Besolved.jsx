@@ -12,6 +12,7 @@ import {
   Table,
   DatePicker,
   Select,
+  Cascader
 } from 'antd';
 
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
@@ -145,6 +146,7 @@ function Besolved(props) {
       payload: {
         ...newvalues,
         pageSize,
+        type: values.type ? (values.type)[1].toString():'',
         pageNum: page,
       },
     });
@@ -405,20 +407,19 @@ function Besolved(props) {
                     )}
                 </Form.Item>
               </Col>
+
               <Col span={8}>
                 <Form.Item label="问题分类">
                   {getFieldDecorator('type', {
-                    initialValue: cacheinfo.type,
-                  })
-                    (
-                      <Select placeholder="请选择" allowClear>
-                        {problemType.map(obj => [
-                          <Option key={obj.key} value={obj.dict_code}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
+                    initialValue: cacheinfo.type ? (cacheinfo.type.toString()).split(',') : '',
+                  })(
+                    <Cascader
+                      fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
+                      options={problemType}
+                      placeholder="请选择"
+                    />,
+                    <Input />
+                  )}
                 </Form.Item>
               </Col>
 

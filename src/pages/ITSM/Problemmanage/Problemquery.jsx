@@ -15,6 +15,7 @@ import {
   Popover,
   Checkbox,
   Icon,
+  Cascader
 } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -698,7 +699,13 @@ function Besolved(props) {
     resetFields();
   };
 
+  const handlobjectChange = value => {
+    // console.log('value: ', value);
+    // setFieldsValue({ type: value?.slice(-1)[0] }, () => { })
+  }
+
   const searchdata = (values, page, pageSize, search) => {
+    console.log('values: ', values);
     dispatch({
       type: 'problemmanage/queryList',
       payload: {
@@ -707,6 +714,7 @@ function Besolved(props) {
         addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
         createTime: '',
         pageNum: page,
+        type: values.type ? (values.type)[1].toString():'',
         pageSize: paginations.pageSize
       },
     });
@@ -1028,9 +1036,11 @@ function Besolved(props) {
   useEffect(() => {
     if (location.state && location.state.reset) {
       handleReset();
-      searchdata({},1)
+      searchdata({}, 1)
     }
   }, [location.state]);
+
+  console.log(cacheinfo,'cacheinfo')
 
   return (
     <PageHeaderWrapper title={differentTitle}>
@@ -1055,15 +1065,15 @@ function Besolved(props) {
               <Col span={8}>
                 <Form.Item label="问题分类">
                   {getFieldDecorator('type', {
-                    initialValue: cacheinfo.type,
+                    initialValue: cacheinfo.type ? (cacheinfo.type.toString()).split(',') : '',
                   })(
-                    <Select placeholder="请选择" allowClear>
-                      {problemType.map(obj => [
-                        <Option key={obj.key} value={obj.dict_code}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
+                    <Cascader
+                      fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
+                      options={problemType}
+                      placeholder="请选择"
+                      onChange={() => handlobjectChange()}
+                    />,
+                    <Input />
                   )}
                 </Form.Item>
               </Col>

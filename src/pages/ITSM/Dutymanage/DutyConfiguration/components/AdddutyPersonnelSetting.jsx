@@ -80,51 +80,6 @@ function AdddutyPersonnelSetting(props) {
       status: '1',
     };
     switch (type) {
-      // case 'provider':
-      //   providerList({ ...requestData }).then(res => {
-      //     if (res) {
-      //       const arr = [...res.data.records];
-      //       setSpinLoading(false);
-      //       setDisabledList(arr);
-      //     }
-      //   });
-      //   break;
-      // case 'contract':
-      //   if (!providerId) {
-      //     message.error('请先选择服务商哦');
-      //   } else {
-      //     contractProvider(providerId).then(res => {
-      //       if (res) {
-      //         const arr = [...res.data];
-      //         setSpinLoading(false);
-      //         setContractlist(arr);
-      //       }
-      //     });
-      //   }
-
-      //   break;
-      // case 'score':
-      //   scoreListpage({
-      //     scoreName: value,
-      //     pageNum: 1,
-      //     pageSize: 1000,
-      //   }).then(res => {
-      //     if (res) {
-      //       const arr = [...res.data.records];
-      //       setSpinLoading(false);
-      //       setScorelist(arr);
-      //     }
-      //   });
-      //   break;
-      // case 'clause':
-      //   searchUsers({ ...requestData, scoreId, targetId: target2Type }).then(res => {
-      //     if (res) {
-      //       const arr = [...res.data.records];
-      //       setSpinLoading(false);
-      //       setScorelist(arr);
-      //     }
-      //   });
-      //   break;
       case 'director':
         searchUsers({ userName: value }).then(res => {
           if (res) {
@@ -229,7 +184,6 @@ function AdddutyPersonnelSetting(props) {
         visible={visible}
         title={title}
         width={720}
-        getContainer={false}
         centered='true'
         maskClosable='true'
         onClose={handleCancel}
@@ -248,6 +202,7 @@ function AdddutyPersonnelSetting(props) {
               <AutoComplete
                 dataSource={directoruser}
                 dropdownMatchSelectWidth={false}
+                getPopupContainer={e => e.parentNode}
                 dropdownStyle={{ width: 600 }}
                 onSelect={(v, opt) => handleDisableduser(v, opt, 'director')}
               >

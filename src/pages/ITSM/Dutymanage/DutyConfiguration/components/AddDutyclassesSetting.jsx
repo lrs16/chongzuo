@@ -64,7 +64,6 @@ function AddDutyclassesSetting(props) {
 
   const handleOk = () => {
     validateFields((err, values) => {
-      console.log('values: ', values);
       const start = (new Date(moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss'))).valueOf();
       const end = (new Date(moment(values.endTime).format('YYYY-MM-DD HH:mm:ss'))).valueOf();
       const newValue = {
@@ -75,8 +74,6 @@ function AddDutyclassesSetting(props) {
         ctime: moment(values.ctime).format('YYYY-MM-DD HH:mm:ss'),
         status:values.status === true ? '1': '0' 
       }
-
-      console.log(newValue,'newValue')
 
       if (!err) {
         if (start >= end) {

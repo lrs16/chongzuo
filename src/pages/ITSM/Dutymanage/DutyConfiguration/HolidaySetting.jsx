@@ -107,7 +107,6 @@ function HolidaySetting(props) {
       dataIndex: 'status',
       key: 'status',
       render: (text, record) => {
-        console.log('record: ', record);
         return (
           <Switch
             defaultChecked={(record.status === '1') ? true : false}

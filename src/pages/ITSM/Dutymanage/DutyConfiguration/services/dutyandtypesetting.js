@@ -31,4 +31,13 @@ export async function holidayId(id) {
   return request(`/duty/holiday/${id}`)
 }
 
+//  排版设置新增
+export async function staffAdd(params) {
+  return request(`/duty/schedule/add`,{
+    method:'POST',
+    body:JSON.stringify(params)
+  })
+}
+
+
 

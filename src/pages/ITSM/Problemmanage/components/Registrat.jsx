@@ -108,8 +108,6 @@ const Registrat = React.forwardRef((props, ref) => {
     });
   };
 
-  console.log(register.developmentLead, 'register.developmentLead')
-
   // 选择报障用户，信息回填
   const handleDisableduser = (v, opt) => {
     const { user, phone } = opt.props.disableuser;

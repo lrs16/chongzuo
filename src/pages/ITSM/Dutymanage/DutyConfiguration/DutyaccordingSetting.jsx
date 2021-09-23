@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
-import { Calendar, Badge, Card, Button, Layout, Tree, message } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'dva';
+import { Calendar, Icon, Card, Button, Layout, Tree, message } from 'antd';
 import SettingDetails from './components/SettingDetails';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import moment from 'moment';
+import SysDict from '@/components/SysDict';
+import Dutyexcel from './components/Dutyexcel';
 
 const { Sider, Content } = Layout;
 const { TreeNode } = Tree;
@@ -36,6 +39,9 @@ const calenData = [
 
 function DutyaccordingSetting(props) {
   const pagetitle = props.route.name;
+  const {
+    dispatch
+  } = props;
 
   const [currentmonth, setCurrentmonth] = useState(
     moment()
@@ -44,6 +50,8 @@ function DutyaccordingSetting(props) {
       .split('-')[1],
   );
   const [currentTime, setCurrentTime] = useState('');
+  const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
+  const [selectdata, setSelectData] = useState('');
 
   const getListData = value => {
     let result;
@@ -89,6 +97,30 @@ function DutyaccordingSetting(props) {
     console.log('value: ', value);
   };
 
+  const handleSubmit = (newdata) => {
+    return dispatch({
+      type: 'dutyandtypesetting/fetchstaffAdd',
+      payload: newdata
+    }).then(res => {
+      if (res.code === 200) {
+        message.info(res.msg)
+      }
+    })
+  }
+
+  //  渲染树结构
+  const renderTreeNodes = data =>
+    data.map(item => {
+      if (item.children) {
+        return (
+          <TreeNode title={item.title} key={item.id} dataRef={item}>
+            {renderTreeNodes(item.children)}
+          </TreeNode>
+        );
+      }
+      return <TreeNode icon={<Icon type="smile-o" />} key={item.id} {...item} dataRef={item} />;
+    });
+
   //  单元格渲染
   const dateCellRender = value => {
     const listData = getListData(value);
@@ -114,18 +146,60 @@ function DutyaccordingSetting(props) {
       </ul>
     );
   };
+
+  const handleClick = (selectkeys) => {
+    console.log('selectkeys: ', selectkeys);
+    sessionStorage.setItem('groupId',selectkeys.toString())
+  }
+
+  useEffect(() => {
+    sessionStorage.setItem('groupId','1438060967991177218')
+  },[])
+
+  const getTypebyTitle = title => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.title === title)[0].children;
+    }
+    return []
+  };
+
+  const teamname = getTypebyTitle('班组名称');
+  console.log('teamname: ', teamname);
+
   return (
     <PageHeaderWrapper title={pagetitle}>
-      <Card>
-        <Layout>
-          <Sider theme="light">ff</Sider>
+      <SysDict
+        typeid="1438058740916416514"
+        commonid="1354288354950123522"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'none' }}
+      />
+      <Layout>
+        <Card title='所属班组'>
+          <Sider theme="light">
+            {
+              teamname && teamname.length >0  && (
+                <Tree
+                  defaultSelectedKeys={['1438060967991177218']}
+                  onSelect={handleClick}
+                  defaultExpandAll
+                >
+                  {renderTreeNodes(teamname)}
+                </Tree>
+              )
+            }
 
-          <Content>
+          </Sider>
+        </Card>
+
+        <Card style={{ marginLeft: 10 }}>
+          <Content >
             {
               pagetitle === '排班设置' && (
                 <div style={{ backgroundColor: 'white', paddingBottom: 7 }}>
                   <SettingDetails
                     title='新增排班信息'
+                    onSubmit={handleSubmit}
                   >
                     <Button type="primary" style={{ marginRight: 8 }}>
                       新增
@@ -135,12 +209,17 @@ function DutyaccordingSetting(props) {
                   <Button type="primary" style={{ marginRight: 8 }}>
                     下载导入模板
                   </Button>
-                  <Button type="primary" style={{ marginRight: 8 }}>
-                    导入
-                  </Button>
+
                   <Button type="primary" style={{ marginRight: 8 }}>
                     导出
                   </Button>
+
+                  <Dutyexcel
+                    fileslist={[]}
+                    ChangeFileslist={newvalue => setFiles(newvalue)}
+                  />
+
+
                   {/* <Button type="danger" ghost>
                     删除
                   </Button> */}
@@ -162,10 +241,18 @@ function DutyaccordingSetting(props) {
               />
             </Card>
           </Content>
-        </Layout>
-      </Card>
+
+        </Card>
+
+
+
+      </Layout>
     </PageHeaderWrapper>
   );
 }
 
-export default DutyaccordingSetting;
+export default
+  connect(({ dutyandtypesetting, loading }) => ({
+    loading: dutyandtypesetting.loading
+  }))(DutyaccordingSetting);
+

@@ -48,7 +48,8 @@ function DutyclassesSetting(props) {
     form: {
       getFieldDecorator,
       resetFields,
-      getFieldsValue
+      getFieldsValue,
+      setFieldsValue
     },
     shiftSearcharr,
     loading,
@@ -68,9 +69,10 @@ function DutyclassesSetting(props) {
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [paginations, setPageinations] = useState({ current: 1, size: 15 });
-
+  const [tabrecord, setTabRecord] = useState({});
 
   const searchdata = (values, current, size) => {
+    console.log('values: ', values);
     const newdata = {
       ...values,
       beginTime: values.beginTime ? moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
@@ -78,12 +80,12 @@ function DutyclassesSetting(props) {
       current,
       size
     }
-
+    console.log(newdata,'newdata')
+    setTabRecord({...newdata})
     dispatch({
       type: 'shiftsandholidays/fetchshiftSearch',
       payload: newdata
     })
-
   }
 
   const handleSearch = () => {
@@ -108,17 +110,6 @@ function DutyclassesSetting(props) {
     selectedRowKeys,
     onChange: (key, record) => onSelectChange(key, record),
   };
-
-  const getList = (value, page, size) => {
-    dispatch({
-      type: 'shiftsandholidays/fetchshiftSearch',
-      payload: {
-        ...value,
-        page,
-        size
-      }
-    })
-  }
 
   const handleStartOpenChange = (open, type) => {
     if (!open && type === 'create') {
@@ -151,6 +142,7 @@ function DutyclassesSetting(props) {
       current: page,
     });
   };
+
   const pagination = {
     showSizeChanger: true,
     onShowSizeChange: (page, size) => onShowSizeChange(page, size),
@@ -163,7 +155,8 @@ function DutyclassesSetting(props) {
 
 
   useEffect(() => {
-    getList({}, 1, 15)
+    const value = getFieldsValue();
+    searchdata(value, 1, 15)
   }, [])
 
   // 查询
@@ -369,6 +362,50 @@ function DutyclassesSetting(props) {
 
   };
 
+   //  传给多标签的数据
+   const record = {
+    shiftNo: '',
+    creatorName: '',
+    shiftName: '',
+    directorPhone: '',
+  }
+
+  const cacheinfo = (location.state && location.state.cacheinfo === undefined) ? record : location.state.cacheinfo;
+  console.log('cacheinfo: ', cacheinfo);
+
+  useEffect(() => {
+    if(location.state) {
+      if(location.state.cache) {
+        dispatch({
+          type:'viewcache/gettabstate',
+          payload:{
+            cacheinfo: {
+              ...tabrecord,
+              paginations
+            },
+            tabid: sessionStorage.getItem('tabid')
+          }
+        })
+      };
+
+      if(location.state.reset) {
+        handleReset();
+      }
+    }
+  },[location.state])
+
+  // 设置时间
+  useEffect(() => {
+    if(location && location.state && location.state.cacheinfo) {
+      setFieldsValue({
+        beginTime:moment(location.state.cacheinfo.beginTime),
+        endTime:moment(location.state.cacheinfo.endTime),
+      })
+    }
+  },[location.state])
+
+  
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
@@ -377,7 +414,7 @@ function DutyclassesSetting(props) {
             <Col span={8}>
               <Form.Item label="班次编号">
                 {getFieldDecorator('shiftNo', {
-                  initialValue: '',
+                  initialValue: cacheinfo.shiftNo,
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
@@ -428,14 +465,14 @@ function DutyclassesSetting(props) {
             <Col span={8}>
               <Form.Item label="创建人">
                 {getFieldDecorator('creatorName', {
-                  initialValue: '',
+                  // initialValue: cacheinfo.creatorName,
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
             <Col span={8}>
               <Form.Item label="班次名称">
                 {getFieldDecorator('shiftName', {
-                  initialValue: '',
+                  // initialValue: cacheinfo.shiftName,
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>

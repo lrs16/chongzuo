@@ -2,7 +2,8 @@ import {
   staffSave,
   staffSearch,
   staffDel,
-  holidayId
+  holidayId,
+  staffAdd
 } from '../services/dutyandtypesetting';
 
 export default {
@@ -32,6 +33,11 @@ export default {
     *fetchholidayId({ payload }, { call, put }) {
       return  yield call(holidayId,payload);
     },
+
+    //  排版设置新增
+    *fetchstaffAdd({ payload }, { call, put }) {
+      return yield call(staffAdd,payload)
+    }
   },
 
   reducers: {

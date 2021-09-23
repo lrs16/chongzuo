@@ -85,10 +85,9 @@ function DutypersonnelSetting(props) {
 
   const handleSearch = () => {
     const formdata = getFieldsValue();
-    searchdata(formdata,1,15)
+    searchdata(formdata, 1, 15)
   }
   const handleReset = () => {
-    console.log('重置')
     resetFields();
   }
 
@@ -243,19 +242,6 @@ function DutypersonnelSetting(props) {
       title: '值班人员',
       dataIndex: 'staffName',
       key: 'staffName',
-      render: (text, record) => {
-        return (
-          <AdddutyPersonnelSetting
-            personnelSetting={record}
-            id={record.No}
-            title='编辑值班人员'
-            onSubmit={submitdata => handleSubmit(submitdata)}
-            onDelete={() => handleDelete(record.id)}
-          >
-            <a>{text}</a>
-          </AdddutyPersonnelSetting>
-        )
-      }
     },
     {
       title: '所属部门',
@@ -284,7 +270,7 @@ function DutypersonnelSetting(props) {
       render: (text, record) => {
         return (
           <>
-            {/* <AdddutyPersonnelSetting
+            <AdddutyPersonnelSetting
               personnelSetting={record}
               id={record.No}
               title='编辑值班人员'
@@ -292,8 +278,8 @@ function DutypersonnelSetting(props) {
               onDelete={() => handleDelete(record.id)}
             >
               <a>编辑</a>
-            </AdddutyPersonnelSetting> */}
-            {/* <Divider type='vertical' /> */}
+            </AdddutyPersonnelSetting>
+            <Divider type='vertical' />
             <Popconfirm
               title='是否要删除该条数据'
               onConfirm={() => handleDelete(record.id)}>
@@ -427,12 +413,12 @@ function DutypersonnelSetting(props) {
             </Col>
 
             <Form.Item label='' style={{ display: 'none' }}>
-            {
-              getFieldDecorator('jobName', {
-                // initialValue: personnelSetting.jobName
-              })(<Input />)
-            }
-          </Form.Item>
+              {
+                getFieldDecorator('jobName', {
+                  // initialValue: personnelSetting.jobName
+                })(<Input />)
+              }
+            </Form.Item>
 
             <Form.Item label='' style={{ display: 'none' }}>
               {
