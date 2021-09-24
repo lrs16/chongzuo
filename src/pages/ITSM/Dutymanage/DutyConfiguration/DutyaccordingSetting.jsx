@@ -60,103 +60,103 @@ function DutyaccordingSetting(props) {
     const getCurrentmonth = moment(value)
       .format('YYYY-MM-DD')
       .split('-')[1];
-    if (getCurrentmonth === currentmonth) {
+    if (getCurrentmonth === currentmonth && tableArr && tableArr.length > 0) {
       switch (value.date()) {
         case 1:
-          result = tableArr[0] ? tableArr[0].details : [];
+          result = tableArr[0].details;
           break;
 
-        // case 2:
-        //   result = tableArr[1].details;
-        //   break;
+        case 2:
+          result = tableArr[1].details;
+          break;
 
-        // case 3:
-        //   result = tableArr[2].details;
-        //   break;
-        // case 4:
-        //   result = tableArr[3].details;
-        //   break;
-        // case 5:
-        //   result = tableArr[4].details;
-        //   break;
-        // case 6:
-        //   result = tableArr[5].details;
-        //   break;
-        // case 7:
-        //   result = tableArr[6].details;
-        //   break;
-        // case 8:
-        //   result = tableArr[7].details;
-        //   break;
-        // case 9:
-        //   result = tableArr[8].details;
-        //   break;
-        // case 10:
-        //   result = tableArr[9].details;
-        //   break;
-        // case 11:
-        //   result = tableArr[10].details;
-        //   break;
-        // case 12:
-        //   result = tableArr[11].details;
-        //   break;
-        // case 13:
-        //   result = tableArr[12].details;
-        //   break;
-        // case 14:
-        //   result = tableArr[13].details;
-        //   break;
-        // case 15:
-        //   result = tableArr[14].details;
-        //   break;
-        // case 16:
-        //   result = tableArr[15].details;
-        //   break;
-        // case 17:
-        //   result = tableArr[16].details;
-        //   break;
-        // case 18:
-        //   result = tableArr[17].details;
-        //   break;
-        // case 19:
-        //   result = tableArr[18].details;
-        //   break;
-        // case 20:
-        //   result = tableArr[19].details;
-        //   break;
-        // case 21:
-        //   result = tableArr[20].details;
-        //   break;
-        // case 22:
-        //   result = tableArr[21].details;
-        //   break;
-        // case 23:
-        //   result = tableArr[22].details;
-        //   break;
-        // case 24:
-        //   result = tableArr[23].details;
-        //   break;
-        // case 25:
-        //   result = tableArr[24].details;
-        //   break;
-        // case 26:
-        //   result = tableArr[25].details;
-        //   break;
-        // case 27:
-        //   result = tableArr[26].details;
-        //   break;
-        // case 28:
-        //   result = tableArr[27].details;
-        //   break;
-        // case 29:
-        //   result = tableArr[28].details;
-        //   break;
-        // case 30:
-        //   result = tableArr[29].details;
-        //   break;
-        // case 31:
-        //   result = tableArr[30].details;
-        //   break;
+        case 3:
+          result = tableArr[2].details;
+          break;
+        case 4:
+          result = tableArr[3].details;
+          break;
+        case 5:
+          result = tableArr[4].details;
+          break;
+        case 6:
+          result = tableArr[5].details;
+          break;
+        case 7:
+          result = tableArr[6].details;
+          break;
+        case 8:
+          result = tableArr[7].details;
+          break;
+        case 9:
+          result = tableArr[8].details;
+          break;
+        case 10:
+          result = tableArr[9].details;
+          break;
+        case 11:
+          result = tableArr[10].details;
+          break;
+        case 12:
+          result = tableArr[11].details;
+          break;
+        case 13:
+          result = tableArr[12].details;
+          break;
+        case 14:
+          result = tableArr[13].details;
+          break;
+        case 15:
+          result = tableArr[14].details;
+          break;
+        case 16:
+          result = tableArr[15].details;
+          break;
+        case 17:
+          result = tableArr[16].details;
+          break;
+        case 18:
+          result = tableArr[17].details;
+          break;
+        case 19:
+          result = tableArr[18].details;
+          break;
+        case 20:
+          result = tableArr[19].details;
+          break;
+        case 21:
+          result = tableArr[20].details;
+          break;
+        case 22:
+          result = tableArr[21].details;
+          break;
+        case 23:
+          result = tableArr[22].details;
+          break;
+        case 24:
+          result = tableArr[23].details;
+          break;
+        case 25:
+          result = tableArr[24].details;
+          break;
+        case 26:
+          result = tableArr[25].details;
+          break;
+        case 27:
+          result = tableArr[26].details;
+          break;
+        case 28:
+          result = tableArr[27].details;
+          break;
+        case 29:
+          result = tableArr[28].details;
+          break;
+        case 30:
+          result = tableArr[29].details;
+          break;
+        case 31:
+          result = tableArr[30].details;
+          break;
         default:
           break;
       }
