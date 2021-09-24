@@ -340,7 +340,13 @@ function Newregist(props) {
             </Panel>
             <Panel header='启停审核' key="formpanel2">
               {
-                Info.autoSoftWorkExamine && (<Examine
+                (Id && (Id !== '' || Id !== undefined)) ? (Info.autoSoftWorkExamine && (<Examine
+                  wrappedComponentRef={ExmaineRef}
+                  check={Info.autoSoftWorkExamine}
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
+                  userinfo={userinfo}
+                />)) : (<Examine
                   wrappedComponentRef={ExmaineRef}
                   check={Info.autoSoftWorkExamine}
                   formItemLayout={formItemLayout}
@@ -348,6 +354,7 @@ function Newregist(props) {
                   userinfo={userinfo}
                 />)
               }
+
             </Panel>
             {/* <Panel header="软件信息" key="formpane3">
               <SoftwareInfoList />

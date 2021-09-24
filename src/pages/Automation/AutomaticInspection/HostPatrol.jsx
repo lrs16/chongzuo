@@ -5,7 +5,7 @@ import router from 'umi/router';
 import { Card, Badge, Button, Table, Form, Input, Row, Col, DatePicker } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysUpload from '@/components/SysUpload/Upload';
-import FilesContext from '@/layouts/MenuContext'; 
+import FilesContext from '@/layouts/MenuContext';
 import PatrolconfigModal from './components/PatrolconfigModal';
 import PatrolBriefDrawer from './components/PatrolBriefDrawer';
 
@@ -19,6 +19,11 @@ const formItemLayout = {
     sm: { span: 18 },
   },
 };
+
+const colormap = new Map([
+  ['失败', 'default'],
+  ['成功', 'success'],
+]);
 
 function HostPatrol(props) {
   const pagetitle = props.route.name;
@@ -120,16 +125,6 @@ function HostPatrol(props) {
       key: 'checkNo',
     },
     {
-      title: '报告名称',
-      dataIndex: 'reportName',
-      key: 'reportName',
-    },
-    {
-      title: '巡检类型',
-      dataIndex: 'checkType',
-      key: 'checkType',
-    },
-    {
       title: '巡检人',
       dataIndex: 'checkUser',
       key: 'checkUser',
@@ -138,22 +133,27 @@ function HostPatrol(props) {
       title: '巡检状态',
       dataIndex: 'checkStatus',
       key: 'checkStatus',
-      render: (text, record) => {
-        const status = record.checkStatus;
-        const statuswaitetext = '等待巡检';
-        const statuswaitico = 'processing';
-        const statustext = status.length === 4 ? '成功' : '巡检中';
-        const statusico = status.length === 4 ? 'success' : 'error';
-        return (
-          <>
-            {status === 'W' && status !== 'ERRR' && (
-              <Badge status={statuswaitico} text={statuswaitetext} />
-            )}
-            {status !== 'W' && status !== 'ERRR' && <Badge status={statusico} text={statustext} />}
-            {status === 'ERRR' && <Badge status="error" text="巡检被中断" />}
-          </>
-        );
-      },
+      render: (text, record) => (
+        <span>
+          <Badge status={colormap.get(record.checkStatus)} text={text} />
+        </span>
+      ),
+      // render: (text, record) => {
+      //   const status = record.checkStatus;
+      //   const statuswaitetext = '等待巡检';
+      //   const statuswaitico = 'processing';
+      //   const statustext = status.length === 4 ? '成功' : '巡检中';
+      //   const statusico = status.length === 4 ? 'success' : 'error';
+      //   return (
+      //     <>
+      //       {status === 'W' && status !== 'ERRR' && (
+      //         <Badge status={statuswaitico} text={statuswaitetext} />
+      //       )}
+      //       {status !== 'W' && status !== 'ERRR' && <Badge status={statusico} text={statustext} />}
+      //       {status === 'ERRR' && <Badge status="error" text="巡检被中断" />}
+      //     </>
+      //   );
+      // },
     },
     {
       title: '开始时间',
@@ -249,7 +249,7 @@ function HostPatrol(props) {
         </Row>
         <div style={{ marginBottom: 8 }}>
           <Button type="primary" style={{ marginRight: 8 }}
-          >执行巡检</Button>
+          >巡检全部</Button>
           <PatrolconfigModal>
             <Button type="primary" style={{ marginRight: 8 }}
             >巡检配置</Button>

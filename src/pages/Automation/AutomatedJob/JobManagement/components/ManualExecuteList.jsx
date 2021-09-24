@@ -52,7 +52,7 @@ function ManualExecuteList(props) {
 
     const searchdata = (page, size) => {
         const values = getFieldsValue();
-        // values.taskStatus = '3';
+        // values.taskStatus = '3' || '4' || '5' || '6' || '7';
         values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
         values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
         dispatch({
@@ -77,8 +77,10 @@ function ManualExecuteList(props) {
             },
         }).then(res => {
             if (res.code === 200) {
-                message.success(res.msg || '执行成功！');
-                searchdata(1, 15);
+                setTimeout(() => {
+                    message.success(res.msg || '执行成功！');
+                    searchdata(1, 15);
+                }, 1000);
             } else {
                 message.error(res.msg);
             }
@@ -377,15 +379,15 @@ function ManualExecuteList(props) {
                         onClick={() => handleDelete()}
                     >删除</Button>
                 </div>
-                <Table
+                {autotasklist.rows && (<Table
                     columns={columns}
                     rowKey={record => record.id}
-                    dataSource={autotasklist.rows}
+                    dataSource={autotasklist.rows.filter(item => item.taskStatus !== ('已登记' || '待审核'))}
                     pagination={pagination}
                     rowSelection={rowSelection}
                     loading={loading}
                     scroll={{ x: 1300 }}
-                />
+                />)}
             </Card>
         </>
     );

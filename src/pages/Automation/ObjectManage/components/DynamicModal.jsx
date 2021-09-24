@@ -93,7 +93,7 @@ function DynamicModal(props) {
             softId,
             dynamicName: '',
             dynamicVal: '',
-            dynamicSorts: '',
+            dynamicSorts: '1',
             dynamicRemarks: '',
             editable: true,
             isNew: true,
@@ -204,6 +204,7 @@ function DynamicModal(props) {
             dataIndex: 'dynamicVal',
             key: 'dynamicVal',
             width: 300,
+            ellsellipsis: true,
             render: (text, record) => {
                 if (record.editable) {
                     return (

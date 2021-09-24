@@ -180,6 +180,14 @@ function HostDetailView(props) {
             dataIndex: 'agentZone',
             key: 'agentZone',
             width: 150,
+            render: (text, record) => {
+                const obj = {
+                  children: text,
+                  props: {},
+                };
+                obj.props.rowSpan = record.rowSpan;
+                return obj;
+            },
         },
         {
             title: '设备名称',
