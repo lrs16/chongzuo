@@ -41,13 +41,18 @@ class Cylinder extends Component {
   dv = new DataSet().createView();
 
   render() {
-    const { height, colors, padding, symbol, data, scale } = this.props;
+    const { height, colors, padding, symbol, data, scal, onGetVal } = this.props;
     this.dv.source(data);
     //  const end =data[data.length - 1];
 
     return (
       <div>
-        <Chart data={this.dv} padding={padding} scale={scale} height={height} forceFit animate>
+        <Chart data={this.dv} padding={padding} scale={scal} height={height} forceFit animate onClick={ev => {
+          const linkdata = ev.data;
+          if (linkdata) {
+            onGetVal(linkdata.data.name)
+          }
+        }}>
           <Axis
             name="rate"
             label={{
@@ -86,13 +91,13 @@ class Cylinder extends Component {
                 };
               },
             ]}
-            // shape={['name*rate', (date, val) => {
-            //   if (val === 0) {
-            //     return;
-            //   }
-            //   // eslint-disable-next-line consistent-return
-            //   return 'border-radius';
-            // }]}
+          // shape={['name*rate', (date, val) => {
+          //   if (val === 0) {
+          //     return;
+          //   }
+          //   // eslint-disable-next-line consistent-return
+          //   return 'border-radius';
+          // }]}
           />
         </Chart>
       </div>

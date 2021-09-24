@@ -90,6 +90,8 @@ class index extends Component {
     const WEBdatas = hosts.filter(obj => {
       return obj.type === 'WEB响应时间';
     });
+
+    console.log(CPUdatas)
     return (
       <div>
         <Row gutter={24} type="flex">

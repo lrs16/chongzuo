@@ -1,14 +1,680 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
-import { Card, Row, Col, Avatar, Tag, DatePicker } from 'antd';
+import { Card, Row, Col, Avatar, Tag, DatePicker, Empty } from 'antd';
+import { ChartCard } from '@/components/Charts';
 import StatisticsCard from '@/components/StatisticsCard';
 import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
 import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
+import Cylinder from '@/components/CustomizeCharts/Cylinder';
 import styles from '../index.less';
 
 const { CheckableTag } = Tag;
 const tagsFromServer = [{ name: '本日', key: '1' }, { name: '本月', key: '2' }];
+const cols = {
+  rate: {
+    // alias: '%',
+    // tickCount: 10,
+  },
+};
 
+// const Donutdata = [
+//   {
+//     "type": "业务指标",
+//     "value": 2
+//   },
+//   {
+//     "type": "终端在线和入库",
+//     "value": 1
+//   },
+//   {
+//     "type": "KAFKA消费",
+//     "value": 1
+//   },
+//   {
+//     "type": "接口数据核查",
+//     "value": 1
+//   },
+//   {
+//     "type": "主站系统运行",
+//     "value": 1
+//   }
+// ];
+
+const Smoothdata = [
+  {
+    "date": "2021-09-01",
+    "name": "终端在线和入库",
+    "value": 0
+  },
+  {
+    "date": "2021-09-02",
+    "name": "终端在线和入库",
+    "value": 0
+  },
+  {
+    "date": "2021-09-03",
+    "name": "终端在线和入库",
+    "value": 0
+  },
+  {
+    "date": "2021-09-04",
+    "name": "终端在线和入库",
+    "value": 0
+  },
+  {
+    "date": "2021-09-05",
+    "name": "终端在线和入库",
+    "value": 0
+  },
+  {
+    "date": "2021-09-06",
+    "name": "终端在线和入库",
+    "value": 0
+  },
+  {
+    "date": "2021-09-07",
+    "name": "终端在线和入库",
+    "value": 0
+  },
+  {
+    "date": "2021-09-08",
+    "name": "终端在线和入库",
+    "value": 0
+  },
+  {
+    "date": "2021-09-09",
+    "name": "终端在线和入库",
+    "value": 0
+  },
+  {
+    "date": "2021-09-10",
+    "name": "终端在线和入库",
+    "value": 0
+  },
+  {
+    "date": "2021-09-11",
+    "name": "终端在线和入库",
+    "value": 0
+  },
+  {
+    "date": "2021-09-12",
+    "name": "终端在线和入库",
+    "value": 0
+  },
+  {
+    "date": "2021-09-13",
+    "name": "终端在线和入库",
+    "value": 0
+  },
+  {
+    "date": "2021-09-14",
+    "name": "终端在线和入库",
+    "value": 1
+  },
+  {
+    "date": "2021-09-15",
+    "name": "终端在线和入库",
+    "value": 0
+  },
+  {
+    "date": "2021-09-16",
+    "name": "终端在线和入库",
+    "value": 0
+  },
+  {
+    "date": "2021-09-17",
+    "name": "终端在线和入库",
+    "value": 0
+  },
+  {
+    "date": "2021-09-18",
+    "name": "终端在线和入库",
+    "value": 0
+  },
+  {
+    "date": "2021-09-19",
+    "name": "终端在线和入库",
+    "value": 0
+  },
+  {
+    "date": "2021-09-20",
+    "name": "终端在线和入库",
+    "value": 0
+  },
+  {
+    "date": "2021-09-21",
+    "name": "终端在线和入库",
+    "value": 0
+  },
+  {
+    "date": "2021-09-22",
+    "name": "终端在线和入库",
+    "value": 0
+  },
+  {
+    "date": "2021-09-23",
+    "name": "终端在线和入库",
+    "value": 0
+  },
+  {
+    "date": "2021-09-24",
+    "name": "终端在线和入库",
+    "value": 0
+  },
+  {
+    "date": "2021-09-01",
+    "name": "业务指标",
+    "value": 0
+  },
+  {
+    "date": "2021-09-02",
+    "name": "业务指标",
+    "value": 0
+  },
+  {
+    "date": "2021-09-03",
+    "name": "业务指标",
+    "value": 0
+  },
+  {
+    "date": "2021-09-04",
+    "name": "业务指标",
+    "value": 0
+  },
+  {
+    "date": "2021-09-05",
+    "name": "业务指标",
+    "value": 0
+  },
+  {
+    "date": "2021-09-06",
+    "name": "业务指标",
+    "value": 0
+  },
+  {
+    "date": "2021-09-07",
+    "name": "业务指标",
+    "value": 0
+  },
+  {
+    "date": "2021-09-08",
+    "name": "业务指标",
+    "value": 0
+  },
+  {
+    "date": "2021-09-09",
+    "name": "业务指标",
+    "value": 0
+  },
+  {
+    "date": "2021-09-10",
+    "name": "业务指标",
+    "value": 0
+  },
+  {
+    "date": "2021-09-11",
+    "name": "业务指标",
+    "value": 0
+  },
+  {
+    "date": "2021-09-12",
+    "name": "业务指标",
+    "value": 0
+  },
+  {
+    "date": "2021-09-13",
+    "name": "业务指标",
+    "value": 1
+  },
+  {
+    "date": "2021-09-14",
+    "name": "业务指标",
+    "value": 0
+  },
+  {
+    "date": "2021-09-15",
+    "name": "业务指标",
+    "value": 1
+  },
+  {
+    "date": "2021-09-16",
+    "name": "业务指标",
+    "value": 0
+  },
+  {
+    "date": "2021-09-17",
+    "name": "业务指标",
+    "value": 0
+  },
+  {
+    "date": "2021-09-18",
+    "name": "业务指标",
+    "value": 0
+  },
+  {
+    "date": "2021-09-19",
+    "name": "业务指标",
+    "value": 0
+  },
+  {
+    "date": "2021-09-20",
+    "name": "业务指标",
+    "value": 0
+  },
+  {
+    "date": "2021-09-21",
+    "name": "业务指标",
+    "value": 0
+  },
+  {
+    "date": "2021-09-22",
+    "name": "业务指标",
+    "value": 0
+  },
+  {
+    "date": "2021-09-23",
+    "name": "业务指标",
+    "value": 0
+  },
+  {
+    "date": "2021-09-24",
+    "name": "业务指标",
+    "value": 0
+  },
+  {
+    "date": "2021-09-01",
+    "name": "接口数据核查",
+    "value": 0
+  },
+  {
+    "date": "2021-09-02",
+    "name": "接口数据核查",
+    "value": 0
+  },
+  {
+    "date": "2021-09-03",
+    "name": "接口数据核查",
+    "value": 0
+  },
+  {
+    "date": "2021-09-04",
+    "name": "接口数据核查",
+    "value": 0
+  },
+  {
+    "date": "2021-09-05",
+    "name": "接口数据核查",
+    "value": 0
+  },
+  {
+    "date": "2021-09-06",
+    "name": "接口数据核查",
+    "value": 0
+  },
+  {
+    "date": "2021-09-07",
+    "name": "接口数据核查",
+    "value": 0
+  },
+  {
+    "date": "2021-09-08",
+    "name": "接口数据核查",
+    "value": 0
+  },
+  {
+    "date": "2021-09-09",
+    "name": "接口数据核查",
+    "value": 0
+  },
+  {
+    "date": "2021-09-10",
+    "name": "接口数据核查",
+    "value": 0
+  },
+  {
+    "date": "2021-09-11",
+    "name": "接口数据核查",
+    "value": 0
+  },
+  {
+    "date": "2021-09-12",
+    "name": "接口数据核查",
+    "value": 0
+  },
+  {
+    "date": "2021-09-13",
+    "name": "接口数据核查",
+    "value": 0
+  },
+  {
+    "date": "2021-09-14",
+    "name": "接口数据核查",
+    "value": 0
+  },
+  {
+    "date": "2021-09-15",
+    "name": "接口数据核查",
+    "value": 0
+  },
+  {
+    "date": "2021-09-16",
+    "name": "接口数据核查",
+    "value": 0
+  },
+  {
+    "date": "2021-09-17",
+    "name": "接口数据核查",
+    "value": 0
+  },
+  {
+    "date": "2021-09-18",
+    "name": "接口数据核查",
+    "value": 0
+  },
+  {
+    "date": "2021-09-19",
+    "name": "接口数据核查",
+    "value": 0
+  },
+  {
+    "date": "2021-09-20",
+    "name": "接口数据核查",
+    "value": 0
+  },
+  {
+    "date": "2021-09-21",
+    "name": "接口数据核查",
+    "value": 0
+  },
+  {
+    "date": "2021-09-22",
+    "name": "接口数据核查",
+    "value": 1
+  },
+  {
+    "date": "2021-09-23",
+    "name": "接口数据核查",
+    "value": 0
+  },
+  {
+    "date": "2021-09-24",
+    "name": "接口数据核查",
+    "value": 0
+  },
+  {
+    "date": "2021-09-01",
+    "name": "主站系统运行",
+    "value": 0
+  },
+  {
+    "date": "2021-09-02",
+    "name": "主站系统运行",
+    "value": 0
+  },
+  {
+    "date": "2021-09-03",
+    "name": "主站系统运行",
+    "value": 0
+  },
+  {
+    "date": "2021-09-04",
+    "name": "主站系统运行",
+    "value": 0
+  },
+  {
+    "date": "2021-09-05",
+    "name": "主站系统运行",
+    "value": 0
+  },
+  {
+    "date": "2021-09-06",
+    "name": "主站系统运行",
+    "value": 0
+  },
+  {
+    "date": "2021-09-07",
+    "name": "主站系统运行",
+    "value": 0
+  },
+  {
+    "date": "2021-09-08",
+    "name": "主站系统运行",
+    "value": 0
+  },
+  {
+    "date": "2021-09-09",
+    "name": "主站系统运行",
+    "value": 0
+  },
+  {
+    "date": "2021-09-10",
+    "name": "主站系统运行",
+    "value": 0
+  },
+  {
+    "date": "2021-09-11",
+    "name": "主站系统运行",
+    "value": 0
+  },
+  {
+    "date": "2021-09-12",
+    "name": "主站系统运行",
+    "value": 0
+  },
+  {
+    "date": "2021-09-13",
+    "name": "主站系统运行",
+    "value": 0
+  },
+  {
+    "date": "2021-09-14",
+    "name": "主站系统运行",
+    "value": 0
+  },
+  {
+    "date": "2021-09-15",
+    "name": "主站系统运行",
+    "value": 0
+  },
+  {
+    "date": "2021-09-16",
+    "name": "主站系统运行",
+    "value": 0
+  },
+  {
+    "date": "2021-09-17",
+    "name": "主站系统运行",
+    "value": 0
+  },
+  {
+    "date": "2021-09-18",
+    "name": "主站系统运行",
+    "value": 0
+  },
+  {
+    "date": "2021-09-19",
+    "name": "主站系统运行",
+    "value": 0
+  },
+  {
+    "date": "2021-09-20",
+    "name": "主站系统运行",
+    "value": 0
+  },
+  {
+    "date": "2021-09-21",
+    "name": "主站系统运行",
+    "value": 1
+  },
+  {
+    "date": "2021-09-22",
+    "name": "主站系统运行",
+    "value": 0
+  },
+  {
+    "date": "2021-09-23",
+    "name": "主站系统运行",
+    "value": 0
+  },
+  {
+    "date": "2021-09-24",
+    "name": "主站系统运行",
+    "value": 0
+  },
+  {
+    "date": "2021-09-01",
+    "name": "KAFKA消费",
+    "value": 0
+  },
+  {
+    "date": "2021-09-02",
+    "name": "KAFKA消费",
+    "value": 0
+  },
+  {
+    "date": "2021-09-03",
+    "name": "KAFKA消费",
+    "value": 0
+  },
+  {
+    "date": "2021-09-04",
+    "name": "KAFKA消费",
+    "value": 0
+  },
+  {
+    "date": "2021-09-05",
+    "name": "KAFKA消费",
+    "value": 0
+  },
+  {
+    "date": "2021-09-06",
+    "name": "KAFKA消费",
+    "value": 0
+  },
+  {
+    "date": "2021-09-07",
+    "name": "KAFKA消费",
+    "value": 0
+  },
+  {
+    "date": "2021-09-08",
+    "name": "KAFKA消费",
+    "value": 0
+  },
+  {
+    "date": "2021-09-09",
+    "name": "KAFKA消费",
+    "value": 0
+  },
+  {
+    "date": "2021-09-10",
+    "name": "KAFKA消费",
+    "value": 0
+  },
+  {
+    "date": "2021-09-11",
+    "name": "KAFKA消费",
+    "value": 0
+  },
+  {
+    "date": "2021-09-12",
+    "name": "KAFKA消费",
+    "value": 0
+  },
+  {
+    "date": "2021-09-13",
+    "name": "KAFKA消费",
+    "value": 0
+  },
+  {
+    "date": "2021-09-14",
+    "name": "KAFKA消费",
+    "value": 0
+  },
+  {
+    "date": "2021-09-15",
+    "name": "KAFKA消费",
+    "value": 1
+  },
+  {
+    "date": "2021-09-16",
+    "name": "KAFKA消费",
+    "value": 0
+  },
+  {
+    "date": "2021-09-17",
+    "name": "KAFKA消费",
+    "value": 0
+  },
+  {
+    "date": "2021-09-18",
+    "name": "KAFKA消费",
+    "value": 0
+  },
+  {
+    "date": "2021-09-19",
+    "name": "KAFKA消费",
+    "value": 0
+  },
+  {
+    "date": "2021-09-20",
+    "name": "KAFKA消费",
+    "value": 0
+  },
+  {
+    "date": "2021-09-21",
+    "name": "KAFKA消费",
+    "value": 0
+  },
+  {
+    "date": "2021-09-22",
+    "name": "KAFKA消费",
+    "value": 0
+  },
+  {
+    "date": "2021-09-23",
+    "name": "KAFKA消费",
+    "value": 0
+  },
+  {
+    "date": "2021-09-24",
+    "name": "KAFKA消费",
+    "value": 0
+  }
+];
+
+const CPUdatas = [
+  {
+    "type": "CPU",
+    "expected": 100,
+    "name": "238.54.142.91",
+    "rate": 81
+  },
+  {
+    "type": "CPU",
+    "expected": 100,
+    "name": "213.113.16.141",
+    "rate": 90
+  },
+  {
+    "type": "CPU",
+    "expected": 100,
+    "name": "178.116.21.161",
+    "rate": 60
+  },
+  {
+    "type": "CPU",
+    "expected": 100,
+    "name": "78.247.130.67",
+    "rate": 82
+  },
+  {
+    "type": "CPU",
+    "expected": 100,
+    "name": "72.14.153.133",
+    "rate": 78
+  }
+]
 
 // 饼图数据
 const Donutdata = [
@@ -22,7 +688,7 @@ const Donutdata2 = [
 ];
 
 function Statistics(props) {
-  const { dispatch, Smoothdata } = props;
+  const { dispatch, } = props;
   const [selectedTags, setSelectedTags] = useState([]);
   const [picval, setPicVal] = useState({});
 
@@ -32,12 +698,12 @@ function Statistics(props) {
     }
   }
 
-  useEffect(() => {
-    dispatch({
-      type: 'alarmovervies/fetchoversmooth',
-      payload: { key: 'function' },
-    });
-  }, [])
+  // useEffect(() => {
+  //   dispatch({
+  //     type: 'alarmovervies/fetchoversmooth',
+  //     payload: { key: 'function' },
+  //   });
+  // }, [])
   return (
     <div>
       <Card>
@@ -179,11 +845,33 @@ function Statistics(props) {
           </Card>
         </Col>
       </Row>
+      <Row style={{ marginTop: 24 }}>
+        <div className={styles.statisticscard}>
+          <Avatar icon="share-alt" />
+          <b>发布类型统计分析</b>
+        </div>
+        <Col span={12}>
+          <ChartCard title="CPU TOP5" contentHeight={350} onMouseDown={() => setPicVal({})} >
+            {CPUdatas.length === 0 && <Empty style={{ height: '250px' }} />}
+            {CPUdatas.length > 0 && (
+              <Cylinder
+                height={350}
+                data={CPUdatas}
+                padding={[0, 50, 30, 150]}
+                symbol="%"
+                cols={cols}
+                colors="l(270) 0:#04e8ff 0.5:#05bdfe 1:#05bdfe"
+                onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log(v) }}
+              />
+            )}
+          </ChartCard>
+        </Col>
+      </Row>
     </div>
   );
 }
 
 export default connect(({ alarmovervies, loading }) => ({
-  Smoothdata: alarmovervies.Smoothdata,
+  // Smoothdata: alarmovervies.Smoothdata,
   loading: loading.models.alarmovervies,
 }))(Statistics);
