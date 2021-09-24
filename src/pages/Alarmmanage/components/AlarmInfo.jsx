@@ -1,7 +1,8 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
 import moment from 'moment';
-import { Badge, Form, Input, Row, Col, Checkbox, Radio } from 'antd';
+import { Badge, Form, Input, Row, Col, Checkbox, Dropdown, Menu, Button } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
 
 const formItemLayout = {
   labelCol: {
@@ -49,7 +50,18 @@ class AlarmInfo extends Component {
       if ((tempTime.days() === 0 && tempTime.hours() === 0 && tempTime.minutes() === 0 && tempTime.seconds() === 0) || tempTime.seconds() !== 0) {
         seconds = `${tempTime.seconds()}秒`
       }
-    }
+    };
+
+    const handleMenuClick = e => {
+      console.log(e)
+    };
+    const menu = (
+      <Menu onClick={handleMenuClick}>
+        <Menu.Item key="0">事件工单</Menu.Item>
+        <Menu.Item key="1">问题工单</Menu.Item>
+        <Menu.Item key="3">发布工单</Menu.Item>
+      </Menu>
+    );
     return (
       <>
         {data.record && (
@@ -128,21 +140,6 @@ class AlarmInfo extends Component {
                 </Form.Item>
               </Col>
               <Col span={8}>
-                <Form.Item label='上次告警时间'>
-                  <Input defaultValue={data.record} disabled />
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label='工单生成'>
-                  <Input defaultValue={data.record} disabled />
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label='工单编号'>
-                  <Input defaultValue={data.record} disabled />
-                </Form.Item>
-              </Col>
-              <Col span={8}>
                 <Form.Item label='确认告警'>
                   <Input defaultValue={data.record.confirmStatus} disabled />
                 </Form.Item>
@@ -152,9 +149,14 @@ class AlarmInfo extends Component {
                   <Input defaultValue={data.record.clearStatus} disabled />
                 </Form.Item>
               </Col>
-              <Col span={8}>
-                <Form.Item label='派发工单'>
-                  <Input defaultValue={data.record} disabled />
+              <Col span={24}>
+                <Form.Item label='工单编号'  {...forminladeLayout}>
+                  <Dropdown overlay={menu}>
+                    <Button type="primary" style={{ marginRight: 8 }}>
+                      派发工单 <DownOutlined />
+                    </Button>
+                  </Dropdown>
+                  <div><a>SJ202109040013</a>，<a>SJ202109040013</a></div>
                 </Form.Item>
               </Col>
             </Form>

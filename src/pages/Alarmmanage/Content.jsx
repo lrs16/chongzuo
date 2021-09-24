@@ -37,8 +37,8 @@ function Today(props) {
   // const [activeTabInfo, setActiveTabInfo] = useState({});
   const { tabActivekey, tabdate } = useContext(TypeContext);
 
-  const getdatas = () => {
-    const classify = activeTabKey === '告警概览' ? '告警概览' : activeTabKey.slice(0, -2);
+  const getdatas = (key) => {
+    const classify = key === '告警概览' ? '告警概览' : key.slice(0, -2);
     dispatch({
       type: 'measuralarm/fetchoverdonut',
       payload: {
@@ -59,9 +59,8 @@ function Today(props) {
 
   const handleTabChange = (key) => {
     setActiveTabKey(key);
-    const target = tabkeyDist.filter(item => item.key === key)[0];
-    if (target && key === 'all') {
-      getdatas(target.tab);
+    if (tabActivekey === 'all') {
+      getdatas(key);
     }
   };
   useEffect(() => {
@@ -78,7 +77,7 @@ function Today(props) {
 
   useEffect(() => {
     if (tabdate) {
-      getdatas()
+      handleTabChange('告警概览')
     }
   }, [tabdate])
 
@@ -115,7 +114,7 @@ function Today(props) {
           </Spin>
         )}
       </Card>
-      {distkey === 'measuralarm' && (<MeasurList ChangeActiveTabKey={(v) => setActiveTabKey(v)} activeTabKey={activeTabKey} />)}
+      {distkey === 'measuralarm' && (<MeasurList ChangeActiveTabKey={(v) => handleTabChange(v)} activeTabKey={activeTabKey} />)}
       {distkey === 'hostalarm' && (<HostList activeTabInfo={activeTabKey} />)}
       {distkey === 'configurationfile' && (<ConfigurationFileList activeTabInfo={activeTabKey} />)}
       {distkey === 'clockpatrol' && (<ClockPatrolList activeTabInfo={activeTabKey} />)}

@@ -10,30 +10,30 @@ import AlarmHistory from './components/AlarmHistory';
 import NoticeHistory from './components/NoticeHistory';
 
 function DetailView(props) {
-  const { dispatch, location, location: { query: { Id } } } = props;
+  const { dispatch, location, location: { query: { Id, code } }, statuslogs, historylists } = props;
   const pagetitle = props.route.name;
   const [tabActivekey, settabActivekey] = useState('1'); // 打开标签
   const { currenttab } = useContext(RecordContext);
 
-  const getalarmdetailsdatas = () => {
+  const getstatusLog = () => {
     dispatch({
-      type: 'alarmdetails/fetchbasic',
-      payload: Id,
+      type: 'alarmdetails/fetchstatusLog',
+      payload: { warnId: Id },
     });
   };
 
-  const getalarmoperatdatas = () => {
+  const gethistroylist = () => {
     dispatch({
-      type: 'alarmdetails/fetchoperats',
+      type: 'alarmdetails/fetchhistroylist',
+      payload: { code },
     });
   };
 
   useEffect(() => {
     if (Id) {
-      getalarmdetailsdatas();
-      getalarmoperatdatas();
+      getstatusLog();
+      gethistroylist();
     }
-
   }, [Id])
 
   const handleTabChange = key => {
@@ -79,8 +79,8 @@ function DetailView(props) {
     >
       <Card>
         {tabActivekey === '1' && (<AlarmInfo data={currenttab && currenttab.state && currenttab.state || {}} />)}
-        {tabActivekey === '2' && (<OperationRecord data={[]} />)}
-        {tabActivekey === '3' && (<AlarmHistory data={[]} />)}
+        {tabActivekey === '2' && (<OperationRecord data={statuslogs || []} />)}
+        {tabActivekey === '3' && (<AlarmHistory data={historylists || []} />)}
         {tabActivekey === '4' && (<NoticeHistory data={[]} />)}
       </Card>
     </PageHeaderWrapper>
@@ -88,6 +88,7 @@ function DetailView(props) {
 }
 
 export default connect(({ alarmdetails, loading }) => ({
-  alarmdetails,
+  statuslogs: alarmdetails.statuslogs,
+  historylists: alarmdetails.historylists,
   loading: loading.models.alarmdetails,
 }))(DetailView);

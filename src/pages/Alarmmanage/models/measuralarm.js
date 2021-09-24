@@ -8,6 +8,7 @@ import {
   warmBizList,         // 列表
   bizlistStatistics,   // 列表页签
   updateClearStatus,
+  statusLog,
 } from '../services/api';
 
 export default {
@@ -15,8 +16,8 @@ export default {
 
   state: {
     list: {},
-    Donutdata: '',
-    Smoothdata: '',
+    Donutdata: [],
+    Smoothdata: [],
     totalinfo: undefined,
     searchtab: [],
   },
@@ -92,6 +93,19 @@ export default {
         message.error('操作失败！')
       }
     },
+    // 详情操作记录 statusLog
+    *fetchstatusLog({ payload }, { call, put }) {
+      yield put({
+        type: 'clearcache',
+      });
+      const response = yield call(statusLog, payload);
+      if (response.code === 200) {
+        yield put({
+          type: 'savestatuslog',
+          payload: response.data,
+        });
+      }
+    },
   },
 
   reducers: {
@@ -99,8 +113,8 @@ export default {
       return {
         ...state,
         list: {},
-        Donutdata: '',
-        Smoothdata: '',
+        Donutdata: [],
+        Smoothdata: [],
         totalinfo: undefined,
         searchtab: [],
       };
@@ -133,6 +147,12 @@ export default {
       return {
         ...state,
         Smoothdata: action.payload || [],
+      };
+    },
+    savestatuslog(state, action) {
+      return {
+        ...state,
+        statuslog: action.payload || [],
       };
     },
   },

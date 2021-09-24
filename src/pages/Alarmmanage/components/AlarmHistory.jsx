@@ -1,53 +1,75 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
+import moment from 'moment';
 import { Table, Badge } from 'antd';
 
-const recordingMap = ['success', 'error', 'default'];
-const recording = ['已确认', '未确认', '已取消'];
+// const recordingMap = ['success', 'error', 'default'];
+// const recording = ['已确认', '未确认', '已取消'];
 
-const statusMap = ['error', 'success', 'default'];
-const status = ['未消除', '已消除', '已取消'];
+// const statusMap = ['error', 'success', 'default'];
+// const status = ['未消除', '已消除', '已取消'];
 class AlarmHistory extends Component {
   render() {
-    const rowSelection = {
-      onChange: (selectedRows) => {
-        console.log(selectedRows);
-      }
-    };
     const columns = [
       {
         title: '告警时间',
-        dataIndex: 'alarmtime',
-        key: 'alarmtime',
+        dataIndex: 'warnTime',
+        key: 'warnTime',
       },
       {
         title: '恢复时间',
-        dataIndex: 'restoretime',
-        key: 'restoretime',
+        dataIndex: 'clearTime',
+        key: 'clearTime',
       },
       {
         title: '持续时长',
         dataIndex: 'duration',
         key: 'duration',
+        render: (text, record) => {
+          let tempTime = '';
+          let day = '';
+          let houre = '';
+          let minutes = '';
+          let seconds = '';
+          if (record.warnTime && record.clearTime) {
+            const addtime = moment(record.warnTime);
+            const endtime = moment(record.clearTime);
+            const dura = endtime.format('x') - addtime.format('x');
+            tempTime = moment.duration(dura);
+            if (tempTime.days() !== 0) {
+              day = `${tempTime.days()}天`
+            };
+            if (tempTime.hours() !== 0) {
+              houre = `${tempTime.hours()}小时`
+            };
+            if (tempTime.minutes() !== 0) {
+              minutes = `${tempTime.minutes()}分`
+            };
+            if ((tempTime.days() === 0 && tempTime.hours() === 0 && tempTime.minutes() === 0 && tempTime.seconds() === 0) || tempTime.seconds() !== 0) {
+              seconds = `${tempTime.seconds()}秒`
+            }
+          };
+          return (
+            <>
+              {record.warnTime && record.clearTime ? (<>{day}{houre}{minutes}{seconds}</>) : ''}
+            </>
+          )
+        },
       },
       {
-        title: '告警确认',
-        dataIndex: 'eliminate',
-        key: 'eliminate',
-        render: (text, record) => (
-          <span>
-            <Badge status={recordingMap[record.recording]} text={recording[record.recording]} />
-          </span>
+        title: '消除状态',
+        dataIndex: 'clearStatus',
+        key: 'clearStatus',
+        render: (text) => (
+          <Badge status={text === '待消除' ? 'error' : 'default'} text={text} />
         ),
       },
       {
-        title: '状态',
-        dataIndex: 'status',
-        key: 'status',
-        render: (text, record) => (
-          <span>
-            <Badge status={statusMap[record.status]} text={status[record.status]} />
-          </span>
+        title: '确认状态',
+        dataIndex: 'confirmStatus',
+        key: 'confirmStatus',
+        render: (text) => (
+          <Badge status={text === '已确认' ? 'success' : 'error'} text={text} />
         ),
       },
     ];
@@ -61,7 +83,6 @@ class AlarmHistory extends Component {
           dataSource={dataSource}
           rowKey={record => record.historyid}
           columns={columns}
-          rowSelection={rowSelection}
         />
       </div>
     );

@@ -17,7 +17,7 @@ function TotalInfo(props) {
       <Card bordered>
         <div>
           {infolist.map((obj, index) =>
-            <div style={{ width: `${100 / infolist.length}%`, float: 'left' }}>
+            <div style={{ width: `${100 / infolist.length}%`, float: 'left' }} key={index.toString()}>
               <Info key={index.toString()} title={obj.name} value={obj.total} bordered={index !== infolist.length - 1} />
             </div>
           )}

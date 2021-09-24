@@ -9,11 +9,11 @@ function ButtonGroup(props) {
 
   const handleConfig = (status, updatastatus) => {
     if (selectedRowKeys.length === 0) {
-      Message.error('至少选择一条告警记录');
+      Message.error('至少选择一条告警');
     } else {
-      const target = selectRowdata.filter(item => item.confirmStatus === status);
+      const target = selectRowdata.filter(item => item.confirmStatus === status && item.clearStatus === '待消除');
       if (target.length === 0) {
-        Message.error(`请选择确认状态为 ‘${status}’ 的数据`);
+        Message.error(`请选择确认状态为 ‘${status}’且消除状态为‘待消除’的数据`);
         ChangeSelects([]);
       } else {
         ChangeSelects([]);
@@ -34,20 +34,20 @@ function ButtonGroup(props) {
 
   const handleClearConfig = () => {
     if (selectedRowKeys.length === 0) {
-      Message.error('至少选择一条告警记录');
+      Message.error('至少选择一条告警');
     } else {
-      const target = selectRowdata.filter(item => item.confirmStatus === '已确认');
+      const target = selectRowdata.filter(item => item.confirmStatus === '已确认' && item.clearStatus === '待消除');
       if (target.length === 0) {
-        Message.error('请选择确认状态为 ‘已确认’ 的数据');
-        ChangeSelects(false);
+        Message.error('请选择确认状态为 ‘已确认’ 且消除状态为‘待消除’的数据');
+        ChangeSelects([]);
       } else {
+        ChangeSelects([]);
         const ids = target.map(item => (item.id));
         dispatch({
           type: 'measuralarm/clearconfig',
           payload: {
             configval: {
               ids: ids.toString(),
-              status: '已确认',
             },
             values: {
               ...values,
@@ -83,7 +83,7 @@ function ButtonGroup(props) {
     <Menu onClick={handleMenuClick}>
       <Menu.Item key="0">事件工单</Menu.Item>
       <Menu.Item key="1">问题工单</Menu.Item>
-      <Menu.Item key="3">发布工单</Menu.Item>
+      <Menu.Item key="3">故障工单</Menu.Item>
     </Menu>
   );
 

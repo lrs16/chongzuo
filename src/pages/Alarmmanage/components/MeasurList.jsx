@@ -128,6 +128,7 @@ const columns = [
           pathname: `/alarmmanage/measuralarm/details`,
           query: {
             Id: record.id,
+            code: record.monitorCode,
           },
           state: {
             dynamicpath: true,

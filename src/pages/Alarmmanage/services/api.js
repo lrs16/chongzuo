@@ -71,3 +71,21 @@ export async function updateClearStatus(params) {
     requestType: 'form',
   });
 }
+
+// 操作记录/warn/biz/statusLog
+export async function statusLog(params) {
+  return request(`/warn/biz/statusLog`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 当月告警历史/warn/biz/hisWarnList
+export async function hisWarnList(params) {
+  return request(`/warn/biz/hisWarnList`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}

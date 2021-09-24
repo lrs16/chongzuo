@@ -25,11 +25,15 @@ function All(props) {
         const beginWarnTime = moment().startOf('day').format('YYYY-MM-DD HH:mm:ss');
         const endWarnTime = moment().format('YYYY-MM-DD HH:mm:ss');
         ChangeDate({ beginWarnTime, endWarnTime })
+        setStartDates(undefined);
+        setEndDates(undefined);
       };
       if (tag.name === '本月') {
         const beginWarnTime = moment().startOf('month').format('YYYY-MM-DD HH:mm:ss');
         const endWarnTime = moment().format('YYYY-MM-DD HH:mm:ss');
-        ChangeDate({ beginWarnTime, endWarnTime })
+        ChangeDate({ beginWarnTime, endWarnTime });
+        setStartDates(undefined);
+        setEndDates(undefined);
       };
     }
   };
@@ -73,6 +77,7 @@ function All(props) {
         )
       })}
       <DatePicker
+        value={startdates}
         placeholder="开始时间"
         onChange={onStartChange}
         style={{ marginLeft: 24 }}
@@ -85,6 +90,7 @@ function All(props) {
       />
       <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
       <DatePicker
+        value={enddates}
         placeholder="结束时间"
         onChange={onEndChange}
         showTime={{
