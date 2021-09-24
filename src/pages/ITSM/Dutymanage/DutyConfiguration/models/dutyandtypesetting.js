@@ -3,14 +3,19 @@ import {
   staffSearch,
   staffDel,
   holidayId,
-  staffAdd
+  staffAdd,
+  tableGroupId,
+  scheduleId,
+  staffUpdata
 } from '../services/dutyandtypesetting';
 
 export default {
   namespace:'dutyandtypesetting',
 
   state:{
-    searchUsersarr:[]
+    searchUsersarr:[],
+    tableArr:[],
+    settingDetails:[]
   },
 
   effects:{
@@ -37,6 +42,33 @@ export default {
     //  排版设置新增
     *fetchstaffAdd({ payload }, { call, put }) {
       return yield call(staffAdd,payload)
+    },
+    
+    *fetchtable({ payload }, { call, put }) {
+      const response = yield call(tableGroupId,payload);
+      yield put({
+        type:'tableArr',
+        payload: response
+      })
+    },
+
+    *fetchscheduleDetail({ payload }, { call, put }) {
+      const response = yield call(scheduleId,payload);
+      yield put({
+        type:'settingDetails',
+        payload: response
+      })
+    },
+
+    //  排版设置更新
+    *fetchstaffUpdata({ payload }, { call, put }) {
+      return yield call(staffUpdata,payload)
+    },
+
+    *clearstaff({ payload }, { call, put }) {
+      yield put ({
+        type:'clear'
+      })
     }
   },
 
@@ -47,5 +79,23 @@ export default {
         searchUsersarr: acttion.payload.data
       }
     },
+    tableArr(state, acttion) {
+      return {
+        ...state,
+        tableArr: acttion.payload.data
+      }
+    },
+    settingDetails(state, action) {
+      return {
+        ...state,
+        settingDetails: action.payload.data
+      }
+    },
+    clear(state,action) {
+      return {
+        ...state,
+        settingDetails:[]
+      }
+    }
   }
 }

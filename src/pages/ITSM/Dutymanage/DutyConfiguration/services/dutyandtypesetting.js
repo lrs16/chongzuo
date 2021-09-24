@@ -39,5 +39,25 @@ export async function staffAdd(params) {
   })
 }
 
+//  排班表格列表
+export async function tableGroupId(params) {
+  return request(`/duty/schedule/table/${sessionStorage.getItem('groupId')}?year=${params.year}&month=${params.month}`)
+}
+
+// //  排班表格列表
+export async function scheduleId(id) {
+  return request(`/duty/schedule/${id}`)
+}
+
+//  排版设置新增
+export async function staffUpdata(params) {
+  return request(`/duty/schedule/upd`,{
+    method:'POST',
+    body:JSON.stringify(params)
+  })
+}
+
+
+
 
 

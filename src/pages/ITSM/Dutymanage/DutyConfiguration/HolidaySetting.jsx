@@ -37,7 +37,7 @@ function HolidaySetting(props) {
   const { pagetitle } = props.route.name;
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
   const [selectedKeys, setSelectedKeys] = useState([]);
-
+  const [tabrecord, setTabRecord] = useState({});
 
   const searchdata = (current, size) => {
     const newdata = {
@@ -170,6 +170,7 @@ function HolidaySetting(props) {
     }
   }
 
+
   const pagination = {
     showSizeChanger: true,
     onShowSizeChange: (page, pagesize) => onShowSizeChange(page, pagesize),
@@ -179,6 +180,12 @@ function HolidaySetting(props) {
     showTotal: total => `总共 ${total} 条记录`,
     onChange: (page) => changePage(page)
   }
+
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      searchdata(1, 15)
+    }
+  }, [location.state]);
 
   return (
     <PageHeaderWrapper title={pagetitle}>

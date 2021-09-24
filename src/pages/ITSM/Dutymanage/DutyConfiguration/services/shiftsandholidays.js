@@ -65,4 +65,10 @@ export async function holidayStart(id) {
   return request(`/duty/holiday/start?id=${id}`)
 }
 
+//  查看班次信息
+export async function scheduleId(id) {
+  return request(`/duty/schedule/${id}`)
+}
+
+
 

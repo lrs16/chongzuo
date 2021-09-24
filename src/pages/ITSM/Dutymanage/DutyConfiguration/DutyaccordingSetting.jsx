@@ -6,6 +6,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import moment from 'moment';
 import SysDict from '@/components/SysDict';
 import Dutyexcel from './components/Dutyexcel';
+import { load } from 'react-cookies';
 
 const { Sider, Content } = Layout;
 const { TreeNode } = Tree;
@@ -40,7 +41,9 @@ const calenData = [
 function DutyaccordingSetting(props) {
   const pagetitle = props.route.name;
   const {
-    dispatch
+    dispatch,
+    tableArr,
+    loading
   } = props;
 
   const [currentmonth, setCurrentmonth] = useState(
@@ -49,7 +52,6 @@ function DutyaccordingSetting(props) {
       .format('YYYY-MM-DD')
       .split('-')[1],
   );
-  const [currentTime, setCurrentTime] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [selectdata, setSelectData] = useState('');
 
@@ -61,27 +63,113 @@ function DutyaccordingSetting(props) {
     if (getCurrentmonth === currentmonth) {
       switch (value.date()) {
         case 1:
-          result = calenData[0];
+          result = tableArr[0] ? tableArr[0].details : [];
           break;
 
-        case 2:
-          result = calenData[1];
-          break;
+        // case 2:
+        //   result = tableArr[1].details;
+        //   break;
 
-        case 3:
-          result = result = calenData[2];
-          break;
+        // case 3:
+        //   result = tableArr[2].details;
+        //   break;
+        // case 4:
+        //   result = tableArr[3].details;
+        //   break;
+        // case 5:
+        //   result = tableArr[4].details;
+        //   break;
+        // case 6:
+        //   result = tableArr[5].details;
+        //   break;
+        // case 7:
+        //   result = tableArr[6].details;
+        //   break;
+        // case 8:
+        //   result = tableArr[7].details;
+        //   break;
+        // case 9:
+        //   result = tableArr[8].details;
+        //   break;
+        // case 10:
+        //   result = tableArr[9].details;
+        //   break;
+        // case 11:
+        //   result = tableArr[10].details;
+        //   break;
+        // case 12:
+        //   result = tableArr[11].details;
+        //   break;
+        // case 13:
+        //   result = tableArr[12].details;
+        //   break;
+        // case 14:
+        //   result = tableArr[13].details;
+        //   break;
+        // case 15:
+        //   result = tableArr[14].details;
+        //   break;
+        // case 16:
+        //   result = tableArr[15].details;
+        //   break;
+        // case 17:
+        //   result = tableArr[16].details;
+        //   break;
+        // case 18:
+        //   result = tableArr[17].details;
+        //   break;
+        // case 19:
+        //   result = tableArr[18].details;
+        //   break;
+        // case 20:
+        //   result = tableArr[19].details;
+        //   break;
+        // case 21:
+        //   result = tableArr[20].details;
+        //   break;
+        // case 22:
+        //   result = tableArr[21].details;
+        //   break;
+        // case 23:
+        //   result = tableArr[22].details;
+        //   break;
+        // case 24:
+        //   result = tableArr[23].details;
+        //   break;
+        // case 25:
+        //   result = tableArr[24].details;
+        //   break;
+        // case 26:
+        //   result = tableArr[25].details;
+        //   break;
+        // case 27:
+        //   result = tableArr[26].details;
+        //   break;
+        // case 28:
+        //   result = tableArr[27].details;
+        //   break;
+        // case 29:
+        //   result = tableArr[28].details;
+        //   break;
+        // case 30:
+        //   result = tableArr[29].details;
+        //   break;
+        // case 31:
+        //   result = tableArr[30].details;
+        //   break;
         default:
           break;
       }
     }
-    return result || [];
+    return result;
   };
+
 
   //  年月日面板的切换
   const onPanelChange = (value, mode) => {
-    console.log(value.startOf('month').format('YYYY-MM-DD HH:mm:ss')); // 开始
-    console.log(value.endOf('month').format('YYYY-MM-DD HH:mm:ss')); // 开始
+    // console.log('value, mode: ', value, mode);
+    // console.log(value.startOf('month').format('YYYY-MM-DD HH:mm:ss')); // 开始
+    // console.log(value.endOf('month').format('YYYY-MM-DD HH:mm:ss')); // 开始
     if (mode === 'month') { // 只有月支持渲染
       const changeMonth = moment(value)
         .format('YYYY-MM')
@@ -94,18 +182,38 @@ function DutyaccordingSetting(props) {
 
 
   const handleSelect = value => {
-    console.log('value: ', value);
   };
 
   const handleSubmit = (newdata) => {
-    return dispatch({
-      type: 'dutyandtypesetting/fetchstaffAdd',
-      payload: newdata
-    }).then(res => {
-      if (res.code === 200) {
-        message.info(res.msg)
-      }
-    })
+    if(!newdata.id) {
+      return dispatch({
+        type: 'dutyandtypesetting/fetchstaffAdd',
+        payload: newdata
+      }).then(res => {
+        if (res.code === 200) {
+          const currentYear = moment(new Date()).format('YYYY');
+          const month = moment(new Date()).format('MM')
+          getTable(currentYear, month)
+          message.info(res.msg)
+        }
+      })
+    } 
+
+    if(newdata.id) {
+      return dispatch({
+        type: 'dutyandtypesetting/fetchstaffUpdata',
+        payload: newdata
+      }).then(res => {
+        if (res.code === 200) {
+          const currentYear = moment(new Date()).format('YYYY');
+          const month = moment(new Date()).format('MM')
+          getTable(currentYear, month)
+          message.info(res.msg)
+        }
+      })
+    } 
+  
+  
   }
 
   //  渲染树结构
@@ -118,7 +226,8 @@ function DutyaccordingSetting(props) {
           </TreeNode>
         );
       }
-      return <TreeNode icon={<Icon type="smile-o" />} key={item.id} {...item} dataRef={item} />;
+      return <TreeNode key={item.id} {...item} dataRef={item}
+      />;
     });
 
   //  单元格渲染
@@ -129,17 +238,20 @@ function DutyaccordingSetting(props) {
         {(listData || []).map(item => (
           <SettingDetails
             title='编辑排班信息'
-            key={item.content}
-            settingDetailsparams={{
-              params1: item.params1,
-              params2: item.params2,
-              params3: item.params3,
-            }}
+            key={item.id}
+            id={item.id}
+            onSubmit={handleSubmit}
+            groupId={item.groupId}
+            // settingDetails={{
+            //   params1: item.params1,
+            //   params2: item.params2,
+            //   params3: item.params3,
+            // }}
           >
-            <li key={item.content}>
+            <li key={item.id}>
 
               {/* <Badge status={item.type} text={item.content} /> */}
-              <span>{item.content}</span>
+              <span>{item.staffName}</span>
             </li>
           </SettingDetails>
         ))}
@@ -147,14 +259,28 @@ function DutyaccordingSetting(props) {
     );
   };
 
+
+
   const handleClick = (selectkeys) => {
-    console.log('selectkeys: ', selectkeys);
-    sessionStorage.setItem('groupId',selectkeys.toString())
+    sessionStorage.setItem('groupId', selectkeys.toString())
+  }
+
+  const getTable = (year, month) => {
+    dispatch({
+      type: 'dutyandtypesetting/fetchtable',
+      payload: {
+        year,
+        month
+      }
+    })
   }
 
   useEffect(() => {
-    sessionStorage.setItem('groupId','1438060967991177218')
-  },[])
+    sessionStorage.setItem('groupId', '1438060967991177218')
+    const currentYear = moment(new Date()).format('YYYY');
+    const month = moment(new Date()).format('MM')
+    getTable(currentYear, month)
+  }, [])
 
   const getTypebyTitle = title => {
     if (selectdata.ischange) {
@@ -164,7 +290,6 @@ function DutyaccordingSetting(props) {
   };
 
   const teamname = getTypebyTitle('班组名称');
-  console.log('teamname: ', teamname);
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -174,11 +299,12 @@ function DutyaccordingSetting(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
+
       <Layout>
         <Card title='所属班组'>
           <Sider theme="light">
             {
-              teamname && teamname.length >0  && (
+              teamname && teamname.length > 0 && (
                 <Tree
                   defaultSelectedKeys={['1438060967991177218']}
                   onSelect={handleClick}
@@ -200,6 +326,8 @@ function DutyaccordingSetting(props) {
                   <SettingDetails
                     title='新增排班信息'
                     onSubmit={handleSubmit}
+                    settingDetails=''
+                    id=''
                   >
                     <Button type="primary" style={{ marginRight: 8 }}>
                       新增
@@ -240,6 +368,7 @@ function DutyaccordingSetting(props) {
                 shownextprevmonth={false}
               />
             </Card>
+
           </Content>
 
         </Card>
@@ -253,6 +382,7 @@ function DutyaccordingSetting(props) {
 
 export default
   connect(({ dutyandtypesetting, loading }) => ({
+    tableArr: dutyandtypesetting.tableArr,
     loading: dutyandtypesetting.loading
   }))(DutyaccordingSetting);
 

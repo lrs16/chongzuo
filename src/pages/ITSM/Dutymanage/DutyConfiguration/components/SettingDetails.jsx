@@ -10,11 +10,13 @@ import {
   Select,
   Col,
   Row,
-  message
+  Table,
+  Checkbox
 } from 'antd';
+import { connect } from 'dva';
 import moment from 'moment';
 import styles from '../index.less';
-import { operationPerson, searchUsers } from '@/services/common';
+import { staffSearch } from '../services/dutyandtypesetting';
 import { shiftSearch } from '../services/shiftsandholidays';
 
 
@@ -36,6 +38,34 @@ const format = 'HH:mm';
 const { Option } = Select;
 const { Search } = Input;
 
+const columns = [
+  {
+    title: '序号',
+    key: 'index',
+    dataIndex: 'index'
+  },
+  {
+    title: '操作人',
+    key: 'operatorName',
+    dataIndex: 'operatorName'
+  },
+  {
+    title: '操作',
+    key: 'operate',
+    dataIndex: 'operate'
+  },
+  {
+    title: '操作描述',
+    key: 'comment',
+    dataIndex: 'comment'
+  },
+  {
+    title: '操作时间',
+    key: 'ctime',
+    dataIndex: 'ctime'
+  },
+]
+
 const withClick = (element, handleClick = () => { }) => {
   return <element.type {...element.props} onClick={handleClick} />
 }
@@ -48,19 +78,30 @@ function SettingDetails(props) {
     children,
     onSubmit,
     id,
+    groupId,
     onDelete,
-    settingDetailsparams,
+    dispatch,
     settingDetails,
   } = props;
   const [directorlist, setDirectorlist] = useState([]);// 值班人
   const [shiftlist, setShiftlist] = useState([]);// 值班人
 
-
   const required = true;
 
-
   const handleopenClick = () => {
-    console.log(settingDetailsparams, 'settingDetailsparams')
+    if (title === '编辑排班信息') {
+      console.log(1)
+      dispatch({
+        type: 'dutyandtypesetting/fetchscheduleDetail',
+        payload: id
+      })
+    } 
+    if(title !== '编辑排班信息') {
+      console.log(2)
+      dispatch({
+        type: 'dutyandtypesetting/clearstaff',
+      })
+    }
     setVisible(true)
   }
 
@@ -68,7 +109,7 @@ function SettingDetails(props) {
     <Option key={opt.id} value={opt.id} disableuser={opt}>
       {/* <Spin spinning={spinloading}> */}
       <div className={styles.disableuser}>
-        <span>{opt.userName}</span>
+        <span>{opt.staffName}</span>
       </div>
       {/* </Spin> */}
     </Option>
@@ -79,6 +120,7 @@ function SettingDetails(props) {
       {/* <Spin spinning={spinloading}> */}
       <div className={styles.disableuser}>
         <span>{opt.shiftName}</span>
+        <span>{opt.shiftType}</span>
       </div>
       {/* </Spin> */}
     </Option>
@@ -88,9 +130,9 @@ function SettingDetails(props) {
   const SearchDisableduser = (value, type) => {
     switch (type) {
       case 'director':
-        searchUsers({ userName: value }).then(res => {
+        staffSearch({ staffName: value, groupId }).then(res => {
           if (res) {
-            const arr = [...(res.data)];
+            const arr = [...(res.data.records)];
             setDirectorlist(arr);
           }
         });
@@ -110,11 +152,11 @@ function SettingDetails(props) {
 
   // 选择下拉值，信息回填
   const handleDisableduser = (v, opt, type) => {
-    const { id, userMobile, deptNameExt, shiftName, userName,beginTime,endTime } = opt.props.disableuser;
+    const { id, userMobile, deptNameExt, shiftName, staffName, beginTime, endTime, shiftType } = opt.props.disableuser;
     switch (type) {
       case 'director':
         setFieldsValue({
-          staffName: userName, // 用户名称
+          staffName, // 用户名称
           staffId: id, // 用户id
           deptName: deptNameExt,
           staffPhone: userMobile
@@ -123,9 +165,10 @@ function SettingDetails(props) {
       case 'shiftName':
         setFieldsValue({
           shiftName, // 用户名称
-          shiftId:id,
-          beginTime: moment(beginTime,format),
-          endTime: moment(endTime,format),
+          shiftType,
+          shiftId: id,
+          beginTime: moment(beginTime, format),
+          endTime: moment(endTime, format),
         });
         break;
 
@@ -142,11 +185,13 @@ function SettingDetails(props) {
     validateFields((err, values) => {
       const newValue = {
         // id:classSetting.id || '',
+        id,
+        groupId: sessionStorage.getItem('groupId'),
         ...values,
         beginTime: moment(values.beginTime).format('HH:mm'),
         endTime: moment(values.endTime).format('HH:mm'),
         ctime: moment(values.ctime).format('YYYY-MM-DD HH:mm:ss'),
-        dutyDate : values.dutyDate ? moment(values.dutyDate).format('YYYY-MM-DD HH:mm:ss'):'',
+        dutyDate: values.dutyDate ? moment(values.dutyDate).format('YYYY-MM-DD HH:mm:ss') : '',
       }
       if (!err) {
         onSubmit(newValue);
@@ -161,7 +206,6 @@ function SettingDetails(props) {
 
   const startOnchange = (time, timeString) => {
     startTime = timeString
-    console.log('timeString: ', timeString);
   }
 
   const endOnchange = (time, timeString) => {
@@ -183,7 +227,6 @@ function SettingDetails(props) {
   const startdisabledHours = () => {
     if (endTime) {
       const hours = endTime.split(':');
-      console.log('hours: ', hours);
       const nums = [];
       for (let i = 0; i < 24 - hours[0]; i += 1) {
         nums.push(Number(hours[0]) + i);
@@ -243,7 +286,7 @@ function SettingDetails(props) {
           <Form.Item style={{ display: 'none' }}>
             {
               getFieldDecorator('staffId', {
-                initialValue:settingDetails.staffId
+                initialValue: settingDetails.staffId
               })
             }
           </Form.Item>
@@ -251,9 +294,15 @@ function SettingDetails(props) {
           <Form.Item label='联系电话'>
             {
               getFieldDecorator('staffPhone', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入联系电话',
+                  },
+                ],
                 initialValue: settingDetails.staffPhone,
               }
-              )(<Input disabled />)
+              )(<Input />)
             }
 
           </Form.Item>
@@ -269,6 +318,7 @@ function SettingDetails(props) {
               initialValue: settingDetails.shiftName,
             })(
               <AutoComplete
+                disabled={title === '编辑排班信息'}
                 dataSource={shifarr}
                 dropdownMatchSelectWidth={false}
                 getPopupContainer={e => e.parentNode}
@@ -284,21 +334,22 @@ function SettingDetails(props) {
             )}
           </Form.Item>
 
-          <Form.Item style={{display:'none'}}>
-              {
-                getFieldDecorator('shiftId',{
-                  initialValue:settingDetails.shiftId
-                })(<Input/>)
-              }
+          <Form.Item style={{ display: 'none' }}>
+            {
+              getFieldDecorator('shiftId', {
+                initialValue: settingDetails.shiftId
+              })(<Input />)
+            }
           </Form.Item>
 
           <Form.Item label='值班日期'>
             {
               getFieldDecorator('dutyDate', {
-                initialValue: settingDetails.dutyDate,
+                initialValue: settingDetails.dutyDate ? moment(settingDetails.dutyDate) : '',
               }
               )(
                 <DatePicker
+                  disabled={title === '编辑排班信息'}
                   showTime
                   format='YYYY-MM-DD'
                   onOk={handleSelecttime}
@@ -317,6 +368,16 @@ function SettingDetails(props) {
 
           </Form.Item>
 
+          <Form.Item label='班次类型'>
+            {
+              getFieldDecorator('shiftType', {
+                initialValue: settingDetails.shiftType,
+              }
+              )(<Input disabled />)
+            }
+
+          </Form.Item>
+
           <Col>
             <Form.Item label="值班时段">
               <Row>
@@ -329,7 +390,7 @@ function SettingDetails(props) {
                           message: '请选择时间',
                         },
                       ],
-                      // initialValue: classSetting.beginTime ? moment(classSetting.beginTime, format) : moment(new Date())
+                      initialValue: settingDetails.beginTime ? moment(settingDetails.beginTime, format) : ''
                     },
                   )(
                     <TimePicker
@@ -355,7 +416,7 @@ function SettingDetails(props) {
                           message: '请选择时间',
                         },
                       ],
-                      // initialValue: classSetting.endTime ? moment(classSetting.endTime, format) : moment(new Date())
+                      initialValue: settingDetails.endTime ? moment(settingDetails.endTime, format) : ''
                     },
                   )(
                     <TimePicker
@@ -382,17 +443,22 @@ function SettingDetails(props) {
           </Form.Item>
 
 
-          <Form.Item label='创建时间'>
+          {/* <Form.Item label='创建时间'>
             {
               getFieldDecorator('ctime', {
-                initialValue: settingDetails.ctime || moment(new Date()),
+                initialValue: settingDetails.ctime ? moment(settingDetails.ctime) : moment(new Date()),
               }
               )(<DatePicker disabled />)
             }
 
-          </Form.Item>
+          </Form.Item> */}
 
         </Form>
+
+        <Table
+          columns={columns}
+          dataSource={settingDetails.log}
+        />
 
         <div
           style={{
@@ -436,8 +502,17 @@ SettingDetails.defaultProps = {
     weekday: '',
     creatorName: sessionStorage.getItem('userName'),
     createtime: '',
-    ctime:''
+    ctime: '',
+    shiftType: '',
+    log: []
   }
 }
 
-export default Form.create({})(SettingDetails)
+export default Form.create({})(
+  connect(({ dutyandtypesetting, loading }) => ({
+    settingDetails: dutyandtypesetting.settingDetails,
+    loading: dutyandtypesetting.loading
+  }))(SettingDetails)
+)
+
+

@@ -50,6 +50,7 @@ function DutypersonnelSetting(props) {
     },
     dispatch,
     searchUsersarr,
+    location,
     loading
   } = props;
   const [directorlist, setDirectorlist] = useState([]); // 详细条款
@@ -57,6 +58,7 @@ function DutypersonnelSetting(props) {
   const [selectdata, setSelectData] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [paginations, setPageinations] = useState({ current: 1, size: 15 });
+  const [tabrecord, setTabRecord] = useState({});
 
   const directoruser = directorlist.map((opt, index) => (
     <Option key={opt.id} value={opt.id} disableuser={opt}>
@@ -81,6 +83,7 @@ function DutypersonnelSetting(props) {
       payload: newdata
     })
 
+    setTabRecord(newdata)
   }
 
   const handleSearch = () => {
@@ -202,6 +205,45 @@ function DutypersonnelSetting(props) {
       }
     })
   }
+
+  //  传给多标签的数据
+  const record = {
+    staffName: '',
+    deptName: '',
+    jobId: '',
+    jobName: '',
+    phone: '',
+  }
+
+  const cacheinfo = (location.state && location.state.cacheinfo === undefined) ? record : location.state.cacheinfo;
+
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations
+            },
+            tabid: sessionStorage.getItem('tabid')
+          }
+        })
+      };
+
+      if (location.state.reset) {
+        handleReset();
+      }
+    }
+  }, [location.state])
+
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      handleReset();
+      searchdata({}, 1,15)
+    }
+  }, [location.state]);
 
   useEffect(() => {
     searchdata({}, 1, 15)
@@ -360,7 +402,7 @@ function DutypersonnelSetting(props) {
             <Col span={8}>
               <Form.Item label="责任人">
                 {getFieldDecorator('staffName', {
-                  // initialValue: register.directorName,
+                  initialValue: cacheinfo.staffName,
                 })(
                   <AutoComplete
                     dataSource={directoruser}
@@ -377,17 +419,17 @@ function DutypersonnelSetting(props) {
                 )}
               </Form.Item>
             </Col>
-            <Col span={8}>
+            {/* <Col span={8}>
               <Form.Item label="值班人员">
                 {getFieldDecorator('form1', {
                   initialValue: '',
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
-            </Col>
+            </Col> */}
             <Col span={8}>
               <Form.Item label="所属部门">
                 {getFieldDecorator('deptName', {
-                  initialValue: '',
+                  initialValue: cacheinfo.deptName,
                 })(
                   <Input disabled />
                 )}
@@ -396,7 +438,7 @@ function DutypersonnelSetting(props) {
             <Col span={8}>
               <Form.Item label="所属岗位">
                 {getFieldDecorator('jobId', {
-                  initialValue: '',
+                  initialValue: cacheinfo.jobId,
                 })(
                   <Select placeholder="请选择" onChange={(value, option) => handleChange(value, option, 'jobName')}>
                     {teamjobName.map(obj => [
@@ -415,21 +457,15 @@ function DutypersonnelSetting(props) {
             <Form.Item label='' style={{ display: 'none' }}>
               {
                 getFieldDecorator('jobName', {
-                  // initialValue: personnelSetting.jobName
+                  initialValue: cacheinfo.jobName
                 })(<Input />)
               }
             </Form.Item>
 
-            <Form.Item label='' style={{ display: 'none' }}>
-              {
-                getFieldDecorator('jobName', {
-                })(<Input />)
-              }
-            </Form.Item>
             <Col span={8}>
               <Form.Item label="联系电话">
                 {getFieldDecorator('phone', {
-                  initialValue: '',
+                  initialValue: cacheinfo.phone,
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>

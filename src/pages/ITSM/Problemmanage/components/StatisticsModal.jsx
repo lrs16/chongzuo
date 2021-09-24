@@ -9,10 +9,9 @@ function StatisticsModal(props) {
     visible,
     title,
     handleCancel,
+    modalParams
   } = props;
-
- 
-
+  console.log(modalParams,'modalParams')
 
   return (
     <>

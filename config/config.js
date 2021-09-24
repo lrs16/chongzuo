@@ -319,6 +319,12 @@ export default {
                               icon: 'euro',
                               component: './ITSM/Problemmanage/TimeoutStatistics',
                             },
+                            {
+                              path: '/ITSM/problemmanage/statistics/statisticsanalysis',
+                              name: '问题统计分析',
+                              icon: 'euro',
+                              component: './ITSM/Problemmanage/StatisticsAnalysis',
+                            },
                           ],
                         },
                       ],

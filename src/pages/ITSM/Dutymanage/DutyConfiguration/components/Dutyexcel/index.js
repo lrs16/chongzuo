@@ -36,7 +36,6 @@ function Dutyexcel(props) {
         id: info.uid,
       },
     }).then(res => {
-      // console.log(res);
       const filename = info.name;
       const blob = new Blob([res]);
       const url = window.URL.createObjectURL(blob);
@@ -47,8 +46,6 @@ function Dutyexcel(props) {
       window.URL.revokeObjectURL(url);
     });
   };
-
-  console.log(sessionStorage.getItem('groupId'))
 
   const uploadprops = {
     name: 'file',

@@ -58,8 +58,6 @@ function AdddutyPersonnelSetting(props) {
   const [selectdata, setSelectData] = useState('');
   const required = true;
 
-  console.log(personnelSetting, 'personnelSetting')
-  // 自动完成责任人
   // 自动完成责任人
   const directoruser = directorlist.map((opt, index) => (
     <Option key={opt.id} value={opt.id} disableuser={opt}>
@@ -313,13 +311,13 @@ function AdddutyPersonnelSetting(props) {
           <Form.Item label='联系电话'>
             {
               getFieldDecorator('phone', {
-                // rules: [
-                //   {
-                //     required,
-                //     message: '请输入联系电话'
-                //   }
-                // ]
-              })(<Input disabled />)
+                rules: [
+                  {
+                    required,
+                    message: '请输入联系电话'
+                  }
+                ]
+              })(<Input />)
             }
           </Form.Item>
         </Form>

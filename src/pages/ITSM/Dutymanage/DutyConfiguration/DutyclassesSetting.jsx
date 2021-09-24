@@ -371,7 +371,6 @@ function DutyclassesSetting(props) {
   }
 
   const cacheinfo = (location.state && location.state.cacheinfo === undefined) ? record : location.state.cacheinfo;
-  console.log('cacheinfo: ', cacheinfo);
 
   useEffect(() => {
     if(location.state) {
