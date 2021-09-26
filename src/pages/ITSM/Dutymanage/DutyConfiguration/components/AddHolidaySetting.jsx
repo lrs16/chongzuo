@@ -108,8 +108,8 @@ function AddholidaySetting(props) {
       key: data.length + 1,
       holidayName: '',
       dateType: '工作日',
-      beginDate: moment().format('YYYY-MM-DD HH:mm:ss'),
-      endDate: moment().format('YYYY-MM-DD HH:mm:ss'),
+      beginDate: moment().format('YYYY-MM-DD'),
+      endDate: moment().format('YYYY-MM-DD'),
       editable: true,
     })
     setData(newData)
@@ -163,7 +163,7 @@ function AddholidaySetting(props) {
       return;
     }
 
-    if ((target.beginDate).valueOf() >= (target.endDate).valueOf()) {
+    if ((target.beginDate).valueOf() > (target.endDate).valueOf()) {
       message.error('开始时间必须小于结束时间');
       e.target.focus();
       return;
@@ -249,7 +249,7 @@ function AddholidaySetting(props) {
             <div>
               <DatePicker
                 allowClear
-                defaultValue={moment(text, dateFormat)}
+                defaultValue={moment(text)}
                 onChange={e => handleFieldChange(e.format('YYYY-MM-DD HH:mm:ss'), 'beginDate', record.key)}
                 // disabledDate={this.disabledStartDate}
                 // showTime
@@ -271,13 +271,13 @@ function AddholidaySetting(props) {
       dataIndex: 'endDate',
       key: 'endDate',
       render: (text, record) => {
-        const dateFormat = 'YYYY-MM-DD HH:mm:ss';
+        // const dateFormat = 'YYYY-MM-DD HH:mm:ss';
         if (record.editable) {
           return (
             <div>
               <DatePicker
                 allowClear
-                defaultValue={moment(text, dateFormat)}
+                defaultValue={moment(text)}
                 onChange={e => handleFieldChange(e.format('YYYY-MM-DD HH:mm:ss'), 'endDate', record.key)}
                 // disabledDate={this.disabledStartDate}
                 // showTime

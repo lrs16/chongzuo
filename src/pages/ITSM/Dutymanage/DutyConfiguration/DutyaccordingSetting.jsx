@@ -19,7 +19,6 @@ function DutyaccordingSetting(props) {
     loading
   } = props;
 
-
   const [currentmonth, setCurrentmonth] = useState(
     moment()
       .startOf('month')
@@ -29,14 +28,26 @@ function DutyaccordingSetting(props) {
   const [currentMode, setCurrentMode] = useState(moment(new Date()).format('YYYY'))
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [selectdata, setSelectData] = useState('');
-  const [tabledata,setTabledata] = useState([])
+  const [tabledata, setTabledata] = useState([]);
+  const [currentYear,setCurrentYear] = useState(moment(new Date()).format('YYYY'));
+  const [month,setMonth] = useState(moment(new Date()).format('MM'));
+
+  const getTable = (year, paramsmonth) => {
+    dispatch({
+      type: 'dutyandtypesetting/fetchtable',
+      payload: {
+        year,
+        month:paramsmonth
+      }
+    })
+  }
 
   const getListData = value => {
     let result;
     const getCurrentmonth = moment(value)
       .format('YYYY-MM-DD')
       .split('-')[1];
-    if (getCurrentmonth === currentmonth && tableArr && tableArr.length > 0) {
+    if (loading === false && getCurrentmonth === currentmonth && tableArr && tableArr.length > 0) {
       switch (value.date()) {
         case 1:
           result = tableArr[0].details;
@@ -140,60 +151,23 @@ function DutyaccordingSetting(props) {
     return result;
   };
 
- 
-
-
-
-
   //  年月日面板的切换
   const onPanelChange = (value, mode) => {
-    console.log('value, mode: ', value, mode);
-    const currentYear = moment(value).format('YYYY');
-    // console.log('value, mode: ', value, mode);
-    // console.log(value.startOf('month').format('YYYY-MM-DD HH:mm:ss')); // 开始
-    // console.log(value.endOf('month').format('YYYY-MM-DD HH:mm:ss')); // 开始
+    const nowYear = moment(value).format('YYYY');
     if (mode === 'month') { // 只有月支持渲染
       const changeMonth = moment(value)
         .format('YYYY-MM')
         .split('-')[1];
       //  去请求接口
+      getTable(nowYear, changeMonth)
       setCurrentmonth(changeMonth);
-      setCurrentMode(currentYear)
+      setCurrentYear(nowYear);
+      setMonth(changeMonth);
+      setCurrentMode(nowYear)
     }
   };
 
-
-  const handleSubmit = (newdata) => {
-    if (!newdata.id) {
-      return dispatch({
-        type: 'dutyandtypesetting/fetchstaffAdd',
-        payload: newdata
-      }).then(res => {
-        if (res.code === 200) {
-          const currentYear = moment(new Date()).format('YYYY');
-          const month = moment(new Date()).format('MM')
-          getTable(currentYear, month)
-          message.info(res.msg)
-        }
-      })
-    }
-
-    if (newdata.id) {
-      return dispatch({
-        type: 'dutyandtypesetting/fetchstaffUpdata',
-        payload: newdata
-      }).then(res => {
-        if (res.code === 200) {
-          const currentYear = moment(new Date()).format('YYYY');
-          const month = moment(new Date()).format('MM')
-          getTable(currentYear, month)
-          message.info(res.msg)
-        }
-      })
-    }
-
-
-  }
+ 
 
   //  渲染树结构
   const renderTreeNodes = data =>
@@ -219,18 +193,11 @@ function DutyaccordingSetting(props) {
             title='编辑排班信息'
             key={item.id}
             id={item.id}
-            onSubmit={handleSubmit}
+            getTable={getTable}
             groupId={item.groupId}
-          // settingDetails={{
-          //   params1: item.params1,
-          //   params2: item.params2,
-          //   params3: item.params3,
-          // }}
           >
             <li key={item.id}>
-
-              {/* <Badge status={item.type} text={item.content} /> */}
-              <span>{item.staffName}</span>
+              <span>{item.staffName + '(' +item.shiftType + ')'}</span>
             </li>
           </SettingDetails>
         ))}
@@ -240,16 +207,7 @@ function DutyaccordingSetting(props) {
 
   const handleClick = (selectkeys) => {
     sessionStorage.setItem('groupId', selectkeys.toString())
-  }
-
-  const getTable = (year, month) => {
-    dispatch({
-      type: 'dutyandtypesetting/fetchtable',
-      payload: {
-        year,
-        month
-      }
-    })
+    getTable(currentYear,month)
   }
 
   const handleDelete = () => {
@@ -262,20 +220,35 @@ function DutyaccordingSetting(props) {
     }).then(res => {
       if (res.code === 200) {
         message.info(res.msg)
+        getTable(currentYear, month)
       }
     })
   }
 
   useEffect(() => {
     if (files.ischange) {
-      getTable()
+      getTable(currentYear, month)
     }
   }, [files])
 
+  const download = () => {
+    dispatch({
+      type: 'dutyandtypesetting/fetchTemplate',
+    }).then(res => {
+      const filename = '下载.xls';
+      const blob = new Blob([res]);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url)
+    })
+  }
+
+
   useEffect(() => {
     sessionStorage.setItem('groupId', '1438060967991177218')
-    const currentYear = moment(new Date()).format('YYYY');
-    const month = moment(new Date()).format('MM')
     getTable(currentYear, month)
   }, [])
 
@@ -287,14 +260,12 @@ function DutyaccordingSetting(props) {
   };
 
   const teamname = getTypebyTitle('班组名称');
-  console.log(teamname,'teamname')
 
   useEffect(() => {
-    const resutlteam  = [{title:'班组信息',children:teamname}]
+    const resutlteam = [{ title: '班组信息', children: teamname }]
     setTabledata(resutlteam)
-  },[teamname])
+  }, [teamname])
 
-  console.log(tabledata,'tabledata')
   return (
     <PageHeaderWrapper title={pagetitle}>
       <SysDict
@@ -338,16 +309,20 @@ function DutyaccordingSetting(props) {
 
                     <SettingDetails
                       title='新增排班信息'
-                      onSubmit={handleSubmit}
                       settingDetails=''
                       id=''
+                      groupId={sessionStorage.getItem('groupId')}
                     >
                       <Button type="primary" style={{ marginRight: 8 }}>
                         新增
                       </Button>
                     </SettingDetails>
 
-                    <Button type="primary" style={{ marginRight: 8 }}>
+                    <Button
+                      type="primary"
+                      style={{ marginRight: 8 }}
+                      onClick={download}
+                    >
                       下载导入模板
                     </Button>
 
@@ -356,11 +331,13 @@ function DutyaccordingSetting(props) {
                     </Button>
 
 
+                    {loading === false && (
+                      <Dutyexcel
+                        fileslist={[]}
+                        ChangeFileslist={newvalue => setFiles(newvalue)}
+                      />
+                    )}
 
-                    <Dutyexcel
-                      fileslist={[]}
-                      ChangeFileslist={newvalue => setFiles(newvalue)}
-                    />
                   </div>
                 )
               }
@@ -377,13 +354,8 @@ function DutyaccordingSetting(props) {
                   shownextprevmonth={false}
                 />
               </Card>
-
             </Content>
-
           </Card>
-
-
-
         </Layout>
 
       </>

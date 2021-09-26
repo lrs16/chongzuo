@@ -83,6 +83,7 @@ function SettingDetails(props) {
     onDelete,
     dispatch,
     settingDetails,
+    getTable
   } = props;
   const [directorlist, setDirectorlist] = useState([]);// 值班人
   const [shiftlist, setShiftlist] = useState([]);// 值班人
@@ -91,16 +92,14 @@ function SettingDetails(props) {
 
   const handleopenClick = () => {
     if (title === '编辑排班信息') {
-      console.log(1)
       dispatch({
-        type: 'dutyandtypesetting/fetchscheduleDetail',
+        type: 'shiftsandholidays/fetchscheduleDetail',
         payload: id
       })
     } 
     if(title !== '编辑排班信息') {
-      console.log(2)
       dispatch({
-        type: 'dutyandtypesetting/clearstaff',
+        type: 'shiftsandholidays/clearstaff',
       })
     }
     setVisible(true)
@@ -182,6 +181,34 @@ function SettingDetails(props) {
     setVisible(false)
   }
 
+  const handleSubmit = (newdata) => {
+    if (!newdata.id) {
+      return dispatch({
+        type: 'shiftsandholidays/fetchstaffAdd',
+        payload: newdata
+      }).then(res => {
+        if (res.code === 200) {
+          // getTable(moment(new Date()).format('YYYY'),moment(new Date()).format('MM'))
+          message.info(res.msg)
+        }
+      })
+    }
+
+    if (newdata.id) {
+      return dispatch({
+        type: 'shiftsandholidays/fetchstaffUpdata',
+        payload: newdata
+      }).then(res => {
+        if (res.code === 200) {
+          // getTable(moment(new Date()).format('YYYY'),moment(new Date()).format('MM'))
+          message.info(res.msg)
+        }
+      })
+    }
+
+
+  }
+
   const handleOk = () => {
     validateFields((err, values) => {
       const newValue = {
@@ -195,7 +222,7 @@ function SettingDetails(props) {
         dutyDate: values.dutyDate ? moment(values.dutyDate).format('YYYY-MM-DD HH:mm:ss') : '',
       }
       if (!err) {
-        onSubmit(newValue);
+        handleSubmit(newValue);
         setVisible(false)
       }
     })
@@ -207,7 +234,8 @@ function SettingDetails(props) {
       payload: {id}
     }).then(res => {
       if (res.code === 200) {
-        message.info(res.msg)
+        message.info(res.msg);
+        getTable(moment(new Date()).format('YYYY'),moment(new Date()).format('MM'))
         setVisible(false)
       } else {
         message.error(res.msg)
@@ -522,9 +550,9 @@ SettingDetails.defaultProps = {
 }
 
 export default Form.create({})(
-  connect(({ dutyandtypesetting, loading }) => ({
-    settingDetails: dutyandtypesetting.settingDetails,
-    loading: dutyandtypesetting.loading
+  connect(({ shiftsandholidays, loading }) => ({
+    settingDetails: shiftsandholidays.settingDetails,
+    loading: shiftsandholidays.loading
   }))(SettingDetails)
 )
 

@@ -3,12 +3,10 @@ import {
   staffSearch,
   staffDel,
   holidayId,
-  staffAdd,
-  tableGroupId,
-  scheduleId,
-  staffUpdata,
   delmonth,
-  delId
+  delId,
+  template,
+  tableGroupId
 } from '../services/dutyandtypesetting';
 
 export default {
@@ -17,7 +15,6 @@ export default {
   state:{
     searchUsersarr:[],
     tableArr:[],
-    settingDetails:[]
   },
 
   effects:{
@@ -41,11 +38,6 @@ export default {
       return  yield call(holidayId,payload);
     },
 
-    //  排版设置新增
-    *fetchstaffAdd({ payload }, { call, put }) {
-      return yield call(staffAdd,payload)
-    },
-    
     *fetchtable({ payload }, { call, put }) {
       const response = yield call(tableGroupId,payload);
       yield put({
@@ -53,32 +45,18 @@ export default {
         payload: response
       })
     },
-
-    *fetchscheduleDetail({ payload }, { call, put }) {
-      const response = yield call(scheduleId,payload);
-      yield put({
-        type:'settingDetails',
-        payload: response
-      })
-    },
-
-    //  排版设置更新
-    *fetchstaffUpdata({ payload }, { call, put }) {
-      return yield call(staffUpdata,payload)
-    },
-
-    *clearstaff({ payload }, { call, put }) {
-      yield put ({
-        type:'clear'
-      })
-    },
+  
     *fetchDelmonth({ payload }, { call, put }) {
       return yield call(delmonth,payload)
     },
 
-    // 
+    // 删除人
     *fetchdelId({ payload }, { call, put }) {
       return yield call(delId,payload)
+    },
+
+    *fetchTemplate({ payload },{ call, put }) {
+      return yield call(template,payload);
     },
   },
 
@@ -95,17 +73,6 @@ export default {
         tableArr: acttion.payload.data
       }
     },
-    settingDetails(state, action) {
-      return {
-        ...state,
-        settingDetails: action.payload.data
-      }
-    },
-    clear(state,action) {
-      return {
-        ...state,
-        settingDetails:[]
-      }
-    }
+    
   }
 }

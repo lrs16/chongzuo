@@ -7,8 +7,10 @@ import {
   holidayDel,
   holidayId,
   holidayStart,
-  delmonth,
-  delId
+  tableGroupId,
+  scheduleId,
+  staffAdd,
+  staffUpdata
 } from '../services/shiftsandholidays';
 
 export default {
@@ -17,8 +19,8 @@ export default {
   state:{
     shiftSearcharr:[],
     holidaySearcharr:[],
-    holidayDetail:[]
-
+    holidayDetail:[],
+    settingDetails:[]
   },
 
   effects: {
@@ -67,6 +69,30 @@ export default {
     *fetchStart({ payload }, { call, put }) {
       return yield call(holidayStart,payload)
     },
+
+    *fetchscheduleDetail({ payload }, { call, put }) {
+      const response = yield call(scheduleId,payload);
+      yield put({
+        type:'settingDetails',
+        payload: response
+      })
+    },
+
+    *clearstaff({ payload }, { call, put }) {
+      yield put ({
+        type:'clear'
+      })
+    },
+
+     //  排版设置新增
+     *fetchstaffAdd({ payload }, { call, put }) {
+      return yield call(staffAdd,payload)
+    },
+
+     //  排版设置更新
+     *fetchstaffUpdata({ payload }, { call, put }) {
+      return yield call(staffUpdata,payload)
+    },
  
   },
 
@@ -83,6 +109,19 @@ export default {
         holidaySearcharr: acttion.payload.data
       }
     },
+
+    settingDetails(state, action) {
+      return {
+        ...state,
+        settingDetails: action.payload.data
+      }
+    },
+    clear(state,action) {
+      return {
+        ...state,
+        settingDetails:[]
+      }
+    }
 
 
   }

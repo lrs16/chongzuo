@@ -70,6 +70,24 @@ export async function scheduleId(id) {
   return request(`/duty/schedule/${id}`)
 }
 
+//  排版设置新增
+export async function staffAdd(params) {
+  return request(`/duty/schedule/add`,{
+    method:'POST',
+    body:JSON.stringify(params)
+  })
+}
+
+//  排版设置新增
+export async function staffUpdata(params) {
+  return request(`/duty/schedule/upd`,{
+    method:'POST',
+    body:JSON.stringify(params)
+  })
+}
+
+
+
 
 
 

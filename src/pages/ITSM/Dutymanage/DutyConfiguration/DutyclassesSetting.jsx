@@ -21,6 +21,7 @@ import {
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import AddDutyclassesSetting from './components/AddDutyclassesSetting';
+import SysDict from '@/components/SysDict';
 
 const { Option } = Select;
 
@@ -70,6 +71,7 @@ function DutyclassesSetting(props) {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [paginations, setPageinations] = useState({ current: 1, size: 15 });
   const [tabrecord, setTabRecord] = useState({});
+  const [selectdata, setSelectData] = useState('');
 
   const searchdata = (values, current, size) => {
     console.log('values: ', values);
@@ -80,8 +82,8 @@ function DutyclassesSetting(props) {
       current,
       size
     }
-    console.log(newdata,'newdata')
-    setTabRecord({...newdata})
+    console.log(newdata, 'newdata')
+    setTabRecord({ ...newdata })
     dispatch({
       type: 'shiftsandholidays/fetchshiftSearch',
       payload: newdata
@@ -172,7 +174,7 @@ function DutyclassesSetting(props) {
     }).then(res => {
       if (res.code === 200) {
         message.info(res.msg);
-        searchdata({},1,15)
+        searchdata({}, 1, 15)
       }
     })
   }
@@ -341,6 +343,15 @@ function DutyclassesSetting(props) {
 
   };
 
+  const hancleChange = (value, option) => {
+    const { values } = option.props;
+    setFieldsValue(
+      {
+        groupName: values,
+      }
+    )
+  }
+
   const onStartChange = (value, type) => {
     onChange('startValue', value, type);
   };
@@ -362,8 +373,8 @@ function DutyclassesSetting(props) {
 
   };
 
-   //  传给多标签的数据
-   const record = {
+  //  传给多标签的数据
+  const record = {
     shiftNo: '',
     creatorName: '',
     shiftName: '',
@@ -373,11 +384,11 @@ function DutyclassesSetting(props) {
   const cacheinfo = (location.state && location.state.cacheinfo === undefined) ? record : location.state.cacheinfo;
 
   useEffect(() => {
-    if(location.state) {
-      if(location.state.cache) {
+    if (location.state) {
+      if (location.state.cache) {
         dispatch({
-          type:'viewcache/gettabstate',
-          payload:{
+          type: 'viewcache/gettabstate',
+          payload: {
             cacheinfo: {
               ...tabrecord,
               paginations
@@ -387,26 +398,39 @@ function DutyclassesSetting(props) {
         })
       };
 
-      if(location.state.reset) {
+      if (location.state.reset) {
         handleReset();
       }
     }
-  },[location.state])
+  }, [location.state])
 
   // 设置时间
   useEffect(() => {
-    if(location && location.state && location.state.cacheinfo) {
+    if (location && location.state && location.state.cacheinfo) {
       setFieldsValue({
-        beginTime:moment(location.state.cacheinfo.beginTime),
-        endTime:moment(location.state.cacheinfo.endTime),
+        beginTime: moment(location.state.cacheinfo.beginTime),
+        endTime: moment(location.state.cacheinfo.endTime),
       })
     }
-  },[location.state])
+  }, [location.state])
 
-  
+  const getTypebyTitle = title => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.title === title)[0].children;
+    }
+    return []
+  };
+
+  const teamname = getTypebyTitle('班组名称');
 
   return (
     <PageHeaderWrapper title={pagetitle}>
+      <SysDict
+        typeid="1438058740916416514"
+        commonid="1354288354950123522"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'none' }}
+      />
       <Card>
         <Row gutter={8}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
@@ -535,9 +559,37 @@ function DutyclassesSetting(props) {
                 )}
               </Form.Item>
             </Col>
+
+            <Col span={8}>
+              <Form.Item label='班组名称'>
+                {getFieldDecorator('groupId', {
+
+                  // initialValue: classSetting.groupId
+                })(
+                  <Select placeholder="请选择" onChange={hancleChange}>
+                    {teamname.map(obj => [
+                      <Option
+                        key={obj.key}
+                        values={obj.title}
+                      >
+                        {obj.title}
+                      </Option>
+                    ])}
+                  </Select>
+                )}
+              </Form.Item>
+            </Col>
+
+            <Form.Item style={{ display: 'none' }}>
+              {getFieldDecorator('groupName', {
+                // initialValue: classSetting.groupName
+              })(<Input />)}
+            </Form.Item>
             <Col span={24} style={{ textAlign: 'right', paddingTop: 4 }}>{extra}</Col>
           </Form>
         </Row>
+
+
 
         {/* <div style={{ marginBottom: 24 }}>
         {/* <Button type="primary" style={{ marginRight: 8 }} onClick={() => newclasses()}>新增</Button > */}
