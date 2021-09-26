@@ -60,12 +60,13 @@ function Clause(props) {
         const submitData = {
           ...values,
           id: clause.id,
+          calc:values.calc === '加分项' ?'ADD':'SUB',
           title,
           score: scoreVisible ? values.score : `-${values.score}`
         }
 
         submitClause(submitData);
-        // setVisible(false)
+        setVisible(false)
       }
     })
   }
@@ -105,8 +106,8 @@ function Clause(props) {
             })
               (
                 <Select onChange={selectChange}>
-                  <Option value='ADD'>加分项</Option>
-                  <Option value='SUB'>扣分项</Option>
+                  <Option value='加分项'>加分项</Option>
+                  <Option value='扣分项'>扣分项</Option>
                 </Select>
               )
             }

@@ -259,8 +259,6 @@ function DutyaccordingSetting(props) {
     );
   };
 
-
-
   const handleClick = (selectkeys) => {
     sessionStorage.setItem('groupId', selectkeys.toString())
   }
@@ -274,6 +272,12 @@ function DutyaccordingSetting(props) {
       }
     })
   }
+
+  useEffect(() => {
+    if(files.ischange) {
+      getTable()
+    }
+  },[files])
 
   useEffect(() => {
     sessionStorage.setItem('groupId', '1438060967991177218')

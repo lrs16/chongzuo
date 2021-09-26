@@ -20,7 +20,9 @@ import styles from './index.less';
 // import StatisticsModal from './components/StatisticsModal';
 
 const { CheckableTag } = Tag;
-const tagsFromServer = [{ name: '本日', key: '1' }, { name: '本月', key: '2' }];
+const { RangePicker, MonthPicker } = DatePicker;
+const format = 'YYYY-MM-DD 00:00:00'
+const tagsFromServer = ['本日', '本月'];
 function Statistics(props) {
   const {
     statisticData,
@@ -29,44 +31,94 @@ function Statistics(props) {
     dispatch
   } = props;
 
-  const [selectedTags, setSelectedTags] = useState([{ name: '本日', key: '1' }]);
+  const [selectedTags, setSelectedTags] = useState(['本日']);
+  // .format('YYYY-MM-DD 00:00:00')
+  // .format('YYYY-MM-DD 23:59:59')
   const [selectTime, setSelectTime] = [{ start: moment(new Date()).format('YYYY-MM-DD 00:00:00'), end: moment(new Date).format('YYYY-MM-DD 23:59:59') }]
   const [time, setTime] = useState({
-    startValue: null,
-    endValue: null,
+    // startValue: moment(new Date()).format('YYYY-MM-DD'),
+    // endValue: moment(new Date()),
+    startValue:null,
+    endValue:null,
     endOpen: false,
   })
 
-  const getlist = (obj) => {
-    dispatch({
-      type: 'qualityassessment/fetchstatsRatio',
-      payload: {
-        beginTime: (obj && obj.startValue) ? moment(obj.startValue).format('YYYY-MM-DD HH:mm:ss') : selectTime.start,
-        endTime: (obj && obj.endValue) ? moment(obj.endValue).format('YYYY-MM-DD HH:mm:ss') : selectTime.end,
-        type: 'LIST'
-      }
-    })
+  const [monthTime, setMonthTime] = useState({
+    mode: ['month', 'month'],
+    value:[]
+    // value: [moment(moment().startOf('month').format('YYYY-MM-DD'), 'YYYY-MM-DD'), moment(moment().endOf('month').format('YYYY-MM-DD'), 'YYYY-MM-DD')]
+  })
+
+  const [currentDatatype, setCurrentDatatype] = useState('本日');
+
+  const getlist = (obj, tag) => {
+    if (tag === '本日') {
+      dispatch({
+        type: 'qualityassessment/fetchstatsRatio',
+        payload: {
+          beginTime: (obj && obj.startValue) ? moment(obj.startValue).format('YYYY-MM-DD HH:mm:ss') : selectTime.start,
+          endTime: (obj && obj.endValue) ? moment(obj.endValue).format('YYYY-MM-DD HH:mm:ss') : selectTime.end,
+          type: 'LIST'
+        }
+      })
+    } else {
+      dispatch({
+        type: 'qualityassessment/fetchstatsRatio',
+        payload: {
+          beginTime: (obj && obj[0]) ? moment(obj[0]).format('YYYY-MM-DD 00:00:00') : moment().startOf('month').format('YYYY-MM-DD 00:00:00'),
+          endTime: (obj && obj[1]) ? moment(obj[1]).endOf('month').format('YYYY-MM-DD 23:59:59') : moment().endOf('month').format('YYYY-MM-DD 23:59:59'),
+          type: 'LIST'
+        }
+      })
+    }
+
   }
 
-  const projectAssessment = (obj) => {
-    dispatch({
-      type: 'qualityassessment/fetchstatsSum',
-      payload: {
-        beginTime: (obj && obj.startValue) ? moment(obj.startValue).format('YYYY-MM-DD HH:mm:ss') : selectTime.start,
-        endTime: (obj && obj.endValue) ? moment(obj.endValue).format('YYYY-MM-DD HH:mm:ss') : selectTime.end,
-      }
-    })
+  const projectAssessment = (obj, tag) => {
+    if (tag === '本日') {
+      dispatch({
+        type: 'qualityassessment/fetchstatsSum',
+        payload: {
+          beginTime: (obj && obj.startValue) ? moment(obj.startValue).format('YYYY-MM-DD HH:mm:ss') : selectTime.start,
+          endTime: (obj && obj.endValue) ? moment(obj.endValue).format('YYYY-MM-DD HH:mm:ss') : selectTime.end,
+        }
+      })
+    }
+    if (tag === '本月') {
+      console.log('tag: ', tag);
+      dispatch({
+        type: 'qualityassessment/fetchstatsSum',
+        payload: {
+          beginTime: (obj && obj[0]) ? moment(obj[0]).format('YYYY-MM-DD HH:mm:ss') : moment().startOf('month').format('YYYY-MM-DD 00:00:00'),
+          endTime: (obj && obj[1]) ? moment(obj[1]).endOf('month').format('YYYY-MM-DD 23:59:59') : moment().endOf('month').format('YYYY-MM-DD 23:59:59'),
+        }
+      })
+    }
   }
+
+
+  const monthhandlePanelChange = (value, mode) => {
+    console.log('value: ', value);
+    setMonthTime({
+      value,
+      mode: [mode[0] === 'date' ? 'month' : mode[0], mode[1] === 'date' ? 'month' : mode[1]],
+    });
+  };
+
+  const monthhandleChange = value => {
+    setMonthTime({ value });
+  };
 
   const handleChange = (tag, checked) => {
     if (checked) {
       const obj = {
-        startValue: tag.name === "本日" ? moment(new Date()).format('YYYY-MM-DD 00:00:00') : moment().startOf('month').format('YYYY-MM-DD 00:00:00'),
-        endValue: tag.name === "本月" ? moment().endOf('month').format('YYYY-MM-DD 23:59:59') : moment(new Date()).format('YYYY-MM-DD 23:59:59'),
+        startValue: tag === "本日" ? moment(new Date()).format('YYYY-MM-DD 00:00:00') : moment().startOf('month').format('YYYY-MM-DD 00:00:00'),
+        endValue: tag === "本月" ? moment().endOf('month').format('YYYY-MM-DD 23:59:59') : moment(new Date()).format('YYYY-MM-DD 23:59:59'),
         endOpen: false,
       }
-      getlist(obj)
-      projectAssessment(obj);
+      getlist(obj, tag)
+      setCurrentDatatype(tag);
+      projectAssessment(obj, tag);
       setSelectedTags([tag])
     }
   }
@@ -125,8 +177,8 @@ function Statistics(props) {
   };
 
   useEffect(() => {
-    getlist();
-    projectAssessment()
+    getlist('', currentDatatype);
+    projectAssessment('', currentDatatype)
   }, [])
 
   useEffect(() => {
@@ -140,47 +192,86 @@ function Statistics(props) {
       <Card>
         <span style={{ fontSize: 16, fontWeight: 700, paddingRight: 12 }}>统计周期:</span>
         {
-          tagsFromServer.map(obj => (
+          tagsFromServer.map((obj, index) => (
             <CheckableTag
-              key={obj.key}
+              key={index}
               checked={selectedTags.indexOf(obj) > -1}
               onChange={checked => handleChange(obj, checked)}
-            >{obj.name}</CheckableTag>
+            >{obj}</CheckableTag>
           ))
         }
-        <DatePicker
-          disabledDate={disabledStartDate}
-          onChange={onStartChange}
-          onOpenChange={handleStartOpenChange}
-          showTime={{
-            hideDisabledOptions: true,
-            defaultValue: moment('00:00:00', 'HH:mm:ss'),
-          }}
-          value={time.startValue}
-          placeholder='开始时间'
-        />
-        <span style={{ display: 'inline-block', width: 24, textAlign: 'center' }}>-</span>
-        <DatePicker
-          disabledDate={disabledEndDate}
-          onChange={onEndChange}
-          open={time.endOpen}
-          onOpenChange={handleEndOpenChange}
-          value={time.endValue}
-          showTime={{
-            hideDisabledOptions: true,
-            defaultValue: moment('23:59:59', 'HH:mm:ss'),
-          }}
-          format='YYYY-MM-DD HH:mm:ss'
-          placeholder='结束时间'
-        />
 
-        <Button
-          onClick={() => { getlist(time); projectAssessment(time) }}
-          type='primary'
-          style={{ marginLeft: 10 }}
-        >
-          查询
-        </Button>
+        {
+          currentDatatype === '本日' && (
+            <>
+              <DatePicker
+                value={moment(new Date(), format)}
+                allowClear={false}
+                disabledDate={disabledStartDate}
+                onChange={onStartChange}
+                onOpenChange={handleStartOpenChange}
+                showTime={{
+                  hideDisabledOptions: true,
+                  defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                }}
+                value={time.startValue}
+                placeholder='开始时间'
+              />
+              <span style={{ display: 'inline-block', width: 24, textAlign: 'center' }}>-</span>
+              <DatePicker
+                allowClear
+                disabledDate={disabledEndDate}
+                onChange={onEndChange}
+                open={time.endOpen}
+                onOpenChange={handleEndOpenChange}
+                value={time.endValue}
+                showTime={{
+                  hideDisabledOptions: true,
+                  defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                }}
+                format='YYYY-MM-DD HH:mm:ss'
+                placeholder='结束时间'
+              />
+            </>
+          )
+        }
+
+        {
+          currentDatatype === '本月' && (
+            <RangePicker
+              allowClear={false}
+              // defaultValue={[moment(moment().startOf('month').format('YYYY-MM-DD'), 'YYYY-MM-DD'), moment(moment().endOf('month').format('YYYY-MM-DD'), 'YYYY-MM-DD')]}
+              placeholder={['Start month', 'End month']}
+              format="YYYY-MM"
+              value={monthTime.value}
+              mode={monthTime.mode}
+              onChange={monthhandleChange}
+              onPanelChange={monthhandlePanelChange}
+            />
+          )
+        }
+
+
+        {currentDatatype === '本日' && (
+          <Button
+            onClick={() => { getlist(time, currentDatatype); projectAssessment(time, currentDatatype) }}
+            type='primary'
+            style={{ marginLeft: 10 }}
+          >
+            查询
+          </Button>
+        )}
+
+        {currentDatatype === '本月' && (
+          <Button
+            onClick={() => { getlist(monthTime.value, currentDatatype); projectAssessment(monthTime.value, currentDatatype) }}
+            type='primary'
+            style={{ marginLeft: 10 }}
+          >
+            查询
+          </Button>
+        )}
+
       </Card>
 
       {(statisticData || []).map((obj) => {
@@ -204,7 +295,7 @@ function Statistics(props) {
         )
       })}
 
-      {statsSumdata && statsSumdata.length >0  && (
+      {statsSumdata && statsSumdata.length > 0 && (
         <div style={{ marginTop: 20 }}>
           <ChartCard title='项目考核情况'>
             <Barchart

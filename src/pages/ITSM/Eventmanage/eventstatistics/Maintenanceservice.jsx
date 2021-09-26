@@ -66,7 +66,9 @@ function Maintenanceservice(props) {
       setFieldsValue({ time2: moment(endTime) });
     } else {
       startTime = date.startOf('month').format('YYYY-MM-DD');
+      console.log('startTime: ', startTime);
       endTime = date.endOf('month').format('YYYY-MM-DD');
+      console.log('endTime: ', endTime);
     }
   }
 
