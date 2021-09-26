@@ -31,7 +31,7 @@ function Statistics(props) {
     dispatch
   } = props;
 
-  const [selectedTags, setSelectedTags] = useState(['本日']);
+  const [selectedTags, setSelectedTags] = useState(['本月']);
   // .format('YYYY-MM-DD 00:00:00')
   // .format('YYYY-MM-DD 23:59:59')
   const [selectTime, setSelectTime] = [{ start: moment(new Date()).format('YYYY-MM-DD 00:00:00'), end: moment(new Date).format('YYYY-MM-DD 23:59:59') }]
@@ -49,7 +49,7 @@ function Statistics(props) {
     // value: [moment(moment().startOf('month').format('YYYY-MM-DD'), 'YYYY-MM-DD'), moment(moment().endOf('month').format('YYYY-MM-DD'), 'YYYY-MM-DD')]
   })
 
-  const [currentDatatype, setCurrentDatatype] = useState('本日');
+  const [currentDatatype, setCurrentDatatype] = useState('本月');
 
   const getlist = (obj, tag) => {
     if (tag === '本日') {
@@ -65,7 +65,7 @@ function Statistics(props) {
       dispatch({
         type: 'qualityassessment/fetchstatsRatio',
         payload: {
-          beginTime: (obj && obj[0]) ? moment(obj[0]).format('YYYY-MM-DD 00:00:00') : moment().startOf('month').format('YYYY-MM-DD 00:00:00'),
+          beginTime: (obj && obj[0]) ? moment(obj[0]).startOf('month').format('YYYY-MM-DD 00:00:00') : moment().startOf('month').format('YYYY-MM-DD 00:00:00'),
           endTime: (obj && obj[1]) ? moment(obj[1]).endOf('month').format('YYYY-MM-DD 23:59:59') : moment().endOf('month').format('YYYY-MM-DD 23:59:59'),
           type: 'LIST'
         }
@@ -89,7 +89,7 @@ function Statistics(props) {
       dispatch({
         type: 'qualityassessment/fetchstatsSum',
         payload: {
-          beginTime: (obj && obj[0]) ? moment(obj[0]).format('YYYY-MM-DD HH:mm:ss') : moment().startOf('month').format('YYYY-MM-DD 00:00:00'),
+          beginTime: (obj && obj[0]) ? moment(obj[0]).startOf('month').format('YYYY-MM-DD HH:mm:ss') : moment().startOf('month').format('YYYY-MM-DD 00:00:00'),
           endTime: (obj && obj[1]) ? moment(obj[1]).endOf('month').format('YYYY-MM-DD 23:59:59') : moment().endOf('month').format('YYYY-MM-DD 23:59:59'),
         }
       })

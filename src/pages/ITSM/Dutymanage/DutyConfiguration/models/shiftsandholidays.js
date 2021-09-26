@@ -6,7 +6,9 @@ import {
   holidaySearch,
   holidayDel,
   holidayId,
-  holidayStart
+  holidayStart,
+  delmonth,
+  delId
 } from '../services/shiftsandholidays';
 
 export default {
@@ -64,7 +66,8 @@ export default {
 
     *fetchStart({ payload }, { call, put }) {
       return yield call(holidayStart,payload)
-    }
+    },
+ 
   },
 
   reducers: {

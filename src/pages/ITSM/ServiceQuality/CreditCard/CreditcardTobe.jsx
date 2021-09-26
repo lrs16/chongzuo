@@ -61,7 +61,7 @@ function CreditcardTobe(props) {
       locked: '0',
     };
     dispatch({
-      type: 'performanceappraisal/getMycardtobe',
+      type: `${pagetitle === '计分卡登记' ? 'performanceappraisal/getMycardtobe' : 'performanceappraisal/getscorecardlistPage'}`,
       payload: {
         ...values,
         beginTime: values.evaluationInterval?.length

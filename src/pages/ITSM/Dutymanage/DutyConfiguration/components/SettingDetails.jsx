@@ -11,7 +11,8 @@ import {
   Col,
   Row,
   Table,
-  Checkbox
+  Checkbox,
+  message
 } from 'antd';
 import { connect } from 'dva';
 import moment from 'moment';
@@ -200,8 +201,19 @@ function SettingDetails(props) {
     })
   }
 
-  const handleDelete = (id) => {
-    onDelete(id)
+  const handleDelete = () => {
+    return dispatch({
+      type: 'dutyandtypesetting/fetchdelId',
+      payload: {id}
+    }).then(res => {
+      if (res.code === 200) {
+        message.info(res.msg)
+        setVisible(false)
+      } else {
+        message.error(res.msg)
+        setVisible(false)
+      }
+    })
   }
 
   const startOnchange = (time, timeString) => {
@@ -390,7 +402,7 @@ function SettingDetails(props) {
                           message: '请选择时间',
                         },
                       ],
-                      initialValue: settingDetails.beginTime ? moment(settingDetails.beginTime, format) : ''
+                      initialValue: settingDetails.shift.beginTime ? moment(settingDetails.shift.beginTime, format) : ''
                     },
                   )(
                     <TimePicker
@@ -416,7 +428,7 @@ function SettingDetails(props) {
                           message: '请选择时间',
                         },
                       ],
-                      initialValue: settingDetails.endTime ? moment(settingDetails.endTime, format) : ''
+                      initialValue: settingDetails.shift.endTime ? moment(settingDetails.shift.endTime, format) : ''
                     },
                   )(
                     <TimePicker
@@ -500,6 +512,7 @@ SettingDetails.defaultProps = {
     staffPhone: '',
     dutyDate: '',
     weekday: '',
+    shift:{beginTime:'',endTime:''},
     creatorName: sessionStorage.getItem('userName'),
     createtime: '',
     ctime: '',

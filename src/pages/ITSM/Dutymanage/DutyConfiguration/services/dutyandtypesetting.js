@@ -57,6 +57,24 @@ export async function staffUpdata(params) {
   })
 }
 
+//  删除月排班
+export async function delmonth(params) {
+  return request(`/duty/schedule/delmonth`,{
+    method:'POST',
+    data:params,
+    requestType:'form'
+  })
+}
+
+//  删除日
+export async function delId(params) {
+  return request(`/duty/schedule/del`,{
+    method:'POST',
+    data:params,
+    requestType:'form'
+  })
+}
+
 
 
 

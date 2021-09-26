@@ -10,33 +10,6 @@ import { load } from 'react-cookies';
 
 const { Sider, Content } = Layout;
 const { TreeNode } = Tree;
-const calenData = [
-  [
-    { type: 'warning', content: '张三(早班)', params1: 1, params2: 2, params3: 3 },
-    { type: 'success', content: '李四(中班)' },
-    { type: 'success', content: '王五(夜班)' },
-    { type: 'success', content: '小明(行政班班)' },
-  ],
-
-  [
-    { type: 'warning', content: '张三(早班)', params1: 1, params2: 2, params3: 3 },
-    { type: 'success', content: '李四(中班)' },
-    { type: 'success', content: '王五(夜班)' },
-    { type: 'success', content: '小明(行政班班)' },
-  ],
-  [
-    { type: 'warning', content: '张三(早班)', params1: 1, params2: 2, params3: 3 },
-    { type: 'success', content: '李四(中班)' },
-    { type: 'success', content: '王五(夜班)' },
-    { type: 'success', content: '小明(行政班班)' },
-    // { type: 'warning', content: '小绿(早班)' },
-    // { type: 'success', content: '美团(中班)' },
-    // { type: 'error', content: '支付宝(夜班)' },
-    // { type: 'error', content: '微信(行政班班)' },
-    // { type: 'error', content: '花呗(行政班班)' },
-    // { type: 'error', content: '余额宝(行政班班)' },
-  ],
-];
 
 function DutyaccordingSetting(props) {
   const pagetitle = props.route.name;
@@ -46,12 +19,14 @@ function DutyaccordingSetting(props) {
     loading
   } = props;
 
+
   const [currentmonth, setCurrentmonth] = useState(
     moment()
       .startOf('month')
       .format('YYYY-MM-DD')
       .split('-')[1],
   );
+  const [currentMode, setCurrentMode] = useState(moment(new Date()).format('YYYY'))
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [selectdata, setSelectData] = useState('');
 
@@ -167,6 +142,8 @@ function DutyaccordingSetting(props) {
 
   //  年月日面板的切换
   const onPanelChange = (value, mode) => {
+    console.log('value, mode: ', value, mode);
+    const currentYear = moment(value).format('YYYY');
     // console.log('value, mode: ', value, mode);
     // console.log(value.startOf('month').format('YYYY-MM-DD HH:mm:ss')); // 开始
     // console.log(value.endOf('month').format('YYYY-MM-DD HH:mm:ss')); // 开始
@@ -176,16 +153,13 @@ function DutyaccordingSetting(props) {
         .split('-')[1];
       //  去请求接口
       setCurrentmonth(changeMonth);
+      setCurrentMode(currentYear)
     }
   };
 
 
-
-  const handleSelect = value => {
-  };
-
   const handleSubmit = (newdata) => {
-    if(!newdata.id) {
+    if (!newdata.id) {
       return dispatch({
         type: 'dutyandtypesetting/fetchstaffAdd',
         payload: newdata
@@ -197,9 +171,9 @@ function DutyaccordingSetting(props) {
           message.info(res.msg)
         }
       })
-    } 
+    }
 
-    if(newdata.id) {
+    if (newdata.id) {
       return dispatch({
         type: 'dutyandtypesetting/fetchstaffUpdata',
         payload: newdata
@@ -211,9 +185,9 @@ function DutyaccordingSetting(props) {
           message.info(res.msg)
         }
       })
-    } 
-  
-  
+    }
+
+
   }
 
   //  渲染树结构
@@ -242,11 +216,11 @@ function DutyaccordingSetting(props) {
             id={item.id}
             onSubmit={handleSubmit}
             groupId={item.groupId}
-            // settingDetails={{
-            //   params1: item.params1,
-            //   params2: item.params2,
-            //   params3: item.params3,
-            // }}
+          // settingDetails={{
+          //   params1: item.params1,
+          //   params2: item.params2,
+          //   params3: item.params3,
+          // }}
           >
             <li key={item.id}>
 
@@ -273,11 +247,25 @@ function DutyaccordingSetting(props) {
     })
   }
 
+  const handleDelete = () => {
+    return dispatch({
+      type: 'dutyandtypesetting/fetchDelmonth',
+      payload: {
+        year: currentMode,
+        month: currentmonth
+      }
+    }).then(res => {
+      if (res.code === 200) {
+        message.info(res.msg)
+      }
+    })
+  }
+
   useEffect(() => {
-    if(files.ischange) {
+    if (files.ischange) {
       getTable()
     }
-  },[files])
+  }, [files])
 
   useEffect(() => {
     sessionStorage.setItem('groupId', '1438060967991177218')
@@ -303,83 +291,90 @@ function DutyaccordingSetting(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-
-      <Layout>
-        <Card title='所属班组'>
-          <Sider theme="light">
-            {
-              teamname && teamname.length > 0 && (
-                <Tree
-                  defaultSelectedKeys={['1438060967991177218']}
-                  onSelect={handleClick}
-                  defaultExpandAll
-                >
-                  {renderTreeNodes(teamname)}
-                </Tree>
-              )
-            }
-
-          </Sider>
-        </Card>
-
-        <Card style={{ marginLeft: 10 }}>
-          <Content >
-            {
-              pagetitle === '排班设置' && (
-                <div style={{ backgroundColor: 'white', paddingBottom: 7 }}>
-                  <SettingDetails
-                    title='新增排班信息'
-                    onSubmit={handleSubmit}
-                    settingDetails=''
-                    id=''
+      <>
+        <Layout>
+          <Card title='所属班组'>
+            <Sider theme="light">
+              {
+                teamname && teamname.length > 0 && (
+                  <Tree
+                    defaultSelectedKeys={['1438060967991177218']}
+                    onSelect={handleClick}
+                    defaultExpandAll
                   >
-                    <Button type="primary" style={{ marginRight: 8 }}>
-                      新增
+                    {renderTreeNodes(teamname)}
+                  </Tree>
+                )
+              }
+
+            </Sider>
+          </Card>
+
+          <Card style={{ marginLeft: 10 }}>
+            <Content >
+              {
+                pagetitle === '排班设置' && (
+                  <div style={{ backgroundColor: 'white', paddingBottom: 7 }}>
+                    <Button
+                      type="danger"
+                      style={{ marginRight: 8 }}
+                      ghost
+                      onClick={handleDelete}
+                    >
+                      删除
                     </Button>
-                  </SettingDetails>
 
-                  <Button type="primary" style={{ marginRight: 8 }}>
-                    下载导入模板
-                  </Button>
+                    <SettingDetails
+                      title='新增排班信息'
+                      onSubmit={handleSubmit}
+                      settingDetails=''
+                      id=''
+                    >
+                      <Button type="primary" style={{ marginRight: 8 }}>
+                        新增
+                      </Button>
+                    </SettingDetails>
 
-                  <Button type="primary" style={{ marginRight: 8 }}>
-                    导出
-                  </Button>
+                    <Button type="primary" style={{ marginRight: 8 }}>
+                      下载导入模板
+                    </Button>
 
-                  <Dutyexcel
-                    fileslist={[]}
-                    ChangeFileslist={newvalue => setFiles(newvalue)}
-                  />
-
-
-                  {/* <Button type="danger" ghost>
-                    删除
-                  </Button> */}
-                </div>
-              )
-            }
-
-            <div style={{ backgroundColor: 'white' }}>
-              行政班:（09:00-17:30 ） 早班:（ 09:00-16:00 ） 中班:（16:00-22:00）
-              晚班:（22:00-次09:00）
-            </div>
-
-            <Card>
-              <Calendar
-                onPanelChange={onPanelChange}
-                dateCellRender={dateCellRender}
-                onSelect={handleSelect}
-                shownextprevmonth={false}
-              />
-            </Card>
-
-          </Content>
-
-        </Card>
+                    <Button type="primary" style={{ marginRight: 8 }}>
+                      导出
+                    </Button>
 
 
 
-      </Layout>
+                    <Dutyexcel
+                      fileslist={[]}
+                      ChangeFileslist={newvalue => setFiles(newvalue)}
+                    />
+                  </div>
+                )
+              }
+
+              <div style={{ backgroundColor: 'white' }}>
+                行政班:（09:00-17:30 ） 早班:（ 09:00-16:00 ） 中班:（16:00-22:00）
+                晚班:（22:00-次09:00）
+              </div>
+
+              <Card>
+                <Calendar
+                  onPanelChange={onPanelChange}
+                  dateCellRender={dateCellRender}
+                  shownextprevmonth={false}
+                />
+              </Card>
+
+            </Content>
+
+          </Card>
+
+
+
+        </Layout>
+
+      </>
     </PageHeaderWrapper>
   );
 }
@@ -387,6 +382,6 @@ function DutyaccordingSetting(props) {
 export default
   connect(({ dutyandtypesetting, loading }) => ({
     tableArr: dutyandtypesetting.tableArr,
-    loading: dutyandtypesetting.loading
+    loading: loading.models.dutyandtypesetting
   }))(DutyaccordingSetting);
 

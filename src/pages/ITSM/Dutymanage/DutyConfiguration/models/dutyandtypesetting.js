@@ -6,7 +6,9 @@ import {
   staffAdd,
   tableGroupId,
   scheduleId,
-  staffUpdata
+  staffUpdata,
+  delmonth,
+  delId
 } from '../services/dutyandtypesetting';
 
 export default {
@@ -69,7 +71,15 @@ export default {
       yield put ({
         type:'clear'
       })
-    }
+    },
+    *fetchDelmonth({ payload }, { call, put }) {
+      return yield call(delmonth,payload)
+    },
+
+    // 
+    *fetchdelId({ payload }, { call, put }) {
+      return yield call(delId,payload)
+    },
   },
 
   reducers: {
