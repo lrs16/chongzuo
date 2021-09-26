@@ -295,7 +295,7 @@ function MessagesList(props) {
                 <Form.Item label="告警内容">{getFieldDecorator('content ')(<Input />)}</Form.Item>
               </Col>
               <Col span={8}>
-                <Form.Item label="告警时间">
+                {/* <Form.Item label="告警时间">
                   <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                     {getFieldDecorator('time1', {
                       initialValue: '',
@@ -327,7 +327,7 @@ function MessagesList(props) {
                       />
                     )}
                   </div>
-                </Form.Item>
+                </Form.Item> */}
               </Col>
             </>
           )}

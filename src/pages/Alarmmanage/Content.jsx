@@ -76,7 +76,7 @@ function Today(props) {
   }, [tabActivekey]);
 
   useEffect(() => {
-    if (tabdate) {
+    if (tabdate && distkey === 'measuralarm') {
       handleTabChange('告警概览')
     }
   }, [tabdate])
@@ -84,7 +84,7 @@ function Today(props) {
   return (
     <>
       <Card
-        tabList={tabkeyDist}
+        tabList={(distkey === 'measuralarm' || (distkey !== 'measuralarm' && tabActivekey === 'today')) ? tabkeyDist : null}
         activeTabKey={activeTabKey}
         onTabChange={key => { handleTabChange(key) }}
         style={{ marginTop: 24, marginBottom: `${tabActivekey === 'today' ? '-50px' : '-1px'}` }}

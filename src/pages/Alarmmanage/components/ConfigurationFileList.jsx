@@ -387,7 +387,7 @@ function ConfigurationFileList(props) {
               </Form.Item>
             </Col>
 
-            {expand === true && (
+            {expand && (
               <>
                 {pagetitle === '配置文件变更告警' && (
                   <>
@@ -417,7 +417,7 @@ function ConfigurationFileList(props) {
                     </Col>
                   </>
                 )}
-                <Col span={8}>
+                {/* <Col span={8}>
                   <Form.Item label="告警时间">
                     <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                       {getFieldDecorator('time1', {
@@ -451,10 +451,10 @@ function ConfigurationFileList(props) {
                       )}
                     </div>
                   </Form.Item>
-                </Col>
+                </Col> */}
               </>
             )}
-            <Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>
+            {(expand || pagetitle === '时钟巡检告警') ? (<Col span={8} >{extra}</Col>) : (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>)}
           </Row>
         </Form>
         <ButtonGroup selectedRowKeys={selectedRowKeys} selectRowdata={selectRowdata} />

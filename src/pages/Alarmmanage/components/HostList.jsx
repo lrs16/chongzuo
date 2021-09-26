@@ -494,7 +494,7 @@ function HostList(props) {
                     </Form.Item>
                   </Col>
                 )}
-                <Col span={8}>
+                {/* <Col span={8}>
                   <Form.Item label="告警时间">
                     <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                       {getFieldDecorator('time1', {
@@ -528,7 +528,7 @@ function HostList(props) {
                       )}
                     </div>
                   </Form.Item>
-                </Col>
+                </Col> */}
                 <Col span={8}>
                   <Form.Item label="告警确认时间">
                     <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
@@ -601,7 +601,7 @@ function HostList(props) {
                 </Col>
               </>
             )}
-            {(expand && pagetitle === '主机巡检告警') ? (<Col span={8}><Form.Item>{extra}</Form.Item></Col>) : (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>)}
+            {(expand && pagetitle !== '主机巡检告警') ? (<Col span={8}><Form.Item>{extra}</Form.Item></Col>) : (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>)}
           </Row>
         </Form>
 

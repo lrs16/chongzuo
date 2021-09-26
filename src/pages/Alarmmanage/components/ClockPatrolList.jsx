@@ -257,7 +257,7 @@ function ClockPatrolList(props) {
                 )}
               </Form.Item>
             </Col>
-            <Col span={10}>
+            {/* <Col span={10}>
               <Form.Item label="告警时间">
                 <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                   {getFieldDecorator('time1', {
@@ -291,7 +291,7 @@ function ClockPatrolList(props) {
                   )}
                 </div>
               </Form.Item>
-            </Col>
+            </Col> */}
             <Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>
           </Row>
         </Form>
