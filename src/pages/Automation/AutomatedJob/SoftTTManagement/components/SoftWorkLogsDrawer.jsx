@@ -71,17 +71,17 @@ function SoftWorkLogsDrawer(props) {
             ...paginations,
             current: 1,
         });
-        // searchdata(1, paginations.pageSize);
+        searchdata(1, paginations.pageSize);
     };
 
     const handleReset = () => {
         resetFields();
-        // searchdata(1, 15);
+        searchdata(1, 15);
         setPageinations({ current: 1, pageSize: 15 });
     };
 
     const onShowSizeChange = (page, size) => {
-        // searchdata(page, size);
+        searchdata(page, size);
         setPageinations({
             ...paginations,
             pageSize: size,
@@ -89,7 +89,7 @@ function SoftWorkLogsDrawer(props) {
     };
 
     const changePage = page => {
-        // searchdata(page, paginations.pageSize);
+        searchdata(page, paginations.pageSize);
         setPageinations({
             ...paginations,
             current: page,
@@ -160,8 +160,8 @@ function SoftWorkLogsDrawer(props) {
         },
         {
             title: '执行类型',
-            dataIndex: 'hostAddress',
-            key: 'hostAddress',
+            dataIndex: 'workType',
+            key: 'workType',
             width: 200,
         },
         {
@@ -198,9 +198,8 @@ function SoftWorkLogsDrawer(props) {
         return [];
     };
 
-    // const typemap = getTypebyId('100000000000001002');         // 类型
-    const statusmap = getTypebyId('100000000000001003');       // 状态
-    const zonemap = getTypebyId('100000000000001004');         // 区域
+    const executestatusmap = getTypebyId('200000000000001004');       // 执行状态
+    const worktypemap = getTypebyId('200000000000001007');         // 区域
 
     return (
         <Drawer
@@ -212,7 +211,7 @@ function SoftWorkLogsDrawer(props) {
             destroyOnClose
         >
             <DictLower
-                typeid="100000000000001001"
+                typeid="200000000000001001"
                 ChangeSelectdata={newvalue => setSelectData(newvalue)}
                 style={{ display: 'none' }}
             />
@@ -224,8 +223,8 @@ function SoftWorkLogsDrawer(props) {
                                 initialValue: '',
                             })(
                                 <Select placeholder="请选择" allowClear>
-                                    {zonemap.map(obj => (
-                                        <Option key={obj.key} value={obj.title}>
+                                    {executestatusmap.map(obj => (
+                                        <Option key={obj.key} value={obj.dict_code}>
                                             {obj.title}
                                         </Option>
                                     ))}
@@ -234,12 +233,12 @@ function SoftWorkLogsDrawer(props) {
                     </Col>
                     <Col span={8}>
                         <Form.Item label="执行类型">
-                            {getFieldDecorator('hostAddress', {
+                            {getFieldDecorator('workType', {
                                 initialValue: '',
                             })(
                                 <Select placeholder="请选择" allowClear>
-                                    {statusmap.map(obj => (
-                                        <Option key={obj.key} value={obj.title}>
+                                    {worktypemap.map(obj => (
+                                        <Option key={obj.key} value={obj.dict_code}>
                                             {obj.title}
                                         </Option>
                                     ))}
@@ -275,7 +274,7 @@ function SoftWorkLogsDrawer(props) {
                     title={title}
                     visible={visiblelog}
                     orderIdPre={recordvalues.id}
-                    orderTypePre='softwork'
+                    orderTypePre='trouble'
                     orderTypeSuf='trouble'
                     ChangeVisible={(v) => setVisible(v)}
                 />

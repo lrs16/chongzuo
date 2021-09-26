@@ -264,8 +264,8 @@ function JobConfig(props) {
         },
         {
             title: '审核说明',
-            dataIndex: 'examineRemarks',
-            key: 'examineRemarks',
+            dataIndex: 'taskRemarks',
+            key: 'taskRemarks',
             width: 250,
         },
         {

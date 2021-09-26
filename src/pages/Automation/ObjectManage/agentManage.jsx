@@ -293,7 +293,7 @@ function TestEnvironmentManage(props) {
                 })(
                   <Select placeholder="请选择" allowClear>
                     {typemap.map(obj => (
-                      <Option key={obj.key} value={obj.title}>
+                      <Option key={obj.key} value={obj.dict_code}>
                         {obj.title}
                       </Option>
                     ))}
@@ -307,7 +307,7 @@ function TestEnvironmentManage(props) {
                 })(
                   <Select placeholder="请选择" allowClear>
                     {statusmap.map(obj => (
-                      <Option key={obj.key} value={obj.title}>
+                      <Option key={obj.key} value={obj.dict_code}>
                         {obj.title}
                       </Option>
                     ))}

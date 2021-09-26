@@ -73,6 +73,7 @@ function AddagentObjDrawer(props) {
 
     const searchdata = (page, size) => {
         const values = getFieldsValue();
+        // values.softStatus = '在用';
         dispatch({
             type: 'autosoftwork/findautoSoftObjectList',
             payload: {
@@ -204,7 +205,7 @@ function AddagentObjDrawer(props) {
             width: 120,
             render: (text, record) => (
                 <span>
-                    <Badge status={colormap.get(record.agentStatus)} text={text} />
+                    <Badge status={colormap.get(record.softStatus)} text={text} />
                 </span>
             ),
         },
@@ -262,9 +263,14 @@ function AddagentObjDrawer(props) {
         return [];
     };
 
-    // const typemap = getTypebyId('100000000000001002');         // 类型
-    const statusmap = getTypebyId('100000000000001003');       // 状态
-    const zonemap = getTypebyId('100000000000001004');         // 区域
+    const statusmap = [{
+        key: '0',
+        title: '在用'
+    }, {
+        key: '1',
+        title: '停用'
+    }];       // 状态
+    const zonemap = getTypebyId('1428182995477942274'); // 主机区域
 
     return (
         <Drawer
@@ -276,7 +282,7 @@ function AddagentObjDrawer(props) {
             destroyOnClose
         >
             <DictLower
-                typeid="100000000000001001"
+                typeid="1428178684907835393"
                 ChangeSelectdata={newvalue => setSelectData(newvalue)}
                 style={{ display: 'none' }}
             />
@@ -284,7 +290,7 @@ function AddagentObjDrawer(props) {
                 <Form {...formItemLayout} onSubmit={handleSearch}>
                     <Col span={8}>
                         <Form.Item label="区域">
-                            {getFieldDecorator('hostZoneId ', {
+                            {getFieldDecorator('hostZoneId', {
                                 initialValue: '',
                             })(
                                 <Select placeholder="请选择" allowClear>
@@ -341,7 +347,7 @@ function AddagentObjDrawer(props) {
                     <Col span={8}>
                         <Form.Item label="软件状态">
                             {getFieldDecorator('softStatus', {
-                                initialValue: '1',
+                                initialValue: '在用',
                             })(
                                 <Select placeholder="请选择" allowClear>
                                     {statusmap.map(obj => (

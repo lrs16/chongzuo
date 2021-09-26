@@ -141,7 +141,7 @@ function HostDetailView(props) {
             </Button>
             <Button type="primary" style={{ marginRight: 8 }}>
               {/* onClick={download} */}
-              下载
+              下载巡检明细
             </Button>
             <Button type="primary">
                 <Link to="/automation/automaticinspection/hostpatrol">返回列表</Link>

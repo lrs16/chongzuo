@@ -8,7 +8,7 @@ import moment from 'moment';
 import { Table, Card, Button, Form, Input, Select, Row, Col, DatePicker, Divider, message, Popconfirm } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
-// import DictLower from '@/components/SysDict/DictLower';
+import DictLower from '@/components/SysDict/DictLower';
 import { runAutoSoftWork, stopAutoSoftWork, endAutoSoftWork } from './services/api';
 import TaskWorkObjectModel from './components/TaskWorkObjectModel';
 import SoftWorkLogsDrawer from './components/SoftWorkLogsDrawer';
@@ -46,7 +46,7 @@ function SoftTTExecute(props) {
   } = props;
 
   const [expand, setExpand] = useState(false);
-  // const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
+  const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [visibledrawer, setVisibledrawer] = useState(false); // 抽屉是否显示
   const [titledrawer, setTitledrawer] = useState('');
@@ -244,7 +244,7 @@ function SoftTTExecute(props) {
           <div>
             <Popconfirm title="是否确定启动软件？" onConfirm={() => torunAutoSoftWork(record.id)}>
               <a type="link"
-                // disabled={disable}
+              // disabled={disable}
               >
                 启动
               </a>
@@ -260,7 +260,7 @@ function SoftTTExecute(props) {
             <Divider type="vertical" />
             <Popconfirm title="是否确定结束作业？" onConfirm={() => toendAutoSoftWork(record.id)}>
               <a type="link"
-                // disabled={disable}
+              // disabled={disable}
               >
                 结束作业
               </a>
@@ -278,24 +278,23 @@ function SoftTTExecute(props) {
   ];
 
   // 数据字典取下拉值
-  // const getTypebyId = key => {
-  //   if (selectdata.ischange) {
-  //     return selectdata.arr[0].children.filter(item => item.key === key)[0].children;
-  //   }
-  //   return [];
-  // };
+  const getTypebyId = key => {
+    if (selectdata.ischange) {
+      return selectdata.arr[0].children.filter(item => item.key === key)[0].children;
+    }
+    return [];
+  };
 
-  // const zonemap = getTypebyId('1428182995477942274'); // 区域
-  const statusmap = [];
-  const checkresultsmap = [];
+  const statusmap = getTypebyId('200000000000001006'); // 状态
+  const checkresultsmap = getTypebyId('200000000000001005'); // 审核结果
 
   return (
     <PageHeaderWrapper title={pagetitle}>
-      {/* <DictLower
-        typeid="1428178684907835393"
+      <DictLower
+        typeid="200000000000001001"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
-      /> */}
+      />
       <Card>
         <Row gutter={16}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
@@ -341,11 +340,11 @@ function SoftTTExecute(props) {
             </Col>
             <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
               <Form.Item label="状态">
-                {getFieldDecorator('examineStatus', {
-                  initialValue: '1',
+                {getFieldDecorator('workStatus', {
+                  initialValue: '',
                 })(<Select placeholder="请选择" allowClear>
                   {statusmap.map(obj => (
-                    <Option key={obj.key} value={obj.title}>
+                    <Option key={obj.key} value={obj.dict_code}>
                       {obj.title}
                     </Option>
                   ))}
@@ -354,11 +353,11 @@ function SoftTTExecute(props) {
             </Col>
             <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
               <Form.Item label="审核结果">
-                {getFieldDecorator('checkResults', {
+                {getFieldDecorator('examineStatus', {
                   initialValue: '',
                 })(<Select placeholder="请选择" allowClear>
                   {checkresultsmap.map(obj => (
-                    <Option key={obj.key} value={obj.title}>
+                    <Option key={obj.key} value={obj.dict_code}>
                       {obj.title}
                     </Option>
                   ))}
@@ -408,14 +407,14 @@ function SoftTTExecute(props) {
             {expand ? (<Col span={24} style={{ marginTop: 4, textAlign: 'right' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
           </Form>
         </Row>
-        <Table
+        {autosoftworklist.rows && (<Table
           columns={columns}
-          dataSource={autosoftworklist.rows}
+          dataSource={autosoftworklist.rows.filter(item => item.workStatus !== '已登记')}
           loading={loading}
           rowKey={(_, index) => index.toString()}
           pagination={pagination}
           scroll={{ x: 1300 }}
-        />
+        />)}
       </Card>
       {/* 抽屉 */}
       <SoftWorkLogsDrawer

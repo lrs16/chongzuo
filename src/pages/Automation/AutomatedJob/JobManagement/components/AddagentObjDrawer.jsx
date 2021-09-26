@@ -19,8 +19,8 @@ const formItemLayout = {
 };
 
 const colormap = new Map([
-    ['停用', 'default'],
-    ['在用', 'success'],
+    ['离线', 'default'],
+    ['在线', 'success'],
 ]);
 
 function AddagentObjDrawer(props) {
@@ -290,7 +290,7 @@ function AddagentObjDrawer(props) {
                             })(
                                 <Select placeholder="请选择" allowClear>
                                     {zonemap.map(obj => (
-                                        <Option key={obj.key} value={obj.title}>
+                                        <Option key={obj.key} value={obj.dict_code}>
                                             {obj.title}
                                         </Option>
                                     ))}
@@ -304,7 +304,7 @@ function AddagentObjDrawer(props) {
                             })(
                                 <Select placeholder="请选择" allowClear>
                                     {typemap.map(obj => (
-                                        <Option key={obj.key} value={obj.title}>
+                                        <Option key={obj.key} value={obj.dict_code}>
                                             {obj.title}
                                         </Option>
                                     ))}
@@ -314,11 +314,11 @@ function AddagentObjDrawer(props) {
                     <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
                         <Form.Item label="agent状态">
                             {getFieldDecorator('agentStatus', {
-                                initialValue: '1',
+                                initialValue: '',
                             })(
                                 <Select placeholder="请选择" allowClear>
                                     {statusmap.map(obj => (
-                                        <Option key={obj.key} value={obj.title}>
+                                        <Option key={obj.key} value={obj.dict_code}>
                                             {obj.title}
                                         </Option>
                                     ))}

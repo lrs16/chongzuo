@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
-import { Drawer, Button, Table, Row, Col, Input, Form, Select, Layout } from 'antd';
+import { Drawer, Button, Table, Row, Col, Input, Form, Select, Layout, message } from 'antd';
 import { querkeyVal } from '@/services/api'
 
 const { Option } = Select;
@@ -53,17 +53,23 @@ function RelationDrawer(props) {
   };
 
   const handleSave = () => {
-    // 保存
-    dispatch({
-      type: 'relationorder/saverelation',
-      payload: {
-        orderIdPre,
-        orderIdSuf: selectedRowKeys,
-        orderTypePre,
-        orderTypeSuf,
-        relationType: 1
-      },
-    });
+    const len = selectedRowKeys.length;
+    if (len === 0) {
+      message.error('您还没有选择数据');
+    } else {
+      // 保存
+      dispatch({
+        type: 'relationorder/saverelation',
+        payload: {
+          orderIdPre,
+          orderIdSuf: selectedRowKeys,
+          orderTypePre,
+          orderTypeSuf,
+          relationType: 1
+        },
+      });
+      setSelectedRowKeys([]);
+    };
   }
 
   const hanldleCancel = () => {
@@ -96,6 +102,12 @@ function RelationDrawer(props) {
     const values = getFieldsValue();
     handleSearch(values.no, values.status, 0, 15);
   }
+
+  const handleReset = () => { // 重置
+    resetFields();
+    const values = getFieldsValue();
+    handleSearch(values.no, values.status, 0, 15);
+  };
 
   const onShowSizeChange = (page, size) => {
     const values = getFieldsValue();
@@ -222,7 +234,8 @@ function RelationDrawer(props) {
 
                 <Col span={6} style={{ paddingTop: 4 }}>
                   <Button type='primary' style={{ marginLeft: 16 }} onClick={() => handleSumit()} >查询</Button>
-                  <Button style={{ marginLeft: 8 }} onClick={() => { resetFields(); handleSearch() }}>重置</Button>
+                  {/* <Button style={{ marginLeft: 8 }} onClick={() => { resetFields(); handleSearch() }}>重置</Button> */}
+                  <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重置</Button>
                 </Col>
               </Form>
             </Row>

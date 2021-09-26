@@ -205,6 +205,12 @@ function ManualLog(props) {
             ),
         },
         {
+            title: '数据返回时间',
+            dataIndex: 'executeResultTime',
+            key: 'executeResultTime',
+            width: 250,
+        },
+        {
             title: '执行时长',
             dataIndex: 'executeCompleteTime',
             key: 'executeCompleteTime',

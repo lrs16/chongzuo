@@ -287,7 +287,8 @@ function TimedExecuteList(props) {
             title: '作业名称',
             dataIndex: 'taskName',
             key: 'taskName',
-            width: 200,
+            width: 250,
+            ellipsis: true,
         },
         {
             title: '作业状态',
@@ -361,7 +362,7 @@ function TimedExecuteList(props) {
                 return (
                     <>
                         {
-                            (record.taskStatus === '已审核') ?
+                            (record.taskJobStatus === '1') ?
                                 <a type="link"
                                     onClick={() => handleClickTask('start', record.id)}
                                 >

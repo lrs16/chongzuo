@@ -77,10 +77,8 @@ function ManualExecuteList(props) {
             },
         }).then(res => {
             if (res.code === 200) {
-                setTimeout(() => {
-                    message.success(res.msg || '执行成功！');
-                    searchdata(1, 15);
-                }, 1000);
+                message.success('方法已执行, 稍后查看结果');
+                searchdata(1, 15);
             } else {
                 message.error(res.msg);
             }
@@ -225,7 +223,8 @@ function ManualExecuteList(props) {
             title: '作业名称',
             dataIndex: 'taskName',
             key: 'taskName',
-            width: 200,
+            width: 250,
+            ellipsis: true,
         },
         {
             title: '作业状态',
@@ -297,17 +296,17 @@ function ManualExecuteList(props) {
             width: 150,
             render: (text, record) => {
                 return (
-                    <>
+                    <div spinning={loading} delay={1000}>
                         <a type="link"
-                            onClick={() => handlerunTask(record.id)}
-                        >
-                            执行
-                        </a>
+                                onClick={() => handlerunTask(record.id)}
+                            >
+                                执行
+                            </a>
                         <Divider type="vertical" />
                         <a type="link" onClick={() => newpagetolog(record.id)}>
                             执行日志
                         </a>
-                    </>
+                    </div>
                 );
             },
         },
