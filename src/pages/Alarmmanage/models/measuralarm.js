@@ -32,9 +32,6 @@ export default {
       });
     },
     *fetchtotalinfo({ payload }, { call, put }) {
-      yield put({
-        type: 'clearcache',
-      });
       const response = yield call(statisticsItems, payload);
       yield put({
         type: 'savetotal',
@@ -70,6 +67,11 @@ export default {
       const response = yield call(configStatus, configval);
       if (response.code === 200) {
         message.success('操作成功！')
+        const restabs = yield call(bizlistStatistics, values);
+        yield put({
+          type: 'savesearchtab',
+          payload: restabs.data,
+        });
         const reslist = yield call(warmBizList, values);
         yield put({
           type: 'save',
@@ -84,6 +86,11 @@ export default {
       const response = yield call(updateClearStatus, configval);
       if (response.code === 200) {
         message.success('操作成功！')
+        const restabs = yield call(bizlistStatistics, values);
+        yield put({
+          type: 'savesearchtab',
+          payload: restabs.data,
+        });
         const reslist = yield call(warmBizList, values);
         yield put({
           type: 'save',

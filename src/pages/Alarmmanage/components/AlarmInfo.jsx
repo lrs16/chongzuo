@@ -69,7 +69,7 @@ class AlarmInfo extends Component {
             <Form {...formItemLayout}>
               <Col span={8}>
                 <Form.Item label='告警编号'>
-                  <Input defaultValue={data.record.id} disabled />
+                  <Input defaultValue={data.record.sourceCode} disabled />
                 </Form.Item>
               </Col>
               {data.type === 'measuralarm' && (

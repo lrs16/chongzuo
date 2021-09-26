@@ -35,16 +35,16 @@ function Today(props) {
   const { match, tabkeyDist, distkey, Donutdata, Smoothdata, dispatch, loading } = props;
   const [activeTabKey, setActiveTabKey] = useState('');
   // const [activeTabInfo, setActiveTabInfo] = useState({});
-  const { tabActivekey, tabdate } = useContext(TypeContext);
+  const { tabActivekey, tabdate, warnModule } = useContext(TypeContext);
 
-  const getdatas = (key) => {
-    const classify = key === '告警概览' ? '告警概览' : key.slice(0, -2);
+  const getdatas = (classify) => {
     dispatch({
       type: 'measuralarm/fetchoverdonut',
       payload: {
         beginDate: tabdate.beginWarnTime ? moment(tabdate.beginWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
         endDate: tabdate.endWarnTime ? moment(tabdate.endWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
         classify,
+        warnModule,
       },
     });
     dispatch({
@@ -53,16 +53,26 @@ function Today(props) {
         beginDate: tabdate.beginWarnTime ? moment(tabdate.beginWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
         endDate: tabdate.endWarnTime ? moment(tabdate.endWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
         classify,
+        warnModule,
       },
     });
   };
 
   const handleTabChange = (key) => {
-    setActiveTabKey(key);
-    if (tabActivekey === 'all') {
-      getdatas(key);
+    if (distkey === 'measuralarm') {
+      setActiveTabKey(key);
+      if (tabActivekey === 'all') {
+        const classify = key === '告警概览' ? '告警概览' : key.slice(0, -2);
+        getdatas(classify);
+      }
+    } else if (tabActivekey === 'all') {
+      getdatas('');
+    } else {
+      const classify = !key ? '全部' : key;
+      setActiveTabKey(classify);
     }
   };
+
   useEffect(() => {
     if (tabkeyDist && tabkeyDist.length > 1) {
       handleTabChange(tabkeyDist[0].key);
@@ -76,9 +86,14 @@ function Today(props) {
   }, [tabActivekey]);
 
   useEffect(() => {
-    if (tabdate && distkey === 'measuralarm') {
-      handleTabChange('告警概览')
+    if (tabdate) {
+      if (distkey === 'measuralarm') {
+        handleTabChange('告警概览')
+      } else {
+        handleTabChange('全部')
+      }
     }
+
   }, [tabdate])
 
   return (
@@ -115,9 +130,9 @@ function Today(props) {
         )}
       </Card>
       {distkey === 'measuralarm' && (<MeasurList ChangeActiveTabKey={(v) => handleTabChange(v)} activeTabKey={activeTabKey} />)}
-      {distkey === 'hostalarm' && (<HostList activeTabInfo={activeTabKey} />)}
-      {distkey === 'configurationfile' && (<ConfigurationFileList activeTabInfo={activeTabKey} />)}
-      {distkey === 'clockpatrol' && (<ClockPatrolList activeTabInfo={activeTabKey} />)}
+      {distkey === 'hostalarm' && (<HostList ChangeActiveTabKey={(v) => handleTabChange(v)} activeTabKey={activeTabKey} />)}
+      {distkey === 'configurationfile' && (<ConfigurationFileList ChangeActiveTabKey={(v) => handleTabChange(v)} activeTabKey={activeTabKey} />)}
+      {distkey === 'clockpatrol' && (<ClockPatrolList ChangeActiveTabKey={(v) => handleTabChange(v)} activeTabKey={activeTabKey} />)}
     </>
   );
 }

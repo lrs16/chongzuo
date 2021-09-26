@@ -9,12 +9,6 @@ import ButtonGroup from './ButtonGroup';
 const { TabPane } = Tabs;
 const { Option } = Select;
 
-
-const clearStatusmap = new Map([
-  ['人工消除', 'default'],
-  ['自动消除', 'default'],
-  ['待消除', 'error'],
-]);
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -87,9 +81,7 @@ const columns = [
     key: 'confirmStatus',
     width: 90,
     render: (text) => (
-      <span>
-        <Badge status={text === '已确认' ? 'success' : 'error'} text={text} />
-      </span>
+      <Badge status={text === '已确认' ? 'success' : 'error'} text={text} />
     ),
   },
   {
@@ -98,12 +90,7 @@ const columns = [
     key: 'clearStatus',
     width: 120,
     render: (text) => (
-      <span>
-        <Badge
-          status={clearStatusmap.get(text)}
-          text={text}
-        />
-      </span>
+      <Badge status={text === '已确认' ? 'success' : 'default'} text={text} />
     ),
   },
   {
@@ -172,7 +159,7 @@ function MeasurList(props) {
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
   const [searchdata, setSearchData] = useState({});
   const [activeKey, setActiveKey] = useState('');
-  const { tabActivekey, selectdata, tabdate } = useContext(TypeContext);
+  const { tabActivekey, selectdata, tabdate, warnModule } = useContext(TypeContext);
 
   const getvalues = () => {
     const val = getFieldsValue();
@@ -187,6 +174,7 @@ function MeasurList(props) {
       endConfirmTime: val.endConfirmTime ? moment(val.endConfirmTime).format('YYYY-MM-DD HH:mm:ss') : '',
       endWarnTime: tabdate.endWarnTime ? moment(tabdate.endWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
       warnContent: val.warnContent,
+      warnModule
     };
     return values
   }
@@ -229,13 +217,14 @@ function MeasurList(props) {
         confirmStatus: (key === '已确认' || key === '待确认') ? key : '',
         clearStatus: (key === '待消除' || key === '人工消除' || key === '自动消除') ? key : '',
         pageIndex: 1,
-        pageSize: 2,
+        pageSize: 10,
       },
     });
     setPageinations({ current: 1, pageSize: 2 })
   };
 
-  const onChange = (val) => {
+  const handleChange = (val) => {
+    console.log(val)
     const key = val && val.length > 0 ? `${val[0]}告警` : '告警概览';
     ChangeActiveTabKey(key)
   };
@@ -252,7 +241,7 @@ function MeasurList(props) {
   useEffect(() => {
     if (activeTabKey && tabdate) {
       const key = activeTabKey === '告警概览' ? '' : activeTabKey.slice(0, -2);
-      setClassifykey([key]);
+      setClassifykey(key.split(','));
       handleSearch(1, 10);
     }
   }, [activeTabKey]);
@@ -313,6 +302,7 @@ function MeasurList(props) {
     <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
   </>
   )
+  console.log(classifykey)
 
   return (
     <>
@@ -354,8 +344,7 @@ function MeasurList(props) {
                     fieldNames={{ label: 'title', value: 'title', children: 'children' }}
                     options={typemap}
                     changeOnSelect
-                    allowClear
-                    onChange={onChange}
+                    onChange={handleChange}
                   />,
                 )}
               </Form.Item>
@@ -512,8 +501,6 @@ function MeasurList(props) {
 export default Form.create({})(
   connect(({ measuralarm, loading }) => ({
     list: measuralarm.list,
-    Donutdata: measuralarm.Donutdata,
-    Smoothdata: measuralarm.Smoothdata,
     searchtab: measuralarm.searchtab,
     loading: loading.models.measuralarm,
     updataloading: loading.effects['measuralarm/alarmsconfig'],

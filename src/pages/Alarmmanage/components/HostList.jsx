@@ -16,6 +16,7 @@ import { connect } from 'dva';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { querkeyVal } from '@/services/api';
 import TypeContext from '@/layouts/MenuContext';
+import ButtonGroup from './ButtonGroup';
 
 const { TabPane } = Tabs;
 const { Option } = Select;
@@ -87,77 +88,17 @@ const DropdownMenu = props => {
 };
 
 function HostList(props) {
-  const { loading, dispatch, list, activeTabInfo } = props;
-  const { getFieldDecorator, resetFields, validateFields } = props.form;
-  const dataSource = list.data;
-  const [querykeys, setQueryKeys] = useState({ type: '', configstatus: '', elimination: '' });
+  const { loading, dispatch, list, searchtab, ChangeActiveTabKey, activeTabKey } = props;
+  const { getFieldDecorator, resetFields, getFieldsValue } = props.form;
   const [selectedRowKeys, setSelectionRow] = useState([]);
   const [selectRowdata, setSelectdata] = useState([]);
+  // const [classifykey, setClassifykey] = useState([]);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
-  const [expand, setExpand] = useState(false);
+  const [searchdata, setSearchData] = useState({});
+  const [activeKey, setActiveKey] = useState('');
   const [assets, setAssets] = useState([]);
-  const { tabActivekey, pagetitle, selectdata } = useContext(TypeContext);
-
-  const handleSearch = () => {
-    validateFields((err, values) => {
-      setQueryKeys(values);
-    });
-  };
-
-  const handleReset = () => {
-    resetFields();
-    setQueryKeys({});
-  };
-
-  const searchdata = (values, page, size) => {
-    dispatch({
-      type: 'measuralarm/fetchlist',
-      payload: {
-        ...values,
-        type: activeTabInfo.tab,
-        pageSize: size,
-        current: page,
-      },
-    });
-  };
-
-  const handleTabs = key => {
-    switch (key) {
-      case '0':
-        setQueryKeys({ configstatus: '', elimination: '' });
-        break;
-      case '1':
-        setQueryKeys({ configstatus: 0, elimination: '' });
-        break;
-      case '2':
-        setQueryKeys({ configstatus: 1, elimination: '' });
-        break;
-      case '3':
-        setQueryKeys({ configstatus: '', elimination: 0 });
-        break;
-      case '4':
-        setQueryKeys({ configstatus: '', elimination: 1 });
-        break;
-      default:
-        break;
-    }
-  };
-
-  useEffect(() => {
-    if (activeTabInfo) {
-      setQueryKeys(querykeys);
-    }
-  }, [activeTabInfo]);
-
-  useEffect(() => {
-    if (tabActivekey) {
-      setQueryKeys(querykeys);
-    }
-  }, [tabActivekey]);
-
-  useEffect(() => {
-    searchdata(querykeys, paginations.current, paginations.pageSize);
-  }, [querykeys]);
+  const [expand, setExpand] = useState(false);
+  const { tabActivekey, selectdata, tabdate, warnModule, pagetitle } = useContext(TypeContext);
 
   useEffect(() => {
     querkeyVal('assets', 'assets_host_zone_id').then(res => {
@@ -167,28 +108,106 @@ function HostList(props) {
     });
   }, []);
 
+  const getvalues = () => {
+    const val = getFieldsValue();
+    const values = {
+      firstClassify: val.Classify ? val.Classify[0] : '',
+      secondClassify: val.Classify && val.Classify.length > 1 ? val.Classify[1] : '',
+      thirdClassify: val.Classify && val.Classify.length > 2 ? val.Classify[2] : '',
+      beginClearTime: val.beginClearTime ? moment(val.beginClearTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      beginConfirmTime: val.beginConfirmTime ? moment(val.beginConfirmTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      beginWarnTime: tabdate.beginWarnTime ? moment(tabdate.beginWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      endClearTime: val.endClearTime ? moment(val.endClearTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      endConfirmTime: val.endConfirmTime ? moment(val.endConfirmTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      endWarnTime: tabdate.endWarnTime ? moment(tabdate.endWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      warnContent: val.warnContent,
+      warnModule
+    };
+    return values
+  }
+
+  const handleSearch = (page, size) => {
+    const key = activeTabKey === '全部' ? '' : activeTabKey;
+    setActiveKey('全部');
+    const values = getvalues();
+    setSearchData({ ...values, firstClassify: key, pageIndex: paginations.current, pageSize: paginations.pageSize })
+    dispatch({
+      type: 'measuralarm/fetchsearchtab',
+      payload: {
+        ...values,
+        firstClassify: key,
+      },
+    });
+    dispatch({
+      type: 'measuralarm/fetchlist',
+      payload: {
+        ...values,
+        firstClassify: key,
+        pageSize: size,
+        pageIndex: page,
+      },
+    });
+  };
+
+  const handleReset = () => {
+    resetFields();
+    handleSearch(1, 10);
+  };
+
+  const handleTabs = key => {
+    setActiveKey(key);
+    const values = getvalues();
+    dispatch({
+      type: 'measuralarm/fetchlist',
+      payload: {
+        ...values,
+        confirmStatus: (key === '已确认' || key === '待确认') ? key : '',
+        clearStatus: (key === '待消除' || key === '人工消除' || key === '自动消除') ? key : '',
+        pageIndex: 1,
+        pageSize: 10,
+      },
+    });
+    setPageinations({ current: 1, pageSize: 10 })
+  };
+
+  // const onChange = (val) => {
+  //   ChangeActiveTabKey(val)
+  // };
+
+  const handleSelects = (v) => {
+    setSelectionRow(v);
+    setSelectdata(v);
+  };
+
+  useEffect(() => {
+    handleReset();
+  }, [tabActivekey])
+
+  useEffect(() => {
+    if (activeTabKey && tabdate) {
+      // const key = activeTabKey === '全部' ? '' : activeTabKey;
+      // setClassifykey(key);
+      handleSearch(1, 10);
+    }
+  }, [activeTabKey]);
+
+  useEffect(() => {
+    if (tabdate) {
+      resetFields();
+      handleSearch(1, 10);
+    }
+  }, [tabdate])
+
   const rowSelection = {
+    selectedRowKeys,
     onChange: (selectRowKey, selectedRows) => {
       setSelectionRow(selectRowKey);
       setSelectdata(selectedRows);
     },
   };
 
-  const handleConfig = () => {
-    if (selectedRowKeys.length === 0) {
-      Message.error('至少选择一条告警记录');
-    } else {
-      dispatch({
-        type: 'alarmovervies/alarmsconfig',
-        payload: {
-          selectedRowKeys,
-        },
-      });
-    }
-  };
-
   const onShowSizeChange = (page, size) => {
-    searchdata(querykeys, page, size);
+    handleSearch(page, size);
     setPageinations({
       ...paginations,
       pageSize: size,
@@ -196,7 +215,7 @@ function HostList(props) {
   };
 
   const changePage = page => {
-    searchdata(querykeys, page, paginations.pageSize);
+    handleSearch(page, paginations.pageSize);
     setPageinations({
       ...paginations,
       current: page,
@@ -212,18 +231,17 @@ function HostList(props) {
     onChange: page => changePage(page),
   };
 
-
   const columns = [
     {
       title: '区域',
-      dataIndex: 'type',
-      key: 'type',
+      dataIndex: 'firstClassify',
+      key: 'firstClassify',
       width: 140,
     },
     {
       title: '设备IP',
-      dataIndex: 'monitorco',
-      key: 'monitorco',
+      dataIndex: 'fourthClassify',
+      key: 'fourthClassify',
       width: 180,
       onCell: () => {
         return {
@@ -240,8 +258,8 @@ function HostList(props) {
     },
     {
       title: '设备名称',
-      dataIndex: '1',
-      key: '1',
+      dataIndex: 'thirdClassify',
+      key: 'thirdClassify',
       width: 180,
       onCell: () => {
         return {
@@ -258,8 +276,8 @@ function HostList(props) {
     },
     {
       title: '巡检内容',
-      dataIndex: '2',
-      key: '2',
+      dataIndex: 'secondClassify',
+      key: 'secondClassify',
       width: 180,
       onCell: () => {
         return {
@@ -276,33 +294,26 @@ function HostList(props) {
     },
     {
       title: '确认状态',
-      dataIndex: 'configstatus',
-      key: 'configstatus',
+      dataIndex: 'confirmStatus',
+      key: 'confirmStatus',
       width: 90,
-      render: (text, record) => (
-        <span>
-          <Badge status={statusMap[record.configstatus]} text={configstatus[record.configstatus]} />
-        </span>
+      render: (text) => (
+        <Badge status={text === '已确认' ? 'success' : 'error'} text={text} />
       ),
     },
     {
       title: '消除状态',
-      dataIndex: 'elimination',
-      key: 'elimination',
-      width: 90,
-      render: (text, record) => (
-        <span>
-          <Badge
-            status={eliminationsMap[record.elimination]}
-            text={eliminations[record.elimination]}
-          />
-        </span>
+      dataIndex: 'clearStatus',
+      key: 'clearStatus',
+      width: 120,
+      render: (text) => (
+        <Badge status={text === '已确认' ? 'success' : 'default'} text={text} />
       ),
     },
     {
       title: '告警内容',
-      dataIndex: 'content',
-      key: 'content',
+      dataIndex: 'warnContent',
+      key: 'warnContent',
       with: 300,
       onCell: () => {
         return {
@@ -339,8 +350,8 @@ function HostList(props) {
 
   const softName = {
     title: '软件名称',
-    dataIndex: '3softName',
-    key: 'softName',
+    dataIndex: 'fiveClassify',
+    key: 'fiveClassify',
     width: 180,
     onCell: () => {
       return {
@@ -358,8 +369,8 @@ function HostList(props) {
 
   const processName = {
     title: '进程名称',
-    dataIndex: '4',
-    key: '4',
+    dataIndex: 'sixthClassify',
+    key: 'sixthClassify',
     width: 180,
     onCell: () => {
       return {
@@ -416,10 +427,12 @@ function HostList(props) {
       <Card>
         <Form {...formItemLayout} onSubmit={handleSearch}>
           <Row gutter={24}>
-            <Col span={8}>
+            {/* <Col span={8}>
               <Form.Item label="区域">
-                {getFieldDecorator('hostZoneId')(
-                  <Select placeholder="请选择">
+                {getFieldDecorator('firstClassify', {
+                  initialValue: classifykey,
+                })(
+                  <Select placeholder="请选择" onChange={onChange} allowClear>
                     {assets.map(({ key, val }) => [
                       <Option key={key} value={val}>
                         {val}
@@ -428,17 +441,17 @@ function HostList(props) {
                   </Select>,
                 )}
               </Form.Item>
-            </Col>
+            </Col> */}
             <Col span={8}>
               <Form.Item label="设备名称">
-                {getFieldDecorator('hostName ')(
+                {getFieldDecorator('thirdClassify ')(
                   <Input allowClear />
                 )}
               </Form.Item>
             </Col>
             <Col span={8}>
               <Form.Item label="设备IP">
-                {getFieldDecorator('hostIp')(
+                {getFieldDecorator('fourthClassify')(
                   <Input allowClear />,
                 )}
               </Form.Item>
@@ -450,14 +463,14 @@ function HostList(props) {
                   <>
                     <Col span={8}>
                       <Form.Item label="软件名称">
-                        {getFieldDecorator('inspection')(
+                        {getFieldDecorator('fiveClassify')(
                           <Input allowClear />,
                         )}
                       </Form.Item>
                     </Col>
                     <Col span={8}>
                       <Form.Item label="进程名称">
-                        {getFieldDecorator('softName')(
+                        {getFieldDecorator('sixthClassify')(
                           <Input allowClear />,
                         )}
                       </Form.Item>
@@ -467,7 +480,7 @@ function HostList(props) {
                 {(pagetitle === '主机巡检告警' || pagetitle === '软件巡检告警') && (
                   <Col span={8}>
                     <Form.Item label="巡检内容">
-                      {getFieldDecorator('softName')(
+                      {getFieldDecorator('secondClassify')(
                         <Select placeholder="请选择">
                           {inspectionmmap.map(({ dict_code, title }) => [
                             <Option key={dict_code} value={title}>
@@ -482,7 +495,7 @@ function HostList(props) {
                 {pagetitle === '应用程序运行状态告警' && (
                   <Col span={8}>
                     <Form.Item label="监测内容">
-                      {getFieldDecorator('softName')(
+                      {getFieldDecorator('secondClassify')(
                         <Select placeholder="请选择">
                           {hostmonitormap.map(({ dict_code, title }) => [
                             <Option key={dict_code} value={title}>
@@ -532,7 +545,7 @@ function HostList(props) {
                 <Col span={8}>
                   <Form.Item label="告警确认时间">
                     <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                      {getFieldDecorator('time3', {
+                      {getFieldDecorator('beginConfirmTime', {
                         initialValue: '',
                       })(
                         <DatePicker
@@ -548,7 +561,7 @@ function HostList(props) {
                     </div>
                     <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
                     <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                      {getFieldDecorator('time4', {
+                      {getFieldDecorator('endConfirmTime', {
                         initialValue: '',
                       })(
                         <DatePicker
@@ -567,7 +580,7 @@ function HostList(props) {
                 <Col span={8}>
                   <Form.Item label="告警消除时间">
                     <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                      {getFieldDecorator('time5', {
+                      {getFieldDecorator('beginClearTime', {
                         initialValue: '',
                       })(
                         <DatePicker
@@ -601,38 +614,33 @@ function HostList(props) {
                 </Col>
               </>
             )}
-            {(expand && pagetitle !== '主机巡检告警') ? (<Col span={8}><Form.Item>{extra}</Form.Item></Col>) : (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>)}
+            <Col span={8}><Form.Item>{extra}</Form.Item></Col>
           </Row>
         </Form>
 
-        <div style={{ margin: '10px 0 24px 0' }}>
-          <Button type="primary" style={{ marginRight: 8 }} onClick={handleConfig}>
-            确认告警
-          </Button>
-          <Button style={{ marginRight: 8 }}>取消确认</Button>
-          <DropdownMenu selectedRowKeys={selectedRowKeys} datas={selectRowdata} />
-          <Button type="danger" ghost style={{ marginRight: 8 }}>
-            手工消除
-          </Button>
-          <Button style={{ marginRight: 8 }}>导 出</Button>
-        </div>
-        <Tabs defaultActiveKey="0" onChange={handleTabs}>
-          {tabsmap.map(({ key, name, color, data }) => [
+        <ButtonGroup
+          selectedRowKeys={selectedRowKeys}
+          selectRowdata={selectRowdata}
+          values={searchdata}
+          ChangeSelects={v => handleSelects(v)}
+        />
+        <Tabs activeKey={activeKey} onChange={handleTabs}>
+          {searchtab && searchtab.map(({ name, total }) => [
             <TabPane
               tab={
                 <>
                   <span>{name}</span>
-                  <span style={{ color: `${color}` }}>（{data}）</span>
+                  <span style={{ color: `${(name === '待确认' || name === '待消除') ? '#ff0000' : ''}` }}>（{total}）</span>
                 </>
               }
-              key={key}
+              key={name}
             />,
           ])}
         </Tabs>
         <Table
           rowSelection={rowSelection}
           columns={column}
-          dataSource={dataSource}
+          dataSource={list.records || []}
           loading={loading}
           rowKey={record => record.id}
           scroll={{ x: 2150 }}
@@ -646,8 +654,8 @@ function HostList(props) {
 export default Form.create({})(
   connect(({ measuralarm, loading }) => ({
     list: measuralarm.list,
-    Donutdata: measuralarm.Donutdata,
-    Smoothdata: measuralarm.Smoothdata,
+    searchtab: measuralarm.searchtab,
     loading: loading.models.measuralarm,
+    updataloading: loading.effects['measuralarm/alarmsconfig'],
   }))(HostList)
 );

@@ -15,26 +15,26 @@ function DetailView(props) {
   const [tabActivekey, settabActivekey] = useState('1'); // 打开标签
   const { currenttab } = useContext(RecordContext);
 
-  const getstatusLog = () => {
+  const getstatusLog = (warnModule) => {
     dispatch({
       type: 'alarmdetails/fetchstatusLog',
-      payload: { warnId: Id },
+      payload: { warnId: Id, warnModule },
     });
   };
 
-  const gethistroylist = () => {
+  const gethistroylist = (warnModule) => {
     dispatch({
       type: 'alarmdetails/fetchhistroylist',
-      payload: { code },
+      payload: { code, warnModule },
     });
   };
 
   useEffect(() => {
-    if (Id) {
-      getstatusLog();
-      gethistroylist();
+    if (currenttab && currenttab.state && currenttab.state.record && currenttab.state.record.warnModule) {
+      getstatusLog(currenttab.state.record.warnModule);
+      gethistroylist(currenttab.state.record.warnModule);
     }
-  }, [Id])
+  }, [currenttab])
 
   const handleTabChange = key => {
     settabActivekey(key)

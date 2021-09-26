@@ -27,6 +27,16 @@ function MeasurAlarm(props) {
     ['时钟巡检告警', 'clockpatrol'],
   ]);
 
+  const warnModulemap = new Map([
+    ['计量业务告警', 'biz'],
+    ['主机巡检告警', 'host'],
+    ['软件巡检告警', 'soft'],
+    ['应用程序运行状态告警', 'hostalarm'],
+    ['配置文件变更告警', 'configurationfile'],
+    ['时钟巡检告警', 'clock'],
+    ['上下行报文页面告警', 'packet'],
+  ]);
+
   const handleTabChange = key => {
     setTabdate({});
     settabActivekey(key);
@@ -70,13 +80,16 @@ function MeasurAlarm(props) {
   }, []);
 
   useEffect(() => {
-    dispatch({
-      type: 'measuralarm/fetchtotalinfo',
-      payload: {
-        beginDate: moment().format('YYYY-MM-DD HH:mm:ss'),
-        endDate: moment().format('YYYY-MM-DD HH:mm:ss'),
-      },
-    });
+    if (tabActivekey) {
+      dispatch({
+        type: 'measuralarm/fetchtotalinfo',
+        payload: {
+          beginDate: moment().format('YYYY-MM-DD 00:00:00'),
+          endDate: moment().format('YYYY-MM-DD HH:mm:ss'),
+          warnModule: warnModulemap.get(pagetitle),
+        },
+      });
+    }
   }, [tabActivekey])
 
   return (
@@ -98,6 +111,7 @@ function MeasurAlarm(props) {
         pagetitle,
         selectdata,
         tabdate,
+        warnModule: warnModulemap.get(pagetitle),
       }}>
         {pagetitle === '上下行报文页面告警' ? (
           <MessageContent tabActivekey={tabActivekey} />

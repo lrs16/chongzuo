@@ -1,4 +1,4 @@
-// import { stringify } from 'qs';
+import { stringify } from 'qs';
 import request from '@/utils/request';
 
 // 告警概览:列表
@@ -38,10 +38,9 @@ export async function configStatus(params) {
 
 // 计量业务告警统计
 export async function statisticsItems(params) {
-  return request(`/warn/biz/statistics`, {
-    method: 'GET',
-    data: JSON.stringify(params),
-    requestType: 'formjosn',
+  return request(`/warn/biz/statistics?${stringify(params)}`, {
+    method: 'POST',
+    requestType: 'form',
   });
 }
 
@@ -49,7 +48,7 @@ export async function statisticsItems(params) {
 export async function warmBizList(params) {
   return request(`/warn/biz/list`, {
     method: 'POST',
-    data: JSON.stringify(params),
+    body: JSON.stringify(params),
     requestType: 'formjosn',
   });
 }
