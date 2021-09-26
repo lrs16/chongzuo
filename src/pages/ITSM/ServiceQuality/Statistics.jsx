@@ -36,17 +36,18 @@ function Statistics(props) {
   // .format('YYYY-MM-DD 23:59:59')
   const [selectTime, setSelectTime] = [{ start: moment(new Date()).format('YYYY-MM-DD 00:00:00'), end: moment(new Date).format('YYYY-MM-DD 23:59:59') }]
   const [time, setTime] = useState({
-    // startValue: moment(new Date()).format('YYYY-MM-DD'),
-    // endValue: moment(new Date()),
-    startValue:null,
-    endValue:null,
+    startValue: moment(new Date(moment(new Date()).format('YYYY-MM-DD 00:00:00'))),
+    endValue: moment(new Date(moment(new Date()).format('YYYY-MM-DD 23:59:59'))),
     endOpen: false,
   })
 
+  console.log(time.startValue, 'lll')
+  console.log(time.endValue, 'lll')
+
   const [monthTime, setMonthTime] = useState({
     mode: ['month', 'month'],
-    value:[]
-    // value: [moment(moment().startOf('month').format('YYYY-MM-DD'), 'YYYY-MM-DD'), moment(moment().endOf('month').format('YYYY-MM-DD'), 'YYYY-MM-DD')]
+    // value:[]
+    value: [moment(moment().startOf('month').format('YYYY-MM-DD'), 'YYYY-MM-DD'), moment(moment().endOf('month').format('YYYY-MM-DD'), 'YYYY-MM-DD')]
   })
 
   const [currentDatatype, setCurrentDatatype] = useState('本月');
@@ -110,12 +111,26 @@ function Statistics(props) {
   };
 
   const handleChange = (tag, checked) => {
+    console.log('tag: ', tag);
     if (checked) {
       const obj = {
         startValue: tag === "本日" ? moment(new Date()).format('YYYY-MM-DD 00:00:00') : moment().startOf('month').format('YYYY-MM-DD 00:00:00'),
         endValue: tag === "本月" ? moment().endOf('month').format('YYYY-MM-DD 23:59:59') : moment(new Date()).format('YYYY-MM-DD 23:59:59'),
         endOpen: false,
       }
+      if( tag === "本日") {
+        setMonthTime({
+          mode: ['month', 'month'],
+          value: [moment(moment().startOf('month').format('YYYY-MM-DD'), 'YYYY-MM-DD'), moment(moment().endOf('month').format('YYYY-MM-DD'), 'YYYY-MM-DD')]
+        })
+      } else {
+        setTime({
+          startValue: moment(new Date(moment(new Date()).format('YYYY-MM-DD 00:00:00'))),
+          endValue: moment(new Date(moment(new Date()).format('YYYY-MM-DD 23:59:59'))),
+          endOpen: false,
+        })
+      }
+     
       getlist(obj, tag)
       setCurrentDatatype(tag);
       projectAssessment(obj, tag);
@@ -126,8 +141,10 @@ function Statistics(props) {
   const disabledStartDate = startValue => {
     const { endValue } = time;
     if (!startValue || !endValue) {
+      console.log(1)
       return false;
     }
+    console.log(2)
     return startValue.valueOf() > endValue.valueOf();
   };
 
@@ -205,7 +222,7 @@ function Statistics(props) {
           currentDatatype === '本日' && (
             <>
               <DatePicker
-                value={moment(new Date(), format)}
+                // value={moment(new Date(), format)}
                 allowClear={false}
                 disabledDate={disabledStartDate}
                 onChange={onStartChange}

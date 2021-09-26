@@ -29,6 +29,7 @@ function DutyaccordingSetting(props) {
   const [currentMode, setCurrentMode] = useState(moment(new Date()).format('YYYY'))
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [selectdata, setSelectData] = useState('');
+  const [tabledata,setTabledata] = useState([])
 
   const getListData = value => {
     let result;
@@ -138,6 +139,10 @@ function DutyaccordingSetting(props) {
     }
     return result;
   };
+
+ 
+
+
 
 
   //  年月日面板的切换
@@ -282,7 +287,14 @@ function DutyaccordingSetting(props) {
   };
 
   const teamname = getTypebyTitle('班组名称');
+  console.log(teamname,'teamname')
 
+  useEffect(() => {
+    const resutlteam  = [{title:'班组信息',children:teamname}]
+    setTabledata(resutlteam)
+  },[teamname])
+
+  console.log(tabledata,'tabledata')
   return (
     <PageHeaderWrapper title={pagetitle}>
       <SysDict
@@ -302,7 +314,7 @@ function DutyaccordingSetting(props) {
                     onSelect={handleClick}
                     defaultExpandAll
                   >
-                    {renderTreeNodes(teamname)}
+                    {renderTreeNodes(tabledata)}
                   </Tree>
                 )
               }
