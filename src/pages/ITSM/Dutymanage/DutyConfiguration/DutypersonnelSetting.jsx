@@ -241,7 +241,7 @@ function DutypersonnelSetting(props) {
   useEffect(() => {
     if (location.state && location.state.reset) {
       handleReset();
-      searchdata({}, 1,15)
+      searchdata({}, 1, 15)
     }
   }, [location.state]);
 
@@ -475,26 +475,34 @@ function DutypersonnelSetting(props) {
           </Form>
         </Row>
 
-        <AdddutyPersonnelSetting
-          title='新建值班人员设置'
-          onSubmit={(submitdata => handleSubmit(submitdata))}
-        >
-          <Button
-            style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-            icon='plus'
-          >
-            新建值班人员设置
-          </Button>
-        </AdddutyPersonnelSetting>
+        {
+          loading === false && (
+            <>
+              <AdddutyPersonnelSetting
+                title='新建值班人员设置'
+                onSubmit={(submitdata => handleSubmit(submitdata))}
+                personnelSetting=''
+              >
+                <Button
+                  style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+                  icon='plus'
+                >
+                  新建值班人员设置
+                </Button>
+              </AdddutyPersonnelSetting>
 
-        <Table
-          columns={columns}
-          pagination={pagination}
-          dataSource={searchUsersarr.records}
-          // rowKey={(_, index) => index.toString()}
-          rowSelection={rowSelection}
-          scroll={{ x: 1300 }}
-        />
+              <Table
+                columns={columns}
+                pagination={pagination}
+                dataSource={searchUsersarr.records}
+                // rowKey={(_, index) => index.toString()}
+                rowSelection={rowSelection}
+                scroll={{ x: 1300 }}
+              />
+            </>
+          )
+        }
+
       </Card>
     </PageHeaderWrapper >
   );

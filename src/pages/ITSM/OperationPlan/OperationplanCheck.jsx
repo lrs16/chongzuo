@@ -386,7 +386,7 @@ function OperationplanCheck(props) {
 
   //  导出
   const exportDownload = () => {
-    const exportColumns = columns.map(function (item) {
+    const exportColumns = columns.map(item => {
       return {
         column: item.dataIndex,
         field: item.title
@@ -462,6 +462,17 @@ function OperationplanCheck(props) {
         }
         obj.fixed = 'left'
       }
+      if (val.title === '超时状态') {
+        obj.render = (text, record) => {
+          return (
+            <span>
+              <Badge
+                status={statusMap[statusContent.indexOf(text)]}
+                text={text} />
+            </span>
+          )
+        }
+      }
       initialColumns.push(obj);
       setColumns(initialColumns);
       return null
@@ -520,7 +531,7 @@ function OperationplanCheck(props) {
   useEffect(() => {
     queryDept();
     getoperationPerson();
-    searchdata({},1,paginations.pageSize);
+    searchdata({}, 1, paginations.pageSize);
     setColumns(initialColumns)
   }, []);
 
@@ -547,9 +558,9 @@ function OperationplanCheck(props) {
     }).then(res => {
       if (res.code === 200) {
         message.info(res.msg);
-        searchdata({},1,paginations.pageSize);
+        searchdata({}, 1, paginations.pageSize);
       } else {
-        searchdata({},1,paginations.pageSize);
+        searchdata({}, 1, paginations.pageSize);
         message.error(res.msg);
       }
     });

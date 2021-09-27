@@ -173,6 +173,15 @@ function AddholidaySetting(props) {
       return;
     }
 
+    if ((target.beginDate).valueOf() > (target.endDate).valueOf()) {
+      message.error('开始时间必须小于结束时间');
+      e.target.focus();
+      return;
+    }
+
+
+
+
     target.editable = false;
     // const id = target.id === '' ? '' : target.id;
     //  保存数据
@@ -184,7 +193,6 @@ function AddholidaySetting(props) {
 
   //  设置时间的范围
   const disabledStartDate = (startValue, type,detailstart,detailend) => {
-    console.log('detailstart: ', detailstart);
     if (type === 'create') {
       const { endValue } = time;
       if (!startValue || !endValue) {
@@ -192,9 +200,10 @@ function AddholidaySetting(props) {
         return false;
       }
 
-      console.log(startValue,'startValue')
+      console.log(startValue,'startValue');
+      console.log(detailstart,'detailstart');
 
-      return (detailstart || startValue).valueOf() > (detailend || endValue).valueOf()
+      return detailstart.valueOf() > detailend.valueOf()
     }
 
     if (type === 'duty') {
@@ -220,13 +229,13 @@ function AddholidaySetting(props) {
     }
   };
 
-  const disabledEndDate = (endValue, type,detailtime) => {
+  const disabledEndDate = (endValue, type,detailstart,detailend) => {
     if (type === 'create') {
       const { startValue } = time;
       if (!endValue || !startValue) {
         return false;
       }
-      return endValue.valueOf() <= startValue.valueOf();
+      return (detailend || endValue).valueOf() <= (detailstart || startValue).valueOf();
     }
 
     if (type === 'duty') {
@@ -364,33 +373,32 @@ function AddholidaySetting(props) {
       key: 'duringTime',
       width: 300,
       render: (text, record) => {
-        console.log('text: ', text);
         const dateFormat = 'YYYY-MM-DD HH:mm:ss';
         if (record.editable) {
           return (
             <Row>
-              {/* <Col span={10}> */}
+              <Col span={10}>
               <DatePicker
                 allowClear={false}
-                disabled={!record.editable}
-                disabledDate={(value) => disabledStartDate(value, 'create',moment(new Date(record.beginDate)),moment(new Date(record.endDate)))}
-                onChange={(value) => { onStartChange(value, 'create'); handleFieldChange(value.format('YYYY-MM-DD'), 'beginDate', record.key) }}
-                onOpenChange={(value) => handleStartOpenChange(value, 'create')}
+                // disabled={!record.editable}
+                // disabledDate={(value) => disabledStartDate(value, 'create',moment(moment(new Date(record.beginDate)).format('YYYY-MM-DD')),moment(moment(new Date(record.endDate)).format('YYYY-MM-DD')))}
+                onChange={(value) => { handleFieldChange(value.format('YYYY-MM-DD'), 'beginDate', record.key) }}
+                // onOpenChange={(value) => handleStartOpenChange(value, 'create')}
                 defaultValue={record.beginDate ? moment(record.beginDate) : time.startValue}
                 placeholder="结束时间"
                 format='YYYY-MM-DD'
                 style={{ minWidth: 100, width: '100%' }}
               />
-              {/* </Col> */}
-              {/* <Col span={1} style={{ textAlign: 'center' }}>-</Col> */}
-              {/* <Col span={10}> */}
+              </Col>
+              <Col span={1} style={{ textAlign: 'center' }}>-</Col>
+              <Col span={10}>
               <DatePicker
                 allowClear={false}
-                disabled={!record.editable}
-                disabledDate={(value) => disabledEndDate(value, 'create',moment(new Date(record.endDate)))}
-                onChange={(value) => { onEndChange(value, 'create'); handleFieldChange(value.format('YYYY-MM-DD'), 'endDate', record.key) }}
-                open={time.endOpen}
-                onOpenChange={(value) => handleEndOpenChange(value, 'create')}
+                // disabled={!record.editable}
+                // disabledDate={(value) => disabledEndDate(value, 'create',moment(moment(new Date(record.beginDate)).format('YYYY-MM-DD')),moment(moment(new Date(record.endDate)).format('YYYY-MM-DD')))}
+                onChange={(value) => { handleFieldChange(value.format('YYYY-MM-DD'), 'endDate', record.key) }}
+                // open={time.endOpen}
+                // onOpenChange={(value) => handleEndOpenChange(value, 'create')}
                 // showTime={{
                 //   hideDisabledOptions: true,
                 //   defaultValue: moment('23:59:59', 'HH:mm:ss'),
@@ -401,7 +409,7 @@ function AddholidaySetting(props) {
                 format='YYYY-MM-DD'
                 style={{ minWidth: 100, width: '100%' }}
               />
-              {/* </Col> */}
+              </Col>
             </Row>
           )
         }

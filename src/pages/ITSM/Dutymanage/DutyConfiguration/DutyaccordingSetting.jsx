@@ -31,7 +31,7 @@ function DutyaccordingSetting(props) {
   const [tabledata, setTabledata] = useState([]);
   const [currentYear,setCurrentYear] = useState(moment(new Date()).format('YYYY'));
   const [month,setMonth] = useState(moment(new Date()).format('MM'));
-
+  const [groupName,setGroupName] = useState('计量中心组');
   const getTable = (year, paramsmonth) => {
     dispatch({
       type: 'dutyandtypesetting/fetchtable',
@@ -195,6 +195,8 @@ function DutyaccordingSetting(props) {
             id={item.id}
             getTable={getTable}
             groupId={item.groupId}
+            month={month}
+            currentYear={currentYear}
           >
             <li key={item.id}>
               <span>{item.staffName + '(' +item.shiftType + ')'}</span>
@@ -205,7 +207,10 @@ function DutyaccordingSetting(props) {
     );
   };
 
-  const handleClick = (selectkeys) => {
+  const handleClick = (selectkeys,event) => {
+    console.log('event: ', event);
+    const {props:{ title }} =event.selectedNodes[0];
+    console.log('title: ', title);
     sessionStorage.setItem('groupId', selectkeys.toString())
     getTable(currentYear,month)
   }
@@ -312,6 +317,10 @@ function DutyaccordingSetting(props) {
                       settingDetails=''
                       id=''
                       groupId={sessionStorage.getItem('groupId')}
+                      groupName={groupName}
+                      month={month}
+                      currentYear={currentYear}
+                      getTable={getTable}
                     >
                       <Button type="primary" style={{ marginRight: 8 }}>
                         新增

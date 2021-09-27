@@ -15,7 +15,8 @@ import {
 function Barchart(props) {
   const {
     detailParams,
-    data
+    data,
+    position
   } = props;
 
   return (
@@ -33,7 +34,9 @@ function Barchart(props) {
         }
       >
         <Coordinate transpose />
-        <Interval position="contractName*assessScore" />
+        <Interval 
+          position={position}
+         />
       </Chart>
     </>
   )

@@ -12,6 +12,7 @@ import {
   Col
 } from 'antd';
 import moment from 'moment';
+import { phone_reg } from '@/utils/Regexp';
 import { operationPerson, searchUsers } from '@/services/common';
 import { connect } from 'dva';
 import styles from '../index.less';
@@ -31,10 +32,6 @@ const formItemLayout = {
   }
 }
 
-let startTime;
-let endTime;
-let show = true;
-
 const withClick = (element, handleClick = () => { }) => {
   return <element.type {...element.props} onClick={handleClick} />
 }
@@ -47,11 +44,9 @@ function AdddutyPersonnelSetting(props) {
     children,
     onSubmit,
     onDelete,
-    loading,
-    dispatch,
-    searchUsersarr,
     personnelSetting
   } = props;
+  console.log(personnelSetting,'personnelSetting')
   const [directorlist, setDirectorlist] = useState([]); 
   const [spinloading, setSpinLoading] = useState(true);
   const [select, setSelect] = useState([]);
@@ -314,9 +309,11 @@ function AdddutyPersonnelSetting(props) {
                 rules: [
                   {
                     required,
-                    message: '请输入联系电话'
-                  }
-                ]
+                    len: 11,
+                    validator: phone_reg,
+                    message: '请输入正确的手机号',
+                  },
+                ],
               })(<Input />)
             }
           </Form.Item>

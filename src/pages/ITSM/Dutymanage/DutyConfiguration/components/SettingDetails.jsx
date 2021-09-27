@@ -77,13 +77,15 @@ function SettingDetails(props) {
     form: { getFieldDecorator, validateFields, setFieldsValue },
     title,
     children,
-    onSubmit,
+    groupName,
     id,
     groupId,
     onDelete,
     dispatch,
     settingDetails,
-    getTable
+    getTable,
+    month,
+    currentYear
   } = props;
   const [directorlist, setDirectorlist] = useState([]);// 值班人
   const [shiftlist, setShiftlist] = useState([]);// 值班人
@@ -96,8 +98,8 @@ function SettingDetails(props) {
         type: 'shiftsandholidays/fetchscheduleDetail',
         payload: id
       })
-    } 
-    if(title !== '编辑排班信息') {
+    }
+    if (title !== '编辑排班信息') {
       dispatch({
         type: 'shiftsandholidays/clearstaff',
       })
@@ -105,6 +107,8 @@ function SettingDetails(props) {
     setVisible(true)
   }
 
+
+  console.log( new Date().valueOf() > new Date(settingDetails.dutyDate).valueOf(),'llll')
   const directoruser = directorlist.map((opt, index) => (
     <Option key={opt.id} value={opt.id} disableuser={opt}>
       {/* <Spin spinning={spinloading}> */}
@@ -130,7 +134,7 @@ function SettingDetails(props) {
   const SearchDisableduser = (value, type) => {
     switch (type) {
       case 'director':
-        staffSearch({ staffName: value, groupId }).then(res => {
+        staffSearch({ staffName: value, groupId, groupName }).then(res => {
           if (res) {
             const arr = [...(res.data.records)];
             setDirectorlist(arr);
@@ -152,14 +156,15 @@ function SettingDetails(props) {
 
   // 选择下拉值，信息回填
   const handleDisableduser = (v, opt, type) => {
-    const { id, userMobile, deptNameExt, shiftName, staffName, beginTime, endTime, shiftType } = opt.props.disableuser;
+    const { id, phone, deptNameExt, groupName, shiftName, staffName, beginTime, endTime, shiftType } = opt.props.disableuser;
     switch (type) {
       case 'director':
         setFieldsValue({
           staffName, // 用户名称
           staffId: id, // 用户id
           deptName: deptNameExt,
-          staffPhone: userMobile
+          staffPhone: phone,
+          groupName
         });
         break;
       case 'shiftName':
@@ -188,7 +193,7 @@ function SettingDetails(props) {
         payload: newdata
       }).then(res => {
         if (res.code === 200) {
-          // getTable(moment(new Date()).format('YYYY'),moment(new Date()).format('MM'))
+          getTable(currentYear, month)
           message.info(res.msg)
         }
       })
@@ -200,7 +205,7 @@ function SettingDetails(props) {
         payload: newdata
       }).then(res => {
         if (res.code === 200) {
-          // getTable(moment(new Date()).format('YYYY'),moment(new Date()).format('MM'))
+          getTable(currentYear, month)
           message.info(res.msg)
         }
       })
@@ -231,11 +236,11 @@ function SettingDetails(props) {
   const handleDelete = () => {
     return dispatch({
       type: 'dutyandtypesetting/fetchdelId',
-      payload: {id}
+      payload: { id }
     }).then(res => {
       if (res.code === 200) {
         message.info(res.msg);
-        getTable(moment(new Date()).format('YYYY'),moment(new Date()).format('MM'))
+        getTable(moment(new Date()).format('YYYY'), moment(new Date()).format('MM'))
         setVisible(false)
       } else {
         message.error(res.msg)
@@ -382,15 +387,28 @@ function SettingDetails(props) {
             }
           </Form.Item>
 
+          <Form.Item style={{ display: 'none' }}>
+            {
+              getFieldDecorator('groupName', {
+                initialValue: settingDetails.groupName
+              })(<Input />)
+            }
+          </Form.Item>
+
           <Form.Item label='值班日期'>
             {
               getFieldDecorator('dutyDate', {
+                rules: [
+                  {
+                    required,
+                    message: '请选择值班日期',
+                  },
+                ],
                 initialValue: settingDetails.dutyDate ? moment(settingDetails.dutyDate) : '',
               }
               )(
                 <DatePicker
                   disabled={title === '编辑排班信息'}
-                  showTime
                   format='YYYY-MM-DD'
                   onOk={handleSelecttime}
                 />)
@@ -430,7 +448,7 @@ function SettingDetails(props) {
                           message: '请选择时间',
                         },
                       ],
-                      initialValue: settingDetails.shift.beginTime ? moment(settingDetails.shift.beginTime, format) : ''
+                      // initialValue: settingDetails.shiftPeriod ? moment(((settingDetails.shiftPeriod).split('—'))[0], format) : ''
                     },
                   )(
                     <TimePicker
@@ -456,7 +474,7 @@ function SettingDetails(props) {
                           message: '请选择时间',
                         },
                       ],
-                      initialValue: settingDetails.shift.endTime ? moment(settingDetails.shift.endTime, format) : ''
+                      // initialValue: settingDetails.shiftPeriod ? moment(((settingDetails.shiftPeriod).split('—'))[1], format) : ''
                     },
                   )(
                     <TimePicker
@@ -520,13 +538,16 @@ function SettingDetails(props) {
             确定
           </Button>
 
-          {/* {
-            id && ( */}
-          <Button onClick={handleDelete} type='danger' ghost>
-            删除
-          </Button>
-          {/* //   )
-          // } */}
+
+          {
+           settingDetails && settingDetails.dutyDate &&  new Date().valueOf() < new Date(settingDetails.dutyDate).valueOf() && (
+              <Button onClick={handleDelete} type='danger' ghost>
+                删除
+              </Button>
+            )
+          }
+
+
         </div>
       </Drawer>
     </>
@@ -540,12 +561,13 @@ SettingDetails.defaultProps = {
     staffPhone: '',
     dutyDate: '',
     weekday: '',
-    shift:{beginTime:'',endTime:''},
+    shift: { beginTime: '', endTime: '' },
     creatorName: sessionStorage.getItem('userName'),
     createtime: '',
     ctime: '',
     shiftType: '',
-    log: []
+    log: [],
+    shiftPeriod: ''
   }
 }
 

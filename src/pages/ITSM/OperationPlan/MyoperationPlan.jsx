@@ -577,6 +577,18 @@ function MyoperationPlan(props) {
         }
         obj.fixed = 'left'
       }
+
+      if (val.title === '超时状态') {
+        obj.render = (text, record) => {
+          return (
+            <span>
+              <Badge
+                status={statusMap[statusContent.indexOf(text)]}
+                text={text} />
+            </span>
+          )
+        }
+      }
       initialColumns.push(obj);
       setColumns(initialColumns);
       return null;
