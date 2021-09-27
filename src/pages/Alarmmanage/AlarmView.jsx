@@ -31,7 +31,7 @@ function MeasurAlarm(props) {
     ['计量业务告警', 'biz'],
     ['主机巡检告警', 'host'],
     ['软件巡检告警', 'soft'],
-    ['应用程序运行状态告警', 'hostalarm'],
+    ['应用程序运行状态告警', 'app'],
     ['配置文件变更告警', 'configurationfile'],
     ['时钟巡检告警', 'clock'],
     ['上下行报文页面告警', 'packet'],
@@ -80,7 +80,7 @@ function MeasurAlarm(props) {
   }, []);
 
   useEffect(() => {
-    if (tabActivekey) {
+    if (tabActivekey && tabActivekey === 'today') {
       dispatch({
         type: 'measuralarm/fetchtotalinfo',
         payload: {
@@ -116,7 +116,7 @@ function MeasurAlarm(props) {
         {pagetitle === '上下行报文页面告警' ? (
           <MessageContent tabActivekey={tabActivekey} />
         ) : (
-          <Content match={props.match} tabkeyDist={tabkeyDist} distkey={pagetitlemap.get(pagetitle)} />
+          <Content tabkeyDist={tabkeyDist} distkey={pagetitlemap.get(pagetitle)} />
         )}
       </TypeContext.Provider>
     </PageHeaderWrapper >

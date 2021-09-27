@@ -32,7 +32,7 @@ const cols = {
 };
 
 function Today(props) {
-  const { match, tabkeyDist, distkey, Donutdata, Smoothdata, dispatch, loading } = props;
+  const { tabkeyDist, distkey, Donutdata, Smoothdata, dispatch, loading } = props;
   const [activeTabKey, setActiveTabKey] = useState('');
   // const [activeTabInfo, setActiveTabInfo] = useState({});
   const { tabActivekey, tabdate, warnModule } = useContext(TypeContext);
@@ -59,41 +59,37 @@ function Today(props) {
   };
 
   const handleTabChange = (key) => {
+    setActiveTabKey(key);
     if (distkey === 'measuralarm') {
-      setActiveTabKey(key);
       if (tabActivekey === 'all') {
         const classify = key === '告警概览' ? '告警概览' : key.slice(0, -2);
         getdatas(classify);
       }
     } else if (tabActivekey === 'all') {
-      getdatas('');
-    } else {
-      const classify = !key ? '全部' : key;
-      setActiveTabKey(classify);
+      getdatas('告警概览');
     }
   };
 
-  useEffect(() => {
-    if (tabkeyDist && tabkeyDist.length > 1) {
-      handleTabChange(tabkeyDist[0].key);
-    };
-  }, [tabkeyDist]);
+  // useEffect(() => {
+  //   if (tabkeyDist && tabkeyDist.length > 1) {
+  //     handleTabChange(tabkeyDist[0].key);
+  //   };
+  // }, [tabkeyDist]);
+
+  // useEffect(() => {
+  //   if (tabkeyDist && tabkeyDist.length > 1) {
+  //     handleTabChange(tabkeyDist[0].key);
+  //   };
+  // }, [tabActivekey]);
 
   useEffect(() => {
-    if (tabkeyDist && tabkeyDist.length > 1) {
-      handleTabChange(tabkeyDist[0].key);
-    };
-  }, [tabActivekey]);
-
-  useEffect(() => {
-    if (tabdate) {
+    if (tabdate && (tabdate.beginWarnTime || tabdate.endWarnTime)) {
       if (distkey === 'measuralarm') {
         handleTabChange('告警概览')
       } else {
         handleTabChange('全部')
       }
     }
-
   }, [tabdate])
 
   return (
@@ -101,7 +97,7 @@ function Today(props) {
       <Card
         tabList={(distkey === 'measuralarm' || (distkey !== 'measuralarm' && tabActivekey === 'today')) ? tabkeyDist : null}
         activeTabKey={activeTabKey}
-        onTabChange={key => { handleTabChange(key) }}
+        onTabChange={handleTabChange}
         style={{ marginTop: 24, marginBottom: `${tabActivekey === 'today' ? '-50px' : '-1px'}` }}
       >
         {tabActivekey === 'all' && (

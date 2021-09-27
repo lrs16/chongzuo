@@ -90,7 +90,7 @@ const columns = [
     key: 'clearStatus',
     width: 120,
     render: (text) => (
-      <Badge status={text === '已确认' ? 'success' : 'default'} text={text} />
+      <Badge status={text === '待消除' ? 'error' : 'default'} text={text} />
     ),
   },
   {
@@ -112,7 +112,7 @@ const columns = [
     render: (text, record) => {
       const handleClick = () => {
         router.push({
-          pathname: `/alarmmanage/measuralarm/details`,
+          pathname: `/alarmmanage/measuralarm/measuralarm/details`,
           query: {
             Id: record.id,
             code: record.monitorCode,
@@ -152,10 +152,9 @@ const columns = [
 ];
 function MeasurList(props) {
   const { loading, dispatch, list, searchtab, ChangeActiveTabKey, activeTabKey } = props;
-  const { getFieldDecorator, resetFields, getFieldsValue } = props.form;
+  const { getFieldDecorator, resetFields, getFieldsValue, setFieldsValue } = props.form;
   const [selectedRowKeys, setSelectionRow] = useState([]);
   const [selectRowdata, setSelectdata] = useState([]);
-  const [classifykey, setClassifykey] = useState([]);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
   const [searchdata, setSearchData] = useState({});
   const [activeKey, setActiveKey] = useState('');
@@ -224,9 +223,8 @@ function MeasurList(props) {
   };
 
   const handleChange = (val) => {
-    console.log(val)
     const key = val && val.length > 0 ? `${val[0]}告警` : '告警概览';
-    ChangeActiveTabKey(key)
+    ChangeActiveTabKey(key);
   };
 
   const handleSelects = (v) => {
@@ -234,20 +232,20 @@ function MeasurList(props) {
     setSelectdata(v);
   };
 
-  useEffect(() => {
-    handleReset();
-  }, [tabActivekey])
+  // useEffect(() => {
+  //   handleReset();
+  // }, [tabActivekey])
 
   useEffect(() => {
-    if (activeTabKey && tabdate) {
+    if (activeTabKey) {
       const key = activeTabKey === '告警概览' ? '' : activeTabKey.slice(0, -2);
-      setClassifykey(key.split(','));
+      setFieldsValue({ Classify: key.split(',') });
       handleSearch(1, 10);
     }
   }, [activeTabKey]);
 
   useEffect(() => {
-    if (tabdate) {
+    if (tabActivekey === 'all' && tabdate && (tabdate.beginWarnTime || tabdate.endWarnTime)) {
       resetFields();
       handleSearch(1, 10);
     }
@@ -302,7 +300,6 @@ function MeasurList(props) {
     <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
   </>
   )
-  console.log(classifykey)
 
   return (
     <>
@@ -338,7 +335,7 @@ function MeasurList(props) {
             <Col span={8}>
               <Form.Item label="监控项/内容/子类" >
                 {getFieldDecorator('Classify', {
-                  initialValue: classifykey,
+                  initialValue: '',
                 })(
                   <Cascader
                     fieldNames={{ label: 'title', value: 'title', children: 'children' }}
@@ -351,7 +348,7 @@ function MeasurList(props) {
             </Col>
             <Col span={8}>
               <Form.Item label="告警内容">{
-                getFieldDecorator('warnContent ')(
+                getFieldDecorator('warnContent')(
                   <Input allowClear />
                 )}</Form.Item>
             </Col>

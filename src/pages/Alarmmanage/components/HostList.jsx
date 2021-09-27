@@ -3,10 +3,7 @@ import moment from 'moment';
 import {
   Card,
   Button,
-  Dropdown,
-  Menu,
   Table,
-  Message,
   Badge,
   Tabs,
   Row, Col, Form, Input, Select, DatePicker, Tooltip
@@ -21,19 +18,6 @@ import ButtonGroup from './ButtonGroup';
 const { TabPane } = Tabs;
 const { Option } = Select;
 
-const tabsmap = [
-  { key: '0', name: '全部', color: '', data: 356 },
-  { key: '1', name: '待确认', color: '#ff0000', data: 6 },
-  { key: '2', name: '已确认', color: '', data: 300 },
-  { key: '3', name: '待消除', color: '#ff0000', data: 16 },
-  { key: '4', name: '已消除', color: '', data: 340 },
-];
-
-const eliminationsMap = ['default', 'error'];
-const eliminations = ['已消除', '未消除'];
-const statusMap = ['success', 'error'];
-const configstatus = ['已确认', '未确认'];
-
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -45,51 +29,9 @@ const formItemLayout = {
   },
 };
 
-
-
-const DropdownMenu = props => {
-  const { selectedRowKeys, match, datas } = props;
-
-  const handleMenuClick = e => {
-    const alarmlist = datas.filter(obj => {
-      return obj.configstatus === '0' && obj.elimination === '1';
-    });
-    const { key } = e;
-    if (selectedRowKeys.length < 1) {
-      Message.error('至少选择一条告警记录');
-    } else {
-      router.push({
-        pathname: `${match.url}/workorder`,
-        query: {
-          id: selectedRowKeys,
-          datas: alarmlist,
-          key,
-        },
-      });
-    }
-  };
-
-  const menu = (
-    <Menu onClick={handleMenuClick}>
-      <Menu.Item key="0">事件工单</Menu.Item>
-      <Menu.Item key="1">问题工单</Menu.Item>
-      <Menu.Item key="2">变更工单</Menu.Item>
-      <Menu.Item key="3">发布工单</Menu.Item>
-    </Menu>
-  );
-
-  return (
-    <Dropdown overlay={menu}>
-      <Button type="primary" style={{ marginRight: 8 }}>
-        派发工单 <DownOutlined />
-      </Button>
-    </Dropdown>
-  );
-};
-
 function HostList(props) {
   const { loading, dispatch, list, searchtab, ChangeActiveTabKey, activeTabKey } = props;
-  const { getFieldDecorator, resetFields, getFieldsValue } = props.form;
+  const { getFieldDecorator, resetFields, getFieldsValue, setFieldsValue } = props.form;
   const [selectedRowKeys, setSelectionRow] = useState([]);
   const [selectRowdata, setSelectdata] = useState([]);
   // const [classifykey, setClassifykey] = useState([]);
@@ -98,7 +40,9 @@ function HostList(props) {
   const [activeKey, setActiveKey] = useState('');
   const [assets, setAssets] = useState([]);
   const [expand, setExpand] = useState(false);
-  const { tabActivekey, selectdata, tabdate, warnModule, pagetitle } = useContext(TypeContext);
+  const { tabActivekey, selectdata, tabdate, warnModule, pagetitle, } = useContext(TypeContext);
+
+  const { pathname } = window.location;
 
   useEffect(() => {
     querkeyVal('assets', 'assets_host_zone_id').then(res => {
@@ -110,17 +54,15 @@ function HostList(props) {
 
   const getvalues = () => {
     const val = getFieldsValue();
+    console.log(val)
     const values = {
-      firstClassify: val.Classify ? val.Classify[0] : '',
-      secondClassify: val.Classify && val.Classify.length > 1 ? val.Classify[1] : '',
-      thirdClassify: val.Classify && val.Classify.length > 2 ? val.Classify[2] : '',
+      ...val,
       beginClearTime: val.beginClearTime ? moment(val.beginClearTime).format('YYYY-MM-DD HH:mm:ss') : '',
       beginConfirmTime: val.beginConfirmTime ? moment(val.beginConfirmTime).format('YYYY-MM-DD HH:mm:ss') : '',
       beginWarnTime: tabdate.beginWarnTime ? moment(tabdate.beginWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
       endClearTime: val.endClearTime ? moment(val.endClearTime).format('YYYY-MM-DD HH:mm:ss') : '',
       endConfirmTime: val.endConfirmTime ? moment(val.endConfirmTime).format('YYYY-MM-DD HH:mm:ss') : '',
       endWarnTime: tabdate.endWarnTime ? moment(tabdate.endWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
-      warnContent: val.warnContent,
       warnModule
     };
     return values
@@ -170,29 +112,31 @@ function HostList(props) {
     setPageinations({ current: 1, pageSize: 10 })
   };
 
-  // const onChange = (val) => {
-  //   ChangeActiveTabKey(val)
-  // };
+  const handleChange = (val) => {
+    const key = val || '全部';
+    ChangeActiveTabKey(key)
+  };
 
   const handleSelects = (v) => {
     setSelectionRow(v);
     setSelectdata(v);
   };
 
-  useEffect(() => {
-    handleReset();
-  }, [tabActivekey])
+  // useEffect(() => {
+  //   handleReset();
+  // }, [tabActivekey])
 
   useEffect(() => {
     if (activeTabKey && tabdate) {
-      // const key = activeTabKey === '全部' ? '' : activeTabKey;
+      const key = activeTabKey === '全部' ? '' : activeTabKey;
       // setClassifykey(key);
+      setFieldsValue({ firstClassify: key });
       handleSearch(1, 10);
     }
   }, [activeTabKey]);
 
   useEffect(() => {
-    if (tabdate) {
+    if (tabActivekey === 'all' && tabdate && (tabdate.beginWarnTime || tabdate.endWarnTime)) {
       resetFields();
       handleSearch(1, 10);
     }
@@ -236,17 +180,17 @@ function HostList(props) {
       title: '区域',
       dataIndex: 'firstClassify',
       key: 'firstClassify',
-      width: 140,
+      width: 120,
     },
     {
       title: '设备IP',
       dataIndex: 'fourthClassify',
       key: 'fourthClassify',
-      width: 180,
+      width: 120,
       onCell: () => {
         return {
           style: {
-            maxWidth: 180,
+            maxWidth: 120,
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
@@ -260,11 +204,11 @@ function HostList(props) {
       title: '设备名称',
       dataIndex: 'thirdClassify',
       key: 'thirdClassify',
-      width: 180,
+      width: 150,
       onCell: () => {
         return {
           style: {
-            maxWidth: 180,
+            maxWidth: 150,
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
@@ -275,14 +219,14 @@ function HostList(props) {
       render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
     {
-      title: '巡检内容',
+      title: `${pagetitle === '应用程序运行状态告警' ? '监测内容' : '巡检内容'}`,
       dataIndex: 'secondClassify',
       key: 'secondClassify',
-      width: 180,
+      width: 120,
       onCell: () => {
         return {
           style: {
-            maxWidth: 180,
+            maxWidth: 120,
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
@@ -307,7 +251,7 @@ function HostList(props) {
       key: 'clearStatus',
       width: 120,
       render: (text) => (
-        <Badge status={text === '已确认' ? 'success' : 'default'} text={text} />
+        <Badge status={text === '待消除' ? 'error' : 'default'} text={text} />
       ),
     },
     {
@@ -326,32 +270,52 @@ function HostList(props) {
           }
         }
       },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      render: (text, record) => {
+        const handleClick = () => {
+          router.push({
+            pathname: `${pathname}/details`,
+            query: {
+              Id: record.id,
+              code: record.monitorCode,
+            },
+            state: {
+              dynamicpath: true,
+              menuDesc: '告警详细信息',
+              record,
+              type: 'measuralarm',
+            }
+          });
+        };
+        return (
+          <Tooltip placement='topLeft' title={text}>
+            <a onClick={handleClick}>{text}</a>
+          </Tooltip>)
+      }
     },
     {
       title: '告警时间',
-      dataIndex: 'time',
-      key: 'time',
+      dataIndex: 'warnTime',
+      key: 'warnTime',
       width: 180,
     },
     {
       title: '确认告警时间',
-      dataIndex: 'contenttime',
-      key: 'contenttime',
+      dataIndex: 'confirmTime',
+      key: 'confirmTime',
       width: 180,
     },
     {
       title: '告警消除时间',
-      dataIndex: 'thistime',
-      key: 'thistime',
+      dataIndex: 'clearTime',
+      key: 'clearTime',
       width: 180,
     },
   ];
 
   const softName = {
     title: '软件名称',
-    dataIndex: 'fiveClassify',
-    key: 'fiveClassify',
+    dataIndex: 'fifthClassify',
+    key: 'fifthClassify',
     width: 180,
     onCell: () => {
       return {
@@ -404,11 +368,12 @@ function HostList(props) {
     return [];
   };
 
-  const inspectionmmap = getTypebykey('1437319207950217217');       // 巡检内容
+  const hostinspectionmmap = getTypebykey('1437319207950217217');       // 主机巡检内容
+  const softinspectionmmap = getTypebykey('1442405396184997889');
   const hostmonitormap = getTypebykey('1437322008466026497');       // 主机监测
 
   const extra = (<>
-    <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
+    <Button type="primary" onClick={() => handleSearch(1, 10)}>查 询</Button>
     <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
     <Button
       style={{ marginLeft: 8 }}
@@ -427,12 +392,12 @@ function HostList(props) {
       <Card>
         <Form {...formItemLayout} onSubmit={handleSearch}>
           <Row gutter={24}>
-            {/* <Col span={8}>
+            <Col span={8}>
               <Form.Item label="区域">
                 {getFieldDecorator('firstClassify', {
-                  initialValue: classifykey,
+                  initialValue: '',
                 })(
-                  <Select placeholder="请选择" onChange={onChange} allowClear>
+                  <Select placeholder="请选择" onChange={handleChange} allowClear>
                     {assets.map(({ key, val }) => [
                       <Option key={key} value={val}>
                         {val}
@@ -441,7 +406,7 @@ function HostList(props) {
                   </Select>,
                 )}
               </Form.Item>
-            </Col> */}
+            </Col>
             <Col span={8}>
               <Form.Item label="设备名称">
                 {getFieldDecorator('thirdClassify ')(
@@ -463,7 +428,7 @@ function HostList(props) {
                   <>
                     <Col span={8}>
                       <Form.Item label="软件名称">
-                        {getFieldDecorator('fiveClassify')(
+                        {getFieldDecorator('fifthClassify')(
                           <Input allowClear />,
                         )}
                       </Form.Item>
@@ -477,12 +442,27 @@ function HostList(props) {
                     </Col>
                   </>
                 )}
-                {(pagetitle === '主机巡检告警' || pagetitle === '软件巡检告警') && (
+                {pagetitle === '主机巡检告警' && (
                   <Col span={8}>
                     <Form.Item label="巡检内容">
                       {getFieldDecorator('secondClassify')(
-                        <Select placeholder="请选择">
-                          {inspectionmmap.map(({ dict_code, title }) => [
+                        <Select placeholder="请选择" allowClear>
+                          {hostinspectionmmap.map(({ dict_code, title }) => [
+                            <Option key={dict_code} value={title}>
+                              {title}
+                            </Option>,
+                          ])}
+                        </Select>,
+                      )}
+                    </Form.Item>
+                  </Col>
+                )}
+                {pagetitle === '软件巡检告警' && (
+                  <Col span={8}>
+                    <Form.Item label="巡检内容">
+                      {getFieldDecorator('secondClassify')(
+                        <Select placeholder="请选择" allowClear>
+                          {softinspectionmmap.map(({ dict_code, title }) => [
                             <Option key={dict_code} value={title}>
                               {title}
                             </Option>,
@@ -596,7 +576,7 @@ function HostList(props) {
                     </div>
                     <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
                     <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                      {getFieldDecorator('time6', {
+                      {getFieldDecorator('endClearTime', {
                         initialValue: '',
                       })(
                         <DatePicker
@@ -614,7 +594,7 @@ function HostList(props) {
                 </Col>
               </>
             )}
-            <Col span={8}><Form.Item>{extra}</Form.Item></Col>
+            {(pagetitle === '主机巡检告警' || (pagetitle !== '主机巡检告警' && !expand)) ? <Col span={24} style={{ textAlign: 'right' }}>{extra}</Col> : <Col span={8}><Form.Item>{extra}</Form.Item></Col>}
           </Row>
         </Form>
 
@@ -643,7 +623,7 @@ function HostList(props) {
           dataSource={list.records || []}
           loading={loading}
           rowKey={record => record.id}
-          scroll={{ x: 2150 }}
+          scroll={{ x: pagetitle === '主机巡检告警' ? 1500 : 2000 }}
           pagination={pagination}
         />
       </Card>
