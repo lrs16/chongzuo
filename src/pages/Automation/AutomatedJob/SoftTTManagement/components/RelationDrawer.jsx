@@ -100,7 +100,8 @@ function RelationDrawer(props) {
 
   const handleSumit = () => {
     const values = getFieldsValue();
-    handleSearch(values.no, values.status, 0, 15);
+    const status = values.status?values.status:'';
+    handleSearch(values.no, status, 0, 15);
   }
 
   const handleReset = () => { // 重置

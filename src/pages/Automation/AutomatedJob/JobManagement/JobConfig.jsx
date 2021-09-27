@@ -29,6 +29,7 @@ function JobConfig(props) {
         dispatch,
         location,
         autotasklist,
+        userinfo,
         form: {
             getFieldDecorator,
             getFieldsValue,
@@ -42,7 +43,7 @@ function JobConfig(props) {
 
     const searchdata = (page, size) => {
         const values = getFieldsValue();
-        values.taskStatus = '1';
+        // values.taskStatus = '1';
         values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
         values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
         //   values.startUpdateTime = values.startUpdateTime ? moment(values.startUpdateTime).format('YYYY-MM-DD HH:mm:ss') : '';
@@ -57,8 +58,15 @@ function JobConfig(props) {
         });
     };
 
+    const queryDept = () => {
+        dispatch({
+            type: 'itsmuser/fetchuser',
+        });
+    };
+
     useEffect(() => {
         searchdata(1, 15);
+        queryDept();
     }, [location]);
 
     const handleReset = () => {
@@ -196,8 +204,8 @@ function JobConfig(props) {
         },
         {
             title: '审核结果',
-            dataIndex: 'examineResults',
-            key: 'examineResults',
+            dataIndex: 'examineStatus',
+            key: 'examineStatus',
             width: 150,
         },
         {
@@ -264,8 +272,8 @@ function JobConfig(props) {
         },
         {
             title: '审核说明',
-            dataIndex: 'taskRemarks',
-            key: 'taskRemarks',
+            dataIndex: 'examineRemarks',
+            key: 'examineRemarks',
             width: 250,
         },
         {
@@ -328,7 +336,7 @@ function JobConfig(props) {
                                 })(
                                     <Select placeholder="请选择" allowClear>
                                         {tsskstatusmap.map(obj => (
-                                            <Option key={obj.key} value={obj.title}>
+                                            <Option key={obj.key} value={obj.dict_code}>
                                                 {obj.title}
                                             </Option>
                                         ))}
@@ -344,7 +352,7 @@ function JobConfig(props) {
                                         })(
                                             <Select placeholder="请选择" allowClear>
                                                 {examinestatusmap.map(obj => (
-                                                    <Option key={obj.key} value={obj.title}>
+                                                    <Option key={obj.key} value={obj.dict_code}>
                                                         {obj.title}
                                                     </Option>
                                                 ))}
@@ -353,7 +361,7 @@ function JobConfig(props) {
                                 </Col>
                                 <Col span={8}>
                                     <Form.Item label="创建人">
-                                        {getFieldDecorator('createByNameExt', {
+                                        {getFieldDecorator('createBy', {
                                             initialValue: '',
                                         })(<Input placeholder="请输入" allowClear />)}
                                     </Form.Item>
@@ -393,7 +401,7 @@ function JobConfig(props) {
                                 </Col>
                                 <Col span={8}>
                                     <Form.Item label="更新人">
-                                        {getFieldDecorator('updateByNameExt', {
+                                        {getFieldDecorator('updateBy', {
                                             initialValue: '',
                                         })(<Input placeholder="请输入" allowClear />)}
                                     </Form.Item>
@@ -478,7 +486,7 @@ function JobConfig(props) {
                                         })(
                                             <Select placeholder="请选择" allowClear>
                                                 {taskmodesmap.map(obj => (
-                                                    <Option key={obj.key} value={obj.title}>
+                                                    <Option key={obj.key} value={obj.dict_code}>
                                                         {obj.title}
                                                     </Option>
                                                 ))}
@@ -495,22 +503,25 @@ function JobConfig(props) {
                         onClick={() => newjobconfig('add')}
                     >新增</Button>
                 </div>
-                <Table
-                    columns={columns}
-                    loading={loading}
-                    dataSource={autotasklist.rows}
-                    rowKey={record => record.id}
-                    pagination={pagination}
-                    scroll={{ x: 1300 }}
-                />
+                {
+                    autotasklist.rows && (<Table
+                        columns={columns}
+                        loading={loading}
+                        dataSource={autotasklist.rows.filter(item => item.createBy === userinfo.userName)}
+                        rowKey={record => record.id}
+                        pagination={pagination}
+                        scroll={{ x: 1300 }}
+                    />)
+                }
             </Card>
         </PageHeaderWrapper>
     );
 }
 
 export default Form.create({})(
-    connect(({ autotask, loading }) => ({
+    connect(({ autotask, loading, itsmuser }) => ({
         autotasklist: autotask.autotasklist,
+        userinfo: itsmuser.userinfo,
         loading: loading.models.autotask,
     }))(JobConfig),
 );

@@ -171,6 +171,7 @@ function SoftTTExecute(props) {
       dataIndex: 'workRemarks',
       key: 'workRemarks',
       width: 250,
+      ellipsis: true,
     },
     {
       title: '状态',
@@ -226,6 +227,7 @@ function SoftTTExecute(props) {
       dataIndex: 'examineRemarks',
       key: 'examineRemarks',
       width: 250,
+      ellipsis: true,
     },
     {
       title: '审核单位',

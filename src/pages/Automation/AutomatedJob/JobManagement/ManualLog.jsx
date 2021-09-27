@@ -4,9 +4,12 @@ import { connect } from 'dva';
 import moment from 'moment';
 import Link from 'umi/link';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Table, Card, Button, Form, Input, Tooltip, Row, Col, DatePicker, Badge } from 'antd';
+import { Table, Card, Button, Form, Input, Tooltip, Row, Col, DatePicker, Select, Badge } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 // import DictLower from '@/components/SysDict/DictLower';
+import { querkeyVal } from '@/services/api';
+
+const { Option } = Select;
 
 // const { Option } = Select;
 const operations = <Button type="primary">
@@ -48,7 +51,8 @@ function ManualLog(props) {
         },
     } = props;
 
-    // const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
+    const [agentzonemap, setAgentzonemap] = useState({ arr: [], ischange: false }); // 下拉值
+    const [executestatusmap, setExecutestatusmap] = useState({ arr: [], ischange: false }); // 下拉值
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
 
     const searchdata = (page, size) => {
@@ -81,6 +85,25 @@ function ManualLog(props) {
         // } else {
         searchdata(1, 15);
         // }
+        querkeyVal('agent', 'host_zone_id').then(res => { // 区域
+            if (res.code === 200) {
+                const value = Object.values(res.data)[0];
+                const newData = value.map(item => {
+                    return { key: item.key, title: item.val }
+                });
+                setAgentzonemap(newData);
+            }
+        });
+
+        querkeyVal('auto', 'execute_status_id').then(res => { // 执行状态
+            if (res.code === 200) {
+                const value = Object.values(res.data)[0];
+                const newData = value.map(item => {
+                    return { key: item.key, title: item.val }
+                });
+                setExecutestatusmap(newData);
+            }
+        });
     }, [location]);
 
     const handleReset = () => {
@@ -136,8 +159,8 @@ function ManualLog(props) {
     //     }
     //     return [];
     // };
-
-    // const tsskstatusmap = getTypebyId('200000000000001002'); // 执行结果
+    // getTypebyId('200000000000001004')
+    // const executestatusmap = [];       // 执行状态
 
     const columns = [
         {
@@ -175,15 +198,23 @@ function ManualLog(props) {
         },
         {
             title: '执行脚本',
-            dataIndex: 'scriptcont',
-            key: 'scriptcont',
-            width: 150,
+            dataIndex: 'scriptCont',
+            key: 'scriptCont',
+            width: 350,
+            ellipsis: true,
+            render: (text) => {
+                return (
+                    <Tooltip placement="topLeft" title={text}>
+                        <span>{text}</span>
+                    </Tooltip>
+                );
+            },
         },
         {
             title: '执行返回',
             dataIndex: 'executeResult',
             key: 'executeResult',
-            width: 250,
+            width: 350,
             ellipsis: true,
             render: (text) => {
                 return (
@@ -198,6 +229,7 @@ function ManualLog(props) {
             dataIndex: 'executeStatus',
             key: 'executeStatus',
             width: 150,
+            ellipsis: true,
             render: (text, record) => (
                 <span>
                     <Badge status={colormap.get(record.executeStatus)} text={text} />
@@ -234,6 +266,7 @@ function ManualLog(props) {
         <PageHeaderWrapper title={pagetitle} extra={operations}>
             {/* <DictLower
                 typeid="200000000000001001"
+                commonid="100000000000001001"
                 ChangeSelectdata={newvalue => setSelectData(newvalue)}
                 style={{ display: 'none' }}
             /> */}
@@ -251,7 +284,13 @@ function ManualLog(props) {
                             <Form.Item label="区域">
                                 {getFieldDecorator('agentZone', {
                                     initialValue: '',
-                                })(<Input placeholder="请输入" allowClear />)}
+                                })(<Select placeholder="请选择" allowClear>
+                                {agentzonemap && agentzonemap.length > 0 && agentzonemap.map(obj => (
+                                    <Option key={obj.key} value={obj.key}>
+                                        {obj.title}
+                                    </Option>
+                                ))}
+                            </Select>)}
                             </Form.Item>
                         </Col>
                         <Col span={8}>
@@ -270,9 +309,15 @@ function ManualLog(props) {
                         </Col>
                         <Col span={8}>
                             <Form.Item label="执行结果">
-                                {getFieldDecorator('executeResult', {
+                                {getFieldDecorator('executeStatus', {
                                     initialValue: '',
-                                })(<Input placeholder="请输入" allowClear />)}
+                                })(<Select placeholder="请选择" allowClear>
+                                    {executestatusmap && executestatusmap.length > 0 && executestatusmap.map(obj => (
+                                        <Option key={obj.key} value={obj.key}>
+                                            {obj.title}
+                                        </Option>
+                                    ))}
+                                </Select>)}
                             </Form.Item>
                         </Col>
                         <Col span={8}>

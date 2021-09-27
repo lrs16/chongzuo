@@ -148,11 +148,11 @@ function SoftWorkLogsDrawer(props) {
             title: '执行返回',
             dataIndex: 'executeResult',
             key: 'executeResult',
-            width: 250,
+            width: 350,
             ellipsis: true,
             render: (text) => {
                 return (
-                    <Tooltip placement="topRight" title={text}>
+                    <Tooltip placement="topLeft" title={text}>
                         <span>{text}</span>
                     </Tooltip>
                 );
@@ -199,7 +199,7 @@ function SoftWorkLogsDrawer(props) {
     };
 
     const executestatusmap = getTypebyId('200000000000001004');       // 执行状态
-    const worktypemap = getTypebyId('200000000000001007');         // 区域
+    const worktypemap = getTypebyId('200000000000001007');         // 执行类型
 
     return (
         <Drawer

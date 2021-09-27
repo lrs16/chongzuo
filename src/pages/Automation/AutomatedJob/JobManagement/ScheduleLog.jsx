@@ -175,9 +175,17 @@ function ScheduleLog(props) {
         },
         {
             title: '执行脚本',
-            dataIndex: 'scriptcont',
-            key: 'scriptcont',
-            width: 150,
+            dataIndex: 'scriptCont',
+            key: 'scriptCont',
+            width: 350,
+            ellipsis: true,
+            render: (text) => {
+                return (
+                    <Tooltip placement="topLeft" title={text}>
+                        <span>{text}</span>
+                    </Tooltip>
+                );
+            },
         },
         {
             title: '执行返回',

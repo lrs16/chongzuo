@@ -326,7 +326,7 @@ function ManualExecuteList(props) {
                         </Col>
                         <Col span={5}>
                             <Form.Item label="创建人">
-                                {getFieldDecorator('createByNameExt', {
+                                {getFieldDecorator('createBy', {
                                     initialValue: '',
                                 })(<Input placeholder="请输入" allowClear />)}
                             </Form.Item>

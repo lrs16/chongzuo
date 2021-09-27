@@ -105,9 +105,9 @@ const Content = forwardRef((props, ref) => {
               })(<TextArea autoSize={{ minRows: 5 }} placeholder="请输入" disabled={Noediting}/>)}
             </Form.Item>
           </Col>
-          {/* <Col span={8}>
+          <Col span={8}>
             <Form.Item label="申请人">
-              {getFieldDecorator('createBy', {
+              {getFieldDecorator('createByName', {
                 rules: [{ required: true }],
                 initialValue: userinfo.userName ? userinfo.userName : registrat.createBy,
               })(<Input placeholder="请输入" disabled />)}
@@ -115,12 +115,12 @@ const Content = forwardRef((props, ref) => {
           </Col>
           <Col span={8} >
             <Form.Item label="申请人单位">
-              {getFieldDecorator('createDept', {
+              {getFieldDecorator('createDeptName', {
                 rules: [{ required: true }],
                 initialValue: userinfo.unitName ? userinfo.unitName : registrat.createDept,
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
-          </Col> */}
+          </Col>
           <Col span={8}>
             <Form.Item label="申请时间">
               {getFieldDecorator('createTime', {

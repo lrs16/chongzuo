@@ -103,7 +103,7 @@ const Examine = forwardRef((props, ref) => {
           </Col>
           <Col span={8}>
             <Form.Item label="审核人">
-              {getFieldDecorator('examineBy', {
+              {getFieldDecorator('examineByName', {
                 rules: [{ required: true }],
                 initialValue: userinfo.userName ? userinfo.userName : checkInfo.examineBy,
               })(<Input placeholder="请输入" disabled />)}
@@ -111,7 +111,7 @@ const Examine = forwardRef((props, ref) => {
           </Col>
           <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="审核人ID">
-              {getFieldDecorator('examineById', {
+              {getFieldDecorator('examineBy', {
                 rules: [{ required: true }],
                 initialValue: userinfo.userId ? userinfo.userId : checkInfo.examineById,
               })(<Input placeholder="请输入" disabled />)}
@@ -119,7 +119,7 @@ const Examine = forwardRef((props, ref) => {
           </Col>
           <Col span={8}>
             <Form.Item label="审核人单位">
-              {getFieldDecorator('examineDept', {
+              {getFieldDecorator('examineDeptName', {
                 rules: [{ required: true }],
                 initialValue: userinfo.unitName ? userinfo.unitName : checkInfo.examineDept,
               })(<Input placeholder="请输入" disabled />)}
@@ -127,7 +127,7 @@ const Examine = forwardRef((props, ref) => {
           </Col>
           <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="审核人单位ID">
-              {getFieldDecorator('examineDeptId', {
+              {getFieldDecorator('examineDept', {
                 rules: [{ required: true }],
                 initialValue: userinfo.unitId ? userinfo.unitId : checkInfo.examineDeptId,
               })(<Input placeholder="请输入" disabled />)}

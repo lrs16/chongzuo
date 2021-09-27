@@ -279,7 +279,7 @@ function TestEnvironmentManage(props) {
                 })(
                   <Select placeholder="请选择" allowClear>
                     {zonemap.map(obj => (
-                      <Option key={obj.key} value={obj.title}>
+                      <Option key={obj.key} value={obj.dict_code}>
                         {obj.title}
                       </Option>
                     ))}
