@@ -1143,6 +1143,7 @@ function TobedealtList(props) {
   };
 
   const assessmentObject = getTypebyTitle('考核对象');
+  console.log('assessmentObject: ', assessmentObject);
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -1305,10 +1306,10 @@ function TobedealtList(props) {
                     initialValue: cacheinfo.assessType,
                   })(
                     <Select onChange={(value, option) => handleChange(value, option, 'assessType')}>
-                      <Option key="1" value="功能开发">
+                      <Option key="1" value="1">
                         功能开发
                       </Option>
-                      <Option key="2" value="系统运维">
+                      <Option key="2" value="2">
                         系统运维
                       </Option>
                     </Select>,
@@ -1423,37 +1424,35 @@ function TobedealtList(props) {
                 </Form.Item>
               </Col>
 
-              {/* {performanceLeader && performanceLeader.length && (
-          <Col span={8}>
-            <Form.Item label='登记人'>
-              {
-                getFieldDecorator('register', {
-                })
-                  (
-                    <Select onSelect={selectOnchange}>
-                      {performanceLeader.map(obj => [
-                        <Option key={obj.key} value={obj.key}>
-                          {obj.value}
-                        </Option>
-                      ])}
+              {/* <Col span={8}>
+                <Form.Item label='登记人'>
+                  {
+                    getFieldDecorator('register', {
+                    })
+                      (
+                        <Select onSelect={selectOnchange}>
+                          {(performanceLeader || []).map(obj => [
+                            <Option key={obj.key} value={obj.key}>
+                              {obj.value}
+                            </Option>
+                          ])}
 
-                    </Select>
-                  )
-              }
-            </Form.Item>
-          </Col>
-        )}
+                        </Select>
+                      )
+                  }
+                </Form.Item>
+              </Col> */}
 
 
-        <Col span={8} style={{ display: 'none' }}>
-          <Form.Item label='登记人id'>
-            {
-              getFieldDecorator('register', {
-              })
-                (<Input />)
-            }
-          </Form.Item>
-        </Col> */}
+              <Col span={8} style={{ display: 'none' }}>
+                <Form.Item label='登记人id'>
+                  {
+                    getFieldDecorator('register', {
+                    })
+                      (<Input />)
+                  }
+                </Form.Item>
+              </Col>
 
               <Col span={8}>
                 <Form.Item label="登记人">
@@ -1663,17 +1662,18 @@ function TobedealtList(props) {
                     {getFieldDecorator('providerConfirmer', {
                       initialValue: cacheinfo.providerConfirmer,
                     })(
-                      <Select
-                        onSelect={(value, option) =>
-                          selectOnchange(value, option, 'providerConfirmer')
-                        }
-                      >
-                        {performanceLeader.map(obj => [
-                          <Option key={obj.key} value={obj.key}>
-                            {obj.value}
-                          </Option>,
-                        ])}
-                      </Select>,
+                      // <Select
+                      //   onSelect={(value, option) =>
+                      //     selectOnchange(value, option, 'providerConfirmer')
+                      //   }
+                      // >
+                      //   {performanceLeader.map(obj => [
+                      //     <Option key={obj.key} value={obj.key}>
+                      //       {obj.value}
+                      //     </Option>,
+                      //   ])}
+                      // </Select>,
+                      <Input />
                     )}
                   </Form.Item>
                 </Col>
@@ -1739,21 +1739,21 @@ function TobedealtList(props) {
                 </Form.Item>
               </Col>
 
-              {/* <Col span={8}>
+              <Col span={8}>
                 <Form.Item label="考核对象">
                   {getFieldDecorator('assessObject', {
                     initialValue: cacheinfo.assessObject,
                   })(
                     <Select placeholder="请选择">
                       {(assessmentObject || []).map(obj => [
-                        <Option key={obj.dict_code} value={obj.title}>
+                        <Option key={obj.dict_code} value={obj.dict_code}>
                           {obj.title}
                         </Option>,
                       ])}
                     </Select>,
                   )}
                 </Form.Item>
-              </Col> */}
+              </Col>
 
               <Col span={8}>
                 <Form.Item label="业务负责人复核人">
@@ -1821,17 +1821,18 @@ function TobedealtList(props) {
                     {getFieldDecorator('finallyConfirmerName', {
                       initialValue: cacheinfo.finallyConfirmerName,
                     })(
-                      <Select
-                        onSelect={(value, option) =>
-                          selectOnchange(value, option, 'finallyConfirmerName')
-                        }
-                      >
-                        {performanceLeader.map(obj => [
-                          <Option key={obj.key} value={obj.key}>
-                            {obj.value}
-                          </Option>,
-                        ])}
-                      </Select>,
+                      // <Select
+                      //   onSelect={(value, option) =>
+                      //     selectOnchange(value, option, 'finallyConfirmerName')
+                      //   }
+                      // >
+                      //   {performanceLeader.map(obj => [
+                      //     <Option key={obj.key} value={obj.key}>
+                      //       {obj.value}
+                      //     </Option>,
+                      //   ])}
+                      // </Select>,
+                      <Input />
                     )}
                   </Form.Item>
                 </Col>

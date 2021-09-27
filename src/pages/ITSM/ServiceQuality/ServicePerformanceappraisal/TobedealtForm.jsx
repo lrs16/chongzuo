@@ -293,6 +293,7 @@ function TobedealtForm(props) {
             id: currentTask.id,
             instanceId,
             taskId,
+            assessType:values.assessType === '系统运维' ? '2':'1',
             assessTime: moment(values.assessTime).format('YYYY-MM-DD HH:mm:ss'),
             applyTime: moment(values.applyTime).format('YYYY-MM-DD HH:mm:ss'),
             attachment: files.ischange ? JSON.stringify(files.arr) : values.attachment,
@@ -586,7 +587,7 @@ function TobedealtForm(props) {
         <>
           {taskName && !search && (
             <>
-              {taskName === '服务绩效考核登记' && hisTasks && hisTasks.length <= 3 && (
+              {taskName === '服务绩效考核登记' && hisTasks && hisTasks.length <= 3 && tabActiveKey === 'workorder' && (
                 <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete}>
                   删除
                 </Button>
@@ -595,13 +596,13 @@ function TobedealtForm(props) {
               {taskName === '业务负责人审核' &&
                 taskData &&
                 taskData.currentTask &&
-                !currentTask.verifyValue && (
+                !currentTask.verifyValue && tabActiveKey === 'workorder' && (
                   <Button type="danger" ghost onClick={handleBacksubmit}>
                     回退
                   </Button>
                 )}
 
-              {taskName && (
+              {taskName && tabActiveKey === 'workorder' && (
                 <Button type="primary" onClick={() => onClickSubmit(taskName)}>
                   保存
                 </Button>
@@ -610,7 +611,7 @@ function TobedealtForm(props) {
               {taskName &&
                 taskName !== '服务绩效考核确认' &&
                 taskName !== '业务负责人复核' &&
-                noselect === '1' && (
+                noselect === '1' && tabActiveKey === 'workorder' && (
                   <Button type="primary" onClick={() => onClickSubmit(taskName, 'circula')}>
                     {taskName === '业务负责人复核' ? '确认复核' : '流转'}
                   </Button>
@@ -623,25 +624,25 @@ function TobedealtForm(props) {
                 taskName !== '服务绩效考核确认' &&
                 (taskName === '业务负责人审核' ||
                   taskName === '自动化科专责审核' ||
-                  taskName === '服务绩效考核确认') && (
+                  taskName === '服务绩效考核确认') && tabActiveKey === 'workorder' &&  (
                   <Button type="primary" onClick={() => onClickSubmit(taskName, '流转不选人')}>
                     {buttonContent}
                   </Button>
                 )}
 
-              {taskName && taskName === '服务绩效考核确认' && (
+              {taskName && taskName === '服务绩效考核确认' && tabActiveKey === 'workorder' && (
                 <Button type="primary" onClick={() => onClickSubmit(taskName, '流转不选人')}>
                   确认考核
                 </Button>
               )}
 
-              {taskName && taskName === '业务负责人复核' && (
+              {taskName && taskName === '业务负责人复核' && tabActiveKey === 'workorder' &&  (
                 <Button type="primary" onClick={() => onClickSubmit(taskName, 'circula')}>
                   确认复核
                 </Button>
               )}
 
-              {taskName && noselect === '0' && taskName === '服务商确认' && (
+              {taskName && noselect === '0' && taskName === '服务商确认' && tabActiveKey === 'workorder' && ( 
                 <Button type="primary" onClick={() => onClickSubmit(taskName, 'circula')}>
                   流转
                 </Button>

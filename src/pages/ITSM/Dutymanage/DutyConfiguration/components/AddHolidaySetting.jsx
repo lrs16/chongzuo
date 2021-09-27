@@ -41,8 +41,12 @@ function AddholidaySetting(props) {
   const [newbutton, setNewButton] = useState(false);
   const [selectSwitch, setSelectSwitch] = useState(false);
   const [formdata, setFormdata] = useState('');
+  const [time, setTime] = useState({
+    startValue: moment(new Date(moment(new Date()).format('YYYY-MM-DD 00:00:00'))),
+    endValue: moment(new Date(moment(new Date()).format('YYYY-MM-DD 23:59:59'))),
+    endOpen: false,
+  })
 
-  console.log(data, 'data')
   const {
     form: { getFieldDecorator, validateFields },
     dispatch,
@@ -108,8 +112,9 @@ function AddholidaySetting(props) {
       key: data.length + 1,
       holidayName: '',
       dateType: '工作日',
-      beginDate: moment().format('YYYY-MM-DD'),
-      endDate: moment().format('YYYY-MM-DD'),
+      beginDate: moment(new Date()).format('YYYY-MM-DD'),
+      endDate: moment(new Date()).format('YYYY-MM-DD'),
+      duringTime: ['', ''],
       editable: true,
     })
     setData(newData)
@@ -124,11 +129,15 @@ function AddholidaySetting(props) {
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData);
+
     if (target) {
       target[fieldName] = e;
       setData(newData)
     }
+
   }
+
+  console.log(data, 'data')
 
   const deleteObj = (key, newData) => {
     return (newData || data).filter(item => item.key !== key);
@@ -156,6 +165,7 @@ function AddholidaySetting(props) {
 
   // 保存记录
   const saveRow = (e, key) => {
+
     const target = getRowByKey(key) || {};
     if (!target.holidayName || !target.dateType) {
       message.error('请填写完整信息。');
@@ -163,17 +173,136 @@ function AddholidaySetting(props) {
       return;
     }
 
-    if ((target.beginDate).valueOf() > (target.endDate).valueOf()) {
-      message.error('开始时间必须小于结束时间');
-      e.target.focus();
-      return;
-    }
-    // delete target.key;
     target.editable = false;
     // const id = target.id === '' ? '' : target.id;
     //  保存数据
     setNewButton(false);
   }
+
+  console.log(data, 'data')
+
+
+  //  设置时间的范围
+  const disabledStartDate = (startValue, type,detailstart,detailend) => {
+    console.log('detailstart: ', detailstart);
+    if (type === 'create') {
+      const { endValue } = time;
+      if (!startValue || !endValue) {
+        console.log(11)
+        return false;
+      }
+
+      console.log(startValue,'startValue')
+
+      return (detailstart || startValue).valueOf() > (detailend || endValue).valueOf()
+    }
+
+    if (type === 'duty') {
+      const { endValue } = dutytime;
+      if (!startValue || !endValue) {
+        return false;
+      }
+      return startValue.valueOf() > endValue.valueOf()
+    }
+
+  }
+  const handleStartOpenChange = (open, type) => {
+    if (!open && type === 'create') {
+      const obj = time;
+      obj.endOpen = true;
+      setTime(obj);
+    }
+
+    if (!open && type === 'duty') {
+      const obj = dutytime;
+      obj.endOpen = true;
+      setDutytime(obj);
+    }
+  };
+
+  const disabledEndDate = (endValue, type,detailtime) => {
+    if (type === 'create') {
+      const { startValue } = time;
+      if (!endValue || !startValue) {
+        return false;
+      }
+      return endValue.valueOf() <= startValue.valueOf();
+    }
+
+    if (type === 'duty') {
+      const { startValue } = dutytime;
+      if (!endValue || !startValue) {
+        return false;
+      }
+      return endValue.valueOf() <= startValue.valueOf();
+    }
+
+  };
+
+  const timeonChange = (field, value, type) => {
+    if (type === 'create') {
+      const obj = time;
+      switch (field) {
+        case 'startValue':
+          obj.startValue = value;
+          setTime(obj);
+          break;
+        case 'endValue':
+          obj.endValue = value;
+          setTime(obj);
+          break;
+        default:
+          break;
+      }
+    }
+
+    if (type === 'duty') {
+      const obj = dutytime;
+      switch (field) {
+        case 'startValue':
+          obj.startValue = value;
+          setDutytime(obj);
+          break;
+        case 'endValue':
+          obj.endValue = value;
+          setDutytime(obj);
+          break;
+        default:
+          break;
+      }
+    }
+
+  };
+
+  const hancleChange = (value, option) => {
+    const { values } = option.props;
+    setFieldsValue(
+      {
+        groupName: values,
+      }
+    )
+  }
+
+  const onStartChange = (value, type) => {
+    timeonChange('startValue', value, type);
+  };
+
+  const onEndChange = (value, type) => {
+    timeonChange('endValue', value, type);
+  };
+
+  const handleEndOpenChange = (open, type) => {
+    if (type === 'create') {
+      const obj = time;
+      obj.endOpen = open
+      setTime(obj);
+    } else {
+      const obj = dutytime;
+      obj.endOpen = open
+      setDutytime(obj);
+    }
+
+  };
 
   const columns = [
     {
@@ -201,9 +330,7 @@ function AddholidaySetting(props) {
             )
           }
         }
-
         return text
-
       }
     },
     {
@@ -215,8 +342,11 @@ function AddholidaySetting(props) {
         if (record.editable) {
           return (
             <Select
+              allowClear={false}
+              defaultValue={text}
+              onChange={e => handleFieldChange(e, 'dateType', record.key)}
               placeholder="请选择"
-              style={{width:'100%'}}
+              style={{ width: '100%' }}
             >
               <Option key='工作日' value='工作日'>工作日</Option>
               <Option key='节假日' value='节假日'>节假日</Option>
@@ -230,57 +360,53 @@ function AddholidaySetting(props) {
     },
     {
       title: '节日排期开始时间',
-      dataIndex: 'beginDate',
-      key: 'beginDate',
+      dataIndex: 'duringTime',
+      key: 'duringTime',
+      width: 300,
       render: (text, record) => {
+        console.log('text: ', text);
         const dateFormat = 'YYYY-MM-DD HH:mm:ss';
         if (record.editable) {
           return (
-            <div>
+            <Row>
+              {/* <Col span={10}> */}
               <DatePicker
-                allowClear
-                defaultValue={moment(text)}
-                onChange={e => handleFieldChange(e.format('YYYY-MM-DD HH:mm:ss'), 'beginDate', record.key)}
-                // disabledDate={this.disabledStartDate}
-                // showTime
-                // format="YYYY-MM-DD HH:mm:ss"
-                // value={startValue}
-                placeholder="Start"
-              // onChange={this.onStartChange}
-              // onOpenChange={this.handleStartOpenChange}
+                allowClear={false}
+                disabled={!record.editable}
+                disabledDate={(value) => disabledStartDate(value, 'create',moment(new Date(record.beginDate)),moment(new Date(record.endDate)))}
+                onChange={(value) => { onStartChange(value, 'create'); handleFieldChange(value.format('YYYY-MM-DD'), 'beginDate', record.key) }}
+                onOpenChange={(value) => handleStartOpenChange(value, 'create')}
+                defaultValue={record.beginDate ? moment(record.beginDate) : time.startValue}
+                placeholder="结束时间"
+                format='YYYY-MM-DD'
+                style={{ minWidth: 100, width: '100%' }}
               />
-            </div>
+              {/* </Col> */}
+              {/* <Col span={1} style={{ textAlign: 'center' }}>-</Col> */}
+              {/* <Col span={10}> */}
+              <DatePicker
+                allowClear={false}
+                disabled={!record.editable}
+                disabledDate={(value) => disabledEndDate(value, 'create',moment(new Date(record.endDate)))}
+                onChange={(value) => { onEndChange(value, 'create'); handleFieldChange(value.format('YYYY-MM-DD'), 'endDate', record.key) }}
+                open={time.endOpen}
+                onOpenChange={(value) => handleEndOpenChange(value, 'create')}
+                // showTime={{
+                //   hideDisabledOptions: true,
+                //   defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                // }}
+                defaultValue={record.endDate ? moment(record.endDate) : time.endValue}
+                // value={record.endDate ? moment(record.endDate) : time.endValue}
+                placeholder="结束时间"
+                format='YYYY-MM-DD'
+                style={{ minWidth: 100, width: '100%' }}
+              />
+              {/* </Col> */}
+            </Row>
           )
         }
 
-        return text
-      }
-    },
-    {
-      title: '节日排期结束时间',
-      dataIndex: 'endDate',
-      key: 'endDate',
-      render: (text, record) => {
-        // const dateFormat = 'YYYY-MM-DD HH:mm:ss';
-        if (record.editable) {
-          return (
-            <div>
-              <DatePicker
-                allowClear
-                defaultValue={moment(text)}
-                onChange={e => handleFieldChange(e.format('YYYY-MM-DD HH:mm:ss'), 'endDate', record.key)}
-                // disabledDate={this.disabledStartDate}
-                // showTime
-                // format="YYYY-MM-DD HH:mm:ss"
-                // value={startValue}
-                placeholder="end"
-              // onChange={this.onStartChange}
-              // onOpenChange={this.handleStartOpenChange}
-              />
-            </div>
-          )
-        }
-        return text
+        return <span>{(record.beginDate || moment(new Date()).format('YYYY-MM-DD')) + '-' + (record.endDate || moment(new Date()).format('YYYY-MM-DD'))}</span>
       }
     },
     {
@@ -321,7 +447,6 @@ function AddholidaySetting(props) {
   ]
 
   const onChange = (checked) => {
-    console.log('checked: ', checked);
     setSelectSwitch(checked)
   }
 

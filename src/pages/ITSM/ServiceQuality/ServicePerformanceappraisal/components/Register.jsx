@@ -514,7 +514,7 @@ const Register = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="考核类型">
             {getFieldDecorator('assessType', {
-              initialValue: register.assessType,
+              initialValue: register.assessType === '1' ? '功能开发': '系统运维',
             })(<Input disabled={true} />)}
           </Form.Item>
         </Col>
@@ -532,7 +532,7 @@ const Register = React.forwardRef((props, ref) => {
             })(
               <Select placeholder="请选择" disabled={noEdit}>
                 {(assessmentObject || []).map(obj => [
-                  <Option key={obj.dict_code} value={obj.title}>
+                  <Option key={obj.dict_code} value={obj.dict_code}>
                     {obj.title}
                   </Option>,
                 ])}
@@ -724,11 +724,21 @@ const Register = React.forwardRef((props, ref) => {
 
         <Col span={8}>
           <Form.Item label="登记人">
-            {getFieldDecorator('register', {
+            {getFieldDecorator('registerName', {
               initialValue: register.registerName || userinfo.userName,
             })(<Input disabled={noEdit} />)}
           </Form.Item>
         </Col>
+
+        <Col span={8} style={{display:'none'}}>
+          <Form.Item label="登记人">
+            {getFieldDecorator('register', {
+              initialValue: register.register || userinfo.userauthorityid,
+            })(<Input disabled={noEdit} />)}
+          </Form.Item>
+        </Col>
+
+        
 
         <Col span={8}>
           <Form.Item label="登记时间">
@@ -769,6 +779,7 @@ Register.defaultProps = {
     remark: '',
     attachment: '',
     registerName: '',
+    register:sessionStorage.getItem('userauthorityid')
   },
 };
 

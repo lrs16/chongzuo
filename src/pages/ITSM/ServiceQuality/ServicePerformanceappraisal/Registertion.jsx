@@ -71,6 +71,7 @@ function Registertion(props) {
           type: 'performanceappraisal/assessRegister',
           payload: {
             ...submitIfnfo,
+            assessType:values.assessType === '系统运维' ? '2':'1',
             assessTime: moment(values.assessTime).format('YYYY-MM-DD HH:mm:ss'),
             applyTime: moment(values.applyTime).format('YYYY-MM-DD HH:mm:ss'),
             attachment: files.ischange ? JSON.stringify(files.arr) : ''
