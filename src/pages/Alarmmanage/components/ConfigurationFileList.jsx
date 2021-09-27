@@ -34,78 +34,141 @@ const formItemLayout = {
   },
 };
 function ConfigurationFileList(props) {
-  const { loading, dispatch, list, activeTabInfo } = props;
-  const { getFieldDecorator, resetFields, validateFields } = props.form;
-  const dataSource = list.data;
-  const [querykeys, setQueryKeys] = useState({ type: '', configstatus: '', elimination: '' });
+  const { loading, dispatch, list, searchtab, ChangeActiveTabKey, activeTabKey } = props;
+  const { getFieldDecorator, resetFields, getFieldsValue, setFieldsValue } = props.form;
   const [selectedRowKeys, setSelectionRow] = useState([]);
   const [selectRowdata, setSelectdata] = useState([]);
+  const [classifykey, setCompany] = useState([]);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
-  const [expand, setExpand] = useState(false);
+  const [searchdata, setSearchData] = useState({});
+  const [activeKey, setActiveKey] = useState('');
   const [assets, setAssets] = useState([]);
-  const [company, setCompany] = useState([]);
-  const { tabActivekey, pagetitle, selectdata } = useContext(TypeContext);
+  const [expand, setExpand] = useState(false);
+  const { tabActivekey, selectdata, tabdate, warnModule, pagetitle, } = useContext(TypeContext);
 
-  const handleSearch = () => {
-    validateFields((err, values) => {
-      setQueryKeys(values);
+  const { pathname } = window.location;
+
+  const getvalues = () => {
+    const val = getFieldsValue();
+    const values = {
+      ...val,
+      beginClearTime: val.beginClearTime ? moment(val.beginClearTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      beginConfirmTime: val.beginConfirmTime ? moment(val.beginConfirmTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      beginWarnTime: tabdate.beginWarnTime ? moment(tabdate.beginWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      endClearTime: val.endClearTime ? moment(val.endClearTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      endConfirmTime: val.endConfirmTime ? moment(val.endConfirmTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      endWarnTime: tabdate.endWarnTime ? moment(tabdate.endWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      warnModule
+    };
+    return values
+  }
+
+  const handleSearch = (page, size) => {
+    const key = activeTabKey === '全部' ? '' : activeTabKey;
+    setActiveKey('全部');
+    const values = getvalues();
+    setSearchData({ ...values, firstClassify: key, pageIndex: paginations.current, pageSize: paginations.pageSize })
+    dispatch({
+      type: 'measuralarm/fetchsearchtab',
+      payload: {
+        ...values,
+        firstClassify: key,
+      },
+    });
+    dispatch({
+      type: 'measuralarm/fetchlist',
+      payload: {
+        ...values,
+        firstClassify: key,
+        pageSize: size,
+        pageIndex: page,
+      },
     });
   };
 
   const handleReset = () => {
     resetFields();
-    setQueryKeys({});
+    handleSearch(1, 10);
   };
 
-  const searchdata = (values, page, size) => {
+  const handleTabs = key => {
+    setActiveKey(key);
+    const values = getvalues();
     dispatch({
       type: 'measuralarm/fetchlist',
       payload: {
         ...values,
-        type: activeTabInfo.tab,
-        pageSize: size,
-        current: page,
+        confirmStatus: (key === '已确认' || key === '待确认') ? key : '',
+        clearStatus: (key === '待消除' || key === '人工消除' || key === '自动消除') ? key : '',
+        pageIndex: 1,
+        pageSize: 10,
       },
+    });
+    setPageinations({ current: 1, pageSize: 10 })
+  };
+
+  const handleChange = (val) => {
+    const key = val || '全部';
+    ChangeActiveTabKey(key)
+  };
+
+  const handleSelects = (v) => {
+    setSelectionRow(v);
+    setSelectdata(v);
+  };
+
+  // useEffect(() => {
+  //   handleReset();
+  // }, [tabActivekey])
+
+  useEffect(() => {
+    if (activeTabKey && tabdate) {
+      const key = activeTabKey === '全部' ? '' : activeTabKey;
+      // setClassifykey(key);
+      setFieldsValue({ firstClassify: key });
+      handleSearch(1, 10);
+    }
+  }, [activeTabKey]);
+
+  useEffect(() => {
+    if (tabActivekey === 'all' && tabdate && (tabdate.beginWarnTime || tabdate.endWarnTime)) {
+      resetFields();
+      handleSearch(1, 10);
+    }
+  }, [tabdate])
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: (selectRowKey, selectedRows) => {
+      setSelectionRow(selectRowKey);
+      setSelectdata(selectedRows);
+    },
+  };
+
+  const onShowSizeChange = (page, size) => {
+    handleSearch(page, size);
+    setPageinations({
+      ...paginations,
+      pageSize: size,
     });
   };
 
-  const handleTabs = key => {
-    switch (key) {
-      case '0':
-        setQueryKeys({ configstatus: '', elimination: '' });
-        break;
-      case '1':
-        setQueryKeys({ configstatus: 0, elimination: '' });
-        break;
-      case '2':
-        setQueryKeys({ configstatus: 1, elimination: '' });
-        break;
-      case '3':
-        setQueryKeys({ configstatus: '', elimination: 0 });
-        break;
-      case '4':
-        setQueryKeys({ configstatus: '', elimination: 1 });
-        break;
-      default:
-        break;
-    }
+  const changePage = page => {
+    handleSearch(page, paginations.pageSize);
+    setPageinations({
+      ...paginations,
+      current: page,
+    });
   };
 
-  useEffect(() => {
-    if (activeTabInfo) {
-      setQueryKeys(querykeys);
-    }
-  }, [activeTabInfo]);
-
-  useEffect(() => {
-    if (tabActivekey) {
-      setQueryKeys(querykeys);
-    }
-  }, [tabActivekey]);
-
-  useEffect(() => {
-    searchdata(querykeys, paginations.current, paginations.pageSize);
-  }, [querykeys]);
+  const pagination = {
+    showSizeChanger: true,
+    onShowSizeChange: (page, size) => onShowSizeChange(page, size),
+    current: paginations.current,
+    pageSize: paginations.pageSize,
+    total: list.total,
+    onChange: page => changePage(page),
+  };
 
   useEffect(() => {
     if (pagetitle === '配置文件变更告警') {
@@ -125,55 +188,22 @@ function ConfigurationFileList(props) {
 
   }, []);
 
-  const rowSelection = {
-    onChange: (selectRowKey, selectedRows) => {
-      setSelectionRow(selectRowKey);
-      setSelectdata(selectedRows);
-    },
-  };
-
-  const onShowSizeChange = (page, size) => {
-    searchdata(querykeys, page, size);
-    setPageinations({
-      ...paginations,
-      pageSize: size,
-    });
-  };
-
-  const changePage = page => {
-    searchdata(querykeys, page, paginations.pageSize);
-    setPageinations({
-      ...paginations,
-      current: page,
-    });
-  };
-
-  const pagination = {
-    showSizeChanger: true,
-    onShowSizeChange: (page, size) => onShowSizeChange(page, size),
-    current: paginations.current,
-    pageSize: paginations.pageSize,
-    total: list.total,
-    onChange: page => changePage(page),
-  };
-
-
   const columns = [
     {
       title: '区域',
-      dataIndex: 'type',
-      key: 'type',
-      width: 140,
+      dataIndex: 'firstClassify',
+      key: 'firstClassify',
+      width: 120,
     },
     {
       title: '设备IP',
-      dataIndex: 'monitorco',
-      key: 'monitorco',
-      width: 180,
+      dataIndex: 'fourthClassify',
+      key: 'fourthClassify',
+      width: 120,
       onCell: () => {
         return {
           style: {
-            maxWidth: 180,
+            maxWidth: 120,
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
@@ -185,13 +215,13 @@ function ConfigurationFileList(props) {
     },
     {
       title: '设备名称',
-      dataIndex: '1',
-      key: '1',
-      width: 180,
+      dataIndex: 'thirdClassify',
+      key: 'thirdClassify',
+      width: 150,
       onCell: () => {
         return {
           style: {
-            maxWidth: 180,
+            maxWidth: 150,
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
@@ -203,8 +233,8 @@ function ConfigurationFileList(props) {
     },
     {
       title: '软件名称',
-      dataIndex: '2',
-      key: '2',
+      dataIndex: 'fifthClassify',
+      key: 'fifthClassify',
       width: 180,
       onCell: () => {
         return {
@@ -221,8 +251,8 @@ function ConfigurationFileList(props) {
     },
     {
       title: '配置文件路径',
-      dataIndex: 'configstatus',
-      key: 'configstatus',
+      dataIndex: 'sixthClassify',
+      key: 'sixthClassify',
       width: 180,
       onCell: () => {
         return {
@@ -239,8 +269,8 @@ function ConfigurationFileList(props) {
     },
     {
       title: '配置文件名称',
-      dataIndex: 'configstatus1',
-      key: 'configstatus1',
+      dataIndex: 'seventhClassify',
+      key: 'seventhClassify',
       width: 180,
       onCell: () => {
         return {
@@ -257,8 +287,8 @@ function ConfigurationFileList(props) {
     },
     {
       title: '告警内容',
-      dataIndex: 'content',
-      key: 'content',
+      dataIndex: 'warnContent',
+      key: 'warnContent',
       with: 300,
       onCell: () => {
         return {
@@ -275,8 +305,8 @@ function ConfigurationFileList(props) {
     },
     {
       title: '告警时间',
-      dataIndex: 'time',
-      key: 'time',
+      dataIndex: 'warnTime',
+      key: 'warnTime',
       width: 180,
     },
     {
@@ -287,8 +317,8 @@ function ConfigurationFileList(props) {
     },
     {
       title: '配置文件内容',
-      dataIndex: 'key2',
-      key: 'key2',
+      dataIndex: 'warnContent',
+      key: 'warnContent',
       width: 180,
       onCell: () => {
         return {
@@ -310,21 +340,21 @@ function ConfigurationFileList(props) {
       width: 180,
     },
     {
-      title: '文件访问时间',
-      dataIndex: 'contenttime',
-      key: 'contenttime',
+      title: '告警时间',
+      dataIndex: 'warnTime',
+      key: 'warnTime',
       width: 180,
     },
     {
-      title: '文件修改时间',
-      dataIndex: 'thistime',
-      key: 'thistime',
+      title: '确认告警时间',
+      dataIndex: 'confirmTime',
+      key: 'confirmTime',
       width: 180,
     },
     {
-      title: '文件改变时间',
-      dataIndex: 'thistime',
-      key: 'thistime1',
+      title: '告警消除时间',
+      dataIndex: 'clearTime',
+      key: 'clearTime',
       width: 180,
     },
   ];
@@ -361,7 +391,7 @@ function ConfigurationFileList(props) {
           <Row gutter={24}>
             <Col span={8}>
               <Form.Item label="区域">
-                {getFieldDecorator('hostZoneId')(
+                {getFieldDecorator('firstClassify')(
                   <Select placeholder="请选择">
                     {assets.map(({ key, val }) => [
                       <Option key={key} value={val}>
@@ -374,14 +404,14 @@ function ConfigurationFileList(props) {
             </Col>
             <Col span={8}>
               <Form.Item label="设备名称">
-                {getFieldDecorator('hostName ')(
+                {getFieldDecorator('thirdClassify')(
                   <Input allowClear />
                 )}
               </Form.Item>
             </Col>
             <Col span={8}>
               <Form.Item label="设备IP">
-                {getFieldDecorator('hostIp')(
+                {getFieldDecorator('fourthClassify')(
                   <Input allowClear />,
                 )}
               </Form.Item>
@@ -393,27 +423,27 @@ function ConfigurationFileList(props) {
                   <>
                     <Col span={8}>
                       <Form.Item label="软件名称">
-                        {getFieldDecorator('inspection')(
+                        {getFieldDecorator('fifthClassify')(
                           <Input allowClear />,
                         )}
                       </Form.Item>
                     </Col>
                     <Col span={8}>
                       <Form.Item label="配置文件名称">
-                        {getFieldDecorator('configurationfileName')(
+                        {getFieldDecorator('seventhClassify')(
                           <Input allowClear />,
                         )}
                       </Form.Item>
                     </Col>
                     <Col span={8}>
                       <Form.Item label="配置文件路径">
-                        {getFieldDecorator('configurationfileRoad')(
+                        {getFieldDecorator('sixthClassify')(
                           <Input allowClear />,
                         )}
                       </Form.Item>
                     </Col>
                     <Col span={8}>
-                      <Form.Item label="告警内容">{getFieldDecorator('content ')(<Input />)}</Form.Item>
+                      <Form.Item label="告警内容">{getFieldDecorator('warnContent ')(<Input allowClear />)}</Form.Item>
                     </Col>
                   </>
                 )}
@@ -457,24 +487,29 @@ function ConfigurationFileList(props) {
             {(expand || pagetitle === '时钟巡检告警') ? (<Col span={8} >{extra}</Col>) : (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>)}
           </Row>
         </Form>
-        <ButtonGroup selectedRowKeys={selectedRowKeys} selectRowdata={selectRowdata} />
-        <Tabs defaultActiveKey="0" onChange={handleTabs}>
-          {tabsmap.map(({ key, name, color, data }) => [
+        <ButtonGroup
+          selectedRowKeys={selectedRowKeys}
+          selectRowdata={selectRowdata}
+          values={searchdata}
+          ChangeSelects={v => handleSelects(v)}
+        />
+        <Tabs activeKey={activeKey} onChange={handleTabs}>
+          {searchtab && searchtab.map(({ name, total }) => [
             <TabPane
               tab={
                 <>
                   <span>{name}</span>
-                  <span style={{ color: `${color}` }}>（{data}）</span>
+                  <span style={{ color: `${(name === '待确认' || name === '待消除') ? '#ff0000' : ''}` }}>（{total}）</span>
                 </>
               }
-              key={key}
+              key={name}
             />,
           ])}
         </Tabs>
         <Table
           rowSelection={rowSelection}
           columns={columns}
-          dataSource={dataSource}
+          dataSource={list.records || []}
           loading={loading}
           rowKey={record => record.id}
           scroll={{ x: 2750 }}
@@ -488,8 +523,8 @@ function ConfigurationFileList(props) {
 export default Form.create({})(
   connect(({ measuralarm, loading }) => ({
     list: measuralarm.list,
-    Donutdata: measuralarm.Donutdata,
-    Smoothdata: measuralarm.Smoothdata,
+    searchtab: measuralarm.searchtab,
     loading: loading.models.measuralarm,
+    updataloading: loading.effects['measuralarm/alarmsconfig'],
   }))(ConfigurationFileList)
 );

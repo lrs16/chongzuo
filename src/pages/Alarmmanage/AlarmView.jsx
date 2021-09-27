@@ -32,7 +32,7 @@ function MeasurAlarm(props) {
     ['主机巡检告警', 'host'],
     ['软件巡检告警', 'soft'],
     ['应用程序运行状态告警', 'app'],
-    ['配置文件变更告警', 'configurationfile'],
+    ['配置文件变更告警', 'configFile'],
     ['时钟巡检告警', 'clock'],
     ['上下行报文页面告警', 'packet'],
   ]);

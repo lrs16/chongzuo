@@ -54,7 +54,6 @@ function HostList(props) {
 
   const getvalues = () => {
     const val = getFieldsValue();
-    console.log(val)
     const values = {
       ...val,
       beginClearTime: val.beginClearTime ? moment(val.beginClearTime).format('YYYY-MM-DD HH:mm:ss') : '',
@@ -409,7 +408,7 @@ function HostList(props) {
             </Col>
             <Col span={8}>
               <Form.Item label="设备名称">
-                {getFieldDecorator('thirdClassify ')(
+                {getFieldDecorator('thirdClassify')(
                   <Input allowClear />
                 )}
               </Form.Item>
