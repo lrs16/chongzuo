@@ -202,24 +202,32 @@ function TobedealtForm(props) {
       }
 
       let noeditProviderid;
+      let sored;
+      let type;
+      let tar1;
+      let tar2;
       if (hisTasks && hisTasks[0] && hisTasks[0]['服务绩效考核登记']) {
         noeditProviderid = hisTasks[0]['服务绩效考核登记'].providerId;
+        sored = hisTasks[0]['服务绩效考核登记'].scoreId;
+        type = hisTasks[0]['服务绩效考核登记'].assessType;
+        tar1 = hisTasks[0]['服务绩效考核登记'].target1Id;
+        tar2 = hisTasks[0]['服务绩效考核登记'].target2Id;
       }
 
       if (providerId || noeditProviderid) {
-        getContrractname(providerId || noeditProviderid);
+        getContrractname(noeditProviderid || providerId);
       }
 
-      if (scoreId || assessType) {
-        getTarget1(scoreId);
+      if (sored || type || scoreId) {
+        getTarget1(sored);
       }
 
-      if (target1Id) {
-        getTarget2(target1Id);
+      if (tar1 || target1Id) {
+        getTarget2(tar1 || target1Id);
       }
 
-      if (target2Id && (scoreId || comfirmScoreid)) {
-        getclausedetail(target2Id, scoreId);
+      if ((tar2 || target2Id) && (sored || scoreId)) {
+        getclausedetail(tar2,sored);
       }
     }
   }, [loading]);

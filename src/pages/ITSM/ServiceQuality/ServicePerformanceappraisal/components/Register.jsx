@@ -532,7 +532,7 @@ const Register = React.forwardRef((props, ref) => {
             })(
               <Select placeholder="请选择" disabled={noEdit}>
                 {(assessmentObject || []).map(obj => [
-                  <Option key={obj.dict_code} value={obj.dict_code}>
+                  <Option key={obj.dict_code} value={obj.title}>
                     {obj.title}
                   </Option>,
                 ])}

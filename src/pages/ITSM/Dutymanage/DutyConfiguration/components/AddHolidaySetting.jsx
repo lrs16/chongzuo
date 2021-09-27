@@ -64,8 +64,8 @@ function AddholidaySetting(props) {
         payload: id
       }).then(res => {
         if (res.code === 200) {
-          const newarr = (res.data.holidays).map((item,index) => {
-            return Object.assign(item,{editable:false, isNew:false, key:index})
+          const newarr = (res.data.holidays).map((item, index) => {
+            return Object.assign(item, { editable: false, isNew: false, key: index })
           })
           setData(newarr);
           setFormdata(res.data)
@@ -213,25 +213,15 @@ function AddholidaySetting(props) {
       width: 150,
       render: (text, record) => {
         if (record.editable) {
-          if (text === '') {
-            return (
-              <Select
-                placeholder="请选择"
-                style={{ width: '100%', borderColor: '#ff4d4f' }}>
-                <Option key='工作日' value='工作日'>工作日</Option>
-                <Option key='节假日' value='节假日'>节假日</Option>
-              </Select>
-            )
-          }
-
-          if (text) {
-            return (
-              <Input
-                defaultValue={text}
-                onChange={e => handleFieldChange(e.target.value, 'holidayName', record.key)}
-              />
-            )
-          }
+          return (
+            <Select
+              placeholder="请选择"
+              style={{width:'100%'}}
+            >
+              <Option key='工作日' value='工作日'>工作日</Option>
+              <Option key='节假日' value='节假日'>节假日</Option>
+            </Select>
+          )
         }
 
         return text

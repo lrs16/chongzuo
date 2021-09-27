@@ -21,7 +21,7 @@ import { connect } from 'dva';
 import { operationPerson } from '@/services/common';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { providerList, scoreListpage, contractProvider, clauseListpage } from '../services/quality';
-
+import SysDict from '@/components/SysDict';
 import styles from './index.less';
 
 const formItemLayout = {
@@ -77,6 +77,7 @@ function TobedealtList(props) {
   const [spinloading, setSpinLoading] = useState(true);
   const [tabrecord, setTabRecord] = useState({});
   const [selectedKeys, setSelectedKeys] = useState([]);
+  const [selectdata, setSelectData] = useState('');
 
   const columns = [
     {
@@ -186,6 +187,12 @@ function TobedealtList(props) {
       title: '考核类型',
       dataIndex: 'assessType',
       key: 'assessType',
+      width: 150,
+    },
+    {
+      title: '考核对象',
+      dataIndex: 'assessObject',
+      key: 'assessObject',
       width: 150,
     },
     {
@@ -553,7 +560,7 @@ function TobedealtList(props) {
         setFieldsValue({
           providerName, // 服务商
           providerId: id, // 服务商id
-          contractName:'',
+          contractName: '',
           contractId: '',
         });
         getContrractname(id);
@@ -673,8 +680,8 @@ function TobedealtList(props) {
 
   const record = {
     assessNo: '',
-    providerId:'',
-    providerName:'',
+    providerId: '',
+    providerName: '',
     currentTaskName: '',
     provider: '',
     contractName: '',
@@ -683,7 +690,7 @@ function TobedealtList(props) {
     directorName: '',
     assessType: '',
     target1Name: '',
-    clauseId:'',
+    clauseId: '',
     assessContent: '',
     target1Id: '',
     target2Name: '',
@@ -917,7 +924,7 @@ function TobedealtList(props) {
           target1Id: key,
           target2Name: '',
           target2Id: '',
-          clauseName:'',
+          clauseName: '',
         });
         getTarget2(key);
         setTarget2Type(key);
@@ -927,7 +934,7 @@ function TobedealtList(props) {
         setFieldsValue({
           target2Name: value,
           target2Id: key,
-          clauseId:'',
+          clauseId: '',
           clauseName: '',
         });
         break;
@@ -1090,7 +1097,7 @@ function TobedealtList(props) {
           break;
 
       }
-     
+
     });
   };
 
@@ -1128,8 +1135,23 @@ function TobedealtList(props) {
     </>
   );
 
+  const getTypebyTitle = title => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.title === title)[0].children;
+    }
+    return []
+  };
+
+  const assessmentObject = getTypebyTitle('考核对象');
+
   return (
     <PageHeaderWrapper title={pagetitle}>
+      <SysDict
+        typeid="1410413049587699713"
+        commonid="1354288354950123522"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'none' }}
+      />
       <Card>
         <Row gutter={16}>
           <Form {...formItemLayout}>
@@ -1385,8 +1407,8 @@ function TobedealtList(props) {
                 </Form.Item>
               </Col>
 
-              <Col span={8} style={{display:'none'}}>
-              <Form.Item label="得分">
+              <Col span={8} style={{ display: 'none' }}>
+                <Form.Item label="得分">
                   {getFieldDecorator('clauseName', {
                     initialValue: cacheinfo.clauseName,
                   })(<Input />)}
@@ -1716,6 +1738,22 @@ function TobedealtList(props) {
                   })(<Input />)}
                 </Form.Item>
               </Col>
+
+              {/* <Col span={8}>
+                <Form.Item label="考核对象">
+                  {getFieldDecorator('assessObject', {
+                    initialValue: cacheinfo.assessObject,
+                  })(
+                    <Select placeholder="请选择">
+                      {(assessmentObject || []).map(obj => [
+                        <Option key={obj.dict_code} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col> */}
 
               <Col span={8}>
                 <Form.Item label="业务负责人复核人">

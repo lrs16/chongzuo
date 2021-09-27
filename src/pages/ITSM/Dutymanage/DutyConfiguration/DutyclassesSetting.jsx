@@ -345,11 +345,11 @@ function DutyclassesSetting(props) {
 
   const hancleChange = (value, option) => {
     const { values } = option.props;
-    setFieldsValue(
-      {
-        groupName: values,
-      }
-    )
+        setFieldsValue(
+          {
+            groupName: values,
+          }
+        )
   }
 
   const onStartChange = (value, type) => {

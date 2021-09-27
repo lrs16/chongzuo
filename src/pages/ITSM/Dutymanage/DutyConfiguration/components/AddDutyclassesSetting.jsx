@@ -77,7 +77,7 @@ function AddDutyclassesSetting(props) {
 
       if (!err) {
         if (start >= end) {
-          message.info('开始时间必须小于结束时间')
+          message.error('开始时间必须小于结束时间')
         } else {
           onSubmit(newValue);
           setVisible(false);
@@ -201,7 +201,7 @@ function AddDutyclassesSetting(props) {
                 ],
                 initialValue: classSetting.shiftType
               })(
-                <Select placeholder="请选择" onChange={hancleChange}>
+                <Select placeholder="请选择">
                   {teamtype.map(obj => [
                     <Option
                       key={obj.title}
