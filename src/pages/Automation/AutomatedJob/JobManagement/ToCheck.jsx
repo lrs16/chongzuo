@@ -12,6 +12,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 // import Content from './components/Content';
 import Examine from './components/Examine';
 import Contentdes from './components/Contentdes';
+import { addExamineTask } from './services/api';
 
 import styles from './index.less';
 
@@ -124,22 +125,30 @@ function ToCheck(props) {
         message.error('请将信息填写完整')
       } else {
         const values = ExmaineRef.current.getVal();
-        dispatch({
-          type: 'autotask/toexaminesubmitTask',
-          payload: {
-            taskId: Id,
-            taskStatus: values.examineStatus === '1' ? '3' : '1',
-          },
-        }).then(res => {
-          if (res.code === 200) {
-            message.success(res.msg);
-            router.push({
-              pathname: `/automation/automatedjob/jobmanagement/jobcheck`,
-              query: { pathpush: true },
-              state: { cache: false }
-            });
+        values.examineTime = values.examineTime ? moment(values.examineTime).format('YYYY-MM-DD HH:mm:ss') : '';
+        values.taskId = Id;
+        addExamineTask({ ...values }).then(resp => {
+          if (resp.code === 200) {
+            dispatch({
+              type: 'autotask/toexaminesubmitTask',
+              payload: {
+                taskId: Id,
+                taskStatus: values.examineStatus === '1' ? '3' : '1',
+              },
+            }).then(res => {
+              if (res.code === 200) {
+                message.success(res.msg);
+                router.push({
+                  pathname: `/automation/automatedjob/jobmanagement/jobcheck`,
+                  query: { pathpush: true },
+                  state: { cache: false }
+                });
+              } else {
+                message.error(res.msg);
+              }
+            })
           } else {
-            message.error(res.msg);
+            message.error(resp.msg);
           }
         })
       }

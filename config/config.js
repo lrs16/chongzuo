@@ -2136,6 +2136,10 @@ export default {
       target: 'http://172.16.10.33:9901/',        // 自动化运维-设备管理、机柜管理
       changeOrigin: true
     },
+    '/inspect/': {
+      target: 'http://172.16.10.33:9901/',        //  巡检
+      changeOrigin: true,
+    },
     '/job/': {
       target: 'http://172.16.10.33:9901/',        // 任务调度
       changeOrigin: true

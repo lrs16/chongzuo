@@ -17,7 +17,15 @@ function SoftTaskObjectList(props) {
 
     useEffect(() => {
         if (selectrowsData && selectrowsData.length >= 1) {
-            setselectedrowsData(selectrowsData);
+            // const newArr = Object.assign({}, selectrowsData);
+            // console.log(newArr, 'eee')
+            const newArr = [];
+            selectrowsData.forEach(item => {
+                // console.log(item, 'itemmm')
+                return newArr.push(item);
+            });
+            console.log(newArr, 'newArr')
+            setselectedrowsData(newArr);
         }
     }, [selectrowsData]);
 

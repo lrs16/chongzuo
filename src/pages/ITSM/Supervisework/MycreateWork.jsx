@@ -203,12 +203,12 @@ function MycreateWork(props) {
 
     useEffect(() => {
         if (location.state) {
-          // 点击菜单刷新,并获取数据
-          if (location.state.reset) {
-            handleReset();
-          };
+            // 点击菜单刷新,并获取数据
+            if (location.state.reset) {
+                handleReset();
+            };
         }
-      }, [location.state]);
+    }, [location.state]);
 
     // 查询
     const extra = (<>
@@ -259,11 +259,11 @@ function MycreateWork(props) {
             key: 'no',
             width: 250,
             render: (text, record) => {
-                if(record.taskUserId.indexOf(userinfo.userId) !== -1) {
+                if (record.taskUserId.indexOf(userinfo.userId) !== -1) {
                     return <a onClick={() => gotoDetail(record)}>{text}</a>
-                } 
+                }
                 return <a onClick={() => gotoView(record)}>{text}</a>
-                    
+
             },
         },
         {
@@ -555,6 +555,29 @@ function MycreateWork(props) {
                 }
                 obj.fixed = 'left'
             }
+            if (val.title === '超时状态') {
+                obj.render = (text) => {
+                    return (
+                        <span>
+                            <Badge
+                                status={statusMap[statusContent.indexOf(text)]}
+                                text={text} />
+                        </span>
+                    )
+                }
+            }
+            if (val.title === '工作状态') {
+                obj.render = (text) => {
+                    return (
+                        <span>
+                            <Badge
+                                status={statusMap1[statusContent1.indexOf(text)]}
+                                text={text} />
+                        </span>
+                    )
+                }
+            }
+
             initialColumns.push(obj);
             setColumns(initialColumns);
             return null;

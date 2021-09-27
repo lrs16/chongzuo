@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-// import { connect } from 'dva';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
 import { Card, Badge, Button, Table, Form, Input, Row, Col, DatePicker } from 'antd';
@@ -25,28 +25,39 @@ const colormap = new Map([
 function SoftwarePatrol(props) {
   const pagetitle = props.route.name;
   const {
-    // loading,
-    // dispatch,
-    // list,
-    // location,
+    loading,
+    dispatch,
+    softlist,
+    location,
     form: {
       getFieldDecorator,
-      // getFieldsValue,
+      getFieldsValue,
       resetFields,
     },
   } = props;
 
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
 
-  // useEffect(() => {
-  //   dispatch({
-  //     type: 'checkmanage/fetchlist',
-  //     payload: { currentPage: paginations.current, pageSize: paginations.pageSize },
-  //   });
-  // }, []);
+  const searchdata = (page, size) => {
+    const values = getFieldsValue();
+    values.time1 = values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '';
+    values.time2 = values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '';
+    dispatch({
+      type: 'automation/fetchsoftList',
+      payload: {
+        values,
+        pageIndex: page,
+        pageSize: size,
+      },
+    });
+  };
+
+  useEffect(() => {
+    searchdata(1, 15);
+  }, [location]);
 
   const onShowSizeChange = (page, size) => {
-    // getdata(page, size);
+    searchdata(page, size);
     setPageinations({
       ...paginations,
       pageSize: size,
@@ -54,7 +65,7 @@ function SoftwarePatrol(props) {
   };
 
   const changePage = page => {
-    // getdata(page, paginations.pageSize);
+    searchdata(page, paginations.pageSize);
     setPageinations({
       ...paginations,
       current: page,
@@ -66,13 +77,24 @@ function SoftwarePatrol(props) {
     onShowSizeChange: (page, size) => onShowSizeChange(page, size),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    total: 10,
+    total: softlist.total,
+    showTotal: total => `总共  ${total}  条记录`,
     onChange: page => changePage(page),
   };
 
-  const handleReset = () => { resetFields(); };
+  const handleReset = () => {
+    resetFields();
+    searchdata(1, 15)
+    setPageinations({ current: 1, pageSize: 15 });
+  };
 
-  const handleSearch = () => { };
+  const handleSearch = () => {
+    setPageinations({
+      ...paginations,
+      current: 1,
+    });
+    searchdata(1, paginations.pageSize);
+  };
 
   const newDetailView = () => {
     router.push({
@@ -116,23 +138,23 @@ function SoftwarePatrol(props) {
   const columns = [
     {
       title: '巡检编号',
-      dataIndex: 'checkNo',
-      key: 'checkNo',
+      dataIndex: 'no',
+      key: 'no',
     },
     {
       title: '巡检人',
-      dataIndex: 'checkUser',
-      key: 'checkUser',
+      dataIndex: 'user',
+      key: 'user',
     },
     {
       title: '巡检状态',
-      dataIndex: 'checkStatus',
-      key: 'checkStatus',
-      render: (text, record) => (
-        <span>
-          <Badge status={colormap.get(record.checkStatus)} text={text} />
-        </span>
-      ),
+      dataIndex: 'status',
+      key: 'status',
+      // render: (text, record) => (
+      //   <span>
+      //     <Badge status={colormap.get(record.status)} text={text} />
+      //   </span>
+      // ),
     },
     {
       title: '开始时间',
@@ -236,10 +258,10 @@ function SoftwarePatrol(props) {
           >查看明细</Button>
         </div>
         <Table
-          // loading={loading}
-          rowKey={record => record.checkNo}
+          loading={loading}
+          rowKey={record => record.id}
           columns={columns}
-          // dataSource={list.records}
+          dataSource={softlist.rows}
           pagination={pagination}
         />
       </Card>
@@ -247,10 +269,9 @@ function SoftwarePatrol(props) {
   );
 }
 
-export default Form.create({})(SoftwarePatrol);
-// (
-//   connect(({ checkmanage, loading }) => ({
-//     list: checkmanage.list,
-//     loading: loading.models.checkmanage,
-//   }))(SoftwarePatrol),
-// );
+export default Form.create({})(
+  connect(({ automation, loading }) => ({
+    softlist: automation.softlist,
+    loading: loading.models.automation,
+  }))(SoftwarePatrol),
+);

@@ -297,11 +297,14 @@ function JobConfig(props) {
             render: (text, record) => {
                 return (
                     <div>
-                        <a type="link"
+                        {(record.taskStatus !== '已登记') ? <a type="link" disabled
+                        >
+                            编辑
+                        </a> : <a type="link"
                             onClick={() => newjobconfig('edit', record)}
                         >
                             编辑
-                        </a>
+                        </a>}
                         <Divider type="vertical" />
                         <Popconfirm title="确定删除吗？" onConfirm={() => handleDelete(record.id)}>
                             <a type="link" style={{ color: 'red' }}>删除</a>
