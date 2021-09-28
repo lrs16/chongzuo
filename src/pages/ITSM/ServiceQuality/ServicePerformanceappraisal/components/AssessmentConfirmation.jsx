@@ -18,6 +18,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
     getTarget1,
     getTarget2,
     clauseList,
+    getclausedetail,
     target1,
     target2,
     editSign,
@@ -59,12 +60,20 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
         break;
       case 'target1Name':
         setFieldsValue({
-          target1Name: key,
-          target1Id: value,
+          target1Name: value,
+          target1Id: key,
           target2Name: '',
           target2Id: '',
         });
         getTarget2(key);
+        break;
+      case 'target2Name':
+        setFieldsValue({
+          target2Name: value,
+          target2Id: key,
+          clause: '',
+        });
+        getclausedetail(key, assessmentConfirmation.scoreId);
         break;
       case 'clause': {
         const {
@@ -154,6 +163,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                 initialValue: assessmentConfirmation.assessType,
               })(
                 <Select
+                  getPopupContainer={e => e.parentNode}
                   disabled={editSign}
                   onChange={(value, option) => handleChange(value, option, 'assessType')}
                 >
@@ -194,6 +204,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                 initialValue: assessmentConfirmation.target1Name,
               })(
                 <Select
+                  getPopupContainer={e => e.parentNode}
                   disabled={editSign}
                   onChange={(value, option) => handleChange(value, option, 'target1Name')}
                   placeholder="请选择"
@@ -229,6 +240,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                 initialValue: assessmentConfirmation.target2Name,
               })(
                 <Select
+                  getPopupContainer={e => e.parentNode}
                   disabled={editSign}
                   onChange={(value, option) => handleChange(value, option, 'target2Name')}
                   placeholder="请选择"
@@ -257,7 +269,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
               {getFieldDecorator('taskName', {
                 initialValue: assessmentConfirmation.taskName,
               })(
-                <Select disabled={editSign}>
+                <Select disabled={editSign} getPopupContainer={e => e.parentNode}>
                   {appraisalStatus.map(obj => [
                     <Option key={obj.key} value={obj.title}>
                       {obj.title}
@@ -282,6 +294,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                   : assessmentConfirmation.clause,
               })(
                 <Select
+                  getPopupContainer={e => e.parentNode}
                   disabled={editSign}
                   onChange={(value, option) => handleChange(value, option, 'clause')}
                 >

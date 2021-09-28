@@ -196,6 +196,7 @@ function TobedealtForm(props) {
       taskData.hisTasks && uservisible === false
     ) {
       const { providerId, scoreId, target1Id, target2Id, assessType } = currentTask;
+      console.log('target2Id: ', target2Id);
       let comfirmScoreid;
       if (taskData && taskData.clause && taskData.clause.scoreId) {
         comfirmScoreid = taskData.clause.scoreId;
@@ -215,19 +216,19 @@ function TobedealtForm(props) {
       }
 
       if (providerId || noeditProviderid) {
-        getContrractname(noeditProviderid || providerId);
+        getContrractname( providerId || noeditProviderid );
       }
 
       if (sored || type || scoreId) {
-        getTarget1(sored);
+        getTarget1(sored || type || scoreId);
       }
 
-      if (tar1 || target1Id) {
-        getTarget2(tar1 || target1Id);
+      if (target1Id || tar1) {
+        getTarget2( target1Id || tar1);
       }
 
-      if ((tar2 || target2Id) && (sored || scoreId)) {
-        getclausedetail(tar2,sored);
+      if ((target2Id || tar2) && (scoreId || sored)) {
+        getclausedetail((target2Id || tar2),(scoreId || sored));
       }
     }
   }, [loading]);

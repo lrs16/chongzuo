@@ -505,17 +505,21 @@ const Register = React.forwardRef((props, ref) => {
 
                     })
                       (
-                        <RangePicker
-                          disabled={search}
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                          }}
-                          format="YYYY-MM-DD HH:mm:ss"
-                          style={{ width: '100%' }}
-                          placeholder="请选择"
-                          allowClear
-                        />
+                        <div>
+                          <RangePicker
+                            defaultValue={[moment(register.beginTime,'YYYY-MM-DD'), moment(register.endTime,'YYYY-MM-DD')]}
+                            disabled={search}
+                            showTime={{
+                              hideDisabledOptions: true,
+                              defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                            }}
+                            format="YYYY-MM-DD HH:mm:ss"
+                            style={{ width: '100%' }}
+                            placeholder="请选择"
+                            allowClear
+                          />
+                        </div>
+
 
                       )
                   }

@@ -85,7 +85,8 @@ function SettingDetails(props) {
     settingDetails,
     getTable,
     month,
-    currentYear
+    currentYear,
+    pagetitle
   } = props;
   const [directorlist, setDirectorlist] = useState([]);// 值班人
   const [shiftlist, setShiftlist] = useState([]);// 值班人
@@ -107,8 +108,6 @@ function SettingDetails(props) {
     setVisible(true)
   }
 
-
-  console.log( new Date().valueOf() > new Date(settingDetails.dutyDate).valueOf(),'llll')
   const directoruser = directorlist.map((opt, index) => (
     <Option key={opt.id} value={opt.id} disableuser={opt}>
       {/* <Spin spinning={spinloading}> */}
@@ -276,8 +275,6 @@ function SettingDetails(props) {
       for (let i = 0; i < 24 - hours[0]; i += 1) {
         nums.push(Number(hours[0]) + i);
       }
-
-      console.log(nums, 'nums')
       return nums;
     }
   }
@@ -300,6 +297,7 @@ function SettingDetails(props) {
         centered='true'
         maskClosable='true'
         onClose={handleCancel}
+        destroyOnClose={true}
       >
         <Form {...formItemLayout}>
           <Form.Item label="值班人">
@@ -313,6 +311,7 @@ function SettingDetails(props) {
               initialValue: settingDetails.staffName,
             })(
               <AutoComplete
+                disabled={pagetitle === '排班查询' || new Date().valueOf() > new Date(settingDetails.dutyDate).valueOf()}
                 dataSource={directoruser}
                 dropdownMatchSelectWidth={false}
                 getPopupContainer={e => e.parentNode}
@@ -347,7 +346,7 @@ function SettingDetails(props) {
                 ],
                 initialValue: settingDetails.staffPhone,
               }
-              )(<Input />)
+              )(<Input   disabled={pagetitle === '排班查询' || new Date().valueOf() > new Date(settingDetails.dutyDate).valueOf()}/>)
             }
 
           </Form.Item>
@@ -534,13 +533,18 @@ function SettingDetails(props) {
             取消
           </Button>
 
-          <Button onClick={handleOk} type='primary' style={{ marginRight: 8 }}>
-            确定
-          </Button>
+          {
+             pagetitle !== '排班查询' && (
+              <Button onClick={handleOk} type='primary' style={{ marginRight: 8 }}>
+              确定
+            </Button>
+            )
+          }
+       
 
 
           {
-           settingDetails && settingDetails.dutyDate &&  new Date().valueOf() < new Date(settingDetails.dutyDate).valueOf() && (
+           pagetitle !== '排班查询' && settingDetails && settingDetails.dutyDate &&  new Date().valueOf() < new Date(settingDetails.dutyDate).valueOf() && (
               <Button onClick={handleDelete} type='danger' ghost>
                 删除
               </Button>

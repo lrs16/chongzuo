@@ -90,7 +90,7 @@ const Register = React.forwardRef((props, ref) => {
           target1Id: key,
           target2Name: '',
           target2Id: '',
-          clauseName:'',
+          clauseName: '',
         });
         getTarget2(key);
         setTarget2Type(key);
@@ -100,7 +100,7 @@ const Register = React.forwardRef((props, ref) => {
         setFieldsValue({
           target2Name: value,
           target2Id: key,
-          clauseId:'',
+          clauseId: '',
           clauseName: '',
         });
         break;
@@ -281,8 +281,8 @@ const Register = React.forwardRef((props, ref) => {
           target2Name: '',
           target2Id: '',
           clauseId: '',
-          clauseName:'',
-          assessValue:''
+          clauseName: '',
+          assessValue: ''
         });
         setScoreId(id);
         getTarget1(assessType === '功能开发' ? '1' : '2');
@@ -370,6 +370,7 @@ const Register = React.forwardRef((props, ref) => {
                 : register.provider,
             })(
               <AutoComplete
+                getPopupContainer={e => e.parentNode}
                 disabled={noEdit}
                 dataSource={disableduser}
                 dropdownMatchSelectWidth={false}
@@ -412,6 +413,7 @@ const Register = React.forwardRef((props, ref) => {
               initialValue: register.contractId,
             })(
               <Select
+                getPopupContainer={e => e.parentNode}
                 disabled={noEdit}
                 placeholder="请选择"
                 allowClear
@@ -451,6 +453,7 @@ const Register = React.forwardRef((props, ref) => {
               initialValue: register.directorName,
             })(
               <AutoComplete
+                getPopupContainer={e => e.parentNode}
                 disabled={noEdit}
                 dataSource={directoruser}
                 dropdownMatchSelectWidth={false}
@@ -487,6 +490,7 @@ const Register = React.forwardRef((props, ref) => {
               initialValue: register.score?.scoreName ? register.score.scoreName : register.score,
             })(
               <AutoComplete
+                getPopupContainer={e => e.parentNode}
                 disabled={noEdit}
                 dataSource={scorenameList}
                 dropdownMatchSelectWidth={false}
@@ -514,7 +518,7 @@ const Register = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="考核类型">
             {getFieldDecorator('assessType', {
-              initialValue: register.assessType === '1' ? '功能开发': '系统运维',
+              initialValue: register.assessType === '1' ? '功能开发' : '系统运维',
             })(<Input disabled={true} />)}
           </Form.Item>
         </Col>
@@ -530,7 +534,11 @@ const Register = React.forwardRef((props, ref) => {
               ],
               initialValue: register.assessObject,
             })(
-              <Select placeholder="请选择" disabled={noEdit}>
+              <Select
+                placeholder="请选择"
+                disabled={noEdit}
+                getPopupContainer={e => e.parentNode}
+              >
                 {(assessmentObject || []).map(obj => [
                   <Option key={obj.dict_code} value={obj.dict_code}>
                     {obj.title}
@@ -574,6 +582,7 @@ const Register = React.forwardRef((props, ref) => {
               initialValue: register.target1Name,
             })(
               <Select
+                getPopupContainer={e => e.parentNode}
                 disabled={noEdit}
                 onChange={(value, option) => handleChange(value, option, 'target1Name')}
                 onFocus={() => handleFocus('one')}
@@ -635,37 +644,56 @@ const Register = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-        <Col span={24}>
-          <Form.Item label="详细条款" {...forminladeLayout}>
-            {getFieldDecorator('clauseId', {
-              rules: [
-                {
-                  required,
-                  message: '请输入详细条款',
-                },
-              ],
-              initialValue: register.clauseId,
-            })(
-              <Select
-                disabled={noEdit}
-                onChange={(value, option) => handleChange(value, option, 'clause')}
-                onFocus={() => handleFocus('clause')}
-              >
-                {(clauseList.records || []).map(obj => [
-                  <Option key={obj.detailed} value={obj.id}>
-                    <div className={styles.disableuser}>
-                      <span>{obj.orderNo}</span>
-                      <span>{obj.detailed}</span>
-                      <span>{obj.calc}</span>
-                      <span>{obj.scoreValue}</span>
-                      <span>{obj.sources}</span>
-                    </div>
-                  </Option>,
-                ])}
-              </Select>,
-            )}
-          </Form.Item>
-        </Col>
+        {
+          !noEdit && (
+            <Col span={24}>
+              <Form.Item label="详细条款" {...forminladeLayout}>
+                {getFieldDecorator('clauseId', {
+                  rules: [
+                    {
+                      required,
+                      message: '请输入详细条款',
+                    },
+                  ],
+                  initialValue: register.clauseId,
+                })(
+                  <Select
+                    getPopupContainer={e => e.parentNode}
+                    disabled={noEdit}
+                    onChange={(value, option) => handleChange(value, option, 'clause')}
+                    onFocus={() => handleFocus('clause')}
+                  >
+                    {(clauseList.records || []).map(obj => [
+                      <Option key={obj.detailed} value={obj.id}>
+                        <div className={styles.disableuser}>
+                          <span>{obj.orderNo}</span>
+                          <spa>{obj.detailed}</spa>
+                          <span>{obj.calc}</span>
+                          <span>{obj.scoreValue}</span>
+                          <span>{obj.sources}</span>
+                        </div>
+                      </Option>,
+                    ])}
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
+          )
+        }
+
+        {
+          noEdit && (
+            <Col span={24}>
+              <Form.Item label=" 详细条款" {...forminladeLayout}>
+                {getFieldDecorator('clause', {
+                  initialValue: `${register.clause.orderNo}${'\xa0'}${'\xa0'}${'\xa0'}${'\xa0'}${register.clause.detailed}${'\xa0'}${'\xa0'}${'\xa0'}${'\xa0'}${register.clause.calc === 'ADD' ? '加分项' : '扣分项'}${'\xa0'}${'\xa0'}${'\xa0'}${'\xa0'}${register.clause.scoreValue}${'\xa0'}${'\xa0'}${'\xa0'}${'\xa0'}${register.clause.sources}`,
+                })(
+                  <Input disabled className={styles.disableuser} />
+                )}
+              </Form.Item>
+            </Col>
+          )
+        }
 
         <Col span={24} style={{ display: 'none' }}>
           <Form.Item label="详细条款" {...forminladeLayout}>
@@ -730,7 +758,7 @@ const Register = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-        <Col span={8} style={{display:'none'}}>
+        <Col span={8} style={{ display: 'none' }}>
           <Form.Item label="登记人">
             {getFieldDecorator('register', {
               initialValue: register.register || userinfo.userauthorityid,
@@ -738,7 +766,7 @@ const Register = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-        
+
 
         <Col span={8}>
           <Form.Item label="登记时间">
@@ -773,13 +801,13 @@ Register.defaultProps = {
     target1Id: '',
     target2Id: '',
     clauseId: '',
-    clauseName:'',
+    clauseName: '',
     assessValue: '',
     status: '',
     remark: '',
     attachment: '',
     registerName: '',
-    register:sessionStorage.getItem('userauthorityid')
+    register: sessionStorage.getItem('userauthorityid')
   },
 };
 

@@ -29,15 +29,15 @@ function DutyaccordingSetting(props) {
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [selectdata, setSelectData] = useState('');
   const [tabledata, setTabledata] = useState([]);
-  const [currentYear,setCurrentYear] = useState(moment(new Date()).format('YYYY'));
-  const [month,setMonth] = useState(moment(new Date()).format('MM'));
-  const [groupName,setGroupName] = useState('计量中心组');
+  const [currentYear, setCurrentYear] = useState(moment(new Date()).format('YYYY'));
+  const [month, setMonth] = useState(moment(new Date()).format('MM'));
+  const [groupName, setGroupName] = useState('计量中心组');
   const getTable = (year, paramsmonth) => {
     dispatch({
       type: 'dutyandtypesetting/fetchtable',
       payload: {
         year,
-        month:paramsmonth
+        month: paramsmonth
       }
     })
   }
@@ -167,7 +167,7 @@ function DutyaccordingSetting(props) {
     }
   };
 
- 
+
 
   //  渲染树结构
   const renderTreeNodes = data =>
@@ -197,9 +197,10 @@ function DutyaccordingSetting(props) {
             groupId={item.groupId}
             month={month}
             currentYear={currentYear}
+            pagetitle={pagetitle}
           >
             <li key={item.id}>
-              <span>{item.staffName + '(' +item.shiftType + ')'}</span>
+              <span>{item.staffName + '(' + item.shiftType + ')'}</span>
             </li>
           </SettingDetails>
         ))}
@@ -207,12 +208,12 @@ function DutyaccordingSetting(props) {
     );
   };
 
-  const handleClick = (selectkeys,event) => {
+  const handleClick = (selectkeys, event) => {
     console.log('event: ', event);
-    const {props:{ title }} =event.selectedNodes[0];
+    const { props: { title } } = event.selectedNodes[0];
     console.log('title: ', title);
     sessionStorage.setItem('groupId', selectkeys.toString())
-    getTable(currentYear,month)
+    getTable(currentYear, month)
   }
 
   const handleDelete = () => {
@@ -253,7 +254,7 @@ function DutyaccordingSetting(props) {
 
   const handlePrint = () => {
     const newstr = document.getElementById('calendar').innerHTML;
-    document.body.innerHTML = newstr; 
+    document.body.innerHTML = newstr;
     window.print();
     return false
   }
@@ -342,14 +343,13 @@ function DutyaccordingSetting(props) {
                       下载导入模板
                     </Button>
 
-                    <Button 
-                    type="primary"
-                     style={{ marginRight: 8 }}
-                     onClick={handlePrint}
-                     >
+                    <Button
+                      type="primary"
+                      style={{ marginRight: 8 }}
+                      onClick={handlePrint}
+                    >
                       导出
                     </Button>
-
 
                     {loading === false && (
                       <Dutyexcel
@@ -357,7 +357,6 @@ function DutyaccordingSetting(props) {
                         ChangeFileslist={newvalue => setFiles(newvalue)}
                       />
                     )}
-
                   </div>
                 )
               }

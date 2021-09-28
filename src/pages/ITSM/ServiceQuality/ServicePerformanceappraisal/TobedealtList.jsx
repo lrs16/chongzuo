@@ -253,8 +253,8 @@ function TobedealtList(props) {
     },
     {
       title: '登记人',
-      dataIndex: 'registerName',
-      key: 'registerName',
+      dataIndex: 'register',
+      key: 'register',
       width: 150,
     },
     {
@@ -679,9 +679,9 @@ function TobedealtList(props) {
   };
 
   const record = {
-    registerName:'',
-    expertVerifierName:'',
-    providerConfirmerName:'',
+    registerName: '',
+    expertVerifierName: '',
+    providerConfirmerName: '',
     assessNo: '',
     providerId: '',
     providerName: '',
@@ -1274,33 +1274,32 @@ function TobedealtList(props) {
                 })(<Input />)}
               </Col>
 
-              {performanceLeader && performanceLeader.length && (
-                <Col span={8}>
-                  <Form.Item label="责任人">
-                    {getFieldDecorator('directorName', {
-                      initialValue: cacheinfo.directorName,
-                    })(
-                      <Select
-                        onSelect={(value, option) => selectOnchange(value, option, 'director')}
-                      >
-                        {performanceLeader.map(obj => [
-                          <Option key={obj.key} value={obj.key}>
-                            {obj.value}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-              )}
+              <Col span={8}>
+                <Form.Item label="责任人">
+                  {getFieldDecorator('directorName', {
+                    initialValue: cacheinfo.directorName,
+                  })(
+                    // <Select
+                    //   onSelect={(value, option) => selectOnchange(value, option, 'director')}
+                    // >
+                    //   {performanceLeader.map(obj => [
+                    //     <Option key={obj.key} value={obj.key}>
+                    //       {obj.value}
+                    //     </Option>,
+                    //   ])}
+                    // </Select>,
+                    <Input />
+                  )}
+                </Form.Item>
+              </Col>
 
-              <Col span={8} style={{ display: 'none' }}>
+              {/* <Col span={8} style={{ display: 'none' }}>
                 <Form.Item label="责任人id">
                   {getFieldDecorator('directorId', {
                     initialValue: cacheinfo.directorId,
                   })(<Input />)}
                 </Form.Item>
-              </Col>
+              </Col> */}
 
               <Col span={8}>
                 <Form.Item label="考核类型">
