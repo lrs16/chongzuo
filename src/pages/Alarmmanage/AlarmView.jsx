@@ -12,7 +12,7 @@ import All from './All';
 
 function MeasurAlarm(props) {
   const pagetitle = props.route.name;
-  const { dispatch, totalinfo, match: { path } } = props;
+  const { dispatch, totalinfo, match: { path }, location } = props;
   const [tabActivekey, settabActivekey] = useState({}); // 打开标签
   const [tabdate, setTabdate] = useState('');
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
@@ -61,7 +61,7 @@ function MeasurAlarm(props) {
     if (path) {
       handleTabChange('today')
     };
-  }, [path])
+  }, [path]);
 
   useEffect(() => {
     if (pagetitle !== '上下行报文页面告警') {
@@ -90,7 +90,24 @@ function MeasurAlarm(props) {
         },
       });
     }
-  }, [tabActivekey])
+  }, [tabActivekey]);
+
+  useEffect(() => {
+    if (location.state) {
+      // 点击菜单刷新
+      if (location.state.reset) {
+        handleTabChange('today');
+        dispatch({
+          type: 'measuralarm/fetchtotalinfo',
+          payload: {
+            beginDate: moment().format('YYYY-MM-DD 00:00:00'),
+            endDate: moment().format('YYYY-MM-DD HH:mm:ss'),
+            warnModule: warnModulemap.get(pagetitle),
+          },
+        });
+      };
+    }
+  }, [location.state]);
 
   return (
     <PageHeaderWrapper
@@ -112,6 +129,7 @@ function MeasurAlarm(props) {
         selectdata,
         tabdate,
         warnModule: warnModulemap.get(pagetitle),
+        reset: location.state && location.state.reset,
       }}>
         {pagetitle === '上下行报文页面告警' ? (
           <MessageContent tabActivekey={tabActivekey} />

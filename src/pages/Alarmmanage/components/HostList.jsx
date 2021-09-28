@@ -40,7 +40,7 @@ function HostList(props) {
   const [activeKey, setActiveKey] = useState('');
   const [assets, setAssets] = useState([]);
   const [expand, setExpand] = useState(false);
-  const { tabActivekey, selectdata, tabdate, warnModule, pagetitle, } = useContext(TypeContext);
+  const { tabActivekey, selectdata, tabdate, warnModule, pagetitle, reset } = useContext(TypeContext);
 
   const { pathname } = window.location;
 
@@ -139,7 +139,14 @@ function HostList(props) {
       resetFields();
       handleSearch(1, 10);
     }
-  }, [tabdate])
+  }, [tabdate]);
+
+  useEffect(() => {
+    if (reset && tabActivekey === 'today') {
+      resetFields();
+      handleSearch(1, 10);
+    };
+  }, [reset]);
 
   const rowSelection = {
     selectedRowKeys,

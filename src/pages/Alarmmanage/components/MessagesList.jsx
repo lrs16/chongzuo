@@ -10,15 +10,6 @@ import ButtonGroup from './ButtonGroup';
 const { TabPane } = Tabs;
 const { Option } = Select;
 
-const tabsmap = [
-  { key: '0', name: '全部', color: '', data: 356 },
-  { key: '1', name: '待确认', color: '#ff0000', data: 6 },
-  { key: '2', name: '已确认', color: '', data: 300 },
-  { key: '3', name: '待消除', color: '#ff0000', data: 16 },
-  { key: '4', name: '已消除', color: '', data: 340 },
-];
-
-
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -31,65 +22,101 @@ const formItemLayout = {
 };
 
 function MessagesList(props) {
-  const { loading, dispatch, list } = props;
-  const { getFieldDecorator, resetFields, validateFields } = props.form;
-  const dataSource = list.data;
-  const [querykeys, setQueryKeys] = useState({ type: '', configstatus: '', elimination: '' });
+  const { loading, dispatch, list, searchtab } = props;
+  const { getFieldDecorator, resetFields, getFieldsValue } = props.form;
   const [selectedRowKeys, setSelectionRow] = useState([]);
   const [selectRowdata, setSelectdata] = useState([]);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
   const [expand, setExpand] = useState(false);
   const [company, setCompany] = useState([]);
-  const { selectdata } = useContext(TypeContext);
+  const [searchdata, setSearchData] = useState({});
+  const [activeKey, setActiveKey] = useState('');
+  const { tabActivekey, selectdata, tabdate, warnModule, reset } = useContext(TypeContext);
 
-  const handleSearch = () => {
-    validateFields((err, values) => {
-      setQueryKeys(values);
+  const getvalues = () => {
+    const val = getFieldsValue();
+    const values = {
+      ...val,
+      beginClearTime: val.beginClearTime ? moment(val.beginClearTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      beginConfirmTime: val.beginConfirmTime ? moment(val.beginConfirmTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      beginWarnTime: tabdate.beginWarnTime ? moment(tabdate.beginWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      endClearTime: val.endClearTime ? moment(val.endClearTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      endConfirmTime: val.endConfirmTime ? moment(val.endConfirmTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      endWarnTime: tabdate.endWarnTime ? moment(tabdate.endWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      warnModule
+    };
+    return values
+  }
+
+  const handleSearch = (page, size) => {
+    setActiveKey('全部');
+    const values = getvalues();
+    setSearchData({ ...values, pageIndex: paginations.current, pageSize: paginations.pageSize })
+    dispatch({
+      type: 'measuralarm/fetchsearchtab',
+      payload: {
+        ...values,
+      },
     });
-  };
-
-  const handleReset = () => {
-    resetFields();
-    setQueryKeys({});
-  };
-
-  const searchdata = (values, page, size) => {
     dispatch({
       type: 'measuralarm/fetchlist',
       payload: {
         ...values,
-        type: '全部',
         pageSize: size,
-        current: page,
+        pageIndex: page,
       },
     });
   };
 
-  const handleTabs = key => {
-    switch (key) {
-      case '0':
-        setQueryKeys({ configstatus: '', elimination: '' });
-        break;
-      case '1':
-        setQueryKeys({ configstatus: 0, elimination: '' });
-        break;
-      case '2':
-        setQueryKeys({ configstatus: 1, elimination: '' });
-        break;
-      case '3':
-        setQueryKeys({ configstatus: '', elimination: 0 });
-        break;
-      case '4':
-        setQueryKeys({ configstatus: '', elimination: 1 });
-        break;
-      default:
-        break;
-    }
+  const handleSelects = (v) => {
+    setSelectionRow(v);
+    setSelectdata(v);
   };
 
-  useEffect(() => {
-    searchdata(querykeys, paginations.current, paginations.pageSize);
-  }, [querykeys]);
+  const handleReset = () => {
+    resetFields();
+    handleSearch(1, 10);
+  };
+
+  const handleTabs = key => {
+    setActiveKey(key);
+    const values = getvalues();
+    dispatch({
+      type: 'measuralarm/fetchlist',
+      payload: {
+        ...values,
+        confirmStatus: (key === '已确认' || key === '待确认') ? key : '',
+        clearStatus: (key === '待消除' || key === '人工消除' || key === '自动消除') ? key : '',
+        pageIndex: 1,
+        pageSize: 10,
+      },
+    });
+    setPageinations({ current: 1, pageSize: 10 })
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: (selectRowKey, selectedRows) => {
+      setSelectionRow(selectRowKey);
+      setSelectdata(selectedRows);
+    },
+  };
+
+  const onShowSizeChange = (page, size) => {
+    handleSearch(page, size);
+    setPageinations({
+      ...paginations,
+      pageSize: size,
+    });
+  };
+
+  const changePage = page => {
+    handleSearch(page, paginations.pageSize);
+    setPageinations({
+      ...paginations,
+      current: page,
+    });
+  };
 
   useEffect(() => {
     querkeyVal('system', 'company').then(res => {
@@ -99,28 +126,23 @@ function MessagesList(props) {
     });
   }, []);
 
-  const rowSelection = {
-    onChange: (selectRowKey, selectedRows) => {
-      setSelectionRow(selectRowKey);
-      setSelectdata(selectedRows);
-    },
-  };
+  useEffect(() => {
+    handleReset();
+  }, [tabActivekey])
 
-  const onShowSizeChange = (page, size) => {
-    searchdata(querykeys, page, size);
-    setPageinations({
-      ...paginations,
-      pageSize: size,
-    });
-  };
+  useEffect(() => {
+    if (tabActivekey === 'all' && tabdate && (tabdate.beginWarnTime || tabdate.endWarnTime)) {
+      resetFields();
+      handleSearch(1, 10);
+    }
+  }, [tabdate]);
 
-  const changePage = page => {
-    searchdata(querykeys, page, paginations.pageSize);
-    setPageinations({
-      ...paginations,
-      current: page,
-    });
-  };
+  useEffect(() => {
+    if (reset && tabActivekey === 'today') {
+      resetFields();
+      handleSearch(1, 10);
+    };
+  }, [reset]);
 
   const pagination = {
     showSizeChanger: true,
@@ -131,18 +153,17 @@ function MessagesList(props) {
     onChange: page => changePage(page),
   };
 
-
   const columns = [
     {
       title: '监测类型',
-      dataIndex: 'type',
-      key: 'type',
-      width: 140,
+      dataIndex: 'secondClassify',
+      key: 'secondClassify',
+      width: 120,
     },
     {
       title: '单位',
-      dataIndex: 'monitorco',
-      key: 'monitorco',
+      dataIndex: 'firstClassify',
+      key: 'firstClassify',
       width: 180,
       onCell: () => {
         return {
@@ -159,8 +180,8 @@ function MessagesList(props) {
     },
     {
       title: '终端资产编号',
-      dataIndex: '1',
-      key: '1',
+      dataIndex: 'thirdClassify',
+      key: 'thirdClassify',
       width: 180,
       onCell: () => {
         return {
@@ -177,8 +198,8 @@ function MessagesList(props) {
     },
     {
       title: '终端地址',
-      dataIndex: '2',
-      key: '2',
+      dataIndex: 'fourthClassify',
+      key: 'fourthClassify',
       width: 180,
       onCell: () => {
         return {
@@ -195,8 +216,8 @@ function MessagesList(props) {
     },
     {
       title: '告警内容',
-      dataIndex: 'content',
-      key: 'content',
+      dataIndex: 'warnContent',
+      key: 'warnContent',
       with: 300,
       onCell: () => {
         return {
@@ -213,11 +234,22 @@ function MessagesList(props) {
     },
     {
       title: '告警时间',
-      dataIndex: 'contenttime',
-      key: 'contenttime',
+      dataIndex: 'warnTime',
+      key: 'warnTime',
       width: 180,
     },
-
+    {
+      title: '确认告警时间',
+      dataIndex: 'confirmTime',
+      key: 'confirmTime',
+      width: 180,
+    },
+    {
+      title: '告警消除时间',
+      dataIndex: 'clearTime',
+      key: 'clearTime',
+      width: 180,
+    },
   ];
 
 
@@ -335,27 +367,32 @@ function MessagesList(props) {
           <Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>
         </Row>
       </Form>
-      <ButtonGroup selectedRowKeys={selectedRowKeys} selectRowdata={selectRowdata} />
-      <Tabs defaultActiveKey="0" onChange={handleTabs}>
-        {tabsmap.map(({ key, name, color, data }) => [
+      <ButtonGroup
+        selectedRowKeys={selectedRowKeys}
+        selectRowdata={selectRowdata}
+        values={searchdata}
+        ChangeSelects={v => handleSelects(v)}
+      />
+      <Tabs activeKey={activeKey} onChange={handleTabs}>
+        {searchtab && searchtab.map(({ name, total }) => [
           <TabPane
             tab={
               <>
                 <span>{name}</span>
-                <span style={{ color: `${color}` }}>（{data}）</span>
+                <span style={{ color: `${(name === '待确认' || name === '待消除') ? '#ff0000' : ''}` }}>（{total}）</span>
               </>
             }
-            key={key}
+            key={name}
           />,
         ])}
       </Tabs>
       <Table
         rowSelection={rowSelection}
         columns={columns}
-        dataSource={dataSource}
+        dataSource={list.records || []}
         loading={loading}
         rowKey={record => record.id}
-        scroll={{ x: 2150 }}
+        scroll={{ x: 1500 }}
         pagination={pagination}
       />
     </Card>
@@ -365,8 +402,8 @@ function MessagesList(props) {
 export default Form.create({})(
   connect(({ measuralarm, loading }) => ({
     list: measuralarm.list,
-    Donutdata: measuralarm.Donutdata,
-    Smoothdata: measuralarm.Smoothdata,
+    searchtab: measuralarm.searchtab,
     loading: loading.models.measuralarm,
+    updataloading: loading.effects['measuralarm/alarmsconfig'],
   }))(MessagesList)
 );

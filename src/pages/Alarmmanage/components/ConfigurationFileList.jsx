@@ -10,19 +10,6 @@ import ButtonGroup from './ButtonGroup';
 const { TabPane } = Tabs;
 const { Option } = Select;
 
-const tabsmap = [
-  { key: '0', name: '全部', color: '', data: 356 },
-  { key: '1', name: '待确认', color: '#ff0000', data: 6 },
-  { key: '2', name: '已确认', color: '', data: 300 },
-  { key: '3', name: '待消除', color: '#ff0000', data: 16 },
-  { key: '4', name: '已消除', color: '', data: 340 },
-];
-
-const eliminationsMap = ['default', 'error'];
-const eliminations = ['已消除', '未消除'];
-const statusMap = ['success', 'error'];
-const configstatus = ['已确认', '未确认'];
-
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -44,7 +31,7 @@ function ConfigurationFileList(props) {
   const [activeKey, setActiveKey] = useState('');
   const [assets, setAssets] = useState([]);
   const [expand, setExpand] = useState(false);
-  const { tabActivekey, selectdata, tabdate, warnModule, pagetitle, } = useContext(TypeContext);
+  const { tabActivekey, selectdata, tabdate, warnModule, pagetitle, reset } = useContext(TypeContext);
 
   const { pathname } = window.location;
 
@@ -117,9 +104,9 @@ function ConfigurationFileList(props) {
     setSelectdata(v);
   };
 
-  // useEffect(() => {
-  //   handleReset();
-  // }, [tabActivekey])
+  useEffect(() => {
+    handleReset();
+  }, [tabActivekey])
 
   useEffect(() => {
     if (activeTabKey && tabdate) {
@@ -135,7 +122,14 @@ function ConfigurationFileList(props) {
       resetFields();
       handleSearch(1, 10);
     }
-  }, [tabdate])
+  }, [tabdate]);
+
+  useEffect(() => {
+    if (reset && tabActivekey === 'today') {
+      resetFields();
+      handleSearch(1, 10);
+    };
+  }, [reset]);
 
   const rowSelection = {
     selectedRowKeys,
@@ -178,14 +172,13 @@ function ConfigurationFileList(props) {
         }
       });
     };
-    if (pagetitle === '上下行报文页面告警') {
-      querkeyVal('system', 'company').then(res => {
-        if (res.code === 200) {
-          setCompany(res.data.company)
-        }
-      });
-    }
-
+    // if (pagetitle === '上下行报文页面告警') {
+    //   querkeyVal('system', 'company').then(res => {
+    //     if (res.code === 200) {
+    //       setCompany(res.data.company)
+    //     }
+    //   });
+    // }
   }, []);
 
   const columns = [
@@ -286,6 +279,24 @@ function ConfigurationFileList(props) {
       render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
     {
+      title: '确认状态',
+      dataIndex: 'confirmStatus',
+      key: 'confirmStatus',
+      width: 90,
+      render: (text) => (
+        <Badge status={text === '已确认' ? 'success' : 'error'} text={text} />
+      ),
+    },
+    {
+      title: '消除状态',
+      dataIndex: 'clearStatus',
+      key: 'clearStatus',
+      width: 120,
+      render: (text) => (
+        <Badge status={text === '待消除' ? 'error' : 'default'} text={text} />
+      ),
+    },
+    {
       title: '告警内容',
       dataIndex: 'warnContent',
       key: 'warnContent',
@@ -304,12 +315,6 @@ function ConfigurationFileList(props) {
       render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
     {
-      title: '告警时间',
-      dataIndex: 'warnTime',
-      key: 'warnTime',
-      width: 180,
-    },
-    {
       title: '配置文件大小',
       dataIndex: 'key1',
       key: 'key1',
@@ -317,8 +322,8 @@ function ConfigurationFileList(props) {
     },
     {
       title: '配置文件内容',
-      dataIndex: 'warnContent',
-      key: 'warnContent',
+      dataIndex: 'warnContent1',
+      key: 'warnContent1',
       width: 180,
       onCell: () => {
         return {
@@ -392,7 +397,7 @@ function ConfigurationFileList(props) {
             <Col span={8}>
               <Form.Item label="区域">
                 {getFieldDecorator('firstClassify')(
-                  <Select placeholder="请选择">
+                  <Select placeholder="请选择" onChange={handleChange} allowClear>
                     {assets.map(({ key, val }) => [
                       <Option key={key} value={val}>
                         {val}
@@ -484,7 +489,7 @@ function ConfigurationFileList(props) {
                 </Col> */}
               </>
             )}
-            {(expand || pagetitle === '时钟巡检告警') ? (<Col span={8} >{extra}</Col>) : (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>)}
+            {(expand || pagetitle === '时钟巡检告警') ? (<Col span={8} style={{ padding: '4px 0 0 48px' }} >{extra}</Col>) : (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>)}
           </Row>
         </Form>
         <ButtonGroup

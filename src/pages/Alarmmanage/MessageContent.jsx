@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Row, Col, Spin, Empty } from 'antd';
 import { connect } from 'dva';
+import moment from 'moment';
 import TypeContext from '@/layouts/MenuContext';
 import { ChartCard } from '@/components/Charts';
 import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
 import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
+import ButtonGroup from './components/ButtonGroup';
 import MessagesList from './components/MessagesList';
 
 const cols = {
@@ -23,16 +25,26 @@ const cols = {
 
 function MessageContent(props) {
   const { Donutdata, Smoothdata, dispatch, loading } = props;
-  const { tabActivekey } = useContext(TypeContext);
+  const { tabActivekey, tabdate, warnModule } = useContext(TypeContext);
 
-  const getdatas = (key) => {
+  const getdatas = (classify) => {
     dispatch({
       type: 'measuralarm/fetchoverdonut',
-      payload: { key },
+      payload: {
+        beginDate: tabdate.beginWarnTime ? moment(tabdate.beginWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        endDate: tabdate.endWarnTime ? moment(tabdate.endWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        classify,
+        warnModule,
+      },
     });
     dispatch({
       type: 'measuralarm/fetchoversmooth',
-      payload: { key },
+      payload: {
+        beginDate: tabdate.beginWarnTime ? moment(tabdate.beginWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        endDate: tabdate.endWarnTime ? moment(tabdate.endWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        classify,
+        warnModule,
+      },
     });
   };
 
@@ -50,20 +62,18 @@ function MessageContent(props) {
             <Col span={12}>
               <ChartCard title='告警概览'>
                 <Spin spinning={false} style={{ background: '#ffffff' }}>
-                  {Donutdata === undefined && <Empty style={{ height: '250px' }} />}
-                  {Donutdata !== undefined && (
+                  {Donutdata && Donutdata.length > 0 ? (
                     <DonutPCT data={Donutdata} cols={cols} height={350} padding={[40, 40, 60, 40]} onGetVal={() => { }} />
-                  )}
+                  ) : (<Empty style={{ height: '250px' }} />)}
                 </Spin>
               </ChartCard>
             </Col>
             <Col span={12}>
               <ChartCard title='告警趋势'>
                 <Spin spinning={false} style={{ background: '#ffffff' }}>
-                  {Smoothdata === undefined && <Empty style={{ height: '250px' }} />}
-                  {Smoothdata !== undefined && (
+                  {Smoothdata && Smoothdata.length > 0 ? (
                     <SmoothLine data={Smoothdata} height={350} padding={[30, 0, 50, 60]} onGetVal={() => { }} />
-                  )}
+                  ) : (<Empty style={{ height: '250px' }} />)}
                 </Spin>
               </ChartCard>
             </Col>

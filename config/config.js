@@ -1765,6 +1765,12 @@ export default {
                           icon: 'interaction',
                           component: './Alarmmanage/AlarmView',
                         },
+                        {
+                          path: '/alarmmanage/:key1/:key2/details',
+                          name: '告警详细信息',
+                          icon: 'cloud-server',
+                          component: './Alarmmanage/DetailView',
+                        },
                       ]
                     },
                     {

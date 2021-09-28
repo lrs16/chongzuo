@@ -158,7 +158,7 @@ function MeasurList(props) {
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
   const [searchdata, setSearchData] = useState({});
   const [activeKey, setActiveKey] = useState('');
-  const { tabActivekey, selectdata, tabdate, warnModule } = useContext(TypeContext);
+  const { tabActivekey, selectdata, tabdate, warnModule, reset } = useContext(TypeContext);
 
   const getvalues = () => {
     const val = getFieldsValue();
@@ -234,7 +234,7 @@ function MeasurList(props) {
 
   useEffect(() => {
     handleReset();
-  }, [tabActivekey])
+  }, [tabActivekey]);
 
   useEffect(() => {
     if (activeTabKey) {
@@ -249,7 +249,14 @@ function MeasurList(props) {
       resetFields();
       handleSearch(1, 10);
     }
-  }, [tabdate])
+  }, [tabdate]);
+
+  useEffect(() => {
+    if (reset && tabActivekey === 'today') {
+      resetFields();
+      handleSearch(1, 10);
+    };
+  }, [reset]);
 
   const rowSelection = {
     selectedRowKeys,

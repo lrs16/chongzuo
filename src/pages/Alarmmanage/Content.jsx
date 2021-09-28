@@ -18,15 +18,16 @@ import ConfigurationFileList from './components/ConfigurationFileList';
 import ClockPatrolList from './components/ClockPatrolList';
 
 const cols = {
+  temperature: { min: 0 },
   value: {
     min: 100,
-    range: [0, 0.95],
+    range: [0.2, 0.8],
     alias: '',
     tickCount: 5,
   },
   date: {
     // max: 24,
-    range: [0.02, 0.95],
+    range: [0.2, 1],
     alias: '',
   },
 };
@@ -90,7 +91,7 @@ function Today(props) {
         handleTabChange('全部')
       }
     }
-  }, [tabdate])
+  }, [tabdate]);
 
   return (
     <>
@@ -116,7 +117,7 @@ function Today(props) {
                 <ChartCard title='告警趋势'>
                   <Spin spinning={false} style={{ background: '#ffffff' }}>
                     {Smoothdata && Smoothdata.length > 0 ? (
-                      <SmoothLine data={Smoothdata} height={350} padding={[30, 0, 50, 60]} onGetVal={() => { }} />
+                      <SmoothLine data={Smoothdata} height={350} padding={[30, 10, 60, 60]} onGetVal={() => { }} />
                     ) : (<Empty style={{ height: '250px' }} />)}
                   </Spin>
                 </ChartCard>

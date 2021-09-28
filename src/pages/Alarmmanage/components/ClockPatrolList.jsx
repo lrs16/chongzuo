@@ -1,103 +1,137 @@
 import React, { useState, useEffect, useContext } from 'react';
 import moment from 'moment';
-import { Card, Button, Table, Tabs, Row, Col, Form, Input, Select, DatePicker, Tooltip } from 'antd';
+import { Card, Button, Table, Badge, Tabs, Row, Col, Form, Input, Select, DatePicker, Tooltip } from 'antd';
 import { connect } from 'dva';
+import { querkeyVal } from '@/services/api';
 import TypeContext from '@/layouts/MenuContext';
 import ButtonGroup from './ButtonGroup';
 
 const { TabPane } = Tabs;
 const { Option } = Select;
 
-const tabsmap = [
-  { key: '0', name: '全部', color: '', data: 356 },
-  { key: '1', name: '待确认', color: '#ff0000', data: 6 },
-  { key: '2', name: '已确认', color: '', data: 300 },
-  { key: '3', name: '待消除', color: '#ff0000', data: 16 },
-  { key: '4', name: '已消除', color: '', data: 340 },
-];
-
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 4 },
+    sm: { span: 6 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 20 },
+    sm: { span: 18 },
   },
 };
 function ClockPatrolList(props) {
-  const { loading, dispatch, list, activeTabInfo } = props;
-  const { getFieldDecorator, resetFields, validateFields } = props.form;
-  const dataSource = list.data;
-  const [querykeys, setQueryKeys] = useState({ type: '', configstatus: '', elimination: '' });
+  const { loading, dispatch, list, searchtab, ChangeActiveTabKey, activeTabKey } = props;
+  const { getFieldDecorator, resetFields, getFieldsValue, setFieldsValue } = props.form;
   const [selectedRowKeys, setSelectionRow] = useState([]);
   const [selectRowdata, setSelectdata] = useState([]);
+  const [classifykey, setCompany] = useState([]);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
-  const { tabActivekey, selectdata } = useContext(TypeContext);
+  const [searchdata, setSearchData] = useState({});
+  const [activeKey, setActiveKey] = useState('');
+  const [assets, setAssets] = useState([]);
+  const [expand, setExpand] = useState(false);
+  const { tabActivekey, selectdata, tabdate, warnModule, pagetitle, reset } = useContext(TypeContext);
 
-  const handleSearch = () => {
-    validateFields((err, values) => {
-      setQueryKeys(values);
+  const { pathname } = window.location;
+
+  const getvalues = () => {
+    const val = getFieldsValue();
+    const values = {
+      ...val,
+      beginClearTime: val.beginClearTime ? moment(val.beginClearTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      beginConfirmTime: val.beginConfirmTime ? moment(val.beginConfirmTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      beginWarnTime: tabdate.beginWarnTime ? moment(tabdate.beginWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      endClearTime: val.endClearTime ? moment(val.endClearTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      endConfirmTime: val.endConfirmTime ? moment(val.endConfirmTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      endWarnTime: tabdate.endWarnTime ? moment(tabdate.endWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      warnModule
+    };
+    return values
+  }
+
+  const handleSearch = (page, size) => {
+    const key = activeTabKey === '全部' ? '' : activeTabKey;
+    setActiveKey('全部');
+    const values = getvalues();
+    setSearchData({ ...values, firstClassify: key, pageIndex: paginations.current, pageSize: paginations.pageSize })
+    dispatch({
+      type: 'measuralarm/fetchsearchtab',
+      payload: {
+        ...values,
+        firstClassify: key,
+      },
+    });
+    dispatch({
+      type: 'measuralarm/fetchlist',
+      payload: {
+        ...values,
+        firstClassify: key,
+        pageSize: size,
+        pageIndex: page,
+      },
     });
   };
 
   const handleReset = () => {
     resetFields();
-    setQueryKeys({});
+    handleSearch(1, 10);
   };
 
-  const searchdata = (values, page, size) => {
+  const handleTabs = key => {
+    setActiveKey(key);
+    const values = getvalues();
     dispatch({
       type: 'measuralarm/fetchlist',
       payload: {
         ...values,
-        type: activeTabInfo.tab,
-        pageSize: size,
-        current: page,
+        confirmStatus: (key === '已确认' || key === '待确认') ? key : '',
+        clearStatus: (key === '待消除' || key === '人工消除' || key === '自动消除') ? key : '',
+        pageIndex: 1,
+        pageSize: 10,
       },
     });
+    setPageinations({ current: 1, pageSize: 10 })
   };
 
-  const handleTabs = key => {
-    switch (key) {
-      case '0':
-        setQueryKeys({ configstatus: '', elimination: '' });
-        break;
-      case '1':
-        setQueryKeys({ configstatus: 0, elimination: '' });
-        break;
-      case '2':
-        setQueryKeys({ configstatus: 1, elimination: '' });
-        break;
-      case '3':
-        setQueryKeys({ configstatus: '', elimination: 0 });
-        break;
-      case '4':
-        setQueryKeys({ configstatus: '', elimination: 1 });
-        break;
-      default:
-        break;
-    }
+  const handleChange = (val) => {
+    const key = val || '全部';
+    ChangeActiveTabKey(key)
+  };
+
+  const handleSelects = (v) => {
+    setSelectionRow(v);
+    setSelectdata(v);
   };
 
   useEffect(() => {
-    if (activeTabInfo) {
-      setQueryKeys(querykeys);
-    }
-  }, [activeTabInfo]);
+    handleReset();
+  }, [tabActivekey])
 
   useEffect(() => {
-    if (tabActivekey) {
-      setQueryKeys(querykeys);
+    if (activeTabKey && tabdate) {
+      const key = activeTabKey === '全部' ? '' : activeTabKey;
+      // setClassifykey(key);
+      setFieldsValue({ firstClassify: key });
+      handleSearch(1, 10);
     }
-  }, [tabActivekey]);
+  }, [activeTabKey]);
 
   useEffect(() => {
-    searchdata(querykeys, paginations.current, paginations.pageSize);
-  }, [querykeys]);
+    if (tabActivekey === 'all' && tabdate && (tabdate.beginWarnTime || tabdate.endWarnTime)) {
+      resetFields();
+      handleSearch(1, 10);
+    }
+  }, [tabdate]);
+
+  useEffect(() => {
+    if (reset && tabActivekey === 'today') {
+      resetFields();
+      handleSearch(1, 10);
+    };
+  }, [reset]);
 
   const rowSelection = {
+    selectedRowKeys,
     onChange: (selectRowKey, selectedRows) => {
       setSelectionRow(selectRowKey);
       setSelectdata(selectedRows);
@@ -105,7 +139,7 @@ function ClockPatrolList(props) {
   };
 
   const onShowSizeChange = (page, size) => {
-    searchdata(querykeys, page, size);
+    handleSearch(page, size);
     setPageinations({
       ...paginations,
       pageSize: size,
@@ -113,7 +147,7 @@ function ClockPatrolList(props) {
   };
 
   const changePage = page => {
-    searchdata(querykeys, page, paginations.pageSize);
+    handleSearch(page, paginations.pageSize);
     setPageinations({
       ...paginations,
       current: page,
@@ -129,23 +163,30 @@ function ClockPatrolList(props) {
     onChange: page => changePage(page),
   };
 
+  useEffect(() => {
+    querkeyVal('assets', 'assets_host_zone_id').then(res => {
+      if (res.code === 200) {
+        setAssets(res.data.assets_host_zone_id)
+      }
+    });
+  }, []);
 
   const columns = [
     {
       title: '区域',
-      dataIndex: 'type',
-      key: 'type',
-      width: 140,
+      dataIndex: 'firstClassify',
+      key: 'firstClassify',
+      width: 120,
     },
     {
       title: '设备IP',
-      dataIndex: 'monitorco',
-      key: 'monitorco',
-      width: 180,
+      dataIndex: 'fourthClassify',
+      key: 'fourthClassify',
+      width: 120,
       onCell: () => {
         return {
           style: {
-            maxWidth: 180,
+            maxWidth: 120,
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
@@ -157,13 +198,13 @@ function ClockPatrolList(props) {
     },
     {
       title: '设备名称',
-      dataIndex: '1',
-      key: '1',
-      width: 180,
+      dataIndex: 'thirdClassify',
+      key: 'thirdClassify',
+      width: 150,
       onCell: () => {
         return {
           style: {
-            maxWidth: 180,
+            maxWidth: 150,
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
@@ -175,8 +216,8 @@ function ClockPatrolList(props) {
     },
     {
       title: '告警内容',
-      dataIndex: 'content',
-      key: 'content',
+      dataIndex: 'warnContent',
+      key: 'warnContent',
       with: 300,
       onCell: () => {
         return {
@@ -211,20 +252,23 @@ function ClockPatrolList(props) {
     },
     {
       title: '告警时间',
-      dataIndex: 'thistime',
-      key: 'thistime',
+      dataIndex: 'warnTime',
+      key: 'warnTime',
+      width: 180,
+    },
+    {
+      title: '确认告警时间',
+      dataIndex: 'confirmTime',
+      key: 'confirmTime',
+      width: 180,
+    },
+    {
+      title: '告警消除时间',
+      dataIndex: 'clearTime',
+      key: 'clearTime',
       width: 180,
     },
   ];
-
-  const getTypebykey = key => {
-    if (selectdata.ischange) {
-      return selectdata.arr.filter(item => item.key === key)[0].children;
-    }
-    return [];
-  };
-
-  const areammap = getTypebykey('1437583023694807042');             // 时钟巡检区域
 
   const extra = (<>
     <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
@@ -240,10 +284,10 @@ function ClockPatrolList(props) {
             <Col span={6}>
               <Form.Item label="区域">
                 {getFieldDecorator('hostZoneId')(
-                  <Select placeholder="请选择">
-                    {areammap.map(({ dict_code, title }) => [
-                      <Option key={dict_code} value={title}>
-                        {title}
+                  <Select placeholder="请选择" onChange={handleChange} allowClear>
+                    {assets.map(({ key, val }) => [
+                      <Option key={key} value={val}>
+                        {val}
                       </Option>,
                     ])}
                   </Select>,
@@ -292,30 +336,35 @@ function ClockPatrolList(props) {
                 </div>
               </Form.Item>
             </Col> */}
-            <Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>
+            <Col span={8} style={{ paddingTop: 4, paddingLeft: 48 }}>{extra}</Col>
           </Row>
         </Form>
-        <ButtonGroup selectedRowKeys={selectedRowKeys} selectRowdata={selectRowdata} />
-        <Tabs defaultActiveKey="0" onChange={handleTabs}>
-          {tabsmap.map(({ key, name, color, data }) => [
+        <ButtonGroup
+          selectedRowKeys={selectedRowKeys}
+          selectRowdata={selectRowdata}
+          values={searchdata}
+          ChangeSelects={v => handleSelects(v)}
+        />
+        <Tabs activeKey={activeKey} onChange={handleTabs}>
+          {searchtab && searchtab.map(({ name, total }) => [
             <TabPane
               tab={
                 <>
                   <span>{name}</span>
-                  <span style={{ color: `${color}` }}>（{data}）</span>
+                  <span style={{ color: `${(name === '待确认' || name === '待消除') ? '#ff0000' : ''}` }}>（{total}）</span>
                 </>
               }
-              key={key}
+              key={name}
             />,
           ])}
         </Tabs>
         <Table
           rowSelection={rowSelection}
           columns={columns}
-          dataSource={dataSource}
+          dataSource={list.records || []}
           loading={loading}
           rowKey={record => record.id}
-          scroll={{ x: 2150 }}
+          scroll={{ x: 1850 }}
           pagination={pagination}
         />
       </Card>
@@ -326,8 +375,8 @@ function ClockPatrolList(props) {
 export default Form.create({})(
   connect(({ measuralarm, loading }) => ({
     list: measuralarm.list,
-    Donutdata: measuralarm.Donutdata,
-    Smoothdata: measuralarm.Smoothdata,
+    searchtab: measuralarm.searchtab,
     loading: loading.models.measuralarm,
+    updataloading: loading.effects['measuralarm/alarmsconfig'],
   }))(ClockPatrolList)
 );
