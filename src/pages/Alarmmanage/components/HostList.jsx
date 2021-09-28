@@ -121,9 +121,9 @@ function HostList(props) {
     setSelectdata(v);
   };
 
-  // useEffect(() => {
-  //   handleReset();
-  // }, [tabActivekey])
+  useEffect(() => {
+    handleReset();
+  }, [tabActivekey])
 
   useEffect(() => {
     if (activeTabKey && tabdate) {
