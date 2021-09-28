@@ -679,6 +679,9 @@ function TobedealtList(props) {
   };
 
   const record = {
+    registerName:'',
+    expertVerifierName:'',
+    providerConfirmerName:'',
     assessNo: '',
     providerId: '',
     providerName: '',
@@ -708,7 +711,6 @@ function TobedealtList(props) {
     expertVerifier: '',
     isAppeal: '',
     appealContent: '',
-    providerConfirmerName: '',
     providerConfirmer: '',
     directorReviewValue: '',
     directorReviewContent: '',
@@ -1457,7 +1459,7 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label="登记人">
                   {getFieldDecorator('registerName', {
-                    initialValue: cacheinfo.register,
+                    initialValue: cacheinfo.registerName,
                   })(<Input />)}
                 </Form.Item>
               </Col>

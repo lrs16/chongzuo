@@ -73,7 +73,7 @@ function CreditcardTobe(props) {
         evaluationInterval: '',
         pageNum: page,
         pageSize,
-        locked: '0',
+        locked: pagetitle === '计分卡登记' ? '0' :'1',
       },
     });
     setTabRecord({ ...newValue });
