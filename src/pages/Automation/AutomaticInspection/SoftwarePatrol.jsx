@@ -45,7 +45,7 @@ function SoftwarePatrol(props) {
     dispatch({
       type: 'automation/fetchsoftList',
       payload: {
-        values,
+        ...values,
         pageIndex: page,
         pageSize: size,
       },

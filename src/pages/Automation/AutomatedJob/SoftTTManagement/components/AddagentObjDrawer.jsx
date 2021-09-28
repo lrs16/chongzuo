@@ -39,7 +39,9 @@ function AddagentObjDrawer(props) {
             getFieldsValue,
             resetFields,
             // validateFields
-        } } = props;
+        },
+        rows,
+    } = props;
 
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -90,7 +92,15 @@ function AddagentObjDrawer(props) {
     }, [location]);
 
     useEffect(() => {
-        if (workId !== undefined && (buttype === 'edit' || buttype === 'detailsview') && buttype !== 'add' ) {
+        if (rows) {
+            const rowkeys = rows.map(item => item.id);
+            setSelectedRows(rows);
+            setSelectedRowKeys(rowkeys);
+        }
+    }, [rows])
+
+    useEffect(() => {
+        if (workId !== undefined && (buttype === 'edit' || buttype === 'detailsview') && buttype !== 'add') {
             const values = getFieldsValue();
             dispatch({
                 type: 'autosoftwork/findautoSoftObjectList1',

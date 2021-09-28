@@ -10,7 +10,8 @@ function TaskObjectList1(props) {
     const {
         selectrowsData,
         GetRowskeysData,
-        Noediting
+        Noediting,
+        onChangeSelect
     } = props;
 
     const [selectedrowsData, setselectedrowsData] = useState([]);
@@ -23,9 +24,17 @@ function TaskObjectList1(props) {
 
     const handleDelete = id => {
         const deleteidrow = selectedrowsData.filter(item => item.id !== id);
-        const deleteidrowkey = deleteidrow.map(item => item.id)
-        setselectedrowsData(deleteidrow);
-        GetRowskeysData(deleteidrowkey);
+        const deleteidrowkey = deleteidrow.map(item => item.id);
+        if(selectedrowsData&&selectedrowsData.length>0){
+            setselectedrowsData(deleteidrow);
+            GetRowskeysData(deleteidrowkey);
+            onChangeSelect(deleteidrow)
+         }else{
+            setselectedrowsData([]);
+            GetRowskeysData([]);
+            onChangeSelect([]);
+         }
+        
     };
 
     const columns = [
@@ -113,7 +122,7 @@ function TaskObjectList1(props) {
             dataIndex: 'action',
             key: 'action',
             fixed: 'right',
-            width: 50,
+            width: 70,
             render: (text, record) =>
                 selectrowsData.length >= 1 ? (
                     <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.id)}>

@@ -10,30 +10,31 @@ function SoftTaskObjectList(props) {
     const {
         selectrowsData,
         GetRowskeysData,
-        Noediting
+        Noediting,
+        onChangeSelect
     } = props;
 
     const [selectedrowsData, setselectedrowsData] = useState([]);
 
     useEffect(() => {
         if (selectrowsData && selectrowsData.length >= 1) {
-            // const newArr = Object.assign({}, selectrowsData);
-            // console.log(newArr, 'eee')
-            const newArr = [];
-            selectrowsData.forEach(item => {
-                // console.log(item, 'itemmm')
-                return newArr.push(item);
-            });
-            console.log(newArr, 'newArr')
-            setselectedrowsData(newArr);
+            setselectedrowsData(selectrowsData);
         }
     }, [selectrowsData]);
 
-    const handleDelete = id => {
+    const handleDelete = id => { 
         const deleteidrow = selectedrowsData.filter(item => item.id !== id);
         const deleteidrowkey = deleteidrow.map(item => item.id)
-        setselectedrowsData(deleteidrow);
-        GetRowskeysData(deleteidrowkey);
+         if(selectedrowsData&&selectedrowsData.length>0){
+            setselectedrowsData(deleteidrow);
+            GetRowskeysData(deleteidrowkey);
+            onChangeSelect(deleteidrow);
+         }else{
+            setselectedrowsData([]);
+            GetRowskeysData([]);
+            onChangeSelect([]);
+         }
+        
     };
 
     const columns = [

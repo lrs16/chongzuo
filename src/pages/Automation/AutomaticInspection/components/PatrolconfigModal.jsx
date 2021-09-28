@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { connect } from 'dva';
 import {
     Modal,
-    Table, Button, Form, Input, Row, Col, Select, Alert
+    Table, Button, Form, Input, Row, Col, Select, Alert, Popconfirm, message
 } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
+import { createInspection } from '../services/api';
 
 const { Option } = Select;
 
@@ -30,6 +31,7 @@ function PatrolconfigModal(props) {
         children,
         dispatch,
         list,
+        onChangeList,
         form: {
             getFieldDecorator,
             getFieldsValue,
@@ -71,6 +73,28 @@ function PatrolconfigModal(props) {
     const handleCancel = () => {
         setVisible(false);
     };
+
+    const handleOk = () => {
+        if (selectedRowKeys.length === 0) {
+            message.error('至少选择一条agent');
+        } else {
+            const ids = selectedRowKeys;
+            createInspection(ids).then(resp => {
+                if (resp.code === 200) {
+                    message.success(resp.msg);
+                    onChangeList();
+                } else {
+                    message.error(resp.msg);
+                }
+            });
+        }
+        // 关闭弹窗
+        handleCancel();
+        resetFields();
+        setSelectedRows([]);
+        setSelectedRowKeys([]);
+    };
+
 
     const handleopenClick = () => {
         setVisible(true);
@@ -228,6 +252,18 @@ function PatrolconfigModal(props) {
                 onCancel={() => handleCancel()}
                 visible={visible}
                 width={1160}
+                footer={[
+                    <Button key="back" onClick={() => handleCancel()}>
+                        取消
+                    </Button>,
+                    <Popconfirm title="是否确认进行执行巡检？" onConfirm={() => handleOk()}>
+                        <Button key="submit" type="primary" style={{ marginLeft: 8 }}
+                        >
+                            执行巡检
+                        </Button>,
+                    </Popconfirm>
+
+                ]}
             >
                 <DictLower
                     typeid="100000000000001001"

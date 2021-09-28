@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
-import { Card, Badge, Button, Table, Form, Input, Row, Col, DatePicker, Divider } from 'antd';
+import { Card, Badge, Button, Table, Form, Input, Row, Col, DatePicker, Divider, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysUpload from '@/components/SysUpload/Upload';
 import FilesContext from '@/layouts/MenuContext';
 import PatrolconfigModal from './components/PatrolconfigModal';
 import PatrolBriefDrawer from './components/PatrolBriefDrawer';
+import { saveFileIds, createReport, createInspectionall } from './services/api';
 
 const formItemLayout = {
   labelCol: {
@@ -43,6 +44,9 @@ function HostPatrol(props) {
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [visible, setVisible] = useState(false); // 抽屉是否显示
   const [title, setTitle] = useState('');
+  const [openviewid, setOpenViewId] = useState('');
+  const [filelist, setFilelist] = useState([]);
+  const [filelistid, setFilelistId] = useState(''); 
 
   const searchdata = (page, size) => {
     const values = getFieldsValue();
@@ -51,7 +55,7 @@ function HostPatrol(props) {
     dispatch({
       type: 'automation/fetchhostList',
       payload: {
-        values,
+        ...values,
         pageIndex: page,
         pageSize: size,
       },
@@ -61,6 +65,14 @@ function HostPatrol(props) {
   useEffect(() => {
     searchdata(1, 15);
   }, [location]);
+
+  useEffect(() => {
+    if (filelist && filelistid) {
+      saveFileIds({ fileIds: filelist, id: filelistid }).then(res => {
+        console.log(res, 'res')
+      });
+    }
+  }, [filelist]);
 
   const onShowSizeChange = (page, size) => {
     searchdata(page, size);
@@ -102,38 +114,29 @@ function HostPatrol(props) {
     searchdata(1, paginations.pageSize);
   };
 
-  const newDetailView = () => {
+  const newDetailView = (Id) => {
     router.push({
       pathname: '/automation/automaticinspection/hostpatrol/hostview',
       query: {
-        Id: Math.random(),
+        Id,
         addtab: true,
         menuDesc: '查看巡检明细',
       },
     })
   };
 
-  // const handledownFileToZip = (id, no) => {
-  //   dispatch({
-  //     type: '',
-  //     payload: {
-  //       id,
-  //     },
-  //   }).then(res => {
-  //     if (res.size === 0 || res.type === 'text/html') {
-  //       message.error('下载失败');
-  //     } else {
-  //       const filename = `${no}_附件.zip`;
-  //       const blob = new Blob([res]);
-  //       const url = window.URL.createObjectURL(blob);
-  //       const a = document.createElement('a');
-  //       a.href = url;
-  //       a.download = filename;
-  //       a.click();
-  //       window.URL.revokeObjectURL(url);
-  //     }
-  //   })
-  // }
+  const handledownFileToZip = (id, no) => { // 下载报告
+    createReport(id).then(res => {
+      const filename = `${no}_报告.docx`;
+      const blob = new Blob([res]);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+  }
 
   // 查询
   const extra = (<>
@@ -141,10 +144,33 @@ function HostPatrol(props) {
     <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button></>
   );
 
-  const handleShowBrieDrawer = (drawtitle) => {
+  const handleShowBrieDrawer = (drawtitle, Id) => {
     setTitle(drawtitle);
     setVisible(!visible);
+    if (Id) {
+      setOpenViewId(Id);
+    }
   };
+
+  // 列表中下载附件
+  // const handledownload = info => {
+  //   dispatch({
+  //     type: 'sysfile/downloadfile',
+  //     payload: {
+  //       id: info.id,
+  //     },
+  //   }).then(res => {
+  //     // console.log(res);
+  //     const filename = info.name;
+  //     const blob = new Blob([res]);
+  //     const url = window.URL.createObjectURL(blob);
+  //     const a = document.createElement('a');
+  //     a.href = url;
+  //     a.download = filename;
+  //     a.click();
+  //     window.URL.revokeObjectURL(url);
+  //   });
+  // };
 
   const columns = [
     {
@@ -184,6 +210,11 @@ function HostPatrol(props) {
       // },
     },
     {
+      title: '巡检类型',
+      dataIndex: 'type',
+      key: 'type',
+    },
+    {
       title: '开始时间',
       dataIndex: 'beginTime',
       key: 'beginTime',
@@ -197,40 +228,32 @@ function HostPatrol(props) {
       title: '操作',
       dataIndex: 'action',
       key: 'action',
-      width: 400,
-      render: (text, record) => {
-        // const url = `/inspection/report/download?checkNo=${record.checkNo}`;
-        // const download = () => {
-        //   window.location.href = url;
-        // };
-        // const status = record.checkStatus;
-        // // const statustext = status.length === 4 ? '下载报告' : '';
-        // const { checkNo } = record;
-        // return (
-        //   <>
-        //     {status.length === 4 && status !== 'ERRR' && <a onClick={download}> 下载报告</a>}
-        //     {status === 'ERRR' && <a onClick={() => goon(checkNo)}> 继续巡检</a>}
-        //   </>
-        // );
+      width: 500,
+      render: (_, record) => {
         return (
           <div style={{ display: 'flex' }}>
-            <a type="link"
-            // onClick={() => handledownFileToZip(record.id, record.no)}
-            >报告下载</a>
-            <Divider type="vertical" />
-            <a type="link"
-              onClick={() => {
-                handleShowBrieDrawer('巡检简报');
-              }}
-            >生成简报</a>
-            <Divider type="vertical" />
-            <a type="link"
-              onClick={() => newDetailView()}
-            >查看明细</a>
-            <Divider type="vertical" />
+            <span style={{ marginTop: 7 }}>
+              {(record.status !== '成功') ? <a type="link" disabled
+              >
+                报告下载
+              </a> : <a type="link"
+                onClick={() => handledownFileToZip(record.id, record.no)}
+              >报告下载</a>}
+              <Divider type="vertical" />
+              <a type="link"
+                onClick={() => {
+                  handleShowBrieDrawer('巡检简报', record.id);
+                }}
+              >生成简报</a>
+              <Divider type="vertical" />
+              <a type="link"
+                onClick={() => newDetailView(record.id)}
+              >查看明细</a>
+              <Divider type="vertical" /></span>
             <FilesContext.Provider value={{
               files: [],
-              ChangeFiles: (v => { console.log(v); }),
+              // files: hostlist && hostlist.rows.files ? JSON.parse(check.examineFiles) : [],
+              ChangeFiles: (v => { setFilelist(v); setFilelistId(record.id); }),
             }}>
               <SysUpload />
             </FilesContext.Provider>
@@ -290,8 +313,15 @@ function HostPatrol(props) {
         </Row>
         <div style={{ marginBottom: 8 }}>
           <Button type="primary" style={{ marginRight: 8 }}
+            onClick={() => createInspectionall().then(res => {
+              if (res.code === 200) {
+                message.success(res.msg);
+              } else {
+                message.error(res.msg);
+              }
+            })}
           >巡检全部</Button>
-          <PatrolconfigModal>
+          <PatrolconfigModal onChangeList={() => searchdata(1, 15)}>
             <Button type="primary" style={{ marginRight: 8 }}
             >巡检配置</Button>
           </PatrolconfigModal>
@@ -307,6 +337,7 @@ function HostPatrol(props) {
           visible={visible}
           ChangeVisible={newvalue => setVisible(newvalue)}
           title={title}
+          Id={openviewid}
           destroyOnClose
         />
       </Card>

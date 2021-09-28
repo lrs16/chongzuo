@@ -120,7 +120,7 @@ const Content = forwardRef((props, ref) => {
           }}>+作业对象</Button>)}
         </Form.Item>
         <Form.Item span={24} {...formItemLayout444}>
-          <TaskObjectList1 selectrowsData={rows} GetRowskeysData={ (v) => { setFieldsValue({ agentIds: v }); }} Noediting={Noediting}/>
+          <TaskObjectList1 onChangeSelect={(v)=>setRows(v)} selectrowsData={rows} GetRowskeysData={ (v) => { setFieldsValue({ agentIds: v }); }} Noediting={Noediting}/>
         </Form.Item>
         <Form.Item label="作业脚本"  {...formItemLayout1}>
           {getFieldDecorator('scriptIds', {
@@ -131,7 +131,7 @@ const Content = forwardRef((props, ref) => {
           }}>+作业脚本</Button>)}
         </Form.Item>
         <Form.Item span={24} {...formItemLayout444}>
-          <SystemScriptList1 selectrowsData={scriptrows} GetRowskeysData={ (v) => { setFieldsValue({ scriptIds: v }); }} Noediting={Noediting}/>
+          <SystemScriptList1 onChangeSelect={(v)=>setScriptRows(v)} selectrowsData={scriptrows} GetRowskeysData={ (v) => { setFieldsValue({ scriptIds: v }); }} Noediting={Noediting}/>
         </Form.Item>
         <Form.Item label="作业备注">
           {getFieldDecorator('taskRemarks', {
@@ -170,6 +170,7 @@ const Content = forwardRef((props, ref) => {
         title={title}
         GetRowsData={newvalue => setRows(newvalue)}
         GetRowskeysData={(v) => { setFieldsValue({ agentIds: v }); }}
+        rows={rows}
         destroyOnClose
       />
       {/* 抽屉2 */}
@@ -179,6 +180,7 @@ const Content = forwardRef((props, ref) => {
         title={scripttitle}
         GetRowsData={newvalue => setScriptRows(newvalue)}
         GetRowskeysData={(v) => { setFieldsValue({ scriptIds: v }); }}
+        rows={scriptrows} 
         destroyOnClose
       />
     </div>

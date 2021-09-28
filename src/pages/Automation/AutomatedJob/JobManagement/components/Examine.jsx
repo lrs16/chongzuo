@@ -51,13 +51,13 @@ const Examine = forwardRef((props, ref) => {
     <div style={{ marginRight: 24 }}>
       <Row gutter={24}>
         <Form {...formallItemLayout}>
-          <Col span={8} style={{ display: 'none' }}>
+          {/* <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="审核表单id">
               {getFieldDecorator('id', {
                 initialValue: checkInfo.id,
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
-          </Col>
+          </Col> */}
           <Col span={8} >
             <Form.Item label="审核结果">
               {getFieldDecorator('examineStatus', {

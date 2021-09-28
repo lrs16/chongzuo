@@ -38,7 +38,9 @@ function AddagentObjDrawer(props) {
             getFieldDecorator,
             getFieldsValue,
             resetFields,
-        } } = props;
+        },
+        rows,
+    } = props;
 
     const [expand, setExpand] = useState(false);
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
@@ -86,6 +88,14 @@ function AddagentObjDrawer(props) {
     useEffect(() => {
         searchdata(1, 15);
     }, [location]);
+
+    useEffect(() => {
+        if (rows) {
+            const rowkeys = rows.map(item => item.id);
+            setSelectedRows(rows);
+            setSelectedRowKeys(rowkeys);
+        }
+    }, [rows])
 
     useEffect(() => {
         if (taskId !== undefined && (buttype === 'edit' || buttype === 'detailsview') && buttype !== 'add') {

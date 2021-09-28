@@ -44,7 +44,7 @@ function ClockPatrol(props) {
     dispatch({
       type: 'automation/fetchclockList',
       payload: {
-        values,
+        ...values,
         pageIndex: page,
         pageSize: size,
       },

@@ -28,55 +28,42 @@ function SoftDetailView(props) {
     const pagetitle = props.route.name;
     const {
         loading,
-        // dispatch,
+        dispatch,
         location,
-        // location: {
-        //     query: {
-        //         Id,
-        //     }
-        // },
+        location: {
+            query: {
+                Id,
+            }
+        },
         // list,
         form: {
             getFieldDecorator,
-            // getFieldsValue,
+            getFieldsValue,
             resetFields,
         },
     } = props;
 
+    console.log(Id, 'Id')
+
     // const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
 
-    const searchdata = () => {
-        // const values = getFieldsValue();
-        // values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
-        // values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
-        // values.taskId = (Id !== '' || Id !== undefined) ? Id : '';
-        // dispatch({
-        //     type: '',
-        //     payload: {
-        //         values,
-        //         pageNum: page,
-        //         pageSize: size,
-        //     },
-        // });
+    const searchdata = (page, size) => {
+        const values = getFieldsValue();
+        dispatch({
+            type: 'automation/queryhostinfoList',
+            payload: {
+                values,
+                id: Id,
+                pageNum: page,
+                pageSize: size,
+            },
+        });
     };
 
-    // const tosearchlog = (Id) => {
-    //     dispatch({
-    //         type: 'autotask/findlistPageAutoTaskLogs',
-    //         payload: {
-    //             taskId: Id,
-    //         },
-    //     });
-    // };
-
     useEffect(() => {
-        // if(Id && (Id !== '' || Id !== undefined)) {
-        //     tosearchlog(Id);
-        // } else {
         searchdata(1, 15);
-        // }
-    }, [location]);
+    }, [location && Id]);
 
     const handleReset = () => {
         resetFields();

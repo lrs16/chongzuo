@@ -1,8 +1,10 @@
+// import { message } from 'antd';
 import {
     taskObjectList, // 添加对象的数据
     inspectionhostList, // 主机list
     inspectionclockList, // 时钟list
     inspectionsoftList, // 软件list
+    hostinfoList, // 信息列表
 } from '../services/api';
 
 export default {
@@ -12,7 +14,9 @@ export default {
         list: {},
         hostlist: {},
         clocklist: {},
-        softlist: {}
+        softlist: {},
+        info: undefined,
+        infolistdetails: {},
     },
 
     effects: {
@@ -25,30 +29,37 @@ export default {
             });
         },
 
-        *fetchhostList({ payload: { pageIndex, pageSize } }, { call, put }) { // 主机list
-            const response = yield call(inspectionhostList, pageIndex, pageSize);
+        *fetchhostList({ payload }, { call, put }) { // 主机list
+            const response = yield call(inspectionhostList, payload);
             yield put({
                 type: 'tohostlist',
                 payload: response.data,
             });
         },
 
-        *fetchclockList({ payload: { pageIndex, pageSize } }, { call, put }) { // 时钟list
-            const response = yield call(inspectionclockList, pageIndex, pageSize);
+        *fetchclockList({ payload }, { call, put }) { // 时钟list
+            const response = yield call(inspectionclockList, payload);
             yield put({
                 type: 'toclocklist',
                 payload: response.data,
             });
         },
 
-        *fetchsoftList({ payload: { pageIndex, pageSize } }, { call, put }) { // 软件list
-            const response = yield call(inspectionsoftList, pageIndex, pageSize);
+        *fetchsoftList({ payload }, { call, put }) { // 软件list
+            const response = yield call(inspectionsoftList, payload);
             yield put({
                 type: 'tosoftlist',
                 payload: response.data,
             });
         },
 
+        *queryhostinfoList({ payload }, { call, put }) { // 信息list post
+            const response = yield call(hostinfoList, payload);
+            yield put({
+                type: 'hostinfolist',
+                payload: response.data,
+            });
+        },
     },
 
     reducers: {
@@ -79,5 +90,12 @@ export default {
                 softlist: action.payload,
             };
         },
+
+        hostinfolist(state, action) { // 信息列表
+            return {
+                ...state,
+                infolistdetails: action.payload,
+            };
+        }
     },
 };

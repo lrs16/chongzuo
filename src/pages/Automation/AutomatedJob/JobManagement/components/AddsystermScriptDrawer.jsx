@@ -31,7 +31,9 @@ function AddsystermScriptDrawer(props) {
             getFieldDecorator,
             getFieldsValue,
             resetFields,
-        } } = props;
+        },
+        rows,
+    } = props;
 
     const [expand, setExpand] = useState(false);
     const [selectedRows, setSelectedRows] = useState([]);
@@ -78,6 +80,14 @@ function AddsystermScriptDrawer(props) {
             },
         });
     };
+
+    useEffect(() => {
+        if (rows) {
+            const rowkeys = rows.map(item => item.id);
+            setSelectedRows(rows);
+            setSelectedRowKeys(rowkeys);
+        }
+    }, [rows])
 
     useEffect(() => {
         searchdata(1, 15);

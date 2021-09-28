@@ -94,7 +94,7 @@ const Content = forwardRef((props, ref) => {
               }} disabled={Noediting}>+添加对象</Button>)}
             </Form.Item>
             <Form.Item span={24} {...formItemLayout}>
-              <SoftTaskObjectList selectrowsData={rows} GetRowskeysData={ (v) => { setFieldsValue({ workSoftIds: v }); }} Noediting={Noediting}/>
+              <SoftTaskObjectList onChangeSelect={(v)=>setRows(v)} selectrowsData={rows} GetRowskeysData={ (v) => { setFieldsValue({ workSoftIds: v }); }} Noediting={Noediting}/>
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -154,6 +154,7 @@ const Content = forwardRef((props, ref) => {
         title={title}
         GetRowsData={newvalue => setRows(newvalue)}
         GetRowskeysData={(v) => { setFieldsValue({ workSoftIds: v }); }}
+        rows={rows}
         destroyOnClose
       />
     </div>
