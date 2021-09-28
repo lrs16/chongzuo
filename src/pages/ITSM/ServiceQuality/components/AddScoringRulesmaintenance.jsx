@@ -38,12 +38,12 @@ const { Option } = Select;
 function AddScoringRulesmaintenance(props) {
   const pagetitle = props.route.name;
   const {
-    form: { 
+    form: {
       getFieldDecorator,
-       validateFields,
-        resetFields,
-        setFieldsValue
-       },
+      validateFields,
+      resetFields,
+      setFieldsValue
+    },
     location: { query: { id, scoreSearch } },
     location,
     scoreDetail,
@@ -76,11 +76,23 @@ function AddScoringRulesmaintenance(props) {
     })
   };
 
+  console.log(scoreDetail, 'scoreDetail')
+
   useEffect(() => {
+    console.log(1)
+    dispatch({
+      type: 'qualityassessment/clearclauseList'
+    })
+
+    dispatch({
+      type: 'qualityassessment/cleardata'
+    })
+
+    dispatch({
+      type: 'performanceappraisal/clearTree'
+    })
     if (location.state && location.state.reset && id) {
-      dispatch({
-        type: 'performanceappraisal/clearTree'
-      })
+      console.log('lplp')
       getlist();
       getalldata()
     }
@@ -88,7 +100,7 @@ function AddScoringRulesmaintenance(props) {
 
   //  按需加载树节点
   const getalldata = () => {
-    if (id && scoreDetail.assessType) {
+    if (id && scoreDetail && scoreDetail.assessType) {
       dispatch({
         type: 'performanceappraisal/getTypeTree',
         payload: type || scoreDetail.assessType
@@ -102,6 +114,7 @@ function AddScoringRulesmaintenance(props) {
   }
 
   useEffect(() => {
+    console.log(2)
     dispatch({
       type: 'qualityassessment/clearclauseList'
     }
@@ -113,6 +126,7 @@ function AddScoringRulesmaintenance(props) {
   }, [])
 
   useEffect(() => {
+    console.log(3)
     if (loading === false && id && treeData && treeData[0] && treeData[0].children) {
       getlist(treeData[0].children[0].id);
     }
@@ -151,26 +165,37 @@ function AddScoringRulesmaintenance(props) {
   }
 
   useEffect(() => {
+    console.log(3)
     if (loading === false && scoreDetail && scoreDetail.assessType) {
-      setFieldsValue({assessType:scoreDetail.assessType})
+      setFieldsValue({ assessType: scoreDetail.assessType })
       getalldata();
       setType(scoreDetail.assessType)
     }
   }, [scoreDetail])
 
   useEffect(() => {
+    console.log(4)
     setTreeData(treeArr)
   }, [loading]);
 
 
   useEffect(() => {
+    console.log(5)
+    dispatch({
+      type: 'qualityassessment/clearclauseList'
+    }
+    )
+
     dispatch({
       type: 'performanceappraisal/clearTree'
     })
+
+
     getalldata();
   }, [type])
 
   useEffect(() => {
+    console.log(6)
     if (loading === false && treeData && treeData.length && treeData[0].children[0] && treeData[0].children[0].id) {
       dispatch({
         type: 'qualityassessment/getTargetValue',
@@ -308,6 +333,7 @@ function AddScoringRulesmaintenance(props) {
   ];
 
   useEffect(() => {
+    console.log('last')
     dispatch({
       type: 'qualityassessment/clearclauseList'
     })
@@ -389,7 +415,7 @@ function AddScoringRulesmaintenance(props) {
                     <Form.Item label='评分细则编号'>
                       {
                         getFieldDecorator('scoreNo', {
-                          initialValue: scoreDetail.scoreNo
+                          initialValue: scoreDetail && scoreDetail.scoreNo
                         })
                           (<Input disabled={true} />)
                       }
@@ -406,7 +432,7 @@ function AddScoringRulesmaintenance(props) {
                               message: '请输入评分细则名称'
                             }
                           ],
-                          initialValue: scoreDetail.scoreName
+                          initialValue: scoreDetail && scoreDetail.scoreName
                         })
                           (<Input disabled={scoreSearch} />)
                       }
@@ -426,7 +452,7 @@ function AddScoringRulesmaintenance(props) {
                         message: '请选择考核类型'
                       }
                     ],
-                    initialValue: scoreDetail.assessType || '1'
+                    initialValue: (scoreDetail && scoreDetail.assessType) || '1'
                   })
                     (
                       <Select

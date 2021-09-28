@@ -251,6 +251,13 @@ function DutyaccordingSetting(props) {
     })
   }
 
+  const handlePrint = () => {
+    const newstr = document.getElementById('calendar').innerHTML;
+    document.body.innerHTML = newstr; 
+    window.print();
+    return false
+  }
+
 
   useEffect(() => {
     sessionStorage.setItem('groupId', '1438060967991177218')
@@ -335,7 +342,11 @@ function DutyaccordingSetting(props) {
                       下载导入模板
                     </Button>
 
-                    <Button type="primary" style={{ marginRight: 8 }}>
+                    <Button 
+                    type="primary"
+                     style={{ marginRight: 8 }}
+                     onClick={handlePrint}
+                     >
                       导出
                     </Button>
 
@@ -356,7 +367,7 @@ function DutyaccordingSetting(props) {
                 晚班:（22:00-次09:00）
               </div>
 
-              <Card>
+              <Card id='calendar'>
                 <Calendar
                   onPanelChange={onPanelChange}
                   dateCellRender={dateCellRender}
