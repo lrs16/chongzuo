@@ -253,8 +253,8 @@ function TobedealtList(props) {
     },
     {
       title: '登记人',
-      dataIndex: 'register',
-      key: 'register',
+      dataIndex: 'registerName',
+      key: 'registerName',
       width: 150,
     },
     {
@@ -1456,7 +1456,7 @@ function TobedealtList(props) {
 
               <Col span={8}>
                 <Form.Item label="登记人">
-                  {getFieldDecorator('register', {
+                  {getFieldDecorator('registerName', {
                     initialValue: cacheinfo.register,
                   })(<Input />)}
                 </Form.Item>
@@ -1598,8 +1598,8 @@ function TobedealtList(props) {
 
               <Col span={8}>
                 <Form.Item label="自动化科专责审核人">
-                  {getFieldDecorator('expertVerifier', {
-                    initialValue: cacheinfo.expertVerifier,
+                  {getFieldDecorator('expertVerifierName', {
+                    initialValue: cacheinfo.expertVerifierName,
                   })(<Input />)}
                 </Form.Item>
               </Col>
@@ -1659,8 +1659,8 @@ function TobedealtList(props) {
               {performanceLeader && performanceLeader.length && (
                 <Col span={8}>
                   <Form.Item label="服务商确认人">
-                    {getFieldDecorator('providerConfirmer', {
-                      initialValue: cacheinfo.providerConfirmer,
+                    {getFieldDecorator('providerConfirmerName', {
+                      initialValue: cacheinfo.providerConfirmerName,
                     })(
                       // <Select
                       //   onSelect={(value, option) =>

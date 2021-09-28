@@ -32,7 +32,7 @@ function Statistics(props) {
     loading
   } = props;
 
-  console.log(loading,'loading')
+  console.log(loading, 'loading')
 
   const [selectedTags, setSelectedTags] = useState(['本月']);
   // .format('YYYY-MM-DD 00:00:00')
@@ -52,7 +52,7 @@ function Statistics(props) {
   })
 
   const [currentDatatype, setCurrentDatatype] = useState('本月');
-  const [bardata,setBardata] = useState([])
+  const [bardata, setBardata] = useState([])
   const getlist = (obj, tag) => {
     if (tag === '本日') {
       dispatch({
@@ -119,7 +119,7 @@ function Statistics(props) {
         endValue: tag === "本月" ? moment().endOf('month').format('YYYY-MM-DD 23:59:59') : moment(new Date()).format('YYYY-MM-DD 23:59:59'),
         endOpen: false,
       }
-      if( tag === "本日") {
+      if (tag === "本日") {
         setMonthTime({
           mode: ['month', 'month'],
           value: [moment(moment().startOf('month').format('YYYY-MM-DD'), 'YYYY-MM-DD'), moment(moment().endOf('month').format('YYYY-MM-DD'), 'YYYY-MM-DD')]
@@ -131,7 +131,7 @@ function Statistics(props) {
           endOpen: false,
         })
       }
-     
+
       getlist(obj, tag)
       setCurrentDatatype(tag);
       projectAssessment(obj, tag);
@@ -206,10 +206,15 @@ function Statistics(props) {
   }, [location.state]);
 
   useEffect(() => {
-    const result =JSON.parse(JSON.stringify(statsSumdata).replace(/assessScore/g, '分值'))
-    console.log('result: ', result);
-    setBardata(result)
-  },[loading])
+    console.log(statsSumdata, 'statsSumdata')
+    if (statsSumdata && statsSumdata.length > 0) {
+      const result = JSON.parse(JSON.stringify(statsSumdata).replace(/assessScore/g, '分值'))
+      setBardata(result)
+    }
+
+  }, [loading])
+
+  console.log(bardata, 'f')
 
   return (
     <div>
@@ -318,28 +323,30 @@ function Statistics(props) {
           </Row>
         )
       })}
+      {
+        loading === false && bardata && bardata.length > 0 && (
+          <div style={{ marginTop: 20 }}>
+            <ChartCard title='项目考核情况'>
+              <Barchart
+                data={bardata}
+                position='contractName*分值'
+              // height={315}
+              // detailParams={newdata => { showDetaillist(newdata, 'barchart') }}
+              />
+            </ChartCard>
+          </div>
+        )
+      }
 
-      { loading ===  false && bardata && bardata.length > 0 && (
-        <div style={{ marginTop: 20 }}>
-          <ChartCard title='项目考核情况'>
-            <Barchart
-              data={bardata}
-              position='contractName*分值'
-            // height={315}
-            // detailParams={newdata => { showDetaillist(newdata, 'barchart') }}
-            />
-          </ChartCard>
-        </div>
-       )}
     </div >
 
   )
 }
 
 export default (
-  connect(({ qualityassessment,loading }) => ({
+  connect(({ qualityassessment, loading }) => ({
     statisticData: qualityassessment.statisticData,
     statsSumdata: qualityassessment.statsSumdata,
-    loading:loading.models.qualityassessment
+    loading: loading.models.qualityassessment
   }))
 )(Statistics);
