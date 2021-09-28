@@ -447,7 +447,7 @@ function SettingDetails(props) {
                           message: '请选择时间',
                         },
                       ],
-                      // initialValue: settingDetails.shiftPeriod ? moment(((settingDetails.shiftPeriod).split('—'))[0], format) : ''
+                      initialValue: settingDetails.shift ? moment(settingDetails.shift.beginTime, format) : ''
                     },
                   )(
                     <TimePicker
@@ -473,7 +473,7 @@ function SettingDetails(props) {
                           message: '请选择时间',
                         },
                       ],
-                      // initialValue: settingDetails.shiftPeriod ? moment(((settingDetails.shiftPeriod).split('—'))[1], format) : ''
+                      initialValue: settingDetails.shift ? moment(settingDetails.shift.endTime, format) : ''
                     },
                   )(
                     <TimePicker

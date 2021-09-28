@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Collapse, Button } from 'antd';
+import { Collapse, Button, message } from 'antd';
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
@@ -47,8 +47,19 @@ function CreditCardRegister(props) {
   const RegistratRef = useRef();
   const [contractArr, setContractArr] = useState([]);
   const [editTablesource, setEditTablesource] = useState([]);
+  const [rangerTime, setRangerTime] = useState({ start: '', end: '' })
 
   //  获取合同名称
+
+  const timeOK = (data) => {
+    const startTime = moment(data[0]).format('YYYY-MM-DD')
+    const endTime = moment(data[1]).format('YYYY-MM-DD');
+    setRangerTime({
+      start: startTime,
+      end: endTime
+    })
+  }
+
   const getContrractname = providerId => {
     contractProvider({ id: providerId, status: '1' }).then(res => {
       if (res) {
@@ -66,7 +77,6 @@ function CreditCardRegister(props) {
     });
   };
 
-  
   useEffect(() => {
     if (location.state && location.state.reset && paramId) {
       registerDetail()
@@ -83,17 +93,21 @@ function CreditCardRegister(props) {
               id: paramId,
               ...values,
               details: editTablesource,
-              beginTime: values.evaluationInterval?.length
-                ? moment(values.evaluationInterval[0]).format('YYYY-MM-DD HH:mm:ss')
-                : '',
-              endTime: values.evaluationInterval?.length
-                ? moment(values.evaluationInterval[1]).format('YYYY-MM-DD HH:mm:ss')
-                : '', // 发生时间
+              // beginTime: values.evaluationInterval?.length
+              //   ? moment(values.evaluationInterval[0]).format('YYYY-MM-DD HH:mm:ss')
+              //   : '',
+              // endTime: values.evaluationInterval?.length
+              //   ? moment(values.evaluationInterval[1]).format('YYYY-MM-DD HH:mm:ss')
+              //   : '', // 发生时间
+
+              beginTime: rangerTime.start || (values.evaluationInterval?.length ? moment(values.evaluationInterval[0]).format('YYYY-MM-DD HH:mm:ss') : ''),
+              endTime: rangerTime.end || (values.evaluationInterval?.length ? moment(values.evaluationInterval[1]).format('YYYY-MM-DD HH:mm:ss') : ''),
               evaluationInterval: '',
               assessType: values.assessType && values.assessType === '功能开发' ? '1' : '2',
             },
           }).then(res => {
             if (res.code === 200) {
+              message.info(res.msg)
               registerDetail();
             }
           });
@@ -106,12 +120,8 @@ function CreditCardRegister(props) {
               id: paramId,
               ...values,
               details: editTablesource,
-              beginTime: values.evaluationInterval?.length
-                ? moment(values.evaluationInterval[0]).format('YYYY-MM-DD HH:mm:ss')
-                : '',
-              endTime: values.evaluationInterval?.length
-                ? moment(values.evaluationInterval[1]).format('YYYY-MM-DD HH:mm:ss')
-                : '', // 发生时间
+              beginTime: rangerTime.start || (values.evaluationInterval?.length ? moment(values.evaluationInterval[0]).format('YYYY-MM-DD HH:mm:ss') : ''),
+              endTime: rangerTime.end || (values.evaluationInterval?.length ? moment(values.evaluationInterval[1]).format('YYYY-MM-DD HH:mm:ss') : ''),
               evaluationInterval: '',
               assessType: values.assessType && values.assessType === '功能开发' ? '1' : '2',
             },
@@ -253,7 +263,7 @@ function CreditCardRegister(props) {
         </>
       }
     >
-      {(paramId ? loading === false && scorecardetail && scorecardetail.beginTime : true) && (
+      {(paramId ? loading === false && scorecardetail && scorecardetail.cardNo : true) && (
         <div className={styles.collapse}>
           <Collapse expandIconPosition="right" defaultActiveKey={['1']} bordered={false}>
             <Panel header="计分卡登记" key="1">
@@ -270,11 +280,13 @@ function CreditCardRegister(props) {
                 getContrractname={getContrractname}
                 changeTablesource={changeTablesource}
                 search={search}
+                timeOK={timeOK}
               />
             </Panel>
           </Collapse>
         </div>
       )}
+
     </PageHeaderWrapper>
   );
 }

@@ -686,7 +686,7 @@ const Register = React.forwardRef((props, ref) => {
             <Col span={24}>
               <Form.Item label=" 详细条款" {...forminladeLayout}>
                 {getFieldDecorator('clause', {
-                  initialValue: `${register.clause.orderNo}${'\xa0'}${'\xa0'}${'\xa0'}${'\xa0'}${register.clause.detailed}${'\xa0'}${'\xa0'}${'\xa0'}${'\xa0'}${register.clause.calc === 'ADD' ? '加分项' : '扣分项'}${'\xa0'}${'\xa0'}${'\xa0'}${'\xa0'}${register.clause.scoreValue}${'\xa0'}${'\xa0'}${'\xa0'}${'\xa0'}${register.clause.sources}`,
+                  initialValue: (register &&register.clause ) ?`${register.clause.orderNo}${'\xa0'}${'\xa0'}${'\xa0'}${'\xa0'}${register.clause.detailed}${'\xa0'}${'\xa0'}${'\xa0'}${'\xa0'}${register.clause.calc === 'ADD' ? '加分项' : '扣分项'}${'\xa0'}${'\xa0'}${'\xa0'}${'\xa0'}${register.clause.scoreValue}${'\xa0'}${'\xa0'}${'\xa0'}${'\xa0'}${register.clause.sources}`:'',
                 })(
                   <Input disabled className={styles.disableuser} />
                 )}
@@ -789,7 +789,6 @@ Register.defaultProps = {
     providerId: '',
     target1Name: '',
     target2Name: '',
-    clause: '',
     contract: '',
     contractId: '',
     directorName: '',
@@ -807,6 +806,13 @@ Register.defaultProps = {
     remark: '',
     attachment: '',
     registerName: '',
+    clause:{
+      orderNo:'',
+      detailed:'',
+      calc:'',
+      scoreValue:'',
+      sources:''
+    },
     register: sessionStorage.getItem('userauthorityid')
   },
 };

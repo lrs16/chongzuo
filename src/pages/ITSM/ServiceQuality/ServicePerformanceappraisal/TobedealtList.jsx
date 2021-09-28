@@ -1171,7 +1171,7 @@ function TobedealtList(props) {
                 {getFieldDecorator('currentTaskName', {
                   initialValue: cacheinfo.currentTaskName,
                 })(
-                  <Select>
+                  <Select  getPopupContainer={e => e.parentNode}>
                     <Option key="服务绩效考核登记" value="服务绩效考核登记">
                       服务绩效考核登记
                     </Option>
@@ -1223,6 +1223,7 @@ function TobedealtList(props) {
                     initialValue: cacheinfo.providerName,
                   })(
                     <AutoComplete
+                    getPopupContainer={e => e.parentNode}
                       dataSource={disableduser}
                       dropdownMatchSelectWidth={false}
                       dropdownStyle={{ width: 600 }}
@@ -1250,6 +1251,7 @@ function TobedealtList(props) {
                     initialValue: cacheinfo.contractId,
                   })(
                     <Select
+                      getPopupContainer={e => e.parentNode}
                       placeholder="请选择"
                       allowClear
                       onChange={(value, option) => handleChange(value, option, 'contractId')}
@@ -1306,7 +1308,9 @@ function TobedealtList(props) {
                   {getFieldDecorator('assessType', {
                     initialValue: cacheinfo.assessType,
                   })(
-                    <Select onChange={(value, option) => handleChange(value, option, 'assessType')}>
+                    <Select
+                      getPopupContainer={e => e.parentNode}
+                      onChange={(value, option) => handleChange(value, option, 'assessType')}>
                       <Option key="1" value="1">
                         功能开发
                       </Option>
@@ -1332,6 +1336,7 @@ function TobedealtList(props) {
                     initialValue: cacheinfo.target1Name,
                   })(
                     <Select
+                      getPopupContainer={e => e.parentNode}
                       onChange={(value, option) => handleChange(value, option, 'target1Name')}
                       onFocus={() => handleFocus('one')}
                       placeholder="请选择"
@@ -1361,6 +1366,7 @@ function TobedealtList(props) {
                     initialValue: cacheinfo.target2Name,
                   })(
                     <Select
+                      getPopupContainer={e => e.parentNode}
                       onChange={(value, option) => handleChange(value, option, 'target2Name')}
                       onFocus={() => handleFocus('two')}
                       placeholder="请选择"
@@ -1390,6 +1396,7 @@ function TobedealtList(props) {
                     initialValue: cacheinfo.clauseId,
                   })(
                     <Select
+                      getPopupContainer={e => e.parentNode}
                       onChange={(value, option) => handleChange(value, option, 'clause')}
                       onFocus={() => handleFocus('clause')}
                     >
@@ -1492,7 +1499,7 @@ function TobedealtList(props) {
                   {getFieldDecorator('directorVerifyValue', {
                     initialValue: cacheinfo.directorVerifyValue,
                   })(
-                    <Select>
+                    <Select getPopupContainer={e => e.parentNode}>
                       <Option key="1" value="1">
                         通过
                       </Option>
@@ -1516,7 +1523,15 @@ function TobedealtList(props) {
                 <Form.Item label="业务负责人审核状态">
                   {getFieldDecorator('directorVerifyStatus', {
                     initialValue: cacheinfo.directorVerifyStatus,
-                  })(<Input />)}
+                  })(
+                    <Select getPopupContainer={e => e.parentNode}>
+                      <Option key="待审核" value="待审核">
+                        待审核
+                      </Option>
+                      <Option key="已审核" value="已审核">
+                        已审核
+                      </Option>
+                    </Select>)}
                 </Form.Item>
               </Col>
 
@@ -1560,7 +1575,7 @@ function TobedealtList(props) {
                   {getFieldDecorator('expertVerifyValue', {
                     initialValue: cacheinfo.expertVerifyValue,
                   })(
-                    <Select>
+                    <Select  getPopupContainer={e => e.parentNode}>
                       <Option key="待审核" value="待审核">
                         待审核
                       </Option>
@@ -1585,7 +1600,7 @@ function TobedealtList(props) {
                   {getFieldDecorator('expertVerifyStatus', {
                     initialValue: cacheinfo.expertVerifyStatus,
                   })(
-                    <Select>
+                    <Select  getPopupContainer={e => e.parentNode}>
                       <Option key="待审核" value="待审核">
                         待审核
                       </Option>
@@ -1637,7 +1652,7 @@ function TobedealtList(props) {
                   {getFieldDecorator('isAppeal', {
                     initialValue: cacheinfo.isAppeal,
                   })(
-                    <Select>
+                    <Select  getPopupContainer={e => e.parentNode}>
                       <Option key="1" value="1">
                         是
                       </Option>
@@ -1720,7 +1735,7 @@ function TobedealtList(props) {
                   {getFieldDecorator('directorReviewValue', {
                     initialValue: cacheinfo.directorReviewValue,
                   })(
-                    <Select>
+                    <Select  getPopupContainer={e => e.parentNode}>
                       <Option key="1" value="1">
                         同意
                       </Option>
@@ -1745,7 +1760,7 @@ function TobedealtList(props) {
                   {getFieldDecorator('assessObject', {
                     initialValue: cacheinfo.assessObject,
                   })(
-                    <Select placeholder="请选择">
+                    <Select placeholder="请选择"  getPopupContainer={e => e.parentNode}>
                       {(assessmentObject || []).map(obj => [
                         <Option key={obj.dict_code} value={obj.dict_code}>
                           {obj.title}
@@ -1796,7 +1811,7 @@ function TobedealtList(props) {
                   {getFieldDecorator('finallyConfirmValue', {
                     initialValue: cacheinfo.finallyConfirmValue,
                   })(
-                    <Select>
+                    <Select  getPopupContainer={e => e.parentNode}>
                       <Option key="完成" value="完成">
                         完成
                       </Option>
