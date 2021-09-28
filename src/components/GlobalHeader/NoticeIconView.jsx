@@ -22,7 +22,7 @@ class GlobalHeaderRight extends Component {
   componentDidMount() {
     this.getcount();
     this.getovertimenum();
-    this.interval = setInterval(() => { this.getcount(); this.getovertimenum(); }, 30000);
+    //  this.interval = setInterval(() => { this.getcount(); this.getovertimenum(); }, 30000);    // 打包到计量要放开
   }
 
   componentDidUpdate(newProps, _) {
