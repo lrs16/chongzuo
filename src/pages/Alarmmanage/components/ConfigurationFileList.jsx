@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import router from 'umi/router';
 import moment from 'moment';
 import { Card, Button, Table, Badge, Tabs, Row, Col, Form, Input, Select, DatePicker, Tooltip } from 'antd';
 import { connect } from 'dva';
@@ -39,11 +40,7 @@ function ConfigurationFileList(props) {
     const val = getFieldsValue();
     const values = {
       ...val,
-      beginClearTime: val.beginClearTime ? moment(val.beginClearTime).format('YYYY-MM-DD HH:mm:ss') : '',
-      beginConfirmTime: val.beginConfirmTime ? moment(val.beginConfirmTime).format('YYYY-MM-DD HH:mm:ss') : '',
       beginWarnTime: tabdate.beginWarnTime ? moment(tabdate.beginWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
-      endClearTime: val.endClearTime ? moment(val.endClearTime).format('YYYY-MM-DD HH:mm:ss') : '',
-      endConfirmTime: val.endConfirmTime ? moment(val.endConfirmTime).format('YYYY-MM-DD HH:mm:ss') : '',
       endWarnTime: tabdate.endWarnTime ? moment(tabdate.endWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
       warnModule
     };
@@ -312,7 +309,27 @@ function ConfigurationFileList(props) {
           }
         }
       },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      render: (text, record) => {
+        const handleClick = () => {
+          router.push({
+            pathname: `${pathname}/details`,
+            query: {
+              Id: record.id,
+              code: record.monitorCode,
+            },
+            state: {
+              dynamicpath: true,
+              menuDesc: '告警详细信息',
+              record,
+              type: 'measuralarm',
+            }
+          });
+        };
+        return (
+          <Tooltip placement='topLeft' title={text}>
+            <a onClick={handleClick}>{text}</a>
+          </Tooltip>)
+      }
     },
     {
       title: '配置文件大小',
@@ -375,7 +392,7 @@ function ConfigurationFileList(props) {
   const monitormap = getTypebykey('1437584114700386305');       // 主机监测
 
   const extra = (<>
-    <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
+    <Button type="primary" onClick={() => handleSearch(1, 10)}>查 询</Button>
     <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
     {pagetitle !== '时钟巡检告警' && (<Button
       style={{ marginLeft: 8 }}

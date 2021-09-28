@@ -3,11 +3,11 @@ import { Card } from 'antd';
 import TotalInfo from '../../Alarmmanage/components/TotalInfo';
 
 const infolist = [
-  { title: '告警总数', value: 1988, key: '1' },
-  { title: '安全接入区', value: 556, key: '2' },
-  { title: '安全I区', value: 3855, key: '3' },
-  { title: '安全II区', value: 1, key: '4' },
-  { title: '安全III区', value: 520, key: '5' },
+  { name: '告警总数', total: 1988, key: '1' },
+  { name: '安全接入区', total: 556, key: '2' },
+  { name: '安全I区', total: 3855, key: '3' },
+  { name: '安全II区', total: 1, key: '4' },
+  { name: '安全III区', total: 520, key: '5' },
 ]
 
 const tabkeyDist = [

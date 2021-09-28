@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import router from 'umi/router';
 import moment from 'moment';
 import { Card, Button, Table, Tabs, Row, Col, Form, Input, Select, DatePicker, Tooltip } from 'antd';
 import { connect } from 'dva';
@@ -33,15 +34,13 @@ function MessagesList(props) {
   const [activeKey, setActiveKey] = useState('');
   const { tabActivekey, selectdata, tabdate, warnModule, reset } = useContext(TypeContext);
 
+  const { pathname } = window.location;
+
   const getvalues = () => {
     const val = getFieldsValue();
     const values = {
       ...val,
-      beginClearTime: val.beginClearTime ? moment(val.beginClearTime).format('YYYY-MM-DD HH:mm:ss') : '',
-      beginConfirmTime: val.beginConfirmTime ? moment(val.beginConfirmTime).format('YYYY-MM-DD HH:mm:ss') : '',
       beginWarnTime: tabdate.beginWarnTime ? moment(tabdate.beginWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
-      endClearTime: val.endClearTime ? moment(val.endClearTime).format('YYYY-MM-DD HH:mm:ss') : '',
-      endConfirmTime: val.endConfirmTime ? moment(val.endConfirmTime).format('YYYY-MM-DD HH:mm:ss') : '',
       endWarnTime: tabdate.endWarnTime ? moment(tabdate.endWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
       warnModule
     };
@@ -230,7 +229,27 @@ function MessagesList(props) {
           }
         }
       },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      render: (text, record) => {
+        const handleClick = () => {
+          router.push({
+            pathname: `${pathname}/details`,
+            query: {
+              Id: record.id,
+              code: record.monitorCode,
+            },
+            state: {
+              dynamicpath: true,
+              menuDesc: '告警详细信息',
+              record,
+              type: 'measuralarm',
+            }
+          });
+        };
+        return (
+          <Tooltip placement='topLeft' title={text}>
+            <a onClick={handleClick}>{text}</a>
+          </Tooltip>)
+      }
     },
     {
       title: '告警时间',
@@ -263,7 +282,7 @@ function MessagesList(props) {
   const monitormap = getTypebykey('1437584114700386305');       // 主机监测
 
   const extra = (<>
-    <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
+    <Button type="primary" onClick={() => handleSearch(1, 10)}>查 询</Button>
     <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
     <Button
       style={{ marginLeft: 8 }}
@@ -283,7 +302,7 @@ function MessagesList(props) {
         <Row gutter={24}>
           <Col span={8}>
             <Form.Item label="监测类型">
-              {getFieldDecorator('hostZoneId')(
+              {getFieldDecorator('secondClassify')(
                 <Select placeholder="请选择">
                   {monitormap.map(({ dict_code, title }) => [
                     <Option key={dict_code} value={title}>
@@ -296,7 +315,7 @@ function MessagesList(props) {
           </Col>
           <Col span={8}>
             <Form.Item label="单位">
-              {getFieldDecorator('unit')(
+              {getFieldDecorator('firstClassify')(
                 <Select placeholder="请选择">
                   {company.map(({ key, val }) => [
                     <Option key={key} value={val}>
@@ -309,7 +328,7 @@ function MessagesList(props) {
           </Col>
           <Col span={8}>
             <Form.Item label="终端资产编号">
-              {getFieldDecorator('id')(
+              {getFieldDecorator('thirdClassify')(
                 <Input allowClear />
               )}
             </Form.Item>
@@ -318,16 +337,16 @@ function MessagesList(props) {
             <>
               <Col span={8}>
                 <Form.Item label="终端地址">
-                  {getFieldDecorator('adress')(
+                  {getFieldDecorator('fourthClassify')(
                     <Input allowClear />
                   )}
                 </Form.Item>
               </Col>
               <Col span={8}>
-                <Form.Item label="告警内容">{getFieldDecorator('content ')(<Input />)}</Form.Item>
+                <Form.Item label="告警内容">{getFieldDecorator('warnContent')(<Input allowClear />)}</Form.Item>
               </Col>
-              <Col span={8}>
-                {/* <Form.Item label="告警时间">
+              {/* <Col span={8}>
+                <Form.Item label="告警时间">
                   <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                     {getFieldDecorator('time1', {
                       initialValue: '',
@@ -359,8 +378,8 @@ function MessagesList(props) {
                       />
                     )}
                   </div>
-                </Form.Item> */}
-              </Col>
+                </Form.Item>
+              </Col> */}
             </>
           )}
 

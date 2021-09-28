@@ -61,14 +61,17 @@ function Today(props) {
 
   const handleTabChange = (key) => {
     setActiveTabKey(key);
-    if (distkey === 'measuralarm') {
-      if (tabActivekey === 'all') {
+    if (tabActivekey === 'all') {
+      if (distkey === 'measuralarm') {
         const classify = key === '告警概览' ? '告警概览' : key.slice(0, -2);
         getdatas(classify);
+      } else if (distkey === 'clockpatrol') {
+        getdatas('告警概览');
+      } else {
+        const classify = key === '全部' ? '告警概览' : key;
+        getdatas(classify);
       }
-    } else if (tabActivekey === 'all') {
-      getdatas('告警概览');
-    }
+    };
   };
 
   // useEffect(() => {
@@ -96,7 +99,7 @@ function Today(props) {
   return (
     <>
       <Card
-        tabList={(distkey === 'measuralarm' || (distkey !== 'measuralarm' && tabActivekey === 'today')) ? tabkeyDist : null}
+        tabList={(distkey === 'clockpatrol' && tabActivekey === 'all') ? null : tabkeyDist}
         activeTabKey={activeTabKey}
         onTabChange={handleTabChange}
         style={{ marginTop: 24, marginBottom: `${tabActivekey === 'today' ? '-50px' : '-1px'}` }}
