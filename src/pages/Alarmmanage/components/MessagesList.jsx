@@ -126,7 +126,9 @@ function MessagesList(props) {
   }, []);
 
   useEffect(() => {
-    handleReset();
+    if (tabActivekey) {
+      handleReset();
+    }
   }, [tabActivekey])
 
   useEffect(() => {

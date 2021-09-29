@@ -99,11 +99,13 @@ function ClockPatrolList(props) {
   };
 
   useEffect(() => {
-    handleReset();
+    if (tabActivekey) {
+      handleReset();
+    }
   }, [tabActivekey])
 
   useEffect(() => {
-    if (activeTabKey && tabdate) {
+    if (activeTabKey && tabdate && (tabdate.beginWarnTime || tabdate.endWarnTime)) {
       const key = activeTabKey === '全部' ? '' : activeTabKey;
       // setClassifykey(key);
       setFieldsValue({ firstClassify: key });
@@ -249,20 +251,20 @@ function ClockPatrolList(props) {
     },
     {
       title: '服务器时间',
-      dataIndex: 'time',
-      key: 'time',
+      dataIndex: 'fifthClassify',
+      key: 'fifthClassify',
       width: 180,
     },
     {
       title: '时钟时间',
-      dataIndex: 'contenttime',
-      key: 'contenttime',
+      dataIndex: 'sixthClassify',
+      key: 'sixthClassify',
       width: 180,
     },
     {
       title: '时间差值',
-      dataIndex: 'thistime1',
-      key: 'thistime1',
+      dataIndex: 'seventhClassify',
+      key: 'seventhClassify',
       width: 180,
     },
     {

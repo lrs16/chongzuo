@@ -122,11 +122,13 @@ function HostList(props) {
   };
 
   useEffect(() => {
-    handleReset();
+    if (tabActivekey) {
+      handleReset();
+    }
   }, [tabActivekey])
 
   useEffect(() => {
-    if (activeTabKey && tabdate) {
+    if (activeTabKey && tabdate && (tabdate.beginWarnTime || tabdate.endWarnTime)) {
       const key = activeTabKey === '全部' ? '' : activeTabKey;
       // setClassifykey(key);
       setFieldsValue({ firstClassify: key });

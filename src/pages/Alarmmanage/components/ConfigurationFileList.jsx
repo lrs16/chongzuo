@@ -102,11 +102,13 @@ function ConfigurationFileList(props) {
   };
 
   useEffect(() => {
-    handleReset();
+    if (tabActivekey) {
+      handleReset();
+    }
   }, [tabActivekey])
 
   useEffect(() => {
-    if (activeTabKey && tabdate) {
+    if (activeTabKey && tabdate && (tabdate.beginWarnTime || tabdate.endWarnTime)) {
       const key = activeTabKey === '全部' ? '' : activeTabKey;
       // setClassifykey(key);
       setFieldsValue({ firstClassify: key });
@@ -184,6 +186,24 @@ function ConfigurationFileList(props) {
       dataIndex: 'firstClassify',
       key: 'firstClassify',
       width: 120,
+    },
+    {
+      title: '监测内容',
+      dataIndex: 'secondClassify',
+      key: 'secondClassify',
+      width: 120,
+      onCell: () => {
+        return {
+          style: {
+            maxWidth: 120,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            cursor: 'pointer'
+          }
+        }
+      },
+      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
     {
       title: '设备IP',
@@ -388,8 +408,7 @@ function ConfigurationFileList(props) {
     return [];
   };
 
-  const areammap = getTypebykey('1437583023694807042');             // 时钟巡检区域
-  const monitormap = getTypebykey('1437584114700386305');       // 主机监测
+  const alarmmap = getTypebykey('1442417886570639362');             // 监测内容
 
   const extra = (<>
     <Button type="primary" onClick={() => handleSearch(1, 10)}>查 询</Button>
@@ -432,9 +451,15 @@ function ConfigurationFileList(props) {
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item label="设备IP">
-                {getFieldDecorator('fourthClassify')(
-                  <Input allowClear />,
+              <Form.Item label="监测内容">
+                {getFieldDecorator('secondClassify')(
+                  <Select placeholder="请选择" allowClear>
+                    {alarmmap && alarmmap.map(({ key, title }) => [
+                      <Option key={key} value={title}>
+                        {title}
+                      </Option>,
+                    ])}
+                  </Select>,
                 )}
               </Form.Item>
             </Col>
@@ -443,6 +468,13 @@ function ConfigurationFileList(props) {
               <>
                 {pagetitle === '配置文件变更告警' && (
                   <>
+                    <Col span={8}>
+                      <Form.Item label="设备IP">
+                        {getFieldDecorator('fourthClassify')(
+                          <Input allowClear />,
+                        )}
+                      </Form.Item>
+                    </Col>
                     <Col span={8}>
                       <Form.Item label="软件名称">
                         {getFieldDecorator('fifthClassify')(

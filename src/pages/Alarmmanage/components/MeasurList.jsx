@@ -233,11 +233,13 @@ function MeasurList(props) {
   };
 
   useEffect(() => {
-    handleReset();
+    if (tabActivekey) {
+      handleReset();
+    }
   }, [tabActivekey]);
 
   useEffect(() => {
-    if (activeTabKey) {
+    if (activeTabKey && tabdate && (tabdate.beginWarnTime || tabdate.endWarnTime)) {
       const key = activeTabKey === '告警概览' ? '' : activeTabKey.slice(0, -2);
       setFieldsValue({ Classify: key.split(',') });
       handleSearch(1, 10);

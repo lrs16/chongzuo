@@ -13,7 +13,7 @@ import All from './All';
 function MeasurAlarm(props) {
   const pagetitle = props.route.name;
   const { dispatch, totalinfo, match: { path }, location } = props;
-  const [tabActivekey, settabActivekey] = useState({}); // 打开标签
+  const [tabActivekey, settabActivekey] = useState(''); // 打开标签
   const [tabdate, setTabdate] = useState('');
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
   const [tabkeyDist, setTabkeyDist] = useState([{ key: 'index1', tab: '加载中' }]);

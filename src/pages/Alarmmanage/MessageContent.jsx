@@ -26,14 +26,15 @@ const cols = {
 function MessageContent(props) {
   const { Donutdata, Smoothdata, dispatch, loading } = props;
   const { tabActivekey, tabdate, warnModule } = useContext(TypeContext);
+  console.log(tabdate, tabActivekey)
 
-  const getdatas = (classify) => {
+  const getdatas = () => {
     dispatch({
       type: 'measuralarm/fetchoverdonut',
       payload: {
         beginDate: tabdate.beginWarnTime ? moment(tabdate.beginWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
         endDate: tabdate.endWarnTime ? moment(tabdate.endWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        classify,
+        classify: '告警概览',
         warnModule,
       },
     });
@@ -42,17 +43,17 @@ function MessageContent(props) {
       payload: {
         beginDate: tabdate.beginWarnTime ? moment(tabdate.beginWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
         endDate: tabdate.endWarnTime ? moment(tabdate.endWarnTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        classify,
+        classify: '告警概览',
         warnModule,
       },
     });
   };
 
   useEffect(() => {
-    if (tabActivekey === 'all') {
+    if (tabActivekey === 'all' && (tabdate && (tabdate.beginWarnTime || tabdate.endWarnTime))) {
       getdatas()
     }
-  }, [tabActivekey])
+  }, [tabdate])
 
   return (
     <div style={{ marginTop: 24 }}>
