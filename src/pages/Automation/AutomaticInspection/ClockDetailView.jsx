@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import router from 'umi/router';
 import Link from 'umi/link';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Table, Card, Button, Form, Input, Tooltip, Row, Col, message, Badge, Select } from 'antd';
+import { Table, Card, Button, Form, Input, Row, Col, Badge, Select } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import DictLower from '@/components/SysDict/DictLower';
-// import MergeTable from '@/components/MergeTable';
-import { downloadInfoExcel, createEvent } from './services/api';
+import { downloadclockInfoExcel } from './services/api';
 
 const { Option } = Select;
 
@@ -22,14 +19,7 @@ const formItemLayout = {
     },
 };
 
-const colormap = new Map([
-    ['异常', 'error'],
-    ['正常', 'success'],
-]);
-
-const mergeCell = 'hostZone';
-
-function HostDetailView(props) {
+function ClockDetailView(props) {
     const pagetitle = props.route.name;
     const {
         loading,
@@ -40,7 +30,7 @@ function HostDetailView(props) {
                 Id,
             }
         },
-        infolistdetails,
+        clockinfolistdetails,
         form: {
             getFieldDecorator,
             getFieldsValue,
@@ -54,7 +44,7 @@ function HostDetailView(props) {
     const searchdata = (page, size) => {
         const values = getFieldsValue();
         dispatch({
-            type: 'automation/queryhostinfoList',
+            type: 'automation/queryclockinfoList',
             payload: {
                 ...values,
                 id: Id,
@@ -65,7 +55,7 @@ function HostDetailView(props) {
     };
 
     useEffect(() => {
-        if(Id && Id !== '' && Id !== undefined) {
+        if (Id && Id !== '' && Id !== undefined) {
             searchdata(1, 15);
         }
     }, [location && Id]);
@@ -97,7 +87,7 @@ function HostDetailView(props) {
         onShowSizeChange: (page, size) => onShowSizeChange(page, size),
         current: paginations.current,
         pageSize: paginations.pageSize,
-        total: infolistdetails.total || 15,
+        total: clockinfolistdetails.total,
         showTotal: total => `总共  ${total}  条记录`,
         onChange: page => changePage(page),
     };
@@ -112,8 +102,8 @@ function HostDetailView(props) {
 
     const download = () => { // 下载巡检明细
         if (Id) {
-            downloadInfoExcel(Id).then(resp => {
-                const filename = `主机巡检明细下载_${Id}.xls`;
+            downloadclockInfoExcel(Id).then(resp => {
+                const filename = `时钟巡检明细下载_${Id}.xls`;
                 const blob = new Blob([resp]);
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
@@ -128,32 +118,12 @@ function HostDetailView(props) {
     const operations = (
         <>
             <Button type="primary" style={{ marginRight: 8 }}
-                onClick={() => createEvent(Id).then(res => {
-                    if (res.code === 200) {
-                        router.push({
-                            pathname: `/ITSM/eventmanage/to-do/record/workorder`,
-                            query: {
-                                taskName: '已登记',
-                                taskId: res.taskId,
-                                mainId: res.mainId,
-                                check: '',
-                                orderNo: res.no,
-                            },
-                        });
-                    } else {
-                        message.error(res.msg);
-                    }
-                })}
-            >
-                发起事件单
-            </Button>
-            <Button type="primary" style={{ marginRight: 8 }}
                 onClick={() => download()}
             >
                 下载巡检明细
             </Button>
             <Button type="primary">
-                <Link to="/automation/automaticinspection/hostpatrol">返回列表</Link>
+                <Link to="/automation/automaticinspection/clockpatrol">返回列表</Link>
             </Button>
         </>
     );
@@ -182,21 +152,17 @@ function HostDetailView(props) {
 
     const zonemap = getTypebyId('1428182995477942274'); // 主机区域
 
+    const colorrendermap = new Map([
+        ['异常', 'error'],
+        ['正常', 'success'],
+    ]);
+
     const columns = [
         {
             title: '区域',
-            dataIndex: mergeCell,
-            key: mergeCell,
-            width: 250,
-            // ellipsis: true,
-            render: (text, record) => {
-                const obj = {
-                    children: text,
-                    props: {},
-                };
-                obj.props.rowSpan = record.rowSpan;
-                return obj;
-            },
+            dataIndex: 'hostZone',
+            key: 'hostZone',
+            width: 200,
         },
         {
             title: '设备名称',
@@ -213,89 +179,42 @@ function HostDetailView(props) {
             ellipsis: true,
         },
         {
-            title: 'CPU使用情况',
-            dataIndex: 'cpu',
-            key: 'cpu',
+            title: '服务器时间',
+            dataIndex: 'hostTime',
+            key: 'hostTime',
+            width: 250,
+            ellipsis: true,
+        },
+        {
+            title: '标准时钟源',
+            dataIndex: 'sourceTime',
+            key: 'sourceTime',
+            width: 250,
+            ellipsis: true,
+        },
+        {
+            title: '时间差',
+            dataIndex: 'difference',
+            key: 'difference',
             width: 200,
             ellipsis: true,
         },
         {
-            title: '内存使用情况',
-            dataIndex: 'memory',
-            key: 'memory',
-            width: 200,
+            title: '时延',
+            dataIndex: 'delay',
+            key: 'delay',
+            width: 150,
             ellipsis: true,
-        },
-        {
-            title: '网络流量',
-            dataIndex: 'netCard',
-            key: 'netCard',
-            width: 250,
-            onCell: () => {
-                return {
-                    style: {
-                        maxWidth: 250,
-                        overflow: 'hidden',
-                        whiteSpace: 'nowrap',
-                        textOverflow: 'ellipsis',
-                        cursor: 'pointer'
-                    }
-                }
-            },
-            render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
-        },
-        {
-            title: '磁盘IO',
-            dataIndex: 'io',
-            key: 'io',
-            width: 250,
-            onCell: () => {
-                return {
-                    style: {
-                        maxWidth: 250,
-                        overflow: 'hidden',
-                        whiteSpace: 'nowrap',
-                        textOverflow: 'ellipsis',
-                        cursor: 'pointer'
-                    }
-                }
-            },
-            render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
-        },
-        {
-            title: '磁盘使用情况',
-            dataIndex: 'disk',
-            key: 'disk',
-            width: 250,
-            ellipsis: true,
-            onCell: () => {
-                return {
-                    style: {
-                        maxWidth: 250,
-                        overflow: 'hidden',
-                        whiteSpace: 'nowrap',
-                        textOverflow: 'ellipsis',
-                        cursor: 'pointer'
-                    }
-                }
-            },
-            render: (text) => {
-                return (
-                    <Tooltip placement="topLeft" title={text}>
-                        <span>{text}</span>
-                    </Tooltip>
-                );
-            },
         },
         {
             title: '巡检结果',
             dataIndex: 'result',
             key: 'result',
-            width: 150,
+            width: 200,
             ellipsis: true,
             render: (text, record) => (
                 <span>
-                    <Badge status={colormap.get(record.result)} text={text} />
+                    <Badge status={colorrendermap.get(record.result)} text={text} />
                 </span>
             ),
         },
@@ -309,7 +228,7 @@ function HostDetailView(props) {
                 style={{ display: 'none' }}
             />
             <Card>
-                <h3>一、主机巡检明细：</h3>
+                <h3>一、时钟巡检结果：</h3>
                 <Row gutter={16}>
                     <Form {...formItemLayout} onSubmit={handleSearch}>
                         <Col span={8}>
@@ -357,20 +276,11 @@ function HostDetailView(props) {
                 <Table
                     columns={columns}
                     loading={loading}
-                    dataSource={infolistdetails.rows}
+                    dataSource={clockinfolistdetails.rows}
                     rowKey={record => record.id}
                     pagination={pagination}
                     scroll={{ x: 1300 }}
                 />
-                {/* <MergeTable
-                        columns={columns}
-                        // loading={loading}
-                        tableSource={infolistdetails.rows}
-                        // rowKey={record => record.id}
-                        // pagination={pagination}
-                        // scroll={{ x: 1300 }}
-                        mergecell={mergeCell}
-                    /> */}
             </Card>
         </PageHeaderWrapper>
     );
@@ -378,7 +288,7 @@ function HostDetailView(props) {
 
 export default Form.create({})(
     connect(({ automation, loading }) => ({
-        infolistdetails: automation.infolistdetails,
+        clockinfolistdetails: automation.clockinfolistdetails,
         loading: loading.models.automation,
-    }))(HostDetailView),
+    }))(ClockDetailView),
 );

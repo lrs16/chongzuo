@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import { Table, Drawer, Button, Form, Select, Row, Col, Badge, Tooltip } from 'antd';
+import { Table, Drawer, Button, Form, Select, Row, Col, Badge, Input } from 'antd';
 import DictLower from '@/components/SysDict/DictLower';
 import RelationDrawer from './RelationDrawer';
 
@@ -42,6 +42,7 @@ function SoftWorkLogsDrawer(props) {
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
     const [visiblelog, setVisible] = useState(false);
     const [title, setTitle] = useState('');
+    const [showlist, setshowList] = useState(true);
 
     const hanldleCancel = () => {
         ChangeVisibledrawer(false);
@@ -109,8 +110,8 @@ function SoftWorkLogsDrawer(props) {
     const columns = [
         {
             title: '区域',
-            dataIndex: 'agentZone',
-            key: 'agentZone',
+            dataIndex: 'hostZone',
+            key: 'hostZone',
             width: 200,
         },
         {
@@ -122,8 +123,8 @@ function SoftWorkLogsDrawer(props) {
         },
         {
             title: '设备IP',
-            dataIndex: 'hostIp',
-            key: 'hostIp',
+            dataIndex: 'hostAddress',
+            key: 'hostAddress',
             width: 200,
         },
         {
@@ -148,15 +149,26 @@ function SoftWorkLogsDrawer(props) {
             title: '执行返回',
             dataIndex: 'executeResult',
             key: 'executeResult',
-            width: 350,
+            width: 250,
             ellipsis: true,
-            render: (text) => {
-                return (
-                    <Tooltip placement="topLeft" title={text}>
-                        <span>{text}</span>
-                    </Tooltip>
-                );
-            },
+            // onCell: () => {
+            //     return {
+            //         style: {
+            //             maxWidth: 250,
+            //             overflow: 'hidden',
+            //             whiteSpace: 'nowrap',
+            //             textOverflow: 'ellipsis',
+            //             cursor: 'pointer'
+            //         }
+            //     }
+            // },
+            // render: (text) => {
+            //     return (
+            //       <Tooltip placement='topLeft' title={text} overlayStyle={{ maxWidth: '250px' }}>
+            //         {text}
+            //       </Tooltip>)
+            //   }
+            // render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
         },
         {
             title: '执行类型',
@@ -166,8 +178,8 @@ function SoftWorkLogsDrawer(props) {
         },
         {
             title: '执行时长',
-            dataIndex: 'executeCompleteTime',
-            key: 'executeCompleteTime',
+            dataIndex: 'executeLength',
+            key: 'executeLength',
             width: 200,
         },
         {
@@ -181,7 +193,17 @@ function SoftWorkLogsDrawer(props) {
             dataIndex: 'executeIssueTime',
             key: 'executeIssueTime',
             width: 250,
-        }
+        },
+        {
+            title: '操作',
+            key: 'action',
+            width: 120,
+            render: () => {
+                return (
+                    <a onClick={() => { setshowList(false); }}>关联工单</a>
+                )
+            },
+        },
     ];
 
     // 查询
@@ -215,70 +237,100 @@ function SoftWorkLogsDrawer(props) {
                 ChangeSelectdata={newvalue => setSelectData(newvalue)}
                 style={{ display: 'none' }}
             />
-            <Row gutter={8} >
-                <Form {...formItemLayout} onSubmit={handleSearch}>
-                    <Col span={8}>
-                        <Form.Item label="执行结果">
-                            {getFieldDecorator('executeStatus', {
-                                initialValue: '',
-                            })(
-                                <Select placeholder="请选择" allowClear>
-                                    {executestatusmap.map(obj => (
-                                        <Option key={obj.key} value={obj.dict_code}>
-                                            {obj.title}
-                                        </Option>
-                                    ))}
-                                </Select>)}
-                        </Form.Item>
-                    </Col>
-                    <Col span={8}>
-                        <Form.Item label="执行类型">
-                            {getFieldDecorator('workType', {
-                                initialValue: '',
-                            })(
-                                <Select placeholder="请选择" allowClear>
-                                    {worktypemap.map(obj => (
-                                        <Option key={obj.key} value={obj.dict_code}>
-                                            {obj.title}
-                                        </Option>
-                                    ))}
-                                </Select>)}
-                        </Form.Item>
-                    </Col>
-                    <Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>
-                </Form>
-            </Row>
-            <div style={{ marginBottom: 8 }}>
-                <Button
-                    type="primary"
-                    style={{ marginLeft: 8 }}
-                    onClick={() => { setVisible(true); setTitle('故障'); }}
-                >
-                    一键关联故障单
-                </Button>
-                {/* <Button type="primary" style={{ marginRight: 8 }}
-                // onClick={() => aa()}
-                >一键关联故障单</Button> */}
-            </div>
-            <Table
-                dataSource={autosoftworkloglist.rows}
-                columns={columns}
-                rowKey={record => record.id}
-                scroll={{ x: 1300 }}
-                paginations={pagination}
-                loading={loading}
-                footer={null}
-            />
-            {visiblelog && (
-                <RelationDrawer
-                    title={title}
-                    visible={visiblelog}
-                    orderIdPre={recordvalues.id}
-                    orderTypePre='trouble'
-                    orderTypeSuf='trouble'
-                    ChangeVisible={(v) => setVisible(v)}
-                />
-            )}
+            {
+                showlist === false ? (
+                    <>
+                    <p onClick={() => { setshowList(true); }} style={{textAlign: 'right', cursor: 'pointer'}}>返回执行结果&gt;</p>
+                    <Row>
+                        <Col span={8}>
+                            <Input placeholder="请输入故障单号" allowClear />
+                        </Col>
+                        <Col span={8}>
+                            <Button type="primary" style={{ marginLeft: 16 }} onClick={() => handleSearch()} >本页查询</Button>
+                            <Button style={{ marginLeft: 16 }} >重 置</Button>
+                            <Button
+                                type="primary"
+                                style={{ marginLeft: 8 }}
+                                onClick={() => { setVisible(true); setTitle('故障'); }}
+                            >
+                                关联工单
+                            </Button>
+                        </Col>
+                    </Row>
+                        <Table
+                            style={{ marginTop: 16 }}
+                            columns={columns}
+                            // dataSource={searchrow === undefined ? list.rows : searchrow}
+                            rowKey={r => r.id}
+                            pagination={pagination}
+                        />
+                        {visiblelog && (
+                            <RelationDrawer
+                                title={title}
+                                visible={visiblelog}
+                                orderIdPre={recordvalues.id}
+                                orderTypePre='trouble'
+                                orderTypeSuf='trouble'
+                                ChangeVisible={(v) => setVisible(v)}
+                            />
+                        )}
+                    </>
+                ) : (
+                    <>
+                        <Row gutter={8} >
+                            <Form {...formItemLayout} onSubmit={handleSearch}>
+                                <Col span={8}>
+                                    <Form.Item label="执行结果">
+                                        {getFieldDecorator('executeStatus', {
+                                            initialValue: '',
+                                        })(
+                                            <Select placeholder="请选择" allowClear>
+                                                {executestatusmap.map(obj => (
+                                                    <Option key={obj.key} value={obj.dict_code}>
+                                                        {obj.title}
+                                                    </Option>
+                                                ))}
+                                            </Select>)}
+                                    </Form.Item>
+                                </Col>
+                                <Col span={8}>
+                                    <Form.Item label="执行类型">
+                                        {getFieldDecorator('workType', {
+                                            initialValue: '',
+                                        })(
+                                            <Select placeholder="请选择" allowClear>
+                                                {worktypemap.map(obj => (
+                                                    <Option key={obj.key} value={obj.dict_code}>
+                                                        {obj.title}
+                                                    </Option>
+                                                ))}
+                                            </Select>)}
+                                    </Form.Item>
+                                </Col>
+                                <Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>
+                            </Form>
+                        </Row>
+                        <div style={{ marginBottom: 8 }}>
+                            <Button
+                                type="primary"
+                                style={{ marginLeft: 8 }}
+                                onClick={() => { setshowList(false); }}
+                            >
+                                一键关联故障单
+                            </Button>
+                        </div>
+                        <Table
+                            dataSource={autosoftworkloglist.rows}
+                            columns={columns}
+                            rowKey={record => record.id}
+                            scroll={{ x: 1300 }}
+                            paginations={pagination}
+                            loading={loading}
+                            footer={null}
+                        />
+                    </>
+                )
+            }
         </Drawer>
     );
 }

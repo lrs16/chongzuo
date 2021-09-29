@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
-import { Card, Badge, Button, Table, Form, Input, Row, Col, DatePicker, Divider, message } from 'antd';
+import { Card, Select, Badge, Button, Table, Form, Input, Row, Col, DatePicker, Divider, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysUpload from '@/components/SysUpload/Upload';
 import FilesContext from '@/layouts/MenuContext';
 import PatrolconfigModal from './components/PatrolconfigModal';
 import PatrolBriefDrawer from './components/PatrolBriefDrawer';
 import { saveFileIds, createReport, createInspectionall } from './services/api';
+
+const { Option } = Select;
 
 const formItemLayout = {
   labelCol: {
@@ -26,6 +28,14 @@ const colormap = new Map([
   ['成功', 'success'],
   ['巡检中', 'blue'],
 ]);
+
+const typemap = [{
+  key: '0',
+  title: '巡检全部'
+}, {
+  key: '1',
+  title: '巡检配置'
+}];
 
 function HostPatrol(props) {
   const pagetitle = props.route.name;
@@ -46,7 +56,7 @@ function HostPatrol(props) {
   const [title, setTitle] = useState('');
   const [openviewid, setOpenViewId] = useState('');
   const [filelist, setFilelist] = useState([]);
-  const [filelistid, setFilelistId] = useState(''); 
+  const [filelistid, setFilelistId] = useState('');
 
   const searchdata = (page, size) => {
     const values = getFieldsValue();
@@ -67,12 +77,17 @@ function HostPatrol(props) {
   }, [location]);
 
   useEffect(() => {
-    if (filelist && filelistid) {
-      saveFileIds({ fileIds: filelist, id: filelistid }).then(res => {
-        console.log(res, 'res')
+    if (filelist !== [] && filelistid !== '') {
+      const getuid = filelist.map(item => { return item.uid });
+      saveFileIds({ fileIds: JSON.stringify(getuid), id: filelistid }).then(res => {
+        if (res.code === 200) {
+          message.success(res.msg);
+        } else {
+          message.error(res.msg);
+        }
       });
     }
-  }, [filelist]);
+  }, [filelist && filelistid]);
 
   const onShowSizeChange = (page, size) => {
     searchdata(page, size);
@@ -152,26 +167,6 @@ function HostPatrol(props) {
     }
   };
 
-  // 列表中下载附件
-  // const handledownload = info => {
-  //   dispatch({
-  //     type: 'sysfile/downloadfile',
-  //     payload: {
-  //       id: info.id,
-  //     },
-  //   }).then(res => {
-  //     // console.log(res);
-  //     const filename = info.name;
-  //     const blob = new Blob([res]);
-  //     const url = window.URL.createObjectURL(blob);
-  //     const a = document.createElement('a');
-  //     a.href = url;
-  //     a.download = filename;
-  //     a.click();
-  //     window.URL.revokeObjectURL(url);
-  //   });
-  // };
-
   const columns = [
     {
       title: '巡检编号',
@@ -192,22 +187,6 @@ function HostPatrol(props) {
           <Badge status={colormap.get(record.status)} text={text} />
         </span>
       ),
-      // render: (text, record) => {
-      //   const status = record.checkStatus;
-      //   const statuswaitetext = '等待巡检';
-      //   const statuswaitico = 'processing';
-      //   const statustext = status.length === 4 ? '成功' : '巡检中';
-      //   const statusico = status.length === 4 ? 'success' : 'error';
-      //   return (
-      //     <>
-      //       {status === 'W' && status !== 'ERRR' && (
-      //         <Badge status={statuswaitico} text={statuswaitetext} />
-      //       )}
-      //       {status !== 'W' && status !== 'ERRR' && <Badge status={statusico} text={statustext} />}
-      //       {status === 'ERRR' && <Badge status="error" text="巡检被中断" />}
-      //     </>
-      //   );
-      // },
     },
     {
       title: '巡检类型',
@@ -228,7 +207,7 @@ function HostPatrol(props) {
       title: '操作',
       dataIndex: 'action',
       key: 'action',
-      width: 500,
+      width: 450,
       render: (_, record) => {
         return (
           <div style={{ display: 'flex' }}>
@@ -252,7 +231,7 @@ function HostPatrol(props) {
               <Divider type="vertical" /></span>
             <FilesContext.Provider value={{
               files: [],
-              // files: hostlist && hostlist.rows.files ? JSON.parse(check.examineFiles) : [],
+              // files: record.fileIds && record.fileIds !== null ? JSON.parse(record.fileIds) : [],
               ChangeFiles: (v => { setFilelist(v); setFilelistId(record.id); }),
             }}>
               <SysUpload />
@@ -268,11 +247,24 @@ function HostPatrol(props) {
       <Card>
         <Row>
           <Form {...formItemLayout} onSubmit={handleSearch}>
-            <Col span={5}>
+            <Col span={6}>
               <Form.Item label="巡检人">
                 {getFieldDecorator('user', {
                   initialValue: '',
                 })(<Input placeholder="请输入" allowClear />)}
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item label="巡检类型">
+                {getFieldDecorator('type', {
+                  initialValue: '',
+                })(<Select placeholder="请选择" allowClear>
+                  {typemap.map(obj => (
+                    <Option key={obj.key} value={obj.title}>
+                      {obj.title}
+                    </Option>
+                  ))}
+                </Select>)}
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -308,7 +300,7 @@ function HostPatrol(props) {
                 </Row>
               </Form.Item>
             </Col>
-            <Col span={6} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>
+            <Col span={4} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>
           </Form>
         </Row>
         <div style={{ marginBottom: 8 }}>
@@ -321,7 +313,10 @@ function HostPatrol(props) {
               }
             })}
           >巡检全部</Button>
-          <PatrolconfigModal onChangeList={() => searchdata(1, 15)}>
+          <PatrolconfigModal
+            onChangeList={() => searchdata(1, 15)}
+            pagename='hostpatrol'
+          >
             <Button type="primary" style={{ marginRight: 8 }}
             >巡检配置</Button>
           </PatrolconfigModal>

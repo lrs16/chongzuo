@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { connect } from 'dva';
 import {
     Modal,
-    Table, Button, Form, Input, Row, Col, Select, Alert, Popconfirm, message
+    Table, Button, Form, Input, Row, Col, Select, Alert, Popconfirm, message, Badge
 } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
-import { createInspection } from '../services/api';
+import { createInspection, createsoftInspection, createclockInspection } from '../services/api';
 
 const { Option } = Select;
 
@@ -21,6 +21,11 @@ const formItemLayout = {
     },
 };
 
+const colormap = new Map([
+    ['离线', 'default'],
+    ['在线', 'success'],
+]);
+
 // 克隆子元素按钮，并添加事件
 const withClick = (element, handleClick = () => { }) => {
     return <element.type {...element.props} onClick={handleClick} />;
@@ -32,6 +37,7 @@ function PatrolconfigModal(props) {
         dispatch,
         list,
         onChangeList,
+        pagename,
         form: {
             getFieldDecorator,
             getFieldsValue,
@@ -79,14 +85,36 @@ function PatrolconfigModal(props) {
             message.error('至少选择一条agent');
         } else {
             const ids = selectedRowKeys;
-            createInspection(ids).then(resp => {
-                if (resp.code === 200) {
-                    message.success(resp.msg);
-                    onChangeList();
-                } else {
-                    message.error(resp.msg);
-                }
-            });
+            if(pagename === 'softpatrol') { // 软件巡检
+                createsoftInspection(ids).then(resp => {
+                    if (resp.code === 200) {
+                        message.success(resp.msg);
+                        onChangeList();
+                    } else {
+                        message.error(resp.msg);
+                    }
+                });
+            }
+            if(pagename === 'hostpatrol') { // 主机巡检
+                createInspection(ids).then(resp => {
+                    if (resp.code === 200) {
+                        message.success(resp.msg);
+                        onChangeList();
+                    } else {
+                        message.error(resp.msg);
+                    }
+                });
+            }
+            if(pagename === 'clockpatrol') { // 时钟巡检
+                createclockInspection(ids).then(resp => {
+                    if (resp.code === 200) {
+                        message.success(resp.msg);
+                        onChangeList();
+                    } else {
+                        message.error(resp.msg);
+                    }
+                });
+            }
         }
         // 关闭弹窗
         handleCancel();
@@ -197,6 +225,11 @@ function PatrolconfigModal(props) {
             dataIndex: 'agentStatus',
             key: 'agentStatus',
             width: 80,
+            render: (text, record) => (
+                <span>
+                    <Badge status={colormap.get(record.agentStatus)} text={text} />
+                </span>
+            ),
         },
         {
             title: '节点地址',
@@ -286,7 +319,7 @@ function PatrolconfigModal(props) {
                                 })(
                                     <Select placeholder="请选择" allowClear>
                                         {zonemap.map(obj => (
-                                            <Option key={obj.key} value={obj.title}>
+                                            <Option key={obj.key} value={obj.dict_code}>
                                                 {obj.title}
                                             </Option>
                                         ))}
@@ -300,7 +333,7 @@ function PatrolconfigModal(props) {
                                 })(
                                     <Select placeholder="请选择" allowClear>
                                         {typemap.map(obj => (
-                                            <Option key={obj.key} value={obj.title}>
+                                            <Option key={obj.key} value={obj.dict_code}>
                                                 {obj.title}
                                             </Option>
                                         ))}
@@ -314,7 +347,7 @@ function PatrolconfigModal(props) {
                                 })(
                                     <Select placeholder="请选择" allowClear>
                                         {statusmap.map(obj => (
-                                            <Option key={obj.key} value={obj.title}>
+                                            <Option key={obj.key} value={obj.dict_code}>
                                                 {obj.title}
                                             </Option>
                                         ))}

@@ -369,7 +369,7 @@ function JobCheck(props) {
                                 </Col>
                                 <Col span={8}>
                                     <Form.Item label="更新人">
-                                        {getFieldDecorator('updateByNameExt', {
+                                        {getFieldDecorator('updateBy', {
                                             initialValue: '',
                                         })(<Input placeholder="请输入" allowClear />)}
                                     </Form.Item>

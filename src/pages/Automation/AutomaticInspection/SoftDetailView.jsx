@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-// import { connect } from 'dva';
-// import router from 'umi/router';
+import { connect } from 'dva';
+import router from 'umi/router';
 import Link from 'umi/link';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Table, Card, Button, Form, Input, Tooltip, Row, Col, DatePicker, Badge } from 'antd';
+import { Table, Card, Button, Form, Input, Tooltip, Row, Col, message, Badge, Select } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-// import DictLower from '@/components/SysDict/DictLower';
+import DictLower from '@/components/SysDict/DictLower';
+import { downloadInfoExcel, createsoftEvent } from './services/api';
 
-// const { Option } = Select;
+const { Option } = Select;
+
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -18,11 +20,6 @@ const formItemLayout = {
         sm: { span: 18 },
     },
 };
-
-const colormap = new Map([
-    ['异常', 'error'],
-    ['正常', 'success'],
-]);
 
 function SoftDetailView(props) {
     const pagetitle = props.route.name;
@@ -35,7 +32,7 @@ function SoftDetailView(props) {
                 Id,
             }
         },
-        // list,
+        softinfolistdetails,
         form: {
             getFieldDecorator,
             getFieldsValue,
@@ -43,31 +40,31 @@ function SoftDetailView(props) {
         },
     } = props;
 
-    console.log(Id, 'Id')
-
-    // const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
+    const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
 
     const searchdata = (page, size) => {
         const values = getFieldsValue();
         dispatch({
-            type: 'automation/queryhostinfoList',
+            type: 'automation/querysoftinfoList',
             payload: {
-                values,
+                ...values,
                 id: Id,
-                pageNum: page,
+                pageIndex: page,
                 pageSize: size,
             },
         });
     };
 
     useEffect(() => {
-        searchdata(1, 15);
+        if (Id && Id !== '' && Id !== undefined) {
+            searchdata(1, 15);
+        }
     }, [location && Id]);
 
     const handleReset = () => {
         resetFields();
-        searchdata(1, 15)
+        searchdata(1, 15);
         setPageinations({ current: 1, pageSize: 15 });
     };
 
@@ -92,7 +89,7 @@ function SoftDetailView(props) {
         onShowSizeChange: (page, size) => onShowSizeChange(page, size),
         current: paginations.current,
         pageSize: paginations.pageSize,
-        total: 15,
+        total: softinfolistdetails.total || 15,
         showTotal: total => `总共  ${total}  条记录`,
         onChange: page => changePage(page),
     };
@@ -105,33 +102,50 @@ function SoftDetailView(props) {
         searchdata(1, paginations.pageSize);
     };
 
-    // const download = () => { // 下载
-    //     dispatch({
-    //       type: '',
-    //       payload: {  }
-    //     }).then(res => {
-    //       const filename = '下载.xls';
-    //       const blob = new Blob([res]);
-    //       const url = window.URL.createObjectURL(blob);
-    //       const a = document.createElement('a');
-    //       a.href = url;
-    //       a.download = filename;
-    //       a.click();
-    //       window.URL.revokeObjectURL(url);
-    //     })
-    //   }
+    const download = () => { // 下载巡检明细
+        if (Id) {
+            downloadInfoExcel(Id).then(resp => {
+                const filename = `软件巡检明细下载_${Id}.xls`;
+                const blob = new Blob([resp]);
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.click();
+                window.URL.revokeObjectURL(url);
+            })
+        }
+    }
 
     const operations = (
         <>
-            <Button type="primary" style={{ marginRight: 8 }}>
-              发起事件单
+            <Button type="primary" style={{ marginRight: 8 }}
+                onClick={() => createsoftEvent(Id).then(res => {
+                    if (res.code === 200) {
+                        router.push({
+                            pathname: `/ITSM/eventmanage/to-do/record/workorder`,
+                            query: {
+                                taskName: '已登记',
+                                taskId: res.taskId,
+                                mainId: res.mainId,
+                                check: '',
+                                orderNo: res.no,
+                            },
+                        });
+                    } else {
+                        message.error(res.msg);
+                    }
+                })}
+            >
+                发起事件单
             </Button>
-            <Button type="primary" style={{ marginRight: 8 }}>
-              {/* onClick={download} */}
-              下载巡检明细
+            <Button type="primary" style={{ marginRight: 8 }}
+                onClick={() => download()}
+            >
+                下载巡检明细
             </Button>
             <Button type="primary">
-                <Link to="/automation/automaticinspection/hostpatrol">返回列表</Link>
+                <Link to="/automation/automaticinspection/softwarepatrol">返回列表</Link>
             </Button>
         </>
     );
@@ -143,73 +157,73 @@ function SoftDetailView(props) {
     );
 
     // 数据字典取下拉值
-    // const getTypebyId = key => {
-    //     if (selectdata.ischange) {
-    //         return selectdata.arr[0].children.filter(item => item.key === key)[0].children;
-    //     }
-    //     return [];
-    // };
+    const getTypebyId = key => {
+        if (selectdata.ischange) {
+            return selectdata.arr[0].children.filter(item => item.key === key)[0].children;
+        }
+        return [];
+    };
 
-    // const tsskstatusmap = getTypebyId('200000000000001002'); // 执行结果
+    const resultmap = [{
+        key: '0',
+        title: '正常'
+    }, {
+        key: '1',
+        title: '异常'
+    }];
+
+    const zonemap = getTypebyId('1428182995477942274'); // 主机区域
+
+    const colorrendermap = new Map([
+        ['异常', 'error'],
+        ['正常', 'success'],
+    ]);
 
     const columns = [
-        // {
-        //     title: '序号',
-        //     dataIndex: 'key',
-        //     key: 'key',
-        //     width: 60,
-        //     render: (text, record, index) => {
-        //         return <>{`${index + 1}`}</>;
-        //     },
-        // },
         {
             title: '区域',
-            dataIndex: 'agentZone',
-            key: 'agentZone',
-            width: 150,
+            dataIndex: 'hostZone',
+            key: 'hostZone',
+            width: 200,
         },
         {
             title: '设备名称',
             dataIndex: 'hostName',
             key: 'hostName',
             width: 250,
+            ellipsis: true,
         },
         {
             title: '设备IP',
-            dataIndex: 'agentHost',
-            key: 'agentHost',
+            dataIndex: 'hostIp',
+            key: 'hostIp',
             width: 200,
+            ellipsis: true,
         },
         {
-            title: 'CPU使用情况',
-            dataIndex: 'f1',
-            key: 'f1',
-            width: 200,
-        },
-        {
-            title: '内存使用情况',
-            dataIndex: 'f2',
-            key: 'f2',
-            width: 200,
-        },
-        {
-            title: '网络流量',
-            dataIndex: 'f3',
-            key: 'f3',
-            width: 150,
-        },
-        {
-            title: '磁盘IO',
-            dataIndex: 'f4',
-            key: 'f4',
-            width: 150,
-        },
-        {
-            title: '磁盘使用情况',
-            dataIndex: 'f5',
-            key: 'f5',
+            title: '软件名称',
+            dataIndex: 'softName',
+            key: 'softName',
             width: 250,
             ellipsis: true,
+        },
+        {
+            title: 'top',
+            dataIndex: 'top',
+            key: 'top',
+            width: 200,
+            ellipsis: true,
+            onCell: () => {
+                return {
+                    style: {
+                        maxWidth: 250,
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap',
+                        textOverflow: 'ellipsis',
+                        cursor: 'pointer'
+                    }
+                }
+            },
             render: (text) => {
                 return (
                     <Tooltip placement="topLeft" title={text}>
@@ -219,34 +233,181 @@ function SoftDetailView(props) {
             },
         },
         {
+            title: '内存使用情况',
+            dataIndex: 'memory',
+            key: 'memory',
+            width: 200,
+            ellipsis: true,
+            onCell: () => {
+                return {
+                    style: {
+                        maxWidth: 250,
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap',
+                        textOverflow: 'ellipsis',
+                        cursor: 'pointer'
+                    }
+                }
+            },
+            render: (text) => {
+                return (
+                    <Tooltip placement="topLeft" title={text}>
+                        <span>{text}</span>
+                    </Tooltip>
+                );
+            },
+        },
+        {
+            title: '磁盘使用情况',
+            dataIndex: 'disk',
+            key: 'disk',
+            width: 250,
+            ellipsis: true,
+            onCell: () => {
+                return {
+                    style: {
+                        maxWidth: 250,
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap',
+                        textOverflow: 'ellipsis',
+                        cursor: 'pointer'
+                    }
+                }
+            },
+            render: (text) => {
+                return (
+                    <Tooltip placement="topLeft" title={text}>
+                        <span>{text}</span>
+                    </Tooltip>
+                );
+            },
+        },
+        {
+            title: '进程名称',
+            dataIndex: 'processName',
+            key: 'processName',
+            width: 200,
+            ellipsis: true,
+        },
+        {
+            title: '进程id',
+            dataIndex: 'processId',
+            key: 'processId',
+            width: 250,
+            ellipsis: true,
+        },
+        {
+            title: '进程gc情况',
+            dataIndex: 'processGc',
+            key: 'processGc',
+            width: 250,
+            ellipsis: true,
+            onCell: () => {
+                return {
+                    style: {
+                        maxWidth: 250,
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap',
+                        textOverflow: 'ellipsis',
+                        cursor: 'pointer'
+                    }
+                }
+            },
+            render: (text) => {
+                return (
+                    <Tooltip placement="topLeft" title={text}>
+                        <span>{text}</span>
+                    </Tooltip>
+                );
+            },
+        },
+        {
+            title: '网络连接情况(TIME_WAIT)',
+            dataIndex: 'networkTimeWait',
+            key: 'networkTimeWait',
+            width: 300,
+            ellipsis: true,
+        },
+        {
+            title: '网络连接情况(CLOSE-WAIT)',
+            dataIndex: 'networkCloseWait',
+            key: 'networkCloseWait',
+            width: 300,
+            ellipsis: true,
+        },
+        {
+            title: '软件日志',
+            dataIndex: 'softLog',
+            key: 'softLog',
+            width: 200,
+            ellipsis: true,
+            onCell: () => {
+                return {
+                    style: {
+                        maxWidth: 250,
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap',
+                        textOverflow: 'ellipsis',
+                        cursor: 'pointer'
+                    }
+                }
+            },
+            render: (text) => {
+                return (
+                    <Tooltip placement="topLeft" title={text}>
+                        <span>{text}</span>
+                    </Tooltip>
+                );
+            },
+        },
+        {
+            title: '备注',
+            dataIndex: 'remark',
+            key: 'remark',
+            width: 250,
+        },
+        {
             title: '巡检结果',
-            dataIndex: 'f6',
-            key: 'f6',
+            dataIndex: 'result',
+            key: 'result',
             width: 150,
             render: (text, record) => (
                 <span>
-                    <Badge status={colormap.get(record.executeStatus)} text={text} />
+                    <Badge status={colorrendermap.get(record.result)} text={text} />
                 </span>
             ),
+        },
+        {
+            title: '巡检时间',
+            dataIndex: 'addTime',
+            key: 'addTime',
+            width: 250,
+            ellipsis: true,
         },
     ];
 
     return (
         <PageHeaderWrapper title={pagetitle} extra={operations}>
-            {/* <DictLower
-                typeid="200000000000001001"
+            <DictLower
+                typeid="1428178684907835393"
                 ChangeSelectdata={newvalue => setSelectData(newvalue)}
                 style={{ display: 'none' }}
-            /> */}
+            />
             <Card>
                 <h3>一、软件巡检明细：</h3>
                 <Row gutter={16}>
                     <Form {...formItemLayout} onSubmit={handleSearch}>
                         <Col span={8}>
                             <Form.Item label="区域">
-                                {getFieldDecorator('agentZone', {
+                                {getFieldDecorator('hostZoneId', {
                                     initialValue: '',
-                                })(<Input placeholder="请输入" allowClear />)}
+                                })(<Select placeholder="请选择" allowClear>
+                                    {zonemap.map(obj => (
+                                        <Option key={obj.key} value={obj.dict_code}>
+                                            {obj.title}
+                                        </Option>
+                                    ))}
+                                </Select>)}
                             </Form.Item>
                         </Col>
                         <Col span={8}>
@@ -258,31 +419,37 @@ function SoftDetailView(props) {
                         </Col>
                         <Col span={8}>
                             <Form.Item label="设备IP">
-                                {getFieldDecorator('agentHost', {
+                                {getFieldDecorator('hostIp', {
                                     initialValue: '',
                                 })(<Input placeholder="请输入" allowClear />)}
                             </Form.Item>
                         </Col>
                         <Col span={8}>
                             <Form.Item label="巡检结果">
-                                {getFieldDecorator('executeResult', {
+                                {getFieldDecorator('result', {
                                     initialValue: '',
-                                })(<Input placeholder="请输入" allowClear />)}
+                                })(<Select placeholder="请选择" allowClear>
+                                    {resultmap.map(obj => (
+                                        <Option key={obj.key} value={obj.title}>
+                                            {obj.title}
+                                        </Option>
+                                    ))}
+                                </Select>)}
                             </Form.Item>
                         </Col>
                         <Col span={8}>
                             <Form.Item label="进程名称">
-                                {getFieldDecorator('namename', {
+                                {getFieldDecorator('processName', {
                                     initialValue: '',
                                 })(<Input placeholder="请输入" allowClear />)}
                             </Form.Item>
                         </Col>
-                        <Col span={8}>{extra}</Col>
+                        <Col span={8} style={{ marginTop: 4, textAlign: 'right' }}>{extra}</Col>
                     </Form></Row>
                 <Table
                     columns={columns}
                     loading={loading}
-                    // dataSource={list.rows}
+                    dataSource={softinfolistdetails.rows}
                     rowKey={record => record.id}
                     pagination={pagination}
                     scroll={{ x: 1300 }}
@@ -292,10 +459,9 @@ function SoftDetailView(props) {
     );
 }
 
-export default Form.create({})(SoftDetailView);
-// (
-//     connect(({ autotask, loading }) => ({
-//         autotasklogslist: autotask.autotasklogslist,
-//         loading: loading.models.autotask,
-//     }))(SoftDetailView),
-// );
+export default Form.create({})(
+    connect(({ automation, loading }) => ({
+        softinfolistdetails: automation.softinfolistdetails,
+        loading: loading.models.automation,
+    }))(SoftDetailView),
+);

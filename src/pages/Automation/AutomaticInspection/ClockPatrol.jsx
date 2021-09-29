@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
+import router from 'umi/router';
 import moment from 'moment';
-import { Card, Badge, Button, Table, Form, Input, Row, Col, DatePicker } from 'antd';
+import { Card, Badge, Button, Table, Form, Input, message, Row, Col, DatePicker, Select } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import PatrolconfigModal from './components/PatrolconfigModal';
+import { createclockInspectionall } from './services/api';
+
+const { Option } = Select;
 
 const formItemLayout = {
   labelCol: {
@@ -17,9 +21,18 @@ const formItemLayout = {
 };
 
 const colormap = new Map([
-  ['失败', 'default'],
+  ['失败', 'error'],
   ['成功', 'success'],
+  ['巡检中', 'blue'],
 ]);
+
+const typemap = [{
+  key: '0',
+  title: '巡检全部'
+}, {
+  key: '1',
+  title: '巡检配置'
+}];
 
 function ClockPatrol(props) {
   const pagetitle = props.route.name;
@@ -96,6 +109,17 @@ function ClockPatrol(props) {
     searchdata(1, paginations.pageSize);
   };
 
+  const newDetailView = (Id) => { // 查看报告
+    router.push({
+      pathname: '/automation/automaticinspection/clockpatrol/clockview',
+      query: {
+        Id,
+        addtab: true,
+        menuDesc: '查看报告',
+      },
+    })
+  };
+
   // 查询
   const extra = (<>
     <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
@@ -117,11 +141,16 @@ function ClockPatrol(props) {
       title: '巡检状态',
       dataIndex: 'status',
       key: 'status',
-      // render: (text, record) => (
-      //   <span>
-      //     <Badge status={colormap.get(record.checkStatus)} text={text} />
-      //   </span>
-      // ),
+      render: (text, record) => (
+        <span>
+          <Badge status={colormap.get(record.status)} text={text} />
+        </span>
+      ),
+    },
+    {
+      title: '巡检类型',
+      dataIndex: 'type',
+      key: 'type',
     },
     {
       title: '开始时间',
@@ -137,21 +166,21 @@ function ClockPatrol(props) {
       title: '操作',
       dataIndex: 'action',
       key: 'action',
-      // render: (text, record) => {
-      //   const url = `/inspection/report/download?checkNo=${record.checkNo}`;
-      //   const download = () => {
-      //     window.location.href = url;
-      //   };
-      //   const status = record.checkStatus;
-      //   // const statustext = status.length === 4 ? '下载报告' : '';
-      //   const { checkNo } = record;
-      //   return (
-      //     <>
-      //       {status.length === 4 && status !== 'ERRR' && <a onClick={download}> 下载报告</a>}
-      //       {status === 'ERRR' && <a onClick={() => goon(checkNo)}> 继续巡检</a>}
-      //     </>
-      //   );
-      // },
+      render: (_, record) => {
+        return (
+          <span >
+            {(record.status === '成功') ?
+              <a type="link"
+                onClick={() => newDetailView(record.id)}
+              >查看报告</a>
+              :
+              <a type="link"
+              >
+                继续巡检
+              </a>}
+          </span>
+        );
+      },
     },
   ];
 
@@ -160,18 +189,24 @@ function ClockPatrol(props) {
       <Card>
         <Row>
           <Form {...formItemLayout} onSubmit={handleSearch}>
-            <Col span={5}>
-              <Form.Item label="报告名称">
-                {getFieldDecorator('reportName', {
-                  initialValue: '',
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-            <Col span={5}>
+            <Col span={6}>
               <Form.Item label="巡检人">
                 {getFieldDecorator('checkUser', {
                   initialValue: '',
                 })(<Input placeholder="请输入" allowClear />)}
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item label="巡检类型">
+                {getFieldDecorator('type', {
+                  initialValue: '',
+                })(<Select placeholder="请选择" allowClear>
+                  {typemap.map(obj => (
+                    <Option key={obj.key} value={obj.title}>
+                      {obj.title}
+                    </Option>
+                  ))}
+                </Select>)}
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -207,13 +242,23 @@ function ClockPatrol(props) {
                 </Row>
               </Form.Item>
             </Col>
-            <Col span={6} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>
+            <Col span={4} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>
           </Form>
         </Row>
         <div style={{ marginBottom: 8 }}>
           <Button type="primary" style={{ marginRight: 8 }}
+            onClick={() => createclockInspectionall().then(res => {
+              if (res.code === 200) {
+                message.success(res.msg);
+              } else {
+                message.error(res.msg);
+              }
+            })}
           >巡检全部</Button>
-          <PatrolconfigModal>
+          <PatrolconfigModal
+            onChangeList={() => searchdata(1, 15)}
+            pagename='clockpatrol'
+          >
             <Button type="primary" style={{ marginRight: 8 }}
             >巡检配置</Button>
           </PatrolconfigModal>

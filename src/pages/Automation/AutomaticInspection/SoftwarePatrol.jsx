@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
-import { Card, Badge, Button, Table, Form, Input, Row, Col, DatePicker } from 'antd';
+import { Card, Badge, Button, Table, Form, Input, Row, message, Col, DatePicker, Select, Divider } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import PatrolconfigModal from './components/PatrolconfigModal';
+import { createsoftInspectionall, createsoftReport } from './services/api';
+
+const { Option } = Select;
 
 const formItemLayout = {
   labelCol: {
@@ -18,9 +21,18 @@ const formItemLayout = {
 };
 
 const colormap = new Map([
-  ['失败', 'default'],
+  ['失败', 'error'],
   ['成功', 'success'],
+  ['巡检中', 'blue'],
 ]);
+
+const typemap = [{
+  key: '0',
+  title: '巡检全部'
+}, {
+  key: '1',
+  title: '巡检配置'
+}];
 
 function SoftwarePatrol(props) {
   const pagetitle = props.route.name;
@@ -96,38 +108,29 @@ function SoftwarePatrol(props) {
     searchdata(1, paginations.pageSize);
   };
 
-  const newDetailView = () => {
+  const newDetailView = (Id) => {
     router.push({
       pathname: '/automation/automaticinspection/softwarepatrol/softview',
       query: {
-        Id: Math.random(),
+        Id,
         addtab: true,
         menuDesc: '查看巡检明细',
       },
     })
   };
 
-  // const handledownFileToZip = (id, no) => {
-  //   dispatch({
-  //     type: '',
-  //     payload: {
-  //       id,
-  //     },
-  //   }).then(res => {
-  //     if (res.size === 0 || res.type === 'text/html') {
-  //       message.error('下载失败');
-  //     } else {
-  //       const filename = `${no}_附件.zip`;
-  //       const blob = new Blob([res]);
-  //       const url = window.URL.createObjectURL(blob);
-  //       const a = document.createElement('a');
-  //       a.href = url;
-  //       a.download = filename;
-  //       a.click();
-  //       window.URL.revokeObjectURL(url);
-  //     }
-  //   })
-  // }
+  const handledownFileToZip = (id, no) => { // 下载报告
+    createsoftReport(id).then(res => {
+      const filename = `${no}_报告.docx`;
+      const blob = new Blob([res]);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+  }
 
   // 查询
   const extra = (<>
@@ -150,11 +153,16 @@ function SoftwarePatrol(props) {
       title: '巡检状态',
       dataIndex: 'status',
       key: 'status',
-      // render: (text, record) => (
-      //   <span>
-      //     <Badge status={colormap.get(record.status)} text={text} />
-      //   </span>
-      // ),
+      render: (text, record) => (
+        <span>
+          <Badge status={colormap.get(record.status)} text={text} />
+        </span>
+      ),
+    },
+    {
+      title: '巡检类型',
+      dataIndex: 'type',
+      key: 'type',
     },
     {
       title: '开始时间',
@@ -170,21 +178,24 @@ function SoftwarePatrol(props) {
       title: '操作',
       dataIndex: 'action',
       key: 'action',
-      // render: (text, record) => {
-      //   const url = `/inspection/report/download?checkNo=${record.checkNo}`;
-      //   const download = () => {
-      //     window.location.href = url;
-      //   };
-      //   const status = record.checkStatus;
-      //   // const statustext = status.length === 4 ? '下载报告' : '';
-      //   const { checkNo } = record;
-      //   return (
-      //     <>
-      //       {status.length === 4 && status !== 'ERRR' && <a onClick={download}> 下载报告</a>}
-      //       {status === 'ERRR' && <a onClick={() => goon(checkNo)}> 继续巡检</a>}
-      //     </>
-      //   );
-      // },
+      render: (_, record) => {
+        return (
+          <span style={{ marginTop: 7 }}>
+            {(record.status === '成功') ?
+              <a type="link"
+                onClick={() => handledownFileToZip(record.id, record.no)}
+              >报告下载</a>
+              :
+              <a type="link"
+              >
+                继续巡检
+              </a>}
+            <Divider type="vertical" />
+            <a type="link"
+              onClick={() => newDetailView(record.id)}
+            >查看明细</a></span>
+        );
+      },
     },
   ];
 
@@ -193,18 +204,24 @@ function SoftwarePatrol(props) {
       <Card>
         <Row>
           <Form {...formItemLayout} onSubmit={handleSearch}>
-            <Col span={5}>
-              <Form.Item label="报告名称">
-                {getFieldDecorator('reportName', {
-                  initialValue: '',
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-            <Col span={5}>
+            <Col span={6}>
               <Form.Item label="巡检人">
                 {getFieldDecorator('checkUser', {
                   initialValue: '',
                 })(<Input placeholder="请输入" allowClear />)}
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item label="巡检类型">
+                {getFieldDecorator('type', {
+                  initialValue: '',
+                })(<Select placeholder="请选择" allowClear>
+                  {typemap.map(obj => (
+                    <Option key={obj.key} value={obj.title}>
+                      {obj.title}
+                    </Option>
+                  ))}
+                </Select>)}
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -240,22 +257,26 @@ function SoftwarePatrol(props) {
                 </Row>
               </Form.Item>
             </Col>
-            <Col span={6} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>
+            <Col span={4} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>
           </Form>
         </Row>
         <div style={{ marginBottom: 8 }}>
           <Button type="primary" style={{ marginRight: 8 }}
+            onClick={() => createsoftInspectionall().then(res => {
+              if (res.code === 200) {
+                message.success(res.msg);
+              } else {
+                message.error(res.msg);
+              }
+            })}
           >巡检全部</Button>
-          <PatrolconfigModal>
+          <PatrolconfigModal
+            onChangeList={() => searchdata(1, 15)}
+            pagename='softpatrol'
+          >
             <Button type="primary" style={{ marginRight: 8 }}
             >巡检配置</Button>
           </PatrolconfigModal>
-          <Button type="primary" style={{ marginRight: 8 }}
-          // onClick={() => handledownFileToZip(record.id, record.no)}
-          >报告下载</Button>
-          <Button type="primary" style={{ marginRight: 8 }}
-            onClick={() => newDetailView()}
-          >查看明细</Button>
         </div>
         <Table
           loading={loading}

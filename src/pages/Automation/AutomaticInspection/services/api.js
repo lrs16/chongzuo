@@ -70,6 +70,7 @@ export async function createInspection(ids) {
 export async function createInspectionall() {
     return request(`/inspect/host/createInspection`, {
         method: 'POST',
+        requestType: 'form',
     });
 }
 
@@ -91,10 +92,6 @@ export async function createReport(id) {
 }
 
 // 信息列表 /inspect/host/infoList
-// export async function hostinfoList(pageIndex, pageSize, id, hostZone, hostName) {
-//     return request(`/inspect/host/infoList?pageIndex=${pageIndex}&pageSize=${pageSize}&id=${id}&hostZone=${hostZone}&hostName=${hostName}`);
-// }
-
 export async function hostinfoList(params) {
     return request(`/inspect/host/infoList`, {
         method: 'POST',
@@ -115,5 +112,87 @@ export async function downloadInfoExcel(id) {
 export async function createEvent(id) {
     return request(`/inspect/host/createEvent?id=${id}`, {
         method: 'POST',
+    });
+}
+
+
+// ***************软件巡检
+// 生成软件巡检 /inspect/soft/createInspection
+export async function createsoftInspection(ids) {
+    return request(`/inspect/soft/createInspection?ids=${ids}`, {
+        method: 'POST',
+    });
+}
+
+// 生成软件巡检-巡检全部 //inspect/soft/createInspection 
+export async function createsoftInspectionall() {
+    return request(`/inspect/soft/createInspection`, {
+        method: 'POST',
+        requestType: 'form',
+    });
+}
+
+// /inspect/soft/createReport 生成报告
+export async function createsoftReport(id) {
+    return request(`/inspect/soft/createReport?id=${id}`, {
+        method: 'GET',
+        responseType: 'blob',
+    });
+}
+
+// 软件信息列表 /inspect/soft/infoList
+export async function softinfoList(params) {
+    return request(`/inspect/soft/infoList`, {
+        method: 'POST',
+        data: params,
+        requestType: 'form',
+    });
+}
+
+// /inspect/soft/downloadInfoExcel 下载软件信息列表
+export async function downloadsoftInfoExcel(id) {
+    return request(`/inspect/soft/downloadInfoExcel?id=${id}`, {
+        method: 'GET',
+        responseType: 'blob',
+    });
+}
+
+// /inspect/soft/createEvent 软件生成事件单
+export async function createsoftEvent(id) {
+    return request(`/inspect/soft/createEvent?id=${id}`, {
+        method: 'POST',
+    });
+}
+
+// ***************时钟巡检
+// 生成时钟巡检 /inspect/clock/createInspection
+export async function createclockInspection(ids) {
+    return request(`/inspect/clock/createInspection?ids=${ids}`, {
+        method: 'POST',
+    });
+}
+
+// 生成软件巡检-巡检全部 /inspect/clock/createInspection 
+export async function createclockInspectionall() {
+    return request(`/inspect/clock/createInspection`, {
+        method: 'POST',
+        requestType: 'form',
+    });
+}
+
+// 时钟信息列表 /inspect/clock/infoList
+export async function clockinfoList(params) {
+    return request(`/inspect/clock/infoList`, {
+        method: 'POST',
+        data: params,
+        requestType: 'form',
+    });
+}
+
+// /inspect/clock/downloadInfoExcel 下载时钟信息列表
+export async function downloadclockInfoExcel(id) {
+    return request(`/inspect/clock/downloadInfoExcel?id=${id}`, {
+        method: 'GET',
+        responseType: 'blob',
     });
 }

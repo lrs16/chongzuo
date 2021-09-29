@@ -52,6 +52,7 @@ function ManualExecuteList(props) {
 
     const searchdata = (page, size) => {
         const values = getFieldsValue();
+        values.taskModes = '1';
         // values.taskStatus = '3' || '4' || '5' || '6' || '7';
         values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
         values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';

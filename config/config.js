@@ -1551,6 +1551,12 @@ export default {
                           icon: 'cloud-server',
                           component: './Automation/AutomaticInspection/ClockPatrol',
                         },
+                        {
+                          path: '/automation/automaticinspection/clockpatrol/clockview',
+                          name: '查看报告',
+                          icon: 'cloud-server',
+                          component: './Automation/AutomaticInspection/ClockDetailView',
+                        },
                       ]
                     },
                   ],

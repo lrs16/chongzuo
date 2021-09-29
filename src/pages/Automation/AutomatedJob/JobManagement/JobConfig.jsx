@@ -306,9 +306,12 @@ function JobConfig(props) {
                             编辑
                         </a>}
                         <Divider type="vertical" />
-                        <Popconfirm title="确定删除吗？" onConfirm={() => handleDelete(record.id)}>
+                        {(record.taskStatus !== '已登记') ? <a type="link" disabled
+                        >
+                            删除
+                        </a> : <Popconfirm title="确定删除吗？" onConfirm={() => handleDelete(record.id)}>
                             <a type="link" style={{ color: 'red' }}>删除</a>
-                        </Popconfirm>
+                        </Popconfirm>}
                     </div>
                 );
             },

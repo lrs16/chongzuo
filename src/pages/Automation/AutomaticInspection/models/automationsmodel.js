@@ -5,6 +5,8 @@ import {
     inspectionclockList, // 时钟list
     inspectionsoftList, // 软件list
     hostinfoList, // 信息列表
+    softinfoList, // 软件信息列表
+    clockinfoList, // 时钟信息列表
 } from '../services/api';
 
 export default {
@@ -17,6 +19,8 @@ export default {
         softlist: {},
         info: undefined,
         infolistdetails: {},
+        softinfolistdetails: {},
+        clockinfolistdetails: {},
     },
 
     effects: {
@@ -59,6 +63,22 @@ export default {
                 type: 'hostinfolist',
                 payload: response.data,
             });
+        }, 
+
+        *querysoftinfoList({ payload }, { call, put }) { // 软件信息list post
+            const response = yield call(softinfoList, payload);
+            yield put({
+                type: 'softinfolist',
+                payload: response.data,
+            });
+        }, 
+
+        *queryclockinfoList({ payload }, { call, put }) { // 时钟信息list post
+            const response = yield call(clockinfoList, payload);
+            yield put({
+                type: 'clockinfolist',
+                payload: response.data,
+            });
         },
     },
 
@@ -96,6 +116,20 @@ export default {
                 ...state,
                 infolistdetails: action.payload,
             };
-        }
+        },
+
+        softinfolist(state, action) { // 软件信息列表
+            return {
+                ...state,
+                softinfolistdetails: action.payload,
+            };
+        }, 
+
+        clockinfolist(state, action) { // 软件信息列表
+            return {
+                ...state,
+                clockinfolistdetails: action.payload,
+            };
+        },
     },
 };
