@@ -179,139 +179,133 @@ function AddholidaySetting(props) {
       return;
     }
 
-
-
-
     target.editable = false;
-    // const id = target.id === '' ? '' : target.id;
     //  保存数据
     setNewButton(false);
   }
 
-  console.log(data, 'data')
-
-
+  //  保留这部分代码，日后用到
   //  设置时间的范围
-  const disabledStartDate = (startValue, type,detailstart,detailend) => {
-    if (type === 'create') {
-      const { endValue } = time;
-      if (!startValue || !endValue) {
-        console.log(11)
-        return false;
-      }
+  // const disabledStartDate = (startValue, type,detailstart,detailend) => {
+  //   if (type === 'create') {
+  //     const { endValue } = time;
+  //     if (!startValue || !endValue) {
+  //       console.log(11)
+  //       return false;
+  //     }
 
-      console.log(startValue,'startValue');
-      console.log(detailstart,'detailstart');
+  //     console.log(startValue,'startValue');
+  //     console.log(detailstart,'detailstart');
 
-      return detailstart.valueOf() > detailend.valueOf()
-    }
+  //     return detailstart.valueOf() > detailend.valueOf()
+  //   }
 
-    if (type === 'duty') {
-      const { endValue } = dutytime;
-      if (!startValue || !endValue) {
-        return false;
-      }
-      return startValue.valueOf() > endValue.valueOf()
-    }
+  //   if (type === 'duty') {
+  //     const { endValue } = dutytime;
+  //     if (!startValue || !endValue) {
+  //       return false;
+  //     }
+  //     return startValue.valueOf() > endValue.valueOf()
+  //   }
 
-  }
-  const handleStartOpenChange = (open, type) => {
-    if (!open && type === 'create') {
-      const obj = time;
-      obj.endOpen = true;
-      setTime(obj);
-    }
+  // }
+  // const handleStartOpenChange = (open, type) => {
+  //   if (!open && type === 'create') {
+  //     const obj = time;
+  //     obj.endOpen = true;
+  //     setTime(obj);
+  //   }
 
-    if (!open && type === 'duty') {
-      const obj = dutytime;
-      obj.endOpen = true;
-      setDutytime(obj);
-    }
-  };
+  //   if (!open && type === 'duty') {
+  //     const obj = dutytime;
+  //     obj.endOpen = true;
+  //     setDutytime(obj);
+  //   }
+  // };
 
-  const disabledEndDate = (endValue, type,detailstart,detailend) => {
-    if (type === 'create') {
-      const { startValue } = time;
-      if (!endValue || !startValue) {
-        return false;
-      }
-      return (detailend || endValue).valueOf() <= (detailstart || startValue).valueOf();
-    }
+  // const disabledEndDate = (endValue, type,detailstart,detailend) => {
+  //   if (type === 'create') {
+  //     const { startValue } = time;
+  //     if (!endValue || !startValue) {
+  //       return false;
+  //     }
+  //     return (detailend || endValue).valueOf() <= (detailstart || startValue).valueOf();
+  //   }
 
-    if (type === 'duty') {
-      const { startValue } = dutytime;
-      if (!endValue || !startValue) {
-        return false;
-      }
-      return endValue.valueOf() <= startValue.valueOf();
-    }
+  //   if (type === 'duty') {
+  //     const { startValue } = dutytime;
+  //     if (!endValue || !startValue) {
+  //       return false;
+  //     }
+  //     return endValue.valueOf() <= startValue.valueOf();
+  //   }
 
-  };
+  // };
 
-  const timeonChange = (field, value, type) => {
-    if (type === 'create') {
-      const obj = time;
-      switch (field) {
-        case 'startValue':
-          obj.startValue = value;
-          setTime(obj);
-          break;
-        case 'endValue':
-          obj.endValue = value;
-          setTime(obj);
-          break;
-        default:
-          break;
-      }
-    }
+  // const timeonChange = (field, value, type) => {
+  //   if (type === 'create') {
+  //     const obj = time;
+  //     switch (field) {
+  //       case 'startValue':
+  //         obj.startValue = value;
+  //         setTime(obj);
+  //         break;
+  //       case 'endValue':
+  //         obj.endValue = value;
+  //         setTime(obj);
+  //         break;
+  //       default:
+  //         break;
+  //     }
+  //   }
 
-    if (type === 'duty') {
-      const obj = dutytime;
-      switch (field) {
-        case 'startValue':
-          obj.startValue = value;
-          setDutytime(obj);
-          break;
-        case 'endValue':
-          obj.endValue = value;
-          setDutytime(obj);
-          break;
-        default:
-          break;
-      }
-    }
+  //   if (type === 'duty') {
+  //     const obj = dutytime;
+  //     switch (field) {
+  //       case 'startValue':
+  //         obj.startValue = value;
+  //         setDutytime(obj);
+  //         break;
+  //       case 'endValue':
+  //         obj.endValue = value;
+  //         setDutytime(obj);
+  //         break;
+  //       default:
+  //         break;
+  //     }
+  //   }
 
-  };
+  // };
 
-  const hancleChange = (value, option) => {
-    const { values } = option.props;
-    setFieldsValue(
-      {
-        groupName: values,
-      }
-    )
-  }
+  // const hancleChange = (value, option) => {
+  //   const { values } = option.props;
+  //   setFieldsValue(
+  //     {
+  //       groupName: values,
+  //     }
+  //   )
+  // }
 
-  const onStartChange = (value, type) => {
-    timeonChange('startValue', value, type);
-  };
+  // const onStartChange = (value, type) => {
+  //   timeonChange('startValue', value, type);
+  // };
 
-  const onEndChange = (value, type) => {
-    timeonChange('endValue', value, type);
-  };
+  // const onEndChange = (value, type) => {
+  //   timeonChange('endValue', value, type);
+  // };
 
-  const handleEndOpenChange = (open, type) => {
-    if (type === 'create') {
-      const obj = time;
-      obj.endOpen = open
-      setTime(obj);
-    } else {
-      const obj = dutytime;
-      obj.endOpen = open
-      setDutytime(obj);
-    }
+  // const handleEndOpenChange = (open, type) => {
+  //   if (type === 'create') {
+  //     const obj = time;
+  //     obj.endOpen = open
+  //     setTime(obj);
+  //   } else {
+  //     const obj = dutytime;
+  //     obj.endOpen = open
+  //     setDutytime(obj);
+  //   }
 
-  };
+  // };
 
   const columns = [
     {

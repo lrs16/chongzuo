@@ -24,6 +24,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
     editSign,
     noEdit,
   } = props;
+  console.log(assessmentConfirmation.scoreId,'assessmentConfirmation.scoreId')
   const [selectdata, setSelectData] = useState('');
 
   const required = true;
@@ -48,6 +49,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
       key,
       props: { value },
     } = option;
+    console.log(key,'key')
     switch (params) {
       case 'assessType':
         setFieldsValue({
@@ -73,7 +75,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
           target2Id: key,
           clause: '',
         });
-        getclausedetail(key, assessmentConfirmation.scoreId);
+        getclausedetail(key,assessmentConfirmation.scoreId);
         break;
       case 'clause': {
         const {

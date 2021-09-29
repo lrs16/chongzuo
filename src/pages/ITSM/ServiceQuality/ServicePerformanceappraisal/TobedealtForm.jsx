@@ -196,7 +196,6 @@ function TobedealtForm(props) {
       taskData.hisTasks && uservisible === false
     ) {
       const { providerId, scoreId, target1Id, target2Id, assessType } = currentTask;
-      console.log('target2Id: ', target2Id);
       let comfirmScoreid;
       if (taskData && taskData.clause && taskData.clause.scoreId) {
         comfirmScoreid = taskData.clause.scoreId;
@@ -215,12 +214,14 @@ function TobedealtForm(props) {
         tar2 = hisTasks[0]['服务绩效考核登记'].target2Id;
       }
 
+      console.log(tar2,'tar2')
+
       if (providerId || noeditProviderid) {
         getContrractname( providerId || noeditProviderid );
       }
 
-      if (sored || type || scoreId) {
-        getTarget1(sored || type || scoreId);
+      if (assessType || type) {
+        getTarget1(assessType || type );
       }
 
       if (target1Id || tar1) {

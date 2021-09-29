@@ -32,40 +32,12 @@ const formItemLayout = {
   }
 }
 
-let startTime;
-let endTime;
 const format = 'HH:mm';
 
 const { Option } = Select;
 const { Search } = Input;
 
-const columns = [
-  {
-    title: '序号',
-    key: 'index',
-    dataIndex: 'index'
-  },
-  {
-    title: '操作人',
-    key: 'operatorName',
-    dataIndex: 'operatorName'
-  },
-  {
-    title: '操作',
-    key: 'operate',
-    dataIndex: 'operate'
-  },
-  {
-    title: '操作描述',
-    key: 'comment',
-    dataIndex: 'comment'
-  },
-  {
-    title: '操作时间',
-    key: 'ctime',
-    dataIndex: 'ctime'
-  },
-]
+
 
 const withClick = (element, handleClick = () => { }) => {
   return <element.type {...element.props} onClick={handleClick} />
@@ -88,21 +60,49 @@ function SettingDetails(props) {
     currentYear,
     pagetitle
   } = props;
+
+  console.log(settingDetails, 'settingDetails')
   const [directorlist, setDirectorlist] = useState([]);// 值班人
   const [shiftlist, setShiftlist] = useState([]);// 值班人
 
   const required = true;
+
+  const columns = [
+    {
+      title: '序号',
+      key: 'index',
+      dataIndex: 'index',
+      render:(text,record,index) =>{
+        return (<span>{index+1}</span>)
+      }
+    },
+    {
+      title: '操作人',
+      key: 'operatorName',
+      dataIndex: 'operatorName'
+    },
+    {
+      title: '操作',
+      key: 'operate',
+      dataIndex: 'operate'
+    },
+    {
+      title: '操作描述',
+      key: 'comment',
+      dataIndex: 'comment'
+    },
+    {
+      title: '操作时间',
+      key: 'ctime',
+      dataIndex: 'ctime'
+    },
+  ]
 
   const handleopenClick = () => {
     if (title === '编辑排班信息') {
       dispatch({
         type: 'shiftsandholidays/fetchscheduleDetail',
         payload: id
-      })
-    }
-    if (title !== '编辑排班信息') {
-      dispatch({
-        type: 'shiftsandholidays/clearstaff',
       })
     }
     setVisible(true)
@@ -182,6 +182,9 @@ function SettingDetails(props) {
   };
 
   const handleCancel = () => {
+    dispatch({
+      type: 'shiftsandholidays/clearstaff',
+    })
     setVisible(false)
   }
 
@@ -248,41 +251,6 @@ function SettingDetails(props) {
     })
   }
 
-  const startOnchange = (time, timeString) => {
-    startTime = timeString
-  }
-
-  const endOnchange = (time, timeString) => {
-    endTime = timeString
-  }
-
-  const disabledHours = (time1, time2, time3) => {
-    if (startTime) {
-      const hours = startTime.split(':');
-      const nums = [];
-      for (let i = 0; i < hours[0] - 1; i += 1) {
-        nums.push(i + 1);
-      }
-      return nums;
-    }
-
-  }
-
-  const startdisabledHours = () => {
-    if (endTime) {
-      const hours = endTime.split(':');
-      const nums = [];
-      for (let i = 0; i < 24 - hours[0]; i += 1) {
-        nums.push(Number(hours[0]) + i);
-      }
-      return nums;
-    }
-  }
-
-  const disabledMinutes = (time1, time2, time3) => {
-
-  }
-
   const handleSelecttime = (value) => {
     setFieldsValue({ weekday: moment(value).format('dddd') })
   }
@@ -296,8 +264,8 @@ function SettingDetails(props) {
         width={720}
         centered='true'
         maskClosable='true'
+        destroyOnClose='true'
         onClose={handleCancel}
-        destroyOnClose={true}
       >
         <Form {...formItemLayout}>
           <Form.Item label="值班人">
@@ -346,7 +314,7 @@ function SettingDetails(props) {
                 ],
                 initialValue: settingDetails.staffPhone,
               }
-              )(<Input   disabled={pagetitle === '排班查询' || new Date().valueOf() > new Date(settingDetails.dutyDate).valueOf()}/>)
+              )(<Input disabled={pagetitle === '排班查询' || new Date().valueOf() > new Date(settingDetails.dutyDate).valueOf()} />)
             }
 
           </Form.Item>
@@ -447,7 +415,7 @@ function SettingDetails(props) {
                           message: '请选择时间',
                         },
                       ],
-                      initialValue: settingDetails.shift ? moment(settingDetails.shift.beginTime, format) : ''
+                      initialValue: (settingDetails.shift && settingDetails.shift.beginTime) ? moment(settingDetails.shift.beginTime, format) : ''
                     },
                   )(
                     <TimePicker
@@ -473,7 +441,7 @@ function SettingDetails(props) {
                           message: '请选择时间',
                         },
                       ],
-                      initialValue: settingDetails.shift ? moment(settingDetails.shift.endTime, format) : ''
+                      initialValue: (settingDetails.shift && settingDetails.shift.endTime) ? moment(settingDetails.shift.endTime, format) : ''
                     },
                   )(
                     <TimePicker
@@ -534,17 +502,17 @@ function SettingDetails(props) {
           </Button>
 
           {
-             pagetitle !== '排班查询' && (
+            pagetitle !== '排班查询' && (
               <Button onClick={handleOk} type='primary' style={{ marginRight: 8 }}>
-              确定
-            </Button>
+                确定
+              </Button>
             )
           }
-       
+
 
 
           {
-           pagetitle !== '排班查询' && settingDetails && settingDetails.dutyDate &&  new Date().valueOf() < new Date(settingDetails.dutyDate).valueOf() && (
+            pagetitle !== '排班查询' && settingDetails && settingDetails.dutyDate && new Date().valueOf() < new Date(settingDetails.dutyDate).valueOf() && (
               <Button onClick={handleDelete} type='danger' ghost>
                 删除
               </Button>

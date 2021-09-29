@@ -46,7 +46,6 @@ function AdddutyPersonnelSetting(props) {
     onDelete,
     personnelSetting
   } = props;
-  console.log(personnelSetting,'personnelSetting')
   const [directorlist, setDirectorlist] = useState([]); 
   const [spinloading, setSpinLoading] = useState(true);
   const [select, setSelect] = useState([]);
@@ -178,6 +177,7 @@ function AdddutyPersonnelSetting(props) {
         title={title}
         width={720}
         centered='true'
+        destroyOnClose='true'
         maskClosable='true'
         onClose={handleCancel}
       >
@@ -314,6 +314,7 @@ function AdddutyPersonnelSetting(props) {
                     message: '请输入正确的手机号',
                   },
                 ],
+                initialValue: personnelSetting.phone
               })(<Input />)
             }
           </Form.Item>

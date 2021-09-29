@@ -431,7 +431,7 @@ function DutypersonnelSetting(props) {
                 {getFieldDecorator('deptName', {
                   initialValue: cacheinfo.deptName,
                 })(
-                  <Input disabled />
+                  <Input />
                 )}
               </Form.Item>
             </Col>
