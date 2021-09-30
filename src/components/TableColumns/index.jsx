@@ -31,7 +31,7 @@ function TableColumns(props) {
   return (
     <>
       <InputGroup compact>
-        <Input onChange={e => setSearchKey(e.target.value)} placeholder="请输入" allowClear style={{ width: 300 }} />
+        <Input onChange={e => setSearchKey(e.target.value)} placeholder="请输入" allowClear style={{ width: '50%' }} />
         <Button type="primary" onClick={() => handleSearch()} >查询</Button>
         <Button onClick={() => setSearchRow(undefined)} >重 置</Button>
       </InputGroup>

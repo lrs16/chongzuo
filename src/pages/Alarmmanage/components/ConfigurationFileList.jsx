@@ -281,11 +281,11 @@ function ConfigurationFileList(props) {
       title: '配置文件名称',
       dataIndex: 'seventhClassify',
       key: 'seventhClassify',
-      width: 180,
+      width: 120,
       onCell: () => {
         return {
           style: {
-            maxWidth: 180,
+            maxWidth: 120,
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
@@ -351,36 +351,36 @@ function ConfigurationFileList(props) {
           </Tooltip>)
       }
     },
-    {
-      title: '配置文件大小',
-      dataIndex: 'key1',
-      key: 'key1',
-      width: 180,
-    },
-    {
-      title: '配置文件内容',
-      dataIndex: 'warnContent1',
-      key: 'warnContent1',
-      width: 180,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 300,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
-    },
-    {
-      title: '配置文件版本号',
-      dataIndex: 'key3',
-      key: 'key3',
-      width: 180,
-    },
+    // {
+    //   title: '配置文件大小',
+    //   dataIndex: 'key1',
+    //   key: 'key1',
+    //   width: 180,
+    // },
+    // {
+    //   title: '配置文件内容',
+    //   dataIndex: 'warnContent1',
+    //   key: 'warnContent1',
+    //   width: 180,
+    //   onCell: () => {
+    //     return {
+    //       style: {
+    //         maxWidth: 300,
+    //         overflow: 'hidden',
+    //         whiteSpace: 'nowrap',
+    //         textOverflow: 'ellipsis',
+    //         cursor: 'pointer'
+    //       }
+    //     }
+    //   },
+    //   render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+    // },
+    // {
+    //   title: '配置文件版本号',
+    //   dataIndex: 'key3',
+    //   key: 'key3',
+    //   width: 180,
+    // },
     {
       title: '告警时间',
       dataIndex: 'warnTime',
@@ -444,13 +444,6 @@ function ConfigurationFileList(props) {
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item label="设备名称">
-                {getFieldDecorator('thirdClassify')(
-                  <Input allowClear />
-                )}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
               <Form.Item label="监测内容">
                 {getFieldDecorator('secondClassify')(
                   <Select placeholder="请选择" allowClear>
@@ -463,7 +456,13 @@ function ConfigurationFileList(props) {
                 )}
               </Form.Item>
             </Col>
-
+            <Col span={8}>
+              <Form.Item label="设备名称">
+                {getFieldDecorator('thirdClassify')(
+                  <Input allowClear />
+                )}
+              </Form.Item>
+            </Col>
             {expand && (
               <>
                 {pagetitle === '配置文件变更告警' && (
@@ -566,7 +565,7 @@ function ConfigurationFileList(props) {
           dataSource={list.records || []}
           loading={loading}
           rowKey={record => record.id}
-          scroll={{ x: 2750 }}
+          scroll={{ x: 2250 }}
           pagination={pagination}
         />
       </Card>

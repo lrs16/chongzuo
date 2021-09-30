@@ -485,23 +485,14 @@ function ITHomePage(props) {
     resetFields();
     setPageinations({ current: 1, pageSize: 10 });
     setActiveKey('全部待办');
-    setOrderType('event');
-    validateFields((err, values) => {
-      if (err) {
-        return;
-      }
-      searchdata(values, 1, 15, 'event', '全部待办');
-    });
+    // setOrderType('event');
+    // validateFields((_, values) => {
+    //   searchdata(values, 1, 15, 'event', '全部待办');
+    // });
   };
 
-  useEffect(() => {
-    if (location.state && location.state.reset) {
-      // 点击菜单刷新
-      handleReset()
-    }
-  }, [location.state]);
-
   const handleTabs = key => {
+    console.log(key)
     handleReset();
     validateFields((err, values) => {
       if (!err) {
@@ -529,6 +520,14 @@ function ITHomePage(props) {
     };
     setActiveKey('全部待办')
   };
+
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      // 点击菜单刷新
+      handleReset();
+      handleTabs('event')
+    }
+  }, [location.state]);
 
   const changePage = page => {
     validateFields((err, values) => {
@@ -644,7 +643,7 @@ function ITHomePage(props) {
 
   return (
     <>
-      <h3>
+      {/* <h3>
         <span>关键指标</span>
         <Radio.Group defaultValue="a" style={{ float: 'right' }}>
           <Radio.Button value="a">本日</Radio.Button>
@@ -664,9 +663,14 @@ function ITHomePage(props) {
         <Col span={6}>
           <ChartCard title="功能使用情况排名" style={{ height: 315 }} />
         </Col>
-      </Row>
+      </Row> */}
       <h3 style={{ paddingTop: 12, paddingBottom: 6 }}>我的工作台</h3>
-      <Card tabList={tabsmap} onTabChange={handleTabs} className={styles.home}>
+      <Card
+        tabList={tabsmap}
+        onTabChange={handleTabs}
+        className={styles.home}
+        activeTabKey={ordertype}
+      >
         <div style={{ width: '100%', paddingLeft: '48%' }} > <Spin spinning={tabskeys.length === 0} style={{ marginTop: 12 }} /></div>
         <Tabs activeKey={activeKey} onChange={callback}>
           {tabskeys.map(obj => [

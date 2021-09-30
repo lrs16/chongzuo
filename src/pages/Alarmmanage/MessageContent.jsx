@@ -6,7 +6,6 @@ import TypeContext from '@/layouts/MenuContext';
 import { ChartCard } from '@/components/Charts';
 import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
 import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
-import ButtonGroup from './components/ButtonGroup';
 import MessagesList from './components/MessagesList';
 
 const cols = {
@@ -26,7 +25,6 @@ const cols = {
 function MessageContent(props) {
   const { Donutdata, Smoothdata, dispatch, loading } = props;
   const { tabActivekey, tabdate, warnModule } = useContext(TypeContext);
-  console.log(tabdate, tabActivekey)
 
   const getdatas = () => {
     dispatch({
