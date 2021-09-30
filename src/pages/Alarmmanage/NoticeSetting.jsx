@@ -16,6 +16,7 @@ const data = [
     key: '13214576859',
     key4: '短信',
     key5: '2020-04-22 09:18:49',
+    key6: '告警，确认告警，取消告警'
   },
   {
     val: '林辛',
@@ -23,6 +24,7 @@ const data = [
     key: '13785769440',
     key4: '短信',
     key5: '2020-04-22 09:18:49',
+    key6: '确认告警，取消告警'
   },
   {
     val: '朱强生',
@@ -30,6 +32,7 @@ const data = [
     key: '137857694450',
     key4: '短信',
     key5: '2020-04-22 09:18:49',
+    key6: '告警'
   },
 ]
 
@@ -73,6 +76,11 @@ function NoticeSetting(props) {
       key: 'key',
     },
     {
+      title: '告警项',
+      dataIndex: 'key6',
+      key: 'key6',
+    },
+    {
       title: '通知方式',
       dataIndex: 'key4',
       key: 'key4',
@@ -90,9 +98,7 @@ function NoticeSetting(props) {
         }
         return (
           <span>
-            <a onClick={() => handleSetting()}>移除</a>
-            <Divider type='vertical' />
-            <a onClick={() => handleSetting()}>查看详情</a>
+            <a onClick={() => handleSetting()}>编辑</a>
           </span>
         )
       },

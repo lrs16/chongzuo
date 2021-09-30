@@ -88,3 +88,21 @@ export async function hisWarnList(params) {
     requestType: 'form',
   });
 }
+
+// 生成工单 /warn/biz/createOrder
+export async function createOrder(params) {
+  return request(`/warn/biz/createOrder`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 获取已生成工单/warn/biz/getOrder
+export async function getOrder(params) {
+  return request(`/warn/biz/getOrder`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}

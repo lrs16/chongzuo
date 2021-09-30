@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { Tree, Form, Row, Col, Input, Drawer, Button } from 'antd';
+import { Tree, Form, Row, Col, Input, Drawer, Button, AutoComplete } from 'antd';
+import { SearchUsers } from '../../SysManage/services/api';
 
 const { TreeNode } = Tree;
+const { Search } = Input;
+const { Option } = AutoComplete;
 
 const formItemLayout = {
   labelCol: {
@@ -20,6 +23,7 @@ function NoticTree(props) {
   const [expandedKeys, setExpandedKeys] = useState([]);
   const [checkedKeys, setCheckedKeys] = useState([]);
   const [selectedKeys, setSelectedKeys] = useState([]);
+  const [users, setUsers] = useState([]);
 
   const hanldleCancel = () => {
     ChangeVisible(false)
@@ -36,6 +40,35 @@ function NoticTree(props) {
   const onSelect = (Keys, info) => {
     setSelectedKeys(Keys)
   };
+
+  const Searchuser = (queKey) => {
+    if (queKey) {
+      SearchUsers({ queKey, page: 1, limit: 100 }).then(res => {
+        if (res.code === 200) {
+          setUsers(res.data.rows)
+        }
+      })
+    };
+  }
+
+  const handleSelectduser = (v, opt) => {
+    setFieldsValue({
+      key1: opt.props.user.userName,
+      key2: opt.props.user.deptNameExt,
+      key3: opt.props.user.userPhone,
+    })
+  }
+
+  // 用户列表
+  const userlist = users.map(opt => (
+    <Option key={opt.id} value={opt.userName} user={opt}>
+      <div>
+        <span>{opt.userName}</span>
+        <span>{opt.deptNameExt}</span>
+        <span>{opt.userPhone}</span>
+      </div>
+    </Option>
+  ));
 
   const getTypebykey = key => {
     if (selectdata.ischange) {
@@ -74,7 +107,25 @@ function NoticTree(props) {
             <Col span={24}>
               <Form.Item label="告警通知人">{
                 getFieldDecorator('key1')(
-                  <Input allowClear disabled={openType === 'view'} />
+                  <>
+                    <AutoComplete
+                      defaultActiveFirstOption={false}
+                      filterOption={false}
+                      optionLabelProp="value"
+                      dataSource={userlist}
+                      dropdownMatchSelectWidth={false}
+                      getPopupContainer={triggerNode => triggerNode.parentNode}
+                      dropdownStyle={{ width: 600 }}
+                      onSelect={(v, opt) => handleSelectduser(v, opt)}
+                      disabled={openType === 'view'}
+                    >
+                      <Search
+                        placeholder="可输入姓名或用户ID搜索"
+                        onSearch={values => Searchuser(values)}
+                        allowClear
+                      />
+                    </AutoComplete>
+                  </>
                 )}
               </Form.Item>
             </Col>

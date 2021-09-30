@@ -3,6 +3,7 @@ import router from 'umi/router';
 import { connect } from 'dva';
 import { Button, Dropdown, Message, Menu } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
+import { createOrder } from '../services/api';
 
 function ButtonGroup(props) {
   const { selectedRowKeys, selectRowdata, values, ChangeSelects, dispatch } = props;
@@ -61,29 +62,49 @@ function ButtonGroup(props) {
   }
 
   const handleMenuClick = e => {
-    const alarmlist = selectRowdata.filter(obj => {
-      return obj.configstatus === '0' && obj.elimination === '1';
-    });
     const { key } = e;
-    if (selectedRowKeys.length < 1) {
-      Message.error('至少选择一条告警记录');
-    } else {
-      router.push({
-        pathname: ``,
-        query: {
-          id: selectedRowKeys,
-          datas: alarmlist,
-          key,
-        },
-      });
+    if (selectedRowKeys && selectedRowKeys.length === 1) {
+      const warnId = selectRowdata[0].id;
+      createOrder({ orderType: key, warnId }).then(res => {
+        if (res.code === 200) {
+          Message.success(res.msg);
+          switch (key) {
+            case 'event':
+              router.push({
+                pathname: `/ITSM/eventmanage/to-do`,
+                query: { pathpush: true },
+                state: { cache: false }
+              });
+              break;
+            case 'problem':
+              router.push({
+                pathname: `/ITSM/problemmanage/besolved`,
+                query: { pathpush: true },
+                state: { cache: false }
+              });
+              break;
+            case 'trouble':
+              router.push({
+                pathname: `/ITSM/faultmanage/todolist`,
+                query: { pathpush: true },
+                state: { cache: false }
+              });
+              break;
+            default:
+              break;
+          }
+        } else {
+          Message.error('操作失败');
+        }
+      })
     }
   };
 
   const menu = (
     <Menu onClick={handleMenuClick}>
-      <Menu.Item key="0">事件工单</Menu.Item>
-      <Menu.Item key="1">问题工单</Menu.Item>
-      <Menu.Item key="3">故障工单</Menu.Item>
+      <Menu.Item key="event">事件工单</Menu.Item>
+      <Menu.Item key="problem">问题工单</Menu.Item>
+      <Menu.Item key="trouble">故障工单</Menu.Item>
     </Menu>
   );
 
@@ -93,7 +114,7 @@ function ButtonGroup(props) {
         确认告警
       </Button>
       <Button style={{ marginRight: 8 }} onClick={() => handleConfig('已确认', '待确认')}>取消确认</Button>
-      <Dropdown overlay={menu}>
+      <Dropdown overlay={menu} disabled={selectedRowKeys && selectedRowKeys.length !== 1}>
         <Button type="primary" style={{ marginRight: 8 }}>
           派发工单 <DownOutlined />
         </Button>
