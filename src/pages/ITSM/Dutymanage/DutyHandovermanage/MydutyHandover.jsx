@@ -67,8 +67,6 @@ function MydutyHandover(props) {
     loading,
   } = props;
 
-  console.log(logbookSearcharr, 'logbookSearcharr')
-
   let formThead;
 
   const [expand, setExpand] = useState(false);
@@ -140,6 +138,21 @@ function MydutyHandover(props) {
     </Button></>
   );
 
+  const todetail = (record,type) => {
+    router.push({
+      pathname: '/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/newhandover',
+      query: {
+        Id: record.id,
+        id: record.id,
+        type
+      },
+      state:{
+        dynamicpath: true,
+        menuDesc: '我的交接班详情',
+      }
+    })
+  }
+
   const initialColumns = [
     {
       title: '值班交接编号',
@@ -147,20 +160,7 @@ function MydutyHandover(props) {
       key: 'logbookNo',
       width: 250,
       render: (text, record) => {
-        const todetail = () => {
-          router.push({
-            pathname: '/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/newhandover',
-            query: {
-              Id: record.id,
-              id: record.id,
-            },
-            state:{
-              dynamicpath: true,
-              menuDesc: '我的交接班详情',
-            }
-          })
-        }
-        return <a onClick={todetail}>{text}</a>
+        return <a onClick={()=>todetail(record)}>{text}</a>
       },
     },
     {
@@ -487,6 +487,9 @@ function MydutyHandover(props) {
   // };
 
   // const aa = getTypebyTitle('aaaa');
+  const handleSuccession = () => {
+    todetail(logbookSearcharr[0],'listButton')
+  }
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -730,15 +733,15 @@ function MydutyHandover(props) {
 
         <div>
           {
-            pagetitle === '我的值班交接' && (
+            pagetitle === '我的值班交接' && logbookSearcharr && logbookSearcharr.length === 0 && (
               <Button type="primary" style={{ marginRight: 8 }} onClick={() => newhandover()}>新增</Button>
             )
           }
 
           <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>导出数据</Button>
           {
-            pagetitle === '我的值班交接' && (
-              <Button type="primary">接班</Button>
+            pagetitle === '我的值班交接' && logbookSearcharr && logbookSearcharr.length >0 && logbookSearcharr[0].handoverStatus === '待接班' && (
+              <Button type="primary" onClick={handleSuccession}>接班</Button>
             )
           }
         </div>

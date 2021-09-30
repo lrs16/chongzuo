@@ -89,3 +89,12 @@ import request from '@/utils/request';
     return request(`/duty/logbook/${id}`)
   }
 
+
+  //  导出word
+  export async function logbookWord(id) {
+    return request(`/duty/logbook/word`,{
+      method:'POST',
+      requestType:'form',
+      responseType:'blob'
+    })
+  }

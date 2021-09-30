@@ -324,7 +324,7 @@ function DutyaccordingSetting(props) {
                       删除
                     </Button>
 
-                    {/* <SettingDetails
+                    <SettingDetails
                       title='新增排班信息'
                       settingDetails=''
                       id=''
@@ -337,7 +337,7 @@ function DutyaccordingSetting(props) {
                       <Button type="primary" style={{ marginRight: 8 }}>
                         新增
                       </Button>
-                    </SettingDetails> */}
+                    </SettingDetails>
 
                     <Button
                       type="primary"

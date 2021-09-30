@@ -46,6 +46,7 @@ function AddDutyclassesSetting(props) {
     onDelete,
     classSetting,
   } = props;
+  console.log(classSetting.status === '1' ? true : false)
   const format = 'HH:mm';
   const [selectdata, setSelectData] = useState('');
 
@@ -248,7 +249,7 @@ function AddDutyclassesSetting(props) {
                         format={format}
                         allowClear={false}
                         // disabledHours={startdisabledHours}
-                        onChange={startOnchange}
+                        // onChange={startOnchange}
                         style={{ width: '100%' }}
                       />
                     )}
@@ -271,7 +272,7 @@ function AddDutyclassesSetting(props) {
                         allowClear
                         // disabledHours={disabledHours}
                         format={format}
-                        onChange={endOnchange}
+                        // onChange={endOnchange}
                         style={{ width: '100%' }}
                       />
                     )}
@@ -286,7 +287,7 @@ function AddDutyclassesSetting(props) {
               })(<Switch
                 checkedChildren='开启'
                 unCheckedChildren='关闭'
-                defaultChecked={Number(classSetting.status)}
+                defaultChecked={classSetting.status === '1' ? true : false}
               />)}</Form.Item>
 
             <Form.Item label="创建人">{getFieldDecorator('creatorName', {
@@ -302,6 +303,7 @@ function AddDutyclassesSetting(props) {
           </Form>
 
         </Row>
+
 
         <div
           style={{

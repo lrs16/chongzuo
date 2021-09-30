@@ -30,22 +30,32 @@ const forminladeLayout = {
 
 
 let shift;
+let succession;
+let shiftName;
 function NewHandover(props) {
   const pagetitle = props.route.name;
   const {
     dispatch,
-    location: { query: { id } },
+    location: { query: { id,type } },
     tabdata,
     loading,
     currentUserarr,
     shiftGrouparr,
-    logbookIddetail
+    logbookIddetail,
+    shiftSearcharr,
+    searchUsersarr
   } = props;
 
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  console.log('files: ', files);
 
   const ContentRef = useRef(null);
+
+  const formDetail = () => {
+    dispatch({
+      type: 'shifthandover/fetchlogbookId',
+      payload: id
+    })
+  }
 
   const handleSave = () => { // 保存
     const values = ContentRef.current.getVal();
@@ -54,6 +64,7 @@ function NewHandover(props) {
         return dispatch({
           type: 'shifthandover/fetchlogbookSave',
           payload: {
+            id,
             ...values,
             dutyBeginTime: moment(values.dutyBeginTime).format('YYYY-MM-DD HH:mm:ss'),
             dutyEndTime: moment(values.dutyEndTime).format('YYYY-MM-DD HH:mm:ss'),
@@ -64,6 +75,7 @@ function NewHandover(props) {
           }
         }).then(res => {
           if (res.code === 200) {
+            formDetail()
             message.info(res.msg)
           }
         })
@@ -85,23 +97,22 @@ function NewHandover(props) {
     });
   };
 
+
+
   useEffect(() => {
     dispatch({
       type: 'shifthandover/fetchcurrentUser'
     })
 
     if (id) {
-      dispatch({
-        type: 'shifthandover/fetchlogbookId',
-        payload: id
-      })
+      formDetail()
     }
   }, [id])
 
 
 
   useEffect(() => {
-    if (currentUserarr.groupId) {
+    if (currentUserarr && currentUserarr.groupId) {
       dispatch({
         type: 'shifthandover/fetchshiftGroup',
         payload: { groupId: currentUserarr.groupId }
@@ -109,18 +120,56 @@ function NewHandover(props) {
     }
   }, [currentUserarr])
 
-  if (shiftGrouparr && shiftGrouparr.length > 0) {
-    shift = shiftGrouparr.map(item => {
+  if (shiftGrouparr && (shiftGrouparr.length) > 0) {
+    shift = (shiftGrouparr).map(item => {
       return {
         beginTime: item.beginTime,
         endTime: item.endTime,
         groupName: item.groupName,
         groupId: item.groupId,
         shiftName: item.shiftName,
+        id: item.id,
+      }
+    })
+  }
+
+  useEffect(() => {
+    if (currentUserarr && currentUserarr.groupId) {
+      dispatch({
+        type: 'dutyandtypesetting/staffSearch',
+        payload: {
+          groupId: currentUserarr.groupId,
+          current: 1,
+          size: 1000
+        }
+      })
+    }
+  }, [currentUserarr])
+
+
+
+  if (searchUsersarr && searchUsersarr.records && (searchUsersarr.records).length > 0) {
+    succession = (searchUsersarr.records).map(item => {
+      return {
+        id: item.id,
+        heirName: item.staffName,
+        userId:item.userId,
+      }
+    })
+  }
+
+  console.log(searchUsersarr,'searchUsersarr')
+
+  if (shiftSearcharr && shiftSearcharr.records && (shiftSearcharr.records.length) > 0) {
+    shiftName = (shiftSearcharr.records).map(item => {
+      return {
+        shiftName: item.shiftName,
         id: item.id
       }
     })
   }
+
+  console.log(shiftName, 'shiftName')
 
   // // 重置表单信息
   // useEffect(() => {
@@ -148,43 +197,96 @@ function NewHandover(props) {
       payload: { id }
     }).then(res => {
       if (res.code === 200) {
-        message.info(res.msg);
+        router.push({
+          pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/handoverdetail`,
+          query: {
+            mainId: id,
+            closetab: true,
+          },
+        });
+
+        router.push({
+          pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover`,
+          query: { pathpush: true },
+          state: { cache: false },
+        });
       } else {
         message.error(res.msg);
       }
     })
   }
 
-  console.log(11)
-
-  const logbookTransfer = (id) => {
+  const logbookTransfer = () => {
     return dispatch({
       type: 'shifthandover/fetchlogbookTransfer',
-      payload: id
+      payload: { id }
     }).then(res => {
       if (res.code === 200) {
+        router.push({
+          pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/handoverdetail`,
+          query: {
+            mainId: id,
+            closetab: true,
+          },
+        });
+
+        router.push({
+          pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover`,
+          query: { pathpush: true },
+          state: { cache: false },
+        });
         message.info(res.msg);
       } else {
         message.error(res.msg);
       }
     })
   }
+
+  const download = () => {
+    dispatch({
+      type: 'performanceappraisal/scorecardPrint',
+      payload: {id},
+    }).then(res => {
+      const filename = '下载.doc';
+      const blob = new Blob([res]);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+  };
+
 
   const extrabutton = (
     <>
-      <Button
-        type="danger"
-        ghost
-        style={{ marginRight: 8 }}
-        onClick={handleDelete}
-      >删除</Button >
-      <Button
-        type="primary"
-        style={{ marginRight: 8 }}
-        onClick={() => handleSave()}
-      >
-        导出WORD
-      </Button>
+      {
+        id && (
+          <Button
+            type="danger"
+            ghost
+            style={{ marginRight: 8 }}
+            onClick={handleDelete}
+          >
+            删除
+          </Button >
+        )
+      }
+
+      {
+        id && (
+          <Button
+            type="primary"
+            style={{ marginRight: 8 }}
+            onClick={() => download()}
+          >
+            导出WORD
+          </Button>
+        )
+      }
+
+
       <Button
         type="primary"
         style={{ marginRight: 8 }}
@@ -192,13 +294,19 @@ function NewHandover(props) {
       >
         保存
       </Button>
-      <Button
-        type="primary"
-        style={{ marginRight: 8 }}
-        onClick={() => logbookTransfer()}
-      >
-        确认交班
-      </Button>
+
+      {
+        id && logbookIddetail.handoverStatus === '待接班'&& (
+          <Button
+            type="primary"
+            style={{ marginRight: 8 }}
+            onClick={() => logbookTransfer()}
+          >
+            确认交班
+          </Button>
+        )
+      }
+
       <Button onClick={handleclose}>关闭</Button>
     </>
   )
@@ -210,14 +318,17 @@ function NewHandover(props) {
           loading === false && (
             <Registrat
               forminladeLayout={forminladeLayout}
-              files={logbookIddetail.attachment ? JSON.parse(logbookIddetail.attachment) : []}
+              files={(logbookIddetail && logbookIddetail.attachment) ? JSON.parse(logbookIddetail.attachment) : []}
               wrappedComponentRef={ContentRef}
               currentUserarr={currentUserarr}
-              formrecord={logbookIddetail}
+              formrecord={id ? logbookIddetail : {}}
               shiftinfo={shift}
+              successioninfo={succession}
+              shiftNameinfo={shiftName}
               ChangeFiles={newvalue => {
                 setFiles(newvalue);
               }}
+              type={type}
             />
           )
         }
@@ -228,8 +339,10 @@ function NewHandover(props) {
 }
 
 export default Form.create({})(
-  connect(({ shifthandover, loading }) => ({
+  connect(({ shifthandover, dutyandtypesetting, shiftsandholidays, loading }) => ({
     currentUserarr: shifthandover.currentUserarr,
+    searchUsersarr: dutyandtypesetting.searchUsersarr,
+    shiftSearcharr: shiftsandholidays.shiftSearcharr,
     shiftGrouparr: shifthandover.shiftGrouparr,
     logbookIddetail: shifthandover.logbookIddetail,
     loading: loading.models.shifthandover

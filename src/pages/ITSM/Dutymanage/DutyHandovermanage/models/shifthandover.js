@@ -7,7 +7,8 @@ import {
   logbookTransfer,
   logbookMy,
   logbookId
-} from '../services/api'
+} from '../services/api';
+import router from 'umi/router';
 
 
 export default {
@@ -22,7 +23,35 @@ export default {
 
   effects: {
     *fetchlogbookSave({ payload },{ call, put }) {
-      return yield call(logbookSave,payload)
+      if(payload.logbookNo) {
+        return yield call(logbookSave,payload)
+      } 
+      if(!payload.logbookNo) {
+        const response = yield call(logbookSave,payload);
+        if(response.code === 200) {
+          router.push({
+            pathname:'/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/newhandover',
+            query:{
+              tabid: sessionStorage.getItem('tabid'),
+              closecurrent: true,
+            }
+          });
+          const { id } = response.data;
+          router.push({
+            pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/handoverdetail`,
+            query: { 
+              id,
+              Id:id,
+              },
+              state: {
+                dynamicpath: true,
+                menuDesc: '我的交接班详情',
+              },
+          })
+        }
+      }
+      return []
+    
     },
 
     *fetchlogbookSearch({payload},{call,put}) {
