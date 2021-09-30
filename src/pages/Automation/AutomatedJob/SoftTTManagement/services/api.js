@@ -96,3 +96,12 @@ export async function endAutoSoftWork(workId) {
         method: 'GET',
     });
 }
+
+// 关联工单列表
+export async function queryOrderRelationList(params) {
+    return request(`/common/relation/queryOrderRelationList`, {
+      method: 'POST',
+      data: params,
+      requestType: 'form',
+    });
+  }

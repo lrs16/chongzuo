@@ -182,15 +182,12 @@ function SoftwarePatrol(props) {
         return (
           <span style={{ marginTop: 7 }}>
             {(record.status === '成功') ?
+            <span>
               <a type="link"
                 onClick={() => handledownFileToZip(record.id, record.no)}
               >报告下载</a>
-              :
-              <a type="link"
-              >
-                继续巡检
-              </a>}
-            <Divider type="vertical" />
+              <Divider type="vertical" /></span>
+              : null}
             <a type="link"
               onClick={() => newDetailView(record.id)}
             >查看明细</a></span>

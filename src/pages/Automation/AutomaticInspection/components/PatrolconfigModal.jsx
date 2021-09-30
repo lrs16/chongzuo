@@ -123,7 +123,6 @@ function PatrolconfigModal(props) {
         setSelectedRowKeys([]);
     };
 
-
     const handleopenClick = () => {
         setVisible(true);
         searchdata(1, 15, undefined);

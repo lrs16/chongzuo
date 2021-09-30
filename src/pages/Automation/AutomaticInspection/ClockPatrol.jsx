@@ -168,16 +168,10 @@ function ClockPatrol(props) {
       key: 'action',
       render: (_, record) => {
         return (
-          <span >
-            {(record.status === '成功') ?
+          <span>
               <a type="link"
                 onClick={() => newDetailView(record.id)}
               >查看报告</a>
-              :
-              <a type="link"
-              >
-                继续巡检
-              </a>}
           </span>
         );
       },

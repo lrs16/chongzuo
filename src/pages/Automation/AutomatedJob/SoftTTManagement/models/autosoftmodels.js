@@ -8,6 +8,7 @@ import {
     getAutoSoftWorkDtoById, // 获得作业方案数据
     editAutoSoftWork, // 编辑
     submitAutoSoftWork, // 提交
+    queryOrderRelationList, // 关联工单
 } from '../services/api';
 
 export default {
@@ -18,6 +19,8 @@ export default {
         autosoftworkloglist: {}, // 启停日志列表
         softobjectlist: {}, // 添加对象的数据
         geteditinfo: {}, // 获得作业方案数据
+        list: [],
+        statuscode: ''
     },
 
     effects: {
@@ -97,6 +100,15 @@ export default {
         *tosubmitAutoSoftWork({ payload: { values, workId, workStatus} }, { call }) {
             return yield call(submitAutoSoftWork, values, workId, workStatus);
         },
+
+        *fetcht({ payload }, { put, call }) {
+            const response = yield call(queryOrderRelationList, payload);
+            console.log(response, 'response')
+            yield put({
+            type: 'save',
+            payload: response.data
+            })
+        },
     },
 
     reducers: {
@@ -136,5 +148,13 @@ export default {
                 geteditinfo: action.payload,
             };
         },
+
+        save(state, action) {
+            return {
+              ...state,
+              list: action.payload || [],
+              statuscode: '',
+            };
+          },
     },
 };

@@ -68,12 +68,13 @@ function RelationDrawer(props) {
           relationType: 1
         },
       });
+      ChangeVisible(false);
       setSelectedRowKeys([]);
     };
   }
 
   const hanldleCancel = () => {
-    ChangeVisible(false)
+    ChangeVisible(false);
   };
 
   const handleSearch = (no, status, pageIndex, pageSize) => {

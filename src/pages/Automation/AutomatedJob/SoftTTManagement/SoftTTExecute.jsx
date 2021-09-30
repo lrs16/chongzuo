@@ -423,7 +423,6 @@ function SoftTTExecute(props) {
         visibledrawer={visibledrawer}
         ChangeVisibledrawer={newvalue => setVisibledrawer(newvalue)}
         titledrawer={titledrawer}
-        // dispatch={dispatch}
         recordvalues={recordvalues}
         destroyOnClose
       />

@@ -6,7 +6,7 @@ import Link from 'umi/link';
 import { Table, Card, Button, Form, Input, Tooltip, Row, Col, message, Badge, Select } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import DictLower from '@/components/SysDict/DictLower';
-// import MergeTable from '@/components/MergeTable';
+import MergeTable from './components/MergeTable';
 import { downloadInfoExcel, createEvent } from './services/api';
 
 const { Option } = Select;
@@ -65,7 +65,7 @@ function HostDetailView(props) {
     };
 
     useEffect(() => {
-        if(Id && Id !== '' && Id !== undefined) {
+        if (Id && Id !== '' && Id !== undefined) {
             searchdata(1, 15);
         }
     }, [location && Id]);
@@ -354,23 +354,13 @@ function HostDetailView(props) {
                         </Col>
                         <Col span={8} style={{ marginTop: 4, marginLeft: '8.1%' }}>{extra}</Col>
                     </Form></Row>
-                <Table
-                    columns={columns}
+                <MergeTable
+                    column={columns}
                     loading={loading}
-                    dataSource={infolistdetails.rows}
-                    rowKey={record => record.id}
+                    tableSource={infolistdetails.rows || []}
                     pagination={pagination}
-                    scroll={{ x: 1300 }}
+                    mergecell={mergeCell}
                 />
-                {/* <MergeTable
-                        columns={columns}
-                        // loading={loading}
-                        tableSource={infolistdetails.rows}
-                        // rowKey={record => record.id}
-                        // pagination={pagination}
-                        // scroll={{ x: 1300 }}
-                        mergecell={mergeCell}
-                    /> */}
             </Card>
         </PageHeaderWrapper>
     );

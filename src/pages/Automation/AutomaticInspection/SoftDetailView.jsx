@@ -179,12 +179,43 @@ function SoftDetailView(props) {
         ['正常', 'success'],
     ]);
 
+    // 表格合并
+    const temp = {};
+    const mergeCells = (text, array, columns, unit) => {
+        let i = 0;
+        if (text !== temp[columns]) {
+            temp[columns] = text;
+            if (unit) {
+                array.forEach((item) => {
+                    if (item[columns] === temp[columns] && item[unit] === temp[unit]) {
+                        i += 1;
+                    }
+                });
+            } else {
+                array.forEach((item) => {
+                    if (item[columns] === temp[columns]) {
+                        i += 1;
+                    }
+                });
+            }
+        }
+        return i;
+    };
+
     const columns = [
         {
             title: '区域',
             dataIndex: 'hostZone',
             key: 'hostZone',
             width: 200,
+            render: (text, record) => {
+                const obj = {
+                    children: text,
+                    props: {},
+                };
+                obj.props.rowSpan = mergeCells(record.hostZone, softinfolistdetails.rows, 'hostZone');
+                return obj;
+            },
         },
         {
             title: '设备名称',
@@ -288,6 +319,16 @@ function SoftDetailView(props) {
             key: 'processName',
             width: 200,
             ellipsis: true,
+            render: (text, record) => {
+                const obj = {
+                    children: text,
+                    props: {},
+                };
+                if (softinfolistdetails.rows.length !== 8) {
+                    obj.props.rowSpan = mergeCells(record.processName, softinfolistdetails.rows, 'hostZone', 'processName')
+                };
+                return obj;
+            },
         },
         {
             title: '进程id',
@@ -449,7 +490,7 @@ function SoftDetailView(props) {
                 <Table
                     columns={columns}
                     loading={loading}
-                    dataSource={softinfolistdetails.rows}
+                    dataSource={softinfolistdetails.rows || []}
                     rowKey={record => record.id}
                     pagination={pagination}
                     scroll={{ x: 1300 }}
