@@ -74,7 +74,6 @@ function DutyclassesSetting(props) {
   const [selectdata, setSelectData] = useState('');
 
   const searchdata = (values, current, size) => {
-    console.log('values: ', values);
     const newdata = {
       ...values,
       beginTime: values.beginTime ? moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
@@ -82,7 +81,6 @@ function DutyclassesSetting(props) {
       current,
       size
     }
-    console.log(newdata, 'newdata')
     setTabRecord({ ...newdata })
     dispatch({
       type: 'shiftsandholidays/fetchshiftSearch',

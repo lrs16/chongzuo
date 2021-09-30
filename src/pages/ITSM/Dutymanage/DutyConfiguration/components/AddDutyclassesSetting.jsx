@@ -26,8 +26,8 @@ const formItemLayout = {
   },
 };
 
-let startTime;
-let endTime;
+// let startTime;
+// let endTime;
 
 const { Option } = Select;
 
@@ -67,21 +67,17 @@ function AddDutyclassesSetting(props) {
       const start = (new Date(moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss'))).valueOf();
       const end = (new Date(moment(values.endTime).format('YYYY-MM-DD HH:mm:ss'))).valueOf();
       const newValue = {
-        id:classSetting.id || '',
+        id: classSetting.id || '',
         ...values,
         beginTime: moment(values.beginTime).format('HH:mm'),
         endTime: moment(values.endTime).format('HH:mm'),
         ctime: moment(values.ctime).format('YYYY-MM-DD HH:mm:ss'),
-        status:values.status === true ? '1': '0' 
+        status: values.status === true ? '1' : '0'
       }
 
       if (!err) {
-        if (start >= end) {
-          message.error('开始时间必须小于结束时间')
-        } else {
-          onSubmit(newValue);
-          setVisible(false);
-        }
+        onSubmit(newValue);
+        setVisible(false);
       }
     });
   };
@@ -100,27 +96,27 @@ function AddDutyclassesSetting(props) {
     endTime = timeString;
   };
 
-  const disabledHours = (time1, time2, time3) => {
-    if (startTime) {
-      const hours = startTime.split(':');
-      const nums = [];
-      for (let i = 0; i < hours[0] - 1; i += 1) {
-        nums.push(i + 1);
-      }
-      return nums;
-    }
-  };
+  // const disabledHours = (time1, time2, time3) => {
+  //   if (startTime) {
+  //     const hours = startTime.split(':');
+  //     const nums = [];
+  //     for (let i = 0; i < hours[0] - 1; i += 1) {
+  //       nums.push(i + 1);
+  //     }
+  //     return nums;
+  //   }
+  // };
 
-  const startdisabledHours = () => {
-    if (endTime) {
-      const hours = endTime.split(':');
-      const nums = [];
-      for (let i = 0; i < 24 - hours[0]; i += 1) {
-        nums.push(Number(hours[0]) + i);
-      }
-      return nums;
-    }
-  };
+  // const startdisabledHours = () => {
+  //   if (endTime) {
+  //     const hours = endTime.split(':');
+  //     const nums = [];
+  //     for (let i = 0; i < 24 - hours[0]; i += 1) {
+  //       nums.push(Number(hours[0]) + i);
+  //     }
+  //     return nums;
+  //   }
+  // };
 
   const hancleChange = (value, option) => {
     const { values } = option.props;
@@ -191,12 +187,12 @@ function AddDutyclassesSetting(props) {
               )}
             </Form.Item>
 
-            <Form.Item label='班次类型'> 
+            <Form.Item label='班次类型'>
               {getFieldDecorator('shiftType', {
                 rules: [
                   {
                     required,
-                    message: '请选择班组名称'
+                    message: '请选择班次类型'
                   }
                 ],
                 initialValue: classSetting.shiftType
@@ -245,18 +241,16 @@ function AddDutyclassesSetting(props) {
                             message: '请选择时间',
                           },
                         ],
-                        initialValue: classSetting.beginTime ? moment(classSetting.beginTime,format) : moment(new Date())
+                        initialValue: classSetting.beginTime ? moment(classSetting.beginTime, format) : moment(new Date())
                       },
                     )(
-                        <TimePicker
-                          // defaultValue={moment('12:08', format)}
-                          format={format}
-                          allowClear
-                          disabledHours={startdisabledHours}
-                          // format="HH:mm"
-                          onChange={startOnchange}
-                          style={{ width: '100%' }}
-                        />
+                      <TimePicker
+                        format={format}
+                        allowClear={false}
+                        // disabledHours={startdisabledHours}
+                        onChange={startOnchange}
+                        style={{ width: '100%' }}
+                      />
                     )}
                   </Col>
                   <Col span={2} style={{ textAlign: 'center' }}>-</Col>
@@ -270,15 +264,15 @@ function AddDutyclassesSetting(props) {
                             message: '请选择时间',
                           },
                         ],
-                        initialValue: classSetting.endTime ? moment(classSetting.endTime,format) : moment(new Date())
+                        initialValue: classSetting.endTime ? moment(classSetting.endTime, format) : moment(new Date())
                       },
                     )(
                       <TimePicker
                         allowClear
-                        disabledHours={disabledHours}
-                        format="HH:mm"
+                        // disabledHours={disabledHours}
+                        format={format}
                         onChange={endOnchange}
-                        style={{ minWidth: 120, width: '100%' }}
+                        style={{ width: '100%' }}
                       />
                     )}
                   </Col>
@@ -288,12 +282,12 @@ function AddDutyclassesSetting(props) {
 
             <Form.Item label="启用状态">
               {getFieldDecorator('status', {
-              initialValue: classSetting.status
-            })(<Switch 
-              checkedChildren='开启'
-              unCheckedChildren='关闭'
-              defaultChecked={Number(classSetting.status)}
-            />)}</Form.Item>
+                initialValue: classSetting.status
+              })(<Switch
+                checkedChildren='开启'
+                unCheckedChildren='关闭'
+                defaultChecked={Number(classSetting.status)}
+              />)}</Form.Item>
 
             <Form.Item label="创建人">{getFieldDecorator('creatorName', {
               initialValue: classSetting.creatorName
@@ -350,8 +344,8 @@ AddDutyclassesSetting.defaultProps = {
     ctime: '',
     shiftType: '',
     groupId: '',
-    groupName:'',
-    status:'0'
+    groupName: '',
+    status: '0'
   }
 }
 

@@ -1220,6 +1220,12 @@ export default {
                               component: './ITSM/Dutymanage/DutyHandovermanage/NewHandover'
                             },
                             {
+                              path: '/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/handoverdetail',
+                              name: '值班交接详情',
+                              icon: 'fork',
+                              component: './ITSM/Dutymanage/DutyHandovermanage/NewHandover'
+                            },
+                            {
                               path: '/ITSM/dutymanage/dutyhandovermanage/mydutyhandoversearch',
                               name: '值班交接查询',
                               icon: 'fork',

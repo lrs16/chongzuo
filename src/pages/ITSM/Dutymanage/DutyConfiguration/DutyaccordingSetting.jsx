@@ -273,11 +273,15 @@ function DutyaccordingSetting(props) {
   };
 
   const teamname = getTypebyTitle('班组名称');
+  console.log('teamname: ', teamname);
 
   useEffect(() => {
     const resutlteam = [{ title: '班组信息', children: teamname }]
     setTabledata(resutlteam)
   }, [teamname])
+
+
+
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -320,7 +324,7 @@ function DutyaccordingSetting(props) {
                       删除
                     </Button>
 
-                    <SettingDetails
+                    {/* <SettingDetails
                       title='新增排班信息'
                       settingDetails=''
                       id=''
@@ -333,7 +337,7 @@ function DutyaccordingSetting(props) {
                       <Button type="primary" style={{ marginRight: 8 }}>
                         新增
                       </Button>
-                    </SettingDetails>
+                    </SettingDetails> */}
 
                     <Button
                       type="primary"

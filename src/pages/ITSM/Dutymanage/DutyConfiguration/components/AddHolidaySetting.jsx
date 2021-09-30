@@ -362,7 +362,7 @@ function AddholidaySetting(props) {
       }
     },
     {
-      title: '节日排期开始时间',
+      title: '节日排期时间',
       dataIndex: 'duringTime',
       key: 'duringTime',
       width: 300,

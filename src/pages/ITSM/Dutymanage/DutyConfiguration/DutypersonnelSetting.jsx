@@ -214,7 +214,6 @@ function DutypersonnelSetting(props) {
     jobName: '',
     phone: '',
   }
-
   const cacheinfo = (location.state && location.state.cacheinfo === undefined) ? record : location.state.cacheinfo;
 
   useEffect(() => {

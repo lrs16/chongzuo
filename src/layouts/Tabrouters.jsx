@@ -25,6 +25,7 @@ const alonepath = [
   { path: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform' },
   { path: '/ITSM/servicequalityassessment/addserviceprovidermaintenance' },
   { path: '/ITSM/servicequalityassessment/serviceperformanceappraisal/performancequerydetail' },
+  { path: '/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/newhandover' },
 ];
 
 // 登记或新建

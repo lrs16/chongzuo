@@ -136,12 +136,13 @@ function AdddutyPersonnelSetting(props) {
 
   // 选择下拉值，信息回填
   const handleDisableduser = (v, opt, type) => {
-    const { id, userMobile, deptNameExt, assessType, userName } = opt.props.disableuser;
+    const { id, userMobile, deptNameExt, deptId, userName } = opt.props.disableuser;
     switch (type) {
       case 'director':
         setFieldsValue({
           staffName: userName, // 用户名称
-          directorId: id, // 用户id
+          userId: id, // 用户id
+          deptId,
           deptName: deptNameExt,
           phone: userMobile
         });
@@ -212,6 +213,14 @@ function AdddutyPersonnelSetting(props) {
             {
               getFieldDecorator('userId',{
                 initialValue:personnelSetting.userId
+              })
+            }
+          </Form.Item>
+
+          <Form.Item style={{display:'none'}}>
+            {
+              getFieldDecorator('deptId',{
+                initialValue:personnelSetting.deptId
               })
             }
           </Form.Item>
@@ -364,7 +373,8 @@ AdddutyPersonnelSetting.defaultProps = {
     deptId: '',
     groupId: '',
     jobName: '',
-    jobId: ''
+    jobId: '',
+    deptId:''
   }
 }
 

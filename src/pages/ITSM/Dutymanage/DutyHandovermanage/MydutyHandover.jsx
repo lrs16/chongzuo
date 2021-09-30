@@ -62,18 +62,17 @@ function MydutyHandover(props) {
     form: { getFieldDecorator, resetFields,
       // validateFields 
     },
-    // getWorkQueryLists,
-    // dispatch,
-    // userinfo,
+    logbookSearcharr,
+    dispatch,
+    loading,
   } = props;
+
+  console.log(logbookSearcharr, 'logbookSearcharr')
 
   let formThead;
 
   const [expand, setExpand] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedRows, setSelectedRows] = useState([]);
-  // const [selectdata, setSelectData] = useState('');
-  // const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
   const [columns, setColumns] = useState([]);
 
   const rowSelection = {
@@ -93,42 +92,13 @@ function MydutyHandover(props) {
   //   });
   // };
 
-  // const searchdata = (values, page, pageSize) => {
-  //   const newvalues = {
-  //     ...values,
-  //     addTime: '',
-  //     time1: values.addTime ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-  //     time2: values.addTime ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-  //     plannedStartTime: '',
-  //     plannedStartTime1: values.plannedStartTime ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-  //     plannedStartTime2: values.plannedStartTime ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-  //     plannedEndTime: '',
-  //     plannedEndTime1: values.plannedEndTime ? moment(values.plannedEndTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-  //     plannedEndTime2: values.plannedEndTime ? moment(values.plannedEndTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-  //     checkTime: '',
-  //     checkTime1: values.checkTime ? moment(values.checkTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-  //     checkTime2: values.checkTime ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-  //     startTime: '',
-  //     startTime1: values.startTime ? moment(values.startTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-  //     startTime2: values.startTime ? moment(values.startTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-  //     endTime: '',
-  //     endTime1: values.endTime ? moment(values.endTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-  //     endTime2: values.endTime ? moment(values.endTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-  //     executeTime: '',
-  //     executeTime1: values.executeOperationTime ? moment(values.executeOperationTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-  //     executeTime2: values.executeOperationTime ? moment(values.executeOperationTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-  //   };
-  //   setTabRecord({ ...newvalues });
-  //   dispatch({
-  //     type: 'supervisemodel/getWorkQueryLists',
-  //     payload: {
-  //       ...newvalues,
-  //       tab: '4',
-  //       pageIndex: page,
-  //       pageSize
-  //     },
-  //   });
-  // };
+  const searchdata = () => {
+    if (pagetitle === '我的值班交接') {
+      dispatch({
+        type: 'shifthandover/fetchlogbookSearch',
+      });
+    }
+  };
 
   const handleSearch = () => {
     // setPaginations({
@@ -173,17 +143,30 @@ function MydutyHandover(props) {
   const initialColumns = [
     {
       title: '值班交接编号',
-      dataIndex: 'no',
-      key: 'no',
+      dataIndex: 'logbookNo',
+      key: 'logbookNo',
       width: 250,
-      render: (text) => {
-        return <a>{text}</a>
+      render: (text, record) => {
+        const todetail = () => {
+          router.push({
+            pathname: '/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/newhandover',
+            query: {
+              Id: record.id,
+              id: record.id,
+            },
+            state:{
+              dynamicpath: true,
+              menuDesc: '我的交接班详情',
+            }
+          })
+        }
+        return <a onClick={todetail}>{text}</a>
       },
     },
     {
       title: '交班人',
-      dataIndex: 't1',
-      key: 't1',
+      dataIndex: 'handoverName',
+      key: 'handoverName',
       width: 100,
     },
     {
@@ -195,14 +178,14 @@ function MydutyHandover(props) {
 
     {
       title: '接班班组',
-      dataIndex: 't3',
-      key: 't3',
+      dataIndex: 'heirGroupName',
+      key: 'heirGroupName',
       width: 200,
     },
     {
       title: '接班班次',
-      dataIndex: 't4',
-      key: 't4',
+      dataIndex: 'heirShiftName',
+      key: 'heirShiftName',
       width: 200,
     },
     {
@@ -213,80 +196,80 @@ function MydutyHandover(props) {
     },
     {
       title: '需注意事项',
-      dataIndex: 't6',
-      key: 't6',
+      dataIndex: 'attention',
+      key: 'attention',
       width: 250,
     },
     {
       title: '交接物品',
-      dataIndex: 't7',
-      key: 't7',
+      dataIndex: 'handoverItems',
+      key: 'handoverItems',
       width: 250,
     },
     {
       title: '接班时间',
-      dataIndex: 't8',
-      key: 't8',
+      dataIndex: 'receiveTime',
+      key: 'receiveTime',
       width: 250,
     },
     {
       title: '交接班状态',
-      dataIndex: 't9',
-      key: 't9',
+      dataIndex: 'handoverStatus',
+      key: 'handoverStatus',
       width: 150,
     },
     {
       title: '日志登记时间',
-      dataIndex: 'addTime',
-      key: 'addTime',
+      dataIndex: 'registerTime',
+      key: 'registerTime',
       width: 250,
     },
     {
       title: '值班人',
-      dataIndex: 't10',
-      key: 't10',
+      dataIndex: 'dutyStaffName',
+      key: 'dutyStaffName',
       width: 150,
     },
     {
       title: '巡检及监控记录',
-      dataIndex: 't11',
-      key: 't11',
+      dataIndex: 'monitorNotes',
+      key: 'monitorNotes',
       width: 250,
     },
     {
       title: '异常情况记录',
-      dataIndex: 't12',
-      key: 't12',
+      dataIndex: 'alarmNotes',
+      key: 'alarmNotes',
       width: 250,
     },
     {
       title: '重大运维事件',
-      dataIndex: 't13',
-      key: 't13',
+      dataIndex: 'devopsNotes',
+      key: 'devopsNotes',
       width: 250,
     },
     {
       title: '其他情况记录',
-      dataIndex: 't14',
-      key: 't14',
+      dataIndex: 'otherNotes',
+      key: 'otherNotes',
       width: 250,
     },
     {
       title: '值班班组',
-      dataIndex: 't15',
-      key: 't15',
+      dataIndex: 'groupName',
+      key: 'groupName',
       width: 200,
     },
     {
       title: '值班班次',
-      dataIndex: 't16',
-      key: 't16',
+      dataIndex: 'shiftName',
+      key: 'shiftName',
       width: 200,
     },
     {
       title: '值班时间',
-      dataIndex: 't17',
-      key: 't17',
+      dataIndex: 'dutyBeginTime',
+      key: 'dutyBeginTime',
       width: 250,
     },
   ];
@@ -294,6 +277,39 @@ function MydutyHandover(props) {
   const defaultAllkey = columns.map(item => {
     return item.title
   });
+
+  const columns11 = [
+    {
+      title: '姓名',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: '年龄',
+      dataIndex: 'age',
+      key: 'age',
+    },
+    {
+      title: '住址',
+      dataIndex: 'address',
+      key: 'address',
+    },
+  ];
+
+  const dataSource = [
+    {
+      key: '1',
+      name: '胡彦斌',
+      age: 32,
+      address: '西湖区湖底公园1号',
+    },
+    {
+      key: '2',
+      name: '胡彦祖',
+      age: 42,
+      address: '西湖区湖底公园1号',
+    },
+  ];
 
   // const onShowSizeChange = (page, pageSize) => {
   //   validateFields((err, values) => {
@@ -330,13 +346,9 @@ function MydutyHandover(props) {
   // };
 
   // 获取数据
-  // useEffect(() => {
-  //     if (cacheinfo !== undefined) {
-  //     validateFields((err, values) => {
-  //         searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize);
-  //     })
-  //     }
-  // }, []);
+  useEffect(() => {
+    searchdata()
+  }, []);
 
   const download = () => { // 导出
     // const exportColumns = columns.map(item => {
@@ -485,231 +497,236 @@ function MydutyHandover(props) {
                 style={{ display: 'none' }}
             /> */}
       <Card>
-        <Row gutter={16}>
-          <Form {...formItemLayout} onSubmit={handleSearch}>
-            <Col span={8}>
-              <Form.Item label="登记时间">
-                {getFieldDecorator('addTime', {
-                  initialValue: '',
-                })
-                  (
-                    <RangePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                      }}
-                      format="YYYY-MM-DD HH:mm:ss"
-                      style={{ width: '100%' }}
-                    />
-                  )}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="值班人">
-                {getFieldDecorator('form1', {
-                  initialValue: '',
-                })(
-                  <Input />,
+
+        {
+          pagetitle === '值班交接查询' && (
+            <Row gutter={16}>
+              <Form {...formItemLayout} onSubmit={handleSearch}>
+                <Col span={8}>
+                  <Form.Item label="登记时间">
+                    {getFieldDecorator('addTime', {
+                      initialValue: '',
+                    })
+                      (
+                        <RangePicker
+                          showTime={{
+                            hideDisabledOptions: true,
+                            defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                          }}
+                          format="YYYY-MM-DD HH:mm:ss"
+                          style={{ width: '100%' }}
+                        />
+                      )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="值班人">
+                    {getFieldDecorator('form1', {
+                      initialValue: '',
+                    })(
+                      <Input />,
+                    )}
+                  </Form.Item>
+                </Col>
+                {expand && (
+                  <>
+                    <Col span={8}>
+                      <Form.Item label="值班班组">
+                        {getFieldDecorator('form2', {
+                          initialValue: '',
+                        })(
+                          <Select placeholder="请选择" allowClear>
+                            {allstatusmap.map(obj => (
+                              <Option key={obj.key} value={obj.title}>
+                                {obj.title}
+                              </Option>
+                            ))}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                      <Form.Item label="值班班次">
+                        {getFieldDecorator('form3', {
+                          initialValue: '',
+                        })(
+                          <Select placeholder="请选择" allowClear>
+                            {allstatusmap1.map(obj => (
+                              <Option key={obj.key} value={obj.title}>
+                                {obj.title}
+                              </Option>
+                            ))}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                      <Form.Item label="值班时间">
+                        {getFieldDecorator('form4', {
+                          initialValue: '',
+                        })
+                          (
+                            <RangePicker
+                              showTime={{
+                                hideDisabledOptions: true,
+                                defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                              }}
+                              format="YYYY-MM-DD HH:mm:ss"
+                              style={{ width: '100%' }}
+                            />
+                          )}
+                      </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                      <Form.Item label="巡检及监控记录">
+                        {getFieldDecorator('form5', {
+                          initialValue: '',
+                        })(<Input placeholder="请输入" allowClear />,)}
+                      </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                      <Form.Item label="异常情况记录">
+                        {getFieldDecorator('form6', {
+                          initialValue: '',
+                        })(<Input placeholder="请输入" allowClear />)}
+                      </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                      <Form.Item label="重大运维事件">
+                        {getFieldDecorator('form7', {
+                          initialValue: '',
+                        })(<Input placeholder="请输入" allowClear />,)}
+                      </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                      <Form.Item label="其他情况记录">
+                        {getFieldDecorator('form8', {
+                          initialValue: '',
+                        })(<Input placeholder="请输入" allowClear />)}
+                      </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                      <Form.Item label="交班人">
+                        {getFieldDecorator('form9', {
+                          initialValue: '',
+                        })(<Input placeholder="请输入" allowClear />)}
+                      </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                      <Form.Item label="接班人">
+                        {getFieldDecorator('form10', {
+                          initialValue: '',
+                        })(<Input placeholder="请输入" allowClear />)}
+                      </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                      <Form.Item label="接班班组">
+                        {getFieldDecorator('form11', {
+                          initialValue: '',
+                        })(
+                          <Select placeholder="请选择" allowClear>
+                            {allstatusmap3.map(obj => (
+                              <Option key={obj.key} value={obj.title}>
+                                {obj.title}
+                              </Option>
+                            ))}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                      <Form.Item label="接班班次">
+                        {getFieldDecorator('form12', {
+                          initialValue: '',
+                        })(
+                          <Select placeholder="请选择" allowClear>
+                            {allstatusmap4.map(obj => (
+                              <Option key={obj.key} value={obj.title}>
+                                {obj.title}
+                              </Option>
+                            ))}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                      <Form.Item label="交班时间">
+                        {getFieldDecorator('form13', {
+                          initialValue: '',
+                        })
+                          (
+                            <RangePicker
+                              showTime={{
+                                hideDisabledOptions: true,
+                                defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                              }}
+                              format="YYYY-MM-DD HH:mm:ss"
+                              style={{ width: '100%' }}
+                            />
+                          )}
+                      </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                      <Form.Item label="需注意事项">
+                        {getFieldDecorator('form14', {
+                          initialValue: '',
+                        })(<Input placeholder="请输入" allowClear />)}
+                      </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                      <Form.Item label="交接物品">
+                        {getFieldDecorator('form15', {
+                          initialValue: '',
+                        })(
+                          <Select placeholder="请选择" allowClear>
+                            {allstatusmap2.map(obj => (
+                              <Option key={obj.key} value={obj.title}>
+                                {obj.title}
+                              </Option>
+                            ))}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                      <Form.Item label="交接状态">
+                        {getFieldDecorator('form16', {
+                          initialValue: '',
+                        })(
+                          <Select placeholder="请选择" allowClear>
+                            {allstatusmap6.map(obj => (
+                              <Option key={obj.key} value={obj.title}>
+                                {obj.title}
+                              </Option>
+                            ))}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                      <Form.Item label="接班时间">
+                        {getFieldDecorator('form17', {
+                          initialValue: '',
+                        })
+                          (
+                            <RangePicker
+                              showTime={{
+                                hideDisabledOptions: true,
+                                defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                              }}
+                              format="YYYY-MM-DD HH:mm:ss"
+                              style={{ width: '100%' }}
+                            />
+                          )}
+                      </Form.Item>
+                    </Col>
+                  </>
                 )}
-              </Form.Item>
-            </Col>
-            {expand && (
-              <>
-                <Col span={8}>
-                  <Form.Item label="值班班组">
-                    {getFieldDecorator('form2', {
-                      initialValue: '',
-                    })(
-                      <Select placeholder="请选择" allowClear>
-                        {allstatusmap.map(obj => (
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>
-                        ))}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="值班班次">
-                    {getFieldDecorator('form3', {
-                      initialValue: '',
-                    })(
-                      <Select placeholder="请选择" allowClear>
-                        {allstatusmap1.map(obj => (
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>
-                        ))}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="值班时间">
-                    {getFieldDecorator('form4', {
-                      initialValue: '',
-                    })
-                      (
-                        <RangePicker
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                          }}
-                          format="YYYY-MM-DD HH:mm:ss"
-                          style={{ width: '100%' }}
-                        />
-                      )}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="巡检及监控记录">
-                    {getFieldDecorator('form5', {
-                      initialValue: '',
-                    })(<Input placeholder="请输入" allowClear />,)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="异常情况记录">
-                    {getFieldDecorator('form6', {
-                      initialValue: '',
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="重大运维事件">
-                    {getFieldDecorator('form7', {
-                      initialValue: '',
-                    })(<Input placeholder="请输入" allowClear />,)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="其他情况记录">
-                    {getFieldDecorator('form8', {
-                      initialValue: '',
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="交班人">
-                    {getFieldDecorator('form9', {
-                      initialValue: '',
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="接班人">
-                    {getFieldDecorator('form10', {
-                      initialValue: '',
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="接班班组">
-                    {getFieldDecorator('form11', {
-                      initialValue: '',
-                    })(
-                      <Select placeholder="请选择" allowClear>
-                        {allstatusmap3.map(obj => (
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>
-                        ))}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="接班班次">
-                    {getFieldDecorator('form12', {
-                      initialValue: '',
-                    })(
-                      <Select placeholder="请选择" allowClear>
-                        {allstatusmap4.map(obj => (
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>
-                        ))}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="交班时间">
-                    {getFieldDecorator('form13', {
-                      initialValue: '',
-                    })
-                      (
-                        <RangePicker
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                          }}
-                          format="YYYY-MM-DD HH:mm:ss"
-                          style={{ width: '100%' }}
-                        />
-                      )}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="需注意事项">
-                    {getFieldDecorator('form14', {
-                      initialValue: '',
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="交接物品">
-                    {getFieldDecorator('form15', {
-                      initialValue: '',
-                    })(
-                      <Select placeholder="请选择" allowClear>
-                        {allstatusmap2.map(obj => (
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>
-                        ))}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="交接状态">
-                    {getFieldDecorator('form16', {
-                      initialValue: '',
-                    })(
-                      <Select placeholder="请选择" allowClear>
-                        {allstatusmap6.map(obj => (
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>
-                        ))}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="接班时间">
-                    {getFieldDecorator('form17', {
-                      initialValue: '',
-                    })
-                      (
-                        <RangePicker
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                          }}
-                          format="YYYY-MM-DD HH:mm:ss"
-                          style={{ width: '100%' }}
-                        />
-                      )}
-                  </Form.Item>
-                </Col>
-              </>
-            )}
-            {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
-          </Form>
-        </Row>
+                {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
+              </Form>
+            </Row>
+          )
+        }
 
         <div>
           {
@@ -717,16 +734,15 @@ function MydutyHandover(props) {
               <Button type="primary" style={{ marginRight: 8 }} onClick={() => newhandover()}>新增</Button>
             )
           }
-         
-          <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleDelete()}>删除</Button>
+
           <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>导出数据</Button>
           {
             pagetitle === '我的值班交接' && (
               <Button type="primary">接班</Button>
             )
           }
-         
         </div>
+
         <div style={{ textAlign: 'right', marginBottom: 8 }}>
           <Popover
             placement="bottomRight"
@@ -768,26 +784,25 @@ function MydutyHandover(props) {
             </Button>
           </Popover>
         </div>
+
         < Table
-          // loading={loading}
-          columns={columns}
+          loading={loading}
+          columns={initialColumns}
           scroll={{ x: 1600 }}
-          // dataSource={getWorkQueryLists.rows}
-          // pagination={pagination}
-          rowSelection={rowSelection}
+          dataSource={logbookSearcharr}
+          // rowSelection={rowSelection}
           rowKey={r => r.id}
         />
+
+
       </Card>
     </PageHeaderWrapper >
   );
 }
 
 export default Form.create({})(
-  connect(
-    //   ({ supervisemodel, itsmuser, loading }) => ({
-    //   getWorkQueryLists: supervisemodel.getworkqueryList,
-    //   userinfo: itsmuser.userinfo,
-    //   loading: loading.models.supervisemodel,
-    // })
-  )(MydutyHandover),
+  connect(({ shifthandover, loading }) => ({
+    logbookSearcharr: shifthandover.logbookSearcharr,
+    loading: loading.models.shifthandover
+  }))(MydutyHandover),
 );
