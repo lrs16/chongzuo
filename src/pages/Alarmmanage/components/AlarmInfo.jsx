@@ -147,7 +147,7 @@ function AlarmInfo(props) {
 
   return (
     <>
-      {data.record && (
+      {data && data.record && (
         <Row gutter={24} style={{ marginTop: 24 }}>
           <Form {...formItemLayout}>
             <Col span={8}>
@@ -234,7 +234,7 @@ function AlarmInfo(props) {
             </Col>
             <Col span={24}>
               <Form.Item label='工单编号'  {...forminladeLayout}>
-                <Dropdown overlay={menu} disabled={!data.record.id}>
+                <Dropdown overlay={menu} disabled={!data.record.id || data.record.confirmStatus === '待确认'} >
                   <Button type="primary" style={{ marginRight: 8 }}>
                     派发工单 <DownOutlined />
                   </Button>

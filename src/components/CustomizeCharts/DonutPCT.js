@@ -53,7 +53,7 @@ class DonutPCT extends Component {
         <Chart height={height} data={dv.rows} padding={padding} autoFit onClick={ev => {
           const linkdata = ev.data;
           if (linkdata) {
-            onGetVal(linkdata.type)
+            onGetVal(linkdata)
           }
         }}>
           <Coordinate type="theta" radius={0.8} innerRadius={0.7} />

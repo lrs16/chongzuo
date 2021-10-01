@@ -64,39 +64,45 @@ function ButtonGroup(props) {
   const handleMenuClick = e => {
     const { key } = e;
     if (selectedRowKeys && selectedRowKeys.length === 1) {
-      const warnId = selectRowdata[0].id;
-      createOrder({ orderType: key, warnId }).then(res => {
-        if (res.code === 200) {
-          Message.success(res.msg);
-          switch (key) {
-            case 'event':
-              router.push({
-                pathname: `/ITSM/eventmanage/to-do`,
-                query: { pathpush: true },
-                state: { cache: false }
-              });
-              break;
-            case 'problem':
-              router.push({
-                pathname: `/ITSM/problemmanage/besolved`,
-                query: { pathpush: true },
-                state: { cache: false }
-              });
-              break;
-            case 'trouble':
-              router.push({
-                pathname: `/ITSM/faultmanage/todolist`,
-                query: { pathpush: true },
-                state: { cache: false }
-              });
-              break;
-            default:
-              break;
+      const confirmStatus = selectRowdata[0]?.confirmStatus;
+      if (confirmStatus === '已确认') {
+        const warnId = selectRowdata[0].id;
+        createOrder({ orderType: key, warnId }).then(res => {
+          if (res.code === 200) {
+            Message.success(res.msg);
+            switch (key) {
+              case 'event':
+                router.push({
+                  pathname: `/ITSM/eventmanage/to-do`,
+                  query: { pathpush: true },
+                  state: { cache: false }
+                });
+                break;
+              case 'problem':
+                router.push({
+                  pathname: `/ITSM/problemmanage/besolved`,
+                  query: { pathpush: true },
+                  state: { cache: false }
+                });
+                break;
+              case 'trouble':
+                router.push({
+                  pathname: `/ITSM/faultmanage/todolist`,
+                  query: { pathpush: true },
+                  state: { cache: false }
+                });
+                break;
+              default:
+                break;
+            }
+          } else {
+            Message.error('操作失败');
           }
-        } else {
-          Message.error('操作失败');
-        }
-      })
+        })
+      } else {
+        Message.error('请选择确认状态为 ‘已确认’ 的数据');
+      }
+
     }
   };
 

@@ -212,6 +212,24 @@ function ClockPatrolList(props) {
       render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
     {
+      title: '确认状态',
+      dataIndex: 'confirmStatus',
+      key: 'confirmStatus',
+      width: 90,
+      render: (text) => (
+        <Badge status={text === '已确认' ? 'success' : 'error'} text={text} />
+      ),
+    },
+    {
+      title: '消除状态',
+      dataIndex: 'clearStatus',
+      key: 'clearStatus',
+      width: 120,
+      render: (text) => (
+        <Badge status={text === '待消除' ? 'error' : 'default'} text={text} />
+      ),
+    },
+    {
       title: '告警内容',
       dataIndex: 'warnContent',
       key: 'warnContent',

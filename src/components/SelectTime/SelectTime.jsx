@@ -3,8 +3,8 @@ import moment from 'moment';
 import { Card, Tag, DatePicker, Button } from 'antd';
 
 const { CheckableTag } = Tag;
-const { RangePicker } = DatePicker;
-const tagsFromServer = [{ name: '按日', key: '1' }, { name: '按月', key: '2' }];
+const { MonthPicker } = DatePicker;
+const tagsFromServer = ['按日', '按月'];
 
 function SelectTime(props) {
   const { ChangeDate } = props;
@@ -21,12 +21,24 @@ function SelectTime(props) {
 
   const handleChang = (tag, checked) => {
     if (checked) {
-      setSelectedTags(tag.key);
+      setSelectedTags(tag);
+      const beginTime = moment();
+      const endTime = moment();
+      if (tag === '按日') {
+        setStartDates(beginTime);
+        setEndDates(endTime);
+        ChangeDate({ beginTime: moment(beginTime).format('YYYY-MM-DD'), endTime: moment(endTime).format('YYYY-MM-DD') });
+      }
+      if (tag === '按月') {
+        setStartDates(beginTime);
+        setEndDates(endTime);
+        ChangeDate({ beginTime: moment(beginTime).format('YYYY-MM'), endTime: moment(endTime).format('YYYY-MM') })
+      }
     }
   };
 
   useEffect(() => {
-    handleChang({ name: '按月', key: '2' }, true)
+    handleChang('按月', true)
     return () => {
       handleChang(undefined);
       setStartDates(undefined);
@@ -42,18 +54,20 @@ function SelectTime(props) {
     setEndDates(dateString)
   };
 
-  const handlePanelChange = (value) => {
-    console.log(value)
-  }
-
-  const handleOpenChange = (status) => {
-    console.log(status)
-  }
-
   const handelSearch = () => {
     if (startdates || enddates) {
-      setSelectedTags('3');
-      ChangeDate({ beginWarnTime: startdates, endWarnTime: enddates })
+      if (selectedTags === '按日') {
+        ChangeDate({
+          beginTime: moment(startdates).format('YYYY-MM-DD'),
+          endTime: moment(enddates).format('YYYY-MM-DD')
+        })
+      }
+      if (selectedTags === '按月') {
+        ChangeDate({
+          beginTime: moment(startdates).format('YYYY-MM'),
+          endTime: moment(enddates).format('YYYY-MM')
+        })
+      }
     }
   }
 
@@ -63,51 +77,54 @@ function SelectTime(props) {
       {tagsFromServer.map(obj => {
         return (
           <CheckableTag
-            key={obj.key}
-            checked={selectedTags === obj.key}
+            key={obj}
+            checked={selectedTags === obj}
             onChange={checked => handleChang(obj, checked)}
           >
-            {obj.name}
+            {obj}
           </CheckableTag>
         )
       })}
-      {selectedTags === '1' && (<>
-        <DatePicker
-          value={startdates}
-          placeholder="开始时间"
-          onChange={onStartChange}
-          style={{ marginLeft: 24 }}
-          showTime={{
-            hideDisabledOptions: true,
-            defaultValue: moment('00:00:00', 'HH:mm:ss'),
-          }}
-          format='YYYY-MM-DD HH:mm:ss'
-          disabledDate={disastartbledDate}
-        />
-        <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
-        <DatePicker
-          value={enddates}
-          placeholder="结束时间"
-          onChange={onEndChange}
-          showTime={{
-            hideDisabledOptions: true,
-            defaultValue: moment('23:59:59', 'HH:mm:ss'),
-          }}
-          format='YYYY-MM-DD HH:mm:ss'
-          disabledDate={disaendbledDate} />
-      </>)}
-      {selectedTags === '2' && (
-        <RangePicker
-          allowClear={false}
-          placeholder={['起始月份', '结束月份']}
-          format="YYYY-MM"
-          mode={['month', 'month']}
-          onPanelChange={handlePanelChange}
-          onOpenChange={handleOpenChange}
-        />
+      {selectedTags === '按日' && (
+        <>
+          <DatePicker
+            value={startdates}
+            placeholder="开始时间"
+            onChange={onStartChange}
+            style={{ marginLeft: 24 }}
+            format='YYYY-MM-DD'
+            disabledDate={disastartbledDate}
+          />
+          <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
+          <DatePicker
+            value={enddates}
+            placeholder="结束时间"
+            onChange={onEndChange}
+            format='YYYY-MM-DD'
+            disabledDate={disaendbledDate} />
+        </>
+      )}
+      {selectedTags === '按月' && (
+        <>
+          <MonthPicker
+            value={startdates}
+            placeholder="开始时间"
+            onChange={onStartChange}
+            style={{ marginLeft: 24 }}
+            format='YYYY-MM'
+            disabledDate={disastartbledDate}
+          />
+          <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
+          <MonthPicker
+            value={enddates}
+            placeholder="结束时间"
+            onChange={onEndChange}
+            format='YYYY-MM'
+            disabledDate={disaendbledDate} />
+        </>
       )}
       <Button
-        type={selectedTags === '3' ? 'primary' : 'default'}
+        type='primary'
         onClick={() => handelSearch()}
         style={{ display: 'inline-block', marginLeft: 12 }}
       >
