@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import router from 'umi/router';
 import moment from 'moment';
-import { Card, Button, Table, Tabs, Row, Col, Form, Input, Select, DatePicker, Tooltip } from 'antd';
+import { Card, Button, Table, Tabs, Row, Col, Form, Input, Select, Badge, Tooltip } from 'antd';
 import { connect } from 'dva';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { querkeyVal } from '@/services/api';
@@ -125,6 +125,9 @@ function MessagesList(props) {
     });
   }, []);
 
+  console.log(tabActivekey)
+  console.log(tabdate)
+
   useEffect(() => {
     if (tabActivekey) {
       handleReset();
@@ -132,18 +135,17 @@ function MessagesList(props) {
   }, [tabActivekey])
 
   useEffect(() => {
-    if (tabActivekey === 'all' && tabdate && (tabdate.beginWarnTime || tabdate.endWarnTime)) {
-      resetFields();
-      handleSearch(1, 10);
+    if (tabdate && (tabdate.beginWarnTime || tabdate.endWarnTime)) {
+      handleReset();
     }
   }, [tabdate]);
 
-  useEffect(() => {
-    if (reset && tabActivekey === 'today') {
-      resetFields();
-      handleSearch(1, 10);
-    };
-  }, [reset]);
+  // useEffect(() => {
+  //   if (reset && tabActivekey === 'today' && tabdate && (tabdate.beginWarnTime || tabdate.endWarnTime)) {
+  //     resetFields();
+  //     handleSearch(1, 10);
+  //   };
+  // }, [reset]);
 
   const pagination = {
     showSizeChanger: true,
@@ -431,7 +433,7 @@ function MessagesList(props) {
         dataSource={list.records || []}
         loading={loading}
         rowKey={record => record.id}
-        scroll={{ x: 1500 }}
+        scroll={{ x: 1750 }}
         pagination={pagination}
       />
     </Card>

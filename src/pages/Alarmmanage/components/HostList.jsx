@@ -121,14 +121,14 @@ function HostList(props) {
     setSelectdata(v);
   };
 
-  useEffect(() => {
-    if (tabActivekey) {
-      handleReset();
-    }
-  }, [tabActivekey])
+  // useEffect(() => {
+  //   if (tabActivekey) {
+  //     handleReset();
+  //   }
+  // }, [tabActivekey])
 
   useEffect(() => {
-    if (activeTabKey && tabdate && (tabdate.beginWarnTime || tabdate.endWarnTime)) {
+    if (activeTabKey) {
       const key = activeTabKey === '全部' ? '' : activeTabKey;
       // setClassifykey(key);
       setFieldsValue({ firstClassify: key });
@@ -137,18 +137,18 @@ function HostList(props) {
   }, [activeTabKey]);
 
   useEffect(() => {
-    if (tabActivekey === 'all' && tabdate && (tabdate.beginWarnTime || tabdate.endWarnTime)) {
+    if (tabdate && (tabdate.beginWarnTime || tabdate.endWarnTime)) {
       resetFields();
       handleSearch(1, 10);
     }
   }, [tabdate]);
 
-  useEffect(() => {
-    if (reset && tabActivekey === 'today') {
-      resetFields();
-      handleSearch(1, 10);
-    };
-  }, [reset]);
+  // useEffect(() => {
+  //   if (reset && tabActivekey === 'today') {
+  //     resetFields();
+  //     handleSearch(1, 10);
+  //   };
+  // }, [reset]);
 
   const rowSelection = {
     selectedRowKeys,

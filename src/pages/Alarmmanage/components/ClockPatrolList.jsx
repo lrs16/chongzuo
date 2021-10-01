@@ -98,14 +98,14 @@ function ClockPatrolList(props) {
     setSelectdata(v);
   };
 
-  useEffect(() => {
-    if (tabActivekey) {
-      handleReset();
-    }
-  }, [tabActivekey])
+  // useEffect(() => {
+  //   if (tabActivekey) {
+  //     handleReset();
+  //   }
+  // }, [tabActivekey])
 
   useEffect(() => {
-    if (activeTabKey && tabdate && (tabdate.beginWarnTime || tabdate.endWarnTime)) {
+    if (activeTabKey && (tabdate.beginWarnTime || tabdate.endWarnTime)) {
       const key = activeTabKey === '全部' ? '' : activeTabKey;
       // setClassifykey(key);
       setFieldsValue({ firstClassify: key });
@@ -114,18 +114,18 @@ function ClockPatrolList(props) {
   }, [activeTabKey]);
 
   useEffect(() => {
-    if (tabActivekey === 'all' && tabdate && (tabdate.beginWarnTime || tabdate.endWarnTime)) {
+    if (tabdate && (tabdate.beginWarnTime || tabdate.endWarnTime)) {
       resetFields();
       handleSearch(1, 10);
     }
   }, [tabdate]);
 
-  useEffect(() => {
-    if (reset && tabActivekey === 'today') {
-      resetFields();
-      handleSearch(1, 10);
-    };
-  }, [reset]);
+  // useEffect(() => {
+  //   if (reset && tabActivekey === 'today') {
+  //     resetFields();
+  //     handleSearch(1, 10);
+  //   };
+  // }, [reset]);
 
   const rowSelection = {
     selectedRowKeys,
@@ -318,7 +318,7 @@ function ClockPatrolList(props) {
           <Row gutter={24}>
             <Col span={6}>
               <Form.Item label="区域">
-                {getFieldDecorator('hostZoneId')(
+                {getFieldDecorator('firstClassify')(
                   <Select placeholder="请选择" onChange={handleChange} allowClear>
                     {assets.map(({ key, val }) => [
                       <Option key={key} value={val}>
@@ -331,7 +331,7 @@ function ClockPatrolList(props) {
             </Col>
             <Col span={8}>
               <Form.Item label="设备名称">
-                {getFieldDecorator('hostName ')(
+                {getFieldDecorator('thirdClassify')(
                   <Input allowClear />
                 )}
               </Form.Item>

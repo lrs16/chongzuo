@@ -232,14 +232,15 @@ function MeasurList(props) {
     setSelectdata(v);
   };
 
-  useEffect(() => {
-    if (tabActivekey) {
-      handleReset();
-    }
-  }, [tabActivekey]);
+  // useEffect(() => {
+  //   if (tabActivekey) {
+  //     console.log('1')
+  //     handleReset();
+  //   }
+  // }, [tabActivekey]);
 
   useEffect(() => {
-    if (activeTabKey && tabdate && (tabdate.beginWarnTime || tabdate.endWarnTime)) {
+    if (activeTabKey) {
       const key = activeTabKey === '告警概览' ? '' : activeTabKey.slice(0, -2);
       setFieldsValue({ Classify: key.split(',') });
       handleSearch(1, 10);
@@ -247,18 +248,17 @@ function MeasurList(props) {
   }, [activeTabKey]);
 
   useEffect(() => {
-    if (tabActivekey === 'all' && tabdate && (tabdate.beginWarnTime || tabdate.endWarnTime)) {
-      resetFields();
-      handleSearch(1, 10);
+    if (tabdate && (tabdate.beginWarnTime || tabdate.endWarnTime)) {
+      handleReset()
     }
   }, [tabdate]);
 
-  useEffect(() => {
-    if (reset && tabActivekey === 'today') {
-      resetFields();
-      handleSearch(1, 10);
-    };
-  }, [reset]);
+  // useEffect(() => {
+  //   if (reset && tabActivekey === 'today' && tabdate && (tabdate.beginWarnTime || tabdate.endWarnTime)) {
+  //     resetFields();
+  //     handleSearch(1, 10);
+  //   };
+  // }, [reset]);
 
   const rowSelection = {
     selectedRowKeys,

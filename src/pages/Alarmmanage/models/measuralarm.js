@@ -128,8 +128,6 @@ export default {
         list: {},
         Donutdata: [],
         Smoothdata: [],
-        totalinfo: undefined,
-        searchtab: [],
       };
     },
     save(state, action) {
