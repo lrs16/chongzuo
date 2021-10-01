@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 // import { connect } from 'dva';
-import { Table, Drawer, Button, Form, Select, Row, Col, Input } from 'antd';
+import { Table, Drawer, Button, Form, Select, Row, Col, Input, DatePicker } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
+import moment from 'moment';
 
 const { Option } = Select;
 
@@ -42,7 +43,7 @@ function HistorVersionDrawer(props) {
     const searchdata = () => {
         // const values = getFieldsValue();
         // dispatch({
-        //     type: '',
+        //     type: 'softconf/findsoftConfList',
         //     payload: {
         //         values,
         //         pageNum: page,
@@ -98,6 +99,12 @@ function HistorVersionDrawer(props) {
 
     const columns = [
         {
+            title: '批次号',
+            dataIndex: 'pch',
+            key: 'pch',
+            width: 120,
+        },
+        {
             title: '区域',
             dataIndex: 'hostZoneId',
             key: 'hostZoneId',
@@ -151,6 +158,18 @@ function HistorVersionDrawer(props) {
             key: 'director',
             width: 150,
             editable: true
+        },
+        {
+            title: '文件md5',
+            dataIndex: 'm1',
+            key: 'm1',
+            width: 150,
+        },
+        {
+            title: '比对上次文件变化',
+            dataIndex: 'm2',
+            key: 'm2',
+            width: 150,
         },
         {
             title: '备份时间',
@@ -252,6 +271,53 @@ function HistorVersionDrawer(props) {
                                         {getFieldDecorator('softPath', {
                                             initialValue: '',
                                         })(<Input placeholder="请输入" allowClear />)}
+                                    </Form.Item>
+                                </Col>
+                                <Col span={8}>
+                                    <Form.Item label="批次号">
+                                        {getFieldDecorator('p1', {
+                                            initialValue: '',
+                                        })(<Input placeholder="请输入" allowClear />)}
+                                    </Form.Item>
+                                </Col>
+                                <Col span={8}>
+                                    <Form.Item label="比对上次文件变化">
+                                        {getFieldDecorator('p2', {
+                                            initialValue: '',
+                                        })(<Input placeholder="请输入" allowClear />)}
+                                    </Form.Item>
+                                </Col>
+                                <Col span={8}>
+                                    <Form.Item label="获取时间">
+                                        <Row>
+                                            <Col span={11}>
+                                                {getFieldDecorator('startTime', {})(
+                                                    <DatePicker
+                                                        showTime={{
+                                                            hideDisabledOptions: true,
+                                                            defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                                                        }}
+                                                        placeholder="开始时间"
+                                                        format='YYYY-MM-DD HH:mm:ss'
+                                                        style={{ minWidth: 120, width: '100%' }}
+                                                    />
+                                                )}
+                                            </Col>
+                                            <Col span={2} style={{ textAlign: 'center' }}>-</Col>
+                                            <Col span={11}>
+                                                {getFieldDecorator('endTime', {})(
+                                                    <DatePicker
+                                                        showTime={{
+                                                            hideDisabledOptions: true,
+                                                            defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                                                        }}
+                                                        placeholder="结束时间"
+                                                        format='YYYY-MM-DD HH:mm:ss'
+                                                        style={{ minWidth: 120, width: '100%' }}
+                                                    />
+                                                )}
+                                            </Col>
+                                        </Row>
                                     </Form.Item>
                                 </Col>
                             </>

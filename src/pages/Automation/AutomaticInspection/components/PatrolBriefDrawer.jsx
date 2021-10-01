@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import { Drawer, Button, Form, message } from 'antd';
+import { Drawer, Button, Form, message, Input } from 'antd';
 import { openhostBriefing, saveBriefing, downloadBriefing } from '../services/api';
 
-// const { TextArea } = Input;
+const { TextArea } = Input;
 
 function PatrolBriefDrawer(props) {
     const {
@@ -53,7 +53,9 @@ function PatrolBriefDrawer(props) {
         ChangeVisible(false);
     };
 
-    const htmlbrierInfo = brierInfo;
+    const handleChange = e => {
+        setBrierInfo(e.target.value);
+    }
 
     return (
         <Drawer
@@ -64,16 +66,9 @@ function PatrolBriefDrawer(props) {
             bodyStyle={{ paddingBottom: 60 }}
         >
             <h4>简报内容</h4>
-            <div dangerouslySetInnerHTML={{ __html: htmlbrierInfo?.replace(/[\n]/g, '<br/>') }}
-                style={{
-                    width: "100%",
-                    height: "100%",
-                    borderWidth: 1,
-                    borderStyle: 'solid',
-                    borderColor: 'rgba(233, 233, 233, 1)',
-                    padding: ' 15px 50px 100px 15px'
-                }}
-            />
+            {brierInfo && (
+                <TextArea autoSize={{ minRows: 50 }} defaultValue={brierInfo} onChange={handleChange} />
+            )}
             <div
                 style={{
                     position: 'absolute',

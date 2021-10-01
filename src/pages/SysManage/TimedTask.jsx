@@ -299,25 +299,7 @@ function TimedTask(props) {
       title: '任务名称',
       dataIndex: 'jobName',
       key: 'jobName',
-      width: 200,
-    },
-    {
-      title: '任务组名',
-      dataIndex: 'jobGroup',
-      key: 'jobGroup',
       width: 250,
-    },
-    {
-      title: '是否并发执行',
-      dataIndex: 'concurrentExt',
-      key: 'concurrentExt',
-      width: 250,
-    },
-    {
-      title: '调用目标字符串',
-      dataIndex: 'invokeTarget',
-      key: 'invokeTarget',
-      width: 300,
       ellipsis: true,
     },
     {
@@ -352,6 +334,25 @@ function TimedTask(props) {
           />
         );
       },
+    },
+    {
+      title: '调用目标字符串',
+      dataIndex: 'invokeTarget',
+      key: 'invokeTarget',
+      width: 300,
+      ellipsis: true,
+    },
+    {
+      title: '任务组名',
+      dataIndex: 'jobGroup',
+      key: 'jobGroup',
+      width: 250,
+    },
+    {
+      title: '是否并发执行',
+      dataIndex: 'concurrentExt',
+      key: 'concurrentExt',
+      width: 250,
     },
     {
       title: '计划执行错误策略',

@@ -207,7 +207,8 @@ function SoftDetailView(props) {
             title: '区域',
             dataIndex: 'hostZone',
             key: 'hostZone',
-            width: 200,
+            width: 250,
+            align: 'center',
             render: (text, record) => {
                 const obj = {
                     children: text,
@@ -223,6 +224,15 @@ function SoftDetailView(props) {
             key: 'hostName',
             width: 250,
             ellipsis: true,
+            align: 'center',
+            render: (text, record) => {
+                const obj = {
+                    children: text,
+                    props: {},
+                };
+                obj.props.rowSpan = mergeCells(record.hostName, softinfolistdetails.rows, 'hostName', 'hostZone')
+                return obj;
+            },
         },
         {
             title: '设备IP',
@@ -230,6 +240,15 @@ function SoftDetailView(props) {
             key: 'hostIp',
             width: 200,
             ellipsis: true,
+            align: 'center',
+            render: (text, record) => {
+                const obj = {
+                    children: text,
+                    props: {},
+                };
+                obj.props.rowSpan = mergeCells(record.hostIp, softinfolistdetails.rows, 'hostIp', 'hostZone')
+                return obj;
+            },
         },
         {
             title: '软件名称',
@@ -237,6 +256,15 @@ function SoftDetailView(props) {
             key: 'softName',
             width: 250,
             ellipsis: true,
+            align: 'center',
+            render: (text, record) => {
+                const obj = {
+                    children: text,
+                    props: {},
+                };
+                obj.props.rowSpan = mergeCells(record.softName, softinfolistdetails.rows, 'softName', 'hostZone')
+                return obj;
+            },
         },
         {
             title: 'top',
@@ -244,6 +272,7 @@ function SoftDetailView(props) {
             key: 'top',
             width: 200,
             ellipsis: true,
+            align: 'center',
             onCell: () => {
                 return {
                     style: {
@@ -255,12 +284,15 @@ function SoftDetailView(props) {
                     }
                 }
             },
-            render: (text) => {
-                return (
-                    <Tooltip placement="topLeft" title={text}>
+            render: (text, record) => {
+                const obj = {
+                    children: <Tooltip placement="topLeft" title={text}>
                         <span>{text}</span>
-                    </Tooltip>
-                );
+                    </Tooltip>,
+                    props: {},
+                };
+                obj.props.rowSpan = mergeCells(record.top, softinfolistdetails.rows, 'top', 'hostZone')
+                return obj;
             },
         },
         {
@@ -269,6 +301,7 @@ function SoftDetailView(props) {
             key: 'memory',
             width: 200,
             ellipsis: true,
+            align: 'center',
             onCell: () => {
                 return {
                     style: {
@@ -280,12 +313,15 @@ function SoftDetailView(props) {
                     }
                 }
             },
-            render: (text) => {
-                return (
-                    <Tooltip placement="topLeft" title={text}>
+            render: (text, record) => {
+                const obj = {
+                    children: <Tooltip placement="topLeft" title={text}>
                         <span>{text}</span>
-                    </Tooltip>
-                );
+                    </Tooltip>,
+                    props: {},
+                };
+                obj.props.rowSpan = mergeCells(record.memory, softinfolistdetails.rows, 'memory', 'hostZone')
+                return obj;
             },
         },
         {
@@ -294,6 +330,7 @@ function SoftDetailView(props) {
             key: 'disk',
             width: 250,
             ellipsis: true,
+            align: 'center',
             onCell: () => {
                 return {
                     style: {
@@ -305,12 +342,15 @@ function SoftDetailView(props) {
                     }
                 }
             },
-            render: (text) => {
-                return (
-                    <Tooltip placement="topLeft" title={text}>
+            render: (text, record) => {
+                const obj = {
+                    children: <Tooltip placement="topLeft" title={text}>
                         <span>{text}</span>
-                    </Tooltip>
-                );
+                    </Tooltip>,
+                    props: {},
+                };
+                obj.props.rowSpan = mergeCells(record.disk, softinfolistdetails.rows, 'disk', 'hostZone')
+                return obj;
             },
         },
         {
@@ -319,16 +359,7 @@ function SoftDetailView(props) {
             key: 'processName',
             width: 200,
             ellipsis: true,
-            render: (text, record) => {
-                const obj = {
-                    children: text,
-                    props: {},
-                };
-                if (softinfolistdetails.rows.length !== 8) {
-                    obj.props.rowSpan = mergeCells(record.processName, softinfolistdetails.rows, 'hostZone', 'processName')
-                };
-                return obj;
-            },
+            align: 'center',
         },
         {
             title: '进程id',
@@ -336,6 +367,7 @@ function SoftDetailView(props) {
             key: 'processId',
             width: 250,
             ellipsis: true,
+            align: 'center',
         },
         {
             title: '进程gc情况',
@@ -343,6 +375,7 @@ function SoftDetailView(props) {
             key: 'processGc',
             width: 250,
             ellipsis: true,
+            align: 'center',
             onCell: () => {
                 return {
                     style: {
@@ -368,6 +401,7 @@ function SoftDetailView(props) {
             key: 'networkTimeWait',
             width: 300,
             ellipsis: true,
+            align: 'center',
         },
         {
             title: '网络连接情况(CLOSE-WAIT)',
@@ -375,12 +409,14 @@ function SoftDetailView(props) {
             key: 'networkCloseWait',
             width: 300,
             ellipsis: true,
+            align: 'center',
         },
         {
             title: '软件日志',
             dataIndex: 'softLog',
             key: 'softLog',
             width: 200,
+            align: 'center',
             ellipsis: true,
             onCell: () => {
                 return {
@@ -406,24 +442,37 @@ function SoftDetailView(props) {
             dataIndex: 'remark',
             key: 'remark',
             width: 250,
+            align: 'center',
         },
         {
             title: '巡检结果',
             dataIndex: 'result',
             key: 'result',
             width: 150,
-            render: (text, record) => (
-                <span>
-                    <Badge status={colorrendermap.get(record.result)} text={text} />
-                </span>
-            ),
+            align: 'center',
+            render: (text, record) => {
+                const obj = {
+                    children: <Badge status={colorrendermap.get(record.result)} text={text} />,
+                    props: {},
+                };
+                obj.props.rowSpan = mergeCells(record.result, softinfolistdetails.rows, 'result', 'hostZone')
+                return obj;
+            },
         },
         {
             title: '巡检时间',
             dataIndex: 'addTime',
             key: 'addTime',
+            align: 'center',
             width: 250,
-            ellipsis: true,
+            render: (text, record) => {
+                const obj = {
+                    children: text,
+                    props: {},
+                };
+                obj.props.rowSpan = mergeCells(record.addTime, softinfolistdetails.rows, 'addTime', 'hostZone')
+                return obj;
+            },
         },
     ];
 
@@ -488,6 +537,7 @@ function SoftDetailView(props) {
                         <Col span={8} style={{ marginTop: 4, textAlign: 'right' }}>{extra}</Col>
                     </Form></Row>
                 <Table
+                    bordered
                     columns={columns}
                     loading={loading}
                     dataSource={softinfolistdetails.rows || []}

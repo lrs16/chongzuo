@@ -8,7 +8,7 @@ import SysUpload from '@/components/SysUpload/Upload';
 import FilesContext from '@/layouts/MenuContext';
 import PatrolconfigModal from './components/PatrolconfigModal';
 import PatrolBriefDrawer from './components/PatrolBriefDrawer';
-import { PaperClipOutlined } from '@ant-design/icons';
+// import { PaperClipOutlined } from '@ant-design/icons';
 import { saveFileIds, createReport, createInspectionall } from './services/api';
 
 const { Option } = Select;
@@ -91,23 +91,23 @@ function HostPatrol(props) {
   }, [filelist && filelistid]);
 
   // 列表中下载附件
-  const handledownload = info => {
-    dispatch({
-      type: 'sysfile/downloadfile',
-      payload: {
-        id: info.uid,
-      },
-    }).then(res => {
-      const filename = info.name;
-      const blob = new Blob([res]);
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.click();
-      window.URL.revokeObjectURL(url);
-    });
-  };
+  // const handledownload = info => {
+  //   dispatch({
+  //     type: 'sysfile/downloadfile',
+  //     payload: {
+  //       id: info.uid,
+  //     },
+  //   }).then(res => {
+  //     const filename = info.name;
+  //     const blob = new Blob([res]);
+  //     const url = window.URL.createObjectURL(blob);
+  //     const a = document.createElement('a');
+  //     a.href = url;
+  //     a.download = filename;
+  //     a.click();
+  //     window.URL.revokeObjectURL(url);
+  //   });
+  // };
 
   const onShowSizeChange = (page, size) => {
     searchdata(page, size);
@@ -227,53 +227,69 @@ function HostPatrol(props) {
       title: '操作',
       dataIndex: 'action',
       key: 'action',
-      width: 600,
-      // align: 'center',
+      width: 250,
+      align: 'center',
       render: (_, record) => {
         return (
-          <div style={{ display: 'flex' }}>
-            <span style={{ marginTop: 7 }}>
-              {(record.status !== '成功') ? <a type="link" disabled
-              >
-                报告下载
-              </a> : <a type="link"
-                onClick={() => handledownFileToZip(record.id, record.no)}
-              >报告下载</a>}
-              <Divider type="vertical" />
-              <a type="link"
-                onClick={() => {
-                  handleShowBrieDrawer('巡检简报', record.id);
-                }}
-              >生成简报</a>
-              <Divider type="vertical" />
-              <a type="link"
-                onClick={() => newDetailView(record.id)}
-              >查看明细</a>
-              <Divider type="vertical" /></span>
-            {
-              record.fileIds && record.fileIds !== '[]' && record.fileIds !== null ?
-                (<div style={{ marginTop: '7px' }}>
-                  {JSON.parse(record.fileIds).map((obj, index) => {
-                    return (
-                      <div key={index.toString()} style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', width: 280, overflow: 'hidden' }}>
-                        <PaperClipOutlined
-                          style={{ marginRight: 8, fontSize: 11, color: 'rgba(0, 0, 0, 0.45)' }}
-                        />
-                        <a onClick={() => handledownload(obj)}>{obj.name}</a>
-                      </div>
-                    );
-                  })}
-                </div>) : (
-                  <FilesContext.Provider value={{
-                    files: [],
-                    // files: record.fileIds && record.fileIds !== '[]' && record.fileIds !== null ? JSON.parse(record.fileIds) : [],
-                    ChangeFiles: (v => { setFilelist(v); setFilelistId(record.id); }),
-                  }}>
-                    <SysUpload key={record.id} />
-                  </FilesContext.Provider>
-                )
-            }
-          </div>
+          <span>
+            {(record.status !== '成功') ? <a type="link" disabled
+            >
+              报告下载
+            </a> : <a type="link"
+              onClick={() => handledownFileToZip(record.id, record.no)}
+            >报告下载</a>}
+            <Divider type="vertical" />
+            <a type="link"
+              onClick={() => {
+                handleShowBrieDrawer('巡检简报', record.id);
+              }}
+            >生成简报</a>
+            <Divider type="vertical" />
+            <a type="link"
+              onClick={() => newDetailView(record.id)}
+            >查看明细</a></span>
+          // <div >
+          //   {
+          //     record.fileIds && record.fileIds !== '[]' && record.fileIds !== null ?
+          //       (<div style={{ marginTop: '7px' }}>
+          //         {JSON.parse(record.fileIds).map((obj, index) => {
+          //           return (
+          //             <div key={index.toString()} style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', width: 280, overflow: 'hidden' }}>
+          //               <PaperClipOutlined
+          //                 style={{ marginRight: 8, fontSize: 11, color: 'rgba(0, 0, 0, 0.45)' }}
+          //               />
+          //               <a onClick={() => handledownload(obj)}>{obj.name}</a>
+          //             </div>
+          //           );
+          //         })}
+          //       </div>) : (
+          //         <FilesContext.Provider value={{
+          //           files: [],
+          //           // files: record.fileIds && record.fileIds !== '[]' && record.fileIds !== null ? JSON.parse(record.fileIds) : [],
+          //           ChangeFiles: (v => { setFilelist(v); setFilelistId(record.id); }),
+          //         }}>
+          //           <SysUpload key={record.id} />
+          //         </FilesContext.Provider>
+          //       )
+          //   }
+          // </div>
+        );
+      },
+    },
+    {
+      title: '上传最终报告',
+      dataIndex: 'fileIds',
+      key: 'fileIds',
+      width: 300,
+      render: (_, record) => {
+        return (
+          <FilesContext.Provider value={{
+            // files: [],
+            files: record.fileIds && record.fileIds !== '[]' && record.fileIds !== null ? JSON.parse(record.fileIds) : [],
+            ChangeFiles: (v => { setFilelist(v); setFilelistId(record.id); }),
+          }}>
+            <SysUpload key={record.id} />
+          </FilesContext.Provider>
         );
       },
     },

@@ -188,7 +188,7 @@ function HostDetailView(props) {
             dataIndex: mergeCell,
             key: mergeCell,
             width: 250,
-            // ellipsis: true,
+            ellipsis: true,
             render: (text, record) => {
                 const obj = {
                     children: text,

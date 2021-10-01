@@ -267,3 +267,29 @@ export async function togetSearchUsers() {
     method: 'GET',
   });
 }
+
+// *******软件配置list'
+// /assets/softConf/listPage/{pageNum}/{pageSize}
+export async function softConfList(params, pageNum, pageSize) {
+  return request(`/assets/softConf/listPage/${pageNum}/${pageSize}`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}
+
+// /auto/soft/conf/backupSoftConfigFile 备份配置文件
+export async function backupSoftConfigFile(softIds) {
+  return request(`/auto/soft/conf/backupSoftConfigFile`, {
+    method: 'POST',
+    data: {softIds},
+  });
+}
+
+// /auto/soft/conf/pullSoftConfigFile  获取配置文件-异步请求
+export async function pullSoftConfigFile(softIds) {
+  return request(`/auto/soft/conf/pullSoftConfigFile`, {
+    method: 'POST',
+    data: {softIds},
+  });
+}

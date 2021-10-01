@@ -5,13 +5,15 @@ import React, {
 } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Table, Card, Button, Form, Input, Select, Row, Col, Divider, message } from 'antd';
+import { Table, Card, Button, Form, Input, Select, Row, Col, DatePicker } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
 import HistorVersionDrawer from './components/HistorVersionDrawer';
+import GetFileModal from './components/GetFileModal';
 
 const { Option } = Select;
+// const { confirm } = Modal;
 
 const formItemLayout = {
     labelCol: {
@@ -29,7 +31,7 @@ function softwareConfig(props) {
     const {
         loading,
         dispatch,
-        softList,
+        // softconflist,
         location,
         form: {
             getFieldDecorator,
@@ -37,6 +39,8 @@ function softwareConfig(props) {
             resetFields,
         },
     } = props;
+
+    // console.log(softconflist, 'softconflist')
 
     const [expand, setExpand] = useState(false);
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
@@ -52,24 +56,23 @@ function softwareConfig(props) {
 
     const searchdata = (page, size) => {
         const values = getFieldsValue();
-        values.createTime1 = values.createTime1 ? moment(values.createTime1).format('YYYY-MM-DD HH:mm:ss') : '';
-        values.createTime2 = values.createTime2 ? moment(values.createTime2).format('YYYY-MM-DD HH:mm:ss') : '';
-        values.updateTime1 = values.updateTime1 ? moment(values.updateTime1).format('YYYY-MM-DD HH:mm:ss') : '';
-        values.updateTime2 = values.updateTime2 ? moment(values.updateTime2).format('YYYY-MM-DD HH:mm:ss') : '';
+        values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
+        values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
         dispatch({
-            type: 'softwaremanage/findSoftList1',
+            type: 'softconf/findsoftConfList',
             payload: {
                 values,
                 pageNum: page,
                 pageSize: size,
             },
         }).then(res => {
-            if (res.code === 200) {
-                const newarr = res.data.rows.map((item, index) => {
-                    return Object.assign(item, { key: index });
-                });
-                setData(newarr);
-            }
+            console.log(res, "res")
+            // if (res.code === 200) {
+            //     const newarr = res.data.rows.map((item, index) => {
+            //         return Object.assign(item, { key: index });
+            //     });
+            //     setData(newarr);
+            // }
         })
     };
 
@@ -106,8 +109,8 @@ function softwareConfig(props) {
         onShowSizeChange: (page, size) => onShowSizeChange(page, size),
         current: paginations.current,
         pageSize: paginations.pageSize,
-        total: softList.total,
-        showTotal: total => `总共  ${total}  条记录`,
+        // total: softconflist.total || 15,
+        // showTotal: total => `总共  ${total}  条记录`,
         onChange: page => changePage(page),
     };
 
@@ -120,20 +123,20 @@ function softwareConfig(props) {
     };
 
     // 提交保存数据
-    const savedata = (target, id) => {
-        dispatch({
-            type: 'softwaremanage/todynamicaddOrEdit',
-            payload: {
-                ...target,
-                id,
-            },
-        }).then(res => {
-            if (res.code === 200) {
-                message.success(res.msg);
-                searchdata(1, 15);
-            }
-        });
-    };
+    // const savedata = (target, id) => {
+    //     dispatch({
+    //         type: 'softwaremanage/todynamicaddOrEdit',
+    //         payload: {
+    //             ...target,
+    //             id,
+    //         },
+    //     }).then(res => {
+    //         if (res.code === 200) {
+    //             message.success(res.msg);
+    //             searchdata(1, 15);
+    //         }
+    //     });
+    // };
 
     // 获取行
     const getRowByKey = (key, newData) => {
@@ -150,146 +153,199 @@ function softwareConfig(props) {
         }
     };
 
-    const toggleEditable = (e, key) => {
-        e.preventDefault();
-        const newData = data.map(item => ({ ...item }));
-        const target = getRowByKey(key, newData);
-        if (target) {
-            target.editable = !target.editable;
-            setData(newData);
-        }
-    }
+    // const showgetFileModel = () => {
+    //     confirm({
+    //         title: '获取文件提示',
+    //         content: `获取最新文件，建议备份文件后再获取，若直接获取文件会覆盖当前列表数据！`,
+    //         okText: '直接获取',
+    //         okText1: '备份后获取',
+    //         cancelText: '取消',
+    //         onCancel() {
 
-    const saveRow = (e, key) => {
-        const target = getRowByKey(key) || {};
-        delete target.key;
-        target.editable = false;
-        const id = target.id === '' ? '' : target.id;
-        savedata(target, id);
-    };
+    //         },
+    //         onOk() {
+              
+    //         },
+    //         onOk1() {
+              
+    //         },
+    //     });
+    // };
 
-    const columns = [
-        {
-            title: '区域',
-            dataIndex: 'hostZoneId',
-            key: 'hostZoneId',
-            width: 120,
-        },
-        {
-            title: '设备名称',
-            dataIndex: 'hostName',
-            key: 'hostName',
-            width: 180,
-        },
-        {
-            title: '主机IP',
-            dataIndex: 'hostIp',
-            key: 'hostIp',
-            width: 200,
-        },
-        {
-            title: '软件名称',
-            dataIndex: 'softName',
-            key: 'softName',
-            width: 180,
-        },
-        {
-            title: '配置文件路径',
-            dataIndex: 'softPort',
-            key: 'softPort',
-            width: 250,
-        },
-        {
-            title: '配置文件名称',
-            dataIndex: 'softPath',
-            key: 'softPath',
-            width: 250,
-        },
-        {
-            title: '配置文件大小',
-            dataIndex: 'softVersion',
-            key: 'softVersion',
-            width: 250,
-        },
-        {
-            title: '配置文件内容',
-            dataIndex: 'softStatus',
-            key: 'softStatus',
-            width: 300,
-        },
-        {
-            title: '配置文件版本号',
-            dataIndex: 'director',
-            key: 'director',
-            width: 150,
-            editable: true,
-            render: (text, record) => {
-                if (record.editable) {
-                    return (
-                        <Input
-                            type='text'
-                            placeholder="请输入"
-                            defaultValue={text}
-                            onChange={e => handleFieldChange(e.target.value, 'director', record.key)}
-                        />
-                    );
-                }
-                return text;
-            },
-        },
-        {
-            title: '获取时间',
-            dataIndex: 'gettime',
-            key: 'gettime',
-            width: 150,
-        },
-        {
-            title: '操作',
-            dataIndex: 'action',
-            key: 'action',
-            fixed: 'right',
-            width: 200,
-            render: (text, record) => {
-                if (record.editable === '') {
-                    return null;
-                }
-                return record.editable ? (
-                    <span>
-                        <a
-                            onClick={e => saveRow(e, record.key)}
-                        >
-                            保存
-                        </a>
-                        <Divider type="vertical" />
-                        <a type="link"
-                            record={record}
-                            text={text}
-                            onClick={() => {
-                                handleShowHistoryDrawer('查看历史版本');
-                            }}
-                        >
-                            历史版本
-                        </a>
-                    </span>
-                ) : (
-                    <span>
-                        <a onClick={e => toggleEditable(e, record.key)}>
-                            编辑版本号
-                        </a>
-                        <Divider type="vertical" />
-                        <a type="link"
-                            record={record}
-                            text={text}
-                            onClick={() => {
-                                handleShowHistoryDrawer('查看历史版本');
-                            }}
-                        >
-                            历史版本
-                        </a>
-                    </span>
+    // const toggleEditable = (e, key) => {
+    //     e.preventDefault();
+    //     const newData = data.map(item => ({ ...item }));
+    //     const target = getRowByKey(key, newData);
+    //     if (target) {
+    //         target.editable = !target.editable;
+    //         setData(newData);
+    //     }
+    // }
+
+    // const saveRow = (e, key) => {
+    //     const target = getRowByKey(key) || {};
+    //     delete target.key;
+    //     target.editable = false;
+    //     const id = target.id === '' ? '' : target.id;
+    //     savedata(target, id);
+    // };
+
+    const columns = [{
+        title: '批次号',
+        dataIndex: 'pch',
+        key: 'pch',
+        width: 120,
+    },
+    {
+        title: '区域',
+        dataIndex: 'hostZoneId',
+        key: 'hostZoneId',
+        width: 120,
+    },
+    {
+        title: '设备名称',
+        dataIndex: 'hostName',
+        key: 'hostName',
+        width: 180,
+    },
+    {
+        title: '主机IP',
+        dataIndex: 'hostIp',
+        key: 'hostIp',
+        width: 200,
+    },
+    {
+        title: '软件名称',
+        dataIndex: 'softName',
+        key: 'softName',
+        width: 180,
+    },
+    {
+        title: '配置文件路径',
+        dataIndex: 'softPort',
+        key: 'softPort',
+        width: 250,
+    },
+    {
+        title: '配置文件名称',
+        dataIndex: 'softPath',
+        key: 'softPath',
+        width: 250,
+    },
+    {
+        title: '配置文件大小',
+        dataIndex: 'softVersion',
+        key: 'softVersion',
+        width: 250,
+    },
+    {
+        title: '配置文件内容',
+        dataIndex: 'softStatus',
+        key: 'softStatus',
+        width: 300,
+    },
+    {
+        title: '配置文件版本号',
+        dataIndex: 'director',
+        key: 'director',
+        width: 150,
+        editable: true,
+        render: (text, record) => {
+            if (record.editable) {
+                return (
+                    <Input
+                        type='text'
+                        placeholder="请输入"
+                        defaultValue={text}
+                        onChange={e => handleFieldChange(e.target.value, 'director', record.key)}
+                    />
                 );
-            },
+            }
+            return text;
         },
+    },
+    {
+        title: '文件md5',
+        dataIndex: 'm1',
+        key: 'm1',
+        width: 150,
+    },
+    {
+        title: '比对上次文件变化',
+        dataIndex: 'm2',
+        key: 'm2',
+        width: 150,
+    },
+    {
+        title: '文件修改时间',
+        dataIndex: 'm3',
+        key: 'm3',
+        width: 150,
+    },
+    {
+        title: '获取时间',
+        dataIndex: 'gettime',
+        key: 'gettime',
+        width: 150,
+    },
+    {
+        title: '操作',
+        dataIndex: 'action',
+        key: 'action',
+        fixed: 'right',
+        width: 120,
+        render: (text, record) => {
+            return (
+                <a type="link"
+                    record={record}
+                    text={text}
+                    onClick={() => {
+                        handleShowHistoryDrawer('查看历史版本');
+                    }}
+                >
+                    历史版本
+                </a>
+            );
+            // if (record.editable === '') {
+            //     return null;
+            // }
+            // return record.editable ? (
+            //     <span>
+            //         <a
+            //             onClick={e => saveRow(e, record.key)}
+            //         >
+            //             保存
+            //         </a>
+            //         <Divider type="vertical" />
+            //         <a type="link"
+            //             record={record}
+            //             text={text}
+            //             onClick={() => {
+            //                 handleShowHistoryDrawer('查看历史版本');
+            //             }}
+            //         >
+            //             历史版本
+            //         </a>
+            //     </span>
+            // ) : (
+            //     <span>
+            //         <a onClick={e => toggleEditable(e, record.key)}>
+            //             编辑版本号
+            //         </a>
+            //         <Divider type="vertical" />
+            //         <a type="link"
+            //             record={record}
+            //             text={text}
+            //             onClick={() => {
+            //                 handleShowHistoryDrawer('查看历史版本');
+            //             }}
+            //         >
+            //             历史版本
+            //         </a>
+            //     </span>
+            // );
+        },
+    },
     ];
 
     // 查询
@@ -378,16 +434,64 @@ function softwareConfig(props) {
                                         })(<Input placeholder="请输入" allowClear />)}
                                     </Form.Item>
                                 </Col>
+                                <Col span={8}>
+                                    <Form.Item label="批次号">
+                                        {getFieldDecorator('p1', {
+                                            initialValue: '',
+                                        })(<Input placeholder="请输入" allowClear />)}
+                                    </Form.Item>
+                                </Col>
+                                <Col span={8}>
+                                    <Form.Item label="比对上次文件变化">
+                                        {getFieldDecorator('p2', {
+                                            initialValue: '',
+                                        })(<Input placeholder="请输入" allowClear />)}
+                                    </Form.Item>
+                                </Col>
+                                <Col span={8}>
+                                    <Form.Item label="获取时间">
+                                        <Row>
+                                            <Col span={11}>
+                                                {getFieldDecorator('startTime', {})(
+                                                    <DatePicker
+                                                        showTime={{
+                                                            hideDisabledOptions: true,
+                                                            defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                                                        }}
+                                                        placeholder="开始时间"
+                                                        format='YYYY-MM-DD HH:mm:ss'
+                                                        style={{ minWidth: 120, width: '100%' }}
+                                                    />
+                                                )}
+                                            </Col>
+                                            <Col span={2} style={{ textAlign: 'center' }}>-</Col>
+                                            <Col span={11}>
+                                                {getFieldDecorator('endTime', {})(
+                                                    <DatePicker
+                                                        showTime={{
+                                                            hideDisabledOptions: true,
+                                                            defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                                                        }}
+                                                        placeholder="结束时间"
+                                                        format='YYYY-MM-DD HH:mm:ss'
+                                                        style={{ minWidth: 120, width: '100%' }}
+                                                    />
+                                                )}
+                                            </Col>
+                                        </Row>
+                                    </Form.Item>
+                                </Col>
                             </>
                         )}
                         {expand ? (<Col span={24} style={{ marginTop: 4, textAlign: 'right' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
                     </Form>
                 </Row>
                 <div style={{ marginBottom: 8 }}>
+                    <GetFileModal>
                     <Button type="primary" style={{ marginRight: 8 }}
+                        // onClick={() => showgetFileModel()}
                     >获取文件</Button>
-                    <Button type="primary" style={{ marginRight: 8 }}
-                    >备份文件</Button>
+                    </GetFileModal>
                 </div>
                 <Table
                     columns={columns}
@@ -409,8 +513,8 @@ function softwareConfig(props) {
 }
 
 export default Form.create({})(
-    connect(({ softwaremanage, loading }) => ({
-        softList: softwaremanage.softList,
-        loading: loading.models.softwaremanage,
+    connect(({ softconf, loading }) => ({
+        softconflist: softconf.softconflist,
+        loading: loading.models.softconf,
     }))(softwareConfig),
 );
