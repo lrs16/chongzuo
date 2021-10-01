@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
-import { Card, Row, Col, Avatar, Tag, DatePicker, Empty } from 'antd';
+import { Card, Row, Col, Avatar, Empty } from 'antd';
 import { ChartCard } from '@/components/Charts';
 import StatisticsCard from '@/components/StatisticsCard';
+import SelectTime from '@/components/SelectTime/SelectTime';
 import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
 import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
 import Cylinder from '@/components/CustomizeCharts/Cylinder';
 import styles from '../index.less';
 
-const { CheckableTag } = Tag;
-const tagsFromServer = [{ name: '本日', key: '1' }, { name: '本月', key: '2' }];
 const cols = {
   rate: {
     // alias: '%',
@@ -706,37 +705,23 @@ function Statistics(props) {
   // }, [])
   return (
     <div>
-      <Card>
-        <span style={{ fontSize: 16, fontWeight: 700, paddingRight: 12 }}>统计周期：</span>
-        {tagsFromServer.map(obj => (
-          <CheckableTag
-            key={obj.key}
-            checked={selectedTags.indexOf(obj) > -1}
-            onChange={checked => handleChang(obj, checked)}
-          >
-            {obj.name}
-          </CheckableTag>
-        ))}
-        <DatePicker placeholder="开始时间" />
-        <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
-        <DatePicker placeholder="结束时间" />
-      </Card>
+      <SelectTime ChangeDate={(v) => console.log(v)} />
       <Row style={{ marginTop: 24 }}>
         <div className={styles.statisticscard}>
           <Avatar icon="desktop" />
           <b>发布总情况</b>
         </div>
         <Col span={6}>
-          <StatisticsCard title='发布总次数：' value={1128} suffix='次' des='环比上月' desval='11%' type='up' />
+          <StatisticsCard title='发布总次数：' value={1128} suffix='次' des='环比' desval='11%' type='up' />
         </Col>
         <Col span={6}>
-          <StatisticsCard title='出厂测试总功能项：' value={93} suffix='项' des='环比上月' desval='3.5%' type='down' />
+          <StatisticsCard title='出厂测试总功能项：' value={93} suffix='项' des='环比' desval='3.5%' type='down' />
         </Col>
         <Col span={6}>
-          <StatisticsCard title='发布成功项：' value={935888} suffix='次' des='环比上月' desval='6%' type='up' />
+          <StatisticsCard title='发布成功项：' value={935888} suffix='次' des='环比' desval='6%' type='up' />
         </Col>
         <Col span={6}>
-          <StatisticsCard title='发布成功率：' value={89.558} suffix='%' des='环比上月' desval='6%' type='up' />
+          <StatisticsCard title='发布成功率：' value={89.558} suffix='%' des='环比' desval='6%' type='up' />
         </Col>
       </Row>
       <Row gutter={16}>
@@ -746,8 +731,9 @@ function Statistics(props) {
             <b>平台验证情况</b>
           </div>
           <Row>
-            <Col span={12}><StatisticsCard title='平台验证通过项：' value={152} suffix='项' des='环比上月' desval='6%' type='up' /></Col>
-            <Col span={12}><StatisticsCard title='平台验证未通过项：' value={2} suffix='项' des='环比上月' desval='6%' type='down' /></Col>
+            <Col span={8}><StatisticsCard title='平台验证通过项：' value={152} suffix='项' des='环比' desval='6%' type='up' /></Col>
+            <Col span={8}><StatisticsCard title='平台验证未通过项：' value={2} suffix='项' des='环比' desval='6%' type='down' /></Col>
+            <Col span={8}><StatisticsCard title='平台验证成功率：' value={100.00} suffix='%' des='环比' desval='6%' type='down' /></Col>
           </Row>
         </Col>
         <Col span={12} style={{ marginTop: 24 }}>
@@ -756,8 +742,9 @@ function Statistics(props) {
             <b>业务验证情况</b>
           </div>
           <Row>
-            <Col span={12}><StatisticsCard title='业务验证通过项：' value={150} suffix='项' des='环比上月' desval='6%' type='up' /></Col>
-            <Col span={12}><StatisticsCard title='业务验证未通过项：' value={2} suffix='项' des='环比上月' desval='6%' type='down' /></Col>
+            <Col span={8}><StatisticsCard title='业务验证通过项：' value={150} suffix='项' des='环比' desval='6%' type='up' /></Col>
+            <Col span={8}><StatisticsCard title='业务验证未通过项：' value={2} suffix='项' des='环比' desval='6%' type='down' /></Col>
+            <Col span={8}><StatisticsCard title='平台验证成功率：' value={100.00} suffix='%' des='环比' desval='6%' type='down' /></Col>
           </Row>
         </Col>
       </Row>
@@ -768,9 +755,9 @@ function Statistics(props) {
             <b>发布实施情况</b>
           </div>
           <Row>
-            <Col span={8}><StatisticsCard title='实施通过项：' value={148} suffix='项' des='环比上月' desval='6%' type='up' /></Col>
-            <Col span={8}><StatisticsCard title='实施未通过项：' value={0} suffix='项' des='环比上月' desval='6%' type='down' /></Col>
-            <Col span={8}><StatisticsCard title='实施成功率：' value={100.00} suffix='%' des='环比上月' desval='6%' type='down' /></Col>
+            <Col span={8}><StatisticsCard title='实施通过项：' value={148} suffix='项' des='环比' desval='6%' type='up' /></Col>
+            <Col span={8}><StatisticsCard title='实施未通过项：' value={0} suffix='项' des='环比' desval='6%' type='down' /></Col>
+            <Col span={8}><StatisticsCard title='实施成功率：' value={100.00} suffix='%' des='环比' desval='6%' type='down' /></Col>
           </Row>
         </Col>
         <Col span={12} style={{ marginTop: 24 }}>
@@ -779,9 +766,9 @@ function Statistics(props) {
             <b>业务复核情况</b>
           </div>
           <Row>
-            <Col span={8}><StatisticsCard title='复核通过项：' value={148} suffix='项' des='环比上月' desval='6%' type='up' /></Col>
-            <Col span={8}><StatisticsCard title='复核未通过项：' value={0} suffix='项' des='环比上月' desval='6%' type='down' /></Col>
-            <Col span={8}><StatisticsCard title='复核成功率：' value={100.00} suffix='%' des='环比上月' desval='6%' type='down' /></Col>
+            <Col span={8}><StatisticsCard title='复核通过项：' value={148} suffix='项' des='环比' desval='6%' type='up' /></Col>
+            <Col span={8}><StatisticsCard title='复核未通过项：' value={0} suffix='项' des='环比' desval='6%' type='down' /></Col>
+            <Col span={8}><StatisticsCard title='复核成功率：' value={100.00} suffix='%' des='环比' desval='6%' type='down' /></Col>
           </Row>
         </Col>
       </Row>

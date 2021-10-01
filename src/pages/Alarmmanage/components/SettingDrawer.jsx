@@ -1,34 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Drawer, Input, Radio, Button, InputNumber } from 'antd';
-
-const datas = [
-  {
-    key: '1',
-    key1: 'CPU使用率',
-    key2: '90',
-    key3: '%',
-    key4: '使用状态',
-  }
-]
+import { Table, Drawer, Radio, InputNumber, message } from 'antd';
+import { updateConfigure } from '../services/api';
 
 function HostSettingDrawer(props) {
-  const { title, visible, handleSubmit, ChangeVisible } = props;
+  const { title, visible, ChangeVisible, configList } = props;
   const [data, setData] = useState([]);
   const hanldleCancel = () => {
     ChangeVisible(false);
   };
-  const handleOk = () => {
-    handleSubmit(data);
-    props.form.resetFields();
-    ChangeVisible(false);
-  };
 
   useEffect(() => {
-    if (datas && datas.length > 0) {
-      const newData = datas.map(item => ({ ...item }));
+    if (configList && configList.length > 0) {
+      const newData = configList.map(item => ({ ...item }));
       setData(newData);
     }
-  }, [datas])
+  }, [configList])
 
   // 获取行
   const getRowByKey = (key, newData) => {
@@ -41,6 +27,13 @@ function HostSettingDrawer(props) {
     if (target) {
       target[fieldName] = e;
       setData(newData);
+      updateConfigure(target).then(res => {
+        if (res.code === 200) {
+          message.success('操作成功')
+        } else {
+          message.error('操作失败')
+        }
+      })
     }
   };
   const columns = [
@@ -48,64 +41,47 @@ function HostSettingDrawer(props) {
       title: '序号',
       dataIndex: 'key',
       key: 'key',
-      width: 60,
-    },
-    {
-      title: '配置子项',
-      dataIndex: 'key1',
-      key: 'key1',
-      render: (text, record) => {
-        return (
-          <Input
-            key={record.key}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'key1', record.key)}
-          />
-        )
+      render: (text, record, index) => {
+        return <>{`${index + 1}`}</>;
       },
     },
     {
+      title: '配置子项',
+      dataIndex: 'configureChildren',
+      key: 'configureChildren',
+    },
+    {
       title: '阈值',
-      dataIndex: 'key2',
-      key: 'key2',
+      dataIndex: 'threshold',
+      key: 'threshold',
       render: (text, record) => {
         return (
           <InputNumber
             key={record.key}
             defaultValue={text}
             formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-            parser={value => value.replace(/\$\s?|(,*)/g, '')}
-            onChange={e => handleFieldChange(e, 'key2', record.key)}
+            onChange={e => handleFieldChange(e, 'threshold', record.key)}
           />
         )
       },
     },
     {
       title: '单位',
-      dataIndex: 'key3',
-      key: 'key3',
-      render: (text, record) => {
-        return (
-          <Input
-            key={record.key}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'key3', record.key)}
-          />
-        )
-      },
+      dataIndex: 'punctuation',
+      key: 'punctuation',
     },
     {
       title: '使用状态',
-      dataIndex: 'key4',
-      key: 'key4',
+      dataIndex: 'status',
+      key: 'status',
       width: 200,
       render: (text, record) => {
         return (
           <Radio.Group
-            onChange={e => handleFieldChange(e.target.value, 'key1', record.key)}
+            onChange={e => handleFieldChange(e.target.value, 'status', record.key)}
             value={text}>
-            <Radio value='启用'>启用</Radio>
-            <Radio value='停用'>停用</Radio>
+            <Radio value='1'>启用</Radio>
+            <Radio value='0'>停用</Radio>
           </Radio.Group>
         )
       },
@@ -120,26 +96,7 @@ function HostSettingDrawer(props) {
       bodyStyle={{ paddingBottom: 60 }}
       destroyOnClose
     >
-      <Table columns={columns} dataSource={data} />
-      <div
-        style={{
-          position: 'absolute',
-          right: 0,
-          bottom: 0,
-          width: '100%',
-          borderTop: '1px solid #e9e9e9',
-          padding: '10px 16px',
-          background: '#fff',
-          textAlign: 'right',
-        }}
-      >
-        <Button onClick={hanldleCancel} style={{ marginRight: 8 }}>
-          取消
-        </Button>
-        <Button onClick={handleOk} type="primary">
-          提交
-        </Button>
-      </div>
+      <Table columns={columns} dataSource={data} rowKey={record => record.id} pagination={false} />
     </Drawer>
   );
 }

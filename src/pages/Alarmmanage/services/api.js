@@ -106,3 +106,26 @@ export async function getOrder(params) {
     requestType: 'form',
   });
 }
+
+// 告警配置 其它告警配置列表（主机、软件、时钟）
+export async function thresholdList() {
+  return request(`/inspect/threshold/list`, {
+    method: 'GET',
+  });
+}
+
+// 告警配置 配置列表
+export async function configureList(id) {
+  return request(`/inspect/threshold/configureList?id=${id}`, {
+    method: 'GET',
+  });
+}
+
+// 告警配置 修改配置
+export async function updateConfigure(params) {
+  return request(`/inspect/threshold/updateConfigure`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}

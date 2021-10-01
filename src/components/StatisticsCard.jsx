@@ -7,10 +7,10 @@ function StatisticsCard(props) {
     <Card style={{ marginLeft: '-1px' }}>
       <Row type="flex" justify="space-between" align="bottom">
         <Col span={24}>{title}</Col>
-        <Col span={12}>
+        <Col span={24}>
           <Statistic value={value} suffix={suffix} />
         </Col>
-        <Col span={12} style={{ paddingBottom: 8 }}>
+        <Col span={24} style={{ paddingBottom: 8 }}>
           <span style={{ paddingRight: 12 }}>{des}</span>
           <span>{desval}</span>
           {type === 'up' && <Icon type="caret-up" style={{ color: '#f5222d' }} />}

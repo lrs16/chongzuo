@@ -90,9 +90,6 @@ function NoticeSetting(props) {
       key: 'action',
       render: (text, record) => {
         const handleSetting = () => {
-          // setVisible(!visible);
-          // setDrawerTitle(record.key1);
-          console.log('点击')
           setVisible(!visible);
           setOpenType('view')
         }
