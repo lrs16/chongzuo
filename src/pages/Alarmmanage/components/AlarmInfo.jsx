@@ -109,8 +109,9 @@ function AlarmInfo(props) {
   }, [data]);
 
   const handleClick = (val) => {
-    switch (val.flowNodeName) {
-      case '事件登记':
+    // const type = val.orderNo.substring(0, 2);
+    switch (val.orderType) {
+      case 'event':
         router.push({
           pathname: `/ITSM/eventmanage/query/details`,
           query: {
@@ -121,7 +122,7 @@ function AlarmInfo(props) {
           },
         });
         break;
-      case '问题登记':
+      case 'problem':
         router.push({
           pathname: `/ITSM/problemmanage/problemquery/detail`,
           query: {
@@ -131,7 +132,7 @@ function AlarmInfo(props) {
           },
         });
         break;
-      case '故障登记':
+      case 'trouble':
         router.push({
           pathname: `/ITSM/faultmanage/querylist/record`,
           query: {
