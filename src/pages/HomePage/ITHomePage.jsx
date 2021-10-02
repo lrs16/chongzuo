@@ -50,30 +50,6 @@ const demandtabs = [
   { key: 'd8', name: '待需求登记人员确认', data: 0 },
 ];
 
-// 饼图数据
-const Donutdata = [
-  {
-    type: '事件单',
-    count: 600,
-  },
-  {
-    type: '故障单',
-    count: 200,
-  },
-  {
-    type: '问题单',
-    count: 100,
-  },
-  {
-    type: '需求单',
-    count: 111,
-  },
-  {
-    type: '发布单',
-    count: 150,
-  },
-];
-
 const eventcolumns = [
   {
     title: '工单号',
@@ -492,7 +468,6 @@ function ITHomePage(props) {
   };
 
   const handleTabs = key => {
-    console.log(key)
     handleReset();
     validateFields((err, values) => {
       if (!err) {
@@ -664,7 +639,7 @@ function ITHomePage(props) {
           <ChartCard title="功能使用情况排名" style={{ height: 315 }} />
         </Col>
       </Row> */}
-      <h3 style={{ paddingTop: 12, paddingBottom: 6 }}>我的工作台</h3>
+      {/* <h3 style={{ paddingTop: 12, paddingBottom: 6 }}>我的工作台</h3> */}
       <Card
         tabList={tabsmap}
         onTabChange={handleTabs}

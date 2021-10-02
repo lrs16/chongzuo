@@ -28,7 +28,7 @@ const { TabPane } = Tabs;
 const homepane = [{
   name: '首页',
   itemPath: '/ITSM/home',
-  id: '1362219140546301953',
+  id: '1444116690453917698',
   closable: false,
   state: { cache: false },
 },
@@ -89,7 +89,7 @@ const BasicLayout = props => {
   const url = location.pathname;
 
   const [toptabs, setTopTabs] = useState([...homepane]);
-  const [activeKey, setActiveKey] = useState('1362219140546301953');
+  const [activeKey, setActiveKey] = useState('1444116690453917698');
   const [tabmenu, setTabMenu] = useState({ x: 0, y: 0, v: 'none' });
   const [alonepath, setAlonepath] = useState([]);
   const [multiplepath, setMultiplepath] = useState([]);
@@ -747,7 +747,7 @@ const BasicLayout = props => {
                 if (toptabs.length > 1) { setTopTabs([{ ...homepane[0] }]); }
                 clearcache();         // 清缓存
                 router.push({
-                  pathname: '/ITSM/home',
+                  pathname: 'home',
                   query: {}
                 });
               }}

@@ -113,23 +113,6 @@ export default {
                   redirect: '/ITSM/home',
                 },
                 {
-                  path: '/home',
-                  name: '首页',
-                  dynamic: true,
-                  icon: 'deployment-unit',
-                  routes: [
-                    {
-                      path: '/home',
-                      redirect: '/ITSM/home',
-                    },
-                    {
-                      path: '/ITSM/home',
-                      name: 'IT服务监控台',
-                      icon: 'control',
-                    },
-                  ],
-                },
-                {
                   path: '/ITSM',
                   name: 'IT服务管理',
                   dynamic: true,
@@ -141,9 +124,140 @@ export default {
                     },
                     {
                       path: '/ITSM/home',
-                      name: 'IT服务监控台',
+                      name: '首页',
+                      dynamic: true,
+                      icon: 'deployment-unit',
+                      component: './HomePage/Statistics',
+                      routes: [
+                        {
+                          path: '/ITSM/home',
+                          redirect: '/ITSM/home/releaseanalysis',
+                        },
+                        {
+                          path: '/ITSM/home/eventanalysis',
+                          name: '事件统计分析',
+                          icon: 'control',
+                          component: './ITSM/Releasemanage/Statistics/Analysis',
+                        },
+                        {
+                          path: '/ITSM/home/faultanalysis',
+                          name: '故障统计分析',
+                          icon: 'control',
+                          component: './ITSM/Releasemanage/Statistics/Analysis',
+                        },
+                        {
+                          path: '/ITSM/home/problemanalysis',
+                          name: '问题统计分析',
+                          icon: 'control',
+                          component: './ITSM/Releasemanage/Statistics/Analysis',
+                        },
+                        {
+                          path: '/ITSM/home/demandandalysis',
+                          name: '需求统计分析',
+                          icon: 'control',
+                          component: './ITSM/Releasemanage/Statistics/Analysis',
+                        },
+                        {
+                          path: '/ITSM/home/releaseanalysis',
+                          name: '发布统计分析',
+                          icon: 'control',
+                          component: './ITSM/Releasemanage/Statistics/Analysis',
+                        },
+                        {
+                          path: '/ITSM/home/achievementsanalysis',
+                          name: '服务绩效统计分析',
+                          icon: 'control',
+                          component: './ITSM/ServiceQuality/Statistics',
+                        }
+                      ]
+                    },
+                    {
+                      path: '/ITSM/workbench',
+                      name: '我的工作台',
                       icon: 'control',
-                      component: './HomePage',
+                      component: './HomePage/ITHomePage',
+                    },
+                    {
+                      path: '/ITSM/comprehensivequery',
+                      name: '综合查询',
+                      icon: 'control',
+                      routes: [
+                        {
+                          path: '/ITSM/comprehensivequery/query',
+                          name: '综合查询 ',
+                          icon: 'cloud-server',
+                          component: './HomePage/ComprehensiveQuery',
+                          routes: [
+                            {
+                              path: '/ITSM/comprehensivequery/query/event',
+                              name: '事件查询 ',
+                              icon: 'cloud-server',
+                              component: './ITSM/Eventmanage/QueryList',
+                            },
+                            {
+                              path: '/ITSM/comprehensivequery/query/fault',
+                              name: '故障查询 ',
+                              icon: 'cloud-server',
+                              component: './ITSM/Faultmanage/QueryList',
+                            },
+                            {
+                              path: '/ITSM/comprehensivequery/query/problem',
+                              name: '问题查询 ',
+                              icon: 'cloud-server',
+                              component: './ITSM/Problemmanage/Problemquery',
+                            },
+                            {
+                              path: '/ITSM/comprehensivequery/query/demand',
+                              name: '需求查询 ',
+                              icon: 'cloud-server',
+                              component: './ITSM/Demandmanage/QueryList',
+                            },
+                            {
+                              path: '/ITSM/comprehensivequery/query/release',
+                              name: '发布查询 ',
+                              icon: 'cloud-server',
+                              component: './ITSM/Releasemanage/Querylist',
+                            },
+                            {
+                              path: '/ITSM/comprehensivequery/query/operationplan',
+                              name: '作业计划查询 ',
+                              icon: 'cloud-server',
+                              component: './ITSM/OperationPlan/TaskSearch',
+                            }
+                          ]
+                        },
+                        {
+                          path: '/ITSM/comprehensivequery/timeout',
+                          name: '超时查询 ',
+                          icon: 'cloud-server',
+                          component: './ITSM/Eventmanage/Overtime',
+                        }
+                      ]
+                    },
+                    {
+                      path: '/ITSM/devopsStatistics',
+                      name: 'IT服务运维指标统计',
+                      icon: 'control',
+                      routes: [
+                        {
+                          path: '/ITSM/devopsStatistics/eventmanage/eventstatistics/maintenance',
+                          name: '运维分类情况统计 ',
+                          icon: 'cloud-server',
+                          component: './ITSM/Eventmanage/eventstatistics/Maintenance',
+                        },
+                        {
+                          path: '/ITSM/devopsStatistics/eventmanage/eventstatistics/maintenanceservice',
+                          name: '软件运维服务指标完成情况 ',
+                          icon: 'cloud-server',
+                          component: './ITSM/Eventmanage/eventstatistics/Maintenanceservice',
+                        },
+                        {
+                          path: '/ITSM/devopsStatistics/eventmanage/eventstatistics/workordertreatmentrate',
+                          name: '工单处理率 ',
+                          icon: 'cloud-server',
+                          component: './ITSM/Eventmanage/eventstatistics/Workordertreatmentrate',
+                        },
+                      ]
                     },
                     {
                       path: '/ITSM/todo',
@@ -1580,14 +1694,14 @@ export default {
                   routes: [
                     {
                       path: '/monitormanage',
-                      redirect: '/monitormanage/home',
+                      redirect: '/monitormanage/measurmonitor',
                     },
-                    {
-                      path: '/monitormanage/home',
-                      name: '监控台',
-                      icon: 'cloud-server',
-                      component: './Monitormanage/MonitorStation',
-                    },
+                    // {
+                    //   path: '/monitormanage/home',
+                    //   name: '监控台',
+                    //   icon: 'cloud-server',
+                    //   component: './Monitormanage/MonitorStation',
+                    // },
                     {
                       path: '/monitormanage/measurmonitor',
                       name: '计量业务监控',
