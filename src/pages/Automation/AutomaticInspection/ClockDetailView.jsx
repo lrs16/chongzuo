@@ -305,6 +305,7 @@ function ClockDetailView(props) {
                         <Col span={8} style={{ marginTop: 4, marginLeft: '8.1%' }}>{extra}</Col>
                     </Form></Row>
                 <Table
+                    bordered
                     columns={columns}
                     loading={loading}
                     dataSource={clockinfolistdetails.rows || []}

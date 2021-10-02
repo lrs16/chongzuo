@@ -251,22 +251,6 @@ function SoftDetailView(props) {
             },
         },
         {
-            title: '软件名称',
-            dataIndex: 'softName',
-            key: 'softName',
-            width: 250,
-            ellipsis: true,
-            align: 'center',
-            render: (text, record) => {
-                const obj = {
-                    children: text,
-                    props: {},
-                };
-                obj.props.rowSpan = mergeCells(record.softName, softinfolistdetails.rows, 'softName', 'hostZone')
-                return obj;
-            },
-        },
-        {
             title: 'top',
             dataIndex: 'top',
             key: 'top',
@@ -354,6 +338,14 @@ function SoftDetailView(props) {
             },
         },
         {
+            title: '软件名称',
+            dataIndex: 'softName',
+            key: 'softName',
+            width: 250,
+            ellipsis: true,
+            align: 'center',
+        },
+        {
             title: '进程名称',
             dataIndex: 'processName',
             key: 'processName',
@@ -402,6 +394,14 @@ function SoftDetailView(props) {
             width: 300,
             ellipsis: true,
             align: 'center',
+            render: (text, record) => {
+                const obj = {
+                    children: text,
+                    props: {},
+                };
+                obj.props.rowSpan = mergeCells(record.networkTimeWait, softinfolistdetails.rows, 'networkTimeWait', 'hostZone', 'hostIp')
+                return obj;
+            },
         },
         {
             title: '网络连接情况(CLOSE-WAIT)',
@@ -410,6 +410,14 @@ function SoftDetailView(props) {
             width: 300,
             ellipsis: true,
             align: 'center',
+            render: (text, record) => {
+                const obj = {
+                    children: text,
+                    props: {},
+                };
+                obj.props.rowSpan = mergeCells(record.networkCloseWait, softinfolistdetails.rows, 'networkCloseWait', 'hostZone', 'hostIp')
+                return obj;
+            },
         },
         {
             title: '软件日志',
@@ -451,12 +459,7 @@ function SoftDetailView(props) {
             width: 150,
             align: 'center',
             render: (text, record) => {
-                const obj = {
-                    children: <Badge status={colorrendermap.get(record.result)} text={text} />,
-                    props: {},
-                };
-                obj.props.rowSpan = mergeCells(record.result, softinfolistdetails.rows, 'result', 'hostZone')
-                return obj;
+                <Badge status={colorrendermap.get(record.result)} text={text} />
             },
         },
         {
@@ -465,14 +468,6 @@ function SoftDetailView(props) {
             key: 'addTime',
             align: 'center',
             width: 250,
-            render: (text, record) => {
-                const obj = {
-                    children: text,
-                    props: {},
-                };
-                obj.props.rowSpan = mergeCells(record.addTime, softinfolistdetails.rows, 'addTime', 'hostZone')
-                return obj;
-            },
         },
     ];
 

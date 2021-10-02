@@ -185,7 +185,7 @@ function ClockPatrol(props) {
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={6}>
               <Form.Item label="巡检人">
-                {getFieldDecorator('checkUser', {
+                {getFieldDecorator('user', {
                   initialValue: '',
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
@@ -207,7 +207,7 @@ function ClockPatrol(props) {
               <Form.Item label="开始时间">
                 <Row>
                   <Col span={11}>
-                    {getFieldDecorator('startTime', {})(
+                    {getFieldDecorator('time1', {})(
                       <DatePicker
                         showTime={{
                           hideDisabledOptions: true,
@@ -221,7 +221,7 @@ function ClockPatrol(props) {
                   </Col>
                   <Col span={2} style={{ textAlign: 'center' }}>-</Col>
                   <Col span={11}>
-                    {getFieldDecorator('endTime', {})(
+                    {getFieldDecorator('time2', {})(
                       <DatePicker
                         showTime={{
                           hideDisabledOptions: true,

@@ -413,6 +413,12 @@ export default {
                               icon: 'cloud-server',
                               component: './ITSM/Demandmanage/demandstatistics/DemandTimeout',
                             },
+                            {
+                              path: '/ITSM/demandmanage/demandstatistics/demandanalysis',
+                              name: '需求统计分析',
+                              icon: 'control',
+                              component: './ITSM/Demandmanage/demandstatistics/DemandAnalysis',
+                            },
                           ],
                         },
                       ],

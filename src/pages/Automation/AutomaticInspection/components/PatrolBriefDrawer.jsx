@@ -29,8 +29,18 @@ function PatrolBriefDrawer(props) {
         }
     }, [Id])
 
-    const hanldleCancel = () => {
+    const hanldleCancel = () => { // 取消
         ChangeVisible(false);
+    };
+
+    const hanldleSave = () => { // 保存
+        saveBriefing({ briefing: brierInfo, id: Id }).then(res => {
+            if (res.code === 200) {
+                message.success(res.msg);
+            } else {
+                message.error(res.msg);
+            }
+        });
     };
 
     const handleOk = () => { // 下载简报
@@ -83,6 +93,9 @@ function PatrolBriefDrawer(props) {
             >
                 <Button onClick={() => hanldleCancel()} style={{ marginRight: 8 }}>
                     取消
+                </Button>
+                <Button onClick={() => hanldleSave()} style={{ marginRight: 8 }} type="primary">
+                    保存
                 </Button>
                 <Button onClick={() => handleOk()} type="primary">
                     下载简报

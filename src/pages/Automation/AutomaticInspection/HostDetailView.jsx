@@ -356,6 +356,7 @@ function HostDetailView(props) {
                     </Form></Row>
                 <MergeTable
                     column={columns}
+                    bordered
                     loading={loading}
                     tableSource={infolistdetails.rows || []}
                     pagination={pagination}

@@ -32,14 +32,38 @@ const homepane = [{
   closable: false,
   state: { cache: false },
 },
-  // {
-  //   name: "周报查询",
-  //   id: "1399537627945766913",
-  //   itemPath: "/ITSM/operationreport/weeklyreport/myweeklyreportsearch",
-  //   query: {},
-  //   state: { cache: false, cacheinfo: {} },
-  //   data: { cacheinfo: {} }
-  // }
+{
+  name: "作业管理",
+  id: "1430857478042976257",
+  itemPath: "/automation/automatedjob/jobmanagement",
+  query: {},
+  state: { cache: false, cacheinfo: {} },
+  data: { cacheinfo: {} }
+},
+{
+  name: "数据字典",
+  id: "1324516008983007233",
+  itemPath: "/sysmanage/dropdownvalueset",
+  query: {},
+  state: { cache: false, cacheinfo: {} },
+  data: { cacheinfo: {} }
+},
+{
+  name: "主机巡检",
+  id: "1433702669246472193",
+  itemPath: "/automation/automaticinspection/hostpatrol",
+  query: {},
+  state: { cache: false, cacheinfo: {} },
+  data: { cacheinfo: {} }
+},
+{
+  name: "软件配置",
+  id: "1430095899567542273",
+  itemPath: "/automation/objectmanage/softwareconfig",
+  query: {},
+  state: { cache: false, cacheinfo: {} },
+  data: { cacheinfo: {} }
+}
 ]
 
 const noMatch = (
