@@ -125,9 +125,6 @@ function MessagesList(props) {
     });
   }, []);
 
-  console.log(tabActivekey)
-  console.log(tabdate)
-
   useEffect(() => {
     if (tabActivekey) {
       handleReset();

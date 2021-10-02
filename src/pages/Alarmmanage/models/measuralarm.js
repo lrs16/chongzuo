@@ -25,9 +25,6 @@ export default {
   effects: {
     // 告警概览：列表
     *fetchlist({ payload }, { call, put }) {
-      yield put({
-        type: 'clearcache',
-      });
       const response = yield call(warmBizList, payload);
       yield put({
         type: 'save',
@@ -125,7 +122,6 @@ export default {
     clearcache(state) {
       return {
         ...state,
-        list: {},
         Donutdata: [],
         Smoothdata: [],
       };
