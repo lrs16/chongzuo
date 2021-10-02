@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import router from 'umi/router';
 import { Menu } from 'antd';
+import styles from './index.less';
 
 function ComprehensiveQuery(props) {
   const { children } = props;
@@ -27,7 +28,7 @@ function ComprehensiveQuery(props) {
           <Menu.Item key="operationplan">作业计划查询</Menu.Item>
         </Menu>
       </div>
-      <div style={{ marginTop: 24 }}>
+      <div className={styles.homequery}>
         {children}
       </div>
     </>

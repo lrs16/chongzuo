@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
-import { Radio, Row, Col, Card, Tabs, Table, Form, Input, Button, DatePicker, Spin } from 'antd';
+import { Radio, Row, Col, Card, Tabs, Table, Form, Input, Button, DatePicker, Spin, Tooltip } from 'antd';
 import { ChartCard } from '@/components/Charts';
 import Donut from '@/components/CustomizeCharts/Donut';
 import styles from './index.less';
@@ -77,12 +77,36 @@ const eventcolumns = [
     dataIndex: 'title',
     key: 'title',
     width: 200,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 200,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
   },
   {
     title: '事件描述',
     dataIndex: 'content',
     key: 'content',
     width: 200,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 200,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
   },
   {
     title: '申报人',
@@ -146,12 +170,36 @@ const troublecolumns = [
     dataIndex: 'title',
     key: 'title',
     width: 150,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 150,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
   },
   {
     title: '故障概要',
     dataIndex: 'content',
     key: 'content',
     width: 200,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 200,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
   },
   {
     title: '当前环节',
@@ -200,12 +248,36 @@ const problemcolumns = [
     dataIndex: 'title',
     key: 'title',
     width: 200,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 200,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
   },
   {
     title: '问题描述',
     dataIndex: 'content',
     key: 'content',
     width: 150,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 150,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
   },
   {
     title: '当前环节',
@@ -256,11 +328,36 @@ const demandcolumns = [
     dataIndex: 'demandTitle',
     key: 'demandTitle',
     width: 200,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 200,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
   },
   {
     title: '申请原因',
     dataIndex: 'reason',
     key: 'reason',
+    width: 200,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 200,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
   },
   {
     title: '申请人',
