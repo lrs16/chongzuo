@@ -158,27 +158,27 @@ function ClockDetailView(props) {
     ]);
 
     // 表格合并
-    const temp = {};
-    const mergeCells = (text, array, columns, unit) => {
-        let i = 0;
-        if (text !== temp[columns]) {
-            temp[columns] = text;
-            if (unit) {
-                array.forEach((item) => {
-                    if (item[columns] === temp[columns] && item[unit] === temp[unit]) {
-                        i += 1;
-                    }
-                });
-            } else {
-                array.forEach((item) => {
-                    if (item[columns] === temp[columns]) {
-                        i += 1;
-                    }
-                });
-            }
-        }
-        return i;
-    };
+    // const temp = {};
+    // const mergeCells = (text, array, columns, unit) => {
+    //     let i = 0;
+    //     if (text !== temp[columns]) {
+    //         temp[columns] = text;
+    //         if (unit) {
+    //             array.forEach((item) => {
+    //                 if (item[columns] === temp[columns] && item[unit] === temp[unit]) {
+    //                     i += 1;
+    //                 }
+    //             });
+    //         } else {
+    //             array.forEach((item) => {
+    //                 if (item[columns] === temp[columns]) {
+    //                     i += 1;
+    //                 }
+    //             });
+    //         }
+    //     }
+    //     return i;
+    // };
 
     const columns = [
         {
@@ -186,14 +186,14 @@ function ClockDetailView(props) {
             dataIndex: 'hostZone',
             key: 'hostZone',
             width: 200,
-            render: (text, record) => {
-                const obj = {
-                    children: text,
-                    props: {},
-                };
-                obj.props.rowSpan = mergeCells(record.hostZone, clockinfolistdetails.rows, 'hostZone');
-                return obj;
-            },
+            // render: (text, record) => {
+            //     const obj = {
+            //         children: text,
+            //         props: {},
+            //     };
+            //     obj.props.rowSpan = mergeCells(record.hostZone, clockinfolistdetails.rows, 'hostZone');
+            //     return obj;
+            // },
         },
         {
             title: '设备名称',
@@ -305,7 +305,7 @@ function ClockDetailView(props) {
                         <Col span={8} style={{ marginTop: 4, marginLeft: '8.1%' }}>{extra}</Col>
                     </Form></Row>
                 <Table
-                    bordered
+                    // bordered
                     columns={columns}
                     loading={loading}
                     dataSource={clockinfolistdetails.rows || []}

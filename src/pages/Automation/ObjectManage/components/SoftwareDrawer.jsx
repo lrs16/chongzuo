@@ -266,10 +266,10 @@ function SoftwareDrawer(props) {
                         initialValue: stopScriptArgs,
                     })(<Input placeholder="请输入" />)}
                 </Form.Item>
-                <Form.Item label="是否巡检">
-                    {getFieldDecorator('monitor', {
+                <Form.Item label="是否巡检"> 
+                    {getFieldDecorator('patrolInspection', {
                         rules: [{ required, message: `请选择` }],
-                        initialValue: monitor || '是',
+                        initialValue: patrolInspection || '是',
                     })(
                         <RadioGroup>
                             <Radio value="是">是</Radio>
@@ -277,10 +277,10 @@ function SoftwareDrawer(props) {
                         </RadioGroup>
                     )}
                 </Form.Item>
-                <Form.Item label="是否监控"> 
-                    {getFieldDecorator('patrolInspection', {
+                <Form.Item label="是否监控">
+                    {getFieldDecorator('monitor', {
                         rules: [{ required, message: `请选择` }],
-                        initialValue: patrolInspection || '是',
+                        initialValue: monitor || '是',
                     })(
                         <RadioGroup>
                             <Radio value="是">是</Radio>

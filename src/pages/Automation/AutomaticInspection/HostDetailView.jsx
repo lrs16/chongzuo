@@ -189,14 +189,14 @@ function HostDetailView(props) {
             key: mergeCell,
             width: 250,
             ellipsis: true,
-            render: (text, record) => {
-                const obj = {
-                    children: text,
-                    props: {},
-                };
-                obj.props.rowSpan = record.rowSpan;
-                return obj;
-            },
+            // render: (text, record) => {
+            //     const obj = {
+            //         children: text,
+            //         props: {},
+            //     };
+            //     obj.props.rowSpan = record.rowSpan;
+            //     return obj;
+            // },
         },
         {
             title: '设备名称',
@@ -356,7 +356,7 @@ function HostDetailView(props) {
                     </Form></Row>
                 <MergeTable
                     column={columns}
-                    bordered
+                    // bordered
                     loading={loading}
                     tableSource={infolistdetails.rows || []}
                     pagination={pagination}
