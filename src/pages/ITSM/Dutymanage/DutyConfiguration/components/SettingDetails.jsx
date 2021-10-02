@@ -11,7 +11,6 @@ import {
   Col,
   Row,
   Table,
-  Checkbox,
   message
 } from 'antd';
 import { connect } from 'dva';
@@ -19,7 +18,6 @@ import moment from 'moment';
 import styles from '../index.less';
 import { staffSearch } from '../services/dutyandtypesetting';
 import { shiftSearch } from '../services/shiftsandholidays';
-
 
 const formItemLayout = {
   labelCol: {
@@ -37,8 +35,6 @@ const format = 'HH:mm';
 const { Option } = Select;
 const { Search } = Input;
 
-
-
 const withClick = (element, handleClick = () => { }) => {
   return <element.type {...element.props} onClick={handleClick} />
 }
@@ -52,7 +48,6 @@ function SettingDetails(props) {
     groupName,
     id,
     groupId,
-    onDelete,
     dispatch,
     settingDetails,
     getTable,
@@ -61,7 +56,6 @@ function SettingDetails(props) {
     pagetitle
   } = props;
 
-  console.log(settingDetails, 'settingDetails')
   const [directorlist, setDirectorlist] = useState([]);// 值班人
   const [shiftlist, setShiftlist] = useState([]);// 值班人
 
@@ -72,8 +66,8 @@ function SettingDetails(props) {
       title: '序号',
       key: 'index',
       dataIndex: 'index',
-      render:(text,record,index) =>{
-        return (<span>{index+1}</span>)
+      render: (text, record, index) => {
+        return (<span>{index + 1}</span>)
       }
     },
     {
@@ -108,24 +102,20 @@ function SettingDetails(props) {
     setVisible(true)
   }
 
-  const directoruser = directorlist.map((opt, index) => (
+  const directoruser = directorlist.map((opt) => (
     <Option key={opt.id} value={opt.id} disableuser={opt}>
-      {/* <Spin spinning={spinloading}> */}
       <div className={styles.disableuser}>
         <span>{opt.staffName}</span>
       </div>
-      {/* </Spin> */}
     </Option>
   ));
 
-  const shifarr = shiftlist.map((opt, index) => (
+  const shifarr = shiftlist.map((opt) => (
     <Option key={opt.id} value={opt.id} disableuser={opt}>
-      {/* <Spin spinning={spinloading}> */}
       <div className={styles.disableuser}>
         <span>{opt.shiftName}</span>
         <span>{opt.shiftType}</span>
       </div>
-      {/* </Spin> */}
     </Option>
   ));
 
@@ -197,6 +187,8 @@ function SettingDetails(props) {
         if (res.code === 200) {
           getTable(currentYear, month)
           message.info(res.msg)
+        } else {
+          message.error(res.msg)
         }
       })
     }
@@ -209,17 +201,17 @@ function SettingDetails(props) {
         if (res.code === 200) {
           getTable(currentYear, month)
           message.info(res.msg)
+        } else {
+          message.error(res.msg)
         }
       })
     }
-
-
+    return []
   }
 
   const handleOk = () => {
     validateFields((err, values) => {
       const newValue = {
-        // id:classSetting.id || '',
         id,
         groupId: sessionStorage.getItem('groupId'),
         ...values,
@@ -230,7 +222,10 @@ function SettingDetails(props) {
       }
       if (!err) {
         handleSubmit(newValue);
-        setVisible(false)
+        setVisible(false);
+        dispatch({
+          type: 'shiftsandholidays/clearstaff',
+        })
       }
     })
   }
@@ -243,10 +238,16 @@ function SettingDetails(props) {
       if (res.code === 200) {
         message.info(res.msg);
         getTable(moment(new Date()).format('YYYY'), moment(new Date()).format('MM'))
-        setVisible(false)
+        setVisible(false);
+        dispatch({
+          type: 'shiftsandholidays/clearstaff',
+        })
       } else {
         message.error(res.msg)
-        setVisible(false)
+        setVisible(false);
+        dispatch({
+          type: 'shiftsandholidays/clearstaff',
+        })
       }
     })
   }
@@ -377,7 +378,7 @@ function SettingDetails(props) {
                 <DatePicker
                   disabled={title === '编辑排班信息'}
                   format='YYYY-MM-DD'
-                  onOk={handleSelecttime}
+                  onChange={handleSelecttime}
                 />)
             }
 
@@ -460,7 +461,7 @@ function SettingDetails(props) {
           <Form.Item label='创建人'>
             {
               getFieldDecorator('creatorName', {
-                initialValue: settingDetails.creatorName,
+                initialValue: settingDetails.creatorName || sessionStorage.getItem('userName'),
               }
               )(<Input disabled />)
             }
@@ -485,42 +486,67 @@ function SettingDetails(props) {
           dataSource={settingDetails.log}
         />
 
-        <div
-          style={{
-            position: 'absolute',
-            right: 0,
-            bottom: 0,
-            width: '100%',
-            borderTop: '1px solid #e9e9e9',
-            padding: '10px 16px',
-            background: '#fff',
-            textAlign: 'right',
-          }}
-        >
-          <Button onClick={handleCancel} style={{ marginRight: 8 }}>
-            取消
-          </Button>
-
-          {
-            pagetitle !== '排班查询' && (
-              <Button onClick={handleOk} type='primary' style={{ marginRight: 8 }}>
-                确定
+        {
+          pagetitle === '排班设置' && (
+            <div
+              style={{
+                position: 'absolute',
+                right: 0,
+                bottom: 0,
+                width: '100%',
+                borderTop: '1px solid #e9e9e9',
+                padding: '10px 16px',
+                background: '#fff',
+                textAlign: 'right',
+              }}
+            >
+              <Button onClick={handleCancel} style={{ marginRight: 8 }}>
+                取消
               </Button>
-            )
-          }
+
+              {
+                ((settingDetails && settingDetails.dutyDate) ? new Date().valueOf() < new Date(settingDetails.dutyDate).valueOf() : true) && (
+                  <Button onClick={handleOk} type='primary' style={{ marginRight: 8 }}>
+                    确定
+                  </Button>
+                )
+              }
+
+              {
+                pagetitle !== '排班查询' && settingDetails && settingDetails.dutyDate && new Date().valueOf() < new Date(settingDetails.dutyDate).valueOf() && (
+                  <Button onClick={handleDelete} type='danger' ghost>
+                    删除
+                  </Button>
+                )
+              }
 
 
+            </div>
+          )
+        }
 
-          {
-            pagetitle !== '排班查询' && settingDetails && settingDetails.dutyDate && new Date().valueOf() < new Date(settingDetails.dutyDate).valueOf() && (
-              <Button onClick={handleDelete} type='danger' ghost>
-                删除
+        {
+          pagetitle === '排班查询' && (
+            <div
+              style={{
+                position: 'absolute',
+                right: 0,
+                bottom: 0,
+                width: '100%',
+                borderTop: '1px solid #e9e9e9',
+                padding: '10px 16px',
+                background: '#fff',
+                textAlign: 'right',
+              }}
+            >
+              <Button onClick={handleCancel} style={{ marginRight: 8 }}>
+                取消
               </Button>
-            )
-          }
+            </div>
+          )
+        }
 
 
-        </div>
       </Drawer>
     </>
   )
@@ -544,9 +570,8 @@ SettingDetails.defaultProps = {
 }
 
 export default Form.create({})(
-  connect(({ shiftsandholidays, loading }) => ({
+  connect(({ shiftsandholidays }) => ({
     settingDetails: shiftsandholidays.settingDetails,
-    loading: shiftsandholidays.loading
   }))(SettingDetails)
 )
 

@@ -39,7 +39,7 @@ function AddholidaySetting(props) {
   const [visble, setVisble] = useState(false);
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
-  const [selectSwitch, setSelectSwitch] = useState(false);
+  const [selectSwitch, setSelectSwitch] = useState(0);
   const [formdata, setFormdata] = useState('');
   const [time, setTime] = useState({
     startValue: moment(new Date(moment(new Date()).format('YYYY-MM-DD 00:00:00'))),
@@ -59,8 +59,6 @@ function AddholidaySetting(props) {
     records,
   } = props;
 
-  const required = true;
-
   const handleopenClick = () => {
     if (id) {
       dispatch({
@@ -73,7 +71,8 @@ function AddholidaySetting(props) {
           })
           setData(newarr);
           setFormdata(res.data)
-          setVisble(true)
+          setVisble(true);
+          setSelectSwitch(res.data.status)
         }
       })
     } else {
@@ -82,7 +81,9 @@ function AddholidaySetting(props) {
   }
 
   const handleCancel = () => {
-    setVisble(false)
+    setVisble(false);
+    setFormdata('');
+    setData([])
   }
 
   const handleOk = () => {
@@ -92,11 +93,12 @@ function AddholidaySetting(props) {
           id,
           ...values,
           holidays: data,
-          status: selectSwitch === true ? '1' : '0'
+          status: selectSwitch
         }
-
         onSubmit(result);
-        setVisble(false)
+        setVisble(false);
+        setFormdata('');
+        setData([])
       }
     })
   }
@@ -137,8 +139,6 @@ function AddholidaySetting(props) {
 
   }
 
-  console.log(data, 'data')
-
   const deleteObj = (key, newData) => {
     return (newData || data).filter(item => item.key !== key);
   }
@@ -165,7 +165,6 @@ function AddholidaySetting(props) {
 
   // 保存记录
   const saveRow = (e, key) => {
-
     const target = getRowByKey(key) || {};
     if (!target.holidayName || !target.dateType) {
       message.error('请填写完整信息。');
@@ -449,7 +448,7 @@ function AddholidaySetting(props) {
   ]
 
   const onChange = (checked) => {
-    setSelectSwitch(checked)
+    setSelectSwitch(checked === true ? '1' : '0')
   }
 
   return (

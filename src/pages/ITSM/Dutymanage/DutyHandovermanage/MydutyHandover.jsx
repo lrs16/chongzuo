@@ -9,6 +9,7 @@ import {
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 // import SysDict from '@/components/SysDict';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import SysDict from '@/components/SysDict';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -24,11 +25,6 @@ const formItemLayout = {
   },
 };
 
-const allstatusmap = [
-  { key: '0', title: '班组1' },
-  { key: '1', title: '班组2' },
-  { key: '2', title: '班组3' },
-];
 const allstatusmap1 = [
   { key: '0', title: '班次1' },
   { key: '1', title: '班次2' },
@@ -55,60 +51,83 @@ const allstatusmap6 = [
   { key: '2', title: '交接状态13' },
 ];
 
+let shift;
+
 function MydutyHandover(props) {
   const pagetitle = props.route.name;
+  const [selectdata, setSelectData] = useState('');
   const {
     // loading,
-    form: { getFieldDecorator, resetFields,
+    form: {
+      getFieldDecorator,
+      resetFields,
+      validateFields
       // validateFields 
     },
     logbookSearcharr,
+    shiftGrouparr,
     dispatch,
     loading,
   } = props;
-
   let formThead;
 
   const [expand, setExpand] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [columns, setColumns] = useState([]);
+  const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
+  const [selectedKeys, setSelectedKeys] = useState([]);
 
-  const rowSelection = {
-    onChange: (index, handleSelect) => {
-      setSelectedRows([...handleSelect])
-    }
-  };
-
-  // const getList = () => {
-  //   dispatch({
-  //     type: 'supervisemodel/getWorkQueryLists',
-  //     payload: {
-  //       tab: '4',
-  //       pageIndex: paginations.current,
-  //       pageSize: paginations.pageSize,
-  //     },
-  //   });
-  // };
-
-  const searchdata = () => {
+  const searchdata = (values, current, size) => {
     if (pagetitle === '我的值班交接') {
       dispatch({
         type: 'shifthandover/fetchlogbookSearch',
       });
+    } else {
+      dispatch({
+        type: 'shifthandover/fetchlogbookSearchall',
+        payload: {
+          ...values,
+          current,
+          size,
+          registerBeginTime: (values && values.registerTime?.length)
+            ? moment(values.registerTime[0]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          registerEndTime: (values && values.registerTime?.length)
+            ? moment(values.registerTime[1]).format('YYYY-MM-DD HH:mm:ss')
+            : '', // 发生时间
+          registerTime: '',
+          handoverBeginTime: (values && values.handoverTime?.length)
+            ? moment(values.dutyTime[0]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          handoverEndTime: (values && values.handoverTime?.length)
+            ? moment(values.handoverTime[1]).format('YYYY-MM-DD HH:mm:ss')
+            : '', // 发生时间
+          dutyTime: '',
+          receiveBeginTime: (values && values.handoverTime?.length)
+            ? moment(values.handoverTime[0]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          receiveEndTime: (values && values.handoverTime?.length)
+            ? moment(values.handoverTime[1]).format('YYYY-MM-DD HH:mm:ss')
+            : '', // 发生时间
+          handoverTime: ''
+        }
+
+      });
     }
   };
 
+
   const handleSearch = () => {
-    // setPaginations({
-    //   ...paginations,
-    //   current: 1,
-    // });
-    // validateFields((err, values) => {
-    //   if (err) {
-    //     return;
-    //   }
-    //   searchdata(values, 1, paginations.pageSize);
-    // });
+    setPaginations({
+      ...paginations,
+      current: 1,
+    });
+    validateFields((err, values) => {
+      if (err) {
+        return;
+      }
+      searchdata(values, 1, paginations.pageSize);
+    });
   };
 
   const handleReset = () => {
@@ -138,7 +157,7 @@ function MydutyHandover(props) {
     </Button></>
   );
 
-  const todetail = (record,type) => {
+  const todetail = (record, type) => {
     router.push({
       pathname: '/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/newhandover',
       query: {
@@ -146,7 +165,7 @@ function MydutyHandover(props) {
         id: record.id,
         type
       },
-      state:{
+      state: {
         dynamicpath: true,
         menuDesc: '我的交接班详情',
       }
@@ -160,7 +179,14 @@ function MydutyHandover(props) {
       key: 'logbookNo',
       width: 250,
       render: (text, record) => {
-        return <a onClick={()=>todetail(record)}>{text}</a>
+        if (pagetitle === '我的值班交接') {
+          return <a onClick={() => todetail(record)}>{text}</a>
+        }
+
+        if (pagetitle === '值班交接查询') {
+          return <a onClick={() => todetail(record, 'search')}>{text}</a>
+        }
+
       },
     },
     {
@@ -171,8 +197,8 @@ function MydutyHandover(props) {
     },
     {
       title: '接班人',
-      dataIndex: 't2',
-      key: 't2',
+      dataIndex: 'heirName',
+      key: 'heirName',
       width: 100,
     },
 
@@ -207,9 +233,9 @@ function MydutyHandover(props) {
       width: 250,
     },
     {
-      title: '接班时间',
-      dataIndex: 'receiveTime',
-      key: 'receiveTime',
+      title: '交班时间',
+      dataIndex: 'handoverTime',
+      key: 'handoverTime',
       width: 250,
     },
     {
@@ -278,38 +304,18 @@ function MydutyHandover(props) {
     return item.title
   });
 
-  const columns11 = [
-    {
-      title: '姓名',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: '年龄',
-      dataIndex: 'age',
-      key: 'age',
-    },
-    {
-      title: '住址',
-      dataIndex: 'address',
-      key: 'address',
-    },
-  ];
-
-  const dataSource = [
-    {
-      key: '1',
-      name: '胡彦斌',
-      age: 32,
-      address: '西湖区湖底公园1号',
-    },
-    {
-      key: '2',
-      name: '胡彦祖',
-      age: 42,
-      address: '西湖区湖底公园1号',
-    },
-  ];
+  if (shiftGrouparr && (shiftGrouparr.length) > 0) {
+    shift = (shiftGrouparr).map(item => {
+      return {
+        beginTime: item.beginTime,
+        endTime: item.endTime,
+        groupName: item.groupName,
+        groupId: item.groupId,
+        shiftName: item.shiftName,
+        id: item.id,
+      }
+    })
+  }
 
   // const onShowSizeChange = (page, pageSize) => {
   //   validateFields((err, values) => {
@@ -351,52 +357,53 @@ function MydutyHandover(props) {
   }, []);
 
   const download = () => { // 导出
-    // const exportColumns = columns.map(item => {
-    //   return {
-    //     column: item.dataIndex,
-    //     field: item.title
-    //   }
-    // })
-    // validateFields((err, values) => {
-    //   dispatch({
-    //     type: 'supervisemodel/downloadWorkQueryExcels',
-    //     payload: {
-    //       tab: '4',
-    //       columns: JSON.stringify(exportColumns),
-    //       ...values,
-    //       addTime: '',
-    //       time1: values.addTime ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-    //       time2: values.addTime ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-    //       plannedStartTime: '',
-    //       plannedStartTime1: values.plannedStartTime ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-    //       plannedStartTime2: values.plannedStartTime ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-    //       plannedEndTime: '',
-    //       plannedEndTime1: values.plannedEndTime ? moment(values.plannedEndTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-    //       plannedEndTime2: values.plannedEndTime ? moment(values.plannedEndTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-    //       checkTime: '',
-    //       checkTime1: values.checkTime ? moment(values.checkTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-    //       checkTime2: values.checkTime ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-    //       startTime: '',
-    //       startTime1: values.startTime ? moment(values.startTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-    //       startTime2: values.startTime ? moment(values.startTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-    //       endTime: '',
-    //       endTime1: values.endTime ? moment(values.endTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-    //       endTime2: values.endTime ? moment(values.endTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-    //       executeTime: '',
-    //       executeTime1: values.executeOperationTime ? moment(values.executeOperationTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-    //       executeTime2: values.executeOperationTime ? moment(values.executeOperationTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-    //     }
-    //   }).then(res => {
-    //     const filename = '下载.xls';
-    //     const blob = new Blob([res]);
-    //     const url = window.URL.createObjectURL(blob);
-    //     const a = document.createElement('a');
-    //     a.href = url;
-    //     a.download = filename;
-    //     a.click();
-    //     window.URL.revokeObjectURL(url);
-    //   })
-    // })
+    const exportColumns = columns.map(item => {
+      return {
+        column: item.dataIndex,
+        field: item.title
+      }
+    })
+    validateFields((err, values) => {
+      dispatch({
+        type: 'shifthandover/fetchlogbookDownload',
+        payload: {
+          columns: JSON.stringify(exportColumns),
+          ...values,
+          // addTime: '',
+          // ids: selectedKeys.toString(),
+          id: pagetitle === '我的值班交接' ? (logbookSearcharr && logbookSearcharr.length && logbookSearcharr[0].id) : selectedKeys.toString(),
+          // time1: values.addTime ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          // time2: values.addTime ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          // plannedStartTime: '',
+          // plannedStartTime1: values.plannedStartTime ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          // plannedStartTime2: values.plannedStartTime ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          // plannedEndTime: '',
+          // plannedEndTime1: values.plannedEndTime ? moment(values.plannedEndTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          // plannedEndTime2: values.plannedEndTime ? moment(values.plannedEndTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          // checkTime: '',
+          // checkTime1: values.checkTime ? moment(values.checkTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          // checkTime2: values.checkTime ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          // startTime: '',
+          // startTime1: values.startTime ? moment(values.startTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          // startTime2: values.startTime ? moment(values.startTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          // endTime: '',
+          // endTime1: values.endTime ? moment(values.endTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          // endTime2: values.endTime ? moment(values.endTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          // executeTime: '',
+          // executeTime1: values.executeOperationTime ? moment(values.executeOperationTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          // executeTime2: values.executeOperationTime ? moment(values.executeOperationTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        }
+      }).then(res => {
+        const filename = '下载.xls';
+        const blob = new Blob([res]);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
+    })
   };
 
   const newhandover = () => { // 新增值班交接
@@ -474,40 +481,46 @@ function MydutyHandover(props) {
   };
 
   useEffect(() => {
-    // getList();
     setColumns(initialColumns);
   }, []);
 
-  // 数据字典匹配
-  // const getTypebyTitle = title => {
-  //     if (selectdata.ischange) {
-  //         return selectdata.arr.filter(item => item.title === title)[0].children;
-  //     }
-  //     return [];
-  // };
-
-  // const aa = getTypebyTitle('aaaa');
   const handleSuccession = () => {
-    todetail(logbookSearcharr[0],'listButton')
+    todetail(logbookSearcharr[0], 'listButton')
   }
+
+  const rowSelection = {
+    onChange: (index) => {
+      setSelectedKeys([...index])
+    }
+  }
+
+  const getTypebyTitle = title => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.title === title)[0].children;
+    }
+    return []
+  };
+
+  const teamname = getTypebyTitle('班组名称');
+  const teamtype = getTypebyTitle('班次类型');
+
 
   return (
     <PageHeaderWrapper title={pagetitle}>
-      {/* <SysDict
-                typeid=""
-                commonid=""
-                ChangeSelectdata={newvalue => setSelectData(newvalue)}
-                style={{ display: 'none' }}
-            /> */}
+      <SysDict
+        typeid="1438058740916416514"
+        commonid="1354288354950123522"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'none' }}
+      />
       <Card>
-
         {
           pagetitle === '值班交接查询' && (
             <Row gutter={16}>
               <Form {...formItemLayout} onSubmit={handleSearch}>
                 <Col span={8}>
                   <Form.Item label="登记时间">
-                    {getFieldDecorator('addTime', {
+                    {getFieldDecorator('registerTime', {
                       initialValue: '',
                     })
                       (
@@ -524,7 +537,7 @@ function MydutyHandover(props) {
                 </Col>
                 <Col span={8}>
                   <Form.Item label="值班人">
-                    {getFieldDecorator('form1', {
+                    {getFieldDecorator('staffName', {
                       initialValue: '',
                     })(
                       <Input />,
@@ -539,33 +552,39 @@ function MydutyHandover(props) {
                           initialValue: '',
                         })(
                           <Select placeholder="请选择" allowClear>
-                            {allstatusmap.map(obj => (
-                              <Option key={obj.key} value={obj.title}>
+                            {teamname.map(obj => [
+                              <Option
+                                key={obj.key}
+                                values={obj.title}
+                              >
                                 {obj.title}
                               </Option>
-                            ))}
+                            ])}
                           </Select>,
                         )}
                       </Form.Item>
                     </Col>
                     <Col span={8}>
                       <Form.Item label="值班班次">
-                        {getFieldDecorator('form3', {
+                        {getFieldDecorator('shiftName', {
                           initialValue: '',
                         })(
                           <Select placeholder="请选择" allowClear>
-                            {allstatusmap1.map(obj => (
-                              <Option key={obj.key} value={obj.title}>
-                                {obj.title}
+                            {(shift || []).map((obj) => [
+                              <Option
+                                key={obj.id}
+                                value={obj.shiftName}
+                              >
+                                {obj.shiftName}
                               </Option>
-                            ))}
+                            ])}
                           </Select>,
                         )}
                       </Form.Item>
                     </Col>
-                    <Col span={8}>
+                    {/* <Col span={8}>
                       <Form.Item label="值班时间">
-                        {getFieldDecorator('form4', {
+                        {getFieldDecorator('dutyTime', {
                           initialValue: '',
                         })
                           (
@@ -579,52 +598,52 @@ function MydutyHandover(props) {
                             />
                           )}
                       </Form.Item>
-                    </Col>
+                    </Col> */}
                     <Col span={8}>
                       <Form.Item label="巡检及监控记录">
-                        {getFieldDecorator('form5', {
+                        {getFieldDecorator('monitorNotes', {
                           initialValue: '',
                         })(<Input placeholder="请输入" allowClear />,)}
                       </Form.Item>
                     </Col>
                     <Col span={8}>
                       <Form.Item label="异常情况记录">
-                        {getFieldDecorator('form6', {
+                        {getFieldDecorator('alarmNotes', {
                           initialValue: '',
                         })(<Input placeholder="请输入" allowClear />)}
                       </Form.Item>
                     </Col>
                     <Col span={8}>
                       <Form.Item label="重大运维事件">
-                        {getFieldDecorator('form7', {
+                        {getFieldDecorator('devopsNotes', {
                           initialValue: '',
                         })(<Input placeholder="请输入" allowClear />,)}
                       </Form.Item>
                     </Col>
                     <Col span={8}>
                       <Form.Item label="其他情况记录">
-                        {getFieldDecorator('form8', {
+                        {getFieldDecorator('otherNotes', {
                           initialValue: '',
                         })(<Input placeholder="请输入" allowClear />)}
                       </Form.Item>
                     </Col>
                     <Col span={8}>
                       <Form.Item label="交班人">
-                        {getFieldDecorator('form9', {
+                        {getFieldDecorator('handoverName', {
                           initialValue: '',
                         })(<Input placeholder="请输入" allowClear />)}
                       </Form.Item>
                     </Col>
                     <Col span={8}>
                       <Form.Item label="接班人">
-                        {getFieldDecorator('form10', {
+                        {getFieldDecorator('heirName', {
                           initialValue: '',
                         })(<Input placeholder="请输入" allowClear />)}
                       </Form.Item>
                     </Col>
                     <Col span={8}>
                       <Form.Item label="接班班组">
-                        {getFieldDecorator('form11', {
+                        {getFieldDecorator('heirGroupName', {
                           initialValue: '',
                         })(
                           <Select placeholder="请选择" allowClear>
@@ -639,7 +658,7 @@ function MydutyHandover(props) {
                     </Col>
                     <Col span={8}>
                       <Form.Item label="接班班次">
-                        {getFieldDecorator('form12', {
+                        {getFieldDecorator('heirShiftName', {
                           initialValue: '',
                         })(
                           <Select placeholder="请选择" allowClear>
@@ -652,9 +671,9 @@ function MydutyHandover(props) {
                         )}
                       </Form.Item>
                     </Col>
-                    <Col span={8}>
+                    {/* <Col span={8}>
                       <Form.Item label="交班时间">
-                        {getFieldDecorator('form13', {
+                        {getFieldDecorator('handoverTime', {
                           initialValue: '',
                         })
                           (
@@ -668,17 +687,17 @@ function MydutyHandover(props) {
                             />
                           )}
                       </Form.Item>
-                    </Col>
+                    </Col> */}
                     <Col span={8}>
                       <Form.Item label="需注意事项">
-                        {getFieldDecorator('form14', {
+                        {getFieldDecorator('attention', {
                           initialValue: '',
                         })(<Input placeholder="请输入" allowClear />)}
                       </Form.Item>
                     </Col>
                     <Col span={8}>
                       <Form.Item label="交接物品">
-                        {getFieldDecorator('form15', {
+                        {getFieldDecorator('handoverItems', {
                           initialValue: '',
                         })(
                           <Select placeholder="请选择" allowClear>
@@ -693,7 +712,7 @@ function MydutyHandover(props) {
                     </Col>
                     <Col span={8}>
                       <Form.Item label="交接状态">
-                        {getFieldDecorator('form16', {
+                        {getFieldDecorator('handoverStatus', {
                           initialValue: '',
                         })(
                           <Select placeholder="请选择" allowClear>
@@ -708,7 +727,7 @@ function MydutyHandover(props) {
                     </Col>
                     <Col span={8}>
                       <Form.Item label="接班时间">
-                        {getFieldDecorator('form17', {
+                        {getFieldDecorator('receiveTime', {
                           initialValue: '',
                         })
                           (
@@ -733,14 +752,16 @@ function MydutyHandover(props) {
 
         <div>
           {
-            pagetitle === '我的值班交接' && logbookSearcharr && logbookSearcharr.length === 0 && (
+            pagetitle === '我的值班交接' && logbookSearcharr && logbookSearcharr.records && logbookSearcharr.records.length === 0 && (
               <Button type="primary" style={{ marginRight: 8 }} onClick={() => newhandover()}>新增</Button>
             )
           }
 
+<Button type="primary" style={{ marginRight: 8 }} onClick={() => newhandover()}>新增</Button>
+
           <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>导出数据</Button>
           {
-            pagetitle === '我的值班交接' && logbookSearcharr && logbookSearcharr.length >0 && logbookSearcharr[0].handoverStatus === '待接班' && (
+            pagetitle === '我的值班交接' && logbookSearcharr && logbookSearcharr.length > 0 && logbookSearcharr[0].handoverStatus === '待接班' && (
               <Button type="primary" onClick={handleSuccession}>接班</Button>
             )
           }
@@ -788,16 +809,18 @@ function MydutyHandover(props) {
           </Popover>
         </div>
 
-        < Table
-          loading={loading}
-          columns={initialColumns}
-          scroll={{ x: 1600 }}
-          dataSource={logbookSearcharr}
-          // rowSelection={rowSelection}
-          rowKey={r => r.id}
-        />
-
-
+        {
+          loading === false && (
+            < Table
+              loading={loading}
+              columns={initialColumns}
+              dataSource={logbookSearcharr.records}
+              rowSelection={rowSelection}
+              rowKey={r => r.id}
+              scroll={{ x: 800, y: 700 }}
+            />
+          )
+        }
       </Card>
     </PageHeaderWrapper >
   );
@@ -806,6 +829,7 @@ function MydutyHandover(props) {
 export default Form.create({})(
   connect(({ shifthandover, loading }) => ({
     logbookSearcharr: shifthandover.logbookSearcharr,
+    shiftGrouparr: shifthandover.shiftGrouparr,
     loading: loading.models.shifthandover
   }))(MydutyHandover),
 );

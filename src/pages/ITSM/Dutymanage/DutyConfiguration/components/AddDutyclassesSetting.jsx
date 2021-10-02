@@ -46,7 +46,6 @@ function AddDutyclassesSetting(props) {
     onDelete,
     classSetting,
   } = props;
-  console.log(classSetting.status === '1' ? true : false)
   const format = 'HH:mm';
   const [selectdata, setSelectData] = useState('');
 
@@ -91,8 +90,6 @@ function AddDutyclassesSetting(props) {
     startTime = timeString;
   };
 
-
-
   const endOnchange = (time, timeString) => {
     endTime = timeString;
   };
@@ -127,8 +124,6 @@ function AddDutyclassesSetting(props) {
       }
     )
   }
-
-
 
   const getTypebyTitle = title => {
     if (selectdata.ischange) {
@@ -286,13 +281,17 @@ function AddDutyclassesSetting(props) {
                 initialValue: classSetting.status
               })(<Switch
                 checkedChildren='开启'
-                unCheckedChildren='关闭'
-                defaultChecked={classSetting.status === '1' ? true : false}
+                unCheckedChildren='停用'
+                defaultChecked={classSetting.status === '启动' ? true : false}
               />)}</Form.Item>
 
-            <Form.Item label="创建人">{getFieldDecorator('creatorName', {
-              initialValue: classSetting.creatorName
-            })(<Input disabled />)}</Form.Item>
+            <Form.Item label="创建人">
+              {getFieldDecorator('creatorName', {
+                initialValue: sessionStorage.getItem('userName')
+              })
+                (<Input disabled />)
+              }
+            </Form.Item>
 
             <Form.Item label="创建时间">{getFieldDecorator('ctime', {
               initialValue: classSetting.ctime ? moment(classSetting.ctime) : moment(new Date())
@@ -301,9 +300,7 @@ function AddDutyclassesSetting(props) {
               disabled
             />)}</Form.Item>
           </Form>
-
         </Row>
-
 
         <div
           style={{

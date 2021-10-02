@@ -183,12 +183,12 @@ function AdddutyPersonnelSetting(props) {
         onClose={handleCancel}
       >
         <Form {...formItemLayout}>
-          <Form.Item label="责任人">
+          <Form.Item label="值班人员">
             {getFieldDecorator('staffName', {
               rules: [
                 {
                   required,
-                  message: '请选择责任人',
+                  message: '请选择值班人员',
                 },
               ],
               initialValue: personnelSetting.staffName,
@@ -283,12 +283,12 @@ function AdddutyPersonnelSetting(props) {
 
 
 
-          <Form.Item label='班组名称'>
+          <Form.Item label='所属班组'>
             {getFieldDecorator('groupId', {
               rules: [
                 {
                   required,
-                  message: '请选择班组名称'
+                  message: '请选择所属班组'
                 }
               ],
               initialValue: personnelSetting.groupId
@@ -348,18 +348,6 @@ function AdddutyPersonnelSetting(props) {
           <Button onClick={handleOk} type='primary' style={{ marginRight: 8 }}>
             确定
           </Button>
-
-          {/* {
-            id && (
-              <Button onClick={handleDelete} type='danger' ghost>
-                删除
-              </Button>
-            )
-          } */}
-
-
-
-
         </div>
       </Drawer>
     </>

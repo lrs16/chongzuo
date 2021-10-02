@@ -12,19 +12,16 @@ import {
   Input,
   Button,
   Table,
-  AutoComplete,
   Select,
-  Spin,
   message,
   Divider,
   Popconfirm
 } from 'antd';
 import SysDict from '@/components/SysDict';
+import router from 'umi/router';
 import styles from './index.less';
-import { operationPerson, searchUsers } from '@/services/common';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-const { Search } = Input;
 const { Option } = Select;
 
 const formItemLayout = {
@@ -46,7 +43,6 @@ function DutypersonnelSetting(props) {
       resetFields,
       getFieldsValue,
       setFieldsValue
-      // getFieldsValue 
     },
     dispatch,
     searchUsersarr,
@@ -54,21 +50,12 @@ function DutypersonnelSetting(props) {
     loading
   } = props;
   const [directorlist, setDirectorlist] = useState([]); // 详细条款
-  const [spinloading, setSpinLoading] = useState(true);
   const [selectdata, setSelectData] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [paginations, setPageinations] = useState({ current: 1, size: 15 });
   const [tabrecord, setTabRecord] = useState({});
 
-  const directoruser = directorlist.map((opt, index) => (
-    <Option key={opt.id} value={opt.id} disableuser={opt}>
-      {/* <Spin spinning={spinloading}> */}
-      <div className={styles.disableuser}>
-        <span>{opt.userName}</span>
-      </div>
-      {/* </Spin> */}
-    </Option>
-  ));
+
   const searchdata = (values, current, size) => {
     const newdata = {
       ...values,
@@ -86,13 +73,28 @@ function DutypersonnelSetting(props) {
     setTabRecord(newdata)
   }
 
+
+
   const handleSearch = () => {
     const formdata = getFieldsValue();
     searchdata(formdata, 1, 15)
   }
   const handleReset = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: {}
+    })
     resetFields();
+    searchdata({}, 1, 15)
   }
+
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      handleReset();
+      searchdata({},1,15)
+    }
+  }, [location.state]);
 
   const handleChange = (value, option, type) => {
     const { values } = option.props;
@@ -114,77 +116,7 @@ function DutypersonnelSetting(props) {
       default:
         break;
     }
-
   }
-
-
-  //  请求选人
-  const SearchDisableduser = (value, type) => {
-    const requestData = {
-      providerName: value,
-      pageNum: 1,
-      pageSize: 1000,
-      status: '1',
-    };
-    switch (type) {
-      // case 'provider':
-      //   providerList({ ...requestData }).then(res => {
-      //     if (res) {
-      //       const arr = [...res.data.records];
-      //       setSpinLoading(false);
-      //       setDisabledList(arr);
-      //     }
-      //   });
-      //   break;
-      // case 'contract':
-      //   if (!providerId) {
-      //     message.error('请先选择服务商哦');
-      //   } else {
-      //     contractProvider(providerId).then(res => {
-      //       if (res) {
-      //         const arr = [...res.data];
-      //         setSpinLoading(false);
-      //         setContractlist(arr);
-      //       }
-      //     });
-      //   }
-
-      //   break;
-      // case 'score':
-      //   scoreListpage({
-      //     scoreName: value,
-      //     pageNum: 1,
-      //     pageSize: 1000,
-      //   }).then(res => {
-      //     if (res) {
-      //       const arr = [...res.data.records];
-      //       setSpinLoading(false);
-      //       setScorelist(arr);
-      //     }
-      //   });
-      //   break;
-      // case 'clause':
-      //   searchUsers({ ...requestData, scoreId, targetId: target2Type }).then(res => {
-      //     if (res) {
-      //       const arr = [...res.data.records];
-      //       setSpinLoading(false);
-      //       setScorelist(arr);
-      //     }
-      //   });
-      //   break;
-      case 'director':
-        searchUsers({ userName: value }).then(res => {
-          if (res) {
-            const arr = [...res.data];
-            setSpinLoading(false);
-            setDirectorlist(arr);
-          }
-        });
-        break;
-      default:
-        break;
-    }
-  };
 
   const onSelectChange = (RowKeys) => {
     setSelectedRowKeys(RowKeys);
@@ -202,6 +134,8 @@ function DutypersonnelSetting(props) {
       if (res.code === 200) {
         message.info(res.msg);
         searchdata({}, 1, 15)
+      } else {
+        message.error(res.msg);
       }
     })
   }
@@ -245,7 +179,8 @@ function DutypersonnelSetting(props) {
   }, [location.state]);
 
   useEffect(() => {
-    searchdata({}, 1, 15)
+    const value = getFieldsValue();
+    searchdata(value, 1, 15)
   }, [])
 
   // 查询
@@ -308,22 +243,22 @@ function DutypersonnelSetting(props) {
       title: '操作',
       dataIndex: 'opertator',
       key: 'opertator',
-      render: (text, record) => {
+      render: (text, records) => {
         return (
           <>
             <AdddutyPersonnelSetting
-              personnelSetting={record}
-              id={record.No}
+              personnelSetting={records}
+              id={records.No}
               title='编辑值班人员'
               onSubmit={submitdata => handleSubmit(submitdata)}
-              onDelete={() => handleDelete(record.id)}
+              onDelete={() => handleDelete(records.id)}
             >
               <a>编辑</a>
             </AdddutyPersonnelSetting>
             <Divider type='vertical' />
             <Popconfirm
               title='是否要删除该条数据'
-              onConfirm={() => handleDelete(record.id)}>
+              onConfirm={() => handleDelete(records.id)}>
               <a>删除</a>
             </Popconfirm>
           </>
@@ -359,23 +294,6 @@ function DutypersonnelSetting(props) {
     onChange: page => changePage(page),
   };
 
-  // 选择下拉值，信息回填
-  const handleDisableduser = (v, opt, type) => {
-    const { id, userMobile, deptNameExt, assessType, userName } = opt.props.disableuser;
-    switch (type) {
-      case 'director':
-        setFieldsValue({
-          staffName: userName, // 用户名称
-          directorId: id, // 用户id
-          deptName: deptNameExt,
-          phone: userMobile
-        });
-        break;
-
-      default:
-        break;
-    }
-  };
 
   const getTypebyTitle = title => {
     if (selectdata.ischange) {
@@ -385,7 +303,6 @@ function DutypersonnelSetting(props) {
   };
 
   const teamjobName = getTypebyTitle('所属岗位');
-
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -398,8 +315,8 @@ function DutypersonnelSetting(props) {
       <Card>
         <Row gutter={8}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
-            <Col span={8}>
-              <Form.Item label="责任人">
+            {/* <Col span={8}>
+              <Form.Item label="值班人员">
                 {getFieldDecorator('staffName', {
                   initialValue: cacheinfo.staffName,
                 })(
@@ -417,14 +334,14 @@ function DutypersonnelSetting(props) {
                   </AutoComplete>,
                 )}
               </Form.Item>
-            </Col>
-            {/* <Col span={8}>
+            </Col> */}
+            <Col span={8}>
               <Form.Item label="值班人员">
-                {getFieldDecorator('form1', {
-                  initialValue: '',
+                {getFieldDecorator('staffName', {
+                 initialValue: cacheinfo.staffName,
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
-            </Col> */}
+            </Col>
             <Col span={8}>
               <Form.Item label="所属部门">
                 {getFieldDecorator('deptName', {

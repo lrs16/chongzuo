@@ -22,7 +22,7 @@ import styles from './index.less';
 const { CheckableTag } = Tag;
 const { RangePicker, MonthPicker } = DatePicker;
 const format = 'YYYY-MM-DD 00:00:00'
-const tagsFromServer = ['本日', '本月'];
+const tagsFromServer = ['按日', '按月'];
 function Statistics(props) {
   const {
     statisticData,
@@ -34,7 +34,7 @@ function Statistics(props) {
 
   console.log(loading, 'loading')
 
-  const [selectedTags, setSelectedTags] = useState(['本月']);
+  const [selectedTags, setSelectedTags] = useState(['按月']);
   // .format('YYYY-MM-DD 00:00:00')
   // .format('YYYY-MM-DD 23:59:59')
   const [selectTime, setSelectTime] = [{ start: moment(new Date()).format('YYYY-MM-DD 00:00:00'), end: moment(new Date).format('YYYY-MM-DD 23:59:59') }]
@@ -51,10 +51,10 @@ function Statistics(props) {
     value: [moment(moment().startOf('month').format('YYYY-MM-DD'), 'YYYY-MM-DD'), moment(moment().endOf('month').format('YYYY-MM-DD'), 'YYYY-MM-DD')]
   })
 
-  const [currentDatatype, setCurrentDatatype] = useState('本月');
+  const [currentDatatype, setCurrentDatatype] = useState('按月');
   const [bardata, setBardata] = useState([])
   const getlist = (obj, tag) => {
-    if (tag === '本日') {
+    if (tag === '按日') {
       dispatch({
         type: 'qualityassessment/fetchstatsRatio',
         payload: {
@@ -77,7 +77,7 @@ function Statistics(props) {
   }
 
   const projectAssessment = (obj, tag) => {
-    if (tag === '本日') {
+    if (tag === '按日') {
       dispatch({
         type: 'qualityassessment/fetchstatsSum',
         payload: {
@@ -86,8 +86,7 @@ function Statistics(props) {
         }
       })
     }
-    if (tag === '本月') {
-      console.log('tag: ', tag);
+    if (tag === '按月') {
       dispatch({
         type: 'qualityassessment/fetchstatsSum',
         payload: {
@@ -98,9 +97,7 @@ function Statistics(props) {
     }
   }
 
-
   const monthhandlePanelChange = (value, mode) => {
-    console.log('value: ', value);
     setMonthTime({
       value,
       mode: [mode[0] === 'date' ? 'month' : mode[0], mode[1] === 'date' ? 'month' : mode[1]],
@@ -115,11 +112,11 @@ function Statistics(props) {
     console.log('tag: ', tag);
     if (checked) {
       const obj = {
-        startValue: tag === "本日" ? moment(new Date()).format('YYYY-MM-DD 00:00:00') : moment().startOf('month').format('YYYY-MM-DD 00:00:00'),
-        endValue: tag === "本月" ? moment().endOf('month').format('YYYY-MM-DD 23:59:59') : moment(new Date()).format('YYYY-MM-DD 23:59:59'),
+        startValue: tag === "按日" ? moment(new Date()).format('YYYY-MM-DD 00:00:00') : moment().startOf('month').format('YYYY-MM-DD 00:00:00'),
+        endValue: tag === "按月" ? moment().endOf('month').format('YYYY-MM-DD 23:59:59') : moment(new Date()).format('YYYY-MM-DD 23:59:59'),
         endOpen: false,
       }
-      if (tag === "本日") {
+      if (tag === "按日") {
         setMonthTime({
           mode: ['month', 'month'],
           value: [moment(moment().startOf('month').format('YYYY-MM-DD'), 'YYYY-MM-DD'), moment(moment().endOf('month').format('YYYY-MM-DD'), 'YYYY-MM-DD')]
@@ -142,10 +139,8 @@ function Statistics(props) {
   const disabledStartDate = startValue => {
     const { endValue } = time;
     if (!startValue || !endValue) {
-      console.log(1)
       return false;
     }
-    console.log(2)
     return startValue.valueOf() > endValue.valueOf();
   };
 
@@ -206,15 +201,12 @@ function Statistics(props) {
   }, [location.state]);
 
   useEffect(() => {
-    console.log(statsSumdata, 'statsSumdata')
     if (statsSumdata && statsSumdata.length > 0) {
       const result = JSON.parse(JSON.stringify(statsSumdata).replace(/assessScore/g, '分值'))
       setBardata(result)
     }
 
   }, [loading])
-
-  console.log(bardata, 'f')
 
   return (
     <div>
@@ -231,10 +223,9 @@ function Statistics(props) {
         }
 
         {
-          currentDatatype === '本日' && (
+          currentDatatype === '按日' && (
             <>
               <DatePicker
-                // value={moment(new Date(), format)}
                 allowClear={false}
                 disabledDate={disabledStartDate}
                 onChange={onStartChange}
@@ -266,10 +257,9 @@ function Statistics(props) {
         }
 
         {
-          currentDatatype === '本月' && (
+          currentDatatype === '按月' && (
             <RangePicker
               allowClear={false}
-              // defaultValue={[moment(moment().startOf('month').format('YYYY-MM-DD'), 'YYYY-MM-DD'), moment(moment().endOf('month').format('YYYY-MM-DD'), 'YYYY-MM-DD')]}
               placeholder={['Start month', 'End month']}
               format="YYYY-MM"
               value={monthTime.value}
@@ -281,7 +271,7 @@ function Statistics(props) {
         }
 
 
-        {currentDatatype === '本日' && (
+        {currentDatatype === '按日' && (
           <Button
             onClick={() => { getlist(time, currentDatatype); projectAssessment(time, currentDatatype) }}
             type='primary'
@@ -291,7 +281,7 @@ function Statistics(props) {
           </Button>
         )}
 
-        {currentDatatype === '本月' && (
+        {currentDatatype === '按月' && (
           <Button
             onClick={() => { getlist(monthTime.value, currentDatatype); projectAssessment(monthTime.value, currentDatatype) }}
             type='primary'
@@ -312,13 +302,13 @@ function Statistics(props) {
             </div>
 
             <Col span={8}>
-              <StatisticsCard title='累计扣分' value={obj.minusScore} suffix='累计扣分' des='环比上月' desval={obj.minusRatio} type={Number(obj.minusScore) > Number(obj.prevMinusScore) ? 'up' : 'down'} />
+              <StatisticsCard title='累计扣分' value={obj.minusScore} suffix='累计扣分' des='环比' desval={obj.minusRatio} type={Number(obj.minusScore) > Number(obj.prevMinusScore) ? 'up' : 'down'} />
             </Col>
             <Col span={8}>
-              <StatisticsCard title='累计加分' value={obj.extraScore} suffix='累计加分' des='环比上月' desval={obj.extraRatio} type={Number(obj.extraScore) > Number(obj.prevExtraScore) ? 'up' : 'down'} />
+              <StatisticsCard title='累计加分' value={obj.extraScore} suffix='累计加分' des='环比' desval={obj.extraRatio} type={Number(obj.extraScore) > Number(obj.prevExtraScore) ? 'up' : 'down'} />
             </Col>
             <Col span={8}>
-              <StatisticsCard title='合计分值' value={obj.totalScore} suffix='合计分值' des='环比上月' desval={obj.totalRatio} type={Number(obj.totalScore) > Number(obj.prevTotalScore) ? 'up' : 'down'} />
+              <StatisticsCard title='合计分值' value={obj.totalScore} suffix='合计分值' des='环比' desval={obj.totalRatio} type={Number(obj.totalScore) > Number(obj.prevTotalScore) ? 'up' : 'down'} />
             </Col>
           </Row>
         )

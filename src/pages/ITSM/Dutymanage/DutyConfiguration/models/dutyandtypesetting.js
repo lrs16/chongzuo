@@ -58,6 +58,7 @@ export default {
     *fetchTemplate({ payload },{ call, put }) {
       return yield call(template,payload);
     },
+
   },
 
   reducers: {

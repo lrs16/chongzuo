@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Card,
   Row,
@@ -13,44 +13,11 @@ import {
   Popconfirm
 } from 'antd';
 import router from 'umi/router';
+import moment from 'moment';
 import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-const columns = [
-  {
-    title: '值班人',
-    dataIndex: 'aa',
-    key: 'aa'
-  },
-  {
-    title: '值班总次数',
-    dataIndex: 'bb',
-    key: 'bb'
-  },
-  {
-    title: '工作日值班次数',
-    dataIndex: 'cc',
-    key: 'cc'
-  },
-  {
-    title: '周末值班次数',
-    dataIndex: 'dd',
-    key: 'dd'
-  },
-  {
-    title: '节假值班次数',
-    dataIndex: 'ee',
-    key: 'ee'
-  },
-];
 
-const data = [{
-  aa: 'aa',
-  bb: 'aa',
-  cc: 'aa',
-  dd: 'aa',
-  ee: 'aa',
-}]
 
 const formItemLayout = {
   labelCol: {
@@ -64,6 +31,8 @@ const formItemLayout = {
 };
 
 const { RangePicker } = DatePicker;
+const { Option } = Select;
+let selectDate;
 
 function Statistic(props) {
   const pagetitle = props.route.name;
@@ -71,11 +40,65 @@ function Statistic(props) {
     form: {
       getFieldDecorator,
       resetFields,
-      getFieldsValue
+      getFieldsValue,
+      validateFields
     },
     location,
     dispatch,
+    searchUsersarr,
+    statsIndexarr
   } = props;
+  const [type, setType] = useState('');
+
+
+  const columns = [
+    {
+      title: '值班人',
+      dataIndex: 'staffName',
+      key: 'staffName'
+    },
+    {
+      title: '值班总次数',
+      dataIndex: 'total',
+      key: 'total',
+    },
+    {
+      title: '工作日值班次数',
+      dataIndex: 'workday',
+      key: 'workday'
+    },
+    {
+      title: '周末值班次数',
+      dataIndex: 'weekend',
+      key: 'weekend'
+    },
+    {
+      title: '节假值班次数',
+      dataIndex: 'holiday',
+      key: 'holiday'
+    },
+  ];
+
+
+
+  const searchdata = (values) => {
+    const obj = {
+      ...values,
+      beginTime: (values && values.time?.length)
+        ? moment(values.time[0]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      endTime: (values && values.time?.length)
+        ? moment(values.time[1]).format('YYYY-MM-DD HH:mm:ss')
+        : '', // 发生时间
+    };
+    delete obj.time
+    dispatch({
+      type: 'shifthandover/fetchstatsIndex',
+      payload: {
+        ...obj
+      }
+    });
+  }
 
   const handleReset = () => {
     router.push({
@@ -84,7 +107,41 @@ function Statistic(props) {
       state: {}
     });
     resetFields();
-    // searchdata({}, 1, 15)
+    searchdata({}, 1, 15)
+  }
+
+  useEffect(() => {
+    const value = getFieldsValue();
+    searchdata(value)
+  }, [])
+
+
+  const handleonChange = (value, option) => {
+    setType(value)
+    dispatch({
+      type: 'dutyandtypesetting/staffSearch',
+      payload: {
+        current: 1,
+        size: 1000
+      }
+    }
+    )
+  }
+
+  if (searchUsersarr && searchUsersarr.records) {
+    selectDate = (searchUsersarr.records).map(item => {
+      return {
+        userId: item.userId,
+        staffName: item.staffName,
+        deptId: item.deptId,
+        deptName: item.deptName
+      }
+    })
+  }
+
+  const handlesearch = () => {
+    const value = getFieldsValue();
+    searchdata(value)
   }
 
   return (
@@ -93,76 +150,52 @@ function Statistic(props) {
         <Row gutter={8}>
           <Form {...formItemLayout}>
             <Col span={8}>
-              <Form.Item label="值班单位">
-                {getFieldDecorator('form1', {
-                  initialValue: '',
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-
-            <Col span={8}>
-              <Form.Item label="值班人">
-                {getFieldDecorator('form2', {
-                  initialValue: '',
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
               <Form.Item label="起始时间">
-                {getFieldDecorator('form3', {
+                {getFieldDecorator('time', {
                   initialValue: '',
                 })(<RangePicker placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
-            {/* <Col span={8}>
-              <Form.Item label="值班时段" >
-                <Row>
-                  <Col span={11}>
-                    {getFieldDecorator('time3', {
-                      initialValue: undefined,
-                    })(
-                      <DatePicker
-                        disabledDate={(value) => disabledStartDate(value, 'duty')}
-                        onChange={(value) => onStartChange(value, 'duty')}
-                        onOpenChange={(value) => handleStartOpenChange(value, 'duty')}
-                        showTime={{
-                          hideDisabledOptions: true,
-                          defaultValue: moment('00:00:00', 'HH:mm:ss'),
-                        }}
-                        placeholder="开始时间"
-                        format='YYYY-MM-DD HH:mm:ss'
-                        style={{ minWidth: 120, width: '100%' }}
-                      />
-                    )}
-                  </Col>
-                  <Col span={2} style={{ textAlign: 'center' }}>-</Col>
-                  <Col span={11}>
-                    {getFieldDecorator('time4', {
-                      initialValue: undefined,
-                    })(
-                      <DatePicker
-                        disabledDate={(value) => disabledEndDate(value, 'duty')}
-                        onChange={(value) => onEndChange(value, 'duty')}
-                        open={dutytime.endOpen}
-                        onOpenChange={(value) => handleEndOpenChange(value, 'duty')}
-                        showTime={{
-                          hideDisabledOptions: true,
-                          defaultValue: moment('23:59:59', 'HH:mm:ss'),
-                        }}
-                        placeholder="结束时间"
-                        format='YYYY-MM-DD HH:mm:ss'
-                        style={{ minWidth: 120, width: '100%' }}
-                      />
-                    )}
-                  </Col>
-                </Row>
+
+            <Col span={8}>
+              <Form.Item label="统计方式">
+                {getFieldDecorator('type ', {
+                  initialValue: '',
+                })(
+                  <Select
+                    onChange={handleonChange}
+                  >
+                    <Option key='USER' value='USER'>值班人</Option>
+                    <Option key='DEPT' value='DEPT'>值班单位</Option>
+                  </Select>
+                )}
               </Form.Item>
-            </Col> */}
+            </Col>
+
+            <Col span={8}>
+              <Form.Item label="">
+                {getFieldDecorator('typeValue ', {
+                  initialValue: '',
+                })(
+                  <Select
+                  >
+                    {(selectDate || []).map(obj => [
+                      <Option
+                        key={obj.userId}
+                        value={type === 'USER' ? obj.userId : obj.deptId}
+                      >
+                        {type === 'USER' ? obj.staffName : obj.deptName}
+                      </Option>,
+                    ])}
+                  </Select>
+                )}
+              </Form.Item>
+            </Col>
             <Col span={8} style={{ textAlign: 'left' }}>
               <Button
                 type='primary'
                 style={{ marginRight: 8 }}
-                // onClick={handlesearch}
+                onClick={handlesearch}
               >
                 查询
               </Button>
@@ -176,7 +209,7 @@ function Statistic(props) {
 
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={statsIndexarr}
         />
       </Card>
 
@@ -186,5 +219,9 @@ function Statistic(props) {
 
 }
 export default Form.create({})(
-  connect()(Statistic),
+  connect(({ dutyandtypesetting, shifthandover, loading }) => ({
+    searchUsersarr: dutyandtypesetting.searchUsersarr,
+    statsIndexarr: shifthandover.statsIndexarr,
+    loading: loading.models.dutyandtypesetting
+  }))(Statistic),
 );

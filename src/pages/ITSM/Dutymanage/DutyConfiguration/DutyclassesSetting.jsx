@@ -102,6 +102,13 @@ function DutyclassesSetting(props) {
     searchdata({}, 1, 15)
   }
 
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      handleReset();
+      searchdata({},1,15)
+    }
+  }, [location.state]);
+
 
   const onSelectChange = (RowKeys) => {
     setSelectedRowKeys(RowKeys);
@@ -237,6 +244,7 @@ function DutyclassesSetting(props) {
       title: '创建时间',
       dataIndex: 'ctime',
       key: 'ctime',
+      width: 200,
     },
     {
       title: '操作',
@@ -285,6 +293,8 @@ function DutyclassesSetting(props) {
       return startValue.valueOf() > endValue.valueOf()
     }
 
+    return []
+
   }
 
   const disabledEndDate = (endValue, type) => {
@@ -303,6 +313,8 @@ function DutyclassesSetting(props) {
       }
       return endValue.valueOf() <= startValue.valueOf();
     }
+
+    return []
 
   };
 
@@ -343,11 +355,11 @@ function DutyclassesSetting(props) {
 
   const hancleChange = (value, option) => {
     const { values } = option.props;
-        setFieldsValue(
-          {
-            groupName: values,
-          }
-        )
+    setFieldsValue(
+      {
+        groupName: values,
+      }
+    )
   }
 
   const onStartChange = (value, type) => {
@@ -368,7 +380,6 @@ function DutyclassesSetting(props) {
       obj.endOpen = open
       setDutytime(obj);
     }
-
   };
 
   //  传给多标签的数据
@@ -377,6 +388,9 @@ function DutyclassesSetting(props) {
     creatorName: '',
     shiftName: '',
     directorPhone: '',
+    status:'',
+    groupId:'',
+    groupName:''
   }
 
   const cacheinfo = (location.state && location.state.cacheinfo === undefined) ? record : location.state.cacheinfo;
@@ -444,7 +458,7 @@ function DutyclassesSetting(props) {
                 <Row>
                   <Col span={11}>
                     {getFieldDecorator('beginTime', {
-                      initialValue: undefined,
+                      initialValue: (cacheinfo && cacheinfo.beginTime) ? moment(cacheinfo.beginTime):'',
                     })(
                       <DatePicker
                         disabledDate={(value) => disabledStartDate(value, 'create')}
@@ -463,7 +477,7 @@ function DutyclassesSetting(props) {
                   <Col span={2} style={{ textAlign: 'center' }}>-</Col>
                   <Col span={11}>
                     {getFieldDecorator('endTime', {
-                      initialValue: undefined,
+                      initialValue: (cacheinfo && cacheinfo.endTime) ? moment(cacheinfo.endTime):'',
                     })(
                       <DatePicker
                         disabledDate={(value) => disabledEndDate(value, 'create')}
@@ -486,14 +500,14 @@ function DutyclassesSetting(props) {
             <Col span={8}>
               <Form.Item label="创建人">
                 {getFieldDecorator('creatorName', {
-                  // initialValue: cacheinfo.creatorName,
+                  initialValue: cacheinfo.creatorName,
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
             <Col span={8}>
               <Form.Item label="班次名称">
                 {getFieldDecorator('shiftName', {
-                  // initialValue: cacheinfo.shiftName,
+                  initialValue: cacheinfo.shiftName,
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
@@ -545,7 +559,7 @@ function DutyclassesSetting(props) {
             <Col span={8}>
               <Form.Item label="启用状态">
                 {getFieldDecorator('status', {
-                  initialValue: '',
+                  initialValue: cacheinfo.status,
                 })(
                   <Select placeholder="请选择" allowClear>
                     {enableStatus.map(obj => (
@@ -561,8 +575,7 @@ function DutyclassesSetting(props) {
             <Col span={8}>
               <Form.Item label='班组名称'>
                 {getFieldDecorator('groupId', {
-
-                  // initialValue: classSetting.groupId
+                  initialValue: cacheinfo.groupId
                 })(
                   <Select placeholder="请选择" onChange={hancleChange}>
                     {teamname.map(obj => [
@@ -580,7 +593,7 @@ function DutyclassesSetting(props) {
 
             <Form.Item style={{ display: 'none' }}>
               {getFieldDecorator('groupName', {
-                // initialValue: classSetting.groupName
+                initialValue: cacheinfo.groupName
               })(<Input />)}
             </Form.Item>
             <Col span={24} style={{ textAlign: 'right', paddingTop: 4 }}>{extra}</Col>
@@ -596,6 +609,7 @@ function DutyclassesSetting(props) {
 
         <AddDutyclassesSetting
           title='新增班次'
+          classSetting=''
           onSubmit={(submitdata => handleSubmit(submitdata))}
         >
           <Button

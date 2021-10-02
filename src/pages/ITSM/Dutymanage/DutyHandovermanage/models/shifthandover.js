@@ -6,7 +6,12 @@ import {
   logbookDel,
   logbookTransfer,
   logbookMy,
-  logbookId
+  logbookId,
+  logbookWord,
+  logbookReceive,
+  logbookDownload,
+  statsIndex,
+  fallback
 } from '../services/api';
 import router from 'umi/router';
 
@@ -18,7 +23,8 @@ export default {
     logbookSearcharr:[],
     currentUserarr:[],
     shiftGrouparr:[],
-    logbookIddetail:[]
+    logbookIddetail:[],
+    statsIndexarr:[]
   },
 
   effects: {
@@ -61,6 +67,14 @@ export default {
         payload:response
       })
     },
+
+    *fetchlogbookSearchall({payload},{call,put}) {
+      const response = yield call(logbookSearch,payload);
+      yield put ({
+        type:'logbookSearcharr',
+        payload:response
+      })
+    },
     *fetchcurrentUser({payload},{call,put}) {
       const response = yield call(currentUser,payload);
       yield put ({
@@ -91,6 +105,40 @@ export default {
         payload:response
       })
     },
+    
+    *fetchlogbookWord({ payload },{ call, put }) {
+      return yield call(logbookWord,payload)
+    },
+
+    *fetchlogbookReceive({ payload },{ call, put }) {
+      return yield call(logbookReceive,payload)
+    },
+
+    *fetchlogbookDownload({ payload },{ call, put }) {
+      return yield call(logbookDownload,payload)
+    },
+
+    *fetchstatsIndex({payload},{call,put}) {
+      const response = yield call(statsIndex,payload);
+      yield put ({
+        type:'statsIndexarr',
+        payload:response
+      })
+    },
+
+    *clearlogbookIddetail({ payload }, { call, put }) {
+      yield put ({
+        type:'clearlogbook',
+        payload:[]
+      })
+    },
+
+    *fetchfallback({ payload },{ call, put }) {
+      return yield call(fallback,payload)
+    },
+
+
+
   },
 
   reducers:{
@@ -118,6 +166,17 @@ export default {
         logbookIddetail:acttion.payload.data
       }
     },
-
+    statsIndexarr(state,acttion) {
+      return {
+        ...state,
+        statsIndexarr:acttion.payload.data
+      }
+    },
+    clearlogbook(state,acttion) {
+      return {
+        ...state,
+        logbookIddetail:''
+      }
+    },
   }
 }

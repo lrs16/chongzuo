@@ -18,14 +18,6 @@ import { connect } from 'dva';
 import AddholidaySetting from './components/AddholidaySetting';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-
-
-const dataSource = [{
-  name: 'name',
-  start: 'start',
-  time: 'time'
-}]
-
 function HolidaySetting(props) {
   const {
     loading,
@@ -55,6 +47,7 @@ function HolidaySetting(props) {
     searchdata(paginations.current, paginations.pageSize)
   }, [])
 
+
   const handleDelete = (id) => {
     return dispatch({
       type: 'shiftsandholidays/fetchholidayDel',
@@ -77,6 +70,8 @@ function HolidaySetting(props) {
       if (res.code === 200) {
         message.info(res.msg)
         searchdata(1, 15)
+      } else {
+        message.error(res.msg)
       }
     }
     )

@@ -36,9 +36,10 @@ const Registrat = forwardRef((props, ref) => {
     shiftinfo,
     successioninfo,
     shiftNameinfo,
+    statue,
     files,
     ChangeFiles,
-    type,a
+    type,
   } = props;
   const [shiftList, setShiftList] = useState([]);
   const [fileslist, setFilesList] = useState([]);
@@ -122,8 +123,8 @@ const Registrat = forwardRef((props, ref) => {
 
   const handleChange = (value, option, type) => {
     const currentDate = moment(new Date()).format('YYYY-MM-DD');
-    const { values, id, beginTime, endTime,userId } = option.props;
-    console.log('userId: ', userId);
+    const { values, id, beginTime, endTime, userId } = option.props;
+    // console.log('option.props: ', option.props);
     const start = `${currentDate} ${beginTime}`;
     const end = `${currentDate} ${endTime}`;
     switch (type) {
@@ -139,15 +140,23 @@ const Registrat = forwardRef((props, ref) => {
       case 'heirName':
         setFieldsValue(
           {
-            heirId: id,
-            heirUserId:userId
+            heirName:value,
+            heirId: value,
+            heirUserId: userId
+          }
+        );
+        break;
+      case 'heirShiftName':
+        setFieldsValue(
+          {
+            heirName:value,
+            // heirUserId: userId
           }
         );
         break;
       default:
         break;
     }
-
   }
 
   const getTypebyTitle = title => {
@@ -168,6 +177,31 @@ const Registrat = forwardRef((props, ref) => {
         style={{ display: 'none' }}
       />
       <Form {...forItemLayout} >
+        {
+          type && (
+            <Card title="接班说明" bordered={false}>
+              <Col span={24}>
+                <Form.Item label="接班说明" {...forminladeLayout}>
+                  {getFieldDecorator('receiveRemark', {
+                    rules: [
+                      {
+                        required,
+                        message: '请输入接班说明'
+                      }
+                    ],
+                    initialValue: formrecord.receiveRemark
+                  })(
+                    <TextArea
+                      disabled={type}
+                      rows={4}
+                    />
+                  )}
+                </Form.Item>
+              </Col>
+            </Card>
+          )
+        }
+
         <Card title="值班日志信息" bordered={false}>
           <Col span={8}>
             <Form.Item label="值班日志编号">
@@ -196,11 +230,15 @@ const Registrat = forwardRef((props, ref) => {
               {getFieldDecorator('shiftName', {
                 initialValue: formrecord.shiftName,
               })(
-                <Select placeholder="请选择" onChange={(value, option) => handleChange(value, option, 'shiftName')}>
+                <Select
+                  placeholder="请选择"
+                  onChange={(value, option) => handleChange(value, option, 'shiftName')}
+                  disabled={statue}
+                >
                   {(shiftinfo || []).map((obj, index) => [
                     <Option
                       key={obj.id}
-                      values={obj.shiftName}
+                      value={obj.shiftName}
                       beginTime={obj.beginTime}
                       endTime={obj.endTime}
                       id={obj.id}
@@ -230,6 +268,7 @@ const Registrat = forwardRef((props, ref) => {
                     initialValue: formrecord.dutyBeginTime ? moment(formrecord.dutyBeginTime) : '',
                   })(
                     <DatePicker
+                      disabled={statue}
                       disabledDate={disabledStartDate}
                       onChange={onStartChange}
                       onOpenChange={handleStartOpenChange}
@@ -251,6 +290,7 @@ const Registrat = forwardRef((props, ref) => {
                     initialValue: formrecord.dutyEndTime ? moment(formrecord.dutyEndTime) : '',
                   })(
                     <DatePicker
+                      disabled={statue}
                       disabledDate={disabledEndDate}
                       onChange={onEndChange}
                       open={time.endOpen}
@@ -316,6 +356,7 @@ const Registrat = forwardRef((props, ref) => {
                 initialValue: formrecord.monitorNotes
               })(
                 <TextArea
+                  disabled={statue}
                   rows={4}
                 />
               )}
@@ -334,6 +375,7 @@ const Registrat = forwardRef((props, ref) => {
                 initialValue: formrecord.devopsNotes
               })(
                 <TextArea
+                  disabled={statue}
                   rows={4}
                 />
               )}
@@ -351,7 +393,7 @@ const Registrat = forwardRef((props, ref) => {
                 ],
                 initialValue: formrecord.alarmNotes
               })(
-                <TextArea rows={4} />
+                <TextArea disabled={statue} rows={4} />
               )}
             </Form.Item>
           </Col>
@@ -367,7 +409,7 @@ const Registrat = forwardRef((props, ref) => {
                 ],
                 initialValue: formrecord.otherNotes
               })(
-                <TextArea rows={4} />
+                <TextArea disabled={statue} rows={4} />
               )}
             </Form.Item>
           </Col>
@@ -399,6 +441,7 @@ const Registrat = forwardRef((props, ref) => {
               )}
             </Form.Item>
           </Col>
+
           <Col span={8}>
             <Form.Item label="接班人">
               {getFieldDecorator('heirName', {
@@ -411,6 +454,7 @@ const Registrat = forwardRef((props, ref) => {
                 initialValue: formrecord.heirName,
               })(
                 <Select
+                  disabled={statue}
                   placeholder="请选择"
                   onChange={(value, option) => handleChange(value, option, 'heirName')}
                   getPopupContainer={e => e.parentNode}
@@ -418,7 +462,7 @@ const Registrat = forwardRef((props, ref) => {
                   {(successioninfo || []).map((obj, index) => [
                     <Option
                       key={obj.id}
-                      values={obj.heirName}
+                      value={obj.heirName}
                       userId={obj.userId}
                     >
                       {obj.heirName}
@@ -433,7 +477,7 @@ const Registrat = forwardRef((props, ref) => {
             {getFieldDecorator('heirId', {
               initialValue: formrecord.heirId,
             })(
-              <Input />
+              <Input disabled={statue} />
             )}
           </Form.Item>
 
@@ -453,15 +497,17 @@ const Registrat = forwardRef((props, ref) => {
                 <Input disabled />
               )}
             </Form.Item>
-          </Col>
+          </Col> 
 
-          <Form.Item label="接班班组" style={{ display: 'none' }}>
-            {getFieldDecorator('groupId', {
-              initialValue: (currentUserarr && currentUserarr.groupName) || formrecord.groupName,
-            })(
-              <Input />
-            )}
-          </Form.Item>
+          <Col span={8} style={{display:'none'}}>
+            <Form.Item label="接班班组">
+              {getFieldDecorator('heirGroupId', {
+                initialValue: (currentUserarr && currentUserarr.groupId) || formrecord.heirGroupId,
+              })(
+                <Input disabled />
+              )}
+            </Form.Item>
+          </Col>
 
           <Col span={8}>
             <Form.Item label="接班班次">
@@ -469,6 +515,7 @@ const Registrat = forwardRef((props, ref) => {
                 initialValue: formrecord.heirShiftName,
               })(
                 <Select
+                  disabled={statue}
                   placeholder="请选择"
                   getPopupContainer={e => e.parentNode}
                   onChange={(value, option) => handleChange(value, option, 'heirShiftName')}>
@@ -487,7 +534,7 @@ const Registrat = forwardRef((props, ref) => {
           <Col span={8}>
             <Form.Item label="交班时间">
               {getFieldDecorator('handoverTime', {
-                initialValue: formrecord.handoverTime?moment(formrecord.handoverTime) :moment(new Date()),
+                initialValue: formrecord.handoverTime ? moment(formrecord.handoverTime) : moment(new Date()),
               })(
                 <DatePicker
                   disabled
@@ -501,9 +548,10 @@ const Registrat = forwardRef((props, ref) => {
           <Col span={8}>
             <Form.Item label="交接物品">
               {getFieldDecorator('handoverItems', {
-                 initialValue: formrecord.handoverItems,
+                initialValue: formrecord.handoverItems,
               })(
                 <Select
+                  disabled={statue}
                   placeholder="请选择"
                   allowClear
                   getPopupContainer={e => e.parentNode}
@@ -520,9 +568,9 @@ const Registrat = forwardRef((props, ref) => {
           <Col span={24}>
             <Form.Item label="需注意事项" {...forminladeLayout}>
               {getFieldDecorator('attention', {
-                initialValue:formrecord.attention,
+                initialValue: formrecord.attention,
               })(
-                <TextArea rows={4} />
+                <TextArea disabled={statue} rows={4} />
               )}
             </Form.Item>
           </Col>
@@ -538,7 +586,7 @@ const Registrat = forwardRef((props, ref) => {
           <Col span={8}>
             <Form.Item label="接班时间">
               {getFieldDecorator('receiveTime', {
-                initialValue: formrecord.receiveTime ? moment(formrecord.receiveTime): moment(new Date()),
+                initialValue: formrecord.receiveTime ? moment(formrecord.receiveTime) : moment(new Date()),
               })(
                 <DatePicker
                   disabled
@@ -582,6 +630,7 @@ Registrat.defaultProps = {
     attention: '',
     handoverStatus: '',
     receiveTime: '',
+    heirGroupId:'',
     dutyStaffName: sessionStorage.getItem('userName'),
     addUserId: sessionStorage.getItem('userauthorityid'),
   },

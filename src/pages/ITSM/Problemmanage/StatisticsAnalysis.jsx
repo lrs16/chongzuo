@@ -47,7 +47,7 @@ const Donutdata = [
     count: 150,
   },
 ];
-const tagsFromServer = [{ name: '本日', key: '1' }, { name: '本月', key: '2' }];
+const tagsFromServer = ['按日', '按月'];
 function StatisticsAnalysis(props) {
   const {
     statisticData,
@@ -56,7 +56,7 @@ function StatisticsAnalysis(props) {
     dispatch
   } = props;
 
-  const [selectedTags, setSelectedTags] = useState([{ name: '本日', key: '1' }]);
+  const [selectedTags, setSelectedTags] = useState(['按月']);
   const [selectTime, setSelectTime] = [{ start: moment(new Date()).format('YYYY-MM-DD 00:00:00'), end: moment(new Date).format('YYYY-MM-DD 23:59:59') }];
   const [visible, setVisible] = useState(false);
   const [title, setTitle] = useState('');

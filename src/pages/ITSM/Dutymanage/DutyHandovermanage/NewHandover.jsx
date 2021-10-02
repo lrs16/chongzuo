@@ -12,7 +12,7 @@ import {
   message,
   Form,
 } from 'antd';
-
+import Reasonregression from '../../Problemmanage/components/Reasonregression';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import EditContext from '@/layouts/MenuContext';
 import Registrat from './components/Registrat';
@@ -36,7 +36,7 @@ function NewHandover(props) {
   const pagetitle = props.route.name;
   const {
     dispatch,
-    location: { query: { id,type } },
+    location: { query: { id, type, addtab } },
     tabdata,
     loading,
     currentUserarr,
@@ -47,6 +47,7 @@ function NewHandover(props) {
   } = props;
 
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
+  const [modalrollback, setModalRollBack] = useState(false);   // 回退信息modle
 
   const ContentRef = useRef(null);
 
@@ -57,8 +58,9 @@ function NewHandover(props) {
     })
   }
 
-  const handleSave = () => { // 保存
+  const handleSave = (params) => { // 保存
     const values = ContentRef.current.getVal();
+    console.log('values: ', values);
     ContentRef.current.Forms((err) => {
       if (!err) {
         return dispatch({
@@ -75,7 +77,24 @@ function NewHandover(props) {
           }
         }).then(res => {
           if (res.code === 200) {
-            formDetail()
+            // if(params) {
+
+            // } else {
+            //   formDetail()
+            // }
+            switch (params) {
+              case 'logbookTransfer':
+                handlelogbookTransfer();
+                break;
+              case 'logbookReceive':
+                handlelogbookReceive();
+                break;
+              case undefined:
+                formDetail();
+                break;
+              default:
+                break;
+            }
             message.info(res.msg)
           }
         })
@@ -106,6 +125,10 @@ function NewHandover(props) {
 
     if (id) {
       formDetail()
+    } else {
+      dispatch({
+        type: 'shifthandover/clearlogbookIddetail'
+      })
     }
   }, [id])
 
@@ -153,12 +176,11 @@ function NewHandover(props) {
       return {
         id: item.id,
         heirName: item.staffName,
-        userId:item.userId,
+        userId: item.userId,
       }
     })
   }
 
-  console.log(searchUsersarr,'searchUsersarr')
 
   if (shiftSearcharr && shiftSearcharr.records && (shiftSearcharr.records.length) > 0) {
     shiftName = (shiftSearcharr.records).map(item => {
@@ -216,7 +238,7 @@ function NewHandover(props) {
     })
   }
 
-  const logbookTransfer = () => {
+  const handlelogbookTransfer = () => {
     return dispatch({
       type: 'shifthandover/fetchlogbookTransfer',
       payload: { id }
@@ -242,10 +264,45 @@ function NewHandover(props) {
     })
   }
 
+  const logbookTransfer = () => {
+    handleSave('logbookTransfer');
+  }
+
+  const handlelogbookReceive = () => {
+    const values = ContentRef.current.getVal();
+    return dispatch({
+      type: 'shifthandover/fetchlogbookReceive',
+      payload: { id, remark: values.receiveRemark }
+    }).then(res => {
+      if (res.code === 200) {
+        router.push({
+          pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/handoverdetail`,
+          query: {
+            mainId: id,
+            closetab: true,
+          },
+        });
+
+        router.push({
+          pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover`,
+          query: { pathpush: true },
+          state: { cache: false },
+        });
+        message.info(res.msg);
+      } else {
+        message.error(res.msg);
+      }
+    })
+  }
+
+  const logbookReceive = () => {
+    handleSave('logbookReceive');
+  }
+
   const download = () => {
     dispatch({
-      type: 'performanceappraisal/scorecardPrint',
-      payload: {id},
+      type: 'shifthandover/fetchlogbookWord',
+      payload: { id },
     }).then(res => {
       const filename = '下载.doc';
       const blob = new Blob([res]);
@@ -258,11 +315,41 @@ function NewHandover(props) {
     });
   };
 
+  const handleBack = () => {
+    setModalRollBack(true)
+  }
+
+  const reasonSubmit = (reason) => {
+    dispatch({
+      type: 'shifthandover/fetchfallback',
+      payload:{
+        id,
+        reason:reason.backReason
+      }
+    }).then(res => {
+      if (res.code === 200) {
+        message.info(res.msg);
+        router.push({
+          pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/handoverdetail`,
+          query: {
+            mainId: id,
+            closetab: true,
+          },
+        });
+
+        router.push({
+          pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover`,
+          query: { pathpush: true },
+          state: { cache: false },
+        });
+      }
+    })
+  }
 
   const extrabutton = (
     <>
       {
-        id && (
+        id && (logbookIddetail.handoverStatus === '未交接') && (
           <Button
             type="danger"
             ghost
@@ -270,6 +357,19 @@ function NewHandover(props) {
             onClick={handleDelete}
           >
             删除
+          </Button >
+        )
+      }
+
+      {
+        id && logbookIddetail.handoverStatus === '未交接' && (
+          <Button
+            type="danger"
+            ghost
+            style={{ marginRight: 8 }}
+            onClick={handleBack}
+          >
+            回退
           </Button >
         )
       }
@@ -286,23 +386,38 @@ function NewHandover(props) {
         )
       }
 
-
-      <Button
-        type="primary"
-        style={{ marginRight: 8 }}
-        onClick={() => handleSave()}
-      >
-        保存
-      </Button>
+      {
+        type !== 'search' && (
+          <Button Button
+            type="primary"
+            style={{ marginRight: 8 }}
+            onClick={() => handleSave()}
+          >
+            保存
+          </Button>
+        )
+      }
 
       {
-        id && logbookIddetail.handoverStatus === '待接班'&& (
+        id && (logbookIddetail && logbookIddetail.handoverStatus === '未交接'  || logbookIddetail.handoverStatus === '已退回') && (
           <Button
             type="primary"
             style={{ marginRight: 8 }}
             onClick={() => logbookTransfer()}
           >
             确认交班
+          </Button>
+        )
+      }
+
+      {
+        id && logbookIddetail.handoverStatus === '待接班' && type === 'listButton' && (
+          <Button
+            type="primary"
+            style={{ marginRight: 8 }}
+            onClick={() => logbookReceive()}
+          >
+            确认接班
           </Button>
         )
       }
@@ -322,6 +437,7 @@ function NewHandover(props) {
               wrappedComponentRef={ContentRef}
               currentUserarr={currentUserarr}
               formrecord={id ? logbookIddetail : {}}
+              statue={((logbookIddetail && logbookIddetail.handoverStatus === '待接班' && !addtab) || type) ? true : false}
               shiftinfo={shift}
               successioninfo={succession}
               shiftNameinfo={shiftName}
@@ -332,6 +448,13 @@ function NewHandover(props) {
             />
           )
         }
+
+        <Reasonregression
+          title="填写回退意见"
+          visible={modalrollback}
+          ChangeVisible={v => setModalRollBack(v)}
+          rollbackSubmit={v => reasonSubmit(v)}
+        />
 
       </Card>
     </PageHeaderWrapper>

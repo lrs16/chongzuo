@@ -29,6 +29,7 @@ import request from '@/utils/request';
 
   //  回退交接
   export async function fallback(params) {
+    console.log('params: ', params);
     return request(`/duty/logbook/fallback`,{
       method:'POST',
       data:params,
@@ -50,8 +51,7 @@ import request from '@/utils/request';
   export async function logbookSearch(params) {
     return request(`/duty/logbook/search`,{
       method:'POST',
-      data:params,
-      requestType:'form'
+      body:JSON.stringify(params),
     })
   }
 
@@ -94,7 +94,38 @@ import request from '@/utils/request';
   export async function logbookWord(id) {
     return request(`/duty/logbook/word`,{
       method:'POST',
+      data:id,
       requestType:'form',
       responseType:'blob'
     })
   }
+
+     // 确认接班
+    export async function logbookReceive(params) {
+      return request(`/duty/logbook/receive`,{
+        method:'POST',
+        data:params,
+        requestType:'form'
+      })
+    }
+
+    //  下载值班交接
+    export async function logbookDownload(params) {
+      return request(`/duty/logbook/download`,{
+        method:'POST',
+        data:params,
+        requestType:'form',
+        responseType:'blob'
+      })
+    }
+
+    //  值班管理-值班工作统计
+    export async function statsIndex(params) {
+      return request(`/duty/stats/index`,{
+        method:'POST',
+        data:params,
+        requestType:'form'
+      })
+    }
+
+    
