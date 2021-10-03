@@ -27,12 +27,12 @@ function SelectTime(props) {
       if (tag === '按日') {
         setStartDates(beginTime);
         setEndDates(endTime);
-        ChangeDate({ beginTime: moment(beginTime).format('YYYY-MM-DD'), endTime: moment(endTime).format('YYYY-MM-DD') });
+        ChangeDate({ beginTime: moment(beginTime).format('YYYY-MM-DD 00:00:00'), endTime: moment(endTime).format('YYYY-MM-DD 23:59:59') });
       }
       if (tag === '按月') {
         setStartDates(beginTime);
         setEndDates(endTime);
-        ChangeDate({ beginTime: moment(beginTime).format('YYYY-MM'), endTime: moment(endTime).format('YYYY-MM') })
+        ChangeDate({ beginTime: moment(beginTime).startOf('month').format('YYYY-MM-DD 00:00:00'), endTime: moment(endTime).endOf('month').format('YYYY-MM-DD 23:59:59') })
       }
     }
   };
@@ -58,14 +58,14 @@ function SelectTime(props) {
     if (startdates || enddates) {
       if (selectedTags === '按日') {
         ChangeDate({
-          beginTime: moment(startdates).format('YYYY-MM-DD'),
-          endTime: moment(enddates).format('YYYY-MM-DD')
+          beginTime: moment(startdates || undefined).format('YYYY-MM-DD 00:00:00'),
+          endTime: moment(enddates || undefined).format('YYYY-MM-DD 23:59:59')
         })
       }
       if (selectedTags === '按月') {
         ChangeDate({
-          beginTime: moment(startdates).format('YYYY-MM'),
-          endTime: moment(enddates).format('YYYY-MM')
+          beginTime: moment(startdates || undefined).startOf('month').format('YYYY-MM-DD 00:00:00'),
+          endTime: moment(enddates || undefined).endOf('month').format('YYYY-MM-DD 23:59:59')
         })
       }
     }
@@ -94,6 +94,7 @@ function SelectTime(props) {
             style={{ marginLeft: 24 }}
             format='YYYY-MM-DD'
             disabledDate={disastartbledDate}
+            allowClear={false}
           />
           <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
           <DatePicker
@@ -101,7 +102,9 @@ function SelectTime(props) {
             placeholder="结束时间"
             onChange={onEndChange}
             format='YYYY-MM-DD'
-            disabledDate={disaendbledDate} />
+            disabledDate={disaendbledDate}
+            allowClear={false}
+          />
         </>
       )}
       {selectedTags === '按月' && (
@@ -113,6 +116,7 @@ function SelectTime(props) {
             style={{ marginLeft: 24 }}
             format='YYYY-MM'
             disabledDate={disastartbledDate}
+            allowClear={false}
           />
           <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
           <MonthPicker
@@ -120,7 +124,9 @@ function SelectTime(props) {
             placeholder="结束时间"
             onChange={onEndChange}
             format='YYYY-MM'
-            disabledDate={disaendbledDate} />
+            disabledDate={disaendbledDate}
+            allowClear={false}
+          />
         </>
       )}
       <Button

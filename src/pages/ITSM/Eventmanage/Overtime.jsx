@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
-import { Card, Row, Col, Form, Input, Select, DatePicker, Button, Table, List } from 'antd';
+import { Card, Row, Col, Form, Input, Select, DatePicker, Button, Table, List, Tooltip } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import KeyVal from '@/components/SysDict/KeyVal';
@@ -74,26 +74,43 @@ const columns = [
     title: '申报人',
     dataIndex: 'applicationUser',
     key: 'applicationUser',
+    width: 100,
   },
   {
     title: '事件标题',
     dataIndex: 'title',
     key: 'title',
+    width: 250,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 250,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
   },
   {
     title: '当前环节',
     dataIndex: 'flowNodeName',
     key: 'flowNodeName',
+    width: 150,
   },
   {
     title: '当前处理人',
     dataIndex: 'userName',
     key: 'userName',
+    width: 100,
   },
   {
     title: '超时时间',
     dataIndex: 'timeoutTime',
     key: 'timeoutTime',
+    width: 180,
   },
 ];
 
@@ -123,6 +140,19 @@ const timeoutcolumns = [
     title: '事件标题',
     dataIndex: 'title',
     key: 'title',
+    width: 250,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 250,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
   },
   {
     title: '处理人',
@@ -191,12 +221,25 @@ const timeoutcolumns = [
     title: '事件对象',
     dataIndex: 'eventObject',
     key: 'eventObject',
-    with: 10,
+    with: 150,
   },
   {
     title: '超时原因',
     dataIndex: 'timeoutMsg',
     key: 'timeoutMsg',
+    width: 250,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 250,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
   },
 
 ];

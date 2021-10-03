@@ -647,38 +647,48 @@ const CPUdatas = [
     "type": "CPU",
     "expected": 100,
     "name": "238.54.142.91",
-    "rate": 81
+    "rate": 81,
+    "startdate": "2021-10-01 00:00:00",
+    "enddate": "2021-10-03 23:59:59",
   },
   {
     "type": "CPU",
     "expected": 100,
     "name": "213.113.16.141",
-    "rate": 90
+    "rate": 90,
+    "startdate": "2021-10-01 00:00:00",
+    "enddate": "2021-10-03 23:59:59",
   },
   {
     "type": "CPU",
     "expected": 100,
     "name": "178.116.21.161",
-    "rate": 60
+    "rate": 60,
+    "startdate": "2021-10-01 00:00:00",
+    "enddate": "2021-10-03 23:59:59",
   },
   {
     "type": "CPU",
     "expected": 100,
     "name": "78.247.130.67",
-    "rate": 82
+    "rate": 82,
+    "startdate": "2021-10-01 00:00:00",
+    "enddate": "2021-10-03 23:59:59",
   },
   {
     "type": "CPU",
     "expected": 100,
     "name": "72.14.153.133",
-    "rate": 78
+    "rate": 78,
+    "startdate": "2021-10-01 00:00:00",
+    "enddate": "2021-10-03 23:59:59",
   }
 ]
 
 // 饼图数据
 const Donutdata = [
-  { type: '博联', value: 600 },
-  { type: '南瑞', value: 200 },
+  { type: '博联', value: 600, startdate: '2021-10-03 00:00:00', enddate: '2021-10-03 23:59:59' },
+  { type: '南瑞', value: 200, startdate: '2021-10-03 00:00:00', enddate: '2021-10-02 23:59:59' },
 ];
 
 const Donutdata2 = [
@@ -785,7 +795,7 @@ function Statistics(props) {
               totaltitle='发布总次数'
               total='550'
               padding={[10, 30, 10, 30]}
-              onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
+              onGetVal={(v) => { console.log('发布工单责任单位情况:饼图', v); setPicVal({ ...picval, dutyUnit: v }) }}
             />
           </Card>
         </Col>
@@ -796,7 +806,7 @@ function Statistics(props) {
                 data={Smoothdata}
                 height={300}
                 padding={[30, 0, 50, 60]}
-                onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
+                onGetVal={(v) => { console.log('发布工单责任单位情况：曲线图', v); setPicVal({ ...picval, type: v }) }}
               />
             )}
           </Card>
@@ -815,7 +825,7 @@ function Statistics(props) {
               total="351"
               totaltitle='发布总次数'
               padding={[10, 30, 10, 30]}
-              onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
+              onGetVal={(v) => { console.log('饼图', v); setPicVal({ ...picval, dutyUnit: v }) }}
             />
           </Card>
         </Col>
@@ -826,7 +836,7 @@ function Statistics(props) {
                 data={Smoothdata}
                 height={300}
                 padding={[30, 0, 50, 60]}
-                onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
+                onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('曲线图', v) }}
               />
             )}
           </Card>
@@ -848,7 +858,7 @@ function Statistics(props) {
                 symbol="%"
                 cols={cols}
                 colors="l(270) 0:#04e8ff 0.5:#05bdfe 1:#05bdfe"
-                onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log(v) }}
+                onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('柱形图', v) }}
               />
             )}
           </ChartCard>

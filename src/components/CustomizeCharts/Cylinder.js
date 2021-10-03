@@ -49,8 +49,8 @@ class Cylinder extends Component {
       <div>
         <Chart data={this.dv} padding={padding} scale={scal} height={height} forceFit animate onClick={ev => {
           const linkdata = ev.data;
-          if (linkdata) {
-            onGetVal(linkdata.data.name)
+          if (linkdata && linkdata.data) {
+            onGetVal(linkdata.data)
           }
         }}>
           <Axis

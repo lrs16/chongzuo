@@ -1,6 +1,7 @@
 import React from 'react';
 import { Chart, Line, Point, Tooltip, Axis } from 'bizcharts';
 import DataSet from '@antv/data-set';
+import { message } from '_antd@3.26.18@antd';
 
 const axisConfig = {
   label: {
@@ -44,8 +45,8 @@ function SmoothLine(props) {
   return (
     <Chart padding={padding} scale={cols} autoFit height={height} data={dv.rows} onClick={ev => {
       const linkdata = ev.data;
-      if (linkdata) {
-        onGetVal(linkdata.data.name)
+      if (linkdata && linkdata.data && !Array.isArray(linkdata.data)) {
+        onGetVal(linkdata.data)
       }
     }}>
       <Line shape="smooth" position="date*value" color="name" />

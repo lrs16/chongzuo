@@ -152,7 +152,7 @@ export default {
                           component: './ITSM/Releasemanage/Statistics/Analysis',
                         },
                         {
-                          path: '/ITSM/home/demandandalysis',
+                          path: '/ITSM/home/demandanalysis',
                           name: '需求统计分析',
                           icon: 'control',
                           component: './ITSM/Releasemanage/Statistics/Analysis',
