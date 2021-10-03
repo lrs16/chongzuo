@@ -7,12 +7,22 @@ import SelectTime from '@/components/SelectTime/SelectTime';
 import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
 import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
 import Cylinder from '@/components/CustomizeCharts/Cylinder';
+import ColumnarY from '@/components/CustomizeCharts/ColumnarY';
 import styles from '../index.less';
 
 const cols = {
   rate: {
     // alias: '%',
     // tickCount: 10,
+  },
+};
+
+const Issuedscale = {
+  total: {
+    type: 'linear',
+    alias: '返回结果数量',
+    min: 0,
+    tickInterval: 5000,
   },
 };
 
@@ -642,6 +652,65 @@ const Smoothdata = [
   }
 ];
 
+const issuedata = [
+  {
+    "id": "1437342791630413825",
+    "date": "2021-09-13 17:10:00",
+    "type": "正常",
+    "total": 149120,
+    "sjsj": "2021-09-13 00:00:00",
+    "flag": false
+  },
+  {
+    "id": "1437342791668162561",
+    "date": "2021-09-13 17:10:00",
+    "type": "无上行报文",
+    "total": 20469,
+    "sjsj": "2021-09-13 00:00:00",
+    "flag": false
+  },
+  {
+    "id": "1437342791689134082",
+    "date": "2021-09-13 17:10:00",
+    "type": "前置未返回",
+    "total": 11868,
+    "sjsj": "2021-09-13 00:00:00",
+    "flag": false
+  },
+  {
+    "id": "1437342791714299905",
+    "date": "2021-09-13 17:10:00",
+    "type": "否认",
+    "total": 5226,
+    "sjsj": "2021-09-13 00:00:00",
+    "flag": false
+  },
+  {
+    "id": "1437342791731077121",
+    "date": "2021-09-13 17:10:00",
+    "type": "超时",
+    "total": 1112,
+    "sjsj": "2021-09-13 00:00:00",
+    "flag": false
+  },
+  {
+    "id": "1437342791747854338",
+    "date": "2021-09-13 17:10:00",
+    "type": "设备离线",
+    "total": 924,
+    "sjsj": "2021-09-13 00:00:00",
+    "flag": false
+  },
+  {
+    "id": "1437342791764631554",
+    "date": "2021-09-13 17:10:00",
+    "type": "报文出错",
+    "total": 168,
+    "sjsj": "2021-09-13 00:00:00",
+    "flag": false
+  }
+]
+
 const CPUdatas = [
   {
     "type": "CPU",
@@ -862,6 +931,20 @@ function Statistics(props) {
               />
             )}
           </ChartCard>
+        </Col>
+        <Col span={12}>
+          <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+            {issuedata && issuedata.length === 0 && <Empty style={{ height: '250px' }} />}
+            {issuedata && issuedata.length > 0 && (
+              <ColumnarY
+                cols={Issuedscale}
+                data={issuedata}
+                height={364}
+                padding={[30, 60, 50, 100]}
+                onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
+              />
+            )}
+          </Card>
         </Col>
       </Row>
     </div>

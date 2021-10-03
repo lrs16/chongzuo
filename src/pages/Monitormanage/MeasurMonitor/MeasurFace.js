@@ -11,8 +11,8 @@ import LineChart from '@/components/CustomizeCharts/LineChart';
 import SelectArea from '@/components/Selects/SelectArea';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-//抄表接口数据
-let settl = {
+// 抄表接口数据
+const settl = {
   total: 0,
   tjsj: '',
 };
@@ -25,7 +25,7 @@ const changeSettData = datas => {
   }
   settl.total = 0;
   for (let i = 0; i < arr.length; i += 1) {
-    let vote = {};
+    const vote = {};
     vote.type = arr[i].type;
     vote.count = arr[i].total;
     settl.total += arr[i].total;
@@ -325,13 +325,14 @@ class MeasurFace extends Component {
                       data={issuedata}
                       height={350}
                       padding={[30, 60, 50, 100]}
+                      onGetVal={() => { }}
                     />
                   )}
                 </Spin>
               </ChartCard>
             </Col>
             <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-              <ChartCard title={`自动召测测试`} contentHeight={350}>
+              <ChartCard title="自动召测测试" contentHeight={350}>
                 <div style={{ margin: '0px 0 0 0' }}>
                   <Spin spinning={loading} style={{ background: '#ffffff' }}>
                     {facetree.length === 0 && <Empty style={{ height: '250px' }} />}

@@ -155,7 +155,7 @@ export default {
                           path: '/ITSM/home/demandanalysis',
                           name: '需求统计分析',
                           icon: 'control',
-                          component: './ITSM/Releasemanage/Statistics/Analysis',
+                          component: './ITSM/Demandmanage/demandstatistics/DemandAnalysis',
                         },
                         {
                           path: '/ITSM/home/releaseanalysis',
@@ -2169,7 +2169,7 @@ export default {
       changeOrigin: true,
     },
     '/monitor/': {
-      target: ' http://172.16.10.109:9901/', // 计量业务监控
+      target: ' http://172.16.10.33:9901/', // 计量业务监控
       changeOrigin: true,
     },
     '/inspection/': {

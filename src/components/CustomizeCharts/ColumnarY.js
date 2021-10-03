@@ -1,10 +1,11 @@
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react';
 import { Chart, Geom, Axis, Coord, Label, Tooltip, Legend } from 'bizcharts';
+import DataSet from '@antv/data-set';
 
 class ColumnarY extends React.Component {
   render() {
-    const { data, cols, height, padding } = this.props;
+    const { data, cols, height, padding, onGetVal } = this.props;
     return (
       <div>
         <Chart
@@ -14,6 +15,12 @@ class ColumnarY extends React.Component {
           scale={cols}
           padding={padding}
           forceFit
+          onClick={ev => {
+            const clickdata = ev.data;
+            if (clickdata && clickdata.data) {
+              onGetVal(clickdata.data)
+            }
+          }}
         >
           <Coord transpose />
           <Axis
