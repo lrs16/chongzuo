@@ -51,7 +51,9 @@ import request from '@/utils/request';
   export async function logbookSearch(params) {
     return request(`/duty/logbook/search`,{
       method:'POST',
-      body:JSON.stringify(params),
+      data:params,
+      requestType:'form'
+      // body:JSON.stringify(params),
     })
   }
 

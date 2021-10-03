@@ -7,6 +7,8 @@ import moment from 'moment';
 import SysUpload from '@/components/SysUpload';
 import { Row, Col, Form, Input, DatePicker, Select, Card, message } from 'antd';
 import SysDict from '@/components/SysDict';
+import Downloadfile from '@/components/SysUpload/Downloadfile';
+import styles from '../index.less';
 // const RadioGroup = Radio.Group; Radio, 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -41,6 +43,7 @@ const Registrat = forwardRef((props, ref) => {
     ChangeFiles,
     type,
   } = props;
+
   const [shiftList, setShiftList] = useState([]);
   const [fileslist, setFilesList] = useState([]);
   const [selectdata, setSelectData] = useState('');
@@ -62,10 +65,6 @@ const Registrat = forwardRef((props, ref) => {
   useEffect(() => {
     ChangeFiles(fileslist);
   }, [fileslist]);
-
-  // const onChange = (checked) => {
-  //   console.log(`switch to ${checked}`);
-  // }
 
   const disabledStartDate = startValue => {
     const { endValue } = time;
@@ -121,27 +120,29 @@ const Registrat = forwardRef((props, ref) => {
     }
   };
 
-  const handleChange = (value, option, type) => {
+  const handleChange = (value, option, types) => {
     const currentDate = moment(new Date()).format('YYYY-MM-DD');
-    const { values, id, beginTime, endTime, userId } = option.props;
-    // console.log('option.props: ', option.props);
+    const { values, id, beginTime, endTime, userId, groupId } = option.props;
     const start = `${currentDate} ${beginTime}`;
     const end = `${currentDate} ${endTime}`;
-    switch (type) {
+    switch (types) {
       case 'shiftName':
         setFieldsValue(
           {
             dutyBeginTime: moment(start),
             dutyEndTime: moment(end),
             shiftId: id,
+            dutyStaffId: groupId,
+            dutyUserId: userId
+
           }
         );
         break;
       case 'heirName':
         setFieldsValue(
           {
-            heirName:value,
-            heirId: value,
+            heirName: value,
+            heirId: id,
             heirUserId: userId
           }
         );
@@ -149,7 +150,7 @@ const Registrat = forwardRef((props, ref) => {
       case 'heirShiftName':
         setFieldsValue(
           {
-            heirName:value,
+            heirShiftName: value,
             // heirUserId: userId
           }
         );
@@ -169,7 +170,7 @@ const Registrat = forwardRef((props, ref) => {
   const handoveritems = getTypebyTitle('交接物品');
 
   return (
-    <Row gutter={24}>
+    <Row gutter={24} className={styles.headcolor}>
       <SysDict
         typeid="1438058740916416514"
         commonid="1354288354950123522"
@@ -179,7 +180,7 @@ const Registrat = forwardRef((props, ref) => {
       <Form {...forItemLayout} >
         {
           type && (
-            <Card title="接班说明" bordered={false}>
+            <Card title="接班说明" bordered={false} >
               <Col span={24}>
                 <Form.Item label="接班说明" {...forminladeLayout}>
                   {getFieldDecorator('receiveRemark', {
@@ -192,7 +193,7 @@ const Registrat = forwardRef((props, ref) => {
                     initialValue: formrecord.receiveRemark
                   })(
                     <TextArea
-                      disabled={type}
+                      disabled={type !== 'listButton'}
                       rows={4}
                     />
                   )}
@@ -241,7 +242,7 @@ const Registrat = forwardRef((props, ref) => {
                       value={obj.shiftName}
                       beginTime={obj.beginTime}
                       endTime={obj.endTime}
-                      id={obj.id}
+                      groupId={obj.groupId}
                     >
                       {obj.shiftName}
                     </Option>
@@ -264,10 +265,15 @@ const Registrat = forwardRef((props, ref) => {
               <Row>
                 <Col span={11}>
                   {getFieldDecorator('dutyBeginTime', {
-                    rules: [{ required, }],
+                    rules: [
+                      {
+                        required,
+                        message: '请选择值班时间',
+                      }],
                     initialValue: formrecord.dutyBeginTime ? moment(formrecord.dutyBeginTime) : '',
                   })(
                     <DatePicker
+                      allowClear={true}
                       disabled={statue}
                       disabledDate={disabledStartDate}
                       onChange={onStartChange}
@@ -286,10 +292,14 @@ const Registrat = forwardRef((props, ref) => {
                 <Col span={2} style={{ textAlign: 'center' }}>-</Col>
                 <Col span={11}>
                   {getFieldDecorator('dutyEndTime', {
-                    rules: [{ required, }],
+                    rules: [{
+                      required,
+                      message: '请选择值班时间',
+                    }],
                     initialValue: formrecord.dutyEndTime ? moment(formrecord.dutyEndTime) : '',
                   })(
                     <DatePicker
+                      allowClear={true}
                       disabled={statue}
                       disabledDate={disabledEndDate}
                       onChange={onEndChange}
@@ -414,22 +424,45 @@ const Registrat = forwardRef((props, ref) => {
             </Form.Item>
           </Col>
 
-          <Col span={24}>
-            <Form.Item label="上传附件"  {...forminladeLayout}>
-              {getFieldDecorator('attachment', {
-                initialValue: formrecord.attachment
-              })(
-                <div style={{ width: 400 }}>
-                  <SysUpload
-                    fileslist={files}
-                    ChangeFileslist={newvalue => setFilesList(newvalue)}
-                  />
-                </div>,
-              )}
-            </Form.Item>
-          </Col>
-        </Card>
+          {
+            !statue && (
+              <Col span={24}>
+                <Form.Item label="上传附件"  {...forminladeLayout}>
+                  {getFieldDecorator('attachment', {
+                    initialValue: formrecord.attachment
+                  })(
+                    <div style={{ width: 400 }}>
+                      <SysUpload
+                        fileslist={files}
+                        ChangeFileslist={newvalue => setFilesList(newvalue)}
+                      />
+                    </div>,
+                  )}
+                </Form.Item>
+              </Col>
+            )
+          }
 
+
+
+          {
+            statue && (
+              <Col span={24}>
+                <Form.Item label="上传附件"  {...forminladeLayout}>
+                  {getFieldDecorator('attachment', {
+                    initialValue: formrecord.attachment
+                  })(
+                    <span style={{ color: 'blue', textDecoration: 'underline' }} >
+                      {formrecord && formrecord.attachment && <Downloadfile files={formrecord.attachment} />}
+                    </span>
+                  )}
+                </Form.Item>
+              </Col>
+            )
+          }
+
+
+        </Card>
 
         <Card title='交接班信息' bordered={false}>
           <Col span={8}>
@@ -497,9 +530,9 @@ const Registrat = forwardRef((props, ref) => {
                 <Input disabled />
               )}
             </Form.Item>
-          </Col> 
+          </Col>
 
-          <Col span={8} style={{display:'none'}}>
+          <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="接班班组">
               {getFieldDecorator('heirGroupId', {
                 initialValue: (currentUserarr && currentUserarr.groupId) || formrecord.heirGroupId,
@@ -545,12 +578,13 @@ const Registrat = forwardRef((props, ref) => {
               )}
             </Form.Item>
           </Col>
-          <Col span={8}>
-            <Form.Item label="交接物品">
+          <Col span={24}>
+            <Form.Item label="交接物品" {...forminladeLayout}>
               {getFieldDecorator('handoverItems', {
-                initialValue: formrecord.handoverItems,
+                initialValue: formrecord.handoverItems || undefined,
               })(
                 <Select
+                  mode="multiple"
                   disabled={statue}
                   placeholder="请选择"
                   allowClear
@@ -630,7 +664,7 @@ Registrat.defaultProps = {
     attention: '',
     handoverStatus: '',
     receiveTime: '',
-    heirGroupId:'',
+    heirGroupId: '',
     dutyStaffName: sessionStorage.getItem('userName'),
     addUserId: sessionStorage.getItem('userauthorityid'),
   },

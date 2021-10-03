@@ -8,7 +8,7 @@ import moment from 'moment';
 import router from 'umi/router';
 import {
   Button,
-  Card,
+  Popconfirm,
   message,
   Form,
 } from 'antd';
@@ -36,6 +36,7 @@ function NewHandover(props) {
   const pagetitle = props.route.name;
   const {
     dispatch,
+    location,
     location: { query: { id, type, addtab } },
     tabdata,
     loading,
@@ -58,11 +59,25 @@ function NewHandover(props) {
     })
   }
 
+  useEffect(() => {
+    if(location.state && location.state.reset && id) {
+      formDetail()
+    }
+  },[location.state])
+
   const handleSave = (params) => { // 保存
     const values = ContentRef.current.getVal();
-    console.log('values: ', values);
+    if ((values.dutyBeginTime && !values.dutyEndTime)) {
+      message.error('请选择完整时间')
+    }
     ContentRef.current.Forms((err) => {
       if (!err) {
+        if (values.dutyBeginTime.valueOf() > values.dutyEndTime.valueOf()) {
+          message.error('开始时间必须小于结束时间');
+          return false
+        }
+
+
         return dispatch({
           type: 'shifthandover/fetchlogbookSave',
           payload: {
@@ -73,15 +88,11 @@ function NewHandover(props) {
             registerTime: moment(values.registerTime).format('YYYY-MM-DD HH:mm:ss'),
             handoverTime: moment(values.handoverTime).format('YYYY-MM-DD HH:mm:ss'),
             receiveTime: moment(values.receiveTime).format('YYYY-MM-DD HH:mm:ss'),
-            attachment: files.ischange ? JSON.stringify(files.arr) : ''
+            attachment: files.ischange ? JSON.stringify(files.arr) : '',
+            handoverItems:values.handoverItems ? values.handoverItems.toString():''
           }
         }).then(res => {
           if (res.code === 200) {
-            // if(params) {
-
-            // } else {
-            //   formDetail()
-            // }
             switch (params) {
               case 'logbookTransfer':
                 handlelogbookTransfer();
@@ -116,8 +127,6 @@ function NewHandover(props) {
     });
   };
 
-
-
   useEffect(() => {
     dispatch({
       type: 'shifthandover/fetchcurrentUser'
@@ -131,8 +140,6 @@ function NewHandover(props) {
       })
     }
   }, [id])
-
-
 
   useEffect(() => {
     if (currentUserarr && currentUserarr.groupId) {
@@ -169,8 +176,6 @@ function NewHandover(props) {
     }
   }, [currentUserarr])
 
-
-
   if (searchUsersarr && searchUsersarr.records && (searchUsersarr.records).length > 0) {
     succession = (searchUsersarr.records).map(item => {
       return {
@@ -181,7 +186,6 @@ function NewHandover(props) {
     })
   }
 
-
   if (shiftSearcharr && shiftSearcharr.records && (shiftSearcharr.records.length) > 0) {
     shiftName = (shiftSearcharr.records).map(item => {
       return {
@@ -190,8 +194,6 @@ function NewHandover(props) {
       }
     })
   }
-
-  console.log(shiftName, 'shiftName')
 
   // // 重置表单信息
   // useEffect(() => {
@@ -322,9 +324,9 @@ function NewHandover(props) {
   const reasonSubmit = (reason) => {
     dispatch({
       type: 'shifthandover/fetchfallback',
-      payload:{
+      payload: {
         id,
-        reason:reason.backReason
+        reason: reason.backReason
       }
     }).then(res => {
       if (res.code === 200) {
@@ -399,14 +401,20 @@ function NewHandover(props) {
       }
 
       {
-        id && (logbookIddetail && logbookIddetail.handoverStatus === '未交接'  || logbookIddetail.handoverStatus === '已退回') && (
-          <Button
-            type="primary"
-            style={{ marginRight: 8 }}
-            onClick={() => logbookTransfer()}
+        id && (logbookIddetail && logbookIddetail.handoverStatus === '未交接' || logbookIddetail.handoverStatus === '已退回') && (
+          <Popconfirm
+            title='交班后不可回退，确认是否交班？'
+            onConfirm={() => logbookTransfer()}
           >
-            确认交班
-          </Button>
+            <Button
+              type="primary"
+              style={{ marginRight: 8 }}
+              // onClick={() => logbookTransfer()}
+            >
+              确认交班
+            </Button>
+          </Popconfirm>
+
         )
       }
 
@@ -421,42 +429,38 @@ function NewHandover(props) {
           </Button>
         )
       }
-
       <Button onClick={handleclose}>关闭</Button>
     </>
   )
 
   return (
     <PageHeaderWrapper title={pagetitle} extra={extrabutton}>
-      <Card>
-        {
-          loading === false && (
-            <Registrat
-              forminladeLayout={forminladeLayout}
-              files={(logbookIddetail && logbookIddetail.attachment) ? JSON.parse(logbookIddetail.attachment) : []}
-              wrappedComponentRef={ContentRef}
-              currentUserarr={currentUserarr}
-              formrecord={id ? logbookIddetail : {}}
-              statue={((logbookIddetail && logbookIddetail.handoverStatus === '待接班' && !addtab) || type) ? true : false}
-              shiftinfo={shift}
-              successioninfo={succession}
-              shiftNameinfo={shiftName}
-              ChangeFiles={newvalue => {
-                setFiles(newvalue);
-              }}
-              type={type}
-            />
-          )
-        }
+      {
+        loading === false && (
+          <Registrat
+            forminladeLayout={forminladeLayout}
+            files={(logbookIddetail && logbookIddetail.attachment) ? JSON.parse(logbookIddetail.attachment) : []}
+            wrappedComponentRef={ContentRef}
+            currentUserarr={currentUserarr}
+            formrecord={id ? logbookIddetail : {}}
+            statue={((logbookIddetail && logbookIddetail.handoverStatus === '待接班' && !addtab) || type === 'search') ? true : false}
+            shiftinfo={shift}
+            successioninfo={succession}
+            shiftNameinfo={shiftName}
+            ChangeFiles={newvalue => {
+              setFiles(newvalue);
+            }}
+            type={type}
+          />
+        )
+      }
 
-        <Reasonregression
-          title="填写回退意见"
-          visible={modalrollback}
-          ChangeVisible={v => setModalRollBack(v)}
-          rollbackSubmit={v => reasonSubmit(v)}
-        />
-
-      </Card>
+      <Reasonregression
+        title="填写回退意见"
+        visible={modalrollback}
+        ChangeVisible={v => setModalRollBack(v)}
+        rollbackSubmit={v => reasonSubmit(v)}
+      />
     </PageHeaderWrapper>
   );
 }

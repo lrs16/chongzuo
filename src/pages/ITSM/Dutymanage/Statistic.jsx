@@ -4,20 +4,15 @@ import {
   Row,
   Col,
   Form,
-  Input,
   Select,
   Button,
   DatePicker,
   Table,
-  Divider,
-  Popconfirm
 } from 'antd';
 import router from 'umi/router';
 import moment from 'moment';
 import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-
-
 
 const formItemLayout = {
   labelCol: {
@@ -41,20 +36,32 @@ function Statistic(props) {
       getFieldDecorator,
       resetFields,
       getFieldsValue,
-      validateFields
     },
     location,
     dispatch,
     searchUsersarr,
-    statsIndexarr
+    statsIndexarr,
+    loading
   } = props;
   const [type, setType] = useState('');
+  const [tabrecord, setTabRecord] = useState({});
+  const [time, setTime] = useState({
+    startValue: null,
+    endValue: null,
+    endOpen: false,
+  })
+
+  const [dutytime, setDutytime] = useState({
+    startValue: null,
+    endValue: null,
+    endOpen: false,
+  })
 
 
   const columns = [
     {
-      title: '值班人',
-      dataIndex: 'staffName',
+      title: `${type === 'USER' ? '值班人' : '值班单位'}`,
+      dataIndex: `${type === 'USER' ? 'staffName' : 'deptName'}`,
       key: 'staffName'
     },
     {
@@ -79,25 +86,23 @@ function Statistic(props) {
     },
   ];
 
-
-
   const searchdata = (values) => {
     const obj = {
       ...values,
-      beginTime: (values && values.time?.length)
-        ? moment(values.time[0]).format('YYYY-MM-DD HH:mm:ss')
-        : '',
-      endTime: (values && values.time?.length)
-        ? moment(values.time[1]).format('YYYY-MM-DD HH:mm:ss')
-        : '', // 发生时间
+      beginTime: (values && values.beginTime)
+        ? moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss')
+        : moment().startOf('month').format('YYYY-MM-DD 00:00:00'),
+      endTime: (values && values.endTime)
+        ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss')
+        : moment().endOf('month').format('YYYY-MM-DD 23:59:59'), // 发生时间
     };
-    delete obj.time
     dispatch({
       type: 'shifthandover/fetchstatsIndex',
       payload: {
         ...obj
       }
     });
+    setTabRecord({ ...obj })
   }
 
   const handleReset = () => {
@@ -110,28 +115,17 @@ function Statistic(props) {
     searchdata({}, 1, 15)
   }
 
-  useEffect(() => {
-    const value = getFieldsValue();
-    searchdata(value)
-  }, [])
-
-
-  const handleonChange = (value, option) => {
-    setType(value)
-    dispatch({
-      type: 'dutyandtypesetting/staffSearch',
-      payload: {
-        current: 1,
-        size: 1000
-      }
-    }
-    )
+  const handleonChange = (value) => {
+    setType(value);
+    // const values = getFieldsValue();
+    // console.log('values: ', values);
+    // searchdata(values,1,15)/
   }
 
   if (searchUsersarr && searchUsersarr.records) {
     selectDate = (searchUsersarr.records).map(item => {
       return {
-        userId: item.userId,
+        userId: item.id,
         staffName: item.staffName,
         deptId: item.deptId,
         deptName: item.deptName
@@ -144,23 +138,210 @@ function Statistic(props) {
     searchdata(value)
   }
 
+  const handleStartOpenChange = (open, types) => {
+    if (!open && types === 'create') {
+      const obj = time;
+      obj.endOpen = true;
+      setTime(obj);
+    }
+
+    if (!open && types === 'duty') {
+      const obj = dutytime;
+      obj.endOpen = true;
+      setDutytime(obj);
+    }
+  };
+
+  //  传给多标签的数据
+  const record = {
+    beginTime: '',
+    endTime: '',
+    type: '',
+    typeValue: '',
+  }
+
+  const cacheinfo = (location.state && location.state.cacheinfo === undefined) ? record : location.state.cacheinfo;
+
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              // paginations
+            },
+            tabid: sessionStorage.getItem('tabid')
+          }
+        })
+      };
+
+      if (location.state.reset) {
+        handleReset();
+      }
+    }
+  }, [location.state])
+
+  useEffect(() => {
+    const value = getFieldsValue();
+    if(cacheinfo && cacheinfo.type) {
+      setType(cacheinfo.type)
+    }
+    searchdata(value)
+  }, [])
+
+  //  设置时间的范围
+  const disabledStartDate = (startValue, types) => {
+    if (types === 'create') {
+      const { endValue } = time;
+      if (!startValue || !endValue) {
+        return false;
+      }
+      return startValue.valueOf() > endValue.valueOf()
+    }
+
+    if (types === 'duty') {
+      const { endValue } = dutytime;
+      if (!startValue || !endValue) {
+        return false;
+      }
+      return startValue.valueOf() > endValue.valueOf()
+    }
+
+    return []
+
+  }
+
+  const disabledEndDate = (endValue, types) => {
+    if (types === 'create') {
+      const { startValue } = time;
+      if (!endValue || !startValue) {
+        return false;
+      }
+      return endValue.valueOf() <= startValue.valueOf();
+    }
+
+    if (types === 'duty') {
+      const { startValue } = dutytime;
+      if (!endValue || !startValue) {
+        return false;
+      }
+      return endValue.valueOf() <= startValue.valueOf();
+    }
+
+    return []
+
+  };
+
+  const onChange = (field, value, types) => {
+    if (types === 'create') {
+      const obj = time;
+      switch (field) {
+        case 'startValue':
+          obj.startValue = value;
+          setTime(obj);
+          break;
+        case 'endValue':
+          obj.endValue = value;
+          setTime(obj);
+          break;
+        default:
+          break;
+      }
+    }
+
+    if (types === 'duty') {
+      const obj = dutytime;
+      switch (field) {
+        case 'startValue':
+          obj.startValue = value;
+          setDutytime(obj);
+          break;
+        case 'endValue':
+          obj.endValue = value;
+          setDutytime(obj);
+          break;
+        default:
+          break;
+      }
+    }
+  };
+
+  const onStartChange = (value, types) => {
+    onChange('startValue', value, types);
+  };
+
+  const onEndChange = (value, types) => {
+    onChange('endValue', value, types);
+  };
+
+  const handleEndOpenChange = (open, types) => {
+    if (types === 'create') {
+      const obj = time;
+      obj.endOpen = open
+      setTime(obj);
+    } else {
+      const obj = dutytime;
+      obj.endOpen = open
+      setDutytime(obj);
+    }
+  };
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
-        <Row gutter={8}>
+        <Row gutter={24}>
           <Form {...formItemLayout}>
             <Col span={8}>
-              <Form.Item label="起始时间">
-                {getFieldDecorator('time', {
-                  initialValue: '',
-                })(<RangePicker placeholder="请输入" allowClear />)}
+              <Form.Item label="起始时间" >
+                <Row>
+                  <Col span={11}>
+                    {getFieldDecorator('beginTime', {
+                      initialValue: (cacheinfo && cacheinfo.beginTime) ? moment(cacheinfo.beginTime) : moment().startOf('month'),
+                    })(
+                      <DatePicker
+                        disabledDate={(value) => disabledStartDate(value, 'create')}
+                        onChange={(value) => onStartChange(value, 'create')}
+                        onOpenChange={(value) => handleStartOpenChange(value, 'create')}
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                        }}
+                        placeholder="开始时间"
+                        format='YYYY-MM-DD HH:mm:ss'
+                        style={{ minWidth: 120, width: '100%' }}
+                      />
+                    )}
+                  </Col>
+                  <Col span={2} style={{ textAlign: 'center' }}>-</Col>
+                  <Col span={11}>
+                    {getFieldDecorator('endTime', {
+                      initialValue: (cacheinfo && cacheinfo.endTime) ? moment(cacheinfo.endTime) : moment().endOf('month'),
+                    })(
+                      <DatePicker
+                        disabledDate={(value) => disabledEndDate(value, 'create')}
+                        onChange={(value) => onEndChange(value, 'create')}
+                        open={time.endOpen}
+                        onOpenChange={(value) => handleEndOpenChange(value, 'create')}
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                        }}
+                        placeholder="结束时间"
+                        format='YYYY-MM-DD HH:mm:ss'
+                        style={{ minWidth: 120, width: '100%' }}
+                      />
+                    )}
+                  </Col>
+                </Row>
               </Form.Item>
             </Col>
 
             <Col span={8}>
               <Form.Item label="统计方式">
-                {getFieldDecorator('type ', {
-                  initialValue: '',
+                {getFieldDecorator('type', {
+                  initialValue: cacheinfo.type
                 })(
                   <Select
                     onChange={handleonChange}
@@ -175,13 +356,13 @@ function Statistic(props) {
             <Col span={8}>
               <Form.Item label="">
                 {getFieldDecorator('typeValue ', {
-                  initialValue: '',
+                  initialValue: cacheinfo.typeValue
                 })(
                   <Select
                   >
                     {(selectDate || []).map(obj => [
                       <Option
-                        key={obj.userId}
+                        key={obj.id}
                         value={type === 'USER' ? obj.userId : obj.deptId}
                       >
                         {type === 'USER' ? obj.staffName : obj.deptName}
@@ -191,7 +372,8 @@ function Statistic(props) {
                 )}
               </Form.Item>
             </Col>
-            <Col span={8} style={{ textAlign: 'left' }}>
+
+            <Col span={22} style={{ textAlign: 'right', marginBottom: 10 }}>
               <Button
                 type='primary'
                 style={{ marginRight: 8 }}
@@ -203,16 +385,15 @@ function Statistic(props) {
               <Button onClick={handleReset}>重置</Button>
             </Col>
 
-            {/* <Col span={24} style={{ textAlign: 'right', paddingTop: 4 }}>{extra}</Col> */}
           </Form>
         </Row>
 
         <Table
+          loading={loading}
           columns={columns}
           dataSource={statsIndexarr}
         />
       </Card>
-
     </PageHeaderWrapper>
 
   )
@@ -222,6 +403,6 @@ export default Form.create({})(
   connect(({ dutyandtypesetting, shifthandover, loading }) => ({
     searchUsersarr: dutyandtypesetting.searchUsersarr,
     statsIndexarr: shifthandover.statsIndexarr,
-    loading: loading.models.dutyandtypesetting
+    loading: loading.models.shifthandover
   }))(Statistic),
 );
