@@ -87,7 +87,7 @@ function NewHandover(props) {
             dutyEndTime: moment(values.dutyEndTime).format('YYYY-MM-DD HH:mm:ss'),
             registerTime: moment(values.registerTime).format('YYYY-MM-DD HH:mm:ss'),
             handoverTime: moment(values.handoverTime).format('YYYY-MM-DD HH:mm:ss'),
-            receiveTime: moment(values.receiveTime).format('YYYY-MM-DD HH:mm:ss'),
+            receiveTime: '',
             attachment: files.ischange ? JSON.stringify(files.arr) : '',
             handoverItems:values.handoverItems ? values.handoverItems.toString():''
           }
@@ -123,7 +123,8 @@ function NewHandover(props) {
   const handleclose = () => { // 返回
     router.push({
       pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover`,
-      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true },
+      query: { pathpush: true },
+      state: { cach: false }
     });
   };
 
@@ -364,7 +365,7 @@ function NewHandover(props) {
       }
 
       {
-        id && logbookIddetail.handoverStatus === '未交接' && (
+        id && logbookIddetail.handoverStatus === '待接班' && type === 'listButton' && (
           <Button
             type="danger"
             ghost
@@ -402,34 +403,33 @@ function NewHandover(props) {
 
       {
         id && (logbookIddetail && logbookIddetail.handoverStatus === '未交接' || logbookIddetail.handoverStatus === '已退回') && (
-          <Popconfirm
-            title='交班后不可回退，确认是否交班？'
-            onConfirm={() => logbookTransfer()}
-          >
-            <Button
+          <Button
               type="primary"
               style={{ marginRight: 8 }}
-              // onClick={() => logbookTransfer()}
+              onClick={() => logbookTransfer()}
             >
               确认交班
             </Button>
-          </Popconfirm>
-
         )
       }
 
       {
         id && logbookIddetail.handoverStatus === '待接班' && type === 'listButton' && (
-          <Button
+          <Popconfirm
+          title='接班后不可回退，确认是否接班？'
+          onConfirm={() => logbookReceive()}
+        >
+        <Button
             type="primary"
             style={{ marginRight: 8 }}
-            onClick={() => logbookReceive()}
+            // onClick={() => logbookReceive()}
           >
             确认接班
           </Button>
+        </Popconfirm>
         )
       }
-      <Button onClick={handleclose}>关闭</Button>
+      <Button onClick={handleclose}>返回</Button>
     </>
   )
 

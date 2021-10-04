@@ -150,6 +150,7 @@ function SettingDetails(props) {
       case 'director':
         setFieldsValue({
           staffName, // 用户名称
+          teststaffName:staffName,
           staffId: id, // 用户id
           deptName: deptNameExt,
           staffPhone: phone,
@@ -211,6 +212,7 @@ function SettingDetails(props) {
 
   const handleOk = () => {
     validateFields((err, values) => {
+      console.log('values: ', values);
       const newValue = {
         id,
         groupId: sessionStorage.getItem('groupId'),
@@ -270,11 +272,11 @@ function SettingDetails(props) {
       >
         <Form {...formItemLayout}>
           <Form.Item label="值班人">
-            {getFieldDecorator('staffName', {
+            {getFieldDecorator('teststaffName', {
               rules: [
                 {
                   required,
-                  message: '请选择责任人',
+                  message: '请选择值班人',
                 },
               ],
               initialValue: settingDetails.staffName,
@@ -294,6 +296,14 @@ function SettingDetails(props) {
                 />
               </AutoComplete>,
             )}
+          </Form.Item>
+
+          <Form.Item style={{ display: 'none' }}>
+            {
+              getFieldDecorator('staffName', {
+                initialValue: settingDetails.staffName
+              })
+            }
           </Form.Item>
 
           <Form.Item style={{ display: 'none' }}>
@@ -339,7 +349,7 @@ function SettingDetails(props) {
                 onSelect={(v, opt) => handleDisableduser(v, opt, 'shiftName')}
               >
                 <Search
-                  placeholder="可输入人名称搜索"
+                  placeholder="可输入班次名称搜索"
                   onSearch={values => SearchDisableduser(values, 'shiftName')}
                   allowClear
                 />

@@ -36,6 +36,7 @@ function Statistic(props) {
       getFieldDecorator,
       resetFields,
       getFieldsValue,
+      setFieldsValue
     },
     location,
     dispatch,
@@ -117,21 +118,44 @@ function Statistic(props) {
 
   const handleonChange = (value) => {
     setType(value);
-    // const values = getFieldsValue();
-    // console.log('values: ', values);
-    // searchdata(values,1,15)/
+    setFieldsValue({ typeValue: '' })
+    dispatch({
+      type: 'dutyandtypesetting/staffSearch',
+    })
   }
 
   if (searchUsersarr && searchUsersarr.records) {
-    selectDate = (searchUsersarr.records).map(item => {
-      return {
-        userId: item.id,
-        staffName: item.staffName,
-        deptId: item.deptId,
-        deptName: item.deptName
-      }
-    })
+    if (type !== 'USER') {
+      const obj = {}
+      const arr = (searchUsersarr.records).reduce((item, next) => {
+        obj[next.deptName] ? '' : obj[next.deptName] = true && item.push(next)
+        return item
+      }, []);
+
+      selectDate = (arr).map(item => {
+        return {
+          userId: item.id,
+          staffName: item.staffName,
+          deptId: item.deptId,
+          deptName: item.deptName
+        }
+      })
+    } else {
+      selectDate = (searchUsersarr.records).map(item => {
+        return {
+          userId: item.id,
+          staffName: item.staffName,
+          deptId: item.deptId,
+          deptName: item.deptName
+        }
+      })
+    }
+
+
+
   }
+
+  console.log(searchUsersarr, 'searchUsersarr')
 
   const handlesearch = () => {
     const value = getFieldsValue();
@@ -185,7 +209,7 @@ function Statistic(props) {
 
   useEffect(() => {
     const value = getFieldsValue();
-    if(cacheinfo && cacheinfo.type) {
+    if (cacheinfo && cacheinfo.type) {
       setType(cacheinfo.type)
     }
     searchdata(value)
@@ -338,7 +362,7 @@ function Statistic(props) {
               </Form.Item>
             </Col>
 
-            <Col span={8}>
+            <Col span={6}>
               <Form.Item label="统计方式">
                 {getFieldDecorator('type', {
                   initialValue: cacheinfo.type
@@ -353,9 +377,9 @@ function Statistic(props) {
               </Form.Item>
             </Col>
 
-            <Col span={8}>
+            <Col span={6}>
               <Form.Item label="">
-                {getFieldDecorator('typeValue ', {
+                {getFieldDecorator('typeValue', {
                   initialValue: cacheinfo.typeValue
                 })(
                   <Select
@@ -373,7 +397,7 @@ function Statistic(props) {
               </Form.Item>
             </Col>
 
-            <Col span={22} style={{ textAlign: 'right', marginBottom: 10 }}>
+            <Col span={4} style={{ textAlign: 'left', marginBottom: 10 }}>
               <Button
                 type='primary'
                 style={{ marginRight: 8 }}

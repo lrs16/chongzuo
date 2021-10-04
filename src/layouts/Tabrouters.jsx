@@ -54,6 +54,7 @@ const multiplepath = [
   { path: '/automation/automatedjob/jobmanagement/jobcheck/tocheck', type: 'automatedjobtocheck'},
   { path: '/automation/automatedjob/jobmanagement/jobexecute/manualexecutionlog', type: 'automatedmanualexecutionlog'},
   { path: '/automation/automatedjob/softstartandstop/softregister/newregist', type: 'automatedjobnewregist'},
+  { path: '/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/newhandover', type: 'newhandover'},
 ]
 function Tabrouters(props) {
   const { Changealonepath, Changemultiple } = props;

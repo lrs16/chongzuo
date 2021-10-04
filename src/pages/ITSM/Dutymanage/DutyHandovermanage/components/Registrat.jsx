@@ -37,7 +37,6 @@ const Registrat = forwardRef((props, ref) => {
     currentUserarr,
     shiftinfo,
     successioninfo,
-    shiftNameinfo,
     statue,
     files,
     ChangeFiles,
@@ -122,9 +121,15 @@ const Registrat = forwardRef((props, ref) => {
 
   const handleChange = (value, option, types) => {
     const currentDate = moment(new Date()).format('YYYY-MM-DD');
+    const nextDate = moment().add(1, 'd').format('YYYY-MM-DD');
+    let end;
     const { values, id, beginTime, endTime, userId, groupId } = option.props;
     const start = `${currentDate} ${beginTime}`;
-    const end = `${currentDate} ${endTime}`;
+    if (moment(new Date()).format(`YYYY-MM-DD ${beginTime}`).valueOf() > moment(new Date()).format(`YYYY-MM-DD ${endTime}`).valueOf()) {
+      end = `${nextDate} ${endTime}`;
+    } else {
+      end = `${currentDate} ${endTime}`;
+    }
     switch (types) {
       case 'shiftName':
         setFieldsValue(
@@ -229,6 +234,11 @@ const Registrat = forwardRef((props, ref) => {
           <Col span={8}>
             <Form.Item label="值班班次">
               {getFieldDecorator('shiftName', {
+                rules: [
+                  {
+                    required,
+                    message: '请选择值班班次',
+                  }],
                 initialValue: formrecord.shiftName,
               })(
                 <Select
@@ -273,8 +283,8 @@ const Registrat = forwardRef((props, ref) => {
                     initialValue: formrecord.dutyBeginTime ? moment(formrecord.dutyBeginTime) : '',
                   })(
                     <DatePicker
+                      disabled
                       allowClear={true}
-                      disabled={statue}
                       disabledDate={disabledStartDate}
                       onChange={onStartChange}
                       onOpenChange={handleStartOpenChange}
@@ -300,7 +310,7 @@ const Registrat = forwardRef((props, ref) => {
                   })(
                     <DatePicker
                       allowClear={true}
-                      disabled={statue}
+                      disabled
                       disabledDate={disabledEndDate}
                       onChange={onEndChange}
                       open={time.endOpen}
@@ -350,6 +360,7 @@ const Registrat = forwardRef((props, ref) => {
                 initialValue: formrecord.registerTime ? moment(formrecord.registerTime) : moment(new Date()),
               })(<DatePicker
                 placeholder="请输入"
+                format='YYYY-MM-DD HH:mm:ss'
                 allowClear
                 disabled
               />)}
@@ -460,8 +471,6 @@ const Registrat = forwardRef((props, ref) => {
               </Col>
             )
           }
-
-
         </Card>
 
         <Card title='交接班信息' bordered={false}>
@@ -572,7 +581,7 @@ const Registrat = forwardRef((props, ref) => {
                 <DatePicker
                   disabled
                   showTime
-                  format="YYYY-MM-DD hh:mm:ss"
+                  format='YYYY-MM-DD HH:mm:ss'
                   style={{ width: '100%' }}
                   allowClear />
               )}
@@ -625,7 +634,7 @@ const Registrat = forwardRef((props, ref) => {
                 <DatePicker
                   disabled
                   showTime
-                  format="YYYY-MM-DD hh:mm:ss"
+                  format='YYYY-MM-DD HH:mm:ss'
                   style={{ width: '100%' }}
                   allowClear />
               )}

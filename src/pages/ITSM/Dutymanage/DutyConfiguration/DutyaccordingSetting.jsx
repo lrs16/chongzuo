@@ -39,7 +39,7 @@ function DutyaccordingSetting(props) {
   const [currentYear, setCurrentYear] = useState(moment(new Date()).format('YYYY'));
   const [month, setMonth] = useState(moment(new Date()).format('MM'));
   const [groupName, setGroupName] = useState('计量中心组');
-
+  const [add, setAdd] = useState(true);
   const getTable = (year, paramsmonth) => {
     dispatch({
       type: 'dutyandtypesetting/fetchtable',
@@ -49,8 +49,6 @@ function DutyaccordingSetting(props) {
       }
     })
   }
-
-
 
   const getListData = value => {
     let result;
@@ -214,9 +212,17 @@ function DutyaccordingSetting(props) {
     );
   };
 
-  const handleClick = (selectkeys) => {
-    sessionStorage.setItem('groupId', selectkeys.toString())
-    getTable(currentYear, month)
+  const handleClick = (selectkeys, event) => {
+    const { props: { title } } = event.node;
+    if (title !== '班组信息' && selectkeys.toString() !== '') {
+      sessionStorage.setItem('groupId', selectkeys.toString())
+      getTable(currentYear, month);
+      setAdd(true)
+    }
+    if (title === '班组信息') {
+      message.info('点击该层是没有数据的哦，您现在看到的是上一次您点击节点的数据')
+      setAdd(false)
+    }
   }
 
   const handleDelete = () => {
@@ -281,7 +287,14 @@ function DutyaccordingSetting(props) {
   const teamname = getTypebyTitle('班组名称');
 
   useEffect(() => {
-    const resutlteam = [{ title: '班组信息', children: teamname }]
+    const resutlteam = [
+      {
+        title: '班组信息',
+        children: teamname,
+        key: '0',
+        order: 0,
+        parentId: "-1"
+      }]
     setTabledata(resutlteam)
   }, [teamname])
 
@@ -309,14 +322,13 @@ function DutyaccordingSetting(props) {
                     </Tree>
                   )
                 }
-
               </Sider>
             </Card>
 
             <Card style={{ marginLeft: 10 }}>
               <Content >
                 {
-                  pagetitle === '排班设置' && (
+                  pagetitle === '排班设置' && add && (
                     <div style={{ backgroundColor: 'white', paddingBottom: 7 }}>
                       <Button
                         type="danger"

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Chart, Line, Point, Tooltip, Axis } from 'bizcharts';
 import DataSet from '@antv/data-set';
-import { message } from '_antd@3.26.18@antd';
 
 const axisConfig = {
   label: {

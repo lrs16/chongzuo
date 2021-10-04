@@ -29,7 +29,6 @@ import request from '@/utils/request';
 
   //  回退交接
   export async function fallback(params) {
-    console.log('params: ', params);
     return request(`/duty/logbook/fallback`,{
       method:'POST',
       data:params,

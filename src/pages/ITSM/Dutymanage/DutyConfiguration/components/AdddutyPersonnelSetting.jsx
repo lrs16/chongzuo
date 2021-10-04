@@ -5,11 +5,7 @@ import {
   Input,
   Button,
   AutoComplete,
-  DatePicker,
-  Switch,
   Select,
-  Spin,
-  Col
 } from 'antd';
 import moment from 'moment';
 import { phone_reg } from '@/utils/Regexp';
@@ -96,6 +92,7 @@ function AdddutyPersonnelSetting(props) {
 
   const handleOk = () => {
     validateFields((err, values) => {
+      console.log('values: ', values);
       const newdata = {
         id:personnelSetting.id || '',
         ...values
@@ -141,6 +138,7 @@ function AdddutyPersonnelSetting(props) {
       case 'director':
         setFieldsValue({
           staffName: userName, // 用户名称
+          teststaffName:userName,
           userId: id, // 用户id
           deptId,
           deptName: deptNameExt,
@@ -184,7 +182,7 @@ function AdddutyPersonnelSetting(props) {
       >
         <Form {...formItemLayout}>
           <Form.Item label="值班人员">
-            {getFieldDecorator('staffName', {
+            {getFieldDecorator('teststaffName', {
               rules: [
                 {
                   required,
@@ -207,6 +205,14 @@ function AdddutyPersonnelSetting(props) {
                 />
               </AutoComplete>,
             )}
+          </Form.Item>
+          
+          <Form.Item style={{ display: 'none' }}>
+            {
+              getFieldDecorator('staffName', {
+                initialValue: personnelSetting.staffName
+              })
+            }
           </Form.Item>
 
           <Form.Item style={{display:'none'}}>

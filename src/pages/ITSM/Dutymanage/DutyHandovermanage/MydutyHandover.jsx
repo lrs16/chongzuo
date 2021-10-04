@@ -25,15 +25,11 @@ const formItemLayout = {
   },
 };
 
-const allstatusmap4 = [
-  { key: '0', title: '接班班次1' },
-  { key: '1', title: '接班班次12' },
-  { key: '2', title: '接班班次13' },
-];
 const allstatusmap6 = [
-  { key: '0', title: '交接状态1' },
-  { key: '1', title: '交接状态12' },
-  { key: '2', title: '交接状态13' },
+  { key: '未交接', title: '未交接' },
+  { key: '待接班', title: '待接班' },
+  { key: '已接班', title: '已接班' },
+  { key: '已退回', title: '已退回' },
 ];
 
 let shift;
@@ -101,6 +97,7 @@ function MydutyHandover(props) {
         receiveEndTime: (values && values.receiveTime?.length)
           ? moment(values.receiveTime[1]).format('YYYY-MM-DD HH:mm:ss')
           : '', // 发生时间
+        handoverItems: (values && values.handoverItems) ? values.handoverItems.toString() : ''
       };
       delete obj.registerTime;
       delete obj.dutyTime;
@@ -122,8 +119,9 @@ function MydutyHandover(props) {
       current: 1,
     });
     const values = getFieldsValue();
-    const obj = values;
-    searchdata(obj, 1, paginations.pageSize);
+    console.log('values: ', values);
+    // const obj = values;
+    searchdata(values, 1, paginations.pageSize);
   };
 
   const handleReset = () => {
@@ -226,9 +224,9 @@ function MydutyHandover(props) {
       width: 250,
     },
     {
-      title: '交班时间',
-      dataIndex: 'handoverTime',
-      key: 'handoverTime',
+      title: '接班时间',
+      dataIndex: 'receiveTime',
+      key: 'receiveTime',
       width: 250,
     },
     {
@@ -289,7 +287,14 @@ function MydutyHandover(props) {
       title: '值班时间',
       dataIndex: 'dutyBeginTime',
       key: 'dutyBeginTime',
-      width: 250,
+      width: 350,
+      render: (text, record) => {
+        return (
+          <>
+            <span>{record.dutyBeginTime}</span> - <span>{record.dutyEndTime}</span>
+          </>
+        )
+      }
     },
   ];
 
@@ -446,8 +451,28 @@ function MydutyHandover(props) {
     creataColumns();
   };
 
+  const shiftGroup = (values) => {
+    console.log('values: ', values);
+    dispatch({
+      type: 'shifthandover/fetchshiftGroup',
+      payload: { groupId: values }
+    })
+  }
+
+  const handleChange = (key, option, params) => {
+    const { values } = option.props
+    switch (params) {
+      case 'groupName':
+        shiftGroup(values)
+        break;
+      default:
+        break;
+    }
+  };
+
   useEffect(() => {
     setColumns(initialColumns);
+
   }, []);
 
   const handleSuccession = () => {
@@ -479,8 +504,7 @@ function MydutyHandover(props) {
     handoverStatus: '',
   }
 
-  const cacheinfo = (location.state && location.state.cacheinfo === undefined) ? record : location.state.cacheinfo;
-
+  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
 
 
   useEffect(() => {
@@ -514,20 +538,23 @@ function MydutyHandover(props) {
   useEffect(() => {
     if (location && location.state && location.state.cacheinfo) {
       setFieldsValue({
-        registerTime: location.state.cacheinfo.registerBeginTime ? [moment(location.state.cacheinfo.registerBeginTime),moment(location.state.cacheinfo.registerEndTime)]:'',
-        handoverTime: location.state.cacheinfo.handoverBeginTime ? [moment(location.state.cacheinfo.handoverBeginTime),moment(location.state.cacheinfo.handoverEndTime)]:'',
-        receiveTime: location.state.cacheinfo.receiveBeginTime ? [moment(location.state.cacheinfo.receiveBeginTime),moment(location.state.cacheinfo.receiveEndTime)]:'',
+        registerTime: location.state.cacheinfo.registerBeginTime ? [moment(location.state.cacheinfo.registerBeginTime), moment(location.state.cacheinfo.registerEndTime)] : '',
+        handoverTime: location.state.cacheinfo.handoverBeginTime ? [moment(location.state.cacheinfo.handoverBeginTime), moment(location.state.cacheinfo.handoverEndTime)] : '',
+        receiveTime: location.state.cacheinfo.receiveBeginTime ? [moment(location.state.cacheinfo.receiveBeginTime), moment(location.state.cacheinfo.receiveEndTime)] : '',
       })
     }
   }, [location.state])
 
-    // 获取数据
-    useEffect(() => {
-      const value = getFieldsValue();
-      if (cacheinfo && cacheinfo.paginations && cacheinfo.paginations.current) {
-        searchdata(value, cacheinfo.paginations.current, cacheinfo.paginations.pageSize)
-      }
-    }, []);
+  // 获取数据
+  useEffect(() => {
+    const value = getFieldsValue();
+    if (cacheinfo && cacheinfo.paginations && cacheinfo.paginations.current) {
+      searchdata(value, cacheinfo.paginations.current, cacheinfo.paginations.pageSize)
+    } else {
+      searchdata({}, 1, 15)
+    }
+  }, []);
+
 
   // const disabledStartDate = (startValue, type) => {
   //   if (type === 'create') {
@@ -744,11 +771,16 @@ function MydutyHandover(props) {
                       {getFieldDecorator('groupName', {
                         initialValue: cacheinfo.groupName,
                       })(
-                        <Select placeholder="请选择" allowClear>
+                        <Select
+                          placeholder="请选择"
+                          allowClear={false}
+                          getPopupContainer={e => e.parentNode}
+                          onChange={(value, option) => handleChange(value, option, 'groupName')}
+                        >
                           {teamname.map(obj => [
                             <Option
                               key={obj.title}
-                              values={obj.title}
+                              values={obj.key}
                             >
                               {obj.title}
                             </Option>
@@ -763,10 +795,14 @@ function MydutyHandover(props) {
                       {getFieldDecorator('shiftName', {
                         initialValue: cacheinfo.shiftName,
                       })(
-                        <Select placeholder="请选择" allowClear>
+                        <Select
+                          placeholder="请选择"
+                          allowClear
+                          getPopupContainer={e => e.parentNode}
+                        >
                           {(shift || []).map((obj) => [
                             <Option
-                              key={obj.id}
+                              key={obj.shiftName}
                               value={obj.shiftName}
                             >
                               {obj.shiftName}
@@ -792,7 +828,7 @@ function MydutyHandover(props) {
                       })(<Input placeholder="请输入" allowClear />)}
                     </Form.Item>
                   </Col>
-                 
+
                   <Col span={8}>
                     <Form.Item label="重大运维事件">
                       {getFieldDecorator('devopsNotes', {
@@ -800,7 +836,7 @@ function MydutyHandover(props) {
                       })(<Input placeholder="请输入" allowClear />,)}
                     </Form.Item>
                   </Col>
-                  
+
                   <Col span={8}>
                     <Form.Item label="其他情况记录">
                       {getFieldDecorator('otherNotes', {
@@ -808,7 +844,7 @@ function MydutyHandover(props) {
                       })(<Input placeholder="请输入" allowClear />)}
                     </Form.Item>
                   </Col>
-                 
+
                   <Col span={8}>
                     <Form.Item label="交班人">
                       {getFieldDecorator('handoverName', {
@@ -816,7 +852,7 @@ function MydutyHandover(props) {
                       })(<Input placeholder="请输入" allowClear />)}
                     </Form.Item>
                   </Col>
-                 
+
                   <Col span={8}>
                     <Form.Item label="接班人">
                       {getFieldDecorator('heirName', {
@@ -824,13 +860,17 @@ function MydutyHandover(props) {
                       })(<Input placeholder="请输入" allowClear />)}
                     </Form.Item>
                   </Col>
-                 
+
                   <Col span={8}>
                     <Form.Item label="接班班组">
                       {getFieldDecorator('heirGroupName', {
                         initialValue: cacheinfo.heirGroupName,
                       })(
-                        <Select placeholder="请选择" allowClear>
+                        <Select
+                          placeholder="请选择"
+                          allowClear
+                          getPopupContainer={e => e.parentNode}
+                        >
                           {teamname.map(obj => [
                             <Option
                               key={obj.title}
@@ -843,26 +883,30 @@ function MydutyHandover(props) {
                       )}
                     </Form.Item>
                   </Col>
-                 
+
                   <Col span={8}>
                     <Form.Item label="接班班次">
                       {getFieldDecorator('heirShiftName', {
                         initialValue: cacheinfo.heirShiftName,
                       })(
-                        <Select placeholder="请选择" allowClear>
-                          {(successionArr || []).map(obj => [
+                        <Select
+                          placeholder="请选择"
+                          allowClear
+                          getPopupContainer={e => e.parentNode}
+                        >
+                          {(shift || []).map((obj) => [
                             <Option
-                              key={obj.title}
-                              values={obj.title}
+                              key={obj.shiftName}
+                              value={obj.shiftName}
                             >
-                              {obj.title}
+                              {obj.shiftName}
                             </Option>
                           ])}
                         </Select>,
                       )}
                     </Form.Item>
                   </Col>
-                
+
                   <Col span={8}>
                     <Form.Item label="交班时间">
                       {getFieldDecorator('handoverTime', {
@@ -880,7 +924,7 @@ function MydutyHandover(props) {
                         )}
                     </Form.Item>
                   </Col>
-                
+
                   <Col span={8}>
                     <Form.Item label="需注意事项">
                       {getFieldDecorator('attention', {
@@ -888,13 +932,17 @@ function MydutyHandover(props) {
                       })(<Input placeholder="请输入" allowClear />)}
                     </Form.Item>
                   </Col>
-                
+
                   <Col span={8}>
                     <Form.Item label="交接物品">
                       {getFieldDecorator('handoverItems', {
-                        initialValue: cacheinfo.handoverItems,
+                        initialValue: cacheinfo.handoverItems || undefined,
                       })(
-                        <Select placeholder="请选择" allowClear>
+                        <Select
+                          placeholder="请选择"
+                          mode="multiple"
+                          allowClear
+                        >
                           {(handoveritems || []).map(obj => [
                             <Option key={obj.key} value={obj.title}>
                               {obj.title}
@@ -904,15 +952,19 @@ function MydutyHandover(props) {
                       )}
                     </Form.Item>
                   </Col>
-                 
+
                   <Col span={8}>
                     <Form.Item label="交接状态">
                       {getFieldDecorator('handoverStatus', {
                         initialValue: cacheinfo.handoverStatus,
                       })(
-                        <Select placeholder="请选择" allowClear>
+                        <Select
+                          placeholder="请选择"
+                          allowClear
+                          getPopupContainer={e => e.parentNode}
+                        >
                           {allstatusmap6.map(obj => (
-                            <Option key={obj.key} value={obj.title}>
+                            <Option key={obj.title} value={obj.title}>
                               {obj.title}
                             </Option>
                           ))}
@@ -920,7 +972,7 @@ function MydutyHandover(props) {
                       )}
                     </Form.Item>
                   </Col>
-                
+
                   <Col span={8}>
                     <Form.Item label="接班时间">
                       {getFieldDecorator('receiveTime', {
@@ -1030,5 +1082,5 @@ export default Form.create({})(
     logbookSearcharr: shifthandover.logbookSearcharr,
     shiftGrouparr: shifthandover.shiftGrouparr,
     loading: loading.models.shifthandover
-  }))(MydutyHandover),
+  }))(MydutyHandover)
 );

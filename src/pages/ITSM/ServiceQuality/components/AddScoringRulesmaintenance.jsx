@@ -165,7 +165,6 @@ function AddScoringRulesmaintenance(props) {
   }
 
   useEffect(() => {
-    console.log(3)
     if (loading === false && scoreDetail && scoreDetail.assessType) {
       setFieldsValue({ assessType: scoreDetail.assessType })
       getalldata();
@@ -174,13 +173,11 @@ function AddScoringRulesmaintenance(props) {
   }, [scoreDetail])
 
   useEffect(() => {
-    console.log(4)
     setTreeData(treeArr)
   }, [loading]);
 
 
   useEffect(() => {
-    console.log(5)
     dispatch({
       type: 'qualityassessment/clearclauseList'
     }
@@ -195,7 +192,6 @@ function AddScoringRulesmaintenance(props) {
   }, [type])
 
   useEffect(() => {
-    console.log(6)
     if (loading === false && treeData && treeData.length && treeData[0].children[0] && treeData[0].children[0].id) {
       dispatch({
         type: 'qualityassessment/getTargetValue',
