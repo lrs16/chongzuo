@@ -131,7 +131,7 @@ export default {
                       routes: [
                         {
                           path: '/ITSM/home',
-                          redirect: '/ITSM/home/releaseanalysis',
+                          redirect: '/ITSM/home/achievementsanalysis',
                         },
                         {
                           path: '/ITSM/home/eventanalysis',

@@ -10,7 +10,7 @@ function Statistics(props) {
     router.push({ pathname: `/ITSM/home/${e.key}analysis`, })
   };
   useEffect(() => {
-    handleClick({ key: 'release' })
+    handleClick({ key: 'achievements' })
   }, [])
   return (
     <>
