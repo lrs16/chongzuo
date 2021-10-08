@@ -300,19 +300,19 @@ function softwareConfig(props) {
         dataIndex: 'lastCompareStatus',
         key: 'lastCompareStatus',
         width: 250,
-        render: (text, record) => {
-            const statusMap = new Map([
-                ['1', '无变化'],
-                ['2', '新增'],
-                ['3', '修改'],
-                ['4', '删除'],
-            ])
-            return (
-                <span>
-                    {statusMap.get(record.lastCompareStatus)}
-                </span>
-            );
-        },
+        // render: (text, record) => {
+        //     const statusMap = new Map([
+        //         ['1', '无变化'],
+        //         ['2', '新增'],
+        //         ['3', '修改'],
+        //         ['4', '删除'],
+        //     ])
+        //     return (
+        //         <span>
+        //             {statusMap.get(record.lastCompareStatus)}
+        //         </span>
+        //     );
+        // },
     },
     {
         title: '文件修改时间',
@@ -331,7 +331,7 @@ function softwareConfig(props) {
         dataIndex: 'action',
         key: 'action',
         fixed: 'right',
-        width: 120,
+        width: 100,
         render: (text, record) => {
             return (
                 <a type="link"

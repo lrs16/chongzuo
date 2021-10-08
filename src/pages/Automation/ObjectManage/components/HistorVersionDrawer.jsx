@@ -180,7 +180,7 @@ function HistorVersionDrawer(props) {
             width: 250,
         },
         {
-            title: '配置文件内容',
+            title: '下载配置文件',
             dataIndex: 'confCont',
             key: 'confCont',
             width: 300,
@@ -211,22 +211,22 @@ function HistorVersionDrawer(props) {
             dataIndex: 'lastCompareStatus',
             key: 'lastCompareStatus',
             width: 250,
-            render: (text, record) => {
-                const statusMap = new Map([
-                    ['1', '无变化'],
-                    ['2', '新增'],
-                    ['3', '修改'],
-                    ['4', '删除'],
-                ])
-                return (
-                    <span>
-                        {statusMap.get(record.lastCompareStatus)}
-                    </span>
-                );
-            },
+            // render: (text, record) => {
+            //     const statusMap = new Map([
+            //         ['1', '无变化'],
+            //         ['2', '新增'],
+            //         ['3', '修改'],
+            //         ['4', '删除'],
+            //     ])
+            //     return (
+            //         <span>
+            //             {statusMap.get(record.lastCompareStatus)}
+            //         </span>
+            //     );
+            // },
         },
         {
-            title: '备份时间',
+            title: '获取时间',
             dataIndex: 'pullTime',
             key: 'pullTime',
             width: 250,
@@ -261,7 +261,7 @@ function HistorVersionDrawer(props) {
     return (
         <Drawer
             title={title}
-            width="85%"
+            width="80%"
             onClose={hanldleCancel}
             visible={visible}
             bodyStyle={{ paddingBottom: 60 }}
