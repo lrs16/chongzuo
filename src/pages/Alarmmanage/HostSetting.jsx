@@ -118,9 +118,9 @@ function HostSetting(props) {
       <Card style={{ marginTop: 24 }}>
         {frequency && frequency.confValue && (
           <>
-            监控频率：<Select placeholder="请选择" style={{ width: 200, }} onChange={onFrequency} defaultValue={frequency.confValue} >
+            监控频率：<Select placeholder="请选择" style={{ width: 200, }} onChange={onFrequency} defaultValue={frequency.confValue}>
               {dist.map(({ key, val }) => [
-                <Option key={key} value={val}>
+                <Option key={key} value={key}>
                   {val}
                 </Option>,
               ])}

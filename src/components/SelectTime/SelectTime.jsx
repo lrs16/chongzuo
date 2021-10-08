@@ -27,12 +27,20 @@ function SelectTime(props) {
       if (tag === '按日') {
         setStartDates(beginTime);
         setEndDates(endTime);
-        ChangeDate({ beginTime: moment(beginTime).format('YYYY-MM-DD 00:00:00'), endTime: moment(endTime).format('YYYY-MM-DD 23:59:59') });
+        ChangeDate({
+          beginTime: moment(beginTime).format('YYYY-MM-DD 00:00:00'),
+          endTime: moment(endTime).format('YYYY-MM-DD 23:59:59'),
+          type: 'D'
+        });
       }
       if (tag === '按月') {
         setStartDates(beginTime);
         setEndDates(endTime);
-        ChangeDate({ beginTime: moment(beginTime).startOf('month').format('YYYY-MM-DD 00:00:00'), endTime: moment(endTime).endOf('month').format('YYYY-MM-DD 23:59:59') })
+        ChangeDate({
+          beginTime: moment(beginTime).startOf('month').format('YYYY-MM-DD 00:00:00'),
+          endTime: moment(endTime).endOf('month').format('YYYY-MM-DD 23:59:59'),
+          type: 'M'
+        })
       }
     }
   };
@@ -59,13 +67,15 @@ function SelectTime(props) {
       if (selectedTags === '按日') {
         ChangeDate({
           beginTime: moment(startdates || undefined).format('YYYY-MM-DD 00:00:00'),
-          endTime: moment(enddates || undefined).format('YYYY-MM-DD 23:59:59')
+          endTime: moment(enddates || undefined).format('YYYY-MM-DD 23:59:59'),
+          type: 'D'
         })
       }
       if (selectedTags === '按月') {
         ChangeDate({
           beginTime: moment(startdates || undefined).startOf('month').format('YYYY-MM-DD 00:00:00'),
-          endTime: moment(enddates || undefined).endOf('month').format('YYYY-MM-DD 23:59:59')
+          endTime: moment(enddates || undefined).endOf('month').format('YYYY-MM-DD 23:59:59'),
+          type: 'M'
         })
       }
     }

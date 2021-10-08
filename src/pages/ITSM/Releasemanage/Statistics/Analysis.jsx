@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 import { Card, Row, Col, Avatar, Empty } from 'antd';
 import { ChartCard } from '@/components/Charts';
 import StatisticsCard from '@/components/StatisticsCard';
@@ -8,6 +9,7 @@ import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
 import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
 import Cylinder from '@/components/CustomizeCharts/Cylinder';
 import ColumnarY from '@/components/CustomizeCharts/ColumnarY';
+import { ArrowRightOutlined } from '_@ant-design_icons@4.6.2@@ant-design/icons';
 import styles from '../index.less';
 
 const cols = {
@@ -766,121 +768,178 @@ const Donutdata2 = [
 ];
 
 function Statistics(props) {
-  const { dispatch, } = props;
-  const [selectedTags, setSelectedTags] = useState([]);
+  const { dispatch, analysis, analysis: { summary, platsum, bizsum, donesum, bizchecksum, unitsum } } = props;
   const [picval, setPicVal] = useState({});
+  const [values, setValues] = useState({});
+  console.log(analysis)
 
-  const handleChang = (tag, checked) => {
-    if (checked) {
-      setSelectedTags([tag])
+  const piesum = (arr) => {
+    let sum = 0;
+    if (arr && arr.length > 0) {
+      arr.forEach(item => {
+        sum += item.value;
+      });
+    };
+    return sum
+  };
+
+  // const changeLineData = (arr) => {
+  //   let arr;
+  //   if (arr) {
+
+  //   }
+  // }
+
+  useEffect(() => {
+    if (values && values.type) {
+      dispatch({
+        type: 'releaseanalysis/fetchanalysis',
+        payload: {
+          begin: moment(values.beginTime).format('YYYY-MM-DD'),
+          end: moment(values.endTime).format('YYYY-MM-DD'),
+          type: values.type
+        },
+      });
     }
-  }
 
-  // useEffect(() => {
-  //   dispatch({
-  //     type: 'alarmovervies/fetchoversmooth',
-  //     payload: { key: 'function' },
-  //   });
-  // }, [])
+  }, [values])
+
   return (
     <div>
-      <SelectTime ChangeDate={(v) => console.log(v)} />
-      <Row style={{ marginTop: 24 }}>
+      <SelectTime ChangeDate={(v) => setValues(v)} />
+      {summary && (<Row style={{ marginTop: 24 }}>
         <div className={styles.statisticscard}>
           <Avatar icon="desktop" />
           <b>发布总情况</b>
         </div>
-        <Col span={6}>
-          <StatisticsCard title='发布总次数：' value={1128} suffix='次' des='环比' desval='11%' type='up' />
-        </Col>
-        <Col span={6}>
-          <StatisticsCard title='出厂测试总功能项：' value={93} suffix='项' des='环比' desval='3.5%' type='down' />
-        </Col>
-        <Col span={6}>
-          <StatisticsCard title='发布成功项：' value={935888} suffix='次' des='环比' desval='6%' type='up' />
-        </Col>
-        <Col span={6}>
-          <StatisticsCard title='发布成功率：' value={89.558} suffix='%' des='环比' desval='6%' type='up' />
-        </Col>
-      </Row>
+        {summary.map(({ name, total, prevTotal, ringRatio }) => {
+          const suffixmap = new Map([
+            ['发布总次数', '次'],
+            ['总功能项', '项'],
+            ['发布成功项', '项'],
+            ['发布成功率', '%'],
+          ])
+          return (
+            <Col span={6}>
+              <StatisticsCard title={`${name}：`} value={total} suffix={suffixmap.get(name)} des='环比' desval={ringRatio} type={prevTotal * 100 < total * 100 ? 'up' : 'down'} />
+            </Col>)
+        })}
+      </Row>)}
       <Row gutter={16}>
-        <Col span={12} style={{ marginTop: 24 }}>
+        {platsum && (<Col span={12} style={{ marginTop: 24 }}>
           <div className={styles.statisticscard}>
             <Avatar icon="desktop" />
             <b>平台验证情况</b>
           </div>
           <Row>
-            <Col span={8}><StatisticsCard title='平台验证通过项：' value={152} suffix='项' des='环比' desval='6%' type='up' /></Col>
-            <Col span={8}><StatisticsCard title='平台验证未通过项：' value={2} suffix='项' des='环比' desval='6%' type='down' /></Col>
-            <Col span={8}><StatisticsCard title='平台验证成功率：' value={100.00} suffix='%' des='环比' desval='6%' type='down' /></Col>
+            {platsum.map(({ name, total, prevTotal, ringRatio }) => {
+              const suffixmap = new Map([
+                ['平台验证通过项', '项'],
+                ['平台验证未通过项', '项'],
+                ['平台验证成功率', '%'],
+              ])
+              return (
+                <Col span={8}>
+                  <StatisticsCard title={`${name}：`} value={total} suffix={suffixmap.get(name)} des='环比' desval={ringRatio} type={prevTotal * 100 < total * 100 ? 'up' : 'down'} />
+                </Col>)
+            })}
           </Row>
-        </Col>
-        <Col span={12} style={{ marginTop: 24 }}>
+        </Col>)}
+        {bizsum && (<Col span={12} style={{ marginTop: 24 }}>
           <div className={styles.statisticscard}>
             <Avatar icon="file-protect" />
             <b>业务验证情况</b>
           </div>
           <Row>
-            <Col span={8}><StatisticsCard title='业务验证通过项：' value={150} suffix='项' des='环比' desval='6%' type='up' /></Col>
-            <Col span={8}><StatisticsCard title='业务验证未通过项：' value={2} suffix='项' des='环比' desval='6%' type='down' /></Col>
-            <Col span={8}><StatisticsCard title='平台验证成功率：' value={100.00} suffix='%' des='环比' desval='6%' type='down' /></Col>
+            {bizsum.map(({ name, total, prevTotal, ringRatio }) => {
+              const suffixmap = new Map([
+                ['业务验证通过项', '项'],
+                ['业务验证未通过项', '项'],
+                ['业务验证成功率', '%'],
+              ])
+              return (
+                <Col span={8}>
+                  <StatisticsCard title={`${name}：`} value={total} suffix={suffixmap.get(name)} des='环比' desval={ringRatio} type={prevTotal * 100 < total * 100 ? 'up' : 'down'} />
+                </Col>)
+            })}
           </Row>
-        </Col>
+        </Col>)}
       </Row>
       <Row gutter={16}>
-        <Col span={12} style={{ marginTop: 24 }}>
+        {donesum && (<Col span={12} style={{ marginTop: 24 }}>
           <div className={styles.statisticscard}>
             <Avatar icon="control" />
             <b>发布实施情况</b>
           </div>
           <Row>
-            <Col span={8}><StatisticsCard title='实施通过项：' value={148} suffix='项' des='环比' desval='6%' type='up' /></Col>
-            <Col span={8}><StatisticsCard title='实施未通过项：' value={0} suffix='项' des='环比' desval='6%' type='down' /></Col>
-            <Col span={8}><StatisticsCard title='实施成功率：' value={100.00} suffix='%' des='环比' desval='6%' type='down' /></Col>
+            {donesum.map(({ name, total, prevTotal, ringRatio }) => {
+              const suffixmap = new Map([
+                ['发布实施通过项', '项'],
+                ['发布实施未通过项', '项'],
+                ['发布实施通过率', '%'],
+              ])
+              return (
+                <Col span={8}>
+                  <StatisticsCard title={`${name}：`} value={total} suffix={suffixmap.get(name)} des='环比' desval={ringRatio} type={prevTotal * 100 < total * 100 ? 'up' : 'down'} />
+                </Col>)
+            })}
           </Row>
         </Col>
-        <Col span={12} style={{ marginTop: 24 }}>
+        )}
+        {bizchecksum && (<Col span={12} style={{ marginTop: 24 }}>
           <div className={styles.statisticscard}>
             <Avatar icon="security-scan" />
             <b>业务复核情况</b>
           </div>
           <Row>
-            <Col span={8}><StatisticsCard title='复核通过项：' value={148} suffix='项' des='环比' desval='6%' type='up' /></Col>
-            <Col span={8}><StatisticsCard title='复核未通过项：' value={0} suffix='项' des='环比' desval='6%' type='down' /></Col>
-            <Col span={8}><StatisticsCard title='复核成功率：' value={100.00} suffix='%' des='环比' desval='6%' type='down' /></Col>
+            {bizchecksum.map(({ name, total, prevTotal, ringRatio }) => {
+              const suffixmap = new Map([
+                ['业务复核通过项', '项'],
+                ['业务复核未通过项', '项'],
+                ['业务复核通过率', '%'],
+              ])
+              return (
+                <Col span={8}>
+                  <StatisticsCard title={`${name}：`} value={total} suffix={suffixmap.get(name)} des='环比' desval={ringRatio} type={prevTotal * 100 < total * 100 ? 'up' : 'down'} />
+                </Col>)
+            })}
           </Row>
         </Col>
+        )}
       </Row>
-      <Row style={{ marginTop: 24 }}>
-        <div className={styles.statisticscard}>
-          <Avatar icon="cluster" />
-          <b>发布工单责任单位情况</b>
-        </div>
-        <Col span={8}>
-          <Card onMouseDown={() => setPicVal({})}>
-            <DonutPCT
-              data={Donutdata}
-              height={300}
-              totaltitle='发布总次数'
-              total='550'
-              padding={[10, 30, 10, 30]}
-              onGetVal={(v) => { console.log('发布工单责任单位情况:饼图', v); setPicVal({ ...picval, dutyUnit: v }) }}
-            />
-          </Card>
-        </Col>
-        <Col span={16}>
-          <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-            {Smoothdata && (
-              <SmoothLine
-                data={Smoothdata}
+      {unitsum && (
+        <Row style={{ marginTop: 24 }}>
+          <div className={styles.statisticscard}>
+            <Avatar icon="cluster" />
+            <b>发布工单责任单位情况</b>
+          </div>
+          {unitsum.pieChart && (<Col span={8}>
+            <Card onMouseDown={() => setPicVal({})}>
+              <DonutPCT
+                data={unitsum.pieChart}
                 height={300}
-                padding={[30, 0, 50, 60]}
-                onGetVal={(v) => { console.log('发布工单责任单位情况：曲线图', v); setPicVal({ ...picval, type: v }) }}
+                totaltitle='发布总次数'
+                total={piesum(unitsum.pieChart)}
+                padding={[10, 30, 30, 30]}
+                onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
               />
-            )}
-          </Card>
-        </Col>
-      </Row>
+            </Card>
+          </Col>
+          )}
+          <Col span={16}>
+            <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+              {unitsum.lineChart && (
+                <SmoothLine
+                  data={unitsum.lineChart}
+                  height={300}
+                  padding={[30, 0, 60, 60]}
+                  onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
+                />
+              )}
+            </Card>
+          </Col>
+        </Row>
+      )}
       <Row style={{ marginTop: 24 }}>
         <div className={styles.statisticscard}>
           <Avatar icon="share-alt" />
@@ -951,7 +1010,7 @@ function Statistics(props) {
   );
 }
 
-export default connect(({ alarmovervies, loading }) => ({
-  // Smoothdata: alarmovervies.Smoothdata,
-  loading: loading.models.alarmovervies,
+export default connect(({ releaseanalysis, loading }) => ({
+  analysis: releaseanalysis.analysis,
+  loading: loading.models.releaseanalysis,
 }))(Statistics);

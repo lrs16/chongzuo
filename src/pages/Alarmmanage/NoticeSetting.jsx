@@ -131,6 +131,10 @@ function NoticeSetting(props) {
     return [];
   };
 
+  const rowSelection = (rowkey) => {
+    console.log(rowkey)
+  }
+
   const measurmap = getTypebykey('1436608796393205762');          // 计量
   const hostmap = getTypebykey('1437319207950217217');            // 主机巡检内容
   const softmap = getTypebykey('1442405396184997889');            // 软件      
@@ -202,8 +206,18 @@ function NoticeSetting(props) {
       )}
       {tabActivekey === '2' && (
         <Card>
-          <Button style={{ marginBottom: 8 }} type="dashed" icon="plus" block onClick={() => { setVisible(!visible); setOpenType('new') }}>新增联系人</Button>
-          <Table columns={columns} dataSource={data} />
+          <Button
+            style={{ marginBottom: 8, marginRight: 8 }}
+            type="primary"
+            onClick={() => { setVisible(!visible); setOpenType('new') }}>新增
+          </Button>
+          <Button
+            style={{ marginBottom: 8, }}
+            type="danger"
+            ghost
+            onClick={() => { setVisible(!visible); setOpenType('new') }}>删除
+          </Button>
+          <Table columns={columns} dataSource={data} rowSelection={rowSelection} />
         </Card>
       )}
       <NoticTree visible={visible} ChangeVisible={(v) => setVisible(v)} openType={openType} alarmgroup={alarmgroup} selectdata={selectdata} />
