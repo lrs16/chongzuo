@@ -5,7 +5,7 @@ import React, {
 } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Table, Card, Button, Form, Input, Select, Row, Col, DatePicker } from 'antd';
+import { Table, Card, Button, Form, Input, Select, Row, Col, DatePicker, Tooltip } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
@@ -31,7 +31,7 @@ function softwareConfig(props) {
     const {
         loading,
         dispatch,
-        // softconflist,
+        softconflist,
         location,
         form: {
             getFieldDecorator,
@@ -40,17 +40,17 @@ function softwareConfig(props) {
         },
     } = props;
 
-    // console.log(softconflist, 'softconflist')
-
     const [expand, setExpand] = useState(false);
+    const [confid, setconfId] = useState('');
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
-    const [data, setData] = useState([]);
+    // const [data, setData] = useState([]);
     const [visible, setVisible] = useState(false); // 抽屉是否显示
     const [title, setTitle] = useState('');
 
-    const handleShowHistoryDrawer = (drawtitle) => {
+    const handleShowHistoryDrawer = (drawtitle, gotid) => {
         setTitle(drawtitle);
+        setconfId(gotid);
         setVisible(!visible);
     };
 
@@ -65,15 +65,16 @@ function softwareConfig(props) {
                 pageNum: page,
                 pageSize: size,
             },
-        }).then(res => {
-            console.log(res, "res")
-            // if (res.code === 200) {
-            //     const newarr = res.data.rows.map((item, index) => {
-            //         return Object.assign(item, { key: index });
-            //     });
-            //     setData(newarr);
-            // }
         })
+        // .then(res => {
+        //     console.log(res, "res")
+        //     // if (res.code === 200) {
+        //     //     const newarr = res.data.rows.map((item, index) => {
+        //     //         return Object.assign(item, { key: index });
+        //     //     });
+        //     //     setData(newarr);
+        //     // }
+        // })
     };
 
 
@@ -109,8 +110,8 @@ function softwareConfig(props) {
         onShowSizeChange: (page, size) => onShowSizeChange(page, size),
         current: paginations.current,
         pageSize: paginations.pageSize,
-        // total: softconflist.total || 15,
-        // showTotal: total => `总共  ${total}  条记录`,
+        total: softconflist.total,
+        showTotal: total => `总共  ${total}  条记录`,
         onChange: page => changePage(page),
     };
 
@@ -139,19 +140,19 @@ function softwareConfig(props) {
     // };
 
     // 获取行
-    const getRowByKey = (key, newData) => {
-        return (newData || data).filter(item => item.key === key)[0];
-    };
+    // const getRowByKey = (key, newData) => {
+    //     return (newData || data).filter(item => item.key === key)[0];
+    // };
 
     // 更新表单信息
-    const handleFieldChange = (e, fieldName, key) => {
-        const newData = data.map(item => ({ ...item }));
-        const target = getRowByKey(key, newData);
-        if (target) {
-            target[fieldName] = e;
-            setData(newData);
-        }
-    };
+    // const handleFieldChange = (e, fieldName, key) => {
+    //     const newData = data.map(item => ({ ...item }));
+    //     const target = getRowByKey(key, newData);
+    //     if (target) {
+    //         target[fieldName] = e;
+    //         setData(newData);
+    //     }
+    // };
 
     // const showgetFileModel = () => {
     //     confirm({
@@ -164,10 +165,10 @@ function softwareConfig(props) {
 
     //         },
     //         onOk() {
-              
+
     //         },
     //         onOk1() {
-              
+
     //         },
     //     });
     // };
@@ -192,15 +193,15 @@ function softwareConfig(props) {
 
     const columns = [{
         title: '批次号',
-        dataIndex: 'pch',
-        key: 'pch',
-        width: 120,
+        dataIndex: 'pullNum',
+        key: 'pullNum',
+        width: 250,
     },
     {
         title: '区域',
         dataIndex: 'hostZoneId',
         key: 'hostZoneId',
-        width: 120,
+        width: 200,
     },
     {
         title: '设备名称',
@@ -218,75 +219,112 @@ function softwareConfig(props) {
         title: '软件名称',
         dataIndex: 'softName',
         key: 'softName',
-        width: 180,
+        width: 200,
     },
     {
         title: '配置文件路径',
-        dataIndex: 'softPort',
-        key: 'softPort',
+        dataIndex: 'confPath',
+        key: 'confPath',
         width: 250,
+        onCell: () => {
+            return {
+                style: {
+                    maxWidth: 250,
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis',
+                    cursor: 'pointer'
+                }
+            }
+        },
+        render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
     {
         title: '配置文件名称',
-        dataIndex: 'softPath',
-        key: 'softPath',
+        dataIndex: 'confName',
+        key: 'confName',
         width: 250,
     },
     {
         title: '配置文件大小',
-        dataIndex: 'softVersion',
-        key: 'softVersion',
-        width: 250,
+        dataIndex: 'confSize',
+        key: 'confSize',
+        width: 150,
     },
     {
         title: '配置文件内容',
-        dataIndex: 'softStatus',
-        key: 'softStatus',
+        dataIndex: 'confCont',
+        key: 'confCont',
         width: 300,
+        onCell: () => {
+            return {
+                style: {
+                    maxWidth: 300,
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis',
+                    cursor: 'pointer'
+                }
+            }
+        },
+        render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
     {
         title: '配置文件版本号',
-        dataIndex: 'director',
-        key: 'director',
-        width: 150,
-        editable: true,
-        render: (text, record) => {
-            if (record.editable) {
-                return (
-                    <Input
-                        type='text'
-                        placeholder="请输入"
-                        defaultValue={text}
-                        onChange={e => handleFieldChange(e.target.value, 'director', record.key)}
-                    />
-                );
-            }
-            return text;
-        },
+        dataIndex: 'confVersion',
+        key: 'confVersion',
+        width: 200,
+        // editable: true,
+        // render: (text, record) => {
+        //     if (record.editable) {
+        //         return (
+        //             <Input
+        //                 type='text'
+        //                 placeholder="请输入"
+        //                 defaultValue={text}
+        //                 onChange={e => handleFieldChange(e.target.value, 'director', record.key)}
+        //             />
+        //         );
+        //     }
+        //     return text;
+        // },
     },
     {
         title: '文件md5',
-        dataIndex: 'm1',
-        key: 'm1',
-        width: 150,
+        dataIndex: 'confMd5',
+        key: 'confMd5',
+        width: 300,
     },
     {
         title: '比对上次文件变化',
-        dataIndex: 'm2',
-        key: 'm2',
-        width: 150,
+        dataIndex: 'lastCompareStatus',
+        key: 'lastCompareStatus',
+        width: 250,
+        render: (text, record) => {
+            const statusMap = new Map([
+                ['1', '无变化'],
+                ['2', '新增'],
+                ['3', '修改'],
+                ['4', '删除'],
+            ])
+            return (
+                <span>
+                    {statusMap.get(record.lastCompareStatus)}
+                </span>
+            );
+        },
     },
     {
         title: '文件修改时间',
-        dataIndex: 'm3',
-        key: 'm3',
-        width: 150,
+        dataIndex: 'fileLateTime',
+        key: 'fileLateTime',
+        width: 200,
     },
     {
         title: '获取时间',
-        dataIndex: 'gettime',
-        key: 'gettime',
-        width: 150,
+        dataIndex: 'pullTime',
+        key: 'pullTime',
+        width: 200,
     },
     {
         title: '操作',
@@ -300,7 +338,7 @@ function softwareConfig(props) {
                     record={record}
                     text={text}
                     onClick={() => {
-                        handleShowHistoryDrawer('查看历史版本');
+                        handleShowHistoryDrawer('查看历史版本', record.id);
                     }}
                 >
                     历史版本
@@ -372,6 +410,7 @@ function softwareConfig(props) {
     };
 
     const zonemap = getTypebyId('1428182995477942274'); // 区域
+    const lastcomparestatusmap = getTypebyId('1444111752403349505'); // 软件配置变化状态
 
     return (
         <PageHeaderWrapper title={pagetitle}>
@@ -390,7 +429,7 @@ function softwareConfig(props) {
                                 })(
                                     <Select placeholder="请选择" allowClear>
                                         {zonemap.map(obj => (
-                                            <Option key={obj.key} value={obj.title}>
+                                            <Option key={obj.key} value={obj.dict_code}>
                                                 {obj.title}
                                             </Option>
                                         ))}
@@ -422,37 +461,43 @@ function softwareConfig(props) {
                                 </Col>
                                 <Col span={8}>
                                     <Form.Item label="配置文件名称">
-                                        {getFieldDecorator('softPort', {
+                                        {getFieldDecorator('confName', {
                                             initialValue: '',
                                         })(<Input placeholder="请输入" allowClear />)}
                                     </Form.Item>
                                 </Col>
                                 <Col span={8}>
                                     <Form.Item label="配置文件路径">
-                                        {getFieldDecorator('softPath', {
+                                        {getFieldDecorator('confPath', {
                                             initialValue: '',
                                         })(<Input placeholder="请输入" allowClear />)}
                                     </Form.Item>
                                 </Col>
                                 <Col span={8}>
                                     <Form.Item label="批次号">
-                                        {getFieldDecorator('p1', {
+                                        {getFieldDecorator('pullNum', {
                                             initialValue: '',
                                         })(<Input placeholder="请输入" allowClear />)}
                                     </Form.Item>
                                 </Col>
                                 <Col span={8}>
                                     <Form.Item label="比对上次文件变化">
-                                        {getFieldDecorator('p2', {
+                                        {getFieldDecorator('lastCompareStatus', {
                                             initialValue: '',
-                                        })(<Input placeholder="请输入" allowClear />)}
+                                        })(<Select placeholder="请选择" allowClear>
+                                            {lastcomparestatusmap.map(obj => (
+                                                <Option key={obj.key} value={obj.dict_code}>
+                                                    {obj.title}
+                                                </Option>
+                                            ))}
+                                        </Select>)}
                                     </Form.Item>
                                 </Col>
                                 <Col span={8}>
                                     <Form.Item label="获取时间">
                                         <Row>
                                             <Col span={11}>
-                                                {getFieldDecorator('startTime', {})(
+                                                {getFieldDecorator('startPullTime', {})(
                                                     <DatePicker
                                                         showTime={{
                                                             hideDisabledOptions: true,
@@ -466,7 +511,7 @@ function softwareConfig(props) {
                                             </Col>
                                             <Col span={2} style={{ textAlign: 'center' }}>-</Col>
                                             <Col span={11}>
-                                                {getFieldDecorator('endTime', {})(
+                                                {getFieldDecorator('endPullTime', {})(
                                                     <DatePicker
                                                         showTime={{
                                                             hideDisabledOptions: true,
@@ -488,23 +533,26 @@ function softwareConfig(props) {
                 </Row>
                 <div style={{ marginBottom: 8 }}>
                     <GetFileModal>
-                    <Button type="primary" style={{ marginRight: 8 }}
+                        <Button type="primary" style={{ marginRight: 8 }}
                         // onClick={() => showgetFileModel()}
-                    >获取文件</Button>
+                        >获取文件</Button>
                     </GetFileModal>
                 </div>
                 <Table
                     columns={columns}
-                    dataSource={data}
+                    dataSource={softconflist.rows}
                     loading={loading}
                     rowKey={(_, index) => index.toString()}
                     pagination={pagination}
                     scroll={{ x: 1600 }}
                 />
                 <HistorVersionDrawer
+                    zonemap={zonemap}
+                    lastcomparestatusmap={lastcomparestatusmap}
                     visible={visible}
                     ChangeVisible={newvalue => setVisible(newvalue)}
                     title={title}
+                    id={confid}
                     destroyOnClose
                 />
             </Card>

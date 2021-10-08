@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-// import { connect } from 'dva';
-import { Table, Drawer, Button, Form, Select, Row, Col, Input, DatePicker } from 'antd';
+import { connect } from 'dva';
+import { Table, Drawer, Button, Form, Select, Row, Col, Input, DatePicker, Tooltip } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
-import DictLower from '@/components/SysDict/DictLower';
+// import DictLower from '@/components/SysDict/DictLower';
 import moment from 'moment';
 
 const { Option } = Select;
@@ -23,39 +23,46 @@ function HistorVersionDrawer(props) {
         visible,
         ChangeVisible,
         title,
-        location,
-        // dispatch,
-        // loading,
+        zonemap,
+        softconfhistorylist,
+        dispatch,
+        lastcomparestatusmap,
+        loading,
+        id,
         form: {
             getFieldDecorator,
-            // getFieldsValue,
+            getFieldsValue,
             resetFields,
-        } } = props;
+        }
+    } = props;
 
     const [expand, setExpand] = useState(false);
-    const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
+    // const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
 
     const hanldleCancel = () => {
         ChangeVisible(false);
     };
 
-    const searchdata = () => {
-        // const values = getFieldsValue();
-        // dispatch({
-        //     type: 'softconf/findsoftConfList',
-        //     payload: {
-        //         values,
-        //         pageNum: page,
-        //         pageSize: size,
-        //         taskId: undefined
-        //     },
-        // });
+    const searchdata = (page, size) => {
+        const values = getFieldsValue();
+        values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
+        values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
+        values.confId = id;
+        dispatch({
+            type: 'softconf/findsoftConfHistoryList',
+            payload: {
+                values,
+                pageNum: page,
+                pageSize: size,
+            },
+        });
     };
 
     useEffect(() => {
-        searchdata(1, 15);
-    }, [location]);
+        if (id && id !== '' && id !== undefined)
+            searchdata(1, 15);
+    }, [id]);
 
     const handleSearch = () => {
         setPageinations({
@@ -92,29 +99,43 @@ function HistorVersionDrawer(props) {
         onShowSizeChange: (page, size) => onShowSizeChange(page, size),
         current: paginations.current,
         pageSize: paginations.pageSize,
-        total: 15,
+        total: softconfhistorylist.total,
         showTotal: total => `总共  ${total}  条记录`,
         onChange: page => changePage(page),
     };
 
+    const handledownFile = (file) => { // 配置文件内容
+        console.log(file, '配置文件内容')
+        // createsoftReport(id).then(res => {
+        //   const filename = `${no}_报告.docx`;
+        //   const blob = new Blob([res]);
+        //   const url = window.URL.createObjectURL(blob);
+        //   const a = document.createElement('a');
+        //   a.href = url;
+        //   a.download = filename;
+        //   a.click();
+        //   window.URL.revokeObjectURL(url);
+        // });
+    }
+
     const columns = [
         {
             title: '批次号',
-            dataIndex: 'pch',
-            key: 'pch',
-            width: 120,
+            dataIndex: 'pullNum',
+            key: 'pullNum',
+            width: 250,
         },
         {
             title: '区域',
             dataIndex: 'hostZoneId',
             key: 'hostZoneId',
-            width: 120,
+            width: 200,
         },
         {
             title: '设备名称',
             dataIndex: 'hostName',
             key: 'hostName',
-            width: 180,
+            width: 200,
         },
         {
             title: '设备IP',
@@ -126,56 +147,89 @@ function HistorVersionDrawer(props) {
             title: '软件名称',
             dataIndex: 'softName',
             key: 'softName',
-            width: 180,
+            width: 200,
         },
         {
             title: '配置文件路径',
-            dataIndex: 'softPort',
-            key: 'softPort',
+            dataIndex: 'confPath',
+            key: 'confPath',
             width: 250,
+            onCell: () => {
+                return {
+                    style: {
+                        maxWidth: 250,
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap',
+                        textOverflow: 'ellipsis',
+                        cursor: 'pointer'
+                    }
+                }
+            },
+            render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
         },
         {
             title: '配置文件名称',
-            dataIndex: 'softPath',
-            key: 'softPath',
+            dataIndex: 'confName',
+            key: 'confName',
             width: 250,
         },
         {
             title: '配置文件大小',
-            dataIndex: 'softVersion',
-            key: 'softVersion',
+            dataIndex: 'confSize',
+            key: 'confSize',
             width: 250,
         },
         {
-            title: '下载配置文件',
-            dataIndex: 'softStatus',
-            key: 'softStatus',
+            title: '配置文件内容',
+            dataIndex: 'confCont',
+            key: 'confCont',
             width: 300,
+            ellipsis: true, // 省略号
+            render: (text, record) => {
+                return (
+                    <a type="link"
+                        onClick={() => handledownFile(record.confCont)}
+                    >{text}</a>
+                );
+            },
         },
         {
             title: '配置文件版本号',
-            dataIndex: 'director',
-            key: 'director',
-            width: 150,
+            dataIndex: 'confVersion',
+            key: 'confVersion',
+            width: 200,
             editable: true
         },
         {
             title: '文件md5',
-            dataIndex: 'm1',
-            key: 'm1',
-            width: 150,
+            dataIndex: 'confMd5',
+            key: 'confMd5',
+            width: 300,
         },
         {
             title: '比对上次文件变化',
-            dataIndex: 'm2',
-            key: 'm2',
-            width: 150,
+            dataIndex: 'lastCompareStatus',
+            key: 'lastCompareStatus',
+            width: 250,
+            render: (text, record) => {
+                const statusMap = new Map([
+                    ['1', '无变化'],
+                    ['2', '新增'],
+                    ['3', '修改'],
+                    ['4', '删除'],
+                ])
+                return (
+                    <span>
+                        {statusMap.get(record.lastCompareStatus)}
+                    </span>
+                );
+            },
         },
         {
             title: '备份时间',
-            dataIndex: 'gettime',
-            key: 'gettime',
-            width: 150,
+            dataIndex: 'pullTime',
+            key: 'pullTime',
+            width: 250,
         }
     ];
 
@@ -195,30 +249,25 @@ function HistorVersionDrawer(props) {
     );
 
     // 数据字典取下拉值
-    const getTypebyId = key => {
-        if (selectdata.ischange) {
-            return selectdata.arr[0].children.filter(item => item.key === key)[0].children;
-        }
-        return [];
-    };
+    // const getTypebyId = key => {
+    //     if (selectdata.ischange) {
+    //         return selectdata.arr[0].children.filter(item => item.key === key)[0].children;
+    //     }
+    //     return [];
+    // };
 
-    const zonemap = getTypebyId('100000000000001004');         // 区域
+    // const zonemap = getTypebyId('100000000000001004');         // 区域
 
     return (
         <Drawer
             title={title}
-            width="65%"
+            width="85%"
             onClose={hanldleCancel}
             visible={visible}
             bodyStyle={{ paddingBottom: 60 }}
             footer={null}
             destroyOnClose
         >
-            <DictLower
-                typeid="100000000000001001"
-                ChangeSelectdata={newvalue => setSelectData(newvalue)}
-                style={{ display: 'none' }}
-            />
             <>
                 <Row gutter={16}>
                     <Form {...formItemLayout} onSubmit={handleSearch}>
@@ -229,7 +278,7 @@ function HistorVersionDrawer(props) {
                                 })(
                                     <Select placeholder="请选择" allowClear>
                                         {zonemap.map(obj => (
-                                            <Option key={obj.key} value={obj.title}>
+                                            <Option key={obj.key} value={obj.dict_code}>
                                                 {obj.title}
                                             </Option>
                                         ))}
@@ -261,37 +310,43 @@ function HistorVersionDrawer(props) {
                                 </Col>
                                 <Col span={8}>
                                     <Form.Item label="配置文件名称">
-                                        {getFieldDecorator('softPort', {
+                                        {getFieldDecorator('confName', {
                                             initialValue: '',
                                         })(<Input placeholder="请输入" allowClear />)}
                                     </Form.Item>
                                 </Col>
                                 <Col span={8}>
                                     <Form.Item label="配置文件路径">
-                                        {getFieldDecorator('softPath', {
+                                        {getFieldDecorator('confPath', {
                                             initialValue: '',
                                         })(<Input placeholder="请输入" allowClear />)}
                                     </Form.Item>
                                 </Col>
                                 <Col span={8}>
                                     <Form.Item label="批次号">
-                                        {getFieldDecorator('p1', {
+                                        {getFieldDecorator('pullNum', {
                                             initialValue: '',
                                         })(<Input placeholder="请输入" allowClear />)}
                                     </Form.Item>
                                 </Col>
                                 <Col span={8}>
                                     <Form.Item label="比对上次文件变化">
-                                        {getFieldDecorator('p2', {
+                                        {getFieldDecorator('lastCompareStatus', {
                                             initialValue: '',
-                                        })(<Input placeholder="请输入" allowClear />)}
+                                        })(<Select placeholder="请选择" allowClear>
+                                            {lastcomparestatusmap.map(obj => (
+                                                <Option key={obj.key} value={obj.dict_code}>
+                                                    {obj.title}
+                                                </Option>
+                                            ))}
+                                        </Select>)}
                                     </Form.Item>
                                 </Col>
                                 <Col span={8}>
                                     <Form.Item label="获取时间">
                                         <Row>
                                             <Col span={11}>
-                                                {getFieldDecorator('startTime', {})(
+                                                {getFieldDecorator('startPullTime', {})(
                                                     <DatePicker
                                                         showTime={{
                                                             hideDisabledOptions: true,
@@ -305,7 +360,7 @@ function HistorVersionDrawer(props) {
                                             </Col>
                                             <Col span={2} style={{ textAlign: 'center' }}>-</Col>
                                             <Col span={11}>
-                                                {getFieldDecorator('endTime', {})(
+                                                {getFieldDecorator('endPullTime', {})(
                                                     <DatePicker
                                                         showTime={{
                                                             hideDisabledOptions: true,
@@ -326,16 +381,21 @@ function HistorVersionDrawer(props) {
                     </Form>
                 </Row>
                 <Table
-                    // dataSource={.rows}
+                    dataSource={softconfhistorylist.rows}
                     columns={columns}
                     rowKey={record => record.id}
                     scroll={{ x: 1300 }}
                     paginations={pagination}
-                    // loading={loading}
+                    loading={loading}
                 />
             </>
         </Drawer>
     );
 }
 
-export default Form.create({})(HistorVersionDrawer);
+export default Form.create({})(
+    connect(({ softconf, loading }) => ({
+        softconfhistorylist: softconf.softconfhistorylist,
+        loading: loading.models.softconf,
+    }))(HistorVersionDrawer),
+);

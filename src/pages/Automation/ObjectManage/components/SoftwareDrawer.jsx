@@ -41,12 +41,14 @@ function SoftwareDrawer(props) {
         startupScriptArgs, 
         stopScriptArgs,
         monitor,
-        patrolInspection
+        patrolInspection,
+        hostId
     } = props.record;
 
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
     const [findhostname, setFindhostName] = useState([]); // 区域查询主机名称
     const [findhostip, setFindhostIp] = useState([]); // 主机名称查询主机IP
+    const [getId, setId] = useState([]);
 
     const hanldleCancel = () => {
         ChangeVisible(false);
@@ -74,14 +76,14 @@ function SoftwareDrawer(props) {
         });
     };
 
-    // const handleChange1 = v => {
-    //     dispatch({
-    //         type: 'softwaremanage/tofindCascade',
-    //         payload: { hostZoneId: v },
-    //     }).then(res => {
-    //         setFindhostIp(res.data);
-    //     });
-    // };
+    const handleChangegetId = v => {
+        dispatch({
+            type: 'softwaremanage/tofindCascade',
+            payload: { hostName: v },
+        }).then(res => {
+            setId(res.data[0]);
+        });
+    };
 
     // 数据字典取下拉值
     const getTypebyId = key => {
@@ -136,7 +138,7 @@ function SoftwareDrawer(props) {
                             },
                         ],
                         initialValue: hostName,
-                    })(<Select placeholder="请选择" allowClear>
+                    })(<Select placeholder="请选择" allowClear onChange={item => handleChangegetId(item)}>
                         {findhostname !== undefined && findhostname.map(obj => (
                             <Option key={obj.Id} value={obj.hostName}>
                                 {obj.hostName}
@@ -144,14 +146,14 @@ function SoftwareDrawer(props) {
                         ))}
                     </Select>)}
                 </Form.Item>
-                <Form.Item label="设备IP">
+                <Form.Item label="设备IP"  style={{display: 'none'}}>
                     {getFieldDecorator('hostIp', {
-                        rules: [
-                            {
-                                required,
-                                message: '请输入',
-                            },
-                        ],
+                        // rules: [
+                        //     {
+                        //         required,
+                        //         message: '请输入',
+                        //     },
+                        // ],
                         initialValue: hostIp,
                     })(<Select placeholder="请选择" allowClear>
                         {findhostip !== undefined && findhostip.map(obj => (
@@ -160,6 +162,17 @@ function SoftwareDrawer(props) {
                             </Option>
                         ))}
                     </Select>)}
+                </Form.Item>
+                <Form.Item label="设备ID" style={{display: 'none'}}>
+                    {getFieldDecorator('hostId', {
+                        // rules: [
+                        //     {
+                        //         required,
+                        //         message: '请输入',
+                        //     },
+                        // ],
+                        initialValue: getId && getId.Id ? getId.Id : hostId,
+                    })(<Input placeholder="请输入" />)}
                 </Form.Item>
                 <Form.Item label="软件名称">
                     {getFieldDecorator('softName', {
@@ -343,6 +356,7 @@ SoftwareDrawer.defaultProps = {
         stopScriptArgs: '',
         patrolInspection: '',
         monitor: '',
+        hostId: '',
     },
 };
 

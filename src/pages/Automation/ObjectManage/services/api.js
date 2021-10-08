@@ -124,7 +124,7 @@ export async function getfindCascade(params) {
 }
 // 获取软件列表
 export async function SoftList(params, pageNum, pageSize) {
-  return request(`/assets/soft/listPage/${pageNum}/${pageSize}`, {
+  return request(`/assets/soft/listPageTest/${pageNum}/${pageSize}`, {
     method: 'POST',
     data: JSON.stringify(params),
     requestType: 'formjosn',
@@ -291,5 +291,14 @@ export async function pullSoftConfigFile(softIds) {
   return request(`/auto/soft/conf/pullSoftConfigFile`, {
     method: 'POST',
     data: {softIds},
+  });
+}
+
+// /assets/softConfHi/listPageHi/{pageNum}/{pageSize} 软件历史配置
+export async function softConfHistoryList(params, pageNum, pageSize) {
+  return request(`/assets/softConf/listPage/${pageNum}/${pageSize}`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
   });
 }
