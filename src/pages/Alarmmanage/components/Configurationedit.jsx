@@ -12,7 +12,8 @@ import {
 
 let showAlarmDialog = false;
 let showTerminalDialog = false;
-let title = '';
+let newtitle = '';
+let tableSign = '';
 let sign = false;
 // 克隆子元素按钮，并添加事件
 const withClick = (element, handleClick = () => { }) => {
@@ -30,6 +31,8 @@ function MonitorConfiguration(props) {
   // listCode = code;
   const [state, setState] = useState(false);
   const [data, setData] = useState([]);
+  const [tableSign,setTableSign] = useState([]);
+  const [column,setColumn] = useState('');
 
   const columns = [
     {
@@ -147,7 +150,84 @@ function MonitorConfiguration(props) {
           )
       }
     },
-  ]
+  ];
+
+  const dlcolumns = [
+    {
+      title: '登录地址',
+      dataIndex: 'gddwbm',
+      key: 'gddwbm',
+      render: (text, record, index) => {
+        return <Input
+          defaultValue={text}
+          onChange={e => handleFieldChange(e.target.value, 'gddwbm', record.key)}
+        />
+      }
+    },
+    {
+      title: '失败重试次数',
+      dataIndex: 'tryTimes',
+      key: 'tryTimes',
+      render: (text, record, index) => {
+        return <Input
+          type='number'
+          defaultValue={text}
+          onChange={e => handleFieldChange(e.target.value, 'tryTimes', record.key)}
+        />
+      }
+    },
+    {
+      title: '登录账号',
+      dataIndex: 'gddwmc',
+      key: 'gddwmc',
+      render: (text, record, index) => {
+        return <Input
+          // type='number'
+          defaultValue={text}
+          onChange={e => handleFieldChange(e.target.value, 'gddwmc', record.key)}
+        />
+      }
+    },
+    {
+      title: '密码',
+      dataIndex: 'pzz',
+      key: 'pzz',
+      render: (text, record, index) => {
+        return <Input
+          type='number'
+          defaultValue={text}
+          onChange={e => handleFieldChange(e.target.value, 'pzz', record.key)}
+        />
+      }
+    },
+    {
+      title: '用户名',
+      dataIndex: 'ms',
+      key: 'ms',
+      render: (text, record, index) => {
+        return <Input
+          defaultValue={text}
+          onChange={e => handleFieldChange(e.target.value, 'ms', record.key)}
+        />
+      }
+    },
+    {
+      title: '使用状态',
+      dataIndex: 'sybz',
+      key: 'sybz',
+      width:200,
+      render: (text, record) => {
+          return (
+            <Radio.Group 
+            defaultValue={record.sybz} 
+            onChange={e => handleFieldChange(e.target.value, 'sybz', record.key)}>
+              <Radio value='Y'>启用</Radio>
+              <Radio value='N'>停用</Radio>
+            </Radio.Group>
+          )
+      }
+    },
+  ];
 
   // 获取行
   const getRowByKey = (key, newData) => {
@@ -160,6 +240,7 @@ function MonitorConfiguration(props) {
 
   // 更新表单信息
   const handleFieldChange = (e, fieldName, key) => {
+    console.log('key: ', key);
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData);
     console.log('target: ', target);
@@ -168,12 +249,13 @@ function MonitorConfiguration(props) {
       setData(newData);
     }
   };
+  console.log(data,'data')
 
   // 提交保存数据
   const savedata = () => {
     return dispatch({
       type: 'monitorconfiguration/batchSave',
-      payload: {data,showAlarmDialog,showTerminalDialog}
+      payload: {data,tableSign}
     }).then(res => {
       if (res.code === 200) {
         message.info(res.msg);
@@ -186,23 +268,40 @@ function MonitorConfiguration(props) {
 
 
   const handleopenClick = () => {
-   
     const alarm = ['cjwzl', 'zdfgl', 'zdcbl', 'gkcj', 'sdl', 'gdl', 'cldzb', 'kafka', 'zdzxl', 'datb', 'gsdl'];
     const term = ['sjzc_dy', 'dazc', 'sjzc_fk', 'sjzc_cz'];
     if (alarm.indexOf(code) !== -1) {
       // 告警
-      showAlarmDialog = true;
-      title = '采集完整率配置';
-      sign = true;
+      // showAlarmDialog = true;
+      newtitle='采集完整率配置';
+      setTableSign('采集完整率配置')
+      setColumn(columns)
+      // sign = true;
     } else if (term.indexOf(code) !== -1) {
       // 终端配置
-      showTerminalDialog = true;
-      title = '档案参数下发召测配置';
-      sign = true;
+      // showTerminalDialog = true;
+      newtitle='档案参数下发召测配置';
+      setTableSign('档案参数下发召测配置')
+      setColumn(zdcolumns)
+      // sign = true;
     }
+
+    if(code === 'packet') {
+      // showTerminalDialog = true;
+      newtitle='上下行报文监测告警配置';
+      setTableSign('上下行报文监测告警配置')
+      // sign = true;
+    }
+
+    if(code === 'dljc') {
+      newtitle='登录检测配置';
+      setTableSign('登录检测配置')
+      setColumn(dlcolumns)
+    }
+
     return dispatch({
       type: 'monitorconfiguration/detailConfigura',
-      payload: { code,showAlarmDialog,showTerminalDialog }
+      payload: { code,newtitle }
     }).then(res => {
       if (res.code === 200) {
         const newarr = (res.data).map((item, index) => {
@@ -216,45 +315,37 @@ function MonitorConfiguration(props) {
 
   const hanldleCancel = () => {
     setState(false);
-    showAlarmDialog = false;
-    showTerminalDialog = false;
+    newtitle = ''
   };
 
-  useEffect (() => {
-    sign = false;
-  },[])
+  // useEffect (() => {
+  //   sign = false;
+  // },[])
   
   return (
     <>
       {withClick(children, handleopenClick)}
       <Drawer
-        title={title}
+        title={tableSign}
         visible={state}
         // width={720}
-        width={showAlarmDialog?1000:showTerminalDialog?1500:720}
+        width={1500}
         centered='true'
         maskClosable='true'
         onClose={hanldleCancel}
       >
         {
-          showAlarmDialog === true && sign &&(
-            <Table
-              columns={columns}
-              dataSource={data}
-            // rowKey={record => record.id}
-            />
+          loading === false && (
+            <>
+                <Table
+                  columns={column}
+                  dataSource={data}
+                // rowKey={record => record.id}
+                />
+            </>
           )
         }
-
-        {
-          showTerminalDialog === true  &&  sign &&(
-            <Table
-              columns={zdcolumns}
-              dataSource={data}
-            // rowKey={record => record.id}
-            />
-          )
-        }
+       
 
         <div
           style={{

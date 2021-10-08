@@ -20,7 +20,7 @@ export async function saveConfiguration(params) {
 //  批量保存计量业务监测配置
 export async function batchsaveConfiguration(params) {
   //  告警保存
-  if(params.showAlarmDialog) {
+  if(params.tableSign === '采集完整率配置') {
     return request(`/warn/biz/config/saveAlarmBatch`,{
       method:'POST',
       body:JSON.stringify(params.data),
@@ -28,7 +28,7 @@ export async function batchsaveConfiguration(params) {
     });
   }
 //  终端保存
-  if(params.showTerminalDialog) {
+  if(params.tableSign === '档案参数下发召测配置' || params.tableSign === '登录检测配置') {
     return request(`/warn/biz/config/saveTermConfigBatch`,{
       method:'POST',
       body:JSON.stringify(params.data),
@@ -40,13 +40,19 @@ export async function batchsaveConfiguration(params) {
 }
 
 // 计量业务监测配置详情
-export async function configurationDetail(code,showAlarmDialog,showTerminalDialog) {
-  if(showAlarmDialog) {
+export async function configurationDetail(code,title) {
+  console.log('code: ', code);
+  if(title === '采集完整率配置') {
     return request(`/warn/biz/config/alarmList?code=${code}`);
   }
-  if(showTerminalDialog) {
+  if(title === '档案参数下发召测配置') {
     return request(`/warn/biz/config/terminalList?code=${code}`);
   }
+
+  if(title === '登录检测配置') {
+    return request(`/warn/biz/config/terminalList?code=${code}`);
+  }
+
   return [];
 }
 

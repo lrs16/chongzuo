@@ -25,8 +25,8 @@ export default {
       return yield call(saveConfiguration, payload);
     },
     // 表格的详情接口
-    *detailConfigura({ payload:{code,showAlarmDialog,showTerminalDialog} }, { call, put }) {
-      return yield call(configurationDetail, code,showAlarmDialog,showTerminalDialog);
+    *detailConfigura({ payload:{code,newtitle} }, { call, put }) {
+      return yield call(configurationDetail, code,newtitle);
     },
     //  详情页表格批量保存
     *batchSave({ payload }, { call, put }) {

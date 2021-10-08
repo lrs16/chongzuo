@@ -3,8 +3,19 @@ import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
 import {
-  Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Popover, Checkbox, Icon,
-  // message 
+  Card,
+  Row,
+  Col,
+  Form,
+  Input,
+  Select,
+  Button,
+  DatePicker,
+  Table,
+  Popover,
+  Checkbox,
+  Icon,
+  message
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 // import SysDict from '@/components/SysDict';
@@ -33,6 +44,7 @@ const allstatusmap6 = [
 ];
 
 let shift;
+let acceptshift;
 
 function MydutyHandover(props) {
   const pagetitle = props.route.name;
@@ -46,6 +58,7 @@ function MydutyHandover(props) {
     },
     logbookSearcharr,
     shiftGrouparr,
+    shiftSearcharr,
     dispatch,
     location,
     loading,
@@ -57,6 +70,7 @@ function MydutyHandover(props) {
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [tabrecord, setTabRecord] = useState({});
+  const [newtitle, setNewtitle] = useState('')
   const [time, setTime] = useState({
     startValue: null,
     endValue: null,
@@ -113,13 +127,18 @@ function MydutyHandover(props) {
     }
   };
 
+  const getclassSettinglist = () => {
+    dispatch({
+      type: 'shiftsandholidays/fetchshiftSearch',
+    })
+  }
+
   const handleSearch = () => {
     setPaginations({
       ...paginations,
       current: 1,
     });
     const values = getFieldsValue();
-    console.log('values: ', values);
     // const obj = values;
     searchdata(values, 1, paginations.pageSize);
   };
@@ -131,7 +150,11 @@ function MydutyHandover(props) {
       state: {}
     })
     resetFields();
-    searchdata({}, 1, 15)
+    searchdata({}, 1, 15);
+    shift = [];
+    acceptshift = [];
+    setNewtitle('')
+    getclassSettinglist()
   };
 
   // 查询
@@ -302,7 +325,44 @@ function MydutyHandover(props) {
     return item.title
   });
 
-  if (shiftGrouparr && (shiftGrouparr.length) > 0) {
+  if (shiftSearcharr && (shiftSearcharr.records) && shiftSearcharr.records.length > 0) {
+    shift = (shiftSearcharr.records).map(item => {
+      return {
+        beginTime: item.beginTime,
+        endTime: item.endTime,
+        groupName: item.groupName,
+        groupId: item.groupId,
+        shiftName: item.shiftName,
+        id: item.id,
+      }
+    })
+
+    acceptshift = (shiftSearcharr.records).map(item => {
+      return {
+        beginTime: item.beginTime,
+        endTime: item.endTime,
+        groupName: item.groupName,
+        groupId: item.groupId,
+        shiftName: item.shiftName,
+        id: item.id,
+      }
+    })
+  }
+
+  if (loading === false && newtitle === 'heirGroupName' && shiftGrouparr && (shiftGrouparr.length) > 0) {
+    acceptshift = (shiftGrouparr).map(item => {
+      return {
+        beginTime: item.beginTime,
+        endTime: item.endTime,
+        groupName: item.groupName,
+        groupId: item.groupId,
+        shiftName: item.shiftName,
+        id: item.id,
+      }
+    })
+  }
+
+  if (loading === false && newtitle === 'groupName' && shiftGrouparr && (shiftGrouparr.length) > 0) {
     shift = (shiftGrouparr).map(item => {
       return {
         beginTime: item.beginTime,
@@ -314,6 +374,9 @@ function MydutyHandover(props) {
       }
     })
   }
+
+
+
 
   const onShowSizeChange = (page, pageSize) => {
     const values = getFieldsValue();
@@ -421,13 +484,24 @@ function MydutyHandover(props) {
         dataIndex: val.key,
         width: 150
       };
-      if (key === 0) {
+      if (key === 0 || val.title === '值班交接编号') {
         obj.render = (text, record) => {
           return (
-            <a onClick={() => todetail(record)}>{text}</a>
+            <a onClick={() => todetail(record, 'search')}>{text}</a>
           )
         }
-        obj.fixed = 'left'
+        obj.fixed = 'left';
+        obj.width = 350;
+      }
+      if (val.title === '值班时间') {
+        obj.render = (text, record) => {
+          obj.width = 350;
+          return (
+            <>
+              <span>{record.dutyBeginTime}</span> - <span>{record.dutyEndTime}</span>
+            </>
+          )
+        }
       }
       initialColumns.push(obj);
       setColumns(initialColumns);
@@ -452,7 +526,6 @@ function MydutyHandover(props) {
   };
 
   const shiftGroup = (values) => {
-    console.log('values: ', values);
     dispatch({
       type: 'shifthandover/fetchshiftGroup',
       payload: { groupId: values }
@@ -463,8 +536,45 @@ function MydutyHandover(props) {
     const { values } = option.props
     switch (params) {
       case 'groupName':
-        shiftGroup(values)
+        dispatch({
+          type: 'shiftsandholidays/cleardata'
+        })
+        setFieldsValue({ shiftName: '' })
+        shiftGroup(values);
+        setNewtitle('groupName')
+        shift = []
         break;
+      case 'heirGroupName':
+        dispatch({
+          type: 'shiftsandholidays/cleardata'
+        })
+        setNewtitle('heirGroupName')
+        setFieldsValue({ heirShiftName: '' })
+        shiftGroup(values);
+        acceptshift = []
+        break;
+      case 'heirShiftName':
+      default:
+        break;
+    }
+  };
+
+  const handleFocus = params => {
+    console.log('params: ', params);
+    switch (params) {
+      case 'shiftName':
+        console.log(1, '1')
+        if (loading !== true && shift && shift.length === 0) {
+          message.error('请选择有效的值班班组');
+        }
+        break;
+      case 'heirShiftName':
+        console.log(2, '2')
+        if (loading !== true && acceptshift && acceptshift.length === 0) {
+          message.error('请选择有效的接班班组');
+        } 
+        break;
+
       default:
         break;
     }
@@ -472,7 +582,7 @@ function MydutyHandover(props) {
 
   useEffect(() => {
     setColumns(initialColumns);
-
+    getclassSettinglist()
   }, []);
 
   const handleSuccession = () => {
@@ -772,8 +882,8 @@ function MydutyHandover(props) {
                         initialValue: cacheinfo.groupName,
                       })(
                         <Select
-                          placeholder="请选择"
                           allowClear={false}
+                          placeholder="请选择"
                           getPopupContainer={e => e.parentNode}
                           onChange={(value, option) => handleChange(value, option, 'groupName')}
                         >
@@ -799,6 +909,7 @@ function MydutyHandover(props) {
                           placeholder="请选择"
                           allowClear
                           getPopupContainer={e => e.parentNode}
+                          onFocus={() => handleFocus('shiftName')}
                         >
                           {(shift || []).map((obj) => [
                             <Option
@@ -868,13 +979,14 @@ function MydutyHandover(props) {
                       })(
                         <Select
                           placeholder="请选择"
-                          allowClear
+                          allowClear={false}
                           getPopupContainer={e => e.parentNode}
+                          onChange={(value, option) => handleChange(value, option, 'heirGroupName')}
                         >
                           {teamname.map(obj => [
                             <Option
                               key={obj.title}
-                              values={obj.title}
+                              values={obj.key}
                             >
                               {obj.title}
                             </Option>
@@ -893,8 +1005,9 @@ function MydutyHandover(props) {
                           placeholder="请选择"
                           allowClear
                           getPopupContainer={e => e.parentNode}
+                          onFocus={() => handleFocus('heirShiftName')}
                         >
-                          {(shift || []).map((obj) => [
+                          {(acceptshift || []).map((obj) => [
                             <Option
                               key={obj.shiftName}
                               value={obj.shiftName}
@@ -1078,8 +1191,9 @@ function MydutyHandover(props) {
 }
 
 export default Form.create({})(
-  connect(({ shifthandover, loading }) => ({
+  connect(({ shifthandover, shiftsandholidays, loading }) => ({
     logbookSearcharr: shifthandover.logbookSearcharr,
+    shiftSearcharr: shiftsandholidays.shiftSearcharr,
     shiftGrouparr: shifthandover.shiftGrouparr,
     loading: loading.models.shifthandover
   }))(MydutyHandover)

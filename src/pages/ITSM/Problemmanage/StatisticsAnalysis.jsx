@@ -806,9 +806,9 @@ function StatisticsAnalysis(props) {
     dispatch({
       type: 'qualityassessment/fetchstatsRatio',
       payload: {
-        beginTime: '2021-03-01',
-        endTime: '2021-09-01',
-        type: 'LIST',
+        beginTime:'2021-03-01',
+        endTime:'2021-09-01',
+        type:'LIST',
       },
     });
   };
@@ -817,8 +817,8 @@ function StatisticsAnalysis(props) {
     dispatch({
       type: 'qualityassessment/fetchstatsSum',
       payload: {
-        beginTime: '2021-03-01',
-        endTime: '2021-09-01',
+        beginTime:'2021-03-01',
+        endTime:'2021-09-01',
       },
     });
   };

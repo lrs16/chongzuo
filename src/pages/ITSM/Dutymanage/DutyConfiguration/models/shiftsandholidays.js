@@ -37,6 +37,14 @@ export default {
         payload:response
       })
     },
+    // 清楚班次列表
+    *cleardata({ payload }, { call, put }) {
+      console.log(11);
+      yield put ({
+        type:'clearData',
+        payload:[]
+      })
+    },
 
     //  班次删除
     *fetchshiftDel({payload},{ call, put }) {
@@ -120,6 +128,14 @@ export default {
       return {
         ...state,
         settingDetails:[]
+      }
+    },
+
+    clearData(state,action) {
+      console.log(44)
+      return {
+        ...state,
+        shiftSearcharr:[]
       }
     }
 
