@@ -93,8 +93,6 @@ function Statistics(props) {
     }
   }, [values])
 
-  console.log(bizchecksum)
-
   return (
     <div>
       <SelectTime ChangeDate={(v) => setValues(v)} />
@@ -247,7 +245,7 @@ function Statistics(props) {
                 data={typeanalysis.pieChart || []}
                 height={300}
                 totaltitle='发布总次数'
-                total={piesum(unitanalysis.pieChart)}
+                total={piesum(typeanalysis.pieChart)}
                 padding={[10, 30, 30, 30]}
                 onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
               />
@@ -278,7 +276,7 @@ function Statistics(props) {
                 data={orederanalysis}
                 height={300}
                 totaltitle=''
-                total={piesum(unitanalysis.pieChart)}
+                total={piesum(orederanalysis)}
                 padding={[10, 30, 30, 30]}
                 onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
               />
@@ -361,7 +359,7 @@ function Statistics(props) {
                 data={allability}
                 height={300}
                 totaltitle=''
-                total={piesum(unitanalysis.pieChart)}
+                total={piesum(allability)}
                 padding={[10, 30, 30, 30]}
                 onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
               />
@@ -380,7 +378,7 @@ function Statistics(props) {
                 data={frontability}
                 height={300}
                 totaltitle=''
-                total={piesum(unitanalysis.pieChart)}
+                total={piesum(frontability)}
                 padding={[10, 30, 30, 30]}
                 onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
               />
@@ -399,7 +397,7 @@ function Statistics(props) {
                 data={backability}
                 height={300}
                 totaltitle=''
-                total={piesum(unitanalysis.pieChart)}
+                total={piesum(backability)}
                 padding={[10, 30, 30, 30]}
                 onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
               />
