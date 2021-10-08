@@ -1,7 +1,6 @@
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react';
 import { Chart, Geom, Axis, Coord, Label, Tooltip, Legend } from 'bizcharts';
-import DataSet from '@antv/data-set';
 
 class ColumnarY extends React.Component {
   render() {

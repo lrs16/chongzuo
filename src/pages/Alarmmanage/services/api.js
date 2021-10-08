@@ -129,3 +129,20 @@ export async function updateConfigure(params) {
     requestType: 'form',
   });
 }
+
+// 告警配置 四大区主机告警 获得应用程序监控阀值
+export async function getAppMonitorData() {
+  return request(`/auto/soft/app/getAppMonitorData`, {
+    method: 'GET',
+  });
+}
+
+
+// 告警配置 四大区主机告警 设置应用程序监控阀值
+export async function setAppMonitorConf(params) {
+  return request(`/auto/soft/app/setAppMonitorConf`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}

@@ -1930,7 +1930,7 @@ export default {
                           path: '/alarmmanage/alarmsetting/host',
                           name: '四大区主机告警配置',
                           icon: 'interaction',
-                          component: './Alarmmanage/AlarmSetting'
+                          component: './Alarmmanage/HostSetting'
                         },
                         {
                           path: '/alarmmanage/alarmsetting/other',
