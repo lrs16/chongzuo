@@ -1,31 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Icon,
-  Card,
-  Tag,
-  DatePicker,
-  Avatar,
-  Row,
-  Col,
-  Button,
-  Input,
-  Select
-} from 'antd';
 import { connect } from 'dva';
-import moment from 'moment';
-import StatisticsCard from '@/components/StatisticsCard';
+import { Card, Row, Col, Avatar, Select, Input } from 'antd';
 import { ChartCard } from '@/components/Charts';
-import Barchart from '@/components/CustomizeCharts/Barchart';
+import StatisticsCard from '@/components/StatisticsCard';
+import SelectTime from '@/components/SelectTime/SelectTime';
+import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
+import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
+import Cylinder from '@/components/CustomizeCharts/Cylinder';
+import ColumnarY from '@/components/CustomizeCharts/ColumnarY';
+import styles from '../Problemmanage/index.less';
 import Donut from '@/components/CustomizeCharts/Donut';
-import OrdinaryLine from '@/components/CustomizeCharts/OrdinaryLine';
-import StatisticsModal from './components/StatisticsModal';
-import styles from './index.less';
-// import StatisticsModal from './components/StatisticsModal';
+import Barchart from '@/components/CustomizeCharts/Barchart';
 
-const { CheckableTag } = Tag;
 const { Option } = Select;
-// 饼图数据
-const Donutdata = [
+const cols = {
+  rate: {
+    // alias: '%',
+    // tickCount: 10,
+  },
+};
+const Donutdatatwo = [
   {
     type: '事件单',
     count: 600,
@@ -47,536 +41,1287 @@ const Donutdata = [
     count: 150,
   },
 ];
-const tagsFromServer = ['按日', '按月'];
+
+const Issuedscale = {
+  total: {
+    type: 'linear',
+    alias: '返回结果数量',
+    min: 0,
+    tickInterval: 5000,
+  },
+};
+
+// const Donutdata = [
+//   {
+//     "type": "业务指标",
+//     "value": 2
+//   },
+//   {
+//     "type": "终端在线和入库",
+//     "value": 1
+//   },
+//   {
+//     "type": "KAFKA消费",
+//     "value": 1
+//   },
+//   {
+//     "type": "接口数据核查",
+//     "value": 1
+//   },
+//   {
+//     "type": "主站系统运行",
+//     "value": 1
+//   }
+// ];
+
+const Smoothdata = [
+  {
+    date: '2021-09-01',
+    name: '终端在线和入库',
+    value: 0,
+  },
+  {
+    date: '2021-09-02',
+    name: '终端在线和入库',
+    value: 0,
+  },
+  {
+    date: '2021-09-03',
+    name: '终端在线和入库',
+    value: 0,
+  },
+  {
+    date: '2021-09-04',
+    name: '终端在线和入库',
+    value: 0,
+  },
+  {
+    date: '2021-09-05',
+    name: '终端在线和入库',
+    value: 0,
+  },
+  {
+    date: '2021-09-06',
+    name: '终端在线和入库',
+    value: 0,
+  },
+  {
+    date: '2021-09-07',
+    name: '终端在线和入库',
+    value: 0,
+  },
+  {
+    date: '2021-09-08',
+    name: '终端在线和入库',
+    value: 0,
+  },
+  {
+    date: '2021-09-09',
+    name: '终端在线和入库',
+    value: 0,
+  },
+  {
+    date: '2021-09-10',
+    name: '终端在线和入库',
+    value: 0,
+  },
+  {
+    date: '2021-09-11',
+    name: '终端在线和入库',
+    value: 0,
+  },
+  {
+    date: '2021-09-12',
+    name: '终端在线和入库',
+    value: 0,
+  },
+  {
+    date: '2021-09-13',
+    name: '终端在线和入库',
+    value: 0,
+  },
+  {
+    date: '2021-09-14',
+    name: '终端在线和入库',
+    value: 1,
+  },
+  {
+    date: '2021-09-15',
+    name: '终端在线和入库',
+    value: 0,
+  },
+  {
+    date: '2021-09-16',
+    name: '终端在线和入库',
+    value: 0,
+  },
+  {
+    date: '2021-09-17',
+    name: '终端在线和入库',
+    value: 0,
+  },
+  {
+    date: '2021-09-18',
+    name: '终端在线和入库',
+    value: 0,
+  },
+  {
+    date: '2021-09-19',
+    name: '终端在线和入库',
+    value: 0,
+  },
+  {
+    date: '2021-09-20',
+    name: '终端在线和入库',
+    value: 0,
+  },
+  {
+    date: '2021-09-21',
+    name: '终端在线和入库',
+    value: 0,
+  },
+  {
+    date: '2021-09-22',
+    name: '终端在线和入库',
+    value: 0,
+  },
+  {
+    date: '2021-09-23',
+    name: '终端在线和入库',
+    value: 0,
+  },
+  {
+    date: '2021-09-24',
+    name: '终端在线和入库',
+    value: 0,
+  },
+  {
+    date: '2021-09-01',
+    name: '业务指标',
+    value: 0,
+  },
+  {
+    date: '2021-09-02',
+    name: '业务指标',
+    value: 0,
+  },
+  {
+    date: '2021-09-03',
+    name: '业务指标',
+    value: 0,
+  },
+  {
+    date: '2021-09-04',
+    name: '业务指标',
+    value: 0,
+  },
+  {
+    date: '2021-09-05',
+    name: '业务指标',
+    value: 0,
+  },
+  {
+    date: '2021-09-06',
+    name: '业务指标',
+    value: 0,
+  },
+  {
+    date: '2021-09-07',
+    name: '业务指标',
+    value: 0,
+  },
+  {
+    date: '2021-09-08',
+    name: '业务指标',
+    value: 0,
+  },
+  {
+    date: '2021-09-09',
+    name: '业务指标',
+    value: 0,
+  },
+  {
+    date: '2021-09-10',
+    name: '业务指标',
+    value: 0,
+  },
+  {
+    date: '2021-09-11',
+    name: '业务指标',
+    value: 0,
+  },
+  {
+    date: '2021-09-12',
+    name: '业务指标',
+    value: 0,
+  },
+  {
+    date: '2021-09-13',
+    name: '业务指标',
+    value: 1,
+  },
+  {
+    date: '2021-09-14',
+    name: '业务指标',
+    value: 0,
+  },
+  {
+    date: '2021-09-15',
+    name: '业务指标',
+    value: 1,
+  },
+  {
+    date: '2021-09-16',
+    name: '业务指标',
+    value: 0,
+  },
+  {
+    date: '2021-09-17',
+    name: '业务指标',
+    value: 0,
+  },
+  {
+    date: '2021-09-18',
+    name: '业务指标',
+    value: 0,
+  },
+  {
+    date: '2021-09-19',
+    name: '业务指标',
+    value: 0,
+  },
+  {
+    date: '2021-09-20',
+    name: '业务指标',
+    value: 0,
+  },
+  {
+    date: '2021-09-21',
+    name: '业务指标',
+    value: 0,
+  },
+  {
+    date: '2021-09-22',
+    name: '业务指标',
+    value: 0,
+  },
+  {
+    date: '2021-09-23',
+    name: '业务指标',
+    value: 0,
+  },
+  {
+    date: '2021-09-24',
+    name: '业务指标',
+    value: 0,
+  },
+  {
+    date: '2021-09-01',
+    name: '接口数据核查',
+    value: 0,
+  },
+  {
+    date: '2021-09-02',
+    name: '接口数据核查',
+    value: 0,
+  },
+  {
+    date: '2021-09-03',
+    name: '接口数据核查',
+    value: 0,
+  },
+  {
+    date: '2021-09-04',
+    name: '接口数据核查',
+    value: 0,
+  },
+  {
+    date: '2021-09-05',
+    name: '接口数据核查',
+    value: 0,
+  },
+  {
+    date: '2021-09-06',
+    name: '接口数据核查',
+    value: 0,
+  },
+  {
+    date: '2021-09-07',
+    name: '接口数据核查',
+    value: 0,
+  },
+  {
+    date: '2021-09-08',
+    name: '接口数据核查',
+    value: 0,
+  },
+  {
+    date: '2021-09-09',
+    name: '接口数据核查',
+    value: 0,
+  },
+  {
+    date: '2021-09-10',
+    name: '接口数据核查',
+    value: 0,
+  },
+  {
+    date: '2021-09-11',
+    name: '接口数据核查',
+    value: 0,
+  },
+  {
+    date: '2021-09-12',
+    name: '接口数据核查',
+    value: 0,
+  },
+  {
+    date: '2021-09-13',
+    name: '接口数据核查',
+    value: 0,
+  },
+  {
+    date: '2021-09-14',
+    name: '接口数据核查',
+    value: 0,
+  },
+  {
+    date: '2021-09-15',
+    name: '接口数据核查',
+    value: 0,
+  },
+  {
+    date: '2021-09-16',
+    name: '接口数据核查',
+    value: 0,
+  },
+  {
+    date: '2021-09-17',
+    name: '接口数据核查',
+    value: 0,
+  },
+  {
+    date: '2021-09-18',
+    name: '接口数据核查',
+    value: 0,
+  },
+  {
+    date: '2021-09-19',
+    name: '接口数据核查',
+    value: 0,
+  },
+  {
+    date: '2021-09-20',
+    name: '接口数据核查',
+    value: 0,
+  },
+  {
+    date: '2021-09-21',
+    name: '接口数据核查',
+    value: 0,
+  },
+  {
+    date: '2021-09-22',
+    name: '接口数据核查',
+    value: 1,
+  },
+  {
+    date: '2021-09-23',
+    name: '接口数据核查',
+    value: 0,
+  },
+  {
+    date: '2021-09-24',
+    name: '接口数据核查',
+    value: 0,
+  },
+  {
+    date: '2021-09-01',
+    name: '主站系统运行',
+    value: 0,
+  },
+  {
+    date: '2021-09-02',
+    name: '主站系统运行',
+    value: 0,
+  },
+  {
+    date: '2021-09-03',
+    name: '主站系统运行',
+    value: 0,
+  },
+  {
+    date: '2021-09-04',
+    name: '主站系统运行',
+    value: 0,
+  },
+  {
+    date: '2021-09-05',
+    name: '主站系统运行',
+    value: 0,
+  },
+  {
+    date: '2021-09-06',
+    name: '主站系统运行',
+    value: 0,
+  },
+  {
+    date: '2021-09-07',
+    name: '主站系统运行',
+    value: 0,
+  },
+  {
+    date: '2021-09-08',
+    name: '主站系统运行',
+    value: 0,
+  },
+  {
+    date: '2021-09-09',
+    name: '主站系统运行',
+    value: 0,
+  },
+  {
+    date: '2021-09-10',
+    name: '主站系统运行',
+    value: 0,
+  },
+  {
+    date: '2021-09-11',
+    name: '主站系统运行',
+    value: 0,
+  },
+  {
+    date: '2021-09-12',
+    name: '主站系统运行',
+    value: 0,
+  },
+  {
+    date: '2021-09-13',
+    name: '主站系统运行',
+    value: 0,
+  },
+  {
+    date: '2021-09-14',
+    name: '主站系统运行',
+    value: 0,
+  },
+  {
+    date: '2021-09-15',
+    name: '主站系统运行',
+    value: 0,
+  },
+  {
+    date: '2021-09-16',
+    name: '主站系统运行',
+    value: 0,
+  },
+  {
+    date: '2021-09-17',
+    name: '主站系统运行',
+    value: 0,
+  },
+  {
+    date: '2021-09-18',
+    name: '主站系统运行',
+    value: 0,
+  },
+  {
+    date: '2021-09-19',
+    name: '主站系统运行',
+    value: 0,
+  },
+  {
+    date: '2021-09-20',
+    name: '主站系统运行',
+    value: 0,
+  },
+  {
+    date: '2021-09-21',
+    name: '主站系统运行',
+    value: 1,
+  },
+  {
+    date: '2021-09-22',
+    name: '主站系统运行',
+    value: 0,
+  },
+  {
+    date: '2021-09-23',
+    name: '主站系统运行',
+    value: 0,
+  },
+  {
+    date: '2021-09-24',
+    name: '主站系统运行',
+    value: 0,
+  },
+  {
+    date: '2021-09-01',
+    name: 'KAFKA消费',
+    value: 0,
+  },
+  {
+    date: '2021-09-02',
+    name: 'KAFKA消费',
+    value: 0,
+  },
+  {
+    date: '2021-09-03',
+    name: 'KAFKA消费',
+    value: 0,
+  },
+  {
+    date: '2021-09-04',
+    name: 'KAFKA消费',
+    value: 0,
+  },
+  {
+    date: '2021-09-05',
+    name: 'KAFKA消费',
+    value: 0,
+  },
+  {
+    date: '2021-09-06',
+    name: 'KAFKA消费',
+    value: 0,
+  },
+  {
+    date: '2021-09-07',
+    name: 'KAFKA消费',
+    value: 0,
+  },
+  {
+    date: '2021-09-08',
+    name: 'KAFKA消费',
+    value: 0,
+  },
+  {
+    date: '2021-09-09',
+    name: 'KAFKA消费',
+    value: 0,
+  },
+  {
+    date: '2021-09-10',
+    name: 'KAFKA消费',
+    value: 0,
+  },
+  {
+    date: '2021-09-11',
+    name: 'KAFKA消费',
+    value: 0,
+  },
+  {
+    date: '2021-09-12',
+    name: 'KAFKA消费',
+    value: 0,
+  },
+  {
+    date: '2021-09-13',
+    name: 'KAFKA消费',
+    value: 0,
+  },
+  {
+    date: '2021-09-14',
+    name: 'KAFKA消费',
+    value: 0,
+  },
+  {
+    date: '2021-09-15',
+    name: 'KAFKA消费',
+    value: 1,
+  },
+  {
+    date: '2021-09-16',
+    name: 'KAFKA消费',
+    value: 0,
+  },
+  {
+    date: '2021-09-17',
+    name: 'KAFKA消费',
+    value: 0,
+  },
+  {
+    date: '2021-09-18',
+    name: 'KAFKA消费',
+    value: 0,
+  },
+  {
+    date: '2021-09-19',
+    name: 'KAFKA消费',
+    value: 0,
+  },
+  {
+    date: '2021-09-20',
+    name: 'KAFKA消费',
+    value: 0,
+  },
+  {
+    date: '2021-09-21',
+    name: 'KAFKA消费',
+    value: 0,
+  },
+  {
+    date: '2021-09-22',
+    name: 'KAFKA消费',
+    value: 0,
+  },
+  {
+    date: '2021-09-23',
+    name: 'KAFKA消费',
+    value: 0,
+  },
+  {
+    date: '2021-09-24',
+    name: 'KAFKA消费',
+    value: 0,
+  },
+];
+
+const issuedata = [
+  {
+    id: '1437342791630413825',
+    date: '2021-09-13 17:10:00',
+    type: '正常',
+    total: 149120,
+    sjsj: '2021-09-13 00:00:00',
+    flag: false,
+  },
+  {
+    id: '1437342791668162561',
+    date: '2021-09-13 17:10:00',
+    type: '无上行报文',
+    total: 20469,
+    sjsj: '2021-09-13 00:00:00',
+    flag: false,
+  },
+  {
+    id: '1437342791689134082',
+    date: '2021-09-13 17:10:00',
+    type: '前置未返回',
+    total: 11868,
+    sjsj: '2021-09-13 00:00:00',
+    flag: false,
+  },
+  {
+    id: '1437342791714299905',
+    date: '2021-09-13 17:10:00',
+    type: '否认',
+    total: 5226,
+    sjsj: '2021-09-13 00:00:00',
+    flag: false,
+  },
+  {
+    id: '1437342791731077121',
+    date: '2021-09-13 17:10:00',
+    type: '超时',
+    total: 1112,
+    sjsj: '2021-09-13 00:00:00',
+    flag: false,
+  },
+  {
+    id: '1437342791747854338',
+    date: '2021-09-13 17:10:00',
+    type: '设备离线',
+    total: 924,
+    sjsj: '2021-09-13 00:00:00',
+    flag: false,
+  },
+  {
+    id: '1437342791764631554',
+    date: '2021-09-13 17:10:00',
+    type: '报文出错',
+    total: 168,
+    sjsj: '2021-09-13 00:00:00',
+    flag: false,
+  },
+];
+
+const CPUdatas = [
+  {
+    type: 'CPU',
+    expected: 100,
+    name: '238.54.142.91',
+    rate: 81,
+    startdate: '2021-10-01 00:00:00',
+    enddate: '2021-10-03 23:59:59',
+  },
+  {
+    type: 'CPU',
+    expected: 100,
+    name: '213.113.16.141',
+    rate: 90,
+    startdate: '2021-10-01 00:00:00',
+    enddate: '2021-10-03 23:59:59',
+  },
+  {
+    type: 'CPU',
+    expected: 100,
+    name: '178.116.21.161',
+    rate: 60,
+    startdate: '2021-10-01 00:00:00',
+    enddate: '2021-10-03 23:59:59',
+  },
+  {
+    type: 'CPU',
+    expected: 100,
+    name: '78.247.130.67',
+    rate: 82,
+    startdate: '2021-10-01 00:00:00',
+    enddate: '2021-10-03 23:59:59',
+  },
+  {
+    type: 'CPU',
+    expected: 100,
+    name: '72.14.153.133',
+    rate: 78,
+    startdate: '2021-10-01 00:00:00',
+    enddate: '2021-10-03 23:59:59',
+  },
+];
+
+// 饼图数据
+const Donutdata = [
+  { type: '博联', value: 600, startdate: '2021-10-03 00:00:00', enddate: '2021-10-03 23:59:59' },
+  { type: '南瑞', value: 200, startdate: '2021-10-03 00:00:00', enddate: '2021-10-02 23:59:59' },
+];
+
+const Donutdata2 = [
+  { type: '计划发布', value: 151 },
+  { type: '临时发布', value: 200 },
+];
+
 function StatisticsAnalysis(props) {
-  const {
-    statisticData,
-    statsSumdata,
-    location,
-    dispatch
-  } = props;
+  const { dispatch, statpieArr, loading, statisticData, statsSumdata } = props;
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [picval, setPicVal] = useState({});
+  const [bardata, setBardata] = useState([]);
 
-  const [selectedTags, setSelectedTags] = useState(['按月']);
-  const [selectTime, setSelectTime] = [{ start: moment(new Date()).format('YYYY-MM-DD 00:00:00'), end: moment(new Date).format('YYYY-MM-DD 23:59:59') }];
-  const [visible, setVisible] = useState(false);
-  const [title, setTitle] = useState('');
-  const [modalParams, setModalParams] = useState('');
+  const handleChang = (tag, checked) => {
+    if (checked) {
+      setSelectedTags([tag]);
+    }
+  };
 
-  const [time, setTime] = useState({
-    startValue: null,
-    endValue: null,
-    endOpen: false,
-  })
-
-  const getlist = (obj) => {
+  const getlist = () => {
     dispatch({
       type: 'qualityassessment/fetchstatsRatio',
       payload: {
-        beginTime: (obj && obj.startValue) ? moment(obj.startValue).format('YYYY-MM-DD HH:mm:ss') : selectTime.start,
-        endTime: (obj && obj.endValue) ? moment(obj.endValue).format('YYYY-MM-DD HH:mm:ss') : selectTime.end,
-        type: 'LIST'
-      }
-    })
-  }
+        beginTime: '2021-03-01',
+        endTime: '2021-09-01',
+        type: 'LIST',
+      },
+    });
+  };
 
-  const projectAssessment = (obj) => {
+  const projectAssessment = () => {
     dispatch({
       type: 'qualityassessment/fetchstatsSum',
       payload: {
-        beginTime: (obj && obj.startValue) ? moment(obj.startValue).format('YYYY-MM-DD HH:mm:ss') : selectTime.start,
-        endTime: (obj && obj.endValue) ? moment(obj.endValue).format('YYYY-MM-DD HH:mm:ss') : selectTime.end,
-      }
-    })
-  }
-
-  const handleChange = (tag, checked) => {
-    if (checked) {
-      const obj = {
-        startValue: tag.name === "本日" ? moment(new Date()).format('YYYY-MM-DD 00:00:00') : moment().startOf('month').format('YYYY-MM-DD 00:00:00'),
-        endValue: tag.name === "本月" ? moment().endOf('month').format('YYYY-MM-DD 23:59:59') : moment(new Date()).format('YYYY-MM-DD 23:59:59'),
-        endOpen: false,
-      }
-      getlist(obj)
-      projectAssessment(obj);
-      setSelectedTags([tag])
-    }
-  }
-
-  const disabledStartDate = startValue => {
-    const { endValue } = time;
-    if (!startValue || !endValue) {
-      return false;
-    }
-    return startValue.valueOf() > endValue.valueOf();
-  };
-
-  const disabledEndDate = endValue => {
-    const { startValue } = time;
-    if (!endValue || !startValue) {
-      return false;
-    }
-    return endValue.valueOf() <= startValue.valueOf();
-  };
-
-  const onChange = (field, value) => {
-    const obj = time;
-    switch (field) {
-      case 'startValue':
-        obj.startValue = value;
-        setTime(obj);
-        break;
-      case 'endValue':
-        obj.endValue = value;
-        setTime(obj);
-        break;
-      default:
-        break;
-    }
-  };
-  const onStartChange = value => {
-    onChange('startValue', value);
-  };
-
-  const onEndChange = value => {
-    onChange('endValue', value);
-  };
-
-  const handleEndOpenChange = open => {
-    const obj = time;
-    obj.endOpen = open
-    setTime(obj);
-  };
-
-  const handleStartOpenChange = open => {
-    if (!open) {
-      const obj = time;
-      obj.endOpen = true;
-      setTime(obj);
-    }
+        beginTime: '2021-03-01',
+        endTime: '2021-09-01',
+      },
+    });
   };
 
   useEffect(() => {
     getlist();
-    projectAssessment()
-  }, [])
+    projectAssessment();
+  }, []);
 
   useEffect(() => {
-    if (location.state && location.state.reset) {
-      getlist()
+    if (statsSumdata && statsSumdata.length > 0) {
+      const result = JSON.parse(JSON.stringify(statsSumdata).replace(/assessScore/g, '分值'));
+      setBardata(result);
     }
-  }, [location.state]);
+  }, [loading]);
 
-  const showDetaillist = (params, type) => {
-    console.log('type: ', type);
-    console.log('params: ', params);
-    switch (type) {
-      case 'ordinaryline': {
-        if (params) {
-          const { mappingData: { _origin } } = params;
-          setVisible(true);
-          setTitle(_origin.city);
-          setModalParams(_origin);
-        }
+  console.log(statpieArr, 'statpieArr');
 
-        break;
-      }
-
-      case 'donut': {
-        const { data } = params;
-        setModalParams(data);
-        setVisible(true);
-        setTitle(data.type);
-        break;
-      }
-
-      default:
-        break;
-    }
-  }
-
+  useEffect(() => {
+    dispatch({
+      type: 'problemstatistics/fetchstatpieData',
+      payload: { begin: '2016-02-01', end: '2022-07-01' },
+    });
+  }, []);
   return (
     <div>
-      <Card>
-        <span style={{ fontSize: 16, fontWeight: 700, paddingRight: 12 }}>统计周期:</span>
-        {
-          tagsFromServer.map(obj => (
-            <CheckableTag
-              key={obj.key}
-              checked={selectedTags.indexOf(obj) > -1}
-              onChange={checked => handleChange(obj, checked)}
-            >{obj.name}</CheckableTag>
-          ))
-        }
-        <DatePicker
-          disabledDate={disabledStartDate}
-          onChange={onStartChange}
-          onOpenChange={handleStartOpenChange}
-          showTime={{
-            hideDisabledOptions: true,
-            defaultValue: moment('00:00:00', 'HH:mm:ss'),
-          }}
-          value={time.startValue}
-          placeholder='开始时间'
-        />
-        <span style={{ display: 'inline-block', width: 24, textAlign: 'center' }}>-</span>
-        <DatePicker
-          disabledDate={disabledEndDate}
-          onChange={onEndChange}
-          open={time.endOpen}
-          onOpenChange={handleEndOpenChange}
-          value={time.endValue}
-          showTime={{
-            hideDisabledOptions: true,
-            defaultValue: moment('23:59:59', 'HH:mm:ss'),
-          }}
-          format='YYYY-MM-DD HH:mm:ss'
-          placeholder='结束时间'
-        />
-
-        <Button
-          onClick={() => { getlist(time); projectAssessment(time) }}
-          type='primary'
-          style={{ marginLeft: 10 }}
-        >
-          查询
-        </Button>
-      </Card>
-
-      {(statisticData || []).map((obj) => {
-        return (
-          <Row key={obj.id} style={{ marginTop: 10 }}>
-            <div className={styles.statisticscard}>
-              <Avatar icon='desktop' />
-              <b>{obj.name}总情况</b>
-            </div>
-
+      <SelectTime ChangeDate={v => console.log(v)} />
+      <Row style={{ marginTop: 24 }}>
+        <div className={styles.statisticscard}>
+          <Avatar icon="desktop" />
+          <b>发布总情况</b>
+        </div>
+        <Col span={6}>
+          <StatisticsCard
+            title="发布总次数："
+            value={1128}
+            suffix="次"
+            des="环比"
+            desval="11%"
+            type="up"
+          />
+        </Col>
+        <Col span={6}>
+          <StatisticsCard
+            title="出厂测试总功能项："
+            value={93}
+            suffix="项"
+            des="环比"
+            desval="3.5%"
+            type="down"
+          />
+        </Col>
+        <Col span={6}>
+          <StatisticsCard
+            title="发布成功项："
+            value={935888}
+            suffix="次"
+            des="环比"
+            desval="6%"
+            type="up"
+          />
+        </Col>
+        <Col span={6}>
+          <StatisticsCard
+            title="发布成功率："
+            value={89.558}
+            suffix="%"
+            des="环比"
+            desval="6%"
+            type="up"
+          />
+        </Col>
+      </Row>
+      <Row gutter={16}>
+        <Col span={12} style={{ marginTop: 24 }}>
+          <div className={styles.statisticscard}>
+            <Avatar icon="desktop" />
+            <b>平台验证情况</b>
+          </div>
+          <Row>
             <Col span={8}>
-              <StatisticsCard title='累计扣分' value={obj.minusScore} suffix='累计扣分' des='环比上月' desval={obj.minusRatio} type={Number(obj.minusScore) > Number(obj.prevMinusScore) ? 'up' : 'down'} />
+              <StatisticsCard
+                title="平台验证通过项："
+                value={152}
+                suffix="项"
+                des="环比"
+                desval="6%"
+                type="up"
+              />
             </Col>
             <Col span={8}>
-              <StatisticsCard title='累计加分' value={obj.extraScore} suffix='累计加分' des='环比上月' desval={obj.extraRatio} type={Number(obj.extraScore) > Number(obj.prevExtraScore) ? 'up' : 'down'} />
+              <StatisticsCard
+                title="平台验证未通过项："
+                value={2}
+                suffix="项"
+                des="环比"
+                desval="6%"
+                type="down"
+              />
             </Col>
             <Col span={8}>
-              <StatisticsCard title='合计分值' value={obj.totalScore} suffix='合计分值' des='环比上月' desval={obj.totalRatio} type={Number(obj.totalScore) > Number(obj.prevTotalScore) ? 'up' : 'down'} />
+              <StatisticsCard
+                title="平台验证成功率："
+                value={100.0}
+                suffix="%"
+                des="环比"
+                desval="6%"
+                type="down"
+              />
             </Col>
           </Row>
-        )
-      })}
-
-      <Row style={{ marginTop: 20 }}>
+        </Col>
+        <Col span={12} style={{ marginTop: 24 }}>
+          <div className={styles.statisticscard}>
+            <Avatar icon="file-protect" />
+            <b>业务验证情况</b>
+          </div>
+          <Row>
+            <Col span={8}>
+              <StatisticsCard
+                title="业务验证通过项："
+                value={150}
+                suffix="项"
+                des="环比"
+                desval="6%"
+                type="up"
+              />
+            </Col>
+            <Col span={8}>
+              <StatisticsCard
+                title="业务验证未通过项："
+                value={2}
+                suffix="项"
+                des="环比"
+                desval="6%"
+                type="down"
+              />
+            </Col>
+            <Col span={8}>
+              <StatisticsCard
+                title="平台验证成功率："
+                value={100.0}
+                suffix="%"
+                des="环比"
+                desval="6%"
+                type="down"
+              />
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+      <Row gutter={16}>
+        <Col span={12} style={{ marginTop: 24 }}>
+          <div className={styles.statisticscard}>
+            <Avatar icon="control" />
+            <b>发布实施情况</b>
+          </div>
+          <Row>
+            <Col span={8}>
+              <StatisticsCard
+                title="实施通过项："
+                value={148}
+                suffix="项"
+                des="环比"
+                desval="6%"
+                type="up"
+              />
+            </Col>
+            <Col span={8}>
+              <StatisticsCard
+                title="实施未通过项："
+                value={0}
+                suffix="项"
+                des="环比"
+                desval="6%"
+                type="down"
+              />
+            </Col>
+            <Col span={8}>
+              <StatisticsCard
+                title="实施成功率："
+                value={100.0}
+                suffix="%"
+                des="环比"
+                desval="6%"
+                type="down"
+              />
+            </Col>
+          </Row>
+        </Col>
+        <Col span={12} style={{ marginTop: 24 }}>
+          <div className={styles.statisticscard}>
+            <Avatar icon="security-scan" />
+            <b>业务复核情况</b>
+          </div>
+          <Row>
+            <Col span={8}>
+              <StatisticsCard
+                title="复核通过项："
+                value={148}
+                suffix="项"
+                des="环比"
+                desval="6%"
+                type="up"
+              />
+            </Col>
+            <Col span={8}>
+              <StatisticsCard
+                title="复核未通过项："
+                value={0}
+                suffix="项"
+                des="环比"
+                desval="6%"
+                type="down"
+              />
+            </Col>
+            <Col span={8}>
+              <StatisticsCard
+                title="复核成功率："
+                value={100.0}
+                suffix="%"
+                des="环比"
+                desval="6%"
+                type="down"
+              />
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+      <Row style={{ marginTop: 24 }}>
         <div className={styles.statisticscard}>
-          <Avatar icon='desktop' />
+          <Avatar icon="cluster" />
           <b>问题工单总情况</b>
         </div>
-
-        <Col span={11} style={{ margin: '10px 10px auto auto' }}>
-          <div>
-            <ChartCard title='问题处理情况占比'>
-              <Donut
-                data={Donutdata}
-                height={315}
-                total="1161"
-                padding={[0, 0, 0, 0]}
-                detailParams={newdata => { showDetaillist(newdata, 'donut') }}
-              />
-            </ChartCard>
-          </div>
+        <Col span={8}>
+          <Card onMouseDown={() => setPicVal({})}>
+            <DonutPCT
+              data={Donutdata}
+              height={300}
+              totaltitle="问题总数"
+              total="550"
+              padding={[10, 30, 10, 30]}
+              onGetVal={v => {
+                console.log('发布工单责任单位情况:饼图', v);
+                setPicVal({ ...picval, dutyUnit: v });
+              }}
+            />
+          </Card>
         </Col>
-
-        <Col span={11} style={{ margin: '10px 10px auto auto' }}>
-          <div >
-            <ChartCard title='问题工单量趋势'>
-              <OrdinaryLine
-                data={statsSumdata}
-                height={315}
-                detailParams={newdata => { showDetaillist(newdata, 'ordinaryline') }}
+        <Col span={16}>
+          <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+            {Smoothdata && (
+              <SmoothLine
+                data={Smoothdata}
+                height={300}
+                padding={[30, 0, 50, 60]}
+                onGetVal={v => {
+                  console.log('发布工单责任单位情况：曲线图', v);
+                  setPicVal({ ...picval, type: v });
+                }}
               />
-            </ChartCard>
-          </div>
-        </Col>
-      </Row>
-
-      <Row style={{ marginTop: 20 }}>
-        <div className={styles.statisticscard}>
-          <Avatar icon='desktop' />
-          <b>问题责任单位情况</b>
-        </div>
-
-        <Col span={11} style={{ margin: '10px 10px auto auto' }}>
-          <div>
-            <ChartCard>
-              <Donut
-                data={Donutdata}
-                height={315}
-                total="1161"
-                padding={[0, 0, 0, 0]}
-                detailParams={newdata => { showDetaillist(newdata, 'donut') }}
-              />
-            </ChartCard>
-          </div>
-        </Col>
-
-        <Col span={11} style={{ margin: '10px 10px auto auto' }}>
-          <div >
-            <ChartCard>
-              <OrdinaryLine
-                data={statsSumdata}
-                height={315}
-                detailParams={newdata => { showDetaillist(newdata, 'ordinaryline') }}
-              />
-            </ChartCard>
-          </div>
+            )}
+          </Card>
         </Col>
       </Row>
 
-      <Row style={{ marginTop: 20 }}>
-        <div className={styles.statisticscard}>
-          <Avatar icon='desktop' />
-          <b>问题分类统计分析</b>
-        </div>
-
-        <Col span={11} style={{ margin: '10px 10px auto auto' }}>
-          <div>
-            <ChartCard title='问题分类总情况'>
-              <Donut
-                data={Donutdata}
-                height={315}
-                total="1161"
-                padding={[0, 0, 0, 0]}
-                detailParams={newdata => { showDetaillist(newdata, 'donut') }}
-              />
-            </ChartCard>
-          </div>
+      <Row style={{ marginTop: 24 }}>
+        <Col span={8}>
+          <Card onMouseDown={() => setPicVal({})}>
+            <DonutPCT
+              data={Donutdata2}
+              height={300}
+              total="351"
+              totaltitle="程序问题总数"
+              padding={[10, 30, 10, 30]}
+              onGetVal={v => {
+                console.log('饼图', v);
+                setPicVal({ ...picval, dutyUnit: v });
+              }}
+            />
+          </Card>
         </Col>
-
-        <Col span={11} style={{ margin: '10px 10px auto auto' }}>
-          <div >
-            <ChartCard title='问题分类总趋势'>
-              <OrdinaryLine
-                data={statsSumdata}
-                height={315}
-                detailParams={newdata => { showDetaillist(newdata, 'ordinaryline') }}
+        <Col span={16}>
+          <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+            {Smoothdata && (
+              <SmoothLine
+                data={Smoothdata}
+                height={300}
+                padding={[30, 0, 50, 60]}
+                onGetVal={v => {
+                  setPicVal({ ...picval, type: v });
+                  console.log('曲线图', v);
+                }}
               />
-            </ChartCard>
-          </div>
-        </Col>
-
-        <Col span={11} style={{ margin: '10px 10px auto auto' }}>
-          <div>
-            <ChartCard title='程序问题情况'>
-              <Donut
-                data={Donutdata}
-                height={315}
-                total="1161"
-                padding={[0, 0, 0, 0]}
-                detailParams={newdata => { showDetaillist(newdata, 'donut') }}
-              />
-            </ChartCard>
-          </div>
-        </Col>
-
-        <Col span={11} style={{ margin: '10px 10px auto auto' }}>
-          <div >
-            <ChartCard title='程序问题趋势'>
-              <OrdinaryLine
-                data={statsSumdata}
-                height={315}
-                detailParams={newdata => { showDetaillist(newdata, 'ordinaryline') }}
-              />
-            </ChartCard>
-          </div>
-        </Col>
-        <Col span={11} style={{ margin: '10px 10px auto auto' }}>
-          <div>
-            <ChartCard title='功能问题情况'>
-              <Donut
-                data={Donutdata}
-                height={315}
-                total="1161"
-                padding={[0, 0, 0, 0]}
-                detailParams={newdata => { showDetaillist(newdata, 'donut') }}
-              />
-            </ChartCard>
-          </div>
-        </Col>
-
-        <Col span={11} style={{ margin: '10px 10px auto auto' }}>
-          <div >
-            <ChartCard title='功能问题趋势'>
-              <OrdinaryLine
-                data={statsSumdata}
-                height={315}
-                detailParams={newdata => { showDetaillist(newdata, 'ordinaryline') }}
-              />
-            </ChartCard>
-          </div>
+            )}
+          </Card>
         </Col>
       </Row>
 
-      <Row style={{ marginTop: 20 }}>
+      <Row style={{ marginTop: 24 }}>
+        <Col span={8}>
+          <Card onMouseDown={() => setPicVal({})}>
+            <DonutPCT
+              data={Donutdata2}
+              height={300}
+              total="351"
+              totaltitle="功能问题总数"
+              padding={[10, 30, 10, 30]}
+              onGetVal={v => {
+                console.log('饼图', v);
+                setPicVal({ ...picval, dutyUnit: v });
+              }}
+            />
+          </Card>
+        </Col>
+        <Col span={16}>
+          <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+            {Smoothdata && (
+              <SmoothLine
+                data={Smoothdata}
+                height={300}
+                padding={[30, 0, 50, 60]}
+                onGetVal={v => {
+                  setPicVal({ ...picval, type: v });
+                  console.log('曲线图', v);
+                }}
+              />
+            )}
+          </Card>
+        </Col>
+      </Row>
+
+      <Row style={{ marginTop: 24 }}>
         <div className={styles.statisticscard}>
-          <Avatar icon='desktop' />
+          <Avatar icon="cluster" />
           <b>问题来源统计分析</b>
         </div>
-
-        <Col span={11} style={{ margin: '10px 10px auto auto' }}>
-          <div>
-            <ChartCard>
-              <Donut
-                data={Donutdata}
-                height={315}
-                total="1161"
-                padding={[0, 0, 0, 0]}
-                detailParams={newdata => { showDetaillist(newdata, 'donut') }}
-              />
-            </ChartCard>
-          </div>
+        <Col span={8}>
+          <Card onMouseDown={() => setPicVal({})}>
+            <DonutPCT
+              data={Donutdata}
+              height={300}
+              totaltitle="问题总数"
+              total="550"
+              padding={[10, 30, 10, 30]}
+              onGetVal={v => {
+                console.log('发布工单责任单位情况:饼图', v);
+                setPicVal({ ...picval, dutyUnit: v });
+              }}
+            />
+          </Card>
         </Col>
-
-        <Col span={11} style={{ margin: '10px 10px auto auto' }}>
-          <div >
-            <ChartCard>
-              <OrdinaryLine
-                data={statsSumdata}
-                height={315}
-                detailParams={newdata => { showDetaillist(newdata, 'ordinaryline') }}
+        <Col span={16}>
+          <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+            {Smoothdata && (
+              <SmoothLine
+                data={Smoothdata}
+                height={300}
+                padding={[30, 0, 50, 60]}
+                onGetVal={v => {
+                  console.log('发布工单责任单位情况：曲线图', v);
+                  setPicVal({ ...picval, type: v });
+                }}
               />
-            </ChartCard>
-          </div>
+            )}
+          </Card>
         </Col>
       </Row>
 
-      <Row style={{ marginTop: 20 }}>
-        <Col span={11} style={{ margin: '10px 10px auto auto' }}>
-          <div>
-            <ChartCard title='问题工单超时情况'>
-              <Donut
-                data={Donutdata}
-                height={315}
-                total="1161"
-                padding={[0, 0, 0, 0]}
-                detailParams={newdata => { showDetaillist(newdata, 'donut') }}
+      <Row style={{ marginTop: 24 }}>
+        <div className={styles.statisticscard}>
+          <Avatar icon="cluster" />
+          <b>问题来源统计分析</b>
+        </div>
+        <Col span={8}>
+          <Card onMouseDown={() => setPicVal({})}>
+            <DonutPCT
+              data={Donutdata}
+              height={300}
+              totaltitle="问题总数"
+              total="550"
+              padding={[10, 30, 10, 30]}
+              onGetVal={v => {
+                console.log('发布工单责任单位情况:饼图', v);
+                setPicVal({ ...picval, dutyUnit: v });
+              }}
+            />
+          </Card>
+        </Col>
+        <Col span={16}>
+          <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+            {Smoothdata && (
+              <SmoothLine
+                data={Smoothdata}
+                height={300}
+                padding={[30, 0, 50, 60]}
+                onGetVal={v => {
+                  console.log('发布工单责任单位情况：曲线图', v);
+                  setPicVal({ ...picval, type: v });
+                }}
               />
-            </ChartCard>
-          </div>
-        </Col>
-
-        <Col span={11} style={{ margin: '10px 10px auto auto' }}>
-          <div >
-            <ChartCard title='问题申请人Top5'>
-
-              <Col span={22}>
-                <Barchart
-                  data={statsSumdata}
-                  height={315}
-                  detailParams={newdata => { showDetaillist(newdata, 'ordinaryline') }}
-                />
-              </Col>
-              <Col span={2}>
-                <Select defaultValue="5">
-                  <Option value="5">5</Option>
-                  <Option value="10">10</Option>
-                  <Option value="15">15</Option>
-                  <Option value="20">20</Option>
-                </Select>
-              </Col>
-
-
-            </ChartCard>
-          </div>
-        </Col>
-      </Row>
-      <Row style={{ marginTop: 20 }}>
-        <Col span={11} style={{ margin: '10px 10px auto auto' }}>
-          <div>
-            <ChartCard title='问题处理人Top5'>
-              <Donut
-                data={Donutdata}
-                height={315}
-                total="1161"
-                padding={[0, 0, 0, 0]}
-                detailParams={newdata => { showDetaillist(newdata, 'donut') }}
-              />
-            </ChartCard>
-          </div>
-        </Col>
-
-        <Col span={11} style={{ margin: '10px 10px auto auto' }}>
-          <div >
-            <ChartCard title='问题申请单位Top5'>
-              <Col span={22}>
-                <Barchart
-                  data={statsSumdata}
-                  height={315}
-                  detailParams={newdata => { showDetaillist(newdata, 'ordinaryline') }}
-                />
-              </Col>
-              <Col span={2}>
-                <Select defaultValue="5">
-                  <Option value="5">5</Option>
-                  <Option value="10">10</Option>
-                  <Option value="15">15</Option>
-                  <Option value="20">20</Option>
-                </Select>
-              </Col>
-            </ChartCard>
-          </div>
-        </Col>
-      </Row>
-      <Row style={{ marginTop: 20 }}>
-        <Col span={11} style={{ margin: '10px 10px auto auto' }}>
-          <div>
-            <ChartCard title='问题处理单位Top5'>
-              <Donut
-                data={Donutdata}
-                height={315}
-                total="1161"
-                padding={[0, 0, 0, 0]}
-                detailParams={newdata => { showDetaillist(newdata, 'donut') }}
-              />
-            </ChartCard>
-          </div>
-        </Col>
-
-        <Col span={11} style={{ margin: '10px 10px auto auto' }}>
-          <div >
-            <ChartCard title='问题申请人Top5'>
-              <Col span={22}>
-                <Barchart
-                  data={statsSumdata}
-                  height={315}
-                  detailParams={newdata => { showDetaillist(newdata, 'ordinaryline') }}
-                />
-              </Col>
-              <Col span={2}>
-                <Select defaultValue="5">
-                  <Option value="5">5</Option>
-                  <Option value="10">10</Option>
-                  <Option value="15">15</Option>
-                  <Option value="20">20</Option>
-                </Select>
-              </Col>
-            </ChartCard>
-          </div>
+            )}
+          </Card>
         </Col>
       </Row>
 
+      <Row style={{ marginTop: 24 }}>
+        <Col span={8}>
+          <ChartCard title="问题工单超时情况">
+            <Donut
+              data={Donutdatatwo}
+              height={300}
+              total="1161"
+              padding={[10, 30, 10, 30]}
+              detailParams={newdata => {
+                showDetaillist(newdata, 'donut');
+              }}
+            />
+          </ChartCard>
+        </Col>
 
-      <StatisticsModal
-        visible={visible}
-        modalParams={modalParams}
-        title={title}
-        handleCancel={() => setVisible(false)}
-      />
+        <Col span={16}>
+          <ChartCard title="问题工单超时情况">
+            {Smoothdata && (
+              <SmoothLine
+                data={Smoothdata}
+                height={300}
+                padding={[30, 0, 50, 60]}
+                onGetVal={v => {
+                  console.log('发布工单责任单位情况：曲线图', v);
+                  setPicVal({ ...picval, type: v });
+                }}
+              />
+            )}
+          </ChartCard>
+        </Col>
+      </Row>
 
-    </div >
+      <Col span={8}>
+        <ChartCard title="问题登记人Top5">
+          <Col span={20}>
+            <Donut
+              data={Donutdatatwo}
+              height={300}
+              total="1161"
+              padding={[10, 30, 10, 30]}
+              detailParams={newdata => {
+                showDetaillist(newdata, 'donut');
+              }}
+            />
+          </Col>
 
-  )
+          <Col span={4}>
+            <Select defaultValue="5">
+              <Option value="5">5</Option>
+              <Option value="10">10</Option>
+              <Option value="15">15</Option>
+              <Option value="20">20</Option>
+            </Select>
+          </Col>
+        </ChartCard>
+      </Col>
+
+      <Col span={16}>
+        <ChartCard title="问题登记单位Top5">
+          {Smoothdata && (
+            <SmoothLine
+              data={Smoothdata}
+              height={300}
+              padding={[30, 0, 50, 60]}
+              onGetVal={v => {
+                console.log('发布工单责任单位情况：曲线图', v);
+                setPicVal({ ...picval, type: v });
+              }}
+            />
+          )}
+        </ChartCard>
+      </Col>
+
+      <Row style={{ marginTop: 24 }}>
+        <Col span={24}>
+          {/* <ChartCard title='项目考核情况'> */}
+          <Barchart
+            data={bardata}
+            title="项目考核情况"
+            // position='contractName*分值'
+            xField="分值"
+            yField="contractName"
+            colors="l(270) 0:#04e8ff 0.5:#05bdfe 1:#05bdfe"
+            // height={315}
+            // detailParams={newdata => { showDetaillist(newdata, 'barchart') }}
+          />
+          {/* </ChartCard> */}
+        </Col>
+      </Row>
+    </div>
+  );
 }
 
-export default (
-  connect(({ qualityassessment }) => ({
-    statisticData: qualityassessment.statisticData,
-    statsSumdata: qualityassessment.statsSumdata
-  }))
-)(StatisticsAnalysis);
+export default connect(({ problemstatistics, qualityassessment, loading }) => ({
+  statpieArr: problemstatistics.statpieArr,
+  statisticData: qualityassessment.statisticData,
+  statsSumdata: qualityassessment.statsSumdata,
+  // loading: loading.models.alarmovervies,
+  loading: loading.models.qualityassessment,
+}))(StatisticsAnalysis);
