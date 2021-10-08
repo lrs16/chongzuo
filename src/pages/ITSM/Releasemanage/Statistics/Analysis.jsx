@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Card, Row, Col, Avatar, Empty } from 'antd';
-import { ChartCard } from '@/components/Charts';
+import { Card, Row, Col, Avatar, Empty, Spin } from 'antd';
 import StatisticsCard from '@/components/StatisticsCard';
 import SelectTime from '@/components/SelectTime/SelectTime';
 import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
 import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
 import Cylinder from '@/components/CustomizeCharts/Cylinder';
-import ColumnarY from '@/components/CustomizeCharts/ColumnarY';
-import { ArrowRightOutlined } from '_@ant-design_icons@4.6.2@@ant-design/icons';
 import styles from '../index.less';
 
 const cols = {
@@ -19,759 +16,15 @@ const cols = {
   },
 };
 
-const Issuedscale = {
-  total: {
-    type: 'linear',
-    alias: '返回结果数量',
-    min: 0,
-    tickInterval: 5000,
-  },
-};
-
-// const Donutdata = [
-//   {
-//     "type": "业务指标",
-//     "value": 2
-//   },
-//   {
-//     "type": "终端在线和入库",
-//     "value": 1
-//   },
-//   {
-//     "type": "KAFKA消费",
-//     "value": 1
-//   },
-//   {
-//     "type": "接口数据核查",
-//     "value": 1
-//   },
-//   {
-//     "type": "主站系统运行",
-//     "value": 1
-//   }
-// ];
-
-const Smoothdata = [
-  {
-    "date": "2021-09-01",
-    "name": "终端在线和入库",
-    "value": 0
-  },
-  {
-    "date": "2021-09-02",
-    "name": "终端在线和入库",
-    "value": 0
-  },
-  {
-    "date": "2021-09-03",
-    "name": "终端在线和入库",
-    "value": 0
-  },
-  {
-    "date": "2021-09-04",
-    "name": "终端在线和入库",
-    "value": 0
-  },
-  {
-    "date": "2021-09-05",
-    "name": "终端在线和入库",
-    "value": 0
-  },
-  {
-    "date": "2021-09-06",
-    "name": "终端在线和入库",
-    "value": 0
-  },
-  {
-    "date": "2021-09-07",
-    "name": "终端在线和入库",
-    "value": 0
-  },
-  {
-    "date": "2021-09-08",
-    "name": "终端在线和入库",
-    "value": 0
-  },
-  {
-    "date": "2021-09-09",
-    "name": "终端在线和入库",
-    "value": 0
-  },
-  {
-    "date": "2021-09-10",
-    "name": "终端在线和入库",
-    "value": 0
-  },
-  {
-    "date": "2021-09-11",
-    "name": "终端在线和入库",
-    "value": 0
-  },
-  {
-    "date": "2021-09-12",
-    "name": "终端在线和入库",
-    "value": 0
-  },
-  {
-    "date": "2021-09-13",
-    "name": "终端在线和入库",
-    "value": 0
-  },
-  {
-    "date": "2021-09-14",
-    "name": "终端在线和入库",
-    "value": 1
-  },
-  {
-    "date": "2021-09-15",
-    "name": "终端在线和入库",
-    "value": 0
-  },
-  {
-    "date": "2021-09-16",
-    "name": "终端在线和入库",
-    "value": 0
-  },
-  {
-    "date": "2021-09-17",
-    "name": "终端在线和入库",
-    "value": 0
-  },
-  {
-    "date": "2021-09-18",
-    "name": "终端在线和入库",
-    "value": 0
-  },
-  {
-    "date": "2021-09-19",
-    "name": "终端在线和入库",
-    "value": 0
-  },
-  {
-    "date": "2021-09-20",
-    "name": "终端在线和入库",
-    "value": 0
-  },
-  {
-    "date": "2021-09-21",
-    "name": "终端在线和入库",
-    "value": 0
-  },
-  {
-    "date": "2021-09-22",
-    "name": "终端在线和入库",
-    "value": 0
-  },
-  {
-    "date": "2021-09-23",
-    "name": "终端在线和入库",
-    "value": 0
-  },
-  {
-    "date": "2021-09-24",
-    "name": "终端在线和入库",
-    "value": 0
-  },
-  {
-    "date": "2021-09-01",
-    "name": "业务指标",
-    "value": 0
-  },
-  {
-    "date": "2021-09-02",
-    "name": "业务指标",
-    "value": 0
-  },
-  {
-    "date": "2021-09-03",
-    "name": "业务指标",
-    "value": 0
-  },
-  {
-    "date": "2021-09-04",
-    "name": "业务指标",
-    "value": 0
-  },
-  {
-    "date": "2021-09-05",
-    "name": "业务指标",
-    "value": 0
-  },
-  {
-    "date": "2021-09-06",
-    "name": "业务指标",
-    "value": 0
-  },
-  {
-    "date": "2021-09-07",
-    "name": "业务指标",
-    "value": 0
-  },
-  {
-    "date": "2021-09-08",
-    "name": "业务指标",
-    "value": 0
-  },
-  {
-    "date": "2021-09-09",
-    "name": "业务指标",
-    "value": 0
-  },
-  {
-    "date": "2021-09-10",
-    "name": "业务指标",
-    "value": 0
-  },
-  {
-    "date": "2021-09-11",
-    "name": "业务指标",
-    "value": 0
-  },
-  {
-    "date": "2021-09-12",
-    "name": "业务指标",
-    "value": 0
-  },
-  {
-    "date": "2021-09-13",
-    "name": "业务指标",
-    "value": 1
-  },
-  {
-    "date": "2021-09-14",
-    "name": "业务指标",
-    "value": 0
-  },
-  {
-    "date": "2021-09-15",
-    "name": "业务指标",
-    "value": 1
-  },
-  {
-    "date": "2021-09-16",
-    "name": "业务指标",
-    "value": 0
-  },
-  {
-    "date": "2021-09-17",
-    "name": "业务指标",
-    "value": 0
-  },
-  {
-    "date": "2021-09-18",
-    "name": "业务指标",
-    "value": 0
-  },
-  {
-    "date": "2021-09-19",
-    "name": "业务指标",
-    "value": 0
-  },
-  {
-    "date": "2021-09-20",
-    "name": "业务指标",
-    "value": 0
-  },
-  {
-    "date": "2021-09-21",
-    "name": "业务指标",
-    "value": 0
-  },
-  {
-    "date": "2021-09-22",
-    "name": "业务指标",
-    "value": 0
-  },
-  {
-    "date": "2021-09-23",
-    "name": "业务指标",
-    "value": 0
-  },
-  {
-    "date": "2021-09-24",
-    "name": "业务指标",
-    "value": 0
-  },
-  {
-    "date": "2021-09-01",
-    "name": "接口数据核查",
-    "value": 0
-  },
-  {
-    "date": "2021-09-02",
-    "name": "接口数据核查",
-    "value": 0
-  },
-  {
-    "date": "2021-09-03",
-    "name": "接口数据核查",
-    "value": 0
-  },
-  {
-    "date": "2021-09-04",
-    "name": "接口数据核查",
-    "value": 0
-  },
-  {
-    "date": "2021-09-05",
-    "name": "接口数据核查",
-    "value": 0
-  },
-  {
-    "date": "2021-09-06",
-    "name": "接口数据核查",
-    "value": 0
-  },
-  {
-    "date": "2021-09-07",
-    "name": "接口数据核查",
-    "value": 0
-  },
-  {
-    "date": "2021-09-08",
-    "name": "接口数据核查",
-    "value": 0
-  },
-  {
-    "date": "2021-09-09",
-    "name": "接口数据核查",
-    "value": 0
-  },
-  {
-    "date": "2021-09-10",
-    "name": "接口数据核查",
-    "value": 0
-  },
-  {
-    "date": "2021-09-11",
-    "name": "接口数据核查",
-    "value": 0
-  },
-  {
-    "date": "2021-09-12",
-    "name": "接口数据核查",
-    "value": 0
-  },
-  {
-    "date": "2021-09-13",
-    "name": "接口数据核查",
-    "value": 0
-  },
-  {
-    "date": "2021-09-14",
-    "name": "接口数据核查",
-    "value": 0
-  },
-  {
-    "date": "2021-09-15",
-    "name": "接口数据核查",
-    "value": 0
-  },
-  {
-    "date": "2021-09-16",
-    "name": "接口数据核查",
-    "value": 0
-  },
-  {
-    "date": "2021-09-17",
-    "name": "接口数据核查",
-    "value": 0
-  },
-  {
-    "date": "2021-09-18",
-    "name": "接口数据核查",
-    "value": 0
-  },
-  {
-    "date": "2021-09-19",
-    "name": "接口数据核查",
-    "value": 0
-  },
-  {
-    "date": "2021-09-20",
-    "name": "接口数据核查",
-    "value": 0
-  },
-  {
-    "date": "2021-09-21",
-    "name": "接口数据核查",
-    "value": 0
-  },
-  {
-    "date": "2021-09-22",
-    "name": "接口数据核查",
-    "value": 1
-  },
-  {
-    "date": "2021-09-23",
-    "name": "接口数据核查",
-    "value": 0
-  },
-  {
-    "date": "2021-09-24",
-    "name": "接口数据核查",
-    "value": 0
-  },
-  {
-    "date": "2021-09-01",
-    "name": "主站系统运行",
-    "value": 0
-  },
-  {
-    "date": "2021-09-02",
-    "name": "主站系统运行",
-    "value": 0
-  },
-  {
-    "date": "2021-09-03",
-    "name": "主站系统运行",
-    "value": 0
-  },
-  {
-    "date": "2021-09-04",
-    "name": "主站系统运行",
-    "value": 0
-  },
-  {
-    "date": "2021-09-05",
-    "name": "主站系统运行",
-    "value": 0
-  },
-  {
-    "date": "2021-09-06",
-    "name": "主站系统运行",
-    "value": 0
-  },
-  {
-    "date": "2021-09-07",
-    "name": "主站系统运行",
-    "value": 0
-  },
-  {
-    "date": "2021-09-08",
-    "name": "主站系统运行",
-    "value": 0
-  },
-  {
-    "date": "2021-09-09",
-    "name": "主站系统运行",
-    "value": 0
-  },
-  {
-    "date": "2021-09-10",
-    "name": "主站系统运行",
-    "value": 0
-  },
-  {
-    "date": "2021-09-11",
-    "name": "主站系统运行",
-    "value": 0
-  },
-  {
-    "date": "2021-09-12",
-    "name": "主站系统运行",
-    "value": 0
-  },
-  {
-    "date": "2021-09-13",
-    "name": "主站系统运行",
-    "value": 0
-  },
-  {
-    "date": "2021-09-14",
-    "name": "主站系统运行",
-    "value": 0
-  },
-  {
-    "date": "2021-09-15",
-    "name": "主站系统运行",
-    "value": 0
-  },
-  {
-    "date": "2021-09-16",
-    "name": "主站系统运行",
-    "value": 0
-  },
-  {
-    "date": "2021-09-17",
-    "name": "主站系统运行",
-    "value": 0
-  },
-  {
-    "date": "2021-09-18",
-    "name": "主站系统运行",
-    "value": 0
-  },
-  {
-    "date": "2021-09-19",
-    "name": "主站系统运行",
-    "value": 0
-  },
-  {
-    "date": "2021-09-20",
-    "name": "主站系统运行",
-    "value": 0
-  },
-  {
-    "date": "2021-09-21",
-    "name": "主站系统运行",
-    "value": 1
-  },
-  {
-    "date": "2021-09-22",
-    "name": "主站系统运行",
-    "value": 0
-  },
-  {
-    "date": "2021-09-23",
-    "name": "主站系统运行",
-    "value": 0
-  },
-  {
-    "date": "2021-09-24",
-    "name": "主站系统运行",
-    "value": 0
-  },
-  {
-    "date": "2021-09-01",
-    "name": "KAFKA消费",
-    "value": 0
-  },
-  {
-    "date": "2021-09-02",
-    "name": "KAFKA消费",
-    "value": 0
-  },
-  {
-    "date": "2021-09-03",
-    "name": "KAFKA消费",
-    "value": 0
-  },
-  {
-    "date": "2021-09-04",
-    "name": "KAFKA消费",
-    "value": 0
-  },
-  {
-    "date": "2021-09-05",
-    "name": "KAFKA消费",
-    "value": 0
-  },
-  {
-    "date": "2021-09-06",
-    "name": "KAFKA消费",
-    "value": 0
-  },
-  {
-    "date": "2021-09-07",
-    "name": "KAFKA消费",
-    "value": 0
-  },
-  {
-    "date": "2021-09-08",
-    "name": "KAFKA消费",
-    "value": 0
-  },
-  {
-    "date": "2021-09-09",
-    "name": "KAFKA消费",
-    "value": 0
-  },
-  {
-    "date": "2021-09-10",
-    "name": "KAFKA消费",
-    "value": 0
-  },
-  {
-    "date": "2021-09-11",
-    "name": "KAFKA消费",
-    "value": 0
-  },
-  {
-    "date": "2021-09-12",
-    "name": "KAFKA消费",
-    "value": 0
-  },
-  {
-    "date": "2021-09-13",
-    "name": "KAFKA消费",
-    "value": 0
-  },
-  {
-    "date": "2021-09-14",
-    "name": "KAFKA消费",
-    "value": 0
-  },
-  {
-    "date": "2021-09-15",
-    "name": "KAFKA消费",
-    "value": 1
-  },
-  {
-    "date": "2021-09-16",
-    "name": "KAFKA消费",
-    "value": 0
-  },
-  {
-    "date": "2021-09-17",
-    "name": "KAFKA消费",
-    "value": 0
-  },
-  {
-    "date": "2021-09-18",
-    "name": "KAFKA消费",
-    "value": 0
-  },
-  {
-    "date": "2021-09-19",
-    "name": "KAFKA消费",
-    "value": 0
-  },
-  {
-    "date": "2021-09-20",
-    "name": "KAFKA消费",
-    "value": 0
-  },
-  {
-    "date": "2021-09-21",
-    "name": "KAFKA消费",
-    "value": 0
-  },
-  {
-    "date": "2021-09-22",
-    "name": "KAFKA消费",
-    "value": 0
-  },
-  {
-    "date": "2021-09-23",
-    "name": "KAFKA消费",
-    "value": 0
-  },
-  {
-    "date": "2021-09-24",
-    "name": "KAFKA消费",
-    "value": 0
-  }
-];
-
-const issuedata = [
-  {
-    "id": "1437342791630413825",
-    "date": "2021-09-13 17:10:00",
-    "type": "正常",
-    "total": 149120,
-    "sjsj": "2021-09-13 00:00:00",
-    "flag": false
-  },
-  {
-    "id": "1437342791668162561",
-    "date": "2021-09-13 17:10:00",
-    "type": "无上行报文",
-    "total": 20469,
-    "sjsj": "2021-09-13 00:00:00",
-    "flag": false
-  },
-  {
-    "id": "1437342791689134082",
-    "date": "2021-09-13 17:10:00",
-    "type": "前置未返回",
-    "total": 11868,
-    "sjsj": "2021-09-13 00:00:00",
-    "flag": false
-  },
-  {
-    "id": "1437342791714299905",
-    "date": "2021-09-13 17:10:00",
-    "type": "否认",
-    "total": 5226,
-    "sjsj": "2021-09-13 00:00:00",
-    "flag": false
-  },
-  {
-    "id": "1437342791731077121",
-    "date": "2021-09-13 17:10:00",
-    "type": "超时",
-    "total": 1112,
-    "sjsj": "2021-09-13 00:00:00",
-    "flag": false
-  },
-  {
-    "id": "1437342791747854338",
-    "date": "2021-09-13 17:10:00",
-    "type": "设备离线",
-    "total": 924,
-    "sjsj": "2021-09-13 00:00:00",
-    "flag": false
-  },
-  {
-    "id": "1437342791764631554",
-    "date": "2021-09-13 17:10:00",
-    "type": "报文出错",
-    "total": 168,
-    "sjsj": "2021-09-13 00:00:00",
-    "flag": false
-  }
-]
-
-const CPUdatas = [
-  {
-    "type": "CPU",
-    "expected": 100,
-    "name": "238.54.142.91",
-    "rate": 81,
-    "startdate": "2021-10-01 00:00:00",
-    "enddate": "2021-10-03 23:59:59",
-  },
-  {
-    "type": "CPU",
-    "expected": 100,
-    "name": "213.113.16.141",
-    "rate": 90,
-    "startdate": "2021-10-01 00:00:00",
-    "enddate": "2021-10-03 23:59:59",
-  },
-  {
-    "type": "CPU",
-    "expected": 100,
-    "name": "178.116.21.161",
-    "rate": 60,
-    "startdate": "2021-10-01 00:00:00",
-    "enddate": "2021-10-03 23:59:59",
-  },
-  {
-    "type": "CPU",
-    "expected": 100,
-    "name": "78.247.130.67",
-    "rate": 82,
-    "startdate": "2021-10-01 00:00:00",
-    "enddate": "2021-10-03 23:59:59",
-  },
-  {
-    "type": "CPU",
-    "expected": 100,
-    "name": "72.14.153.133",
-    "rate": 78,
-    "startdate": "2021-10-01 00:00:00",
-    "enddate": "2021-10-03 23:59:59",
-  }
-]
-
-// 饼图数据
-const Donutdata = [
-  { type: '博联', value: 600, startdate: '2021-10-03 00:00:00', enddate: '2021-10-03 23:59:59' },
-  { type: '南瑞', value: 200, startdate: '2021-10-03 00:00:00', enddate: '2021-10-02 23:59:59' },
-];
-
-const Donutdata2 = [
-  { type: '计划发布', value: 151 },
-  { type: '临时发布', value: 200 },
-];
-
 function Statistics(props) {
-  const { dispatch, analysis, analysis: { summary, platsum, bizsum, donesum, bizchecksum, unitsum } } = props;
+  const { dispatch, loadingsum,
+    analysis: { summary, platsum, bizsum, donesum, bizchecksum, },
+    unitdata: { unitanalysis, typeanalysis },
+    timeoutdata: { orederanalysis, taskanalysis, unittimeout, assigneetimeout },
+    ability: { allability, frontability, backability }
+  } = props;
   const [picval, setPicVal] = useState({});
   const [values, setValues] = useState({});
-  console.log(analysis)
 
   const piesum = (arr) => {
     let sum = 0;
@@ -783,224 +36,372 @@ function Statistics(props) {
     return sum
   };
 
-  // const changeLineData = (arr) => {
-  //   let arr;
-  //   if (arr) {
+  const dataArr = datas => {
+    const newArr = [];
+    if (!Array.isArray(datas)) {
+      return newArr;
+    }
+    for (let i = 0; i < datas.length; i += 1) {
+      const vote = {};
+      vote.value = datas[i].value;
+      vote.name = datas[i].type;
+      vote.date = datas[i].date;
+      newArr.push(vote);
+    }
+    return newArr;
+  };
 
-  //   }
-  // }
+  const dataCylinder = datas => {
+    const newArr = [];
+    if (!Array.isArray(datas)) {
+      return newArr;
+    }
+    for (let i = 0; i < datas.length; i += 1) {
+      const vote = {};
+      vote.name = datas[i].name;
+      vote.rate = datas[i].value;
+      vote.type = '环节';
+      newArr.push(vote);
+    }
+    return newArr;
+
+  };
 
   useEffect(() => {
     if (values && values.type) {
+      const val = {
+        begin: moment(values.beginTime).format('YYYY-MM-DD'),
+        end: moment(values.endTime).format('YYYY-MM-DD'),
+        type: values.type
+      }
       dispatch({
-        type: 'releaseanalysis/fetchanalysis',
-        payload: {
-          begin: moment(values.beginTime).format('YYYY-MM-DD'),
-          end: moment(values.endTime).format('YYYY-MM-DD'),
-          type: values.type
-        },
+        type: 'releaseanalysis/fetchsum',
+        payload: { ...val },
+      });
+      dispatch({
+        type: 'releaseanalysis/fetchunit',
+        payload: { ...val },
+      });
+      dispatch({
+        type: 'releaseanalysis/fetchtimeout',
+        payload: { ...val },
+      });
+      dispatch({
+        type: 'releaseanalysis/fetchability',
+        payload: { ...val },
       });
     }
-
   }, [values])
+
+  console.log(bizchecksum)
 
   return (
     <div>
       <SelectTime ChangeDate={(v) => setValues(v)} />
-      {summary && (<Row style={{ marginTop: 24 }}>
-        <div className={styles.statisticscard}>
-          <Avatar icon="desktop" />
-          <b>发布总情况</b>
-        </div>
-        {summary.map(({ name, total, prevTotal, ringRatio }) => {
-          const suffixmap = new Map([
-            ['发布总次数', '次'],
-            ['总功能项', '项'],
-            ['发布成功项', '项'],
-            ['发布成功率', '%'],
-          ])
-          return (
-            <Col span={6}>
-              <StatisticsCard title={`${name}：`} value={total} suffix={suffixmap.get(name)} des='环比' desval={ringRatio} type={prevTotal * 100 < total * 100 ? 'up' : 'down'} />
-            </Col>)
-        })}
-      </Row>)}
-      <Row gutter={16}>
-        {platsum && (<Col span={12} style={{ marginTop: 24 }}>
+      <Spin spinning={loadingsum}>
+        <Row style={{ marginTop: 24 }}>
           <div className={styles.statisticscard}>
             <Avatar icon="desktop" />
-            <b>平台验证情况</b>
+            <b>发布总情况</b>
           </div>
-          <Row>
-            {platsum.map(({ name, total, prevTotal, ringRatio }) => {
-              const suffixmap = new Map([
-                ['平台验证通过项', '项'],
-                ['平台验证未通过项', '项'],
-                ['平台验证成功率', '%'],
-              ])
-              return (
-                <Col span={8}>
-                  <StatisticsCard title={`${name}：`} value={total} suffix={suffixmap.get(name)} des='环比' desval={ringRatio} type={prevTotal * 100 < total * 100 ? 'up' : 'down'} />
-                </Col>)
-            })}
-          </Row>
-        </Col>)}
-        {bizsum && (<Col span={12} style={{ marginTop: 24 }}>
-          <div className={styles.statisticscard}>
-            <Avatar icon="file-protect" />
-            <b>业务验证情况</b>
-          </div>
-          <Row>
-            {bizsum.map(({ name, total, prevTotal, ringRatio }) => {
-              const suffixmap = new Map([
-                ['业务验证通过项', '项'],
-                ['业务验证未通过项', '项'],
-                ['业务验证成功率', '%'],
-              ])
-              return (
-                <Col span={8}>
-                  <StatisticsCard title={`${name}：`} value={total} suffix={suffixmap.get(name)} des='环比' desval={ringRatio} type={prevTotal * 100 < total * 100 ? 'up' : 'down'} />
-                </Col>)
-            })}
-          </Row>
-        </Col>)}
-      </Row>
-      <Row gutter={16}>
-        {donesum && (<Col span={12} style={{ marginTop: 24 }}>
-          <div className={styles.statisticscard}>
-            <Avatar icon="control" />
-            <b>发布实施情况</b>
-          </div>
-          <Row>
-            {donesum.map(({ name, total, prevTotal, ringRatio }) => {
-              const suffixmap = new Map([
-                ['发布实施通过项', '项'],
-                ['发布实施未通过项', '项'],
-                ['发布实施通过率', '%'],
-              ])
-              return (
-                <Col span={8}>
-                  <StatisticsCard title={`${name}：`} value={total} suffix={suffixmap.get(name)} des='环比' desval={ringRatio} type={prevTotal * 100 < total * 100 ? 'up' : 'down'} />
-                </Col>)
-            })}
-          </Row>
-        </Col>
-        )}
-        {bizchecksum && (<Col span={12} style={{ marginTop: 24 }}>
-          <div className={styles.statisticscard}>
-            <Avatar icon="security-scan" />
-            <b>业务复核情况</b>
-          </div>
-          <Row>
-            {bizchecksum.map(({ name, total, prevTotal, ringRatio }) => {
-              const suffixmap = new Map([
-                ['业务复核通过项', '项'],
-                ['业务复核未通过项', '项'],
-                ['业务复核通过率', '%'],
-              ])
-              return (
-                <Col span={8}>
-                  <StatisticsCard title={`${name}：`} value={total} suffix={suffixmap.get(name)} des='环比' desval={ringRatio} type={prevTotal * 100 < total * 100 ? 'up' : 'down'} />
-                </Col>)
-            })}
-          </Row>
-        </Col>
-        )}
-      </Row>
-      {unitsum && (
+          {(!summary || (summary && summary.length === 0)) && <Empty style={{ height: '100px' }} />}
+          {summary && summary.length > 0 && summary.map(({ name, total, prevTotal, ringRatio }) => {
+            const suffixmap = new Map([
+              ['发布总次数', '次'],
+              ['总功能项', '项'],
+              ['发布成功项', '项'],
+              ['发布成功率', '%'],
+            ])
+            return (
+              <Col span={6}>
+                <StatisticsCard title={`${name}：`} value={total} suffix={suffixmap.get(name)} des='环比' desval={ringRatio} type={prevTotal * 100 < total * 100 ? 'up' : 'down'} />
+              </Col>)
+          })}
+        </Row>
+        <Row gutter={16}>
+          {platsum && (<Col span={12} style={{ marginTop: 24 }}>
+            <div className={styles.statisticscard}>
+              <Avatar icon="desktop" />
+              <b>平台验证情况</b>
+            </div>
+            {(!platsum || (platsum && platsum.length === 0)) && <Empty style={{ height: '100px' }} />}
+            <Row>
+              {platsum && platsum.length > 0 && platsum.map(({ name, total, prevTotal, ringRatio }) => {
+                const suffixmap = new Map([
+                  ['平台验证通过项', '项'],
+                  ['平台验证未通过项', '项'],
+                  ['平台验证成功率', '%'],
+                ])
+                return (
+                  <Col span={8}>
+                    <StatisticsCard title={`${name}：`} value={total} suffix={suffixmap.get(name)} des='环比' desval={ringRatio} type={prevTotal * 100 < total * 100 ? 'up' : 'down'} />
+                  </Col>)
+              })}
+            </Row>
+          </Col>)}
+          {bizsum && (<Col span={12} style={{ marginTop: 24 }}>
+            <div className={styles.statisticscard}>
+              <Avatar icon="file-protect" />
+              <b>业务验证情况</b>
+            </div>
+            {(!bizsum || (bizsum && bizsum.length === 0)) && <Empty style={{ height: '100px' }} />}
+            <Row>
+              {bizsum && bizsum.length > 0 && bizsum.map(({ name, total, prevTotal, ringRatio }) => {
+                const suffixmap = new Map([
+                  ['业务验证通过项', '项'],
+                  ['业务验证未通过项', '项'],
+                  ['业务验证成功率', '%'],
+                ])
+                return (
+                  <Col span={8}>
+                    <StatisticsCard title={`${name}：`} value={total} suffix={suffixmap.get(name)} des='环比' desval={ringRatio} type={prevTotal * 100 < total * 100 ? 'up' : 'down'} />
+                  </Col>)
+              })}
+            </Row>
+          </Col>)}
+        </Row>
+        <Row gutter={16}>
+          <Col span={12} style={{ marginTop: 24 }}>
+            <div className={styles.statisticscard}>
+              <Avatar icon="control" />
+              <b>发布实施情况</b>
+            </div>
+            {(!donesum || (donesum && donesum.length === 0)) && <Empty style={{ height: '100px' }} />}
+            <Row>
+              {donesum && donesum.length > 0 && donesum.map(({ name, total, prevTotal, ringRatio }) => {
+                const suffixmap = new Map([
+                  ['发布实施通过项', '项'],
+                  ['发布实施未通过项', '项'],
+                  ['发布实施通过率', '%'],
+                ])
+                return (
+                  <Col span={8}>
+                    <StatisticsCard title={`${name}：`} value={total} suffix={suffixmap.get(name)} des='环比' desval={ringRatio} type={prevTotal * 100 < total * 100 ? 'up' : 'down'} />
+                  </Col>)
+              })}
+            </Row>
+          </Col>
+
+          {bizchecksum && bizchecksum.length > 0 && bizchecksum && (<Col span={12} style={{ marginTop: 24 }}>
+            <div className={styles.statisticscard}>
+              <Avatar icon="security-scan" />
+              <b>业务复核情况</b>
+            </div>
+            {(!bizchecksum || (bizchecksum && bizchecksum.length === 0)) && <Empty style={{ height: '100px' }} />}
+            <Row>
+              {bizchecksum && bizchecksum.map(({ name, total, prevTotal, ringRatio }) => {
+                const suffixmap = new Map([
+                  ['业务复核通过项', '项'],
+                  ['业务复核未通过项', '项'],
+                  ['业务复核通过率', '%'],
+                ])
+                return (
+                  <Col span={8}>
+                    <StatisticsCard title={`${name}：`} value={total} suffix={suffixmap.get(name)} des='环比' desval={ringRatio} type={prevTotal * 100 < total * 100 ? 'up' : 'down'} />
+                  </Col>)
+              })}
+            </Row>
+          </Col>
+          )}
+        </Row>
+      </Spin>
+      {unitanalysis && (
         <Row style={{ marginTop: 24 }}>
           <div className={styles.statisticscard}>
             <Avatar icon="cluster" />
             <b>发布工单责任单位情况</b>
           </div>
-          {unitsum.pieChart && (<Col span={8}>
+          <Col span={8}>
             <Card onMouseDown={() => setPicVal({})}>
               <DonutPCT
-                data={unitsum.pieChart}
+                data={unitanalysis.pieChart || []}
                 height={300}
                 totaltitle='发布总次数'
-                total={piesum(unitsum.pieChart)}
+                total={piesum(unitanalysis.pieChart)}
                 padding={[10, 30, 30, 30]}
                 onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
               />
             </Card>
           </Col>
-          )}
           <Col span={16}>
             <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-              {unitsum.lineChart && (
-                <SmoothLine
-                  data={unitsum.lineChart}
-                  height={300}
-                  padding={[30, 0, 60, 60]}
-                  onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
-                />
-              )}
+              <SmoothLine
+                data={dataArr(unitanalysis.lineChart || [])}
+                height={300}
+                padding={[30, 0, 60, 60]}
+                onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
+              />
             </Card>
           </Col>
         </Row>
       )}
-      <Row style={{ marginTop: 24 }}>
-        <div className={styles.statisticscard}>
-          <Avatar icon="share-alt" />
-          <b>发布类型统计分析</b>
-        </div>
-        <Col span={8}>
+      {typeanalysis && (
+        <Row style={{ marginTop: 24 }}>
+          <div className={styles.statisticscard}>
+            <Avatar icon="cluster" />
+            <b>发布类型统计分析</b>
+          </div>
+          <Col span={8}>
+            <Card onMouseDown={() => setPicVal({})}>
+              <DonutPCT
+                data={typeanalysis.pieChart || []}
+                height={300}
+                totaltitle='发布总次数'
+                total={piesum(unitanalysis.pieChart)}
+                padding={[10, 30, 30, 30]}
+                onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
+              />
+            </Card>
+          </Col>
+          <Col span={16}>
+            <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+              <SmoothLine
+                data={dataArr(typeanalysis.lineChart || [])}
+                height={300}
+                padding={[30, 0, 60, 60]}
+                onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
+              />
+            </Card>
+          </Col>
+        </Row>
+      )}
+      <Row style={{ marginTop: 24 }} gutter={16}>
+        <Col span={12}>
+          <div className={styles.statisticscard}>
+            <Avatar icon="share-alt" />
+            <b>发布超时总情况</b>
+          </div>
           <Card onMouseDown={() => setPicVal({})}>
-            <DonutPCT
-              data={Donutdata2}
-              height={300}
-              total="351"
-              totaltitle='发布总次数'
-              padding={[10, 30, 10, 30]}
-              onGetVal={(v) => { console.log('饼图', v); setPicVal({ ...picval, dutyUnit: v }) }}
-            />
+            {orederanalysis && orederanalysis.length === 0 && <Empty style={{ height: '300px' }} />}
+            {orederanalysis && orederanalysis.length > 0 && (
+              <DonutPCT
+                data={orederanalysis}
+                height={300}
+                totaltitle=''
+                total={piesum(unitanalysis.pieChart)}
+                padding={[10, 30, 30, 30]}
+                onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
+              />
+            )}
           </Card>
         </Col>
-        <Col span={16}>
-          <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-            {Smoothdata && (
-              <SmoothLine
-                data={Smoothdata}
+        <Col span={12}>
+          <div className={styles.statisticscard}>
+            <Avatar icon="share-alt" />
+            <b>环节超时Top5</b>
+          </div>
+          <Card onMouseDown={() => setPicVal({})}>
+            {taskanalysis && taskanalysis.length === 0 && <Empty style={{ height: '300px' }} />}
+            {taskanalysis && taskanalysis.length > 0 && (
+              <Cylinder
                 height={300}
-                padding={[30, 0, 50, 60]}
-                onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('曲线图', v) }}
+                data={dataCylinder(taskanalysis)}
+                padding={[0, 50, 30, 150]}
+                symbol=""
+                cols={cols}
+                colors="l(270) 0:#04e8ff 0.5:#05bdfe 1:#05bdfe"
+                onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
               />
             )}
           </Card>
         </Col>
       </Row>
-      <Row style={{ marginTop: 24 }}>
-        <div className={styles.statisticscard}>
-          <Avatar icon="share-alt" />
-          <b>发布类型统计分析</b>
-        </div>
+      <Row style={{ marginTop: 24 }} gutter={16}>
         <Col span={12}>
-          <ChartCard title="CPU TOP5" contentHeight={350} onMouseDown={() => setPicVal({})} >
-            {CPUdatas.length === 0 && <Empty style={{ height: '250px' }} />}
-            {CPUdatas.length > 0 && (
+          <div className={styles.statisticscard}>
+            <Avatar icon="share-alt" />
+            <b>责任单位超时Top</b>
+          </div>
+          <Card onMouseDown={() => setPicVal({})}>
+            {unittimeout && unittimeout.length === 0 && <Empty style={{ height: '300px' }} />}
+            {unittimeout && unittimeout.length > 0 && (
               <Cylinder
-                height={350}
-                data={CPUdatas}
+                height={300}
+                data={dataCylinder(unittimeout)}
                 padding={[0, 50, 30, 150]}
-                symbol="%"
+                symbol=""
                 cols={cols}
                 colors="l(270) 0:#04e8ff 0.5:#05bdfe 1:#05bdfe"
-                onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('柱形图', v) }}
+                onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
               />
             )}
-          </ChartCard>
+          </Card>
         </Col>
         <Col span={12}>
-          <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-            {issuedata && issuedata.length === 0 && <Empty style={{ height: '250px' }} />}
-            {issuedata && issuedata.length > 0 && (
-              <ColumnarY
-                cols={Issuedscale}
-                data={issuedata}
-                height={364}
-                padding={[30, 60, 50, 100]}
-                onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
+          <div className={styles.statisticscard}>
+            <Avatar icon="share-alt" />
+            <b>责任人超时Top5</b>
+          </div>
+          <Card onMouseDown={() => setPicVal({})}>
+            {assigneetimeout && assigneetimeout.length === 0 && <Empty style={{ height: '300px' }} />}
+            {assigneetimeout && assigneetimeout.length > 0 && (
+              <Cylinder
+                height={300}
+                data={dataCylinder(assigneetimeout)}
+                padding={[0, 50, 30, 150]}
+                symbol=""
+                cols={cols}
+                colors="l(270) 0:#04e8ff 0.5:#05bdfe 1:#05bdfe"
+                onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
+              />
+            )}
+          </Card>
+        </Col>
+      </Row>
+      <Row style={{ marginTop: 24 }} gutter={16}>
+        <Col span={8}>
+          <div className={styles.statisticscard}>
+            <Avatar icon="share-alt" />
+            <b>功能类型统计总情况</b>
+          </div>
+          <Card onMouseDown={() => setPicVal({})}>
+            {allability && allability.length === 0 && <Empty style={{ height: '300px' }} />}
+            {allability && allability.length > 0 && (
+              <DonutPCT
+                data={allability}
+                height={300}
+                totaltitle=''
+                total={piesum(unitanalysis.pieChart)}
+                padding={[10, 30, 30, 30]}
+                onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
+              />
+            )}
+          </Card>
+        </Col>
+        <Col span={8}>
+          <div className={styles.statisticscard}>
+            <Avatar icon="share-alt" />
+            <b>功能类型-前台功能统计情况</b>
+          </div>
+          <Card onMouseDown={() => setPicVal({})}>
+            {frontability && frontability.length === 0 && <Empty style={{ height: '300px' }} />}
+            {frontability && frontability.length > 0 && (
+              <DonutPCT
+                data={frontability}
+                height={300}
+                totaltitle=''
+                total={piesum(unitanalysis.pieChart)}
+                padding={[10, 30, 30, 30]}
+                onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
+              />
+            )}
+          </Card>
+        </Col>
+        <Col span={8}>
+          <div className={styles.statisticscard}>
+            <Avatar icon="share-alt" />
+            <b>功能类型-后台功能统计情况</b>
+          </div>
+          <Card onMouseDown={() => setPicVal({})}>
+            {backability && backability.length === 0 && <Empty style={{ height: '300px' }} />}
+            {backability && backability.length > 0 && (
+              <DonutPCT
+                data={backability}
+                height={300}
+                totaltitle=''
+                total={piesum(unitanalysis.pieChart)}
+                padding={[10, 30, 30, 30]}
+                onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
               />
             )}
           </Card>
@@ -1012,5 +413,9 @@ function Statistics(props) {
 
 export default connect(({ releaseanalysis, loading }) => ({
   analysis: releaseanalysis.analysis,
-  loading: loading.models.releaseanalysis,
+  unitdata: releaseanalysis.unitdata,
+  timeoutdata: releaseanalysis.timeoutdata,
+  ability: releaseanalysis.ability,
+  loadingsum: loading.effects['releaseanalysis/fetchsum'],
+  loadingunit: loading.effects['releaseanalysis/fetchunit'],
 }))(Statistics);

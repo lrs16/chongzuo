@@ -61,3 +61,57 @@ export async function unitStatistical(params) {
     requestType: 'form',
   });
 }
+
+// 统计分析 发布类型统计/release/analysis/typeStatistical
+export async function typeStatistical(params) {
+  return request(`/release/analysis/typeStatistical`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 统计分析 发布超时总情况
+export async function timeOutOrder(params) {
+  return request(`/release/analysis/timeOutOrder`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 统计分析 超时环节TOP5
+export async function timeOutTask(params) {
+  return request(`/release/analysis/timeOutTask`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 统计分析 /release/analysis/unitTimeOut责任单位超时
+export async function unitTimeOut(params) {
+  return request(`/release/analysis/unitTimeOut`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 统计分析 /release/analysis/assigneeTimeOut 责任人超时
+export async function assigneeTimeOut(params) {
+  return request(`/release/analysis/assigneeTimeOut`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 统计分析 /release/analysis/abilityTimeOut功能类型统计
+export async function abilityTimeOut(params) {
+  return request(`/release/analysis/abilityTimeOut`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
