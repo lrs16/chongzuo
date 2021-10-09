@@ -1,9 +1,11 @@
 import React from 'react';
 import router from 'umi/router';
+import moment from 'moment';
 import { connect } from 'dva';
-import { Button, Dropdown, Message, Menu } from 'antd';
+import { Button, Dropdown, Message, Menu, } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
-import { createOrder } from '../services/api';
+import { message } from '_antd@4.6.2@antd';
+import { createOrder, downloadExport } from '../services/api';
 
 function ButtonGroup(props) {
   const { selectedRowKeys, selectRowdata, values, ChangeSelects, dispatch } = props;
@@ -106,6 +108,28 @@ function ButtonGroup(props) {
     }
   };
 
+  const handleDownload = () => {
+    let ids = '';
+    if (selectedRowKeys && selectedRowKeys.length > 0) {
+      const selectids = selectRowdata.map(item => (item.id));
+      ids = selectids.toString();
+    };
+    downloadExport({ ...values, ids }).then(res => {
+      if (res) {
+        const filename = `告警_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+        const blob = new Blob([res]);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      } else {
+        message.error('导出失败！')
+      }
+    })
+  }
+
   const menu = (
     <Menu onClick={handleMenuClick}>
       <Menu.Item key="event">事件工单</Menu.Item>
@@ -128,7 +152,7 @@ function ButtonGroup(props) {
       <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleClearConfig()}>
         手工消除
       </Button>
-      <Button style={{ marginRight: 8 }}>导 出</Button>
+      <Button style={{ marginRight: 8 }} onClick={() => handleDownload()}>导 出</Button>
     </div>
   );
 }

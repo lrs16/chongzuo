@@ -146,3 +146,13 @@ export async function setAppMonitorConf(params) {
     requestType: 'formjosn',
   });
 }
+
+// 告警导出
+export async function downloadExport(params) {
+  return request(`/warn/biz/export`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+    requestType: 'formjosn',
+    responseType: 'blob',
+  });
+}

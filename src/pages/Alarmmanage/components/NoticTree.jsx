@@ -35,6 +35,7 @@ function NoticTree(props) {
     setExpandedKeys(Keys);
   };
   const onCheck = (Keys) => {
+    console.log(Keys)
     setCheckedKeys(Keys)
   };
   const onSelect = (Keys, info) => {
@@ -83,6 +84,8 @@ function NoticTree(props) {
   const appmap = getTypebykey('1437322008466026497');             // 应用程序
   const filesmmap = getTypebykey('1442417886570639362');          // 配置文件
   const messagermap = getTypebykey('1437584114700386305');        // 上下行报文
+  const alarmgroupmap = getTypebykey('1443057641104752641');        // 告警通知
+  console.log(measurmap);
 
   const treenodemap = new Map([
     ['计量业务告警', measurmap],
@@ -148,11 +151,11 @@ function NoticTree(props) {
                 getFieldDecorator('key4')(
                   <Tree
                     checkable
-                    // onExpand={onExpand}
-                    // expandedKeys={expandedKeys}
+                    onExpand={onExpand}
+                    expandedKeys={expandedKeys}
                     autoExpandParent
-                    // onCheck={onCheck}
-                    // checkedKeys={checkedKeys}
+                    onCheck={onCheck}
+                    checkedKeys={checkedKeys}
                     onSelect={onSelect}
                     selectedKeys={selectedKeys}
                     defaultExpandedKeys={['a']}
@@ -163,8 +166,8 @@ function NoticTree(props) {
                         if (type) {
                           return (<TreeNode key={item.key} title={item.val} >
                             {type.map(obj => [
-                              <TreeNode key={obj.key} title={obj.title} >
-                                <TreeNode key={`${obj.key}_1`} title='告警' />
+                              <TreeNode key={`${item.val}_${obj.title}`} title={obj.title} >
+                                <TreeNode key={`${item.val}_${obj.title}_告警`} title='告警' />
                                 <TreeNode key={`${obj.key}_2`} title='确认告警' />
                                 <TreeNode key={`${obj.key}_3`} title='取消告警' />
                               </TreeNode>
