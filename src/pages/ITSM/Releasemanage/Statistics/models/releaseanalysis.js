@@ -41,6 +41,9 @@ export default {
       });
     },
     *fetchunit({ payload }, { call, put }) {
+      yield put({
+        type: 'clearcache',
+      });
       const unitres = yield call(unitStatistical, payload);
       const typeres = yield call(typeStatistical, payload);
       yield put({
@@ -85,7 +88,7 @@ export default {
     clearcache(state) {
       return {
         ...state,
-        analysis: undefined,
+        unitdata: {},
       };
     },
     save(state, action) {

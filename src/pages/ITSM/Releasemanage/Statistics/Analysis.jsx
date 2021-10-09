@@ -230,7 +230,7 @@ function Statistics(props) {
           <Col span={8}>
             <Card onMouseDown={() => setPicVal({})}>
               <DonutPCT
-                data={unitanalysis.pieChart || []}
+                data={unitanalysis.pieChart}
                 height={300}
                 totaltitle='发布总次数'
                 total={piesum(unitanalysis.pieChart)}
@@ -242,7 +242,7 @@ function Statistics(props) {
           <Col span={16}>
             <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
               <SmoothLine
-                data={dataArr(unitanalysis.lineChart || [])}
+                data={dataArr(unitanalysis.lineChart)}
                 height={300}
                 padding={[30, 0, 60, 60]}
                 onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
