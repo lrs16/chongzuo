@@ -76,3 +76,16 @@ export async function timeoutDownload(params) {
     responseType: 'blob',
   });
 }
+
+// 故障统计分析
+// 工单总情况 /trouble/analysis/getOrderConditions time1, time2, type
+export async function queryOrderConditions(params) {
+  console.log(params, 'params')
+  return request(`/trouble/analysis/getOrderConditions?time1=${params.time1}&time2=${params.time2}&type=${params.type}`, {
+      method: 'GET',
+      data: { params }
+      // data: JSON.stringify(params),
+      // requestType: 'formjosn',
+      // requestType: 'form',
+  });
+}

@@ -6,7 +6,9 @@ import {
   demandSchedulelist,
   demandTimeoutlist,
   demandscheduleDownload,
-  demandtimeoutDownload
+  demandtimeoutDownload,
+  demandstatipieData, // 统计分析 -饼图
+  demandstatilineData, // 统计分析 -趋势折线图
 } from '../services/statisticapi';
 
 export default {
@@ -17,6 +19,8 @@ export default {
     demandstateArr:[],
     demandscheduleArr:[],
     demandtomeoutArr:[],
+    piedatalist: [], // 统计分析 -饼图
+    linedatalist: [], // 统计分析 -趋势折线图
   },
 
   effects: {
@@ -71,38 +75,71 @@ export default {
       return yield call(demandtimeoutDownload, payload)
     },
 
+    // 统计分析
+    // 统计分析饼图
+    *getdemandstatipieData({ payload }, { call, put }) {
+      const response = yield call(demandstatipieData, payload);
+      yield put({
+        type: 'demandpiedatalist',
+        payload: response,
+      });
+    },
+
+    // 统计分析趋势图
+    *getdemandstatilineData({ payload }, { call, put }) {
+      const response = yield call(demandstatilineData, payload);
+      yield put({
+        type: 'demandlinedatalist',
+        payload: response,
+      });
+    },
+
   },
 
   reducers: {
-  // 功能需求统计列表
-  requirementArr(state, action) {
-    return {
-      ...state,
-      requirementArr: action.payload.data
-    }
-  },
+    // 功能需求统计列表
+    requirementArr(state, action) {
+      return {
+        ...state,
+        requirementArr: action.payload.data
+      }
+    },
 
-  // 需求状态统计列表
-  demandstateArr(state, action) {
-    return {
-      ...state,
-      demandstateArr: action.payload.data
-    }
-  },
-  // 需求进度统计列表
-  demandscheduleArr(state, action) {
-    return {
-      ...state,
-      demandscheduleArr: action.payload.data
-    }
-  },
-  // 需求超时统计列表
-  demandtomeoutArr(state, action) {
-    return {
-      ...state,
-      demandtomeoutArr: action.payload.data
-    }
-  },
+    // 需求状态统计列表
+    demandstateArr(state, action) {
+      return {
+        ...state,
+        demandstateArr: action.payload.data
+      }
+    },
+    // 需求进度统计列表
+    demandscheduleArr(state, action) {
+      return {
+        ...state,
+        demandscheduleArr: action.payload.data
+      }
+    },
+    // 需求超时统计列表
+    demandtomeoutArr(state, action) {
+      return {
+        ...state,
+        demandtomeoutArr: action.payload.data
+      }
+    },
+    // 统计分析 -饼图
+    demandpiedatalist(state, action) {
+      return {
+        ...state,
+        piedatalist: action.payload.data,
+      };
+    },
+    // 统计分析 -趋势折线图
+    demandlinedatalist(state, action) {
+      return {
+        ...state,
+        linedatalist: action.payload.data,
+      };
+    },
 
   },
 };

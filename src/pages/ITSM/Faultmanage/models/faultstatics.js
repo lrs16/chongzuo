@@ -7,7 +7,8 @@ import {
   faulthandleList,
   handlegrateDownload,
   timeoutList,
-  timeoutDownload
+  timeoutDownload,
+  queryOrderConditions, // 统计分析-工单总情况
 } from '../services/statistics';
 
 export default {
@@ -19,7 +20,8 @@ export default {
     faultArr:[],
     relatedictArr:[],
     faultdetailArr:[],
-    timeoutArr:[]
+    timeoutArr:[],
+    analysislist: [], // 统计分析-工单总情况
   },
 
   effects: {
@@ -83,9 +85,17 @@ export default {
      // 导出超时统计
      *timeDownload({ payload }, { call, put }) {
        return yield call(timeoutDownload);
-     }
+     },
 
-    
+    //  统计分析-工单总情况
+     *getOrderConditions({ payload }, { call, put }) {
+       console.log(payload, 'payload')
+      const response = yield call(queryOrderConditions, { ...payload });
+      yield put({
+        type: 'saveanalysislist',
+        payload: response.data,
+      });
+    },
 
   },
 
@@ -111,5 +121,12 @@ export default {
       faultdetailArr: action.payload.data
     }
   }
+  },
+
+  saveanalysislist(state, action) {
+    return {
+      ...state,
+      analysislist: action.payload,
+    };
   },
 };

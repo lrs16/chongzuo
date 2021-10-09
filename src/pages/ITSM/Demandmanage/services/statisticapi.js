@@ -106,5 +106,23 @@ export async function querkeyVal(params) {
   });
 }
 
+// 需求统计分析 bizchart类
 
+// /demand/statisstics/pieData  -饼图数据
+export async function demandstatipieData(params) {
+  return request(`/demand/statisstics/pieData`, {
+    method: 'POST',
+    data:params,
+    requestType:'form'
+  });
+}
+
+// /demand/statisstics/lineData  -趋势折线数据
+export async function demandstatilineData(params) {
+  return request(`/demand/statisstics/lineData`, {
+    method: 'POST',
+    data:params,
+    requestType:'form'
+  });
+}
 

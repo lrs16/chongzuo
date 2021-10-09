@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-// import { connect } from 'dva';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'dva';
 import { Card, Row, Col, Avatar, Empty } from 'antd';
+import moment from 'moment';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { ChartCard } from '@/components/Charts';
 import SelectTime from '@/components/SelectTime/SelectTime';
@@ -483,28 +484,38 @@ const Donutdata5 = [
 
 function StatisticalAnalysis(props) {
   const { pagetitle } = props.route.name;
+  const {
+    dispatch,
+    analysislist, // 工单总情况
+  } = props;
+
+  console.log(analysislist, 'analysislist')
+
   // const [selectedTags, setSelectedTags] = useState([]);
   const [picval, setPicVal] = useState({});
+  const [values, setValues] = useState({}); // 获取统计周期
 
-  // const handleChang = (tag, checked) => {
-  //   if (checked) {
-  //     setSelectedTags([tag])
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   dispatch({
-  //     type: 'alarmovervies/fetchoversmooth',
-  //     payload: { key: 'function' },
-  //   });
-  // }, [])
+  useEffect(() => {
+    if (values && values.type) {
+      console.log(values, 'values')
+      const val = {
+        time1: moment(values.beginTime).format('YYYY-MM-DD'),
+        time2: moment(values.endTime).format('YYYY-MM-DD'),
+        type: values.type
+      };
+      dispatch({ // 工单总情况
+        type: 'faultstatics/getOrderConditions',
+        payload: { ...val },
+      });
+    }
+  }, [values]);
 
   return (
     <PageHeaderWrapper
       title={pagetitle}
     >
       <div>
-        <SelectTime ChangeDate={(v) => console.log(v)} />
+        <SelectTime ChangeDate={(v) => setValues(v)} />
         <Row gutter={24}>
           <Col span={8} style={{ marginTop: 24 }}>
             <div className={styles.statisticscard}>
@@ -792,8 +803,6 @@ function StatisticalAnalysis(props) {
   );
 }
 
-export default StatisticalAnalysis;
-// export default connect(({ loading }) => ({
-//   // Smoothdata: alarmovervies.Smoothdata,
-//   loading: loading.models.alarmovervies,
-// }))(StatisticalAnalysis);
+export default connect(({ faultstatics }) => ({
+  analysislist: faultstatics.analysislist, // 工单总情况
+}))(StatisticalAnalysis);
