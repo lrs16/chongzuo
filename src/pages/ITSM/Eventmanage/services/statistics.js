@@ -104,5 +104,40 @@ export async function downloadEventHandleRateListExcel(params) {
   })
 }
 
+//  可视化分析接口
+// // 事件处理人排名
+export async function getHandlerTop(params) {
+  return request(`/event/analysis/getHandlerTop?num=${params.value}&time1=${params.startTime}&time2=${params.endTime}`); 
+}
+// 事件处理单位排名
+export async function getHandleUnitTop(params) {
+  return request(`/event/analysis/getHandleUnitTop?num=${params.value}&time1=${params.startTime}&time2=${params.endTime}`); 
+}
+
+// 事件对象总情况
+export async function getObjectConditions(params) {
+  return request(`/event/analysis/getObjectConditions?num=${params.value}&time1=${params.startTime}&time2=${params.endTime}`); 
+}
+// 事件工单总情况
+export async function getOrderConditions(params) {
+  return request(`/event/analysis/getOrderConditions?num=${params.value}&time1=${params.startTime}&time2=${params.endTime}`); 
+}
+// 事件登记单位排名
+export async function getRegisterUnitTop(params) {
+  return request(`/event/analysis/getRegisterUnitTop?num=${params.value}&time1=${params.startTime}&time2=${params.endTime}`); 
+}
+// 事件登记人排名
+export async function getRegisterUserTop(params) {
+  return request(`/event/analysis/getRegisterUserTop?num=${params.value}&time1=${params.startTime}&time2=${params.endTime}`); 
+}
+// 事件超时总情况
+export async function getTimeOutConditions(params) {
+  return request(`/event/analysis/getTimeOutConditions?num=${params.value}&time1=${params.startTime}&time2=${params.endTime}`); 
+}
+// 事件分类总情况
+export async function getTypeConditions(params) {
+  return request(`/event/analysis/getTypeConditions?time1=${params.startTime}&time2=${params.endTime}&type=${params.type}`); 
+}
+
 
 

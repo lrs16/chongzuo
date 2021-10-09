@@ -10,7 +10,15 @@ import {
   eventtopnDownload,
   eventhandlerateDownload,
   getEventHandleRateList,
-  downloadEventHandleRateListExcel
+  downloadEventHandleRateListExcel,
+  getHandlerTop,
+  getHandleUnitTop,
+  getObjectConditions,
+  getOrderConditions,
+  getRegisterUnitTop,
+  getRegisterUserTop,
+  getTimeOutConditions,
+  getTypeConditions
 } from '../services/statistics';
 
 export default {
@@ -24,7 +32,17 @@ export default {
     orderrateArr:[],
     eventServicearr:[],
     primaryObject:[],
-    eventHandleRatearr:[]
+    eventHandleRatearr:[],
+
+    getHandlerTopdata:[],
+    getHandleUnitTopdata:[],
+    getObjectConditionsdata:[],
+    getOrderConditionsdata:[],
+    getRegisterUnitTopdata:[],
+    getRegisterUserTopdata:[],
+    getTimeOutConditionsdata:[],
+    getTypeConditionsdata:[],
+    getTypeConditionsdatalineChart:[],
   },
 
   effects: {
@@ -111,6 +129,25 @@ export default {
       return yield call(downloadEventHandleRateListExcel, payload)
     },
 
+    // 可视化统计分析
+     // // 事件处理人排名
+     *fetchgetHandlerTop({ payload }, { call, put }) {
+      const response = yield call(getHandlerTop,payload);
+      yield put ({
+        type: 'getHandlerTopdata',
+        payload: response
+      })
+    },
+
+     // // 事件事件分类总情况
+     *fetchgetTypeConditions({ payload }, { call, put }) {
+      const response = yield call(getTypeConditions,payload);
+      console.log('response: ', response);
+      yield put ({
+        type: 'getTypeConditionsdata',
+        payload: response
+      })
+    },
     
   },
 
@@ -157,6 +194,28 @@ export default {
     return {
       ...state,
       eventHandleRatearr: action.payload.data
+    }
+  },
+
+  getHandlerTopdata(state, action) {
+    return {
+      ...state,
+      getHandlerTopdata: action.payload.data
+    }
+  },
+  
+  //  饼图
+  getTypeConditionsdata(state, action) {
+    return {
+      ...state,
+      getTypeConditionsdata: action.payload.data.pieChart
+    }
+  },
+  //  线图
+  getTypeConditionsdata(state, action) {
+    return {
+      ...state,
+      getTypeConditionsdatalineChart: action.payload.data.lineChart
     }
   },
 

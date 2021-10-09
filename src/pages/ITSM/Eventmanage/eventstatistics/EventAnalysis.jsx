@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 import { Card, Row, Col, Avatar, Select, Empty } from 'antd';
 import { ChartCard } from '@/components/Charts';
 import StatisticsCard from '@/components/StatisticsCard';
@@ -8,7 +9,7 @@ import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
 import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
 import Cylinder from '@/components/CustomizeCharts/Cylinder';
 import ColumnarY from '@/components/CustomizeCharts/ColumnarY';
-import styles from '../Problemmanage/index.less';
+import styles from '../../Problemmanage/index.less';
 import Donut from '@/components/CustomizeCharts/Donut';
 import Barchart from '@/components/CustomizeCharts/Barchart';
 
@@ -19,60 +20,7 @@ const cols = {
     // tickCount: 10,
   },
 };
-const Donutdatatwo = [
-  {
-    type: '事件单',
-    count: 600,
-  },
-  {
-    type: '故障单',
-    count: 200,
-  },
-  {
-    type: '问题单',
-    count: 100,
-  },
-  {
-    type: '需求单',
-    count: 111,
-  },
-  {
-    type: '发布单',
-    count: 150,
-  },
-];
 
-const Issuedscale = {
-  total: {
-    type: 'linear',
-    alias: '返回结果数量',
-    min: 0,
-    tickInterval: 5000,
-  },
-};
-
-// const Donutdata = [
-//   {
-//     "type": "业务指标",
-//     "value": 2
-//   },
-//   {
-//     "type": "终端在线和入库",
-//     "value": 1
-//   },
-//   {
-//     "type": "KAFKA消费",
-//     "value": 1
-//   },
-//   {
-//     "type": "接口数据核查",
-//     "value": 1
-//   },
-//   {
-//     "type": "主站系统运行",
-//     "value": 1
-//   }
-// ];
 
 const Smoothdata = [
   {
@@ -677,110 +625,6 @@ const Smoothdata = [
   },
 ];
 
-const issuedata = [
-  {
-    id: '1437342791630413825',
-    date: '2021-09-13 17:10:00',
-    type: '正常',
-    total: 149120,
-    sjsj: '2021-09-13 00:00:00',
-    flag: false,
-  },
-  {
-    id: '1437342791668162561',
-    date: '2021-09-13 17:10:00',
-    type: '无上行报文',
-    total: 20469,
-    sjsj: '2021-09-13 00:00:00',
-    flag: false,
-  },
-  {
-    id: '1437342791689134082',
-    date: '2021-09-13 17:10:00',
-    type: '前置未返回',
-    total: 11868,
-    sjsj: '2021-09-13 00:00:00',
-    flag: false,
-  },
-  {
-    id: '1437342791714299905',
-    date: '2021-09-13 17:10:00',
-    type: '否认',
-    total: 5226,
-    sjsj: '2021-09-13 00:00:00',
-    flag: false,
-  },
-  {
-    id: '1437342791731077121',
-    date: '2021-09-13 17:10:00',
-    type: '超时',
-    total: 1112,
-    sjsj: '2021-09-13 00:00:00',
-    flag: false,
-  },
-  {
-    id: '1437342791747854338',
-    date: '2021-09-13 17:10:00',
-    type: '设备离线',
-    total: 924,
-    sjsj: '2021-09-13 00:00:00',
-    flag: false,
-  },
-  {
-    id: '1437342791764631554',
-    date: '2021-09-13 17:10:00',
-    type: '报文出错',
-    total: 168,
-    sjsj: '2021-09-13 00:00:00',
-    flag: false,
-  },
-];
-
-
-
-const CPUdatas = [
-  {
-    type: 'CPU',
-    expected: 100,
-    name: '238.54.142.91',
-    rate: 81,
-    startdate: '2021-10-01 00:00:00',
-    enddate: '2021-10-03 23:59:59',
-  },
-  {
-    type: 'CPU',
-    expected: 100,
-    name: '213.113.16.141',
-    rate: 90,
-    startdate: '2021-10-01 00:00:00',
-    enddate: '2021-10-03 23:59:59',
-  },
-  {
-    type: 'CPU',
-    expected: 100,
-    name: '178.116.21.161',
-    rate: 60,
-    startdate: '2021-10-01 00:00:00',
-    enddate: '2021-10-03 23:59:59',
-  },
-  {
-    type: 'CPU',
-    expected: 100,
-    name: '78.247.130.67',
-    rate: 82,
-    startdate: '2021-10-01 00:00:00',
-    enddate: '2021-10-03 23:59:59',
-  },
-  {
-    type: 'CPU',
-    expected: 100,
-    name: '72.14.153.133',
-    rate: 78,
-    startdate: '2021-10-01 00:00:00',
-    enddate: '2021-10-03 23:59:59',
-  },
-];
-
 // 饼图数据
 const Donutdata = [
   { type: '博联', value: 600, startdate: '2021-10-03 00:00:00', enddate: '2021-10-03 23:59:59' },
@@ -803,7 +647,7 @@ const test = [
   }
 ]
 
-function StatisticsAnalysis(props) {
+function EventAnalysis(props) {
   const {
     dispatch,
     statpieArr,
@@ -813,7 +657,12 @@ function StatisticsAnalysis(props) {
     lineArr,
     statratioArr,
     timeoutArr,
+    getHandlerTopdata,
+    getTypeConditionsdata,
+    getTypeConditionsdatalineChart,
   } = props;
+  console.log(getTypeConditionsdata, 'getTypeConditionsdata')
+  console.log(getTypeConditionsdatalineChart, 'getTypeConditionsdatalineChart')
   const [selectedTags, setSelectedTags] = useState([]);
   const [picval, setPicVal] = useState({});
   const [bardata, setBardata] = useState([]);
@@ -863,8 +712,6 @@ function StatisticsAnalysis(props) {
     projectAssessment();
   }, []);
 
-  console.log(lineArr, 'lineArr');
-  console.log(statpieArr, 'lplp')
 
   // console.log(statpieArr, 'statpieArr')
 
@@ -954,7 +801,27 @@ function StatisticsAnalysis(props) {
     }
   }, [loading]);
 
+  const getHandlerTop = () => {
+    dispatch({
+      type: 'eventstatistics/fetchgetHandlerTop',
+      payload: { startTime: moment().startOf('month').format('YYYY-MM-DD 00:00:00'), endTime: moment(moment().endOf('month').format('YYYY-MM-DD 23:59:59')) }
+    })
+  }
+
+  const getTypeConditions = () => {
+    dispatch({
+      type: 'eventstatistics/fetchgetTypeConditions',
+      payload: {
+        type: 'MONTH',
+        startTime: moment().startOf('month').format('YYYY-MM-DD 00:00:00'),
+        endTime: moment().endOf('month').format('YYYY-MM-DD 23:59:59')
+      }
+    })
+  }
+
   useEffect(() => {
+    // getHandlerTop()
+    getTypeConditions()
     dispatch({
       type: 'problemstatistics/fetchstatpieData',
       payload: { begin: '2021-08-01 00:00:00', end: '2021-09-01 00:00:00' },
@@ -972,8 +839,6 @@ function StatisticsAnalysis(props) {
       payload: { statTimeBegin: '2021-08-01 00:00:00', statTimeEnd: '2021-09-01 00:00:00' }
     })
   }, []);
-
-  console.log(statpieArr && statpieArr['问题登记人TOP'], 'console.log(statpieArr)')
 
   return (
     <div>
@@ -1337,12 +1202,14 @@ function StatisticsAnalysis(props) {
   );
 }
 
-export default connect(({ problemstatistics, qualityassessment, loading }) => ({
+export default connect(({ problemstatistics, eventstatistics, qualityassessment, loading }) => ({
   statpieArr: problemstatistics.statpieArr,
   lineArr: problemstatistics.lineArr,
   statratioArr: problemstatistics.statratioArr,
   statisticData: qualityassessment.statisticData,
   statsSumdata: qualityassessment.statsSumdata,
+  getHandlerTopdata: eventstatistics.getHandlerTopdata, //   统计分析接口
+  getTypeConditionsdatalineChart: eventstatistics.getTypeConditionsdatalineChart, //   统计分析接口
   loading: loading.models.problemstatistics,
   timeoutArr: problemstatistics.timeoutArr
-}))(StatisticsAnalysis);
+}))(EventAnalysis);

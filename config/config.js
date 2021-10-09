@@ -349,6 +349,12 @@ export default {
                               icon: 'cloud-server',
                               component: './ITSM/Eventmanage/eventstatistics/Workordertreatmentrate',
                             },
+                            {
+                              path: '/ITSM/eventmanage/eventstatistics/statisticsAnalysis',
+                              name: '事件统计分析',
+                              icon: 'cloud-server',
+                              component: './ITSM/Eventmanage/eventstatistics/EventAnalysis',
+                            },
                           ],
                         },
                         {
