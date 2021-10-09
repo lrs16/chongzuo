@@ -5,6 +5,7 @@ import { querkeyVal } from '@/services/api';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import DictLower from '@/components/SysDict/DictLower';
 import NoticTree from './components/NoticTree';
+import { userList } from './services/api';
 
 const { Sider, Content } = Layout;
 const { SubMenu } = Menu;
@@ -37,7 +38,7 @@ const data = [
 ]
 
 function NoticeSetting(props) {
-  const { dispatch } = props;
+  const { dispatch, list } = props;
   const pagetitle = props.route.name;
   const [tabActivekey, settabActivekey] = useState('1'); // 打开标签
   const [alarmgroup, setAlarmgroup] = useState([]);
@@ -45,10 +46,51 @@ function NoticeSetting(props) {
   const [openType, setOpenType] = useState('');
   const [openKeys, setOpenKeys] = useState(['001']);
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
+  const [selectedRowKeys, setSelectionRow] = useState([]);
+  const [selectRowdata, setSelectdata] = useState([]);
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
 
   const handleTabChange = key => {
     settabActivekey(key)
   };
+
+  const handleSearch = () => {
+
+  }
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: (selectRowKey, selectedRows) => {
+      setSelectionRow(selectRowKey);
+      setSelectdata(selectedRows);
+    },
+  };
+
+  const onShowSizeChange = (page, size) => {
+    handleSearch(page, size);
+    setPageinations({
+      ...paginations,
+      pageSize: size,
+    });
+  };
+
+  const changePage = page => {
+    handleSearch(page, paginations.pageSize);
+    setPageinations({
+      ...paginations,
+      current: page,
+    });
+  };
+
+  const pagination = {
+    showSizeChanger: true,
+    onShowSizeChange: (page, size) => onShowSizeChange(page, size),
+    current: paginations.current,
+    pageSize: paginations.pageSize,
+    total: list.total,
+    onChange: page => changePage(page),
+  };
+
   const tabList = [
     {
       key: '1',
@@ -130,10 +172,6 @@ function NoticeSetting(props) {
     }
     return [];
   };
-
-  const rowSelection = (rowkey) => {
-    console.log(rowkey)
-  }
 
   const measurmap = getTypebykey('1436608796393205762');          // 计量
   const hostmap = getTypebykey('1437319207950217217');            // 主机巡检内容
@@ -217,7 +255,12 @@ function NoticeSetting(props) {
             ghost
             onClick={() => { setVisible(!visible); setOpenType('new') }}>删除
           </Button>
-          <Table columns={columns} dataSource={data} rowSelection={rowSelection} />
+          <Table
+            columns={columns}
+            dataSource={data}
+            rowSelection={rowSelection}
+            pagination={pagination}
+          />
         </Card>
       )}
       <NoticTree visible={visible} ChangeVisible={(v) => setVisible(v)} openType={openType} alarmgroup={alarmgroup} selectdata={selectdata} />
@@ -225,4 +268,7 @@ function NoticeSetting(props) {
   );
 }
 
-export default NoticeSetting;
+export default connect(({ noticesetting, loading }) => ({
+  list: noticesetting.list,
+  loading: loading.models.noticesetting,
+}))(NoticeSetting);

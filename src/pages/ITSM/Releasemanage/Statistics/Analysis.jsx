@@ -146,7 +146,7 @@ function Statistics(props) {
                 const suffixmap = new Map([
                   ['平台验证通过项', '项'],
                   ['平台验证未通过项', '项'],
-                  ['平台验证成功率', '%'],
+                  ['平台验证通过率', '%'],
                 ])
                 return (
                   <Col span={8}>
@@ -166,7 +166,7 @@ function Statistics(props) {
                 const suffixmap = new Map([
                   ['业务验证通过项', '项'],
                   ['业务验证未通过项', '项'],
-                  ['业务验证成功率', '%'],
+                  ['业务验证通过率', '%'],
                 ])
                 return (
                   <Col span={8}>
@@ -293,7 +293,7 @@ function Statistics(props) {
               <DonutPCT
                 data={orederanalysis}
                 height={300}
-                totaltitle=''
+                totaltitle='发布总次数'
                 total={piesum(orederanalysis)}
                 padding={[10, 30, 30, 30]}
                 onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
@@ -377,7 +377,7 @@ function Statistics(props) {
               <DonutPCT
                 data={allability}
                 height={300}
-                totaltitle=''
+                totaltitle='清单数'
                 total={piesum(allability)}
                 padding={[10, 30, 30, 30]}
                 onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
@@ -396,7 +396,7 @@ function Statistics(props) {
               <DonutPCT
                 data={frontability}
                 height={300}
-                totaltitle=''
+                totaltitle='清单数'
                 total={piesum(frontability)}
                 padding={[10, 30, 30, 30]}
                 onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
@@ -415,7 +415,7 @@ function Statistics(props) {
               <DonutPCT
                 data={backability}
                 height={300}
-                totaltitle=''
+                totaltitle='清单数'
                 total={piesum(backability)}
                 padding={[10, 30, 30, 30]}
                 onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}

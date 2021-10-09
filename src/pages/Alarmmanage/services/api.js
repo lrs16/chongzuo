@@ -156,3 +156,30 @@ export async function downloadExport(params) {
     responseType: 'blob',
   });
 }
+
+// /warn/sms/userList告警联系人设置-列表数据
+export async function userList(params) {
+  return request(`/warn/sms/userList`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// /warn/sms/saveUser保存告警通知人
+export async function saveUser(params) {
+  return request(`/warn/sms/saveUser`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}
+
+// /warn/sms/delUser删除告警通知人
+export async function delUser(params) {
+  return request(`/warn/sms/delUser`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}

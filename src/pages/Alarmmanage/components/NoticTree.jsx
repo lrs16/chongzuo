@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Tree, Form, Row, Col, Input, Drawer, Button, AutoComplete } from 'antd';
 import { SearchUsers } from '../../SysManage/services/api';
+import { saveUser } from '../services/api';
 
 const { TreeNode } = Tree;
 const { Search } = Input;
@@ -18,29 +19,34 @@ const formItemLayout = {
 };
 
 function NoticTree(props) {
-  const { visible, ChangeVisible, openType, alarmgroup, selectdata } = props;
+  const { visible, ChangeVisible, openType, alarmgroup, selectdata, record } = props;
   const { getFieldDecorator, resetFields, getFieldsValue, setFieldsValue } = props.form;
-  const [expandedKeys, setExpandedKeys] = useState([]);
+  // const [expandedKeys, setExpandedKeys] = useState([]);
   const [checkedKeys, setCheckedKeys] = useState([]);
-  const [selectedKeys, setSelectedKeys] = useState([]);
+  // const [selectedKeys, setSelectedKeys] = useState([]);
   const [users, setUsers] = useState([]);
+  const required = true;
 
   const hanldleCancel = () => {
     ChangeVisible(false)
   };
   const handleOk = () => {
-    ChangeVisible(false)
+    const val = getFieldsValue();
+    saveUser(val).then(res => {
+      console.log(res)
+    })
+    //  ChangeVisible(false);
   }
-  const onExpand = (Keys) => {
-    setExpandedKeys(Keys);
-  };
+  // const onExpand = (Keys) => {
+  //   setExpandedKeys(Keys);
+  // };
   const onCheck = (Keys) => {
-    console.log(Keys)
-    setCheckedKeys(Keys)
+    setFieldsValue({ noticGroup: Keys.toString() });
+    setCheckedKeys(Keys);
   };
-  const onSelect = (Keys, info) => {
-    setSelectedKeys(Keys)
-  };
+  // const onSelect = (Keys, info) => {
+  //   setSelectedKeys(Keys)
+  // };
 
   const Searchuser = (queKey) => {
     if (queKey) {
@@ -55,8 +61,10 @@ function NoticTree(props) {
   const handleSelectduser = (v, opt) => {
     setFieldsValue({
       key1: opt.props.user.userName,
-      key2: opt.props.user.deptNameExt,
-      key3: opt.props.user.userPhone,
+      username: opt.props.user.userName,
+      userId: opt.props.user.id,
+      userDept: opt.props.user.deptNameExt,
+      tel: opt.props.user.userPhone,
     })
   }
 
@@ -64,8 +72,8 @@ function NoticTree(props) {
   const userlist = users.map(opt => (
     <Option key={opt.id} value={opt.userName} user={opt}>
       <div>
-        <span>{opt.userName}</span>
-        <span>{opt.deptNameExt}</span>
+        <span style={{ marginRight: 8 }}>{opt.userName}</span>
+        <span style={{ marginRight: 8 }}>{opt.deptNameExt}</span>
         <span>{opt.userPhone}</span>
       </div>
     </Option>
@@ -84,8 +92,6 @@ function NoticTree(props) {
   const appmap = getTypebykey('1437322008466026497');             // 应用程序
   const filesmmap = getTypebykey('1442417886570639362');          // 配置文件
   const messagermap = getTypebykey('1437584114700386305');        // 上下行报文
-  const alarmgroupmap = getTypebykey('1443057641104752641');        // 告警通知
-  console.log(measurmap);
 
   const treenodemap = new Map([
     ['计量业务告警', measurmap],
@@ -107,9 +113,21 @@ function NoticTree(props) {
       <Row>
         <Form {...formItemLayout}>
           <Row gutter={24}>
+            <Col span={24} style={{ display: 'none' }}>
+              <Form.Item label="id">{
+                getFieldDecorator('id', {
+                  initialValue: record.id,
+                })(
+                  <Input disabled />
+                )}
+              </Form.Item>
+            </Col>
             <Col span={24}>
               <Form.Item label="告警通知人">{
-                getFieldDecorator('key1')(
+                getFieldDecorator('key1', {
+                  rules: [{ required, message: '请选择告警通知人' }],
+                  initialValue: record.username,
+                })(
                   <>
                     <AutoComplete
                       defaultActiveFirstOption={false}
@@ -132,33 +150,58 @@ function NoticTree(props) {
                 )}
               </Form.Item>
             </Col>
+            <Col span={24} style={{ display: 'none' }}>
+              <Form.Item label="告警通知人">{
+                getFieldDecorator('username', {
+                  initialValue: record.username,
+                })(
+                  <Input disabled />
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={24}>
+              <Form.Item label="告警通知人id">{
+                getFieldDecorator('userId', {
+                  rules: [{ required, message: '请选择告警通知人' }],
+                  initialValue: record.userId,
+                })(
+                  <Input disabled />
+                )}
+              </Form.Item>
+            </Col>
             <Col span={24}>
               <Form.Item label="所属部门">{
-                getFieldDecorator('key2')(
+                getFieldDecorator('userDept', {
+                  rules: [{ required, message: '请选择所属部门' }],
+                  initialValue: record.userDept,
+                })(
                   <Input disabled />
                 )}
               </Form.Item>
             </Col>
             <Col span={24}>
               <Form.Item label="联系电话">{
-                getFieldDecorator('key3')(
+                getFieldDecorator('tel', {
+                  rules: [{ required, message: '请输入联系人电话' }],
+                  initialValue: record.tel,
+                })(
                   <Input allowClear />
                 )}
               </Form.Item>
             </Col>
             <Col span={24}>
-              {alarmgroup && alarmgroup.length > 0 && (<Form.Item label="告警通知组">{
-                getFieldDecorator('key4')(
+              {alarmgroup && alarmgroup.length > 0 && (
+                <Form.Item label="告警通知项">
                   <Tree
                     checkable
-                    onExpand={onExpand}
-                    expandedKeys={expandedKeys}
+                    // onExpand={onExpand}
+                    // expandedKeys={expandedKeys}
                     autoExpandParent
                     onCheck={onCheck}
-                    checkedKeys={checkedKeys}
-                    onSelect={onSelect}
-                    selectedKeys={selectedKeys}
-                    defaultExpandedKeys={['a']}
+                    checkedKeys={record.noticGroup && record.noticGroup.length > 0 ? record.noticGroup.split() : []}
+                    // onSelect={onSelect}
+                    // selectedKeys={selectedKeys}
+                    defaultExpandedKeys={['all']}
                   >
                     <TreeNode title='全部' key='a'>
                       {alarmgroup.map(item => {
@@ -166,10 +209,10 @@ function NoticTree(props) {
                         if (type) {
                           return (<TreeNode key={item.key} title={item.val} >
                             {type.map(obj => [
-                              <TreeNode key={`${item.val}_${obj.title}`} title={obj.title} >
-                                <TreeNode key={`${item.val}_${obj.title}_告警`} title='告警' />
-                                <TreeNode key={`${obj.key}_2`} title='确认告警' />
-                                <TreeNode key={`${obj.key}_3`} title='取消告警' />
+                              <TreeNode key={`${item.key}_${obj.dict_code}`} title={obj.title} >
+                                <TreeNode key={`${item.key}_${obj.dict_code}_1`} title='告警' />
+                                <TreeNode key={`${item.key}_${obj.dict_code}_2`} title='确认告警' />
+                                <TreeNode key={`${item.key}_${obj.dict_code}_3`} title='取消告警' />
                               </TreeNode>
                             ])}
                           </TreeNode>)
@@ -183,8 +226,14 @@ function NoticTree(props) {
                       })}
                     </TreeNode>
                   </Tree>
-                )}
-              </Form.Item>
+                  {getFieldDecorator('noticGroup', {
+                    rules: [{ required, message: '请选择告警通知项' }],
+                    initialValue: record.noticGroup,
+                  })
+                    (
+                      <></>
+                    )}
+                </Form.Item>
               )}
             </Col>
           </Row>
@@ -212,6 +261,10 @@ function NoticTree(props) {
       </div>
     </Drawer>
   );
+}
+
+NoticTree.defaultProps = {
+  record: {}
 }
 
 export default Form.create()(NoticTree);
