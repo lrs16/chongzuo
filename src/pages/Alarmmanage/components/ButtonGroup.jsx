@@ -4,7 +4,6 @@ import moment from 'moment';
 import { connect } from 'dva';
 import { Button, Dropdown, Message, Menu, } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
-import { message } from '_antd@4.6.2@antd';
 import { createOrder, downloadExport } from '../services/api';
 
 function ButtonGroup(props) {
@@ -125,7 +124,7 @@ function ButtonGroup(props) {
         a.click();
         window.URL.revokeObjectURL(url);
       } else {
-        message.error('导出失败！')
+        Message.error('导出失败！')
       }
     })
   }
