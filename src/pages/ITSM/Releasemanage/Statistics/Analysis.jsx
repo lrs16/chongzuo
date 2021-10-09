@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Card, Row, Col, Avatar, Empty, Spin } from 'antd';
+import { Card, Row, Col, Avatar, Empty, Spin, InputNumber } from 'antd';
 import StatisticsCard from '@/components/StatisticsCard';
 import SelectTime from '@/components/SelectTime/SelectTime';
 import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
@@ -25,6 +25,7 @@ function Statistics(props) {
   } = props;
   const [picval, setPicVal] = useState({});
   const [values, setValues] = useState({});
+  const [topN, setTopN] = useState(5)
 
   const piesum = (arr) => {
     let sum = 0;
@@ -53,18 +54,35 @@ function Statistics(props) {
 
   const dataCylinder = datas => {
     const newArr = [];
-    if (!Array.isArray(datas)) {
+    if (!Array.isArray(datas) || datas.length === 0) {
       return newArr;
     }
-    for (let i = 0; i < datas.length; i += 1) {
+    for (let i = 0; datas.length < 5 ? i < datas.length : i < 5; i += 1) {
       const vote = {};
       vote.name = datas[i].name;
       vote.rate = datas[i].value;
-      vote.type = '环节';
+      vote.expected = datas[0].value;
       newArr.push(vote);
     }
-    return newArr;
+    return newArr.reverse();
+  };
 
+  const dataAssigneetimeout = datas => {
+    const newArr = [];
+    if (!Array.isArray(datas) || datas.length === 0) {
+      return newArr;
+    }
+    for (let i = 0; datas.length < topN ? i < datas.length : i < topN; i += 1) {
+      const vote = {};
+      vote.name = datas[i].name;
+      vote.rate = datas[i].value;
+      vote.expected = datas[0].value;
+      newArr.push(vote);
+    }
+    return newArr.reverse();
+  };
+  const handleInput = (val) => {
+    setTopN(val)
   };
 
   useEffect(() => {
@@ -294,7 +312,7 @@ function Statistics(props) {
               <Cylinder
                 height={300}
                 data={dataCylinder(taskanalysis)}
-                padding={[0, 50, 30, 150]}
+                padding={[10, 50, 30, 120]}
                 symbol=""
                 cols={cols}
                 colors="l(270) 0:#04e8ff 0.5:#05bdfe 1:#05bdfe"
@@ -316,10 +334,10 @@ function Statistics(props) {
               <Cylinder
                 height={300}
                 data={dataCylinder(unittimeout)}
-                padding={[0, 50, 30, 150]}
+                padding={[10, 50, 30, 100]}
                 symbol=""
                 cols={cols}
-                colors="l(270) 0:#04e8ff 0.5:#05bdfe 1:#05bdfe"
+                colors="l(180) 0:#c408f8 0.5:#8105fb 1:#8105fb"
                 onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
               />
             )}
@@ -328,18 +346,19 @@ function Statistics(props) {
         <Col span={12}>
           <div className={styles.statisticscard}>
             <Avatar icon="share-alt" />
-            <b>责任人超时Top5</b>
+            <b>责任人超时Top{topN}</b>
+            <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={handleInput} /></div>
           </div>
           <Card onMouseDown={() => setPicVal({})}>
             {assigneetimeout && assigneetimeout.length === 0 && <Empty style={{ height: '300px' }} />}
             {assigneetimeout && assigneetimeout.length > 0 && (
               <Cylinder
                 height={300}
-                data={dataCylinder(assigneetimeout)}
-                padding={[0, 50, 30, 150]}
+                data={dataAssigneetimeout(assigneetimeout)}
+                padding={[10, 50, 30, 70]}
                 symbol=""
                 cols={cols}
-                colors="l(270) 0:#04e8ff 0.5:#05bdfe 1:#05bdfe"
+                colors="l(180) 0:#ffbb02 0.5:#fe7402 1:#fe7402"
                 onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
               />
             )}
