@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
-import { Card, Row, Col, Avatar, Select, Input } from 'antd';
+import { Card, Row, Col, Avatar, Select, Empty } from 'antd';
 import { ChartCard } from '@/components/Charts';
 import StatisticsCard from '@/components/StatisticsCard';
 import SelectTime from '@/components/SelectTime/SelectTime';
@@ -736,6 +736,8 @@ const issuedata = [
   },
 ];
 
+
+
 const CPUdatas = [
   {
     type: 'CPU',
@@ -790,6 +792,17 @@ const Donutdata2 = [
   { type: '临时发布', value: 200 },
 ];
 
+const test = [
+  {
+    type: '按时处理',
+    value: 1
+  },
+  {
+    type: '超时处理',
+    value: 5
+  }
+]
+
 function StatisticsAnalysis(props) {
   const {
     dispatch,
@@ -798,14 +811,25 @@ function StatisticsAnalysis(props) {
     statisticData,
     statsSumdata,
     lineArr,
-    statratioArr
+    statratioArr,
+    timeoutArr,
   } = props;
-  console.log(statratioArr, 'statratioArr')
   const [selectedTags, setSelectedTags] = useState([]);
   const [picval, setPicVal] = useState({});
   const [bardata, setBardata] = useState([]);
   const [toplist, setToplist] = useState([]);
-  console.log('toplist: ', toplist);
+  const [type, setType] = useState([]);
+  const [timeoutdata, setTimeoutdata] = useState([])
+
+  const piesum = (arr) => {
+    let sum = 0;
+    if (arr && arr.length > 0) {
+      arr.forEach(item => {
+        sum += item.value;
+      });
+    };
+    return sum
+  };
 
   const handleChang = (tag, checked) => {
     if (checked) {
@@ -839,7 +863,89 @@ function StatisticsAnalysis(props) {
     projectAssessment();
   }, []);
 
-  console.log(statratioArr, 'statratioArr')
+  console.log(lineArr, 'lineArr');
+  console.log(statpieArr, 'lplp')
+
+  // console.log(statpieArr, 'statpieArr')
+
+  const dataCylinder = datas => {
+    const newArr = [];
+    if (!Array.isArray(datas)) {
+      return newArr;
+    }
+    for (let i = 0; i < datas.length; i += 1) {
+      const vote = {};
+      vote.name = datas[i].type;
+      vote.rate = datas[i].value;
+      vote.type = '环节';
+      newArr.push(vote);
+    }
+    return newArr;
+  };
+
+  // console.log(dataCylinder(statpieArr['问题登记人TOP']))
+
+  useEffect(() => {
+    const result = [];
+    const typeresult = [];
+    let timeoutList = [];
+    let changeType = []
+    if (loading === false) {
+      const obj1 = {
+        // total: statratioArr.total,
+        // resolved: statratioArr.resolved,
+        // rate: statratioArr.Rate,
+        type: '已解决',
+        value: statratioArr.resolved,
+        // value:'60%',
+      }
+      const obj2 = {
+        // total: statratioArr.total,
+        // resolved: statratioArr.resolved,
+        // rate: statratioArr.Rate,
+        type: '未解决',
+        value: statratioArr.total - statratioArr.resolved,
+      }
+      const obj3 = {
+        // total: statratioArr.total,
+        // program: statratioArr.program,
+        // function: statratioArr.function,
+        // rate: statratioArr.Rate,
+        type: '功能问题',
+        value: statratioArr.function,
+      }
+
+      const obj4 = {
+        // total: statratioArr.total,
+        // program: statratioArr.program,
+        // function: statratioArr.function,
+        // rate: statratioArr.Rate,
+        type: '程序问题',
+        value: statratioArr.program,
+      }
+      result.push(obj1, obj2);
+      typeresult.push(obj3, obj4);
+      // timeoutList = JSON.parse(JSON.stringify(timeoutArr)
+      //   .replace(/statName/g, 'type')
+      //   .replace(/statCount/g, 'value')
+      //   // .replace(/second_object/g, 'field3')
+      //   // .replace(/last_num/g, 'field4')
+      //   // .replace(/now_num/g, 'field5')
+      //   // .replace(/points_count/g, 'field6')
+      // );
+      timeoutList = timeoutArr.map(item => {
+        return {
+          type: item.statName,
+          value: Number(item.statCount)
+        }
+      })
+
+      setTimeoutdata(timeoutList)
+      setToplist(result);
+      setType(typeresult)
+
+    }
+  }, [loading])
 
   useEffect(() => {
     if (statsSumdata && statsSumdata.length > 0) {
@@ -847,8 +953,6 @@ function StatisticsAnalysis(props) {
       setBardata(result);
     }
   }, [loading]);
-
-  console.log(statpieArr, 'statpieArr');
 
   useEffect(() => {
     dispatch({
@@ -859,244 +963,376 @@ function StatisticsAnalysis(props) {
       type: 'problemstatistics/fetchstatratioData',
       payload: { begin: '2021-08-01 00:00:00', end: '2021-09-01 00:00:00' },
     });
+    dispatch({
+      type: 'problemstatistics/fetchlineData',
+      payload: { begin: '2021-08-01 00:00:00', end: '2021-09-01 00:00:00' },
+    });
+    dispatch({
+      type: 'problemstatistics/timeoutLists',
+      payload: { statTimeBegin: '2021-08-01 00:00:00', statTimeEnd: '2021-09-01 00:00:00' }
+    })
   }, []);
+
+  console.log(statpieArr && statpieArr['问题登记人TOP'], 'console.log(statpieArr)')
+
   return (
     <div>
-      <SelectTime ChangeDate={v => console.log(v)} />
-  
+      {
+        loading === false && (
+          <>
+            <SelectTime ChangeDate={v => console.log(v)} />
+            <Row style={{ marginTop: 24 }}>
+              {([statratioArr] || []).map((obj, index) => {
+                return (
+                  <Row key={index} style={{ marginTop: 10 }}>
+                    <div className={styles.statisticscard}>
+                      <Avatar icon='desktop' />
+                      <b>问题工单情况</b>
+                    </div>
 
-      <Row style={{ marginTop: 24 }}>
-        <Col span={8}>
-          <Card onMouseDown={() => setPicVal({})}>
-            <DonutPCT
-              data={Donutdata2}
-              height={300}
-              total="351"
-              totaltitle="程序问题总数"
-              padding={[10, 30, 10, 30]}
-              onGetVal={v => {
-                console.log('饼图', v);
-                setPicVal({ ...picval, dutyUnit: v });
-              }}
-            />
-          </Card>
-        </Col>
-        <Col span={16}>
-          <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-            {Smoothdata && (
-              <SmoothLine
-                data={Smoothdata}
-                height={300}
-                padding={[30, 0, 50, 60]}
-                onGetVal={v => {
-                  setPicVal({ ...picval, type: v });
-                  console.log('曲线图', v);
-                }}
-              />
-            )}
-          </Card>
-        </Col>
-      </Row>
+                    <Col span={8}>
+                      <StatisticsCard title='问题总数' value={obj.total} suffix='单' des='环比' type={Number(obj.total) > Number(obj.prevResolved) ? 'up' : 'down'} />
+                    </Col>
+                    <Col span={8}>
+                      <StatisticsCard title='已解决' value={obj.resolved} suffix='单' des='环比' type={Number(obj.resolved) > Number(obj.prevResolved) ? 'up' : 'down'} />
+                    </Col>
+                    <Col span={8}>
+                      <StatisticsCard title='解决率' value={obj.Rate} suffix='%' des='环比' type={Number(obj.totalScore) > Number(obj.prevTotalScore) ? 'up' : 'down'} />
+                    </Col>
+                  </Row>
+                )
+              })}
 
-      <Row style={{ marginTop: 24 }}>
-        <Col span={8}>
-          <Card onMouseDown={() => setPicVal({})}>
-            <DonutPCT
-              data={Donutdata2}
-              height={300}
-              total="351"
-              totaltitle="功能问题总数"
-              padding={[10, 30, 10, 30]}
-              onGetVal={v => {
-                console.log('饼图', v);
-                setPicVal({ ...picval, dutyUnit: v });
-              }}
-            />
-          </Card>
-        </Col>
-        <Col span={16}>
-          <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-            {Smoothdata && (
-              <SmoothLine
-                data={Smoothdata}
-                height={300}
-                padding={[30, 0, 50, 60]}
-                onGetVal={v => {
-                  setPicVal({ ...picval, type: v });
-                  console.log('曲线图', v);
-                }}
-              />
-            )}
-          </Card>
-        </Col>
-      </Row>
+              {([statratioArr] || []).map((obj, index) => {
+                return (
+                  <Row key={index} style={{ marginTop: 10 }}>
+                    <div className={styles.statisticscard}>
+                      <Avatar icon='desktop' />
+                      <b>问题分类情况</b>
+                    </div>
 
-      <Row style={{ marginTop: 24 }}>
-        <div className={styles.statisticscard}>
-          <Avatar icon="cluster" />
-          <b>问题来源统计分析</b>
-        </div>
-        <Col span={8}>
-          <Card onMouseDown={() => setPicVal({})}>
-            <DonutPCT
-              data={Donutdata}
-              height={300}
-              totaltitle="问题总数"
-              total="550"
-              padding={[10, 30, 10, 30]}
-              onGetVal={v => {
-                console.log('发布工单责任单位情况:饼图', v);
-                setPicVal({ ...picval, dutyUnit: v });
-              }}
-            />
-          </Card>
-        </Col>
-        <Col span={16}>
-          <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-            {Smoothdata && (
-              <SmoothLine
-                data={Smoothdata}
-                height={300}
-                padding={[30, 0, 50, 60]}
-                onGetVal={v => {
-                  console.log('发布工单责任单位情况：曲线图', v);
-                  setPicVal({ ...picval, type: v });
-                }}
-              />
-            )}
-          </Card>
-        </Col>
-      </Row>
+                    <Col span={12}>
+                      <StatisticsCard title='程序问题' value={obj.program} suffix='单' des='环比' type={Number(obj.program) > Number(obj.prevProgram) ? 'up' : 'down'} />
+                    </Col>
+                    <Col span={12}>
+                      <StatisticsCard title='功能问题' value={obj.function} suffix='单' des='环比' type={Number(obj.function) > Number(obj.prevFunction) ? 'up' : 'down'} />
+                    </Col>
 
-      <Row style={{ marginTop: 24 }}>
-        <div className={styles.statisticscard}>
-          <Avatar icon="cluster" />
-          <b>问题来源统计分析</b>
-        </div>
-        <Col span={8}>
-          <Card onMouseDown={() => setPicVal({})}>
-            <DonutPCT
-              data={Donutdata}
-              height={300}
-              totaltitle="问题总数"
-              total="550"
-              padding={[10, 30, 10, 30]}
-              onGetVal={v => {
-                console.log('发布工单责任单位情况:饼图', v);
-                setPicVal({ ...picval, dutyUnit: v });
-              }}
-            />
-          </Card>
-        </Col>
-        <Col span={16}>
-          <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-            {Smoothdata && (
-              <SmoothLine
-                data={Smoothdata}
-                height={300}
-                padding={[30, 0, 50, 60]}
-                onGetVal={v => {
-                  console.log('发布工单责任单位情况：曲线图', v);
-                  setPicVal({ ...picval, type: v });
-                }}
-              />
-            )}
-          </Card>
-        </Col>
-      </Row>
+                  </Row>
+                )
+              })}
 
-      <Row style={{ marginTop: 24 }}>
-        <Col span={8}>
-          <ChartCard title="问题工单超时情况">
-            <Donut
-              data={Donutdatatwo}
-              height={300}
-              total="1161"
-              padding={[10, 30, 10, 30]}
-              detailParams={newdata => {
-                showDetaillist(newdata, 'donut');
-              }}
-            />
-          </ChartCard>
-        </Col>
-
-        <Col span={16}>
-          <ChartCard title="问题工单超时情况">
-            {Smoothdata && (
-              <SmoothLine
-                data={Smoothdata}
-                height={300}
-                padding={[30, 0, 50, 60]}
-                onGetVal={v => {
-                  console.log('发布工单责任单位情况：曲线图', v);
-                  setPicVal({ ...picval, type: v });
-                }}
-              />
-            )}
-          </ChartCard>
-        </Col>
-      </Row>
-
-      <Row style={{ marginTop: 24 }}>
-        <Col span={20}>
-          <Donut
-            data={Donutdatatwo}
-            height={300}
-            total="1161"
-            padding={[10, 30, 10, 30]}
-            detailParams={newdata => {
-              showDetaillist(newdata, 'donut');
-            }}
-          />
-        </Col>
-        <Col span={16}>
-          <ChartCard title="问题登记单位Top5">
-            <Col span={20}>
-              {Smoothdata && (
-                <SmoothLine
-                  data={Smoothdata}
-                  height={300}
-                  padding={[30, 0, 50, 60]}
-                  onGetVal={v => {
-                    console.log('发布工单责任单位情况：曲线图', v);
-                    setPicVal({ ...picval, type: v });
-                  }}
-                />
-              )}
-            </Col>
+            </Row>
 
 
-            <Col span={4} style={{ zIndex: 1000 }}>
-              <Select defaultValue="5">
-                <Option value="5">5</Option>
-                <Option value="10">10</Option>
-                <Option value="15">15</Option>
-                <Option value="20">20</Option>
-              </Select>
-            </Col>
+            {/* 问题分类总情况 */}
+            <Row style={{ marginTop: 24 }}>
+              <div className={styles.statisticscard}>
+                <Avatar icon="cluster" />
+                <b>问题工单总情况</b>
+              </div>
+              <Col span={8}>
+                <Card onMouseDown={() => setPicVal({})}>
+                  <DonutPCT
+                    data={toplist}
+                    height={300}
+                    total={statratioArr.total}
+                    totaltitle="问题总数"
+                    padding={[10, 30, 10, 30]}
+                    onGetVal={v => {
+                      console.log('饼图', v);
+                      setPicVal({ ...picval, dutyUnit: v });
+                    }}
+                  />
+                </Card>
+              </Col>
+              <Col span={16}>
+                <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+                  {Smoothdata && (
+                    <SmoothLine
+                      data={lineArr && lineArr['问题工单量趋势']}
+                      height={300}
+                      padding={[30, 0, 50, 60]}
+                      onGetVal={v => {
+                        setPicVal({ ...picval, type: v });
+                        console.log('曲线图', v);
+                      }}
+                    />
+                  )}
+                </Card>
+              </Col>
+            </Row>
 
-          </ChartCard>
-        </Col>
+            {/* 问题分类统计分析 */}
+            {/* 问题分类总情况 */}
+            <Row style={{ marginTop: 24 }}>
+              <div className={styles.statisticscard}>
+                <Avatar icon="cluster" />
+                <b>问题分类统计分析</b>
+              </div>
+              <Col span={8}>
+                <Card onMouseDown={() => setPicVal({})}>
+                  <DonutPCT
+                    data={type}
+                    height={300}
+                    total={statratioArr.total}
+                    totaltitle="问题总数"
+                    padding={[10, 30, 10, 30]}
+                    onGetVal={v => {
+                      console.log('饼图', v);
+                      setPicVal({ ...picval, dutyUnit: v });
+                    }}
+                  />
+                </Card>
+              </Col>
+              <Col span={16}>
+                <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+                  {Smoothdata && (
+                    <SmoothLine
+                      data={lineArr && lineArr['问题分类总趋势']}
+                      height={300}
+                      padding={[30, 0, 50, 60]}
+                      onGetVal={v => {
+                        setPicVal({ ...picval, type: v });
+                        console.log('曲线图', v);
+                      }}
+                    />
+                  )}
+                </Card>
+              </Col>
+            </Row>
 
-      </Row>
+            {/* 程序问题情况 */}
+            <Row style={{ marginTop: 24 }}>
+              <Col span={8}>
+                <Card onMouseDown={() => setPicVal({})}>
+                  <DonutPCT
+                    // data={Donutdata}
+                    data={statpieArr && statpieArr['程序问题情况']}
+                    height={300}
+                    total={piesum(statpieArr && statpieArr['程序问题情况'])}
+                    totaltitle="程序问题总数"
+                    padding={[10, 30, 10, 30]}
+                    onGetVal={v => {
+                      console.log('饼图', v);
+                      setPicVal({ ...picval, dutyUnit: v });
+                    }}
+                  />
+                </Card>
+              </Col>
+              <Col span={16}>
+                <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+                  {lineArr && lineArr['程序问题趋势'] && (
+                    <SmoothLine
+                      // data={Smoothdata}
+                      data={lineArr && lineArr['程序问题趋势']}
+                      height={300}
+                      padding={[30, 0, 50, 60]}
+                      onGetVal={v => {
+                        setPicVal({ ...picval, type: v });
+                        console.log('曲线图', v);
+                      }}
+                    />
+                  )}
+                </Card>
+              </Col>
+            </Row>
+
+            {/* 功能问题情况 */}
+            <Row style={{ marginTop: 24 }}>
+              <Col span={8}>
+                <Card onMouseDown={() => setPicVal({})}>
+                  <DonutPCT
+                    data={statpieArr && statpieArr['程序问题情况']}
+                    height={300}
+                    // total={piesum( statpieArr && statpieArr['程序问题情况'])}
+                    totaltitle="功能问题总数"
+                    padding={[10, 30, 10, 30]}
+                    onGetVal={v => {
+                      console.log('饼图', v);
+                      setPicVal({ ...picval, dutyUnit: v });
+                    }}
+                  />
+                </Card>
+              </Col>
+              <Col span={16}>
+                <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+                  {Smoothdata && (
+                    <SmoothLine
+                      data={lineArr && lineArr['程序问题趋势']}
+                      height={300}
+                      padding={[30, 0, 50, 60]}
+                      onGetVal={v => {
+                        setPicVal({ ...picval, type: v });
+                        console.log('曲线图', v);
+                      }}
+                    />
+                  )}
+                </Card>
+              </Col>
+            </Row>
 
 
-      <Row style={{ marginTop: 24 }}>
-        <Col span={24}>
-          {/* <ChartCard title='项目考核情况'> */}
-          <Barchart
-            data={bardata}
-            title="项目考核情况"
-            // position='contractName*分值'
-            xField="分值"
-            yField="contractName"
-            colors="l(270) 0:#04e8ff 0.5:#05bdfe 1:#05bdfe"
-          // height={315}
-          // detailParams={newdata => { showDetaillist(newdata, 'barchart') }}
-          />
-          {/* </ChartCard> */}
-        </Col>
-      </Row>
+            <Row style={{ marginTop: 24 }}>
+              <div className={styles.statisticscard}>
+                <Avatar icon="cluster" />
+                <b>问题来源统计分析</b>
+              </div>
+              <Col span={8}>
+                <Card onMouseDown={() => setPicVal({})}>
+                  <DonutPCT
+                    data={statpieArr && statpieArr['问题来源统计分析']}
+                    height={300}
+                    total={piesum(statpieArr && statpieArr['问题来源统计分析'])}
+                    totaltitle="问题总数"
+                    padding={[10, 30, 10, 30]}
+                    onGetVal={v => {
+                      console.log('饼图', v);
+                      setPicVal({ ...picval, dutyUnit: v });
+                    }}
+                  />
+                </Card>
+              </Col>
+              <Col span={16}>
+                <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+                  {lineArr && lineArr['问题来源'] && (
+                    <SmoothLine
+                      data={lineArr && lineArr['问题来源']}
+                      height={300}
+                      padding={[30, 0, 50, 60]}
+                      onGetVal={v => {
+                        setPicVal({ ...picval, type: v });
+                        console.log('曲线图', v);
+                      }}
+                    />
+                  )}
+                </Card>
+              </Col>
+            </Row>
+
+            <Row style={{ marginTop: 24 }} gutter={16}>
+              <Col span={8}>
+                <div className={styles.statisticscard}>
+                  <Avatar icon="cluster" />
+                  <b>问题工单超时情况</b>
+                </div>
+                <Card onMouseDown={() => setPicVal({})}>
+                  <DonutPCT
+                    data={timeoutdata}
+                    height={300}
+                    total={piesum(timeoutdata)}
+                    totaltitle="问题总数"
+                    padding={[10, 30, 10, 30]}
+                    onGetVal={v => {
+                      console.log('饼图', v);
+                      setPicVal({ ...picval, dutyUnit: v });
+                    }}
+                  />
+                </Card>
+              </Col>
+
+              <Col span={16}>
+                <div className={styles.statisticscard}>
+                  <Avatar icon="share-alt" />
+                  <b>问题登记人Top5</b>
+                </div>
+                <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+                  {statpieArr && statpieArr['问题登记人TOP'] && statpieArr['问题登记人TOP'].length === 0 && <Empty style={{ height: '300px' }} />}
+                  {statpieArr && statpieArr['问题登记人TOP'] && statpieArr['问题登记人TOP'].length > 0 && (
+                    <Cylinder
+                      height={300}
+                      data={dataCylinder(statpieArr && statpieArr['问题登记人TOP'])}
+                      padding={[0, 50, 30, 150]}
+                      symbol=""
+                      cols={cols}
+                      colors="l(270) 0:#04e8ff 0.5:#05bdfe 1:#05bdfe"
+                      onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
+                    />
+                    // <Barchart
+                    //   data={statpieArr['问题登记人TOP']}
+                    //   position='type*value'
+                    // // height={315}
+                    // // detailParams={newdata => { showDetaillist(newdata, 'barchart') }}
+                    // />
+
+                  )}
+                </Card>
+              </Col>
+            </Row>
+
+            <Row style={{ marginTop: 24 }}>
+              <Col span={8}>
+                <div className={styles.statisticscard}>
+                  <Avatar icon="share-alt" />
+                  <b>问题处理人Top5</b>
+                </div>
+                <ChartCard>
+                  {statpieArr && statpieArr['问题处理人Top'] && statpieArr['问题登记人TOP'].length === 0 && <Empty style={{ height: '300px' }} />}
+                  {statpieArr && statpieArr['问题处理人Top'] && statpieArr['问题登记人TOP'].length > 0 && (
+                    <Cylinder
+                      height={300}
+                      data={dataCylinder(statpieArr && statpieArr['问题登记人TOP'])}
+                      padding={[0, 50, 30, 150]}
+                      symbol=""
+                      cols={cols}
+                      colors="l(270) 0:#04e8ff 0.5:#05bdfe 1:#05bdfe"
+                      onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
+                    />
+                    // <Barchart
+                    //   data={statpieArr['问题处理人Top']}
+                    //   position='type*value'
+                    // // height={315}
+                    // // detailParams={newdata => { showDetaillist(newdata, 'barchart') }}
+                    // />
+                  )}
+                </ChartCard>
+              </Col>
+
+              <Col span={16}>
+                <div className={styles.statisticscard}>
+                  <Avatar icon="share-alt" />
+                  <b>需求申请单位Top5</b>
+                </div>
+                <ChartCard>
+                  {statpieArr && statpieArr['问题登记人TOP'] && statpieArr['问题登记人TOP'].length === 0 && <Empty style={{ height: '300px' }} />}
+                  {statpieArr && statpieArr['问题登记人TOP'] && statpieArr['问题登记人TOP'].length > 0 && (
+                    <Cylinder
+                      height={300}
+                      data={dataCylinder(statpieArr && statpieArr['问题登记人TOP'])}
+                      padding={[0, 50, 30, 150]}
+                      symbol=""
+                      cols={cols}
+                      colors="l(270) 0:#04e8ff 0.5:#05bdfe 1:#05bdfe"
+                      onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
+                    />
+                  )}
+                </ChartCard>
+              </Col>
+            </Row>
+
+            <Row style={{ marginTop: 24 }}>
+              <ChartCard title="问题登记单位Top5">
+                <Col span={16} style={{ zIndex: 1000 }}>
+                  {statpieArr && statpieArr['问题登记单位TOP'] && statpieArr['问题登记单位TOP'].length === 0 && <Empty style={{ height: '300px' }} />}
+                  {statpieArr && statpieArr['问题登记单位TOP'] && statpieArr['问题登记单位TOP'].length > 0 && (
+                    <Cylinder
+                      height={300}
+                      data={dataCylinder(statpieArr && statpieArr['问题登记单位TOP'])}
+                      padding={[0, 50, 30, 150]}
+                      symbol=""
+                      cols={cols}
+                      colors="l(270) 0:#04e8ff 0.5:#05bdfe 1:#05bdfe"
+                      onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
+                    />
+                  )}
+                </Col>
+              </ChartCard>
+            </Row>
+
+          </>
+        )
+      }
+
     </div>
   );
 }
@@ -1107,6 +1343,6 @@ export default connect(({ problemstatistics, qualityassessment, loading }) => ({
   statratioArr: problemstatistics.statratioArr,
   statisticData: qualityassessment.statisticData,
   statsSumdata: qualityassessment.statsSumdata,
-  // loading: loading.models.alarmovervies,
-  loading: loading.models.qualityassessment,
+  loading: loading.models.problemstatistics,
+  timeoutArr: problemstatistics.timeoutArr
 }))(StatisticsAnalysis);
