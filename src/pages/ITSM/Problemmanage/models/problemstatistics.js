@@ -10,6 +10,8 @@ import {
   solvescheduleDownload,
   problemstatusList,
   statpieData,
+  lineData,
+  statratioData
 } from '../services/statistics';
 
 export default {
@@ -22,6 +24,8 @@ export default {
     statusdetailList: [],
     timeoutArr: [],
     statpieArr: [],
+    lineArr:[],
+    statratioArr:[]
   },
 
   effects: {
@@ -102,6 +106,22 @@ export default {
         payload: response,
       });
     },
+    //  线图
+    *fetchlineData({ payload }, { call, put }) {
+      const response = yield call(lineData, payload);
+      yield put({
+        type: 'lineArr',
+        payload: response,
+      });
+    },
+    //  环比
+    *fetchstatratioData({ payload }, { call, put }) {
+      const response = yield call(statratioData, payload);
+      yield put({
+        type: 'statratioArr',
+        payload: response,
+      });
+    },
   },
 
   reducers: {
@@ -145,6 +165,18 @@ export default {
       return {
         ...state,
         statpieArr: action.payload.data,
+      };
+    },
+    lineArr(state, action) {
+      return {
+        ...state,
+        lineArr: action.payload.data,
+      };
+    },
+    statratioArr(state, action) {
+      return {
+        ...state,
+        statratioArr: action.payload.data,
       };
     },
   },

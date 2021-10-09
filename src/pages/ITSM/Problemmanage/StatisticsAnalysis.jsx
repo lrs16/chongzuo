@@ -791,10 +791,21 @@ const Donutdata2 = [
 ];
 
 function StatisticsAnalysis(props) {
-  const { dispatch, statpieArr, loading, statisticData, statsSumdata } = props;
+  const {
+    dispatch,
+    statpieArr,
+    loading,
+    statisticData,
+    statsSumdata,
+    lineArr,
+    statratioArr
+  } = props;
+  console.log(statratioArr, 'statratioArr')
   const [selectedTags, setSelectedTags] = useState([]);
   const [picval, setPicVal] = useState({});
   const [bardata, setBardata] = useState([]);
+  const [toplist, setToplist] = useState([]);
+  console.log('toplist: ', toplist);
 
   const handleChang = (tag, checked) => {
     if (checked) {
@@ -806,9 +817,9 @@ function StatisticsAnalysis(props) {
     dispatch({
       type: 'qualityassessment/fetchstatsRatio',
       payload: {
-        beginTime:'2021-03-01',
-        endTime:'2021-09-01',
-        type:'LIST',
+        beginTime: '2021-03-01',
+        endTime: '2021-09-01',
+        type: 'LIST',
       },
     });
   };
@@ -817,8 +828,8 @@ function StatisticsAnalysis(props) {
     dispatch({
       type: 'qualityassessment/fetchstatsSum',
       payload: {
-        beginTime:'2021-03-01',
-        endTime:'2021-09-01',
+        beginTime: '2021-03-01',
+        endTime: '2021-09-01',
       },
     });
   };
@@ -827,6 +838,8 @@ function StatisticsAnalysis(props) {
     getlist();
     projectAssessment();
   }, []);
+
+  console.log(statratioArr, 'statratioArr')
 
   useEffect(() => {
     if (statsSumdata && statsSumdata.length > 0) {
@@ -840,250 +853,17 @@ function StatisticsAnalysis(props) {
   useEffect(() => {
     dispatch({
       type: 'problemstatistics/fetchstatpieData',
-      payload: { begin: '2016-02-01', end: '2022-07-01' },
+      payload: { begin: '2021-08-01 00:00:00', end: '2021-09-01 00:00:00' },
+    });
+    dispatch({
+      type: 'problemstatistics/fetchstatratioData',
+      payload: { begin: '2021-08-01 00:00:00', end: '2021-09-01 00:00:00' },
     });
   }, []);
   return (
     <div>
       <SelectTime ChangeDate={v => console.log(v)} />
-      <Row style={{ marginTop: 24 }}>
-        <div className={styles.statisticscard}>
-          <Avatar icon="desktop" />
-          <b>发布总情况</b>
-        </div>
-        <Col span={6}>
-          <StatisticsCard
-            title="发布总次数："
-            value={1128}
-            suffix="次"
-            des="环比"
-            desval="11%"
-            type="up"
-          />
-        </Col>
-        <Col span={6}>
-          <StatisticsCard
-            title="出厂测试总功能项："
-            value={93}
-            suffix="项"
-            des="环比"
-            desval="3.5%"
-            type="down"
-          />
-        </Col>
-        <Col span={6}>
-          <StatisticsCard
-            title="发布成功项："
-            value={935888}
-            suffix="次"
-            des="环比"
-            desval="6%"
-            type="up"
-          />
-        </Col>
-        <Col span={6}>
-          <StatisticsCard
-            title="发布成功率："
-            value={89.558}
-            suffix="%"
-            des="环比"
-            desval="6%"
-            type="up"
-          />
-        </Col>
-      </Row>
-      <Row gutter={16}>
-        <Col span={12} style={{ marginTop: 24 }}>
-          <div className={styles.statisticscard}>
-            <Avatar icon="desktop" />
-            <b>平台验证情况</b>
-          </div>
-          <Row>
-            <Col span={8}>
-              <StatisticsCard
-                title="平台验证通过项："
-                value={152}
-                suffix="项"
-                des="环比"
-                desval="6%"
-                type="up"
-              />
-            </Col>
-            <Col span={8}>
-              <StatisticsCard
-                title="平台验证未通过项："
-                value={2}
-                suffix="项"
-                des="环比"
-                desval="6%"
-                type="down"
-              />
-            </Col>
-            <Col span={8}>
-              <StatisticsCard
-                title="平台验证成功率："
-                value={100.0}
-                suffix="%"
-                des="环比"
-                desval="6%"
-                type="down"
-              />
-            </Col>
-          </Row>
-        </Col>
-        <Col span={12} style={{ marginTop: 24 }}>
-          <div className={styles.statisticscard}>
-            <Avatar icon="file-protect" />
-            <b>业务验证情况</b>
-          </div>
-          <Row>
-            <Col span={8}>
-              <StatisticsCard
-                title="业务验证通过项："
-                value={150}
-                suffix="项"
-                des="环比"
-                desval="6%"
-                type="up"
-              />
-            </Col>
-            <Col span={8}>
-              <StatisticsCard
-                title="业务验证未通过项："
-                value={2}
-                suffix="项"
-                des="环比"
-                desval="6%"
-                type="down"
-              />
-            </Col>
-            <Col span={8}>
-              <StatisticsCard
-                title="平台验证成功率："
-                value={100.0}
-                suffix="%"
-                des="环比"
-                desval="6%"
-                type="down"
-              />
-            </Col>
-          </Row>
-        </Col>
-      </Row>
-      <Row gutter={16}>
-        <Col span={12} style={{ marginTop: 24 }}>
-          <div className={styles.statisticscard}>
-            <Avatar icon="control" />
-            <b>发布实施情况</b>
-          </div>
-          <Row>
-            <Col span={8}>
-              <StatisticsCard
-                title="实施通过项："
-                value={148}
-                suffix="项"
-                des="环比"
-                desval="6%"
-                type="up"
-              />
-            </Col>
-            <Col span={8}>
-              <StatisticsCard
-                title="实施未通过项："
-                value={0}
-                suffix="项"
-                des="环比"
-                desval="6%"
-                type="down"
-              />
-            </Col>
-            <Col span={8}>
-              <StatisticsCard
-                title="实施成功率："
-                value={100.0}
-                suffix="%"
-                des="环比"
-                desval="6%"
-                type="down"
-              />
-            </Col>
-          </Row>
-        </Col>
-        <Col span={12} style={{ marginTop: 24 }}>
-          <div className={styles.statisticscard}>
-            <Avatar icon="security-scan" />
-            <b>业务复核情况</b>
-          </div>
-          <Row>
-            <Col span={8}>
-              <StatisticsCard
-                title="复核通过项："
-                value={148}
-                suffix="项"
-                des="环比"
-                desval="6%"
-                type="up"
-              />
-            </Col>
-            <Col span={8}>
-              <StatisticsCard
-                title="复核未通过项："
-                value={0}
-                suffix="项"
-                des="环比"
-                desval="6%"
-                type="down"
-              />
-            </Col>
-            <Col span={8}>
-              <StatisticsCard
-                title="复核成功率："
-                value={100.0}
-                suffix="%"
-                des="环比"
-                desval="6%"
-                type="down"
-              />
-            </Col>
-          </Row>
-        </Col>
-      </Row>
-      <Row style={{ marginTop: 24 }}>
-        <div className={styles.statisticscard}>
-          <Avatar icon="cluster" />
-          <b>问题工单总情况</b>
-        </div>
-        <Col span={8}>
-          <Card onMouseDown={() => setPicVal({})}>
-            <DonutPCT
-              data={Donutdata}
-              height={300}
-              totaltitle="问题总数"
-              total="550"
-              padding={[10, 30, 10, 30]}
-              onGetVal={v => {
-                console.log('发布工单责任单位情况:饼图', v);
-                setPicVal({ ...picval, dutyUnit: v });
-              }}
-            />
-          </Card>
-        </Col>
-        <Col span={16}>
-          <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-            {Smoothdata && (
-              <SmoothLine
-                data={Smoothdata}
-                height={300}
-                padding={[30, 0, 50, 60]}
-                onGetVal={v => {
-                  console.log('发布工单责任单位情况：曲线图', v);
-                  setPicVal({ ...picval, type: v });
-                }}
-              />
-            )}
-          </Card>
-        </Col>
-      </Row>
+  
 
       <Row style={{ marginTop: 24 }}>
         <Col span={8}>
@@ -1257,46 +1037,49 @@ function StatisticsAnalysis(props) {
         </Col>
       </Row>
 
-      <Col span={8}>
-        <ChartCard title="问题登记人Top5">
-          <Col span={20}>
-            <Donut
-              data={Donutdatatwo}
-              height={300}
-              total="1161"
-              padding={[10, 30, 10, 30]}
-              detailParams={newdata => {
-                showDetaillist(newdata, 'donut');
-              }}
-            />
-          </Col>
+      <Row style={{ marginTop: 24 }}>
+        <Col span={20}>
+          <Donut
+            data={Donutdatatwo}
+            height={300}
+            total="1161"
+            padding={[10, 30, 10, 30]}
+            detailParams={newdata => {
+              showDetaillist(newdata, 'donut');
+            }}
+          />
+        </Col>
+        <Col span={16}>
+          <ChartCard title="问题登记单位Top5">
+            <Col span={20}>
+              {Smoothdata && (
+                <SmoothLine
+                  data={Smoothdata}
+                  height={300}
+                  padding={[30, 0, 50, 60]}
+                  onGetVal={v => {
+                    console.log('发布工单责任单位情况：曲线图', v);
+                    setPicVal({ ...picval, type: v });
+                  }}
+                />
+              )}
+            </Col>
 
-          <Col span={4}>
-            <Select defaultValue="5">
-              <Option value="5">5</Option>
-              <Option value="10">10</Option>
-              <Option value="15">15</Option>
-              <Option value="20">20</Option>
-            </Select>
-          </Col>
-        </ChartCard>
-      </Col>
 
-      <Col span={16}>
-        <ChartCard title="问题登记单位Top5">
-          {Smoothdata && (
-            <SmoothLine
-              data={Smoothdata}
-              height={300}
-              padding={[30, 0, 50, 60]}
-              onGetVal={v => {
-                console.log('发布工单责任单位情况：曲线图', v);
-                setPicVal({ ...picval, type: v });
-              }}
-            />
-          )}
-        </ChartCard>
-      </Col>
+            <Col span={4} style={{ zIndex: 1000 }}>
+              <Select defaultValue="5">
+                <Option value="5">5</Option>
+                <Option value="10">10</Option>
+                <Option value="15">15</Option>
+                <Option value="20">20</Option>
+              </Select>
+            </Col>
+
+          </ChartCard>
+        </Col>
+
+      </Row>
+
 
       <Row style={{ marginTop: 24 }}>
         <Col span={24}>
@@ -1308,8 +1091,8 @@ function StatisticsAnalysis(props) {
             xField="分值"
             yField="contractName"
             colors="l(270) 0:#04e8ff 0.5:#05bdfe 1:#05bdfe"
-            // height={315}
-            // detailParams={newdata => { showDetaillist(newdata, 'barchart') }}
+          // height={315}
+          // detailParams={newdata => { showDetaillist(newdata, 'barchart') }}
           />
           {/* </ChartCard> */}
         </Col>
@@ -1320,6 +1103,8 @@ function StatisticsAnalysis(props) {
 
 export default connect(({ problemstatistics, qualityassessment, loading }) => ({
   statpieArr: problemstatistics.statpieArr,
+  lineArr: problemstatistics.lineArr,
+  statratioArr: problemstatistics.statratioArr,
   statisticData: qualityassessment.statisticData,
   statsSumdata: qualityassessment.statsSumdata,
   // loading: loading.models.alarmovervies,

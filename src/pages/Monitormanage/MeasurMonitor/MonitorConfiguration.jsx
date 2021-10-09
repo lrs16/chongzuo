@@ -171,7 +171,7 @@ function MonitorConfiguration(props) {
 
   const columns = [
     {
-      title: '监控项',
+      title: '监控项11',
       dataIndex: 'item',
       key: 'item',
     },
@@ -226,7 +226,7 @@ function MonitorConfiguration(props) {
     {
       title: '监控类型',
       dataIndex: 'type',
-      key: 'tytypepecn',
+      key: 'type',
     },
     {
       title: '使用状态',

@@ -90,6 +90,24 @@ export async function problemstatusList(params) {
 export async function statpieData(params) {
   return request(`/problem/stat/pieData`, {
     method: 'POST',
-    body: JSON.stringify(params),
+    data:params,
+    requestType:'form'
+  });
+}
+
+//  问题统计分析-趋势图数据
+export async function lineData(params) {
+  return request(`/problem/stat/lineData`, {
+    method: 'POST',
+    data:params,
+    requestType:'form'
+  });
+}
+//  问题统计分析-环比数据
+export async function statratioData(params) {
+  return request(`/problem/stat/ratio`, {
+    method: 'POST',
+    data:params,
+    requestType:'form'
   });
 }

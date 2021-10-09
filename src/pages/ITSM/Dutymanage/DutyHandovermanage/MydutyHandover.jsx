@@ -560,16 +560,13 @@ function MydutyHandover(props) {
   };
 
   const handleFocus = params => {
-    console.log('params: ', params);
     switch (params) {
       case 'shiftName':
-        console.log(1, '1')
         if (loading !== true && shift && shift.length === 0) {
           message.error('请选择有效的值班班组');
         }
         break;
       case 'heirShiftName':
-        console.log(2, '2')
         if (loading !== true && acceptshift && acceptshift.length === 0) {
           message.error('请选择有效的接班班组');
         } 

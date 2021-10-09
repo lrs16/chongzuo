@@ -31,8 +31,8 @@ function MonitorConfiguration(props) {
   // listCode = code;
   const [state, setState] = useState(false);
   const [data, setData] = useState([]);
-  const [tableSign,setTableSign] = useState([]);
-  const [column,setColumn] = useState('');
+  const [tableSign, setTableSign] = useState([]);
+  // const [column, setColumn] = useState('');
 
   const columns = [
     {
@@ -53,7 +53,7 @@ function MonitorConfiguration(props) {
         return <Input
           type='number'
           defaultValue={text}
-          onChange={e => handleFieldChange(e.target.value, 'minVal', record.id)}
+          onChange={e => handleFieldChange(e.target.value, 'minVal', record.key)}
         />
       }
     },
@@ -65,7 +65,7 @@ function MonitorConfiguration(props) {
         return <Input
           type='number'
           defaultValue={text}
-          onChange={e => handleFieldChange(e.target.value, 'maxVal', record.id)}
+          onChange={e => handleFieldChange(e.target.value, 'maxVal', record.key)}
         />
       }
     },
@@ -73,12 +73,12 @@ function MonitorConfiguration(props) {
       title: '使用状态',
       dataIndex: 'useStatus',
       key: 'useStatus',
-      render:(text,record) => {
-        return  <Radio.Group defaultValue={record.useStatus} onChange={e => handleFieldChange(e.target.value, 'useStatus', record.key)}>
+      render: (text, record) => {
+        return <Radio.Group defaultValue={record.useStatus} onChange={e => handleFieldChange(e.target.value, 'useStatus', record.key)}>
           <Radio value='Y'>启用</Radio>
           <Radio value='N'>停用</Radio>
         </Radio.Group>
-        
+
       }
     },
   ];
@@ -102,7 +102,7 @@ function MonitorConfiguration(props) {
         return <Input
           // type='number'
           defaultValue={text}
-          onChange={e => handleFieldChange(e.target.value, 'pzz', record.id)}
+          onChange={e => handleFieldChange(e.target.value, 'pzz', record.key)}
         />
       }
     },
@@ -114,7 +114,7 @@ function MonitorConfiguration(props) {
         return <Input
           type='number'
           defaultValue={text}
-          onChange={e => handleFieldChange(e.target.value, 'tryTimes', record.id)}
+          onChange={e => handleFieldChange(e.target.value, 'tryTimes', record.key)}
         />
       }
     },
@@ -125,7 +125,7 @@ function MonitorConfiguration(props) {
       render: (text, record, index) => {
         return <Input
           defaultValue={text}
-          onChange={e => handleFieldChange(e.target.value, 'ms', record.id)}
+          onChange={e => handleFieldChange(e.target.value, 'ms', record.key)}
         />
       }
     },
@@ -138,16 +138,16 @@ function MonitorConfiguration(props) {
       title: '使用状态',
       dataIndex: 'sybz',
       key: 'sybz',
-      width:200,
+      width: 200,
       render: (text, record) => {
-          return (
-            <Radio.Group 
-            defaultValue={record.sybz} 
+        return (
+          <Radio.Group
+            defaultValue={record.sybz}
             onChange={e => handleFieldChange(e.target.value, 'sybz', record.key)}>
-              <Radio value='Y'>启用</Radio>
-              <Radio value='N'>停用</Radio>
-            </Radio.Group>
-          )
+            <Radio value='Y'>启用</Radio>
+            <Radio value='N'>停用</Radio>
+          </Radio.Group>
+        )
       }
     },
   ];
@@ -215,26 +215,101 @@ function MonitorConfiguration(props) {
       title: '使用状态',
       dataIndex: 'sybz',
       key: 'sybz',
-      width:200,
+      width: 200,
       render: (text, record) => {
-          return (
-            <Radio.Group 
-            defaultValue={record.sybz} 
+        return (
+          <Radio.Group
+            defaultValue={record.sybz}
             onChange={e => handleFieldChange(e.target.value, 'sybz', record.key)}>
-              <Radio value='Y'>启用</Radio>
-              <Radio value='N'>停用</Radio>
-            </Radio.Group>
-          )
+            <Radio value='Y'>启用</Radio>
+            <Radio value='N'>停用</Radio>
+          </Radio.Group>
+        )
       }
     },
   ];
 
+  const sxcolumns = [
+    {
+      title: '序号',
+      dataIndex: 'gddwbm',
+      key: 'gddwbm',
+      render:(text,record,index) => {
+        return <span>{index +1}</span>
+      }
+    },
+    {
+      title: '供电单位',
+      dataIndex: 'gddwmc',
+      key: 'gddwmc',
+      render: (text, record, index) => {
+        return <Input
+          defaultValue={text}
+          onChange={e => handleFieldChange(e.target.value, 'gddwmc', record.key)}
+        />
+      }
+    },
+    {
+      title: '终端地址|资产编号',
+      dataIndex: 'pzz',
+      key: 'pzz',
+      render: (text, record, index) => {
+        return <Input
+          defaultValue={text}
+          onChange={e => handleFieldChange(e.target.value, 'pzz', record.key)}
+        />
+      }
+    },
+    {
+      title: '查询记录总数',
+      dataIndex: 'ms',
+      key: 'ms',
+      render: (text, record, index) => {
+        return <Input
+          defaultValue={text}
+          onChange={e => handleFieldChange(e.target.value, 'ms', record.key)}
+        />
+      }
+    },
+    {
+      title: '连续报文数',
+      dataIndex: 'tryTimes',
+      key: 'tryTimes',
+      width: 200,
+      render: (text, record, index) => {
+        return <Input
+          defaultValue={text}
+          onChange={e => handleFieldChange(e.target.value, 'tryTimes', record.key)}
+        />
+      }
+    },
+    {
+      title: '使用状态',
+      dataIndex: 'sybz',
+      key: 'sybz',
+      width: 200,
+      render: (text, record) => {
+        return (
+          <Radio.Group
+            defaultValue={record.sybz}
+            onChange={e => handleFieldChange(e.target.value, 'sybz', record.key)}>
+            <Radio value='Y'>启用</Radio>
+            <Radio value='N'>停用</Radio>
+          </Radio.Group>
+        )
+      }
+    },
+  ];
+
+ 
+
   // 获取行
   const getRowByKey = (key, newData) => {
+    console.log('newData: ', newData);
+    console.log((newData || data).filter(item => item.key === key)[0])
     return (newData || data).filter(item =>
       item.key === key)[0]
       ;
-    // return (newData || data).filter(item =>console.log(item))
     ;
   };
 
@@ -249,19 +324,18 @@ function MonitorConfiguration(props) {
       setData(newData);
     }
   };
-  console.log(data,'data')
+  console.log(data, 'data')
 
   // 提交保存数据
   const savedata = () => {
+    console.log(data, 'data444')
     return dispatch({
       type: 'monitorconfiguration/batchSave',
-      payload: {data,tableSign}
+      payload: { data, tableSign }
     }).then(res => {
       if (res.code === 200) {
         message.info(res.msg);
         hanldleCancel();
-        showAlarmDialog = false;
-        showTerminalDialog = false;
       }
     })
   };
@@ -273,35 +347,47 @@ function MonitorConfiguration(props) {
     if (alarm.indexOf(code) !== -1) {
       // 告警
       // showAlarmDialog = true;
-      newtitle='采集完整率配置';
+      newtitle = '采集完整率配置';
       setTableSign('采集完整率配置')
-      setColumn(columns)
+      // setColumn(columns)
       // sign = true;
     } else if (term.indexOf(code) !== -1) {
       // 终端配置
       // showTerminalDialog = true;
-      newtitle='档案参数下发召测配置';
+      newtitle = '档案参数下发召测配置';
       setTableSign('档案参数下发召测配置')
-      setColumn(zdcolumns)
+      // setColumn(zdcolumns)
       // sign = true;
     }
 
-    if(code === 'packet') {
+    if (code === 'packet') {
       // showTerminalDialog = true;
-      newtitle='上下行报文监测告警配置';
+      newtitle = '上下行报文监测告警配置';
       setTableSign('上下行报文监测告警配置')
       // sign = true;
     }
 
-    if(code === 'dljc') {
-      newtitle='登录检测配置';
+    if (code === 'dljc') {
+      newtitle = '登录检测配置';
       setTableSign('登录检测配置')
-      setColumn(dlcolumns)
+      // setColumn(dlcolumns)
     }
 
+    if (code === 'packet') {
+      newtitle = '上下行报文监测告警配置';
+      setTableSign('上下行报文监测告警配置')
+      // setColumn(dlcolumns)
+    }
+
+    if (code === 'rd') {
+      newtitle = '日冻结电能量';
+      setTableSign('日冻结电能量')
+      // setColumn(dlcolumns)
+    }
+    console.log(code,'code')
     return dispatch({
       type: 'monitorconfiguration/detailConfigura',
-      payload: { code,newtitle }
+      payload: { code, newtitle }
     }).then(res => {
       if (res.code === 200) {
         const newarr = (res.data).map((item, index) => {
@@ -321,7 +407,9 @@ function MonitorConfiguration(props) {
   // useEffect (() => {
   //   sign = false;
   // },[])
-  
+
+  console.log(tableSign, 'tableSign')
+
   return (
     <>
       {withClick(children, handleopenClick)}
@@ -334,18 +422,46 @@ function MonitorConfiguration(props) {
         maskClosable='true'
         onClose={hanldleCancel}
       >
+
         {
-          loading === false && (
-            <>
-                <Table
-                  columns={column}
-                  dataSource={data}
-                // rowKey={record => record.id}
-                />
-            </>
+          loading === false && (tableSign === '采集完整率配置' || tableSign === '日冻结电能量') && (
+            <Table
+              columns={columns}
+              dataSource={data}
+              rowKey={record => record.id}
+            />
           )
         }
-       
+
+        {
+          loading === false && tableSign === '档案参数下发召测配置' && (
+            <Table
+              columns={zdcolumns}
+              dataSource={data}
+              rowKey={record => record.id}
+            />
+          )
+        }
+
+        {
+          loading === false && (tableSign === '登录检测配置') && (
+            <Table
+              columns={dlcolumns}
+              dataSource={data}
+              rowKey={record => record.id}
+            />
+          )
+        }
+
+        {
+          loading === false && tableSign === '上下行报文监测告警配置' && (
+            <Table
+              columns={sxcolumns}
+              dataSource={data}
+              rowKey={record => record.id}
+            />
+          )
+        }
 
         <div
           style={{
@@ -359,12 +475,12 @@ function MonitorConfiguration(props) {
             textAlign: 'right',
           }}
         >
-          <Button  onClick={hanldleCancel} style={{ marginRight: 8 }}>
+          <Button onClick={hanldleCancel} style={{ marginRight: 8 }}>
             取消
-            </Button>
+          </Button>
           <Button onClick={savedata} type="primary">
             确定
-            </Button>
+          </Button>
         </div>
       </Drawer>
 

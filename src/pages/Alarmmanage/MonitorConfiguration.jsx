@@ -142,6 +142,11 @@ function MonitorConfiguration(props) {
 
   const columns = [
     {
+      title: '监测项目分类',
+      dataIndex: 'project',
+      key: 'project',
+    },
+    {
       title: '监控项',
       dataIndex: 'item',
       key: 'item',

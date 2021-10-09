@@ -19,41 +19,38 @@ export async function saveConfiguration(params) {
 }
 //  批量保存计量业务监测配置
 export async function batchsaveConfiguration(params) {
-  //  告警保存
-  if(params.tableSign === '采集完整率配置') {
-    return request(`/warn/biz/config/saveAlarmBatch`,{
-      method:'POST',
-      body:JSON.stringify(params.data),
-      // requestType:'form'
-    });
+  switch (params.tableSign) {
+    case '采集完整率配置':
+    case '日冻结电能量':
+      return request(`/warn/biz/config/saveAlarmBatch`,{
+        method:'POST',
+        body:JSON.stringify(params.data),
+      });
+    case '档案参数下发召测配置':
+    case '登录检测配置':
+    case '上下行报文监测告警配置':
+      return request(`/warn/biz/config/saveTermConfigBatch`,{
+        method:'POST',
+        body:JSON.stringify(params.data),
+      });
   }
-//  终端保存
-  if(params.tableSign === '档案参数下发召测配置' || params.tableSign === '登录检测配置') {
-    return request(`/warn/biz/config/saveTermConfigBatch`,{
-      method:'POST',
-      body:JSON.stringify(params.data),
-      // requestType:'form'
-    });
-  }
-  return [];
-
 }
 
 // 计量业务监测配置详情
 export async function configurationDetail(code,title) {
-  console.log('code: ', code);
-  if(title === '采集完整率配置') {
-    return request(`/warn/biz/config/alarmList?code=${code}`);
-  }
-  if(title === '档案参数下发召测配置') {
+  switch (title) {
+    case '采集完整率配置':
+      case '采集完整率配置':
+      case '日冻结电能量':
+      return request(`/warn/biz/config/alarmList?code=${code}`);
+    case '档案参数下发召测配置':
+    case '登录检测配置':
+    case '档案参数下发召测配置':
+    case '上下行报文监测告警配置':
     return request(`/warn/biz/config/terminalList?code=${code}`);
+    default:
+      break;
   }
-
-  if(title === '登录检测配置') {
-    return request(`/warn/biz/config/terminalList?code=${code}`);
-  }
-
-  return [];
 }
 
 // 监控指令的表格接口

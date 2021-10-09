@@ -32,8 +32,6 @@ function Statistics(props) {
     loading
   } = props;
 
-  console.log(loading, 'loading')
-
   const [selectedTags, setSelectedTags] = useState(['按月']);
   // .format('YYYY-MM-DD 00:00:00')
   // .format('YYYY-MM-DD 23:59:59')
