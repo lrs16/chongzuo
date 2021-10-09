@@ -18,7 +18,7 @@ function HostSettingDrawer(props) {
 
   // 获取行
   const getRowByKey = (key, newData) => {
-    return (newData || data).filter(item => item.key === key)[0];
+    return (newData || data).filter(item => item.id === key)[0];
   };
   // 更新表单信息
   const handleFieldChange = (e, fieldName, key) => {
@@ -60,7 +60,7 @@ function HostSettingDrawer(props) {
             key={record.key}
             defaultValue={text}
             formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-            onChange={e => handleFieldChange(e, 'threshold', record.key)}
+            onChange={e => handleFieldChange(e, 'threshold', record.id)}
           />
         )
       },
@@ -78,7 +78,7 @@ function HostSettingDrawer(props) {
       render: (text, record) => {
         return (
           <Radio.Group
-            onChange={e => handleFieldChange(e.target.value, 'status', record.key)}
+            onChange={e => handleFieldChange(e.target.value, 'status', record.id)}
             value={text}>
             <Radio value='1'>启用</Radio>
             <Radio value='0'>停用</Radio>
