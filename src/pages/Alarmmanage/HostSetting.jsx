@@ -14,7 +14,7 @@ function HostSetting(props) {
 
   // 获取行
   const getRowByKey = (key, newData) => {
-    return (newData || data).filter(item => item.key === key)[0];
+    return (newData || data).filter(item => item.id === key)[0];
   };
   // 更新表单信息
   const handleFieldChange = (e, fieldName, key) => {
@@ -102,7 +102,7 @@ function HostSetting(props) {
       render: (text, record) => {
         return (
           <Radio.Group
-            onChange={e => handleFieldChange(e.target.value, 'confStatus', record.key)}
+            onChange={e => handleFieldChange(e.target.value, 'confStatus', record.id)}
             value={text}>
             <Radio value='1'>启用</Radio>
             <Radio value='0'>停用</Radio>

@@ -132,7 +132,7 @@ export async function updateConfigure(params) {
 
 // 告警配置 四大区主机告警 获得应用程序监控阀值
 export async function getAppMonitorData() {
-  return request(`/auto/soft/app/getAppMonitorData`, {
+  return request(`/auto/soft/app/getAppMonitorConf`, {
     method: 'GET',
   });
 }
