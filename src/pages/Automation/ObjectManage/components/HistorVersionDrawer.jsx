@@ -4,6 +4,7 @@ import { Table, Drawer, Button, Form, Select, Row, Col, Input, DatePicker, Toolt
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 // import DictLower from '@/components/SysDict/DictLower';
 import moment from 'moment';
+import { downloadConfHiCont } from '../services/api';
 
 const { Option } = Select;
 
@@ -104,18 +105,18 @@ function HistorVersionDrawer(props) {
         onChange: page => changePage(page),
     };
 
-    const handledownFile = (file) => { // 配置文件内容
-        console.log(file, '配置文件内容')
-        // createsoftReport(id).then(res => {
-        //   const filename = `${no}_报告.docx`;
-        //   const blob = new Blob([res]);
-        //   const url = window.URL.createObjectURL(blob);
-        //   const a = document.createElement('a');
-        //   a.href = url;
-        //   a.download = filename;
-        //   a.click();
-        //   window.URL.revokeObjectURL(url);
-        // });
+    const handledownFile = (v) => { // 配置文件内容
+        downloadConfHiCont({Id: v}).then(res => {
+        //   const filename = `${v}_配置文件内容.yml`;
+        const filename = `_`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
     }
 
     const columns = [
@@ -188,7 +189,7 @@ function HistorVersionDrawer(props) {
             render: (text, record) => {
                 return (
                     <a type="link"
-                        onClick={() => handledownFile(record.confCont)}
+                        onClick={() => handledownFile(record.id)}
                     >{text}</a>
                 );
             },

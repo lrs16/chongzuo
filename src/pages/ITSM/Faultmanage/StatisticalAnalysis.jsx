@@ -1,512 +1,181 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
-import { Card, Row, Col, Avatar, Empty } from 'antd';
+import { Card, Row, Col, Avatar, Empty, InputNumber } from 'antd';
 import moment from 'moment';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { ChartCard } from '@/components/Charts';
 import SelectTime from '@/components/SelectTime/SelectTime';
 import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
 import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
-import Cylinder from '@/components/CustomizeCharts/Cylinder';
+// import Cylinder from '@/components/CustomizeCharts/Cylinder';
+import ColumnarY from '@/components/CustomizeCharts/ColumnarY';
 import styles from './index.less'
 import StatisticsCard from './components/StatisticsCard';
 
-const cols = {
-  rate: {
-    // alias: '%',
-    // tickCount: 10,
+const Issuedscale = {
+  total: {
+    type: 'linear',
+    alias: '返回结果数量',
+    min: 0,
+    tickInterval: 10,
   },
 };
-
-// const Donutdata = [
-//   {
-//     "type": "业务指标",
-//     "value": 2
-//   },
-//   {
-//     "type": "终端在线和入库",
-//     "value": 1
-//   },
-//   {
-//     "type": "KAFKA消费",
-//     "value": 1
-//   },
-//   {
-//     "type": "接口数据核查",
-//     "value": 1
-//   },
-//   {
-//     "type": "主站系统运行",
-//     "value": 1
-//   }
-// ];
-
-const Smoothdata = [
-  {
-    "date": "1",
-    "name": "功能开发",
-    "value": 5
-  },
-  {
-    "date": "2",
-    "name": "功能开发",
-    "value": 10
-  },
-  {
-    "date": "3",
-    "name": "功能开发",
-    "value": 10
-  },
-  {
-    "date": "4",
-    "name": "功能开发",
-    "value": 5
-  },
-  {
-    "date": "5",
-    "name": "功能开发",
-    "value": 0
-  },
-  {
-    "date": "6",
-    "name": "功能开发",
-    "value": 0
-  },
-  {
-    "date": "7",
-    "name": "功能开发",
-    "value": 0
-  },
-  {
-    "date": "8",
-    "name": "功能开发",
-    "value": 0
-  },
-  {
-    "date": "9",
-    "name": "功能开发",
-    "value": 0
-  },
-  {
-    "date": "10",
-    "name": "功能开发",
-    "value": 0
-  },
-  {
-    "date": "11",
-    "name": "功能开发",
-    "value": 0
-  },
-  {
-    "date": "12",
-    "name": "功能开发",
-    "value": 0
-  },
-  {
-    "date": "13",
-    "name": "功能开发",
-    "value": 0
-  },
-  {
-    "date": "14",
-    "name": "功能开发",
-    "value": 1
-  },
-  {
-    "date": "15",
-    "name": "功能开发",
-    "value": 10
-  },
-  {
-    "date": "16",
-    "name": "功能开发",
-    "value": 5
-  },
-  {
-    "date": "17",
-    "name": "功能开发",
-    "value": 0
-  },
-  {
-    "date": "18",
-    "name": "功能开发",
-    "value": 0
-  },
-  {
-    "date": "19",
-    "name": "功能开发",
-    "value": 0
-  },
-  {
-    "date": "20",
-    "name": "功能开发",
-    "value": 0
-  },
-  {
-    "date": "21",
-    "name": "功能开发",
-    "value": 0
-  },
-  {
-    "date": "22",
-    "name": "功能开发",
-    "value": 0
-  },
-  {
-    "date": "23",
-    "name": "功能开发",
-    "value": 0
-  },
-  {
-    "date": "24",
-    "name": "功能开发",
-    "value": 0
-  },
-  {
-    "date": "1",
-    "name": "软件运维",
-    "value": 0
-  },
-  {
-    "date": "2",
-    "name": "软件运维",
-    "value": 5
-  },
-  {
-    "date": "3",
-    "name": "软件运维",
-    "value": 10
-  },
-  {
-    "date": "4",
-    "name": "软件运维",
-    "value": 15
-  },
-  {
-    "date": "5",
-    "name": "软件运维",
-    "value": 20
-  },
-  {
-    "date": "6",
-    "name": "软件运维",
-    "value": 25
-  },
-  {
-    "date": "7",
-    "name": "软件运维",
-    "value": 30
-  },
-  {
-    "date": "8",
-    "name": "软件运维",
-    "value": 35
-  },
-  {
-    "date": "9",
-    "name": "软件运维",
-    "value": 40
-  },
-  {
-    "date": "10",
-    "name": "软件运维",
-    "value": 5
-  },
-  {
-    "date": "11",
-    "name": "软件运维",
-    "value": 10
-  },
-  {
-    "date": "12",
-    "name": "软件运维",
-    "value": 20
-  },
-  {
-    "date": "13",
-    "name": "软件运维",
-    "value": 15
-  },
-  {
-    "date": "14",
-    "name": "软件运维",
-    "value": 20
-  },
-  {
-    "date": "15",
-    "name": "软件运维",
-    "value": 15
-  },
-  {
-    "date": "16",
-    "name": "软件运维",
-    "value": 10
-  },
-  {
-    "date": "17",
-    "name": "软件运维",
-    "value": 20
-  },
-  {
-    "date": "18",
-    "name": "软件运维",
-    "value": 30
-  },
-  {
-    "date": "19",
-    "name": "软件运维",
-    "value": 30
-  },
-  {
-    "date": "20",
-    "name": "软件运维",
-    "value": 10
-  },
-  {
-    "date": "21",
-    "name": "软件运维",
-    "value": 5
-  },
-  {
-    "date": "22",
-    "name": "软件运维",
-    "value": 10
-  },
-  {
-    "date": "23",
-    "name": "软件运维",
-    "value": 15
-  },
-  {
-    "date": "24",
-    "name": "软件运维",
-    "value": 20
-  },
-  {
-    "date": "1",
-    "name": "系统运维",
-    "value": 5
-  },
-  {
-    "date": "2",
-    "name": "系统运维",
-    "value": 10
-  },
-  {
-    "date": "3",
-    "name": "系统运维",
-    "value": 20
-  },
-  {
-    "date": "4",
-    "name": "系统运维",
-    "value": 30
-  },
-  {
-    "date": "5",
-    "name": "系统运维",
-    "value": 5
-  },
-  {
-    "date": "6",
-    "name": "系统运维",
-    "value": 10
-  },
-  {
-    "date": "7",
-    "name": "系统运维",
-    "value": 30
-  },
-  {
-    "date": "8",
-    "name": "系统运维",
-    "value": 35
-  },
-  {
-    "date": "9",
-    "name": "系统运维",
-    "value": 5
-  },
-  {
-    "date": "10",
-    "name": "系统运维",
-    "value": 0
-  },
-  {
-    "date": "11",
-    "name": "系统运维",
-    "value": 5
-  },
-  {
-    "date": "12",
-    "name": "系统运维",
-    "value": 10
-  },
-  {
-    "date": "13",
-    "name": "系统运维",
-    "value": 15
-  },
-  {
-    "date": "14",
-    "name": "系统运维",
-    "value": 20
-  },
-  {
-    "date": "15",
-    "name": "系统运维",
-    "value": 15
-  },
-  {
-    "date": "16",
-    "name": "系统运维",
-    "value": 20
-  },
-  {
-    "date": "17",
-    "name": "系统运维",
-    "value": 0
-  },
-  {
-    "date": "18",
-    "name": "系统运维",
-    "value": 0
-  },
-  {
-    "date": "19",
-    "name": "系统运维",
-    "value": 0
-  },
-  {
-    "date": "20",
-    "name": "系统运维",
-    "value": 0
-  },
-  {
-    "date": "21",
-    "name": "系统运维",
-    "value": 0
-  },
-  {
-    "date": "22",
-    "name": "系统运维",
-    "value": 0
-  },
-  {
-    "date": "23",
-    "name": "系统运维",
-    "value": 0
-  },
-  {
-    "date": "24",
-    "name": "系统运维",
-    "value": 0
-  },
-];
-
-const CPUdatas = [
-  {
-    "type": "CPU",
-    "expected": 100,
-    "name": "238.54.142.91",
-    "rate": 81
-  },
-  {
-    "type": "CPU",
-    "expected": 100,
-    "name": "213.113.16.141",
-    "rate": 90
-  },
-  {
-    "type": "CPU",
-    "expected": 100,
-    "name": "178.116.21.161",
-    "rate": 60
-  },
-  {
-    "type": "CPU",
-    "expected": 100,
-    "name": "78.247.130.67",
-    "rate": 82
-  },
-  {
-    "type": "CPU",
-    "expected": 100,
-    "name": "72.14.153.133",
-    "rate": 78
-  }
-]
-
-// 饼图数据
-const Donutdata = [
-  { type: '硬件运维', value: 402 },
-  { type: '功能研发', value: 299 },
-  { type: '软件运维', value: 299 },
-];
-
-const Donutdata2 = [
-  { type: '软件', value: 260 },
-  { type: '硬件', value: 260 },
-];
-
-const Donutdata3 = [
-  { type: '服务器故障', value: 89.4 },
-  { type: '安防故障', value: 88.1 },
-  { type: '数据库故障', value: 12.1 },
-  { type: '网络故障', value: 18.4 },
-  { type: '计量系统故障', value: 23.5 },
-  { type: '人为误操作', value: 12.77 },
-  { type: '终端设备故障', value: 89.4 },
-  { type: '程序运行或配置故障', value: 25.5 },
-  { type: '配电设备故障', value: 3.83 },
-];
-
-const Donutdata4 = [
-  { type: '数据备份', value: 89.4 },
-  { type: '前台应用', value: 88.1 },
-  { type: '外部接口', value: 12.1 },
-  { type: 'VNC所承载程序', value: 18.4 },
-  { type: '中间件所承载程序', value: 23.5 },
-  { type: '前置采集程序', value: 12.77 },
-  { type: '后台解析程序', value: 89.4 },
-  { type: '数据库读写程序', value: 25.5 },
-];
-
-const Donutdata5 = [
-  { type: '采集管理', value: 89.4 },
-  { type: '数据管理', value: 88.1 },
-  { type: '系统管理', value: 12.1 },
-  { type: '业务应用', value: 18.4 },
-  { type: '运维管理', value: 23.5 },
-  { type: '首页', value: 12.77 },
-  { type: '导航数', value: 89.4 },
-];
 
 function StatisticalAnalysis(props) {
   const { pagetitle } = props.route.name;
   const {
     dispatch,
     analysislist, // 工单总情况
+    blameconditlist, // 故障责任单位总情况
+    typeconditlist, // 故障分类总情况
+    modelconditlist, // 故障模块总情况
+    timeoutconditlist, // 故障超时总情况
+    registeruserlist, // 故障登记人排名
+    registeruserunitlist, // 故障登记人单位排名
+    handlerlist, // 故障处理人排名 
+    handleunitlist, // 故障处理人单位排名
   } = props;
 
-  console.log(analysislist, 'analysislist')
-
-  // const [selectedTags, setSelectedTags] = useState([]);
   const [picval, setPicVal] = useState({});
   const [values, setValues] = useState({}); // 获取统计周期
+  const [topN, setTopN] = useState(5) // 排序
+  const [topN1, setTopN1] = useState(5) // 排序
+  const [topN2, setTopN2] = useState(5) // 排序
+  const [topN3, setTopN3] = useState(5) // 排序
+
+  const piesum = (arr) => { // 饼图统计总数
+    let sum = 0;
+    if (arr && arr.length > 0) {
+      arr.forEach(item => {
+        sum += item.value;
+      });
+    };
+    return sum;
+  };
+
+  const dataCylinder = datas => { // 柱状图集成数组
+    const newArr = [];
+    if (!Array.isArray(datas) || datas.length === 0) {
+      return newArr;
+    }
+    for (let i = 0; datas.length < topN ? i < datas.length : i < topN; i += 1) {
+      const vote = {};
+      vote.type = datas[i].type;
+      vote.total = datas[i].total;
+      vote.expected = datas[0].total;
+      newArr.push(vote);
+    }
+    return newArr.reverse();
+  };
+
+  const dataCylinder1 = datas => { // 柱状图集成数组
+    const newArr = [];
+    if (!Array.isArray(datas) || datas.length === 0) {
+      return newArr;
+    }
+    for (let i = 0; datas.length < topN1 ? i < datas.length : i < topN1; i += 1) {
+      const vote = {};
+      vote.type = datas[i].type;
+      vote.total = datas[i].total;
+      vote.expected = datas[0].total;
+      newArr.push(vote);
+    }
+    return newArr.reverse();
+  };
+
+  const dataCylinder2 = datas => { // 柱状图集成数组
+    const newArr = [];
+    if (!Array.isArray(datas) || datas.length === 0) {
+      return newArr;
+    }
+    for (let i = 0; datas.length < topN2 ? i < datas.length : i < topN2; i += 1) {
+      const vote = {};
+      vote.type = datas[i].type;
+      vote.total = datas[i].total;
+      vote.expected = datas[0].total;
+      newArr.push(vote);
+    }
+    return newArr.reverse();
+  };
+
+  const dataCylinder3 = datas => { // 柱状图集成数组
+    const newArr = [];
+    if (!Array.isArray(datas) || datas.length === 0) {
+      return newArr;
+    }
+    for (let i = 0; datas.length < topN3 ? i < datas.length : i < topN3; i += 1) {
+      const vote = {};
+      vote.type = datas[i].type;
+      vote.total = datas[i].total;
+      vote.expected = datas[0].total;
+      newArr.push(vote);
+    }
+    return newArr.reverse();
+  };
 
   useEffect(() => {
     if (values && values.type) {
-      console.log(values, 'values')
       const val = {
-        time1: moment(values.beginTime).format('YYYY-MM-DD'),
-        time2: moment(values.endTime).format('YYYY-MM-DD'),
+        time1: moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss'),
+        time2: moment(values.endTime).format('YYYY-MM-DD HH:mm:ss'),
         type: values.type
       };
+      const notypeval = {
+        time1: moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss'),
+        time2: moment(values.endTime).format('YYYY-MM-DD HH:mm:ss'),
+      };
+
+      const numval = {
+        time1: moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss'),
+        time2: moment(values.endTime).format('YYYY-MM-DD HH:mm:ss'),
+        num: topN,
+      };
+
       dispatch({ // 工单总情况
         type: 'faultstatics/getOrderConditions',
         payload: { ...val },
       });
+
+      dispatch({ // 故障责任单位总情况
+        type: 'faultstatics/getBlameConditions',
+        payload: { ...notypeval },
+      });
+
+      dispatch({ // 故障分类总情况
+        type: 'faultstatics/getTypeConditions',
+        payload: { ...notypeval },
+      });
+
+      dispatch({ // 故障模块总情况
+        type: 'faultstatics/getModelConditions',
+        payload: { ...notypeval },
+      });
+
+      dispatch({ // 故障超时总情况
+        type: 'faultstatics/getTimeOutConditions',
+        payload: { ...notypeval },
+      });
+
+      dispatch({ // 故障登记人排名
+        type: 'faultstatics/getRegisterUserTop',
+        payload: { ...numval },
+      });
+
+      dispatch({ // 故障登记人单位排名
+        type: 'faultstatics/getRegisterUnitTop',
+        payload: { ...numval },
+      });
+
+      dispatch({ // 故障处理人排名
+        type: 'faultstatics/getHandlerTop',
+        payload: { ...numval },
+      });
+
+      dispatch({ // 故障处理人单位排名
+        type: 'faultstatics/queryHandleUnitTop',
+        payload: { ...numval },
+      });
+
     }
   }, [values]);
 
@@ -515,242 +184,274 @@ function StatisticalAnalysis(props) {
       title={pagetitle}
     >
       <div>
+        {/* 统计周期 */}
         <SelectTime ChangeDate={(v) => setValues(v)} />
+        {/* 工单 */}
         <Row gutter={24}>
           <Col span={8} style={{ marginTop: 24 }}>
             <div className={styles.statisticscard}>
               <Avatar icon="file-protect" />
               <b>故障工单情况</b>
             </div>
-            <Row>
-              <Col span={8}><StatisticsCard title='故障总数：' value={521} suffix='单' des='环比' desval='11%' type='up' /></Col>
-              <Col span={8}><StatisticsCard title='已处理：' value={511} suffix='单' des='环比' desval='11%' type='up' /></Col>
-              <Col span={8}><StatisticsCard title='解决率：' value={98.10} suffix='%' des='环比' desval='11%' type='down' /></Col>
-            </Row>
+            {(!analysislist || (analysislist && analysislist === undefined)) && <Empty style={{ height: '100px' }} />}
+            {
+              analysislist && analysislist !== undefined && (
+                <Row>
+                  <Col span={8}><StatisticsCard title='故障总数：' value={analysislist.allNum} suffix='单' des='环比' desval={`${analysislist.allRingPoints}%`} type={Number(analysislist.allRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                  <Col span={8}><StatisticsCard title='已处理：' value={analysislist.closeNum} suffix='单' des='环比' desval={`${analysislist.closeRingPoints}%`} type={Number(analysislist.closeRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                  <Col span={8}><StatisticsCard title='解决率：' value={analysislist.point} suffix='%' des='环比' desval={`${analysislist.ringPoints}%`} type={Number(analysislist.ringPoints) > 0 ? 'up' : 'down'} /></Col>
+                </Row>
+              )
+            }
           </Col>
           <Col span={8} style={{ marginTop: 24 }}>
             <div className={styles.statisticscard}>
               <Avatar icon="control" />
               <b>系统故障率、可用率</b>
             </div>
-            <Row>
-              <Col span={8}><StatisticsCard title='故障时长：' value={10.28} suffix='H' des='环比' desval='11%' type='up' /></Col>
-              <Col span={8}><StatisticsCard title='故障率：' value={0.24} suffix='%' des='环比' desval='11%' type='down' /></Col>
-              <Col span={8}><StatisticsCard title='可用率：' value={99.76} suffix='%' des='环比' desval='11%' type='down' /></Col>
-            </Row>
+            {(!analysislist || (analysislist && analysislist === undefined)) && <Empty style={{ height: '100px' }} />}
+            {
+              analysislist && analysislist !== undefined && (
+                <Row>
+                  <Col span={8}><StatisticsCard title='故障时长：' value={analysislist.handleTime} suffix='H' des='环比' desval={`${analysislist.handleTimeRingPoints}%`} type={Number(analysislist.handleTimeRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                  <Col span={8}><StatisticsCard title='故障率：' value={analysislist.troublePoint} suffix='%' des='环比' desval={`${analysislist.troubleRingPoints}%`} type={Number(analysislist.troubleRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                  <Col span={8}><StatisticsCard title='可用率：' value={analysislist.canUserPoint} suffix='%' des='环比' desval={`${analysislist.canUserRingPoints}%`} type={Number(analysislist.canUserRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                </Row>
+              )
+            }
           </Col>
           <Col span={8} style={{ marginTop: 24 }}>
             <div className={styles.statisticscard}>
               <Avatar icon="security-scan" />
               <b>故障责任单位情况</b>
             </div>
-            <Row>
-              <Col span={8}><StatisticsCard title='功能开发：' value={50} suffix='单' des='环比' desval='11%' type='up' /></Col>
-              <Col span={8}><StatisticsCard title='软件运维：' value={51} suffix='单' des='环比' desval='11%' type='down' /></Col>
-              <Col span={8}><StatisticsCard title='硬件运维：' value={53} suffix='单' des='环比' desval='11%' type='down' /></Col>
-            </Row>
+            {(!analysislist || (analysislist && analysislist === undefined)) && <Empty style={{ height: '100px' }} />}
+            {
+              analysislist && analysislist !== undefined && (
+                <Row>
+                  <Col span={8}><StatisticsCard title='功能开发：' value={analysislist.development} suffix='单' des='环比' desval={`${analysislist.developmentRingPoints}%`} type={Number(analysislist.developmentRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                  <Col span={8}><StatisticsCard title='软件运维：' value={analysislist.soft} suffix='单' des='环比' desval={`${analysislist.softRingPoints}%`} type={Number(analysislist.softRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                  <Col span={8}><StatisticsCard title='硬件运维：' value={analysislist.hardware} suffix='单' des='环比' desval={`${analysislist.hardwareRingPoints}%`} type={Number(analysislist.hardwareRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                </Row>
+              )
+            }
           </Col>
         </Row>
+        {/* 责任单位 */}
         <Row style={{ marginTop: 24 }}>
           <div className={styles.statisticscard}>
             <Avatar icon="cluster" />
             <b>故障责任单位情况</b>
           </div>
-          <Col span={8}>
-            <Card onMouseDown={() => setPicVal({})}>
-              <DonutPCT
-                data={Donutdata}
-                height={300}
-                totaltitle='故障总数'
-                total='521'
-                padding={[10, 30, 30, 30]}
-                onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
-              />
-            </Card>
-          </Col>
-          <Col span={16}>
-            <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-              {Smoothdata && (
-                <SmoothLine
-                  data={Smoothdata}
-                  // cols = {colsa}
-                  height={300}
-                  padding={[30, 0, 70, 60]}
-                  onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
-                />
-              )}
-            </Card>
-          </Col>
+          {/* {(!blameconditlist || (blameconditlist && blameconditlist === undefined)) && <Empty style={{ height: '100px' }} />} */}
+          {
+            blameconditlist && (<>
+              <Col span={8}>
+                <Card onMouseDown={() => setPicVal({})}>
+                  <DonutPCT
+                    data={blameconditlist.pieChart || []}
+                    height={300}
+                    totaltitle='故障总数'
+                    total={piesum(blameconditlist.pieChart)}
+                    padding={[10, 30, 30, 30]}
+                    onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
+                  />
+                </Card>
+              </Col>
+              <Col span={16}>
+                <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+                  <SmoothLine
+                    data={blameconditlist.lineChart || []}
+                    height={300}
+                    padding={[30, 0, 70, 60]}
+                    onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
+                  />
+                </Card>
+              </Col>
+            </>
+            )
+          }
         </Row>
+        {/* 故障类型统计分析 */}
         <Row style={{ marginTop: 24 }}>
           <div className={styles.statisticscard}>
             <Avatar icon="share-alt" />
             <b>故障类型统计分析</b>
           </div>
-          <Col span={8}>
-            <Card onMouseDown={() => setPicVal({})}>
-              <h4 style={{fontWeight: 'bold'}}>故障类型总情况</h4>
-              <DonutPCT
-                data={Donutdata2}
-                height={300}
-                total="521"
-                totaltitle='故障总数'
-                padding={[10, 30, 30, 30]}
-                onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
-              />
-            </Card>
-          </Col>
-          <Col span={16}>
-            <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-              <h4 style={{fontWeight: 'bold'}}>故障类型趋势分析</h4>
-              {Smoothdata && (
-                <SmoothLine
-                  data={Smoothdata}
-                  height={300}
-                  padding={[30, 0, 70, 60]}
-                  onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
-                />
-              )}
-            </Card>
-          </Col>
-          <Col span={8}>
-            <Card onMouseDown={() => setPicVal({})}>
-              <h4 style={{fontWeight: 'bold'}}>硬件故障情况</h4>
-              <DonutPCT
-                data={Donutdata3}
-                height={300}
-                total="261"
-                totaltitle='硬件故障总数'
-                padding={[10, 30, 30, 30]}
-                onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
-              />
-            </Card>
-          </Col>
-          <Col span={16}>
-            <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-              <h4 style={{fontWeight: 'bold'}}>硬件故障趋势分析</h4>
-              {Smoothdata && (
-                <SmoothLine
-                  data={Smoothdata}
-                  height={300}
-                  padding={[30, 0, 70, 60]}
-                  onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
-                />
-              )}
-            </Card>
-          </Col>
-          <Col span={8}>
-            <Card onMouseDown={() => setPicVal({})}>
-              <h4 style={{fontWeight: 'bold'}}>软件故障情况</h4>
-              <DonutPCT
-                data={Donutdata4}
-                height={300}
-                total="261"
-                totaltitle='软件故障总数'
-                padding={[10, 30, 30, 30]}
-                onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
-              />
-            </Card>
-          </Col>
-          <Col span={16}>
-            <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-              <h4 style={{fontWeight: 'bold'}}>软件故障趋势分析</h4>
-              {Smoothdata && (
-                <SmoothLine
-                  data={Smoothdata}
-                  height={300}
-                  padding={[30, 0, 70, 60]}
-                  onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
-                />
-              )}
-            </Card>
-          </Col>
+          {
+            typeconditlist && (<>
+              <Col span={8}>
+                <Card onMouseDown={() => setPicVal({})}>
+                  <h4 style={{ fontWeight: 'bold' }}>故障类型总情况</h4>
+                  <DonutPCT
+                    data={typeconditlist.allPieChart || []}
+                    height={300}
+                    total={piesum(typeconditlist.allPieChart)}
+                    totaltitle='故障总数'
+                    padding={[10, 30, 30, 30]}
+                    onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
+                  />
+                </Card>
+              </Col>
+              <Col span={16}>
+                <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+                  <h4 style={{ fontWeight: 'bold' }}>故障类型趋势分析</h4>
+                  <SmoothLine
+                    data={typeconditlist.allLineChart || []}
+                    height={300}
+                    padding={[30, 0, 70, 60]}
+                    onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
+                  />
+                </Card>
+              </Col>
+              <Col span={8}>
+                <Card onMouseDown={() => setPicVal({})}>
+                  <h4 style={{ fontWeight: 'bold' }}>硬件故障情况</h4>
+                  <DonutPCT
+                    data={typeconditlist.hardwarePieChart || []}
+                    height={300}
+                    total={piesum(typeconditlist.hardwarePieChart)}
+                    totaltitle='硬件故障总数'
+                    padding={[10, 30, 30, 30]}
+                    onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
+                  />
+                </Card>
+              </Col>
+              <Col span={16}>
+                <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+                  <h4 style={{ fontWeight: 'bold' }}>硬件故障趋势分析</h4>
+                  <SmoothLine
+                    data={typeconditlist.hardwareLineChart || []}
+                    height={300}
+                    padding={[30, 0, 70, 60]}
+                    onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
+                  />
+                </Card>
+              </Col>
+              <Col span={8}>
+                <Card onMouseDown={() => setPicVal({})}>
+                  <h4 style={{ fontWeight: 'bold' }}>软件故障情况</h4>
+                  <DonutPCT
+                    data={typeconditlist.softPieChart || []}
+                    height={300}
+                    total={piesum(typeconditlist.softPieChart)}
+                    totaltitle='软件故障总数'
+                    padding={[10, 30, 30, 30]}
+                    onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
+                  />
+                </Card>
+              </Col>
+              <Col span={16}>
+                <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+                  <h4 style={{ fontWeight: 'bold' }}>软件故障趋势分析</h4>
+                  <SmoothLine
+                    data={typeconditlist.softLineChart || []}
+                    height={300}
+                    padding={[30, 0, 70, 60]}
+                    onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
+                  />
+                </Card>
+              </Col>
+            </>
+            )
+          }
         </Row>
+        {/* 故障系统模块情况 */}
         <Row style={{ marginTop: 24 }}>
           <div className={styles.statisticscard}>
             <Avatar icon="share-alt" />
             <b>故障系统模块情况</b>
           </div>
-          <Col span={8}>
-            <Card onMouseDown={() => setPicVal({})}>
-              <DonutPCT
-                data={Donutdata5}
-                height={300}
-                total="521"
-                totaltitle='总工单数'
-                padding={[10, 30, 30, 30]}
-                onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
-              />
-            </Card>
-          </Col>
-          <Col span={16}>
-            <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-              {Smoothdata && (
-                <SmoothLine
-                  data={Smoothdata}
-                  height={300}
-                  padding={[30, 0, 70, 60]}
-                  onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
-                />
-              )}
-            </Card>
-          </Col>
+          {
+            modelconditlist && (<>
+              <Col span={8}>
+                <Card onMouseDown={() => setPicVal({})}>
+                  <DonutPCT
+                    data={modelconditlist.pieChart || []}
+                    height={300}
+                    total={piesum(modelconditlist.pieChart)}
+                    totaltitle='总工单数'
+                    padding={[10, 30, 30, 30]}
+                    onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
+                  />
+                </Card>
+              </Col>
+              <Col span={16}>
+                <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+                  {modelconditlist.lineChart && (
+                    <SmoothLine
+                      data={modelconditlist.lineChart || []}
+                      height={300}
+                      padding={[30, 0, 70, 60]}
+                      onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
+                    />
+                  )}
+                </Card>
+              </Col>
+            </>
+            )
+          }
         </Row>
+        {/* 故障工单超时情况 + 故障登记人Top5 */}
         <Row gutter={12} style={{ marginTop: 24 }}>
           <Col span={12}>
             <div className={styles.statisticscard}>
               <Avatar icon="share-alt" />
               <b>故障工单超时情况</b>
             </div>
-            <Card onMouseDown={() => setPicVal({})}>
-              <DonutPCT
-                data={Donutdata5}
-                height={364.5}
-                total="521"
-                totaltitle='总工单数'
-                padding={[10, 30, 30, 30]}
-                onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
-              />
-            </Card>
+            {(!timeoutconditlist || (timeoutconditlist && timeoutconditlist.length === 0)) && <Empty style={{ height: '364.5px' }} />}
+            {
+              timeoutconditlist && timeoutconditlist.length > 0 && (
+                <Card onMouseDown={() => setPicVal({})}>
+                  <DonutPCT
+                    data={timeoutconditlist || []}
+                    height={364.5}
+                    total={piesum(timeoutconditlist)}
+                    totaltitle='总工单数'
+                    padding={[10, 30, 30, 30]}
+                    onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
+                  />
+                </Card>
+              )
+            }
           </Col>
           <Col span={12}>
             <div className={styles.statisticscard}>
               <Avatar icon="share-alt" />
-              <b>故障登记人Top5</b>
+              <b>故障登记人Top{topN}</b>
+              <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN(v)} /></div>
             </div>
-            <ChartCard title="CPU TOP5" contentHeight={350} onMouseDown={() => setPicVal({})} >
-              {CPUdatas.length === 0 && <Empty style={{ height: '250px' }} />}
-              {CPUdatas.length > 0 && (
-                <Cylinder
+            <ChartCard contentHeight={350} onMouseDown={() => setPicVal({})} >
+              {(!registeruserlist || (registeruserlist && registeruserlist.length === 0)) && <Empty style={{ height: '350px' }} />}
+              {registeruserlist && registeruserlist.length > 0 && (
+                <ColumnarY
                   height={350}
-                  data={CPUdatas}
-                  padding={[0, 50, 30, 150]}
-                  symbol="%"
-                  cols={cols}
-                  colors="l(270) 0:#04e8ff 0.5:#05bdfe 1:#05bdfe"
-                  onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log(v) }}
+                  data={dataCylinder(registeruserlist)}
+                  padding={[30, 60, 50, 100]}
+                  cols={Issuedscale}
+                  onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
                 />
               )}
             </ChartCard>
           </Col>
         </Row>
+        {/* 故障处理人Top5 + 故障登记单位Top5 */}
         <Row gutter={12} style={{ marginTop: 24 }}>
           <Col span={12}>
             <div className={styles.statisticscard}>
               <Avatar icon="share-alt" />
-              <b>故障处理人Top5</b>
+              <b>故障处理人Top{topN2}</b>
+              <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN2(v)} /></div>
             </div>
-            <ChartCard title="CPU TOP5" contentHeight={350} onMouseDown={() => setPicVal({})} >
-              {CPUdatas.length === 0 && <Empty style={{ height: '250px' }} />}
-              {CPUdatas.length > 0 && (
-                <Cylinder
+            <ChartCard contentHeight={350} onMouseDown={() => setPicVal({})} >
+              {(!handlerlist || (handlerlist && handlerlist.length === 0)) && <Empty style={{ height: '350px' }} />}
+              {handlerlist && handlerlist.length > 0 && (
+                <ColumnarY
                   height={350}
-                  data={CPUdatas}
-                  padding={[0, 50, 30, 150]}
-                  symbol="%"
-                  cols={cols}
-                  colors="l(270) 0:#04e8ff 0.5:#05bdfe 1:#05bdfe"
-                  onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log(v) }}
+                  data={dataCylinder2(handlerlist)}
+                  padding={[30, 60, 50, 100]}
+                  cols={Issuedscale}
+                  onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
                 />
               )}
             </ChartCard>
@@ -758,41 +459,40 @@ function StatisticalAnalysis(props) {
           <Col span={12}>
             <div className={styles.statisticscard}>
               <Avatar icon="share-alt" />
-              <b>故障登记单位Top5</b>
+              <b>故障登记单位Top{topN1}</b>
+              <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN1(v)} /></div>
             </div>
-            <ChartCard title="CPU TOP5" contentHeight={350} onMouseDown={() => setPicVal({})} >
-              {CPUdatas.length === 0 && <Empty style={{ height: '250px' }} />}
-              {CPUdatas.length > 0 && (
-                <Cylinder
+            <ChartCard contentHeight={350} onMouseDown={() => setPicVal({})} >
+              {(!registeruserunitlist || (registeruserunitlist && registeruserunitlist.length === 0)) && <Empty style={{ height: '350px' }} />}
+              {registeruserunitlist && registeruserunitlist.length > 0 && (
+                <ColumnarY
                   height={350}
-                  data={CPUdatas}
-                  padding={[0, 50, 30, 150]}
-                  symbol="%"
-                  cols={cols}
-                  colors="l(270) 0:#04e8ff 0.5:#05bdfe 1:#05bdfe"
-                  onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log(v) }}
+                  data={dataCylinder1(registeruserunitlist)}
+                  padding={[30, 60, 50, 100]}
+                  cols={Issuedscale}
+                  onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
                 />
               )}
             </ChartCard>
           </Col>
         </Row>
+        {/* 故障处理单位Top5 */}
         <Row gutter={12} style={{ marginTop: 24 }}>
           <Col span={12}>
             <div className={styles.statisticscard}>
               <Avatar icon="share-alt" />
-              <b>故障处理单位Top5</b>
+              <b>故障处理单位Top{topN3}</b>
+              <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN3(v)} /></div>
             </div>
             <ChartCard title="CPU TOP5" contentHeight={350} onMouseDown={() => setPicVal({})} >
-              {CPUdatas.length === 0 && <Empty style={{ height: '250px' }} />}
-              {CPUdatas.length > 0 && (
-                <Cylinder
+              {(!handleunitlist || (handleunitlist && handleunitlist.length === 0)) && <Empty style={{ height: '350px' }} />}
+              {handleunitlist && handleunitlist.length > 0 && (
+                <ColumnarY
                   height={350}
-                  data={CPUdatas}
-                  padding={[0, 50, 30, 150]}
-                  symbol="%"
-                  cols={cols}
-                  colors="l(270) 0:#04e8ff 0.5:#05bdfe 1:#05bdfe"
-                  onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log(v) }}
+                  data={dataCylinder3(handleunitlist)}
+                  padding={[30, 60, 50, 100]}
+                  cols={Issuedscale}
+                  onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
                 />
               )}
             </ChartCard>
@@ -805,4 +505,12 @@ function StatisticalAnalysis(props) {
 
 export default connect(({ faultstatics }) => ({
   analysislist: faultstatics.analysislist, // 工单总情况
+  blameconditlist: faultstatics.blameconditlist, // 故障责任单位总情况
+  typeconditlist: faultstatics.typeconditlist, // 故障分类总情况
+  modelconditlist: faultstatics.modelconditlist, // 故障模块总情况
+  timeoutconditlist: faultstatics.timeoutconditlist, // 故障超时总情况
+  registeruserlist: faultstatics.registeruserlist, // 故障登记人排名
+  registeruserunitlist: faultstatics.registeruserunitlist, // 故障登记人单位排名
+  handlerlist: faultstatics.handlerlist, // 故障处理人排名
+  handleunitlist: faultstatics.handleunitlist, // 故障处理人单位排名
 }))(StatisticalAnalysis);

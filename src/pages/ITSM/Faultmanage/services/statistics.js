@@ -80,12 +80,72 @@ export async function timeoutDownload(params) {
 // 故障统计分析
 // 工单总情况 /trouble/analysis/getOrderConditions time1, time2, type
 export async function queryOrderConditions(params) {
-  console.log(params, 'params')
   return request(`/trouble/analysis/getOrderConditions?time1=${params.time1}&time2=${params.time2}&type=${params.type}`, {
       method: 'GET',
       data: { params }
-      // data: JSON.stringify(params),
-      // requestType: 'formjosn',
-      // requestType: 'form',
+  });
+}
+
+// 故障责任单位总情况 /trouble/analysis/getBlameConditions
+export async function queryBlameConditions(params) {
+  return request(`/trouble/analysis/getBlameConditions?time1=${params.time1}&time2=${params.time2}`, {
+      method: 'GET',
+      data: { params }
+  });
+}
+
+// 故障分类总情况 /trouble/analysis/getTypeConditions 
+export async function queryTypeConditions(params) {
+  return request(`/trouble/analysis/getTypeConditions?time1=${params.time1}&time2=${params.time2}`, {
+      method: 'GET',
+      data: { params }
+  });
+}
+
+// 故障模块总情况 /trouble/analysis/getModelConditions 
+export async function queryModelConditions(params) {
+  return request(`/trouble/analysis/getModelConditions?time1=${params.time1}&time2=${params.time2}`, {
+      method: 'GET',
+      data: { params }
+  });
+}
+
+// 故障超时总情况 /trouble/analysis/getTimeOutConditions
+export async function queryTimeOutConditions(params) {
+  return request(`/trouble/analysis/getTimeOutConditions?time1=${params.time1}&time2=${params.time2}`, {
+      method: 'GET',
+      data: { params }
+  });
+}
+
+// 故障登记人排名 /trouble/analysis/getRegisterUserTop
+export async function queryRegisterUserTop(params) {
+  return request(`/trouble/analysis/getRegisterUserTop?time1=${params.time1}&time2=${params.time2}&num=${params.num}`, {
+      method: 'GET',
+      data: { params }
+  });
+}
+
+// 故障登记单位排名 /trouble/analysis/getRegisterUnitTop
+export async function queryRegisterUnitTop(params) {
+  return request(`/trouble/analysis/getRegisterUnitTop?time1=${params.time1}&time2=${params.time2}&num=${params.num}`, {
+      method: 'GET',
+      data: { params }
+  });
+}
+
+// 故障处理人排名 /trouble/analysis/getHandlerTop
+export async function queryHandlerTop(params) {
+  return request(`/trouble/analysis/getHandlerTop?time1=${params.time1}&time2=${params.time2}&num=${params.num}`, {
+      method: 'GET',
+      data: { params }
+  });
+}
+
+// 故障处理单位排名 /trouble/analysis/getHandleUnitTop
+export async function queryHandleUnitTop(params) {
+  return request(`/trouble/analysis/getHandleUnitTop?time1=${params.time1}&time2=${params.time2}&num=${params.num}`, {
+      method: 'GET',
+      data: { params }
   });
 }

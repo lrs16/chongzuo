@@ -112,7 +112,7 @@ export async function querkeyVal(params) {
 export async function demandstatipieData(params) {
   return request(`/demand/statisstics/pieData`, {
     method: 'POST',
-    data:params,
+    data: params,
     requestType:'form'
   });
 }
@@ -121,8 +121,16 @@ export async function demandstatipieData(params) {
 export async function demandstatilineData(params) {
   return request(`/demand/statisstics/lineData`, {
     method: 'POST',
-    data:params,
+    data: params,
     requestType:'form'
   });
 }
 
+// /demand/statisstics/ratio 需求统计分析-需求工单情况
+export async function demandstatiratioData(params) {
+  return request(`/demand/statisstics/ratio`, {
+    method: 'POST',
+    data: params,
+    requestType:'form'
+  });
+}

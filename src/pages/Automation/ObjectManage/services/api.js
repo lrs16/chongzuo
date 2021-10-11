@@ -185,7 +185,7 @@ export async function findDynamic(softId, pageNum, pageSize) {
 
 // ****脚本配置
 // 获取脚本配置系统脚本列表
-export async function systemScriptList(params, pageNum, pageSize) {
+export async function SystemScriptList(params, pageNum, pageSize) {
   return request(`/assets/script/listPage/${pageNum}/${pageSize}`, {
     method: 'POST',
     data: JSON.stringify(params),
@@ -294,11 +294,29 @@ export async function pullSoftConfigFile(softIds) {
   });
 }
 
-// /assets/softConfHi/listPageHi/{pageNum}/{pageSize} 软件历史配置
-export async function softConfHistoryList(params, pageNum, pageSize) {
+// 软件配置列表
+export async function findsoftConfList(params, pageNum, pageSize) {
   return request(`/assets/softConf/listPage/${pageNum}/${pageSize}`, {
     method: 'POST',
     data: JSON.stringify(params),
     requestType: 'formjosn',
+  });
+}
+
+// /assets/softConfHi/listPageHi/{pageNum}/{pageSize} 软件历史配置
+export async function softConfHistoryList(params, pageNum, pageSize) {
+  return request(`/assets/softConfHi/listPageHi/${pageNum}/${pageSize}`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}
+
+// 配置文件内容下载
+export async function downloadConfHiCont(Id) {
+  return request(`/assets/softConfHi/downloadConfHiCont`, {
+      method: 'POST',
+      data: Id,
+      requestType: 'form',
   });
 }

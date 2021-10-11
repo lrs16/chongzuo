@@ -9,6 +9,7 @@ import {
   demandtimeoutDownload,
   demandstatipieData, // 统计分析 -饼图
   demandstatilineData, // 统计分析 -趋势折线图
+  demandstatiratioData, // 统计分析-工单情况
 } from '../services/statisticapi';
 
 export default {
@@ -21,6 +22,7 @@ export default {
     demandtomeoutArr:[],
     piedatalist: [], // 统计分析 -饼图
     linedatalist: [], // 统计分析 -趋势折线图
+    ratiodatalist: [], // 统计分析 -工单数
   },
 
   effects: {
@@ -94,6 +96,15 @@ export default {
       });
     },
 
+    // 统计分析-工单数
+    *getdemandstatiratioData({ payload }, { call, put }) {
+      const response = yield call(demandstatiratioData, payload);
+      yield put({
+        type: 'demandratiodatalist',
+        payload: response,
+      });
+    },
+
   },
 
   reducers: {
@@ -141,5 +152,12 @@ export default {
       };
     },
 
+    // 统计分析-工单数
+    demandratiodatalist(state, action) {
+      return {
+        ...state,
+        ratiodatalist: action.payload.data,
+      };
+    },
   },
 };

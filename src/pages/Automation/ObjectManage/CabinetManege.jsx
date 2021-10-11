@@ -160,6 +160,12 @@ function CabinetManege(props) {
 
     const columns = [
         {
+            title: '机柜编号',
+            dataIndex: 'id',
+            key: 'id',
+            width: 200,
+        },
+        {
             title: '区域',
             dataIndex: 'cabinetZoneId',
             key: 'cabinetZoneId',

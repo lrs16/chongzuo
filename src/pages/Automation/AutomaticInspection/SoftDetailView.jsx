@@ -480,7 +480,9 @@ function SoftDetailView(props) {
             width: 150,
             align: 'center',
             render: (text, record) => {
-                <Badge status={colorrendermap.get(record.result)} text={text} />
+                return (
+                    <Badge status={colorrendermap.get(record.result)} text={text} />
+                )
             },
         },
         {

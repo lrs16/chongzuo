@@ -1,6 +1,6 @@
 import {
     // 系统脚本
-    systemScriptList,
+    SystemScriptList,
     systemscriptaddOrEdit, // 添加编辑（保存）
     systemscriptSubmit, // 提交
     deletesystemScript,
@@ -25,12 +25,12 @@ export default {
         // 系统脚本
         // 获取脚本配置系统脚本列表
         *findSystemScriptList({ payload: { values, pageNum, pageSize } }, { call, put }) {
-            const response = yield call(systemScriptList, values, pageNum, pageSize);
+            const response = yield call(SystemScriptList, values, pageNum, pageSize);
+            // yield put({
+            //     type: 'clearcache',
+            // });
             yield put({
-                type: 'clearcache',
-            });
-            yield put({
-                type: 'systemscriptlist',
+                type: 'savesystemscriptlist',
                 payload: response.data,
             });
         },
@@ -59,11 +59,11 @@ export default {
         // 获取脚本配置本地脚本列表
         *findLocalScriptList({ payload: { values, pageNum, pageSize } }, { call, put }) {
             const response = yield call(localScriptList, values, pageNum, pageSize);
+            // yield put({
+            //     type: 'clearcache',
+            // });
             yield put({
-                type: 'clearcache',
-            });
-            yield put({
-                type: 'localscriptlist',
+                type: 'savelocalscriptlist',
                 payload: response.data,
             });
         },
@@ -93,13 +93,13 @@ export default {
             };
         },
 
-        systemscriptlist(state, action) {
+        savesystemscriptlist(state, action) {
             return {
                 ...state,
                 systemscriptlist: action.payload,
             };
         },
-        localscriptlist(state, action) {
+        savelocalscriptlist(state, action) {
             return {
                 ...state,
                 localscriptlist: action.payload,

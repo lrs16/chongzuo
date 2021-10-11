@@ -66,6 +66,9 @@ function SystemScriptList(props) {
 
     useEffect(() => {
         searchdata(1, 15);
+    }, [location]);
+
+    useEffect(() => {
         togetSearchUsers().then(res => {
             if (res.code === 200) {
                 setallUserData(res.data.userList)
@@ -73,7 +76,7 @@ function SystemScriptList(props) {
                 message.error('获取负责人失败')
             }
         });
-    }, [location]);
+    }, []);
 
     // 上传删除附件触发保存
     useEffect(() => {
@@ -146,14 +149,6 @@ function SystemScriptList(props) {
         });
     };
 
-    const handleSearch = () => {
-        setPageinations({
-            ...paginations,
-            current: 1,
-        });
-        searchdata(1, paginations.pageSize);
-    };
-
     const handleReset = () => {
         resetFields();
         searchdata(1, 15)
@@ -184,6 +179,14 @@ function SystemScriptList(props) {
         total: systemscriptlist.total,
         showTotal: total => `总共  ${total}  条记录`,
         onChange: page => changePage(page),
+    };
+
+    const handleSearch = () => {
+        setPageinations({
+            ...paginations,
+            current: 1,
+        });
+        searchdata(1, paginations.pageSize);
     };
 
     const columns = [
