@@ -111,3 +111,47 @@ export async function statratioData(params) {
     requestType:'form'
   });
 }
+
+export async function statTop(params) {
+  return request(`/problem/stat/top`, {
+    method: 'POST',
+    data:params,
+    requestType:'form'
+  });
+}
+
+//  问题统计分析登记人-TOP数据
+export async function resgisterstatTop(params) {
+  return request(`/problem/stat/top`, {
+    method: 'POST',
+    data:params,
+    requestType:'form'
+  });
+}
+//  问题统计分析问题处理人Top5数据
+export async function handlerstatTop(params) {
+  return request(`/problem/stat/top`, {
+    method: 'POST',
+    data:params,
+    requestType:'form'
+  });
+}
+//  问题统计分析登记单位-TOP数据
+export async function resgisterunitstatTop(params) {
+  return request(`/problem/stat/top`, {
+    method: 'POST',
+    data:params,
+    requestType:'form'
+  });
+}
+//  问题处理单位Top5
+export async function handleunitstatTop(params) {
+  return request(`/problem/stat/top`, {
+    method: 'POST',
+    data:params,
+    requestType:'form'
+  });
+}
+
+
+

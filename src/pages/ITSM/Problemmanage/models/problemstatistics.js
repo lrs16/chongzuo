@@ -11,7 +11,12 @@ import {
   problemstatusList,
   statpieData,
   lineData,
-  statratioData
+  statratioData,
+  statTop,
+  resgisterstatTop,
+  handlerstatTop,
+  resgisterunitstatTop,
+  handleunitstatTop
 } from '../services/statistics';
 
 export default {
@@ -25,7 +30,12 @@ export default {
     timeoutArr: [],
     statpieArr: [],
     lineArr:[],
-    statratioArr:[]
+    statratioArr:[],
+    statToparr:[],
+    resgisterarr:[],
+    handlerarr:[],
+    resgisterunitarr:[],
+    handlerunitarr:[]
   },
 
   effects: {
@@ -122,6 +132,47 @@ export default {
         payload: response,
       });
     },
+    //  环比
+    *fetchstatTop({ payload }, { call, put }) {
+      const response = yield call(statTop, payload);
+      yield put({
+        type: 'statToparr',
+        payload: response,
+      });
+    },
+    //  问题统计分析登记人-TOP数据
+    *fetchresgisterstatTop({ payload }, { call, put }) {
+      console.log('payload: ', payload);
+      const response = yield call(resgisterstatTop, payload);
+      yield put({
+        type: 'resgisterarr',
+        payload: response,
+      });
+    },
+    //   问题统计分析问题处理人Top5数据
+    *fetchhandlerstatTop({ payload }, { call, put }) {
+      const response = yield call(handlerstatTop, payload);
+      yield put({
+        type: 'handlerarr',
+        payload: response,
+      });
+    },
+    //  问题统计分析登记单位-TOP数据
+    *fetchresgisterunitstatTop({ payload }, { call, put }) {
+      const response = yield call(resgisterunitstatTop, payload);
+      yield put({
+        type: 'resgisterunitarr',
+        payload: response,
+      });
+    },
+    //   问题处理单位Top5
+    *fetchhandleunitstatTop({ payload }, { call, put }) {
+      const response = yield call(handleunitstatTop, payload);
+      yield put({
+        type: 'handlerunitarr',
+        payload: response,
+      });
+    },
   },
 
   reducers: {
@@ -177,6 +228,36 @@ export default {
       return {
         ...state,
         statratioArr: action.payload.data,
+      };
+    },
+    statToparr(state, action) {
+      return {
+        ...state,
+        statToparr: action.payload.data,
+      };
+    },
+    resgisterarr(state, action) {
+      return {
+        ...state,
+        resgisterarr: action.payload.data,
+      };
+    },
+    handlerarr(state, action) {
+      return {
+        ...state,
+        handlerarr: action.payload.data,
+      };
+    },
+    resgisterunitarr(state, action) {
+      return {
+        ...state,
+        resgisterunitarr: action.payload.data,
+      };
+    },
+    handlerunitarr(state, action) {
+      return {
+        ...state,
+        handlerunitarr: action.payload.data,
       };
     },
   },

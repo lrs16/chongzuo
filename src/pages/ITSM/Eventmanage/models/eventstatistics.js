@@ -43,6 +43,7 @@ export default {
     getTimeOutConditionsdata:[],
     getTypeConditionsdata:[],
     getTypeConditionsdatalineChart:[],
+    getOrderConditionsobj:[]
   },
 
   effects: {
@@ -142,9 +143,66 @@ export default {
      // // 事件事件分类总情况
      *fetchgetTypeConditions({ payload }, { call, put }) {
       const response = yield call(getTypeConditions,payload);
-      console.log('response: ', response);
       yield put ({
         type: 'getTypeConditionsdata',
+        payload: response
+      })
+    },
+
+     // // 事件对象总情况
+     *fetchgetObjectConditions({ payload }, { call, put }) {
+      const response = yield call(getObjectConditions,payload);
+      yield put ({
+        type: 'getObjectConditionsdata',
+        payload: response
+      })
+    },
+
+     // // 事件工单超时情况
+     *fetchgetTimeOutConditions({ payload }, { call, put }) {
+      const response = yield call(getTimeOutConditions,payload);
+      yield put ({
+        type: 'getTimeOutConditionsdata',
+        payload: response
+      })
+    },
+
+     *fetchgetRegisterUserTop({ payload }, { call, put }) {
+      const response = yield call(getRegisterUserTop,payload);
+      yield put ({
+        type: 'getRegisterUserTopdata',
+        payload: response
+      })
+    },
+
+     *fetchgetHandlerTop({ payload }, { call, put }) {
+      const response = yield call(getHandlerTop,payload);
+      yield put ({
+        type: 'getHandlerTopdata',
+        payload: response
+      })
+    },
+
+     *fetchgetRegisterUnitTop({ payload }, { call, put }) {
+      const response = yield call(getRegisterUnitTop,payload);
+      yield put ({
+        type: 'getRegisterUnitTopdata',
+        payload: response
+      })
+    },
+
+     *fetchgetHandleUnitTop({ payload }, { call, put }) {
+      const response = yield call(getHandleUnitTop,payload);
+      yield put ({
+        type: 'getHandleUnitTopdata',
+        payload: response
+      })
+    },
+
+     *fetchgetOrderConditions({ payload }, { call, put }) {
+      const response = yield call(getOrderConditions,payload);
+      yield put ({
+        type: 'getOrderConditionsobj',
         payload: response
       })
     },
@@ -204,18 +262,53 @@ export default {
     }
   },
   
-  //  饼图
   getTypeConditionsdata(state, action) {
     return {
       ...state,
-      getTypeConditionsdata: action.payload.data.pieChart
+      getTypeConditionsdata: action.payload.data
     }
   },
-  //  线图
-  getTypeConditionsdata(state, action) {
+  
+  getObjectConditionsdata(state, action) {
     return {
       ...state,
-      getTypeConditionsdatalineChart: action.payload.data.lineChart
+      getObjectConditionsdata: action.payload.data
+    }
+  },
+  getTimeOutConditionsdata(state, action) {
+    return {
+      ...state,
+      getTimeOutConditionsdata: action.payload.data
+    }
+  },
+  getRegisterUserTopdata(state, action) {
+    return {
+      ...state,
+      getRegisterUserTopdata: action.payload.data
+    }
+  },
+  getHandlerTopdata(state, action) {
+    return {
+      ...state,
+      getHandlerTopdata: action.payload.data
+    }
+  },
+  getRegisterUnitTopdata(state, action) {
+    return {
+      ...state,
+      getRegisterUnitTopdata: action.payload.data
+    }
+  },
+  getHandleUnitTopdata(state, action) {
+    return {
+      ...state,
+      getHandleUnitTopdata: action.payload.data
+    }
+  },
+  getOrderConditionsobj(state, action) {
+    return {
+      ...state,
+      getOrderConditionsobj: action.payload.data
     }
   },
 
