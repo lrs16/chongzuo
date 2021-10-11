@@ -229,24 +229,30 @@ function Statistics(props) {
           </div>
           <Col span={8}>
             <Card onMouseDown={() => setPicVal({})}>
-              <DonutPCT
-                data={unitanalysis.pieChart}
-                height={300}
-                totaltitle='发布总次数'
-                total={piesum(unitanalysis.pieChart)}
-                padding={[10, 30, 30, 30]}
-                onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
-              />
+              {(!unitanalysis.pieChart || (unitanalysis.pieChart && unitanalysis.pieChart.length === 0)) && <Empty style={{ height: '300px' }} />}
+              {unitanalysis.pieChart && unitanalysis.pieChart.length > 0 && (
+                <DonutPCT
+                  data={unitanalysis.pieChart || []}
+                  height={300}
+                  totaltitle='发布总次数'
+                  total={piesum(unitanalysis.pieChart)}
+                  padding={[10, 30, 30, 30]}
+                  onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
+                />
+              )}
             </Card>
           </Col>
           <Col span={16}>
             <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-              <SmoothLine
-                data={dataArr(unitanalysis.lineChart)}
-                height={300}
-                padding={[30, 0, 60, 60]}
-                onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
-              />
+              {(!unitanalysis.lineChart || (unitanalysis.lineChart && unitanalysis.lineChart.length === 0)) && <Empty style={{ height: '300px' }} />}
+              {unitanalysis.lineChart && unitanalysis.lineChart.length > 0 && (
+                <SmoothLine
+                  data={dataArr(unitanalysis.lineChart)}
+                  height={300}
+                  padding={[30, 0, 60, 60]}
+                  onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
+                />
+              )}
             </Card>
           </Col>
         </Row>
@@ -259,26 +265,32 @@ function Statistics(props) {
           </div>
           <Col span={8}>
             <Card onMouseDown={() => setPicVal({})}>
-              <DonutPCT
-                data={typeanalysis.pieChart || []}
-                height={300}
-                totaltitle='发布总次数'
-                total={piesum(typeanalysis.pieChart)}
-                padding={[10, 30, 30, 30]}
-                onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
-              />
+              {(!typeanalysis.pieChart || (typeanalysis.pieChart && typeanalysis.pieChart.length === 0)) && <Empty style={{ height: '300px' }} />}
+              {typeanalysis.pieChart && typeanalysis.pieChart.length > 0 && (
+                <DonutPCT
+                  data={typeanalysis.pieChart || []}
+                  height={300}
+                  totaltitle='发布总次数'
+                  total={piesum(typeanalysis.pieChart)}
+                  padding={[10, 30, 30, 30]}
+                  onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
+                />)}
             </Card>
           </Col>
           <Col span={16}>
             <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-              <SmoothLine
-                data={dataArr(typeanalysis.lineChart || [])}
-                height={300}
-                padding={[30, 0, 60, 60]}
-                onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
-              />
+              {(!typeanalysis.lineChart || (typeanalysis.lineChart && typeanalysis.lineChart.length === 0)) && <Empty style={{ height: '300px' }} />}
+              {typeanalysis.lineChart && typeanalysis.lineChart.length > 0 && (
+                <SmoothLine
+                  data={dataArr(typeanalysis.lineChart || [])}
+                  height={300}
+                  padding={[30, 0, 60, 60]}
+                  onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
+                />
+              )}
             </Card>
           </Col>
+
         </Row>
       )}
       <Row style={{ marginTop: 24 }} gutter={16}>
@@ -288,17 +300,17 @@ function Statistics(props) {
             <b>发布超时总情况</b>
           </div>
           <Card onMouseDown={() => setPicVal({})}>
-            {orederanalysis && orederanalysis.length === 0 && <Empty style={{ height: '300px' }} />}
-            {orederanalysis && orederanalysis.length > 0 && (
-              <DonutPCT
-                data={orederanalysis}
+            {((orederanalysis && orederanalysis.length === 0) ||
+              (orederanalysis && orederanalysis.length === 2 && orederanalysis[0].value === 0 && orederanalysis[1].value === 0))
+              ?
+              <Empty style={{ height: '300px' }} /> : <DonutPCT
+                data={orederanalysis || []}
                 height={300}
                 totaltitle='发布总次数'
                 total={piesum(orederanalysis)}
                 padding={[10, 30, 30, 30]}
                 onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
-              />
-            )}
+              />}
           </Card>
         </Col>
         <Col span={12}>
@@ -375,7 +387,7 @@ function Statistics(props) {
             {allability && allability.length === 0 && <Empty style={{ height: '300px' }} />}
             {allability && allability.length > 0 && (
               <DonutPCT
-                data={allability}
+                data={allability || []}
                 height={300}
                 totaltitle='清单数'
                 total={piesum(allability)}
@@ -394,7 +406,7 @@ function Statistics(props) {
             {frontability && frontability.length === 0 && <Empty style={{ height: '300px' }} />}
             {frontability && frontability.length > 0 && (
               <DonutPCT
-                data={frontability}
+                data={frontability || []}
                 height={300}
                 totaltitle='清单数'
                 total={piesum(frontability)}
@@ -413,7 +425,7 @@ function Statistics(props) {
             {backability && backability.length === 0 && <Empty style={{ height: '300px' }} />}
             {backability && backability.length > 0 && (
               <DonutPCT
-                data={backability}
+                data={backability || []}
                 height={300}
                 totaltitle='清单数'
                 total={piesum(backability)}

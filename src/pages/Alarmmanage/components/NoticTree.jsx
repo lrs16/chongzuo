@@ -21,9 +21,9 @@ const formItemLayout = {
 function NoticTree(props) {
   const { visible, ChangeVisible, openType, alarmgroup, selectdata, record } = props;
   const { getFieldDecorator, resetFields, getFieldsValue, setFieldsValue } = props.form;
-  // const [expandedKeys, setExpandedKeys] = useState([]);
-  const [checkedKeys, setCheckedKeys] = useState([]);
-  // const [selectedKeys, setSelectedKeys] = useState([]);
+  const [expandedKeys, setExpandedKeys] = useState(['a']);
+  const [checkedKeys, setCheckedKeys] = useState(['001_001_1', '001_001_2']);
+  const [selectedKeys, setSelectedKeys] = useState([]);
   const [users, setUsers] = useState([]);
   const required = true;
 
@@ -37,16 +37,18 @@ function NoticTree(props) {
     })
     //  ChangeVisible(false);
   }
-  // const onExpand = (Keys) => {
-  //   setExpandedKeys(Keys);
-  // };
+  const onExpand = (Keys) => {
+    setExpandedKeys(Keys);
+  };
   const onCheck = (Keys) => {
+
     setFieldsValue({ noticGroup: Keys.toString() });
     setCheckedKeys(Keys);
+    console.log(Keys)
   };
-  // const onSelect = (Keys, info) => {
-  //   setSelectedKeys(Keys)
-  // };
+  const onSelect = (Keys, info) => {
+    setSelectedKeys(Keys)
+  };
 
   const Searchuser = (queKey) => {
     if (queKey) {
@@ -92,15 +94,16 @@ function NoticTree(props) {
   const appmap = getTypebykey('1437322008466026497');             // 应用程序
   const filesmmap = getTypebykey('1442417886570639362');          // 配置文件
   const messagermap = getTypebykey('1437584114700386305');        // 上下行报文
+  // console.log(measurmap)
 
-  const treenodemap = new Map([
-    ['计量业务告警', measurmap],
-    ['主机巡检告警', hostmap],
-    ['软件巡检告警', softmap],
-    ['应用程序运行状态告警', appmap],
-    ['配置文件变更告警', filesmmap],
-    ['上下行报文页面告警', messagermap],
-  ]);
+  // const treenodemap = new Map([
+  //   ['计量业务告警', measurmap],
+  //   ['主机巡检告警', hostmap],
+  //   ['软件巡检告警', softmap],
+  //   ['应用程序运行状态告警', appmap],
+  //   ['配置文件变更告警', filesmmap],
+  //   ['上下行报文页面告警', messagermap],
+  // ]);
 
   return (
     <Drawer
@@ -190,50 +193,44 @@ function NoticTree(props) {
               </Form.Item>
             </Col>
             <Col span={24}>
-              {alarmgroup && alarmgroup.length > 0 && (
-                <Form.Item label="告警通知项">
+              {alarmgroup && alarmgroup.length > 0 && (<Form.Item label="告警通知组">{
+                getFieldDecorator('noticGroup')(
                   <Tree
                     checkable
-                    // onExpand={onExpand}
-                    // expandedKeys={expandedKeys}
+                    onExpand={onExpand}
+                    expandedKeys={expandedKeys}
                     autoExpandParent
                     onCheck={onCheck}
-                    checkedKeys={record.noticGroup && record.noticGroup.length > 0 ? record.noticGroup.split() : []}
-                    // onSelect={onSelect}
-                    // selectedKeys={selectedKeys}
-                    defaultExpandedKeys={['all']}
+                    checkedKeys={checkedKeys}
+                    onSelect={onSelect}
+                    selectedKeys={selectedKeys}
+                  // defaultExpandedKeys={['a']}
                   >
                     <TreeNode title='全部' key='a'>
                       {alarmgroup.map(item => {
-                        const type = treenodemap.get(item.val);
-                        if (type) {
+                        // const type = treenodemap.get(item.val);
+                        if (item.key === '001') {
                           return (<TreeNode key={item.key} title={item.val} >
-                            {type.map(obj => [
+                            {measurmap.map(obj => [
                               <TreeNode key={`${item.key}_${obj.dict_code}`} title={obj.title} >
-                                <TreeNode key={`${item.key}_${obj.dict_code}_1`} title='告警' />
-                                <TreeNode key={`${item.key}_${obj.dict_code}_2`} title='确认告警' />
-                                <TreeNode key={`${item.key}_${obj.dict_code}_3`} title='取消告警' />
+                                <TreeNode key={`${item.key}_${obj.dict_code}_1/${item.val}_${obj.title}_告警`} title='告警' />
+                                <TreeNode key={`${item.key}_${obj.dict_code}_2/${item.val}_${obj.title}_确认告警`} title='确认告警' />
+                                <TreeNode key={`${item.key}_${obj.dict_code}_3/${item.val}_${obj.title}_告警消除`} title='告警消除' />
                               </TreeNode>
                             ])}
                           </TreeNode>)
                         }
                         return (
                           <TreeNode key={item.key} title={item.val} >
-                            <TreeNode key={`${item.key}_1`} title='告警' />
-                            <TreeNode key={`${item.key}_2`} title='确认告警' />
-                            <TreeNode key={`${item.key}_3`} title='取消告警' />
+                            <TreeNode key={`${item.key}_1/${item.val}_告警`} title='告警' />
+                            <TreeNode key={`${item.key}_2/${item.val}_确认告警`} title='确认告警' />
+                            <TreeNode key={`${item.key}_3/${item.val}_告警消除`} title='告警消除' />
                           </TreeNode>)
                       })}
                     </TreeNode>
                   </Tree>
-                  {getFieldDecorator('noticGroup', {
-                    rules: [{ required, message: '请选择告警通知项' }],
-                    initialValue: record.noticGroup,
-                  })
-                    (
-                      <></>
-                    )}
-                </Form.Item>
+                )}
+              </Form.Item>
               )}
             </Col>
           </Row>
