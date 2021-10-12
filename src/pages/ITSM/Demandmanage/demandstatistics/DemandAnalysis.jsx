@@ -30,7 +30,7 @@ function Statistics(props) {
 
   const [picval, setPicVal] = useState({});
   const [values, setValues] = useState({});
-  const [topN, setTopN] = useState({val1:5,val2:5,val3:5,val4:5,}) // 排序
+  const [topN, setTopN] = useState({ val1: 5, val2: 5, val3: 5, val4: 5, }) // 排序
 
   const dataCylindertop = (datas, v) => { // 柱状图集成数组
     const newArr = [];
@@ -67,10 +67,30 @@ function Statistics(props) {
     if (!Array.isArray(datas)) {
       return newArr;
     }
-    for (let i = 0; i < datas.length; i += 1) {
+    const newdData = datas;
+    const newdatas = newdData.concat();
+    newdatas.pop();
+    for (let i = 0; i < newdatas.length; i += 1) {
       const vote = {};
-      vote.type = datas[i].status;
-      vote.value = datas[i].quantity;
+      vote.type = newdatas[i].status;
+      vote.value = newdatas[i].quantity;
+      newArr.push(vote);
+    }
+    return newArr;
+  };
+
+  const piedataArrtwo = datas => { // 饼图
+    const newArr = [];
+    if (!Array.isArray(datas)) {
+      return newArr;
+    }
+    const newdData = datas;
+    const newdatas = newdData.concat();
+    newdatas.shift();
+    for (let i = 0; i < newdatas.length; i += 1) {
+      const vote = {};
+      vote.type = newdatas[i].type;
+      vote.value = newdatas[i].value;
       newArr.push(vote);
     }
     return newArr;
@@ -104,8 +124,11 @@ function Statistics(props) {
   const piesum1 = (arr) => { // 计算总数
     let sum = 0;
     if (arr && arr.length > 0) {
-      arr.forEach(item => {
-        sum += item.quantity;
+      const newdData = arr;
+      const newdatas = newdData.concat();
+      newdatas.shift();
+      newdatas.forEach(item => {
+        sum += item.value;
       });
     };
     return sum;
@@ -145,6 +168,7 @@ function Statistics(props) {
 
   return (
     <div>
+      {/* 统计周期 */}
       <SelectTime ChangeDate={(v) => setValues(v)} />
       <Spin spinning={loading}>
         <Row style={{ marginTop: 24 }}>
@@ -174,14 +198,15 @@ function Statistics(props) {
         </div>
         <Col span={8}>
           <Card onMouseDown={() => setPicVal({})}>
-          {/* {(!piedatalist || (piedatalist && piedatalist === undefined)) && <Empty style={{ height: '100px' }} />} */}
+            <h4 style={{ fontWeight: 'bold' }}>需求处理情况占比</h4>
+            {(!piedatalist || (piedatalist && piedatalist === undefined)) && <Empty style={{ height: '300px' }} />}
             {
-              piedatalist && (
+              piedatalist && piedatalist !== undefined && (
                 <DonutPCT
-                  data={piedatalist['需求处理情况占比'] || []}
+                  data={piedataArrtwo(piedatalist['需求处理情况占比']) || []}
                   height={300}
                   totaltitle='需求总数'
-                  total={piesum(piedatalist['需求处理情况占比'])}
+                  total={piesum1(piedatalist['需求处理情况占比'])}
                   padding={[10, 30, 30, 30]}
                   onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
                 />
@@ -191,8 +216,10 @@ function Statistics(props) {
         </Col>
         <Col span={16}>
           <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+            <h4 style={{ fontWeight: 'bold' }}>需求工单量趋势</h4>
+            {(!linedatalist || (linedatalist && linedatalist === undefined)) && <Empty style={{ height: '300px' }} />}
             {
-              linedatalist && (
+              linedatalist && linedatalist !== undefined && (
                 <SmoothLine
                   data={linedataArr(linedatalist['需求工单量趋势'])}
                   height={300}
@@ -204,67 +231,85 @@ function Statistics(props) {
           </Card>
         </Col>
       </Row>
-
-      {piedatalist && ( // 功能模块情况 （饼图+折线图）
-        <Row style={{ marginTop: 24 }}>
-          <div className={styles.statisticscard}>
-            <Avatar icon="cluster" />
-            <b>功能模块情况</b>
-          </div>
-          <Col span={8}>
-            <Card onMouseDown={() => setPicVal({})}>
-              <DonutPCT
-                data={piedatalist['功能模块情况'] || []}
-                height={300}
-                totaltitle='需求总数'
-                total={piesum(piedatalist['功能模块情况'])}
-                padding={[10, 30, 30, 30]}
-                onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
-              />
-            </Card>
-          </Col>
-          <Col span={16}>
-            <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-              <SmoothLine
-                data={linedataArr(linedatalist['功能模块情况趋势'])}
-                height={300}
-                padding={[30, 0, 60, 60]}
-                onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
-              />
-            </Card>
-          </Col>
-        </Row>
-      )}
-      {piedatalist && ( // 需求类型统计分析 （饼图+折线图）
-        <Row style={{ marginTop: 24 }}>
-          <div className={styles.statisticscard}>
-            <Avatar icon="cluster" />
-            <b>需求类型统计分析</b>
-          </div>
-          <Col span={8}>
-            <Card onMouseDown={() => setPicVal({})}>
-              <DonutPCT
-                data={piedatalist['需求类型统计分析'] || []}
-                height={300}
-                totaltitle='需求总数'
-                total={piesum(piedatalist['需求类型统计分析'])}
-                padding={[10, 30, 30, 30]}
-                onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
-              />
-            </Card>
-          </Col>
-          <Col span={16}>
-            <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-              <SmoothLine
-                data={linedataArr(linedatalist['需求类型趋势'])}
-                height={300}
-                padding={[30, 0, 60, 60]}
-                onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
-              />
-            </Card>
-          </Col>
-        </Row>
-      )}
+      {/* // 功能模块情况 （饼图+折线图） */}
+      <Row style={{ marginTop: 24 }}>
+        <div className={styles.statisticscard}>
+          <Avatar icon="cluster" />
+          <b>功能模块情况</b>
+        </div>
+        <Col span={8}>
+          <Card onMouseDown={() => setPicVal({})}>
+            {(!piedatalist || (piedatalist && piedatalist === undefined)) && <Empty style={{ height: '300px' }} />}
+            {
+              piedatalist && piedatalist !== undefined && (
+                <DonutPCT
+                  data={piedatalist['功能模块情况'] || []}
+                  height={300}
+                  totaltitle='需求总数'
+                  total={piesum(piedatalist['功能模块情况'])}
+                  padding={[10, 30, 30, 30]}
+                  onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
+                />
+              )
+            }
+          </Card>
+        </Col>
+        <Col span={16}>
+          <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+            {(!linedatalist || (linedatalist && linedatalist === undefined && linedataArr(linedatalist['功能模块情况趋势']).length === 0)) && <Empty style={{ height: '300px' }} />}
+            {
+              linedatalist && linedatalist !== undefined && linedataArr(linedatalist['功能模块情况趋势']).length > 0 && (
+                <SmoothLine
+                  data={linedataArr(linedatalist['功能模块情况趋势'])}
+                  height={300}
+                  padding={[30, 0, 60, 60]}
+                  onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
+                />
+              )
+            }
+          </Card>
+        </Col>
+      </Row>
+      {/* // 需求类型统计分析 （饼图+折线图） */}
+      <Row style={{ marginTop: 24 }}>
+        <div className={styles.statisticscard}>
+          <Avatar icon="cluster" />
+          <b>需求类型统计分析</b>
+        </div>
+        <Col span={8}>
+          <Card onMouseDown={() => setPicVal({})}>
+            {(piedatalist && piedatalist === undefined && linedataArr(piedatalist['需求类型统计分析']).length === 0) && <Empty style={{ height: '300px' }} />}
+            {
+              piedatalist && piedatalist !== undefined && linedataArr(piedatalist['需求类型统计分析']).length > 0 && (
+                <DonutPCT
+                  data={piedatalist['需求类型统计分析'] || []}
+                  height={300}
+                  totaltitle='需求总数'
+                  total={piesum(piedatalist['需求类型统计分析'])}
+                  padding={[10, 30, 30, 30]}
+                  onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
+                />
+              )
+            }
+          </Card>
+        </Col>
+        <Col span={16}>
+          <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+            {(linedatalist && linedataArr(linedatalist['需求类型趋势']).length === 0) && <Empty style={{ height: '300px' }} />}
+            {
+              linedatalist && linedatalist !== undefined && linedataArr(linedatalist['需求类型趋势']).length > 0 && (
+                <SmoothLine
+                  data={linedataArr(linedatalist['需求类型趋势'])}
+                  height={300}
+                  padding={[30, 0, 60, 60]}
+                  onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
+                />
+              )
+            }
+          </Card>
+        </Col>
+      </Row>
+      {/* 需求工单超时情况 */}
       <Row style={{ marginTop: 24 }} gutter={16}>
         <Col span={12}>
           <div className={styles.statisticscard}>
@@ -272,13 +317,14 @@ function Statistics(props) {
             <b>需求工单超时情况</b>
           </div>
           <Card onMouseDown={() => setPicVal({})}>
-            {demandtomeoutArr && piedataArr(demandtomeoutArr).length === 0 && <Empty style={{ height: '300px' }} />}
+            {(demandtomeoutArr && piedataArr(demandtomeoutArr).length === 0) && <Empty style={{ height: '300px' }} />}
             {demandtomeoutArr && piedataArr(demandtomeoutArr).length > 0 && (
               <DonutPCT
                 data={piedataArr(demandtomeoutArr)}
                 height={300}
                 totaltitle='需求总数'
-                total={piesum1(demandtomeoutArr)}
+                // total={piesum1(demandtomeoutArr)}
+                total={demandtomeoutArr[demandtomeoutArr.length -1].quantity}
                 padding={[10, 30, 30, 30]}
                 onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
               />
@@ -289,10 +335,10 @@ function Statistics(props) {
           <div className={styles.statisticscard}>
             <Avatar icon="share-alt" />
             <b>需求申请人Top{topN.val1}</b>
-            <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN({...topN, val1:v})} /></div>
+            <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN({ ...topN, val1: v })} /></div>
           </div>
           <Card onMouseDown={() => setPicVal({})}>
-            {piedatalist && dataCylinder(piedatalist['需求申请人TOP']).length === 0 && <Empty style={{ height: '300px' }} />}
+            {(piedatalist && dataCylinder(piedatalist['需求申请人TOP']).length === 0) && <Empty style={{ height: '300px' }} />}
             {piedatalist && dataCylinder(piedatalist['需求申请人TOP']).length > 0 && (
               <ColumnarY
                 height={300}
@@ -305,15 +351,16 @@ function Statistics(props) {
           </Card>
         </Col>
       </Row>
+      {/* 需求处理人Top + 需求申请单位Top */}
       <Row style={{ marginTop: 24 }} gutter={16}>
         <Col span={12}>
           <div className={styles.statisticscard}>
             <Avatar icon="share-alt" />
             <b>需求处理人Top{topN.val2}</b>
-            <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN({...topN, val2:v})} /></div>
+            <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN({ ...topN, val2: v })} /></div>
           </div>
           <Card onMouseDown={() => setPicVal({})}>
-            {piedatalist && dataCylinder(piedatalist['需求处理人TOP']).length === 0 && <Empty style={{ height: '300px' }} />}
+            {(piedatalist && dataCylinder(piedatalist['需求处理人TOP']).length === 0) && <Empty style={{ height: '300px' }} />}
             {piedatalist && dataCylinder(piedatalist['需求处理人TOP']).length > 0 && (
               <ColumnarY
                 height={300}
@@ -329,10 +376,10 @@ function Statistics(props) {
           <div className={styles.statisticscard}>
             <Avatar icon="share-alt" />
             <b>需求申请单位Top{topN.val3}</b>
-            <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN({...topN, val3:v})} /></div>
+            <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN({ ...topN, val3: v })} /></div>
           </div>
           <Card onMouseDown={() => setPicVal({})}>
-            {piedatalist && dataCylinder(piedatalist['需求申请单位TOP']).length === 0 && <Empty style={{ height: '300px' }} />}
+            {(piedatalist && dataCylinder(piedatalist['需求申请单位TOP']).length === 0) && <Empty style={{ height: '300px' }} />}
             {piedatalist && dataCylinder(piedatalist['需求申请单位TOP']).length > 0 && (
               <ColumnarY
                 height={300}
@@ -345,15 +392,16 @@ function Statistics(props) {
           </Card>
         </Col>
       </Row>
+      {/* 需求处理单位Top */}
       <Row style={{ marginTop: 24 }} gutter={16}>
         <Col span={12}>
           <div className={styles.statisticscard}>
             <Avatar icon="share-alt" />
             <b>需求处理单位Top{topN.val4}</b>
-            <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v =>  setTopN({...topN, val4:v})} /></div>
+            <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN({ ...topN, val4: v })} /></div>
           </div>
           <Card onMouseDown={() => setPicVal({})}>
-            {piedatalist && dataCylinder(piedatalist['需求处理单位TOP']).length === 0 && <Empty style={{ height: '300px' }} />}
+            {(piedatalist && dataCylinder(piedatalist['需求处理单位TOP']).length === 0) && <Empty style={{ height: '300px' }} />}
             {piedatalist && dataCylinder(piedatalist['需求处理单位TOP']).length > 0 && (
               <ColumnarY
                 height={300}

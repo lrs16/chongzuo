@@ -16,10 +16,10 @@ export default {
   namespace: 'demandstatistic',
 
   state: {
-    requirementArr:[],
-    demandstateArr:[],
-    demandscheduleArr:[],
-    demandtomeoutArr:[],
+    requirementArr: [],
+    demandstateArr: [],
+    demandscheduleArr: [],
+    demandtomeoutArr: [],
     piedatalist: [], // 统计分析 -饼图
     linedatalist: [], // 统计分析 -趋势折线图
     ratiodatalist: [], // 统计分析 -工单数
@@ -28,16 +28,16 @@ export default {
   effects: {
     // 功能需求统计列表
     *fetchdemandRequirement({ payload }, { call, put }) {
-      const response = yield call(demandRequirementlist,payload);
-      yield put ({
+      const response = yield call(demandRequirementlist, payload);
+      yield put({
         type: 'requirementArr',
         payload: response
       })
     },
     // 需求状态统计列表
     *fetchdemandstateList({ payload }, { call, put }) {
-      const response = yield call(demandstateList,payload);
-      yield put ({
+      const response = yield call(demandstateList, payload);
+      yield put({
         type: 'demandstateArr',
         payload: response
       })
@@ -45,41 +45,44 @@ export default {
 
     // 需求进度统计列表
     *fetchdemandSchedulelist({ payload }, { call, put }) {
-      const response = yield call(demandSchedulelist,payload);
-      yield put ({
+      const response = yield call(demandSchedulelist, payload);
+      yield put({
         type: 'demandscheduleArr',
         payload: response
       })
     },
     // 需求超时统计列表
     *fetchdemandTimeoutlist({ payload }, { call, put }) {
-      const response = yield call(demandTimeoutlist,payload);
-      yield put ({
+      const response = yield call(demandTimeoutlist, payload);
+      yield put({
         type: 'demandtomeoutArr',
         payload: response
       })
     },
 
-     //   下载功能需求统计
-     *downloadrequirement({payload},{ call, put }) {
+    //   下载功能需求统计
+    *downloadrequirement({ payload }, { call }) {
       return yield call(requirementDownload, payload)
     },
-     //   下载需求状态统计
-     *downloaddemandstate({payload},{ call, put }) {
+    //   下载需求状态统计
+    *downloaddemandstate({ payload }, { call }) {
       return yield call(demandstateDownload, payload)
     },
-     //   下载需求进度统计
-     *downloaddemandSchedule({payload},{ call, put }) {
+    //   下载需求进度统计
+    *downloaddemandSchedule({ payload }, { call }) {
       return yield call(demandscheduleDownload, payload)
     },
-     //   需求超时导出
-     *downloaddemandTimeout({payload},{ call, put }) {
+    //   需求超时导出
+    *downloaddemandTimeout({ payload }, { call }) {
       return yield call(demandtimeoutDownload, payload)
     },
 
     // 统计分析
     // 统计分析饼图
     *getdemandstatipieData({ payload }, { call, put }) {
+      yield put({
+        type: 'clearcache'
+      })
       const response = yield call(demandstatipieData, payload);
       yield put({
         type: 'demandpiedatalist',
@@ -89,6 +92,9 @@ export default {
 
     // 统计分析趋势图
     *getdemandstatilineData({ payload }, { call, put }) {
+      yield put({
+        type: 'clearcache'
+      })
       const response = yield call(demandstatilineData, payload);
       yield put({
         type: 'demandlinedatalist',
@@ -108,6 +114,13 @@ export default {
   },
 
   reducers: {
+    clearcache(state) {
+      return {
+        ...state,
+        piedatalist: [], // 统计分析 -饼图
+        linedatalist: [], // 统计分析 -趋势折线图
+      }
+    },
     // 功能需求统计列表
     requirementArr(state, action) {
       return {

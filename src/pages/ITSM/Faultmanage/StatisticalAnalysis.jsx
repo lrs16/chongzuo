@@ -185,9 +185,9 @@ function StatisticalAnalysis(props) {
           </div>
           <Col span={8}>
             <Card onMouseDown={() => setPicVal({})}>
-              {(!blameconditlist.pieChart || (blameconditlist.pieChart && blameconditlist.pieChart.length === 0)) && <Empty style={{ height: '300px' }} />}
+              {(!blameconditlist.pieChart || (blameconditlist && blameconditlist.pieChart && blameconditlist.pieChart.length === 0)) && <Empty style={{ height: '300px' }} />}
               {
-                blameconditlist.pieChart && blameconditlist.pieChart.length > 0 && (
+                blameconditlist && blameconditlist.pieChart && blameconditlist.pieChart.length > 0 && (
                   <DonutPCT
                     data={blameconditlist.pieChart || []}
                     height={300}
@@ -202,7 +202,7 @@ function StatisticalAnalysis(props) {
           </Col>
           <Col span={16}>
             <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-              {(!blameconditlist.lineChart || (blameconditlist.lineChart && blameconditlist.lineChart.length === 0)) && <Empty style={{ height: '300px' }} />}
+              {(!blameconditlist.lineChart || (blameconditlist && blameconditlist.lineChart && blameconditlist.lineChart.length === 0)) && <Empty style={{ height: '300px' }} />}
               {
                 blameconditlist.lineChart && blameconditlist.lineChart.length > 0 && (
                   <SmoothLine
@@ -225,7 +225,7 @@ function StatisticalAnalysis(props) {
           <Col span={8}>
             <Card onMouseDown={() => setPicVal({})}>
               <h4 style={{ fontWeight: 'bold' }}>故障类型总情况</h4>
-              {(!typeconditlist.allPieChart || (typeconditlist.allPieChart && typeconditlist.allPieChart.length === 0)) && <Empty style={{ height: '300px' }} />}
+              {(!typeconditlist.allPieChart || (typeconditlist && typeconditlist.allPieChart && typeconditlist.allPieChart.length === 0)) && <Empty style={{ height: '300px' }} />}
               {
                 typeconditlist.allPieChart && typeconditlist.allPieChart.length > 0 && (
                   <DonutPCT
@@ -243,7 +243,7 @@ function StatisticalAnalysis(props) {
           <Col span={16}>
             <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
               <h4 style={{ fontWeight: 'bold' }}>故障类型趋势分析</h4>
-              {(!typeconditlist.allLineChart || (typeconditlist.allLineChart && typeconditlist.allLineChart.length === 0)) && <Empty style={{ height: '300px' }} />}
+              {(!typeconditlist.allLineChart || (typeconditlist && typeconditlist.allLineChart && typeconditlist.allLineChart.length === 0)) && <Empty style={{ height: '300px' }} />}
               {
                 typeconditlist.allLineChart && typeconditlist.allLineChart.length > 0 && (
                   <SmoothLine
@@ -259,7 +259,7 @@ function StatisticalAnalysis(props) {
           <Col span={8}>
             <Card onMouseDown={() => setPicVal({})}>
               <h4 style={{ fontWeight: 'bold' }}>硬件故障情况</h4>
-              {(!typeconditlist.hardwarePieChart || (typeconditlist.hardwarePieChart && typeconditlist.hardwarePieChart.length === 0)) && <Empty style={{ height: '300px' }} />}
+              {(!typeconditlist.hardwarePieChart || (typeconditlist && typeconditlist.hardwarePieChart && typeconditlist.hardwarePieChart.length === 0)) && <Empty style={{ height: '300px' }} />}
               {
                 typeconditlist && typeconditlist.hardwarePieChart && typeconditlist.hardwarePieChart.length > 0 && (
                   <DonutPCT
@@ -277,7 +277,7 @@ function StatisticalAnalysis(props) {
           <Col span={16}>
             <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
               <h4 style={{ fontWeight: 'bold' }}>硬件故障趋势分析</h4>
-              {(!typeconditlist.hardwareLineChart || (typeconditlist.hardwareLineChart && typeconditlist.hardwareLineChart.length === 0)) && <Empty style={{ height: '300px' }} />}
+              {(!typeconditlist.hardwareLineChart || (typeconditlist && typeconditlist.hardwareLineChart && typeconditlist.hardwareLineChart.length === 0)) && <Empty style={{ height: '300px' }} />}
               {
                 typeconditlist && typeconditlist.hardwareLineChart && typeconditlist.hardwareLineChart.length > 0 && (
                   <SmoothLine
@@ -293,7 +293,7 @@ function StatisticalAnalysis(props) {
           <Col span={8}>
             <Card onMouseDown={() => setPicVal({})}>
               <h4 style={{ fontWeight: 'bold' }}>软件故障情况</h4>
-              {(!typeconditlist.softPieChart || (typeconditlist.softPieChart && typeconditlist.softPieChart.length === 0)) && <Empty style={{ height: '300px' }} />}
+              {(!typeconditlist.softPieChart || (typeconditlist && typeconditlist.softPieChart && typeconditlist.softPieChart.length === 0)) && <Empty style={{ height: '300px' }} />}
               {
                 typeconditlist && typeconditlist.softPieChart && typeconditlist.softPieChart.length > 0 && (
                   <DonutPCT
@@ -311,7 +311,7 @@ function StatisticalAnalysis(props) {
           <Col span={16}>
             <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
               <h4 style={{ fontWeight: 'bold' }}>软件故障趋势分析</h4>
-              {(!typeconditlist.softLineChart || (typeconditlist.softLineChart && typeconditlist.softLineChart.length === 0)) && <Empty style={{ height: '300px' }} />}
+              {(!typeconditlist.softLineChart || (typeconditlist && typeconditlist.softLineChart && typeconditlist.softLineChart.length === 0)) && <Empty style={{ height: '300px' }} />}
               {
                 typeconditlist && typeconditlist.softLineChart && typeconditlist.softLineChart.length > 0 && (
                   <SmoothLine
@@ -333,9 +333,9 @@ function StatisticalAnalysis(props) {
           </div>
           <Col span={8}>
             <Card onMouseDown={() => setPicVal({})}>
-              {(!modelconditlist.pieChart || (modelconditlist.pieChart && modelconditlist.pieChart.length === 0)) && <Empty style={{ height: '300px' }} />}
+              {(!modelconditlist.pieChart || (modelconditlist && modelconditlist.pieChart && modelconditlist.pieChart.length === 0)) && <Empty style={{ height: '300px' }} />}
               {
-                modelconditlist.pieChart && modelconditlist.pieChart.length > 0 && (
+                modelconditlist && modelconditlist.pieChart && modelconditlist.pieChart.length > 0 && (
                   <DonutPCT
                     data={modelconditlist.pieChart || []}
                     height={300}
@@ -350,8 +350,8 @@ function StatisticalAnalysis(props) {
           </Col>
           <Col span={16}>
             <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-              {(!modelconditlist.lineChart || (modelconditlist.lineChart && modelconditlist.lineChart.length === 0)) && <Empty style={{ height: '300px' }} />}
-              {modelconditlist.lineChart && modelconditlist.lineChart.length > 0 && (
+              {(!modelconditlist.lineChart || (modelconditlist && modelconditlist.lineChart && modelconditlist.lineChart.length === 0)) && <Empty style={{ height: '300px' }} />}
+              {modelconditlist && modelconditlist.lineChart && modelconditlist.lineChart.length > 0 && (
                 <SmoothLine
                   data={modelconditlist.lineChart || []}
                   height={300}
