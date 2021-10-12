@@ -440,7 +440,7 @@ function EventAnalysis(props) {
                   {getRegisterUserTopdata && getRegisterUserTopdata.length > 0 && (
                     <>
                       <Col span={20}>
-                        <Cylinder
+                        {/* <Cylinder
                           height={300}
                           data={dataCylinder(getRegisterUserTopdata)}
                           padding={[0, 50, 30, 150]}
@@ -448,6 +448,13 @@ function EventAnalysis(props) {
                           cols={cols}
                           colors="l(270) 0:#04e8ff 0.5:#05bdfe 1:#05bdfe"
                           onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
+                        /> */}
+                        <ColumnarY
+                          cols={Issuedscale}
+                          data={getRegisterUserTopdata}
+                          height={300}
+                          padding={[30, 60, 50, 100]}
+                          onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />
                       </Col>
 
@@ -480,14 +487,12 @@ function EventAnalysis(props) {
                   {getHandlerTopdata && getHandlerTopdata.length > 0 && (
                     <>
                       <Col span={20}>
-                        <Cylinder
+                        <ColumnarY
+                          cols={Issuedscale}
+                          data={getHandlerTopdata}
                           height={300}
-                          data={dataCylinder(getHandlerTopdata)}
-                          padding={[0, 50, 30, 150]}
-                          symbol=""
-                          cols={cols}
-                          colors="l(270) 0:#04e8ff 0.5:#05bdfe 1:#05bdfe"
-                          onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
+                          padding={[30, 60, 50, 100]}
+                          onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />
                       </Col>
 
@@ -565,14 +570,12 @@ function EventAnalysis(props) {
                   {getHandleUnitTopdata && getHandleUnitTopdata.length > 0 && (
                     <>
                       <Col span={20}>
-                        <Cylinder
+                        <ColumnarY
+                          cols={Issuedscale}
+                          data={getHandleUnitTopdata}
                           height={300}
-                          data={dataCylinder(getHandleUnitTopdata)}
-                          padding={[0, 50, 30, 150]}
-                          symbol=""
-                          cols={cols}
-                          colors="l(270) 0:#04e8ff 0.5:#05bdfe 1:#05bdfe"
-                          onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
+                          padding={[30, 60, 50, 100]}
+                          onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />
                       </Col>
 
@@ -590,21 +593,6 @@ function EventAnalysis(props) {
                       </Col>
                     </>
                   )}
-
-
-                </Card>
-              </Col>
-
-
-              <Col span={12}>
-                <Card>
-                  <ColumnarY
-                    cols={Issuedscale}
-                    data={issuedata}
-                    height={364}
-                    padding={[30, 60, 50, 100]}
-                    onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
-                  />
                 </Card>
               </Col>
             </Row>

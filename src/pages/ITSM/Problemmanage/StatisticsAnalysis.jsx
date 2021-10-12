@@ -47,14 +47,23 @@ function StatisticsAnalysis(props) {
     resgisterunitarr,
     handlerunitarr
   } = props;
-  console.log(lineArr,'lineArr')
+  console.log(lineArr, 'lineArr')
   const [picval, setPicVal] = useState({});
   const [bardata, setBardata] = useState([]);
   const [toplist, setToplist] = useState([]);
   const [type, setType] = useState([]);
   const [timeoutdata, setTimeoutdata] = useState([])
   const [values, setValues] = useState({});
-  const [topN, setTopN] = useState(5)
+  const [topN, setTopN] = useState(5);
+
+  const Issuedscale = {
+    total: {
+      type: 'linear',
+      alias: '返回结果数量',
+      min: 0,
+      tickInterval: 5000,
+    },
+  };
 
   const piesum = (arr) => {
     let sum = 0;
@@ -80,6 +89,20 @@ function StatisticsAnalysis(props) {
     }
     return newArr;
   };
+
+  const columnsYresult = datas => {
+    const newArr = [];
+    if (!Array.isArray(datas)) {
+      return newArr;
+    }
+    for (let i = 0; i < datas.length; i += 1) {
+      const vote = {};
+      vote.type = datas[i].type;
+      vote.total = datas[i].value;
+      newArr.push(vote);
+    }
+    return newArr;
+  }
 
   useEffect(() => {
     const result = [];
@@ -527,7 +550,6 @@ function StatisticsAnalysis(props) {
               </Col>
             </Row>
 
-
             <Row style={{ marginTop: 24 }}>
               <div className={styles.statisticscard}>
                 <Avatar icon="cluster" />
@@ -550,17 +572,15 @@ function StatisticsAnalysis(props) {
               </Col>
               <Col span={16}>
                 <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-                  {lineArr && lineArr['问题来源'] && (
-                    <SmoothLine
-                      data={lineArr && lineArr['问题来源']}
-                      height={300}
-                      padding={[30, 0, 50, 60]}
-                      onGetVal={v => {
-                        setPicVal({ ...picval, type: v });
-                        console.log('曲线图', v);
-                      }}
-                    />
-                  )}
+                  <SmoothLine
+                    data={lineArr && lineArr['问题来源']}
+                    height={300}
+                    padding={[30, 0, 50, 60]}
+                    onGetVal={v => {
+                      setPicVal({ ...picval, type: v });
+                      console.log('曲线图', v);
+                    }}
+                  />
                 </Card>
               </Col>
             </Row>
@@ -596,7 +616,7 @@ function StatisticsAnalysis(props) {
                   {resgisterarr && resgisterarr.length > 0 && (
                     <>
                       <Col span={20}>
-                        <Cylinder
+                        {/* <Cylinder
                           height={300}
                           data={dataCylinder(resgisterarr)}
                           padding={[10, 50, 30, 120]}
@@ -604,6 +624,14 @@ function StatisticsAnalysis(props) {
                           cols={cols}
                           colors="l(270) 0:#04e8ff 0.5:#05bdfe 1:#05bdfe"
                           onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
+                        /> */}
+
+                        <ColumnarY
+                          cols={Issuedscale}
+                          data={columnsYresult(resgisterarr)}
+                          height={300}
+                          padding={[30, 60, 50, 100]}
+                          onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />
                       </Col>
 
@@ -636,7 +664,7 @@ function StatisticsAnalysis(props) {
                   {handlerarr && handlerarr.length > 0 && (
                     <>
                       <Col span={20}>
-                        <Cylinder
+                        {/* <Cylinder
                           height={300}
                           data={dataCylinder(handlerarr)}
                           padding={[10, 50, 30, 120]}
@@ -645,6 +673,13 @@ function StatisticsAnalysis(props) {
                           cols={cols}
                           colors="l(180) 0:#c408f8 0.5:#8105fb 1:#8105fb"
                           onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
+                        /> */}
+                        <ColumnarY
+                          cols={Issuedscale}
+                          data={columnsYresult(handlerarr)}
+                          height={300}
+                          padding={[30, 60, 50, 100]}
+                          onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />
                       </Col>
 
@@ -676,7 +711,7 @@ function StatisticsAnalysis(props) {
                   {resgisterunitarr && resgisterunitarr.length > 0 && (
                     <>
                       <Col span={20}>
-                        <Cylinder
+                        {/* <Cylinder
                           height={300}
                           data={dataCylinder(resgisterunitarr)}
                           padding={[10, 50, 30, 120]}
@@ -684,6 +719,13 @@ function StatisticsAnalysis(props) {
                           cols={cols}
                           colors="l(180) 0:#ffbb02 0.5:#fe7402 1:#fe7402"
                           onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
+                        /> */}
+                        <ColumnarY
+                          cols={Issuedscale}
+                          data={columnsYresult(resgisterunitarr)}
+                          height={300}
+                          padding={[30, 60, 50, 100]}
+                          onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />
                       </Col>
 
@@ -717,7 +759,7 @@ function StatisticsAnalysis(props) {
                   {handlerunitarr && handlerunitarr.length > 0 && (
                     <>
                       <Col span={20}>
-                        <Cylinder
+                        {/* <Cylinder
                           height={300}
                           data={dataCylinder(handlerunitarr)}
                           padding={[10, 50, 30, 120]}
@@ -725,6 +767,14 @@ function StatisticsAnalysis(props) {
                           cols={cols}
                           colors="l(270) 0:#FFDAB9 0.5:#FFDEAD 1:#F5DEB3"
                           onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
+                        /> */}
+
+                        <ColumnarY
+                          cols={Issuedscale}
+                          data={columnsYresult(handlerunitarr)}
+                          height={300}
+                          padding={[30, 60, 50, 100]}
+                          onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />
                       </Col>
 
