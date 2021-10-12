@@ -155,6 +155,32 @@ function MessagesList(props) {
 
   const columns = [
     {
+      title: '告警编号',
+      dataIndex: 'sourceCode',
+      key: 'sourceCode',
+      width: 180,
+      render: (text, record) => {
+        const handleClick = () => {
+          router.push({
+            pathname: `${pathname}/details`,
+            query: {
+              Id: record.id,
+              code: record.monitorCode,
+            },
+            state: {
+              dynamicpath: true,
+              menuDesc: '告警详细信息',
+              record,
+              type: 'measuralarm',
+            }
+          });
+        };
+        return (
+          <a onClick={handleClick}>{text}</a>
+        )
+      }
+    },
+    {
       title: '监测类型',
       dataIndex: 'secondClassify',
       key: 'secondClassify',
@@ -248,25 +274,10 @@ function MessagesList(props) {
           }
         }
       },
-      render: (text, record) => {
-        const handleClick = () => {
-          router.push({
-            pathname: `${pathname}/details`,
-            query: {
-              Id: record.id,
-              code: record.monitorCode,
-            },
-            state: {
-              dynamicpath: true,
-              menuDesc: '告警详细信息',
-              record,
-              type: 'measuralarm',
-            }
-          });
-        };
+      render: (text) => {
         return (
           <Tooltip placement='topLeft' title={text}>
-            <a onClick={handleClick}>{text}</a>
+            {text}
           </Tooltip>)
       }
     },
@@ -430,7 +441,7 @@ function MessagesList(props) {
         dataSource={list.records || []}
         loading={loading}
         rowKey={record => record.id}
-        scroll={{ x: 1750 }}
+        scroll={{ x: 2000 }}
         pagination={pagination}
       />
     </Card>

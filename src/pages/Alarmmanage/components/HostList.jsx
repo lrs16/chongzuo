@@ -185,6 +185,32 @@ function HostList(props) {
 
   const columns = [
     {
+      title: '告警编号',
+      dataIndex: 'sourceCode',
+      key: 'sourceCode',
+      width: 180,
+      render: (text, record) => {
+        const handleClick = () => {
+          router.push({
+            pathname: `${pathname}/details`,
+            query: {
+              Id: record.id,
+              code: record.monitorCode,
+            },
+            state: {
+              dynamicpath: true,
+              menuDesc: '告警详细信息',
+              record,
+              type: 'measuralarm',
+            }
+          });
+        };
+        return (
+          <a onClick={handleClick}>{text}</a>
+        )
+      }
+    },
+    {
       title: '区域',
       dataIndex: 'firstClassify',
       key: 'firstClassify',
@@ -278,25 +304,10 @@ function HostList(props) {
           }
         }
       },
-      render: (text, record) => {
-        const handleClick = () => {
-          router.push({
-            pathname: `${pathname}/details`,
-            query: {
-              Id: record.id,
-              code: record.monitorCode,
-            },
-            state: {
-              dynamicpath: true,
-              menuDesc: '告警详细信息',
-              record,
-              type: 'measuralarm',
-            }
-          });
-        };
+      render: (text) => {
         return (
           <Tooltip placement='topLeft' title={text}>
-            <a onClick={handleClick}>{text}</a>
+            {text}
           </Tooltip>)
       }
     },
@@ -631,7 +642,7 @@ function HostList(props) {
           dataSource={list.records || []}
           loading={loading}
           rowKey={record => record.id}
-          scroll={{ x: pagetitle === '主机巡检告警' ? 1500 : 2000 }}
+          scroll={{ x: pagetitle === '主机巡检告警' ? 1850 : 2000 }}
           pagination={pagination}
         />
       </Card>

@@ -22,6 +22,32 @@ const formItemLayout = {
 
 const columns = [
   {
+    title: '告警编号',
+    dataIndex: 'sourceCode',
+    key: 'sourceCode',
+    width: 180,
+    render: (text, record) => {
+      const handleClick = () => {
+        router.push({
+          pathname: `/alarmmanage/measuralarm/measuralarm/details`,
+          query: {
+            Id: record.id,
+            code: record.monitorCode,
+          },
+          state: {
+            dynamicpath: true,
+            menuDesc: '告警详细信息',
+            record,
+            type: 'measuralarm',
+          }
+        });
+      };
+      return (
+        <a onClick={handleClick}>{text}</a>
+      )
+    }
+  },
+  {
     title: '监控项',
     dataIndex: 'firstClassify',
     key: 'firstClassify',
@@ -109,26 +135,9 @@ const columns = [
         }
       }
     },
-    render: (text, record) => {
-      const handleClick = () => {
-        router.push({
-          pathname: `/alarmmanage/measuralarm/measuralarm/details`,
-          query: {
-            Id: record.id,
-            code: record.monitorCode,
-          },
-          state: {
-            dynamicpath: true,
-            menuDesc: '告警详细信息',
-            record,
-            type: 'measuralarm',
-          }
-        });
-      };
+    render: (text) => {
       return (
-        <Tooltip placement='topLeft' title={text}>
-          <a onClick={handleClick}>{text}</a>
-        </Tooltip>)
+        <Tooltip placement='topLeft' title={text}>{text}</Tooltip>)
     }
   },
   {

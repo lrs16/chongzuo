@@ -1,30 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Card, Layout, Tabs, Row, Col, Tag, Menu, Badge } from 'antd';
+import { Card, Tabs, Row, Col, Tag, Badge, Spin } from 'antd';
 import { querkeyVal } from '@/services/api';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
 import TotalInfo from '../../Alarmmanage/components/TotalInfo';
 
-const { Sider, Content } = Layout;
 const { TabPane } = Tabs;
 
-const panes = [
-  { title: 'Tab 1', key: '1' },
-  { title: 'Tab 2', key: '2' },
-  { title: 'Tab 3', key: '3', },
-];
-
-const panesleft = [
-  { title: '10.218.1.13通信服务器', key: '1', ok: 3, err: 2 },
-  { title: '10.218.1.13通信服务器', key: '2', ok: 3, err: 2 },
-  { title: '10.218.1.13通信服务器', key: '3', ok: 3, err: 2 },
-];
-
-
 function AppRunning(props) {
-  const { dispatch, location, totalinfo, chartdata } = props;
+  const { dispatch, location, totalinfo, chartdata, chartloading } = props;
   const pagetitle = props.route.name;
   const [activeTabKey, setActiveTabKey] = useState('');
   const [tabkeyDist, setTabkeyDist] = useState([{ key: 'index1', tab: '加载中' }]);
@@ -37,23 +23,22 @@ function AppRunning(props) {
 
   const handleClick = (key) => {
     setMenukey(key);
-    onChange('1')
+    onChange('0')
   };
 
   const handleTabChange = (key) => {
     setActiveTabKey(key);
-    handleClick('1');
+    handleClick('0');
     dispatch({
       type: 'orthermonitor/fetchchart',
       payload: {
         hostId: '',
         hostName: menukey,
-        hostZoneId: activeTabKey,
+        hostZoneId: key,
         softId: '',
         softProcessName: '',
         dataStartTime: moment().format('YYYY-MM-DD 00:00:00'),
-        endDate: moment().format('YYYY-MM-DD HH:mm:ss'),
-        dataEndTime: 'configFile',
+        dataEndTime: moment().format('YYYY-MM-DD HH:mm:ss'),
       },
     });
   };
@@ -95,11 +80,6 @@ function AppRunning(props) {
     }
   }, [location.state]);
 
-  console.log(chartdata);
-  if (chartdata && chartdata.length > 0) {
-    console.log(JSON.parse(chartdata[0].appSoftVoList[0].softPort))
-  }
-
   return (
     <PageHeaderWrapper title={pagetitle}>
       <TotalInfo infolist={totalinfo || []} />
@@ -109,76 +89,109 @@ function AppRunning(props) {
         onTabChange={key => { handleTabChange(key) }}
         style={{ margin: '24px 0' }}
       >
-        <Tabs tabPosition='left'>
-          {chartdata && chartdata.map((pane, index) => (<TabPane
-            tab={
-              <>
-                <span style={{ marginRight: 8 }}>{pane.hostAddress}{pane.hostName}</span>
-                {pane.normalNum && (<><Badge status="success" />{pane.normalNum}</>)}
-                {pane.errorNum && (<><Badge status="error" style={{ marginLeft: 8 }} />{pane.errorNum}</>)}
-              </>
-            }
-            key={index.toString()}
-          >
-            <div>
-              {pane.appSoftVoList && (
-                <Tabs
-                  onChange={onChange}
-                  activeKey={activeKey}
-                  type="editable-card"
-                >
-                  {pane.appSoftVoList && pane.appSoftVoList.map(item => (
-                    <TabPane
-                      tab={
-                        <>
-                          <span style={{ marginRight: 8 }}>{item.softName}</span>
-                          <Badge status={item.softStatus === '1' ? 'success' : 'error'} />
-                        </>
-                      }
-                      key={item.key}
-                      closable={false}>
-                      <Row gutter={16}>
-                        <Col span={12}>
-                          <Card style={{ height: 153 }}>
-                            <h3>端口状态</h3>
-                            <div>
-                              {item.softPort && JSON.parse(item.softPort) && (
-                                Object.keys(JSON.parse(item.softPort)).map((obj, i) => {
-                                  const val = Object.values(JSON.parse(item.softPort));
-                                  console.log(val, i);
-                                  return <Tag color={val[i] ? 'green' : 'volcano'} key={i.toString()}>{obj}</Tag>
-                                })
-                              )}
-                            </div>
-                          </Card>
-                          <Card style={{ marginTop: 16, height: 153 }}>
-                            <h3>运行时长</h3>
-                            <div>
-                              <Tag color="green">8080</Tag>
-                              <Tag color="green">8010</Tag>
-                            </div>
-                          </Card>
-                        </Col>
-                        <Col span={12}>
-                          <Card>
-                            <h3>进程CPU使用率</h3>
-                            <SmoothLine
-                              data={[]}
-                              height={240}
-                              padding={[30, 0, 60, 60]}
-                              onGetVal={() => { }}
-                            />
-                          </Card>
-                        </Col>
-                      </Row>
-                    </TabPane>
-                  ))}
-                </Tabs>
-              )}
-            </div>
-          </TabPane>
-          ))}
-        </Tabs>
+        <Spin spinning={chartloading}>
+          <Tabs tabPosition='left'>
+            {chartdata && chartdata.map((pane, index) => (<TabPane
+              tab={
+                <>
+                  <span style={{ marginRight: 8 }}>{pane.hostAddress}{pane.hostName}</span>
+                  {pane.normalNum && (<><Badge status="success" />{pane.normalNum}</>)}
+                  {pane.errorNum && (<><Badge status="error" style={{ marginLeft: 8 }} />{pane.errorNum}</>)}
+                </>
+              }
+              key={index.toString()}
+            >
+              <div>
+                {pane.appSoftVoList && (
+                  <Tabs
+                    onChange={onChange}
+                    activeKey={activeKey}
+                    type="editable-card"
+                  >
+                    {pane.appSoftVoList && pane.appSoftVoList.map(item => (
+                      <TabPane
+                        tab={
+                          <>
+                            <span style={{ marginRight: 8 }}>{item.softName}</span>
+                            <Badge status={item.softStatus === '1' ? 'success' : 'error'} />
+                          </>
+                        }
+                        key={item.key}
+                        closable={false}>
+                        <Row gutter={16}>
+                          <Col span={12}>
+                            <Card style={{ height: 130 }}>
+                              <h3>端口状态</h3>
+                              <div>
+                                {item.softPort && JSON.parse(item.softPort) && (
+                                  Object.keys(JSON.parse(item.softPort)).map((obj, i) => {
+                                    const val = Object.values(JSON.parse(item.softPort));
+                                    return <Tag color={val[i] ? 'green' : 'volcano'} key={i.toString()}>{obj}</Tag>
+                                  })
+                                )}
+                              </div>
+                            </Card>
+                            <Card style={{ marginTop: 16, height: 130 }}>
+                              <h3>运行时长</h3>
+                              <div>
+                                <span style={{ color: '#1890ff', fontWeight: 700, fontSize: ' 2.0em' }}>{item.softRunDay}</span>day
+                              </div>
+                            </Card>
+                          </Col>
+                          <Col span={12}>
+                            <Card>
+                              <h3>进程CPU使用率（%）</h3>
+                              <SmoothLine
+                                data={item.cpuUse || []}
+                                height={200}
+                                padding={[30, 0, 60, 60]}
+                                onGetVal={() => { }}
+                              />
+                            </Card>
+                          </Col>
+                          <Col span={12} style={{ marginTop: 16 }}>
+                            <Card>
+                              <h3>进程内存使用率（%）</h3>
+                              <SmoothLine
+                                data={item.memoryUse || []}
+                                height={200}
+                                padding={[30, 0, 60, 60]}
+                                onGetVal={() => { }}
+                              />
+                            </Card>
+                          </Col>
+                          <Col span={12} style={{ marginTop: 16 }}>
+                            <Card>
+                              <h3>进程使用物理内存（MB）</h3>
+                              <SmoothLine
+                                data={item.physicalMemory || []}
+                                height={200}
+                                padding={[30, 0, 60, 60]}
+                                onGetVal={() => { }}
+                              />
+                            </Card>
+                          </Col>
+                          <Col span={12} style={{ marginTop: 16 }}>
+                            <Card>
+                              <h3>进程使用虚拟内存（MB）</h3>
+                              <SmoothLine
+                                data={item.virtualMemory || []}
+                                height={200}
+                                padding={[30, 0, 60, 60]}
+                                onGetVal={() => { }}
+                              />
+                            </Card>
+                          </Col>
+                        </Row>
+                      </TabPane>
+                    ))}
+                  </Tabs>
+                )}
+              </div>
+            </TabPane>
+            ))}
+          </Tabs>
+        </Spin>
       </Card>
     </PageHeaderWrapper>
   );
@@ -188,4 +201,5 @@ export default connect(({ measuralarm, orthermonitor, loading }) => ({
   chartdata: orthermonitor.chartdata,
   totalinfo: measuralarm.totalinfo,
   loading: loading.models.measuralarm,
+  chartloading: loading.models.orthermonitor,
 }))(AppRunning);

@@ -170,6 +170,30 @@ function ClockPatrolList(props) {
 
   const columns = [
     {
+      title: '告警编号',
+      dataIndex: 'sourceCode',
+      key: 'sourceCode',
+      width: 180,
+      render: (text, record) => {
+        const handleClick = () => {
+          router.push({
+            pathname: `${pathname}/details`,
+            query: {
+              Id: record.id,
+              code: record.monitorCode,
+            },
+            state: {
+              dynamicpath: true,
+              menuDesc: '告警详细信息',
+              record,
+              type: 'measuralarm',
+            }
+          });
+        };
+        return (<a onClick={handleClick}>{text}</a>)
+      }
+    },
+    {
       title: '区域',
       dataIndex: 'firstClassify',
       key: 'firstClassify',
@@ -245,25 +269,10 @@ function ClockPatrolList(props) {
           }
         }
       },
-      render: (text, record) => {
-        const handleClick = () => {
-          router.push({
-            pathname: `${pathname}/details`,
-            query: {
-              Id: record.id,
-              code: record.monitorCode,
-            },
-            state: {
-              dynamicpath: true,
-              menuDesc: '告警详细信息',
-              record,
-              type: 'measuralarm',
-            }
-          });
-        };
+      render: (text) => {
         return (
           <Tooltip placement='topLeft' title={text}>
-            <a onClick={handleClick}>{text}</a>
+            {text}
           </Tooltip>)
       }
     },
@@ -399,7 +408,7 @@ function ClockPatrolList(props) {
           dataSource={list.records || []}
           loading={loading}
           rowKey={record => record.id}
-          scroll={{ x: 1850 }}
+          scroll={{ x: 2250 }}
           pagination={pagination}
         />
       </Card>
