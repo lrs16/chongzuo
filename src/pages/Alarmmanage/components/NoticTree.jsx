@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Tree, Form, Row, Col, Input, Drawer, Button, AutoComplete } from 'antd';
-import { message } from '_antd@4.6.2@antd';
+import { Tree, Form, Row, Col, Input, Drawer, Button, AutoComplete, message } from 'antd';
 import { SearchUsers } from '../../SysManage/services/api';
 import { saveUser } from '../services/api';
 
