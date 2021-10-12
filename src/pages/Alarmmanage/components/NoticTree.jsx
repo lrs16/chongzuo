@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Tree, Form, Row, Col, Input, Drawer, Button, AutoComplete } from 'antd';
+import { message } from '_antd@4.6.2@antd';
 import { SearchUsers } from '../../SysManage/services/api';
 import { saveUser } from '../services/api';
 
@@ -20,31 +21,38 @@ const formItemLayout = {
 
 function NoticTree(props) {
   const { visible, ChangeVisible, openType, alarmgroup, selectdata, record } = props;
-  const { getFieldDecorator, resetFields, getFieldsValue, setFieldsValue } = props.form;
+  const { getFieldDecorator, resetFields, setFieldsValue, validateFields } = props.form;
   const [expandedKeys, setExpandedKeys] = useState(['a']);
-  const [checkedKeys, setCheckedKeys] = useState(['001_001_1', '001_001_2']);
+  const [checkedKeys, setCheckedKeys] = useState([]);
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [users, setUsers] = useState([]);
   const required = true;
 
   const hanldleCancel = () => {
-    ChangeVisible(false)
+    ChangeVisible(false);
+    resetFields();
+    setCheckedKeys([])
   };
   const handleOk = () => {
-    const val = getFieldsValue();
-    saveUser(val).then(res => {
-      console.log(res)
+    validateFields((err, val) => {
+      if (!err) {
+        saveUser(val).then(res => {
+          if (res.code === 200) {
+            message.success('操作成功！');
+            ChangeVisible(false);
+            resetFields();
+            setCheckedKeys([])
+          }
+        })
+      }
     })
-    //  ChangeVisible(false);
   }
   const onExpand = (Keys) => {
     setExpandedKeys(Keys);
   };
   const onCheck = (Keys) => {
-
     setFieldsValue({ noticGroup: Keys.toString() });
     setCheckedKeys(Keys);
-    console.log(Keys)
   };
   const onSelect = (Keys, info) => {
     setSelectedKeys(Keys)
@@ -68,7 +76,14 @@ function NoticTree(props) {
       userDept: opt.props.user.deptNameExt,
       tel: opt.props.user.userPhone,
     })
-  }
+  };
+
+  useEffect(() => {
+    if (record && record.noticGroup) {
+      const arr = record.noticGroup.split(',');
+      setCheckedKeys(arr)
+    }
+  }, [record])
 
   // 用户列表
   const userlist = users.map(opt => (
@@ -213,18 +228,18 @@ function NoticTree(props) {
                           return (<TreeNode key={item.key} title={item.val} >
                             {measurmap.map(obj => [
                               <TreeNode key={`${item.key}_${obj.dict_code}`} title={obj.title} >
-                                <TreeNode key={`${item.key}_${obj.dict_code}_1/${item.val}_${obj.title}_告警`} title='告警' />
-                                <TreeNode key={`${item.key}_${obj.dict_code}_2/${item.val}_${obj.title}_确认告警`} title='确认告警' />
-                                <TreeNode key={`${item.key}_${obj.dict_code}_3/${item.val}_${obj.title}_告警消除`} title='告警消除' />
+                                <TreeNode key={`${item.key}_${obj.dict_code}_1`} title='告警' />
+                                <TreeNode key={`${item.key}_${obj.dict_code}_2`} title='确认告警' />
+                                <TreeNode key={`${item.key}_${obj.dict_code}_3`} title='告警消除' />
                               </TreeNode>
                             ])}
                           </TreeNode>)
                         }
                         return (
                           <TreeNode key={item.key} title={item.val} >
-                            <TreeNode key={`${item.key}_1/${item.val}_告警`} title='告警' />
-                            <TreeNode key={`${item.key}_2/${item.val}_确认告警`} title='确认告警' />
-                            <TreeNode key={`${item.key}_3/${item.val}_告警消除`} title='告警消除' />
+                            <TreeNode key={`${item.key}_1`} title='告警' />
+                            <TreeNode key={`${item.key}_2`} title='确认告警' />
+                            <TreeNode key={`${item.key}_3`} title='告警消除' />
                           </TreeNode>)
                       })}
                     </TreeNode>

@@ -1,47 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import { Card, Table, Button, Layout, Input, Menu, Row, Col } from 'antd';
+import { Card, Table, Button, Layout, Input, Menu, Row, Col, Divider, message } from 'antd';
 import { querkeyVal } from '@/services/api';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import DictLower from '@/components/SysDict/DictLower';
 import NoticTree from './components/NoticTree';
-import { userList } from './services/api';
+import { delUser } from './services/api';
 
 const { Sider, Content } = Layout;
 const { SubMenu } = Menu;
 const { Search } = Input;
 
-const data = [
-  {
-    val: '许华聪',
-    key2: '广西博联信息通信技术有限责任公司',
-    key: '13214576859',
-    key4: '短信',
-    key5: '2020-04-22 09:18:49',
-    key6: '告警，确认告警，取消告警'
-  },
-  {
-    val: '林辛',
-    key2: '广西博联信息通信技术有限责任公司',
-    key: '13785769440',
-    key4: '短信',
-    key5: '2020-04-22 09:18:49',
-    key6: '确认告警，取消告警'
-  },
-  {
-    val: '朱强生',
-    key2: '广西博联信息通信技术有限责任公司',
-    key: '137857694450',
-    key4: '短信',
-    key5: '2020-04-22 09:18:49',
-    key6: '告警'
-  },
-]
-
 function NoticeSetting(props) {
-  const { dispatch, list } = props;
+  const { dispatch, list, loading } = props;
   const pagetitle = props.route.name;
-  const [tabActivekey, settabActivekey] = useState('1'); // 打开标签
+  const [tabActivekey, settabActivekey] = useState('2'); // 打开标签
   const [alarmgroup, setAlarmgroup] = useState([]);
   const [visible, setVisible] = useState('');
   const [openType, setOpenType] = useState('');
@@ -57,11 +30,21 @@ function NoticeSetting(props) {
     settabActivekey(key)
   };
 
-  const handleSearch = (pageIndex, pageSize) => {
+  const handleSearch = (pageIndex, pageSize, val) => {
     dispatch({
-      type: 'measuralarm/fetchtotalinfo',
-      payload: { pageIndex, pageSize, username },
+      type: 'noticesetting/fetchlist',
+      payload: {
+        pageIndex,
+        pageSize,
+        username: val === undefined ? username : val
+      },
     });
+  };
+
+  const handleDelids = () => {
+    delUser({ id: selectedRowKeys.toString() }).then(res => {
+      console.log(res)
+    })
   }
 
   const rowSelection = {
@@ -98,10 +81,10 @@ function NoticeSetting(props) {
   };
 
   const tabList = [
-    {
-      key: '1',
-      tab: '告警通知组',
-    },
+    // {
+    //   key: '1',
+    //   tab: '告警通知组',
+    // },
     {
       key: '2',
       tab: '告警联系人设置',
@@ -110,29 +93,29 @@ function NoticeSetting(props) {
   const columns = [
     {
       title: '告警通知人',
-      dataIndex: 'val',
-      key: 'val',
+      dataIndex: 'username',
+      key: 'username',
     },
     {
       title: '所属部门',
-      dataIndex: 'key2',
-      key: 'key2',
+      dataIndex: 'userDept',
+      key: 'userDept',
     },
     {
       title: '联系电话',
-      dataIndex: 'key',
-      key: 'key',
+      dataIndex: 'tel',
+      key: 'tel',
     },
-    {
-      title: '告警项',
-      dataIndex: 'key6',
-      key: 'key6',
-    },
-    {
-      title: '通知方式',
-      dataIndex: 'key4',
-      key: 'key4',
-    },
+    // {
+    //   title: '告警项',
+    //   dataIndex: 'key6',
+    //   key: 'key6',
+    // },
+    // {
+    //   title: '通知方式',
+    //   dataIndex: 'key4',
+    //   key: 'key4',
+    // },
     {
       title: '操作',
       key: 'action',
@@ -141,10 +124,22 @@ function NoticeSetting(props) {
           setOpenType('view');
           setRecords(record);
           setVisible(!visible);
+        };
+        const handleDel = () => {
+          delUser({ id: record.id }).then(res => {
+            if (res.code === 200) {
+              message.success('操作成功！');
+              handleSearch(1, 15)
+            } else {
+              message.error('操作失败！');
+            }
+          })
         }
         return (
           <span>
             <a onClick={() => handleSetting()}>编辑</a>
+            <Divider type='vertical' />
+            <a onClick={() => handleDel()}>删除</a>
           </span>
         )
       },
@@ -152,7 +147,6 @@ function NoticeSetting(props) {
   ];
 
   const onOpenChange = keys => {
-    console.log(keys)
     setOpenKeys(keys)
     // const latestOpenKey = keys.find(key => openKeys.indexOf(key) === -1);
     // if (latestOpenKey) {
@@ -173,6 +167,7 @@ function NoticeSetting(props) {
         setAlarmgroup(value)
       }
     });
+    handleSearch(1, 15)
   }, []);
 
   const getTypebykey = key => {
@@ -255,7 +250,7 @@ function NoticeSetting(props) {
           </Sider>
           <Content style={{ marginLeft: 274 }}>
             <Card bordered={false}>
-              <Table columns={columns} dataSource={data} />
+              <Table columns={columns} dataSource={[]} />
             </Card>
           </Content>
         </Layout>
@@ -263,34 +258,44 @@ function NoticeSetting(props) {
       {tabActivekey === '2' && (
         <Card>
           <Row>
-            <Col span={16}>
+            <Col span={8} offset={16}>
+              <Search
+                placeholder="请输入关键字"
+                onSearch={values => { setUsername(values); handleSearch(1, 15, values) }}
+              />
+            </Col>
+            <Col span={24}>
               <Button
-                style={{ marginBottom: 8, marginRight: 8 }}
-                type="primary"
-                onClick={() => { setVisible(!visible); setOpenType('new') }}>新增
+                style={{ marginBottom: 8, marginTop: 8 }}
+                type="dashed"
+                icon="plus"
+                block
+                onClick={() => { setVisible(!visible); setOpenType('new'); setRecords({}) }}>新增联系人
               </Button>
-              <Button
+              {/* <Button
                 style={{ marginBottom: 8, }}
                 type="danger"
                 ghost
-                onClick={() => { setVisible(!visible); setOpenType('new') }}>删除
-              </Button>
-            </Col>
-            <Col span={8}>
-              <Search placeholder="请输入关键字" onSearch={values => { setUsername(values); handleSearch(1, 15) }} />
+                onClick={() => { handleDelids() }}
+                disabled={!(selectedRowKeys.length > 0)}
+              >
+                删除
+              </Button> */}
             </Col>
           </Row>
           <Table
+            loading={loading}
             columns={columns}
-            dataSource={data}
-            rowSelection={rowSelection}
+            dataSource={list.records || []}
+            rowKey={record => record.id}
+            // rowSelection={rowSelection}
             pagination={pagination}
           />
         </Card>
       )}
       <NoticTree
         visible={visible}
-        ChangeVisible={(v) => setVisible(v)}
+        ChangeVisible={(v) => { setVisible(v); handleSearch(1, 15) }}
         openType={openType}
         alarmgroup={alarmgroup}
         selectdata={selectdata}
