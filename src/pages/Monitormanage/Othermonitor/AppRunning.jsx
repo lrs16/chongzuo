@@ -106,14 +106,14 @@ function AppRunning(props) {
             <div style={{ marginLeft: 2 }}>
               <Row gutter={16}>
                 <Col span={12}>
-                  <Card>
+                  <Card style={{ height: 102 }}>
                     <h3>端口状态</h3>
                     <div>
                       <Tag color="green">8080</Tag>
                       <Tag color="green">8010</Tag>
                     </div>
                   </Card>
-                  <Card style={{ marginTop: 16 }}>
+                  <Card style={{ marginTop: 16, height: 102 }}>
                     <h3>端口状态</h3>
                     <div>
                       <Tag color="green">8080</Tag>

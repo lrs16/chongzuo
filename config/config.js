@@ -137,19 +137,19 @@ export default {
                           path: '/ITSM/home/eventanalysis',
                           name: '事件统计分析',
                           icon: 'control',
-                          component: './ITSM/Releasemanage/Statistics/Analysis',
+                          component: './ITSM/Eventmanage/eventstatistics/EventAnalysis',
                         },
                         {
                           path: '/ITSM/home/faultanalysis',
                           name: '故障统计分析',
                           icon: 'control',
-                          component: './ITSM/Releasemanage/Statistics/Analysis',
+                          component: './ITSM/Faultmanage/StatisticalAnalysis',
                         },
                         {
                           path: '/ITSM/home/problemanalysis',
                           name: '问题统计分析',
                           icon: 'control',
-                          component: './ITSM/Releasemanage/Statistics/Analysis',
+                          component: './ITSM/Problemmanage/StatisticsAnalysis',
                         },
                         {
                           path: '/ITSM/home/demandanalysis',
