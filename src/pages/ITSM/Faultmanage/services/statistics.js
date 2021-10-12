@@ -82,7 +82,6 @@ export async function timeoutDownload(params) {
 export async function queryOrderConditions(params) {
   return request(`/trouble/analysis/getOrderConditions?time1=${params.time1}&time2=${params.time2}&type=${params.type}`, {
       method: 'GET',
-      data: { params }
   });
 }
 
@@ -90,7 +89,6 @@ export async function queryOrderConditions(params) {
 export async function queryBlameConditions(params) {
   return request(`/trouble/analysis/getBlameConditions?time1=${params.time1}&time2=${params.time2}`, {
       method: 'GET',
-      data: { params }
   });
 }
 
@@ -98,7 +96,6 @@ export async function queryBlameConditions(params) {
 export async function queryTypeConditions(params) {
   return request(`/trouble/analysis/getTypeConditions?time1=${params.time1}&time2=${params.time2}`, {
       method: 'GET',
-      data: { params }
   });
 }
 
@@ -106,7 +103,6 @@ export async function queryTypeConditions(params) {
 export async function queryModelConditions(params) {
   return request(`/trouble/analysis/getModelConditions?time1=${params.time1}&time2=${params.time2}`, {
       method: 'GET',
-      data: { params }
   });
 }
 
@@ -114,7 +110,6 @@ export async function queryModelConditions(params) {
 export async function queryTimeOutConditions(params) {
   return request(`/trouble/analysis/getTimeOutConditions?time1=${params.time1}&time2=${params.time2}`, {
       method: 'GET',
-      data: { params }
   });
 }
 
@@ -122,7 +117,6 @@ export async function queryTimeOutConditions(params) {
 export async function queryRegisterUserTop(params) {
   return request(`/trouble/analysis/getRegisterUserTop?time1=${params.time1}&time2=${params.time2}&num=${params.num}`, {
       method: 'GET',
-      data: { params }
   });
 }
 
@@ -130,7 +124,6 @@ export async function queryRegisterUserTop(params) {
 export async function queryRegisterUnitTop(params) {
   return request(`/trouble/analysis/getRegisterUnitTop?time1=${params.time1}&time2=${params.time2}&num=${params.num}`, {
       method: 'GET',
-      data: { params }
   });
 }
 
@@ -138,7 +131,6 @@ export async function queryRegisterUnitTop(params) {
 export async function queryHandlerTop(params) {
   return request(`/trouble/analysis/getHandlerTop?time1=${params.time1}&time2=${params.time2}&num=${params.num}`, {
       method: 'GET',
-      data: { params }
   });
 }
 
@@ -146,6 +138,5 @@ export async function queryHandlerTop(params) {
 export async function queryHandleUnitTop(params) {
   return request(`/trouble/analysis/getHandleUnitTop?time1=${params.time1}&time2=${params.time2}&num=${params.num}`, {
       method: 'GET',
-      data: { params }
   });
 }

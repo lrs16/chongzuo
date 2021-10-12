@@ -399,10 +399,10 @@ function StatisticalAnalysis(props) {
               <Avatar icon="share-alt" />
               <b>故障工单超时情况</b>
             </div>
-            {(!timeoutconditlist || (timeoutconditlist && timeoutconditlist.length === 0)) && <Empty style={{ height: '364.5px' }} />}
-            {
-              timeoutconditlist && timeoutconditlist.length > 0 && (
-                <Card onMouseDown={() => setPicVal({})}>
+            <Card onMouseDown={() => setPicVal({})}>
+              {(!timeoutconditlist || (timeoutconditlist && timeoutconditlist.length === 0)) && <Empty style={{ height: '364.5px' }} />}
+              {
+                timeoutconditlist && timeoutconditlist.length > 0 && (
                   <DonutPCT
                     data={timeoutconditlist || []}
                     height={364.5}
@@ -411,9 +411,9 @@ function StatisticalAnalysis(props) {
                     padding={[10, 30, 30, 30]}
                     onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
                   />
-                </Card>
-              )
-            }
+                )
+              }
+            </Card>
           </Col>
           <Col span={12}>
             <div className={styles.statisticscard}>

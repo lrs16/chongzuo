@@ -105,7 +105,7 @@ export default {
 
     //  统计分析-工单总情况
     *getOrderConditions({ payload }, { call, put }) {
-      const response = yield call(queryOrderConditions, { ...payload });
+      const response = yield call(queryOrderConditions, payload);
       yield put({
         type: 'saveanalysislist',
         payload: response.data,
@@ -114,7 +114,7 @@ export default {
 
     //  统计分析-故障责任单位总情况
     *getBlameConditions({ payload }, { call, put }) {
-      const response = yield call(queryBlameConditions, { ...payload });
+      const response = yield call(queryBlameConditions, payload);
       yield put({
         type: 'saveblameconditlist',
         payload: response.data,
@@ -123,7 +123,7 @@ export default {
 
     //  统计分析-故障分类总情况
     *getTypeConditions({ payload }, { call, put }) {
-      const response = yield call(queryTypeConditions, { ...payload });
+      const response = yield call(queryTypeConditions, payload);
       yield put({
         type: 'savetypeconditions',
         payload: response.data,
@@ -132,7 +132,7 @@ export default {
 
     //  统计分析-故障模块总情况
     *getModelConditions({ payload }, { call, put }) {
-      const response = yield call(queryModelConditions, { ...payload });
+      const response = yield call(queryModelConditions, payload);
       yield put({
         type: 'savemodelconditions',
         payload: response.data,
@@ -141,7 +141,7 @@ export default {
 
     //  统计分析-故障超时总情况
     *getTimeOutConditions({ payload }, { call, put }) {
-      const response = yield call(queryTimeOutConditions, { ...payload });
+      const response = yield call(queryTimeOutConditions, payload);
       yield put({
         type: 'savetimeoutconditions',
         payload: response.data,
@@ -150,7 +150,7 @@ export default {
 
     //  统计分析-故障登记人排名
     *getRegisterUserTop({ payload }, { call, put }) {
-      const response = yield call(queryRegisterUserTop, { ...payload });
+      const response = yield call(queryRegisterUserTop, payload);
       yield put({
         type: 'saveregisteruser',
         payload: response.data,
@@ -159,7 +159,7 @@ export default {
 
     //  统计分析-故障登记人单位排名
     *getRegisterUnitTop({ payload }, { call, put }) {
-      const response = yield call(queryRegisterUnitTop, { ...payload });
+      const response = yield call(queryRegisterUnitTop, payload);
       yield put({
         type: 'saveregisteruserunit',
         payload: response.data,
@@ -168,7 +168,7 @@ export default {
 
     //  统计分析-故障处理人排名
     *getHandlerTop({ payload }, { call, put }) {
-      const response = yield call(queryHandlerTop, { ...payload });
+      const response = yield call(queryHandlerTop, payload);
       yield put({
         type: 'savehandler',
         payload: response.data,
@@ -177,7 +177,7 @@ export default {
 
     //  统计分析-故障处理人单位排名
     *queryHandleUnitTop({ payload }, { call, put }) {
-      const response = yield call(queryHandleUnitTop, { ...payload });
+      const response = yield call(queryHandleUnitTop, payload);
       yield put({
         type: 'savehandleunit',
         payload: response.data,
