@@ -184,7 +184,7 @@ function EventAnalysis(props) {
       type: 'linear',
       alias: '返回结果数量',
       min: 0,
-      tickInterval: 10,
+      tickInterval: 100,
     },
   };
 
@@ -220,51 +220,54 @@ function EventAnalysis(props) {
       {
         loading === false && (
           <>
-            <Row style={{ marginTop: 24 }}>
-              {([getOrderConditionsobj] || []).map((obj, index) => {
-                return (
-                  <>
-                    <Row key={index} style={{ marginTop: 10 }}>
-                      <div className={styles.statisticscard}>
-                        <Avatar icon='desktop' />
-                        <b>事件工单总情况</b>
-                      </div>
+            {([getOrderConditionsobj] || []).map((obj, index) => {
+              return (
+                <>
+                  <Row key={index} style={{ marginTop: 10 }} gutter={24}>
+                    <Col span={16}>
+                      <Row>
+                        <div className={styles.statisticscard}>
+                          <Avatar icon='desktop' />
+                          <b>事件工单总情况</b>
+                        </div>
+                        <Col span={6}>
+                          <StatisticsCard title='事件总数' value={obj && obj.allNum} suffix='单' des='环比' desval={`${obj && obj.allRingPoints}%`} type={Number((obj && obj.allRingPoints)) > 0 ? 'up' : 'down'} />
+                        </Col>
+                        <Col span={6}>
+                          <StatisticsCard title='已完成' value={obj && obj.closeNum} suffix='单' des='环比' desval={`${obj && obj.closeRingPoints}%`} type={Number((obj && obj.closeRingPoints)) > 0 ? 'up' : 'down'} />
+                        </Col>
+                        <Col span={6}>
+                          <StatisticsCard title='未完成' value={obj && obj.unCloseNum} suffix='单' des='环比' desval={`${obj && obj.unCloseRingPoints}%`} type={Number((obj && obj.unCloseRingPoints)) > 0 ? 'up' : 'down'} />
+                        </Col>
+                        <Col span={6}>
+                          <StatisticsCard title='解决率' value={obj && obj.point} suffix='%' des='环比' desval={`${obj && obj.ringPoints}%`} type={Number((obj && obj.ringPoints)) > 0 ? 'up' : 'down'} />
+                        </Col>
+                      </Row>
+                    </Col>
 
-                      <Col span={6}>
-                        <StatisticsCard title='事件总数' value={obj && obj.allNum} suffix='单' des='环比' type={Number((obj && obj.allRingPoints)) > 0 ? 'up' : 'down'} />
-                      </Col>
-                      <Col span={6}>
-                        <StatisticsCard title='已完成' value={obj && obj.closeNum} suffix='单' des='环比' type={Number((obj && obj.closeRingPoints)) > 0 ? 'up' : 'down'} />
-                      </Col>
-                      <Col span={6}>
-                        <StatisticsCard title='未完成' value={obj && obj.unCloseNum} suffix='单' des='环比' type={Number((obj && obj.unCloseRingPoints)) > 0 ? 'up' : 'down'} />
-                      </Col>
-                      <Col span={6}>
-                        <StatisticsCard title='解决率' value={obj && obj.point} suffix='%' des='环比' type={Number((obj && obj.ringPoints)) > 0 ? 'up' : 'down'} />
-                      </Col>
-                    </Row>
-
-                    <Row key={index} style={{ marginTop: 10 }}>
-                      <div className={styles.statisticscard}>
-                        <Avatar icon='desktop' />
-                        <b>一线解决事件单情况（客服）</b>
-                      </div>
-
-                      <Col span={8}>
-                        <StatisticsCard title='受理总数' value={obj && obj.allNum} suffix='单' des='环比' type={Number((obj && obj.allRingPoints)) > 0 ? 'up' : 'down'} />
-                      </Col>
-                      <Col span={8}>
-                        <StatisticsCard title='一线处理量' value={obj && obj.selfHandleNum} suffix='单' des='环比' type={Number((obj && obj.selfHandleRingPoints)) > 0 ? 'up' : 'down'} />
-                      </Col>
-                      <Col span={8}>
-                        <StatisticsCard title='一线解决率' value={obj && obj.selfHandlePoint} suffix='%' des='环比' type={Number((obj && obj.selfHandleRingPoints)) > 0 ? 'up' : 'down'} />
-                      </Col>
-
-                    </Row>
-                  </>
-                )
-              })}
-            </Row>
+                    <Col span={8}>
+                      <Row>
+                        <div className={styles.statisticscard}>
+                          <Avatar icon='desktop' />
+                          <b>一线解决事件单情况（客服）</b>
+                        </div>
+                        <Col span={24}>
+                          <Col span={8}>
+                            <StatisticsCard title='受理总数' value={obj && obj.allNum} suffix='单' des='环比' desval={`${obj && obj.allRingPoints}%`} type={Number((obj && obj.allRingPoints)) > 0 ? 'up' : 'down'} />
+                          </Col>
+                          <Col span={8}>
+                            <StatisticsCard title='一线处理量' value={obj && obj.selfHandleNum} suffix='单' des='环比' desval={`${obj && obj.selfHandleRingPoints}%`} type={Number((obj && obj.selfHandleRingPoints)) > 0 ? 'up' : 'down'} />
+                          </Col>
+                          <Col span={8}>
+                            <StatisticsCard title='一线解决率' value={obj && obj.selfHandlePoint} suffix='%' des='环比' desval={`${obj && obj.selfHandleRingPoints}%`} type={Number((obj && obj.selfHandleRingPoints)) > 0 ? 'up' : 'down'} />
+                          </Col>
+                        </Col>
+                      </Row>
+                    </Col>
+                  </Row>
+                </>
+              )
+            })}
 
             {/* 问题分类总情况 */}
             <Row style={{ marginTop: 24 }}>

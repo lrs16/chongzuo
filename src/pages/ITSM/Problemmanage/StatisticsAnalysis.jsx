@@ -60,7 +60,7 @@ function StatisticsAnalysis(props) {
       type: 'linear',
       alias: '返回结果数量',
       min: 0,
-      tickInterval: 10,
+      tickInterval: 100,
     },
   };
 
@@ -98,6 +98,7 @@ function StatisticsAnalysis(props) {
       const vote = {};
       vote.type = datas[i].type;
       vote.total = datas[i].value;
+      vote.expected = datas[0].value;
       newArr.push(vote);
     }
     return newArr;
@@ -177,7 +178,7 @@ function StatisticsAnalysis(props) {
     defaultNum2 = '';
     defaultNum3 = '';
     defaultNum4 = '';
-  },[])
+  }, [])
 
   const dataAssigneetimeout = datas => {
     const newArr = [];
@@ -324,6 +325,8 @@ function StatisticsAnalysis(props) {
     }
   }, [values]);
 
+  console.log(statratioArr, 'statratioArr')
+
   return (
     <div>
       <SelectTime ChangeDate={(v) => setValues(v)} />
@@ -337,48 +340,58 @@ function StatisticsAnalysis(props) {
       {
         loading === false && (
           <>
-            <Row style={{ marginTop: 24 }}>
-              {([statratioArr] || []).map((obj, index) => {
-                return (
-                  <Row key={index} style={{ marginTop: 10 }}>
-                    <div className={styles.statisticscard}>
-                      <Avatar icon='desktop' />
-                      <b>问题工单情况</b>
-                    </div>
+            {([statratioArr] || []).map((obj, index) => {
+              return (
+                <Row key={index} style={{ marginTop: 10 }}  gutter={24}>
+                  <Col span={16}>
+                    <Row>
+                      <div className={styles.statisticscard}>
+                        <Avatar icon='desktop' />
+                        <b>问题工单情况</b>
+                      </div>
+                      <Col span={8}>
+                        <StatisticsCard title='问题总数' value={obj.total} desval={`${obj && obj.totalRingRatio}%`} suffix='单' des='环比' type={Number(obj.total) > Number(obj.prevResolved) ? 'up' : 'down'} />
+                      </Col>
+                      <Col span={8}>
+                        <StatisticsCard title='已解决' value={obj.resolved} desval={`${obj && obj.resolvedRingRatio}%`} suffix='单' des='环比' type={Number(obj.resolved) > Number(obj.prevResolved) ? 'up' : 'down'} />
+                      </Col>
+                      <Col span={8}>
+                        <StatisticsCard title='解决率' value={obj.Rate} desval={`${obj && obj.rate}%`} suffix='%' des='环比' type={Number(obj.totalScore) > Number(obj.prevTotalScore) ? 'up' : 'down'} />
+                      </Col>
+                    </Row>
+                  </Col>
 
-                    <Col span={8}>
-                      <StatisticsCard title='问题总数' value={obj.total} suffix='单' des='环比' type={Number(obj.total) > Number(obj.prevResolved) ? 'up' : 'down'} />
-                    </Col>
-                    <Col span={8}>
-                      <StatisticsCard title='已解决' value={obj.resolved} suffix='单' des='环比' type={Number(obj.resolved) > Number(obj.prevResolved) ? 'up' : 'down'} />
-                    </Col>
-                    <Col span={8}>
-                      <StatisticsCard title='解决率' value={obj.Rate} suffix='%' des='环比' type={Number(obj.totalScore) > Number(obj.prevTotalScore) ? 'up' : 'down'} />
-                    </Col>
-                  </Row>
-                )
-              })}
+                  <Col span={8}>
+                    <Row>
+                      <div className={styles.statisticscard}>
+                        <Avatar icon='desktop' />
+                        <b>问题分类情况</b>
+                      </div>
 
-              {([statratioArr] || []).map((obj, index) => {
-                return (
-                  <Row key={index} style={{ marginTop: 10 }}>
-                    <div className={styles.statisticscard}>
-                      <Avatar icon='desktop' />
-                      <b>问题分类情况</b>
-                    </div>
+                      <Col span={12}>
+                        <StatisticsCard title='程序问题' value={obj.program} desval={`${obj && obj.programRingRatio}%`} suffix='单' des='环比' type={Number(obj.program) > Number(obj.prevProgram) ? 'up' : 'down'} />
+                      </Col>
+                      <Col span={12}>
+                        <StatisticsCard title='功能问题' value={obj.function} desval={`${obj && obj.functionRingRatio}%`} suffix='单' des='环比' type={Number(obj.function) > Number(obj.prevFunction) ? 'up' : 'down'} />
+                      </Col>
 
-                    <Col span={12}>
-                      <StatisticsCard title='程序问题' value={obj.program} suffix='单' des='环比' type={Number(obj.program) > Number(obj.prevProgram) ? 'up' : 'down'} />
-                    </Col>
-                    <Col span={12}>
-                      <StatisticsCard title='功能问题' value={obj.function} suffix='单' des='环比' type={Number(obj.function) > Number(obj.prevFunction) ? 'up' : 'down'} />
-                    </Col>
+                    </Row>
+                  </Col>
 
-                  </Row>
-                )
-              })}
 
-            </Row>
+                </Row>
+              )
+            })}
+
+            {([statratioArr] || []).map((obj, index) => {
+              return (
+                <Row key={index} style={{ marginTop: 10 }}>
+
+                </Row>
+              )
+            })}
+
+
 
 
             {/* 问题分类总情况 */}
@@ -388,11 +401,8 @@ function StatisticsAnalysis(props) {
                 <b>问题工单总情况</b>
               </div>
               <Col span={8}>
-                <div className={styles.statisticscard}>
-                  <Avatar icon="cluster" />
-                  <b>问题处理情况占比</b>
-                </div>
                 <Card onMouseDown={() => setPicVal({})}>
+                  <h4 style={{ fontWeight: 'bold' }}>问题处理情况占比</h4>
                   <DonutPCT
                     data={toplist}
                     height={300}
@@ -407,11 +417,8 @@ function StatisticsAnalysis(props) {
                 </Card>
               </Col>
               <Col span={16}>
-                <div className={styles.statisticscard}>
-                  <Avatar icon="cluster" />
-                  <b>问题工单量趋势</b>
-                </div>
                 <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+                  <h4 style={{ fontWeight: 'bold' }}>问题工单量趋势</h4>
                   {lineArr && lineArr['问题工单量趋势'] && lineArr['问题工单量趋势'].length === 0 && <Empty style={{ height: '300px' }} />}
                   {lineArr && lineArr['问题工单量趋势'] && lineArr['问题工单量趋势'].length > 0 && (
                     <SmoothLine
@@ -437,11 +444,8 @@ function StatisticsAnalysis(props) {
                 <b>问题分类统计分析</b>
               </div>
               <Col span={8}>
-                <div className={styles.statisticscard}>
-                  <Avatar icon="cluster" />
-                  <b>问题分类总情况</b>
-                </div>
                 <Card onMouseDown={() => setPicVal({})}>
+                  <h4 style={{ fontWeight: 'bold' }}>问题分类总情况</h4>
                   <DonutPCT
                     data={type}
                     height={300}
@@ -456,11 +460,8 @@ function StatisticsAnalysis(props) {
                 </Card>
               </Col>
               <Col span={16}>
-                <div className={styles.statisticscard}>
-                  <Avatar icon="cluster" />
-                  <b>问题分类总趋势</b>
-                </div>
                 <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+                  <h4 style={{ fontWeight: 'bold' }}>问题分类总趋势</h4>
                   <SmoothLine
                     data={lineArr && lineArr['问题分类总趋势']}
                     height={300}
@@ -477,11 +478,8 @@ function StatisticsAnalysis(props) {
             {/* 程序问题情况 */}
             <Row style={{ marginTop: 24 }}>
               <Col span={8}>
-                <div className={styles.statisticscard}>
-                  <Avatar icon="cluster" />
-                  <b>程序问题情况</b>
-                </div>
                 <Card onMouseDown={() => setPicVal({})}>
+                  <h4 style={{ fontWeight: 'bold' }}>程序问题情况</h4>
                   <DonutPCT
                     data={statpieArr && statpieArr['程序问题情况']}
                     height={300}
@@ -496,11 +494,8 @@ function StatisticsAnalysis(props) {
                 </Card>
               </Col>
               <Col span={16}>
-                <div className={styles.statisticscard}>
-                  <Avatar icon="cluster" />
-                  <b>程序问题趋势</b>
-                </div>
                 <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+                  <h4 style={{ fontWeight: 'bold' }}>程序问题趋势</h4>
                   {lineArr && lineArr['程序问题趋势'] && (
                     <SmoothLine
                       data={lineArr && lineArr['程序问题趋势']}
@@ -519,11 +514,8 @@ function StatisticsAnalysis(props) {
             {/* 功能问题情况 */}
             <Row style={{ marginTop: 24 }}>
               <Col span={8}>
-                <div className={styles.statisticscard}>
-                  <Avatar icon="cluster" />
-                  <b>功能问题情况</b>
-                </div>
                 <Card onMouseDown={() => setPicVal({})}>
+                  <h4 style={{ fontWeight: 'bold' }}>功能问题情况</h4>
                   <DonutPCT
                     data={statpieArr && statpieArr['功能问题情况']}
                     height={300}
@@ -538,11 +530,8 @@ function StatisticsAnalysis(props) {
                 </Card>
               </Col>
               <Col span={16}>
-                <div className={styles.statisticscard}>
-                  <Avatar icon="cluster" />
-                  <b>功能问题趋势</b>
-                </div>
                 <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+                  <h4 style={{ fontWeight: 'bold' }}>功能问题趋势</h4>
                   <SmoothLine
                     data={lineArr && lineArr['功能问题趋势']}
                     height={300}
