@@ -1,38 +1,28 @@
-import { queryKpizbhbList, queryextractData, Downloadfils } from '../services/api';
+import { getAppMonitorData } from '../services/api';
 
 export default {
   namespace: 'orthermonitor',
 
   state: {
-    data: [],
+    chartdata: [],
   },
 
   effects: {
-    // 获取列表
-    *fetchzbhblist({ payload }, { call, put }) {
-      const response = yield call(queryKpizbhbList, payload);
+    // 获取图表列表
+    *fetchchart({ payload }, { call, put }) {
+      const response = yield call(getAppMonitorData, payload);
       yield put({
-        type: 'getdatas',
+        type: 'savechart',
         payload: response.data,
       });
-    },
-
-    // 抽数
-    *fetchextractData({ payload }, { call }) {
-      return yield call(queryextractData, payload);
-    },
-
-    // 下载
-    *downloads({ payload }, { call }) {
-      return yield call(Downloadfils, payload);
     },
   },
 
   reducers: {
-    getdatas(state, action) {
+    savechart(state, action) {
       return {
         ...state,
-        data: action.payload,
+        chartdata: action.payload,
       };
     },
   },

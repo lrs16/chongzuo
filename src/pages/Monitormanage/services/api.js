@@ -31,4 +31,10 @@ export async function Downloadfils(params) {
 }
 
 // 其它告警 应用程序运行状态监测
-
+export async function getAppMonitorData(params) {
+  return request(`/auto/soft/app/getAppMonitorData`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjson'
+  });
+}
