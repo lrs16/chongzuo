@@ -11,7 +11,7 @@ import {
   Spin,
 } from 'antd';
 import moment from 'moment';
-import StatisticsCard from '@/components/StatisticsCard';
+import StatisticsCard from '../../ITSM/Eventmanage/eventstatistics/StatisticsCard';
 import SelectTime from '@/components/SelectTime/SelectTime';
 import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
 import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
@@ -47,7 +47,6 @@ function StatisticsAnalysis(props) {
     resgisterunitarr,
     handlerunitarr
   } = props;
-  console.log(lineArr, 'lineArr')
   const [picval, setPicVal] = useState({});
   const [bardata, setBardata] = useState([]);
   const [toplist, setToplist] = useState([]);
@@ -61,7 +60,7 @@ function StatisticsAnalysis(props) {
       type: 'linear',
       alias: '返回结果数量',
       min: 0,
-      tickInterval: 5000,
+      tickInterval: 10,
     },
   };
 
@@ -173,6 +172,13 @@ function StatisticsAnalysis(props) {
     }
   }, [loading])
 
+  useEffect(() => {
+    defaultNum1 = '';
+    defaultNum2 = '';
+    defaultNum3 = '';
+    defaultNum4 = '';
+  },[])
+
   const dataAssigneetimeout = datas => {
     const newArr = [];
     if (!Array.isArray(datas) || datas.length === 0) {
@@ -187,6 +193,7 @@ function StatisticsAnalysis(props) {
     }
     return newArr.reverse();
   };
+
   const handleInput = (val) => {
     setTopN(val)
   };
@@ -220,8 +227,6 @@ function StatisticsAnalysis(props) {
     })
   }
 
-  console.log(resgisterarr, 'resgisterarr')
-
   // 分开的TOP
   const resgisterstatTop = (values) => {
     dispatch({
@@ -232,6 +237,7 @@ function StatisticsAnalysis(props) {
       }
     })
   }
+
   const handlerstatTop = (values) => {
     dispatch({
       type: 'problemstatistics/fetchhandlerstatTop',
@@ -585,8 +591,8 @@ function StatisticsAnalysis(props) {
               </Col>
             </Row>
 
-            <Row style={{ marginTop: 24 }} gutter={16}>
-              <Col span={8}>
+            <Row style={{ marginTop: 24 }}>
+              <Col span={12}>
                 <div className={styles.statisticscard}>
                   <Avatar icon="cluster" />
                   <b>问题工单超时情况</b>
@@ -606,7 +612,7 @@ function StatisticsAnalysis(props) {
                 </Card>
               </Col>
 
-              <Col span={16}>
+              <Col span={12}>
                 <div className={styles.statisticscard}>
                   <Avatar icon="share-alt" />
                   <b>问题登记人Top5</b>
@@ -664,16 +670,6 @@ function StatisticsAnalysis(props) {
                   {handlerarr && handlerarr.length > 0 && (
                     <>
                       <Col span={20}>
-                        {/* <Cylinder
-                          height={300}
-                          data={dataCylinder(handlerarr)}
-                          padding={[10, 50, 30, 120]}
-                          // padding={[10, 30, 30, 30]}
-                          symbol=""
-                          cols={cols}
-                          colors="l(180) 0:#c408f8 0.5:#8105fb 1:#8105fb"
-                          onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
-                        /> */}
                         <ColumnarY
                           cols={Issuedscale}
                           data={columnsYresult(handlerarr)}
@@ -711,15 +707,6 @@ function StatisticsAnalysis(props) {
                   {resgisterunitarr && resgisterunitarr.length > 0 && (
                     <>
                       <Col span={20}>
-                        {/* <Cylinder
-                          height={300}
-                          data={dataCylinder(resgisterunitarr)}
-                          padding={[10, 50, 30, 120]}
-                          symbol=""
-                          cols={cols}
-                          colors="l(180) 0:#ffbb02 0.5:#fe7402 1:#fe7402"
-                          onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
-                        /> */}
                         <ColumnarY
                           cols={Issuedscale}
                           data={columnsYresult(resgisterunitarr)}
@@ -742,7 +729,6 @@ function StatisticsAnalysis(props) {
                         </Select>
                       </Col>
                     </>
-
                   )}
                 </Card>
               </Col>
@@ -759,16 +745,6 @@ function StatisticsAnalysis(props) {
                   {handlerunitarr && handlerunitarr.length > 0 && (
                     <>
                       <Col span={20}>
-                        {/* <Cylinder
-                          height={300}
-                          data={dataCylinder(handlerunitarr)}
-                          padding={[10, 50, 30, 120]}
-                          symbol=""
-                          cols={cols}
-                          colors="l(270) 0:#FFDAB9 0.5:#FFDEAD 1:#F5DEB3"
-                          onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
-                        /> */}
-
                         <ColumnarY
                           cols={Issuedscale}
                           data={columnsYresult(handlerunitarr)}
@@ -793,14 +769,11 @@ function StatisticsAnalysis(props) {
                     </>
                   )}
                 </Card>
-
               </Col>
             </Row>
           </>
         )
       }
-
-
     </div>
   );
 }

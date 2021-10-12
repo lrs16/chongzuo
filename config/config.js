@@ -2092,6 +2092,12 @@ export default {
                       icon: 'smile',
                       component: './SysManage/TestEnvironmentManage',
                     },
+                    // {
+                    //   path: '/sysmanage/usageranking',
+                    //   name: '使用情况排名',
+                    //   icon: 'smile',
+                    //   component: './SysManage/UsageRanking',
+                    // },
                   ],
                 },
                 {

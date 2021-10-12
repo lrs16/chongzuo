@@ -10,7 +10,7 @@ import {
   Empty,
   Spin
 } from 'antd';
-import StatisticsCard from '@/components/StatisticsCard';
+import StatisticsCard from '../eventstatistics/StatisticsCard';
 import SelectTime from '@/components/SelectTime/SelectTime';
 import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
 import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
@@ -184,70 +184,9 @@ function EventAnalysis(props) {
       type: 'linear',
       alias: '返回结果数量',
       min: 0,
-      tickInterval: 5000,
+      tickInterval: 10,
     },
   };
-
-  console.log(getRegisterUnitTopdata, 'getRegisterUnitTopdata')
-
-  const issuedata = [
-    // {
-    //   "id": "1437342791630413825",
-    //   "date": "2021-09-13 17:10:00",
-    //   "type": "正常",
-    //   "total": 149120,
-    //   "sjsj": "2021-09-13 00:00:00",
-    //   "flag": false
-    // },
-    {
-      "id": "1437342791668162561",
-      "date": "2021-09-13 17:10:00",
-      "type": "无上行报文",
-      "total": 20469,
-      "sjsj": "2021-09-13 00:00:00",
-      "flag": false
-    },
-    // {
-    //   "id": "1437342791689134082",
-    //   "date": "2021-09-13 17:10:00",
-    //   "type": "前置未返回",
-    //   "total": 11868,
-    //   "sjsj": "2021-09-13 00:00:00",
-    //   "flag": false
-    // },
-    // {
-    //   "id": "1437342791714299905",
-    //   "date": "2021-09-13 17:10:00",
-    //   "type": "否认",
-    //   "total": 5226,
-    //   "sjsj": "2021-09-13 00:00:00",
-    //   "flag": false
-    // },
-    // {
-    //   "id": "1437342791731077121",
-    //   "date": "2021-09-13 17:10:00",
-    //   "type": "超时",
-    //   "total": 1112,
-    //   "sjsj": "2021-09-13 00:00:00",
-    //   "flag": false
-    // },
-    // {
-    //   "id": "1437342791747854338",
-    //   "date": "2021-09-13 17:10:00",
-    //   "type": "设备离线",
-    //   "total": 924,
-    //   "sjsj": "2021-09-13 00:00:00",
-    //   "flag": false
-    // },
-    // {
-    //   "id": "1437342791764631554",
-    //   "date": "2021-09-13 17:10:00",
-    //   "type": "报文出错",
-    //   "total": 168,
-    //   "sjsj": "2021-09-13 00:00:00",
-    //   "flag": false
-    // }
-  ]
 
   useEffect(() => {
     if (values && values.type) {
@@ -268,7 +207,6 @@ function EventAnalysis(props) {
     }
   }, [values])
 
-
   return (
     <div>
       <SelectTime ChangeDate={(v) => setValues(v)} />
@@ -282,7 +220,6 @@ function EventAnalysis(props) {
       {
         loading === false && (
           <>
-
             <Row style={{ marginTop: 24 }}>
               {([getOrderConditionsobj] || []).map((obj, index) => {
                 return (
@@ -294,16 +231,16 @@ function EventAnalysis(props) {
                       </div>
 
                       <Col span={6}>
-                        <StatisticsCard title='事件总数' value={obj && obj.allNum} suffix='单' des='环比' type={(obj && obj.allRingPoints).substr(0, 1) === '-' ? 'down' : 'up'} />
+                        <StatisticsCard title='事件总数' value={obj && obj.allNum} suffix='单' des='环比' type={Number((obj && obj.allRingPoints)) > 0 ? 'up' : 'down'} />
                       </Col>
                       <Col span={6}>
-                        <StatisticsCard title='已完成' value={obj && obj.closeNum} suffix='单' des='环比' type={(obj && obj.closeRingPoints).substr(0, 1) === '-' ? 'down' : 'up'} />
+                        <StatisticsCard title='已完成' value={obj && obj.closeNum} suffix='单' des='环比' type={Number((obj && obj.closeRingPoints)) > 0 ? 'up' : 'down'} />
                       </Col>
                       <Col span={6}>
-                        <StatisticsCard title='未完成' value={obj && obj.unCloseNum} suffix='单' des='环比' type={(obj && obj.unCloseRingPoints).substr(0, 1) === '-' ? 'down' : 'up'} />
+                        <StatisticsCard title='未完成' value={obj && obj.unCloseNum} suffix='单' des='环比' type={Number((obj && obj.unCloseRingPoints)) > 0 ? 'up' : 'down'} />
                       </Col>
                       <Col span={6}>
-                        <StatisticsCard title='解决率' value={obj && obj.point} suffix='%' des='环比' type={(obj && obj.ringPoints).substr(0, 1) === '-' ? 'down' : 'up'} />
+                        <StatisticsCard title='解决率' value={obj && obj.point} suffix='%' des='环比' type={Number((obj && obj.ringPoints)) > 0 ? 'up' : 'down'} />
                       </Col>
                     </Row>
 
@@ -314,13 +251,13 @@ function EventAnalysis(props) {
                       </div>
 
                       <Col span={8}>
-                        <StatisticsCard title='受理总数' value={obj && obj.allNum} suffix='单' des='环比' type={(obj && obj.allRingPoints).substr(0, 1) === '-' ? 'down' : 'up'} />
+                        <StatisticsCard title='受理总数' value={obj && obj.allNum} suffix='单' des='环比' type={Number((obj && obj.allRingPoints)) > 0 ? 'up' : 'down'} />
                       </Col>
                       <Col span={8}>
-                        <StatisticsCard title='一线处理量' value={obj && obj.selfHandleNum} suffix='单' des='环比' type={(obj && obj.selfHandleRingPoints).substr(0, 1) === '-' ? 'down' : 'up'} />
+                        <StatisticsCard title='一线处理量' value={obj && obj.selfHandleNum} suffix='单' des='环比' type={Number((obj && obj.selfHandleRingPoints)) > 0 ? 'up' : 'down'} />
                       </Col>
                       <Col span={8}>
-                        <StatisticsCard title='一线解决率' value={obj && obj.selfHandlePoint} suffix='%' des='环比' type={(obj && obj.selfHandleRingPoints).substr(0, 1) === '-' ? 'down' : 'up'} />
+                        <StatisticsCard title='一线解决率' value={obj && obj.selfHandlePoint} suffix='%' des='环比' type={Number((obj && obj.selfHandleRingPoints)) > 0 ? 'up' : 'down'} />
                       </Col>
 
                     </Row>
@@ -411,7 +348,7 @@ function EventAnalysis(props) {
 
             {/* 程序问题情况 */}
             <Row style={{ marginTop: 24 }}>
-              <Col span={8}>
+              <Col span={12}>
                 <div className={styles.statisticscard}>
                   <Avatar icon="cluster" />
                   <b>事件工单超时情况</b>
@@ -430,7 +367,7 @@ function EventAnalysis(props) {
                   />
                 </Card>
               </Col>
-              <Col span={16}>
+              <Col span={12}>
                 <div className={styles.statisticscard}>
                   <Avatar icon="cluster" />
                   <b>事件登记人Top5</b>
@@ -440,15 +377,6 @@ function EventAnalysis(props) {
                   {getRegisterUserTopdata && getRegisterUserTopdata.length > 0 && (
                     <>
                       <Col span={20}>
-                        {/* <Cylinder
-                          height={300}
-                          data={dataCylinder(getRegisterUserTopdata)}
-                          padding={[0, 50, 30, 150]}
-                          symbol=""
-                          cols={cols}
-                          colors="l(270) 0:#04e8ff 0.5:#05bdfe 1:#05bdfe"
-                          onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
-                        /> */}
                         <ColumnarY
                           cols={Issuedscale}
                           data={getRegisterUserTopdata}
@@ -508,9 +436,7 @@ function EventAnalysis(props) {
                           <Option value="20">20</Option>
                         </Select>
                       </Col>
-
                     </>
-
                   )}
                 </Card>
               </Col>
@@ -524,15 +450,6 @@ function EventAnalysis(props) {
                   {getRegisterUnitTopdata && getRegisterUnitTopdata.length > 0 && (
                     <>
                       <Col span={20}>
-                        {/* <Cylinder
-                          height={300}
-                          data={dataCylinder(getRegisterUserTopdata)}
-                          padding={[0, 50, 30, 150]}
-                          symbol=""
-                          cols={cols}
-                          colors="l(270) 0:#04e8ff 0.5:#05bdfe 1:#05bdfe"
-                          onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
-                        /> */}
                         <ColumnarY
                           cols={Issuedscale}
                           data={getRegisterUnitTopdata}
@@ -599,8 +516,6 @@ function EventAnalysis(props) {
           </>
         )
       }
-
-
     </div>
   );
 }

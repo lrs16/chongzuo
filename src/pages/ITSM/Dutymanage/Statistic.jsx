@@ -113,15 +113,20 @@ function Statistic(props) {
       state: {}
     });
     resetFields();
+    setType('DEPTName')
     searchdata({}, 1, 15)
   }
 
   const handleonChange = (value) => {
+    const obj = getFieldsValue();
+    const resultobj = obj;
+    resultobj.type = value
     setType(value);
     setFieldsValue({ typeValue: '' })
     dispatch({
       type: 'dutyandtypesetting/staffSearch',
     })
+    searchdata(resultobj)
   }
 
   if (searchUsersarr && searchUsersarr.records) {
@@ -150,12 +155,8 @@ function Statistic(props) {
         }
       })
     }
-
-
-
   }
 
-  console.log(searchUsersarr, 'searchUsersarr')
 
   const handlesearch = () => {
     const value = getFieldsValue();
