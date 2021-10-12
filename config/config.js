@@ -1804,12 +1804,12 @@ export default {
                       name: '其它监测',
                       icon: 'cloud-server',
                       routes: [
-                        // {
-                        //   path: '/monitormanage/indicatorchain',
-                        //   name: '上下行报文页面检测',
-                        //   icon: 'cloud-server',
-                        //   component: './Monitormanage/IndicatorChain',
-                        // },
+                        {
+                          path: '/monitormanage/other/messagepage',
+                          name: '上下行报文页面检测',
+                          icon: 'cloud-server',
+                          component: './Monitormanage/Othermonitor/MessagesPage',
+                        },
                         {
                           path: '/monitormanage/other/Apprunning',
                           name: '应用程序运行状态监测',

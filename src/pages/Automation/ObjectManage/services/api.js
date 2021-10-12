@@ -222,7 +222,7 @@ export async function deletesystemScript(dynamicIds) {
 export async function recellScript(Ids) {
   return request(`/assets/script/recellScript`, {
     method: 'POST',
-    data: {Ids},
+    data: { Ids },
     requestType: 'form',
   })
 }
@@ -282,7 +282,7 @@ export async function softConfList(params, pageNum, pageSize) {
 export async function backupSoftConfigFile(softIds) {
   return request(`/auto/soft/conf/backupSoftConfigFile`, {
     method: 'POST',
-    data: {softIds},
+    data: { softIds },
   });
 }
 
@@ -290,7 +290,7 @@ export async function backupSoftConfigFile(softIds) {
 export async function pullSoftConfigFile(softIds) {
   return request(`/auto/soft/conf/pullSoftConfigFile`, {
     method: 'POST',
-    data: {softIds},
+    data: { softIds },
   });
 }
 
@@ -315,8 +315,8 @@ export async function softConfHistoryList(params, pageNum, pageSize) {
 // 配置文件内容下载
 export async function downloadConfHiCont(Id) {
   return request(`/assets/softConfHi/downloadConfHiCont`, {
-      method: 'POST',
-      data: Id,
-      requestType: 'form',
+    method: 'POST',
+    data: Id,
+    requestType: 'form',
   });
 }

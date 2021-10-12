@@ -90,7 +90,7 @@ function AppRunning(props) {
         style={{ margin: '24px 0' }}
       >
         <Spin spinning={chartloading}>
-          <Tabs tabPosition='left'>
+          <Tabs tabPosition='left' onChange={handleClick} activeKey={menukey}>
             {chartdata && chartdata.map((pane, index) => (<TabPane
               tab={
                 <>
@@ -106,9 +106,9 @@ function AppRunning(props) {
                   <Tabs
                     onChange={onChange}
                     activeKey={activeKey}
-                    type="editable-card"
+                    type="card"
                   >
-                    {pane.appSoftVoList && pane.appSoftVoList.map(item => (
+                    {pane.appSoftVoList && pane.appSoftVoList.map((item, ii) => (
                       <TabPane
                         tab={
                           <>
@@ -116,7 +116,7 @@ function AppRunning(props) {
                             <Badge status={item.softStatus === '1' ? 'success' : 'error'} />
                           </>
                         }
-                        key={item.key}
+                        key={ii.toString()}
                         closable={false}>
                         <Row gutter={16}>
                           <Col span={12}>
