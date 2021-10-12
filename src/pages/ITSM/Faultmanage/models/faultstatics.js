@@ -86,7 +86,7 @@ export default {
     },
 
     // 导出问题处理率
-    * downloadHandlegrate({ payload }, { call }) {
+    * downloadHandlegrate(_, { call }) {
       return yield call(handlegrateDownload);
     },
 
@@ -99,7 +99,7 @@ export default {
       })
     },
     // 导出超时统计
-    *timeDownload({ payload }, { call, put }) {
+    *timeDownload(_, { call }) {
       return yield call(timeoutDownload);
     },
 
@@ -108,16 +108,19 @@ export default {
       const response = yield call(queryOrderConditions, payload);
       yield put({
         type: 'saveanalysislist',
-        payload: response.data,
+        payload: response,
       });
     },
 
     //  统计分析-故障责任单位总情况
     *getBlameConditions({ payload }, { call, put }) {
+      yield put({
+        type: 'clearcache'
+      })
       const response = yield call(queryBlameConditions, payload);
       yield put({
         type: 'saveblameconditlist',
-        payload: response.data,
+        payload: response,
       });
     },
 
@@ -126,7 +129,7 @@ export default {
       const response = yield call(queryTypeConditions, payload);
       yield put({
         type: 'savetypeconditions',
-        payload: response.data,
+        payload: response,
       });
     },
 
@@ -135,7 +138,7 @@ export default {
       const response = yield call(queryModelConditions, payload);
       yield put({
         type: 'savemodelconditions',
-        payload: response.data,
+        payload: response,
       });
     },
 
@@ -144,7 +147,7 @@ export default {
       const response = yield call(queryTimeOutConditions, payload);
       yield put({
         type: 'savetimeoutconditions',
-        payload: response.data,
+        payload: response,
       });
     },
 
@@ -153,7 +156,7 @@ export default {
       const response = yield call(queryRegisterUserTop, payload);
       yield put({
         type: 'saveregisteruser',
-        payload: response.data,
+        payload: response,
       });
     },   
 
@@ -162,7 +165,7 @@ export default {
       const response = yield call(queryRegisterUnitTop, payload);
       yield put({
         type: 'saveregisteruserunit',
-        payload: response.data,
+        payload: response,
       });
     }, 
 
@@ -171,7 +174,7 @@ export default {
       const response = yield call(queryHandlerTop, payload);
       yield put({
         type: 'savehandler',
-        payload: response.data,
+        payload: response,
       });
     },
 
@@ -180,12 +183,21 @@ export default {
       const response = yield call(queryHandleUnitTop, payload);
       yield put({
         type: 'savehandleunit',
-        payload: response.data,
+        payload: response,
       });
     },
   },
 
   reducers: {
+    clearcache(state){
+      return{
+        ...state,
+        blameconditlist: {}, // 统计分析-故障责任单位总情况
+        typeconditlist: {}, // 统计分析-故障分类总情况
+        modelconditlist: {}, // 统计分析-故障模块总情况
+        timeoutconditlist: {}, // 统计分析-故障超时总情况
+      }
+    },
     // 问题状态列表
     relatedictArr(state, action) {
       return {
@@ -211,63 +223,63 @@ export default {
     saveanalysislist(state, action) { // 故障统计分析 -工单总情况
       return {
         ...state,
-        analysislist: action.payload,
+        analysislist: action.payload.data,
       };
     },
 
     saveblameconditlist(state, action) { // 故障统计分析 -故障责任单位总情况
       return {
         ...state,
-        blameconditlist: action.payload,
+        blameconditlist: action.payload.data,
       };
     },
 
     savetypeconditions(state, action) { // 故障统计分析 -故障分类总情况
       return {
         ...state,
-        typeconditlist: action.payload,
+        typeconditlist: action.payload.data,
       };
     },
 
     savemodelconditions(state, action) { // 故障统计分析 -故障模块总情况
       return {
         ...state,
-        modelconditlist: action.payload,
+        modelconditlist: action.payload.data,
       };
     },
 
     savetimeoutconditions(state, action) { // 故障统计分析 -故障模块总情况
       return {
         ...state,
-        timeoutconditlist: action.payload,
+        timeoutconditlist: action.payload.data,
       };
     },
 
     saveregisteruser(state, action) { // 故障统计分析 -故障登记人排名
       return {
         ...state,
-        registeruserlist: action.payload,
+        registeruserlist: action.payload.data,
       };
     },   
 
     saveregisteruserunit(state, action) { // 故障统计分析 -故障登记人单位排名
       return {
         ...state,
-        registeruserunitlist: action.payload,
+        registeruserunitlist: action.payload.data,
       };
     },
 
     savehandler(state, action) { // 故障统计分析 -故障处理人排名
       return {
         ...state,
-        handlerlist: action.payload,
+        handlerlist: action.payload.data,
       };
     },
 
     savehandleunit(state, action) { // 故障统计分析 -故障处理人单位排名
       return {
         ...state,
-        handleunitlist: action.payload,
+        handleunitlist: action.payload.data,
       };
     },
   },

@@ -28,26 +28,16 @@ function Statistics(props) {
     ratiodatalist, // 工单数
   } = props;
 
-  console.log(linedatalist, 'linedatalist')
-
   const [picval, setPicVal] = useState({});
   const [values, setValues] = useState({});
-  const [topN, setTopN] = useState(5) // 排序
+  const [topN, setTopN] = useState({val1:5,val2:5,val3:5,val4:5,}) // 排序
 
-  // 饼图数据
-  const Donutdata = [
-    { type: '未开发', value: 130 },
-    { type: '已开发', value: 662 },
-    { type: '已开发未发布', value: 649 },
-    { type: '已发布', value: 200 },
-  ];
-
-  const dataCylindertop = datas => { // 柱状图集成数组
+  const dataCylindertop = (datas, v) => { // 柱状图集成数组
     const newArr = [];
     if (!Array.isArray(datas) || datas.length === 0) {
       return newArr;
     }
-    for (let i = 0; datas.length < topN ? i < datas.length : i < topN; i += 1) {
+    for (let i = 0; datas.length < topN[v] ? i < datas.length : i < topN[v]; i += 1) {
       const vote = {};
       vote.type = datas[i].type;
       vote.total = datas[i].value;
@@ -162,7 +152,7 @@ function Statistics(props) {
             <Avatar icon="desktop" />
             <b>需求工单情况</b>
           </div>
-          {(!ratiodatalist || (ratiodatalist && ratiodatalist.length === 0)) && <Empty style={{ height: '100px' }} />}
+          {(!ratiodatalist || (ratiodatalist && ratiodatalist === undefined)) && <Empty style={{ height: '100px' }} />}
           {
             ratiodatalist && ratiodatalist !== undefined && (
               <Row type="flex" justify="space-around">
@@ -176,35 +166,45 @@ function Statistics(props) {
           }
         </Row>
       </Spin>
-      {linedatalist && ( // 需求工单总情况 （饼图+折线图）
-        <Row style={{ marginTop: 24 }}>
-          <div className={styles.statisticscard}>
-            <Avatar icon="cluster" />
-            <b>需求工单总情况</b>
-          </div>
-          <Col span={8}>
-            <Card onMouseDown={() => setPicVal({})}>
-              <DonutPCT
-                data={Donutdata}
-                height={300}
-                total='154'
-                padding={[10, 30, 30, 30]}
-                onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
-              />
-            </Card>
-          </Col>
-          <Col span={16}>
-            <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-              <SmoothLine
-                data={linedataArr(linedatalist['需求工单量趋势'])}
-                height={300}
-                padding={[30, 0, 60, 60]}
-                onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
-              />
-            </Card>
-          </Col>
-        </Row>
-      )}
+      {/* // 需求工单总情况 （饼图+折线图） */}
+      <Row style={{ marginTop: 24 }}>
+        <div className={styles.statisticscard}>
+          <Avatar icon="cluster" />
+          <b>需求工单总情况</b>
+        </div>
+        <Col span={8}>
+          <Card onMouseDown={() => setPicVal({})}>
+          {/* {(!piedatalist || (piedatalist && piedatalist === undefined)) && <Empty style={{ height: '100px' }} />} */}
+            {
+              piedatalist && (
+                <DonutPCT
+                  data={piedatalist['需求处理情况占比'] || []}
+                  height={300}
+                  totaltitle='需求总数'
+                  total={piesum(piedatalist['需求处理情况占比'])}
+                  padding={[10, 30, 30, 30]}
+                  onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
+                />
+              )
+            }
+          </Card>
+        </Col>
+        <Col span={16}>
+          <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+            {
+              linedatalist && (
+                <SmoothLine
+                  data={linedataArr(linedatalist['需求工单量趋势'])}
+                  height={300}
+                  padding={[30, 0, 60, 60]}
+                  onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
+                />
+              )
+            }
+          </Card>
+        </Col>
+      </Row>
+
       {piedatalist && ( // 功能模块情况 （饼图+折线图）
         <Row style={{ marginTop: 24 }}>
           <div className={styles.statisticscard}>
@@ -288,15 +288,15 @@ function Statistics(props) {
         <Col span={12}>
           <div className={styles.statisticscard}>
             <Avatar icon="share-alt" />
-            <b>需求申请人Top{topN}</b>
-            <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN(v)} /></div>
+            <b>需求申请人Top{topN.val1}</b>
+            <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN({...topN, val1:v})} /></div>
           </div>
           <Card onMouseDown={() => setPicVal({})}>
             {piedatalist && dataCylinder(piedatalist['需求申请人TOP']).length === 0 && <Empty style={{ height: '300px' }} />}
             {piedatalist && dataCylinder(piedatalist['需求申请人TOP']).length > 0 && (
               <ColumnarY
                 height={300}
-                data={dataCylindertop(piedatalist['需求申请人TOP']) || []}
+                data={dataCylindertop(piedatalist['需求申请人TOP'], 'val1') || []}
                 padding={[30, 60, 50, 100]}
                 cols={Issuedscale}
                 onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
@@ -309,15 +309,15 @@ function Statistics(props) {
         <Col span={12}>
           <div className={styles.statisticscard}>
             <Avatar icon="share-alt" />
-            <b>需求处理人Top{topN}</b>
-            <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN(v)} /></div>
+            <b>需求处理人Top{topN.val2}</b>
+            <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN({...topN, val2:v})} /></div>
           </div>
           <Card onMouseDown={() => setPicVal({})}>
             {piedatalist && dataCylinder(piedatalist['需求处理人TOP']).length === 0 && <Empty style={{ height: '300px' }} />}
             {piedatalist && dataCylinder(piedatalist['需求处理人TOP']).length > 0 && (
               <ColumnarY
                 height={300}
-                data={dataCylindertop(piedatalist['需求处理人TOP']) || []}
+                data={dataCylindertop(piedatalist['需求处理人TOP'], 'val2') || []}
                 padding={[30, 60, 50, 100]}
                 cols={Issuedscale}
                 onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
@@ -328,15 +328,15 @@ function Statistics(props) {
         <Col span={12}>
           <div className={styles.statisticscard}>
             <Avatar icon="share-alt" />
-            <b>需求申请单位Top{topN}</b>
-            <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN(v)} /></div>
+            <b>需求申请单位Top{topN.val3}</b>
+            <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN({...topN, val3:v})} /></div>
           </div>
           <Card onMouseDown={() => setPicVal({})}>
             {piedatalist && dataCylinder(piedatalist['需求申请单位TOP']).length === 0 && <Empty style={{ height: '300px' }} />}
             {piedatalist && dataCylinder(piedatalist['需求申请单位TOP']).length > 0 && (
               <ColumnarY
                 height={300}
-                data={dataCylindertop(piedatalist['需求申请单位TOP']) || []}
+                data={dataCylindertop(piedatalist['需求申请单位TOP'], 'val3') || []}
                 padding={[30, 60, 50, 100]}
                 cols={Issuedscale}
                 onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
@@ -349,15 +349,15 @@ function Statistics(props) {
         <Col span={12}>
           <div className={styles.statisticscard}>
             <Avatar icon="share-alt" />
-            <b>需求处理单位Top{topN}</b>
-            <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN(v)} /></div>
+            <b>需求处理单位Top{topN.val4}</b>
+            <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v =>  setTopN({...topN, val4:v})} /></div>
           </div>
           <Card onMouseDown={() => setPicVal({})}>
             {piedatalist && dataCylinder(piedatalist['需求处理单位TOP']).length === 0 && <Empty style={{ height: '300px' }} />}
             {piedatalist && dataCylinder(piedatalist['需求处理单位TOP']).length > 0 && (
               <ColumnarY
                 height={300}
-                data={dataCylinder(piedatalist['需求处理单位TOP']) || []}
+                data={dataCylinder(piedatalist['需求处理单位TOP'], 'val4') || []}
                 padding={[30, 60, 50, 100]}
                 cols={Issuedscale}
                 onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
