@@ -8,14 +8,15 @@ import {
   Avatar,
   Select,
   Empty,
-  Spin
+  Spin,
+  InputNumber
 } from 'antd';
 import StatisticsCard from '../eventstatistics/StatisticsCard';
 import SelectTime from '@/components/SelectTime/SelectTime';
 import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
 import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
 import Cylinder from '@/components/CustomizeCharts/Cylinder';
-import ColumnarY from '@/components/CustomizeCharts/ColumnarY';
+import ColumnarY from '../eventstatistics/ColumnarY';
 import styles from '../../Problemmanage/index.less';
 import Barchart from '@/components/CustomizeCharts/Barchart';
 
@@ -49,6 +50,10 @@ function EventAnalysis(props) {
   const [picval, setPicVal] = useState({});
   const [bardata, setBardata] = useState([]);
   const [values, setValues] = useState({});
+  const [topN, setTopN] = useState(5) // 排序
+  const [topN1, setTopN1] = useState(5) // 排序
+  const [topN2, setTopN2] = useState(5) // 排序
+  const [topN3, setTopN3] = useState(5) // 排序
 
   const piesum = (arr) => {
     let sum = 0;
@@ -57,8 +62,70 @@ function EventAnalysis(props) {
         sum += item.value;
       });
     };
+    console.log(sum, 'sum')
     return sum
   };
+
+  const dataCylinder = (datas) => { // 柱状图集成数组
+    const newArr = [];
+    if (!Array.isArray(datas) || datas.length === 0) {
+      return newArr;
+    }
+    for (let i = 0; datas.length < topN ? i < datas.length : i < topN; i += 1) {
+      const vote = {};
+      vote.type = datas[i].type;
+      vote.total = datas[i].total;
+      vote.expected = datas[0].total;
+      newArr.push(vote);
+    }
+    return newArr.reverse();
+  };
+
+  const dataCylinder1 = (datas) => { // 柱状图集成数组
+    console.log('datas: ', datas);
+    const newArr = [];
+    if (!Array.isArray(datas) || datas.length === 0) {
+      return newArr;
+    }
+    for (let i = 0; datas.length < topN1 ? i < datas.length : i < topN1; i += 1) {
+      const vote = {};
+      vote.type = datas[i].type;
+      vote.total = datas[i].total;
+      vote.expected = datas[0].total;
+      newArr.push(vote);
+    }
+    return newArr.reverse();
+  };
+  const dataCylinder2 = (datas) => { // 柱状图集成数组
+    const newArr = [];
+    if (!Array.isArray(datas) || datas.length === 0) {
+      return newArr;
+    }
+    for (let i = 0; datas.length < topN2 ? i < datas.length : i < topN2; i += 1) {
+      const vote = {};
+      vote.type = datas[i].type;
+      vote.total = datas[i].total;
+      vote.expected = datas[0].total;
+      newArr.push(vote);
+    }
+    return newArr.reverse();
+  };
+  const dataCylinder3 = (datas) => { // 柱状图集成数组
+    const newArr = [];
+    if (!Array.isArray(datas) || datas.length === 0) {
+      return newArr;
+    }
+    for (let i = 0; datas.length < topN3 ? i < datas.length : i < topN3; i += 1) {
+      const vote = {};
+      vote.type = datas[i].type;
+      vote.total = datas[i].total;
+      vote.expected = datas[0].total;
+      newArr.push(vote);
+    }
+    return newArr.reverse();
+  };
+
+
 
 
   useEffect(() => {
@@ -69,20 +136,20 @@ function EventAnalysis(props) {
   }, []);
 
 
-  const dataCylinder = datas => {
-    const newArr = [];
-    if (!Array.isArray(datas)) {
-      return newArr;
-    }
-    for (let i = 0; i < datas.length; i += 1) {
-      const vote = {};
-      vote.name = datas[i].type;
-      vote.rate = datas[i].total;
-      vote.type = '环节';
-      newArr.push(vote);
-    }
-    return newArr;
-  };
+  // const dataCylinder = datas => {
+  //   const newArr = [];
+  //   if (!Array.isArray(datas)) {
+  //     return newArr;
+  //   }
+  //   for (let i = 0; i < datas.length; i += 1) {
+  //     const vote = {};
+  //     vote.name = datas[i].type;
+  //     vote.rate = datas[i].total;
+  //     vote.type = '环节';
+  //     newArr.push(vote);
+  //   }
+  //   return newArr;
+  // };
 
   const getTypeConditions = (values) => {
     dispatch({
@@ -145,32 +212,32 @@ function EventAnalysis(props) {
       case 'registrant':
         defaultNum1 = e;
         getRegisterUserTop({
-          begin: moment(values.beginTime).format('YYYY-MM-DD 00:00:00'),
-          end: moment(values.endTime).format('YYYY-MM-DD 23:59:59'),
+          time1: moment(values.beginTime).format('YYYY-MM-DD 00:00:00'),
+          time2: moment(values.endTime).format('YYYY-MM-DD 23:59:59'),
           num: e
         });
         break;
       case 'handler':
         defaultNum2 = e;
         getHandlerTop({
-          begin: moment(values.beginTime).format('YYYY-MM-DD 00:00:00'),
-          end: moment(values.endTime).format('YYYY-MM-DD 23:59:59'),
+          time1: moment(values.beginTime).format('YYYY-MM-DD 00:00:00'),
+          time2: moment(values.endTime).format('YYYY-MM-DD 23:59:59'),
           num: e
         });
         break;
       case 'registrationunit':
         defaultNum3 = e;
         getRegisterUnitTop({
-          begin: moment(values.beginTime).format('YYYY-MM-DD 00:00:00'),
-          end: moment(values.endTime).format('YYYY-MM-DD 23:59:59'),
+          time1: moment(values.beginTime).format('YYYY-MM-DD 00:00:00'),
+          time2: moment(values.endTime).format('YYYY-MM-DD 23:59:59'),
           num: e
         });
         break;
       case 'handlerunit':
         defaultNum4 = e;
         getHandleUnitTop({
-          begin: moment(values.beginTime).format('YYYY-MM-DD 00:00:00'),
-          end: moment(values.endTime).format('YYYY-MM-DD 23:59:59'),
+          time1: moment(values.beginTime).format('YYYY-MM-DD 00:00:00'),
+          time2: moment(values.endTime).format('YYYY-MM-DD 23:59:59'),
           num: e
         });
         break;
@@ -184,15 +251,16 @@ function EventAnalysis(props) {
       type: 'linear',
       alias: '返回结果数量',
       min: 0,
-      tickInterval: 100,
+      tickInterval: 500,
     },
   };
 
+  console.log(getTimeOutConditionsdata,'getTimeOutConditionsdata')
   useEffect(() => {
     if (values && values.type) {
       const val = {
-        begin: moment(values.beginTime).format('YYYY-MM-DD 00:00:00'),
-        end: moment(values.endTime).format('YYYY-MM-DD 23:59:59'),
+        time1: moment(values.beginTime).format('YYYY-MM-DD 00:00:00'),
+        time2: moment(values.endTime).format('YYYY-MM-DD 23:59:59'),
         type: values.type === 'M' ? 'MONTH' : 'DAY',
         num: values.num || 5
       }
@@ -256,10 +324,10 @@ function EventAnalysis(props) {
                             <StatisticsCard title='受理总数' value={obj && obj.allNum} suffix='单' des='环比' desval={`${obj && obj.allRingPoints}%`} type={Number((obj && obj.allRingPoints)) > 0 ? 'up' : 'down'} />
                           </Col>
                           <Col span={8}>
-                            <StatisticsCard title='一线处理量' value={obj && obj.selfHandleNum} suffix='单' des='环比' desval={`${obj && obj.selfHandleRingPoints}%`} type={Number((obj && obj.selfHandleRingPoints)) > 0 ? 'up' : 'down'} />
+                            <StatisticsCard title='一线处理量' value={obj && obj.selfHandleNum} suffix='单' des='环比' desval={`${obj && obj.selfHandleNumRingPoints}%`} type={Number((obj && obj.selfHandleRingPoints)) > 0 ? 'up' : 'down'} />
                           </Col>
                           <Col span={8}>
-                            <StatisticsCard title='一线解决率' value={obj && obj.selfHandlePoint} suffix='%' des='环比' desval={`${obj && obj.selfHandleRingPoints}%`} type={Number((obj && obj.selfHandleRingPoints)) > 0 ? 'up' : 'down'} />
+                            <StatisticsCard title='一线解决率' value={obj && obj.selfHandlePoint} suffix='%' des='环比' desval={`${obj && obj.selfHandlePointRingPoints}%`} type={Number((obj && obj.selfHandleRingPoints)) > 0 ? 'up' : 'down'} />
                           </Col>
                         </Col>
                       </Row>
@@ -270,24 +338,27 @@ function EventAnalysis(props) {
             })}
 
             {/* 问题分类总情况 */}
-            <Row style={{ marginTop: 24 }}>
+            <Row style={{ marginTop: 24 }} gutter={24}>
               <div className={styles.statisticscard}>
                 <Avatar icon="cluster" />
                 <b>事件分类统计分析</b>
               </div>
               <Col span={8}>
                 <Card onMouseDown={() => setPicVal({})}>
-                  <DonutPCT
-                    data={getTypeConditionsdata && getTypeConditionsdata.pieChart}
-                    height={300}
-                    total={piesum(getTypeConditionsdata)}
-                    totaltitle="事件总数"
-                    padding={[10, 30, 10, 30]}
-                    onGetVal={v => {
-                      console.log('饼图', v);
-                      setPicVal({ ...picval, dutyUnit: v });
-                    }}
-                  />
+                  {getTypeConditionsdata && getTypeConditionsdata.pieChart && getTypeConditionsdata.pieChart.length === 0 && <Empty style={{ height: '300px' }} />}
+                  {getTypeConditionsdata && getTypeConditionsdata.pieChart && getTypeConditionsdata.pieChart.length > 0 && (
+                    <DonutPCT
+                      data={getTypeConditionsdata && getTypeConditionsdata.pieChart}
+                      height={300}
+                      total={piesum(getTypeConditionsdata && getTypeConditionsdata.pieChart)}
+                      totaltitle="事件总数"
+                      padding={[10, 30, 10, 30]}
+                      onGetVal={v => {
+                        console.log('饼图', v);
+                        setPicVal({ ...picval, dutyUnit: v });
+                      }}
+                    />
+                  )}
                 </Card>
               </Col>
               <Col span={16}>
@@ -311,24 +382,28 @@ function EventAnalysis(props) {
 
             {/* 问题分类统计分析 */}
             {/* 问题分类总情况 */}
-            <Row style={{ marginTop: 24 }}>
+            <Row style={{ marginTop: 24 }} gutter={24}>
               <div className={styles.statisticscard}>
                 <Avatar icon="cluster" />
                 <b>事件对象统计分析</b>
               </div>
               <Col span={8}>
                 <Card onMouseDown={() => setPicVal({})}>
-                  <DonutPCT
-                    data={getObjectConditionsdata && getObjectConditionsdata.pieChart}
-                    height={300}
-                    total={piesum(getObjectConditionsdata && getObjectConditionsdata.pieChart)}
-                    totaltitle="事件总数"
-                    padding={[10, 30, 10, 30]}
-                    onGetVal={v => {
-                      console.log('饼图', v);
-                      setPicVal({ ...picval, dutyUnit: v });
-                    }}
-                  />
+                  {getObjectConditionsdata && getObjectConditionsdata.pieChart && getObjectConditionsdata.pieChart.length === 0 && <Empty style={{ height: '300px' }} />}
+                  {getObjectConditionsdata && getObjectConditionsdata.pieChart && getObjectConditionsdata.pieChart.length > 0 && (
+                    <DonutPCT
+                      data={getObjectConditionsdata && getObjectConditionsdata.pieChart}
+                      height={300}
+                      total={piesum(getObjectConditionsdata && getObjectConditionsdata.pieChart)}
+                      totaltitle="事件总数"
+                      padding={[10, 30, 10, 30]}
+                      onGetVal={v => {
+                        console.log('饼图', v);
+                        setPicVal({ ...picval, dutyUnit: v });
+                      }}
+                    />
+                  )}
+
                 </Card>
               </Col>
               <Col span={16}>
@@ -350,56 +425,60 @@ function EventAnalysis(props) {
             </Row>
 
             {/* 程序问题情况 */}
-            <Row style={{ marginTop: 24 }}>
+            <Row style={{ marginTop: 24 }} gutter={24}>
               <Col span={12}>
                 <div className={styles.statisticscard}>
                   <Avatar icon="cluster" />
                   <b>事件工单超时情况</b>
                 </div>
                 <Card onMouseDown={() => setPicVal({})}>
-                  <DonutPCT
-                    data={getTimeOutConditionsdata}
-                    height={300}
-                    total={piesum(getTimeOutConditionsdata)}
-                    totaltitle="总工单数"
-                    padding={[10, 30, 10, 30]}
-                    onGetVal={v => {
-                      console.log('饼图', v);
-                      setPicVal({ ...picval, dutyUnit: v });
-                    }}
-                  />
+                  {getTimeOutConditionsdata && getTimeOutConditionsdata.length === 0 && <Empty style={{ height: '300px' }} />}
+                  {getTimeOutConditionsdata && getTimeOutConditionsdata.length > 0 && (
+                    <DonutPCT
+                      data={getTimeOutConditionsdata}
+                      height={300}
+                      total={piesum(getTimeOutConditionsdata)}
+                      totaltitle="总工单数"
+                      padding={[10, 30, 10, 30]}
+                      onGetVal={v => {
+                        console.log('饼图', v);
+                        setPicVal({ ...picval, dutyUnit: v });
+                      }}
+                    />
+                  )}
+
                 </Card>
               </Col>
               <Col span={12}>
                 <div className={styles.statisticscard}>
                   <Avatar icon="cluster" />
-                  <b>事件登记人Top5</b>
+                  <b>事件登记人Top{topN}</b>
+                  <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN(v)} /></div>
+                  {/* <div style={{ float: 'right' }}>
+                    <Select
+                      defaultValue={defaultNum1 || 5}
+                      onChange={(e) => selectOnchange(e, 'registrant')}
+                      style={{ width: '100%'}}
+                    >
+                      <Option value="5">5</Option>
+                      <Option value="10">10</Option>
+                      <Option value="15">15</Option>
+                      <Option value="20">20</Option>
+                    </Select>
+                  </div> */}
                 </div>
                 <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
                   {getRegisterUserTopdata && getRegisterUserTopdata.length === 0 && <Empty style={{ height: '300px' }} />}
                   {getRegisterUserTopdata && getRegisterUserTopdata.length > 0 && (
                     <>
-                      <Col span={20}>
+                      <Col span={24}>
                         <ColumnarY
                           cols={Issuedscale}
-                          data={getRegisterUserTopdata}
+                          data={dataCylinder(getRegisterUserTopdata)}
                           height={300}
                           padding={[30, 60, 50, 100]}
                           onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />
-                      </Col>
-
-                      <Col span={4} style={{ zIndex: 1000 }}>
-                        <Select
-                          defaultValue={defaultNum1 || 5}
-                          onChange={(e) => selectOnchange(e, 'registrant')}
-                          style={{ width: '100%' }}
-                        >
-                          <Option value="5">5</Option>
-                          <Option value="10">10</Option>
-                          <Option value="15">15</Option>
-                          <Option value="20">20</Option>
-                        </Select>
                       </Col>
                     </>
                   )}
@@ -407,27 +486,28 @@ function EventAnalysis(props) {
               </Col>
             </Row>
 
-            <Row style={{ marginTop: 24 }}>
+            <Row style={{ marginTop: 24 }} gutter={24}>
               <Col span={12}>
                 <div className={styles.statisticscard}>
                   <Avatar icon="cluster" />
-                  <b>事件处理人Top5</b>
+                  <b>事件处理人Top{topN1}</b>
+                  <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN1(v)} /></div>
                 </div>
                 <Card onMouseDown={() => setPicVal({})}>
                   {getHandlerTopdata && getHandlerTopdata.length === 0 && <Empty style={{ height: '300px' }} />}
                   {getHandlerTopdata && getHandlerTopdata.length > 0 && (
                     <>
-                      <Col span={20}>
+                      <Col span={24}>
                         <ColumnarY
                           cols={Issuedscale}
-                          data={getHandlerTopdata}
+                          data={dataCylinder1(getHandlerTopdata)}
                           height={300}
                           padding={[30, 60, 50, 100]}
                           onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />
                       </Col>
 
-                      <Col span={4} style={{ zIndex: 1000 }}>
+                      {/* <Col span={4} style={{ zIndex: 1000 }}>
                         <Select
                           defaultValue={defaultNum2 || 5}
                           onChange={(e) => selectOnchange(e, 'handler')}
@@ -438,7 +518,7 @@ function EventAnalysis(props) {
                           <Option value="15">15</Option>
                           <Option value="20">20</Option>
                         </Select>
-                      </Col>
+                      </Col> */}
                     </>
                   )}
                 </Card>
@@ -446,23 +526,24 @@ function EventAnalysis(props) {
               <Col span={12}>
                 <div className={styles.statisticscard}>
                   <Avatar icon="cluster" />
-                  <b>事件登记单位Top5</b>
+                  <b>事件登记单位Top{topN2}</b>
+                  <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN2(v)} /></div>
                 </div>
                 <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
                   {getRegisterUnitTopdata && getRegisterUnitTopdata.length === 0 && <Empty style={{ height: '300px' }} />}
                   {getRegisterUnitTopdata && getRegisterUnitTopdata.length > 0 && (
                     <>
-                      <Col span={20}>
+                      <Col span={24}>
                         <ColumnarY
                           cols={Issuedscale}
-                          data={getRegisterUnitTopdata}
+                          data={dataCylinder2(getRegisterUnitTopdata)}
                           height={300}
                           padding={[30, 60, 50, 100]}
                           onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />
                       </Col>
 
-                      <Col span={4} style={{ zIndex: 1000 }}>
+                      {/* <Col span={4} style={{ zIndex: 1000 }}>
                         <Select
                           defaultValue={defaultNum3 || 5}
                           style={{ width: '100%' }}
@@ -472,34 +553,35 @@ function EventAnalysis(props) {
                           <Option value="15">15</Option>
                           <Option value="20">20</Option>
                         </Select>
-                      </Col>
+                      </Col> */}
                     </>
                   )}
                 </Card>
               </Col>
             </Row>
 
-            <Row style={{ marginTop: 24 }}>
-              <div className={styles.statisticscard}>
-                <Avatar icon="cluster" />
-                <b>事件处理单位Top5</b>
-              </div>
+            <Row style={{ marginTop: 24 }} gutter={24}>
               <Col span={12}>
+                <div className={styles.statisticscard}>
+                  <Avatar icon="cluster" />
+                  <b>事件处理单位Top{topN3}</b>
+                  <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN3(v)} /></div>
+                </div>
                 <Card onMouseDown={() => setPicVal({})}>
                   {getHandleUnitTopdata && getHandleUnitTopdata.length === 0 && <Empty style={{ height: '300px' }} />}
                   {getHandleUnitTopdata && getHandleUnitTopdata.length > 0 && (
                     <>
-                      <Col span={20}>
+                      <Col span={24}>
                         <ColumnarY
                           cols={Issuedscale}
-                          data={getHandleUnitTopdata}
+                          data={dataCylinder3(getHandleUnitTopdata)}
                           height={300}
                           padding={[30, 60, 50, 100]}
                           onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />
                       </Col>
 
-                      <Col span={4} style={{ zIndex: 1000 }}>
+                      {/* <Col span={4} style={{ zIndex: 1000 }}>
                         <Select
                           onChange={(e) => selectOnchange(e, 'handlerunit')}
                           defaultValue={defaultNum4 || 5}
@@ -510,7 +592,7 @@ function EventAnalysis(props) {
                           <Option value="15">15</Option>
                           <Option value="20">20</Option>
                         </Select>
-                      </Col>
+                      </Col> */}
                     </>
                   )}
                 </Card>

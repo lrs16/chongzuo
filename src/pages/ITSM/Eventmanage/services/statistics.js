@@ -107,36 +107,68 @@ export async function downloadEventHandleRateListExcel(params) {
 //  可视化分析接口
 // // 事件处理人排名
 export async function getHandlerTop(params) {
-  return request(`/event/analysis/getHandlerTop?num=${params.num}&time1=${params.begin}&time2=${params.end}`); 
+  return request(`/event/analysis/getHandlerTop`,{
+    method:'POST',
+    data:params,
+    requestType:'form'
+  }); 
 }
 // 事件处理单位排名
 export async function getHandleUnitTop(params) {
-  return request(`/event/analysis/getHandleUnitTop?num=${params.num}&time1=${params.begin}&time2=${params.end}`); 
+  return request(`/event/analysis/getHandleUnitTop`,{
+    method:'POST',
+    data:params,
+    requestType:'form'
+  }); 
 }
 
 // 事件对象总情况
 export async function getObjectConditions(params) {
-  return request(`/event/analysis/getObjectConditions?type=${params.type}&time1=${params.begin}&time2=${params.end}`); 
+  return request(`/event/analysis/getObjectConditions`,{
+    method:'POST',
+    data:params,
+    requestType:'form'
+  }); 
 }
 // 事件工单总情况
 export async function getOrderConditions(params) {
-  return request(`/event/analysis/getOrderConditions?type=${params.type}&time1=${params.begin}&time2=${params.end}`); 
+  return request(`/event/analysis/getOrderConditions`,{
+    method:'POST',
+    data:params,
+    requestType:'form'
+  }); 
 }
 // 事件登记单位排名
 export async function getRegisterUnitTop(params) {
-  return request(`/event/analysis/getRegisterUnitTop?num=${params.num}&time1=${params.begin}&time2=${params.end}`); 
+  return request(`/event/analysis/getRegisterUnitTop`,{
+    method:'POST',
+    data:params,
+    requestType:'form'
+  }); 
 }
 // 事件登记人排名
 export async function getRegisterUserTop(params) {
-  return request(`/event/analysis/getRegisterUserTop?num=${params.num}&time1=${params.begin}&time2=${params.end}`); 
+  return request(`/event/analysis/getRegisterUserTop`,{
+    method:'POST',
+    data:params,
+    requestType:'form'
+  }); 
 }
 // 事件超时总情况
 export async function getTimeOutConditions(params) {
-  return request(`/event/analysis/getTimeOutConditions?time1=${params.begin}&time2=${params.end}`); 
+  return request(`/event/analysis/getTimeOutConditions`,{
+    method:'POST',
+    data:params,
+    requestType:'form'
+  }); 
 }
 // 事件分类总情况
 export async function getTypeConditions(params) {
-  return request(`/event/analysis/getTypeConditions?time1=${params.begin}&time2=${params.end}&type=${params.type}`); 
+  return request(`/event/analysis/getTypeConditions`,{
+    method:'POST',
+    data:params,
+    requestType:'form'
+  }); 
 }
 
 

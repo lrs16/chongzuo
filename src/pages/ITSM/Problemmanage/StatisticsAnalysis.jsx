@@ -342,7 +342,7 @@ function StatisticsAnalysis(props) {
           <>
             {([statratioArr] || []).map((obj, index) => {
               return (
-                <Row key={index} style={{ marginTop: 10 }}  gutter={24}>
+                <Row key={index} style={{ marginTop: 10 }} gutter={24}>
                   <Col span={16}>
                     <Row>
                       <div className={styles.statisticscard}>
@@ -350,13 +350,13 @@ function StatisticsAnalysis(props) {
                         <b>问题工单情况</b>
                       </div>
                       <Col span={8}>
-                        <StatisticsCard title='问题总数' value={obj.total} desval={`${obj && obj.totalRingRatio}%`} suffix='单' des='环比' type={Number(obj.total) > Number(obj.prevResolved) ? 'up' : 'down'} />
+                        <StatisticsCard title='问题总数' value={obj.total} desval={`${obj && obj.totalRingRatio}`} suffix='单' des='环比' type={Number(obj.total) > Number(obj.prevResolved) ? 'up' : 'down'} />
                       </Col>
                       <Col span={8}>
-                        <StatisticsCard title='已解决' value={obj.resolved} desval={`${obj && obj.resolvedRingRatio}%`} suffix='单' des='环比' type={Number(obj.resolved) > Number(obj.prevResolved) ? 'up' : 'down'} />
+                        <StatisticsCard title='已解决' value={obj.resolved} desval={`${obj && obj.resolvedRingRatio}`} suffix='单' des='环比' type={Number(obj.resolved) > Number(obj.prevResolved) ? 'up' : 'down'} />
                       </Col>
                       <Col span={8}>
-                        <StatisticsCard title='解决率' value={obj.Rate} desval={`${obj && obj.rate}%`} suffix='%' des='环比' type={Number(obj.totalScore) > Number(obj.prevTotalScore) ? 'up' : 'down'} />
+                        <StatisticsCard title='解决率' value={obj.Rate} desval={`${obj && obj.rate}`} suffix='%' des='环比' type={Number(obj.totalScore) > Number(obj.prevTotalScore) ? 'up' : 'down'} />
                       </Col>
                     </Row>
                   </Col>
@@ -369,30 +369,16 @@ function StatisticsAnalysis(props) {
                       </div>
 
                       <Col span={12}>
-                        <StatisticsCard title='程序问题' value={obj.program} desval={`${obj && obj.programRingRatio}%`} suffix='单' des='环比' type={Number(obj.program) > Number(obj.prevProgram) ? 'up' : 'down'} />
+                        <StatisticsCard title='程序问题' value={obj.program} desval={`${obj && obj.programRingRatio}`} suffix='单' des='环比' type={Number(obj.program) > Number(obj.prevProgram) ? 'up' : 'down'} />
                       </Col>
                       <Col span={12}>
-                        <StatisticsCard title='功能问题' value={obj.function} desval={`${obj && obj.functionRingRatio}%`} suffix='单' des='环比' type={Number(obj.function) > Number(obj.prevFunction) ? 'up' : 'down'} />
+                        <StatisticsCard title='功能问题' value={obj.function} desval={`${obj && obj.functionRingRatio}`} suffix='单' des='环比' type={Number(obj.function) > Number(obj.prevFunction) ? 'up' : 'down'} />
                       </Col>
-
                     </Row>
                   </Col>
-
-
                 </Row>
               )
             })}
-
-            {([statratioArr] || []).map((obj, index) => {
-              return (
-                <Row key={index} style={{ marginTop: 10 }}>
-
-                </Row>
-              )
-            })}
-
-
-
 
             {/* 问题分类总情况 */}
             <Row style={{ marginTop: 24 }}>
@@ -622,10 +608,10 @@ function StatisticsAnalysis(props) {
                         /> */}
 
                         <ColumnarY
-                          cols={Issuedscale}
                           data={columnsYresult(resgisterarr)}
                           height={300}
                           padding={[30, 60, 50, 100]}
+                          cols={Issuedscale}
                           onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />
                       </Col>
@@ -660,10 +646,10 @@ function StatisticsAnalysis(props) {
                     <>
                       <Col span={20}>
                         <ColumnarY
-                          cols={Issuedscale}
-                          data={columnsYresult(handlerarr)}
                           height={300}
+                          data={columnsYresult(handlerarr)}
                           padding={[30, 60, 50, 100]}
+                          cols={Issuedscale}
                           onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />
                       </Col>
@@ -685,7 +671,6 @@ function StatisticsAnalysis(props) {
                 </Card>
               </Col>
 
-
               <Col span={12}>
                 <div className={styles.statisticscard}>
                   <Avatar icon="share-alt" />
@@ -697,10 +682,10 @@ function StatisticsAnalysis(props) {
                     <>
                       <Col span={20}>
                         <ColumnarY
-                          cols={Issuedscale}
-                          data={columnsYresult(resgisterunitarr)}
                           height={300}
+                          data={columnsYresult(resgisterunitarr)}
                           padding={[30, 60, 50, 100]}
+                          cols={Issuedscale}
                           onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />
                       </Col>
@@ -735,10 +720,10 @@ function StatisticsAnalysis(props) {
                     <>
                       <Col span={20}>
                         <ColumnarY
-                          cols={Issuedscale}
-                          data={columnsYresult(handlerunitarr)}
                           height={300}
+                          data={columnsYresult(handlerunitarr)}
                           padding={[30, 60, 50, 100]}
+                          cols={Issuedscale}
                           onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />
                       </Col>
