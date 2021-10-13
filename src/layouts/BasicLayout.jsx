@@ -32,14 +32,14 @@ const homepane = [{
   closable: false,
   state: { cache: false },
 },
-// {
-//   name: "作业管理",
-//   id: "1430857478042976257",
-//   itemPath: "/automation/automatedjob/jobmanagement",
-//   query: {},
-//   state: { cache: false, cacheinfo: {} },
-//   data: { cacheinfo: {} }
-// },
+  // {
+  //   name: "作业管理",
+  //   id: "1430857478042976257",
+  //   itemPath: "/automation/automatedjob/jobmanagement",
+  //   query: {},
+  //   state: { cache: false, cacheinfo: {} },
+  //   data: { cacheinfo: {} }
+  // },
 ]
 
 const noMatch = (
@@ -746,8 +746,9 @@ const BasicLayout = props => {
               onClick={() => {
                 if (toptabs.length > 1) { setTopTabs([{ ...homepane[0] }]); }
                 clearcache();         // 清缓存
+                setActiveKey('1444116690453917698');
                 router.push({
-                  pathname: 'home',
+                  pathname: '/',
                   query: {}
                 });
               }}
