@@ -80,6 +80,7 @@ function LocalScriptList(props) {
       setData(record);
     } else {
       setData({});
+      setFiles({ arr: [], ischange: false });
     }
   };
 
@@ -451,7 +452,7 @@ function LocalScriptList(props) {
           rowKey={record => record.id}
           scroll={{ x: 1300 }}
           columns={columns}
-          paginations={pagination}
+          pagination={pagination}
           loading={loading} />
       </Card>
       {/* 抽屉 */}

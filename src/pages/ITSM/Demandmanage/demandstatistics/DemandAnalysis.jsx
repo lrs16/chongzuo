@@ -14,6 +14,7 @@ const Issuedscale = {
     type: 'linear',
     alias: '返回结果数量',
     min: 0,
+    // range: [0,99],
     tickInterval: 10,
   },
 };
@@ -122,16 +123,13 @@ function Statistics(props) {
   };
 
   const piesum1 = (arr) => { // 计算总数
-    let sum = 0;
     if (arr && arr.length > 0) {
-      const newdData = arr;
-      const newdatas = newdData.concat();
-      newdatas.shift();
-      newdatas.forEach(item => {
-        sum += item.value;
+      const newarr = arr.map(item => {
+        return item.value;
       });
+      return newarr[0];
     };
-    return sum;
+    return false;
   };
 
   useEffect(() => {
@@ -180,11 +178,11 @@ function Statistics(props) {
           {
             ratiodatalist && ratiodatalist !== undefined && (
               <Row type="flex" justify="space-around">
-                <Col span={4}><StatisticsCard title='需求总数：' value={ratiodatalist.total} suffix='单' des='环比' desval={ratiodatalist.totalMom} type={Number(ratiodatalist.totalMom) > 0 ? 'up' : 'down'} /></Col>
-                <Col span={5}><StatisticsCard title='已开发：' value={ratiodatalist.dev} suffix='单' des='环比' desval={ratiodatalist.devMom} type={Number(ratiodatalist.devMom) > 0 ? 'up' : 'down'} /></Col>
-                <Col span={5}><StatisticsCard title='已发布：' value={ratiodatalist.release} suffix='单' des='环比' desval={ratiodatalist.releaseMom} type={Number(ratiodatalist.releaseMom) > 0 ? 'up' : 'down'} /></Col>
-                <Col span={5}><StatisticsCard title='开发率：' value={ratiodatalist.devRate} suffix='' des='环比' desval={ratiodatalist.devRateMom} type={Number(ratiodatalist.devRateMom) > 0 ? 'up' : 'down'} /></Col>
-                <Col span={5}><StatisticsCard title='发布率：' value={ratiodatalist.releaseRate} suffix='' des='环比' desval={ratiodatalist.releaseRateMom} type={Number(ratiodatalist.releaseRateMom) > 0 ? 'up' : 'down'} /></Col>
+                <Col span={4}><StatisticsCard title='需求总数：' value={ratiodatalist.total} suffix='单' des='环比' desval={`${ratiodatalist.totalMom}%`} type={Number(ratiodatalist.totalMom) > 0 ? 'up' : 'down'} /></Col>
+                <Col span={5}><StatisticsCard title='已开发：' value={ratiodatalist.dev} suffix='单' des='环比' desval={`${ratiodatalist.devMom}%`} type={Number(ratiodatalist.devMom) > 0 ? 'up' : 'down'} /></Col>
+                <Col span={5}><StatisticsCard title='已发布：' value={ratiodatalist.release} suffix='单' des='环比' desval={`${ratiodatalist.releaseMom}%`} type={Number(ratiodatalist.releaseMom) > 0 ? 'up' : 'down'} /></Col>
+                <Col span={5}><StatisticsCard title='开发率：' value={ratiodatalist.devRate} suffix='' des='环比' desval={`${ratiodatalist.devRateMom}%`} type={Number(ratiodatalist.devRateMom) > 0 ? 'up' : 'down'} /></Col>
+                <Col span={5}><StatisticsCard title='发布率：' value={ratiodatalist.releaseRate} suffix='' des='环比' desval={`${ratiodatalist.releaseRateMom}%`} type={Number(ratiodatalist.releaseRateMom) > 0 ? 'up' : 'down'} /></Col>
               </Row>
             )
           }
@@ -323,7 +321,6 @@ function Statistics(props) {
                 data={piedataArr(demandtomeoutArr)}
                 height={300}
                 totaltitle='需求总数'
-                // total={piesum1(demandtomeoutArr)}
                 total={demandtomeoutArr[demandtomeoutArr.length -1].quantity}
                 padding={[10, 30, 30, 30]}
                 onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}

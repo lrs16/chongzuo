@@ -93,6 +93,7 @@ function SystemScriptList(props) {
             setData(record);
         } else {
             setData({});
+            setFiles({ arr: [], ischange: false });
         }
     };
 
@@ -488,7 +489,7 @@ function SystemScriptList(props) {
                     loading={loading}
                     rowKey={record => record.id}
                     scroll={{ x: 1300 }}
-                    paginations={pagination}
+                    pagination={pagination}
                     rowSelection={rowSelection}
                     dispatch={dispatch}
                 />
