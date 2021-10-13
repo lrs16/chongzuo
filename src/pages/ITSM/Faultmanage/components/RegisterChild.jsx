@@ -348,11 +348,11 @@ const RegisterChild = React.forwardRef((props, ref) => {
         <Col span={24}>
           <Form.Item label="是否影响业务" {...forminladeLayout}>
             {getFieldDecorator('registerEffect', {
-              initialValue: Number(tododetailslist.register.registerEffect),
+              initialValue: tododetailslist && tododetailslist.register && tododetailslist.register.registerEffect,
             })(
               <RadioGroup>
-                <Radio value={0}>是</Radio>
-                <Radio value={1}>否</Radio>
+                <Radio value='0'>是</Radio>
+                <Radio value='1'>否</Radio>
               </RadioGroup>,
             )}
           </Form.Item>
@@ -372,6 +372,19 @@ const RegisterChild = React.forwardRef((props, ref) => {
                 ChangeFileslist={newvalue => setFilesList(newvalue)}
               />
             </div>
+          </Form.Item>
+        </Col>
+
+        <Col span={24}>
+          <Form.Item label="是否影响计量主站" {...forminladeLayout}>
+            {getFieldDecorator('registerMaster', {
+              initialValue: tododetailslist && tododetailslist.register && tododetailslist.register.registerMaster,
+            })(
+              <RadioGroup>
+                <Radio value='0'>是</Radio>
+                <Radio value='1'>否</Radio>
+              </RadioGroup>,
+            )}
           </Form.Item>
         </Col>
 

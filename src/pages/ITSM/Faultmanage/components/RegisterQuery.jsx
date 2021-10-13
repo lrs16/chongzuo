@@ -76,6 +76,14 @@ function RegisterQuery(props) {
             </Form.Item>
           </Col>
           <Col span={24}>
+            <Form.Item label="是否影响计量主站"  {...forminladeLayout}>
+              <RadioGroup defaultValue={Number(info.registerMaster)} disabled>
+                <Radio value={0}>是</Radio>
+                <Radio value={1}>否</Radio>
+              </RadioGroup>
+            </Form.Item>
+          </Col>
+          <Col span={24}>
             <Form.Item label="附件" {...forminladeLayout}>
               {info.registerAttachments && <Downloadfile files={info.registerAttachments} />}
             </Form.Item>

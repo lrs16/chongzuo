@@ -215,6 +215,8 @@ function Registration(props) {
     }
   };
 
+  console.log(cacheinfo,'cacheinfo')
+
   // 打开多页签，表单信息传回tab
   useEffect(() => {
     if (tabnew) {
@@ -274,7 +276,8 @@ function Registration(props) {
     </>
   );
 
-  const cacheinfo = tabdata === undefined ? { registerLevel: '一般', registerEffect: '0' } : tabdata;
+  const cacheinfo = tabdata === undefined ? { registerLevel: '一般', registerEffect: '',registerMaster:'' } : tabdata;
+  console.log(cacheinfo,'cacheinfo')
 
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
@@ -484,8 +487,8 @@ function Registration(props) {
                   initialValue: cacheinfo.registerEffect || '',
                 })(
                   <RadioGroup>
-                    <Radio value={0}>是</Radio>
-                    <Radio value={1}>否</Radio>
+                    <Radio value='0'>是</Radio>
+                    <Radio value='1'>否</Radio>
                   </RadioGroup>,
                 )}
               </Form.Item>
@@ -506,10 +509,23 @@ function Registration(props) {
               </Form.Item>
             </Col>
 
+            <Col span={24}>
+              <Form.Item label="是否影响计量主站" {...forminladeLayout}>
+                {getFieldDecorator('registerMaster', {
+                  initialValue: cacheinfo.registerMaster || '',
+                })(
+                  <RadioGroup>
+                    <Radio value='0'>是</Radio>
+                    <Radio value='1'>否</Radio>
+                  </RadioGroup>,
+                )}
+              </Form.Item>
+            </Col>
+
             <Col span={8}>
               <Form.Item label="登记人">
                 {getFieldDecorator('registerUser', {
-                  initialValue: curruserinfo.userName || '',
+                  initialValue: curruserinfo.userName,
                 })(<Input disabled />)}
               </Form.Item>
             </Col>

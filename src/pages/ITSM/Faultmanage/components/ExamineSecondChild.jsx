@@ -7,13 +7,14 @@ import {
   Input,
   DatePicker,
   Radio,
-  Select
+  Select,
 } from 'antd';
 import SysUpload from '@/components/SysUpload'; // 附件下载组件
 import SysDict from '@/components/SysDict';
 
 const { TextArea } = Input;
 const { Option } = Select;
+const RadioGroup = Radio.Group;
 
 const ExamineSecondChild = React.forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout, check, curruserinfo, ChangeFiles, ChangeResult } = props;
@@ -58,7 +59,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
     return [];
   };
 
-  console.log(check.checkTime,'check.checkTime')
+  console.log(check.checkTime, 'check.checkTime')
 
   const responsible = getTypebyTitle('故障责任方');
 
@@ -95,15 +96,15 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
                 },
               ],
               initialValue: check.checkBlame
-            })( 
-            <Select placeholder="请选择" allowClear>
-            {responsible.map(obj => [
-              <Option key={obj.key} value={obj.title}>
-                {obj.title}
-              </Option>,
-            ])}
-          </Select>
-          )}
+            })(
+              <Select placeholder="请选择" allowClear>
+                {responsible.map(obj => [
+                  <Option key={obj.key} value={obj.title}>
+                    {obj.title}
+                  </Option>,
+                ])}
+              </Select>
+            )}
           </Form.Item>
         </Col>
 
@@ -140,7 +141,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
             </Form.Item>
           )}
         </Col>
-
+        
         <Col span={24}>
           <Form.Item
             label="上传附件"
@@ -150,6 +151,19 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
             <div style={{ width: 400 }}>
               <SysUpload fileslist={(check && check.checkAttachments) ? JSON.parse(check.checkAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
             </div>
+          </Form.Item>
+        </Col>
+
+        <Col span={24}>
+          <Form.Item label="是否影响计量主站" {...forminladeLayout}>
+            {getFieldDecorator('checkMaster', {
+              initialValue: check && check.checkMaster  || '',
+            })(
+              <RadioGroup>
+                <Radio value='0'>是</Radio>
+                <Radio value='1'>否</Radio>
+              </RadioGroup>,
+            )}
           </Form.Item>
         </Col>
 

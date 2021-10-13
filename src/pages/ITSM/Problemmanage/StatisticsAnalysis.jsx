@@ -9,7 +9,6 @@ import {
   Empty,
   Spin,
   InputNumber,
-  Form
 } from 'antd';
 import moment from 'moment';
 import StatisticsCard from '../../ITSM/Eventmanage/eventstatistics/StatisticsCard';
@@ -18,8 +17,6 @@ import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
 import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
 import ColumnarY from '../Eventmanage/eventstatistics/ColumnarY';
 import styles from '../Problemmanage/index.less';
-
-const { Option } = Select;
 
 function StatisticsAnalysis(props) {
   const {
@@ -35,7 +32,6 @@ function StatisticsAnalysis(props) {
     handlerunitarr
   } = props;
   const [picval, setPicVal] = useState({});
-  const [bardata, setBardata] = useState([]);
   const [toplist, setToplist] = useState([]);
   const [type, setType] = useState([]);
   const [timeoutdata, setTimeoutdata] = useState([])
@@ -63,22 +59,6 @@ function StatisticsAnalysis(props) {
     };
     return sum
   };
-
-  // const dataCylinder = datas => {
-  //   const newArr = [];
-  //   if (!Array.isArray(datas)) {
-  //     return newArr;
-  //   }
-  //   for (let i = 0; i < datas.length; i += 1) {
-  //     const vote = {};
-  //     vote.name = datas[i].type;
-  //     vote.rate = datas[i].value;
-  //     vote.type = '环节';
-  //     newArr.push(vote);
-  //   }
-  //   return newArr;
-  // };
-
 
   const dataCylinder = (datas) => { // 柱状图集成数组
     const newArr = [];
@@ -144,53 +124,24 @@ function StatisticsAnalysis(props) {
     let timeoutList = [];
     if (loading === false) {
       const obj1 = {
-        // total: statratioArr.total,
-        // resolved: statratioArr.resolved,
-        // rate: statratioArr.Rate,
         type: '已解决',
         value: statratioArr.resolved,
-        // value:'60%',
       }
       const obj2 = {
-        // total: statratioArr.total,
-        // resolved: statratioArr.resolved,
-        // rate: statratioArr.Rate,
         type: '未解决',
         value: statratioArr.total - statratioArr.resolved,
       }
       const obj3 = {
-        // total: statratioArr.total,
-        // program: statratioArr.program,
-        // function: statratioArr.function,
-        // rate: statratioArr.Rate,
         type: '功能问题',
         value: statratioArr.function,
       }
 
       const obj4 = {
-        // total: statratioArr.total,
-        // program: statratioArr.program,
-        // function: statratioArr.function,
-        // rate: statratioArr.Rate,
         type: '程序问题',
         value: statratioArr.program,
       }
       result.push(obj1, obj2);
       typeresult.push(obj3, obj4);
-      // timeoutList = JSON.parse(JSON.stringify(timeoutArr)
-      //   .replace(/statName/g, 'type')
-      //   .replace(/statCount/g, 'value')
-      //   // .replace(/second_object/g, 'field3')
-      //   // .replace(/last_num/g, 'field4')
-      //   // .replace(/now_num/g, 'field5')
-      //   // .replace(/points_count/g, 'field6')
-      // );
-      // timeoutList = timeoutArr.map(item => {
-      //   return {
-      //     type: item.statName,
-      //     value: Number(item.statCount)
-      //   }
-      // })
       timeoutList = timeoutArr.filter(item => {
         return item.statName !== '合计'
       }).map(items => {
@@ -294,6 +245,8 @@ function StatisticsAnalysis(props) {
     }
   }, [values]);
 
+  console.log(statratioArr && statratioArr.rate,'kokod')
+
   return (
     <div>
       <SelectTime ChangeDate={(v) => setValues(v)} />
@@ -322,8 +275,9 @@ function StatisticsAnalysis(props) {
                       <Col span={8}>
                         <StatisticsCard title='已解决' value={obj.resolved} desval={`${obj && obj.resolvedRingRatio}`} suffix='单' des='环比' type={Number(obj.resolved) > Number(obj.prevResolved) ? 'up' : 'down'} />
                       </Col>
+     
                       <Col span={8}>
-                        <StatisticsCard title='解决率' value={obj.rate} desval={`${obj && obj.rateRingRatio}`} suffix='%' des='环比' type={Number(obj.totalScore) > Number(obj.prevTotalScore) ? 'up' : 'down'} />
+                        <StatisticsCard title='解决率' value={obj.rate} desval={`${obj && obj.rateRingRatio}%`} suffix='%' des='环比' type={Number(obj.totalScore) > Number(obj.prevTotalScore) ? 'up' : 'down'} />
                       </Col>
                     </Row>
                   </Col>
@@ -424,12 +378,11 @@ function StatisticsAnalysis(props) {
               </Col>
 
               <Col span={16}>
-                <h4 style={{ fontWeight: 'bold' }}>问题分类总趋势</h4>
                 <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+                <h4 style={{ fontWeight: 'bold' }}>问题分类总趋势</h4>
                   {lineArr && lineArr['问题分类总趋势'] && lineArr['问题分类总趋势'].length === 0 && <Empty style={{ height: '300px' }} />}
                   {lineArr && lineArr['问题分类总趋势'] && lineArr['问题分类总趋势'].length > 0 && (
                     <>
-
                       <SmoothLine
                         data={lineArr && lineArr['问题分类总趋势']}
                         height={300}
@@ -453,7 +406,6 @@ function StatisticsAnalysis(props) {
                   {statpieArr && statpieArr['程序问题情况'] && statpieArr['程序问题情况'].length === 0 && <Empty style={{ height: '300px' }} />}
                   {statpieArr && statpieArr['程序问题情况'] && statpieArr['程序问题情况'].length > 0 && (
                     <>
-
                       <DonutPCT
                         data={statpieArr && statpieArr['程序问题情况']}
                         height={300}
@@ -489,7 +441,6 @@ function StatisticsAnalysis(props) {
                       )}
                     </>
                   )}
-
                 </Card>
               </Col>
             </Row>
@@ -695,7 +646,7 @@ function StatisticsAnalysis(props) {
                         <ColumnarY
                           height={300}
                           data={dataCylinder3(handlerunitarr)}
-                          padding={[30, 60, 50, 200]}
+                          padding={[30, 60, 50, 250]}
                           cols={Issuedscale}
                           onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />

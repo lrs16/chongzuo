@@ -38,6 +38,14 @@ function ExamineSecondQuery(props) {
             </Form.Item>
           </Col>
           <Col span={24}>
+            <Form.Item label="是否影响计量主站"  {...forminladeLayout}>
+              <RadioGroup defaultValue={Number(info.checkMaster)} disabled>
+                <Radio value={0}>是</Radio>
+                <Radio value={1}>否</Radio>
+              </RadioGroup>
+            </Form.Item>
+          </Col>
+          <Col span={24}>
             <Form.Item label="附件" {...forminladeLayout}>
               {info.checkAttachments && <Downloadfile files={info.checkAttachments} />}
             </Form.Item>

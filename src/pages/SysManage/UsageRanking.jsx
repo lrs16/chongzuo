@@ -111,7 +111,7 @@ function UsageRanking(props) {
             {tabClickNumToparr && tabClickNumToparr.length === 0 && <Empty style={{ height: '300px' }} />}
             {tabClickNumToparr && tabClickNumToparr.length > 0 && (
               <ColumnarY
-                data={dataCylinder1(tabClickNumToparr)}
+                data={dataCylinder(tabClickNumToparr)}
                 height={300}
                 padding={[30, 60, 50, 100]}
                 cols={Issuedscale2}
@@ -131,7 +131,7 @@ function UsageRanking(props) {
             {loginUserToparr && loginUserToparr.length === 0 && <Empty style={{ height: '300px' }} />}
             {loginUserToparr && loginUserToparr.length > 0 && (
               <ColumnarY
-                data={dataCylinder(loginUserToparr)}
+                data={dataCylinder1(loginUserToparr)}
                 height={300}
                 padding={[30, 60, 50, 100]}
                 cols={Issuedscale}
