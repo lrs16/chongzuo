@@ -574,7 +574,7 @@ function QueryList(props) {
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item label="建单时间" {...form10ladeLayout}>
+              <Form.Item label="建单时间" >
                 {getFieldDecorator('createTime', {
                   initialValue: '',
                 })(<RangePicker
@@ -584,6 +584,7 @@ function QueryList(props) {
                   }}
                   format='YYYY-MM-DD'
                   allowClear
+                  style={{ width: '100%' }}
                 />)}
               </Form.Item>
             </Col>

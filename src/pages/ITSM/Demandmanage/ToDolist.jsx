@@ -5,22 +5,9 @@ import router from 'umi/router';
 import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
-import KeyVal from '@/components/SysDict/KeyVal';
+import DictLower from '@/components/SysDict/DictLower';
 
 const { Option } = Select;
-
-const statemap = [
-  { key: '0', value: '需求登记' },
-  { key: '1', value: '业务科室领导审核' },
-  { key: '2', value: '系统开发商审核' },
-  { key: '3', value: '自动化科专责审核' },
-  { key: '4', value: '自动化科业务人员审核' },
-  { key: '5', value: '市场部领导审核' },
-  { key: '6', value: '科室领导审核' },
-  { key: '7', value: '系统开发商处理' },
-  { key: '8', value: '自动化科负责人确认' },
-  { key: '9', value: '需求登记人员确认' },
-];
 
 const formItemLayout = {
   labelCol: {
@@ -278,13 +265,21 @@ function ToDolist(props) {
     </Button>
   </>)
 
+  const getTypebyId = key => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.key === key)[0].children;
+    }
+    return [];
+  };
+  const statemap = getTypebyId('1398105664881954817');
+  const souremap = getTypebyId('1352069854860939266');
+
   return (
     <PageHeaderWrapper title={pagetitle}>
-      <KeyVal
-        style={{ display: 'none' }}
-        dictModule="demand"
-        dictType="source"
+      <DictLower
+        typeid="1354274450639425537"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'none' }}
       />
       <Card>
         <Row gutter={24}>
@@ -302,9 +297,9 @@ function ToDolist(props) {
                   initialValue: cacheinfo.taskName
                 })(
                   <Select placeholder="请选择" allowClear>
-                    {statemap.map(({ key, value }) => (
-                      <Option key={key} value={value}>
-                        {value}
+                    {statemap && statemap.map((obj) => (
+                      <Option key={obj.key} value={obj.title}>
+                        {obj.title}
                       </Option>
                     ))}
                   </Select>,
@@ -325,7 +320,7 @@ function ToDolist(props) {
                     initialValue: cacheinfo.demandType
                   })(
                     <Select placeholder="请选择" allowClear>
-                      {selectdata.source.map(obj => (
+                      {souremap && souremap.map(obj => (
                         <Option key={obj.key} value={obj.val}>
                           {obj.val}
                         </Option>
