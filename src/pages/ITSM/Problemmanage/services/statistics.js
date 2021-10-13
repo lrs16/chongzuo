@@ -53,7 +53,6 @@ export async function handlegrateDownload(params) {
 
 //  超时统计列表
 export async function timeoutList(params) {
-  console.log('1');
   return request(`/problem/stat/statOrderByOverTime`, {
     method: 'POST',
     body: JSON.stringify(params),
@@ -105,6 +104,7 @@ export async function lineData(params) {
 }
 //  问题统计分析-环比数据
 export async function statratioData(params) {
+  console.log('params: ', params);
   return request(`/problem/stat/ratio`, {
     method: 'POST',
     data:params,

@@ -9,6 +9,7 @@ import {
   Empty,
   Input,
   Spin,
+  InputNumber
 } from 'antd';
 import moment from 'moment';
 import StatisticsCard from '../../ITSM/Eventmanage/eventstatistics/StatisticsCard';
@@ -53,7 +54,10 @@ function StatisticsAnalysis(props) {
   const [type, setType] = useState([]);
   const [timeoutdata, setTimeoutdata] = useState([])
   const [values, setValues] = useState({});
-  const [topN, setTopN] = useState(5);
+  const [topN, setTopN] = useState(5) // 排序
+  const [topN1, setTopN1] = useState(5) // 排序
+  const [topN2, setTopN2] = useState(5) // 排序
+  const [topN3, setTopN3] = useState(5) // 排序
 
   const Issuedscale = {
     total: {
@@ -74,35 +78,78 @@ function StatisticsAnalysis(props) {
     return sum
   };
 
-  const dataCylinder = datas => {
-    const newArr = [];
-    if (!Array.isArray(datas)) {
-      return newArr;
-    }
-    for (let i = 0; i < datas.length; i += 1) {
-      const vote = {};
-      vote.name = datas[i].type;
-      vote.rate = datas[i].value;
-      vote.type = '环节';
-      newArr.push(vote);
-    }
-    return newArr;
-  };
+  // const dataCylinder = datas => {
+  //   const newArr = [];
+  //   if (!Array.isArray(datas)) {
+  //     return newArr;
+  //   }
+  //   for (let i = 0; i < datas.length; i += 1) {
+  //     const vote = {};
+  //     vote.name = datas[i].type;
+  //     vote.rate = datas[i].value;
+  //     vote.type = '环节';
+  //     newArr.push(vote);
+  //   }
+  //   return newArr;
+  // };
 
-  const columnsYresult = datas => {
+  const dataCylinder = (datas) => { // 柱状图集成数组
     const newArr = [];
-    if (!Array.isArray(datas)) {
+    if (!Array.isArray(datas) || datas.length === 0) {
       return newArr;
     }
-    for (let i = 0; i < datas.length; i += 1) {
+    for (let i = 0; datas.length < topN ? i < datas.length : i < topN; i += 1) {
       const vote = {};
       vote.type = datas[i].type;
       vote.total = datas[i].value;
       vote.expected = datas[0].value;
       newArr.push(vote);
     }
-    return newArr;
-  }
+    return newArr.reverse();
+  };
+
+  const dataCylinder1 = (datas) => { // 柱状图集成数组
+    const newArr = [];
+    if (!Array.isArray(datas) || datas.length === 0) {
+      return newArr;
+    }
+    for (let i = 0; datas.length < topN1 ? i < datas.length : i < topN1; i += 1) {
+      const vote = {};
+      vote.type = datas[i].type;
+      vote.total = datas[i].value;
+      vote.expected = datas[0].value;
+      newArr.push(vote);
+    }
+    return newArr.reverse();
+  };
+  const dataCylinder2 = (datas) => { // 柱状图集成数组
+    const newArr = [];
+    if (!Array.isArray(datas) || datas.length === 0) {
+      return newArr;
+    }
+    for (let i = 0; datas.length < topN2 ? i < datas.length : i < topN2; i += 1) {
+      const vote = {};
+      vote.type = datas[i].type;
+      vote.total = datas[i].value;
+      vote.expected = datas[0].value;
+      newArr.push(vote);
+    }
+    return newArr.reverse();
+  };
+  const dataCylinder3 = (datas) => { // 柱状图集成数组
+    const newArr = [];
+    if (!Array.isArray(datas) || datas.length === 0) {
+      return newArr;
+    }
+    for (let i = 0; datas.length < topN3 ? i < datas.length : i < topN3; i += 1) {
+      const vote = {};
+      vote.type = datas[i].type;
+      vote.total = datas[i].value;
+      vote.expected = datas[0].value;
+      newArr.push(vote);
+    }
+    return newArr.reverse();
+  };
 
   useEffect(() => {
     const result = [];
@@ -208,6 +255,7 @@ function StatisticsAnalysis(props) {
   }
 
   const statratioData = (values) => {
+    console.log('values111: ', values);
     dispatch({
       type: 'problemstatistics/fetchstatratioData',
       payload: { ...values },
@@ -311,8 +359,8 @@ function StatisticsAnalysis(props) {
       const val = {
         begin: moment(values.beginTime).format('YYYY-MM-DD 00:00:00'),
         end: moment(values.endTime).format('YYYY-MM-DD 23:59:59'),
-        type: values.type === 'M' ? 'MONTH' : 'DAY',
-        n: values.n || 5
+        type: values.type,
+        n: 1000
       }
       statpieData(val);
       statratioData(val);
@@ -324,8 +372,7 @@ function StatisticsAnalysis(props) {
       handleunitstatTop(val);
     }
   }, [values]);
-
-  console.log(statratioArr, 'statratioArr')
+  console.log(toplist,'toplist')
 
   return (
     <div>
@@ -381,25 +428,31 @@ function StatisticsAnalysis(props) {
             })}
 
             {/* 问题分类总情况 */}
-            <Row style={{ marginTop: 24 }}>
+            <Row style={{ marginTop: 24 }} gutter={24}>
               <div className={styles.statisticscard}>
                 <Avatar icon="cluster" />
                 <b>问题工单总情况</b>
               </div>
               <Col span={8}>
                 <Card onMouseDown={() => setPicVal({})}>
-                  <h4 style={{ fontWeight: 'bold' }}>问题处理情况占比</h4>
-                  <DonutPCT
-                    data={toplist}
-                    height={300}
-                    total={statratioArr.total}
-                    totaltitle="问题总数"
-                    padding={[10, 30, 10, 30]}
-                    onGetVal={v => {
-                      console.log('饼图', v);
-                      setPicVal({ ...picval, dutyUnit: v });
-                    }}
-                  />
+                  {toplist && toplist.length === 0 && <Empty style={{ height: '300px' }} />}
+                  {toplist && toplist.length > 0 && (
+                    <>
+                      <h4 style={{ fontWeight: 'bold' }}>问题处理情况占比</h4>
+                      <DonutPCT
+                        data={toplist}
+                        height={300}
+                        total={statratioArr && statratioArr.total}
+                        totaltitle="问题总数"
+                        padding={[10, 30, 10, 30]}
+                        onGetVal={v => {
+                          console.log('饼图', v);
+                          setPicVal({ ...picval, dutyUnit: v });
+                        }}
+                      />
+                    </>
+                  )}
+
                 </Card>
               </Col>
               <Col span={16}>
@@ -417,74 +470,184 @@ function StatisticsAnalysis(props) {
                       }}
                     />
                   )}
-
                 </Card>
               </Col>
             </Row>
 
             {/* 问题分类统计分析 */}
             {/* 问题分类总情况 */}
-            <Row style={{ marginTop: 24 }}>
+            <Row style={{ marginTop: 24 }} gutter={24}>
               <div className={styles.statisticscard}>
                 <Avatar icon="cluster" />
                 <b>问题分类统计分析</b>
               </div>
               <Col span={8}>
                 <Card onMouseDown={() => setPicVal({})}>
-                  <h4 style={{ fontWeight: 'bold' }}>问题分类总情况</h4>
-                  <DonutPCT
-                    data={type}
-                    height={300}
-                    total={statratioArr.total}
-                    totaltitle="问题总数"
-                    padding={[10, 30, 10, 30]}
-                    onGetVal={v => {
-                      console.log('饼图', v);
-                      setPicVal({ ...picval, dutyUnit: v });
-                    }}
-                  />
+                  {type && type.length === 0 && <Empty style={{ height: '300px' }} />}
+                  {type && type.length > 0 && (
+                    <>
+                      <h4 style={{ fontWeight: 'bold' }}>问题分类总情况</h4>
+                      <DonutPCT
+                        data={type}
+                        height={300}
+                        total={statratioArr && statratioArr.total}
+                        totaltitle="问题总数"
+                        padding={[10, 30, 10, 30]}
+                        onGetVal={v => {
+                          console.log('饼图', v);
+                          setPicVal({ ...picval, dutyUnit: v });
+                        }}
+                      />
+                    </>
+                  )}
                 </Card>
               </Col>
+
               <Col span={16}>
                 <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-                  <h4 style={{ fontWeight: 'bold' }}>问题分类总趋势</h4>
-                  <SmoothLine
-                    data={lineArr && lineArr['问题分类总趋势']}
-                    height={300}
-                    padding={[30, 0, 50, 60]}
-                    onGetVal={v => {
-                      setPicVal({ ...picval, type: v });
-                      console.log('曲线图', v);
-                    }}
-                  />
+                  {lineArr && lineArr['问题分类总趋势'] && lineArr['问题分类总趋势'].length === 0 && <Empty style={{ height: '300px' }} />}
+                  {lineArr && lineArr['问题分类总趋势'] && lineArr['问题分类总趋势'].length > 0 && (
+                    <>
+                      <h4 style={{ fontWeight: 'bold' }}>问题分类总趋势</h4>
+                      <SmoothLine
+                        data={lineArr && lineArr['问题分类总趋势']}
+                        height={300}
+                        padding={[30, 0, 50, 60]}
+                        onGetVal={v => {
+                          setPicVal({ ...picval, type: v });
+                          console.log('曲线图', v);
+                        }}
+                      />
+                    </>
+                  )}
                 </Card>
               </Col>
             </Row>
 
             {/* 程序问题情况 */}
-            <Row style={{ marginTop: 24 }}>
+            <Row style={{ marginTop: 24 }} gutter={24}>
               <Col span={8}>
                 <Card onMouseDown={() => setPicVal({})}>
-                  <h4 style={{ fontWeight: 'bold' }}>程序问题情况</h4>
-                  <DonutPCT
-                    data={statpieArr && statpieArr['程序问题情况']}
-                    height={300}
-                    total={piesum(statpieArr && statpieArr['程序问题情况'])}
-                    totaltitle="程序问题总数"
-                    padding={[10, 30, 10, 30]}
-                    onGetVal={v => {
-                      console.log('饼图', v);
-                      setPicVal({ ...picval, dutyUnit: v });
-                    }}
-                  />
+                  {statpieArr && statpieArr['程序问题情况'] && statpieArr['程序问题情况'].length === 0 && <Empty style={{ height: '300px' }} />}
+                  {statpieArr && statpieArr['程序问题情况'] && statpieArr['程序问题情况'].length > 0 && (
+                    <>
+                      <h4 style={{ fontWeight: 'bold' }}>程序问题情况</h4>
+                      <DonutPCT
+                        data={statpieArr && statpieArr['程序问题情况']}
+                        height={300}
+                        total={piesum(statpieArr && statpieArr['程序问题情况'])}
+                        totaltitle="程序问题总数"
+                        padding={[10, 30, 10, 30]}
+                        onGetVal={v => {
+                          console.log('饼图', v);
+                          setPicVal({ ...picval, dutyUnit: v });
+                        }}
+                      />
+                    </>
+                  )}
+
                 </Card>
               </Col>
               <Col span={16}>
                 <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-                  <h4 style={{ fontWeight: 'bold' }}>程序问题趋势</h4>
-                  {lineArr && lineArr['程序问题趋势'] && (
+                  {lineArr && lineArr['程序问题趋势'] && lineArr['程序问题趋势'].length === 0 && <Empty style={{ height: '300px' }} />}
+                  {lineArr && lineArr['程序问题趋势'] && lineArr['程序问题趋势'].length > 0 && (
+                    <>
+                      <h4 style={{ fontWeight: 'bold' }}>程序问题趋势</h4>
+                      {lineArr && lineArr['程序问题趋势'] && (
+                        <SmoothLine
+                          data={lineArr && lineArr['程序问题趋势']}
+                          height={300}
+                          padding={[30, 0, 50, 60]}
+                          onGetVal={v => {
+                            setPicVal({ ...picval, type: v });
+                            console.log('曲线图', v);
+                          }}
+                        />
+                      )}
+                    </>
+                  )}
+
+                </Card>
+              </Col>
+            </Row>
+
+            {/* 功能问题情况 */}
+            <Row style={{ marginTop: 24 }} gutter={24}>
+              <Col span={8}>
+                <Card onMouseDown={() => setPicVal({})}>
+                  {statpieArr && statpieArr['功能问题情况'] && statpieArr['功能问题情况'].length === 0 && <Empty style={{ height: '300px' }} />}
+                  {statpieArr && statpieArr['功能问题情况'] && statpieArr['功能问题情况'].length > 0 && (
+                    <>
+                      <h4 style={{ fontWeight: 'bold' }}>功能问题情况</h4>
+                      <DonutPCT
+                        data={statpieArr && statpieArr['功能问题情况']}
+                        height={300}
+                        total={piesum(statpieArr && statpieArr['功能问题情况'])}
+                        totaltitle="功能问题总数"
+                        padding={[10, 30, 10, 30]}
+                        onGetVal={v => {
+                          console.log('饼图', v);
+                          setPicVal({ ...picval, dutyUnit: v });
+                        }}
+                      />
+                    </>
+                  )}
+
+                </Card>
+              </Col>
+              <Col span={16}>
+                <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+                  {lineArr && lineArr['功能问题趋势'] && lineArr['功能问题趋势'].length === 0 && <Empty style={{ height: '300px' }} />}
+                  {lineArr && lineArr['功能问题趋势'] && lineArr['功能问题趋势'].length > 0 && (
+                    <>
+                      <h4 style={{ fontWeight: 'bold' }}>功能问题趋势</h4>
+                      <SmoothLine
+                        data={lineArr && lineArr['功能问题趋势']}
+                        height={300}
+                        padding={[30, 0, 50, 60]}
+                        onGetVal={v => {
+                          setPicVal({ ...picval, type: v });
+                          console.log('曲线图', v);
+                        }}
+                      />
+                    </>
+                  )}
+
+                </Card>
+              </Col>
+            </Row>
+
+            <Row style={{ marginTop: 24 }} gutter={24}>
+              <div className={styles.statisticscard}>
+                <Avatar icon="cluster" />
+                <b>问题来源统计分析</b>
+              </div>
+              <Col span={8}>
+                <Card onMouseDown={() => setPicVal({})}>
+                  {statpieArr && statpieArr['问题来源统计分析'] && statpieArr['问题来源统计分析'].length === 0 && <Empty style={{ height: '300px' }} />}
+                  {statpieArr && statpieArr['问题来源统计分析'] && statpieArr['问题来源统计分析'].length > 0 && (
+                    <DonutPCT
+                      data={statpieArr && statpieArr['问题来源统计分析']}
+                      height={300}
+                      total={piesum(statpieArr && statpieArr['问题来源统计分析'])}
+                      totaltitle="问题总数"
+                      padding={[10, 30, 10, 30]}
+                      onGetVal={v => {
+                        console.log('饼图', v);
+                        setPicVal({ ...picval, dutyUnit: v });
+                      }}
+                    />
+                  )}
+
+                </Card>
+              </Col>
+              <Col span={16}>
+                <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+                  {lineArr && lineArr['问题来源'] && lineArr['问题来源'].length === 0 && <Empty style={{ height: '300px' }} />}
+                  {lineArr && lineArr['问题来源'] && lineArr['问题来源'].length > 0 && (
                     <SmoothLine
-                      data={lineArr && lineArr['程序问题趋势']}
+                      data={lineArr && lineArr['问题来源']}
                       height={300}
                       padding={[30, 0, 50, 60]}
                       onGetVal={v => {
@@ -497,136 +660,48 @@ function StatisticsAnalysis(props) {
               </Col>
             </Row>
 
-            {/* 功能问题情况 */}
-            <Row style={{ marginTop: 24 }}>
-              <Col span={8}>
-                <Card onMouseDown={() => setPicVal({})}>
-                  <h4 style={{ fontWeight: 'bold' }}>功能问题情况</h4>
-                  <DonutPCT
-                    data={statpieArr && statpieArr['功能问题情况']}
-                    height={300}
-                    total={piesum(statpieArr && statpieArr['功能问题情况'])}
-                    totaltitle="功能问题总数"
-                    padding={[10, 30, 10, 30]}
-                    onGetVal={v => {
-                      console.log('饼图', v);
-                      setPicVal({ ...picval, dutyUnit: v });
-                    }}
-                  />
-                </Card>
-              </Col>
-              <Col span={16}>
-                <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-                  <h4 style={{ fontWeight: 'bold' }}>功能问题趋势</h4>
-                  <SmoothLine
-                    data={lineArr && lineArr['功能问题趋势']}
-                    height={300}
-                    padding={[30, 0, 50, 60]}
-                    onGetVal={v => {
-                      setPicVal({ ...picval, type: v });
-                      console.log('曲线图', v);
-                    }}
-                  />
-                </Card>
-              </Col>
-            </Row>
-
-            <Row style={{ marginTop: 24 }}>
-              <div className={styles.statisticscard}>
-                <Avatar icon="cluster" />
-                <b>问题来源统计分析</b>
-              </div>
-              <Col span={8}>
-                <Card onMouseDown={() => setPicVal({})}>
-                  <DonutPCT
-                    data={statpieArr && statpieArr['问题来源统计分析']}
-                    height={300}
-                    total={piesum(statpieArr && statpieArr['问题来源统计分析'])}
-                    totaltitle="问题总数"
-                    padding={[10, 30, 10, 30]}
-                    onGetVal={v => {
-                      console.log('饼图', v);
-                      setPicVal({ ...picval, dutyUnit: v });
-                    }}
-                  />
-                </Card>
-              </Col>
-              <Col span={16}>
-                <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-                  <SmoothLine
-                    data={lineArr && lineArr['问题来源']}
-                    height={300}
-                    padding={[30, 0, 50, 60]}
-                    onGetVal={v => {
-                      setPicVal({ ...picval, type: v });
-                      console.log('曲线图', v);
-                    }}
-                  />
-                </Card>
-              </Col>
-            </Row>
-
-            <Row style={{ marginTop: 24 }}>
+            <Row style={{ marginTop: 24 }} gutter={24}>
               <Col span={12}>
                 <div className={styles.statisticscard}>
                   <Avatar icon="cluster" />
                   <b>问题工单超时情况</b>
                 </div>
                 <Card onMouseDown={() => setPicVal({})}>
-                  <DonutPCT
-                    data={timeoutdata}
-                    height={300}
-                    total={piesum(timeoutdata)}
-                    totaltitle="问题总数"
-                    padding={[10, 30, 10, 30]}
-                    onGetVal={v => {
-                      console.log('饼图', v);
-                      setPicVal({ ...picval, dutyUnit: v });
-                    }}
-                  />
+                  {timeoutdata && timeoutdata.length === 0 && <Empty style={{ height: '300px' }} />}
+                  {timeoutdata && timeoutdata.length > 0 && (
+                    <DonutPCT
+                      data={timeoutdata}
+                      height={300}
+                      total={piesum(timeoutdata)}
+                      totaltitle="问题总数"
+                      padding={[10, 30, 10, 30]}
+                      onGetVal={v => {
+                        console.log('饼图', v);
+                        setPicVal({ ...picval, dutyUnit: v });
+                      }}
+                    />
+                  )}
                 </Card>
               </Col>
 
               <Col span={12}>
                 <div className={styles.statisticscard}>
                   <Avatar icon="share-alt" />
-                  <b>问题登记人Top5</b>
+                  <b>问题登记人Top{topN}</b>
+                  <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN(v)} /></div>
                 </div>
                 <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
                   {resgisterarr && resgisterarr.length === 0 && <Empty style={{ height: '300px' }} />}
                   {resgisterarr && resgisterarr.length > 0 && (
                     <>
-                      <Col span={20}>
-                        {/* <Cylinder
-                          height={300}
-                          data={dataCylinder(resgisterarr)}
-                          padding={[10, 50, 30, 120]}
-                          symbol=""
-                          cols={cols}
-                          colors="l(270) 0:#04e8ff 0.5:#05bdfe 1:#05bdfe"
-                          onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
-                        /> */}
-
+                      <Col span={24}>
                         <ColumnarY
-                          data={columnsYresult(resgisterarr)}
+                          data={dataCylinder(resgisterarr)}
                           height={300}
                           padding={[30, 60, 50, 100]}
                           cols={Issuedscale}
                           onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />
-                      </Col>
-
-                      <Col span={4} style={{ zIndex: 1000 }}>
-                        <Select
-                          defaultValue={defaultNum1 || 5}
-                          onChange={(e) => selectOnchange(e, 'registrant')}
-                          style={{ width: '100%' }}
-                        >
-                          <Option value="5">5</Option>
-                          <Option value="10">10</Option>
-                          <Option value="15">15</Option>
-                          <Option value="20">20</Option>
-                        </Select>
                       </Col>
                     </>
                   )}
@@ -634,37 +709,25 @@ function StatisticsAnalysis(props) {
               </Col>
             </Row>
 
-            <Row style={{ marginTop: 24 }}>
+            <Row style={{ marginTop: 24 }} gutter={24}>
               <Col span={12}>
                 <div className={styles.statisticscard}>
                   <Avatar icon="share-alt" />
-                  <b>问题处理人Top5</b>
+                  <b>问题处理人Top{topN1}</b>
+                  <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN1(v)} /></div>
                 </div>
                 <Card>
                   {handlerarr && handlerarr.length === 0 && <Empty style={{ height: 300 }} />}
                   {handlerarr && handlerarr.length > 0 && (
                     <>
-                      <Col span={20}>
+                      <Col span={24}>
                         <ColumnarY
                           height={300}
-                          data={columnsYresult(handlerarr)}
+                          data={dataCylinder1(handlerarr)}
                           padding={[30, 60, 50, 100]}
                           cols={Issuedscale}
                           onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />
-                      </Col>
-
-                      <Col span={4} style={{ zIndex: 1000 }}>
-                        <Select
-                          defaultValue={defaultNum2 || 5}
-                          onChange={(e) => selectOnchange(e, 'handler')}
-                          style={{ width: '100%' }}
-                        >
-                          <Option value="5">5</Option>
-                          <Option value="10">10</Option>
-                          <Option value="15">15</Option>
-                          <Option value="20">20</Option>
-                        </Select>
                       </Col>
                     </>
                   )}
@@ -674,33 +737,21 @@ function StatisticsAnalysis(props) {
               <Col span={12}>
                 <div className={styles.statisticscard}>
                   <Avatar icon="share-alt" />
-                  <b>问题登记单位Top5</b>
+                  <b>问题登记单位Top{topN2}</b>
+                  <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN2(v)} /></div>
                 </div>
                 <Card>
                   {resgisterunitarr && resgisterunitarr.length === 0 && <Empty style={{ height: '300px' }} />}
                   {resgisterunitarr && resgisterunitarr.length > 0 && (
                     <>
-                      <Col span={20}>
+                      <Col span={24}>
                         <ColumnarY
                           height={300}
-                          data={columnsYresult(resgisterunitarr)}
+                          data={dataCylinder2(resgisterunitarr)}
                           padding={[30, 60, 50, 100]}
                           cols={Issuedscale}
                           onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />
-                      </Col>
-
-                      <Col span={4} style={{ zIndex: 1000 }}>
-                        <Select
-                          defaultValue={defaultNum3 || 5}
-                          onChange={(e) => selectOnchange(e, 'registrationunit')}
-                          style={{ width: '100%' }}
-                        >
-                          <Option value="5">5</Option>
-                          <Option value="10">10</Option>
-                          <Option value="15">15</Option>
-                          <Option value="20">20</Option>
-                        </Select>
                       </Col>
                     </>
                   )}
@@ -708,37 +759,25 @@ function StatisticsAnalysis(props) {
               </Col>
             </Row>
 
-            <Row style={{ marginTop: 24 }}>
+            <Row style={{ marginTop: 24 }} gutter={24}>
               <Col span={12} style={{ zIndex: 1000 }}>
                 <div className={styles.statisticscard}>
                   <Avatar icon="share-alt" />
-                  <b>问题处理单位Top5</b>
+                  <b>问题处理单位Top{topN3}</b>
+                  <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN3(v)} /></div>
                 </div>
                 <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
                   {handlerunitarr && handlerunitarr.length === 0 && <Empty style={{ height: '300px' }} />}
                   {handlerunitarr && handlerunitarr.length > 0 && (
                     <>
-                      <Col span={20}>
+                      <Col span={24}>
                         <ColumnarY
                           height={300}
-                          data={columnsYresult(handlerunitarr)}
+                          data={dataCylinder3(handlerunitarr)}
                           padding={[30, 60, 50, 100]}
                           cols={Issuedscale}
                           onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />
-                      </Col>
-
-                      <Col span={4} style={{ zIndex: 1000 }}>
-                        <Select
-                          defaultValue={defaultNum4 || 5}
-                          onChange={(e) => selectOnchange(e, 'handlerunit')}
-                          style={{ width: '100%' }}
-                        >
-                          <Option value="5">5</Option>
-                          <Option value="10">10</Option>
-                          <Option value="15">15</Option>
-                          <Option value="20">20</Option>
-                        </Select>
                       </Col>
                     </>
                   )}

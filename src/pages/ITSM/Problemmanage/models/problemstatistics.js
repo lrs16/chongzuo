@@ -142,7 +142,6 @@ export default {
     },
     //  问题统计分析登记人-TOP数据
     *fetchresgisterstatTop({ payload }, { call, put }) {
-      console.log('payload: ', payload);
       const response = yield call(resgisterstatTop, payload);
       yield put({
         type: 'resgisterarr',

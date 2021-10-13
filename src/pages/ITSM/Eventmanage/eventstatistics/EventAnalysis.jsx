@@ -403,9 +403,9 @@ function EventAnalysis(props) {
                       }}
                     />
                   )}
-
                 </Card>
               </Col>
+              
               <Col span={16}>
                 <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
                   {getObjectConditionsdata && getObjectConditionsdata.lineChart && getObjectConditionsdata.lineChart.length === 0 && <Empty style={{ height: '300px' }} />}
