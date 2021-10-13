@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import { Table, Drawer, Button, Form, Select, Row, Col, Input, DatePicker, Tooltip } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
-// import DictLower from '@/components/SysDict/DictLower';
 import moment from 'moment';
 import { downloadConfHiCont } from '../services/api';
 
@@ -38,13 +37,13 @@ function HistorVersionDrawer(props) {
     } = props;
 
     const [expand, setExpand] = useState(false);
-    // const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
 
     const hanldleCancel = () => {
         ChangeVisible(false);
     };
 
+    // 列表请求
     const searchdata = (page, size) => {
         const values = getFieldsValue();
         values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
@@ -65,6 +64,7 @@ function HistorVersionDrawer(props) {
             searchdata(1, 15);
     }, [id]);
 
+    // 查询
     const handleSearch = () => {
         setPageinations({
             ...paginations,
@@ -73,6 +73,7 @@ function HistorVersionDrawer(props) {
         searchdata(1, paginations.pageSize);
     };
 
+    // 重置
     const handleReset = () => {
         resetFields();
         searchdata(1, 15);
@@ -95,6 +96,7 @@ function HistorVersionDrawer(props) {
         });
     };
 
+    // 分页
     const pagination = {
         showSizeChanger: true,
         onShowSizeChange: (page, size) => onShowSizeChange(page, size),
@@ -105,19 +107,20 @@ function HistorVersionDrawer(props) {
         onChange: page => changePage(page),
     };
 
-    const handledownFile = (v) => { // 配置文件内容
-        downloadConfHiCont({Id: v}).then(res => {
-        //   const filename = `${v}_配置文件内容.yml`;
-        const filename = `_`;
-          const blob = new Blob([res]);
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          a.click();
-          window.URL.revokeObjectURL(url);
+    // 配置文件内容下载（格式未知，先text）
+    const handledownFile = (v) => {
+        downloadConfHiCont({ Id: v }).then(res => {
+            //   const filename = `${v}_配置文件内容.yml`;
+            const filename = `_`;
+            const blob = new Blob([res]);
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
         });
-    }
+    };
 
     const columns = [
         {
@@ -248,16 +251,6 @@ function HistorVersionDrawer(props) {
             {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
         </Button></>
     );
-
-    // 数据字典取下拉值
-    // const getTypebyId = key => {
-    //     if (selectdata.ischange) {
-    //         return selectdata.arr[0].children.filter(item => item.key === key)[0].children;
-    //     }
-    //     return [];
-    // };
-
-    // const zonemap = getTypebyId('100000000000001004');         // 区域
 
     return (
         <Drawer

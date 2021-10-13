@@ -13,7 +13,6 @@ import HistorVersionDrawer from './components/HistorVersionDrawer';
 import GetFileModal from './components/GetFileModal';
 
 const { Option } = Select;
-// const { confirm } = Modal;
 
 const formItemLayout = {
     labelCol: {
@@ -44,16 +43,17 @@ function softwareConfig(props) {
     const [confid, setconfId] = useState('');
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
-    // const [data, setData] = useState([]);
     const [visible, setVisible] = useState(false); // 抽屉是否显示
     const [title, setTitle] = useState('');
 
+    // 历史版本抽屉
     const handleShowHistoryDrawer = (drawtitle, gotid) => {
         setTitle(drawtitle);
         setconfId(gotid);
         setVisible(!visible);
     };
 
+    // 列表请求
     const searchdata = (page, size) => {
         const values = getFieldsValue();
         values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
@@ -66,23 +66,13 @@ function softwareConfig(props) {
                 pageSize: size,
             },
         })
-        // .then(res => {
-        //     console.log(res, "res")
-        //     // if (res.code === 200) {
-        //     //     const newarr = res.data.rows.map((item, index) => {
-        //     //         return Object.assign(item, { key: index });
-        //     //     });
-        //     //     setData(newarr);
-        //     // }
-        // })
     };
-
 
     useEffect(() => {
         searchdata(1, 15);
     }, [location]);
 
-
+    // 重置
     const handleReset = () => {
         resetFields();
         searchdata(1, 15);
@@ -105,6 +95,7 @@ function softwareConfig(props) {
         });
     };
 
+    // 分页
     const pagination = {
         showSizeChanger: true,
         onShowSizeChange: (page, size) => onShowSizeChange(page, size),
@@ -115,6 +106,7 @@ function softwareConfig(props) {
         onChange: page => changePage(page),
     };
 
+    // 查询
     const handleSearch = () => {
         setPageinations({
             ...paginations,
@@ -122,74 +114,6 @@ function softwareConfig(props) {
         });
         searchdata(1, paginations.pageSize);
     };
-
-    // 提交保存数据
-    // const savedata = (target, id) => {
-    //     dispatch({
-    //         type: 'softwaremanage/todynamicaddOrEdit',
-    //         payload: {
-    //             ...target,
-    //             id,
-    //         },
-    //     }).then(res => {
-    //         if (res.code === 200) {
-    //             message.success(res.msg);
-    //             searchdata(1, 15);
-    //         }
-    //     });
-    // };
-
-    // 获取行
-    // const getRowByKey = (key, newData) => {
-    //     return (newData || data).filter(item => item.key === key)[0];
-    // };
-
-    // 更新表单信息
-    // const handleFieldChange = (e, fieldName, key) => {
-    //     const newData = data.map(item => ({ ...item }));
-    //     const target = getRowByKey(key, newData);
-    //     if (target) {
-    //         target[fieldName] = e;
-    //         setData(newData);
-    //     }
-    // };
-
-    // const showgetFileModel = () => {
-    //     confirm({
-    //         title: '获取文件提示',
-    //         content: `获取最新文件，建议备份文件后再获取，若直接获取文件会覆盖当前列表数据！`,
-    //         okText: '直接获取',
-    //         okText1: '备份后获取',
-    //         cancelText: '取消',
-    //         onCancel() {
-
-    //         },
-    //         onOk() {
-
-    //         },
-    //         onOk1() {
-
-    //         },
-    //     });
-    // };
-
-    // const toggleEditable = (e, key) => {
-    //     e.preventDefault();
-    //     const newData = data.map(item => ({ ...item }));
-    //     const target = getRowByKey(key, newData);
-    //     if (target) {
-    //         target.editable = !target.editable;
-    //         setData(newData);
-    //     }
-    // }
-
-    // const saveRow = (e, key) => {
-    //     const target = getRowByKey(key) || {};
-    //     delete target.key;
-    //     target.editable = false;
-    //     const id = target.id === '' ? '' : target.id;
-    //     savedata(target, id);
-    // };
 
     const columns = [{
         title: '批次号',
@@ -274,20 +198,6 @@ function softwareConfig(props) {
         dataIndex: 'confVersion',
         key: 'confVersion',
         width: 200,
-        // editable: true,
-        // render: (text, record) => {
-        //     if (record.editable) {
-        //         return (
-        //             <Input
-        //                 type='text'
-        //                 placeholder="请输入"
-        //                 defaultValue={text}
-        //                 onChange={e => handleFieldChange(e.target.value, 'director', record.key)}
-        //             />
-        //         );
-        //     }
-        //     return text;
-        // },
     },
     {
         title: '文件md5',
@@ -300,19 +210,6 @@ function softwareConfig(props) {
         dataIndex: 'lastCompareStatus',
         key: 'lastCompareStatus',
         width: 250,
-        // render: (text, record) => {
-        //     const statusMap = new Map([
-        //         ['1', '无变化'],
-        //         ['2', '新增'],
-        //         ['3', '修改'],
-        //         ['4', '删除'],
-        //     ])
-        //     return (
-        //         <span>
-        //             {statusMap.get(record.lastCompareStatus)}
-        //         </span>
-        //     );
-        // },
     },
     {
         title: '文件修改时间',
@@ -344,44 +241,6 @@ function softwareConfig(props) {
                     历史版本
                 </a>
             );
-            // if (record.editable === '') {
-            //     return null;
-            // }
-            // return record.editable ? (
-            //     <span>
-            //         <a
-            //             onClick={e => saveRow(e, record.key)}
-            //         >
-            //             保存
-            //         </a>
-            //         <Divider type="vertical" />
-            //         <a type="link"
-            //             record={record}
-            //             text={text}
-            //             onClick={() => {
-            //                 handleShowHistoryDrawer('查看历史版本');
-            //             }}
-            //         >
-            //             历史版本
-            //         </a>
-            //     </span>
-            // ) : (
-            //     <span>
-            //         <a onClick={e => toggleEditable(e, record.key)}>
-            //             编辑版本号
-            //         </a>
-            //         <Divider type="vertical" />
-            //         <a type="link"
-            //             record={record}
-            //             text={text}
-            //             onClick={() => {
-            //                 handleShowHistoryDrawer('查看历史版本');
-            //             }}
-            //         >
-            //             历史版本
-            //         </a>
-            //     </span>
-            // );
         },
     },
     ];
@@ -534,13 +393,12 @@ function softwareConfig(props) {
                 <div style={{ marginBottom: 8 }}>
                     <GetFileModal>
                         <Button type="primary" style={{ marginRight: 8 }}
-                        // onClick={() => showgetFileModel()}
                         >获取文件</Button>
                     </GetFileModal>
                 </div>
                 <Table
                     columns={columns}
-                    dataSource={softconflist.rows}
+                    dataSource={softconflist.rows || []}
                     loading={loading}
                     rowKey={(_, index) => index.toString()}
                     pagination={pagination}

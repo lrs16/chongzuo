@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-// import { connect } from 'dva';
 import {
     Modal,
     Button,
@@ -21,21 +20,17 @@ function GetFileModal(props) {
 
     const [visible, setVisible] = useState(false);
 
+    // 取消
     const handleCancel = () => {
         setVisible(false);
     };
-
-    // const handleOk = () => {
-    //     // 关闭弹窗
-    //     handleCancel();
-    //     resetFields();
-    // };
 
     const handleopenClick = () => {
         setVisible(true);
     };
 
-    const handleBackupFiles = () => { // 备份后获取
+    // 备份后获取
+    const handleBackupFiles = () => { 
         const softIds = [];
         backupSoftConfigFile(softIds).then(res => {
             if (res.code === 200) {
@@ -53,7 +48,8 @@ function GetFileModal(props) {
         });
     };
 
-    const handlePullFiles = () => { // 直接获取
+    // 直接获取
+    const handlePullFiles = () => { 
         const softIds = [];
         pullSoftConfigFile(softIds).then(resp => {
             if (resp.code === 200) {

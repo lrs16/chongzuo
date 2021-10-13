@@ -294,15 +294,6 @@ export async function pullSoftConfigFile(softIds) {
   });
 }
 
-// 软件配置列表
-export async function findsoftConfList(params, pageNum, pageSize) {
-  return request(`/assets/softConf/listPage/${pageNum}/${pageSize}`, {
-    method: 'POST',
-    data: JSON.stringify(params),
-    requestType: 'formjosn',
-  });
-}
-
 // /assets/softConfHi/listPageHi/{pageNum}/{pageSize} 软件历史配置
 export async function softConfHistoryList(params, pageNum, pageSize) {
   return request(`/assets/softConfHi/listPageHi/${pageNum}/${pageSize}`, {

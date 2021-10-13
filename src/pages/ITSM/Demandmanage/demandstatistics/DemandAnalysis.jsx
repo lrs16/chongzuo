@@ -22,7 +22,7 @@ const Issuedscale = {
 function Statistics(props) {
   const {
     dispatch,
-    loading,
+    loadingratio,
     piedatalist, // 饼图
     linedatalist, // 趋势图
     demandtomeoutArr, // 需求超时情况饼图
@@ -168,7 +168,7 @@ function Statistics(props) {
     <div>
       {/* 统计周期 */}
       <SelectTime ChangeDate={(v) => setValues(v)} />
-      <Spin spinning={loading}>
+      <Spin spinning={loadingratio}>
         <Row style={{ marginTop: 24 }}>
           <div className={styles.statisticscard}>
             <Avatar icon="desktop" />
@@ -219,7 +219,7 @@ function Statistics(props) {
             {
               linedatalist && linedatalist !== undefined && (
                 <SmoothLine
-                  data={linedataArr(linedatalist['需求工单量趋势'])}
+                  data={linedataArr(linedatalist['需求工单量趋势']) || []}
                   height={300}
                   padding={[30, 0, 60, 60]}
                   onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
@@ -258,7 +258,7 @@ function Statistics(props) {
             {
               linedatalist && linedatalist !== undefined && linedataArr(linedatalist['功能模块情况趋势']).length > 0 && (
                 <SmoothLine
-                  data={linedataArr(linedatalist['功能模块情况趋势'])}
+                  data={linedataArr(linedatalist['功能模块情况趋势']) || []}
                   height={300}
                   padding={[30, 0, 60, 60]}
                   onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
@@ -297,7 +297,7 @@ function Statistics(props) {
             {
               linedatalist && linedatalist !== undefined && linedataArr(linedatalist['需求类型趋势']).length > 0 && (
                 <SmoothLine
-                  data={linedataArr(linedatalist['需求类型趋势'])}
+                  data={linedataArr(linedatalist['需求类型趋势']) || []}
                   height={300}
                   padding={[30, 0, 60, 60]}
                   onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
@@ -318,7 +318,7 @@ function Statistics(props) {
             {(demandtomeoutArr && piedataArr(demandtomeoutArr).length === 0) && <Empty style={{ height: '300px' }} />}
             {demandtomeoutArr && piedataArr(demandtomeoutArr).length > 0 && (
               <DonutPCT
-                data={piedataArr(demandtomeoutArr)}
+                data={piedataArr(demandtomeoutArr) || []}
                 height={300}
                 totaltitle='需求总数'
                 total={demandtomeoutArr[demandtomeoutArr.length -1].quantity}
@@ -420,5 +420,5 @@ export default connect(({ demandstatistic, loading }) => ({
   linedatalist: demandstatistic.linedatalist, // 趋势折线图
   demandtomeoutArr: demandstatistic.demandtomeoutArr, // 工单超时情况饼图
   ratiodatalist: demandstatistic.ratiodatalist, // 工单数
-  loading: loading.models.demandstatistic,
+  loadingratio: loading.effects['demandstatistic/demandstatiratioData'],
 }))(Statistics);

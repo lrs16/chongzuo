@@ -50,9 +50,12 @@ function SoftwareDrawer(props) {
     const [findhostip, setFindhostIp] = useState([]); // 主机名称查询主机IP
     const [getId, setId] = useState([]);
 
+    // 取消
     const hanldleCancel = () => {
         ChangeVisible(false);
     };
+
+    // 提交
     const handleOk = () => {
         validateFields((err, values) => {
             if (!err) {
@@ -66,6 +69,7 @@ function SoftwareDrawer(props) {
         });
     };
 
+    // 区域选择
     const handleChange = v => {
         dispatch({
             type: 'softwaremanage/tofindCascade',
@@ -76,6 +80,7 @@ function SoftwareDrawer(props) {
         });
     };
 
+    // 设备名称选择
     const handleChangegetId = v => {
         dispatch({
             type: 'softwaremanage/tofindCascade',
@@ -148,12 +153,6 @@ function SoftwareDrawer(props) {
                 </Form.Item>
                 <Form.Item label="设备IP"  style={{display: 'none'}}>
                     {getFieldDecorator('hostIp', {
-                        // rules: [
-                        //     {
-                        //         required,
-                        //         message: '请输入',
-                        //     },
-                        // ],
                         initialValue: hostIp,
                     })(<Select placeholder="请选择" allowClear>
                         {findhostip !== undefined && findhostip.map(obj => (
@@ -165,12 +164,6 @@ function SoftwareDrawer(props) {
                 </Form.Item>
                 <Form.Item label="设备ID" style={{display: 'none'}}>
                     {getFieldDecorator('hostId', {
-                        // rules: [
-                        //     {
-                        //         required,
-                        //         message: '请输入',
-                        //     },
-                        // ],
                         initialValue: getId && getId.Id ? getId.Id : hostId,
                     })(<Input placeholder="请输入" />)}
                 </Form.Item>
@@ -209,12 +202,6 @@ function SoftwareDrawer(props) {
                 </Form.Item>
                 <Form.Item label="软件版本号">
                     {getFieldDecorator('softVersion', {
-                        // rules: [
-                        //     {
-                        //         required,
-                        //         message: '请输入',
-                        //     },
-                        // ],
                         initialValue: softVersion,
                     })(<Input placeholder="请输入" />)}
                 </Form.Item>
@@ -312,7 +299,6 @@ function SoftwareDrawer(props) {
                     })(<TextArea placeholder="请输入" autoSize={{ minRows: 3 }} allowClear />)}
                 </Form.Item>
             </Form>
-
             <div
                 style={{
                     position: 'absolute',

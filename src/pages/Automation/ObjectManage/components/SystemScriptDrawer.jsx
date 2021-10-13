@@ -18,16 +18,23 @@ const formItemLayout = {
   colon: false,
 };
 function SystemScriptDrawer(props) {
-  const { visible, ChangeVisible, title, handleSubmit, dispatch,
-    // scriptsourcemap, 
+  const {
+    visible,
+    ChangeVisible,
+    title,
+    handleSubmit,
+    dispatch,
     scripttypemap,
     files,
     ChangeFiles,
     onChangeList,
-    directormap
+    directormap,
+    form: {
+      getFieldDecorator,
+      validateFields,
+    },
   } = props;
 
-  const { getFieldDecorator, validateFields } = props.form;
   const required = true;
   const {
     id,
@@ -41,14 +48,15 @@ function SystemScriptDrawer(props) {
     scriptRemarks,
   } = props.record;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [showElem, setshowElem] = useState('none');
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 附件上传下载
 
+  // 取消
   const hanldleCancel = () => {
     ChangeVisible(false);
   };
 
+  // 保存->状态：已登记
   const handleOk = () => {
     validateFields((err, values) => {
       if (!err) {
@@ -62,19 +70,17 @@ function SystemScriptDrawer(props) {
     });
   };
 
+  // 附件上传...
   useEffect(() => {
     if (fileslist.ischange) {
       ChangeFiles(fileslist);
-      // if(files && files.length > 0) {
-      //   setFieldsValue({ scriptCont: files[0].resInfo })
-      // }
     }
   }, [fileslist]);
 
   useEffect(() => {
     if (scriptSource === '本地上传') {
       setshowElem('block');
-    }else {
+    } else {
       setshowElem('none');
     }
   }, [scriptSource]);
@@ -83,6 +89,7 @@ function SystemScriptDrawer(props) {
     setFilesList({ ...fileslist, arr: files });
   }, []);
 
+  // 提交->状态：已发布
   const handletosave = () => {
     validateFields((err, values) => {
       if (!err) {
@@ -123,7 +130,7 @@ function SystemScriptDrawer(props) {
       destroyOnClose
     >
       <Form {...formItemLayout} onSubmit={handleOk}>
-        <Form.Item label="Id" style={{display: 'none'}}>
+        <Form.Item label="Id" style={{ display: 'none' }}>
           {getFieldDecorator('id', {
             initialValue: id,
           })(<Input disabled />)}
@@ -174,13 +181,12 @@ function SystemScriptDrawer(props) {
         </Form.Item>
         <Form.Item label="脚本内容">
           {getFieldDecorator('scriptCont', {
-            rules: [{ required,message: '请输入 ' }],
+            rules: [{ required, message: '请输入 ' }],
             initialValue: fileslist.ischange && files.length > 0 && files[0] ? files[0].scriptCont : scriptCont,
           })(<TextArea placeholder="请输入" autoSize={{ minRows: 30 }} allowClear />)}
         </Form.Item>
         <Form.Item label="脚本参数" extra="多个参数以 ; 符号分割 如 xxx;xxx;xxx">
           {getFieldDecorator('scriptArgs', {
-            // initialValue: scriptArgs.join(';'), extra="多个参数以 ; 符号分割 如 aaa;bbb;cccc"
             initialValue: scriptArgs,
           })(<Input placeholder="请输入" />)}
         </Form.Item>
@@ -212,7 +218,6 @@ function SystemScriptDrawer(props) {
           })(<TextArea placeholder="请输入" autoSize={{ minRows: 3 }} allowClear />)}
         </Form.Item>
       </Form>
-
       <div
         style={{
           position: 'absolute',

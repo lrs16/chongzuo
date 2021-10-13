@@ -24,7 +24,8 @@ function SystemScriptList(props) {
             getFieldDecorator,
             getFieldsValue,
             resetFields,
-        } } = props;
+        }
+    } = props;
 
     const [expand, setExpand] = useState(false);
     const [selectedRows, setSelectedRows] = useState([]);
@@ -32,22 +33,24 @@ function SystemScriptList(props) {
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
     const [visible, setVisible] = useState(false); // 抽屉是否显示
     const [title, setTitle] = useState('');
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
     const [data, setData] = useState('');
     const [allUserData, setallUserData] = useState([]);
     const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
 
+    // checkbox复选框
     const onSelectChange = (RowKeys, Rows) => {
         setSelectedRowKeys(RowKeys);
         setSelectedRows(Rows);
     };
 
+    // checkbox复选框
     const rowSelection = {
         selectedRowKeys,
         onChange: onSelectChange,
     };
 
+    // 列表请求
     const searchdata = (page, size) => {
         const values = getFieldsValue();
         values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
@@ -68,6 +71,7 @@ function SystemScriptList(props) {
         searchdata(1, 15);
     }, [location]);
 
+    // 获取负责人
     useEffect(() => {
         togetSearchUsers().then(res => {
             if (res.code === 200) {
@@ -85,6 +89,7 @@ function SystemScriptList(props) {
         }
     }, [files]);
 
+    // 打开抽屉
     const handleShowDrawer = (drwertitle, type, record) => {
         setVisible(!visible);
         setTitle(drwertitle);
@@ -97,7 +102,8 @@ function SystemScriptList(props) {
         }
     };
 
-    const Handlerecall = () => { // 撤回
+    // 撤回操作
+    const Handlerecall = () => {
         const len = selectedRowKeys.length;
         if (len === 0) {
             message.info('至少选择一条数据');
@@ -136,7 +142,8 @@ function SystemScriptList(props) {
         });
     };
 
-    const handleDelete = id => { // 删除
+    // 删除
+    const handleDelete = id => {
         dispatch({
             type: 'scriptconfig/toDeletesystemScript',
             payload: { Ids: id },
@@ -150,6 +157,7 @@ function SystemScriptList(props) {
         });
     };
 
+    // 重置
     const handleReset = () => {
         resetFields();
         searchdata(1, 15)
@@ -172,6 +180,7 @@ function SystemScriptList(props) {
         });
     };
 
+    // 分页
     const pagination = {
         showSizeChanger: true,
         onShowSizeChange: (page, size) => onShowSizeChange(page, size),
@@ -182,6 +191,7 @@ function SystemScriptList(props) {
         onChange: page => changePage(page),
     };
 
+    // 查询
     const handleSearch = () => {
         setPageinations({
             ...paginations,

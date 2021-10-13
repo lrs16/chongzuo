@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// import { connect } from 'dva';
 import {
     Form,
     Modal,
@@ -25,7 +24,6 @@ function DynamicModal(props) {
         children,
         dispatch,
         softId,
-        // loading,
     } = props;
 
     const [visible, setVisible] = useState(false);
@@ -319,7 +317,6 @@ function DynamicModal(props) {
                 />
                 <Table
                     dataSource={data}
-                    // loading={loading}
                     columns={columns}
                     bordered
                     rowKey={record => record.id || record.softId}
@@ -340,9 +337,3 @@ function DynamicModal(props) {
 }
 
 export default Form.create({})(DynamicModal);
-// (
-//     connect(({ softwaremanage, loading }) => ({
-//         // dynamicList: softwaremanage.dynamicList,
-//         loading: loading.models.softwaremanage,
-//     }))(DynamicModal),
-// );

@@ -42,13 +42,14 @@ function EquipDrawer(props) {
     deployChange,
     uposition,
     hostAssets
-  } = props.record;
+  } = props.record; // 列表的值
 
   const [equipCabinet, setEquipCabinet] = useState([]);
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
 
+  // 根据设备id请求设备机柜数据
   useEffect(() => {
-    if (savetype !== '' && savetype !=='add' && (hostZoneId !== undefined || hostZoneId !== '')) {
+    if (savetype !== '' && savetype !== 'add' && (hostZoneId !== undefined || hostZoneId !== '')) {
       dispatch({
         type: 'equipmanage/getCabinetMsgs',
         payload: { cabinetZoneId: hostZoneId },
@@ -56,11 +57,14 @@ function EquipDrawer(props) {
         setEquipCabinet(res.data);
       });
     }
-}, [savetype]);
+  }, [savetype]);
 
+  // 取消
   const hanldleCancel = () => {
     ChangeVisible(false);
   };
+
+  // 提交
   const handleOk = () => {
     validateFields((err, values) => {
       if (!err) {
@@ -74,6 +78,7 @@ function EquipDrawer(props) {
     });
   };
 
+  // 区域选择后 =>得到设备
   const handleChange = v => {
     dispatch({
       type: 'equipmanage/getCabinetMsgs',
@@ -83,9 +88,9 @@ function EquipDrawer(props) {
     });
   };
 
-  const handleOnchange = v => { // 是否物理机
-    console.log(v,'vvv')
-  }
+  // const handleOnchange = v => { // 是否物理机
+  //   console.log(v,'vvv')   onChange={v => handleOnchange(v)}
+  // }
 
   // 数据字典取下拉值
   const getTypebyId = key => {
@@ -140,6 +145,27 @@ function EquipDrawer(props) {
               </Option>
             ))}
           </Select>)}
+        </Form.Item>
+        <Form.Item label="设备机柜">
+          {getFieldDecorator('hostCabinetId', {
+            rules: [
+              {
+                required,
+                message: '请选择',
+              },
+            ],
+            // initialValue: hostCabinetId,
+            // initialValue: (equipCabinet && equipCabinet[0] && savetype === 'add') ? equipCabinet[0].tital : hostCabinetId,
+            initialValue: (equipCabinet && equipCabinet[0]) ? equipCabinet[0].key : hostCabinetId,
+          })(
+            <Select placeholder="请选择" allowClear>
+              {equipCabinet !== undefined && equipCabinet.map(obj => (
+                <Option key={obj.key} value={obj.key}>
+                  {obj.tital}
+                </Option>
+              ))}
+            </Select>
+          )}
         </Form.Item>
         <Form.Item label="设备名称">
           {getFieldDecorator('hostName', {
@@ -237,34 +263,13 @@ function EquipDrawer(props) {
           {getFieldDecorator('hostPhysicId', {
             rules: [{ required }],
             initialValue: hostPhysicId,
-          })(<Select placeholder="请选择" allowClear  onChange={v => handleOnchange(v)}>
+          })(<Select placeholder="请选择" allowClear>
             {hostphysicmap.map(obj => (
               <Option key={obj.key} value={obj.title}>
                 {obj.title}
               </Option>
             ))}
           </Select>)}
-        </Form.Item>
-        <Form.Item label="设备机柜">
-          {getFieldDecorator('hostCabinetId', {
-            rules: [
-              {
-                required,
-                message: '请选择',
-              },
-            ],
-            // initialValue: hostCabinetId,
-            // initialValue: (equipCabinet && equipCabinet[0] && savetype === 'add') ? equipCabinet[0].tital : hostCabinetId,
-            initialValue: (equipCabinet && equipCabinet[0]) ? equipCabinet[0].key : hostCabinetId,
-          })(
-            <Select placeholder="请选择" allowClear>
-              {equipCabinet !== undefined && equipCabinet.map(obj => (
-                <Option key={obj.key} value={obj.key}>
-                  {obj.tital}
-                </Option>
-              ))}
-            </Select>
-          )}
         </Form.Item>
         <Form.Item label="所在U位">
           {getFieldDecorator('uposition', {
@@ -338,7 +343,6 @@ function EquipDrawer(props) {
           })(<TextArea placeholder="请输入" autoSize={{ minRows: 3 }} allowClear />)}
         </Form.Item>
       </Form>
-
       <div
         style={{
           position: 'absolute',
@@ -386,9 +390,3 @@ EquipDrawer.defaultProps = {
 };
 
 export default Form.create()(EquipDrawer);
-// export default Form.create({})(
-//   connect(({ equipmanage, loading }) => ({
-//       list: equipmanage.hostList,
-//       loading: loading.models.equipmanage,
-//   }))(EquipDrawer),
-// );

@@ -33,7 +33,7 @@ function StatisticalAnalysis(props) {
     registeruserunitlist, // 故障登记人单位排名
     handlerlist, // 故障处理人排名 
     handleunitlist, // 故障处理人单位排名
-    loading
+    loadingorder
   } = props;
 
   const [picval, setPicVal] = useState({});
@@ -128,9 +128,9 @@ function StatisticalAnalysis(props) {
         {/* 统计周期 */}
         <SelectTime ChangeDate={(v) => setValues(v)} />
         {/* 工单 */}
-        <Spin spinning={loading}>
+        <Spin spinning={loadingorder}>
           <Row gutter={24}>
-            <Col span={8} style={{ marginTop: 24 }}>
+            <Col span={8} xs={12} style={{ marginTop: 24 }}>
               <div className={styles.statisticscard}>
                 <Avatar icon="file-protect" />
                 <b>故障工单情况</b>
@@ -146,7 +146,7 @@ function StatisticalAnalysis(props) {
                 )
               }
             </Col>
-            <Col span={8} style={{ marginTop: 24 }}>
+            <Col span={8} xs={12} style={{ marginTop: 24 }}>
               <div className={styles.statisticscard}>
                 <Avatar icon="control" />
                 <b>系统故障率、可用率</b>
@@ -162,7 +162,7 @@ function StatisticalAnalysis(props) {
                 )
               }
             </Col>
-            <Col span={8} style={{ marginTop: 24 }}>
+            <Col span={8} xs={24} style={{ marginTop: 24 }}>
               <div className={styles.statisticscard}>
                 <Avatar icon="security-scan" />
                 <b>故障责任单位情况</b>
@@ -399,7 +399,7 @@ function StatisticalAnalysis(props) {
               {registeruserlist && registeruserlist.length > 0 && (
                 <ColumnarY
                   height={350}
-                  data={dataCylinder(registeruserlist, 'val1')}
+                  data={dataCylinder(registeruserlist, 'val1') || []}
                   padding={[30, 60, 50, 100]}
                   cols={Issuedscale}
                   onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
@@ -421,7 +421,7 @@ function StatisticalAnalysis(props) {
               {handlerlist && handlerlist.length > 0 && (
                 <ColumnarY
                   height={350}
-                  data={dataCylinder(handlerlist, 'val2')}
+                  data={dataCylinder(handlerlist, 'val2') || []}
                   padding={[30, 60, 50, 100]}
                   cols={Issuedscale}
                   onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
@@ -440,7 +440,7 @@ function StatisticalAnalysis(props) {
               {registeruserunitlist && registeruserunitlist.length > 0 && (
                 <ColumnarY
                   height={350}
-                  data={dataCylinder(registeruserunitlist, 'val3')}
+                  data={dataCylinder(registeruserunitlist, 'val3') || []}
                   padding={[30, 60, 50, 200]}
                   cols={Issuedscale}
                   onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
@@ -462,7 +462,7 @@ function StatisticalAnalysis(props) {
               {handleunitlist && handleunitlist.length > 0 && (
                 <ColumnarY
                   height={350}
-                  data={dataCylinder(handleunitlist, 'val4')}
+                  data={dataCylinder(handleunitlist, 'val4') || []}
                   padding={[30, 60, 50, 210]}
                   cols={Issuedscale}
                   onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
@@ -486,5 +486,5 @@ export default connect(({ faultstatics, loading }) => ({
   registeruserunitlist: faultstatics.registeruserunitlist, // 故障登记人单位排名
   handlerlist: faultstatics.handlerlist, // 故障处理人排名
   handleunitlist: faultstatics.handleunitlist, // 故障处理人单位排名
-  loading: loading.models.faultstatics,
+  loadingorder: loading.effects['faultstatics/getOrderConditions'],
 }))(StatisticalAnalysis);

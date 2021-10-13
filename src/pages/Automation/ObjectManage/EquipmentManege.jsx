@@ -1,7 +1,4 @@
-import React, {
-    useEffect,
-    useState
-} from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import { Table, Card, Divider, Button, Message, Form, Input, Select, Row, Col, DatePicker, Badge } from 'antd';
@@ -43,17 +40,16 @@ function EquipmentManege(props) {
     } = props;
 
     const [expand, setExpand] = useState(false);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
     const [visible, setVisible] = useState(false); // 抽屉是否显示
     const [title, setTitle] = useState('');
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
     const [data, setData] = useState('');
     const [allUserData, setallUserData] = useState([]);   
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
     const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
 
+    // 列表请求
     const searchdata = (page, size) => {
         const values = getFieldsValue();
         values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
@@ -90,6 +86,7 @@ function EquipmentManege(props) {
         }
     }, [files]);
 
+    // 打开抽屉
     const handleShowDrawer = (drwertitle, type, record) => {
         setVisible(!visible);
         setTitle(drwertitle);
@@ -97,7 +94,7 @@ function EquipmentManege(props) {
         setData(record);
     };
 
-    // 提交
+    // 提交功能
     const handleSubmit = values => {
         if (savetype === '' || savetype === 'add') {
             dispatch({
@@ -134,6 +131,7 @@ function EquipmentManege(props) {
         }
     };
 
+    // 重置
     const handleReset = () => {
         resetFields();
         searchdata(1, 15)
@@ -156,6 +154,7 @@ function EquipmentManege(props) {
         });
     };
 
+    // 分页
     const pagination = {
         showSizeChanger: true,
         onShowSizeChange: (page, size) => onShowSizeChange(page, size),
@@ -166,6 +165,7 @@ function EquipmentManege(props) {
         onChange: page => changePage(page),
     };
 
+    // 查询
     const handleSearch = () => {
         setPageinations({
             ...paginations,
@@ -174,7 +174,8 @@ function EquipmentManege(props) {
         searchdata(1, paginations.pageSize);
     };
 
-    const handleDelete = id => { // 删除
+    // 删除
+    const handleDelete = id => { 
         dispatch({
             type: 'equipmanage/toDeleteEquip',
             payload: { Ids: id },
@@ -408,13 +409,6 @@ function EquipmentManege(props) {
         })
     };
 
-    const directormap = [
-        { key: '1', title: '张三' },
-        { key: '2', title: '李四' },
-        { key: '3', title: '王五' },
-        { key: '3', title: '赵六' },
-    ];
-
     // 数据字典取下拉值
     const getTypebyId = key => {
         if (selectdata.ischange) {
@@ -549,7 +543,6 @@ function EquipmentManege(props) {
                                         <Row>
                                             <Col span={11}>
                                                 {getFieldDecorator('starMaintainTime', {
-                                                    // initialValue: '',
                                                 })(
                                                     <DatePicker
                                                         showTime={{
@@ -565,7 +558,6 @@ function EquipmentManege(props) {
                                             <Col span={2} style={{ textAlign: 'center' }}>-</Col>
                                             <Col span={11}>
                                                 {getFieldDecorator('endMaintainTime', {
-                                                    // initialValue: '',
                                                 })(
                                                     <DatePicker
                                                         showTime={{
@@ -586,9 +578,9 @@ function EquipmentManege(props) {
                                         {getFieldDecorator('director', {
                                             initialValue: '',
                                         })(<Select placeholder="请选择" allowClear>
-                                            {directormap.map(obj => (
-                                                <Option key={obj.key} value={obj.title}>
-                                                    {obj.title}
+                                            {allUserData.map(obj => (
+                                                <Option key={obj.userId} value={obj.userName}>
+                                                    {obj.userName}
                                                 </Option>
                                             ))}
                                         </Select>)}

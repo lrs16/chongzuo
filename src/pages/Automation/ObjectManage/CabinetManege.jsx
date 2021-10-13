@@ -28,24 +28,22 @@ function CabinetManege(props) {
         dispatch, cabinetList, loading, location,
         form: {
             getFieldDecorator,
-            // validateFields, 
             getFieldsValue,
             resetFields
         },
     } = props;
 
     const [expand, setExpand] = useState(false);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
     const [visible, setVisible] = useState(false); // 抽屉是否显示
     const [title, setTitle] = useState('');
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
+    // const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
     const [data, setData] = useState('');
     const [allUserData, setallUserData] = useState([]); 
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
     const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
 
+    // 列表请求
     const searchdata = (page, size) => {
         const values = getFieldsValue();
         values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
@@ -73,10 +71,11 @@ function CabinetManege(props) {
         }
     }, [files]);
 
+    // 打开抽屉
     const handleShowDrawer = (drwertitle, type, record) => {
         setVisible(!visible);
         setTitle(drwertitle);
-        setSaveType(type);
+        // setSaveType(type);
         setData(record);
         togetSearchUsers().then(res => {
             if (res.code === 200) {
@@ -104,6 +103,7 @@ function CabinetManege(props) {
         });
     };
 
+    // 重置
     const handleReset = () => {
         resetFields();
         searchdata(1, 15)
@@ -126,6 +126,7 @@ function CabinetManege(props) {
         });
     };
 
+    // 分页
     const pagination = {
         showSizeChanger: true,
         onShowSizeChange: (page, size) => onShowSizeChange(page, size),
@@ -136,6 +137,7 @@ function CabinetManege(props) {
         onChange: page => changePage(page),
     };
 
+    // 查询
     const handleSearch = () => {
         setPageinations({
             ...paginations,
@@ -144,7 +146,8 @@ function CabinetManege(props) {
         searchdata(1, paginations.pageSize);
     };
 
-    const handleDelete = (id) => { // 删除
+    // 删除
+    const handleDelete = (id) => { 
         dispatch({
             type: 'cabinetmanage/toDeleteCabinet',
             payload: { Ids: id },
@@ -158,6 +161,7 @@ function CabinetManege(props) {
         });
     };
 
+    // 列表
     const columns = [
         {
             title: '机柜编号',
@@ -488,6 +492,7 @@ function CabinetManege(props) {
                         {expand ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '5.666667%' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
                     </Form>
                 </Row>
+                {/* 列表顶部按钮 */}
                 <div style={{ marginBottom: 8, display: 'flex' }}>
                     <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleShowDrawer('新增机柜', 'add',)}>新增</Button>
                     <div>
@@ -501,7 +506,7 @@ function CabinetManege(props) {
                 </div>
                 <Table
                     columns={columns}
-                    dataSource={cabinetList.rows}
+                    dataSource={cabinetList.rows || []}
                     loading={loading}
                     rowKey={(_, index) => index.toString()}
                     pagination={pagination}

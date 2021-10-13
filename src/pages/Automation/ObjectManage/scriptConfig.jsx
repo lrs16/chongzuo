@@ -1,10 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, {
-    // useEffect,
-    useState
-} from 'react';
-// import { connect } from 'dva';
-// import { Form, } from 'antd';
+import React, { useState } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import DictLower from '@/components/SysDict/DictLower';
 import LocalScriptList from './components/LocalScriptList';
@@ -34,13 +29,9 @@ const tabList = [
 
 function scriptConfig(props) {
     const pagetitle = props.route.name;
-    // const {
-    //     dispatch,
-    //     location,
-    // } = props;
 
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
-    const [tabActivekey, settabActivekey] = useState('systemscript'); // 打开标签
+    const [tabActivekey, settabActivekey] = useState('systemscript'); // 打开标签/默认
 
     const handleTabChange = key => {
         settabActivekey(key);
@@ -76,14 +67,10 @@ function scriptConfig(props) {
                     scriptstatusmap={scriptstatusmap}
                     scripttypemap={scripttypemap}
                     formItemLayout={formItemLayout}
-                    // dispatch={dispatch}
-                    // location={location}
                 />
             )}
             {tabActivekey === 'localscript' && ( // 本地脚本
                 <LocalScriptList
-                    // dispatch={dispatch}
-                    // location={location}
                     scriptsourcemap={scriptsourcemap}
                     scripttypemap={scripttypemap}
                     formItemLayout={formItemLayout}
@@ -92,12 +79,5 @@ function scriptConfig(props) {
         </PageHeaderWrapper>
     );
 }
-
-// export default Form.create({})(
-//     connect(({ scriptconfig, loading }) => ({
-//         systemscriptlist: scriptconfig.systemscriptlist,
-//         loading: loading.models.scriptconfig,
-//     }))(scriptConfig),
-// );
 
 export default scriptConfig;

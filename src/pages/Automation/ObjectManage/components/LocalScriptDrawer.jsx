@@ -20,14 +20,27 @@ const formItemLayout = {
 };
 
 function LocalScriptDrawer(props) {
-  const { visible, ChangeVisible, title, handleSubmit,
-    scriptsourcemap, scripttypemap, dispatch, userinfo, savetype,
+  const {
+    visible,
+    ChangeVisible,
+    title,
+    handleSubmit,
+    scriptsourcemap,
+    scripttypemap,
+    dispatch,
+    userinfo,
+    savetype,
     files,
     ChangeFiles,
+    form: {
+      getFieldDecorator,
+      validateFields,
+      resetFields,
+    },
   } = props;
 
-  const { getFieldDecorator, validateFields, resetFields } = props.form;
   const required = true;
+
   const {
     id,
     hostName,
@@ -49,6 +62,7 @@ function LocalScriptDrawer(props) {
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 附件上传下载
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
 
+  // 取消
   const hanldleCancel = () => {
     resetFields();
     ChangeVisible(false);
@@ -60,18 +74,19 @@ function LocalScriptDrawer(props) {
     }
   }, [fileslist]);
 
-//   useEffect(() => {
-//     if (savetype !== '' && savetype !=='add' && (hostName !== undefined || hostName !== '')) {
-//       dispatch({
-//         type: 'softwaremanage/tofindCascade',
-//         payload: { hostName },
-//       }).then(res => {
-//         console.log(res, 'res')
-//         // setFindhostIp(res.data[0]);
-//       });
-//     }
-// }, [savetype]);
+  //   useEffect(() => {
+  //     if (savetype !== '' && savetype !=='add' && (hostName !== undefined || hostName !== '')) {
+  //       dispatch({
+  //         type: 'softwaremanage/tofindCascade',
+  //         payload: { hostName },
+  //       }).then(res => {
+  //         console.log(res, 'res')
+  //         // setFindhostIp(res.data[0]);
+  //       });
+  //     }
+  // }, [savetype]);
 
+  // 提交
   const handleOk = () => {
     validateFields((err, values) => {
       if (!err) {
@@ -93,6 +108,7 @@ function LocalScriptDrawer(props) {
     }
   }, [scriptSource]);
 
+  // 区域选择
   const handleChange = v => {
     dispatch({
       type: 'softwaremanage/tofindCascade',
@@ -102,6 +118,7 @@ function LocalScriptDrawer(props) {
     });
   };
 
+  // 脚本来源选择
   const handletoChange = e => {
     if (e.target.value === '本地上传') {
       setshowElem('block');
@@ -110,6 +127,7 @@ function LocalScriptDrawer(props) {
     }
   };
 
+  // 设备名称选择
   const handlehostNameChange = v => {
     dispatch({
       type: 'softwaremanage/tofindCascade',
@@ -118,17 +136,6 @@ function LocalScriptDrawer(props) {
       setFindhostIp(res.data[0]);
     });
   };
-
-  // useEffect(() => {
-  //   return () => {
-  //     setSelectData([]);
-  //     setFindhostIp({});
-  //   };
-  // }, []);
-
-  // useEffect(() => {
-  //   setFindhostIp({});
-  // }, [hostIp === undefined]);
 
   // 数据字典取下拉值
   const getTypebyId = key => {
@@ -139,7 +146,7 @@ function LocalScriptDrawer(props) {
   };
 
   const zonemap = getTypebyId('1428182995477942274'); // 区域
-  
+
   return (
     <Drawer
       title={title}
@@ -216,7 +223,7 @@ function LocalScriptDrawer(props) {
                 message: '请输入 '
               },
             ],
-            initialValue: savetype !== '' && savetype !=='add' && (hostName !== undefined || hostName !== '') ?  hostIp : findhostip.hostIp
+            initialValue: savetype !== '' && savetype !== 'add' && (hostName !== undefined || hostName !== '') ? hostIp : findhostip.hostIp
           })(<Input allowClear />)}
         </Form.Item>
         <Form.Item label="脚本名称">
@@ -280,8 +287,7 @@ function LocalScriptDrawer(props) {
         <Form.Item label="脚本内容">
           {getFieldDecorator('scriptCont', {
             rules: [{ required, message: '请输入 ' }],
-            // initialValue: scriptCont,
-            initialValue: fileslist.ischange && files.length > 0 && files[0] && savetype !== 'update'? files[0].scriptCont : scriptCont,
+            initialValue: fileslist.ischange && files.length > 0 && files[0] && savetype !== 'update' ? files[0].scriptCont : scriptCont,
           })(<TextArea placeholder="请输入" autoSize={{ minRows: 30 }} allowClear />)}
         </Form.Item>
         <Form.Item label="脚本备注">
@@ -291,8 +297,7 @@ function LocalScriptDrawer(props) {
         </Form.Item>
         <Form.Item label="脚本文件大小">
           {getFieldDecorator('scriptSize', {
-            // initialValue: scriptSize,
-            initialValue: fileslist.ischange && files.length > 0 && files[0] && savetype !== 'update'? files[0].fileSize : scriptSize,
+            initialValue: fileslist.ischange && files.length > 0 && files[0] && savetype !== 'update' ? files[0].fileSize : scriptSize,
           })(<Input style={{ width: '100%' }} placeholder="请输入" disabled />)}
         </Form.Item>
         <Form.Item label="上传时间">
@@ -306,7 +311,6 @@ function LocalScriptDrawer(props) {
           })(<Input disabled />)}
         </Form.Item>
       </Form>
-
       <div
         style={{
           position: 'absolute',
@@ -344,11 +348,10 @@ LocalScriptDrawer.defaultProps = {
     scriptRemarks: '',
     scriptSize: '',
     createTime: '',
-    createBy: '',
+    // createBy: '',
   },
   userinfo: {
     userName: '',
-    userId: '',
   },
 };
 

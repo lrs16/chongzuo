@@ -31,13 +31,16 @@ function CabinetDrawer(props) {
     director,
     cabinetSorts,
     cabinetRemarks,
-  } = props.record;
+  } = props.record; // 列表数据
 
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
 
+  // 取消
   const hanldleCancel = () => {
     ChangeVisible(false);
   };
+
+  // 提交
   const handleOk = () => {
     validateFields((err, values) => {
       if (!err) {
@@ -144,12 +147,6 @@ function CabinetDrawer(props) {
         </Form.Item>
         <Form.Item label="剩余容量">
           {getFieldDecorator('cabinetResidueU', {
-            // rules: [
-            //   {
-            //     required,
-            //     message: '请输入 '
-            //   },
-            // ],
             initialValue: cabinetResidueU,
           })(<Input placeholder="请输入" disabled/>)}
         </Form.Item>
@@ -181,7 +178,6 @@ function CabinetDrawer(props) {
           })(<TextArea placeholder="请输入" autoSize={{ minRows: 3 }} allowClear />)}
         </Form.Item>
       </Form>
-
       <div
         style={{
           position: 'absolute',

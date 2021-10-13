@@ -26,7 +26,8 @@ function LocalScriptList(props) {
       getFieldDecorator,
       getFieldsValue,
       resetFields,
-    }, } = props;
+    },
+  } = props;
 
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
@@ -35,11 +36,11 @@ function LocalScriptList(props) {
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [visible, setVisible] = useState(false); // 抽屉是否显示
   const [title, setTitle] = useState('');
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
   const [data, setData] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
 
+  // 列表请求
   const searchdata = (page, size) => {
     const values = getFieldsValue();
     values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
@@ -53,7 +54,6 @@ function LocalScriptList(props) {
       },
     });
   };
-
 
   useEffect(() => {
     searchdata(1, 15);
@@ -118,7 +118,7 @@ function LocalScriptList(props) {
     }
   };
 
-
+  // 重置
   const handleReset = () => {
     resetFields();
     searchdata(1, 15)
@@ -141,6 +141,7 @@ function LocalScriptList(props) {
     });
   };
 
+  // 分页
   const pagination = {
     showSizeChanger: true,
     onShowSizeChange: (page, size) => onShowSizeChange(page, size),
@@ -151,6 +152,7 @@ function LocalScriptList(props) {
     onChange: page => changePage(page),
   };
 
+  // 查询
   const handleSearch = () => {
     setPageinations({
       ...paginations,
@@ -159,7 +161,8 @@ function LocalScriptList(props) {
     searchdata(1, paginations.pageSize);
   };
 
-  const handleDelete = id => { // 删除
+  // 删除
+  const handleDelete = id => {
     dispatch({
       type: 'scriptconfig/toDeletelocalScript',
       payload: { Ids: id },
@@ -173,6 +176,7 @@ function LocalScriptList(props) {
     });
   };
 
+  // 列表
   const columns = [
     {
       title: '脚本编号',
@@ -211,6 +215,7 @@ function LocalScriptList(props) {
       dataIndex: 'scriptName',
       key: 'scriptName',
       width: 200,
+      ellipsis: true,
     },
     {
       title: '存放路径',
@@ -306,7 +311,7 @@ function LocalScriptList(props) {
     >
       {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
     </Button></>
-  )
+  );
 
   // 数据字典取下拉值
   const getTypebyId = key => {
@@ -405,7 +410,6 @@ function LocalScriptList(props) {
                     <Row>
                       <Col span={11}>
                         {getFieldDecorator('startTime', {
-                          // initialValue: '',
                         })(
                           <DatePicker
                             showTime={{
@@ -421,7 +425,6 @@ function LocalScriptList(props) {
                       <Col span={2} style={{ textAlign: 'center' }}>-</Col>
                       <Col span={11}>
                         {getFieldDecorator('endTime', {
-                          // initialValue: '',
                         })(
                           <DatePicker
                             showTime={{
@@ -453,7 +456,8 @@ function LocalScriptList(props) {
           scroll={{ x: 1300 }}
           columns={columns}
           pagination={pagination}
-          loading={loading} />
+          loading={loading}
+        />
       </Card>
       {/* 抽屉 */}
       <LocalScriptDrawer

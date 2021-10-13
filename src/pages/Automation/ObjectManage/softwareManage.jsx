@@ -37,7 +37,6 @@ function softwareManage(props) {
         loading,
         dispatch,
         softList,
-        // dynamicList,
         location,
         form: {
             getFieldDecorator,
@@ -56,6 +55,7 @@ function softwareManage(props) {
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
 
+    // 列表请求
     const searchdata = (page, size) => {
         const values = getFieldsValue();
         values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
@@ -72,17 +72,6 @@ function softwareManage(props) {
         });
     };
 
-    // const getList = (page, size) => {
-    // dispatch({
-    //     type: 'softwaremanage/tofindDynamic',
-    //     payload: {
-    //         softId: '',
-    //         pageNum: page,
-    //         pageSize: size,
-    //     },
-    // });
-    // };
-
     useEffect(() => {
         searchdata(1, 15);
         togetSearchUsers().then(res => {
@@ -94,6 +83,7 @@ function softwareManage(props) {
         });
     }, [location]);
 
+    // 打开弹窗
     const handleShowDrawer = (drwertitle, type, record) => {
         setVisible(!visible);
         setTitle(drwertitle);
@@ -136,6 +126,7 @@ function softwareManage(props) {
         }
     };
 
+    // 重置
     const handleReset = () => {
         resetFields();
         searchdata(1, 15)
@@ -158,6 +149,7 @@ function softwareManage(props) {
         });
     };
 
+    // 分页
     const pagination = {
         showSizeChanger: true,
         onShowSizeChange: (page, size) => onShowSizeChange(page, size),
@@ -168,6 +160,7 @@ function softwareManage(props) {
         onChange: page => changePage(page),
     };
 
+    // 查询
     const handleSearch = () => {
         setPageinations({
             ...paginations,
@@ -176,7 +169,8 @@ function softwareManage(props) {
         searchdata(1, paginations.pageSize);
     };
 
-    const handleDelete = id => { // 删除
+    // 删除
+    const handleDelete = id => { 
         dispatch({
             type: 'softwaremanage/todeleteSoft',
             payload: { Ids: id },
@@ -606,7 +600,6 @@ function softwareManage(props) {
 export default Form.create({})(
     connect(({ softwaremanage, loading }) => ({
         softList: softwaremanage.softList,
-        // dynamicList: softwaremanage.dynamicList,
         loading: loading.models.softwaremanage,
     }))(softwareManage),
 );
