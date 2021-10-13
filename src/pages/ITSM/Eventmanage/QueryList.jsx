@@ -674,8 +674,8 @@ function QueryList(props) {
               </Col>
               <Col span={8}>
                 <Form.Item label="处理结果">
-                  {getFieldDecorator('eventResult', {
-                    initialValue: cacheinfo.eventResult,
+                  {getFieldDecorator('handleResult', {
+                    initialValue: cacheinfo.handleResult,
                   })(
                     <Select placeholder="请选择" allowClear>
                       {handleresultmap.map(obj => [

@@ -25,7 +25,12 @@ class ColumnarY extends React.Component {
           <Axis
             name="total"
             label={{
-              formatter: val => `${(val / 10000).toFixed(1)}w`,
+              formatter: val => {
+                if (val > 10000) {
+                  return `{(val / 10000).toFixed(1)}w`
+                }
+                return val
+              },
               autoRotate: false,
             }}
           />
