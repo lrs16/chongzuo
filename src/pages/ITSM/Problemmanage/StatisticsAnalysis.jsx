@@ -17,7 +17,7 @@ import SelectTime from '@/components/SelectTime/SelectTime';
 import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
 import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
 import Cylinder from '@/components/CustomizeCharts/Cylinder';
-import ColumnarY from '@/components/CustomizeCharts/ColumnarY';
+import ColumnarY from '../Eventmanage/eventstatistics/ColumnarY';
 import styles from '../Problemmanage/index.less';
 import Donut from '@/components/CustomizeCharts/Donut';
 import Barchart from '@/components/CustomizeCharts/Barchart';
@@ -372,7 +372,6 @@ function StatisticsAnalysis(props) {
       handleunitstatTop(val);
     }
   }, [values]);
-  console.log(toplist,'toplist')
 
   return (
     <div>

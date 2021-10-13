@@ -7,12 +7,15 @@ import {
   Avatar,
   Select,
   Empty,
-  Input,
+  InputNumber,
   Spin,
 } from 'antd';
+import styles from '../SysManage/index.less';
 import moment from 'moment';
 import ColumnarY from '../ITSM/Eventmanage/eventstatistics/ColumnarY';
 import SelectTime from '@/components/SelectTime/SelectTime';
+
+
 
 function UsageRanking(props) {
   const {
@@ -86,10 +89,35 @@ function UsageRanking(props) {
     }
   }, [values]);
   return (
-    <>
+    <div>
       <SelectTime ChangeDate={(v) => setValues(v)} />
-      <Row  style={{ marginTop: 24 }} gutter={24}>
+      <Row style={{ marginTop: 24 }} gutter={24}>
         <Col span={12}>
+          <div className={styles.statisticscard}>
+            <Avatar icon="share-alt" />
+            <b>功能使用排名情况Top{topN1}</b>
+            <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN1(v)} /></div>
+          </div>
+          <Card>
+            {tabClickNumToparr && tabClickNumToparr.length === 0 && <Empty style={{ height: '300px' }} />}
+            {tabClickNumToparr && tabClickNumToparr.length > 0 && (
+              <ColumnarY
+                data={dataCylinder(tabClickNumToparr)}
+                height={300}
+                padding={[30, 60, 50, 100]}
+                cols={Issuedscale}
+                onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
+              />
+            )}
+          </Card>
+        </Col>
+
+        <Col span={12}>
+          <div className={styles.statisticscard}>
+            <Avatar icon="share-alt" />
+            <b>用户登录排名情况Top{topN2}</b>
+            <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN2(v)} /></div>
+          </div>
           <Card>
             {loginUserToparr && loginUserToparr.length === 0 && <Empty style={{ height: '300px' }} />}
             {loginUserToparr && loginUserToparr.length > 0 && (
@@ -103,29 +131,10 @@ function UsageRanking(props) {
             )}
           </Card>
         </Col>
-
-        <Card>
-
-          <Col span={12}>
-            <Card>
-              {tabClickNumToparr && tabClickNumToparr.length === 0 && <Empty style={{ height: '300px' }} />}
-              {tabClickNumToparr && tabClickNumToparr.length > 0 && (
-                <ColumnarY
-                  data={dataCylinder(tabClickNumToparr)}
-                  height={300}
-                  padding={[30, 60, 50, 100]}
-                  cols={Issuedscale}
-                  onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
-                />
-              )}
-            </Card>
-          </Col>
-
-        </Card>
       </Row>
 
 
-    </>
+    </div >
   )
 }
 
