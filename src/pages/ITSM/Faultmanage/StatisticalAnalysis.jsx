@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
-import { Card, Row, Col, Avatar, Empty, InputNumber } from 'antd';
+import { Card, Row, Col, Avatar, Empty, InputNumber, Spin } from 'antd';
 import moment from 'moment';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { ChartCard } from '@/components/Charts';
@@ -33,6 +33,7 @@ function StatisticalAnalysis(props) {
     registeruserunitlist, // 故障登记人单位排名
     handlerlist, // 故障处理人排名 
     handleunitlist, // 故障处理人单位排名
+    loading
   } = props;
 
   const [picval, setPicVal] = useState({});
@@ -127,95 +128,97 @@ function StatisticalAnalysis(props) {
         {/* 统计周期 */}
         <SelectTime ChangeDate={(v) => setValues(v)} />
         {/* 工单 */}
-        <Row gutter={24}>
-          <Col span={8} style={{ marginTop: 24 }}>
+        <Spin spinning={loading}>
+          <Row gutter={24}>
+            <Col span={8} style={{ marginTop: 24 }}>
+              <div className={styles.statisticscard}>
+                <Avatar icon="file-protect" />
+                <b>故障工单情况</b>
+              </div>
+              {(!analysislist || (analysislist && analysislist === undefined)) && <Empty style={{ height: '100px' }} />}
+              {
+                analysislist && analysislist !== undefined && (
+                  <Row>
+                    <Col span={8}><StatisticsCard title='故障总数：' value={analysislist.allNum} suffix='单' des='环比' desval={`${analysislist.allRingPoints}%`} type={Number(analysislist.allRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                    <Col span={8}><StatisticsCard title='已处理：' value={analysislist.closeNum} suffix='单' des='环比' desval={`${analysislist.closeRingPoints}%`} type={Number(analysislist.closeRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                    <Col span={8}><StatisticsCard title='解决率：' value={analysislist.point} suffix='%' des='环比' desval={`${analysislist.ringPoints}%`} type={Number(analysislist.ringPoints) > 0 ? 'up' : 'down'} /></Col>
+                  </Row>
+                )
+              }
+            </Col>
+            <Col span={8} style={{ marginTop: 24 }}>
+              <div className={styles.statisticscard}>
+                <Avatar icon="control" />
+                <b>系统故障率、可用率</b>
+              </div>
+              {(!analysislist || (analysislist && analysislist === undefined)) && <Empty style={{ height: '100px' }} />}
+              {
+                analysislist && analysislist !== undefined && (
+                  <Row>
+                    <Col span={8}><StatisticsCard title='故障时长：' value={analysislist.handleTime} suffix='H' des='环比' desval={`${analysislist.handleTimeRingPoints}%`} type={Number(analysislist.handleTimeRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                    <Col span={8}><StatisticsCard title='故障率：' value={analysislist.troublePoint} suffix='%' des='环比' desval={`${analysislist.troubleRingPoints}%`} type={Number(analysislist.troubleRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                    <Col span={8}><StatisticsCard title='可用率：' value={analysislist.canUserPoint} suffix='%' des='环比' desval={`${analysislist.canUserRingPoints}%`} type={Number(analysislist.canUserRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                  </Row>
+                )
+              }
+            </Col>
+            <Col span={8} style={{ marginTop: 24 }}>
+              <div className={styles.statisticscard}>
+                <Avatar icon="security-scan" />
+                <b>故障责任单位情况</b>
+              </div>
+              {(!analysislist || (analysislist && analysislist === undefined)) && <Empty style={{ height: '100px' }} />}
+              {
+                analysislist && analysislist !== undefined && (
+                  <Row>
+                    <Col span={8}><StatisticsCard title='功能开发：' value={analysislist.development} suffix='单' des='环比' desval={`${analysislist.developmentRingPoints}%`} type={Number(analysislist.developmentRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                    <Col span={8}><StatisticsCard title='软件运维：' value={analysislist.soft} suffix='单' des='环比' desval={`${analysislist.softRingPoints}%`} type={Number(analysislist.softRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                    <Col span={8}><StatisticsCard title='硬件运维：' value={analysislist.hardware} suffix='单' des='环比' desval={`${analysislist.hardwareRingPoints}%`} type={Number(analysislist.hardwareRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                  </Row>
+                )
+              }
+            </Col>
+          </Row>
+          {/* 责任单位 */}
+          <Row style={{ marginTop: 24 }}>
             <div className={styles.statisticscard}>
-              <Avatar icon="file-protect" />
-              <b>故障工单情况</b>
-            </div>
-            {(!analysislist || (analysislist && analysislist === undefined)) && <Empty style={{ height: '100px' }} />}
-            {
-              analysislist && analysislist !== undefined && (
-                <Row>
-                  <Col span={8}><StatisticsCard title='故障总数：' value={analysislist.allNum} suffix='单' des='环比' desval={`${analysislist.allRingPoints}%`} type={Number(analysislist.allRingPoints) > 0 ? 'up' : 'down'} /></Col>
-                  <Col span={8}><StatisticsCard title='已处理：' value={analysislist.closeNum} suffix='单' des='环比' desval={`${analysislist.closeRingPoints}%`} type={Number(analysislist.closeRingPoints) > 0 ? 'up' : 'down'} /></Col>
-                  <Col span={8}><StatisticsCard title='解决率：' value={analysislist.point} suffix='%' des='环比' desval={`${analysislist.ringPoints}%`} type={Number(analysislist.ringPoints) > 0 ? 'up' : 'down'} /></Col>
-                </Row>
-              )
-            }
-          </Col>
-          <Col span={8} style={{ marginTop: 24 }}>
-            <div className={styles.statisticscard}>
-              <Avatar icon="control" />
-              <b>系统故障率、可用率</b>
-            </div>
-            {(!analysislist || (analysislist && analysislist === undefined)) && <Empty style={{ height: '100px' }} />}
-            {
-              analysislist && analysislist !== undefined && (
-                <Row>
-                  <Col span={8}><StatisticsCard title='故障时长：' value={analysislist.handleTime} suffix='H' des='环比' desval={`${analysislist.handleTimeRingPoints}%`} type={Number(analysislist.handleTimeRingPoints) > 0 ? 'up' : 'down'} /></Col>
-                  <Col span={8}><StatisticsCard title='故障率：' value={analysislist.troublePoint} suffix='%' des='环比' desval={`${analysislist.troubleRingPoints}%`} type={Number(analysislist.troubleRingPoints) > 0 ? 'up' : 'down'} /></Col>
-                  <Col span={8}><StatisticsCard title='可用率：' value={analysislist.canUserPoint} suffix='%' des='环比' desval={`${analysislist.canUserRingPoints}%`} type={Number(analysislist.canUserRingPoints) > 0 ? 'up' : 'down'} /></Col>
-                </Row>
-              )
-            }
-          </Col>
-          <Col span={8} style={{ marginTop: 24 }}>
-            <div className={styles.statisticscard}>
-              <Avatar icon="security-scan" />
+              <Avatar icon="cluster" />
               <b>故障责任单位情况</b>
             </div>
-            {(!analysislist || (analysislist && analysislist === undefined)) && <Empty style={{ height: '100px' }} />}
-            {
-              analysislist && analysislist !== undefined && (
-                <Row>
-                  <Col span={8}><StatisticsCard title='功能开发：' value={analysislist.development} suffix='单' des='环比' desval={`${analysislist.developmentRingPoints}%`} type={Number(analysislist.developmentRingPoints) > 0 ? 'up' : 'down'} /></Col>
-                  <Col span={8}><StatisticsCard title='软件运维：' value={analysislist.soft} suffix='单' des='环比' desval={`${analysislist.softRingPoints}%`} type={Number(analysislist.softRingPoints) > 0 ? 'up' : 'down'} /></Col>
-                  <Col span={8}><StatisticsCard title='硬件运维：' value={analysislist.hardware} suffix='单' des='环比' desval={`${analysislist.hardwareRingPoints}%`} type={Number(analysislist.hardwareRingPoints) > 0 ? 'up' : 'down'} /></Col>
-                </Row>
-              )
-            }
-          </Col>
-        </Row>
-        {/* 责任单位 */}
-        <Row style={{ marginTop: 24 }}>
-          <div className={styles.statisticscard}>
-            <Avatar icon="cluster" />
-            <b>故障责任单位情况</b>
-          </div>
-          <Col span={8}>
-            <Card onMouseDown={() => setPicVal({})}>
-              {(!blameconditlist.pieChart || (blameconditlist && blameconditlist.pieChart && blameconditlist.pieChart.length === 0)) && <Empty style={{ height: '300px' }} />}
-              {
-                blameconditlist && blameconditlist.pieChart && blameconditlist.pieChart.length > 0 && (
-                  <DonutPCT
-                    data={blameconditlist.pieChart || []}
-                    height={300}
-                    totaltitle='故障总数'
-                    total={piesum(blameconditlist.pieChart)}
-                    padding={[10, 30, 30, 30]}
-                    onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
-                  />
-                )
-              }
-            </Card>
-          </Col>
-          <Col span={16}>
-            <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-              {(!blameconditlist.lineChart || (blameconditlist && blameconditlist.lineChart && blameconditlist.lineChart.length === 0)) && <Empty style={{ height: '300px' }} />}
-              {
-                blameconditlist.lineChart && blameconditlist.lineChart.length > 0 && (
-                  <SmoothLine
-                    data={blameconditlist.lineChart || []}
-                    height={300}
-                    padding={[30, 0, 70, 60]}
-                    onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
-                  />
-                )
-              }
-            </Card>
-          </Col>
-        </Row>
+            <Col span={8}>
+              <Card onMouseDown={() => setPicVal({})}>
+                {(!blameconditlist.pieChart || (blameconditlist && blameconditlist.pieChart && blameconditlist.pieChart.length === 0)) && <Empty style={{ height: '300px' }} />}
+                {
+                  blameconditlist && blameconditlist.pieChart && blameconditlist.pieChart.length > 0 && (
+                    <DonutPCT
+                      data={blameconditlist.pieChart || []}
+                      height={300}
+                      totaltitle='故障总数'
+                      total={piesum(blameconditlist.pieChart)}
+                      padding={[10, 30, 30, 30]}
+                      onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
+                    />
+                  )
+                }
+              </Card>
+            </Col>
+            <Col span={16}>
+              <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+                {(!blameconditlist.lineChart || (blameconditlist && blameconditlist.lineChart && blameconditlist.lineChart.length === 0)) && <Empty style={{ height: '300px' }} />}
+                {
+                  blameconditlist.lineChart && blameconditlist.lineChart.length > 0 && (
+                    <SmoothLine
+                      data={blameconditlist.lineChart || []}
+                      height={300}
+                      padding={[30, 0, 70, 60]}
+                      onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
+                    />
+                  )
+                }
+              </Card>
+            </Col>
+          </Row>
+        </Spin>
         {/* 故障类型统计分析 */}
         <Row style={{ marginTop: 24 }}>
           <div className={styles.statisticscard}>
@@ -438,7 +441,7 @@ function StatisticalAnalysis(props) {
                 <ColumnarY
                   height={350}
                   data={dataCylinder(registeruserunitlist, 'val3')}
-                  padding={[30, 60, 50, 100]}
+                  padding={[30, 60, 50, 200]}
                   cols={Issuedscale}
                   onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
                 />
@@ -460,7 +463,7 @@ function StatisticalAnalysis(props) {
                 <ColumnarY
                   height={350}
                   data={dataCylinder(handleunitlist, 'val4')}
-                  padding={[30, 60, 50, 100]}
+                  padding={[30, 60, 50, 210]}
                   cols={Issuedscale}
                   onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
                 />
@@ -473,7 +476,7 @@ function StatisticalAnalysis(props) {
   );
 }
 
-export default connect(({ faultstatics }) => ({
+export default connect(({ faultstatics, loading }) => ({
   analysislist: faultstatics.analysislist, // 工单总情况
   blameconditlist: faultstatics.blameconditlist, // 故障责任单位总情况
   typeconditlist: faultstatics.typeconditlist, // 故障分类总情况
@@ -483,4 +486,5 @@ export default connect(({ faultstatics }) => ({
   registeruserunitlist: faultstatics.registeruserunitlist, // 故障登记人单位排名
   handlerlist: faultstatics.handlerlist, // 故障处理人排名
   handleunitlist: faultstatics.handleunitlist, // 故障处理人单位排名
+  loading: loading.models.faultstatics,
 }))(StatisticalAnalysis);

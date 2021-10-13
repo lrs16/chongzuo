@@ -106,7 +106,7 @@ function Statistics(props) {
       const vote = {};
       vote.name = datas[i].type;
       vote.rate = datas[i].value;
-      vote.expected = '100';
+      vote.expected = datas[0].value;
       newArr.push(vote);
     }
     return newArr;
@@ -381,7 +381,7 @@ function Statistics(props) {
               <ColumnarY
                 height={300}
                 data={dataCylindertop(piedatalist['需求申请单位TOP'], 'val3') || []}
-                padding={[30, 60, 50, 100]}
+                padding={[30, 60, 50, 200]}
                 cols={Issuedscale}
                 onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
               />
@@ -402,8 +402,8 @@ function Statistics(props) {
             {piedatalist && dataCylinder(piedatalist['需求处理单位TOP']).length > 0 && (
               <ColumnarY
                 height={300}
-                data={dataCylinder(piedatalist['需求处理单位TOP'], 'val4') || []}
-                padding={[30, 60, 50, 100]}
+                data={dataCylindertop(piedatalist['需求处理单位TOP'], 'val4') || []}
+                padding={[30, 60, 50, 200]}
                 cols={Issuedscale}
                 onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
               />
