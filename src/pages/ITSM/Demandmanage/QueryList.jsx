@@ -352,7 +352,7 @@ function QueryList(props) {
 
 
   const time = startTime ? [moment(startTime), moment(endTime)] : '';
-  const modulestatus = module === undefined ? [] : module.split('/');
+  const modulestatus = !module ? [] : module.split('/');
   const record = {
     demandId: '',
     taskName,
