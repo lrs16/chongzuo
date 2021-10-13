@@ -709,9 +709,9 @@ function Besolved(props) {
       type: 'problemmanage/queryList',
       payload: {
         ...values,
-        addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
-        addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
-        createTime: '',
+        createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
+        createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
+        createTime: values.createTime?.length ? [moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
         pageNum: page,
         type: values.type ? (values.type)[1].toString():'',
         pageSize: paginations.pageSize
@@ -719,8 +719,8 @@ function Besolved(props) {
     });
     const newvalues = {
       ...values,
-      addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
-      addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
+      createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
+      createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
       createTime: values.createTime?.length ? [moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
       pageNum: paginations.current,
       pageSize: paginations.pageSize,
@@ -798,8 +798,8 @@ function Besolved(props) {
             ids: selectedKeys.toString(),
             ...values,
             type: values.type ? (values.type)[1].toString():'',
-            addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
-            addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
+            createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
+            createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
             createTime: '',
           }
         }).then(res => {
@@ -833,8 +833,8 @@ function Besolved(props) {
   // 设置时间
   useEffect(() => {
     if (location && location.state && location.state.cacheinfo) {
-      const cachestartTime = location.state.cacheinfo.addTimeBegin;
-      const cacheendTime = location.state.cacheinfo.addTimeEnd;
+      const cachestartTime = location.state.cacheinfo.createTimeBegin;
+      const cacheendTime = location.state.cacheinfo.createTimeEnd;
       setFieldsValue({
         createTime: cachestartTime ? [moment(cachestartTime), moment(cacheendTime)] : '',
       })

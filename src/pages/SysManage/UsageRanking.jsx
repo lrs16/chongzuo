@@ -37,6 +37,15 @@ function UsageRanking(props) {
       tickInterval: 100,
     },
   };
+
+  const Issuedscale2 = {
+    total: {
+      type: 'linear',
+      alias: '返回结果数量',
+      min: 0,
+      tickInterval: 1000,
+    },
+  };
   const dataCylinder = (datas) => { // 柱状图集成数组
     const newArr = [];
     if (!Array.isArray(datas) || datas.length === 0) {
@@ -102,10 +111,10 @@ function UsageRanking(props) {
             {tabClickNumToparr && tabClickNumToparr.length === 0 && <Empty style={{ height: '300px' }} />}
             {tabClickNumToparr && tabClickNumToparr.length > 0 && (
               <ColumnarY
-                data={dataCylinder(tabClickNumToparr)}
+                data={dataCylinder1(tabClickNumToparr)}
                 height={300}
                 padding={[30, 60, 50, 100]}
-                cols={Issuedscale}
+                cols={Issuedscale2}
                 onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
               />
             )}

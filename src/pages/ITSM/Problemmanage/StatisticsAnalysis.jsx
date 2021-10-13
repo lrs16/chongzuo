@@ -7,33 +7,19 @@ import {
   Avatar,
   Select,
   Empty,
-  Input,
   Spin,
-  InputNumber
+  InputNumber,
+  Form
 } from 'antd';
 import moment from 'moment';
 import StatisticsCard from '../../ITSM/Eventmanage/eventstatistics/StatisticsCard';
 import SelectTime from '@/components/SelectTime/SelectTime';
 import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
 import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
-import Cylinder from '@/components/CustomizeCharts/Cylinder';
 import ColumnarY from '../Eventmanage/eventstatistics/ColumnarY';
 import styles from '../Problemmanage/index.less';
-import Donut from '@/components/CustomizeCharts/Donut';
-import Barchart from '@/components/CustomizeCharts/Barchart';
 
 const { Option } = Select;
-const cols = {
-  rate: {
-    // alias: '%',
-    // tickCount: 10,
-  },
-};
-
-let defaultNum1 = 5;
-let defaultNum2 = 5;
-let defaultNum3 = 5;
-let defaultNum4 = 5;
 
 function StatisticsAnalysis(props) {
   const {
@@ -92,6 +78,7 @@ function StatisticsAnalysis(props) {
   //   }
   //   return newArr;
   // };
+
 
   const dataCylinder = (datas) => { // 柱状图集成数组
     const newArr = [];
@@ -155,7 +142,6 @@ function StatisticsAnalysis(props) {
     const result = [];
     const typeresult = [];
     let timeoutList = [];
-    let changeType = []
     if (loading === false) {
       const obj1 = {
         // total: statratioArr.total,
@@ -219,33 +205,6 @@ function StatisticsAnalysis(props) {
 
     }
   }, [loading])
-
-  useEffect(() => {
-    defaultNum1 = '';
-    defaultNum2 = '';
-    defaultNum3 = '';
-    defaultNum4 = '';
-  }, [])
-
-  const dataAssigneetimeout = datas => {
-    const newArr = [];
-    if (!Array.isArray(datas) || datas.length === 0) {
-      return newArr;
-    }
-    for (let i = 0; datas.length < topN ? i < datas.length : i < topN; i += 1) {
-      const vote = {};
-      vote.name = datas[i].name;
-      vote.rate = datas[i].value;
-      vote.expected = datas[0].value;
-      newArr.push(vote);
-    }
-    return newArr.reverse();
-  };
-
-  const handleInput = (val) => {
-    setTopN(val)
-  };
-
 
   const statpieData = (values) => {
     dispatch({
@@ -315,44 +274,6 @@ function StatisticsAnalysis(props) {
     })
   }
 
-  const selectOnchange = (e, type) => {
-    switch (type) {
-      case 'registrant':
-        defaultNum1 = e;
-        resgisterstatTop({
-          begin: moment(values.beginTime).format('YYYY-MM-DD 00:00:00'),
-          end: moment(values.endTime).format('YYYY-MM-DD 23:59:59'),
-          n: e
-        });
-        break;
-      case 'handler':
-        defaultNum2 = e;
-        handlerstatTop({
-          begin: moment(values.beginTime).format('YYYY-MM-DD 00:00:00'),
-          end: moment(values.endTime).format('YYYY-MM-DD 23:59:59'),
-          n: e
-        });
-        break;
-      case 'registrationunit':
-        defaultNum3 = e;
-        resgisterunitstatTop({
-          begin: moment(values.beginTime).format('YYYY-MM-DD 00:00:00'),
-          end: moment(values.endTime).format('YYYY-MM-DD 23:59:59'),
-          n: e
-        });
-        break;
-      case 'handlerunit':
-        defaultNum4 = e;
-        getHandleUnitTop({
-          begin: moment(values.beginTime).format('YYYY-MM-DD 00:00:00'),
-          end: moment(values.endTime).format('YYYY-MM-DD 23:59:59'),
-          n: e
-        });
-        break;
-      default:
-        break;
-    }
-  }
 
   useEffect(() => {
     if (values && values.type) {
@@ -402,7 +323,7 @@ function StatisticsAnalysis(props) {
                         <StatisticsCard title='已解决' value={obj.resolved} desval={`${obj && obj.resolvedRingRatio}`} suffix='单' des='环比' type={Number(obj.resolved) > Number(obj.prevResolved) ? 'up' : 'down'} />
                       </Col>
                       <Col span={8}>
-                        <StatisticsCard title='解决率' value={obj.Rate} desval={`${obj && obj.rate}`} suffix='%' des='环比' type={Number(obj.totalScore) > Number(obj.prevTotalScore) ? 'up' : 'down'} />
+                        <StatisticsCard title='解决率' value={obj.rate} desval={`${obj && obj.rateRingRatio}`} suffix='%' des='环比' type={Number(obj.totalScore) > Number(obj.prevTotalScore) ? 'up' : 'down'} />
                       </Col>
                     </Row>
                   </Col>
@@ -434,10 +355,10 @@ function StatisticsAnalysis(props) {
               </div>
               <Col span={8}>
                 <Card onMouseDown={() => setPicVal({})}>
+                  <h4 style={{ fontWeight: 'bold' }}>问题处理情况占比</h4>
                   {toplist && toplist.length === 0 && <Empty style={{ height: '300px' }} />}
                   {toplist && toplist.length > 0 && (
                     <>
-                      <h4 style={{ fontWeight: 'bold' }}>问题处理情况占比</h4>
                       <DonutPCT
                         data={toplist}
                         height={300}
@@ -482,14 +403,14 @@ function StatisticsAnalysis(props) {
               </div>
               <Col span={8}>
                 <Card onMouseDown={() => setPicVal({})}>
+                  <h4 style={{ fontWeight: 'bold' }}>问题分类总情况</h4>
                   {type && type.length === 0 && <Empty style={{ height: '300px' }} />}
                   {type && type.length > 0 && (
                     <>
-                      <h4 style={{ fontWeight: 'bold' }}>问题分类总情况</h4>
                       <DonutPCT
                         data={type}
                         height={300}
-                        total={statratioArr && statratioArr.total}
+                        total={statratioArr && (statratioArr.function + statratioArr.program)}
                         totaltitle="问题总数"
                         padding={[10, 30, 10, 30]}
                         onGetVal={v => {
@@ -503,11 +424,12 @@ function StatisticsAnalysis(props) {
               </Col>
 
               <Col span={16}>
+                <h4 style={{ fontWeight: 'bold' }}>问题分类总趋势</h4>
                 <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
                   {lineArr && lineArr['问题分类总趋势'] && lineArr['问题分类总趋势'].length === 0 && <Empty style={{ height: '300px' }} />}
                   {lineArr && lineArr['问题分类总趋势'] && lineArr['问题分类总趋势'].length > 0 && (
                     <>
-                      <h4 style={{ fontWeight: 'bold' }}>问题分类总趋势</h4>
+
                       <SmoothLine
                         data={lineArr && lineArr['问题分类总趋势']}
                         height={300}
@@ -527,10 +449,11 @@ function StatisticsAnalysis(props) {
             <Row style={{ marginTop: 24 }} gutter={24}>
               <Col span={8}>
                 <Card onMouseDown={() => setPicVal({})}>
+                  <h4 style={{ fontWeight: 'bold' }}>程序问题情况</h4>
                   {statpieArr && statpieArr['程序问题情况'] && statpieArr['程序问题情况'].length === 0 && <Empty style={{ height: '300px' }} />}
                   {statpieArr && statpieArr['程序问题情况'] && statpieArr['程序问题情况'].length > 0 && (
                     <>
-                      <h4 style={{ fontWeight: 'bold' }}>程序问题情况</h4>
+
                       <DonutPCT
                         data={statpieArr && statpieArr['程序问题情况']}
                         height={300}
@@ -549,10 +472,10 @@ function StatisticsAnalysis(props) {
               </Col>
               <Col span={16}>
                 <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+                  <h4 style={{ fontWeight: 'bold' }}>程序问题趋势</h4>
                   {lineArr && lineArr['程序问题趋势'] && lineArr['程序问题趋势'].length === 0 && <Empty style={{ height: '300px' }} />}
                   {lineArr && lineArr['程序问题趋势'] && lineArr['程序问题趋势'].length > 0 && (
                     <>
-                      <h4 style={{ fontWeight: 'bold' }}>程序问题趋势</h4>
                       {lineArr && lineArr['程序问题趋势'] && (
                         <SmoothLine
                           data={lineArr && lineArr['程序问题趋势']}
@@ -575,10 +498,10 @@ function StatisticsAnalysis(props) {
             <Row style={{ marginTop: 24 }} gutter={24}>
               <Col span={8}>
                 <Card onMouseDown={() => setPicVal({})}>
+                  <h4 style={{ fontWeight: 'bold' }}>功能问题情况</h4>
                   {statpieArr && statpieArr['功能问题情况'] && statpieArr['功能问题情况'].length === 0 && <Empty style={{ height: '300px' }} />}
                   {statpieArr && statpieArr['功能问题情况'] && statpieArr['功能问题情况'].length > 0 && (
                     <>
-                      <h4 style={{ fontWeight: 'bold' }}>功能问题情况</h4>
                       <DonutPCT
                         data={statpieArr && statpieArr['功能问题情况']}
                         height={300}
@@ -597,10 +520,10 @@ function StatisticsAnalysis(props) {
               </Col>
               <Col span={16}>
                 <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+                  <h4 style={{ fontWeight: 'bold' }}>功能问题趋势</h4>
                   {lineArr && lineArr['功能问题趋势'] && lineArr['功能问题趋势'].length === 0 && <Empty style={{ height: '300px' }} />}
                   {lineArr && lineArr['功能问题趋势'] && lineArr['功能问题趋势'].length > 0 && (
                     <>
-                      <h4 style={{ fontWeight: 'bold' }}>功能问题趋势</h4>
                       <SmoothLine
                         data={lineArr && lineArr['功能问题趋势']}
                         height={300}
@@ -612,7 +535,6 @@ function StatisticsAnalysis(props) {
                       />
                     </>
                   )}
-
                 </Card>
               </Col>
             </Row>
@@ -747,7 +669,7 @@ function StatisticsAnalysis(props) {
                         <ColumnarY
                           height={300}
                           data={dataCylinder2(resgisterunitarr)}
-                          padding={[30, 60, 50, 100]}
+                          padding={[30, 60, 50, 200]}
                           cols={Issuedscale}
                           onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />
@@ -773,7 +695,7 @@ function StatisticsAnalysis(props) {
                         <ColumnarY
                           height={300}
                           data={dataCylinder3(handlerunitarr)}
-                          padding={[30, 60, 50, 100]}
+                          padding={[30, 60, 50, 200]}
                           cols={Issuedscale}
                           onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />

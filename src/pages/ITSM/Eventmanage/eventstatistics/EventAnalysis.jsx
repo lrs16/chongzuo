@@ -15,23 +15,8 @@ import StatisticsCard from '../eventstatistics/StatisticsCard';
 import SelectTime from '@/components/SelectTime/SelectTime';
 import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
 import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
-import Cylinder from '@/components/CustomizeCharts/Cylinder';
 import ColumnarY from '../eventstatistics/ColumnarY';
 import styles from '../../Problemmanage/index.less';
-import Barchart from '@/components/CustomizeCharts/Barchart';
-
-const { Option } = Select;
-const cols = {
-  rate: {
-    // alias: '%',
-    // tickCount: 10,
-  },
-};
-
-let defaultNum1 = 5;
-let defaultNum2 = 5;
-let defaultNum3 = 5;
-let defaultNum4 = 5;
 
 function EventAnalysis(props) {
   const {
@@ -62,7 +47,6 @@ function EventAnalysis(props) {
         sum += item.value;
       });
     };
-    console.log(sum, 'sum')
     return sum
   };
 
@@ -82,7 +66,6 @@ function EventAnalysis(props) {
   };
 
   const dataCylinder1 = (datas) => { // 柱状图集成数组
-    console.log('datas: ', datas);
     const newArr = [];
     if (!Array.isArray(datas) || datas.length === 0) {
       return newArr;
@@ -124,17 +107,6 @@ function EventAnalysis(props) {
     }
     return newArr.reverse();
   };
-
-
-
-
-  useEffect(() => {
-    defaultNum1 = '';
-    defaultNum2 = '';
-    defaultNum3 = '';
-    defaultNum4 = '';
-  }, []);
-
 
   // const dataCylinder = datas => {
   //   const newArr = [];
@@ -207,44 +179,6 @@ function EventAnalysis(props) {
     })
   }
 
-  const selectOnchange = (e, type) => {
-    switch (type) {
-      case 'registrant':
-        defaultNum1 = e;
-        getRegisterUserTop({
-          time1: moment(values.beginTime).format('YYYY-MM-DD 00:00:00'),
-          time2: moment(values.endTime).format('YYYY-MM-DD 23:59:59'),
-          num: e
-        });
-        break;
-      case 'handler':
-        defaultNum2 = e;
-        getHandlerTop({
-          time1: moment(values.beginTime).format('YYYY-MM-DD 00:00:00'),
-          time2: moment(values.endTime).format('YYYY-MM-DD 23:59:59'),
-          num: e
-        });
-        break;
-      case 'registrationunit':
-        defaultNum3 = e;
-        getRegisterUnitTop({
-          time1: moment(values.beginTime).format('YYYY-MM-DD 00:00:00'),
-          time2: moment(values.endTime).format('YYYY-MM-DD 23:59:59'),
-          num: e
-        });
-        break;
-      case 'handlerunit':
-        defaultNum4 = e;
-        getHandleUnitTop({
-          time1: moment(values.beginTime).format('YYYY-MM-DD 00:00:00'),
-          time2: moment(values.endTime).format('YYYY-MM-DD 23:59:59'),
-          num: e
-        });
-        break;
-      default:
-        break;
-    }
-  }
 
   const Issuedscale = {
     total: {
@@ -255,7 +189,6 @@ function EventAnalysis(props) {
     },
   };
 
-  console.log(getTimeOutConditionsdata,'getTimeOutConditionsdata')
   useEffect(() => {
     if (values && values.type) {
       const val = {
@@ -405,7 +338,7 @@ function EventAnalysis(props) {
                   )}
                 </Card>
               </Col>
-              
+
               <Col span={16}>
                 <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
                   {getObjectConditionsdata && getObjectConditionsdata.lineChart && getObjectConditionsdata.lineChart.length === 0 && <Empty style={{ height: '300px' }} />}
@@ -538,7 +471,7 @@ function EventAnalysis(props) {
                           cols={Issuedscale}
                           data={dataCylinder2(getRegisterUnitTopdata)}
                           height={300}
-                          padding={[30, 60, 50, 100]}
+                          padding={[30, 60, 50, 200]}
                           onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />
                       </Col>
@@ -576,7 +509,7 @@ function EventAnalysis(props) {
                           cols={Issuedscale}
                           data={dataCylinder3(getHandleUnitTopdata)}
                           height={300}
-                          padding={[30, 60, 50, 100]}
+                          padding={[30, 60, 50,200]}
                           onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />
                       </Col>
@@ -611,7 +544,6 @@ export default connect(({ eventstatistics, loading }) => ({
   getTypeConditionsdata: eventstatistics.getTypeConditionsdata, //   
   getTimeOutConditionsdata: eventstatistics.getTimeOutConditionsdata, //   
   getRegisterUserTopdata: eventstatistics.getRegisterUserTopdata, //   
-  getHandlerTopdata: eventstatistics.getHandlerTopdata, //   
   getRegisterUnitTopdata: eventstatistics.getRegisterUnitTopdata, //   
   getHandleUnitTopdata: eventstatistics.getHandleUnitTopdata, //   
   getOrderConditionsobj: eventstatistics.getOrderConditionsobj, //   
