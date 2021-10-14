@@ -8,7 +8,7 @@ import moment from 'moment';
 import { Table, Card, Button, Form, Input, Select, Row, Col, DatePicker, Tooltip } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
-import DictLower from '@/components/SysDict/DictLower';
+// import DictLower from '@/components/SysDict/DictLower';
 import HistorVersionDrawer from './components/HistorVersionDrawer';
 import GetFileModal from './components/GetFileModal';
 
@@ -41,7 +41,7 @@ function softwareConfig(props) {
 
     const [expand, setExpand] = useState(false);
     const [confid, setconfId] = useState('');
-    const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
+    // const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
     const [visible, setVisible] = useState(false); // 抽屉是否显示
     const [title, setTitle] = useState('');
@@ -261,23 +261,35 @@ function softwareConfig(props) {
     )
 
     // 数据字典取下拉值
-    const getTypebyId = key => {
-        if (selectdata.ischange) {
-            return selectdata.arr[0].children.filter(item => item.key === key)[0].children;
-        }
-        return [];
-    };
+    // const getTypebyId = key => {
+    //     if (selectdata.ischange) {
+    //         return selectdata.arr[0].children.filter(item => item.key === key)[0].children;
+    //     }
+    //     return [];
+    // };
 
-    const zonemap = getTypebyId('1428182995477942274'); // 区域
-    const lastcomparestatusmap = getTypebyId('1444111752403349505'); // 软件配置变化状态
+    // const zonemap = getTypebyId('1428182995477942274'); // 区域
+    // const lastcomparestatusmap = getTypebyId('1444111752403349505'); // 软件配置变化状态
+    const zonemap = [
+        {key: "1428184196542058497", parentId: "1428182995477942274", order: 0, title: "安全Ⅰ区", dict_code: "1"},
+        {key: "1428184294684577794", parentId: "1428182995477942274", order: 0, title: "安全Ⅱ区", dict_code: "2"},
+        {key: "1428184409923080194", parentId: "1428182995477942274", order: 0, title: "安全Ⅲ区", dict_code: "3"},
+        {key: "1428184082167582721", parentId: "1428182995477942274", order: 0, title: "安全接入区", dict_code: "4"},
+    ];
+    const lastcomparestatusmap = [
+        {key: "1444112169929535490", parentId: "1444111752403349505", order: 0, title: "删除", dict_code: "4"},
+        {key: "1444112094041993217", parentId: "1444111752403349505", order: 0, title: "修改", dict_code: "3"},
+        {key: "1444112035686641666", parentId: "1444111752403349505", order: 0, title: "新增", dict_code: "2"},
+        {key: "1444111916379664385", parentId: "1444111752403349505", order: 0, title: "无变化", dict_code: "1"}
+    ];
 
     return (
         <PageHeaderWrapper title={pagetitle}>
-            <DictLower
+            {/* <DictLower
                 typeid="1428178684907835393"
                 ChangeSelectdata={newvalue => setSelectData(newvalue)}
                 style={{ display: 'none' }}
-            />
+            /> */}
             <Card>
                 <Row gutter={16}>
                     <Form {...formItemLayout} onSubmit={handleSearch}>
