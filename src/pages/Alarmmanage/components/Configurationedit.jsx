@@ -242,32 +242,15 @@ function MonitorConfiguration(props) {
       title: '供电单位',
       dataIndex: 'gddwmc',
       key: 'gddwmc',
-      render: (text, record, index) => {
-        return <Input
-          defaultValue={text}
-          onChange={e => handleFieldChange(e.target.value, 'gddwmc', record.key)}
-        />
-      }
     },
     {
-      title: '终端地址|资产编号',
+      title: '终端地址',
       dataIndex: 'pzz',
       key: 'pzz',
       render: (text, record, index) => {
         return <Input
           defaultValue={text}
           onChange={e => handleFieldChange(e.target.value, 'pzz', record.key)}
-        />
-      }
-    },
-    {
-      title: '查询记录总数',
-      dataIndex: 'ms',
-      key: 'ms',
-      render: (text, record, index) => {
-        return <Input
-          defaultValue={text}
-          onChange={e => handleFieldChange(e.target.value, 'ms', record.key)}
         />
       }
     },
