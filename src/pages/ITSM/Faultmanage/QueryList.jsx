@@ -386,24 +386,6 @@ function QueryList(props) {
       width: 200,
     },
     {
-      title: '系统模块',
-      dataIndex: 'registerModel',
-      key: 'registerModel',
-      width: 120,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 120,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
-    },
-    {
       title: '严重程度',
       dataIndex: 'registerLevel',
       key: 'registerLevel',
@@ -1787,7 +1769,7 @@ function QueryList(props) {
             </Col>
 
             <Col span={8}>
-              <Form.Item label="发送时间">
+              <Form.Item label="发生时间">
                 {getFieldDecorator('createTime', {
                   initialValue: ''
                 })(

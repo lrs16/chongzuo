@@ -104,7 +104,6 @@ export async function lineData(params) {
 }
 //  问题统计分析-环比数据
 export async function statratioData(params) {
-  console.log('params: ', params);
   return request(`/problem/stat/ratio`, {
     method: 'POST',
     data:params,

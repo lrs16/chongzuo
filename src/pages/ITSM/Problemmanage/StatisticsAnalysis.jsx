@@ -247,8 +247,6 @@ function StatisticsAnalysis(props) {
     }
   }, [values]);
 
-  console.log(statratioArr && statratioArr.rate,'kokod')
-
   return (
     <div>
       <SelectTime ChangeDate={(v) => setValues(v)} />

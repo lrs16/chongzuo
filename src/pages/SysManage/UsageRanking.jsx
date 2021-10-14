@@ -8,14 +8,11 @@ import {
   Select,
   Empty,
   InputNumber,
-  Spin,
 } from 'antd';
 import styles from '../SysManage/index.less';
 import moment from 'moment';
 import ColumnarY from '../ITSM/Eventmanage/eventstatistics/ColumnarY';
 import SelectTime from '@/components/SelectTime/SelectTime';
-
-
 
 function UsageRanking(props) {
   const {
@@ -96,7 +93,8 @@ function UsageRanking(props) {
         payload: val
       })
     }
-  }, [values]);
+  }, [values]); 
+
   return (
     <div>
       <SelectTime ChangeDate={(v) => setValues(v)} />
@@ -141,13 +139,11 @@ function UsageRanking(props) {
           </Card>
         </Col>
       </Row>
-
-
     </div >
   )
 }
 
-export default connect(({ functionalranking, loading }) => ({
+export default connect(({ functionalranking }) => ({
   loginUserToparr: functionalranking.loginUserToparr,
   tabClickNumToparr: functionalranking.tabClickNumToparr,
 }))(UsageRanking);

@@ -195,8 +195,8 @@ function Besolved(props) {
     },
     {
       title: '重要程度',
-      dataIndex: 'mportance',
-      key: 'mportance',
+      dataIndex: 'importance',
+      key: 'importance',
       width: 150,
     },
     {
@@ -789,7 +789,6 @@ function Besolved(props) {
       }
     })
     validateFields((err, values) => {
-      console.log('values: ', (values.type)[1]);
       if (!err) {
         dispatch({
           type: 'problemmanage/eventdownload',
@@ -1041,8 +1040,6 @@ function Besolved(props) {
     }
   }, [location.state]);
 
-  console.log(cacheinfo,'cacheinfo')
-
   return (
     <PageHeaderWrapper title={differentTitle}>
       <SysDict
@@ -1117,7 +1114,7 @@ function Besolved(props) {
               </Col>
 
               <Col span={8}>
-                <Form.Item label="超时处理">
+                <Form.Item label="处理状态">
                   {getFieldDecorator('timeStatus',
                     {
                       initialValue: cacheinfo.timeStatus,
@@ -1242,7 +1239,7 @@ function Besolved(props) {
               </Col>
 
 
-              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+              {/* <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
                 <Form.Item label="超时处理">
                   {getFieldDecorator('timeStatus',
                     {
@@ -1258,7 +1255,7 @@ function Besolved(props) {
                     </Select>,
                   )}
                 </Form.Item>
-              </Col>
+              </Col> */}
 
               <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
                 <Form.Item label="处理人" >

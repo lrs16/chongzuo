@@ -214,8 +214,6 @@ function TobedealtForm(props) {
         tar2 = hisTasks[0]['服务绩效考核登记'].target2Id;
       }
 
-      console.log(tar2,'tar2')
-
       if (providerId || noeditProviderid) {
         getContrractname( providerId || noeditProviderid );
       }
