@@ -38,13 +38,11 @@ function AddagentObjDrawer(props) {
             getFieldDecorator,
             getFieldsValue,
             resetFields,
-            // validateFields
         },
         rows,
     } = props;
 
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false });
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [selectedRows, setSelectedRows] = useState([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
@@ -53,6 +51,7 @@ function AddagentObjDrawer(props) {
     const hanldleCancel = () => {
         ChangeVisible(false);
     };
+    
     const handleOk = () => {
         GetRowsData(selectedRows); // 获取选中的行数据
         GetRowskeysData(selectedRowKeys); // 获取选中的行key数据
@@ -273,13 +272,14 @@ function AddagentObjDrawer(props) {
         return [];
     };
 
-    const statusmap = [{
+    const statusmap = [{ // 状态
         key: '0',
         title: '在用'
     }, {
         key: '1',
         title: '停用'
-    }];       // 状态
+    }];    
+       
     const zonemap = getTypebyId('1428182995477942274'); // 主机区域
 
     return (

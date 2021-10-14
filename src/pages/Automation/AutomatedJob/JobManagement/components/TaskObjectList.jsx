@@ -1,13 +1,9 @@
-/* eslint-disable import/no-unresolved */
 import React, { useState, useEffect, useContext } from 'react';
-// import moment from 'moment';
 import { connect } from 'dva';
 import { Table, Button, Form, Input, Row, Col, Select, Alert, Tag, message, Badge, } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
 import EditContext from '@/layouts/MenuContext';
-// import SystemScriptDrawer from './SystemScriptDrawer';
-// import SysViewDrawer from './SysViewDrawer';
 
 const { Option } = Select;
 
@@ -42,7 +38,6 @@ function TaskObjectList(props) {
 
     const [expand, setExpand] = useState(false);
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [selectedRows, setSelectedRows] = useState([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
@@ -128,10 +123,6 @@ function TaskObjectList(props) {
         total: taskobjectlist.total,
         showTotal: total => `总共  ${total}  条记录`,
         onChange: page => changePage(page),
-    };
-
-    const logcalcel = (e) => {
-        console.log(e)
     };
 
     const columns = [
@@ -328,7 +319,7 @@ function TaskObjectList(props) {
                     <Col span={8} style={{ paddingLeft: expand ? '5.666667%' : '24px' }}>{extra}</Col>
                 </Form>
                 <Col span={24} style={{ marginLeft: 48, padding: 8 }}>{selectedRows.map(item => (
-                    <Tag key={item.id} color="red" closable onClose={() => logcalcel()}>{item.agentHost}</Tag>
+                    <Tag key={item.id} color="red" closable >{item.agentHost}</Tag>
                 ))}</Col>
                 <Col span={24}><Alert message={buttype === 'add' ? (`已选择【${selectedRows.length}】个agent` || `已选择【0】个agent`) : `已选择【${selectedRows.length}】个agent`} type="info" style={{ marginBottom: 5, marginLeft: 48, width: '96.6%' }} /></Col>
             </Row>

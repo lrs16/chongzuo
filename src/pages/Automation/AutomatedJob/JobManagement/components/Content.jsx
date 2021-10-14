@@ -1,6 +1,5 @@
 import React, { useState, forwardRef, useImperativeHandle, useEffect } from 'react';
 import { Form, Input, Radio, Button,} from 'antd';
-// import moment from 'moment'; DatePicker, 
 import DictLower from '@/components/SysDict/DictLower';
 import SystemScriptList1 from './SystemScriptList1';
 import TaskObjectList1 from './TaskObjectList1';
@@ -11,7 +10,6 @@ import AddsystermScriptDrawer from './AddsystermScriptDrawer';
 const { TextArea } = Input;
 
 const RadioGroup = Radio.Group;
-// const { RangePicker } = DatePicker;
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -37,11 +35,9 @@ const formItemLayout1 = {
 const formItemLayout444 = {
   labelCol: {
     xs: { span: 2 },
-    // sm: { span: 4 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    // sm: { span: 4 },
   },
 };
 

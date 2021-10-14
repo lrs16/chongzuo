@@ -1,4 +1,3 @@
-// import { message } from 'antd';
 import {
     taskObjectList, // 添加对象的数据
     inspectionhostList, // 主机list

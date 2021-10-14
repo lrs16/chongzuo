@@ -1,7 +1,4 @@
-import React, {
-  useEffect,
-  useState
-} from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
@@ -24,11 +21,6 @@ const formItemLayout = {
   },
 };
 
-// const colormap = new Map([
-//   ['停用', 'error'],
-//   ['在用', 'success'],
-// ]);
-
 function SoftTTRegister(props) {
   const pagetitle = props.route.name;
   const {
@@ -47,6 +39,7 @@ function SoftTTRegister(props) {
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
 
+  // 列表请求
   const searchdata = (page, size) => {
     const values = getFieldsValue();
     values.createStartTime = values.createStartTime ? moment(values.createStartTime).format('YYYY-MM-DD HH:mm:ss') : '';
@@ -73,6 +66,7 @@ function SoftTTRegister(props) {
     setPageinations({ current: 1, pageSize: 15 });
   };
 
+  // 去登记
   const newRegist = (buttype, record) => {
     if (buttype === 'edit') {
       router.push({
@@ -124,6 +118,7 @@ function SoftTTRegister(props) {
     onChange: page => changePage(page),
   };
 
+  // 查询
   const handleSearch = () => {
     setPageinations({
       ...paginations,
@@ -132,7 +127,8 @@ function SoftTTRegister(props) {
     searchdata(1, paginations.pageSize);
   };
 
-  const handleDelete = id => { // 删除
+  // 删除
+  const handleDelete = id => { 
     deleteAutoSoftWorkById(id).then(res => {
       if (res.code === 200) {
         message.success(res.msg || '删除成功');

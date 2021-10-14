@@ -1,7 +1,4 @@
-import React, {
-  useEffect, useRef, useState,
-  useContext
-} from 'react';
+import React, { useEffect, useRef, useState, useContext } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import { Button, Card, message } from 'antd';
@@ -10,7 +7,6 @@ import EditContext from '@/layouts/MenuContext';
 import Content from './components/Content';
 
 function New(props) {
-  // const pagetitle = props.route.name;
   const {
     dispatch,
     location,
@@ -21,7 +17,6 @@ function New(props) {
       }
     },
     tabnew,
-    // tabdata,
     Info,
   } = props;
 
@@ -33,7 +28,7 @@ function New(props) {
     if (currenttab && currenttab.state) {
       setMenuDesc(currenttab.state.menuDesc);
     }
-  }, [currenttab])
+  }, [currenttab]);
 
   useEffect(() => {
     if (Id && (Id !== '' || Id !== undefined)) {
@@ -44,9 +39,10 @@ function New(props) {
         },
       });
     }
-  }, [Id])
+  }, [Id]);
 
-  const handleClick = (buttonype) => { // 保存添加
+  // 保存（新增、编辑）
+  const handleClick = (buttonype) => { 
     ContentRef.current.Forms((err, values) => {
       if (err) {
         message.error('请将信息填写完整')
@@ -92,9 +88,10 @@ function New(props) {
         }
       }
     })
-  }
+  };
 
-  const handleSubmit = (buttonype) => { // 提交 
+   // 提交（新增、编辑）
+  const handleSubmit = (buttonype) => { 
     ContentRef.current.Forms((err, values) => {
       if (err) {
         message.error('请将信息填写完整')
@@ -111,7 +108,8 @@ function New(props) {
     })
   };
 
-  const handleDelete = () => { // 删除
+  // 删除
+  const handleDelete = () => { 
     dispatch({
       type: 'autotask/todeleteTask',
       payload: { taskId: Id },
@@ -129,7 +127,8 @@ function New(props) {
     });
   };
 
-  const handleclose = () => { // 返回
+  // 返回
+  const handleclose = () => { 
     router.push({
       pathname: `/automation/automatedjob/jobmanagement/jobconfig`,
       query: { pathpush: true },
@@ -159,7 +158,7 @@ function New(props) {
         ContentRef.current.resetVal();   // 页签数据获取完成清空表单
       };
     };
-  }, [location])
+  }, [location]);
 
   const operations = (
     <>

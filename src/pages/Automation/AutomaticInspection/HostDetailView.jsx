@@ -2,8 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import Link from 'umi/link';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Table, Card, Button, Form, Input, Tooltip, Row, Col, message, Badge, Select } from 'antd';
+import { 
+    Card, 
+    Button, 
+    Form, 
+    Input, 
+    Tooltip, 
+    Row, 
+    Col, 
+    message, 
+    Badge, 
+    Select 
+} from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import DictLower from '@/components/SysDict/DictLower';
 import MergeTable from './components/MergeTable';
@@ -49,8 +59,9 @@ function HostDetailView(props) {
     } = props;
 
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
-    const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+    const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 }); // 分页
 
+    // 列表请求
     const searchdata = (page, size) => {
         const values = getFieldsValue();
         dispatch({
@@ -64,12 +75,14 @@ function HostDetailView(props) {
         });
     };
 
+    // 获取初始列表数据
     useEffect(() => {
         if (Id && Id !== '' && Id !== undefined) {
             searchdata(1, 15);
         }
     }, [location && Id]);
 
+    // 重置
     const handleReset = () => {
         resetFields();
         searchdata(1, 15);
@@ -92,6 +105,7 @@ function HostDetailView(props) {
         });
     };
 
+    // 分页
     const pagination = {
         showSizeChanger: true,
         onShowSizeChange: (page, size) => onShowSizeChange(page, size),
@@ -102,6 +116,7 @@ function HostDetailView(props) {
         onChange: page => changePage(page),
     };
 
+    // 查询
     const handleSearch = () => {
         setPageinations({
             ...paginations,
@@ -110,7 +125,8 @@ function HostDetailView(props) {
         searchdata(1, paginations.pageSize);
     };
 
-    const download = () => { // 下载巡检明细
+    // 巡检明细下载xls
+    const download = () => { 
         if (Id) {
             downloadInfoExcel(Id).then(resp => {
                 const filename = `主机巡检明细下载_${Id}.xls`;

@@ -8,7 +8,6 @@ import SysUpload from '@/components/SysUpload/Upload';
 import FilesContext from '@/layouts/MenuContext';
 import PatrolconfigModal from './components/PatrolconfigModal';
 import PatrolBriefDrawer from './components/PatrolBriefDrawer';
-// import { PaperClipOutlined } from '@ant-design/icons';
 import { saveFileIds, createReport, createInspectionall } from './services/api';
 
 const { Option } = Select;
@@ -59,6 +58,7 @@ function HostPatrol(props) {
   const [filelist, setFilelist] = useState([]);
   const [filelistid, setFilelistId] = useState('');
 
+  // 列表请求
   const searchdata = (page, size) => {
     const values = getFieldsValue();
     values.time1 = values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '';
@@ -77,6 +77,7 @@ function HostPatrol(props) {
     searchdata(1, 15);
   }, [location]);
 
+  // 附件上传
   useEffect(() => {
     if (filelist !== [] && filelistid !== '') {
       saveFileIds({ fileIds: JSON.stringify(filelist), id: filelistid }).then(res => {
@@ -89,25 +90,6 @@ function HostPatrol(props) {
       });
     }
   }, [filelist && filelistid]);
-
-  // 列表中下载附件
-  // const handledownload = info => {
-  //   dispatch({
-  //     type: 'sysfile/downloadfile',
-  //     payload: {
-  //       id: info.uid,
-  //     },
-  //   }).then(res => {
-  //     const filename = info.name;
-  //     const blob = new Blob([res]);
-  //     const url = window.URL.createObjectURL(blob);
-  //     const a = document.createElement('a');
-  //     a.href = url;
-  //     a.download = filename;
-  //     a.click();
-  //     window.URL.revokeObjectURL(url);
-  //   });
-  // };
 
   const onShowSizeChange = (page, size) => {
     searchdata(page, size);
@@ -125,6 +107,7 @@ function HostPatrol(props) {
     });
   };
 
+  // 分页
   const pagination = {
     showSizeChanger: true,
     onShowSizeChange: (page, size) => onShowSizeChange(page, size),
@@ -135,12 +118,14 @@ function HostPatrol(props) {
     onChange: page => changePage(page),
   };
 
+  // 重置
   const handleReset = () => {
     resetFields();
     searchdata(1, 15)
     setPageinations({ current: 1, pageSize: 15 });
   };
 
+  // 查询 
   const handleSearch = () => {
     setPageinations({
       ...paginations,
@@ -149,6 +134,7 @@ function HostPatrol(props) {
     searchdata(1, paginations.pageSize);
   };
 
+  // 跳转巡检明细详情
   const newDetailView = (Id) => {
     router.push({
       pathname: '/automation/automaticinspection/hostpatrol/hostview',
@@ -160,7 +146,8 @@ function HostPatrol(props) {
     })
   };
 
-  const handledownFileToZip = (id, no) => { // 下载报告
+  // 下载报告
+  const handledownFileToZip = (id, no) => { 
     createReport(id).then(res => {
       const filename = `${no}_报告.docx`;
       const blob = new Blob([res]);
@@ -179,6 +166,7 @@ function HostPatrol(props) {
     <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button></>
   );
 
+  // 打开简报
   const handleShowBrieDrawer = (drawtitle, Id) => {
     setTitle(drawtitle);
     setVisible(!visible);
@@ -248,31 +236,6 @@ function HostPatrol(props) {
             <a type="link"
               onClick={() => newDetailView(record.id)}
             >查看明细</a></span>
-          // <div >
-          //   {
-          //     record.fileIds && record.fileIds !== '[]' && record.fileIds !== null ?
-          //       (<div style={{ marginTop: '7px' }}>
-          //         {JSON.parse(record.fileIds).map((obj, index) => {
-          //           return (
-          //             <div key={index.toString()} style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', width: 280, overflow: 'hidden' }}>
-          //               <PaperClipOutlined
-          //                 style={{ marginRight: 8, fontSize: 11, color: 'rgba(0, 0, 0, 0.45)' }}
-          //               />
-          //               <a onClick={() => handledownload(obj)}>{obj.name}</a>
-          //             </div>
-          //           );
-          //         })}
-          //       </div>) : (
-          //         <FilesContext.Provider value={{
-          //           files: [],
-          //           // files: record.fileIds && record.fileIds !== '[]' && record.fileIds !== null ? JSON.parse(record.fileIds) : [],
-          //           ChangeFiles: (v => { setFilelist(v); setFilelistId(record.id); }),
-          //         }}>
-          //           <SysUpload key={record.id} />
-          //         </FilesContext.Provider>
-          //       )
-          //   }
-          // </div>
         );
       },
     },
@@ -284,7 +247,6 @@ function HostPatrol(props) {
       render: (_, record) => {
         return (
           <FilesContext.Provider value={{
-            // files: [],
             files: record.fileIds && record.fileIds !== '[]' && record.fileIds !== null ? JSON.parse(record.fileIds) : [],
             ChangeFiles: (v => { setFilelist(v); setFilelistId(record.id); }),
           }}>

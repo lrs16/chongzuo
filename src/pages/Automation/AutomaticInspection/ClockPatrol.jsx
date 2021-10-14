@@ -48,8 +48,9 @@ function ClockPatrol(props) {
     },
   } = props;
 
-  const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 }); // 分页
 
+  // 获取列表
   const searchdata = (page, size) => {
     const values = getFieldsValue();
     values.time1 = values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '';
@@ -109,7 +110,8 @@ function ClockPatrol(props) {
     searchdata(1, paginations.pageSize);
   };
 
-  const newDetailView = (Id) => { // 查看报告
+  // 查看报告
+  const newDetailView = (Id) => { 
     router.push({
       pathname: '/automation/automaticinspection/clockpatrol/clockview',
       query: {

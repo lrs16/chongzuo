@@ -11,12 +11,11 @@ function PatrolBriefDrawer(props) {
         ChangeVisible,
         Id,
         title,
-        // dispatch,
     } = props;
 
-    const [brierInfo, setBrierInfo] = useState('');
+    const [brierInfo, setBrierInfo] = useState(''); // 获取简报
 
-    // 打开简报
+    // 获取简报
     useEffect(() => {
         if (Id) {
             openhostBriefing(Id).then(resp => {
@@ -29,11 +28,13 @@ function PatrolBriefDrawer(props) {
         }
     }, [Id])
 
-    const hanldleCancel = () => { // 取消
+    // 取消
+    const hanldleCancel = () => {
         ChangeVisible(false);
     };
 
-    const hanldleSave = () => { // 保存
+    // 简报保存
+    const hanldleSave = () => {
         saveBriefing({ briefing: brierInfo, id: Id }).then(res => {
             if (res.code === 200) {
                 message.success(res.msg);
@@ -43,7 +44,8 @@ function PatrolBriefDrawer(props) {
         });
     };
 
-    const handleOk = () => { // 下载简报
+    // 下载简报
+    const handleOk = () => {
         saveBriefing({ briefing: brierInfo, id: Id }).then(res => {
             if (res.code === 200) {
                 downloadBriefing(Id).then(resp => {
@@ -60,9 +62,10 @@ function PatrolBriefDrawer(props) {
         });
         // 关闭弹窗
         hanldleCancel();
-        ChangeVisible(false);
+        // ChangeVisible(false); 关闭弹窗
     };
 
+    // 简报编辑
     const handleChange = e => {
         setBrierInfo(e.target.value);
     }

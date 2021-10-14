@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-// import { connect } from 'dva';
 import {
     Form,
     Modal,
@@ -37,7 +36,6 @@ function TaskScriptModel(props) {
 
     const { id } = props.record;
     const [visible, setVisible] = useState(false);
-    // const [tabActivekey, settabActivekey] = useState('script'); // 打开标签
     const [data, setData] = useState([]);
 
     const handleCancel = () => {

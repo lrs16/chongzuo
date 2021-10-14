@@ -181,8 +181,7 @@ function Contentdes(props) {
         visible={visible}
         ChangeVisible={newvalue => setVisible(newvalue)}
         title={title}
-        detaildata={detaildata}
-
+        getdetaildata={detaildata}
       />
     </>)
   );

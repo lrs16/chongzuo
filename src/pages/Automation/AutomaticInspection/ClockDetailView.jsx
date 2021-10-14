@@ -100,7 +100,8 @@ function ClockDetailView(props) {
         searchdata(1, paginations.pageSize);
     };
 
-    const download = () => { // 下载巡检明细
+    // 巡检明细下载
+    const download = () => { 
         if (Id) {
             downloadclockInfoExcel(Id).then(resp => {
                 const filename = `时钟巡检明细下载_${Id}.xls`;

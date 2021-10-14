@@ -14,11 +14,13 @@ const formItemLayout = {
     },
     colon: false,
 };
-
 function AviewMadel(props) {
-    const { visible, title, ChangeVisible, detaildata } = props;
-
-    // const { scriptName, scriptType, scriptCont, director, scriptArgs, scriptRemarks, } = props.detaildata;
+    const { 
+        visible, 
+        title, 
+        ChangeVisible, 
+        getdetaildata 
+    } = props;
 
     const handleCancel = () => {
         ChangeVisible(false);
@@ -32,27 +34,28 @@ function AviewMadel(props) {
             footer={null}
             visible={visible}
             onCancel={() => handleCancel()}
+            destroyOnClose
         >
             <Form {...formItemLayout}>
                 <Form.Item label="脚本名称" >
-                    <Input defaultValue={detaildata.scriptName} disabled />
+                    <Input defaultValue={getdetaildata.scriptName} disabled />
                 </Form.Item>
                 <Form.Item label="脚本类型">
-                    <Radio.Group value={detaildata.scriptType} disabled>
+                    <Radio.Group value={getdetaildata.scriptType} disabled>
                         <Radio value='shell'>shell</Radio>
                     </Radio.Group>
                 </Form.Item>
                 <Form.Item label="脚本内容">
-                    <TextArea autoSize={{ minRows: 30 }} defaultValue={detaildata.scriptCont} disabled />
+                    <TextArea autoSize={{ minRows: 30 }} defaultValue={getdetaildata.scriptCont} disabled />
                 </Form.Item>
                 <Form.Item label="负责人">
-                    <Input defaultValue={detaildata.director} disabled />
+                    <Input defaultValue={getdetaildata.director} disabled />
                 </Form.Item>
                 <Form.Item label="脚本参数">
-                    <Input defaultValue={detaildata.scriptArgs} disabled />
+                    <Input defaultValue={getdetaildata.scriptArgs} disabled />
                 </Form.Item>
                 <Form.Item label="脚本备注">
-                    <TextArea autoSize={{ minRows: 3 }} defaultValue={detaildata.scriptRemarks} disabled />
+                    <TextArea autoSize={{ minRows: 3 }} defaultValue={getdetaildata.scriptRemarks} disabled />
                 </Form.Item>
             </Form>
         </Modal>
@@ -60,7 +63,14 @@ function AviewMadel(props) {
 }
 
 AviewMadel.defaultProps = {
-    record: { scriptName: '', scriptType: '', scriptCont: '', director: '', scriptArgs: '', scriptRemarks: '', },
+    record: {
+        scriptName: '',
+        scriptType: '',
+        scriptCont: '',
+        director: '',
+        scriptArgs: '',
+        scriptRemarks: '',
+    },
 };
 
 export default Form.create()(AviewMadel);

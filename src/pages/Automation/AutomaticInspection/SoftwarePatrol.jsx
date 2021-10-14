@@ -108,6 +108,7 @@ function SoftwarePatrol(props) {
     searchdata(1, paginations.pageSize);
   };
 
+  // to查看明细详情
   const newDetailView = (Id) => {
     router.push({
       pathname: '/automation/automaticinspection/softwarepatrol/softview',
@@ -119,7 +120,8 @@ function SoftwarePatrol(props) {
     })
   };
 
-  const handledownFileToZip = (id, no) => { // 下载报告
+  // 报告下载
+  const handledownFileToZip = (id, no) => { 
     createsoftReport(id).then(res => {
       const filename = `${no}_报告.docx`;
       const blob = new Blob([res]);

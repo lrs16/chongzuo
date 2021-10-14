@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
-// import router from 'umi/router';
-// import moment from 'moment';
 import DictLower from '@/components/SysDict/DictLower';
-import { Table, Button, Form, Select, Row, Col, Badge, Tooltip, message } from 'antd';
+import { Table, Button, Form, Select, Row, Col, Badge, Tooltip } from 'antd';
 
 const { Option } = Select;
 
@@ -40,13 +38,12 @@ function LogViews(props) {
 
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false });
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [selectedRows, setSelectedRows] = useState([]);
+    // const [selectedRows, setSelectedRows] = useState([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
-    const onSelectChange = (RowKeys, Rows) => {
+    const onSelectChange = (RowKeys) => {
         setSelectedRowKeys(RowKeys);
-        setSelectedRows(Rows);
+        // setSelectedRows(Rows);
     };
 
     const rowSelection = {
@@ -113,16 +110,16 @@ function LogViews(props) {
         searchdata(1, paginations.pageSize);
     };
 
-    const keyallrelation = () => {
-        const len = selectedRowKeys.length;
-        if(len === 0) {
-            message.error("您还没有选择数据！");
-        } else {
-            const ids = selectedRows.map(i => {return i.id;});
-            GetrelationId(ids);
-            ChangeshowlistValue(false);
-        }
-    }
+    // const keyallrelation = () => {
+    //     const len = selectedRowKeys.length;
+    //     if(len === 0) {
+    //         message.error("您还没有选择数据！");
+    //     } else {
+    //         const ids = selectedRows.map(i => {return i.id;});
+    //         GetrelationId(ids);
+    //         ChangeshowlistValue(false);
+    //     }
+    // };
 
     // 查询
     const extra = (<>
@@ -191,7 +188,6 @@ function LogViews(props) {
                     {text}
                   </Tooltip>)
               }
-            // render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
         },
         {
             title: '执行类型',
@@ -281,11 +277,11 @@ function LogViews(props) {
                     <Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>
                 </Form>
             </Row>
-            <div style={{ marginBottom: 8 }}>
+            {/* <div style={{ marginBottom: 8 }}>
                 <Button type="primary" style={{ marginRight: 8 }}
                 onClick={() => {keyallrelation(); }}
                 >一键关联故障单</Button >
-            </div>
+            </div> */}
             <Table
                 columns={columns}
                 rowKey={record => record.id}

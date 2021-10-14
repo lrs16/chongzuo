@@ -36,17 +36,6 @@ const formItemLayout1 = {
   },
 };
 
-// const formItemLayout444 = {
-//   labelCol: {
-//     xs: { span: 2 },
-//     sm: { span: 1 },
-//   },
-//   wrapperCol: {
-//     xs: { span: 22 },
-//     sm: { span: 2 },
-//   },
-// };
-
 const Content = forwardRef((props, ref) => {
   const {
     userinfo, Noediting,

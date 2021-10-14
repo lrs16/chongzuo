@@ -28,16 +28,17 @@ function RelationDrawer(props) {
     orderTypeSuf,
     ChangeVisible,
     orderlist,
-    loading } = props;
-
-  const {
+    loading,
     form: {
       getFieldDecorator,
       getFieldsValue,
       resetFields,
-    }, } = props;
+    },
+  } = props;
+
   const [troublestatus, setTroublestatus] = useState([]);
   const [problemstatus, setproblemstatus] = useState([]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [releasestatus, setReleasestatus] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
@@ -52,12 +53,12 @@ function RelationDrawer(props) {
     onChange: onSelectChange,
   };
 
+  // 保存
   const handleSave = () => {
     const len = selectedRowKeys.length;
     if (len === 0) {
       message.error('您还没有选择数据');
     } else {
-      // 保存
       dispatch({
         type: 'relationorder/saverelation',
         payload: {
@@ -77,6 +78,7 @@ function RelationDrawer(props) {
     ChangeVisible(false);
   };
 
+  // 查询
   const handleSearch = (no, status, pageIndex, pageSize) => {
     if (orderTypeSuf === 'trouble') {
       dispatch({
@@ -105,7 +107,8 @@ function RelationDrawer(props) {
     handleSearch(values.no, status, 0, 15);
   }
 
-  const handleReset = () => { // 重置
+  // 重置
+  const handleReset = () => { 
     resetFields();
     const values = getFieldsValue();
     handleSearch(values.no, values.status, 0, 15);

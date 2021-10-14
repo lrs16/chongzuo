@@ -31,13 +31,8 @@ function TimedExecuteList(props) {
         },
     } = props;
 
-    // const [visible, setVisible] = useState(false); // 抽屉是否显示
-    // const [title, setTitle] = useState('');
-    // const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
-    // const [data, setData] = useState('');
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [selectedRows, setSelectedRows] = useState([]);
 
     const onSelectChange = (RowKeys, Rows) => {
@@ -50,6 +45,7 @@ function TimedExecuteList(props) {
         onChange: onSelectChange,
     };
 
+    // 请求列表
     const searchdata = (page, size) => {
         const values = getFieldsValue();
         values.taskModes = '0';
@@ -68,23 +64,6 @@ function TimedExecuteList(props) {
     useEffect(() => {
         searchdata(1, 15);
     }, [location]);
-
-    // const handlerunTask = id => { // 执行
-    //     dispatch({
-    //         type: 'autotask/toqueryrunTask',
-    //         payload: {
-    //             taskId: id
-    //         },
-    //     }).then(res => {
-    //         if (res.code === 200) {
-    //             message.success(res.msg || '执行成功！');
-    //             searchdata(1, 15);
-    //         } else {
-    //             message.error(res.msg);
-    //         }
-    //     });
-    // };
-
 
     const handleReset = () => {
         resetFields();
@@ -126,6 +105,7 @@ function TimedExecuteList(props) {
         searchdata(1, paginations.pageSize);
     };
 
+    // table上面按钮操作
     const handleClickRevoke = (buttype) => { // 撤销、删除、废止
         switch (buttype) {
             case 'taskrevoke': {
@@ -206,6 +186,7 @@ function TimedExecuteList(props) {
         }
     };
 
+    // 定时执行操作
     const handleClickTask = (buttontype, id) => { // 启动1、停止0执行操作
         switch (buttontype) {
             case 'start': { // 启动 
@@ -223,7 +204,7 @@ function TimedExecuteList(props) {
                 })
                 break;
             }
-            case 'stop': {
+            case 'stop': { // 停止
                 const newvalue = {
                     taskId: id,
                     qrtzJobStatus: '0'
@@ -249,22 +230,12 @@ function TimedExecuteList(props) {
                 })
                 break;
             }
-            // case 'endexecute': { // 结束执行
-            //     queryrunTask(id).then(res => {
-            //         if (res.code === 200) {
-            //             message.success(res.msg);
-            //         } else {
-            //             message.error(res.msg);
-            //         };
-            //         searchdata(1, 15);
-            //     })
-            //     break;
-            // }
             default:
                 break;
         }
     };
 
+    // 执行日志
     const newpagetolog = id => {
         router.push({
             pathname: '/automation/automatedjob/jobmanagement/jobexecute/scheduledexecutionlog',
@@ -274,13 +245,13 @@ function TimedExecuteList(props) {
                 menuDesc: '定时执行日志',
             },
         })
-    }
+    };
 
     // 查询
     const extra = (<>
         <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
         <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button></>
-    )
+    );
 
     const columns = [
         {
@@ -358,7 +329,7 @@ function TimedExecuteList(props) {
             key: 'action',
             fixed: 'right',
             width: 220,
-            render: (text, record) => {
+            render: (_, record) => {
                 return (
                     <>
                         {
@@ -381,12 +352,6 @@ function TimedExecuteList(props) {
                             手动执行
                         </a>
                         <Divider type="vertical" />
-                        {/* <a type="link"
-                            onClick={() => handleClickTask('endexecute', record.id)}
-                        >
-                            结束执行
-                        </a>
-                        <Divider type="vertical" /> */}
                         <a type="link" onClick={() => newpagetolog(record.id)}>
                             执行日志
                         </a>

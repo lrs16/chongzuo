@@ -1,17 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-// import router from 'umi/router';
 import moment from 'moment';
 import Link from 'umi/link';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Table, Card, Button, Form, Input, Tooltip, Row, Col, DatePicker, Select, Badge } from 'antd';
+import {
+    Table,
+    Card,
+    Button,
+    Form,
+    Input,
+    Tooltip,
+    Row,
+    Col,
+    DatePicker,
+    Select,
+    Badge
+} from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-// import DictLower from '@/components/SysDict/DictLower';
 import { querkeyVal } from '@/services/api';
 
 const { Option } = Select;
 
-// const { Option } = Select;
 const operations = <Button type="primary">
     <Link to="/automation/automatedjob/jobmanagement/jobexecute">返回列表</Link>
 </Button>;
@@ -70,21 +78,9 @@ function ManualLog(props) {
         });
     };
 
-    // const tosearchlog = (Id) => {
-    //     dispatch({
-    //         type: 'autotask/findlistPageAutoTaskLogs',
-    //         payload: {
-    //             taskId: Id,
-    //         },
-    //     });
-    // };
-
     useEffect(() => {
-        // if(Id && (Id !== '' || Id !== undefined)) {
-        //     tosearchlog(Id);
-        // } else {
         searchdata(1, 15);
-        // }
+        // 数据字典获取
         querkeyVal('agent', 'host_zone_id').then(res => { // 区域
             if (res.code === 200) {
                 const value = Object.values(res.data)[0];
@@ -151,16 +147,6 @@ function ManualLog(props) {
         <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
         <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button></>
     );
-
-    // 数据字典取下拉值
-    // const getTypebyId = key => {
-    //     if (selectdata.ischange) {
-    //         return selectdata.arr[0].children.filter(item => item.key === key)[0].children;
-    //     }
-    //     return [];
-    // };
-    // getTypebyId('200000000000001004')
-    // const executestatusmap = [];       // 执行状态
 
     const columns = [
         {
@@ -264,12 +250,6 @@ function ManualLog(props) {
 
     return (
         <PageHeaderWrapper title={pagetitle} extra={operations}>
-            {/* <DictLower
-                typeid="200000000000001001"
-                commonid="100000000000001001"
-                ChangeSelectdata={newvalue => setSelectData(newvalue)}
-                style={{ display: 'none' }}
-            /> */}
             <Card>
                 <Row gutter={16}>
                     <Form {...formItemLayout} onSubmit={handleSearch}>
@@ -285,12 +265,12 @@ function ManualLog(props) {
                                 {getFieldDecorator('agentZone', {
                                     initialValue: '',
                                 })(<Select placeholder="请选择" allowClear>
-                                {agentzonemap && agentzonemap.length > 0 && agentzonemap.map(obj => (
-                                    <Option key={obj.key} value={obj.key}>
-                                        {obj.title}
-                                    </Option>
-                                ))}
-                            </Select>)}
+                                    {agentzonemap && agentzonemap.length > 0 && agentzonemap.map(obj => (
+                                        <Option key={obj.key} value={obj.key}>
+                                            {obj.title}
+                                        </Option>
+                                    ))}
+                                </Select>)}
                             </Form.Item>
                         </Col>
                         <Col span={8}>

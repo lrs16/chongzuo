@@ -2,8 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import Link from 'umi/link';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Table, Card, Button, Form, Input, Tooltip, Row, Col, message, Badge, Select } from 'antd';
+import { 
+    Table, 
+    Card, 
+    Button, 
+    Form, 
+    Input, 
+    Tooltip, 
+    Row, 
+    Col, 
+    message, 
+    Badge, 
+    Select 
+} from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import DictLower from '@/components/SysDict/DictLower';
 import { downloadsoftInfoExcel, createsoftEvent } from './services/api';
@@ -41,7 +52,7 @@ function SoftDetailView(props) {
     } = props;
 
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
-    const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+    const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 }); // 分页
 
     const searchdata = (page, size) => {
         const values = getFieldsValue();
@@ -102,7 +113,8 @@ function SoftDetailView(props) {
         searchdata(1, paginations.pageSize);
     };
 
-    const download = () => { // 下载巡检明细
+    // 巡检明细下载
+    const download = () => { 
         if (Id) {
             downloadsoftInfoExcel(Id).then(resp => {
                 const filename = `软件巡检明细下载_${Id}.xls`;

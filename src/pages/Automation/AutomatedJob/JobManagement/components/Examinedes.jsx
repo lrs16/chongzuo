@@ -3,15 +3,6 @@ import { Form, Input, Row, Col, Radio } from 'antd';
 
 const { TextArea } = Input;
 
-// const resultmap = new Map([
-//   [1, '通过'],
-//   [0, '不通过'],
-//   [2, '通过'],
-//   [3, '通过'],
-//   [4, '通过'],
-// ]);
-// // value={resultmap.get(info.result)}
-
 function Examinedes(props) {
   const { formItemLayout, forminladeLayout } = props;
   return (

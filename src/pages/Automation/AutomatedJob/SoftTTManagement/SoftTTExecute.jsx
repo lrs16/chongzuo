@@ -3,7 +3,6 @@ import React, {
   useState
 } from 'react';
 import { connect } from 'dva';
-// import router from 'umi/router';
 import moment from 'moment';
 import { Table, Card, Button, Form, Input, Select, Row, Col, DatePicker, Divider, message, Popconfirm } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -26,11 +25,6 @@ const formItemLayout = {
   },
 };
 
-// const colormap = new Map([
-//   ['停用', 'error'],
-//   ['在用', 'success'],
-// ]);
-
 function SoftTTExecute(props) {
   const pagetitle = props.route.name;
   const {
@@ -51,7 +45,8 @@ function SoftTTExecute(props) {
   const [visibledrawer, setVisibledrawer] = useState(false); // 抽屉是否显示
   const [titledrawer, setTitledrawer] = useState('');
   const [recordvalues, setRecordvalues] = useState({});
-  // const [disable, setdisable] = useState(false);
+  // const [butdisable, setButDisable] = useState(false);
+  // const [sameId, setsameId] = useState('');
 
   const searchdata = (page, size) => {
     const values = getFieldsValue();
@@ -113,6 +108,7 @@ function SoftTTExecute(props) {
     searchdata(1, paginations.pageSize);
   };
 
+  // 启动
   const torunAutoSoftWork = id => {
     runAutoSoftWork(id).then(res => {
       if (res.code === 200) {
@@ -123,6 +119,7 @@ function SoftTTExecute(props) {
     })
   };
 
+  // 停止
   const tostopAutoSoftWork = id => {
     stopAutoSoftWork(id).then(res => {
       if (res.code === 200) {
@@ -133,17 +130,20 @@ function SoftTTExecute(props) {
     })
   };
 
+  // 结束作业
   const toendAutoSoftWork = id => {
     endAutoSoftWork(id).then(res => {
       if (res.code === 200) {
         message.success(res.msg || '结束作业成功！');
-        // setdisable(true);
+        // setsameId(id);
+        // setButDisable(true);
       } else {
         message.error(res.msg);
       }
     })
   };
 
+  // 打开日志抽屉
   const handleShowDrawer = (drwertitle, record) => {
     setVisibledrawer(!visibledrawer);
     setTitledrawer(drwertitle);
@@ -246,7 +246,7 @@ function SoftTTExecute(props) {
           <div>
             <Popconfirm title="是否确定启动软件？" onConfirm={() => torunAutoSoftWork(record.id)}>
               <a type="link"
-              // disabled={disable}
+                // disabled={record.id === sameId ? butdisable : false}
               >
                 启动
               </a>
@@ -254,7 +254,7 @@ function SoftTTExecute(props) {
             <Divider type="vertical" />
             <Popconfirm title="是否确定停止软件？" onConfirm={() => tostopAutoSoftWork(record.id)}>
               <a type="link"
-              // disabled={disable}
+                // disabled={record.id === sameId ? butdisable : false}
               >
                 停止
               </a>
@@ -262,7 +262,7 @@ function SoftTTExecute(props) {
             <Divider type="vertical" />
             <Popconfirm title="是否确定结束作业？" onConfirm={() => toendAutoSoftWork(record.id)}>
               <a type="link"
-              // disabled={disable}
+                // disabled={record.id === sameId ? butdisable : false}
               >
                 结束作业
               </a>

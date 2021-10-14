@@ -148,7 +148,8 @@ function JobConfig(props) {
         searchdata(1, paginations.pageSize);
     };
 
-    const handleDelete = id => { // 删除
+    // 删除
+    const handleDelete = id => { 
         dispatch({
             type: 'autotask/todeleteTask',
             payload: { taskId: id },

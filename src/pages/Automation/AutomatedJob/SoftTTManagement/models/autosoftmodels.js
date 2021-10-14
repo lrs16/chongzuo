@@ -1,5 +1,4 @@
 import { message } from 'antd';
-// import router from 'umi/router';
 import {
     listPageAutoSoftWord, // 启停列表
     listPageSoftWorkLogs, // 启停日志列表

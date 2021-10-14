@@ -1,12 +1,10 @@
 import React, {
-  useState, useRef,
-  // useContext, 
-  useEffect
+  useState, useRef, useEffect, // useContext, 
 } from 'react';
 import router from 'umi/router';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Collapse, Button, message } from 'antd';
+import { Collapse, Button, message, Spin } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import EditContext from '@/layouts/MenuContext'; // 引用上下文管理组件
 import Content from './components/Content';
@@ -40,17 +38,17 @@ const forminladeLayout = {
 
 function Newregist(props) {
   const pagetitle = props.route.name;
-  const { dispatch,
+  const {
+    dispatch,
     userinfo,
-    // location, 
-    // loading, 
+    loading,
     location: {
       query: {
         Id,
         buttype
       }
     },
-    Info, // 获得作业方案数据
+    Info, // 作业方案数据
   } = props;
 
   const [activeKey, setActiveKey] = useState(['formpanel', 'formpanel2']);
@@ -61,6 +59,7 @@ function Newregist(props) {
     setActiveKey(key);
   };
 
+  // 获取作业方案数据
   useEffect(() => {
     if (Id && (Id !== '' || Id !== undefined)) {
       dispatch({
@@ -72,6 +71,7 @@ function Newregist(props) {
     }
   }, [Id]);
 
+  // 保存（新增、编辑）
   const handleSaveClick = (buttonype) => { // 保存添加
     if (activeKey.length === 2) {
       ContentRef.current.Forms((err) => {
@@ -148,6 +148,7 @@ function Newregist(props) {
     }
   };
 
+  // 返回按钮
   const handleclose = () => {
     router.push({
       pathname: `/automation/automatedjob/softstartandstop/softregister`,
@@ -156,7 +157,8 @@ function Newregist(props) {
     });
   };
 
-  const handleSubmit = (buttonype) => { // 提交 
+  // 提交（新增、编辑）
+  const handleSubmit = (buttonype) => {  
     if (activeKey.length === 2) {
       ContentRef.current.Forms((err) => {
         const values = ContentRef.current?.getVal();
@@ -284,7 +286,6 @@ function Newregist(props) {
     }
   };
 
-
   // 加载用户信息
   useEffect(() => {
     dispatch({
@@ -311,63 +312,65 @@ function Newregist(props) {
       <Button onClick={handleclose}>返回</Button>
     </>
   );
+
   return (
     <div style={{ marginTop: '-24px' }}>
       <PageHeaderWrapper
         title={pagetitle}
         extra={operations}
       >
-        {/* <Spin spinning={loading} > */}
-        <div className={styles.collapse}>
-          <Collapse
-            expandIconPosition="right"
-            activeKey={activeKey}
-            bordered={false}
-            onChange={callback}
-          >
-            <Panel header='启停登记' key="formpanel">
-              <EditContext.Provider value={{
-                editable: true,
-                workId: Id,
-                buttype
-              }}>
-                <Content
-                  wrappedComponentRef={ContentRef}
-                  userinfo={userinfo}
-                  registrat={Info.autoSoftWork}
-                />
-              </EditContext.Provider>
-            </Panel>
-            <Panel header='启停审核' key="formpanel2">
-              {
-                (Id && (Id !== '' || Id !== undefined)) ? (Info.autoSoftWorkExamine && (<Examine
-                  wrappedComponentRef={ExmaineRef}
-                  check={Info.autoSoftWorkExamine}
-                  formItemLayout={formItemLayout}
-                  forminladeLayout={forminladeLayout}
-                  userinfo={userinfo}
-                />)) : (<Examine
-                  wrappedComponentRef={ExmaineRef}
-                  check={Info.autoSoftWorkExamine}
-                  formItemLayout={formItemLayout}
-                  forminladeLayout={forminladeLayout}
-                  userinfo={userinfo}
-                />)
-              }
+        <Spin spinning={loading} >
+          <div className={styles.collapse}>
+            <Collapse
+              expandIconPosition="right"
+              activeKey={activeKey}
+              bordered={false}
+              onChange={callback}
+            >
+              <Panel header='启停登记' key="formpanel">
+                <EditContext.Provider value={{
+                  editable: true,
+                  workId: Id,
+                  buttype
+                }}>
+                  <Content
+                    wrappedComponentRef={ContentRef}
+                    userinfo={userinfo}
+                    registrat={Info.autoSoftWork}
+                  />
+                </EditContext.Provider>
+              </Panel>
+              <Panel header='启停审核' key="formpanel2">
+                {
+                  (Id && (Id !== '' || Id !== undefined)) ? (Info.autoSoftWorkExamine && (<Examine
+                    wrappedComponentRef={ExmaineRef}
+                    check={Info.autoSoftWorkExamine}
+                    formItemLayout={formItemLayout}
+                    forminladeLayout={forminladeLayout}
+                    userinfo={userinfo}
+                  />)) : (<Examine
+                    wrappedComponentRef={ExmaineRef}
+                    check={Info.autoSoftWorkExamine}
+                    formItemLayout={formItemLayout}
+                    forminladeLayout={forminladeLayout}
+                    userinfo={userinfo}
+                  />)
+                }
 
-            </Panel>
-            {/* <Panel header="软件信息" key="formpane3">
+              </Panel>
+              {/* <Panel header="软件信息" key="formpane3">
               <SoftwareInfoList />
             </Panel> */}
-          </Collapse>
-        </div >
-        {/* </Spin> */}
+            </Collapse>
+          </div >
+        </Spin>
       </PageHeaderWrapper>
     </div>
   );
 }
 
-export default connect(({ itsmuser, autosoftwork }) => ({
+export default connect(({ itsmuser, autosoftwork, loading }) => ({
   userinfo: itsmuser.userinfo,
   Info: autosoftwork.geteditinfo,
+  loading: loading.models.autosoftwork,
 }))(Newregist);

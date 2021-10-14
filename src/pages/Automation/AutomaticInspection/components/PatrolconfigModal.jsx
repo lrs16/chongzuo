@@ -2,7 +2,17 @@ import React, { useState } from 'react';
 import { connect } from 'dva';
 import {
     Modal,
-    Table, Button, Form, Input, Row, Col, Select, Alert, Popconfirm, message, Badge
+    Table,
+    Button,
+    Form,
+    Input,
+    Row,
+    Col,
+    Select,
+    Alert,
+    Popconfirm,
+    message,
+    Badge
 } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
@@ -48,7 +58,6 @@ function PatrolconfigModal(props) {
     const [visible, setVisible] = useState(false);
     const [expand, setExpand] = useState(false);
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [selectedRows, setSelectedRows] = useState([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
@@ -58,11 +67,13 @@ function PatrolconfigModal(props) {
         setSelectedRows(Rows);
     };
 
+    // 列表checkbox
     const rowSelection = {
         selectedRowKeys,
         onChange: onSelectChange,
     };
 
+    // 列表查询
     const searchdata = (page, size) => {
         const values = getFieldsValue();
         dispatch({
@@ -76,16 +87,18 @@ function PatrolconfigModal(props) {
         });
     };
 
+    // 取消
     const handleCancel = () => {
         setVisible(false);
     };
 
+    // 执行巡检
     const handleOk = () => {
         if (selectedRowKeys.length === 0) {
             message.error('至少选择一条agent');
         } else {
             const ids = selectedRowKeys;
-            if(pagename === 'softpatrol') { // 软件巡检
+            if (pagename === 'softpatrol') { // 软件巡检
                 createsoftInspection(ids).then(resp => {
                     if (resp.code === 200) {
                         message.success(resp.msg);
@@ -95,7 +108,7 @@ function PatrolconfigModal(props) {
                     }
                 });
             }
-            if(pagename === 'hostpatrol') { // 主机巡检
+            if (pagename === 'hostpatrol') { // 主机巡检
                 createInspection(ids).then(resp => {
                     if (resp.code === 200) {
                         message.success(resp.msg);
@@ -105,7 +118,7 @@ function PatrolconfigModal(props) {
                     }
                 });
             }
-            if(pagename === 'clockpatrol') { // 时钟巡检
+            if (pagename === 'clockpatrol') { // 时钟巡检
                 createclockInspection(ids).then(resp => {
                     if (resp.code === 200) {
                         message.success(resp.msg);
@@ -128,6 +141,7 @@ function PatrolconfigModal(props) {
         searchdata(1, 15, undefined);
     };
 
+    // 查询
     const handleSearch = () => {
         setPageinations({
             ...paginations,
@@ -136,6 +150,7 @@ function PatrolconfigModal(props) {
         searchdata(1, paginations.pageSize);
     };
 
+    // 重置
     const handleReset = () => {
         resetFields();
         searchdata(1, 15)
@@ -158,6 +173,7 @@ function PatrolconfigModal(props) {
         });
     };
 
+    // 分页
     const pagination = {
         showSizeChanger: true,
         onShowSizeChange: (page, size) => onShowSizeChange(page, size),

@@ -14,8 +14,6 @@ function SoftWorkLogsDrawer(props) {
         list,
         statuscode,
         dispatch,
-        // location,
-        // loading,
     } = props;
 
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });

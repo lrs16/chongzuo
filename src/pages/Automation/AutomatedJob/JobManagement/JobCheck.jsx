@@ -52,6 +52,7 @@ function JobCheck(props) {
         onChange: onSelectChange,
     };
 
+    // 列表数据
     const searchdata = (page, size) => {
         const values = getFieldsValue();
         values.taskStatus = '2';
@@ -79,24 +80,10 @@ function JobCheck(props) {
         setPageinations({ current: 1, pageSize: 15 });
     };
 
-    const tonewcheck = () => { // 去审核
+    // 去审核
+    const tonewcheck = () => { 
         const len = selectedRowKeys.length;
         if (len === 1) { // 单条数据
-            // if (selectedRows[0].taskStatus === '待审核') {
-            //     router.push({
-            //         pathname: '/automation/automatedjob/jobmanagement/jobcheck/tocheck',
-            //         query: {
-            //             Id: selectedRows[0].id,
-            //             addtab: true,
-            //             menuDesc: '作业任务审批',
-            //         },
-            //     })
-            // } else {
-            //     message.info('审核的条件: 只有待审核的数据才可以去审核');
-            //     setSelectedRowKeys([]);
-            //     setSelectedRows([]);
-            //     return false;
-            // }
             router.push({
                 pathname: '/automation/automatedjob/jobmanagement/jobcheck/tocheck',
                 query: {

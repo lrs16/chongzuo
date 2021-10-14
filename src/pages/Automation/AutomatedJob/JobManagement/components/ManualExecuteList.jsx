@@ -31,13 +31,8 @@ function ManualExecuteList(props) {
         },
     } = props;
 
-    // const [visible, setVisible] = useState(false); // 抽屉是否显示
-    // const [title, setTitle] = useState('');
-    // const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
-    // const [data, setData] = useState('');
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [selectedRows, setSelectedRows] = useState([]);
 
     const onSelectChange = (RowKeys, Rows) => {
@@ -53,7 +48,6 @@ function ManualExecuteList(props) {
     const searchdata = (page, size) => {
         const values = getFieldsValue();
         values.taskModes = '1';
-        // values.taskStatus = '3' || '4' || '5' || '6' || '7';
         values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
         values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
         dispatch({
@@ -70,7 +64,8 @@ function ManualExecuteList(props) {
         searchdata(1, 15);
     }, [location]);
 
-    const handlerunTask = id => { // 执行
+    // 执行
+    const handlerunTask = id => { 
         dispatch({
             type: 'autotask/toqueryrunTask',
             payload: {
@@ -86,7 +81,8 @@ function ManualExecuteList(props) {
         });
     };
 
-    const handleDelete = () => { // 删除 
+    // 删除
+    const handleDelete = () => {  
         if (selectedRows.length > 0) {
             const ids = selectedRows.map(item => {
                 return item.id;
@@ -110,7 +106,8 @@ function ManualExecuteList(props) {
         setSelectedRows([]);
     };
 
-    const handleClickRevoke = () => { // 撤销发布
+    // 撤销发布
+    const handleClickRevoke = () => { 
         if (selectedRows.length > 0) {
             const ids = selectedRows.map(item => {
                 return item.id;
@@ -138,7 +135,8 @@ function ManualExecuteList(props) {
         setSelectedRows([]);
     };
 
-    const handleClickAbolish = () => { // 废止
+    // 废止
+    const handleClickAbolish = () => { 
         if (selectedRows.length > 0) {
             const ids = selectedRows.map(item => {
                 return item.id;
@@ -168,6 +166,7 @@ function ManualExecuteList(props) {
         setPageinations({ current: 1, pageSize: 15 });
     };
 
+    // 执行日志
     const newpagetolog = id => {
         router.push({
             pathname: '/automation/automatedjob/jobmanagement/jobexecute/manualexecutionlog',
@@ -297,7 +296,7 @@ function ManualExecuteList(props) {
             width: 150,
             render: (text, record) => {
                 return (
-                    <div spinning={loading} delay={1000}>
+                    <div spinning={loading.toString()} delay={1000}>
                         <a type="link"
                                 onClick={() => handlerunTask(record.id)}
                             >

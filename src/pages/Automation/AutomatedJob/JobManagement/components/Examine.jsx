@@ -12,6 +12,7 @@ const formallItemLayout = {
     xs: { span: 18 },
   },
 };
+
 const formItemLayout = {
   labelCol: {
     xs: { span: 2 },
@@ -23,13 +24,17 @@ const formItemLayout = {
 
 const Examine = forwardRef((props, ref) => {
   const {
-    userinfo, checkInfo, Noediting,
-    form: { getFieldDecorator, getFieldsValue, resetFields },
+    userinfo,
+    checkInfo,
+    Noediting,
+    form: {
+      getFieldDecorator,
+      getFieldsValue,
+      resetFields
+    },
   } = props;
 
   const [adopt, setAdopt] = useState('1');
-
-  // console.log(checkInfo, 'checkInfo')
 
   useImperativeHandle(ref, () => ({
     getVal: () => getFieldsValue(),
@@ -51,13 +56,6 @@ const Examine = forwardRef((props, ref) => {
     <div style={{ marginRight: 24 }}>
       <Row gutter={24}>
         <Form {...formallItemLayout}>
-          {/* <Col span={8} style={{ display: 'none' }}>
-            <Form.Item label="审核表单id">
-              {getFieldDecorator('id', {
-                initialValue: checkInfo.id,
-              })(<Input placeholder="请输入" disabled />)}
-            </Form.Item>
-          </Col> */}
           <Col span={8} >
             <Form.Item label="审核结果">
               {getFieldDecorator('examineStatus', {
@@ -79,11 +77,6 @@ const Examine = forwardRef((props, ref) => {
               })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={Noediting} />)}
             </Form.Item>
           </Col>
-          {/* <Col span={8} >
-            <Form.Item label="审核状态">
-              <Tag color="blue">{check.status}</Tag>
-            </Form.Item>
-          </Col> */}
           <Col span={24}>
             {adopt === '1' && (
               <Form.Item label="审核说明" {...formItemLayout}>

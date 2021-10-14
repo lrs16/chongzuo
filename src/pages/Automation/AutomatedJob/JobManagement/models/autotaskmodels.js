@@ -27,6 +27,7 @@ export default {
     // getusetaskobjectandagentlist: [], // 获取选中的数据
     editinfo: {},
     autotasklogslist: {},
+    editcheckinfo: {},
   },
 
   effects: {
@@ -38,7 +39,7 @@ export default {
       });
       if (response.code === 200) {
         yield put({
-          type: 'autotasklist',
+          type: 'saveautotasklist',
           payload: response.data,
         });
       } else {
@@ -50,7 +51,7 @@ export default {
     *findtaskObjectList({ payload: { values, pageNum, pageSize, taskId } }, { call, put }) {
       const response = yield call(taskObjectList, values, pageNum, pageSize, taskId);
       yield put({
-        type: 'taskobjectlist',
+        type: 'savetaskobjectlist',
         payload: response.data,
       });
     },
@@ -64,7 +65,7 @@ export default {
     *findtaskScriptList({ payload: { values, pageNum, pageSize, taskId } }, { call, put }) {
       const response = yield call(taskScriptList, values, pageNum, pageSize, taskId);
       yield put({
-        type: 'taskscriptlist',
+        type: 'savetaskscriptlist',
         payload: response.data,
       });
     },
@@ -125,7 +126,7 @@ export default {
       });
       if (response.code === 200) {
         yield put({
-          type: 'editinfo',
+          type: 'saveeditinfo',
           payload: response.data,
         });
       } else {
@@ -138,7 +139,7 @@ export default {
       const response = yield call(getexamineTaskList, taskId);
       if (response.code === 200) {
         yield put({
-          type: 'editcheckinfo',
+          type: 'saveeditcheckinfo',
           payload: response.data,
         });
       } else {
@@ -238,7 +239,7 @@ export default {
       });
       if (response.code === 200) {
         yield put({
-          type: 'autotasklogslist',
+          type: 'saveautotasklogslist',
           payload: response.data,
         });
       } else {
@@ -258,21 +259,21 @@ export default {
       };
     },
 
-    autotasklist(state, action) {
+    saveautotasklist(state, action) {
       return {
         ...state,
         autotasklist: action.payload,
       };
     },
 
-    taskobjectlist(state, action) {
+    savetaskobjectlist(state, action) {
       return {
         ...state,
         taskobjectlist: action.payload,
       };
     },
 
-    taskscriptlist(state, action) {
+    savetaskscriptlist(state, action) {
       return {
         ...state,
         taskscriptlist: action.payload,
@@ -286,21 +287,21 @@ export default {
     //   };
     // },
 
-    editinfo(state, action) {
+    saveeditinfo(state, action) {
       return {
         ...state,
         editinfo: action.payload,
       };
     },
 
-    editcheckinfo(state, action) {
+    saveeditcheckinfo(state, action) {
       return {
         ...state,
         editcheckinfo: action.payload,
       };
     },
 
-    autotasklogslist(state, action) {
+    saveautotasklogslist(state, action) {
       return {
         ...state,
         autotasklogslist: action.payload,

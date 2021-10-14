@@ -420,5 +420,5 @@ export default connect(({ demandstatistic, loading }) => ({
   linedatalist: demandstatistic.linedatalist, // 趋势折线图
   demandtomeoutArr: demandstatistic.demandtomeoutArr, // 工单超时情况饼图
   ratiodatalist: demandstatistic.ratiodatalist, // 工单数
-  loadingratio: loading.effects['demandstatistic/demandstatiratioData'],
+  loadingratio: loading.effects['demandstatistic/getdemandstatiratioData'],
 }))(Statistics);

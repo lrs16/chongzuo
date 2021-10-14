@@ -1,15 +1,9 @@
-import React, {
-  useState, useRef,
-  // useContext, 
-  useEffect
-} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import router from 'umi/router';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Collapse, Button, message } from 'antd';
+import { Collapse, Button, message, Spin } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-// import EditContext from '@/layouts/MenuContext'; // 引用上下文管理组件
-// import Content from './components/Content';
 import Examine from './components/Examine';
 import Contentdes from './components/Contentdes';
 import { addExamineTask } from './services/api';
@@ -44,6 +38,7 @@ function ToCheck(props) {
   const { dispatch,
     userinfo,
     location,
+    loadingInfo,
     location: {
       query: {
         Id,
@@ -61,7 +56,8 @@ function ToCheck(props) {
     setActiveKey(key);
   };
 
-  const handleExamineClick = () => { // 审核保存
+  // 审核保存
+  const handleExamineClick = () => {
     ExmaineRef.current.Forms((err) => {
       if (err) {
         message.error('请将信息填写完整')
@@ -111,6 +107,7 @@ function ToCheck(props) {
     })
   };
 
+  // 返回
   const handleclose = () => {
     router.push({
       pathname: `/automation/automatedjob/jobmanagement/jobcheck`,
@@ -119,6 +116,7 @@ function ToCheck(props) {
     });
   };
 
+  // 审核提交
   const handleExamineSubmit = () => { // 审核提交 -- 通过状态变为3已审核，不通过状态改为1已登记
     ExmaineRef.current.Forms((err) => {
       if (err) {
@@ -162,6 +160,7 @@ function ToCheck(props) {
     });
   }, []);
 
+  // 获取数据编辑
   useEffect(() => {
     if (Id && (Id !== '' || Id !== undefined)) {
       dispatch({
@@ -199,35 +198,41 @@ function ToCheck(props) {
         title={pagetitle}
         extra={operations}
       >
-        {/* <Spin spinning={loading} > */}
-        <div className={styles.collapse}>
-          <Collapse
-            expandIconPosition="right"
-            activeKey={activeKey}
-            bordered={false}
-            onChange={callback}
-          >
-            <Panel header='作业任务审批' key="formpanel">
-              <Examine
-                wrappedComponentRef={ExmaineRef}
-                checkInfo={checkInfo && checkInfo[0]}
-                formItemLayout={formItemLayout}
-                forminladeLayout={forminladeLayout}
-                userinfo={userinfo}
-              />
-            </Panel>
-            <Panel header="作业任务" key="formpanel1">
-              <Contentdes formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} contentInfo={selectedRows} dispatch={dispatch} />
-            </Panel>
-          </Collapse>
-        </div >
-        {/* </Spin> */}
+        <Spin spinning={loadingInfo} >
+          <div className={styles.collapse}>
+            <Collapse
+              expandIconPosition="right"
+              activeKey={activeKey}
+              bordered={false}
+              onChange={callback}
+            >
+              <Panel header='作业任务审批' key="formpanel">
+                <Examine
+                  wrappedComponentRef={ExmaineRef}
+                  checkInfo={checkInfo && checkInfo[0]}
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
+                  userinfo={userinfo}
+                />
+              </Panel>
+              <Panel header="作业任务" key="formpanel1">
+                <Contentdes 
+                  formItemLayout={formItemLayout} 
+                  forminladeLayout={forminladeLayout} 
+                  contentInfo={selectedRows} 
+                  dispatch={dispatch} 
+                />
+              </Panel>
+            </Collapse>
+          </div >
+        </Spin>
       </PageHeaderWrapper>
     </div>
   );
 }
 
-export default connect(({ autotask, itsmuser }) => ({
+export default connect(({ autotask, itsmuser, loading }) => ({
   userinfo: itsmuser.userinfo,
   checkInfo: autotask.editcheckinfo,
+  loadingInfo: loading.effects['autotask/togetexamineTaskList']
 }))(ToCheck);

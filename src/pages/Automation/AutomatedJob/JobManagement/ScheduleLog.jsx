@@ -1,14 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-// import router from 'umi/router';
 import moment from 'moment';
 import Link from 'umi/link';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Table, Card, Button, Form, Input, Tooltip, Row, Col, DatePicker, Badge } from 'antd';
+import {
+    Table,
+    Card,
+    Button,
+    Form,
+    Input,
+    Tooltip,
+    Row,
+    Col,
+    DatePicker,
+    Badge
+} from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-// import DictLower from '@/components/SysDict/DictLower';
 
-// const { Option } = Select;
 const operations = <Button type="primary">
     <Link to="/automation/automatedjob/jobmanagement/jobexecute">返回列表</Link>
 </Button>;
@@ -48,7 +55,6 @@ function ScheduleLog(props) {
         },
     } = props;
 
-    // const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
 
     const searchdata = (page, size) => {
@@ -66,21 +72,8 @@ function ScheduleLog(props) {
         });
     };
 
-    // const tosearchlog = (Id) => {
-    //     dispatch({
-    //         type: 'autotask/findlistPageAutoTaskLogs',
-    //         payload: {
-    //             taskId: Id,
-    //         },
-    //     });
-    // };
-
     useEffect(() => {
-        // if(Id && (Id !== '' || Id !== undefined)) {
-        //     tosearchlog(Id);
-        // } else {
         searchdata(1, 15);
-        // }
     }, [location]);
 
     const handleReset = () => {
@@ -128,16 +121,6 @@ function ScheduleLog(props) {
         <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
         <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button></>
     );
-
-    // 数据字典取下拉值
-    // const getTypebyId = key => {
-    //     if (selectdata.ischange) {
-    //         return selectdata.arr[0].children.filter(item => item.key === key)[0].children;
-    //     }
-    //     return [];
-    // };
-
-    // const tsskstatusmap = getTypebyId('200000000000001002'); // 执行结果
 
     const columns = [
         {
@@ -240,11 +223,6 @@ function ScheduleLog(props) {
 
     return (
         <PageHeaderWrapper title={pagetitle} extra={operations}>
-            {/* <DictLower
-                typeid="200000000000001001"
-                ChangeSelectdata={newvalue => setSelectData(newvalue)}
-                style={{ display: 'none' }}
-            /> */}
             <Card>
                 <Row gutter={16}>
                     <Form {...formItemLayout} onSubmit={handleSearch}>

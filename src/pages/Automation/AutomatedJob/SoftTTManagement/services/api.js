@@ -58,15 +58,6 @@ export async function deleteAutoSoftWorkById(workId) {
     })
 }
 
-// 提交 /auto/soft/updAutoWorkStatus/{workId}/{workStatus} 更新启停工单的状态(提交/审批)
-// export async function submitAutoSoftWork(params, autoSoftWork, autoSoftWorkExamine) {
-//     return request(`/auto/soft/updAutoWorkStatus/${params.workId}/${params.workStatus}`, {
-//         method: 'GET',
-//         data: {autoSoftWork, autoSoftWorkExamine},
-//         requestType: 'formjosn',
-//     });
-// }
-
 export async function submitAutoSoftWork(params, workId, workStatus) { // 提交
     return request(`/auto/soft/updAutoWorkStatus/${workId}/${workStatus}`, {
         method: 'GET',
