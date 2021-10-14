@@ -165,7 +165,6 @@ function StatisticsAnalysis(props) {
   }
 
   const statratioData = (values) => {
-    console.log('values111: ', values);
     dispatch({
       type: 'problemstatistics/fetchstatratioData',
       payload: { ...values },
@@ -182,7 +181,10 @@ function StatisticsAnalysis(props) {
   const timeoutarr = (values) => {
     dispatch({
       type: 'problemstatistics/timeoutLists',
-      payload: { ...values }
+      payload: { 
+        statTimeBegin:values.begin,
+        statTimeEnd:values.end
+       }
     })
   }
 
