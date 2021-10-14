@@ -10,7 +10,18 @@ const resultmap = new Map([
   [2, '通过'],
   [3, '通过'],
   [4, '通过'],
+  [5, '通过'],
+  [6, '通过'],
+  [7, '通过'],
+  [8, '通过'],
 ]);
+
+const confirresultmap = new Map([
+  [1, '通过'],
+  [0, '重新处理'],
+  [2, '需求取消'],
+])
+
 
 function Examinedes(props) {
   const { info, formItemLayout, forminladeLayout } = props;
@@ -22,10 +33,19 @@ function Examinedes(props) {
         <Form {...formItemLayout}>
           <Col span={8}>
             <Form.Item label={`${text}结果`}>
-              <Radio.Group value={resultmap.get(info.result)} disabled>
-                <Radio value='通过'>通过</Radio>
-                <Radio value='不通过'>不通过</Radio>
-              </Radio.Group>
+              {info.taskName === '自动化科业务人员确认' ? (
+                <Radio.Group value={confirresultmap.get(info.result)} disabled>
+                  <Radio value='通过'>通过</Radio>
+                  <Radio value='重新处理'>重新处理</Radio>
+                  <Radio value='需求取消'>需求取消</Radio>
+                </Radio.Group>
+              ) : (
+                <Radio.Group value={resultmap.get(info.result)} disabled>
+                  <Radio value='通过'>通过</Radio>
+                  <Radio value='不通过'>不通过</Radio>
+                </Radio.Group>
+              )}
+
             </Form.Item>
           </Col>
           <Col span={8}>
