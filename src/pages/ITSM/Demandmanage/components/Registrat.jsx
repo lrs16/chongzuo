@@ -291,11 +291,11 @@ const Registrat = forwardRef((props, ref) => {
     return [];
   };
 
-  const demandtype = getTypebyTitle('1352069854860939266');
-  const prioritymap = getTypebyTitle('1352166246400921601');
-  const projectmap = getTypebyTitle('1354241446307172354');
-  const modulemap = getTypebyTitle('1352070663392727041');
-  // const workloadmap = getTypebyTitle('1432137738533371906');
+  const demandtype = getTypebyTitle(195);   // 需求类型
+  const prioritymap = getTypebyTitle(270);  // 需求优先级
+  const projectmap = getTypebyTitle(329);   // 所属项目
+  const modulemap = getTypebyTitle(198);    // 功能模块
+
 
   const disabledDate = (current) => {
     return current && current < moment().add(45, 'days').endOf('day');

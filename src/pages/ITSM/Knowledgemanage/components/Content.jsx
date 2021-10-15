@@ -55,12 +55,12 @@ const Content = forwardRef((props, ref) => {
     }
     return [];
   };
-  const typemap = getTypebyId('1412301574201413634');         // 知识分类
+  const typemap = getTypebyId(585);         // 知识分类
 
   return (
     <div style={{ paddingRight: 24 }}>
       <DictLower
-        typeid="1412301036722327553"
+        typeid="584"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

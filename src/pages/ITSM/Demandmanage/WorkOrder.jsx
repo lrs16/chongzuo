@@ -471,14 +471,14 @@ function WorkOrder(props) {
     if (!doCancel && taskName === '需求登记') {
       dispatch({
         type: 'dicttree/childdictLower',
-        payload: { id: '1354274450639425537' },
+        payload: { id: 332 },
       }).then(res => {
         if (res.code === 200) {
           selectdata.arr.push(...res.data);
           if (!doCancel) {
             dispatch({
               type: 'dicttree/childdictLower',
-              payload: { id: '1354288354950123522' },
+              payload: { id: 335 },
             }).then(ress => {
               if (ress.code === 200) {
                 selectdata.arr.push(...ress.data);

@@ -73,7 +73,7 @@ function BusinessReview(props, ref) {
     return [];
   };
 
-  const unitmap = getTypebyId('1384056290929545218');       // 责任单位
+  const unitmap = getTypebyId(1052);       // 责任单位
 
   return (
     <Row gutter={12} style={{ paddingTop: 24, }}>

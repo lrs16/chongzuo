@@ -387,18 +387,18 @@ function QueryList(props) {
     return [];
   };
 
-  const sourcemap = getTypebykey('486844540120989696'); // 事件来源
-  const statusmap = getTypebykey('1356421038388285441'); // 工单状态
-  const typemap = getTypebykey('486844495669755904'); // 事件分类
-  const objectmap = getTypebykey('482599461999083520'); // 事件对象
-  const returnvisit = getTypebykey('486852783895478272'); // 回访方式
-  const effectmap = getTypebykey('482610561507393536'); // 影响度
-  const emergentmap = getTypebykey('482610561503199232'); // 紧急度
-  const priormap = getTypebykey('482610561499004928'); // 优先级
-  const checkresultmap = getTypebykey('1356439651098824706'); // 审核结果
-  const yesornomap = getTypebykey('1356502855556534273'); // 是否
-  const handleresultmap = getTypebykey('486846455059841024'); // 处理结果
-  const satisfactionmap = getTypebykey('486855005945462784'); // 满意度
+  const sourcemap = getTypebykey(1107); // 事件来源
+  const statusmap = getTypebykey(366); // 工单状态
+  const typemap = getTypebykey(1106); // 事件分类
+  const objectmap = getTypebykey(1087); // 事件对象
+  const returnvisit = getTypebykey(1116); // 回访方式
+  const effectmap = getTypebykey(1096); // 影响度
+  const emergentmap = getTypebykey(1095); // 紧急度
+  const priormap = getTypebykey(1094); // 优先级
+  const checkresultmap = getTypebykey(622); // 审核结果
+  const yesornomap = getTypebykey(379); // 是否
+  const handleresultmap = getTypebykey(1113); // 处理结果
+  const satisfactionmap = getTypebykey(1120); // 满意度
 
   const record = {
     eventObject: eventObject || '',
@@ -486,8 +486,8 @@ function QueryList(props) {
   return (
     <PageHeaderWrapper title={title}>
       <SysDict
-        typeid="1354273739344187393"
-        commonid="1354288354950123522"
+        typeid="331"
+        commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

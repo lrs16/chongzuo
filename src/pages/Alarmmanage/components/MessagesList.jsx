@@ -309,7 +309,7 @@ function MessagesList(props) {
     return [];
   };
 
-  const monitormap = getTypebykey('1437584114700386305');       // 主机监测
+  const monitormap = getTypebykey(950);       // 上下行报文监测
 
   const extra = (<>
     <Button type="primary" onClick={() => handleSearch(1, 10)}>查 询</Button>

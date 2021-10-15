@@ -288,9 +288,9 @@ function ToDolist(props) {
     return [];
   };
 
-  const sourcemap = getTypebykey('486844540120989696'); // 事件来源
-  const statusmap = getTypebykey('1356421038388285441'); // 工单状态
-  const priormap = getTypebykey('482610561499004928'); // 优先级
+  const sourcemap = getTypebykey(1107); // 事件来源
+  const statusmap = getTypebykey(366); // 工单状态
+  const priormap = getTypebykey(1094); // 优先级
 
   const extra = (<>
     <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
@@ -308,8 +308,8 @@ function ToDolist(props) {
   return (
     <PageHeaderWrapper title={pagetitle}>
       <SysDict
-        typeid="1354273739344187393"
-        commonid="1354288354950123522"
+        typeid="331"
+        commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

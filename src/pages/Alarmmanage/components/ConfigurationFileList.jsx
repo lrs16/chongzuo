@@ -417,7 +417,7 @@ function ConfigurationFileList(props) {
     return [];
   };
 
-  const alarmmap = getTypebykey('1442417886570639362');             // 监测内容
+  const alarmmap = getTypebykey(973);             // 配置文件巡检内容
 
   const extra = (<>
     <Button type="primary" onClick={() => handleSearch(1, 10)}>查 询</Button>

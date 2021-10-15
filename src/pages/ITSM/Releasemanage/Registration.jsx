@@ -249,7 +249,7 @@ function Registration(props) {
     <Spin tip="正在提交数据..." spinning={!!loading}>
       <PageHeaderWrapper title={pagetitle} extra={operations}>
         <DictLower
-          typeid="1379323239808897026"
+          typeid="443"
           ChangeSelectdata={newvalue => setSelectData(newvalue)}
           style={{ display: 'none' }}
         />

@@ -87,8 +87,8 @@ const Handle = React.forwardRef((props, ref) => {
     }
     return [];
   };
-  const typemap = getTypebykey('486844495669755904');
-  const objectmap = getTypebykey('482599461999083520');
+  const typemap = getTypebykey(1106);
+  const objectmap = getTypebykey(1087);
   const resultmap = getTypebykey('486846455059841024');
   const typemaps = adddisabled(typemap);
 

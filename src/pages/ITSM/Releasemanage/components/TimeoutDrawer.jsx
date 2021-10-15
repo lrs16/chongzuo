@@ -45,9 +45,8 @@ function agentDrawer(props) {
     return [];
   };
 
-  const typemap = getTypebyId('1384055209809940482');       // 发布类型
-  const statumap = getTypebyId('1385066256880635905');       // 处理环节
-  // const mothumap = getTypebyId('1433245640232996865');       // 本月下月 数据字典有误
+  const typemap = getTypebyId(460);       // 发布类型
+  const statumap = getTypebyId(469);       // 处理环节
 
   return (
     <Drawer

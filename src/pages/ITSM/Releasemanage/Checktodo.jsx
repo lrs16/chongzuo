@@ -186,9 +186,9 @@ function Checktodo(props) {
     return [];
   };
 
-  const typemap = getTypebyId('1384055209809940482');       // 发布类型
-  const functionmap = getTypebyId('1384052503909240833');       // 功能类型
-  const checkstatusmap = getTypebyId('1390574180168110081');       // 状态
+  const typemap = getTypebyId(460);       // 发布类型
+  const functionmap = getTypebyId(451);       // 功能类型
+  const checkstatusmap = getTypebyId(534);       // 状态
 
   // 合并工单号相同的行
   const temp = {};
@@ -360,7 +360,7 @@ function Checktodo(props) {
   return (
     <PageHeaderWrapper title={pagetitle}>
       <DictLower
-        typeid="1379323239808897026"
+        typeid="443"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

@@ -332,8 +332,8 @@ function Registration(props) {
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
       <SysDict
-        typeid="1354273739344187393"
-        commonid="1354288354950123522"
+        typeid="331"
+        commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

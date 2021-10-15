@@ -560,7 +560,7 @@ function WorkOrder(props) {
     <>
       <div className={styles.collapse}>
         <DictLower
-          typeid="1379323239808897026"
+          typeid="443"
           ChangeSelectdata={newvalue => setSelectData(newvalue)}
           style={{ display: 'none' }}
         />

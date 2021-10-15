@@ -32,7 +32,7 @@ function Statistics(props) {
     }
     return [];
   };
-  const typemap = getTypebyId('1412301574201413634');         // 知识分类
+  const typemap = getTypebyId(585);         // 知识分类
   const handleSearch = () => {
     const values = getFieldsValue();
 
@@ -152,7 +152,7 @@ function Statistics(props) {
   return (
     <PageHeaderWrapper title={pagetitle} >
       <DictLower
-        typeid="1412301036722327553"
+        typeid="584"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

@@ -230,8 +230,8 @@ function Expressions(props) {
     return [];
   };
 
-  const modulemap = getTypebykey('1366665314435076097'); // 工单类型
-  const fieldmap = getTypebykey('1366665671789776897'); // 对应字段
+  const modulemap = getTypebykey(406); // 工单类型
+  const fieldmap = getTypebykey(407); // 对应字段
 
   const columns = [
     {
@@ -374,7 +374,7 @@ function Expressions(props) {
       />
       {/* 下拉值 */}
       <DictLower
-        typeid="1366665043004887042"
+        typeid="405"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

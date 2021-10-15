@@ -231,9 +231,9 @@ function ToDolist(props) {
     return [];
   };
 
-  const typemap = getTypebyId('1384055209809940482');       // 发布类型
-  const unitmap = getTypebyId('1384056290929545218');       // 责任单位
-  const statumap = getTypebyId('1385066256880635905');       // 处理环节
+  const typemap = getTypebyId(460);       // 发布类型
+  const unitmap = getTypebyId(1052);       // 责任单位
+  const statumap = getTypebyId(469);       // 处理环节
 
   const columns = [
     {
@@ -325,7 +325,7 @@ function ToDolist(props) {
   return (
     <PageHeaderWrapper title={pagetitle}>
       <DictLower
-        typeid="1379323239808897026"
+        typeid="443"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

@@ -370,13 +370,13 @@ const Registrat = forwardRef((props, ref) => {
     eventObject.unshift(main.eventObject.slice(0, 3));
   }
 
-  const sourcemap = getTypebykey('486844540120989696'); // 事件来源
-  const typemap = getTypebykey('486844495669755904'); // 事件分类
-  const objectmap = getTypebykey('482599461999083520'); // 事件对象
-  const returnvisit = getTypebykey('486852783895478272'); // 回访方式
-  const effectmap = getTypebykey('482610561507393536'); // 影响度
-  const emergentmap = getTypebykey('482610561503199232'); // 紧急度
-  const priormap = getTypebykey('482610561499004928'); // 优先级
+  const sourcemap = getTypebykey(1107); // 事件来源
+  const typemap = getTypebykey(1106); // 事件分类
+  const objectmap = getTypebykey(1087); // 事件对象
+  const returnvisit = getTypebykey(1116); // 回访方式
+  const effectmap = getTypebykey(1096); // 影响度
+  const emergentmap = getTypebykey(1095); // 紧急度
+  const priormap = getTypebykey(1094); // 优先级
 
   // 附件上传下载
 

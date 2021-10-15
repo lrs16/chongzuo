@@ -117,7 +117,7 @@ function MeasurAlarm(props) {
       onTabChange={handleTabChange}
     >
       <DictLower
-        typeid="1371645400838049793"
+        typeid="438"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

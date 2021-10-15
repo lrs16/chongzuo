@@ -311,7 +311,7 @@ function MeasurList(props) {
 
   // const confirmmap = getTypebykey('1436602806952259586');       // 确认状态
   // const eliminatemap = getTypebykey('1436602917165985794');     // 消除状态
-  const typemap = getTypebykey('1436608796393205762');          // 监控项
+  const typemap = getTypebykey(899);          // 计量监控项
 
   const extra = (<>
     <Button type="primary" onClick={() => handleSearch(1, 10)}>查 询</Button>

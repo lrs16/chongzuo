@@ -438,11 +438,10 @@ function QueryList(props) {
     return [];
   };
 
-  const overtimemap = getTypebyId('1398105281983942657');       // 超时状态
-  const demandtype = getTypebyId('1352069854860939266');
-  const statemap = getTypebyId('1398105664881954817');
-  const modulemap = getTypebyId('1352070663392727041');
-  // const columnsmap = getTypebyId('1431057154650308609');
+  const overtimemap = getTypebyId(545);       // 超时状态
+  const demandtype = getTypebyId(195);        // 需求类型
+  const statemap = getTypebyId(546);          // 当前处理环节,工单状态
+  const modulemap = getTypebyId(198);         // 功能模块
 
   // 管理员账号删除工单
   // 行选择
@@ -490,7 +489,7 @@ function QueryList(props) {
   return (
     <PageHeaderWrapper title={pagetitle}>
       <DictLower
-        typeid="1354274450639425537"
+        typeid="332"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

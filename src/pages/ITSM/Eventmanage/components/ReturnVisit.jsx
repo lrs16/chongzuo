@@ -111,9 +111,9 @@ const ReturnVisit = React.forwardRef((props, ref) => {
     return [];
   };
 
-  const revisitwaymap = getTypebykey('486852783895478272');
-  const handleresultmap = getTypebykey('486846455059841024');
-  const satisfactionmap = getTypebykey('486855005945462784');
+  const revisitwaymap = getTypebykey(1116);     // 回访方式
+  const handleresultmap = getTypebykey(1113);   // 处理结果
+  const satisfactionmap = getTypebykey(1120);  // 满意度
 
 
   const handleAttValidator = (rule, value, callback) => {

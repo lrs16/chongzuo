@@ -147,7 +147,7 @@ function TimeoutRule(props) {
   return (
     <PageHeaderWrapper title={pagetitle}>
       <DictLower
-        typeid="1379323239808897026"
+        typeid="443"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

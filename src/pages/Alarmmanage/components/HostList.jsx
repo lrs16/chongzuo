@@ -387,9 +387,9 @@ function HostList(props) {
     return [];
   };
 
-  const hostinspectionmmap = getTypebykey('1437319207950217217');       // 主机巡检内容
-  const softinspectionmmap = getTypebykey('1442405396184997889');
-  const hostmonitormap = getTypebykey('1437322008466026497');       // 主机监测
+  const hostinspectionmmap = getTypebykey(932);       // 主机巡检内容
+  const softinspectionmmap = getTypebykey(965);      //  软件巡检内容
+  const hostmonitormap = getTypebykey(938);          //  主机监测
 
   const extra = (<>
     <Button type="primary" onClick={() => handleSearch(1, 10)}>查 询</Button>

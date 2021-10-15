@@ -177,12 +177,12 @@ function NoticeSetting(props) {
     return [];
   };
 
-  const measurmap = getTypebykey('1436608796393205762');          // 计量
-  // const hostmap = getTypebykey('1437319207950217217');            // 主机巡检内容
-  // const softmap = getTypebykey('1442405396184997889');            // 软件      
-  // const appmap = getTypebykey('1437322008466026497');             // 应用程序
-  // const filesmmap = getTypebykey('1442417886570639362');          // 配置文件
-  // const messagermap = getTypebykey('1437584114700386305');        // 上下行报文
+  const measurmap = getTypebykey(899);          // 计量
+  // const hostmap = getTypebykey(932);            // 主机巡检内容
+  // const softmap = getTypebykey(965);            // 软件      
+  // const appmap = getTypebykey(938);             // 应用程序
+  // const filesmmap = getTypebykey(973);          // 配置文件
+  // const messagermap = getTypebykey(950);        // 上下行报文
 
   // const treenodemap = new Map([
   //   ['计量业务告警', measurmap],
@@ -201,7 +201,7 @@ function NoticeSetting(props) {
       onTabChange={handleTabChange}
     >
       <DictLower
-        typeid="1371645400838049793"
+        typeid="438"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

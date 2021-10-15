@@ -271,13 +271,13 @@ function ToDolist(props) {
     }
     return [];
   };
-  const statemap = getTypebyId('1398105664881954817');
-  const souremap = getTypebyId('1352069854860939266');
+  const statemap = getTypebyId(546);   // 当前处理环节
+  const souremap = getTypebyId(195);   // 需求类型
 
   return (
     <PageHeaderWrapper title={pagetitle}>
       <DictLower
-        typeid="1354274450639425537"
+        typeid="332"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

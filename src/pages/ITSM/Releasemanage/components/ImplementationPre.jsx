@@ -152,9 +152,9 @@ function ImplementationPre(props, ref) {
     };
   }
 
-  const unitmap = getTypebyId('1384056290929545218');       // 责任单位
-  const functionmap = getTypebyId('1384052503909240833');   // 功能类型
-  const modulamap = getTypebyId('1384430921586839554');  // 模块
+  const unitmap = getTypebyId(1052);       // 责任单位
+  const functionmap = getTypebyId(451);   // 功能类型
+  const modulamap = getTypebyId(466);  // 模块
 
   return (
     <>
