@@ -328,8 +328,8 @@ const Register = React.forwardRef((props, ref) => {
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>
       <SysDict
-        typeid="1410413049587699713"
-        commonid="1354288354950123522"
+        typeid='576'
+        commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

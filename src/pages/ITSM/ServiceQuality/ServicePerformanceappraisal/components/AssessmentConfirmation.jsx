@@ -24,7 +24,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
     editSign,
     noEdit,
   } = props;
-  console.log(assessmentConfirmation.scoreId,'assessmentConfirmation.scoreId')
+  console.log(assessmentConfirmation.scoreId, 'assessmentConfirmation.scoreId')
   const [selectdata, setSelectData] = useState('');
 
   const required = true;
@@ -49,7 +49,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
       key,
       props: { value },
     } = option;
-    console.log(key,'key')
+    console.log(key, 'key')
     switch (params) {
       case 'assessType':
         setFieldsValue({
@@ -75,7 +75,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
           target2Id: key,
           clause: '',
         });
-        getclausedetail(key,assessmentConfirmation.scoreId);
+        getclausedetail(key, assessmentConfirmation.scoreId);
         break;
       case 'clause': {
         const {
@@ -102,8 +102,8 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>
       <SysDict
-        typeid="1410413049587699713"
-        commonid="1354288354950123522"
+        typeid='576'
+        commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

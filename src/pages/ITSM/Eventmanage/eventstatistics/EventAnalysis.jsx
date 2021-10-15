@@ -509,7 +509,7 @@ function EventAnalysis(props) {
                           cols={Issuedscale}
                           data={dataCylinder3(getHandleUnitTopdata)}
                           height={300}
-                          padding={[30, 60, 50,200]}
+                          padding={[30, 60, 50,210]}
                           onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />
                       </Col>

@@ -9,6 +9,7 @@ import {
   Button,
   Table
 } from 'antd';
+import moment from 'moment';
 import Link from 'umi/link';
 import MergeTable from '@/components/MergeTable';
 
@@ -86,7 +87,7 @@ function Breakdownlist(props) {
     search = true;
     dispatch({
       type: 'faultstatics/fetchfaulthandle',
-      payload: { statTimeBegin, statTimeEnd, dictType: 'type' }
+      payload: { statTimeBegin: moment(statTimeBegin).format('YYYY-MM-DD 00:00:00'), statTimeEnd:moment(statTimeEnd).format('YYYY-MM-DD 23:59:59'), dictType: 'type' }
     })
   }
 

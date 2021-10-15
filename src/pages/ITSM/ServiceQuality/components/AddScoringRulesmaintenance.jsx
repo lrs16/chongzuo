@@ -70,7 +70,7 @@ function AddScoringRulesmaintenance(props) {
           pageNum: 1,
           pageSize: 15,
           scoreId: id,
-          targetId: selectedKeys || selectId || (type === '1' ? '1417306125605756929' : '1417307840400809985'),
+          targetId: selectedKeys || selectId || (type === '1' ? '605' : '605'),
         },
       });
     })
@@ -234,7 +234,7 @@ function AddScoringRulesmaintenance(props) {
       payload: {
         ...clauseData,
         scoreId: id,
-        targetId: selectId || (type === '1' ? '1417306125605756929' : '1417307840400809985')
+        targetId: selectId || (type === '1' ? '605' : '613')
       }
     }).then(res => {
       if (res.code === 200) {
@@ -396,8 +396,8 @@ function AddScoringRulesmaintenance(props) {
       }
     >
       <SysDict
-        typeid='1410413049587699713'
-        commonid="1354288354950123522"
+        typeid='576'
+        commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
@@ -477,7 +477,7 @@ function AddScoringRulesmaintenance(props) {
               {
                 loading === false && treeData && treeData.length > 0 && (
                   <Tree
-                    defaultSelectedKeys={((type === '1' || type === '') ? ['1417306125605756929'] : ['1417307840400809985'])}
+                    defaultSelectedKeys={((type === '1' || type === '') ? ['605'] : ['613'])}
                     onSelect={handleClick}
                     defaultExpandAll
                   >

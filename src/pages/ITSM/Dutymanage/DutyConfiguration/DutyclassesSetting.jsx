@@ -105,7 +105,7 @@ function DutyclassesSetting(props) {
   useEffect(() => {
     if (location.state && location.state.reset) {
       handleReset();
-      searchdata({},1,15)
+      searchdata({}, 1, 15)
     }
   }, [location.state]);
 
@@ -388,9 +388,9 @@ function DutyclassesSetting(props) {
     creatorName: '',
     shiftName: '',
     directorPhone: '',
-    status:'',
-    groupId:'',
-    groupName:''
+    status: '',
+    groupId: '',
+    groupName: ''
   }
 
   const cacheinfo = (location.state && location.state.cacheinfo === undefined) ? record : location.state.cacheinfo;
@@ -434,12 +434,13 @@ function DutyclassesSetting(props) {
   };
 
   const teamname = getTypebyTitle('班组名称');
+  console.log('teamname: ', teamname);
 
   return (
     <PageHeaderWrapper title={pagetitle}>
       <SysDict
-        typeid="1438058740916416514"
-        commonid="1354288354950123522"
+        typeid='1021'
+        commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
@@ -458,7 +459,7 @@ function DutyclassesSetting(props) {
                 <Row>
                   <Col span={11}>
                     {getFieldDecorator('beginTime', {
-                      initialValue: (cacheinfo && cacheinfo.beginTime) ? moment(cacheinfo.beginTime):'',
+                      initialValue: (cacheinfo && cacheinfo.beginTime) ? moment(cacheinfo.beginTime) : '',
                     })(
                       <DatePicker
                         disabledDate={(value) => disabledStartDate(value, 'create')}
@@ -477,7 +478,7 @@ function DutyclassesSetting(props) {
                   <Col span={2} style={{ textAlign: 'center' }}>-</Col>
                   <Col span={11}>
                     {getFieldDecorator('endTime', {
-                      initialValue: (cacheinfo && cacheinfo.endTime) ? moment(cacheinfo.endTime):'',
+                      initialValue: (cacheinfo && cacheinfo.endTime) ? moment(cacheinfo.endTime) : '',
                     })(
                       <DatePicker
                         disabledDate={(value) => disabledEndDate(value, 'create')}

@@ -41,13 +41,13 @@ let endTime = '';
 function MymonthlyReport(props) {
   const pagetitle = props.route.name;
   const {
-    form: { 
+    form: {
       getFieldDecorator,
-       resetFields,
-        validateFields,
-         setFieldsValue,
-         getFieldsValue
-         },
+      resetFields,
+      validateFields,
+      setFieldsValue,
+      getFieldsValue
+    },
     queryOrderlist,
     location,
     loading,
@@ -367,7 +367,7 @@ function MymonthlyReport(props) {
     if (location.state && location.state.reset) {
       handleReset();
       const formdata = getFieldsValue()
-        searchdata(formdata, 1, 15)
+      searchdata(formdata, 1, 15)
     }
   }, [location.state]);
 
@@ -383,8 +383,8 @@ function MymonthlyReport(props) {
   return (
     <PageHeaderWrapper title={pagetitle}>
       <SysDict
-        typeid="1399541895977242626"
-        commonid="1354288354950123522"
+        typeid='561'
+        commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

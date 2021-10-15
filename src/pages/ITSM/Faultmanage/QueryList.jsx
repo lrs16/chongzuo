@@ -141,8 +141,8 @@ function QueryList(props) {
     },
     {
       title: '故障发生时间',
-      dataIndex: 'registerOccurTime',
-      key: 'registerOccurTime',
+      dataIndex: 'createTime',
+      key: 'createTime',
       width: 200,
       onCell: () => {
         return {
@@ -1364,10 +1364,10 @@ function QueryList(props) {
     paginations,
   };
 
-  let cacheinfo = {};
-  if (location && location.state) {
-    cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
-  }
+  // let cacheinfo = {};
+  // if (location && location.state) {
+    const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+  // }
 
   const handleReset = () => {
     router.push({
@@ -1376,9 +1376,7 @@ function QueryList(props) {
       state: {}
     });
     resetFields();
-    validateFields((err, values) => {
-      searchdata(values, 1, 15)
-    });
+    searchdata({}, 1, 15)
     setPageinations({ current: 1, pageSize: 15 });
   };
 
@@ -1704,8 +1702,8 @@ function QueryList(props) {
   return (
     <PageHeaderWrapper title={titleParams}>
       <SysDict
-        typeid="1354278126724583426"
-        commonid="1354288354950123522"
+        typeid="333"
+        commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

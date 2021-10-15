@@ -47,43 +47,6 @@ function Registration(props) {
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const RegistratRef = useRef();
 
-  const getSourceapi = (dictModule, dictType) => {
-    dispatch({
-      type: 'problemdropdown/keyvalsource',
-      payload: { dictModule, dictType },
-    });
-  };
-  //  问题来源
-  const getSource = () => {
-    const dictModule = 'problem';
-    const dictType = 'source';
-    getSourceapi(dictModule, dictType);
-  };
-  //  问题分类
-  const gettype = () => {
-    const dictModule = 'problem';
-    const dictType = 'type';
-    getSourceapi(dictModule, dictType);
-  };
-  //  重要程度
-  const getpriority = () => {
-    const dictModule = 'public';
-    const dictType = 'priority';
-    getSourceapi(dictModule, dictType);
-  };
-  //  影响范围
-  const getscope = () => {
-    const dictModule = 'public';
-    const dictType = 'effect';
-    getSourceapi(dictModule, dictType);
-  };
-
-  // 所属项目
-  const getProject = () => {
-    const dictModule = 'public';
-    const dictType = 'project';
-    getSourceapi(dictModule, dictType);
-  };
 
   const queryDept = () => {
     dispatch({
@@ -92,11 +55,6 @@ function Registration(props) {
   };
 
   useEffect(() => {
-    getSource();
-    gettype();
-    getpriority();
-    getscope();
-    getProject();
     queryDept();
   }, []);
 

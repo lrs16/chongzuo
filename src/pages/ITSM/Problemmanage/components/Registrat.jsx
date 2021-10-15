@@ -37,7 +37,7 @@ const Registrat = React.forwardRef((props, ref) => {
     [],
   );
 
-  const { useInfo, register, main, source, type, priority, scope, project } = props;
+  const { useInfo, register, main, } = props;
 
   if (register) {
     if (register.registerOccurTime !== null) {
@@ -156,12 +156,16 @@ const Registrat = React.forwardRef((props, ref) => {
   };
 
   const problemType = getTypebyTitle('问题分类');
+  const source = getTypebyTitle('问题来源');
+  const priority = getTypebyTitle('严重程度');
+  const project = getTypebyTitle('所属项目');
+  const scope = getTypebyTitle('影响范围');
 
   return (
     <>
       <SysDict
-        typeid="1354287742015508481"
-        commonid="1354288354950123522"
+        typeid="334"
+        commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
@@ -247,13 +251,11 @@ const Registrat = React.forwardRef((props, ref) => {
                 initialValue: main.source,
               })(
                 <Select placeholder="请选择">
-                  {source &&
-                    source.length &&
-                    source.map(({ key, val }) => (
-                      <Option key={key} value={key}>
-                        {val}
-                      </Option>
-                    ))}
+                  {(source || []).map(obj => [
+                    <Option key={obj.key} value={obj.dict_code}>
+                      {obj.title}
+                    </Option>,
+                  ])}
                 </Select>,
               )}
             </Form.Item>
@@ -293,13 +295,11 @@ const Registrat = React.forwardRef((props, ref) => {
                 initialValue: main.importance ? main.importance : '一般',
               })(
                 <Select placeholder="请选择">
-                  {priority &&
-                    priority.length &&
-                    priority.map(({ key, val }) => (
-                      <Option key={key} value={key}>
-                        {val}
-                      </Option>
-                    ))}
+                  {(priority || []).map(obj => [
+                    <Option key={obj.title} value={obj.dict_code}>
+                      {obj.title}
+                    </Option>,
+                  ])}
                 </Select>,
               )}
             </Form.Item>
@@ -331,13 +331,11 @@ const Registrat = React.forwardRef((props, ref) => {
                 initialValue: register.registerProject,
               })(
                 <Select placeholder="请选择">
-                  {project &&
-                    project.length &&
-                    project.map(({ key, val }) => (
-                      <Option key={key} value={key}>
-                        {val}
-                      </Option>
-                    ))}
+                  {(project || []).map(obj => [
+                    <Option key={obj.key} value={obj.dict_code}>
+                      {obj.title}
+                    </Option>,
+                  ])}
                 </Select>,
               )}
             </Form.Item>
@@ -355,13 +353,11 @@ const Registrat = React.forwardRef((props, ref) => {
                 initialValue: register.registerScope,
               })(
                 <Select placeholder="请选择">
-                  {scope &&
-                    scope.length &&
-                    scope.map(({ key, val }) => (
-                      <Option key={key} value={key}>
-                        {val}
-                      </Option>
-                    ))}
+                  {(scope || []).map(obj => [
+                    <Option key={obj.key} value={obj.dict_code}>
+                      {obj.title}
+                    </Option>,
+                  ])}
                 </Select>,
               )}
             </Form.Item>

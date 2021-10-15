@@ -163,8 +163,8 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
     <>
       <Row gutter={16}>
         <SysDict
-          typeid="1385513049263181825"
-          commonid="1354288354950123522"
+          typeid="481"
+          commonid="335"
           ChangeSelectdata={newvalue => setSelectData(newvalue)}
           style={{ display: 'none' }}
         />

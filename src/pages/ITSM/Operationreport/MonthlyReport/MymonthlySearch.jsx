@@ -284,8 +284,8 @@ function MymonthlySearch(props) {
   return (
     <PageHeaderWrapper title={pagetitle}>
       <SysDict
-        typeid="1399541895977242626"
-        commonid="1354288354950123522"
+        typeid='561'
+        commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

@@ -40,14 +40,13 @@ const queryParams = true;
 function Besolved(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
+    form: { getFieldDecorator, resetFields, validateFields, setFieldsValue, getFieldsValue },
     location: { query:
       {
         progressStatus,
         type,
         handleDeptId,
         timeStatus,
-        // timeStatuscontent,
         handlerId,
         checkUserId,
         checkDeptId,
@@ -55,7 +54,8 @@ function Besolved(props) {
         addTimeEnd,
         status,
         currentNode,
-        problem
+        problem,
+        handleProcessGroupType
       } },
     dispatch,
     queryArr,
@@ -63,6 +63,7 @@ function Besolved(props) {
     location,
     loading,
   } = props;
+  console.log('props: ', props);
   let differentTitle;
   const [expand, setExpand] = useState(false);
   const [tabrecord, setTabRecord] = useState({});
@@ -664,41 +665,6 @@ function Besolved(props) {
     differentTitle = '问题查询'
   }
 
-  // const aaa = 002;
-  // 设置初始值
-  const record = {
-    no: '',
-    currentNode,
-    title: '',
-    confirmUser: '',
-    source: '',
-    type,
-    registerScope: '',
-    handler: '',
-    handleUnit: '',
-    registerUser: '',
-    importance: '',
-    handlerId,
-    handleDeptId,
-    progressStatus,
-    timeStatus,
-    // timeStatuscontent,
-    checkUserId,
-    checkDeptId,
-    status,
-    createTime: addTimeBegin ? [moment(addTimeBegin), moment(addTimeEnd)] : '',
-    paginations,
-  };
-
-  let cacheinfo = {};
-  if (location && location.state) {
-    cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
-  }
-
-  const handleReset = () => {
-    resetFields();
-  };
-
   const handlobjectChange = value => {
     // console.log('value: ', value);
     // setFieldsValue({ type: value?.slice(-1)[0] }, () => { })
@@ -713,7 +679,7 @@ function Besolved(props) {
         createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
         createTime: values.createTime?.length ? [moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
         pageNum: page,
-        type: values.type ? (values.type)[1].toString():'',
+        type: values.type ? (values.type)[1].toString() : '',
         pageSize: paginations.pageSize
       },
     });
@@ -726,6 +692,16 @@ function Besolved(props) {
       pageSize: paginations.pageSize,
     }
     setTabRecord({ ...newvalues });
+  };
+
+  const handleReset = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: {}
+    });
+    resetFields();
+    searchdata({}, 1, 15);
   };
 
   const onShowSizeChange = (page, pageSize) => {
@@ -796,7 +772,7 @@ function Besolved(props) {
             columns: JSON.stringify(exportColumns),
             ids: selectedKeys.toString(),
             ...values,
-            type: values.type ? (values.type)[1].toString():'',
+            type: values.type ? (values.type)[1].toString() : '',
             createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
             createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
             createTime: '',
@@ -815,9 +791,9 @@ function Besolved(props) {
     })
   }
 
-  const getTypebyTitle = title => {
+  const getTypebyTitle = titles => {
     if (selectdata.ischange) {
-      return selectdata.arr.filter(item => item.title === title)[0].children;
+      return selectdata.arr.filter(item => item.title === titles)[0].children;
     }
     return [];
   };
@@ -844,6 +820,33 @@ function Besolved(props) {
     }
   }, [location.state]);
 
+   // 设置初始值
+   const record = {
+    no: '',
+    currentNode,
+    title: '',
+    confirmUser: '',
+    source: '',
+    type,
+    registerScope: '',
+    handler: '',
+    handleUnit: '',
+    registerUser: '',
+    importance: '',
+    handlerId,
+    handleDeptId,
+    progressStatus,
+    timeStatus,
+    handleProcessGroupType,
+    checkUserId,
+    checkDeptId,
+    status,
+    createTime: addTimeBegin ? [moment(addTimeBegin), moment(addTimeEnd)] : '',
+    paginations,
+  };
+
+  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+
   useEffect(() => {
     if (location.state) {
       if (location.state.cache) {
@@ -862,6 +865,7 @@ function Besolved(props) {
       };
       // 点击菜单刷新
       if (location.state.reset) {
+        console.log('teset')
         handleReset()
       };
       // 标签切回设置初始值
@@ -877,11 +881,17 @@ function Besolved(props) {
     }
   }, [location.state]);
 
-
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      handleReset();
+      searchdata({}, 1)
+    }
+  }, [location.state]);
 
   // 获取数据
   useEffect(() => {
-    validateFields((err, values) => searchdata(values, paginations.current, paginations.pageSize),)
+    const values = getFieldsValue();
+    searchdata(values, paginations.current, paginations.pageSize)
     const controlTable = [
       {
         title: '问题编号',
@@ -1033,18 +1043,14 @@ function Besolved(props) {
     }
   }
 
-  useEffect(() => {
-    if (location.state && location.state.reset) {
-      handleReset();
-      searchdata({}, 1)
-    }
-  }, [location.state]);
+
+
 
   return (
     <PageHeaderWrapper title={differentTitle}>
       <SysDict
-        typeid="1354287742015508481"
-        commonid="1354288354950123522"
+        typeid="334"
+        commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
@@ -1052,6 +1058,79 @@ function Besolved(props) {
         <Row gutter={16}>
           <Form {...formItemLayout}>
             <>
+              <Col span={8} style={{ display: 'none' }}>
+                <Form.Item label="问题编号" >
+                  {getFieldDecorator('handleDeptId', {
+                    initialValue: cacheinfo.handleDeptId,
+                  })(<Input placeholder='请输入' allowClear />)}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{ display: 'none' }}>
+                <Form.Item label="问题编号">
+                  {getFieldDecorator('handlerId', {
+                    initialValue: cacheinfo.handlerId,
+                    rules: [
+                      {
+                        message: '请输入问题编号',
+                      },
+                    ],
+                  })(<Input placeholder='请输入' allowClear />)}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{ display: 'none' }}>
+                <Form.Item label="问题编号">
+                  {getFieldDecorator('progressStatus', {
+                    initialValue: cacheinfo.progressStatus,
+                    rules: [
+                      {
+                        message: '请输入问题编号',
+                      },
+                    ],
+                  })(<Input placeholder='请输入' allowClear />)}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{ display: 'none' }}>
+                <Form.Item label="问题编号">
+                  {getFieldDecorator('checkUserId', {
+                    initialValue: cacheinfo.checkUserId,
+                    rules: [
+                      {
+                        message: '请输入问题编号',
+                      },
+                    ],
+                  })(<Input placeholder='请输入' allowClear />)}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{ display: 'none' }}>
+                <Form.Item label="问题编号">
+                  {getFieldDecorator('checkDeptId', {
+                    initialValue: cacheinfo.checkDeptId,
+                    rules: [
+                      {
+                        message: '请输入问题编号',
+                      },
+                    ],
+                  })(<Input placeholder='请输入' allowClear />)}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{ display: 'none' }}>
+                <Form.Item label="问题编号">
+                  {getFieldDecorator('handleProcessGroupType', {
+                    initialValue: cacheinfo.handleProcessGroupType,
+                    rules: [
+                      {
+                        message: '请输入问题编号',
+                      },
+                    ],
+                  })(<Input placeholder='请输入' allowClear />)}
+                </Form.Item>
+              </Col>
+
               <Col span={8}>
                 <Form.Item label="问题编号">
                   {getFieldDecorator('no', {
@@ -1077,7 +1156,7 @@ function Besolved(props) {
               </Col>
 
               <Col span={8}>
-                <Form.Item label="发送时间">
+                <Form.Item label="发生时间">
                   {getFieldDecorator('createTime', {
                     initialValue: ''
                   })(
@@ -1128,66 +1207,6 @@ function Besolved(props) {
                       ])}
                     </Select>,
                   )}
-                </Form.Item>
-              </Col>
-
-
-              <Col span={8}>
-                <Form.Item label="问题编号" style={{ display: 'none' }}>
-                  {getFieldDecorator('handleDeptId', {
-                    initialValue: cacheinfo.handleDeptId,
-                  })(<Input placeholder='请输入' allowClear />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={8} style={{ display: 'none' }}>
-                <Form.Item label="问题编号">
-                  {getFieldDecorator('handlerId', {
-                    initialValue: cacheinfo.handlerId,
-                    rules: [
-                      {
-                        message: '请输入问题编号',
-                      },
-                    ],
-                  })(<Input placeholder='请输入' allowClear />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={8} style={{ display: 'none' }}>
-                <Form.Item label="问题编号">
-                  {getFieldDecorator('progressStatus', {
-                    initialValue: cacheinfo.progressStatus,
-                    rules: [
-                      {
-                        message: '请输入问题编号',
-                      },
-                    ],
-                  })(<Input placeholder='请输入' allowClear />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={8} style={{ display: 'none' }}>
-                <Form.Item label="问题编号">
-                  {getFieldDecorator('checkUserId', {
-                    initialValue: cacheinfo.checkUserId,
-                    rules: [
-                      {
-                        message: '请输入问题编号',
-                      },
-                    ],
-                  })(<Input placeholder='请输入' allowClear />)}
-                </Form.Item>
-              </Col>
-              <Col span={8} style={{ display: 'none' }}>
-                <Form.Item label="问题编号">
-                  {getFieldDecorator('checkDeptId', {
-                    initialValue: cacheinfo.checkDeptId,
-                    rules: [
-                      {
-                        message: '请输入问题编号',
-                      },
-                    ],
-                  })(<Input placeholder='请输入' allowClear />)}
                 </Form.Item>
               </Col>
 

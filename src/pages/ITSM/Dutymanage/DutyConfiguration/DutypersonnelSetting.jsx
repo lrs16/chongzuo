@@ -92,7 +92,7 @@ function DutypersonnelSetting(props) {
   useEffect(() => {
     if (location.state && location.state.reset) {
       handleReset();
-      searchdata({},1,15)
+      searchdata({}, 1, 15)
     }
   }, [location.state]);
 
@@ -307,8 +307,8 @@ function DutypersonnelSetting(props) {
   return (
     <PageHeaderWrapper title={pagetitle}>
       <SysDict
-        typeid="1438058740916416514"
-        commonid="1354288354950123522"
+        typeid='1021'
+        commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
@@ -338,7 +338,7 @@ function DutypersonnelSetting(props) {
             <Col span={8}>
               <Form.Item label="值班人员">
                 {getFieldDecorator('staffName', {
-                 initialValue: cacheinfo.staffName,
+                  initialValue: cacheinfo.staffName,
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
@@ -356,7 +356,11 @@ function DutypersonnelSetting(props) {
                 {getFieldDecorator('jobId', {
                   initialValue: cacheinfo.jobId,
                 })(
-                  <Select placeholder="请选择" onChange={(value, option) => handleChange(value, option, 'jobName')}>
+                  <Select
+                    getPopupContainer={e => e.parentNode}
+                    placeholder="请选择"
+                    onChange={(value, option) => handleChange(value, option, 'jobName')}
+                  >
                     {teamjobName.map(obj => [
                       <Option
                         key={obj.key}

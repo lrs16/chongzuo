@@ -90,7 +90,7 @@ function TaskSearch(props) {
   const [selectedRows, setSelectedRows] = useState([]);
   const [columns, setColumns] = useState([]);
   const [selectedKeys, setSelectedKeys] = useState([]);
-  
+
   let formThead;
 
 
@@ -659,8 +659,8 @@ function TaskSearch(props) {
   return (
     <PageHeaderWrapper title={titleParams}>
       <SysDict
-        typeid="1385513049263181825"
-        commonid="1354288354950123522"
+        typeid="481"
+        commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

@@ -282,8 +282,8 @@ function Registration(props) {
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
       <SysDict
-        typeid="1354278126724583426"
-        commonid="1354288354950123522"
+        typeid="333"
+        commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
@@ -512,7 +512,7 @@ function Registration(props) {
             <Col span={24}>
               <Form.Item label="是否影响计量主站" {...forminladeLayout}>
                 {getFieldDecorator('registerMaster', {
-                  initialValue: cacheinfo.registerMaster || '',
+                  initialValue: cacheinfo.registerMaster || '0',
                 })(
                   <RadioGroup>
                     <Radio value='0'>是</Radio>

@@ -138,8 +138,8 @@ function AddDutyclassesSetting(props) {
     <>
       {withClick(children, handleopenClick)}
       <SysDict
-        typeid="1438058740916416514"
-        commonid="1354288354950123522"
+        typeid='1021'
+        commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

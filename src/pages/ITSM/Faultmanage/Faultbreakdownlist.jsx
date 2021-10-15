@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 import {
   Card,
   Row,
@@ -61,8 +62,8 @@ const columns = [
           to={{
             pathname: '/ITSM/faultmanage/querylist',
             query: {
-              addTimeBegin: search ? statTimeBegin:'',
-              addTimeEnd:  search ? statTimeEnd:'',
+              addTimeBegin: search ? moment(statTimeBegin).format('YYYY-MM-DD 00:00:00'):'',
+              addTimeEnd:  search ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59'):'',
               type: record.statCode,
               dictType: 'type',
               pathpush: true
@@ -89,6 +90,7 @@ function Faultbreakdownlist(props) {
 
 
   const onChange = (date, dateString) => {
+    console.log('dateString: ', dateString);
     [statTimeBegin, statTimeEnd] = dateString;
   }
 
@@ -96,7 +98,7 @@ function Faultbreakdownlist(props) {
     search = true;
     dispatch({
       type: 'faultstatics/fetchfaultlist',
-      payload: { statTimeBegin, statTimeEnd, dictType: 'type' }
+      payload: { statTimeBegin:moment(statTimeBegin).format('YYYY-MM-DD 00:00:00'), statTimeEnd:moment(statTimeEnd).format('YYYY-MM-DD 23:59:59'), dictType: 'type' }
     })
   }
 

@@ -294,8 +294,8 @@ function DutyaccordingSetting(props) {
   return (
     <PageHeaderWrapper title={pagetitle}>
       <SysDict
-        typeid="1438058740916416514"
-        commonid="1354288354950123522"
+        typeid='1021'
+        commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
@@ -306,7 +306,7 @@ function DutyaccordingSetting(props) {
               <Sider theme="light">
                 {teamname && teamname.length > 0 && (
                   <Tree
-                    defaultSelectedKeys={['1438060967991177218']}
+                    defaultSelectedKeys={['1031']}
                     onSelect={handleClick}
                     defaultExpandAll
                   >

@@ -1145,13 +1145,12 @@ function TobedealtList(props) {
   };
 
   const assessmentObject = getTypebyTitle('考核对象');
-  console.log('assessmentObject: ', assessmentObject);
 
   return (
     <PageHeaderWrapper title={pagetitle}>
       <SysDict
-        typeid="1410413049587699713"
-        commonid="1354288354950123522"
+        typeid='576'
+        commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
@@ -1171,7 +1170,7 @@ function TobedealtList(props) {
                 {getFieldDecorator('currentTaskName', {
                   initialValue: cacheinfo.currentTaskName,
                 })(
-                  <Select  getPopupContainer={e => e.parentNode}>
+                  <Select getPopupContainer={e => e.parentNode}>
                     <Option key="服务绩效考核登记" value="服务绩效考核登记">
                       服务绩效考核登记
                     </Option>
@@ -1223,7 +1222,7 @@ function TobedealtList(props) {
                     initialValue: cacheinfo.providerName,
                   })(
                     <AutoComplete
-                    getPopupContainer={e => e.parentNode}
+                      getPopupContainer={e => e.parentNode}
                       dataSource={disableduser}
                       dropdownMatchSelectWidth={false}
                       dropdownStyle={{ width: 600 }}
@@ -1575,7 +1574,7 @@ function TobedealtList(props) {
                   {getFieldDecorator('expertVerifyValue', {
                     initialValue: cacheinfo.expertVerifyValue,
                   })(
-                    <Select  getPopupContainer={e => e.parentNode}>
+                    <Select getPopupContainer={e => e.parentNode}>
                       <Option key="待审核" value="待审核">
                         待审核
                       </Option>
@@ -1600,7 +1599,7 @@ function TobedealtList(props) {
                   {getFieldDecorator('expertVerifyStatus', {
                     initialValue: cacheinfo.expertVerifyStatus,
                   })(
-                    <Select  getPopupContainer={e => e.parentNode}>
+                    <Select getPopupContainer={e => e.parentNode}>
                       <Option key="待审核" value="待审核">
                         待审核
                       </Option>
@@ -1652,7 +1651,7 @@ function TobedealtList(props) {
                   {getFieldDecorator('isAppeal', {
                     initialValue: cacheinfo.isAppeal,
                   })(
-                    <Select  getPopupContainer={e => e.parentNode}>
+                    <Select getPopupContainer={e => e.parentNode}>
                       <Option key="1" value="1">
                         是
                       </Option>
@@ -1735,7 +1734,7 @@ function TobedealtList(props) {
                   {getFieldDecorator('directorReviewValue', {
                     initialValue: cacheinfo.directorReviewValue,
                   })(
-                    <Select  getPopupContainer={e => e.parentNode}>
+                    <Select getPopupContainer={e => e.parentNode}>
                       <Option key="1" value="1">
                         同意
                       </Option>
@@ -1760,7 +1759,7 @@ function TobedealtList(props) {
                   {getFieldDecorator('assessObject', {
                     initialValue: cacheinfo.assessObject,
                   })(
-                    <Select placeholder="请选择"  getPopupContainer={e => e.parentNode}>
+                    <Select placeholder="请选择" getPopupContainer={e => e.parentNode}>
                       {(assessmentObject || []).map(obj => [
                         <Option key={obj.dict_code} value={obj.dict_code}>
                           {obj.title}
@@ -1811,7 +1810,7 @@ function TobedealtList(props) {
                   {getFieldDecorator('finallyConfirmValue', {
                     initialValue: cacheinfo.finallyConfirmValue,
                   })(
-                    <Select  getPopupContainer={e => e.parentNode}>
+                    <Select getPopupContainer={e => e.parentNode}>
                       <Option key="完成" value="完成">
                         完成
                       </Option>

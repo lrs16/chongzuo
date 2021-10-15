@@ -141,7 +141,7 @@ function Work(props) {
     })
   }
 
-  
+
   useEffect(() => {
     if (location.state && location.state.reset && mainId) {
       getInformation()
@@ -285,7 +285,7 @@ function Work(props) {
 
   //  判断是属于那个保存状态下
   const handleSave = (params, tobatch) => {
-    switch(flowNodeName) {
+    switch (flowNodeName) {
       case '计划登记':
         fillinSave(params, tobatch);
         break;
@@ -561,7 +561,7 @@ function Work(props) {
           }
 
           {
-            loading === false && taskResult && taskResult.length > 0  && !delay && edit.check && edit.check.result === null && taskResult && taskResult.length > 0 && (
+            loading === false && taskResult && taskResult.length > 0 && !delay && edit.check && edit.check.result === null && taskResult && taskResult.length > 0 && (
               <Back
                 reasonSubmit={values => reasonSubmit(values)}
                 detailPage='true'
@@ -592,8 +592,8 @@ function Work(props) {
       }
     >
       <SysDict
-        typeid="1385513049263181825"
-        commonid="1354288354950123522"
+        typeid="481"
+        commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

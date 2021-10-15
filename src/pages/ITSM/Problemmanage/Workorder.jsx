@@ -28,7 +28,8 @@ import Systemoperatorsecond from './components/Systemoperatorsecond';
 import TimeoutModal from '../components/TimeoutModal';                // 超时信息填写
 import { judgeTimeoutStatus, saveTimeoutMsg } from '../services/api'; // 超时接口
 
-import RelationOrder from './RelationOrder';                          // 关联工单
+import RelationOrder from './RelationOrder';       
+import SysDict from '@/components/SysDict';                   // 关联工单
 
 import styles from './index.less';
 
@@ -112,11 +113,7 @@ function Workorder(props) {
     }
   }
 
-
-
-  
   const { id, taskName, mainId } = props.location.query;
-  console.log(mainId,'mainId')
   const { problemFlowLogs, problemFlowNodeRows } = todoDetail;
 
 
@@ -189,7 +186,7 @@ function Workorder(props) {
   const formerr = () => {
     message.error('请将信息填写完整...');
   };
-  
+
   const getUserinfo = () => {
     dispatch({
       type: 'problemmanage/fetchUseinfo',
@@ -204,7 +201,7 @@ function Workorder(props) {
       setTabActiveKey('workorder');
     }
   }, [location.state])
-  
+
 
 
   const gotoCirapi = (closessign) => {
@@ -315,7 +312,7 @@ function Workorder(props) {
             editState: todoDetail.editState === 'edit' ? 'edit' : 'add',
             registerId: todoDetail.editState === 'edit' ? todoDetail.register.id : todoDetail.editGuid,
             registerAttachments: files.ischange ? JSON.stringify(files.arr) : null,
-            developmentLead:(values.developmentLead).toString(),
+            developmentLead: (values.developmentLead).toString(),
           },
         }).then(res => {
           if (res.code === 200) {
@@ -526,7 +523,7 @@ function Workorder(props) {
   }, [files]);
 
 
- 
+
 
   const gethandle = () => {
     const dictModule = 'problem';
@@ -737,6 +734,9 @@ function Workorder(props) {
       }
     });
   }
+
+
+ 
 
   return (
     <PageHeaderWrapper

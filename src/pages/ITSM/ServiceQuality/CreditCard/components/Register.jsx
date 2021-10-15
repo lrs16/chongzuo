@@ -261,8 +261,8 @@ const Register = React.forwardRef((props, ref) => {
   return (
     <>
       <SysDict
-        typeid="1410413049587699713"
-        commonid="1354288354950123522"
+        typeid='576'
+        commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
@@ -453,7 +453,7 @@ const Register = React.forwardRef((props, ref) => {
               {
                 getFieldDecorator('assessType', {
                   // initialValue: (register.assessType === '1') ? '功能开发' : (register.assessType === '2') ? '系统运维' : ''
-                  initialValue: (register && register.assessType && register.assessType === '1') ? '功能开发' : (register.assessType === '2') ? '系统运维' :''
+                  initialValue: (register && register.assessType && register.assessType === '1') ? '功能开发' : (register.assessType === '2') ? '系统运维' : ''
                 })
                   (<Input disabled={true} />)
               }
@@ -508,7 +508,7 @@ const Register = React.forwardRef((props, ref) => {
                     <div>
                       <RangePicker
                         allowClear={false}
-                        defaultValue={register.beginTime ? [moment(register.beginTime, 'YYYY-MM-DD'), moment(register.endTime, 'YYYY-MM-DD')]:[]}
+                        defaultValue={register.beginTime ? [moment(register.beginTime, 'YYYY-MM-DD'), moment(register.endTime, 'YYYY-MM-DD')] : []}
                         disabled={search}
                         showTime={{
                           hideDisabledOptions: true,

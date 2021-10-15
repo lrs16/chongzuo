@@ -53,7 +53,7 @@ const columns = [
         time1: record.start_time,
         time2: record.end_time,
         unitName: record.unit,
-        status:'已完成'
+        status:'已关闭'
       }
       return (
         <TreatmentrateDetail

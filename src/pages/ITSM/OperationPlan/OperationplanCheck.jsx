@@ -681,8 +681,8 @@ function OperationplanCheck(props) {
   return (
     <PageHeaderWrapper title={pagetitle}>
       <SysDict
-        typeid="1385513049263181825"
-        commonid="1354288354950123522"
+        typeid="481"
+        commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

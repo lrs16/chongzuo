@@ -34,7 +34,8 @@ function TimeoutStatistics(props) {
     form: { getFieldDecorator, resetFields },
     dispatch,
     timeoutArr,
-    location
+    location,
+    loading
   } = props;
 
   const columns = [
@@ -184,6 +185,7 @@ function TimeoutStatistics(props) {
         </div>
 
         <Table
+          loading={loading}
           columns={columns}
           dataSource={timeoutArr}
           rowKey={record => record.statName}
@@ -196,7 +198,8 @@ function TimeoutStatistics(props) {
 }
 
 export default Form.create({})(
-  connect(({ problemstatistics }) => ({
-    timeoutArr: problemstatistics.timeoutArr
+  connect(({ problemstatistics,loading }) => ({
+    timeoutArr: problemstatistics.timeoutArr,
+    loading:loading.models.problemstatistics
   }))(TimeoutStatistics)
 );

@@ -73,7 +73,7 @@ function CreditcardTobe(props) {
         evaluationInterval: '',
         pageNum: page,
         pageSize,
-        locked: pagetitle === '计分卡登记' ? '0' :'1',
+        locked: pagetitle === '计分卡登记' ? '0' : '1',
       },
     });
     setTabRecord({ ...newValue });
@@ -359,8 +359,8 @@ function CreditcardTobe(props) {
     <PageHeaderWrapper title={pagetitle}>
       <Card>
         <SysDict
-          typeid='1410413049587699713'
-          commonid="1354288354950123522"
+          typeid='576'
+          commonid="335"
           ChangeSelectdata={newvalue => setSelectData(newvalue)}
           style={{ display: 'none' }}
         />

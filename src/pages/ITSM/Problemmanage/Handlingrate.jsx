@@ -148,7 +148,9 @@ function Handlingrate(props) {
               handleProcessGroupType: tabActiveKey,
               addTimeBegin: search ? statTimeBegin : '',
               addTimeEnd: search ? statTimeEnd : '',
-            }
+              pathpush: true
+            },
+            state: { cache: false, }
           }}
         >
           {text}
@@ -171,7 +173,9 @@ function Handlingrate(props) {
               handleProcessGroupType: tabActiveKey,
               addTimeBegin: search ? statTimeBegin : '',
               addTimeEnd: search ? statTimeEnd : '',
-            }
+              pathpush: true
+            },
+            state: { cache: false, }
           }}
         >
           {text}

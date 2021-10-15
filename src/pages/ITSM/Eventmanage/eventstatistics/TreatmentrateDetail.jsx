@@ -174,31 +174,31 @@ function TreatmentrateDetail(props) {
     setVisible(false)
   }
 
-  const onShowSizeChange = (page, size) => {
-    searchdata(page, size);
-    setPageinations({
-      ...paginations,
-      pageSize: size,
-    });
-  };
+  // const onShowSizeChange = (page, size) => {
+  //   searchdata(page, size);
+  //   setPageinations({
+  //     ...paginations,
+  //     pageSize: size,
+  //   });
+  // };
 
-  const changePage = page => {
-    searchdata(page - 1, paginations.pageSize);
-    setPageinations({
-      ...paginations,
-      current: page,
-    });
-  };
+  // const changePage = page => {
+  //   searchdata(page - 1, paginations.pageSize);
+  //   setPageinations({
+  //     ...paginations,
+  //     current: page,
+  //   });
+  // };
 
-  const pagination = {
-    showSizeChanger: true,
-    onShowSizeChange: (page, size) => onShowSizeChange(page, size),
-    current: paginations.current,
-    pageSize: paginations.pageSize,
-    total: eventHandleRatearr.total,
-    showTotal: total => `总共  ${total}  条记录`,
-    onChange: page => changePage(page),
-  };
+  // const pagination = {
+  //   showSizeChanger: true,
+  //   onShowSizeChange: (page, size) => onShowSizeChange(page, size),
+  //   current: paginations.current,
+  //   pageSize: paginations.pageSize,
+  //   total: eventHandleRatearr.total,
+  //   showTotal: total => `总共  ${total}  条记录`,
+  //   onChange: page => changePage(page),
+  // };
 
   //  下载
   const download = () => {
@@ -244,7 +244,7 @@ function TreatmentrateDetail(props) {
           columns={columns}
           dataSource={eventHandleRatearr.rows}
           rowKey={record => record.id}
-          pagination={pagination}
+          // pagination={pagination}
           scroll={{ x: 700 }}
         />
 

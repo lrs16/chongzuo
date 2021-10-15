@@ -125,7 +125,7 @@ function ToDOlist(props) {
       width: 80,
     },
     {
-      title: '发送时间',
+      title: '发生时间',
       dataIndex: 'createTime',
       key: 'createTime',
       width: 180,
@@ -143,8 +143,8 @@ function ToDOlist(props) {
       const newvalues = {
         ...values,
         // type: values.type ? (values.type).slice(-1)[0] : '',
-        addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-        addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
         createTime: '',
       }
       if (!err) {
@@ -311,8 +311,8 @@ function ToDOlist(props) {
   return (
     <PageHeaderWrapper title={pagetitle}>
       <SysDict
-        typeid="1354278126724583426"
-        commonid="1354288354950123522"
+        typeid="333"
+        commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
@@ -406,7 +406,7 @@ function ToDOlist(props) {
                 </Form.Item>
               </Col>
               <Col span={16}>
-                <Form.Item label="发送时间" {...formminItemLayout}>
+                <Form.Item label="发生时间" {...formminItemLayout}>
                   {getFieldDecorator('createTime', {
                     initialValue: ''
                   })(

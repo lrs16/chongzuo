@@ -42,7 +42,7 @@ function AdddutyPersonnelSetting(props) {
     onDelete,
     personnelSetting
   } = props;
-  const [directorlist, setDirectorlist] = useState([]); 
+  const [directorlist, setDirectorlist] = useState([]);
   const [spinloading, setSpinLoading] = useState(true);
   const [select, setSelect] = useState([]);
   const [selectdata, setSelectData] = useState('');
@@ -94,7 +94,7 @@ function AdddutyPersonnelSetting(props) {
     validateFields((err, values) => {
       console.log('values: ', values);
       const newdata = {
-        id:personnelSetting.id || '',
+        id: personnelSetting.id || '',
         ...values
       }
       if (!err) {
@@ -108,7 +108,7 @@ function AdddutyPersonnelSetting(props) {
     onDelete(id)
   }
 
-  const handleChange = (value, option,type) => {
+  const handleChange = (value, option, type) => {
     const { values } = option.props;
     switch (type) {
       case 'jobName':
@@ -128,7 +128,7 @@ function AdddutyPersonnelSetting(props) {
       default:
         break;
     }
- 
+
   }
 
   // 选择下拉值，信息回填
@@ -138,7 +138,7 @@ function AdddutyPersonnelSetting(props) {
       case 'director':
         setFieldsValue({
           staffName: userName, // 用户名称
-          teststaffName:userName,
+          teststaffName: userName,
           userId: id, // 用户id
           deptId,
           deptName: deptNameExt,
@@ -165,8 +165,8 @@ function AdddutyPersonnelSetting(props) {
   return (
     <>
       <SysDict
-        typeid="1438058740916416514"
-        commonid="1354288354950123522"
+        typeid='1021'
+        commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
@@ -206,7 +206,7 @@ function AdddutyPersonnelSetting(props) {
               </AutoComplete>,
             )}
           </Form.Item>
-          
+
           <Form.Item style={{ display: 'none' }}>
             {
               getFieldDecorator('staffName', {
@@ -215,18 +215,18 @@ function AdddutyPersonnelSetting(props) {
             }
           </Form.Item>
 
-          <Form.Item style={{display:'none'}}>
+          <Form.Item style={{ display: 'none' }}>
             {
-              getFieldDecorator('userId',{
-                initialValue:personnelSetting.userId
+              getFieldDecorator('userId', {
+                initialValue: personnelSetting.userId
               })
             }
           </Form.Item>
 
-          <Form.Item style={{display:'none'}}>
+          <Form.Item style={{ display: 'none' }}>
             {
-              getFieldDecorator('deptId',{
-                initialValue:personnelSetting.deptId
+              getFieldDecorator('deptId', {
+                initialValue: personnelSetting.deptId
               })
             }
           </Form.Item>
@@ -265,7 +265,7 @@ function AdddutyPersonnelSetting(props) {
                 ],
                 initialValue: personnelSetting.jobId
               })(
-                <Select placeholder="请选择" onChange={(value, option)=>handleChange(value, option,'jobName')}>
+                <Select placeholder="请选择" onChange={(value, option) => handleChange(value, option, 'jobName')}>
                   {teamjobName.map(obj => [
                     <Option
                       key={obj.key}
@@ -299,7 +299,7 @@ function AdddutyPersonnelSetting(props) {
               ],
               initialValue: personnelSetting.groupId
             })(
-              <Select placeholder="请选择" onChange={(value, option)=>handleChange(value, option,'group')}>
+              <Select placeholder="请选择" onChange={(value, option) => handleChange(value, option, 'group')}>
                 {teamname.map(obj => [
                   <Option
                     key={obj.key}
@@ -362,13 +362,13 @@ function AdddutyPersonnelSetting(props) {
 AdddutyPersonnelSetting.defaultProps = {
   personnelSetting: {
     staffName: '',
-    userId:'',
+    userId: '',
     deptName: '',
     deptId: '',
     groupId: '',
     jobName: '',
     jobId: '',
-    deptId:''
+    deptId: ''
   }
 }
 

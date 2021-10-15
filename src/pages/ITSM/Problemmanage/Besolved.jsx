@@ -101,7 +101,7 @@ function Besolved(props) {
       key: 'currentNode',
     },
     {
-      title: '发送时间',
+      title: '发生时间',
       dataIndex: 'createTime',
       key: 'createTime',
     },
@@ -350,8 +350,8 @@ function Besolved(props) {
   return (
     <PageHeaderWrapper title={pagetitle}>
       <SysDict
-        typeid="1354287742015508481"
-        commonid="1354288354950123522"
+        typeid="334"
+        commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
@@ -433,7 +433,7 @@ function Besolved(props) {
                 </Form.Item>
               </Col>
               <Col span={8}>
-                <Form.Item label="发送时间">
+                <Form.Item label="发生时间">
                   {getFieldDecorator('createTime', {
                     initialValue: ''
                   })(

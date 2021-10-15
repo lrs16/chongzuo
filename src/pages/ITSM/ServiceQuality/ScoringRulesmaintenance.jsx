@@ -100,22 +100,22 @@ function ScoringRulesmaintenance(props) {
       dataIndex: 'scoreNo',
       key: 'scoreNo',
       width: 200,
-      render:(text,record) => {
+      render: (text, record) => {
         const gotoDetail = () => {
           router.push({
             pathname: '/ITSM/servicequalityassessment/detailscoringrulesmaintenance',
             query: {
               Id: record.scoreNo,
               id: record.id,
-              scoreSearch:true
+              scoreSearch: true
             },
-            state:{
+            state: {
               dynamicpath: true,
               menuDesc: '评分细则详情',
             }
           })
         }
-        if(pagetitle === '评分细则查询') {
+        if (pagetitle === '评分细则查询') {
           return (
             <a onClick={() => gotoDetail()}>{text}</a>
           )
@@ -149,7 +149,7 @@ function ScoringRulesmaintenance(props) {
               Id: record.scoreNo,
               id: record.id,
             },
-            state:{
+            state: {
               dynamicpath: true,
               menuDesc: '评分细则详情',
             }
@@ -205,7 +205,7 @@ function ScoringRulesmaintenance(props) {
   useEffect(() => {
     if (location.state && location.state.reset) {
       handleReset();
-      searchdata({},1,15)
+      searchdata({}, 1, 15)
     }
   }, [location.state]);
 
@@ -303,8 +303,8 @@ function ScoringRulesmaintenance(props) {
   return (
     <PageHeaderWrapper title={pagetitle}>
       <SysDict
-        typeid='1410413049587699713'
-        commonid="1354288354950123522"
+        typeid='576'
+        commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
@@ -374,12 +374,12 @@ function ScoringRulesmaintenance(props) {
         {
           pagetitle === '评分细则维护' && (
             <Button
-            style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-            onClick={newScoringrules}
-            icon='plus'
-          >
-            新增评分细则
-          </Button>
+              style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+              onClick={newScoringrules}
+              icon='plus'
+            >
+              新增评分细则
+            </Button>
           )
         }
 
