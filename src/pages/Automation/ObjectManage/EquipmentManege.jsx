@@ -45,7 +45,7 @@ function EquipmentManege(props) {
     const [title, setTitle] = useState('');
     const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
     const [data, setData] = useState('');
-    const [allUserData, setallUserData] = useState([]);   
+    const [allUserData, setallUserData] = useState([]);
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
     const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
 
@@ -73,9 +73,9 @@ function EquipmentManege(props) {
         togetSearchUsers().then(res => {
             if (res.code === 200) {
                 setallUserData(res.data.userList);
-              } else {
+            } else {
                 Message.error('获取负责人失败');
-              }
+            }
         });
     }, [location]);
 
@@ -175,7 +175,7 @@ function EquipmentManege(props) {
     };
 
     // 删除
-    const handleDelete = id => { 
+    const handleDelete = id => {
         dispatch({
             type: 'equipmanage/toDeleteEquip',
             payload: { Ids: id },
@@ -417,17 +417,17 @@ function EquipmentManege(props) {
         return [];
     };
 
-    const zonemap = getTypebyId('1428182995477942274'); // 主机区域
-    const hoststatusmap = getTypebyId('1428184619231432705'); // 设备状态
-    const hostosmap = getTypebyId('1428185083276644354'); // 操作系统
-    const electrictype = getTypebyId('1428185267658248193'); // 供电类型
-    const hosttype = getTypebyId('1428185403339788289'); // 设备类型
-    const hostphysicmap = getTypebyId('1428185541785374722'); // 物理机
+    const zonemap = getTypebyId(717); // 主机区域
+    const hoststatusmap = getTypebyId(722); // 设备状态
+    const hostosmap = getTypebyId(725); // 操作系统
+    const electrictype = getTypebyId(726); // 供电类型
+    const hosttype = getTypebyId(727); // 设备类型
+    const hostphysicmap = getTypebyId(728); // 物理机
 
     return (
         <PageHeaderWrapper title={pagetitle}>
             <DictLower
-                typeid="1428178684907835393"
+                typeid={710}
                 ChangeSelectdata={newvalue => setSelectData(newvalue)}
                 style={{ display: 'none' }}
             />

@@ -98,7 +98,7 @@ function SoftwareDrawer(props) {
         return [];
     };
 
-    const zonemap = getTypebyId('1428182995477942274'); // 主机区域
+    const zonemap = getTypebyId(717); // 主机区域
     const hoststatusmap = getTypebyId('1428184619231432705'); // 软件状态
     // const whethermap = getTypebyId('1428185541785374722'); // 是否是否
 
@@ -112,7 +112,7 @@ function SoftwareDrawer(props) {
             destroyOnClose
         >
             <DictLower
-                typeid="1428178684907835393"
+                typeid={710}
                 ChangeSelectdata={newvalue => setSelectData(newvalue)}
                 style={{ display: 'none' }}
             />

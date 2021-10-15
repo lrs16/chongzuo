@@ -321,13 +321,13 @@ function LocalScriptList(props) {
     return [];
   };
 
-  const zonemap = getTypebyId('1428182995477942274'); // 主机区域
+  const zonemap = getTypebyId(717); // 主机区域
 
   return (
     <>
       <Card>
         <DictLower
-          typeid="1428178684907835393"
+          typeid={710}
           ChangeSelectdata={newvalue => setSelectData(newvalue)}
           style={{ display: 'none' }}
         />

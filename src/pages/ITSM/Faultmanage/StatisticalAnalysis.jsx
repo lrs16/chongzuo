@@ -331,7 +331,7 @@ function StatisticalAnalysis(props) {
         {/* 故障系统模块情况 */}
         <Row style={{ marginTop: 24 }}>
           <div className={styles.statisticscard}>
-            <Avatar icon="share-alt" />
+            <Avatar icon="gold" />
             <b>故障系统模块情况</b>
           </div>
           <Col span={8}>
@@ -369,7 +369,7 @@ function StatisticalAnalysis(props) {
         <Row gutter={12} style={{ marginTop: 24 }}>
           <Col span={12}>
             <div className={styles.statisticscard}>
-              <Avatar icon="share-alt" />
+              <Avatar icon="clock-circle" />
               <b>故障工单超时情况</b>
             </div>
             <Card onMouseDown={() => setPicVal({})}>
@@ -390,7 +390,7 @@ function StatisticalAnalysis(props) {
           </Col>
           <Col span={12}>
             <div className={styles.statisticscard}>
-              <Avatar icon="share-alt" />
+              <Avatar icon="form" />
               <b>故障登记人Top{topN.val1}</b>
               <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN({ ...topN, val1: v })} /></div>
             </div>
@@ -412,7 +412,7 @@ function StatisticalAnalysis(props) {
         <Row gutter={12} style={{ marginTop: 24 }}>
           <Col span={12}>
             <div className={styles.statisticscard}>
-              <Avatar icon="share-alt" />
+              <Avatar icon="tool" />
               <b>故障处理人Top{topN.val2}</b>
               <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN({ ...topN, val2: v })} /></div>
             </div>
@@ -431,7 +431,7 @@ function StatisticalAnalysis(props) {
           </Col>
           <Col span={12}>
             <div className={styles.statisticscard}>
-              <Avatar icon="share-alt" />
+              <Avatar icon="form" />
               <b>故障登记单位Top{topN.val3}</b>
               <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN({ ...topN, val3: v })} /></div>
             </div>
@@ -453,7 +453,7 @@ function StatisticalAnalysis(props) {
         <Row gutter={12} style={{ marginTop: 24 }}>
           <Col span={12}>
             <div className={styles.statisticscard}>
-              <Avatar icon="share-alt" />
+              <Avatar icon="tool" />
               <b>故障处理单位Top{topN.val4}</b>
               <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN({ ...topN, val4: v })} /></div>
             </div>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Table, Card, Divider, Button, Message, Tooltip, Form, Input, Select, Row, Col, DatePicker } from 'antd';
+import { Table, Card, Button, Message, Tooltip, Form, Input, Select, Row, Col, DatePicker } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
@@ -24,13 +24,13 @@ function TestEnvironmentManage(props) {
   const pagetitle = props.route.name;
   const {
     dispatch, list, loading, location,
-    form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
+    form: { getFieldDecorator, getFieldsValue, resetFields },
   } = props;
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
   const [visible, setVisible] = useState(false); // 抽屉是否显示
   const [title, setTitle] = useState('');
-  const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
+  // const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
   const [data, setData] = useState('');
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
 
@@ -55,7 +55,7 @@ function TestEnvironmentManage(props) {
   const handleShowDrawer = (drwertitle, type, record) => {
     setVisible(!visible);
     setTitle(drwertitle);
-    setSaveType(type);
+    // setSaveType(type);
     setData(record);
   };
 
@@ -251,14 +251,14 @@ function TestEnvironmentManage(props) {
     }
     return [];
   };
-  const typemap = getTypebyId('100000000000001002');         // 类型
-  const statusmap = getTypebyId('100000000000001003');       // 状态
-  const zonemap = getTypebyId('100000000000001004');         // 区域
+  const typemap = getTypebyId(105);         // 类型
+  const statusmap = getTypebyId(106);       // 状态
+  const zonemap = getTypebyId(107);         // 区域
 
   return (
     <PageHeaderWrapper title={pagetitle}>
       <DictLower
-        typeid="100000000000001001"
+        typeid={104}
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

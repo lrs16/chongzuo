@@ -234,13 +234,13 @@ function LogViews(props) {
         return [];
     };
 
-    const executestatusmap = getTypebyId('200000000000001004');       // 执行状态
-    const worktypemap = getTypebyId('200000000000001007');         // 执行类型
+    const executestatusmap = getTypebyId(1069);       // 执行状态
+    const worktypemap = getTypebyId(1014);         // 执行类型
 
     return (
         <>
             <DictLower
-                typeid="200000000000001001"
+                typeid={1066}
                 ChangeSelectdata={newvalue => setSelectData(newvalue)}
                 style={{ display: 'none' }}
             />

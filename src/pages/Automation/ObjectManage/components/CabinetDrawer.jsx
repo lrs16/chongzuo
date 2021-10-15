@@ -62,7 +62,7 @@ function CabinetDrawer(props) {
     return [];
   };
 
-  const zonemap = getTypebyId('1428182995477942274'); // 区域
+  const zonemap = getTypebyId(717); // 区域
 
   return (
     <Drawer
@@ -74,7 +74,7 @@ function CabinetDrawer(props) {
       destroyOnClose
     >
       <DictLower
-        typeid="1428178684907835393"
+        typeid={710}
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

@@ -81,7 +81,7 @@ const Content = forwardRef((props, ref) => {
     }
     return [];
   };
-  const taskmodesmap = getTypebyId('200000000000001003'); // 类型
+  const taskmodesmap = getTypebyId(1068); // 类型
 
   const handleShowObjDrawer = (drwertitle) => {
     setVisible(!visible);
@@ -97,7 +97,7 @@ const Content = forwardRef((props, ref) => {
     <div>
       <Form {...formItemLayout} >
         <DictLower
-          typeid="200000000000001001"
+          typeid={1066}
           ChangeSelectdata={newvalue => setSelectData(newvalue)}
           style={{ display: 'none' }}
         />

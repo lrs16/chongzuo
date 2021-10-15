@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import React, {
     useEffect,
     useState
@@ -31,7 +30,7 @@ const colormap = new Map([
     ['在用', 'success'],
 ]);
 
-function softwareManage(props) {
+function SoftwareManage(props) {
     const pagetitle = props.route.name;
     const {
         loading,
@@ -77,9 +76,9 @@ function softwareManage(props) {
         togetSearchUsers().then(res => {
             if (res.code === 200) {
                 setallUserData(res.data.userList)
-              } else {
+            } else {
                 message.error('获取负责人失败')
-              }
+            }
         });
     }, [location]);
 
@@ -170,7 +169,7 @@ function softwareManage(props) {
     };
 
     // 删除
-    const handleDelete = id => { 
+    const handleDelete = id => {
         dispatch({
             type: 'softwaremanage/todeleteSoft',
             payload: { Ids: id },
@@ -201,15 +200,15 @@ function softwareManage(props) {
 
     // 数据字典取下拉值
     const getTypebyId = key => {
-        if (selectdata.ischange) {
+        if (selectdata.ischange && selectdata && selectdata.arr.length > 0) {
             return selectdata.arr[0].children.filter(item => item.key === key)[0].children;
         }
         return [];
     };
 
-    const zonemap = getTypebyId('1428182995477942274'); // 区域
-    const hoststatusmap = getTypebyId('1428184619231432705'); // 软件状态
-    const dynamicnamemap = getTypebyId('1429724939744124930'); // 软件属性名称
+    const zonemap = getTypebyId(717); // 区域
+    const hoststatusmap = getTypebyId(1258); // 软件状态
+    const dynamicnamemap = getTypebyId(740); // 软件属性名称
 
     const columns = [
         {
@@ -390,7 +389,7 @@ function softwareManage(props) {
     return (
         <PageHeaderWrapper title={pagetitle}>
             <DictLower
-                typeid="1428178684907835393"
+                typeid={710}
                 ChangeSelectdata={newvalue => setSelectData(newvalue)}
                 style={{ display: 'none' }}
             />
@@ -601,5 +600,5 @@ export default Form.create({})(
     connect(({ softwaremanage, loading }) => ({
         softList: softwaremanage.softList,
         loading: loading.models.softwaremanage,
-    }))(softwareManage),
+    }))(SoftwareManage),
 );

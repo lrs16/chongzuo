@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import {
-    Form, Input, Drawer,
+    Form, 
+    Input, 
+    Drawer,
 } from 'antd';
 
 const formItemLayout = {
@@ -22,9 +24,13 @@ const withClick = (element, handleClick = () => { }) => {
 function ToapplayDetail(props) {
     const [visible, setVisible] = useState(false);
     const {
-        form: { getFieldDecorator, resetFields },
-        children, title,
-        record
+        children, 
+        title,
+        record,
+        form: { 
+            getFieldDecorator, 
+            resetFields 
+        },
     } = props;
 
     const {
@@ -59,7 +65,7 @@ function ToapplayDetail(props) {
                 maskClosable="true"
                 onClose={handleCancel}
             >
-                <Form {...formItemLayout}>
+                <Form {...formItemLayout}>
                     <Form.Item label="进出申请编号">
                         {getFieldDecorator('registNo', {
                             initialValue: registNo,

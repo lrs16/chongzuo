@@ -1,7 +1,6 @@
 import React, {
   useState, useEffect
 } from 'react';
-// import { connect } from 'dva';
 import moment from 'moment';
 import DictLower from '@/components/SysDict/DictLower';
 import { Drawer, Button, Form, Input, Select, InputNumber, DatePicker } from 'antd';
@@ -100,12 +99,12 @@ function EquipDrawer(props) {
     return [];
   };
 
-  const zonemap = getTypebyId('1428182995477942274'); // 主机区域
-  const hoststatusmap = getTypebyId('1428184619231432705'); // 设备状态
-  const hostosmap = getTypebyId('1428185083276644354'); // 操作系统
-  const electrictype = getTypebyId('1428185267658248193'); // 供电类型
-  const hosttype = getTypebyId('1428185403339788289'); // 设备类型
-  const hostphysicmap = getTypebyId('1428185541785374722'); // 物理机
+  const zonemap = getTypebyId(717); // 主机区域
+  const hoststatusmap = getTypebyId(722); // 设备状态
+  const hostosmap = getTypebyId(725); // 操作系统
+  const electrictype = getTypebyId(726); // 供电类型
+  const hosttype = getTypebyId(727); // 设备类型
+  const hostphysicmap = getTypebyId(728); // 物理机
 
   return (
     <Drawer
@@ -117,7 +116,7 @@ function EquipDrawer(props) {
       destroyOnClose
     >
       <DictLower
-        typeid="1428178684907835393"
+        typeid={710}
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

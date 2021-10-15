@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import DictLower from '@/components/SysDict/DictLower';
@@ -27,7 +26,7 @@ const tabList = [
     },
 ];
 
-function scriptConfig(props) {
+function ScriptConfig(props) {
     const pagetitle = props.route.name;
 
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
@@ -45,9 +44,9 @@ function scriptConfig(props) {
         return [];
     };
 
-    const scripttypemap = getTypebyId('1429784928986779649'); // 脚本类型
-    const scriptsourcemap = getTypebyId('1429785542332436481'); // 脚本来源
-    const scriptstatusmap = getTypebyId('1429787254489272321'); // 脚本状态
+    const scripttypemap = getTypebyId(745); // 脚本类型
+    const scriptsourcemap = getTypebyId(747); // 脚本来源
+    const scriptstatusmap = getTypebyId(750); // 脚本状态
 
     return (
         <PageHeaderWrapper
@@ -57,7 +56,7 @@ function scriptConfig(props) {
             onTabChange={handleTabChange}
         >
             <DictLower
-                typeid="1429784773575233537"
+                typeid={744}
                 ChangeSelectdata={newvalue => setSelectData(newvalue)}
                 style={{ display: 'none' }}
             />
@@ -80,4 +79,4 @@ function scriptConfig(props) {
     );
 }
 
-export default scriptConfig;
+export default ScriptConfig;

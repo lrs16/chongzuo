@@ -186,9 +186,9 @@ function JobConfig(props) {
         return [];
     };
 
-    const tsskstatusmap = getTypebyId('200000000000001002'); // 作业状态
-    const taskmodesmap = getTypebyId('200000000000001003'); // 作业方式
-    const examinestatusmap = getTypebyId('200000000000001005'); // 审批状态
+    const tsskstatusmap = getTypebyId(1067); // 作业状态
+    const taskmodesmap = getTypebyId(1068); // 作业方式
+    const examinestatusmap = getTypebyId(1070); // 审批状态
 
     const columns = [
         {
@@ -322,7 +322,7 @@ function JobConfig(props) {
     return (
         <PageHeaderWrapper title={pagetitle}>
             <DictLower
-                typeid="200000000000001001"
+                typeid={1066}
                 ChangeSelectdata={newvalue => setSelectData(newvalue)}
                 style={{ display: 'none' }}
             />

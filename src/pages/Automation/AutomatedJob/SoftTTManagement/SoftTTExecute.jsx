@@ -287,13 +287,13 @@ function SoftTTExecute(props) {
     return [];
   };
 
-  const statusmap = getTypebyId('200000000000001006'); // 状态
-  const checkresultsmap = getTypebyId('200000000000001005'); // 审核结果
+  const statusmap = getTypebyId(1071); // 状态
+  const checkresultsmap = getTypebyId(1070); // 审核结果
 
   return (
     <PageHeaderWrapper title={pagetitle}>
       <DictLower
-        typeid="200000000000001001"
+        typeid={1066}
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

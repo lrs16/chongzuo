@@ -66,7 +66,7 @@ function Toregister(props) {
 
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
-  const [tabrecord, setTabrecord] = useState({});
+  // const [tabrecord, setTabrecord] = useState({});
 
   const columns = [
     {
@@ -77,17 +77,6 @@ function Toregister(props) {
       fixed: 'left',
       render: (text, record) => {
         const handleClick = () => {
-          // dispatch({
-          //   type: 'viewcache/gettabstate',
-          //   payload: {
-          //     cacheinfo: {
-          //       ...tabrecord,
-          //       paginations,
-          //       expand,
-          //     },
-          //     tabid: sessionStorage.getItem('tabid')
-          //   },
-          // });
           router.push({
             pathname: `/ITSM/operationplan/personaccessmanage/record`,
             query: {
@@ -261,7 +250,7 @@ function Toregister(props) {
       checkTime2: values.checkTime ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
       checkTime: ''
     }
-    setTabrecord({ ...newValue });
+    // setTabrecord({ ...newValue });
     dispatch({
       type: 'apply/findRegistList',
       payload: {

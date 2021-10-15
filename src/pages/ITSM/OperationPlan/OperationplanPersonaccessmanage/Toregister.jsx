@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 import {
   Form,
   Row,
@@ -12,10 +13,8 @@ import {
   Table,
   Message
 } from 'antd';
-
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
-import moment from 'moment';
 import ToApply from './components/ToApply';
 import ToEditApply from './components/ToEditApply';
 import ToapplayDetail from './components/ToapplayDetail';
@@ -58,7 +57,6 @@ const checkResult1 = [
 function Toregister(props) {
   const pagetitle = props.route.name;
   const {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     form: { getFieldDecorator, resetFields, validateFields, getFieldsValue },
     dispatch,
     location,
@@ -69,8 +67,7 @@ function Toregister(props) {
 
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [tabrecord, setTabrecord] = useState({});
+  // const [tabrecord, setTabrecord] = useState({});
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   // const [selectdata, setSelectData] = useState('');
@@ -346,7 +343,7 @@ function Toregister(props) {
       checkTime2: values.checkTime ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
       checkTime: ''
     }
-    setTabrecord({ ...newValue });
+    // setTabrecord({ ...newValue });
     dispatch({
       type: 'apply/findRegistList',
       payload: {

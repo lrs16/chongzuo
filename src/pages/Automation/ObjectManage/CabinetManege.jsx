@@ -1,7 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Table, Card, Divider, Button, message, Form, Input, Select, Row, Col, DatePicker } from 'antd';
+import { 
+    Table, 
+    Card, 
+    Divider, 
+    Button, 
+    message, 
+    Form, 
+    Input, 
+    Select, 
+    Row, 
+    Col, 
+    DatePicker, 
+    Icon,
+    Popover,
+    Checkbox 
+} from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
@@ -33,15 +48,18 @@ function CabinetManege(props) {
         },
     } = props;
 
+    let formThead;
+
     const [expand, setExpand] = useState(false);
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
     const [visible, setVisible] = useState(false); // 抽屉是否显示
     const [title, setTitle] = useState('');
     // const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
     const [data, setData] = useState('');
-    const [allUserData, setallUserData] = useState([]); 
+    const [allUserData, setallUserData] = useState([]);
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
     const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
+    const [columns, setColumns] = useState([]);
 
     // 列表请求
     const searchdata = (page, size) => {
@@ -60,10 +78,6 @@ function CabinetManege(props) {
         });
     };
 
-    useEffect(() => {
-        searchdata(1, 15);
-    }, [location]);
-
     // 上传删除附件触发保存
     useEffect(() => {
         if (files.ischange) {
@@ -80,9 +94,9 @@ function CabinetManege(props) {
         togetSearchUsers().then(res => {
             if (res.code === 200) {
                 setallUserData(res.data.userList);
-              } else {
+            } else {
                 message.error('获取负责人失败');
-              }
+            }
         });
     };
 
@@ -147,7 +161,7 @@ function CabinetManege(props) {
     };
 
     // 删除
-    const handleDelete = (id) => { 
+    const handleDelete = (id) => {
         dispatch({
             type: 'cabinetmanage/toDeleteCabinet',
             payload: { Ids: id },
@@ -162,7 +176,7 @@ function CabinetManege(props) {
     };
 
     // 列表
-    const columns = [
+    const initialColumns = [
         {
             title: '机柜编号',
             dataIndex: 'id',
@@ -201,14 +215,14 @@ function CabinetManege(props) {
             dataIndex: 'cabinetU',
             key: 'cabinetU',
             width: 120,
-            sorter: (a, b) => a.cabinetU.substring(0, a.cabinetU.length -1) - b.cabinetU.substring(0, b.cabinetU.length -1)
+            sorter: (a, b) => a.cabinetU.substring(0, a.cabinetU.length - 1) - b.cabinetU.substring(0, b.cabinetU.length - 1)
         },
         {
             title: '剩余容量',
             dataIndex: 'cabinetResidueU',
             key: 'cabinetResidueU',
             width: 120,
-            sorter: (a, b) => a.cabinetResidueU.substring(0, a.cabinetResidueU.length -1) - b.cabinetResidueU.substring(0, b.cabinetResidueU.length -1)
+            sorter: (a, b) => a.cabinetResidueU.substring(0, a.cabinetResidueU.length - 1) - b.cabinetResidueU.substring(0, b.cabinetResidueU.length - 1)
         },
         {
             title: '负责人',
@@ -275,6 +289,69 @@ function CabinetManege(props) {
         },
     ];
 
+    const defaultAllkey = columns.map(item => {
+        return item.title
+    });
+
+    // 创建列表
+    const creataColumns = () => { 
+        // columns
+        initialColumns.length = 0;
+        formThead.map((val) => {
+            const obj = {
+                key: val.key,
+                title: val.title,
+                dataIndex: val.key,
+                width: 150
+            };
+            // if (key === 0) {
+            //     obj.render = (text, record) => {
+            //         return (
+            //             <a onClick={() => gotoDetail(record)}>{text}</a>
+            //         )
+            //     }
+            //     obj.fixed = 'left'
+            // }
+            // if (val.title === '超时状态') {
+            //     obj.render = (text) => {
+            //         return (
+            //             <span>
+            //                 <Badge
+            //                     status={statusMap[statusContent.indexOf(text)]}
+            //                     text={text} />
+            //             </span>
+            //         )
+            //     }
+            // }
+
+            initialColumns.push(obj);
+            setColumns(initialColumns);
+            return null;
+        }
+        )
+    };
+
+    // 列表设置
+    const onCheckAllChange = e => {
+        setColumns(e.target.checked ? initialColumns : [])
+    };
+
+    const onCheck = (checkedValues) => {
+        formThead = initialColumns.filter(i =>
+            checkedValues.indexOf(i.title) >= 0
+        );
+
+        if (formThead.length === 0) {
+            setColumns([])
+        }
+        creataColumns();
+    };
+
+    useEffect(() => {
+        searchdata(1, 15);
+        setColumns(initialColumns);
+    }, [location]);
+
     // 查询
     const extra = (<>
         <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
@@ -340,12 +417,12 @@ function CabinetManege(props) {
         return [];
     };
 
-    const zonemap = getTypebyId('1428182995477942274'); // 区域
+    const zonemap = getTypebyId(717); // 区域
 
     return (
         <PageHeaderWrapper title={pagetitle}>
             <DictLower
-                typeid="1428178684907835393"
+                typeid={710}
                 ChangeSelectdata={newvalue => setSelectData(newvalue)}
                 style={{ display: 'none' }}
             />
@@ -373,8 +450,6 @@ function CabinetManege(props) {
                                 })(<Input placeholder="请输入" allowClear />)}
                             </Form.Item>
                         </Col>
-                        {/* {expand && (
-                            <> */}
                         <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
                             <Form.Item label="机柜名称">
                                 {getFieldDecorator('cabinetName', {
@@ -487,8 +562,6 @@ function CabinetManege(props) {
                                 </Row>
                             </Form.Item>
                         </Col>
-                        {/* </>
-                        )} */}
                         {expand ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '5.666667%' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
                     </Form>
                 </Row>
@@ -503,6 +576,46 @@ function CabinetManege(props) {
                     </div>
                     <Button type="primary" style={{ marginRight: 8 }} onClick={() => download()}>导出</Button>
                     <Button type="primary" style={{ marginRight: 8 }} onClick={() => downloadTemplate()}>下载导入模板</Button>
+                </div>
+                {/* 列表设置 */}
+                <div style={{ textAlign: 'right', marginBottom: 8 }}>
+                    <Popover
+                        placement="bottomRight"
+                        trigger="click"
+                        content={
+                            <>
+                                <p style={{ borderBottom: '1px solid #E9E9E9' }}>
+                                    <Checkbox
+                                        onChange={onCheckAllChange}
+                                        checked={columns.length === initialColumns.length === true}
+                                    >
+                                        列表展示
+                                    </Checkbox>
+                                </p>
+                                <Checkbox.Group
+                                    onChange={onCheck}
+                                    value={defaultAllkey}
+                                    defaultValue={columns}
+                                >
+                                    {initialColumns.map(item => (
+                                        <Col key={`item_${item.key}`} style={{ marginBottom: 8 }}>
+                                            <Checkbox
+                                                value={item.title}
+                                                key={item.key}
+                                                checked={columns}
+                                            >
+                                                {item.title}
+                                            </Checkbox>
+                                        </Col>
+                                    ))}
+                                </Checkbox.Group>
+                            </>
+                        }
+                    >
+                        <Button>
+                            <Icon type="setting" theme="filled" style={{ fontSize: 14 }} />
+                        </Button>
+                    </Popover>
                 </div>
                 <Table
                     columns={columns}

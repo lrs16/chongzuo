@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
+import moment from 'moment';
 import {
   Form, Input, Button, Drawer,
   Select,
   DatePicker,
   Message
 } from 'antd';
-import moment from 'moment';
-import router from 'umi/router';
 
 const { Option } = Select;
+
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -33,7 +33,6 @@ function ToEditApply(props) {
     selectedRows,
     dispatch,
     onChangeList
-    // userinfo
   } = props;
 
   const handleopenClick = () => {
@@ -45,6 +44,7 @@ function ToEditApply(props) {
     resetFields();
   };
 
+  // 保存
   const handleSave = () => {
     validateFields((err, values) => {
       if (!err) {
@@ -55,9 +55,10 @@ function ToEditApply(props) {
     });
   };
 
-  const handleSendCheck = () => { // 送审
+  // 送审
+  const handleSendCheck = () => {
     validateFields((err, values) => {
-      if(!err) {
+      if (!err) {
         dispatch({
           type: 'apply/sendCheck',
           payload: {
@@ -91,13 +92,12 @@ function ToEditApply(props) {
         maskClosable="true"
         onClose={handleCancel}
       >
-        <Form {...formItemLayout}>
+        <Form {...formItemLayout}>
           <Form.Item label="进出申请编号">
             {getFieldDecorator('registNo', {
               initialValue: selectedRows.length === 1 ? selectedRows[0].registNo : '',
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
-
           <Form.Item label="姓名">
             {getFieldDecorator('name', {
               rules: [
@@ -109,7 +109,6 @@ function ToEditApply(props) {
               initialValue: selectedRows.length === 1 ? selectedRows[0].name : '',
             })(<Input placeholder="请输入" />)}
           </Form.Item>
-
           <Form.Item label="性别">
             {getFieldDecorator('sex', {
               rules: [
@@ -126,7 +125,6 @@ function ToEditApply(props) {
               </Select>,
             )}
           </Form.Item>
-
           <Form.Item label="联系电话">
             {getFieldDecorator('phone', {
               rules: [
@@ -138,7 +136,6 @@ function ToEditApply(props) {
               initialValue: selectedRows.length === 1 ? selectedRows[0].phone : '',
             })(<Input placeholder="请输入" />)}
           </Form.Item>
-
           <Form.Item label="进出事由">
             {getFieldDecorator('content', {
               rules: [
@@ -150,7 +147,6 @@ function ToEditApply(props) {
               initialValue: selectedRows.length === 1 ? selectedRows[0].content : '',
             })(<Input placeholder="请输入" />)}
           </Form.Item>
-
           <Form.Item label="计划进入时间">
             {getFieldDecorator('planInTime', {
               rules: [
@@ -169,7 +165,6 @@ function ToEditApply(props) {
                   allowClear />
               )}
           </Form.Item>
-
           <Form.Item label="计划离开时间">
             {getFieldDecorator('planOutTime', {
               rules: [
@@ -188,25 +183,16 @@ function ToEditApply(props) {
                   allowClear />
               )}
           </Form.Item>
-
           <Form.Item label="携带工具">
             {getFieldDecorator('carryTool', {
               initialValue: selectedRows.length === 1 ? selectedRows[0].carryTool : '',
             })(<Input placeholder="请输入" />)}
           </Form.Item>
-
           <Form.Item label="申请人">
             {getFieldDecorator('applyUser', {
               initialValue: selectedRows.length === 1 ? selectedRows[0].applyUser : '',
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
-
-          {/* <Form.Item label="申请时间">
-            {getFieldDecorator('applyTime', {
-              initialValue: moment().format('YYYY-MM-DD HH:mm:ss'),
-            })(<Input placeholder="请输入" disabled />)}
-          </Form.Item> */}
-
         </Form>
         <div
           style={{

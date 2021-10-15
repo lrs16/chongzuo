@@ -196,7 +196,7 @@ function HostDetailView(props) {
         title: '异常'
     }];
 
-    const zonemap = getTypebyId('1428182995477942274'); // 主机区域
+    const zonemap = getTypebyId(107); // 主机区域
 
     const columns = [
         {
@@ -320,7 +320,7 @@ function HostDetailView(props) {
     return (
         <PageHeaderWrapper title={pagetitle} extra={operations}>
             <DictLower
-                typeid="1428178684907835393"
+                typeid={104}
                 ChangeSelectdata={newvalue => setSelectData(newvalue)}
                 style={{ display: 'none' }}
             />

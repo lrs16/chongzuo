@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unresolved */
 import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import { connect } from 'dva';

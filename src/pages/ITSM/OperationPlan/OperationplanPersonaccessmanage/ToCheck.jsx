@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
+import router from 'umi/router';
+import moment from 'moment';
 import {
   Form,
   Row,
@@ -12,11 +14,8 @@ import {
   Table,
   Message
 } from 'antd';
-
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
-import router from 'umi/router';
-import moment from 'moment';
 
 const formItemLayout = {
   labelCol: {
@@ -29,42 +28,46 @@ const formItemLayout = {
   },
 };
 
+const sexMap = ['男', '女'];
+const statusMap = ['已登记', '待审核', '已审核'];
+const checkresultMap = ['通过', '不通过'];
+const checkStatus1 = [
+  { key: '1', title: '待审核' },
+  { key: '2', title: '已审核' }
+];
+const sexselectmap = [
+  { key: '0', title: '男' },
+  { key: '1', title: '女' }
+];
+const checkResult1 = [
+  { key: '0', title: '通过' },
+  { key: '1', title: '不通过' }
+];
+
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-function toCheck(props) {
+function ToCheck(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, resetFields, validateFields, getFieldsValue },
     dispatch,
     location,
     findChecklist,
     userinfo,
-    loading
+    loading,
+    form: {
+      getFieldDecorator,
+      resetFields,
+      validateFields,
+      getFieldsValue
+    },
   } = props;
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
-  const [tabrecord, setTabrecord] = useState({});
+  // const [tabrecord, setTabrecord] = useState({});
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
-
-  const sexMap = ['男', '女'];
-  const statusMap = ['已登记', '待审核', '已审核'];
-  const checkresultMap = ['通过', '不通过'];
-  const checkStatus1 = [
-    { key: '1', title: '待审核' },
-    { key: '2', title: '已审核' }
-  ];
-  const sexselectmap = [
-    { key: '0', title: '男' },
-    { key: '1', title: '女' }
-  ];
-  const checkResult1 = [
-    { key: '0', title: '通过' },
-    { key: '1', title: '不通过' }
-  ];
 
   const columns = [
     {
@@ -90,7 +93,6 @@ function toCheck(props) {
           });
         };
         return <a onClick={handleClick}>{text}</a>;
-        // return <a>{text}</a>;
       },
     },
     {
@@ -105,7 +107,7 @@ function toCheck(props) {
       dataIndex: 'sex',
       key: 'sex',
       width: 150,
-      render: (text, record) => {
+      render: (_, record) => {
         return <span>{sexMap[record.sex]}</span>;
       },
     },
@@ -144,7 +146,7 @@ function toCheck(props) {
       dataIndex: 'checkStatus',
       key: 'checkStatus',
       width: 150,
-      render: (text, record) => {
+      render: (_, record) => {
         return <span>{statusMap[record.checkStatus]}</span>;
       },
     },
@@ -159,7 +161,7 @@ function toCheck(props) {
       dataIndex: 'checkResult',
       key: 'checkResult',
       width: 250,
-      render: (text, record) => {
+      render: (_, record) => {
         return <span>{checkresultMap[record.checkResult]}</span>;
       },
     },
@@ -274,7 +276,7 @@ function toCheck(props) {
       checkTime2: values.checkTime ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
       checkTime: ''
     }
-    setTabrecord({ ...newValue });
+    // setTabrecord({ ...newValue });
     dispatch({
       type: 'apply/findCheckList',
       payload: {
@@ -337,6 +339,7 @@ function toCheck(props) {
     });
   };
 
+  // 查询
   const extra = (<>
     <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
     <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
@@ -614,5 +617,5 @@ export default Form.create({})(
     findChecklist: apply.findChecklist, // 审核列表
     loading: loading.models.apply,
     userinfo: itsmuser.userinfo,
-  }))(toCheck)
+  }))(ToCheck)
 );

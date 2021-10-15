@@ -265,9 +265,9 @@ function AddagentObjDrawer(props) {
         return [];
     };
 
-    const typemap = getTypebyId('100000000000001002');         // 类型
-    const statusmap = getTypebyId('100000000000001003');       // 状态
-    const zonemap = getTypebyId('100000000000001004');         // 区域
+    const typemap = getTypebyId(105);         // 类型
+    const statusmap = getTypebyId(106);       // 状态
+    const zonemap = getTypebyId(107);         // 区域
 
     return (
         <Drawer
@@ -279,7 +279,7 @@ function AddagentObjDrawer(props) {
             destroyOnClose
         >
             <DictLower
-                typeid="100000000000001001"
+                typeid={104}
                 ChangeSelectdata={newvalue => setSelectData(newvalue)}
                 style={{ display: 'none' }}
             />

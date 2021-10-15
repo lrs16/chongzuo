@@ -272,15 +272,16 @@ function AddagentObjDrawer(props) {
         return [];
     };
 
-    const statusmap = [{ // 状态
-        key: '0',
-        title: '在用'
-    }, {
-        key: '1',
-        title: '停用'
-    }];    
+    // const statusmap = [{ // 状态
+    //     key: '0',
+    //     title: '在用'
+    // }, {
+    //     key: '1',
+    //     title: '停用'
+    // }];    
        
-    const zonemap = getTypebyId('1428182995477942274'); // 主机区域
+    const zonemap = getTypebyId(717); // 主机区域
+    const statusmap = getTypebyId(1258); // 主机区域
 
     return (
         <Drawer
@@ -292,7 +293,7 @@ function AddagentObjDrawer(props) {
             destroyOnClose
         >
             <DictLower
-                typeid="1428178684907835393"
+                typeid={710}
                 ChangeSelectdata={newvalue => setSelectData(newvalue)}
                 style={{ display: 'none' }}
             />

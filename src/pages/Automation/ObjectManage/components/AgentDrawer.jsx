@@ -18,7 +18,7 @@ const formItemLayout = {
 function agentDrawer(props) {
   const { visible, ChangeVisible, title, handleSubmit } = props;
   const { getFieldDecorator, validateFields } = props.form;
-  const required = true;
+  // const required = true;
   const { id, agentName, agentHost, agentHyper, agentPort, agentToken, agentType, agentRemarks, } = props.record;
 
   const hanldleCancel = () => {

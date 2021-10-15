@@ -1522,19 +1522,19 @@ export default {
                           path: '/automation/objectmanage/software',
                           name: '软件管理',
                           icon: 'cloud-server',
-                          component: './Automation/ObjectManage/softwareManage',
+                          component: './Automation/ObjectManage/SoftwareManage',
                         },
                         {
                           path: '/automation/objectmanage/softwareconfig',
                           name: '软件配置',
                           icon: 'cloud-server',
-                          component: './Automation/ObjectManage/softwareConfig',
+                          component: './Automation/ObjectManage/SoftwareConfig',
                         },
                         {
                           path: '/automation/objectmanage/scriptconfig',
                           name: '脚本配置',
                           icon: 'cloud-server',
-                          component: './Automation/ObjectManage/scriptConfig',
+                          component: './Automation/ObjectManage/ScriptConfig',
                         },
                       ]
                     },

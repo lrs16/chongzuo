@@ -25,11 +25,15 @@ const forItemLayout = {
 
 const Content = forwardRef((props, ref) => {
     const {
-        form: { getFieldDecorator, getFieldsValue, resetFields },
         userinfo,
         selectedRows,
         ChangeResult,
-        type
+        type,
+        form: { 
+            getFieldDecorator, 
+            getFieldsValue, 
+            resetFields 
+        },
     } = props;
 
     useImperativeHandle(ref, () => ({

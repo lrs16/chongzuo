@@ -6,9 +6,9 @@ import {
   Message
 } from 'antd';
 import moment from 'moment';
-import router from 'umi/router';
 
 const { Option } = Select;
+
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -39,11 +39,13 @@ function ToApply(props) {
     setVisible(true);
   };
 
+  // 取消
   const handleCancel = () => {
     setVisible(false);
     resetFields();
   };
 
+  // 保存
   const handleSave = () => {
     validateFields((err, values) => {
       if (!err) {
@@ -54,9 +56,10 @@ function ToApply(props) {
     });
   };
 
-  const handleSendCheck = () => { // 送审
+  // 送审
+  const handleSendCheck = () => {
     validateFields((err, values) => {
-      if(!err) {
+      if (!err) {
         dispatch({
           type: 'apply/sendCheck',
           payload: {
@@ -90,7 +93,7 @@ function ToApply(props) {
         maskClosable="true"
         onClose={handleCancel}
       >
-        <Form {...formItemLayout}>
+        <Form {...formItemLayout}>
           <Form.Item label="进出申请编号">
             {getFieldDecorator('registNo', {
               initialValue: '',

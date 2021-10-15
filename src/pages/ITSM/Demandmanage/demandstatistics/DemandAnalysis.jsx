@@ -171,7 +171,7 @@ function Statistics(props) {
       <Spin spinning={loadingratio}>
         <Row style={{ marginTop: 24 }}>
           <div className={styles.statisticscard}>
-            <Avatar icon="desktop" />
+            <Avatar icon="file-protect" />
             <b>需求工单情况</b>
           </div>
           {(!ratiodatalist || (ratiodatalist && ratiodatalist === undefined)) && <Empty style={{ height: '100px' }} />}
@@ -191,7 +191,7 @@ function Statistics(props) {
       {/* // 需求工单总情况 （饼图+折线图） */}
       <Row style={{ marginTop: 24 }}>
         <div className={styles.statisticscard}>
-          <Avatar icon="cluster" />
+          <Avatar icon="pie-chart" />
           <b>需求工单总情况</b>
         </div>
         <Col span={8}>
@@ -232,7 +232,7 @@ function Statistics(props) {
       {/* // 功能模块情况 （饼图+折线图） */}
       <Row style={{ marginTop: 24 }}>
         <div className={styles.statisticscard}>
-          <Avatar icon="cluster" />
+          <Avatar icon="gold" />
           <b>功能模块情况</b>
         </div>
         <Col span={8}>
@@ -271,7 +271,7 @@ function Statistics(props) {
       {/* // 需求类型统计分析 （饼图+折线图） */}
       <Row style={{ marginTop: 24 }}>
         <div className={styles.statisticscard}>
-          <Avatar icon="cluster" />
+          <Avatar icon="share-alt" />
           <b>需求类型统计分析</b>
         </div>
         <Col span={8}>
@@ -311,7 +311,7 @@ function Statistics(props) {
       <Row style={{ marginTop: 24 }} gutter={16}>
         <Col span={12}>
           <div className={styles.statisticscard}>
-            <Avatar icon="share-alt" />
+            <Avatar icon="clock-circle" />
             <b>需求工单超时情况</b>
           </div>
           <Card onMouseDown={() => setPicVal({})}>
@@ -330,7 +330,7 @@ function Statistics(props) {
         </Col>
         <Col span={12}>
           <div className={styles.statisticscard}>
-            <Avatar icon="share-alt" />
+            <Avatar icon="form" />
             <b>需求申请人Top{topN.val1}</b>
             <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN({ ...topN, val1: v })} /></div>
           </div>
@@ -352,7 +352,7 @@ function Statistics(props) {
       <Row style={{ marginTop: 24 }} gutter={16}>
         <Col span={12}>
           <div className={styles.statisticscard}>
-            <Avatar icon="share-alt" />
+            <Avatar icon="tool" />
             <b>需求处理人Top{topN.val2}</b>
             <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN({ ...topN, val2: v })} /></div>
           </div>
@@ -371,7 +371,7 @@ function Statistics(props) {
         </Col>
         <Col span={12}>
           <div className={styles.statisticscard}>
-            <Avatar icon="share-alt" />
+            <Avatar icon="form" />
             <b>需求申请单位Top{topN.val3}</b>
             <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN({ ...topN, val3: v })} /></div>
           </div>
@@ -393,7 +393,7 @@ function Statistics(props) {
       <Row style={{ marginTop: 24 }} gutter={16}>
         <Col span={12}>
           <div className={styles.statisticscard}>
-            <Avatar icon="share-alt" />
+            <Avatar icon="tool" />
             <b>需求处理单位Top{topN.val4}</b>
             <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN({ ...topN, val4: v })} /></div>
           </div>
