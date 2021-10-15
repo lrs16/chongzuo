@@ -21,8 +21,6 @@ import logo from '../../public/menulogo.png';
 // import PageTab from './PageTab';
 import Tabrouters from './Tabrouters';
 
-
-
 const { TabPane } = Tabs;
 
 const homepane = [{
@@ -629,7 +627,6 @@ const BasicLayout = props => {
                 setTabMenu({ x: e.pageX - 50, y: e.pageY - 40, v: 'block' });
               }
             }}
-          // style={{ position: 'fixed', top: 0, zIndex: 999 }}
           >
             <Tabs
               hideAdd

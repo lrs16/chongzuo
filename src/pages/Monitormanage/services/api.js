@@ -38,3 +38,13 @@ export async function getAppMonitorData(params) {
     requestType: 'formjson'
   });
 }
+
+
+// 其它告警 上行下报文监测
+export async function getBarChart(params) {
+  return request(`/monitor/packet/getBarChart`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form'
+  });
+}

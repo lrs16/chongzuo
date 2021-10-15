@@ -1,10 +1,11 @@
-import { getAppMonitorData } from '../services/api';
+import { getAppMonitorData, getBarChart } from '../services/api';
 
 export default {
   namespace: 'orthermonitor',
 
   state: {
     chartdata: [],
+    messagechart: {},
   },
 
   effects: {
@@ -16,6 +17,13 @@ export default {
         payload: response.data,
       });
     },
+    *fetchmessagechart({ payload }, { call, put }) {
+      const response = yield call(getBarChart, payload);
+      yield put({
+        type: 'savemessage',
+        payload: response.data,
+      });
+    },
   },
 
   reducers: {
@@ -23,6 +31,12 @@ export default {
       return {
         ...state,
         chartdata: action.payload,
+      };
+    },
+    savemessage(state, action) {
+      return {
+        ...state,
+        messagechart: action.payload,
       };
     },
   },
