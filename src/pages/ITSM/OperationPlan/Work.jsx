@@ -702,15 +702,17 @@ function Work(props) {
                 ['main', <OperationPlanfillindes
                   info={Object.values(obj)[0]}
                   main={data[0].main}
+                  key='0'
                 />],
                 ['check', <TaskCheckdes
                   info={Object.values(obj)[0]}
                   main={data[0].main}
+                  key='1'
                 />],
                 ['execute', <TaskExecutedes
                   info={Object.values(obj)[0]}
                   main={data[0].main}
-
+                  key='2'
                 />],
               ]);
               return (
@@ -732,6 +734,7 @@ function Work(props) {
         changorder={changorder}
         ChangeChoice={v => setUserChoice(v)}
         ChangeType={() => 0}
+        describe=''
       />
 
       <TimeoutModal

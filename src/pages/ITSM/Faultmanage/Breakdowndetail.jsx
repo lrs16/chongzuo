@@ -61,8 +61,8 @@ function Breakdownlist(props) {
               pathname: '/ITSM/faultmanage/querylist',
               query: {
                 status: record.statCode,
-                addTimeBegin: search ? statTimeBegin : '',
-                addTimeEnd: search ? statTimeEnd : '',
+                addTimeBegin: search ? moment(statTimeBegin).format('YYYY-MM-DD 00:00:00') : '',
+                addTimeEnd: search ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59') : '',
                 currentNode: record.statCurrentNode,
                 statName: record.statName,
                 pathpush: true
