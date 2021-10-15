@@ -90,7 +90,6 @@ function Faultbreakdownlist(props) {
 
 
   const onChange = (date, dateString) => {
-    console.log('dateString: ', dateString);
     [statTimeBegin, statTimeEnd] = dateString;
   }
 

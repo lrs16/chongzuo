@@ -1223,8 +1223,6 @@ function QueryList(props) {
     })
   };
 
-  console.log(tabrecord,'tabrecord')
-
 
   const handleSearch = search => {
     setPageinations({
@@ -1339,6 +1337,7 @@ function QueryList(props) {
   const workStatues = getTypebyTitle('工单状态');
 
   const faultTypes = type === undefined ? [] : [type.substr(0, 3), type];
+  console.log('faultTypes: ', faultTypes);
   // 设置初始值
   const record = {
     checkUnit: '',
@@ -1372,6 +1371,7 @@ function QueryList(props) {
   };
 
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+  console.log('cacheinfo: ', cacheinfo);
 
   const handleReset = () => {
     router.push({

@@ -10,7 +10,7 @@ import {
   Table
 } from 'antd';
 import Link from 'umi/link';
-
+import moment from 'moment';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 const { RangePicker } = DatePicker;
@@ -47,8 +47,8 @@ const columns = [
           query: {
             problem: 'class',
             type: record.statCode,
-            addTimeBegin: search ? statTimeBegin:'',
-            addTimeEnd:search ? statTimeEnd:'',
+            addTimeBegin: search ?  moment(statTimeBegin).format('YYYY-MM-DD 00:00:00'):'',
+            addTimeEnd:search ?  moment(statTimeEnd).format('YYYY-MM-DD 23:59:59') :'',
             pathpush: true
           },
           state: { cache: false, }
@@ -80,7 +80,7 @@ function ClassifiedStatistics(props) {
     search = true;
     dispatch({
       type: 'problemstatistics/fetchClasslist',
-      payload: { statTimeBegin, statTimeEnd, dictType: 'type' }
+      payload: { statTimeBegin:moment(statTimeBegin).format('YYYY-MM-DD 00:00:00'), statTimeEnd:moment(statTimeEnd).format('YYYY-MM-DD 23:59:59'), dictType: 'type' }
     })
   }
 

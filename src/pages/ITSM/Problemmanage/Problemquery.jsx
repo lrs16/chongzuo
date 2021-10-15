@@ -63,7 +63,6 @@ function Besolved(props) {
     location,
     loading,
   } = props;
-  console.log('props: ', props);
   let differentTitle;
   const [expand, setExpand] = useState(false);
   const [tabrecord, setTabRecord] = useState({});
@@ -123,9 +122,9 @@ function Besolved(props) {
       width: 120,
     },
     {
-      title: '登记时间',
-      dataIndex: 'registerTime',
-      key: 'registerTime',
+      title: '建单时间',
+      dataIndex: 'addTime',
+      key: 'addTime',
       width: 120,
     },
     {
@@ -671,7 +670,6 @@ function Besolved(props) {
   }
 
   const searchdata = (values, page, pageSize, search) => {
-    console.log('values: ', values);
     dispatch({
       type: 'problemmanage/queryList',
       payload: {
@@ -683,8 +681,7 @@ function Besolved(props) {
         addTimeEnd: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
         addTime: values.addTime?.length ? [moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
         pageNum: page,
-        // type: values.type ? (values.type)[1].toString() : '',
-        type: values.type ? values.type.toString():'',
+        type: (values.type && values.type .length) ? (values.type)[1] : '',
         pageSize: paginations.pageSize
       },
     });
@@ -746,8 +743,6 @@ function Besolved(props) {
     showTotal: total => `总共  ${total}  条记录`,
     onChange: (page) => changePage(page),
   };
-
-  console.log(tabrecord,'tabrecord')
 
   const handleSearch = (search) => {
     setPageinations({
@@ -829,6 +824,8 @@ function Besolved(props) {
     }
   }, [location.state]);
 
+  const problemTypes = type === undefined ? [] : [type.substr(0, 3), type];
+
    // 设置初始值
    const record = {
     no: '',
@@ -836,7 +833,7 @@ function Besolved(props) {
     title: '',
     confirmUser: '',
     source: '',
-    type,
+    type:problemTypes,
     registerScope: '',
     handler: '',
     handleUnit: '',
@@ -875,7 +872,6 @@ function Besolved(props) {
       };
       // 点击菜单刷新
       if (location.state.reset) {
-        console.log('teset')
         handleReset()
       };
       // 标签切回设置初始值
@@ -898,6 +894,7 @@ function Besolved(props) {
   // 获取数据
   useEffect(() => {
     const values = getFieldsValue();
+    console.log('values: ', values);
     searchdata(values, paginations.current, paginations.pageSize)
     const controlTable = [
       {
@@ -944,9 +941,9 @@ function Besolved(props) {
         width: 120,
       },
       {
-        title: '登记时间',
-        dataIndex: 'registerTime',
-        key: 'registerTime',
+        title: '建单时间',
+        dataIndex: 'addTime',
+        key: 'addTime',
         width: 120,
       },
       {

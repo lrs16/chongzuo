@@ -10,6 +10,7 @@ import {
   Table
 } from 'antd';
 import Link from 'umi/link';
+import moment from 'moment';
 import MergeTable from '@/components/MergeTable';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
@@ -59,9 +60,8 @@ function Statusstatistics(props) {
               pathname: '/ITSM/problemmanage/problemquery',
               query: {
                 problem: 'status',
-                // status: record.statCode,
-                addTimeBegin: search ? statTimeBegin : '',
-                addTimeEnd: search ? statTimeEnd : '',
+                addTimeBegin: search ?  moment(statTimeBegin).format('YYYY-MM-DD 00:00:00') : '',
+                addTimeEnd: search ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59')  : '',
                 currentNode: record.statCurrentNode,
                 pathpush: true
               },

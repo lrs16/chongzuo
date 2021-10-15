@@ -122,8 +122,8 @@ function Handlingrate(props) {
               progressStatus: record.handlingCode,
               handleDeptId: record.handleDeptId,
               handleProcessGroupType: tabActiveKey,
-              addTimeBegin: search ? statTimeBegin : '',
-              addTimeEnd: search ? statTimeEnd : '',
+              addTimeBegin: search ? moment(statTimeBegin).format('YYYY-MM-DD 00:00:00') : '',
+              addTimeEnd: search ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59') : '',
               pathpush: true
             },
             state: { cache: false, }
@@ -147,8 +147,8 @@ function Handlingrate(props) {
               progressStatus: record.handledCode,
               handleDeptId: record.handleDeptId,
               handleProcessGroupType: tabActiveKey,
-              addTimeBegin: search ? statTimeBegin : '',
-              addTimeEnd: search ? statTimeEnd : '',
+              addTimeBegin: search ? moment(statTimeBegin).format('YYYY-MM-DD 00:00:00') : '',
+              addTimeEnd: search ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59') : '',
               pathpush: true
             },
             state: { cache: false, }
@@ -172,8 +172,8 @@ function Handlingrate(props) {
               progressStatus: record.closedCode,
               handleDeptId: record.handleDeptId,
               handleProcessGroupType: tabActiveKey,
-              addTimeBegin: search ? statTimeBegin : '',
-              addTimeEnd: search ? statTimeEnd : '',
+              addTimeBegin: search ? moment(statTimeBegin).format('YYYY-MM-DD 00:00:00') : '',
+              addTimeEnd: search ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59') : '',
               pathpush: true
             },
             state: { cache: false, }
@@ -224,8 +224,8 @@ function Handlingrate(props) {
               checkUserId: record.handlerId,
               progressStatus: record.totalCode,
               checkDeptId: record.handleDeptId,
-              addTimeBegin: search ? statTimeBegin : '',
-              addTimeEnd: search ? statTimeEnd : '',
+              addTimeBegin: search ? moment(statTimeBegin).format('YYYY-MM-DD 00:00:00') : '',
+              addTimeEnd: search ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59') : '',
               pathpush: true
             },
             state: { cache: false, }
@@ -249,8 +249,8 @@ function Handlingrate(props) {
               checkUserId: record.handlerId,
               progressStatus: record.handlingCode,
               checkDeptId: record.handleDeptId,
-              addTimeBegin: search ? statTimeBegin : '',
-              addTimeEnd: search ? statTimeEnd : '',
+              addTimeBegin: search ? moment(statTimeBegin).format('YYYY-MM-DD 00:00:00') : '',
+              addTimeEnd: search ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59') : '',
               pathpush: true
             },
             state: { cache: false, }
@@ -275,8 +275,8 @@ function Handlingrate(props) {
               checkUserId: record.handlerId,
               progressStatus: record.handledCode,
               checkDeptId: record.handleDeptId,
-              addTimeBegin: search ? statTimeBegin : '',
-              addTimeEnd: search ? statTimeEnd : '',
+              addTimeBegin: search ? moment(statTimeBegin).format('YYYY-MM-DD 00:00:00') : '',
+              addTimeEnd: search ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59') : '',
               pathpush: true
             },
             state: { cache: false, }
@@ -299,8 +299,8 @@ function Handlingrate(props) {
               checkUserId: record.handlerId,
               progressStatus: record.closedCode,
               checkDeptId: record.handleDeptId,
-              addTimeBegin: search ? statTimeBegin : '',
-              addTimeEnd: search ? statTimeEnd : '',
+              addTimeBegin: search ? moment(statTimeBegin).format('YYYY-MM-DD 00:00:00') : '',
+              addTimeEnd: search ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59') : '',
               pathpush: true
             },
             state: { cache: false, }
