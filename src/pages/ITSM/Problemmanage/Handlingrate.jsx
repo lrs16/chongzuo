@@ -9,6 +9,7 @@ import {
   Button,
   Table
 } from 'antd';
+import moment from 'moment';
 import Link from 'umi/link';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
@@ -95,8 +96,8 @@ function Handlingrate(props) {
               progressStatus: record.totalCode,
               handleDeptId: record.handleDeptId,
               handleProcessGroupType: tabActiveKey,
-              addTimeBegin: search ? statTimeBegin : '',
-              addTimeEnd: search ? statTimeEnd : '',
+              addTimeBegin: search ? moment(statTimeBegin).format('YYYY-MM-DD 00:00:00') : '',
+              addTimeEnd: search ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59') : '',
               pathpush: true
             },
             state: { cache: false, }

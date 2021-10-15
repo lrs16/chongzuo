@@ -53,9 +53,9 @@ function OperationplanCheckfillin(props) {
   const {
     form: { validateFields },
     location: { paneKey },
-    match: { params: { id, status, checkoutstatus,executestatus,type } },
+    match: { params: { id, status, checkoutstatus, executestatus, type } },
     userinfo,
-    dispatch, 
+    dispatch,
   } = props;
 
   // const title = props.route.name;
@@ -154,7 +154,7 @@ function OperationplanCheckfillin(props) {
           <Button type='primary' onClick={handleSave}>保存</Button>
 
 
-          { status === '待审核' && (
+          {status === '待审核' && (
             <>
 
               <Button type='primary'>
@@ -189,8 +189,8 @@ function OperationplanCheckfillin(props) {
       }
     >
       <SysDict
-        typeid="1385513049263181825"
-        commonid="1354288354950123522"
+        typeid="481"
+        commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

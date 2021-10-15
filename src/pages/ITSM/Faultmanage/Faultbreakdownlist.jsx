@@ -105,6 +105,7 @@ function Faultbreakdownlist(props) {
   useEffect(() => {
     statTimeBegin = '';
     statTimeEnd = '';
+    search = false;
     dispatch({
       type: 'faultstatics/fetchfaultlist',
       payload: { statTimeBegin, statTimeEnd, dictType: 'type' }

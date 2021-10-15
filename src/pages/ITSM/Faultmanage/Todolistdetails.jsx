@@ -5,7 +5,6 @@ import moment from 'moment';
 import { Card, Form, Button, Steps, Collapse, Popconfirm, message, Spin } from 'antd';
 
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-// eslint-disable-next-line import/no-unresolved
 import creatHistory from 'history/createHashHistory'; // 返回上一页
 import User from '@/components/SelectUser/User';
 import styles from './index.less';

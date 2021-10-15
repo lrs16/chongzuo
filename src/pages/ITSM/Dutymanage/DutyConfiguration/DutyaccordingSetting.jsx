@@ -265,7 +265,7 @@ function DutyaccordingSetting(props) {
   };
 
   useEffect(() => {
-    sessionStorage.setItem('groupId', '1438060967991177218');
+    sessionStorage.setItem('groupId', '1031');
     getTable(currentYear, month);
   }, []);
 

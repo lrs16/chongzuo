@@ -93,7 +93,7 @@ export default {
       if (response.code === 200) {
         message.success(response.msg);
         router.push({
-          pathname: `/ITSM/faultmanage/registration`,
+          pathname: `/ITSM/problemmanage/registration`,
           query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
         });
         const { flowInstId, problemNo, flowTaskId } = response;

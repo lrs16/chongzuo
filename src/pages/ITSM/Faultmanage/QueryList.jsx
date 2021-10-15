@@ -476,9 +476,9 @@ function QueryList(props) {
       width: 120,
     },
     {
-      title: '登记时间',
-      dataIndex: 'registerTime',
-      key: 'registerTime',
+      title: '建单时间',
+      dataIndex: 'addTime',
+      key: 'addTime',
       width: 200,
     },
     {
@@ -1178,7 +1178,7 @@ function QueryList(props) {
 
     if (addTimeBegin) {
       setFieldsValue({
-        registerTime: [moment(addTimeBegin), moment(addTimeEnd)] || '',
+        addTime: [moment(addTimeBegin), moment(addTimeEnd)] || '',
       })
     }
     //  getFaultlist();
@@ -1193,15 +1193,16 @@ function QueryList(props) {
         // registerTimeEnd: values.registerTime?.length ? moment(values.registerTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
         addTimeBegin: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
         addTimeEnd: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        addTime:  values.addTime?.length ? [moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
         registerTime: '',
         handleStartTimeBegin: values.handleTime?.length ? moment(values.handleTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
         handleStartTimeEnd: values.handleTime?.length ? moment(values.handleTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        handleTime: '',
-        registerOccurTimeBegin: values.registerOccurTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
+        handleTime: values.handleTime?.length ? [moment(values.handleTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.handleTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+        // registerOccurTimeBegin: values.registerOccurTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
         type: values.type ? (values.type).slice(-1)[0] : '',
-        createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-        createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        createTime: values.createTime?.length ? [moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+        registerOccurTimeBegin: values.registerOccurTime?.length ? moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        registerOccurTimeEnd: values.registerOccurTime?.length ? moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        registerOccurTime: values.createTime?.length ? [moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
         pageNum: page,
         pageSize: paginations.pageSize,
       },
@@ -1209,15 +1210,20 @@ function QueryList(props) {
     setTabRecord({
       ...values,
       sendTime: '',
-      registerOccurTimeBegin: values.registerOccurTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
-      // registerTimeBegin: values.registerTimeBegin ? values.registerTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
+      addTimeBegin: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      addTimeEnd: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      addTime:  values.addTime?.length ? [moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
       handleStartTimeBegin: values.handleStartTimeBegin ? values.handleStartTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
       handleStartTimeEnd: values.handleStartTimeEnd ? values.handleStartTimeEnd.format('YYYY-MM-DD HH:mm:ss') : '',
-      createTime: values.createTime?.length ? [moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+      registerOccurTimeBegin: values.registerOccurTime?.length ? moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      registerOccurTimeEnd: values.registerOccurTime?.length ? moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      registerOccurTime: values.createTime?.length ? [moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
       registerTime: values.registerTime?.length ? [moment(values.registerTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.registerTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
       handleTime: values.handleTime?.length ? [moment(values.handleTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.handleTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
     })
   };
+
+  console.log(tabrecord,'tabrecord')
 
 
   const handleSearch = search => {
@@ -1296,8 +1302,8 @@ function QueryList(props) {
             handleStartTimeBegin: values.handleStartTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
             handleStartTimeEnd: values.handleStartTimeEnd ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
             type: values.type ? (values.type).slice(-1)[0] : '',
-            addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-            addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+            createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+            createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
             createTime: '',
             pageSize,
             current: page,
@@ -1365,10 +1371,7 @@ function QueryList(props) {
     paginations,
   };
 
-  // let cacheinfo = {};
-  // if (location && location.state) {
-    const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
-  // }
+  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
 
   const handleReset = () => {
     router.push({
@@ -1385,19 +1388,16 @@ function QueryList(props) {
   // 设置时间
   useEffect(() => {
     if (location && location.state && location.state.cacheinfo) {
-      const { addTime } = location.state.cacheinfo;
+      console.log('location.state.cacheinfo: ', location.state.cacheinfo);
+      const { addTime,handleTime } = location.state.cacheinfo;
       const { checkTime } = location.state.cacheinfo;
-      const { handleTime } = location.state.cacheinfo;
-      // const registerStarttime = location.state.cacheinfo.registerTime[0];
-      // const registerEndtime = location.state.cacheinfo.registerTime[1];
       setFieldsValue({
-        registerTime: addTime?.length ? [moment(addTime[0]), moment(addTime[1])] : '',
-        checkTime: checkTime?.length ? [moment(checkTime[0]), moment(checkTime[1])] : '',
+        addTime: addTime?.length ? [moment(addTime[0]), moment(addTime[1])] : '',
         handleTime: handleTime?.length ? [moment(handleTime[0]), moment(handleTime[1])] : '',
       })
     } else {
       setFieldsValue({
-        createTime: addTimeBegin ? [moment(addTimeBegin), moment(addTimeEnd)] : '',
+        addTime: addTimeBegin?  [moment(addTimeBegin), moment(addTimeEnd)] : '',
       })
     }
   }, [location.state]);
@@ -1423,14 +1423,16 @@ function QueryList(props) {
         handleReset()
       };
       if (location.state.cacheinfo) {
+        console.log('location.state.cacheinfo: ', location.state.cacheinfo);
         const { current, pageSize } = location.state.cacheinfo.paginations;
-        const { createTime } = location.state.cacheinfo;
-        const { registerTime } = location.state.cacheinfo;
+        // const { createTime } = location.state.cacheinfo;
+        const { registerTime, handleTime,createTime,addTime } = location.state.cacheinfo;
         setExpand(location.state.cacheinfo.expand);
         setPageinations({ ...paginations, current, pageSize });
         setFieldsValue({
-          createTime: createTime ? [moment(createTime[0]), moment(createTime[1])] : '',
-          registerTime: registerTime?.length ? [moment(registerTime[0]), moment(registerTime[1])] : '',
+          // addTime: (addTime && addTime.length) ? [moment(addTime[0]), moment(addTime[1])] : '',
+          // registerTime: registerTime?.length ? [moment(registerTime[0]), moment(registerTime[1])] : '',
+          handleTime: handleTime?.length ? [moment(handleTime[0]), moment(handleTime[1])] : '',
         })
       };
     }
@@ -1767,7 +1769,7 @@ function QueryList(props) {
               </Form.Item>
             </Col>
 
-            <Col xl={8} xs={12} >
+            <Col span={8} >
               <Form.Item label="建单时间">
                 {getFieldDecorator('addTime', {
                   initialValue: '',
@@ -1787,7 +1789,7 @@ function QueryList(props) {
 
             <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
               <Form.Item label="发生时间">
-                {getFieldDecorator('createTime', {
+                {getFieldDecorator('registerOccurTime', {
                   initialValue: ''
                 })(
                   <RangePicker
@@ -1803,7 +1805,7 @@ function QueryList(props) {
                 )}
               </Form.Item>
             </Col>
-       
+
 
             <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
               <Form.Item label="故障来源">

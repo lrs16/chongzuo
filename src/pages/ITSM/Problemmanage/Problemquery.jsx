@@ -671,23 +671,31 @@ function Besolved(props) {
   }
 
   const searchdata = (values, page, pageSize, search) => {
+    console.log('values: ', values);
     dispatch({
       type: 'problemmanage/queryList',
       payload: {
         ...values,
-        createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
-        createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
-        createTime: values.createTime?.length ? [moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+        registerOccurTimeBegin: values.registerOccurTime?.length ? moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        registerOccurTimeEnd: values.registerOccurTime?.length ? moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        registerOccurTime: values.registerOccurTime?.length ? [moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+        addTimeBegin: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        addTimeEnd: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        addTime: values.addTime?.length ? [moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
         pageNum: page,
-        type: values.type ? (values.type)[1].toString() : '',
+        // type: values.type ? (values.type)[1].toString() : '',
+        type: values.type ? values.type.toString():'',
         pageSize: paginations.pageSize
       },
     });
     const newvalues = {
       ...values,
-      createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
-      createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
-      createTime: values.createTime?.length ? [moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+      registerOccurTimeBegin: values.registerOccurTime?.length ? moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      registerOccurTimeEnd: values.registerOccurTime?.length ? moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      registerOccurTime: values.registerOccurTime?.length ? [moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+      addTimeBegin: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      addTimeEnd: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      addTime: values.addTime?.length ? [moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
       pageNum: paginations.current,
       pageSize: paginations.pageSize,
     }
@@ -739,6 +747,7 @@ function Besolved(props) {
     onChange: (page) => changePage(page),
   };
 
+  console.log(tabrecord,'tabrecord')
 
   const handleSearch = (search) => {
     setPageinations({
@@ -808,14 +817,14 @@ function Besolved(props) {
   // 设置时间
   useEffect(() => {
     if (location && location.state && location.state.cacheinfo) {
-      const cachestartTime = location.state.cacheinfo.createTimeBegin;
-      const cacheendTime = location.state.cacheinfo.createTimeEnd;
+      const { registerOccurTime,addTime } = location.state.cacheinfo;
       setFieldsValue({
-        createTime: cachestartTime ? [moment(cachestartTime), moment(cacheendTime)] : '',
+        registerOccurTime: registerOccurTime?.length ? [moment(registerOccurTime[0]), moment(registerOccurTime[1])] : '',
+        addTime: addTime?.length ? [moment(addTime[0]), moment(addTime[1])] : '',
       })
     } else {
       setFieldsValue({
-        createTime: addTimeBegin ? [moment(addTimeBegin), moment(addTimeEnd)] : '',
+        addTime: addTimeBegin ? [moment(addTimeBegin), moment(addTimeEnd)] : '',
       })
     }
   }, [location.state]);
@@ -841,7 +850,8 @@ function Besolved(props) {
     checkUserId,
     checkDeptId,
     status,
-    createTime: addTimeBegin ? [moment(addTimeBegin), moment(addTimeEnd)] : '',
+    createTime: '',
+    addTime:addTimeBegin ? [moment(addTimeBegin), moment(addTimeEnd)] : '',
     paginations,
   };
 
@@ -874,9 +884,6 @@ function Besolved(props) {
         const { createTime } = location.state.cacheinfo;
         setExpand(location.state.cacheinfo.expand);
         setPageinations({ ...paginations, current, pageSize });
-        setFieldsValue({
-          createTime: createTime ? [moment(createTime[0]), moment(createTime[1])] : '',
-        })
       };
     }
   }, [location.state]);
@@ -1043,9 +1050,6 @@ function Besolved(props) {
     }
   }
 
-
-
-
   return (
     <PageHeaderWrapper title={differentTitle}>
       <SysDict
@@ -1142,7 +1146,7 @@ function Besolved(props) {
               <Col span={8}>
                 <Form.Item label="问题分类">
                   {getFieldDecorator('type', {
-                    initialValue: cacheinfo.type ? (cacheinfo.type.toString()).split(',') : '',
+                    initialValue: cacheinfo.type,
                   })(
                     <Cascader
                       fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
@@ -1155,24 +1159,23 @@ function Besolved(props) {
                 </Form.Item>
               </Col>
 
-              <Col span={8}>
-                <Form.Item label="发生时间">
-                  {getFieldDecorator('createTime', {
-                    initialValue: ''
-                  })(
-                    <RangePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                      }}
-                      format="YYYY-MM-DD HH:mm:ss"
-                      style={{ width: '100%' }}
-                      placeholder="请选择"
-                      allowClear
-                    />,
-                  )}
-                </Form.Item>
-              </Col>
+              <Col span={8} >
+              <Form.Item label="建单时间">
+                {getFieldDecorator('addTime', {
+                  initialValue: '',
+                },
+                )(
+                  <RangePicker
+                    showTime={{
+                      hideDisabledOptions: true,
+                      defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                    }}
+                    format="YYYY-MM-DD HH:mm:ss"
+                    style={{ width: '100%' }}
+                    allowClear
+                  />)}
+              </Form.Item>
+            </Col>
 
               <Col span={8}>
                 <Form.Item label="当前处理环节">
@@ -1209,7 +1212,6 @@ function Besolved(props) {
                   )}
                 </Form.Item>
               </Col>
-
             </>
 
             <>
@@ -1218,6 +1220,26 @@ function Besolved(props) {
                   {getFieldDecorator('title', {
                     initialValue: cacheinfo.title,
                   })(<Input placeholder='请输入' allowClear />)}
+                </Form.Item>
+              </Col>
+
+
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="发生时间">
+                  {getFieldDecorator('registerOccurTime', {
+                    initialValue: ''
+                  })(
+                    <RangePicker
+                      showTime={{
+                        hideDisabledOptions: true,
+                        defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                      }}
+                      format="YYYY-MM-DD HH:mm:ss"
+                      style={{ width: '100%' }}
+                      placeholder="请选择"
+                      allowClear
+                    />,
+                  )}
                 </Form.Item>
               </Col>
             </>
