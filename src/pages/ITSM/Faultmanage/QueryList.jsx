@@ -1176,10 +1176,9 @@ function QueryList(props) {
       })
     }
 
-
     if (addTimeBegin) {
       setFieldsValue({
-        createTime: [moment(addTimeBegin), moment(addTimeEnd)] || '',
+        registerTime: [moment(addTimeBegin), moment(addTimeEnd)] || '',
       })
     }
     //  getFaultlist();
@@ -1190,8 +1189,10 @@ function QueryList(props) {
       type: 'fault/getfaultQueryList',
       payload: {
         ...values,
-        registerTimeBegin: values.registerTime?.length ? moment(values.registerTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-        registerTimeEnd: values.registerTime?.length ? moment(values.registerTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        // registerTimeBegin: values.registerTime?.length ? moment(values.registerTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        // registerTimeEnd: values.registerTime?.length ? moment(values.registerTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        addTimeBegin: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        addTimeEnd: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
         registerTime: '',
         handleStartTimeBegin: values.handleTime?.length ? moment(values.handleTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
         handleStartTimeEnd: values.handleTime?.length ? moment(values.handleTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
@@ -1290,8 +1291,8 @@ function QueryList(props) {
             ...values,
             sendTime: '',
             registerOccurTimeBegin: values.registerOccurTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
-            registerTimeBegin: values.registerTime?.length ? moment(values.registerTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-            registerTimeEnd: values.registerTime?.length ? moment(values.registerTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+            addTimeBegin: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+            addTimeEnd: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
             handleStartTimeBegin: values.handleStartTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
             handleStartTimeEnd: values.handleStartTimeEnd ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
             type: values.type ? (values.type).slice(-1)[0] : '',
@@ -1337,7 +1338,7 @@ function QueryList(props) {
     checkUnit: '',
     checkUser: '',
     confirmUnit: '',
-    createTime: addTimeBegin ? [moment(addTimeBegin), moment(addTimeEnd)] : '',
+    createTime: '',
     confirmUser: '',
     currentNode,
     finishUnit: '',
@@ -1354,7 +1355,7 @@ function QueryList(props) {
     registerOccurTimeBegin: '',
     registerScope: '',
     registerTimeBegin: '',
-    registerTime: '',
+    addTime: addTimeBegin ? [moment(addTimeBegin), moment(addTimeEnd)] : '',
     registerUnit: '',
     registerUser: '',
     source: '',
@@ -1390,7 +1391,7 @@ function QueryList(props) {
       // const registerStarttime = location.state.cacheinfo.registerTime[0];
       // const registerEndtime = location.state.cacheinfo.registerTime[1];
       setFieldsValue({
-        createTime: addTime?.length ? [moment(addTime[0]), moment(addTime[1])] : '',
+        registerTime: addTime?.length ? [moment(addTime[0]), moment(addTime[1])] : '',
         checkTime: checkTime?.length ? [moment(checkTime[0]), moment(checkTime[1])] : '',
         handleTime: handleTime?.length ? [moment(handleTime[0]), moment(handleTime[1])] : '',
       })
@@ -1766,7 +1767,25 @@ function QueryList(props) {
               </Form.Item>
             </Col>
 
-            <Col span={8}>
+            <Col xl={8} xs={12} >
+              <Form.Item label="建单时间">
+                {getFieldDecorator('addTime', {
+                  initialValue: '',
+                },
+                )(
+                  <RangePicker
+                    showTime={{
+                      hideDisabledOptions: true,
+                      defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                    }}
+                    format="YYYY-MM-DD HH:mm:ss"
+                    style={{ width: '100%' }}
+                    allowClear
+                  />)}
+              </Form.Item>
+            </Col>
+
+            <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
               <Form.Item label="发生时间">
                 {getFieldDecorator('createTime', {
                   initialValue: ''
@@ -1784,23 +1803,7 @@ function QueryList(props) {
                 )}
               </Form.Item>
             </Col>
-            <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
-              <Form.Item label="登记时间">
-                {getFieldDecorator('registerTime', {
-                  initialValue: '',
-                },
-                )(
-                  <RangePicker
-                    showTime={{
-                      hideDisabledOptions: true,
-                      defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                    }}
-                    format="YYYY-MM-DD HH:mm:ss"
-                    style={{ width: '100%' }}
-                    allowClear
-                  />)}
-              </Form.Item>
-            </Col>
+       
 
             <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
               <Form.Item label="故障来源">
