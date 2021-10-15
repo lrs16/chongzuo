@@ -26,14 +26,18 @@ function ToDodetails(props) {
 
   const dowloadPre = () => {
     expPracticePre(taskId).then(res => {
-      const filename = `发布实施准备${moment().format('YYYY-MM-DD HH:mm')}.docx`;
-      const blob = new Blob([res], { type: 'application/octet-stream' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.click();
-      window.URL.revokeObjectURL(url);
+      if (res) {
+        const filename = `发布实施准备${moment().format('YYYY-MM-DD HH:mm')}.docx`;
+        const blob = new Blob([res], { type: 'application/octet-stream' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      } else {
+        message.err('下载失败');
+      }
     })
   };
 
