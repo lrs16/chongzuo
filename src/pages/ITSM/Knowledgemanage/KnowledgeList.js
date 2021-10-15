@@ -43,6 +43,7 @@ function KnowledgeList(props) {
   const [visible, setVisible] = useState(false);
   const ExmaineRef = useRef(null);
 
+
   const userId = sessionStorage.getItem('userauthorityid');
 
   const handleSearch = (page, size) => {
@@ -551,7 +552,7 @@ function KnowledgeList(props) {
                   </Select>)}
               </Form.Item>
             </Col>
-            {expand && (
+            {(expand || starttime || endtime) && (
               <>
                 <Col span={8}>
                   <Form.Item label="登记时间" >
