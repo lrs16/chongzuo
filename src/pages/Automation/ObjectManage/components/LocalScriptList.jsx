@@ -4,7 +4,7 @@ import React, {
 } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Table, Card, Button, Form, Input, Select, Tooltip, Row, Col, DatePicker, Divider, message, Popconfirm } from 'antd';
+import { Table, Card, Button, Form, Input, Select, Tooltip, Row, Col, DatePicker, Divider, message, Popconfirm, Icon, Popover, Checkbox } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
 import LocalScriptDrawer from './LocalScriptDrawer';
@@ -29,6 +29,8 @@ function LocalScriptList(props) {
     },
   } = props;
 
+  let formThead;
+
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
   // const [selectedRows, setSelectedRows] = useState([]);
@@ -39,6 +41,7 @@ function LocalScriptList(props) {
   const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
   const [data, setData] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
+  const [columns, setColumns] = useState([]); // 动态表格
 
   // 列表请求
   const searchdata = (page, size) => {
@@ -54,10 +57,6 @@ function LocalScriptList(props) {
       },
     });
   };
-
-  useEffect(() => {
-    searchdata(1, 15);
-  }, [location]);
 
   // 上传删除附件触发保存
   useEffect(() => {
@@ -177,7 +176,7 @@ function LocalScriptList(props) {
   };
 
   // 列表
-  const columns = [
+  const initialColumns = [
     {
       title: '脚本编号',
       dataIndex: 'id',
@@ -284,7 +283,7 @@ function LocalScriptList(props) {
       key: 'action',
       fixed: 'right',
       width: 180,
-      render: (text, record) => {
+      render: (_, record) => {
         return (
           <div>
             <a type="link" onClick={() => handleShowDrawer('编辑本地脚本', 'update', record)}>编辑脚本</a>
@@ -297,6 +296,93 @@ function LocalScriptList(props) {
       },
     },
   ];
+
+  // 动态列表名称
+  const defaultAllkey = columns.map(item => {
+    return item.title;
+  });
+
+  // 创建列表
+  const creataColumns = () => {
+    // columns
+    initialColumns.length = 0;
+    formThead.map(val => {
+      const obj = {
+        key: val.key,
+        title: val.title,
+        dataIndex: val.key,
+        width: 250,
+        ellipsis: true,
+        onCell: val.title === '脚本内容' ? () => {
+          return {
+            style: {
+              maxWidth: 250,
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+              cursor: 'pointer'
+            }
+          }
+        } : () => { },
+      };
+      if (val.title === '脚本内容') {
+        obj.render = (text) => {
+          return (
+            <Tooltip placement='topLeft' title={text} >{text}</Tooltip>
+          )
+        }
+      }
+      if (val.title === '脚本编号') {
+        obj.render = (text, record) => {
+          return (
+            <LocalViewDrawer record={record}>
+              <a type="link">{text}</a>
+            </LocalViewDrawer>
+          )
+        }
+      }
+      if (val.title === '操作') {
+        obj.render = (_, record) => {
+          return (
+            <div>
+              <a type="link" onClick={() => handleShowDrawer('编辑本地脚本', 'update', record)}>编辑脚本</a>
+              <Divider type="vertical" />
+              <Popconfirm title="确定删除此脚本吗？" onConfirm={() => handleDelete(record.id)}>
+                <a type="link" style={{ color: 'red' }}>删除脚本</a>
+              </Popconfirm>
+            </div>
+          );
+        }
+        obj.fixed = 'right'
+      }
+      initialColumns.push(obj);
+      setColumns(initialColumns);
+      return null;
+    }
+    )
+  };
+
+  // 列表设置
+  const onCheckAllChange = e => {
+    setColumns(e.target.checked ? initialColumns : [])
+  };
+
+  // 列名点击
+  const onCheck = (checkedValues) => {
+    formThead = initialColumns.filter(i =>
+      checkedValues.indexOf(i.title) >= 0
+    );
+
+    if (formThead.length === 0) {
+      setColumns([]);
+    }
+    creataColumns();
+  };
+
+  useEffect(() => {
+    searchdata(1, 15);
+    setColumns(initialColumns);
+  }, [location]);
 
   // 查询
   const extra = (<>
@@ -449,6 +535,46 @@ function LocalScriptList(props) {
           <Button type="primary" style={{ marginRight: 8 }}
             onClick={() => handleShowDrawer('新增本地脚本', 'add')}
           >新增</Button>
+        </div>
+        {/* 列表设置 */}
+        <div style={{ textAlign: 'right', marginBottom: 8 }}>
+          <Popover
+            placement="bottomRight"
+            trigger="click"
+            content={
+              <>
+                <p style={{ borderBottom: '1px solid #E9E9E9' }}>
+                  <Checkbox
+                    onChange={onCheckAllChange}
+                    checked={columns.length === initialColumns.length === true}
+                  >
+                    列表展示
+                  </Checkbox>
+                </p>
+                <Checkbox.Group
+                  onChange={onCheck}
+                  value={defaultAllkey}
+                  defaultValue={columns}
+                >
+                  {initialColumns.map(item => (
+                    <Col key={`item_${item.key}`} style={{ marginBottom: 8 }}>
+                      <Checkbox
+                        value={item.title}
+                        key={item.key}
+                        checked={columns}
+                      >
+                        {item.title}
+                      </Checkbox>
+                    </Col>
+                  ))}
+                </Checkbox.Group>
+              </>
+            }
+          >
+            <Button>
+              <Icon type="setting" theme="filled" style={{ fontSize: 14 }} />
+            </Button>
+          </Popover>
         </div>
         <Table
           dataSource={localscriptlist.rows}

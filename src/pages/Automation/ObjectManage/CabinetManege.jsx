@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { 
-    Table, 
-    Card, 
-    Divider, 
-    Button, 
-    message, 
-    Form, 
-    Input, 
-    Select, 
-    Row, 
-    Col, 
-    DatePicker, 
+import {
+    Table,
+    Card,
+    Divider,
+    Button,
+    message,
+    Form,
+    Input,
+    Select,
+    Row,
+    Col,
+    DatePicker,
     Icon,
     Popover,
-    Checkbox 
+    Checkbox
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
@@ -40,7 +40,10 @@ const formItemLayout = {
 function CabinetManege(props) {
     const pagetitle = props.route.name;
     const {
-        dispatch, cabinetList, loading, location,
+        dispatch,
+        cabinetList,
+        loading,
+        location,
         form: {
             getFieldDecorator,
             getFieldsValue,
@@ -59,7 +62,7 @@ function CabinetManege(props) {
     const [allUserData, setallUserData] = useState([]);
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
     const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-    const [columns, setColumns] = useState([]);
+    const [columns, setColumns] = useState([]); // 动态表格
 
     // 列表请求
     const searchdata = (page, size) => {
@@ -273,7 +276,7 @@ function CabinetManege(props) {
             key: 'action',
             fixed: 'right',
             width: 150,
-            render: (text, record) => {
+            render: (_, record) => {
                 return (
                     <div>
                         <a type="link" onClick={() => handleShowDrawer('编辑机柜', 'update', record)}>
@@ -289,41 +292,39 @@ function CabinetManege(props) {
         },
     ];
 
+    // 动态列表名称
     const defaultAllkey = columns.map(item => {
-        return item.title
+        return item.title;
     });
 
     // 创建列表
-    const creataColumns = () => { 
+    const creataColumns = () => {
         // columns
         initialColumns.length = 0;
-        formThead.map((val) => {
+        formThead.map(val => {
             const obj = {
                 key: val.key,
                 title: val.title,
                 dataIndex: val.key,
-                width: 150
+                width: 250,
+                ellipsis: true,
             };
-            // if (key === 0) {
-            //     obj.render = (text, record) => {
-            //         return (
-            //             <a onClick={() => gotoDetail(record)}>{text}</a>
-            //         )
-            //     }
-            //     obj.fixed = 'left'
-            // }
-            // if (val.title === '超时状态') {
-            //     obj.render = (text) => {
-            //         return (
-            //             <span>
-            //                 <Badge
-            //                     status={statusMap[statusContent.indexOf(text)]}
-            //                     text={text} />
-            //             </span>
-            //         )
-            //     }
-            // }
-
+            if (val.title === '操作') {
+                obj.render = (_, record) => {
+                    return (
+                        <div>
+                            <a type="link" onClick={() => handleShowDrawer('编辑机柜', 'update', record)}>
+                                编辑
+                            </a>
+                            <Divider type="vertical" />
+                            <a type="link" style={{ color: 'red' }} onClick={() => handleDelete(record.id)}>
+                                删除
+                            </a>
+                        </div>
+                    );
+                }
+                obj.fixed = 'right'
+            }
             initialColumns.push(obj);
             setColumns(initialColumns);
             return null;
@@ -336,13 +337,14 @@ function CabinetManege(props) {
         setColumns(e.target.checked ? initialColumns : [])
     };
 
+    // 列名点击
     const onCheck = (checkedValues) => {
         formThead = initialColumns.filter(i =>
             checkedValues.indexOf(i.title) >= 0
         );
 
         if (formThead.length === 0) {
-            setColumns([])
+            setColumns([]);
         }
         creataColumns();
     };

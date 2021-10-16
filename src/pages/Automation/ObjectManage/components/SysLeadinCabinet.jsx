@@ -47,6 +47,7 @@ function SysLeadinCabinet(props) {
     // showUploadList: { showDownloadIcon: true },
     // defaultFileList: fileslist,
     multiple: true,
+    showUploadList: false,
 
     beforeUpload(file) {
       return new Promise((resolve, reject) => {

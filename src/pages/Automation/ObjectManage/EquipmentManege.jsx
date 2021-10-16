@@ -1,7 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Table, Card, Divider, Button, Message, Form, Input, Select, Row, Col, DatePicker, Badge } from 'antd';
+import {
+    Table,
+    Card,
+    Divider,
+    Button,
+    Message,
+    Form,
+    Input,
+    Select,
+    Row,
+    Col,
+    DatePicker,
+    Badge,
+    Icon,
+    Popover,
+    Checkbox
+} from 'antd';
 import DictLower from '@/components/SysDict/DictLower';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined, DownloadOutlined } from '@ant-design/icons';
@@ -39,6 +55,8 @@ function EquipmentManege(props) {
         },
     } = props;
 
+    let formThead;
+
     const [expand, setExpand] = useState(false);
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
     const [visible, setVisible] = useState(false); // 抽屉是否显示
@@ -48,6 +66,7 @@ function EquipmentManege(props) {
     const [allUserData, setallUserData] = useState([]);
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
     const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
+    const [columns, setColumns] = useState([]); // 动态表格
 
     // 列表请求
     const searchdata = (page, size) => {
@@ -67,17 +86,6 @@ function EquipmentManege(props) {
             },
         });
     };
-
-    useEffect(() => {
-        searchdata(1, 15);
-        togetSearchUsers().then(res => {
-            if (res.code === 200) {
-                setallUserData(res.data.userList);
-            } else {
-                Message.error('获取负责人失败');
-            }
-        });
-    }, [location]);
 
     // 上传删除附件触发保存
     useEffect(() => {
@@ -189,7 +197,8 @@ function EquipmentManege(props) {
         });
     };
 
-    const columns = [
+    // 列表
+    const initialColumns = [
         {
             title: '设备编号',
             dataIndex: 'hostAssets',
@@ -336,7 +345,7 @@ function EquipmentManege(props) {
             key: 'action',
             fixed: 'right',
             width: 150,
-            render: (text, record) => {
+            render: (_, record) => {
                 return (
                     <div>
                         <a type="link" onClick={() => handleShowDrawer('编辑设备', 'update', record)}>
@@ -351,6 +360,86 @@ function EquipmentManege(props) {
             },
         },
     ];
+
+    // 动态列表名称
+    const defaultAllkey = columns.map(item => {
+        return item.title;
+    });
+
+    // 创建列表
+    const creataColumns = () => {
+        // columns
+        initialColumns.length = 0;
+        formThead.map(val => {
+            const obj = {
+                key: val.key,
+                title: val.title,
+                dataIndex: val.key,
+                width: 250,
+                ellipsis: true,
+            };
+            if (val.title === '操作') {
+                obj.render = (_, record) => {
+                    return (
+                        <div>
+                            <a type="link" onClick={() => handleShowDrawer('编辑设备', 'update', record)}>
+                                编辑
+                            </a>
+                            <Divider type="vertical" />
+                            <a type="link" style={{ color: 'red' }} onClick={() => handleDelete(record.id)}>
+                                删除
+                            </a>
+                        </div>
+                    );
+                }
+                obj.fixed = 'right'
+            }
+            if (val.title === '设备状态') {
+                obj.render = (text, record) => {
+                    return (
+                        <span>
+                            <Badge
+                                status={colormap.get(record.hostStatus)}
+                                text={text} />
+                        </span>
+                    )
+                }
+            }
+            initialColumns.push(obj);
+            setColumns(initialColumns);
+            return null;
+        }
+        )
+    };
+
+    // 列表设置
+    const onCheckAllChange = e => {
+        setColumns(e.target.checked ? initialColumns : [])
+    };
+
+    // 列名点击
+    const onCheck = (checkedValues) => {
+        formThead = initialColumns.filter(i =>
+            checkedValues.indexOf(i.title) >= 0
+        );
+
+        if (formThead.length === 0) {
+            setColumns([]);
+        }
+        creataColumns();
+    };
+
+    useEffect(() => {
+        searchdata(1, 15);
+        setColumns(initialColumns);
+        togetSearchUsers().then(res => {
+            if (res.code === 200) {
+                setallUserData(res.data.userList);
+            } else {
+                Message.error('获取负责人失败');
+            }
+        });
+    }, [location]);
 
     // 查询
     const extra = (<>
@@ -685,6 +774,46 @@ function EquipmentManege(props) {
                     </div>
                     <Button type="primary" style={{ marginRight: 8 }} onClick={() => download()}>导出</Button>
                     <Button type="primary" style={{ marginRight: 8 }} onClick={() => downloadTemplate()}><DownloadOutlined />下载导入模板</Button>
+                </div>
+                {/* 列表设置 */}
+                <div style={{ textAlign: 'right', marginBottom: 8 }}>
+                    <Popover
+                        placement="bottomRight"
+                        trigger="click"
+                        content={
+                            <>
+                                <p style={{ borderBottom: '1px solid #E9E9E9' }}>
+                                    <Checkbox
+                                        onChange={onCheckAllChange}
+                                        checked={columns.length === initialColumns.length === true}
+                                    >
+                                        列表展示
+                                    </Checkbox>
+                                </p>
+                                <Checkbox.Group
+                                    onChange={onCheck}
+                                    value={defaultAllkey}
+                                    defaultValue={columns}
+                                >
+                                    {initialColumns.map(item => (
+                                        <Col key={`item_${item.key}`} style={{ marginBottom: 8 }}>
+                                            <Checkbox
+                                                value={item.title}
+                                                key={item.key}
+                                                checked={columns}
+                                            >
+                                                {item.title}
+                                            </Checkbox>
+                                        </Col>
+                                    ))}
+                                </Checkbox.Group>
+                            </>
+                        }
+                    >
+                        <Button>
+                            <Icon type="setting" theme="filled" style={{ fontSize: 14 }} />
+                        </Button>
+                    </Popover>
                 </div>
                 <Table
                     columns={columns}

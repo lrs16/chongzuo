@@ -2,7 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
-import { Table, Card, Button, Form, Input, Row, Col, DatePicker, Divider, message } from 'antd';
+import {
+    Table,
+    Card,
+    Button,
+    Form,
+    Input,
+    Row,
+    Col,
+    DatePicker,
+    Divider,
+    message,
+    Icon,
+    Popover,
+    Checkbox
+} from 'antd';
 import TaskObjectModel from './TaskObjectModel';
 import TaskScriptModel from './TaskScriptModel';
 import { logicDelTask, deleteTask, submitTask, queryrunTask, queryUpdAutoTaskQrtzJobStatus } from '../services/api';
@@ -31,9 +45,12 @@ function TimedExecuteList(props) {
         },
     } = props;
 
+    let formThead;
+
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [selectedRows, setSelectedRows] = useState([]);
+    const [columns, setColumns] = useState([]); // 动态表格
 
     const onSelectChange = (RowKeys, Rows) => {
         setSelectedRowKeys(RowKeys);
@@ -60,10 +77,6 @@ function TimedExecuteList(props) {
             },
         });
     };
-
-    useEffect(() => {
-        searchdata(1, 15);
-    }, [location]);
 
     const handleReset = () => {
         resetFields();
@@ -253,7 +266,8 @@ function TimedExecuteList(props) {
         <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button></>
     );
 
-    const columns = [
+    // 列表
+    const initialColumns = [
         {
             title: '作业名称',
             dataIndex: 'taskName',
@@ -361,6 +375,102 @@ function TimedExecuteList(props) {
         },
     ];
 
+    // 动态列表名称
+    const defaultAllkey = columns.map(item => {
+        return item.title;
+    });
+
+    // 创建列表
+    const creataColumns = () => {
+        // columns
+        initialColumns.length = 0;
+        formThead.map(val => {
+            const obj = {
+                key: val.key,
+                title: val.title,
+                dataIndex: val.key,
+                width: 250,
+                ellipsis: true,
+            };
+            if (val.title === '作业对象') {
+                obj.render = (text, record) => {
+                    return (
+                        <TaskObjectModel record={record} dispatch={dispatch}>
+                            <a type="link">{text}</a>
+                        </TaskObjectModel>
+                    )
+                }
+            }
+            if (val.title === '作业脚本') {
+                obj.render = (text, record) => {
+                    return (
+                        <TaskScriptModel record={record} dispatch={dispatch}>
+                            <a type="link">{text}</a>
+                        </TaskScriptModel>
+                    )
+                }
+            }
+            if (val.title === '操作') {
+                obj.render = (_, record) => {
+                    return (
+                        <>
+                            {
+                                (record.taskJobStatus === '1') ?
+                                    <a type="link"
+                                        onClick={() => handleClickTask('start', record.id)}
+                                    >
+                                        启动
+                                    </a>
+                                    : <a type="link"
+                                        onClick={() => handleClickTask('stop', record.id)}
+                                    >
+                                        停止
+                                    </a>
+                            }
+                            <Divider type="vertical" />
+                            <a type="link"
+                                onClick={() => handleClickTask('manualexecute', record.id)}
+                            >
+                                手动执行
+                            </a>
+                            <Divider type="vertical" />
+                            <a type="link" onClick={() => newpagetolog(record.id)}>
+                                执行日志
+                            </a>
+                        </>
+                    );
+                }
+                obj.fixed = 'right'
+            }
+            initialColumns.push(obj);
+            setColumns(initialColumns);
+            return null;
+        }
+        )
+    };
+
+    // 列表设置
+    const onCheckAllChange = e => {
+        setColumns(e.target.checked ? initialColumns : [])
+    };
+
+    // 列名点击
+    const onCheck = (checkedValues) => {
+        formThead = initialColumns.filter(i =>
+            checkedValues.indexOf(i.title) >= 0
+        );
+
+        if (formThead.length === 0) {
+            setColumns([]);
+        }
+        creataColumns();
+    };
+
+    useEffect(() => {
+        searchdata(1, 15);
+        setColumns(initialColumns);
+    }, [location]);
+
     return (
         <>
             <Card>
@@ -426,6 +536,46 @@ function TimedExecuteList(props) {
                     <Button type="danger" ghost style={{ marginRight: 8 }}
                         onClick={() => handleClickRevoke('delete')}
                     >删除</Button>
+                </div>
+                {/* 列表设置 */}
+                <div style={{ textAlign: 'right', marginBottom: 8 }}>
+                    <Popover
+                        placement="bottomRight"
+                        trigger="click"
+                        content={
+                            <>
+                                <p style={{ borderBottom: '1px solid #E9E9E9' }}>
+                                    <Checkbox
+                                        onChange={onCheckAllChange}
+                                        checked={columns.length === initialColumns.length === true}
+                                    >
+                                        列表展示
+                                    </Checkbox>
+                                </p>
+                                <Checkbox.Group
+                                    onChange={onCheck}
+                                    value={defaultAllkey}
+                                    defaultValue={columns}
+                                >
+                                    {initialColumns.map(item => (
+                                        <Col key={`item_${item.key}`} style={{ marginBottom: 8 }}>
+                                            <Checkbox
+                                                value={item.title}
+                                                key={item.key}
+                                                checked={columns}
+                                            >
+                                                {item.title}
+                                            </Checkbox>
+                                        </Col>
+                                    ))}
+                                </Checkbox.Group>
+                            </>
+                        }
+                    >
+                        <Button>
+                            <Icon type="setting" theme="filled" style={{ fontSize: 14 }} />
+                        </Button>
+                    </Popover>
                 </div>
                 <Table
                     columns={columns}

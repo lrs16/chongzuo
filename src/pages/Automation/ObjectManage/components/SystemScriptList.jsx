@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import { connect } from 'dva';
-import { Table, Card, Button, Form, Tooltip, Input, Select, Row, Col, DatePicker, Divider, message, Popconfirm } from 'antd';
+import { Table, Card, Button, Form, Tooltip, Input, Select, Row, Col, DatePicker, Divider, message, Popconfirm, Icon, Popover, Checkbox } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { togetSearchUsers } from '../services/api';
 import SystemScriptDrawer from './SystemScriptDrawer';
@@ -26,6 +26,8 @@ function SystemScriptList(props) {
         }
     } = props;
 
+    let formThead;
+
     const [expand, setExpand] = useState(false);
     const [selectedRows, setSelectedRows] = useState([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -36,6 +38,7 @@ function SystemScriptList(props) {
     const [data, setData] = useState('');
     const [allUserData, setallUserData] = useState([]);
     const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
+    const [columns, setColumns] = useState([]); // 动态表格
 
     // checkbox复选框
     const onSelectChange = (RowKeys, Rows) => {
@@ -65,10 +68,6 @@ function SystemScriptList(props) {
             },
         });
     };
-
-    useEffect(() => {
-        searchdata(1, 15);
-    }, [location]);
 
     // 获取负责人
     useEffect(() => {
@@ -199,7 +198,8 @@ function SystemScriptList(props) {
         searchdata(1, paginations.pageSize);
     };
 
-    const columns = [
+    // 列表
+    const initialColumns = [
         {
             title: '脚本编号',
             dataIndex: 'id',
@@ -305,7 +305,7 @@ function SystemScriptList(props) {
             key: 'action',
             fixed: 'right',
             width: 180,
-            render: (text, record) => {
+            render: (_, record) => {
                 return (
                     <div>
                         <a type="link"
@@ -321,6 +321,96 @@ function SystemScriptList(props) {
             },
         },
     ];
+
+    // 动态列表名称
+    const defaultAllkey = columns.map(item => {
+        return item.title;
+    });
+
+    // 创建列表
+    const creataColumns = () => {
+        // columns
+        initialColumns.length = 0;
+        formThead.map(val => {
+            const obj = {
+                key: val.key,
+                title: val.title,
+                dataIndex: val.key,
+                width: 250,
+                ellipsis: true,
+                onCell: val.title === '脚本内容' ? () => {
+                    return {
+                        style: {
+                            maxWidth: 250,
+                            overflow: 'hidden',
+                            whiteSpace: 'nowrap',
+                            textOverflow: 'ellipsis',
+                            cursor: 'pointer'
+                        }
+                    }
+                } : () => { },
+            };
+            if (val.title === '脚本内容') {
+                obj.render = (text) => {
+                    return (
+                        <Tooltip placement='topLeft' title={text} >{text}</Tooltip>
+                    )
+                }
+            }
+            if (val.title === '脚本编号') {
+                obj.render = (text, record) => {
+                    return (
+                        <SysViewDrawer record={record}>
+                            <a type="link">{text}</a>
+                        </SysViewDrawer>
+                    )
+                }
+            }
+            if (val.title === '操作') {
+                obj.render = (_, record) => {
+                    return (
+                        <div>
+                            <a type="link"
+                                onClick={() => handleShowDrawer('编辑系统脚本', 'update', record)}
+                            >
+                                编辑脚本</a>
+                            <Divider type="vertical" />
+                            <Popconfirm title="确定删除此脚本吗？" onConfirm={() => handleDelete(record.id)}>
+                                <a type="link" style={{ color: 'red' }}>删除脚本</a>
+                            </Popconfirm>
+                        </div>
+                    );
+                }
+                obj.fixed = 'right'
+            }
+            initialColumns.push(obj);
+            setColumns(initialColumns);
+            return null;
+        }
+        )
+    };
+
+    // 列表设置
+    const onCheckAllChange = e => {
+        setColumns(e.target.checked ? initialColumns : [])
+    };
+
+    // 列名点击
+    const onCheck = (checkedValues) => {
+        formThead = initialColumns.filter(i =>
+            checkedValues.indexOf(i.title) >= 0
+        );
+
+        if (formThead.length === 0) {
+            setColumns([]);
+        }
+        creataColumns();
+    };
+
+    useEffect(() => {
+        searchdata(1, 15);
+        setColumns(initialColumns);
+    }, [location]);
 
     // 查询
     const extra = (<>
@@ -491,6 +581,46 @@ function SystemScriptList(props) {
                     <Button type="danger" ghost style={{ marginRight: 8 }}
                         onClick={() => Handlerecall()}
                     >撤回</Button>
+                </div>
+                {/* 列表设置 */}
+                <div style={{ textAlign: 'right', marginBottom: 8 }}>
+                    <Popover
+                        placement="bottomRight"
+                        trigger="click"
+                        content={
+                            <>
+                                <p style={{ borderBottom: '1px solid #E9E9E9' }}>
+                                    <Checkbox
+                                        onChange={onCheckAllChange}
+                                        checked={columns.length === initialColumns.length === true}
+                                    >
+                                        列表展示
+                                    </Checkbox>
+                                </p>
+                                <Checkbox.Group
+                                    onChange={onCheck}
+                                    value={defaultAllkey}
+                                    defaultValue={columns}
+                                >
+                                    {initialColumns.map(item => (
+                                        <Col key={`item_${item.key}`} style={{ marginBottom: 8 }}>
+                                            <Checkbox
+                                                value={item.title}
+                                                key={item.key}
+                                                checked={columns}
+                                            >
+                                                {item.title}
+                                            </Checkbox>
+                                        </Col>
+                                    ))}
+                                </Checkbox.Group>
+                            </>
+                        }
+                    >
+                        <Button>
+                            <Icon type="setting" theme="filled" style={{ fontSize: 14 }} />
+                        </Button>
+                    </Popover>
                 </div>
                 <Table
                     dataSource={systemscriptlist.rows}

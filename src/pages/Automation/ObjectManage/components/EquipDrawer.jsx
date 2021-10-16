@@ -40,7 +40,8 @@ function EquipDrawer(props) {
     enployU,
     deployChange,
     uposition,
-    hostAssets
+    hostAssets,
+    maintainEndTime
   } = props.record; // 列表的值
 
   const [equipCabinet, setEquipCabinet] = useState([]);
@@ -312,7 +313,7 @@ function EquipDrawer(props) {
         <Form.Item label="维保结束时间">
           {getFieldDecorator('maintainEndTime', {
             rules: [{ required }],
-            initialValue: moment(new Date()),
+            initialValue: maintainEndTime ? moment(maintainEndTime) : moment(new Date()),
           })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
         </Form.Item>
         <Form.Item label="设备排序">

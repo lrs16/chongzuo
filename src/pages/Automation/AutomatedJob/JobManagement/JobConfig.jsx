@@ -2,7 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
-import { Table, Card, Divider, Button, Form, Input, Select, Row, Col, DatePicker, Popconfirm, message } from 'antd';
+import {
+    Table,
+    Card,
+    Divider,
+    Button,
+    Form,
+    Input,
+    Select,
+    Row,
+    Col,
+    DatePicker,
+    Popconfirm,
+    message,
+    Icon,
+    Popover,
+    Checkbox
+} from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
@@ -37,9 +53,12 @@ function JobConfig(props) {
         },
     } = props;
 
+    let formThead;
+
     const [expand, setExpand] = useState(false);
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+    const [columns, setColumns] = useState([]); // 动态表格
 
     const searchdata = (page, size) => {
         const values = getFieldsValue();
@@ -63,11 +82,6 @@ function JobConfig(props) {
             type: 'itsmuser/fetchuser',
         });
     };
-
-    useEffect(() => {
-        searchdata(1, 15);
-        queryDept();
-    }, [location]);
 
     const handleReset = () => {
         resetFields();
@@ -149,7 +163,7 @@ function JobConfig(props) {
     };
 
     // 删除
-    const handleDelete = id => { 
+    const handleDelete = id => {
         dispatch({
             type: 'autotask/todeleteTask',
             payload: { taskId: id },
@@ -190,7 +204,8 @@ function JobConfig(props) {
     const taskmodesmap = getTypebyId(1068); // 作业方式
     const examinestatusmap = getTypebyId(1070); // 审批状态
 
-    const columns = [
+    // 列表
+    const initialColumns = [
         {
             title: '作业名称',
             dataIndex: 'taskName',
@@ -318,6 +333,95 @@ function JobConfig(props) {
             },
         },
     ];
+
+    // 动态列表名称
+    const defaultAllkey = columns.map(item => {
+        return item.title;
+    });
+
+    // 创建列表
+    const creataColumns = () => {
+        // columns
+        initialColumns.length = 0;
+        formThead.map(val => {
+            const obj = {
+                key: val.key,
+                title: val.title,
+                dataIndex: val.key,
+                width: 250,
+                ellipsis: true,
+            };
+            if (val.title === '作业对象') {
+                obj.render = (text, record) => {
+                    return (
+                        <TaskObjectModel record={record} dispatch={dispatch}>
+                            <a type="link">{text}</a>
+                        </TaskObjectModel>
+                    )
+                }
+            }
+            if (val.title === '作业脚本') {
+                obj.render = (text, record) => {
+                    return (
+                        <TaskScriptModel record={record} dispatch={dispatch}>
+                            <a type="link">{text}</a>
+                        </TaskScriptModel>
+                    )
+                }
+            }
+            if (val.title === '操作') {
+                obj.render = (_, record) => {
+                    return (
+                        <div>
+                            {(record.taskStatus !== '已登记') ? <a type="link" disabled
+                            >
+                                编辑
+                            </a> : <a type="link"
+                                onClick={() => newjobconfig('edit', record)}
+                            >
+                                编辑
+                            </a>}
+                            <Divider type="vertical" />
+                            {(record.taskStatus !== '已登记') ? <a type="link" disabled
+                            >
+                                删除
+                            </a> : <Popconfirm title="确定删除吗？" onConfirm={() => handleDelete(record.id)}>
+                                <a type="link" style={{ color: 'red' }}>删除</a>
+                            </Popconfirm>}
+                        </div>
+                    );
+                }
+                obj.fixed = 'right'
+            }
+            initialColumns.push(obj);
+            setColumns(initialColumns);
+            return null;
+        }
+        )
+    };
+
+    // 列表设置
+    const onCheckAllChange = e => {
+        setColumns(e.target.checked ? initialColumns : [])
+    };
+
+    // 列名点击
+    const onCheck = (checkedValues) => {
+        formThead = initialColumns.filter(i =>
+            checkedValues.indexOf(i.title) >= 0
+        );
+
+        if (formThead.length === 0) {
+            setColumns([]);
+        }
+        creataColumns();
+    };
+
+    useEffect(() => {
+        searchdata(1, 15);
+        queryDept();
+        setColumns(initialColumns);
+    }, [location]);
 
     return (
         <PageHeaderWrapper title={pagetitle}>
@@ -509,6 +613,46 @@ function JobConfig(props) {
                     <Button type="primary" style={{ marginRight: 8 }}
                         onClick={() => newjobconfig('add')}
                     >新增</Button>
+                </div>
+                {/* 列表设置 */}
+                <div style={{ textAlign: 'right', marginBottom: 8 }}>
+                    <Popover
+                        placement="bottomRight"
+                        trigger="click"
+                        content={
+                            <>
+                                <p style={{ borderBottom: '1px solid #E9E9E9' }}>
+                                    <Checkbox
+                                        onChange={onCheckAllChange}
+                                        checked={columns.length === initialColumns.length === true}
+                                    >
+                                        列表展示
+                                    </Checkbox>
+                                </p>
+                                <Checkbox.Group
+                                    onChange={onCheck}
+                                    value={defaultAllkey}
+                                    defaultValue={columns}
+                                >
+                                    {initialColumns.map(item => (
+                                        <Col key={`item_${item.key}`} style={{ marginBottom: 8 }}>
+                                            <Checkbox
+                                                value={item.title}
+                                                key={item.key}
+                                                checked={columns}
+                                            >
+                                                {item.title}
+                                            </Checkbox>
+                                        </Col>
+                                    ))}
+                                </Checkbox.Group>
+                            </>
+                        }
+                    >
+                        <Button>
+                            <Icon type="setting" theme="filled" style={{ fontSize: 14 }} />
+                        </Button>
+                    </Popover>
                 </div>
                 {
                     autotasklist.rows && (<Table

@@ -185,6 +185,8 @@ function DynamicModal(props) {
                             placeholder="请选择"
                             onChange={e => handleFieldChange(e, 'dynamicName', record.key)}
                             style={{ width: '100%' }}
+                            getPopupContainer={triggerNode => triggerNode.parentElement}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                         >
                             {selectdata.assets_dynamic_id.map(obj => [
                                 <Option key={obj.key} value={obj.val}>

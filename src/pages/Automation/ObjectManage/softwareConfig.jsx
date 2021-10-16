@@ -1,10 +1,7 @@
-import React, {
-    useEffect,
-    useState
-} from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Table, Card, Button, Form, Input, Select, Row, Col, DatePicker, Tooltip } from 'antd';
+import { Table, Card, Button, Form, Input, Select, Row, Col, DatePicker, Tooltip, Icon, Popover, Checkbox } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
@@ -38,12 +35,15 @@ function SoftwareConfig(props) {
         },
     } = props;
 
+    let formThead;
+
     const [expand, setExpand] = useState(false);
     const [confid, setconfId] = useState('');
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
     const [visible, setVisible] = useState(false); // 抽屉是否显示
     const [title, setTitle] = useState('');
+    const [columns, setColumns] = useState([]); // 动态表格
 
     // 历史版本抽屉
     const handleShowHistoryDrawer = (drawtitle, gotid) => {
@@ -66,10 +66,6 @@ function SoftwareConfig(props) {
             },
         })
     };
-
-    useEffect(() => {
-        searchdata(1, 15);
-    }, [location]);
 
     // 重置
     const handleReset = () => {
@@ -114,7 +110,8 @@ function SoftwareConfig(props) {
         searchdata(1, paginations.pageSize);
     };
 
-    const columns = [{
+    // 列表
+    const initialColumns = [{
         title: '批次号',
         dataIndex: 'pullNum',
         key: 'pullNum',
@@ -243,6 +240,86 @@ function SoftwareConfig(props) {
         },
     },
     ];
+
+    // 动态列表名称
+    const defaultAllkey = columns.map(item => {
+        return item.title;
+    });
+
+    // 创建列表
+    const creataColumns = () => {
+        // columns
+        initialColumns.length = 0;
+        formThead.map(val => {
+            const obj = {
+                key: val.key,
+                title: val.title,
+                dataIndex: val.key,
+                width: 250,
+                ellipsis: true,
+                onCell: (val.title === '配置文件路径' || val.title === '配置文件内容') ? () => {
+                    return {
+                        style: {
+                            maxWidth: 250,
+                            overflow: 'hidden',
+                            whiteSpace: 'nowrap',
+                            textOverflow: 'ellipsis',
+                            cursor: 'pointer'
+                        }
+                    }
+                } : () => { },
+            };
+            if (val.title === '配置文件路径' || val.title === '配置文件内容') {
+                obj.render = (text) => {
+                    return (
+                        <Tooltip placement='topLeft' title={text} >{text}</Tooltip>
+                    )
+                }
+            }
+            if (val.title === '操作') {
+                obj.render = (text, record) => {
+                    return (
+                        <a type="link"
+                            record={record}
+                            text={text}
+                            onClick={() => {
+                                handleShowHistoryDrawer('查看历史版本', record.id);
+                            }}
+                        >
+                            历史版本
+                        </a>
+                    );
+                }
+                obj.fixed = 'right'
+            }
+            initialColumns.push(obj);
+            setColumns(initialColumns);
+            return null;
+        }
+        )
+    };
+
+    // 列表设置
+    const onCheckAllChange = e => {
+        setColumns(e.target.checked ? initialColumns : [])
+    };
+
+    // 列名点击
+    const onCheck = (checkedValues) => {
+        formThead = initialColumns.filter(i =>
+            checkedValues.indexOf(i.title) >= 0
+        );
+
+        if (formThead.length === 0) {
+            setColumns([]);
+        }
+        creataColumns();
+    };
+
+    useEffect(() => {
+        searchdata(1, 15);
+        setColumns(initialColumns);
+    }, [location]);
 
     // 查询
     const extra = (<>
@@ -394,6 +471,46 @@ function SoftwareConfig(props) {
                         <Button type="primary" style={{ marginRight: 8 }}
                         >获取文件</Button>
                     </GetFileModal>
+                </div>
+                {/* 列表设置 */}
+                <div style={{ textAlign: 'right', marginBottom: 8 }}>
+                    <Popover
+                        placement="bottomRight"
+                        trigger="click"
+                        content={
+                            <>
+                                <p style={{ borderBottom: '1px solid #E9E9E9' }}>
+                                    <Checkbox
+                                        onChange={onCheckAllChange}
+                                        checked={columns.length === initialColumns.length === true}
+                                    >
+                                        列表展示
+                                    </Checkbox>
+                                </p>
+                                <Checkbox.Group
+                                    onChange={onCheck}
+                                    value={defaultAllkey}
+                                    defaultValue={columns}
+                                >
+                                    {initialColumns.map(item => (
+                                        <Col key={`item_${item.key}`} style={{ marginBottom: 8 }}>
+                                            <Checkbox
+                                                value={item.title}
+                                                key={item.key}
+                                                checked={columns}
+                                            >
+                                                {item.title}
+                                            </Checkbox>
+                                        </Col>
+                                    ))}
+                                </Checkbox.Group>
+                            </>
+                        }
+                    >
+                        <Button>
+                            <Icon type="setting" theme="filled" style={{ fontSize: 14 }} />
+                        </Button>
+                    </Popover>
                 </div>
                 <Table
                     columns={columns}

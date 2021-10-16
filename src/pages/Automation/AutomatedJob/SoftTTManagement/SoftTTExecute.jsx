@@ -1,10 +1,23 @@
-import React, {
-  useEffect,
-  useState
-} from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Table, Card, Button, Form, Input, Select, Row, Col, DatePicker, Divider, message, Popconfirm } from 'antd';
+import {
+  Table,
+  Card,
+  Button,
+  Form,
+  Input,
+  Select,
+  Row,
+  Col,
+  DatePicker,
+  Divider,
+  message,
+  Popconfirm,
+  Icon,
+  Popover,
+  Checkbox
+} from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
@@ -39,12 +52,15 @@ function SoftTTExecute(props) {
     },
   } = props;
 
+  let formThead;
+
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [visibledrawer, setVisibledrawer] = useState(false); // 抽屉是否显示
   const [titledrawer, setTitledrawer] = useState('');
   const [recordvalues, setRecordvalues] = useState({});
+  const [columns, setColumns] = useState([]); // 动态表格
   // const [butdisable, setButDisable] = useState(false);
   // const [sameId, setsameId] = useState('');
 
@@ -63,10 +79,6 @@ function SoftTTExecute(props) {
       },
     });
   };
-
-  useEffect(() => {
-    searchdata(1, 15);
-  }, [location]);
 
   const handleReset = () => {
     resetFields();
@@ -165,7 +177,7 @@ function SoftTTExecute(props) {
     </Button></>
   )
 
-  const columns = [
+  const initialColumns = [
     {
       title: '启停申请说明',
       dataIndex: 'workRemarks',
@@ -246,7 +258,7 @@ function SoftTTExecute(props) {
           <div>
             <Popconfirm title="是否确定启动软件？" onConfirm={() => torunAutoSoftWork(record.id)}>
               <a type="link"
-                // disabled={record.id === sameId ? butdisable : false}
+              // disabled={record.id === sameId ? butdisable : false}
               >
                 启动
               </a>
@@ -254,7 +266,7 @@ function SoftTTExecute(props) {
             <Divider type="vertical" />
             <Popconfirm title="是否确定停止软件？" onConfirm={() => tostopAutoSoftWork(record.id)}>
               <a type="link"
-                // disabled={record.id === sameId ? butdisable : false}
+              // disabled={record.id === sameId ? butdisable : false}
               >
                 停止
               </a>
@@ -262,7 +274,7 @@ function SoftTTExecute(props) {
             <Divider type="vertical" />
             <Popconfirm title="是否确定结束作业？" onConfirm={() => toendAutoSoftWork(record.id)}>
               <a type="link"
-                // disabled={record.id === sameId ? butdisable : false}
+              // disabled={record.id === sameId ? butdisable : false}
               >
                 结束作业
               </a>
@@ -278,6 +290,99 @@ function SoftTTExecute(props) {
       },
     },
   ];
+
+  // 动态列表名称
+  const defaultAllkey = columns.map(item => {
+    return item.title;
+  });
+
+  // 创建列表
+  const creataColumns = () => {
+    // columns
+    initialColumns.length = 0;
+    formThead.map(val => {
+      const obj = {
+        key: val.key,
+        title: val.title,
+        dataIndex: val.key,
+        width: 250,
+        ellipsis: true,
+      };
+      if (val.title === '启停对象') {
+        obj.render = (text, record) => {
+          return (
+            <TaskWorkObjectModel record={record} dispatch={dispatch} values={getFieldsValue()}>
+              <a type="link">{text}</a>
+            </TaskWorkObjectModel>
+          )
+        }
+      }
+      if (val.title === '操作') {
+        obj.render = (_, record) => {
+          return (
+            <div>
+              <Popconfirm title="是否确定启动软件？" onConfirm={() => torunAutoSoftWork(record.id)}>
+                <a type="link"
+                // disabled={record.id === sameId ? butdisable : false}
+                >
+                  启动
+                </a>
+              </Popconfirm>
+              <Divider type="vertical" />
+              <Popconfirm title="是否确定停止软件？" onConfirm={() => tostopAutoSoftWork(record.id)}>
+                <a type="link"
+                // disabled={record.id === sameId ? butdisable : false}
+                >
+                  停止
+                </a>
+              </Popconfirm>
+              <Divider type="vertical" />
+              <Popconfirm title="是否确定结束作业？" onConfirm={() => toendAutoSoftWork(record.id)}>
+                <a type="link"
+                // disabled={record.id === sameId ? butdisable : false}
+                >
+                  结束作业
+                </a>
+              </Popconfirm>
+              <Divider type="vertical" />
+              <a type="link"
+                onClick={() => handleShowDrawer('查看执行日志', record)}
+              >
+                查看日志
+              </a>
+            </div>
+          );
+        }
+        obj.fixed = 'right'
+      }
+      initialColumns.push(obj);
+      setColumns(initialColumns);
+      return null;
+    }
+    )
+  };
+
+  // 列表设置
+  const onCheckAllChange = e => {
+    setColumns(e.target.checked ? initialColumns : [])
+  };
+
+  // 列名点击
+  const onCheck = (checkedValues) => {
+    formThead = initialColumns.filter(i =>
+      checkedValues.indexOf(i.title) >= 0
+    );
+
+    if (formThead.length === 0) {
+      setColumns([]);
+    }
+    creataColumns();
+  };
+
+  useEffect(() => {
+    searchdata(1, 15);
+    setColumns(initialColumns);
+  }, [location]);
 
   // 数据字典取下拉值
   const getTypebyId = key => {
@@ -409,6 +514,46 @@ function SoftTTExecute(props) {
             {expand ? (<Col span={24} style={{ marginTop: 4, textAlign: 'right' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
           </Form>
         </Row>
+        {/* 列表设置 */}
+        <div style={{ textAlign: 'right', marginBottom: 8 }}>
+          <Popover
+            placement="bottomRight"
+            trigger="click"
+            content={
+              <>
+                <p style={{ borderBottom: '1px solid #E9E9E9' }}>
+                  <Checkbox
+                    onChange={onCheckAllChange}
+                    checked={columns.length === initialColumns.length === true}
+                  >
+                    列表展示
+                  </Checkbox>
+                </p>
+                <Checkbox.Group
+                  onChange={onCheck}
+                  value={defaultAllkey}
+                  defaultValue={columns}
+                >
+                  {initialColumns.map(item => (
+                    <Col key={`item_${item.key}`} style={{ marginBottom: 8 }}>
+                      <Checkbox
+                        value={item.title}
+                        key={item.key}
+                        checked={columns}
+                      >
+                        {item.title}
+                      </Checkbox>
+                    </Col>
+                  ))}
+                </Checkbox.Group>
+              </>
+            }
+          >
+            <Button>
+              <Icon type="setting" theme="filled" style={{ fontSize: 14 }} />
+            </Button>
+          </Popover>
+        </div>
         {autosoftworklist.rows && (<Table
           columns={columns}
           dataSource={autosoftworklist.rows.filter(item => item.workStatus !== '已登记')}

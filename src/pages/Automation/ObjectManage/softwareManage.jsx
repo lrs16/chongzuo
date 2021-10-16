@@ -1,10 +1,7 @@
-import React, {
-    useEffect,
-    useState
-} from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Table, Card, Divider, Button, message, Form, Input, Select, Row, Col, DatePicker, Badge } from 'antd';
+import { Table, Card, Divider, Button, message, Form, Input, Select, Row, Col, DatePicker, Badge, Icon, Popover, Checkbox } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
@@ -45,6 +42,8 @@ function SoftwareManage(props) {
         },
     } = props;
 
+    let formThead;
+
     const [expand, setExpand] = useState(false);
     const [visible, setVisible] = useState(false); // 抽屉是否显示
     const [title, setTitle] = useState('');
@@ -53,6 +52,7 @@ function SoftwareManage(props) {
     const [allUserData, setallUserData] = useState([]);
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+    const [columns, setColumns] = useState([]); // 动态表格 
 
     // 列表请求
     const searchdata = (page, size) => {
@@ -70,17 +70,6 @@ function SoftwareManage(props) {
             },
         });
     };
-
-    useEffect(() => {
-        searchdata(1, 15);
-        togetSearchUsers().then(res => {
-            if (res.code === 200) {
-                setallUserData(res.data.userList)
-            } else {
-                message.error('获取负责人失败')
-            }
-        });
-    }, [location]);
 
     // 打开弹窗
     const handleShowDrawer = (drwertitle, type, record) => {
@@ -210,7 +199,8 @@ function SoftwareManage(props) {
     const hoststatusmap = getTypebyId(1258); // 软件状态
     const dynamicnamemap = getTypebyId(740); // 软件属性名称
 
-    const columns = [
+    // 列表
+    const initialColumns = [
         {
             title: '区域',
             dataIndex: 'hostZoneId',
@@ -234,7 +224,8 @@ function SoftwareManage(props) {
             title: '软件名称',
             dataIndex: 'softName',
             key: 'softName',
-            width: 180,
+            width: 200,
+            ellipsis: true,
         },
         {
             title: '软件端口',
@@ -385,6 +376,101 @@ function SoftwareManage(props) {
             },
         },
     ];
+
+    // 动态列表名称
+    const defaultAllkey = columns.map(item => {
+        return item.title;
+    });
+
+    // 创建列表
+    const creataColumns = () => {
+        // columns
+        initialColumns.length = 0;
+        formThead.map(val => {
+            const obj = {
+                key: val.key,
+                title: val.title,
+                dataIndex: val.key,
+                width: 250,
+                ellipsis: true,
+            };
+            if (val.title === '操作') {
+                obj.render = (_, record) => {
+                    return (
+                        <div>
+                            <a type="link"
+                                onClick={() => handleShowDrawer('编辑软件', 'update', record)}
+                            >
+                                编辑
+                            </a>
+                            <Divider type="vertical" />
+                            <a type="link" style={{ color: 'red' }} onClick={() => handleDelete(record.id)}>
+                                删除
+                            </a>
+                            <Divider type="vertical" />
+                            <DynamicModal
+                                dispatch={dispatch}
+                                // dataSource={dynamicList.rows}
+                                dynamicnamemap={dynamicnamemap}
+                                ChangeValue={v => setFieldsValue({ dynamicList: v })}
+                                softId={record.id}
+
+                            >
+                                <a type="link">
+                                    其他属性
+                                </a>
+                            </DynamicModal>
+                        </div>
+                    );
+                }
+                obj.fixed = 'right'
+            }
+            if (val.title === '软件状态') {
+                obj.render = (text, record) => {
+                    return (
+                        <span>
+                            <Badge
+                                status={colormap.get(record.softStatus)}
+                                text={text} />
+                        </span>
+                    )
+                }
+            }
+            initialColumns.push(obj);
+            setColumns(initialColumns);
+            return null;
+        }
+        )
+    };
+
+    // 列表设置
+    const onCheckAllChange = e => {
+        setColumns(e.target.checked ? initialColumns : [])
+    };
+
+    // 列名点击
+    const onCheck = (checkedValues) => {
+        formThead = initialColumns.filter(i =>
+            checkedValues.indexOf(i.title) >= 0
+        );
+
+        if (formThead.length === 0) {
+            setColumns([]);
+        }
+        creataColumns();
+    };
+
+    useEffect(() => {
+        searchdata(1, 15);
+        setColumns(initialColumns);
+        togetSearchUsers().then(res => {
+            if (res.code === 200) {
+                setallUserData(res.data.userList)
+            } else {
+                message.error('获取负责人失败')
+            }
+        });
+    }, [location]);
 
     return (
         <PageHeaderWrapper title={pagetitle}>
@@ -570,6 +656,46 @@ function SoftwareManage(props) {
                     <Button type="primary" style={{ marginRight: 8 }}
                         onClick={() => handleShowDrawer('新增软件', 'add',)}
                     >新增</Button>
+                </div>
+                {/* 列表设置 */}
+                <div style={{ textAlign: 'right', marginBottom: 8 }}>
+                    <Popover
+                        placement="bottomRight"
+                        trigger="click"
+                        content={
+                            <>
+                                <p style={{ borderBottom: '1px solid #E9E9E9' }}>
+                                    <Checkbox
+                                        onChange={onCheckAllChange}
+                                        checked={columns.length === initialColumns.length === true}
+                                    >
+                                        列表展示
+                                    </Checkbox>
+                                </p>
+                                <Checkbox.Group
+                                    onChange={onCheck}
+                                    value={defaultAllkey}
+                                    defaultValue={columns}
+                                >
+                                    {initialColumns.map(item => (
+                                        <Col key={`item_${item.key}`} style={{ marginBottom: 8 }}>
+                                            <Checkbox
+                                                value={item.title}
+                                                key={item.key}
+                                                checked={columns}
+                                            >
+                                                {item.title}
+                                            </Checkbox>
+                                        </Col>
+                                    ))}
+                                </Checkbox.Group>
+                            </>
+                        }
+                    >
+                        <Button>
+                            <Icon type="setting" theme="filled" style={{ fontSize: 14 }} />
+                        </Button>
+                    </Popover>
                 </div>
                 <Table
                     columns={columns}
