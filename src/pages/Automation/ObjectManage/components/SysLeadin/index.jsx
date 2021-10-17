@@ -66,14 +66,13 @@ function SysLeadin(props) {
       const alldone = fileList.map(item => item.status !== 'done');
       if (file.status === 'done' && alldone.indexOf(true) === -1) {
         if(file.response.code === 200) {
-          message.success(`导入数据成功`);
+          message.success(`导入数据成功` || file.response.msg);
         } else {
-          message.error(`文件格式不正确，请按照文件下载模板上传`);
+          message.error(`文件格式不正确，请按照文件下载模板上传` || file.response.msg);
         }
   
-        const newarr = [];
-        ChangeFileslist({ arr: newarr, ischange: true });
-      }
+        ChangeFileslist({ arr: [...fileList], ischange: true });
+      } 
     },
     onPreview(file) {
       handledownload(file);

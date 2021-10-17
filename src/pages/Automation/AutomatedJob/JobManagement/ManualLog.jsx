@@ -230,8 +230,8 @@ function ManualLog(props) {
         },
         {
             title: '执行时长',
-            dataIndex: 'executeCompleteTime',
-            key: 'executeCompleteTime',
+            dataIndex: 'executeLength',
+            key: 'executeLength',
             width: 200,
         },
         {

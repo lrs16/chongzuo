@@ -127,7 +127,8 @@ function SoftwareConfig(props) {
         title: '设备名称',
         dataIndex: 'hostName',
         key: 'hostName',
-        width: 180,
+        width: 300,
+        ellipsis: true,
     },
     {
         title: '主机IP',
@@ -139,7 +140,8 @@ function SoftwareConfig(props) {
         title: '软件名称',
         dataIndex: 'softName',
         key: 'softName',
-        width: 200,
+        width: 300,
+        ellipsis: true,
     },
     {
         title: '配置文件路径',
@@ -231,7 +233,7 @@ function SoftwareConfig(props) {
                     record={record}
                     text={text}
                     onClick={() => {
-                        handleShowHistoryDrawer('查看历史版本', record.id);
+                        handleShowHistoryDrawer('查看历史版本', record.confInstance);
                     }}
                 >
                     历史版本
@@ -283,7 +285,7 @@ function SoftwareConfig(props) {
                             record={record}
                             text={text}
                             onClick={() => {
-                                handleShowHistoryDrawer('查看历史版本', record.id);
+                                handleShowHistoryDrawer('查看历史版本', record.confInstance);
                             }}
                         >
                             历史版本

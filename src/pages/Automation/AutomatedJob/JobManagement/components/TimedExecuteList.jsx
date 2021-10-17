@@ -347,7 +347,7 @@ function TimedExecuteList(props) {
                 return (
                     <>
                         {
-                            (record.taskJobStatus === '1') ?
+                            (record.taskJobStatus === '0') ?
                                 <a type="link"
                                     onClick={() => handleClickTask('start', record.id)}
                                 >

@@ -69,9 +69,7 @@ function SysLeadinCabinet(props) {
         } else {
           message.error(`文件格式不正确，请按照文件下载模板上传`);
         }
-  
-        const newarr = [];
-        ChangeFileslist({ arr: newarr, ischange: true });
+        ChangeFileslist({ arr: [...fileList], ischange: true });
       }
     },
     onPreview(file) {

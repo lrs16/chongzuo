@@ -48,7 +48,7 @@ function HistorVersionDrawer(props) {
         const values = getFieldsValue();
         values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
         values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
-        values.confId = id;
+        values.confInstance = id;
         dispatch({
             type: 'softconf/findsoftConfHistoryList',
             payload: {
@@ -139,7 +139,8 @@ function HistorVersionDrawer(props) {
             title: '设备名称',
             dataIndex: 'hostName',
             key: 'hostName',
-            width: 200,
+            width: 300,
+            ellipsis: true,
         },
         {
             title: '设备IP',
@@ -151,7 +152,8 @@ function HistorVersionDrawer(props) {
             title: '软件名称',
             dataIndex: 'softName',
             key: 'softName',
-            width: 200,
+            width: 300,
+            ellipsis: true,
         },
         {
             title: '配置文件路径',
@@ -379,7 +381,7 @@ function HistorVersionDrawer(props) {
                     columns={columns}
                     rowKey={record => record.id}
                     scroll={{ x: 1300 }}
-                    paginations={pagination}
+                    pagination={pagination}
                     loading={loading}
                 />
             </>

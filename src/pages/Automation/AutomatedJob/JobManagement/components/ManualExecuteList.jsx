@@ -310,7 +310,7 @@ function ManualExecuteList(props) {
             width: 150,
             render: (text, record) => {
                 return (
-                    <div spinning={loading.toString()} delay={1000}>
+                    <div spinning={loading} delay={1000}>
                         <a type="link"
                             onClick={() => handlerunTask(record.id)}
                         >
