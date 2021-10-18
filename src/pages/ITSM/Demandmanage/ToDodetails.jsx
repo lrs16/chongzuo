@@ -12,7 +12,7 @@ import TimeoutModal from '../components/TimeoutModal';
 import { judgeTimeoutStatus, saveTimeoutMsg } from '../services/api';
 
 function ToDoregist(props) {
-  const { location, dispatch, workLoad, loading } = props;
+  const { location, dispatch, workLoad, loading, allloading } = props;
   const { taskName, taskId, result, mainId } = location.query;
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [buttontype, setButtonType] = useState('');
@@ -153,7 +153,7 @@ function ToDoregist(props) {
 
   const operations = (
     <>
-      {tabActivekey === 'workorder' && (
+      {tabActivekey === 'workorder' && !allloading && (
         <>
           {taskName === '需求登记' && iscolse === 0 && (
             <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handledelete()}>
@@ -321,4 +321,5 @@ function ToDoregist(props) {
 export default connect(({ demandtodo, loading }) => ({
   workLoad: demandtodo.workLoad,
   loading: loading.effects['demandtodo/demandopenflow'],
+  allloading: loading.models.demandtodo,
 }))(ToDoregist);

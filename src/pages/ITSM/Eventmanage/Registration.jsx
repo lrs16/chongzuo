@@ -321,9 +321,9 @@ function Registration(props) {
 
   const operations = (
     <>
-      <Button type="primary" style={{ marginRight: 8 }} onClick={handlesubmit}>
+      {!loading && (<Button type="primary" style={{ marginRight: 8 }} onClick={handlesubmit}>
         保 存
-      </Button>
+      </Button>)}
       <Button type="default" onClick={() => handleclose()}>
         关 闭
       </Button>

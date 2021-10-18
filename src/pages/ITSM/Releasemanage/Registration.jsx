@@ -35,6 +35,7 @@ function Registration(props) {
   const [taskId, setTaskId] = useState('');
   const [orderId, setOrderId] = useState('');
   const [modalvisible, setModalVisible] = useState(false);
+  const [saveloading, setSaveloading] = useState(false);
   const [indexvalue, setIndexValue] = useState({ releaseMain: {}, releaseRegister: {}, releaseEnvs: [], releaseLists: [], releaseAttaches: Attaches });
   // 初始化用户信息，流程类型
   useEffect(() => {
@@ -112,8 +113,10 @@ function Registration(props) {
       if (err) {
         message.error('请将信息填写完整')
       } else {
+        setSaveloading(true);
         saveRegister(register).then(res => {
           if (res.code === 200) {
+            setSaveloading(false);
             sessionStorage.setItem('flowtype', '1');
             setTaskId(res.data.currentTaskStatus.taskId);
             setOrderId(res.data.currentTaskStatus.processInstanceId)
@@ -127,7 +130,8 @@ function Registration(props) {
                   setUserVisible(true);
                 };
               } else {
-                message.error(res.msg)
+                message.error(res.msg);
+                setSaveloading(false);
               };
             })
           } else {
@@ -158,6 +162,7 @@ function Registration(props) {
 
   // 保存获取表单数据
   const handleSave = () => {
+    setSaveloading(true);
     const register = getformvalues();
     const tabid = sessionStorage.getItem('tabid');
     dispatch({
@@ -170,6 +175,7 @@ function Registration(props) {
     saveRegister(register).then(response => {
       if (response.code === 200) {
         message.success('保存成功');
+        setSaveloading(false);
         router.push({
           pathname: `/ITSM/releasemanage/registration`,
           query: { tabid, closecurrent: true }
@@ -188,7 +194,8 @@ function Registration(props) {
           },
         });
       } else {
-        message.error(response.msg)
+        message.error(response.msg);
+        setSaveloading(false);
       }
     })
   };
@@ -235,12 +242,12 @@ function Registration(props) {
 
   const operations = (
     <>
-      <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSave('save')}>
+      {!saveloading && (<Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSave('save')}>
         保存
-      </Button>
-      <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSubmit()}>
+      </Button>)}
+      {!loading && (<Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSubmit()}>
         流转
-      </Button>
+      </Button>)}
       <Button type="default" onClick={() => handleclose()}>关闭</Button>
     </>
   );

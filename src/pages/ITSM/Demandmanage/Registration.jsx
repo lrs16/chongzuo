@@ -139,9 +139,9 @@ function Registration(props) {
 
   const operations = (
     <>
-      <Button type="primary" style={{ marginRight: 8 }} onClick={() => getregistrat('save')}>
+      {!loading && (<Button type="primary" style={{ marginRight: 8 }} onClick={() => getregistrat('save')}>
         保存
-      </Button>
+      </Button>)}
       {/* <SelectUser handleSubmit={() => getregistrat('next')}>
         <Button type="primary" style={{ marginRight: 8 }}>
           流转

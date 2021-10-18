@@ -24,7 +24,7 @@ const pagetitlemaps = new Map([
 ]);
 
 function ToDodetails(props) {
-  const { location, dispatch } = props;
+  const { location, dispatch, allloading } = props;
   const { taskName, taskId, mainId, check, next, orderNo } = location.query;
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [buttontype, setButtonType] = useState('');
@@ -176,7 +176,7 @@ function ToDodetails(props) {
 
   const operations = (
     <>
-      {tabActivekey === 'workorder' && (
+      {tabActivekey === 'workorder' && !allloading && (
         <>
           {/* 测试下载功能 */}
           {/* <Button onClick={()=>test()}>下载</Button> */}
@@ -332,4 +332,5 @@ function ToDodetails(props) {
 export default connect(({ eventtodo, loading }) => ({
   eventtodo,
   loading: loading.effects['eventtodo/eventback'],
+  allloading: loading.models.eventtodo,
 }))(ToDodetails);
