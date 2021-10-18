@@ -100,6 +100,7 @@ export default {
       return {
         ...state,
         userinfo: action.payload,
+        describe: '',
       };
     },
 
@@ -115,6 +116,7 @@ export default {
       return {
         ...state,
         problemlist: action.payload,
+        describe: '',
       };
     },
 
@@ -122,6 +124,7 @@ export default {
       return {
         ...state,
         tasklist: action.payload,
+        describe: '',
       };
     },
 

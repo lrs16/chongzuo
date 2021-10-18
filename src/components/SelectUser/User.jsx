@@ -203,7 +203,6 @@ const User = props => {
         ChangeUserVisible(false);
       };
     }
-
   };
 
   const handleCancel = () => {
@@ -211,7 +210,6 @@ const User = props => {
     ChangeType('');
     sessionStorage.removeItem('NextflowUserId');
   };
-
 
   const nextflowuser =
     changorder !== undefined ? changorder : sessionStorage.getItem('Nextflowmane');
