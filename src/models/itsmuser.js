@@ -105,6 +105,7 @@ export default {
     },
 
     savelist(state, action) {
+      console.log(action)
       return {
         ...state,
         userlist: action.payload,
