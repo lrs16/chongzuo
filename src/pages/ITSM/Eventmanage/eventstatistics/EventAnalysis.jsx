@@ -31,9 +31,7 @@ function EventAnalysis(props) {
     getHandleUnitTopdata,
     getOrderConditionsobj
   } = props;
-  const [selectedTags, setSelectedTags] = useState([]);
   const [picval, setPicVal] = useState({});
-  const [bardata, setBardata] = useState([]);
   const [values, setValues] = useState({});
   const [topN, setTopN] = useState(5) // 排序
   const [topN1, setTopN1] = useState(5) // 排序
@@ -232,16 +230,16 @@ function EventAnalysis(props) {
                           <b>事件工单总情况</b>
                         </div>
                         <Col span={6}>
-                          <StatisticsCard title='事件总数' value={obj && obj.allNum} suffix='单' des='环比' desval={`${obj && obj.allRingPoints}%`} type={Number((obj && obj.allRingPoints)) > 0 ? 'up' : 'down'} />
+                          <StatisticsCard  key={1} title='事件总数' value={obj && obj.allNum} suffix='单' des='环比' desval={`${obj && obj.allRingPoints}%`} type={Number((obj && obj.allRingPoints)) > 0 ? 'up' : 'down'} />
                         </Col>
                         <Col span={6}>
-                          <StatisticsCard title='已完成' value={obj && obj.closeNum} suffix='单' des='环比' desval={`${obj && obj.closeRingPoints}%`} type={Number((obj && obj.closeRingPoints)) > 0 ? 'up' : 'down'} />
+                          <StatisticsCard key={2} title='已完成' value={obj && obj.closeNum} suffix='单' des='环比' desval={`${obj && obj.closeRingPoints}%`} type={Number((obj && obj.closeRingPoints)) > 0 ? 'up' : 'down'} />
                         </Col>
                         <Col span={6}>
-                          <StatisticsCard title='未完成' value={obj && obj.unCloseNum} suffix='单' des='环比' desval={`${obj && obj.unCloseRingPoints}%`} type={Number((obj && obj.unCloseRingPoints)) > 0 ? 'up' : 'down'} />
+                          <StatisticsCard key={3} title='未完成' value={obj && obj.unCloseNum} suffix='单' des='环比' desval={`${obj && obj.unCloseRingPoints}%`} type={Number((obj && obj.unCloseRingPoints)) > 0 ? 'up' : 'down'} />
                         </Col>
                         <Col span={6}>
-                          <StatisticsCard title='解决率' value={obj && obj.point} suffix='%' des='环比' desval={`${obj && obj.ringPoints}%`} type={Number((obj && obj.ringPoints)) > 0 ? 'up' : 'down'} />
+                          <StatisticsCard key={4} title='解决率' value={obj && obj.point} suffix='%' des='环比' desval={`${obj && obj.ringPoints}%`} type={Number((obj && obj.ringPoints)) > 0 ? 'up' : 'down'} />
                         </Col>
                       </Row>
                     </Col>
@@ -254,13 +252,13 @@ function EventAnalysis(props) {
                         </div>
                         <Col span={24}>
                           <Col span={8}>
-                            <StatisticsCard title='受理总数' value={obj && obj.allNum} suffix='单' des='环比' desval={`${obj && obj.allRingPoints}%`} type={Number((obj && obj.allRingPoints)) > 0 ? 'up' : 'down'} />
+                            <StatisticsCard key={5} title='受理总数' value={obj && obj.allNum} suffix='单' des='环比' desval={`${obj && obj.allRingPoints}%`} type={Number((obj && obj.allRingPoints)) > 0 ? 'up' : 'down'} />
                           </Col>
                           <Col span={8}>
-                            <StatisticsCard title='一线处理量' value={obj && obj.selfHandleNum} suffix='单' des='环比' desval={`${obj && obj.selfHandleNumRingPoints}%`} type={Number((obj && obj.selfHandleRingPoints)) > 0 ? 'up' : 'down'} />
+                            <StatisticsCard key={6} title='一线处理量' value={obj && obj.selfHandleNum} suffix='单' des='环比' desval={`${obj && obj.selfHandleNumRingPoints}%`} type={Number((obj && obj.selfHandleRingPoints)) > 0 ? 'up' : 'down'} />
                           </Col>
                           <Col span={8}>
-                            <StatisticsCard title='一线解决率' value={obj && obj.selfHandlePoint} suffix='%' des='环比' desval={`${obj && obj.selfHandlePointRingPoints}%`} type={Number((obj && obj.selfHandleRingPoints)) > 0 ? 'up' : 'down'} />
+                            <StatisticsCard key={7} title='一线解决率' value={obj && obj.selfHandlePoint} suffix='%' des='环比' desval={`${obj && obj.selfHandlePointRingPoints}%`} type={Number((obj && obj.selfHandleRingPoints)) > 0 ? 'up' : 'down'} />
                           </Col>
                         </Col>
                       </Row>
@@ -387,18 +385,6 @@ function EventAnalysis(props) {
                   <Avatar icon="cluster" />
                   <b>事件登记人Top{topN}</b>
                   <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN(v)} /></div>
-                  {/* <div style={{ float: 'right' }}>
-                    <Select
-                      defaultValue={defaultNum1 || 5}
-                      onChange={(e) => selectOnchange(e, 'registrant')}
-                      style={{ width: '100%'}}
-                    >
-                      <Option value="5">5</Option>
-                      <Option value="10">10</Option>
-                      <Option value="15">15</Option>
-                      <Option value="20">20</Option>
-                    </Select>
-                  </div> */}
                 </div>
                 <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
                   {getRegisterUserTopdata && getRegisterUserTopdata.length === 0 && <Empty style={{ height: '300px' }} />}
@@ -439,23 +425,11 @@ function EventAnalysis(props) {
                           onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />
                       </Col>
-
-                      {/* <Col span={4} style={{ zIndex: 1000 }}>
-                        <Select
-                          defaultValue={defaultNum2 || 5}
-                          onChange={(e) => selectOnchange(e, 'handler')}
-                          style={{ width: '100%' }}
-                        >
-                          <Option value="5">5</Option>
-                          <Option value="10">10</Option>
-                          <Option value="15">15</Option>
-                          <Option value="20">20</Option>
-                        </Select>
-                      </Col> */}
                     </>
                   )}
                 </Card>
               </Col>
+
               <Col span={12}>
                 <div className={styles.statisticscard}>
                   <Avatar icon="cluster" />
@@ -475,18 +449,6 @@ function EventAnalysis(props) {
                           onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />
                       </Col>
-
-                      {/* <Col span={4} style={{ zIndex: 1000 }}>
-                        <Select
-                          defaultValue={defaultNum3 || 5}
-                          style={{ width: '100%' }}
-                          onChange={(e) => selectOnchange(e, 'registrationunit')}>
-                          <Option value="5">5</Option>
-                          <Option value="10">10</Option>
-                          <Option value="15">15</Option>
-                          <Option value="20">20</Option>
-                        </Select>
-                      </Col> */}
                     </>
                   )}
                 </Card>
@@ -513,19 +475,6 @@ function EventAnalysis(props) {
                           onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />
                       </Col>
-
-                      {/* <Col span={4} style={{ zIndex: 1000 }}>
-                        <Select
-                          onChange={(e) => selectOnchange(e, 'handlerunit')}
-                          defaultValue={defaultNum4 || 5}
-                          style={{ width: '100%' }}
-                        >
-                          <Option value="5">5</Option>
-                          <Option value="10">10</Option>
-                          <Option value="15">15</Option>
-                          <Option value="20">20</Option>
-                        </Select>
-                      </Col> */}
                     </>
                   )}
                 </Card>

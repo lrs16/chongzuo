@@ -313,7 +313,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
         </Col>
 
         <Col span={24}>
-          <Form.Item label="故障名称">
+          <Form.Item label="故障名称" {...forminladeLayout}>
             {getFieldDecorator('title', {
               rules: [
                 {

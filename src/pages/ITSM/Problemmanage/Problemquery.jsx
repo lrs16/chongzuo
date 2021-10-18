@@ -470,12 +470,6 @@ function Besolved(props) {
       width: 150,
     },
     {
-      title: '系统运维商确认说明',
-      dataIndex: 'confirmOneContent',
-      key: 'confirmOneContent',
-      width: 150,
-    },
-    {
       title: '系统运维商确认状态',
       dataIndex: 'confirmOneStatus',
       key: 'confirmOneStatus',
