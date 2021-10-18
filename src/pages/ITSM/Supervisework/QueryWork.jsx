@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
-import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Badge, Popover, Checkbox, Icon, message } from 'antd';
+import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Badge, Popover, Checkbox, Icon } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
@@ -731,20 +731,6 @@ function TodelayExamine(props) {
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
-                {/* <Col span={8}>
-                                    <Form.Item label="督办内容">
-                                        {getFieldDecorator('form9', {
-                                            initialValue: '',
-                                        })(<Input placeholder="请输入" allowClear />)}
-                                    </Form.Item>
-                                </Col> */}
-                {/* <Col span={8}>
-                                    <Form.Item label="督办人">
-                                        {getFieldDecorator('form10', {
-                                            initialValue: '',
-                                        })(<Input placeholder="请输入" allowClear />)}
-                                    </Form.Item>
-                                </Col> */}
                 <Col span={8}>
                   <Form.Item label="填报人">
                     {getFieldDecorator('addUser', {
@@ -813,7 +799,7 @@ function TodelayExamine(props) {
                 </Col>
               </>
             )}
-            {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
+            {expand ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
           </Form>
         </Row>
 

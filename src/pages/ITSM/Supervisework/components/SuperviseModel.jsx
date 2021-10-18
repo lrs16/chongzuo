@@ -73,6 +73,7 @@ function SuperviseModel(props) {
       return false;
     }
     setVisible(true);
+    return null;
   };
 
   return (

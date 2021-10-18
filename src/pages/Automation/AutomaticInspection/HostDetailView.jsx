@@ -129,7 +129,7 @@ function HostDetailView(props) {
     const download = () => { 
         if (Id) {
             downloadInfoExcel(Id).then(resp => {
-                const filename = `主机巡检明细下载_${Id}.xls`;
+                const filename = `主机巡检明细下载_${Id}.xlsx`;
                 const blob = new Blob([resp]);
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');

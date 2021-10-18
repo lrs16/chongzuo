@@ -109,7 +109,7 @@ export default {
       })
       const response = yield call(openFlow, payload);
       yield put({
-        type: 'openFlowList',
+        type: 'saveopenFlowList',
         payload: response
       })
     },
@@ -122,7 +122,7 @@ export default {
     *getMyWork({ payload }, { call, put }) {
       const response = yield call(getMyWorkList, payload);
       yield put({
-        type: 'getMyWorkList',
+        type: 'togetMyWorkList',
         payload: response
       })
     },
@@ -131,7 +131,7 @@ export default {
     *getWorkQueryLists({ payload }, { call, put }) {
       const response = yield call(getWorkQueryList, payload);
       yield put({
-        type: 'getworkqueryList',
+        type: 'togetworkqueryList',
         payload: response
       })
     },
@@ -183,7 +183,7 @@ export default {
     *openViews({ payload }, { call, put }) {
       const response = yield call(openView, payload);
       yield put({
-        type: 'openViewlist',
+        type: 'toopenViewlist',
         payload: response
       })
     },
@@ -192,7 +192,7 @@ export default {
     *togetSuperviseList({ payload }, { call, put }) {
       const response = yield call(getSuperviseList, payload);
       yield put({
-        type: 'getSuperviseLists',
+        type: 'togetSuperviseLists',
         payload: response
       })
     },
@@ -206,7 +206,7 @@ export default {
     *pasteData({ payload }, { call, put }) {
       const response = yield call(openFlow, payload);
       yield put({
-        type: 'openFlowList',
+        type: 'saveopenFlowList',
         payload: response
       })
     },
@@ -224,65 +224,59 @@ export default {
     *getWorkUserList({ payload }, { call, put }) {
       const response = yield call(getWorkUserList, payload);
       yield put({
-        type: 'superviseworkPersonArr',
+        type: 'getsuperviseworkPersonArr',
         payload: response,
       });
     },
   },
 
   reducers: {
-    getMyWorkList(state, action) {
+    clearcache(state) {
+      return {
+        ...state,
+        openFlowList: [],
+      }
+    },
+    togetMyWorkList(state, action) {
       return {
         ...state,
         getMyWorkList: action.payload.data
       }
     },
 
-    getworkqueryList(state, action) {
+    togetworkqueryList(state, action) {
       return {
         ...state,
         getworkqueryList: action.payload.data
       }
     },
 
-    openFlowList(state, action) {
+    saveopenFlowList(state, action) {
       return {
         ...state,
         openFlowList: action.payload
       }
     },
 
-    openViewlist(state, action) {
+    toopenViewlist(state, action) {
       return {
         ...state,
         openViewlist: action.payload.data
       }
     },
 
-    getSuperviseLists(state, action) {
+    togetSuperviseLists(state, action) {
       return {
         ...state,
         getSuperviseLists: action.payload.data
       }
     },
 
-    superviseworkPersonArr(state, action) {
+    getsuperviseworkPersonArr(state, action) {
       return {
         ...state,
         superviseworkPersonArr: action.payload.data
       }
     },
-
-    clearcache(state) {
-      return {
-        ...state,
-        // getMyWorkList: [],  // 工作列表
-        // getworkqueryList: [], // 工作督办查询列表
-        openFlowList: [],
-        // getSuperviseLists: [], // 获取督办列表
-        // superviseworkPersonArr: [] // 工作负责人列表
-      }
-    },
-
   }
 }

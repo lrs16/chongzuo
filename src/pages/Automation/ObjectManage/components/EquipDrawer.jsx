@@ -313,7 +313,7 @@ function EquipDrawer(props) {
         <Form.Item label="维保结束时间">
           {getFieldDecorator('maintainEndTime', {
             rules: [{ required }],
-            initialValue: maintainEndTime ? moment(maintainEndTime) : moment(new Date()),
+            initialValue: maintainEndTime ? moment(maintainEndTime) : '',
           })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
         </Form.Item>
         <Form.Item label="设备排序">
@@ -385,7 +385,7 @@ EquipDrawer.defaultProps = {
     enployU: '',
     uposition: '',
     hostAssets: '',
-    maintainEndTime: new Date(),
+    maintainEndTime: '',
   },
 };
 

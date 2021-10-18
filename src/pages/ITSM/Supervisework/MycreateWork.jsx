@@ -38,11 +38,14 @@ function MycreateWork(props) {
   const {
     location,
     loading,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
     getWorkQueryLists,
     dispatch,
     userinfo,
+    form: { 
+      getFieldDecorator,
+       resetFields, 
+       validateFields, 
+    },
   } = props;
 
   let formThead;
@@ -52,8 +55,7 @@ function MycreateWork(props) {
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [tabrecord, setTabRecord] = useState({});
+  // const [tabrecord, setTabRecord] = useState({});
   const [columns, setColumns] = useState([]);
 
   const onSelectChange = (RowKeys, Rows) => {
@@ -72,6 +74,7 @@ function MycreateWork(props) {
     });
   };
 
+  // 列表请求
   const getList = () => {
     dispatch({
       type: 'supervisemodel/getWorkQueryLists',
@@ -84,6 +87,7 @@ function MycreateWork(props) {
     });
   };
 
+  // 查询
   const searchdata = (values, page, pageSize) => {
     const newvalues = {
       ...values,
@@ -109,7 +113,7 @@ function MycreateWork(props) {
       executeTime1: values.executeTime?.length ? moment(values.executeTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
       executeTime2: values.executeTime?.length ? moment(values.executeTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
     };
-    setTabRecord({ ...newvalues });
+    // setTabRecord({ ...newvalues });
     dispatch({
       type: 'supervisemodel/getWorkQueryLists',
       payload: {
@@ -148,7 +152,8 @@ function MycreateWork(props) {
     })
   };
 
-  const handleCopy = () => { // 复制
+  // 复制
+  const handleCopy = () => { 
     const len = selectedRows.length;
     if (len === 1) {
       message.success('复制成功');
@@ -167,10 +172,11 @@ function MycreateWork(props) {
     return null;
   };
 
-  const handleDelete = () => { // 删除
+  // 删除
+  const handleDelete = () => { 
     const len = selectedRows.length;
     const deleteIds = selectedRows.map(res => {
-      return res.mainId
+      return res.mainId;
     })
     if (len === 0) {
       message.info('至少选择一条数据');
@@ -192,7 +198,8 @@ function MycreateWork(props) {
     })
   };
 
-  const handleFillin = () => { // 工作任务填报
+  // 工作任务填报
+  const handleFillin = () => { 
     router.push({
       pathname: '/ITSM/supervisework/mycreatework/taskworkfillin',
       query: {
@@ -427,7 +434,7 @@ function MycreateWork(props) {
   ];
 
   const defaultAllkey = columns.map(item => {
-    return item.title
+    return item.title;
   });
 
   const onShowSizeChange = (page, pageSize) => {
@@ -464,7 +471,8 @@ function MycreateWork(props) {
     onChange: (page) => changePage(page),
   };
 
-  const download = () => { // 导出
+  // 导出
+  const download = () => { 
     const exportColumns = columns.map(item => {
       return {
         column: item.dataIndex,
@@ -514,7 +522,8 @@ function MycreateWork(props) {
     })
   };
 
-  const superSubmit = values => { // 督办提交
+  // 督办提交
+  const superSubmit = values => { 
     const mainids = selectedRows.map(obj => {
       return obj.mainId;
     });
@@ -537,8 +546,8 @@ function MycreateWork(props) {
     setSelectedRows([]);
   };
 
-  const creataColumns = () => { // 创建列表
-    // columns
+  // 创建列表
+  const creataColumns = () => { 
     initialColumns.length = 0;
     formThead.map((val, key) => {
       const obj = {
@@ -577,7 +586,6 @@ function MycreateWork(props) {
           )
         }
       }
-
       initialColumns.push(obj);
       setColumns(initialColumns);
       return null;
@@ -929,20 +937,6 @@ function MycreateWork(props) {
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
-                {/* <Col span={8}>
-                                    <Form.Item label="督办内容">
-                                        {getFieldDecorator('form9', {
-                                            initialValue: '',
-                                        })(<Input placeholder="请输入" allowClear />)}
-                                    </Form.Item>
-                                </Col> */}
-                {/* <Col span={8}>
-                                    <Form.Item label="督办人">
-                                        {getFieldDecorator('form10', {
-                                            initialValue: '',
-                                        })(<Input placeholder="请输入" allowClear />)}
-                                    </Form.Item>
-                                </Col> */}
                 <Col span={8}>
                   <Form.Item label="填报人">
                     {getFieldDecorator('addUser', {
@@ -1011,10 +1005,9 @@ function MycreateWork(props) {
                 </Col>
               </>
             )}
-            {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
+            {expand ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
           </Form>
         </Row>
-
         <div>
           <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleFillin()}>填报</Button>
           <SuperviseModel
