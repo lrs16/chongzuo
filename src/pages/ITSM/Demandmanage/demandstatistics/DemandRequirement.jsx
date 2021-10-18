@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'dva';
 import {
   Card,
@@ -7,13 +7,10 @@ import {
   Form,
   DatePicker,
   Button,
-  Table,
 } from 'antd';
 import Link from 'umi/link';
 import MergeTable from '@/components/MergeTable';
-import moment from 'moment';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-
 
 const { RangePicker } = DatePicker;
 let searchSign = '';
@@ -50,23 +47,28 @@ const columns = [
     title: '工单数',
     dataIndex: 'number',
     key: 'number',
-    render: (text, record) => (
-      <Link
-        to={{
-          pathname: '/ITSM/demandmanage/query',
-          query: {
-            module: record.fullName,
-            statisticalType: 'demandRequirement',
-            startTime: searchSign ? statTimeBegin : '',
-            endTime: searchSign ? statTimeEnd : '',
-            pathpush: true
-          },
-          state: { cache: false, }
-        }}
-      >
-        {text}
-      </Link>
-    )
+    render: (text, record) => {
+      if (record.firstLevel === '合计') {
+        return <span>{text}</span>
+      }
+      return (
+        <Link
+          to={{
+            pathname: '/ITSM/demandmanage/query',
+            query: {
+              module: record.fullName,
+              statisticalType: 'demandRequirement',
+              startTime: searchSign ? statTimeBegin : '',
+              endTime: searchSign ? statTimeEnd : '',
+              pathpush: true
+            },
+            state: { cache: false, }
+          }}
+        >
+          {text}
+        </Link>
+      )
+    }
   },
 ];
 
@@ -77,7 +79,6 @@ function DemandRequirement(props) {
     form: { getFieldDecorator, resetFields },
     requirementArr,
     dispatch,
-    loading,
     location
   } = props;
 
@@ -122,7 +123,6 @@ function DemandRequirement(props) {
       window.URL.revokeObjectURL(url);
     })
   }
-
 
   useEffect(() => {
     searchSign = '';
@@ -170,19 +170,16 @@ function DemandRequirement(props) {
                   onClick={() => handleListdata('search')}
                 >
                   查询
-               </Button>
-
+                </Button>
 
                 <Button
                   style={{ marginLeft: 8 }}
                   onClick={handleReset}
                 >
                   重置
-              </Button>
+                </Button>
               </Col>
             </>
-
-
           </Form>
         </Row>
 
@@ -196,19 +193,11 @@ function DemandRequirement(props) {
           </Button>
         </div>
 
-        {/* <Table
-          columns={columns}
-          dataSource={requirementArr}
-          rowKey={record => record.statName}
-        /> */}
-
-        {/* {loading === false && ( */}
         <MergeTable
           column={columns}
           tableSource={requirementArr}
           mergecell={mergecell}
         />
-        {/* )} */}
       </Card>
     </PageHeaderWrapper>
   )

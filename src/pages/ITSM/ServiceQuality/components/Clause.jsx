@@ -200,7 +200,6 @@ function Clause(props) {
         >
           <Button onClick={handleCancel} style={{ marginRight: 8 }}>取消</Button>
           <Button onClick={handleOk} type='primary'>确定</Button>
-
         </div>
       </Drawer>
     </>

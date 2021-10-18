@@ -520,6 +520,7 @@ function OperationmyweeklyReport(props) {
                 columns={columns}
                 dataSource={queryOrderlist.rows}
                 pagination={pagination}
+                rowKey={record => record.id}
                 rowSelection={rowSelection}
               />
             )}

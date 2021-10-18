@@ -52,8 +52,8 @@ function CreditCardRegister(props) {
   //  获取合同名称
 
   const timeOK = (data) => {
-    const startTime = moment(data[0]).format('YYYY-MM-DD')
-    const endTime = moment(data[1]).format('YYYY-MM-DD');
+    const startTime = moment(data[0]).format('YYYY-MM-DD HH:mm:ss')
+    const endTime = moment(data[1]).format('YYYY-MM-DD HH:mm:ss');
     setRangerTime({
       start: startTime,
       end: endTime

@@ -76,10 +76,7 @@ function AddScoringRulesmaintenance(props) {
     })
   };
 
-  console.log(scoreDetail, 'scoreDetail')
-
   useEffect(() => {
-    console.log(1)
     dispatch({
       type: 'qualityassessment/clearclauseList'
     })
@@ -92,7 +89,6 @@ function AddScoringRulesmaintenance(props) {
       type: 'performanceappraisal/clearTree'
     })
     if (location.state && location.state.reset && id) {
-      console.log('lplp')
       getlist();
       getalldata()
     }
@@ -114,7 +110,6 @@ function AddScoringRulesmaintenance(props) {
   }
 
   useEffect(() => {
-    console.log(2)
     dispatch({
       type: 'qualityassessment/clearclauseList'
     }
@@ -126,7 +121,6 @@ function AddScoringRulesmaintenance(props) {
   }, [])
 
   useEffect(() => {
-    console.log(3)
     if (loading === false && id && treeData && treeData[0] && treeData[0].children) {
       getlist(treeData[0].children[0].id);
     }
@@ -329,7 +323,6 @@ function AddScoringRulesmaintenance(props) {
   ];
 
   useEffect(() => {
-    console.log('last')
     dispatch({
       type: 'qualityassessment/clearclauseList'
     })
@@ -495,7 +488,7 @@ function AddScoringRulesmaintenance(props) {
                   <Form.Item label='一级指标'>
                     {
                       getFieldDecorator('target1Name', {
-                        initialValue: treeForm.target1
+                        initialValue: treeForm && treeForm.target1
                       })
                         (
                           <Input disabled={true} />
@@ -508,7 +501,7 @@ function AddScoringRulesmaintenance(props) {
                   <Form.Item label='一级指标满分'>
                     {
                       getFieldDecorator('value1', {
-                        initialValue: treeForm.value1
+                        initialValue: treeForm && treeForm.value1
                       })
                         (<Input disabled={true} />)
                     }
@@ -519,7 +512,7 @@ function AddScoringRulesmaintenance(props) {
                   <Form.Item label='二级指标'>
                     {
                       getFieldDecorator('target2Name', {
-                        initialValue: treeForm.target2
+                        initialValue: treeForm && treeForm.target2
                       })
                         (
                           <Input disabled={true} />
@@ -532,7 +525,7 @@ function AddScoringRulesmaintenance(props) {
                   <Form.Item label='二级指标满分'>
                     {
                       getFieldDecorator('value2', {
-                        initialValue: treeForm.value2
+                        initialValue: treeForm && treeForm.value2
                       })
                         (<Input disabled={true} />)
                     }
@@ -591,7 +584,6 @@ function AddScoringRulesmaintenance(props) {
                   dataSource={clauseList.records}
                   columns={columns}
                   rowKey={record => record.id}
-                  // pagination={pagination}
                   scroll={{ x: 1300 }}
                 />
               </Col>
@@ -602,17 +594,6 @@ function AddScoringRulesmaintenance(props) {
       </Card>
     </PageHeaderWrapper>
   )
-}
-
-AddScoringRulesmaintenance.defaultProps = {
-  treeForm: {
-    target1: '',
-    target2: '',
-    value1: '',
-    value2: '',
-    scoreName: '',
-    assessType: ''
-  }
 }
 
 

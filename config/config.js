@@ -511,7 +511,7 @@ export default {
                           routes: [
                             {
                               path: '/ITSM/demandmanage/demandstatistics/demandrequirement',
-                              name: '功能需求统计',
+                              name: '需求功能统计',
                               icon: 'cloud-server',
                               component: './ITSM/Demandmanage/demandstatistics/DemandRequirement',
                             },

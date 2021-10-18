@@ -235,14 +235,15 @@ function WeeklySearch(props) {
 
 
   const exportDownload = () => {
-    validateFields((err, values) => {
+    if (selectedrows.length !== 1) {
+      message.info('选择一条数据导出哦')
+    } else {
+      const mainId = selectedrows[0].id;
       dispatch({
-        type: 'processmodel/downloadMyOperationExcel',
-        payload: {
-          ...values,
-        }
+        type: 'softreport/exportWord',
+        payload: { mainId }
       }).then(res => {
-        const filename = '下载.xls';
+        const filename = `下载.doc`;
         const blob = new Blob([res]);
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -251,11 +252,11 @@ function WeeklySearch(props) {
         a.click();
         window.URL.revokeObjectURL(url);
       })
-    })
+    }
   }
 
   const rowSelection = {
-    onChange: (selectedRows) => {
+    onChange: (selected,selectedRows) => {
       setSelectedrows([...selectedRows])
     }
   }

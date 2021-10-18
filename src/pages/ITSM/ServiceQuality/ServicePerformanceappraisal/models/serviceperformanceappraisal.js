@@ -297,8 +297,6 @@ export default {
 
   },
 
-
-
   reducers: {
     maintenanceData(state, action) {
       return {
@@ -378,7 +376,6 @@ export default {
     },
 
     clearTreearr(state, action) {
-      console.log(122)
       return {
         ...state,
         treeArr: [],

@@ -188,12 +188,6 @@ function Besolved(props) {
       width: 150,
     },
     {
-      title: '问题内容',
-      dataIndex: 'content',
-      key: 'content',
-      width: 150,
-    },
-    {
       title: '重要程度',
       dataIndex: 'importance',
       key: 'importance',
@@ -209,12 +203,6 @@ function Besolved(props) {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      width: 150,
-    },
-    {
-      title: '建单时间',
-      dataIndex: 'addTime',
-      key: 'addTime',
       width: 150,
     },
     {
@@ -416,18 +404,6 @@ function Besolved(props) {
       width: 150,
     },
     {
-      title: '处理结果',
-      dataIndex: 'handleResult',
-      key: 'handleResult',
-      width: 150,
-    },
-    {
-      title: '故障详细描述',
-      dataIndex: 'handleContent',
-      key: 'handleContent',
-      width: 150,
-    },
-    {
       title: '处理人单位',
       dataIndex: 'handleUnit',
       key: 'handleUnit',
@@ -437,18 +413,6 @@ function Besolved(props) {
       title: '处理人部门',
       dataIndex: 'handleDept',
       key: 'handleDept',
-      width: 150,
-    },
-    {
-      title: '处理人',
-      dataIndex: 'handler',
-      key: 'handler',
-      width: 150,
-    },
-    {
-      title: '处理时间',
-      dataIndex: 'handleTime',
-      key: 'handleTime',
       width: 150,
     },
     {
@@ -776,7 +740,7 @@ function Besolved(props) {
             columns: JSON.stringify(exportColumns),
             ids: selectedKeys.toString(),
             ...values,
-            type: values.type ? (values.type)[1].toString() : '',
+            type: (values.type && values.type .length) ? (values.type)[1] : '',
             createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
             createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
             createTime: '',
@@ -894,7 +858,6 @@ function Besolved(props) {
   // 获取数据
   useEffect(() => {
     const values = getFieldsValue();
-    console.log('values: ', values);
     searchdata(values, paginations.current, paginations.pageSize)
     const controlTable = [
       {
@@ -1014,7 +977,8 @@ function Besolved(props) {
             <a onClick={() => gotoDetail(text, records)}>{text}</a>
           )
         }
-        obj.fixed = 'left'
+        obj.fixed = 'left';
+        obj.width = 200;
       }
       initialColumns.push(obj);
       setColumns(initialColumns);

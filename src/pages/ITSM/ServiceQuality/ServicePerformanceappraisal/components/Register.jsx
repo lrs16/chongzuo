@@ -323,6 +323,10 @@ const Register = React.forwardRef((props, ref) => {
     getPerformanceleader();
   }, []);
 
+  const onChange = (date, dateString) => {
+    setFieldsValue({ assessTime: moment(dateString) })
+  }
+
   const assessmentObject = getTypebyTitle('考核对象');
 
   return (
@@ -352,11 +356,17 @@ const Register = React.forwardRef((props, ref) => {
                 },
               ],
               initialValue: moment(register.assessTime || new Date()),
-            })(<DatePicker
-              disabled={noEdit}
-              showTime
-              format="YYYY-MM-DD HH:mm:ss"
-            />)}
+            })(
+              <div>
+                <DatePicker
+                  disabled={noEdit}
+                  defaultValue={moment(register.assessTime || new Date())}
+                  showTime
+                  format="YYYY-MM-DD HH:mm"
+                  onChange={onChange}
+                />
+              </div>
+            )}
           </Form.Item>
         </Col>
 
@@ -671,7 +681,7 @@ const Register = React.forwardRef((props, ref) => {
                       <Option key={obj.detailed} value={obj.id}>
                         <div className={styles.disableuser}>
                           <span>{obj.orderNo}</span>
-                          <spa>{obj.detailed}</spa>
+                          <span>{obj.detailed}</span>
                           <span>{obj.calc}</span>
                           <span>{obj.scoreValue}</span>
                           <span>{obj.sources}</span>
@@ -777,9 +787,9 @@ const Register = React.forwardRef((props, ref) => {
             {getFieldDecorator('applyTime', {
               initialValue: moment(register.applyTime || new Date()),
             })(<DatePicker
-              disabled={noEdit}
+              disabled={true}
               showTime
-              format="YYYY-MM-DD HH:mm:ss"
+              format="YYYY-MM-DD HH:mm"
             />)}
           </Form.Item>
         </Col>

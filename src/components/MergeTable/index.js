@@ -65,7 +65,7 @@ function MergeTable(props) {
     return (
   
      <>
-       {tableSource && tableSource.length && mergecell  && (
+       {tableSource && tableSource.length > 0 && mergecell  && (
           <Table
             bordered
             columns={column}

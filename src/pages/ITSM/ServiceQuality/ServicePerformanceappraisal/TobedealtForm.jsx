@@ -684,10 +684,10 @@ function TobedealtForm(props) {
                         description={
                           <div className={styles.stepDescription}>
                             处理人：{assignee}
-                            <div>开始时间：{moment(startTime).format('YYYY-MM-DD HH:mm:ss')}</div>
+                            <div>开始时间：{moment(startTime).format('YYYY-MM-DD HH:mm')}</div>
                             <div>
                               结束时间：
-                              {endTime ? moment(endTime).format('YYYY-MM-DD HH:mm:ss') : ''}
+                              {endTime ? moment(endTime).format('YYYY-MM-DD HH:mm') : ''}
                             </div>
                           </div>
                         }

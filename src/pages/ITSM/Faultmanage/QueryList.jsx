@@ -368,12 +368,6 @@ function QueryList(props) {
       width: 120,
     },
     {
-      title: '建单时间',
-      dataIndex: 'addTime',
-      key: 'addTime',
-      width: 200,
-    },
-    {
       title: '故障责任方',
       dataIndex: 'blame',
       key: 'blame',
@@ -607,24 +601,24 @@ function QueryList(props) {
       key: 'handleId',
       width: 150,
     },
-    {
-      title: '处理结果',
-      dataIndex: 'handleResult',
-      key: 'handleResult',
-      width: 150,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 150,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
-    },
+    // {
+    //   title: '处理结果',
+    //   dataIndex: 'handleResult',
+    //   key: 'handleResult',
+    //   width: 150,
+    //   onCell: () => {
+    //     return {
+    //       style: {
+    //         maxWidth: 150,
+    //         overflow: 'hidden',
+    //         whiteSpace: 'nowrap',
+    //         textOverflow: 'ellipsis',
+    //         cursor: 'pointer'
+    //       }
+    //     }
+    //   },
+    //   render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+    // },
     {
       title: '故障分析及原因',
       dataIndex: 'handleReason',
@@ -757,12 +751,12 @@ function QueryList(props) {
       },
       render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
-    {
-      title: '确认结果',
-      dataIndex: 'confirmResult',
-      key: 'confirmResult',
-      width: 150,
-    },
+    // {
+    //   title: '确认结果',
+    //   dataIndex: 'confirmResult',
+    //   key: 'confirmResult',
+    //   width: 150,
+    // },
     {
       title: '确认人单位',
       dataIndex: 'confirmUnit',
@@ -823,24 +817,24 @@ function QueryList(props) {
       key: 'confirmFlowNodeInstanceIds',
       width: 200,
     },
-    {
-      title: '故障责任方',
-      dataIndex: 'confirmBlame',
-      key: 'confirmBlame',
-      width: 120,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 120,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
-    },
+    // {
+    //   title: '故障责任方',
+    //   dataIndex: 'confirmBlame',
+    //   key: 'confirmBlame',
+    //   width: 120,
+    //   onCell: () => {
+    //     return {
+    //       style: {
+    //         maxWidth: 120,
+    //         overflow: 'hidden',
+    //         whiteSpace: 'nowrap',
+    //         textOverflow: 'ellipsis',
+    //         cursor: 'pointer'
+    //       }
+    //     }
+    //   },
+    //   render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+    // },
     {
       title: '自动化科业务负责人审核ID',
       dataIndex: 'checkTwoId',
@@ -991,24 +985,24 @@ function QueryList(props) {
       },
       render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
-    {
-      title: '要求上传时间',
-      dataIndex: 'finishRequiredTime',
-      key: 'finishRequiredTime',
-      width: 150,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 150,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
-    },
+    // {
+    //   title: '要求上传时间',
+    //   dataIndex: 'finishRequiredTime',
+    //   key: 'finishRequiredTime',
+    //   width: 150,
+    //   onCell: () => {
+    //     return {
+    //       style: {
+    //         maxWidth: 150,
+    //         overflow: 'hidden',
+    //         whiteSpace: 'nowrap',
+    //         textOverflow: 'ellipsis',
+    //         cursor: 'pointer'
+    //       }
+    //     }
+    //   },
+    //   render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+    // },
     {
       title: '实际上传时间',
       dataIndex: 'finishPracticeTime',
@@ -1062,12 +1056,6 @@ function QueryList(props) {
         }
       },
       render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
-    },
-    {
-      title: '总结人',
-      dataIndex: 'finishUser',
-      key: 'finishUser',
-      width: 120,
     },
     {
       title: '总结时间',
@@ -1136,12 +1124,6 @@ function QueryList(props) {
       render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
     {
-      title: '流程代办创建时间',
-      dataIndex: 'createTime',
-      key: 'createTime',
-      width: 150,
-    },
-    {
       title: '操作',
       dataIndex: 'action',
       key: 'action',
@@ -1193,16 +1175,15 @@ function QueryList(props) {
         // registerTimeEnd: values.registerTime?.length ? moment(values.registerTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
         addTimeBegin: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
         addTimeEnd: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        addTime:  values.addTime?.length ? [moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+        addTime: values.addTime?.length ? [moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
         registerTime: '',
         handleStartTimeBegin: values.handleTime?.length ? moment(values.handleTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
         handleStartTimeEnd: values.handleTime?.length ? moment(values.handleTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
         handleTime: values.handleTime?.length ? [moment(values.handleTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.handleTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
-        // registerOccurTimeBegin: values.registerOccurTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
         type: values.type ? (values.type).slice(-1)[0] : '',
         registerOccurTimeBegin: values.registerOccurTime?.length ? moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
         registerOccurTimeEnd: values.registerOccurTime?.length ? moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        registerOccurTime: values.createTime?.length ? [moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+        registerOccurTime: values.registerOccurTime?.length ? [moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
         pageNum: page,
         pageSize: paginations.pageSize,
       },
@@ -1212,17 +1193,16 @@ function QueryList(props) {
       sendTime: '',
       addTimeBegin: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
       addTimeEnd: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-      addTime:  values.addTime?.length ? [moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+      addTime: values.addTime?.length ? [moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
       handleStartTimeBegin: values.handleStartTimeBegin ? values.handleStartTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
       handleStartTimeEnd: values.handleStartTimeEnd ? values.handleStartTimeEnd.format('YYYY-MM-DD HH:mm:ss') : '',
       registerOccurTimeBegin: values.registerOccurTime?.length ? moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
       registerOccurTimeEnd: values.registerOccurTime?.length ? moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-      registerOccurTime: values.createTime?.length ? [moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+      registerOccurTime: values.registerOccurTime?.length ? [moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
       registerTime: values.registerTime?.length ? [moment(values.registerTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.registerTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
       handleTime: values.handleTime?.length ? [moment(values.handleTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.handleTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
     })
   };
-
 
   const handleSearch = search => {
     setPageinations({
@@ -1337,7 +1317,6 @@ function QueryList(props) {
   const workStatues = getTypebyTitle('工单状态');
 
   const faultTypes = type === undefined ? [] : [type.substr(0, 3), type];
-  console.log('faultTypes: ', faultTypes);
   // 设置初始值
   const record = {
     checkUnit: '',
@@ -1363,6 +1342,7 @@ function QueryList(props) {
     addTime: addTimeBegin ? [moment(addTimeBegin), moment(addTimeEnd)] : '',
     registerUnit: '',
     registerUser: '',
+    registerOccurTime:'',
     source: '',
     status,
     title: '',
@@ -1371,7 +1351,6 @@ function QueryList(props) {
   };
 
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
-  console.log('cacheinfo: ', cacheinfo);
 
   const handleReset = () => {
     router.push({
@@ -1388,16 +1367,16 @@ function QueryList(props) {
   // 设置时间
   useEffect(() => {
     if (location && location.state && location.state.cacheinfo) {
-      console.log('location.state.cacheinfo: ', location.state.cacheinfo);
-      const { addTime,handleTime } = location.state.cacheinfo;
+      const { addTime, handleTime,registerOccurTime } = location.state.cacheinfo;
       const { checkTime } = location.state.cacheinfo;
       setFieldsValue({
         addTime: addTime?.length ? [moment(addTime[0]), moment(addTime[1])] : '',
         handleTime: handleTime?.length ? [moment(handleTime[0]), moment(handleTime[1])] : '',
+        registerOccurTime: registerOccurTime?.length ? [moment(registerOccurTime[0]), moment(registerOccurTime[1])] : ''
       })
     } else {
       setFieldsValue({
-        addTime: addTimeBegin?  [moment(addTimeBegin), moment(addTimeEnd)] : '',
+        addTime: addTimeBegin ? [moment(addTimeBegin), moment(addTimeEnd)] : '',
       })
     }
   }, [location.state]);
@@ -1423,15 +1402,14 @@ function QueryList(props) {
         handleReset()
       };
       if (location.state.cacheinfo) {
-        console.log('location.state.cacheinfo: ', location.state.cacheinfo);
         const { current, pageSize } = location.state.cacheinfo.paginations;
         // const { createTime } = location.state.cacheinfo;
-        const { registerTime, handleTime,createTime,addTime } = location.state.cacheinfo;
+        const { registerTime, handleTime, createTime, addTime, registerOccurTime } = location.state.cacheinfo;
         setExpand(location.state.cacheinfo.expand);
         setPageinations({ ...paginations, current, pageSize });
         setFieldsValue({
           // addTime: (addTime && addTime.length) ? [moment(addTime[0]), moment(addTime[1])] : '',
-          // registerTime: registerTime?.length ? [moment(registerTime[0]), moment(registerTime[1])] : '',
+          // registerOccurTime: registerOccurTime?.length ? [moment(registerOccurTime[0], registerOccurTime[1])] : '',
           handleTime: handleTime?.length ? [moment(handleTime[0]), moment(handleTime[1])] : '',
         })
       };
@@ -1660,7 +1638,8 @@ function QueryList(props) {
             <a onClick={() => gotoDetail(text, records)}>{text}</a>
           )
         }
-        obj.fixed = 'left'
+        obj.fixed = 'left';
+        obj.width = 200;
       }
       if (val.title === '操作') {
         obj.render = (text, records) => {

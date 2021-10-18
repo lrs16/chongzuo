@@ -188,7 +188,10 @@ const RegisterChild = React.forwardRef((props, ref) => {
               ],
               initialValue: main.source || '',
             })(
-              <Select placeholder="请选择">
+              <Select
+                placeholder="请选择"
+                getPopupContainer={e => e.parentNode}
+              >
                 {faultSource.map(obj => [
                   <Option key={obj.key} value={obj.title}>
                     {obj.title}
@@ -210,7 +213,10 @@ const RegisterChild = React.forwardRef((props, ref) => {
               ],
               initialValue: tododetailslist ? tododetailslist.register.registerModel : '',
             })(
-              <Select placeholder="请选择">
+              <Select
+                placeholder="请选择"
+                getPopupContainer={e => e.parentNode}
+              >
                 {sysmodular.map(obj => [
                   <Option key={obj.key} value={obj.title}>
                     {obj.title}
@@ -267,7 +273,10 @@ const RegisterChild = React.forwardRef((props, ref) => {
               ],
               initialValue: tododetailslist ? tododetailslist.register.registerLevel : '',
             })(
-              <Select placeholder="请选择">
+              <Select
+                placeholder="请选择"
+                getPopupContainer={e => e.parentNode}
+              >
                 {priority.map(obj => [
                   <Option key={obj.key} value={obj.title}>
                     {obj.title}
@@ -289,7 +298,10 @@ const RegisterChild = React.forwardRef((props, ref) => {
               ],
               initialValue: tododetailslist ? tododetailslist.register.registerScope : '',
             })(
-              <Select placeholder="请选择">
+              <Select
+                getPopupContainer={e => e.parentNode}
+                placeholder="请选择"
+              >
                 {effect.map(obj => [
                   <Option key={obj.key} value={obj.title}>
                     {obj.title}
@@ -300,7 +312,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-        <Col span={8}>
+        <Col span={24}>
           <Form.Item label="故障名称">
             {getFieldDecorator('title', {
               rules: [
@@ -312,6 +324,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
               initialValue: main.title || '',
             })(
               <AutoComplete
+                getPopupContainer={e => e.parentNode}
                 dataSource={titleautodata}
                 onSearch={value => handleSearch(value, 'title')}
               >
@@ -333,6 +346,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
               initialValue: main.content || '',
             })(
               <AutoComplete
+                getPopupContainer={e => e.parentNode}
                 dataSource={desautodata}
                 filterOption={(inputValue, option) =>
                   option.props.children.includes(inputValue)

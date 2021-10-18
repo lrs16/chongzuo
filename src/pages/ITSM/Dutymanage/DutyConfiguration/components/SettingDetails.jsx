@@ -150,7 +150,7 @@ function SettingDetails(props) {
       case 'director':
         setFieldsValue({
           staffName, // 用户名称
-          teststaffName:staffName,
+          teststaffName: staffName,
           staffId: id, // 用户id
           deptName: deptNameExt,
           staffPhone: phone,
@@ -212,7 +212,6 @@ function SettingDetails(props) {
 
   const handleOk = () => {
     validateFields((err, values) => {
-      console.log('values: ', values);
       const newValue = {
         id,
         groupId: sessionStorage.getItem('groupId'),
@@ -420,23 +419,13 @@ function SettingDetails(props) {
                 <Col span={11}>
                   {getFieldDecorator('beginTime',
                     {
-                      rules: [
-                        {
-                          required,
-                          message: '请选择时间',
-                        },
-                      ],
                       initialValue: (settingDetails.shift && settingDetails.shift.beginTime) ? moment(settingDetails.shift.beginTime, format) : ''
                     },
                   )(
                     <TimePicker
                       disabled
-                      // defaultValue={moment('00:00', 'HH:mm')}
                       format={format}
                       allowClear
-                      // disabledHours={startdisabledHours}
-                      // format="HH:mm"
-                      // onChange={startOnchange}
                       style={{ width: '100%' }}
                     />
                   )}
@@ -446,20 +435,12 @@ function SettingDetails(props) {
                   {getFieldDecorator(
                     'endTime',
                     {
-                      rules: [
-                        {
-                          required,
-                          message: '请选择时间',
-                        },
-                      ],
                       initialValue: (settingDetails.shift && settingDetails.shift.endTime) ? moment(settingDetails.shift.endTime, format) : ''
                     },
                   )(
                     <TimePicker
                       disabled
-                      // disabledHours={disabledHours}
                       format="HH:mm"
-                      // onChange={endOnchange}
                       style={{ minWidth: 120, width: '100%' }}
                     />
                   )}
@@ -477,17 +458,6 @@ function SettingDetails(props) {
             }
 
           </Form.Item>
-
-
-          {/* <Form.Item label='创建时间'>
-            {
-              getFieldDecorator('ctime', {
-                initialValue: settingDetails.ctime ? moment(settingDetails.ctime) : moment(new Date()),
-              }
-              )(<DatePicker disabled />)
-            }
-
-          </Form.Item> */}
 
         </Form>
 
@@ -529,8 +499,6 @@ function SettingDetails(props) {
                   </Button>
                 )
               }
-
-
             </div>
           )
         }
@@ -555,8 +523,6 @@ function SettingDetails(props) {
             </div>
           )
         }
-
-
       </Drawer>
     </>
   )

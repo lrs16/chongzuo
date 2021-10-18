@@ -24,7 +24,6 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
     editSign,
     noEdit,
   } = props;
-  console.log(assessmentConfirmation.scoreId, 'assessmentConfirmation.scoreId')
   const [selectdata, setSelectData] = useState('');
 
   const required = true;
@@ -49,7 +48,6 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
       key,
       props: { value },
     } = option;
-    console.log(key, 'key')
     switch (params) {
       case 'assessType':
         setFieldsValue({
@@ -90,12 +88,15 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
           assessValue: children[3].props.children,
         });
       }
-
         break;
       default:
         break;
     }
   };
+
+  const onChange = (date, dateString) => {
+    setFieldsValue({ confirmTime: moment(dateString) })
+  }
 
   const appraisalStatus = getTypebyTitle('考核状态');
 
@@ -344,7 +345,22 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
             <Form.Item label="确认时间">
               {getFieldDecorator('confirmTime', {
                 initialValue: moment(assessmentConfirmation.confirmationtime || new Date()),
-              })(<DatePicker disabled={editSign} format="YYYY-MM-DD HH-MM" />)}
+              })(
+                // <div>
+                //   <DatePicker
+                //     disabled={true}
+                //     defaultValue={moment(assessmentConfirmation.confirmationtime || new Date())}
+                //     format='YYYY-MM-DD HH:mm'
+                //     onChange={onChange}
+                //   />
+                // </div>
+                <DatePicker
+                  disabled={true}
+                  // defaultValue={moment(assessmentConfirmation.confirmationtime || new Date())}
+                  format='YYYY-MM-DD HH:mm'
+                  onChange={onChange}
+                />
+              )}
             </Form.Item>
           </Col>
         </Form>

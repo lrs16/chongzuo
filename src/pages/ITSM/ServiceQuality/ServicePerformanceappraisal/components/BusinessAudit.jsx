@@ -6,7 +6,7 @@ const { TextArea } = Input;
 
 const BusinessAudit = React.forwardRef((props, ref) => {
   const {
-    form: { getFieldDecorator },
+    form: { getFieldDecorator, setFieldsValue },
     formItemLayout,
     forminladeLayout,
     repeatAudit,
@@ -37,6 +37,11 @@ const BusinessAudit = React.forwardRef((props, ref) => {
     selectPersonstate(e.target.value);
   };
 
+  const onChange = (date, dateString) => {
+    setFieldsValue({ verifyTime: moment(dateString) })
+  }
+
+
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>
       <Form {...formItemLayout}>
@@ -53,7 +58,6 @@ const BusinessAudit = React.forwardRef((props, ref) => {
             })(
               <Radio.Group disabled={noEdit} onChange={handleChange}>
                 <Radio value="1">通过</Radio>
-
                 <Radio value="0">不通过</Radio>
               </Radio.Group>,
             )}
@@ -128,12 +132,29 @@ const BusinessAudit = React.forwardRef((props, ref) => {
               initialValue:
                 businessAudit.checktime || businessAudit.reviewTime || businessAudit.verifyTime
                   ? moment(
-                      businessAudit.checktime ||
-                        businessAudit.reviewTime ||
-                        businessAudit.verifyTime,
-                    )
+                    businessAudit.checktime ||
+                    businessAudit.reviewTime ||
+                    businessAudit.verifyTime,
+                  )
                   : moment(new Date()),
-            })(<DatePicker disabled={noEdit} showTime format="YYYY-MM-DD HH:mm:ss" />)}
+            })(
+              // <div>
+              //   <DatePicker
+              //     disabled={true}
+              //     defaultValue={moment(businessAudit.checktime || businessAudit.reviewTime || businessAudit.verifyTime || new Date())}
+              //     showTime
+              //     format="YYYY-MM-DD HH:mm"
+              //     onChange={onChange}
+              //   />
+              // </div>
+              <DatePicker
+                disabled={true}
+                // defaultValue={moment(businessAudit.checktime || businessAudit.reviewTime || businessAudit.verifyTime || new Date())}
+                showTime
+                format="YYYY-MM-DD HH:mm"
+                onChange={onChange}
+              />
+            )}
           </Form.Item>
         </Col>
       </Form>

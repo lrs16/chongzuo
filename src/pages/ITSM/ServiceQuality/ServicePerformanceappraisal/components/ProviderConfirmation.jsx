@@ -16,7 +16,7 @@ const { TextArea } = Input;
 
 const ProviderConfirmation = React.forwardRef((props, ref) => {
   const {
-    form: { getFieldDecorator },
+    form: { getFieldDecorator, setFieldsValue },
     formItemLayout,
     forminladeLayout,
     userinfo,
@@ -54,6 +54,10 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
     selectPersonstate(e.target.value)
   }
 
+  const onChange = (date, dateString) => {
+    setFieldsValue({ confirmTime: moment(dateString) })
+  }
+
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>
       <Form {...formItemLayout}>
@@ -81,7 +85,6 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
                   </Radio.Group>
                 )
             }
-
           </Form.Item>
         </Col>
 
@@ -105,7 +108,6 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
                       placeholder='请输入申诉内容'
                     />)
                 }
-
               </Form.Item>
             </Col>
           )
@@ -148,7 +150,6 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
                       </div>
                     )
                 }
-
               </Form.Item>
             </Col>
           )
@@ -174,11 +175,12 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
                 ],
                 initialValue: providerConfirmation.confirmerName || userinfo.userName
               })
-                (<Input disabled='true' />)
+                (<Input disabled={true} />)
             }
 
           </Form.Item>
         </Col>
+
         <Col span={8}>
           <Form.Item label='确认时间'>
             {
@@ -191,12 +193,25 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
                 ],
                 initialValue: providerConfirmation.confirmTime ? moment(providerConfirmation.confirmTime) : moment(new Date())
               })
-                (<DatePicker
-                  showTime
-                  format='YYYY-MM-DD HH:mm:ss'
-                  disabled='true' />)
+                (
+                  // <div>
+                  //   <DatePicker
+                  //     showTime
+                  //     defaultValue={moment(providerConfirmation.confirmTime || new Date())}
+                  //     format='YYYY-MM-DD HH:mm'
+                  //     disabled={true}
+                  //     onChange={onChange}
+                  //   />
+                  // </div>
+                  <DatePicker
+                    showTime
+                    // defaultValue={moment(providerConfirmation.confirmTime || new Date())}
+                    format='YYYY-MM-DD HH:mm'
+                    disabled={true}
+                    onChange={onChange}
+                  />
+                )
             }
-
           </Form.Item>
         </Col>
       </Form>
@@ -211,7 +226,7 @@ ProviderConfirmation.defaultProps = {
     annex: [],
     confirmer: '',
     confirmTime: '',
-    confirmerName:''
+    confirmerName: ''
   }
 }
 

@@ -68,8 +68,8 @@ function Achievementsflow(props) {
                 <div>
                   <div>当前环节:{obj.name}</div>
                   <div>处理人：{obj.assignee}</div>
-                  <div>开始时间:{moment(obj.startTime).format('YYYY-MM-DD HH:mm:ss')}</div>
-                  <div>结束时间:{obj.endTime?moment(obj.endTime).format('YYYY-MM-DD HH:mm:ss'):''}</div>
+                  <div>开始时间:{moment(obj.startTime).format('YYYY-MM-DD HH:mm')}</div>
+                  <div>结束时间:{obj.endTime?moment(obj.endTime).format('YYYY-MM-DD HH:mm'):''}</div>
                   <div>状态:{obj.taskStatus}</div>
                   {
                     obj.taskStatus === '退回' && (

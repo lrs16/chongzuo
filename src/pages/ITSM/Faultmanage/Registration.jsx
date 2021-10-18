@@ -132,11 +132,6 @@ function Registration(props) {
     });
   };
 
-  // const handlobjectChange = (value, selectedOptions) => {
-  //   setFieldsValue({ main_eventObject: value?.slice(-1)[0] }, () => { });
-  //   selectCascader = `${selectedOptions[1].dict_code}`;
-  // };
-
   // 上传附件触发保存
   useEffect(() => {
     if (files.ischange) {
@@ -145,23 +140,6 @@ function Registration(props) {
   }, [files]);
 
   const required = true;
-
-  // const faultcircula = () => { // 流转
-  //   validateFields((err, values) => {
-  //     if (!err) {
-  //       const formValues = values;
-  //       formValues.registerOccurTime = values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss');
-  //       formValues.registerTime = values.registerTime.format('YYYY-MM-DD HH:mm:ss');
-  //       // formValues.taskId = id.flowTaskId;
-  //       formValues.editState = 'add';
-  //       formValues.registerEffect = String(formValues.registerEffect);
-  //       dispatch({
-  //         type: 'fault/getSaveUserId1',
-  //         payload: { formValues }
-  //       })
-  //     }
-  //   });
-  // }
 
   const handletitleSearch = values => {
     getAndField(values).then(res => {
@@ -214,8 +192,6 @@ function Registration(props) {
         break;
     }
   };
-
-  console.log(cacheinfo,'cacheinfo')
 
   // 打开多页签，表单信息传回tab
   useEffect(() => {
@@ -276,8 +252,7 @@ function Registration(props) {
     </>
   );
 
-  const cacheinfo = tabdata === undefined ? { registerLevel: '一般', registerEffect: '',registerMaster:'' } : tabdata;
-  console.log(cacheinfo,'cacheinfo')
+  const cacheinfo = tabdata === undefined ? { registerLevel: '一般', registerEffect: '', registerMaster: '' } : tabdata;
 
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
@@ -324,7 +299,9 @@ function Registration(props) {
                   ],
                   initialValue: cacheinfo.source || '',
                 })(
-                  <Select placeholder="请选择">
+                  <Select
+                    getPopupContainer={e => e.parentNode}
+                    placeholder="请选择">
                     {faultSource.map(obj => [
                       <Option key={obj.key} value={obj.title}>
                         {obj.title}
@@ -346,7 +323,9 @@ function Registration(props) {
                   ],
                   initialValue: cacheinfo.registerModel || ''
                 })(
-                  <Select placeholder="请选择">
+                  <Select
+                    getPopupContainer={e => e.parentNode}
+                    placeholder="请选择">
                     {sysmodular.map(obj => [
                       <Option key={obj.key} value={obj.title}>
                         {obj.title}
@@ -369,9 +348,9 @@ function Registration(props) {
                   initialValue: cacheinfo.type || [''],
                 })(
                   <Cascader
+                    getPopupContainer={e => e.parentNode}
                     placeholder="请选择"
                     options={faultType}
-                    //  onChange={() => handlobjectChange()}
                     fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
                   />,
                 )}
@@ -403,7 +382,9 @@ function Registration(props) {
                   ],
                   initialValue: cacheinfo.registerLevel || '',
                 })(
-                  <Select placeholder="请选择">
+                  <Select
+                    getPopupContainer={e => e.parentNode}
+                    placeholder="请选择">
                     {priority.map(obj => [
                       <Option key={obj.key} value={obj.title}>
                         {obj.title}
@@ -425,7 +406,9 @@ function Registration(props) {
                   ],
                   initialValue: cacheinfo.registerScope || '',
                 })(
-                  <Select placeholder="请选择">
+                  <Select
+                    getPopupContainer={e => e.parentNode}
+                    placeholder="请选择">
                     {effect.map(obj => [
                       <Option key={obj.key} value={obj.title}>
                         {obj.title}
@@ -448,6 +431,7 @@ function Registration(props) {
                   initialValue: cacheinfo.title || '',
                 })(
                   <AutoComplete
+                    getPopupContainer={e => e.parentNode}
                     dataSource={titleautodata}
                     onSearch={value => handleSearch(value, 'title')}
                   >
@@ -469,11 +453,11 @@ function Registration(props) {
                   initialValue: cacheinfo.content || '',
                 })(
                   <AutoComplete
+                    getPopupContainer={e => e.parentNode}
                     dataSource={desautodata}
                     filterOption={(inputValue, option) =>
                       option.props.children.includes(inputValue)
                     }
-                  //  onSearch={value => handleSearch(value, 'des')}
                   >
                     <TextArea autoSize={{ minRows: 5 }} placeholder="请输入" />
                   </AutoComplete>,
