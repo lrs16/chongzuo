@@ -73,7 +73,7 @@ export default {
       const response = yield call(taskFlowUserList);
       yield put({
         type: 'savelist',
-        payload: {userlist:response.data,describe:''},
+        payload: response.data,
       });
     },
 
@@ -106,8 +106,8 @@ export default {
     savelist(state, action) {
       return {
         ...state,
-        userlist: action.payload.userlist,
-        describe: action.payload.describe,
+        userlist: action.payload,
+        describe: '',
       };
     },
 
@@ -129,6 +129,7 @@ export default {
       return {
         ...state,
         userlist: action.payload,
+        describe: '',
       };
     },
 
