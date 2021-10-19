@@ -258,7 +258,7 @@ function DemandSchedule(props) {
           columns={columns}
           dataSource={makeData(demandscheduleArr)}
           pagination={false}
-          rowKey={record => record.statName}
+          rowKey={(record,index) =>{ return index}}
         />
       </Card>
     </PageHeaderWrapper>

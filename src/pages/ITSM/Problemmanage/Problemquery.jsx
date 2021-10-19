@@ -260,7 +260,7 @@ function Besolved(props) {
       width: 150,
     },
     {
-      title: '登记人名称',
+      title: '发送人',
       dataIndex: 'registerUser',
       key: 'registerUser',
       width: 150,

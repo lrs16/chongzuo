@@ -159,7 +159,7 @@ function Demandstate(props) {
         <Table
           columns={columns}
           dataSource={demandstateArr}
-          rowKey={record => record.statName}
+          rowKey={(record,index) => { return index}}
         />
       </Card>
     </PageHeaderWrapper>
