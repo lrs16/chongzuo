@@ -321,8 +321,8 @@ function ToDolist(props) {
                   })(
                     <Select placeholder="请选择" allowClear>
                       {souremap && souremap.map(obj => (
-                        <Option key={obj.key} value={obj.val}>
-                          {obj.val}
+                        <Option key={obj.dict_code} value={obj.title}>
+                          {obj.title}
                         </Option>
                       ))}
                     </Select>,
