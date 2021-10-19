@@ -168,6 +168,7 @@ function Breakdownlist(props) {
         <Table
           columns={columns}
           dataSource={faultdetailArr}
+          rowKey={r => r.statCurrentNode}
         />
       </Card>
 

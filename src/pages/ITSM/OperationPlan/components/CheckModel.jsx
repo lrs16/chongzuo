@@ -100,8 +100,8 @@ function CheckModel(props) {
         title={title}
         visible={state}
         width={1000}
-        centered='true'
-        maskClosable='true'
+        centered={true}
+        maskClosable={true}
         onCancel={hanldleCancel}
         onOk={handleSubmit}
       >

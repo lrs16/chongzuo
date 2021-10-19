@@ -278,7 +278,7 @@ function AddProviderMaintenance(props) {
                 <Form.Item label="服务商编号">
                   {getFieldDecorator('providerNo', {
                     initialValue: searchProviderobj.providerNo,
-                  })(<Input disabled="true" />)}
+                  })(<Input disabled={true} />)}
                 </Form.Item>
               </Col>
 

@@ -90,16 +90,20 @@ export default {
     //  登记保存
     *getAddid({ payload }, { call }) {
       const response = yield call(startandsave, payload);
+      const tabid = sessionStorage.getItem('tabid')
       if (response.code === 200) {
         message.success(response.msg);
-        router.push({
-          pathname: `/ITSM/problemmanage/registration`,
-          query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
-        });
-        const { flowInstId, problemNo, flowTaskId } = response;
+        const { flowInstId, problemNo, flowTaskId,flowNodeName } = response;
         router.push({
           pathname: `/ITSM/problemmanage/besolveddetail/workorder`,
-          query: { id: flowTaskId, mainId: flowInstId, orderNo: problemNo, }  // 这里要加mainId
+          query: { 
+            id: flowTaskId,
+            taskName:flowNodeName,
+            mainId: flowInstId,
+            taskId:flowTaskId,
+            orderNo: problemNo,
+             },  // 这里要加mainId
+             state: {closetabid: tabid},
         });
       }
     },
@@ -196,9 +200,7 @@ export default {
 
     //  待办详情页
     *ToDodetails({ payload: { id } }, { call, put }) {
-      console.log('id: ', id);
       const response = yield call(todoInformation, id);
-      console.log('response: ', response);
       yield put({
         type: 'details',
         payload: response,

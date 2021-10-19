@@ -134,17 +134,21 @@ export default {
     *getSaveUserId({ payload: { formValues } }, { call, put }) {
       const response = yield call(startandsave, formValues); // querySavefaultRegister登记保存
       // 保存成功后的操作
+      const tabid = sessionStorage.getItem('tabid')
       if (response.code === 200) {
         // 用户数据携带的id 跳转待办详情页
         message.success(response.msg);
-        router.push({
-          pathname: `/ITSM/faultmanage/registration`,
-          query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
-        })
         const { flowInstId, troubleNo, flowTaskId, flowNodeName } = response;
         router.push({
           pathname: `/ITSM/faultmanage/todolist/record`,
-          query: { id: flowTaskId, mainId: flowInstId, orderNo: troubleNo, },
+          query: { 
+            taskName:flowNodeName,
+            id: flowTaskId,
+            mainId: flowInstId,
+            taskId:flowTaskId,
+            orderNo: troubleNo,
+          },
+          state: {closetabid: tabid},
           paneKey: flowNodeName,
         });
       } else {

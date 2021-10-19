@@ -176,6 +176,7 @@ function Statusstatistics(props) {
         <Table
           columns={columns}
           dataSource={statusArr}
+          rowKey={(record,index) => {return index}}
         />
       </Card>
 

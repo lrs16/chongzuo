@@ -118,19 +118,19 @@ const Registrat = forwardRef((props, ref) => {
       .add(1, 'd')
       .format('YYYY-MM-DD');
     let end;
-    const { values, id, beginTime, endTime, userId, groupId } = option.props;
-    const start = `${currentDate} ${beginTime}`;
+    const { values, id, begintime, endtime, userid, groupId } = option.props;
+    const start = `${currentDate} ${begintime}`;
     if (
       moment(new Date())
-        .format(`YYYY-MM-DD ${beginTime}`)
+        .format(`YYYY-MM-DD ${begintime}`)
         .valueOf() >
       moment(new Date())
-        .format(`YYYY-MM-DD ${endTime}`)
+        .format(`YYYY-MM-DD ${endtime}`)
         .valueOf()
     ) {
-      end = `${nextDate} ${endTime}`;
+      end = `${nextDate} ${endtime}`;
     } else {
-      end = `${currentDate} ${endTime}`;
+      end = `${currentDate} ${endtime}`;
     }
     switch (types) {
       case 'shiftName':
@@ -139,14 +139,14 @@ const Registrat = forwardRef((props, ref) => {
           dutyEndTime: moment(end),
           shiftId: id,
           dutyStaffId: groupId,
-          dutyUserId: userId,
+          dutyUserId: userid,
         });
         break;
       case 'heirName':
         setFieldsValue({
           heirName: value,
           heirId: id,
-          heirUserId: userId,
+          heirUserId: userid,
         });
         break;
       case 'heirShiftName':
@@ -239,8 +239,8 @@ const Registrat = forwardRef((props, ref) => {
                     <Option
                       key={obj.id}
                       value={obj.shiftName}
-                      beginTime={obj.beginTime}
-                      endTime={obj.endTime}
+                      begintime={obj.beginTime}
+                      endtime={obj.endTime}
                       groupId={obj.groupId}
                     >
                       {obj.shiftName}
@@ -274,7 +274,7 @@ const Registrat = forwardRef((props, ref) => {
                         hideDisabledOptions: true,
                         defaultValue: moment('00:00:00', 'HH:mm:ss'),
                       }}
-                      value={time.startValue}
+                      // value={time.startValue}
                       placeholder="开始时间"
                       format="YYYY-MM-DD HH:mm:ss"
                       style={{ minWidth: 120, width: '100%' }}
@@ -295,7 +295,7 @@ const Registrat = forwardRef((props, ref) => {
                       onChange={onEndChange}
                       open={time.endOpen}
                       onOpenChange={handleEndOpenChange}
-                      value={time.endValue}
+                      // value={time.endValue}
                       showTime={{
                         hideDisabledOptions: true,
                         defaultValue: moment('23:59:59', 'HH:mm:ss'),
@@ -464,7 +464,7 @@ const Registrat = forwardRef((props, ref) => {
                   getPopupContainer={e => e.parentNode}
                 >
                   {(successioninfo || []).map((obj, index) => [
-                    <Option key={obj.id} value={obj.heirName} userId={obj.userId}>
+                    <Option key={obj.id} value={obj.heirName} userid={obj.userId}>
                       {obj.heirName}
                     </Option>,
                   ])}

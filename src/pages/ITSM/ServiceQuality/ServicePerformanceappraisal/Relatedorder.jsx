@@ -58,8 +58,6 @@ function RelevancyOrder(props) {
     });
   };
 
-  console.log(searchrow, 'searchrow')
-
   const changePage = page => {
     getlist(page - 1, paginations.pageSize);
     setPageinations({

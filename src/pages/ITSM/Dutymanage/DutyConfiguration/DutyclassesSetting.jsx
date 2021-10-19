@@ -434,7 +434,6 @@ function DutyclassesSetting(props) {
   };
 
   const teamname = getTypebyTitle('班组名称');
-  console.log('teamname: ', teamname);
 
   return (
     <PageHeaderWrapper title={pagetitle}>

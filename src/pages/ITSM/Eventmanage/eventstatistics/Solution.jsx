@@ -198,7 +198,7 @@ function Solution(props) {
         <Table
           columns={columns}
           dataSource={soluteArr}
-          rowKey={record => record.statName}
+          rowKey={(record,index) => {return index }}
         />
       </Card>
     </PageHeaderWrapper>

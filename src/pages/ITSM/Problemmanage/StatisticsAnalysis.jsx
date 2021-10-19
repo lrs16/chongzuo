@@ -266,7 +266,7 @@ function StatisticsAnalysis(props) {
                   <Col span={16}>
                     <Row>
                       <div className={styles.statisticscard}>
-                        <Avatar icon='desktop' />
+                        <Avatar icon='tags' />
                         <b>问题工单情况</b>
                       </div>
                       <Col span={8}>
@@ -285,7 +285,7 @@ function StatisticsAnalysis(props) {
                   <Col span={8}>
                     <Row>
                       <div className={styles.statisticscard}>
-                        <Avatar icon='desktop' />
+                        <Avatar icon='layout' />
                         <b>问题分类情况</b>
                       </div>
 
@@ -304,7 +304,7 @@ function StatisticsAnalysis(props) {
             {/* 问题分类总情况 */}
             <Row style={{ marginTop: 24 }} gutter={24}>
               <div className={styles.statisticscard}>
-                <Avatar icon="cluster" />
+                <Avatar icon="hdd" />
                 <b>问题工单总情况</b>
               </div>
               <Col span={8}>
@@ -352,7 +352,7 @@ function StatisticsAnalysis(props) {
             {/* 问题分类总情况 */}
             <Row style={{ marginTop: 24 }} gutter={24}>
               <div className={styles.statisticscard}>
-                <Avatar icon="cluster" />
+                <Avatar icon="code" />
                 <b>问题分类统计分析</b>
               </div>
               <Col span={8}>
@@ -492,7 +492,7 @@ function StatisticsAnalysis(props) {
 
             <Row style={{ marginTop: 24 }} gutter={24}>
               <div className={styles.statisticscard}>
-                <Avatar icon="cluster" />
+                <Avatar icon="bank" />
                 <b>问题来源统计分析</b>
               </div>
               <Col span={8}>
@@ -535,7 +535,7 @@ function StatisticsAnalysis(props) {
             <Row style={{ marginTop: 24 }} gutter={24}>
               <Col span={12}>
                 <div className={styles.statisticscard}>
-                  <Avatar icon="cluster" />
+                  <Avatar icon="appstore" />
                   <b>问题工单超时情况</b>
                 </div>
                 <Card onMouseDown={() => setPicVal({})}>
@@ -558,7 +558,7 @@ function StatisticsAnalysis(props) {
 
               <Col span={12}>
                 <div className={styles.statisticscard}>
-                  <Avatar icon="share-alt" />
+                  <Avatar icon="build" />
                   <b>问题登记人Top{topN}</b>
                   <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN(v)} /></div>
                 </div>
@@ -584,7 +584,7 @@ function StatisticsAnalysis(props) {
             <Row style={{ marginTop: 24 }} gutter={24}>
               <Col span={12}>
                 <div className={styles.statisticscard}>
-                  <Avatar icon="share-alt" />
+                  <Avatar icon="codepen" />
                   <b>问题处理人Top{topN1}</b>
                   <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN1(v)} /></div>
                 </div>
@@ -608,7 +608,7 @@ function StatisticsAnalysis(props) {
 
               <Col span={12}>
                 <div className={styles.statisticscard}>
-                  <Avatar icon="share-alt" />
+                  <Avatar icon="interaction" />
                   <b>问题登记单位Top{topN2}</b>
                   <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN2(v)} /></div>
                 </div>
@@ -634,7 +634,7 @@ function StatisticsAnalysis(props) {
             <Row style={{ marginTop: 24 }} gutter={24}>
               <Col span={12} style={{ zIndex: 1000 }}>
                 <div className={styles.statisticscard}>
-                  <Avatar icon="share-alt" />
+                  <Avatar icon="pushpin" />
                   <b>问题处理单位Top{topN3}</b>
                   <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN3(v)} /></div>
                 </div>

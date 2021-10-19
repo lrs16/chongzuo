@@ -300,11 +300,10 @@ function TobedealtForm(props) {
           },
         }).then(res => {
           if (res.code === 200) {
-            message.info(res.msg);
             if (circulation) {
-              openFlow();
               setUserVisible(true);
             } else {
+              message.info(res.msg);
               openFlow();
             }
           } else {
@@ -357,7 +356,6 @@ function TobedealtForm(props) {
                 openFlow();
                 break;
               case 'circula':
-                openFlow();
                 setUserVisible(true);
                 break;
               case '流转不选人':

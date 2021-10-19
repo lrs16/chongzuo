@@ -1173,36 +1173,42 @@ function Workorder(props) {
                       />],
                       ['系统运维商审核', <Problemreview
                         info={obj}
+                        key='1'
                         main={main}
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}
                       />],
                       ['自动化科审核', <Problemreview
                         info={obj}
+                        key='2'
                         main={main}
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}
                       />],
                       ['系统开发商处理', <Problemsolving
                         info={obj}
+                        key='3'
                         main={main}
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}
                       />],
                       ['系统运维商确认', <Operatorconfirmades
                         info={obj}
+                        key='4'
                         main={main}
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}
                       />],
                       ['自动化科业务人员确认', <Operatorconfirmades
                         info={obj}
+                        key='5'
                         main={main}
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}
                       />],
                       ['问题登记人员确认', <Operatorconfirmades
                         info={obj}
+                        key='6'
                         main={main}
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}

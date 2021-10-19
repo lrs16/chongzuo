@@ -417,10 +417,10 @@ function Statistic(props) {
           loading={loading}
           columns={columns}
           dataSource={statsIndexarr}
+          rowKey={(record,index) => { return index}}
         />
       </Card>
     </PageHeaderWrapper>
-
   )
 
 }

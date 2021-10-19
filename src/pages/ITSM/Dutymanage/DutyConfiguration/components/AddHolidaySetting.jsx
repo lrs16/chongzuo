@@ -490,7 +490,6 @@ function AddholidaySetting(props) {
           style={{ width: '100%', marginTop: '16', marginBottom: '8' }}
           type='primary'
           ghost
-          icon
           onClick={newMember}
           disabled={newbutton}
         >

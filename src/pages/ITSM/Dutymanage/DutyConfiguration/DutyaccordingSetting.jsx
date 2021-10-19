@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
-import { Calendar, Card, Button, Layout, Tree, message } from 'antd';
+import { Calendar, Card, Button, Layout, Tree, message,Select } from 'antd';
 import SettingDetails from './components/SettingDetails';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import moment from 'moment';
@@ -9,6 +9,7 @@ import Dutyexcel from './components/Dutyexcel';
 
 const { Sider, Content } = Layout;
 const { TreeNode } = Tree;
+const { Option } = Select;
 
 function DutyaccordingSetting(props) {
   const pagetitle = props.route.name;
@@ -277,6 +278,7 @@ function DutyaccordingSetting(props) {
   };
 
   const teamname = getTypebyTitle('班组名称');
+  const shiftperiod = getTypebyTitle('值班时段');
 
   useEffect(() => {
     const resutlteam = [
@@ -360,9 +362,16 @@ function DutyaccordingSetting(props) {
                   </Button>
                 )}
 
-                <div style={{ backgroundColor: 'white' }}>
-                  行政班:（09:00-17:30 ） 早班:（ 09:00-16:00 ） 中班:（16:00-22:00）
-                  晚班:（22:00-次09:00）
+                <div placeholder="请选择">
+                  {(shiftperiod || []).map(obj => [
+                    <span
+                      key={obj.key}
+                      values={obj.title}
+                      style={{marginRight:5}}
+                    >
+                      {obj.title}
+                    </span>
+                  ])}
                 </div>
 
                 <Card id="calendar">

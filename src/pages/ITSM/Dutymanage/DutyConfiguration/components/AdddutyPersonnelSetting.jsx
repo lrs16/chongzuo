@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Drawer,
   Form,
@@ -7,9 +7,8 @@ import {
   AutoComplete,
   Select,
 } from 'antd';
-import moment from 'moment';
 import { phone_reg } from '@/utils/Regexp';
-import { operationPerson, searchUsers } from '@/services/common';
+import { searchUsers } from '@/services/common';
 import { connect } from 'dva';
 import styles from '../index.less';
 import SysDict from '@/components/SysDict';
@@ -44,7 +43,6 @@ function AdddutyPersonnelSetting(props) {
   } = props;
   const [directorlist, setDirectorlist] = useState([]);
   const [spinloading, setSpinLoading] = useState(true);
-  const [select, setSelect] = useState([]);
   const [selectdata, setSelectData] = useState('');
   const required = true;
 
@@ -61,12 +59,6 @@ function AdddutyPersonnelSetting(props) {
 
   //  请求选人
   const SearchDisableduser = (value, type) => {
-    const requestData = {
-      providerName: value,
-      pageNum: 1,
-      pageSize: 1000,
-      status: '1',
-    };
     switch (type) {
       case 'director':
         searchUsers({ userName: value }).then(res => {
@@ -92,7 +84,6 @@ function AdddutyPersonnelSetting(props) {
 
   const handleOk = () => {
     validateFields((err, values) => {
-      console.log('values: ', values);
       const newdata = {
         id: personnelSetting.id || '',
         ...values
@@ -102,10 +93,6 @@ function AdddutyPersonnelSetting(props) {
         setVisible(false)
       }
     })
-  }
-
-  const handleDelete = (id) => {
-    onDelete(id)
   }
 
   const handleChange = (value, option, type) => {
@@ -175,9 +162,9 @@ function AdddutyPersonnelSetting(props) {
         visible={visible}
         title={title}
         width={720}
-        centered='true'
-        destroyOnClose='true'
-        maskClosable='true'
+        centered={true}
+        destroyOnClose={true}
+        maskClosable={true}
         onClose={handleCancel}
       >
         <Form {...formItemLayout}>
@@ -234,12 +221,6 @@ function AdddutyPersonnelSetting(props) {
           <Form.Item label='所属部门'>
             {
               getFieldDecorator('deptName', {
-                // rules: [
-                //   {
-                //     required,
-                //     message: '请输入所属部门'
-                //   }
-                // ],
                 initialValue: personnelSetting.deptName
               })(<Input disabled />)
             }

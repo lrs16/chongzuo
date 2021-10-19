@@ -436,19 +436,18 @@ function Handlingrate(props) {
           <Table
             columns={columnsDevelopers}
             dataSource={handlingratedata}
-            rowKey={tabActiveKey}
+            rowKey={(record,index) => {return index}}
           />
         }
 
         {
           tabActiveKey === '2' && loading === false && (
             <Table
-              rowKey={tabActiveKey}
               columns={columnsBusiness}
               dataSource={handlingratedata}
+              rowKey={(record,index) => {return index}}
             />
           )
-
         }
       </Card>
     </PageHeaderWrapper>

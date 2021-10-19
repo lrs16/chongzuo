@@ -391,7 +391,7 @@ function NewHandover(props) {
 
       {
         type !== 'search' && (
-          <Button Button
+          <Button
             type="primary"
             style={{ marginRight: 8 }}
             onClick={() => handleSave()}

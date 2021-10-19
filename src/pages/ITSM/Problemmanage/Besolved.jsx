@@ -92,13 +92,18 @@ function Besolved(props) {
     },
     {
       title: '问题分类',
-      dataIndex: 'typecn',
-      key: 'typecn',
+      dataIndex: 'type',
+      key: 'type',
     },
     {
       title: '当前处理环节',
       dataIndex: 'currentNode',
       key: 'currentNode',
+    },
+    {
+      title: '发送人',
+      dataIndex: 'registerUser',
+      key: 'registerUser',
     },
     {
       title: '发生时间',

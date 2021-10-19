@@ -71,7 +71,7 @@ function MergeTable(props) {
             columns={column}
             dataSource={makeData(tableSource)}
             pagination={false}
-            rowKey={record => record.statCode}
+            rowKey={(record,index) => { return index}}
           />
          )}
      </>

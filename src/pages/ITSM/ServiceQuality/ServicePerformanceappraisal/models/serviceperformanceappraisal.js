@@ -72,15 +72,9 @@ export default {
     //  登记
     *assessRegister({ payload }, { call, put }) {
       const response = yield call(assessRegister, payload);
+      const tabid = sessionStorage.getItem('tabid')
       if (response.code === 200) {
         message.success(response.msg);
-        router.push({
-          pathname: '/ITSM/problemmanage/registration',
-          query: {
-            tabid: sessionStorage.getItem('tabid'),
-            closecurrent: true,
-          },
-        });
         const { taskId, assessNo, instanceId } = response.data;
         router.push({
           pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform`,
@@ -93,6 +87,7 @@ export default {
             instanceId,
             tobelist: true,
           }, // 这里要加mainId
+          state: {closetabid: tabid},
         });
       }
     },

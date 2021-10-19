@@ -43,10 +43,8 @@ function Registration(props) {
     tabnew, location, tabdata
   } = props;
 
-  console.log(tabdata,'tabdata')
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const RegistratRef = useRef();
-
 
   const queryDept = () => {
     dispatch({

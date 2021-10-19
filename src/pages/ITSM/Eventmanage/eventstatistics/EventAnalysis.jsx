@@ -219,59 +219,55 @@ function EventAnalysis(props) {
       {
         loading === false && (
           <>
-            {([getOrderConditionsobj] || []).map((obj, index) => {
-              return (
-                <>
-                  <Row key={index} style={{ marginTop: 10 }} gutter={24}>
-                    <Col span={16}>
-                      <Row>
-                        <div className={styles.statisticscard}>
-                          <Avatar icon='desktop' />
-                          <b>事件工单总情况</b>
-                        </div>
-                        <Col span={6}>
-                          <StatisticsCard  key={1} title='事件总数' value={obj && obj.allNum} suffix='单' des='环比' desval={`${obj && obj.allRingPoints}%`} type={Number((obj && obj.allRingPoints)) > 0 ? 'up' : 'down'} />
-                        </Col>
-                        <Col span={6}>
-                          <StatisticsCard key={2} title='已完成' value={obj && obj.closeNum} suffix='单' des='环比' desval={`${obj && obj.closeRingPoints}%`} type={Number((obj && obj.closeRingPoints)) > 0 ? 'up' : 'down'} />
-                        </Col>
-                        <Col span={6}>
-                          <StatisticsCard key={3} title='未完成' value={obj && obj.unCloseNum} suffix='单' des='环比' desval={`${obj && obj.unCloseRingPoints}%`} type={Number((obj && obj.unCloseRingPoints)) > 0 ? 'up' : 'down'} />
-                        </Col>
-                        <Col span={6}>
-                          <StatisticsCard key={4} title='解决率' value={obj && obj.point} suffix='%' des='环比' desval={`${obj && obj.ringPoints}%`} type={Number((obj && obj.ringPoints)) > 0 ? 'up' : 'down'} />
-                        </Col>
-                      </Row>
+            <>
+              <Row style={{ marginTop: 10 }} gutter={24}>
+                <Col span={16}>
+                  <Row>
+                    <div className={styles.statisticscard}>
+                      <Avatar icon='deployment-unit' />
+                      <b>事件工单总情况</b>
+                    </div>
+                    <Col span={6} >
+                      <StatisticsCard  title='事件总数' value={getOrderConditionsobj && getOrderConditionsobj.allNum} suffix='单' des='环比' desval={`${getOrderConditionsobj && getOrderConditionsobj.allRingPoints}%`} type={Number((getOrderConditionsobj && getOrderConditionsobj.allRingPoints)) > 0 ? 'up' : 'down'} />
                     </Col>
-
-                    <Col span={8}>
-                      <Row>
-                        <div className={styles.statisticscard}>
-                          <Avatar icon='desktop' />
-                          <b>一线解决事件单情况（客服）</b>
-                        </div>
-                        <Col span={24}>
-                          <Col span={8}>
-                            <StatisticsCard key={5} title='受理总数' value={obj && obj.allNum} suffix='单' des='环比' desval={`${obj && obj.allRingPoints}%`} type={Number((obj && obj.allRingPoints)) > 0 ? 'up' : 'down'} />
-                          </Col>
-                          <Col span={8}>
-                            <StatisticsCard key={6} title='一线处理量' value={obj && obj.selfHandleNum} suffix='单' des='环比' desval={`${obj && obj.selfHandleNumRingPoints}%`} type={Number((obj && obj.selfHandleRingPoints)) > 0 ? 'up' : 'down'} />
-                          </Col>
-                          <Col span={8}>
-                            <StatisticsCard key={7} title='一线解决率' value={obj && obj.selfHandlePoint} suffix='%' des='环比' desval={`${obj && obj.selfHandlePointRingPoints}%`} type={Number((obj && obj.selfHandleRingPoints)) > 0 ? 'up' : 'down'} />
-                          </Col>
-                        </Col>
-                      </Row>
+                    <Col span={6} >
+                      <StatisticsCard title='已完成' value={getOrderConditionsobj && getOrderConditionsobj.closeNum} suffix='单' des='环比' desval={`${getOrderConditionsobj && getOrderConditionsobj.closeRingPoints}%`} type={Number((getOrderConditionsobj && getOrderConditionsobj.closeRingPoints)) > 0 ? 'up' : 'down'} />
+                    </Col>
+                    <Col span={6} >
+                      <StatisticsCard title='未完成' value={getOrderConditionsobj && getOrderConditionsobj.unCloseNum} suffix='单' des='环比' desval={`${getOrderConditionsobj && getOrderConditionsobj.unCloseRingPoints}%`} type={Number((getOrderConditionsobj && getOrderConditionsobj.unCloseRingPoints)) > 0 ? 'up' : 'down'} />
+                    </Col>
+                    <Col span={6} >
+                      <StatisticsCard key={4} title='解决率' value={getOrderConditionsobj && getOrderConditionsobj.point} suffix='%' des='环比' desval={`${getOrderConditionsobj && getOrderConditionsobj.ringPoints}%`} type={Number((getOrderConditionsobj && getOrderConditionsobj.ringPoints)) > 0 ? 'up' : 'down'} />
                     </Col>
                   </Row>
-                </>
-              )
-            })}
+                </Col>
+
+                <Col span={8}>
+                  <Row>
+                    <div className={styles.statisticscard}>
+                      <Avatar icon='cluster' />
+                      <b>一线解决事件单情况（客服）</b>
+                    </div>
+                    <Col span={24}>
+                      <Col span={8}>
+                        <StatisticsCard title='受理总数' value={getOrderConditionsobj && getOrderConditionsobj.allNum} suffix='单' des='环比' desval={`${getOrderConditionsobj && getOrderConditionsobj.allRingPoints}%`} type={Number((getOrderConditionsobj && getOrderConditionsobj.allRingPoints)) > 0 ? 'up' : 'down'} />
+                      </Col>
+                      <Col span={8}>
+                        <StatisticsCard title='一线处理量' value={getOrderConditionsobj && getOrderConditionsobj.selfHandleNum} suffix='单' des='环比' desval={`${getOrderConditionsobj && getOrderConditionsobj.selfHandleNumRingPoints}%`} type={Number((getOrderConditionsobj && getOrderConditionsobj.selfHandleRingPoints)) > 0 ? 'up' : 'down'} />
+                      </Col>
+                      <Col span={8}>
+                        <StatisticsCard title='一线解决率' value={getOrderConditionsobj && getOrderConditionsobj.selfHandlePoint} suffix='%' des='环比' desval={`${getOrderConditionsobj && getOrderConditionsobj.selfHandlePointRingPoints}%`} type={Number((getOrderConditionsobj && getOrderConditionsobj.selfHandleRingPoints)) > 0 ? 'up' : 'down'} />
+                      </Col>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+            </>
 
             {/* 问题分类总情况 */}
             <Row style={{ marginTop: 24 }} gutter={24}>
               <div className={styles.statisticscard}>
-                <Avatar icon="cluster" />
+                <Avatar icon="robot" />
                 <b>事件分类统计分析</b>
               </div>
               <Col span={8}>
@@ -315,7 +311,7 @@ function EventAnalysis(props) {
             {/* 问题分类总情况 */}
             <Row style={{ marginTop: 24 }} gutter={24}>
               <div className={styles.statisticscard}>
-                <Avatar icon="cluster" />
+                <Avatar icon="barcode" />
                 <b>事件对象统计分析</b>
               </div>
               <Col span={8}>
@@ -359,7 +355,7 @@ function EventAnalysis(props) {
             <Row style={{ marginTop: 24 }} gutter={24}>
               <Col span={12}>
                 <div className={styles.statisticscard}>
-                  <Avatar icon="cluster" />
+                  <Avatar icon="reconciliation" />
                   <b>事件工单超时情况</b>
                 </div>
                 <Card onMouseDown={() => setPicVal({})}>
@@ -382,7 +378,7 @@ function EventAnalysis(props) {
               </Col>
               <Col span={12}>
                 <div className={styles.statisticscard}>
-                  <Avatar icon="cluster" />
+                  <Avatar icon="funnel-plot" />
                   <b>事件登记人Top{topN}</b>
                   <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN(v)} /></div>
                 </div>
@@ -408,7 +404,7 @@ function EventAnalysis(props) {
             <Row style={{ marginTop: 24 }} gutter={24}>
               <Col span={12}>
                 <div className={styles.statisticscard}>
-                  <Avatar icon="cluster" />
+                  <Avatar icon="flag" />
                   <b>事件处理人Top{topN1}</b>
                   <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN1(v)} /></div>
                 </div>
@@ -432,7 +428,7 @@ function EventAnalysis(props) {
 
               <Col span={12}>
                 <div className={styles.statisticscard}>
-                  <Avatar icon="cluster" />
+                  <Avatar icon="container" />
                   <b>事件登记单位Top{topN2}</b>
                   <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN2(v)} /></div>
                 </div>
@@ -458,7 +454,7 @@ function EventAnalysis(props) {
             <Row style={{ marginTop: 24 }} gutter={24}>
               <Col span={12}>
                 <div className={styles.statisticscard}>
-                  <Avatar icon="cluster" />
+                  <Avatar icon="deployment-unit" />
                   <b>事件处理单位Top{topN3}</b>
                   <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN3(v)} /></div>
                 </div>
@@ -471,7 +467,7 @@ function EventAnalysis(props) {
                           cols={Issuedscale}
                           data={dataCylinder3(getHandleUnitTopdata)}
                           height={300}
-                          padding={[30, 60, 50,210]}
+                          padding={[30, 60, 50, 210]}
                           onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
                         />
                       </Col>

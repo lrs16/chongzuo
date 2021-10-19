@@ -128,7 +128,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
               {getFieldDecorator('appealContent', {
                 initialValue: assessmentConfirmation.appealContent,
               })(
-                <TextArea autosize={{ minRows: 3 }} disabled={true} placeholder="请输入申诉内容" />,
+                <TextArea autoSize={{ minRows: 3 }} disabled={true} placeholder="请输入申诉内容" />,
               )}
             </Form.Item>
           </Col>
@@ -153,7 +153,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
               })(
                 <TextArea
                   disabled={noEdit}
-                  autosize={{ minRows: 3 }}
+                  autoSize={{ minRows: 3 }}
                   placeholder="请输入确认说明"
                 />,
               )}
@@ -188,7 +188,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
               })(
                 <TextArea
                   disabled={editSign}
-                  autosize={{ minRows: 3 }}
+                  autoSize={{ minRows: 3 }}
                   placeholder="请输入考核内容说明"
                 />,
               )}
