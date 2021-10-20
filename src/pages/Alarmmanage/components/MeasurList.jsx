@@ -211,8 +211,9 @@ function MeasurList(props) {
   };
 
   const handleReset = () => {
+    ChangeActiveTabKey('告警概览');
     resetFields();
-    handleSearch(1, 10);
+    //  handleSearch(1, 10);
   };
 
   const handleTabs = key => {

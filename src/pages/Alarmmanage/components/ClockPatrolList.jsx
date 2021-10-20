@@ -68,8 +68,9 @@ function ClockPatrolList(props) {
   };
 
   const handleReset = () => {
+    ChangeActiveTabKey('全部');
     resetFields();
-    handleSearch(1, 10);
+    // handleSearch(1, 10);
   };
 
   const handleTabs = key => {
