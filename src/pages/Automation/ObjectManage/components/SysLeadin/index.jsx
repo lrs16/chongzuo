@@ -63,8 +63,9 @@ function SysLeadin(props) {
       });
     },
     onChange({ file, fileList }) {
-      const alldone = fileList.map(item => item.status !== 'done');
-      if (file.status === 'done' && alldone.indexOf(true) === -1) {
+      // const alldone = fileList.map(item => item.status !== 'done');
+      //  && alldone.indexOf(true) === -1
+      if (file.status === 'done') {
         if(file.response.code === 200) {
           message.success(`导入数据成功` || file.response.msg);
         } else {
@@ -72,7 +73,9 @@ function SysLeadin(props) {
         }
   
         ChangeFileslist({ arr: [...fileList], ischange: true });
-      } 
+      } else if (file.status === 'error') {
+        message.error('导入数据失败');
+      }
     },
     onPreview(file) {
       handledownload(file);

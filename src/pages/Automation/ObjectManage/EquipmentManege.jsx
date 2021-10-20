@@ -768,7 +768,7 @@ function EquipmentManege(props) {
                     <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleShowDrawer('新增设备', 'add',)}>新增</Button>
                     <div>
                         <SysLeadin
-                            fileslist={[]}
+                            fileslist={files.arr}
                             ChangeFileslist={newvalue => setFiles(newvalue)}
                         />
                     </div>

@@ -572,7 +572,7 @@ function CabinetManege(props) {
                     <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleShowDrawer('新增机柜', 'add',)}>新增</Button>
                     <div>
                         <SysLeadinCabinet
-                            fileslist={[]}
+                            fileslist={files.arr}
                             ChangeFileslist={newvalue => setFiles(newvalue)}
                         />
                     </div>
