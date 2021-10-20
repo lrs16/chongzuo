@@ -62,8 +62,8 @@ const columns = [
           to={{
             pathname: '/ITSM/faultmanage/querylist',
             query: {
-              addTimeBegin: search ? moment(statTimeBegin).format('YYYY-MM-DD 00:00:00'):'',
-              addTimeEnd:  search ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59'):'',
+              addTimeBegin: statTimeBegin ? moment(statTimeBegin).format('YYYY-MM-DD 00:00:00'):'',
+              addTimeEnd:  statTimeEnd ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59'):'',
               type: record.statCode,
               dictType: 'type',
               pathpush: true
@@ -97,7 +97,7 @@ function Faultbreakdownlist(props) {
     search = true;
     dispatch({
       type: 'faultstatics/fetchfaultlist',
-      payload: { statTimeBegin:moment(statTimeBegin).format('YYYY-MM-DD 00:00:00'), statTimeEnd:moment(statTimeEnd).format('YYYY-MM-DD 23:59:59'), dictType: 'type' }
+      payload: { statTimeBegin:statTimeBegin ? moment(statTimeBegin).format('YYYY-MM-DD 00:00:00'):'', statTimeEnd:statTimeEnd ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59'):'', dictType: 'type' }
     })
   }
 
@@ -115,6 +115,10 @@ function Faultbreakdownlist(props) {
     resetFields();
     statTimeBegin = '';
     statTimeEnd = '';
+    dispatch({
+      type: 'faultstatics/fetchfaultlist',
+      payload: { statTimeBegin, statTimeEnd, dictType: 'type' }
+    })
   }
 
   const download = () => {

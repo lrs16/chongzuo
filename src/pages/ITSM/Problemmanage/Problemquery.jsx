@@ -639,7 +639,8 @@ function Besolved(props) {
         addTimeEnd: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
         addTime: values.addTime?.length ? [moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
         pageNum: page,
-        type: (values.type && values.type .length) ? (values.type)[1] : '',
+        // type: (values.type && values.type .length) ? (values.type)[1] : '',
+        type:values && values.type && values.type.length > 0 ? (values.type[(values.type).length-1]).toString():'',
         pageSize: paginations.pageSize
       },
     });

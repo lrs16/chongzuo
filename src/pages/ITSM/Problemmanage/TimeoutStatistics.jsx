@@ -16,7 +16,6 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 const { RangePicker } = DatePicker;
 let statTimeBegin = '';
 let statTimeEnd = '';
-let search = false;
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -61,8 +60,8 @@ function TimeoutStatistics(props) {
               query: {
                 problem: 'timeout',
                 timeStatus: record.statCode,
-                addTimeBegin: search ?  moment(statTimeBegin).format('YYYY-MM-DD 00:00:00') :'',
-                addTimeEnd:  search ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59')  :'',
+                addTimeBegin: statTimeBegin ?  moment(statTimeBegin).format('YYYY-MM-DD 00:00:00') :'',
+                addTimeEnd:  statTimeEnd ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59')  :'',
                 pathpush: true
               },
               state: { cache: false, }
@@ -84,7 +83,6 @@ function TimeoutStatistics(props) {
   }
 
   const gettimeoutList = () => {
-    search = true;
     dispatch({
       type: 'problemstatistics/timeoutLists',
       payload: { statTimeBegin, statTimeEnd }
@@ -116,6 +114,10 @@ function TimeoutStatistics(props) {
     resetFields();
     statTimeBegin = '';
     statTimeEnd = '';
+    dispatch({
+      type: 'problemstatistics/timeoutLists',
+      payload: { statTimeBegin, statTimeEnd }
+    })
   }
 
   useEffect(() => {
@@ -129,7 +131,6 @@ function TimeoutStatistics(props) {
   }, [location.state]);
 
   useEffect(() => {
-    search = false;
     statTimeBegin = '';
     statTimeEnd = '';
     dispatch({

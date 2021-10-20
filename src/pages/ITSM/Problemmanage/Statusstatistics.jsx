@@ -28,7 +28,6 @@ const formItemLayout = {
 const { RangePicker } = DatePicker;
 let statTimeBegin;
 let statTimeEnd;
-let search = false;
 const mergeCell = 'statCurrentNode';
 
 
@@ -60,8 +59,8 @@ function Statusstatistics(props) {
               pathname: '/ITSM/problemmanage/problemquery',
               query: {
                 problem: 'status',
-                addTimeBegin: search ?  moment(statTimeBegin).format('YYYY-MM-DD 00:00:00') : '',
-                addTimeEnd: search ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59')  : '',
+                addTimeBegin: statTimeBegin ?  moment(statTimeBegin).format('YYYY-MM-DD 00:00:00') : '',
+                addTimeEnd: statTimeEnd ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59')  : '',
                 currentNode: record.statCurrentNode,
                 pathpush: true
               },
@@ -81,6 +80,10 @@ function Statusstatistics(props) {
     resetFields();
     statTimeBegin = '';
     statTimeEnd = '';
+    dispatch({
+      type: 'problemstatistics/fetchstatusList',
+      payload: { statTimeBegin, statTimeEnd }
+    });
   }
 
   useEffect(() => {
@@ -94,7 +97,6 @@ function Statusstatistics(props) {
   }, [location.state]);
 
   const statusList = () => {
-    search = true;
     dispatch({
       type: 'problemstatistics/fetchstatusList',
       payload: { statTimeBegin, statTimeEnd }
@@ -102,7 +104,6 @@ function Statusstatistics(props) {
   }
 
   useEffect(() => {
-    search = false;
     statTimeBegin = '';
     statTimeEnd = '';
     dispatch({

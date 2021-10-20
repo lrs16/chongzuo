@@ -19,7 +19,6 @@ const { RangePicker } = DatePicker;
 
 let statTimeBegin;
 let statTimeEnd;
-let search = false;
 
 const formItemLayout = {
   labelCol: {
@@ -61,8 +60,8 @@ function Breakdownlist(props) {
               pathname: '/ITSM/faultmanage/querylist',
               query: {
                 status: record.statCode,
-                addTimeBegin: search ? moment(statTimeBegin).format('YYYY-MM-DD 00:00:00') : '',
-                addTimeEnd: search ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59') : '',
+                addTimeBegin: statTimeBegin ? moment(statTimeBegin).format('YYYY-MM-DD 00:00:00') : '',
+                addTimeEnd: statTimeEnd ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59') : '',
                 currentNode: record.statCurrentNode,
                 statName: record.statName,
                 pathpush: true
@@ -84,15 +83,13 @@ function Breakdownlist(props) {
   }
 
   const handleList = () => {
-    search = true;
     dispatch({
       type: 'faultstatics/fetchfaulthandle',
-      payload: { statTimeBegin: moment(statTimeBegin).format('YYYY-MM-DD 00:00:00'), statTimeEnd:moment(statTimeEnd).format('YYYY-MM-DD 23:59:59'), dictType: 'type' }
+      payload: { statTimeBegin: statTimeBegin ? moment(statTimeBegin).format('YYYY-MM-DD 00:00:00'):'', statTimeEnd:statTimeEnd ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59'):'', dictType: 'type' }
     })
   }
 
   useEffect(() => {
-    search = false;
     statTimeBegin = '';
     statTimeEnd = '';
     dispatch({

@@ -158,6 +158,11 @@ function ToDOlist(props) {
   };
 
   const handleReset = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: {}
+    });
     resetFields();
     getTodolists(1, 15);
     setPageinations({ current: 1, pageSize: 15 });

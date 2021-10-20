@@ -16,7 +16,6 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 const { RangePicker } = DatePicker;
 let statTimeBegin;
 let statTimeEnd;
-let search = false;
 
 const formItemLayout = {
   labelCol: {
@@ -47,8 +46,8 @@ const columns = [
           query: {
             problem: 'class',
             type: record.statCode,
-            addTimeBegin: search ?  moment(statTimeBegin).format('YYYY-MM-DD 00:00:00'):'',
-            addTimeEnd:search ?  moment(statTimeEnd).format('YYYY-MM-DD 23:59:59') :'',
+            addTimeBegin: statTimeBegin ?  moment(statTimeBegin).format('YYYY-MM-DD 00:00:00'):'',
+            addTimeEnd:statTimeEnd ?  moment(statTimeEnd).format('YYYY-MM-DD 23:59:59') :'',
             pathpush: true
           },
           state: { cache: false, }
@@ -77,15 +76,13 @@ function ClassifiedStatistics(props) {
   }
 
   const handleList = () => {
-    search = true;
     dispatch({
       type: 'problemstatistics/fetchClasslist',
-      payload: { statTimeBegin:moment(statTimeBegin).format('YYYY-MM-DD 00:00:00'), statTimeEnd:moment(statTimeEnd).format('YYYY-MM-DD 23:59:59'), dictType: 'type' }
+      payload: { statTimeBegin:statTimeBegin ? moment(statTimeBegin).format('YYYY-MM-DD 00:00:00'):'', statTimeEnd:statTimeEnd ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59'):'', dictType: 'type' }
     })
   }
 
   useEffect(() => {
-    search = false;
     statTimeBegin = '';
     statTimeEnd = '';
     dispatch({
@@ -98,7 +95,13 @@ function ClassifiedStatistics(props) {
     resetFields();
     statTimeBegin = '';
     statTimeEnd = '';
+    dispatch({
+      type: 'problemstatistics/fetchClasslist',
+      payload: { statTimeBegin, statTimeEnd, dictType: 'type' }
+    })
   }
+
+
 
   useEffect(() => {
     if (location.state && location.state.reset) {

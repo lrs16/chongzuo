@@ -37,7 +37,7 @@ const { RangePicker } = DatePicker;
 function Besolved(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
+    form: { getFieldDecorator, resetFields,getFieldsValue, validateFields, setFieldsValue },
     dispatch,
     besolveList,
     loading,
@@ -92,8 +92,8 @@ function Besolved(props) {
     },
     {
       title: '问题分类',
-      dataIndex: 'type',
-      key: 'type',
+      dataIndex: 'typecn',
+      key: 'typecn',
     },
     {
       title: '当前处理环节',
@@ -151,7 +151,7 @@ function Besolved(props) {
       payload: {
         ...newvalues,
         pageSize,
-        type: values.type ? (values.type)[1].toString():'',
+        type:values && values.type && values.type.length > 0 ? (values.type).toString():'',
         pageNum: page,
       },
     });
@@ -165,11 +165,7 @@ function Besolved(props) {
       state: {}
     });
     resetFields();
-    validateFields((err, values) => {
-      if (!err) {
-        searchdata(values, 1, 15)
-      }
-    });
+    searchdata({}, 1, 15)
     setPaginations({ current: 1, pageSize: 15 });
   };
 
@@ -228,7 +224,7 @@ function Besolved(props) {
           payload: {
             ids: selectedKeys.toString(),
             ...values,
-            type: values.type ? (values.type)[1].toString():'',
+            type:values && values.type && values.type.length > 0 ? (values.type).toString():'',
             createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
             createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
             createTime: '',
