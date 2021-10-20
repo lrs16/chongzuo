@@ -73,9 +73,9 @@ const columns = [
     width: 150,
   },
   {
-    title: '填报人',
-    dataIndex: 'userName',
-    key: 'userName',
+    title: '登记人',
+    dataIndex: 'registerUser',
+    key: 'registerUser',
     width: 100,
   },
   {
