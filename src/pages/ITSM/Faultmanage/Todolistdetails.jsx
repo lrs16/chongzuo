@@ -918,9 +918,9 @@ function Todolistdetails(props) {
                     type="primary"
                     style={{ marginRight: 8 }}
                     onClick={() => { handleSubmit('submittransfer'); setChangeOrder('请选择处理') }}
+                    onMouseDown={() => { setButtonType(undefined); setChangeOrder('') }}
                     onMouseOver={() => {
                       sessionStorage.setItem('flowtype', '9');
-                      setButtonType('')
                     }}
                     onFocus={() => 0}
                   >
@@ -943,7 +943,8 @@ function Todolistdetails(props) {
                     type="primary"
                     style={{ marginRight: 8 }}
                     onClick={() => { handleSubmit('flow') }}
-                    onMouseOver={() => { sessionStorage.setItem('flowtype', '1'); setButtonType('') }}
+                    onMouseOver={() => { sessionStorage.setItem('flowtype', '1') }}
+                    onMouseDown={() => { setButtonType(undefined); setChangeOrder(undefined) }}
                     onFocus={() => 0}>
                     流转
                   </Button>
