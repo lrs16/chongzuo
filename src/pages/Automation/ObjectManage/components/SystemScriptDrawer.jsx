@@ -230,13 +230,13 @@ function SystemScriptDrawer(props) {
           textAlign: 'right',
         }}
       >
-        <Button onClick={hanldleCancel} style={{ marginRight: 8 }}>
+        <Button onClick={() => hanldleCancel()} style={{ marginRight: 8 }}>
           取消
         </Button>
-        <Button style={{ marginRight: 8 }} onClick={handleOk} type="primary">
+        <Button style={{ marginRight: 8 }} onClick={() => handleOk()} type="primary">
           保存
         </Button>
-        <Button onClick={handletosave} type="primary">
+        <Button onClick={() => handletosave()} type="primary">
           提交
         </Button>
       </div>

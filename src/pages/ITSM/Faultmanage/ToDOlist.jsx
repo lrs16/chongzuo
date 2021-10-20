@@ -14,7 +14,7 @@ import {
   Icon,
   Table,
   Cascader,
-  Popconfirm
+  // Popconfirm
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
@@ -58,8 +58,8 @@ function ToDOlist(props) {
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 }); // 分页state
   const [selectdata, setSelectData] = useState('');
   const [tabrecord, setTabRecord] = useState({});
-  const [selectedKeys, setSelectedKeys] = useState([]);
-  const [selectedRows, setSelectedRows] = useState([]);
+  // const [selectedKeys, setSelectedKeys] = useState([]);
+  // const [selectedRows, setSelectedRows] = useState([]);
 
   const columns = [
     // {
@@ -194,43 +194,43 @@ function ToDOlist(props) {
     onChange: page => changePage(page),
   };
 
-  const rowSelection = {
-    onChange: (index, handleSelect) => {
-      setSelectedKeys([...index])
-      setSelectedRows([...handleSelect])
-    }
-  }
+  // const rowSelection = {
+  //   onChange: (index, handleSelect) => {
+  //     setSelectedKeys([...index])
+  //     setSelectedRows([...handleSelect])
+  //   }
+  // }
 
   //  下载 /导出功能
-  const download = (page, pageSize) => {
-    validateFields((err, values) => {
-      console.log('values: ', values);
-      if (!err) {
-        dispatch({
-          type: 'fault/faultTododownload',
-          payload: {
-            ...values,
-            ids: selectedKeys.toString(),
-            addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-            addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-            createTime: '',
-            type:values.type.toString(),
-            pageSize,
-            pageNum: page,
-          },
-        }).then(res => {
-          console.log('res: ', res);
-          const filename = `下载.xls`;
-          const url = window.URL.createObjectURL(res);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          a.click();
-          window.URL.revokeObjectURL(url);
-        });
-      }
-    });
-  };
+  // const download = (page, pageSize) => {
+  //   validateFields((err, values) => {
+  //     console.log('values: ', values);
+  //     if (!err) {
+  //       dispatch({
+  //         type: 'fault/faultTododownload',
+  //         payload: {
+  //           ...values,
+  //           ids: selectedKeys.toString(),
+  //           addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+  //           addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+  //           createTime: '',
+  //           type:values.type.toString(),
+  //           pageSize,
+  //           pageNum: page,
+  //         },
+  //       }).then(res => {
+  //         console.log('res: ', res);
+  //         const filename = `下载.xls`;
+  //         const url = window.URL.createObjectURL(res);
+  //         const a = document.createElement('a');
+  //         a.href = url;
+  //         a.download = filename;
+  //         a.click();
+  //         window.URL.revokeObjectURL(url);
+  //       });
+  //     }
+  //   });
+  // };
 
   // 设置初始值
   const record = {
@@ -436,7 +436,7 @@ function ToDOlist(props) {
               </Col>
             )}
             {expand === true && (
-              <Col span={24} style={{ textAlign: 'right' }}>
+              <Col span={8} style={{ textAlign: 'right' }}>
                 {extra}
               </Col>
             )}

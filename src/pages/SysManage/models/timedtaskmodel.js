@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import {
     qrtzjobList, // 列表
     addqrtzJob, // 添加
@@ -5,7 +6,6 @@ import {
     qrtzjobDelete, // 删除
     changeStatus, // 状态更改
     qrtzjobRun, // 任务调度执行一次
-    qrtzjobloglistdata, // 根据jobLogId查询任务调度日志数据
     qrtzjoblogDelete, // 删除调度日志
     qrtzjoblogClean, // 清除调度日志
     qrtzjoblogList, // 分页查询日志信息
@@ -17,7 +17,6 @@ export default {
     state: {
         qrtzjoblist: [],
         qrtzjobloglist: [],
-        getqrtzjoblogdata: {}
     },
 
     effects: {
@@ -55,15 +54,6 @@ export default {
             return yield call(qrtzjobRun, jobId);
         },
 
-        // 根据jobLogId查询任务调度日志数据
-        *getqrtzjoblogData({ payload }, { call, put }) {
-            const response = yield call(qrtzjobloglistdata, payload);
-            yield put({
-                type: 'getqrtzjoblogdata',
-                payload: response,
-            });
-        },
-
         // 删除调度日志
         *todeleteqrtzjobLog({ payload: { jobLogId } }, { call }) {
             return yield call(qrtzjoblogDelete, jobLogId);
@@ -75,12 +65,16 @@ export default {
         },
 
         // 分页查询日志信息
-        *toqueryqrtzjoblogList({ payload: { pageNum, pageSize, bodyParams } }, { call, put }) {
-            const response = yield call(qrtzjoblogList, pageNum, pageSize, bodyParams);
-            yield put({
-                type: 'qrtzjobloglist',
-                payload: response,
-            });
+        *toqueryqrtzjoblogList({ payload: { values, pageNum, pageSize } }, { call, put }) {
+            const response = yield call(qrtzjoblogList, values, pageNum, pageSize);
+            if (response.code === 200) {
+                yield put({
+                    type: 'saveqrtzjobloglist',
+                    payload: response,
+                });
+            } else {
+                message.error(response.msg);
+            }
         },
 
     },
@@ -92,16 +86,10 @@ export default {
                 qrtzjoblist: action.payload.data,
             };
         },
-        qrtzjobloglist(state, action) {
+        saveqrtzjobloglist(state, action) {
             return {
                 ...state,
                 qrtzjobloglist: action.payload.data,
-            };
-        },
-        getqrtzjoblogdata(state, action) {
-            return {
-                ...state,
-                getqrtzjoblogdata: action.payload.data,
             };
         },
     },

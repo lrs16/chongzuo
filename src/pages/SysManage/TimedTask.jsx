@@ -1,18 +1,24 @@
-import React, {
-  useState,
-  useEffect
-} from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
+import router from 'umi/router';
 import {
-  Card, Row, Col, Form, Input, Select, Button, Table, message, Divider, Switch,
-  // Popconfirm,
+  Card,
+  Row,
+  Col,
+  Form,
+  Input,
+  Select,
+  Button,
+  Table,
+  message,
+  Divider,
+  Switch,
   Icon,
   Dropdown,
   Menu,
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-// import DictLower from '@/components/SysDict/DictLower';
 import TaskModal from './components/TaskModal';
 import TaskjoblogModal from './components/TaskjoblogModal';
 
@@ -172,6 +178,18 @@ function TimedTask(props) {
     searchdata(1, paginations.pageSize);
   };
 
+  // 调度日志
+  const newpagetolog = id => {
+    router.push({
+      pathname: '/sysmanage/timedtask/schedultasklog',
+      query: {
+        Id: id,
+        addtab: true,
+        menuDesc: '调度日志',
+      },
+    })
+  }
+
   const handleReset = () => {
     resetFields();
     searchdata(1, 15)
@@ -279,7 +297,9 @@ function TimedTask(props) {
 
           <span>
             <Icon type="bars" />
-            <Link to={`/sysmanage/timedtask/schedultasklog/${record.jobId}`}>调度日志</Link>
+            <a type="link" onClick={() => newpagetolog(record.jobId)}>
+              执行日志
+            </a>
           </span>
         </Menu.Item>
       </Menu>
@@ -515,7 +535,7 @@ function TimedTask(props) {
           <Button type="primary" style={{ marginRight: 8 }}>
             导出数据
           </Button>
-          <Link to="/sysmanage/timedtask/schedultasklog/0">
+          <Link to="/sysmanage/timedtask/schedultasklog">
             <Button type="primary" style={{ marginRight: 8 }}>日 志</Button>
           </Link>
         </div>

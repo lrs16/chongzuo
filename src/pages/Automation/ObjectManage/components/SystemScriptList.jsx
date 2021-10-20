@@ -81,11 +81,11 @@ function SystemScriptList(props) {
     }, []);
 
     // 上传删除附件触发保存
-    useEffect(() => {
-        if (files.ischange) {
-            searchdata(1, 15);
-        }
-    }, [files]);
+    // useEffect(() => {
+    //     if (files.ischange) {
+    //         searchdata(1, 15);
+    //     }
+    // }, [files]);
 
     // 打开抽屉
     const handleShowDrawer = (drwertitle, type, record) => {
@@ -93,6 +93,7 @@ function SystemScriptList(props) {
         setTitle(drwertitle);
         setSaveType(type);
         if (type === 'update') {
+            setFiles({ arr: [], ischange: false });
             setData(record);
         } else {
             setData({});
@@ -136,6 +137,8 @@ function SystemScriptList(props) {
                 searchdata(1, 15);
             } else {
                 message.error(res.msg);
+                setFiles({ arr: [], ischange: false });
+                searchdata(1, 15);
             }
         });
     };

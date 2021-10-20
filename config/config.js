@@ -2044,7 +2044,7 @@ export default {
                       component: './SysManage/TimedTask',
                     },
                     {
-                      path: '/sysmanage/timedtask/schedultasklog/:joblogid',
+                      path: '/sysmanage/timedtask/schedultasklog',
                       name: '调度日志',
                       hideInMenu: true,
                       component: './SysManage/SchedultaskLog'

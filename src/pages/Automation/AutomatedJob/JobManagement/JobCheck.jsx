@@ -528,7 +528,7 @@ function JobCheck(props) {
                                 </Col>
                             </>
                         )}
-                        {expand ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '130px' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
+                        {expand ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
                     </Form>
                 </Row>
                 <div style={{ marginBottom: 8 }}>
