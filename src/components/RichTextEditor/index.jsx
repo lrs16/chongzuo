@@ -48,6 +48,9 @@ function Editor(props, ref) {
         formData.append('file', files[0], files[0].name);
         fetch('/sys/file/upload', {
           method: 'POST',
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
+          },
           body: formData,
         }).then(response => response.json())
           .then((data) => {
