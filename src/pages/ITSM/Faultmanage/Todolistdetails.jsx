@@ -445,11 +445,11 @@ function Todolistdetails(props) {
         }
 
         formValues.finishTime = values.finishTime.format('YYYY-MM-DD HH:mm:ss');
-        formValues.finishRequiredTime = values.finishRequiredTime ? values.finishRequiredTime.format('YYYY-MM-DD HH:mm:ss'):''; // 要求上传时间
+        formValues.finishRequiredTime = values.finishRequiredTime ? values.finishRequiredTime.format('YYYY-MM-DD HH:mm:ss') : ''; // 要求上传时间
         if (files.arr.length !== 0) {
           formValues.finishPracticeTime = files.arr[0].nowtime;
         } else if (values.finishPracticeTime !== '') {
-          formValues.finishPracticeTime = values.finishPracticeTime ? values.finishPracticeTime.format('YYYY-MM-DD HH:mm:ss'):'';
+          formValues.finishPracticeTime = values.finishPracticeTime ? values.finishPracticeTime.format('YYYY-MM-DD HH:mm:ss') : '';
         } else {
           formValues.finishPracticeTime = '';
         }
@@ -920,6 +920,7 @@ function Todolistdetails(props) {
                     onClick={() => { handleSubmit('submittransfer'); setChangeOrder('请选择处理') }}
                     onMouseOver={() => {
                       sessionStorage.setItem('flowtype', '9');
+                      setButtonType('')
                     }}
                     onFocus={() => 0}
                   >
@@ -942,7 +943,7 @@ function Todolistdetails(props) {
                     type="primary"
                     style={{ marginRight: 8 }}
                     onClick={() => { handleSubmit('flow') }}
-                    onMouseOver={() => { sessionStorage.setItem('flowtype', '1') }}
+                    onMouseOver={() => { sessionStorage.setItem('flowtype', '1'); setButtonType('') }}
                     onFocus={() => 0}>
                     流转
                   </Button>
@@ -1140,12 +1141,12 @@ function Todolistdetails(props) {
                   troubleFlowNodeRows.map((obj, index) => {
                     // panel详情组件
                     const Paneldesmap = new Map([
-                      ['故障登记', <RegisterQuery key={1}info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                      ['系统运维商审核', <ExamineQuery  key={2} info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                      ['系统运维商处理', <HandleQuery  key={3} info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                      ['系统运维商确认总结', <SummaryQuery  key={4} info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} showFilelist={troubleFlowNodeRows[1]} showFilelist2={troubleFlowNodeRows[2]}/>],
-                      ['自动化科业务负责人审核', <ExamineSecondQuery  key={5} info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                      ['自动化科专责确认', <ConfirmQuery  key={6} info={obj} maindata={main} />],
+                      ['故障登记', <RegisterQuery key={1} info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                      ['系统运维商审核', <ExamineQuery key={2} info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                      ['系统运维商处理', <HandleQuery key={3} info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                      ['系统运维商确认总结', <SummaryQuery key={4} info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} showFilelist={troubleFlowNodeRows[1]} showFilelist2={troubleFlowNodeRows[2]} />],
+                      ['自动化科业务负责人审核', <ExamineSecondQuery key={5} info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                      ['自动化科专责确认', <ConfirmQuery key={6} info={obj} maindata={main} />],
                     ]);
                     return (
                       <Panel Panel header={obj.fnname} key={index.toString()}>
