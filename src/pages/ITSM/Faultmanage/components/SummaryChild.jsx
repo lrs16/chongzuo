@@ -46,13 +46,13 @@ const forminladeLayout = {
 };
 
 const SummaryChild = React.forwardRef((props, ref) => {
-  const { finish, curruserinfo, ChangeFiles, tododetailslist, ChangeFileskey, showFilelist,showFilelist2 } = props;
+  const { finish, curruserinfo, ChangeFiles, tododetailslist, ChangeFileskey, showFilelist, showFilelist2 } = props;
   const message = '上传故障分析报告已超时， 实际上传时间已超过要求上传时间。'
   const { getFieldDecorator, setFieldsValue } = props.form;
   const attRef = useRef();
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
 
-  
+
   useEffect(() => {
     ChangeFiles(fileslist);
   }, [fileslist]);
@@ -91,7 +91,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
                   message: '请选择时间',
                 },
               ],
-              initialValue: finish.finishTime ? moment(finish.finishTime) :moment(Date.now())
+              initialValue: finish.finishTime ? moment(finish.finishTime) : moment(Date.now())
             })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
           </Form.Item>
         </Col>
@@ -105,7 +105,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
         </Col>
 
         {
-          ((showFilelist2 && showFilelist2.checkReportSign) ? showFilelist2.checkReportSign === '0': showFilelist.checkReportSign === '0') && (
+          ((showFilelist2 && showFilelist2.checkReportSign) ? showFilelist2.checkReportSign === '0' : showFilelist.checkReportSign === '0') && (
             <>
               <Col span={24}>
                 <Form.Item label="上传故障分析报告" {...ItemLayout}>

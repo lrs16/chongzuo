@@ -59,8 +59,6 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
     return [];
   };
 
-  console.log(check.checkTime, 'check.checkTime')
-
   const responsible = getTypebyTitle('故障责任方');
 
   return (

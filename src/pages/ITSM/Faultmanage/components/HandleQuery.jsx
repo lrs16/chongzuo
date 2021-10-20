@@ -27,7 +27,10 @@ const forminladeLayout = {
 };
 
 function HandleQuery(props) {
-  const { info, showFilelist } = props;
+  const {
+    info,
+    // showFilelist
+  } = props;
 
   return (
     <>

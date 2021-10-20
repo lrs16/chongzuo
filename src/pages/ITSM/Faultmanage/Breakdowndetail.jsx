@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'dva';
 import {
   Card,
@@ -11,7 +11,7 @@ import {
 } from 'antd';
 import moment from 'moment';
 import Link from 'umi/link';
-import MergeTable from '@/components/MergeTable';
+// import MergeTable from '@/components/MergeTable';
 
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
@@ -31,16 +31,14 @@ const formItemLayout = {
   }
 }
 
-
 function Breakdownlist(props) {
   const { pagetitle } = props.route.name;
   const {
     form: { getFieldDecorator, resetFields },
     dispatch,
     faultdetailArr,
-    loading
+    // loading
   } = props;
- 
 
   const columns = [
     {
@@ -85,7 +83,7 @@ function Breakdownlist(props) {
   const handleList = () => {
     dispatch({
       type: 'faultstatics/fetchfaulthandle',
-      payload: { statTimeBegin: statTimeBegin ? moment(statTimeBegin).format('YYYY-MM-DD 00:00:00'):'', statTimeEnd:statTimeEnd ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59'):'', dictType: 'type' }
+      payload: { statTimeBegin: statTimeBegin ? moment(statTimeBegin).format('YYYY-MM-DD 00:00:00') : '', statTimeEnd: statTimeEnd ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59') : '', dictType: 'type' }
     })
   }
 

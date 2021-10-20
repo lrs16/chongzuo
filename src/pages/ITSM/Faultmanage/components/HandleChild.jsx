@@ -30,7 +30,6 @@ const forminladeLayout = {
   },
 };
 
-
 const HandleChild = React.forwardRef((props, ref) => {
   const { handle, curruserinfo, ChangeFiles, ChangeFileskey, mainId } = props;
   const { getFieldDecorator, setFieldsValue, getFieldsValue } = props.form;
@@ -80,7 +79,7 @@ const HandleChild = React.forwardRef((props, ref) => {
     }
   }, []);
 
-  const type = typeof (handle.handleRecordAttachments);
+  // const type = typeof (handle.handleRecordAttachments);
   useImperativeHandle(
     ref,
     () => ({

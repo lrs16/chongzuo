@@ -24,7 +24,7 @@ import { getAndField } from '@/pages/SysManage/services/api';
 const { TextArea } = Input;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
-let selectCascader;
+// let selectCascader;
 
 const registerLevelmap = new Map([
   ['一般', '001'],
@@ -64,7 +64,7 @@ function Registration(props) {
   const [desrecords, setDesRecords] = useState([]);
 
   const {
-    form: { getFieldDecorator, resetFields, setFieldsValue, getFieldsValue },
+    form: { getFieldDecorator, resetFields, getFieldsValue },
     dispatch,
     // newno, // 新的故障编号
     curruserinfo, // 获取登录用户信息

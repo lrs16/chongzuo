@@ -5,7 +5,7 @@ import Downloadfile from '@/components/SysUpload/Downloadfile'; // 下载组件�
 const { TextArea } = Input;
 
 function SummaryQuery(props) {
-  const { info, maindata, formItemLayout, forminladeLayout, showFilelist,showFilelist2 } = props;
+  const { info, formItemLayout, forminladeLayout, showFilelist, showFilelist2 } = props;
 
   return (
     <>

@@ -16,7 +16,6 @@ function ModelRollback(props) {
     title, visible, ChangeVisible
   } = props;
 
-
   const handleCancel = () => {
     ChangeVisible(false);
   }
@@ -30,9 +29,6 @@ function ModelRollback(props) {
       }
     })
   }
-
-
-
 
   return (
     <>

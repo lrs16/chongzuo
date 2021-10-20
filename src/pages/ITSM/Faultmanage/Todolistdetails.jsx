@@ -5,7 +5,6 @@ import moment from 'moment';
 import { Card, Form, Button, Steps, Collapse, Popconfirm, message, Spin } from 'antd';
 
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import creatHistory from 'history/createHashHistory'; // 返回上一页
 import User from '@/components/SelectUser/User';
 import styles from './index.less';
 import ModelRollback from './components/ModelRollback'; // 回退组件
@@ -34,7 +33,6 @@ import RelationOrder from './RelationOrder';
 
 const { Step } = Steps;
 const { Panel } = Collapse;
-const history1 = creatHistory(); // 返回上一页
 
 const registerLevelmap = new Map([
   ['一般', '001'],
@@ -427,9 +425,7 @@ function Todolistdetails(props) {
 
   const saveSummary = cirStatus => {
     // 系统运维商确认总结
-    // eslint-disable-next-line consistent-return
     SummaryRef.current.validateFields((err, values) => {
-      console.log('values: ', values);
       if (cirStatus ? !err : true) {
         const formValues = values;
         formValues.taskId = id;
@@ -564,7 +560,6 @@ function Todolistdetails(props) {
 
   const handleRegist = (params) => {
     // 登记按钮回到登记页
-    // eslint-disable-next-line consistent-return
     ExamineRef.current.validateFields((err, values) => {
       const formValues = values;
       if (formValues.checkTime) {
@@ -590,7 +585,6 @@ function Todolistdetails(props) {
         return dispatch({
           type: 'fault/getfromsave', // 保存接口
           payload: { formValues },
-          // eslint-disable-next-line consistent-return
         }).then(res => {
           if (res.code === 200) {
             const taskId = id;
@@ -622,6 +616,7 @@ function Todolistdetails(props) {
               }
             });
           }
+          return null;
         });
       }
       return formerr();
@@ -692,6 +687,7 @@ function Todolistdetails(props) {
               }
             });
           }
+          return null;
         });
       }
     });
@@ -699,7 +695,6 @@ function Todolistdetails(props) {
 
   const toHandle1 = () => {
     // 确认回到处理
-    // eslint-disable-next-line consistent-return
     ConfirmRef.current.validateFields((err, values) => {
       if (!err) {
         const formValues = values;
@@ -877,7 +872,7 @@ function Todolistdetails(props) {
     <PageHeaderWrapper
       extra={
         <>
-          {tabActiveKey === 'faultForm' && (
+          {tabActiveKey === 'faultForm' && !loading && (
             <>
               {// 删除按钮只有故障登记有并且没有流转记录
                 flowNodeName === '故障登记' && troubleFlowLogs.length === 1 && (

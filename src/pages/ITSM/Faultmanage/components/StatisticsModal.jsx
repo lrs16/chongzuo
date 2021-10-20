@@ -1,8 +1,5 @@
-import React, { useState } from 'react';
-
-import {
-  Drawer
-} from 'antd';
+import React from 'react';
+import { Drawer } from 'antd';
 
 function StatisticsModal(props) {
   const {
@@ -10,9 +7,6 @@ function StatisticsModal(props) {
     title,
     handleCancel,
   } = props;
-
- 
-
 
   return (
     <>

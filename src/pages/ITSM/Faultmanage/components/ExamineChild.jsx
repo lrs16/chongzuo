@@ -1,7 +1,6 @@
 import React, { useRef, useImperativeHandle, useEffect, useState } from 'react';
 import SysUpload from '@/components/SysUpload'; // 附件下载组件
 import moment from 'moment';
-import router from 'umi/router';
 import {
     Form,
     Row,
@@ -9,14 +8,13 @@ import {
     Input,
     DatePicker,
     Radio,
-    // message
 } from 'antd';
 
 const { TextArea } = Input;
 const RadioGroup = Radio.Group;
 
 const ExamineChild = React.forwardRef((props, ref) => {
-    const { location,formItemLayout, forminladeLayout, check, curruserinfo, ChangeFiles, ChangeResult } = props;
+    const { formItemLayout, forminladeLayout, check, curruserinfo, ChangeFiles, ChangeResult } = props;
     const { getFieldDecorator } = props.form;
     const attRef = useRef();
     const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表

@@ -29,16 +29,6 @@ const formItemLayout = {
     sm: { span: 16 },
   },
 };
-const formminItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 4 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 20 },
-  },
-};
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -322,7 +312,7 @@ function ToDOlist(props) {
         style={{ display: 'none' }}
       />
       <Card>
-        <Row gutter={24}>
+        <Row gutter={16}>
           <Form {...formItemLayout} onSubmit={() => getTodolists()}>
             <Col span={8}>
               <Form.Item label="故障编号">
@@ -410,8 +400,8 @@ function ToDOlist(props) {
                   )}
                 </Form.Item>
               </Col>
-              <Col span={16}>
-                <Form.Item label="发生时间" {...formminItemLayout}>
+              <Col span={8}>
+                <Form.Item label="发生时间">
                   {getFieldDecorator('createTime', {
                     initialValue: ''
                   })(
@@ -421,6 +411,7 @@ function ToDOlist(props) {
                         defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
                       }}
                       format="YYYY-MM-DD HH:mm:ss"
+                      style={{ width: '100%' }}
                       placeholder="请选择"
                       allowClear
                     />,
@@ -428,18 +419,7 @@ function ToDOlist(props) {
                 </Form.Item>
               </Col>
             </span>
-            {expand === false && (
-              <Col span={8}>
-                <Form.Item>
-                  {extra}
-                </Form.Item>
-              </Col>
-            )}
-            {expand === true && (
-              <Col span={8} style={{ textAlign: 'right' }}>
-                {extra}
-              </Col>
-            )}
+            {expand ? (<Col span={8} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
           </Form>
         </Row>
         {/* <div style={{ marginBottom: 24 }}>

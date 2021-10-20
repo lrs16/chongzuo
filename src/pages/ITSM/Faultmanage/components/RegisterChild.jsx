@@ -17,7 +17,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
     ChangeFiles,
     main,
     curruserinfo,
-    saveType
+    // saveType
   } = props;
   const { getFieldDecorator, setFieldsValue } = props.form;
   const attRef = useRef();

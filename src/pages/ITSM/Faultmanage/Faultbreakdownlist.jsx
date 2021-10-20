@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import {
@@ -62,8 +62,8 @@ const columns = [
           to={{
             pathname: '/ITSM/faultmanage/querylist',
             query: {
-              addTimeBegin: statTimeBegin ? moment(statTimeBegin).format('YYYY-MM-DD 00:00:00'):'',
-              addTimeEnd:  statTimeEnd ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59'):'',
+              addTimeBegin: statTimeBegin ? moment(statTimeBegin).format('YYYY-MM-DD 00:00:00') : '',
+              addTimeEnd: statTimeEnd ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59') : '',
               type: record.statCode,
               dictType: 'type',
               pathpush: true
@@ -76,7 +76,6 @@ const columns = [
       }
       return <span>{text}</span>
     }
-
   },
 ]
 function Faultbreakdownlist(props) {
@@ -88,7 +87,6 @@ function Faultbreakdownlist(props) {
     loading
   } = props;
 
-
   const onChange = (date, dateString) => {
     [statTimeBegin, statTimeEnd] = dateString;
   }
@@ -97,7 +95,7 @@ function Faultbreakdownlist(props) {
     search = true;
     dispatch({
       type: 'faultstatics/fetchfaultlist',
-      payload: { statTimeBegin:statTimeBegin ? moment(statTimeBegin).format('YYYY-MM-DD 00:00:00'):'', statTimeEnd:statTimeEnd ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59'):'', dictType: 'type' }
+      payload: { statTimeBegin: statTimeBegin ? moment(statTimeBegin).format('YYYY-MM-DD 00:00:00') : '', statTimeEnd: statTimeEnd ? moment(statTimeEnd).format('YYYY-MM-DD 23:59:59') : '', dictType: 'type' }
     })
   }
 
@@ -136,7 +134,6 @@ function Faultbreakdownlist(props) {
       window.URL.revokeObjectURL(url);
     })
   }
-
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -188,13 +185,12 @@ function Faultbreakdownlist(props) {
           />
         )}
       </Card>
-
     </PageHeaderWrapper>
   )
 }
 
 export default Form.create({})(
-  connect(({ faultstatics,loading }) => ({
+  connect(({ faultstatics, loading }) => ({
     faultArr: faultstatics.faultArr,
     loading: loading.models.faultstatics
   }))(Faultbreakdownlist)
