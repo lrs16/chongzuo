@@ -194,3 +194,9 @@ export async function setTabClickNum(params) {
     requestType: 'form',
   });
 }
+
+// 主网集成 /main/network/getToken
+export async function getNetworkToken() {
+  return request(`/main/network/getToken`);
+}
+

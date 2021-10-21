@@ -2299,5 +2299,9 @@ export default {
       target: 'http://172.16.10.33:9901/',
       changeOrigin: true
     },
+    '/main/': {
+      target: 'http://172.16.10.33:9901/',    // 主网集成
+      changeOrigin: true
+    },
   },
 };

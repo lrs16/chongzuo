@@ -8,13 +8,13 @@ import React, { useEffect, useState } from 'react';
 import Link from 'umi/link';
 import router from 'umi/router';
 import { connect } from 'dva';
-import { Result, Button, Tabs, List, Icon } from 'antd';
+import { Result, Button, Tabs, List, Icon, Spin, message } from 'antd';
 import { formatMessage } from 'umi-plugin-react/locale';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import MenuContext from '@/layouts/MenuContext';
 import { getAuthorityFromRouter } from '@/utils/utils';
-import { setTabClickNum } from '@/services/api';
+import { setTabClickNum, getNetworkToken } from '@/services/api';
 // import TobTabHoc from './TopTabHoc';
 import logo from '../../public/menulogo.png';
 // import Layout from './BlankLayout';
@@ -92,6 +92,7 @@ const BasicLayout = props => {
   const [alonepath, setAlonepath] = useState([]);
   const [multiplepath, setMultiplepath] = useState([]);
   const [currenttab, setCurrentTab] = useState('');
+  const [networkLoading, setNetworkLoading] = useState(false)
 
   const clearcache = () => {
     dispatch({
@@ -372,15 +373,35 @@ const BasicLayout = props => {
 
   const handletopLink = (menuItemProps) => {
     const target = props.route.routes[0].routes.filter(item => item.path === menuItemProps.itemPath)[0];   // comfig配置的路由
-    const targetpath = target.routes[0].redirect;                                                // 获取此路由下redirect的路由
-    const targetmenu = menulist.filter(item => item.menuUrl === targetpath)[0];                  // 系统管理菜单列表获取redirect路由信息
-    const { id, menuUrl } = targetmenu;
-    const targetlink = toptabs.filter(item => item.id === id)[0];                                // 标签中是否已含有redirect的路由
-    if (!targetlink && targetmenu) {
-      const panels = { name: targetmenu.menuDesc, id, itemPath: menuUrl, query: location.query, closable: true, state: { cache: false }, };
-      toptabs.push(panels);
+    if (target && target.routes[0] && target.routes[0].redirect) {
+      const targetpath = target.routes[0].redirect;                                                // 获取此路由下redirect的路由
+      const targetmenu = menulist.filter(item => item.menuUrl === targetpath)[0];                  // 系统管理菜单列表获取redirect路由信息
+      const { id, menuUrl } = targetmenu;
+      const targetlink = toptabs.filter(item => item.id === id)[0];                                // 标签中是否已含有redirect的路由
+      if (!targetlink && targetmenu) {
+        const panels = { name: targetmenu.menuDesc, id, itemPath: menuUrl, query: location.query, closable: true, state: { cache: false }, };
+        toptabs.push(panels);
+      };
+      setActiveKey(id);
     };
-    setActiveKey(id);
+    if (menuItemProps && menuItemProps.itemPath === '/mainNetwork') {
+      setNetworkLoading(true)
+      getNetworkToken().then(res => {
+        if (res && res.data) {
+          localStorage.setItem('isLogin', res.data);
+          window.location = 'https://10.172.208.29:7005/pro/#/index';
+          setNetworkLoading(false)
+        } else {
+          message.error('请求失败，请联系管理员！');
+          setActiveKey('1444116690453917698');
+          router.push({
+            pathname: '/',
+            query: {}
+          });
+          setNetworkLoading(false);
+        }
+      })
+    }
   };
 
   const handleLink = (menuItemProps) => {
@@ -518,248 +539,249 @@ const BasicLayout = props => {
         disableContentMargin
         disableMobile // 禁用手机端菜单，不然手机端下会表现异常
       >
-        <ProLayout
-          // layout={'sidemenu'}
-          fixSiderbar
-          headerRender={false}
-          menuHeaderRender={false}
-          siderWidth={280}
-          navTheme="light"
-          // onCollapse={handleMenuCollapse}
-          menuItemRender={(menuItemProps, defaultDom) => {
-            if (menuItemProps.isUrl || menuItemProps.children) {
-              return defaultDom;
-            };
-            const targetmultiple = multiplepath.filter(item => item.path === menuItemProps.itemPath)[0];
-            const endid = () => {
-              if (targetmultiple) {
-                const targettype = toptabs.filter(item => item.type === targetmultiple.type);
-                const num = targettype.length;
-                return num === 0 ? 0 : Number(targettype.slice(-1)[0].id.replace(/[^0-9]/ig, "")) + 1;
-              }
-              return null
-            };
-            const rutersave = () => {
-              router.push({
-                pathname: location.pathname,
-                state: { ...location.state, cache: true },
-              });
-            };
-            const CleartabState = () => {
-              const target = toptabs.filter(item => item.id === tabid)[0];
-              if (target) {
-                delete target.data
-                if (target.state) {
-                  target.state.cache = false;
-                  target.state.refresh = true;
-                };
-                const newData = toptabs.map(item => {
-                  return item.id === target.id ? target : item
-                });
-                setTopTabs(newData)
+        {networkLoading ? <Spin spinning={networkLoading} /> :
+          <ProLayout
+            // layout={'sidemenu'}
+            fixSiderbar
+            headerRender={false}
+            menuHeaderRender={false}
+            siderWidth={280}
+            navTheme="light"
+            // onCollapse={handleMenuCollapse}
+            menuItemRender={(menuItemProps, defaultDom) => {
+              if (menuItemProps.isUrl || menuItemProps.children) {
+                return defaultDom;
               };
-            };
-            return (
-              <>
-                {targetmultiple && (
-                  <Link
-                    to={{
-                      pathname: menuItemProps.path,
-                      query: { tabid: `${targetmultiple.type}${endid()}` },
-                      state: {
-                        cache: false,
-                      },
-                    }}
-                    onClick={() => { handleLink(menuItemProps); CleartabState() }}
-                    onMouseDown={() => { rutersave() }}
-                  >{defaultDom}</Link>
-                )}
-                {!targetmultiple && (
-                  <Link to={{
-                    pathname: menuItemProps.path,
-                    state: { cache: false, reset: true },
-                  }}
-                    onClick={() => { handleLink(menuItemProps); CleartabState() }}
-                    onMouseDown={() => { rutersave() }}
-                  >{defaultDom}</Link>
-                )}
-              </>
-            );
-          }}
-          breadcrumbRender={(routers = []) => [
-            {
-              path: '/',
-              breadcrumbName: formatMessage({
-                id: 'menu.home',
-                defaultMessage: 'Home',
-              }),
-            },
-            ...routers,
-          ]}
-          itemRender={(route, params, routes, paths) => {
-            const first = routes.indexOf(route) === 0;
-            return first ? (
-              <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
-            ) : (
-              <span>{route.breadcrumbName}</span>
-            );
-          }}
-          menuDataRender={menuDataRender}
-          route={leftRoute}
-        // footerRender={footerRender}
-        >
-          <Button href="#toTop" size="large" type="danger" icon="arrow-up" style={{ zIndex: 9999, position: 'fixed', right: 20, bottom: 0 }} />
-          <div
-            id='toTop'
-            onMouseDown={(e) => {
-              e.preventDefault();
-              if (e.button === 0) {
+              const targetmultiple = multiplepath.filter(item => item.path === menuItemProps.itemPath)[0];
+              const endid = () => {
+                if (targetmultiple) {
+                  const targettype = toptabs.filter(item => item.type === targetmultiple.type);
+                  const num = targettype.length;
+                  return num === 0 ? 0 : Number(targettype.slice(-1)[0].id.replace(/[^0-9]/ig, "")) + 1;
+                }
+                return null
+              };
+              const rutersave = () => {
                 router.push({
                   pathname: location.pathname,
-                  query: location.query,
-                  state: { ...location.state, cache: true, reset: false },
+                  state: { ...location.state, cache: true },
                 });
-              }
+              };
+              const CleartabState = () => {
+                const target = toptabs.filter(item => item.id === tabid)[0];
+                if (target) {
+                  delete target.data
+                  if (target.state) {
+                    target.state.cache = false;
+                    target.state.refresh = true;
+                  };
+                  const newData = toptabs.map(item => {
+                    return item.id === target.id ? target : item
+                  });
+                  setTopTabs(newData)
+                };
+              };
+              return (
+                <>
+                  {targetmultiple && (
+                    <Link
+                      to={{
+                        pathname: menuItemProps.path,
+                        query: { tabid: `${targetmultiple.type}${endid()}` },
+                        state: {
+                          cache: false,
+                        },
+                      }}
+                      onClick={() => { handleLink(menuItemProps); CleartabState() }}
+                      onMouseDown={() => { rutersave() }}
+                    >{defaultDom}</Link>
+                  )}
+                  {!targetmultiple && (
+                    <Link to={{
+                      pathname: menuItemProps.path,
+                      state: { cache: false, reset: true },
+                    }}
+                      onClick={() => { handleLink(menuItemProps); CleartabState() }}
+                      onMouseDown={() => { rutersave() }}
+                    >{defaultDom}</Link>
+                  )}
+                </>
+              );
             }}
-            onContextMenu={(e) => {
-              e.preventDefault();
-              if (e.button === 2) {
-                setTabMenu({ x: e.pageX - 50, y: e.pageY - 40, v: 'block' });
-              }
+            breadcrumbRender={(routers = []) => [
+              {
+                path: '/',
+                breadcrumbName: formatMessage({
+                  id: 'menu.home',
+                  defaultMessage: 'Home',
+                }),
+              },
+              ...routers,
+            ]}
+            itemRender={(route, params, routes, paths) => {
+              const first = routes.indexOf(route) === 0;
+              return first ? (
+                <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
+              ) : (
+                <span>{route.breadcrumbName}</span>
+              );
             }}
+            menuDataRender={menuDataRender}
+            route={leftRoute}
+          // footerRender={footerRender}
           >
-            <Tabs
-              hideAdd
-              activeKey={activeKey}
-              type='editable-card'
-              onChange={(key) => callback(key)}
-              onEdit={onEdit}
-              style={{ margin: '-24px -24px 0 ', backgroundColor: '#fff', position: 'fixed', width: 'calc(100% - 280px)', zIndex: 999 }}
+            <Button href="#toTop" size="large" type="danger" icon="arrow-up" style={{ zIndex: 9999, position: 'fixed', right: 20, bottom: 0 }} />
+            <div
+              id='toTop'
+              onMouseDown={(e) => {
+                e.preventDefault();
+                if (e.button === 0) {
+                  router.push({
+                    pathname: location.pathname,
+                    query: location.query,
+                    state: { ...location.state, cache: true, reset: false },
+                  });
+                }
+              }}
+              onContextMenu={(e) => {
+                e.preventDefault();
+                if (e.button === 2) {
+                  setTabMenu({ x: e.pageX - 50, y: e.pageY - 40, v: 'block' });
+                }
+              }}
             >
-              {toptabs.map(obj => [
-                <TabPane
-                  tab={obj.name}
-                  key={obj.id}
-                  closable={obj.closable}
-                >
-                  {/* <Authorized authority={Userauth} noMatch={noMatch}>
+              <Tabs
+                hideAdd
+                activeKey={activeKey}
+                type='editable-card'
+                onChange={(key) => callback(key)}
+                onEdit={onEdit}
+                style={{ margin: '-24px -24px 0 ', backgroundColor: '#fff', position: 'fixed', width: 'calc(100% - 280px)', zIndex: 999 }}
+              >
+                {toptabs.map(obj => [
+                  <TabPane
+                    tab={obj.name}
+                    key={obj.id}
+                    closable={obj.closable}
+                  >
+                    {/* <Authorized authority={Userauth} noMatch={noMatch}>
                       {multipleurl && (
                         <div style={{ padding: '0 24px 0 24px', marginTop: 8, background: '#f1f1f1' }}>
                           {children}
                         </div>
                       )}
                     </Authorized> */}
-                </TabPane>,
-              ])}
-            </Tabs>
-          </div>
-          {authorized === Userauth && (
-            < >
-              <Authorized authority={Userauth} noMatch={noMatch}>
-                {/* <PageTab>{children}</PageTab> */}
-                {/* <MenuContext.Provider value={{ tabnew, cleartabdata }}>
+                  </TabPane>,
+                ])}
+              </Tabs>
+            </div>
+            {authorized === Userauth && (
+              < >
+                <Authorized authority={Userauth} noMatch={noMatch}>
+                  {/* <PageTab>{children}</PageTab> */}
+                  {/* <MenuContext.Provider value={{ tabnew, cleartabdata }}>
                   <div style={{ marginTop: 10 }}>
                     {children}
                   </div>
                 </MenuContext.Provider> */}
-                <div style={{ marginTop: 0 }}>
-                  <MenuContext.Provider value={{ currenttab }}>
-                    {children}
-                  </MenuContext.Provider>
-                </div>
-              </Authorized>
-            </>
-          )}
-          {authorized === 'incontrol' && (
-            <Result
-              status="403"
-              title="403"
-              subTitle="Sorry, 您没有此页面的访问权限。"
-            // extra={
-            //   <Button type="primary">
-            //     <Link to="/">返 回</Link>
-            //   </Button>
-            // }
-            />
-          )}
-          {authorized === undefined && (
-            <>
+                  <div style={{ marginTop: 0 }}>
+                    <MenuContext.Provider value={{ currenttab }}>
+                      {children}
+                    </MenuContext.Provider>
+                  </div>
+                </Authorized>
+              </>
+            )}
+            {authorized === 'incontrol' && (
               <Result
-                status="404"
-                title="404"
-                subTitle="Sorry, 您访问的页面不存在"
+                status="403"
+                title="403"
+                subTitle="Sorry, 您没有此页面的访问权限。"
               // extra={
               //   <Button type="primary">
-              //     <Link
-              //       to={{
-              //         pathname: '/',
-              //         query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
-              //       }}
-              //     >返 回</Link>
+              //     <Link to="/">返 回</Link>
               //   </Button>
               // }
               />
-            </>
-          )}
-          <List
-            bordered
-            style={{
-              position: 'fixed',
-              left: tabmenu.x,
-              top: tabmenu.y,
-              display: tabmenu.v,
-              zIndex: 9999,
-              background: '#fff'
-            }}>
-            <List.Item style={{ padding: '10px 24px', cursor: 'pointer' }}
-              onClick={() => {
-                // 重置列表查询条件
-                router.push({
-                  pathname: location.pathname,
-                  query: location.query,
-                  state: { ...location.state, cache: false, reset: true },
-                })
-                // 登记类重置表单信息
-                getcache();
-                dispatch({
-                  type: 'viewcache/sendcache',
-                  payload: {
-                    tabdata: undefined,
-                    tabid: activeKey,
-                  },
-                });
+            )}
+            {authorized === undefined && (
+              <>
+                <Result
+                  status="404"
+                  title="404"
+                  subTitle="Sorry, 您访问的页面不存在"
+                // extra={
+                //   <Button type="primary">
+                //     <Link
+                //       to={{
+                //         pathname: '/',
+                //         query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
+                //       }}
+                //     >返 回</Link>
+                //   </Button>
+                // }
+                />
+              </>
+            )}
+            <List
+              bordered
+              style={{
+                position: 'fixed',
+                left: tabmenu.x,
+                top: tabmenu.y,
+                display: tabmenu.v,
+                zIndex: 9999,
+                background: '#fff'
               }}>
-              <Icon type="reload" style={{ marginRight: 16 }} />刷新当前页签
-            </List.Item>
-            <List.Item style={{ padding: '10px 24px', cursor: 'pointer' }}
-              onClick={() => {
-                const target = toptabs.filter(item => item.id === activeKey)[0];
-                if (toptabs.length > 2) { setTopTabs([{ ...homepane[0] }, { ...target }]); }
-              }}
-            >
-              <Icon type="plus-square" style={{ marginRight: 16 }} />关闭其他
-            </List.Item>
-            <List.Item style={{ padding: '10px 24px', cursor: 'pointer' }}
-              onClick={() => {
-                if (toptabs.length > 1) { setTopTabs([{ ...homepane[0] }]); }
-                clearcache();         // 清缓存
-                setActiveKey('1444116690453917698');
-                router.push({
-                  pathname: '/',
-                  query: {}
-                });
-              }}
-            >
-              <Icon type="close" style={{ marginRight: 16 }} />关闭全部
-            </List.Item>
-            {/* <List.Item style={{ padding: '10px', cursor: 'pointer' }}>
+              <List.Item style={{ padding: '10px 24px', cursor: 'pointer' }}
+                onClick={() => {
+                  // 重置列表查询条件
+                  router.push({
+                    pathname: location.pathname,
+                    query: location.query,
+                    state: { ...location.state, cache: false, reset: true },
+                  })
+                  // 登记类重置表单信息
+                  getcache();
+                  dispatch({
+                    type: 'viewcache/sendcache',
+                    payload: {
+                      tabdata: undefined,
+                      tabid: activeKey,
+                    },
+                  });
+                }}>
+                <Icon type="reload" style={{ marginRight: 16 }} />刷新当前页签
+              </List.Item>
+              <List.Item style={{ padding: '10px 24px', cursor: 'pointer' }}
+                onClick={() => {
+                  const target = toptabs.filter(item => item.id === activeKey)[0];
+                  if (toptabs.length > 2) { setTopTabs([{ ...homepane[0] }, { ...target }]); }
+                }}
+              >
+                <Icon type="plus-square" style={{ marginRight: 16 }} />关闭其他
+              </List.Item>
+              <List.Item style={{ padding: '10px 24px', cursor: 'pointer' }}
+                onClick={() => {
+                  if (toptabs.length > 1) { setTopTabs([{ ...homepane[0] }]); }
+                  clearcache();         // 清缓存
+                  setActiveKey('1444116690453917698');
+                  router.push({
+                    pathname: '/',
+                    query: {}
+                  });
+                }}
+              >
+                <Icon type="close" style={{ marginRight: 16 }} />关闭全部
+              </List.Item>
+              {/* <List.Item style={{ padding: '10px', cursor: 'pointer' }}>
                 <Icon type="vertical-right" style={{ marginRight: 16 }} />关闭左侧所有
                 </List.Item>
               <List.Item style={{ padding: '10px', cursor: 'pointer' }}>
                 <Icon type="vertical-left" style={{ marginRight: 16 }} /> 关闭右侧所有
                 </List.Item> */}
-          </List>
-        </ProLayout>
+            </List>
+          </ProLayout>}
       </ProLayout >
     </div>
   );
