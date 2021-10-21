@@ -267,6 +267,7 @@ class Collection extends Component {
     const hourreads = changehour(hourread);
     const salesdatas = changesales(salesdata, 'sdl');
     const supplydatas = changesales(supplydata, 'gdl');
+    console.log(zeroread)
 
     return (
       <PageHeaderWrapper title="采集指标情况">
@@ -372,15 +373,14 @@ class Collection extends Component {
                 contentHeight={350}
               >
                 <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                  {Labecols === undefined && <Empty style={{ height: '250px' }} />}
-                  {Labecols !== undefined && zeroreads.length > 0 && (
+                  {zeroreads && zeroreads.length > 0 ? (
                     <Labelline
                       height={350}
                       data={zeroreads}
                       cols={Labecols}
                       padding={[30, 30, 30, 50]}
                     />
-                  )}
+                  ) : <Empty style={{ height: '250px' }} />}
                 </Spin>
               </ChartCard>
             </Col>

@@ -27,7 +27,7 @@ class ColumnarY extends React.Component {
             label={{
               formatter: val => {
                 if (val > 10000) {
-                  return `{(val / 10000).toFixed(1)}w`
+                  return `${(val / 10000).toFixed(1)}w`
                 }
                 return val
               },

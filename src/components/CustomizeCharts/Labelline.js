@@ -1,4 +1,3 @@
-/* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
 import {
   Chart,
@@ -13,6 +12,7 @@ import {
 import styles from './index.less';
 
 class Labelline extends Component {
+
   render() {
     const { height, padding, data, cols } = this.props;
     return (
