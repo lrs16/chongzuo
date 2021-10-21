@@ -158,7 +158,7 @@ function TreatmentrateDetail(props) {
   }
 
   const onShowSizeChange = (page, size) => {
-    searchdata(detailParams,page, size);
+    searchdata(detailParams,page-1, size);
     setPageinations({
       ...paginations,
       pageSize: size,

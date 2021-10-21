@@ -191,7 +191,7 @@ const User = props => {
         <Spin tip="正在加载数据..." spinning={Boolean(loading)}>
           {loading === false && type !== 'demand' && isnew && problemlist !== '' && currentPeocess !== '系统运维商审核' && (
             <>
-              <div>{sessionStorage.getItem('flowtype') === '9' ? '转单' : '下一环节'}人员</div>
+              <div>{sessionStorage.getItem('flowtype') === '9' ? '转单' :nextflowuser}人员</div>
               <div style={{ marginTop: 12 }} className={styles.useritem}>
                 <Checkbox.Group
                   defaultValue={defaultvalue}

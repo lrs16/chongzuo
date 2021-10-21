@@ -541,7 +541,7 @@ const Registrat = forwardRef((props, ref) => {
           <Col span={24}>
             <Form.Item label="交接物品" {...forminladeLayout}>
               {getFieldDecorator('handoverItems', {
-                initialValue: formrecord.handoverItems || undefined,
+                initialValue: formrecord.handoverItems && (formrecord.handoverItems).split(',') || undefined,
               })(
                 <Select
                   mode="multiple"

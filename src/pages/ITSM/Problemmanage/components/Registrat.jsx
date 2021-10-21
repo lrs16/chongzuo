@@ -387,7 +387,7 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请输入开发负责人',
                     },
                   ],
-                  initialValue: register.developmentLead || undefined,
+                  initialValue: register.developmentLead &&  (register.developmentLead).split(',')|| undefined,
                 })(
                   <Select placeholder="请选择" mode="multiple">
                     {(persondata).map(obj => [

@@ -185,41 +185,41 @@ function MonitorConfiguration(props) {
         return null;
       }
     },
-    {
-      title: '监护间隔（分/次)',
-      dataIndex: 'monitoringInterval',
-      key: 'monitoringInterval',
-      width: 150,
-      render: (text, record) => {
-        if (record.isNew) {
-          return <Input
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'monitoringInterval', record.key)}
-          />
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-        return null;
-      }
-    },
-    {
-      title: '监护次数',
-      dataIndex: 'monitoringTimes',
-      key: 'monitoringTimes',
-      width: 150,
-      render: (text, record) => {
-        if (record.isNew) {
-          return <Input
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'monitoringTimes', record.key)}
-          />
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-      }
-    },
+    // {
+    //   title: '监护间隔（分/次)',
+    //   dataIndex: 'monitoringInterval',
+    //   key: 'monitoringInterval',
+    //   width: 150,
+    //   render: (text, record) => {
+    //     if (record.isNew) {
+    //       return <Input
+    //         defaultValue={text}
+    //         onChange={e => handleFieldChange(e.target.value, 'monitoringInterval', record.key)}
+    //       />
+    //     }
+    //     if (record.isNew === false) {
+    //       return <span>{text}</span>
+    //     }
+    //     return null;
+    //   }
+    // },
+    // {
+    //   title: '监护次数',
+    //   dataIndex: 'monitoringTimes',
+    //   key: 'monitoringTimes',
+    //   width: 150,
+    //   render: (text, record) => {
+    //     if (record.isNew) {
+    //       return <Input
+    //         defaultValue={text}
+    //         onChange={e => handleFieldChange(e.target.value, 'monitoringTimes', record.key)}
+    //       />
+    //     }
+    //     if (record.isNew === false) {
+    //       return <span>{text}</span>
+    //     }
+    //   }
+    // },
     {
       title: '监控类型',
       dataIndex: 'type',

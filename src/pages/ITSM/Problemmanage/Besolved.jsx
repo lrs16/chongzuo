@@ -12,7 +12,8 @@ import {
   Table,
   DatePicker,
   Select,
-  Cascader
+  Cascader,
+  Tooltip
 } from 'antd';
 
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
@@ -94,6 +95,15 @@ function Besolved(props) {
       title: '问题分类',
       dataIndex: 'typecn',
       key: 'typecn',
+      align:'center',
+      ellipsis: true,
+      render: (text) => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '当前处理环节',

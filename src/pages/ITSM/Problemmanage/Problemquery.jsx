@@ -15,7 +15,8 @@ import {
   Popover,
   Checkbox,
   Icon,
-  Cascader
+  Cascader,
+  Tooltip
 } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -92,8 +93,8 @@ function Besolved(props) {
       dataIndex: 'no',
       key: 'no',
       width: 150,
+      align:'center',
       render: (text, record) => {
-
         return <a onClick={() => gotoDetail(text, record)}>{text}</a>;
       },
     },
@@ -102,174 +103,242 @@ function Besolved(props) {
       dataIndex: 'type',
       key: 'type',
       width: 150,
+      align:'center',
+      ellipsis: true,
+      render: (text) => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '问题描述',
       dataIndex: 'content',
       key: 'content',
-      width: 200,
+      width: 150,
+      align:'center',
+      ellipsis: true,
+      render: (text) => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '问题申报人',
       dataIndex: 'complainUser',
       key: 'complainUser',
       width: 200,
+      align:'center',
     },
     {
       title: '开发负责人',
       dataIndex: 'developmentLead',
       key: 'developmentLead',
       width: 120,
+      align:'center',
+      render: (text) => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '建单时间',
       dataIndex: 'addTime',
       key: 'addTime',
-      width: 120,
+      width: 200,
+      align:'center',
     },
     {
       title: '系统运维商确认结果',
       dataIndex: 'confirmOneResult',
       key: 'confirmOneResult',
-      width: 200
+      width: 200,
+      align:'center',
     },
     {
       title: '处理完成时间',
       dataIndex: 'handleTime',
       key: 'handleTime',
-      width: 150
+      width: 200,
+      align:'center',
     },
     {
       title: '系统开发商处理人',
       dataIndex: 'handler',
       key: 'handler',
       width: 150,
+      align:'center',
     },
     {
       title: '计划完成时间',
       dataIndex: 'planEndTime',
       key: 'planEndTime',
-      width: 150,
+      width: 200,
+      align:'center',
     },
     {
       title: '处理解决方案',
       dataIndex: 'handleContent',
       key: 'handleContent',
       width: 150,
+      align:'center',
     },
     {
       title: '系统开发商处理结果',
       dataIndex: 'handleResult',
       key: 'handleResult',
       width: 250,
+      align:'center',
     },
     {
       title: '问题登记人员确认结果',
       dataIndex: 'confirmThreeResult',
       key: 'confirmThreeResult',
       width: 250,
+      align:'center',
     },
     {
       title: '问题登记人员确认人',
       dataIndex: 'confirmThreeUser',
       key: 'confirmThreeUser',
       width: 200,
+      align:'center',
     },
     {
       title: '问题名称',
       dataIndex: 'title',
       key: 'title',
       width: 150,
+      align:'center',
+      ellipsis: true,
+      render: (text) => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '问题来源',
       dataIndex: 'source',
       key: 'source',
       width: 150,
+      align:'center',
     },
     {
       title: '重要程度',
       dataIndex: 'importance',
       key: 'importance',
       width: 150,
+      align:'center',
     },
     {
       title: '结果',
       dataIndex: 'result',
       key: 'result',
       width: 150,
+      align:'center',
     },
     {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
       width: 150,
+      align:'center',
     },
     {
       title: '预计工单超时时间',
       dataIndex: 'timeoutTime',
       key: 'timeoutTime',
       width: 200,
+      align:'center',
     },
     {
       title: '预计工单超时提醒时间',
       dataIndex: 'remindTime',
       key: 'remindTime',
       width: 200,
+      align:'center',
     },
     {
       title: '登记ID',
       dataIndex: 'registerId',
       key: 'registerId',
       width: 150,
+      align:'center',
     },
     {
       title: '发生时间',
       dataIndex: 'registerOccurTime',
       key: 'registerOccurTime',
-      width: 150,
+      width: 200,
+      align:'center',
     },
     {
       title: '期望完成时间',
       dataIndex: 'registerExpectTime',
       key: 'registerExpectTime',
-      width: 150,
+      width: 200,
+      align:'center',
     },
     {
       title: '所属项目',
       dataIndex: 'registerProject',
       key: 'registerProject',
       width: 150,
+      align:'center',
+      ellipsis: true,
+      render: (text) => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '影响范围',
       dataIndex: 'registerScope',
       key: 'registerScope',
       width: 150,
+      align:'center',
     },
     {
       title: '登记人单位名称',
       dataIndex: 'registerUnit',
       key: 'registerUnit',
       width: 150,
+      align:'center',
     },
     {
       title: '登记人部门名称',
       dataIndex: 'registerDept',
       key: 'registerDept',
       width: 150,
+      align:'center',
     },
     {
       title: '发送人',
       dataIndex: 'registerUser',
       key: 'registerUser',
       width: 150,
+      align:'center',
     },
     {
       title: '联系电话',
       dataIndex: 'registerUserPhone',
       key: 'registerUserPhone',
       width: 150,
+      align:'center',
     },
     // {
     //   title: '登记时间',
@@ -282,339 +351,394 @@ function Besolved(props) {
       dataIndex: 'registerStatus',
       key: 'registerStatus',
       width: 150,
+      align:'center',
     },
     {
       title: '登记流程节点实例ids',
       dataIndex: 'registerFlowNodeInstanceIds',
       key: 'registerFlowNodeInstanceIds',
       width: 200,
+      align:'center',
     },
     {
       title: '系统运维商审核ID',
       dataIndex: 'checkOneId',
       key: 'checkOneId',
       width: 200,
+      align:'center',
     },
     {
       title: '系统运维商审核结果',
       dataIndex: 'checkOneResult',
       key: 'checkOneResult',
       width: 200,
+      align:'center',
     },
     {
       title: '系统运维商审核意见',
       dataIndex: 'checkOneOpinion',
       key: 'checkOneOpinion',
       width: 200,
+      align:'center',
     },
     {
       title: '系统运维商审核人单位',
       dataIndex: 'checkOneUnit',
       key: 'checkOneUnit',
       width: 200,
+      align:'center',
     },
     {
       title: '系统运维商审核人部门',
       dataIndex: 'checkOneDept',
       key: 'checkOneDept',
       width: 200,
+      align:'center',
     },
     {
       title: '系统运维商审核人',
       dataIndex: 'checkOneUser',
       key: 'checkOneUser',
       width: 200,
+      align:'center',
     },
     {
       title: '系统运维商审核时间',
       dataIndex: 'checkOneTime',
       key: 'checkOneTime',
       width: 200,
+      align:'center',
     },
     {
       title: '系统运维商审核状态',
       dataIndex: 'checkOneStatus',
       key: 'checkOneStatus',
       width: 200,
+      align:'center',
     },
     {
       title: '系统运维商流程节点实例ids',
       dataIndex: 'checkOneFlowNodeInstanceIds',
       key: 'checkOneFlowNodeInstanceIds',
       width: 250,
+      align:'center',
     },
     {
       title: '自动化科业务负责人审核ID',
       dataIndex: 'checkTwoId',
       key: 'checkTwoId',
       width: 250,
+      align:'center',
     },
     {
       title: '自动化科业务负责人审核结果',
       dataIndex: 'checkTwoResult',
       key: 'checkTwoResult',
       width: 250,
+      align:'center',
     },
     {
       title: '自动化科业务负责人审核意见',
       dataIndex: 'checkTwoOpinion',
       key: 'checkTwoOpinion',
       width: 250,
+      align:'center',
     },
     {
       title: '自动化科业务负责人审核人单位',
       dataIndex: 'checkTwoUnit',
       key: 'checkTwoUnit',
       width: 250,
+      align:'center',
     },
     {
       title: '自动化科业务负责人审核人部门',
       dataIndex: 'checkTwoDept',
       key: 'checkTwoDept',
       width: 250,
+      align:'center',
     },
     {
       title: '自动化科业务负责人审核人',
       dataIndex: 'checkTwoUser',
       key: 'checkTwoUser',
       width: 250,
+      align:'center',
     },
     {
       title: '自动化科业务负责人审核时间',
       dataIndex: 'checkTwoTime',
       key: 'checkTwoTime',
       width: 250,
+      align:'center',
     },
     {
       title: '自动化科业务负责人审核状态',
       dataIndex: 'checkTwoStatus',
       key: 'checkTwoStatus',
       width: 250,
+      align:'center',
     },
     {
       title: '自动化科业务负责人流程节点实例ids',
       dataIndex: 'checkTwoFlowNodeInstanceIds',
       key: 'checkTwoFlowNodeInstanceIds',
       width: 300,
+      align:'center',
     },
     {
       title: '处理ID',
       dataIndex: 'handleId',
       key: 'handleId',
       width: 150,
+      align:'center',
     },
     {
       title: '处理人单位',
       dataIndex: 'handleUnit',
       key: 'handleUnit',
       width: 150,
+      align:'center',
     },
     {
       title: '处理人部门',
       dataIndex: 'handleDept',
       key: 'handleDept',
       width: 150,
+      align:'center',
     },
     {
       title: '处理状态',
       dataIndex: 'handleStatus',
       key: 'handleStatus',
       width: 150,
+      align:'center',
     },
     {
       title: '接单时间',
       dataIndex: 'handleAddTime',
       key: 'handleAddTime',
-      width: 150,
+      width: 200,
+      align:'center',
     },
     {
       title: '处理流程节点实例ids',
       dataIndex: 'handleFlowNodeInstanceIds',
       key: 'handleFlowNodeInstanceIds',
       width: 200,
+      align:'center',
     },
     {
       title: '系统运维商确认ID',
       dataIndex: 'confirmOneId',
       key: 'confirmOneId',
       width: 150,
+      align:'center',
     },
     {
       title: '系统运维商确认说明',
       dataIndex: 'confirmOneContent',
       key: 'confirmOneContent',
       width: 200,
+      align:'center',
     },
     {
       title: '系统运维商确认人单位',
       dataIndex: 'confirmOneUnit;',
       key: 'confirmOneUnit;',
       width: 200,
+      align:'center',
     },
     {
       title: '系统运维商确认人部门',
       dataIndex: 'confirmOneDept',
       key: 'confirmOneDept',
       width: 200,
+      align:'center',
     },
     {
       title: '系统运维商确认人',
       dataIndex: 'confirmOneUser',
       key: 'confirmOneUser',
       width: 150,
+      align:'center',
     },
     {
       title: '系统运维商确认时间',
       dataIndex: 'confirmOneTime',
       key: 'confirmOneTime',
-      width: 150,
+      width: 200,
+      align:'center',
     },
     {
       title: '系统运维商确认状态',
       dataIndex: 'confirmOneStatus',
       key: 'confirmOneStatus',
-      width: 150,
+      width: 200,
+      align:'center',
     },
     {
       title: '系统运维商确认流程节点实例ids',
       dataIndex: 'confirmOneFlowNodeInstanceIds',
       key: 'confirmOneFlowNodeInstanceIds',
       width: 250,
+      align:'center',
     },
     {
       title: '自动化科业务负责人确认ID',
       dataIndex: 'confirmTwoId',
       key: 'confirmTwoId',
-      width: 200,
+      width: 250,
+      align:'center',
     },
     {
       title: '自动化科业务负责人确认结果',
       dataIndex: 'confirmTwoResult',
       key: 'confirmTwoResult',
-      width: 200,
+      width: 250,
+      align:'center',
     },
     {
       title: '自动化科业务负责人确认说明',
       dataIndex: 'confirmTwoContent',
       key: 'confirmTwoContent',
-      width: 200,
+      width: 250,
+      align:'center',
     },
     {
       title: '自动化科业务负责人确认人单位',
       dataIndex: 'confirmTwoUnit',
       key: 'confirmTwoUnit',
       width: 250,
+      align:'center',
     },
     {
       title: '自动化科业务负责人确认人部门',
       dataIndex: 'confirmTwoDept',
       key: 'confirmTwoDept',
       width: 250,
+      align:'center',
     },
     {
       title: '自动化科业务负责人确认人',
       dataIndex: 'confirmTwoUser',
       key: 'confirmTwoUser',
       width: 250,
+      align:'center',
     },
     {
       title: '自动化科业务负责人确认时间',
       dataIndex: 'confirmTwoTime',
       key: 'confirmTwoTime',
       width: 250,
+      align:'center',
     },
     {
       title: '自动化科业务负责人确认状态',
       dataIndex: 'confirmTwoStatus',
       key: 'confirmTwoStatus',
       width: 250,
+      align:'center',
     },
     {
       title: '自动化科业务负责人确认流程节点实例ids',
       dataIndex: 'confirmTwoFlowNodeInstanceIds',
       key: 'confirmTwoFlowNodeInstanceIds',
       width: 300,
+      align:'center',
     },
     {
       title: '问题登记人员确认ID',
       dataIndex: 'confirmThreeId',
       key: 'confirmThreeId',
       width: 200,
+      align:'center',
     },
     {
       title: '问题登记人员确认说明',
       dataIndex: 'confirmThreeContent',
       key: 'confirmThreeContent',
       width: 250,
+      align:'center',
     },
     {
       title: '问题登记人员确认人单位',
       dataIndex: 'confirmThreeUnit',
       key: 'confirmThreeUnit',
       width: 250,
+      align:'center',
     },
     {
       title: '问题登记人员确认人部门',
       dataIndex: 'confirmThreeDept',
       key: 'confirmThreeDept',
       width: 250,
+      align:'center',
     },
     {
       title: '问题登记人员确认时间',
       dataIndex: 'confirmThreeTime',
       key: 'confirmThreeTime',
       width: 250,
+      align:'center',
     },
     {
       title: '问题登记人员确认状态',
       dataIndex: 'confirmThreeStatus',
       key: 'confirmThreeStatus',
       width: 250,
+      align:'center',
     },
     {
       title: '问题登记人员确认流程节点实例ids',
       dataIndex: 'confirmThreeFlowNodeInstanceIds',
       key: 'confirmThreeFlowNodeInstanceIds',
       width: 300,
+      align:'center',
     },
     {
       title: '待办ID',
       dataIndex: 'taskId',
       key: 'taskId',
       width: 150,
+      align:'center',
     },
     {
       title: '待办用户',
       dataIndex: 'taskUser',
       key: 'taskUser',
       width: 150,
+      align:'center',
     },
     {
       title: '待办用户ID',
       dataIndex: 'taskUserId',
       key: 'taskUserId',
       width: 150,
+      align:'center',
     },
     {
       title: '当前流程环境',
       dataIndex: 'flowNodeName',
       key: 'flowNodeName',
       width: 150,
+      align:'center',
     },
     {
       title: '流程代办创建时间',
       dataIndex: 'createTime',
       key: 'createTime',
-      width: 150,
+      width: 200,
+      align:'center',
     },
     {
       title: '数据来源',
       dataIndex: 'dataSource',
       key: 'dataSource',
       width: 150,
+      align:'center',
     },
   ];
-
 
   if (problem) {
     differentTitle = '问题统计查询'
@@ -850,113 +974,152 @@ function Besolved(props) {
     }
   }, [location.state]);
 
-  // 获取数据
-  useEffect(() => {
-    const values = getFieldsValue();
-    searchdata(values, paginations.current, paginations.pageSize)
-    const controlTable = [
-      {
-        title: '问题编号',
-        dataIndex: 'no',
-        key: 'no',
-        width: 150,
-        render: (text, record) => {
-          const handleClick = () => {
-            router.push({
-              pathname: `/ITSM/problemmanage/problemquery/detail`,
-              query: {
-                id: record.id,
-                taskName: record.statuscn,
-                No: text,
-              },
-            });
-          };
-          return <a onClick={handleClick}>{text}</a>;
-        },
+ // 获取数据
+ useEffect(() => {
+  const values = getFieldsValue();
+  searchdata(values, paginations.current, paginations.pageSize)
+  const controlTable = [
+    {
+      title: '问题编号',
+      dataIndex: 'no',
+      key: 'no',
+      width: 150,
+      align:'center',
+      render: (text, record) => {
+        const handleClick = () => {
+          router.push({
+            pathname: `/ITSM/problemmanage/problemquery/detail`,
+            query: {
+              id: record.id,
+              taskName: record.statuscn,
+              No: text,
+            },
+          });
+        };
+        return <a onClick={handleClick}>{text}</a>;
       },
-      {
-        title: '问题分类',
-        dataIndex: 'type',
-        key: 'type',
-        width: 150,
+    },
+    {
+      title: '问题分类',
+      dataIndex: 'type',
+      key: 'type',
+      width: 150,
+      align:'center',
+      ellipsis: true,
+      render: (text) => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
       },
-      {
-        title: '问题描述',
-        dataIndex: 'content',
-        key: 'content',
-        width: 200,
+    },
+    {
+      title: '问题描述',
+      dataIndex: 'content',
+      key: 'content',
+      width: 150,
+      align:'center',
+      ellipsis: true,
+      render: (text) => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
       },
-      {
-        title: '问题申报人',
-        dataIndex: 'complainUser',
-        key: 'complainUser',
-        width: 200,
+    },
+    {
+      title: '问题申报人',
+      dataIndex: 'complainUser',
+      key: 'complainUser',
+      width: 200,
+      align:'center',
+    },
+    {
+      title: '开发负责人',
+      dataIndex: 'developmentLead',
+      key: 'developmentLead',
+      align:'center',
+      width: 120,
+      ellipsis: true,
+      render: (text) => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
       },
-      {
-        title: '开发负责人',
-        dataIndex: 'developmentLead',
-        key: 'developmentLead',
-        width: 120,
-      },
-      {
-        title: '建单时间',
-        dataIndex: 'addTime',
-        key: 'addTime',
-        width: 120,
-      },
-      {
-        title: '系统运维商确认结果',
-        dataIndex: 'confirmOneResult',
-        key: 'confirmOneResult',
-        width: 200
-      },
-      {
-        title: '处理完成时间',
-        dataIndex: 'handleTime',
-        key: 'handleTime',
-        width: 150
-      },
-      {
-        title: '系统开发商处理人',
-        dataIndex: 'handler',
-        key: 'handler',
-        width: 150,
-      },
-      {
-        title: '计划完成时间',
-        dataIndex: 'planEndTime',
-        key: 'planEndTime',
-        width: 150,
-      },
-      {
-        title: '处理解决方案',
-        dataIndex: 'handleContent',
-        key: 'handleContent',
-        width: 150,
-      },
-      {
-        title: '系统开发商处理结果',
-        dataIndex: 'handleResult',
-        key: 'handleResult',
-        width: 250,
-      },
-      {
-        title: '问题登记人员确认结果',
-        dataIndex: 'confirmThreeResult',
-        key: 'confirmThreeResult',
-        width: 250,
-      },
-      {
-        title: '问题登记人员确认人',
-        dataIndex: 'confirmThreeUser',
-        key: 'confirmThreeUser',
-        width: 200,
-      },
-    ]
-    setColumns(controlTable)
-  }, [])
+    },
+    {
+      title: '建单时间',
+      dataIndex: 'addTime',
+      key: 'addTime',
+      align:'center',
+      width: 200,
+    },
+    {
+      title: '系统运维商确认结果',
+      dataIndex: 'confirmOneResult',
+      key: 'confirmOneResult',
+      width: 200,
+      align:'center',
+    },
+    {
+      title: '处理完成时间',
+      dataIndex: 'handleTime',
+      key: 'handleTime',
+      width: 200,
+      align:'center',
+    },
+    {
+      title: '系统开发商处理人',
+      dataIndex: 'handler',
+      key: 'handler',
+      width: 150,
+      align:'center',
+    },
+    {
+      title: '计划完成时间',
+      dataIndex: 'planEndTime',
+      key: 'planEndTime',
+      width: 200,
+      align:'center',
+    },
+    {
+      title: '处理解决方案',
+      dataIndex: 'handleContent',
+      key: 'handleContent',
+      width: 150,
+      align:'center',
+    },
+    {
+      title: '系统开发商处理结果',
+      dataIndex: 'handleResult',
+      key: 'handleResult',
+      width: 250,
+      align:'center',
+    },
+    {
+      title: '问题登记人员确认结果',
+      dataIndex: 'confirmThreeResult',
+      key: 'confirmThreeResult',
+      width: 250,
+      align:'center',
+    },
+    {
+      title: '问题登记人员确认人',
+      dataIndex: 'confirmThreeUser',
+      key: 'confirmThreeUser',
+      width: 200,
+      align:'center',
+    },
+  ]
+  setColumns(controlTable)
+}, [])
 
   const creataColumns = () => {
+    console.log(2)
     // columns
     initialColumns.length = 0;
     formThead.map((val, key) => {
@@ -975,6 +1138,16 @@ function Besolved(props) {
         obj.fixed = 'left';
         obj.width = 200;
       }
+      console.log(val.title,'val.title')
+      if(val.title === ('问题分类' || '问题描述' || '开发负责人' || '所属项目' || '问题名称')) {
+        obj.render = (text) => {
+          return (
+            <Tooltip placement="topLeft" title={text}>
+              <span>{text}</span>
+            </Tooltip>
+          );
+        }
+      }
       initialColumns.push(obj);
       setColumns(initialColumns);
       return null;
@@ -991,6 +1164,7 @@ function Besolved(props) {
     );
 
     if (formThead.length === 0) {
+      console.log(1)
       setColumns([])
     }
     creataColumns();

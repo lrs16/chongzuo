@@ -265,13 +265,10 @@ function Workorder(props) {
     }).then(res => {
       if (res.code === 200) {
         showback = false;
-        if (!params2) {
-          message.success('保存成功');
-          getInformation();
+        if(!params2) {
+          message.success(res.msg);
         }
-        // else {
-        //   getInformation();
-        // }
+        getInformation();
 
         if (params2 && params2 !== '系统开发商处理' && flowtype === '1' && !files.ischange) {
           setUserVisible(true);
@@ -299,7 +296,7 @@ function Workorder(props) {
   //  问题登记
   const saveRegister = (params2) => {
     RegistratRef.current.validateFields((err, values) => {
-      if (params2 ? !err : true) {
+      if (!err) {
         return dispatch({
           type: 'problemmanage/tobeSave',
           payload: {
@@ -316,12 +313,13 @@ function Workorder(props) {
           },
         }).then(res => {
           if (res.code === 200) {
-            message.success(res.msg);
+            
             setFiles({ ...files, ischange: false });
             getInformation();
             if (params2) {
-              // gotoCirapi();
               setUserVisible(true);
+            } else {
+              message.success(res.msg);
             }
           } else {
             message.error(res.msg);
@@ -362,7 +360,6 @@ function Workorder(props) {
 
   //   处理保存
   const saveHandle = (params2, uploadSive) => {
-
     HandleRef.current.validateFields((err, values) => {
       if (params2 ? !err : true) {
         const saveData = {
@@ -857,7 +854,7 @@ function Workorder(props) {
                   <Button
                     type="primary"
                     style={{ marginRight: 8 }}
-                    onClick={() => { handleSubmit(); setButandOrder('end') }}
+                    onClick={() => { handleSubmit('noSelectperson'); setButandOrder('end') }}
                   >
                     {
                       flowNodeName === '问题登记人员确认' ? '结束' : '流转'

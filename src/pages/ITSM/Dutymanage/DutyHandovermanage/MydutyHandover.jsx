@@ -1046,7 +1046,7 @@ function MydutyHandover(props) {
                   <Col span={8}>
                     <Form.Item label="交接物品">
                       {getFieldDecorator('handoverItems', {
-                        initialValue: cacheinfo.handoverItems || undefined,
+                        initialValue: cacheinfo.handoverItems && ( cacheinfo.handoverItems).split(',') || undefined,
                       })(
                         <Select
                           placeholder="请选择"
