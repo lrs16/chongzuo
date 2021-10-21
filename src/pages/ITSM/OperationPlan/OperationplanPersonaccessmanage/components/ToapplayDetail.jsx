@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
-    Form, 
-    Input, 
+    Form,
+    Input,
     Drawer,
 } from 'antd';
 
@@ -24,12 +24,12 @@ const withClick = (element, handleClick = () => { }) => {
 function ToapplayDetail(props) {
     const [visible, setVisible] = useState(false);
     const {
-        children, 
+        children,
         title,
         record,
-        form: { 
-            getFieldDecorator, 
-            resetFields 
+        form: {
+            getFieldDecorator,
+            resetFields
         },
     } = props;
 

@@ -55,6 +55,11 @@ function StatisticalAnalysis(props) {
     if (!Array.isArray(datas) || datas.length === 0) {
       return newArr;
     }
+    const arrCompare = (arrprops) => {
+      return (a, b) => {
+        return a[arrprops] - b[arrprops];
+      }
+    };
     for (let i = 0; datas.length < topN[v] ? i < datas.length : i < topN[v]; i += 1) {
       const vote = {};
       vote.type = datas[i].type;
@@ -62,7 +67,8 @@ function StatisticalAnalysis(props) {
       vote.expected = datas[0].total;
       newArr.push(vote);
     }
-    return newArr.reverse();
+    newArr.sort(arrCompare("total"));
+    return newArr;
   };
 
   useEffect(() => {

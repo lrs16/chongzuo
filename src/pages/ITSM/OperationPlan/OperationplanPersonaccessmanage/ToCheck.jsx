@@ -247,7 +247,7 @@ function ToCheck(props) {
           userinfo,
         }
       })
-    } else if (len > 1) { // 批量删除
+    } else if (len > 1) {
       Message.info('只能选择一条数据');
     } else {
       Message.info('请选择一条数据');
@@ -587,7 +587,7 @@ function ToCheck(props) {
                 </Form.Item>
               </Col>
             </span>
-            {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
+            {expand ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>

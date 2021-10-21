@@ -35,7 +35,7 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 const sexMap = ['男', '女'];
-const statusMap = ['已登记','待审核', '已审核'];
+const statusMap = ['已登记', '待审核', '已审核'];
 const sexselectmap = [
   { key: '0', title: '男' },
   { key: '1', title: '女' }
@@ -269,42 +269,22 @@ function Toregister(props) {
 
   // 申请人员进出删除
   const handleDelete = () => {
-    const {id} = selectedRows[0];
     const len = selectedRowKeys.length;
-
-    if (len === 1) { // 单条数据
+    if (len === 0) { // 未选择数据
+      Message.info('您还没有选择数据');
+    } else { // 单条、多条
+      const ids = selectedRows.map(item => { return item.id; });
       dispatch({
         type: 'apply/deleteApplyForms',
-        payload: {
-          registIds: id,
-        }
+        payload: { registIds: ids.toString() },
       }).then(res => {
         if (res.code === 200) {
-          Message.success('删除成功');
-          getfindRegistList();
-        };
-        if (res.code === -1) {
-          Message.error(res.msg);
-        };
-      });
-    } else if (len > 1) { // 批量删除
-      const registIds = selectedRows.map(item => {
-        return item.id;
-      })
-
-      dispatch({
-        type: 'apply/deleteApplyForms',
-        payload: { registIds: registIds.toString() },
-      }).then(res => {
-        if (res.code === 200) {
-          Message.success('删除成功');
+          Message.success(res.msg);
           getfindRegistList();
         } else {
           Message.error(res.msg);
         }
       });
-    } else {
-      Message.info('请选择一条数据');
     }
     setSelectedRowKeys([]);
     setSelectedRows([]);
@@ -654,7 +634,7 @@ function Toregister(props) {
                 </Form.Item>
               </Col>
             </span>
-            {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
+            {expand ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>
@@ -663,7 +643,7 @@ function Toregister(props) {
             dispatch={dispatch}
             userinfo={userinfo}
             onSumit={values => handleAdd(values)}
-            onChangeList={()=>getfindRegistList()}
+            onChangeList={() => getfindRegistList()}
           >
             <Button type="primary" style={{ marginRight: 8 }} disabled={hasSelected1}>
               申请
@@ -674,7 +654,7 @@ function Toregister(props) {
             dispatch={dispatch}
             selectedRows={selectedRows}
             onSumit={values => handleEdite(values)}
-            onChangeList={()=>getfindRegistList()}
+            onChangeList={() => getfindRegistList()}
           >
             <Button type="primary" style={{ marginRight: 8 }} disabled={!hasSelected}>
               编辑

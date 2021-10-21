@@ -877,7 +877,7 @@ function Todolistdetails(props) {
               {// 删除按钮只有故障登记有并且没有流转记录
                 flowNodeName === '故障登记' && troubleFlowLogs.length === 1 && (
                   <Popconfirm title="确定删除吗？" onConfirm={() => handleDelete()}>
-                    <Button type="danger" ghost>
+                    <Button type="danger" style={{ marginRight: 8 }} ghost>
                       删除
                     </Button>
                   </Popconfirm>
@@ -892,18 +892,18 @@ function Todolistdetails(props) {
                 check === undefined &&
                 finish === undefined &&
                 confirm === undefined && (
-                  <Button type="danger" ghost onClick={() => handleSubmit('goback')}>
+                  <Button type="danger" style={{ marginRight: 8 }} ghost onClick={() => handleSubmit('goback')}>
                     回退
                   </Button>
                 )}
               {// 接单只有系统运维商处理时有
                 main && (main.status === '40' || main.status === '45') && editState === 'add' && (
-                  <Button type="primary" onClick={() => handleSubmit('accpt')}>
+                  <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSubmit('accpt')}>
                     接单
                   </Button>
                 )}
               {main && main.status !== '40' && !(main.status === '45' && editState === 'add') && (
-                <Button type="primary" onClick={() => { handleSave(tosaveStatus); setButtonType('save') }}>
+                <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleSave(tosaveStatus); setButtonType('save') }}>
                   保存
                 </Button>
               )}
@@ -925,7 +925,7 @@ function Todolistdetails(props) {
               {/* 确认过程的时候不需要选人 1通过直接关闭 */}
               {flowNodeName === '自动化科专责确认'
                 ? resultconfirm === '1' && (
-                  <Button type="primary" onClick={() => { handleSubmit('over'); }}>
+                  <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleSubmit('over'); }}>
                     结束
                   </Button>
                 )

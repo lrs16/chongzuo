@@ -18,7 +18,7 @@ function ToApplays(props) {
   const { selectedRows } = props;
 
   return (
-    selectedRows && 
+    selectedRows &&
     (<Row gutter={24} style={{ marginTop: 24 }}>
       <Form {...formItemLayout}>
         <Col span={8}>

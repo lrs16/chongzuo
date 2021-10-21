@@ -431,7 +431,7 @@ function WorkplanDetail(props) {
   };
 
   useEffect(() => {
-    if (main) {
+    if (main && main.responseStatus) {
       if (!delay && flowNodeName === '工作执行' && (workUser && workUser.split(",").length > 1 && main && main.responseStatus === '0')) {
         message.info('请接单..', 1);
         setShow(false);
@@ -443,7 +443,7 @@ function WorkplanDetail(props) {
         setShow(true);
       }
     }
-  }, [main])
+  }, [main && main.responseStatus])
 
   const responseaccpt = () => { // 接单
     return dispatch({

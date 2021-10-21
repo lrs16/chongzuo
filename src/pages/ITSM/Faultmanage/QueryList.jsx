@@ -18,7 +18,6 @@ import {
   Cascader,
   Popover,
   Checkbox,
-  Badge,
   Tooltip
 } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
@@ -36,36 +35,23 @@ const formItemLayout = {
   },
 };
 
-const form10ladeLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 4 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 20 },
-  },
-}
-
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 
 function QueryList(props) {
-  const pagetitle = props.route.name;
-
-
+  // const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, resetFields, validateFields, setFieldsValue, getFieldsValue },
+    form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
     location: { query:
       {
-        dictCode,
+        // dictCode,
         type,
         status,
         addTimeBegin,
         addTimeEnd,
         currentNode,
-        statName,
+        // statName,
       },
     },
     loading,
@@ -1368,7 +1354,7 @@ function QueryList(props) {
   useEffect(() => {
     if (location && location.state && location.state.cacheinfo) {
       const { addTime, handleTime,registerOccurTime } = location.state.cacheinfo;
-      const { checkTime } = location.state.cacheinfo;
+      // const { checkTime } = location.state.cacheinfo;
       setFieldsValue({
         addTime: addTime?.length ? [moment(addTime[0]), moment(addTime[1])] : '',
         handleTime: handleTime?.length ? [moment(handleTime[0]), moment(handleTime[1])] : '',
@@ -1404,7 +1390,11 @@ function QueryList(props) {
       if (location.state.cacheinfo) {
         const { current, pageSize } = location.state.cacheinfo.paginations;
         // const { createTime } = location.state.cacheinfo;
-        const { registerTime, handleTime, createTime, addTime, registerOccurTime } = location.state.cacheinfo;
+        const {
+          // registerTime,
+          handleTime,
+          // createTime, addTime, registerOccurTime
+        } = location.state.cacheinfo;
         setExpand(location.state.cacheinfo.expand);
         setPageinations({ ...paginations, current, pageSize });
         setFieldsValue({

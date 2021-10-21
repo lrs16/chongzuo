@@ -548,7 +548,6 @@ export default {
                       name: '故障管理',
                       icon: 'control',
                       // component: './ITSM/Faultmanage/Registration',
-
                       routes: [
                         {
                           path: '/ITSM/faultmanage',
@@ -583,12 +582,6 @@ export default {
                           name: '故障工单详情',
                           icon: 'cloud-server',
                           component: './ITSM/Faultmanage/Querylistdetails',
-                        },
-                        {
-                          path: '/ITSM/faultmanage/overtime',
-                          name: '超时查询',
-                          icon: 'control',
-                          component: './ITSM/Faultmanage/Overtime',
                         },
                         {
                           path: '/ITSM/faultmanage/faultstaticount',

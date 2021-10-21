@@ -95,17 +95,17 @@ function Newcheck(props) {
     };
 
     // 点击页签右键刷新
-  useEffect(() => {
-    if (location.state && location.state.reset && mainId) {
-      dispatch({
-        type: '/ITSM/operationplan/personaccessmanage/tocheck/newcheck',
-        payload: {
-          mainId,
-        },
-      });
-      setActiveKey(['1', '2']);
-    }
-  }, [location.state])
+    useEffect(() => {
+        if (location.state && location.state.reset && mainId) {
+            dispatch({
+                type: '/ITSM/operationplan/personaccessmanage/tocheck/newcheck',
+                payload: {
+                    mainId,
+                },
+            });
+            setActiveKey(['1', '2']);
+        }
+    }, [location.state])
 
     const operations = (
         <>

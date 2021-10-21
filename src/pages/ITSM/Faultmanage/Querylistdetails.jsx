@@ -10,7 +10,6 @@ import {
   Steps
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import creatHistory from 'history/createHashHistory'; // 返回上一页
 import styles from './index.less';
 // 各个子组件
 import RegisterQuery from './components/RegisterQuery'; // 故障登记
@@ -24,7 +23,6 @@ import RelationOrder from './RelationOrder';
 const { Panel } = Collapse;
 const { Step } = Steps;
 let image;
-const history = creatHistory(); // 返回上一页
 
 const tabList = [
   {
@@ -64,7 +62,6 @@ const forminladeLayout = {
 };
 
 function Querylistdetails(props) {
-  // const pagetitle = props.route.name;
   const [activeKey, setActiveKey] = useState();
   const [tabActiveKey, setTabActiveKey] = useState('faultForm'); // tab切换
 

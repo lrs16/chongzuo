@@ -547,7 +547,7 @@ function Toregister(props) {
                 </Form.Item>
               </Col>
             </span>
-            {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
+            {expand ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>

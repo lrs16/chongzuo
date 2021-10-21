@@ -29,10 +29,10 @@ const Content = forwardRef((props, ref) => {
         selectedRows,
         ChangeResult,
         type,
-        form: { 
-            getFieldDecorator, 
-            getFieldsValue, 
-            resetFields 
+        form: {
+            getFieldDecorator,
+            getFieldsValue,
+            resetFields
         },
     } = props;
 
