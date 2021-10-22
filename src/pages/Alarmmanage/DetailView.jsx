@@ -10,7 +10,7 @@ import AlarmHistory from './components/AlarmHistory';
 import NoticeHistory from './components/NoticeHistory';
 
 function DetailView(props) {
-  const { dispatch, location, location: { query: { Id, code } }, statuslogs, historylists } = props;
+  const { dispatch, location, location: { query: { Id, code, sourceCode } }, statuslogs, historylists, smslist } = props;
   const pagetitle = props.route.name;
   const [tabActivekey, settabActivekey] = useState('1'); // 打开标签
   const { currenttab } = useContext(RecordContext);
@@ -29,10 +29,18 @@ function DetailView(props) {
     });
   };
 
+  const getmsmlist = () => {
+    dispatch({
+      type: 'alarmdetails/fetchsms',
+      payload: { sourceCode },
+    });
+  };
+
   useEffect(() => {
     if (currenttab && currenttab.state && currenttab.state.record && currenttab.state.record.warnModule) {
       getstatusLog(currenttab.state.record.warnModule);
       gethistroylist(currenttab.state.record.warnModule);
+      getmsmlist();
     }
   }, [currenttab])
 
@@ -81,7 +89,7 @@ function DetailView(props) {
         {tabActivekey === '1' && (<AlarmInfo data={currenttab && currenttab.state && currenttab.state || {}} />)}
         {tabActivekey === '2' && (<OperationRecord data={statuslogs || []} />)}
         {tabActivekey === '3' && (<AlarmHistory data={historylists || []} />)}
-        {tabActivekey === '4' && (<NoticeHistory data={[]} />)}
+        {tabActivekey === '4' && (<NoticeHistory data={smslist || []} />)}
       </Card>
     </PageHeaderWrapper>
   );
@@ -90,5 +98,6 @@ function DetailView(props) {
 export default connect(({ alarmdetails, loading }) => ({
   statuslogs: alarmdetails.statuslogs,
   historylists: alarmdetails.historylists,
+  smslist: alarmdetails.smslist,
   loading: loading.models.alarmdetails,
 }))(DetailView);

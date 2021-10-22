@@ -33,6 +33,7 @@ const columns = [
           query: {
             Id: record.id,
             code: record.monitorCode,
+            sourceCode: record.sourceCode,
           },
           state: {
             dynamicpath: true,
@@ -167,7 +168,7 @@ function MeasurList(props) {
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
   const [searchdata, setSearchData] = useState({});
   const [activeKey, setActiveKey] = useState('');
-  const { tabActivekey, selectdata, tabdate, warnModule, reset } = useContext(TypeContext);
+  const { selectdata, tabdate, warnModule } = useContext(TypeContext);
 
   const getvalues = () => {
     const val = getFieldsValue();
@@ -213,7 +214,7 @@ function MeasurList(props) {
   const handleReset = () => {
     ChangeActiveTabKey('告警概览');
     resetFields();
-    //  handleSearch(1, 10);
+    handleSearch(1, 10);
   };
 
   const handleTabs = key => {

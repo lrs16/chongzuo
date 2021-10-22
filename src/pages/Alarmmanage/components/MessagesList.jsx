@@ -166,6 +166,7 @@ function MessagesList(props) {
             query: {
               Id: record.id,
               code: record.monitorCode,
+              sourceCode: record.sourceCode,
             },
             state: {
               dynamicpath: true,

@@ -1,6 +1,6 @@
 import router from 'umi/router';
 import { message } from 'antd';
-import { statusLog, hisWarnList } from '../services/api';
+import { statusLog, hisWarnList, getSms } from '../services/api';
 
 export default {
   namespace: 'alarmdetails',
@@ -8,6 +8,7 @@ export default {
   state: {
     statuslogs: undefined,
     historylists: undefined,
+    smslist: undefined,
   },
 
   effects: {
@@ -33,6 +34,15 @@ export default {
         });
       }
     },
+    *fetchsms({ payload }, { call, put }) {
+      const response = yield call(getSms, payload);
+      if (response.code === 200) {
+        yield put({
+          type: 'savesms',
+          payload: response.data,
+        });
+      }
+    },
   },
 
   reducers: {
@@ -53,6 +63,12 @@ export default {
       return {
         ...state,
         historylists: action.payload || [],
+      };
+    },
+    savesms(state, action) {
+      return {
+        ...state,
+        smslist: action.payload || [],
       };
     },
   },

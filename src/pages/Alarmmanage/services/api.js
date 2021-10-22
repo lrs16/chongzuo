@@ -89,6 +89,15 @@ export async function hisWarnList(params) {
   });
 }
 
+// /warn/biz/getSms 获取告警通知
+export async function getSms(params) {
+  return request(`/warn/biz/getSms`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
 // 生成工单 /warn/biz/createOrder
 export async function createOrder(params) {
   return request(`/warn/biz/createOrder`, {
@@ -183,3 +192,4 @@ export async function delUser(params) {
     requestType: 'form',
   });
 }
+

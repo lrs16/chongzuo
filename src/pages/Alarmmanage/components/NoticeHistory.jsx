@@ -2,21 +2,13 @@
 import React, { Component } from 'react';
 import { Table, Badge } from 'antd';
 
-const statusMap = ['error', 'success'];
-const status = ['发送失败', '发送成功'];
 class NoticHistory extends Component {
   render() {
-    const rowSelection = {
-      onChange: (selectedRows) => {
-        console.log(selectedRows);
-      }
-    };
     const columns = [
       {
         title: '短信内容',
-        dataIndex: 'content',
-        key: 'content',
-        width: 300,
+        dataIndex: 'smsContent',
+        key: 'smsContent',
       },
       {
         title: '发送时间',
@@ -24,29 +16,37 @@ class NoticHistory extends Component {
         key: 'sendingtime',
       },
       {
-        title: '发送方式',
-        dataIndex: 'sendingmethod',
-        key: 'sendingmethod',
-      },
-      {
         title: '接收人',
-        dataIndex: 'receiver',
-        key: 'receiver',
+        dataIndex: 'username',
+        key: 'username',
       },
       {
         title: '接收号码',
-        dataIndex: 'receivernumber',
-        key: 'receivernumber',
+        dataIndex: 'tel',
+        key: 'tel',
       },
       {
         title: '状态',
-        dataIndex: 'status',
-        key: 'status',
-        render: (text, record) => (
-          <span>
-            <Badge status={statusMap[record.status]} text={status[record.status]} />
-          </span>
-        ),
+        dataIndex: 'success',
+        key: 'success',
+        width: 100,
+        render: (text) => {
+          const status = new Map([
+            [-1, '待发送'],
+            [0, '发送成功'],
+            [1, '发送失败'],
+          ]);
+          const statusMap = new Map([
+            [-1, 'processing'],
+            [0, 'success'],
+            [1, 'error'],
+          ])
+          return (
+            <span>
+              <Badge status={statusMap.get(text)} text={status.get(text)} />
+            </span>
+          )
+        },
       },
     ];
 
@@ -58,7 +58,6 @@ class NoticHistory extends Component {
         <Table dataSource={dataSource}
           rowKey={record => record.notichid}
           columns={columns}
-          rowSelection={rowSelection}
         />
       </div>
     );

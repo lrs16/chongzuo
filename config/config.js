@@ -2292,7 +2292,7 @@ export default {
       changeOrigin: true
     },
     '/warn/': {
-      target: 'http://172.16.10.33:9901/',
+      target: 'http://172.16.10.132:9901/',
       changeOrigin: true
     },
     '/duty/': {
