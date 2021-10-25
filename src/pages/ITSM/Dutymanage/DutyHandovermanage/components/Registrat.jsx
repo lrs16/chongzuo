@@ -1,7 +1,7 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import moment from 'moment';
 import SysUpload from '@/components/SysUpload';
-import { Row, Col, Form, Input, DatePicker, Select, Card, message } from 'antd';
+import { Row, Col, Form, Input, DatePicker, Select, Card } from 'antd';
 import SysDict from '@/components/SysDict';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
 import styles from '../index.less';
@@ -33,7 +33,6 @@ const Registrat = forwardRef((props, ref) => {
     type,
   } = props;
 
-  const [shiftList, setShiftList] = useState([]);
   const [fileslist, setFilesList] = useState([]);
   const [selectdata, setSelectData] = useState('');
 
@@ -118,7 +117,7 @@ const Registrat = forwardRef((props, ref) => {
       .add(1, 'd')
       .format('YYYY-MM-DD');
     let end;
-    const { values, id, begintime, endtime, userid, groupId } = option.props;
+    const { id, begintime, endtime, userid, groupId } = option.props;
     const start = `${currentDate} ${begintime}`;
     if (
       moment(new Date())

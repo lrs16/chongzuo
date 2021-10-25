@@ -23,28 +23,29 @@ function Back(props) {
     form: { getFieldDecorator, validateFields, resetFields },
     children,
     selectedRows,
-    detailPage
+    detailPage,
   } = props;
   const handleopenClick = () => {
-    if(!detailPage) {
+    if (!detailPage) {
       if (selectedRows.length === 0) {
-        message.info('请至少选择一条数据')
+        message.info('请至少选择一条数据');
         return false;
       }
       const res = selectedRows.every(item => {
         if (item.checkStatus === '待审核') {
           return item.id;
         }
-        
+
         message.info('请选择审核状态:待审核');
-        return false
-      })
-  
+        return false;
+      });
+
       if (res === false) {
         return false;
       }
     }
     setVisible(true);
+    return [];
   };
 
   const handleCancel = () => {
@@ -82,7 +83,7 @@ function Back(props) {
                     message: '请说明退回原因',
                   },
                 ],
-              })(<TextArea style={{height:'200px'}}/>)}
+              })(<TextArea style={{ height: '200px' }} />)}
             </Form.Item>
           </Form>
         </Card>

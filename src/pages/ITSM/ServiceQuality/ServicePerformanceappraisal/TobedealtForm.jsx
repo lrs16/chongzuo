@@ -3,15 +3,15 @@ import { Form, Button, message, Collapse, Steps } from 'antd';
 import moment from 'moment';
 import router from 'umi/router';
 import User from '@/components/SelectUser/User';
-import { contractProvider } from '../services/quality';
 import { connect } from 'dva';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { contractProvider } from '../services/quality';
 import BusinessAudit from './components/BusinessAudit';
 import Register from './components/Register';
 import ProviderConfirmation from './components/ProviderConfirmation';
 import AssessmentConfirmation from './components/AssessmentConfirmation';
 import Achievementsflow from './Achievementsflow';
 import Relatedorder from './Relatedorder';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { judgeTimeoutStatus, saveTimeoutMsg } from '../../services/api';
 import TimeoutModal from '../../components/TimeoutModal';
 import Reasonregression from '../../Problemmanage/components/Reasonregression';
@@ -167,7 +167,7 @@ function TobedealtForm(props) {
   }
 
   useEffect(() => {
-    if(assessNo) {
+    if (assessNo) {
       getUserinfo();
       openFlow();
       gethisTask();
@@ -182,8 +182,7 @@ function TobedealtForm(props) {
       sessionStorage.setItem('Processtype', 'achievements');
       setTabActiveKey('workorder');
     }
-  }, [location.state])
-  
+  }, [location.state]);
 
   useEffect(() => {
     if (
@@ -192,14 +191,12 @@ function TobedealtForm(props) {
         (hisTasks && hisTasks.length)) &&
       loading === false &&
       taskData &&
-      taskData.currentTask && taskData.currentTask.id &&
-      taskData.hisTasks && uservisible === false
+      taskData.currentTask &&
+      taskData.currentTask.id &&
+      taskData.hisTasks &&
+      uservisible === false
     ) {
       const { providerId, scoreId, target1Id, target2Id, assessType } = currentTask;
-      let comfirmScoreid;
-      if (taskData && taskData.clause && taskData.clause.scoreId) {
-        comfirmScoreid = taskData.clause.scoreId;
-      }
 
       let noeditProviderid;
       let sored;
@@ -215,19 +212,19 @@ function TobedealtForm(props) {
       }
 
       if (providerId || noeditProviderid) {
-        getContrractname( providerId || noeditProviderid );
+        getContrractname(providerId || noeditProviderid);
       }
 
       if (assessType || type) {
-        getTarget1(assessType || type );
+        getTarget1(assessType || type);
       }
 
       if (target1Id || tar1) {
-        getTarget2( target1Id || tar1);
+        getTarget2(target1Id || tar1);
       }
 
       if ((target2Id || tar2) && (scoreId || sored)) {
-        getclausedetail((target2Id || tar2),(scoreId || sored));
+        getclausedetail(target2Id || tar2, scoreId || sored);
       }
     }
   }, [loading]);
@@ -260,6 +257,7 @@ function TobedealtForm(props) {
       },
     }).then(res => {
       if (res.code === 200) {
+        message.success(res.msg);
         router.push({
           pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform`,
           query: {
@@ -293,7 +291,7 @@ function TobedealtForm(props) {
             id: currentTask.id,
             instanceId,
             taskId,
-            assessType:values.assessType === '系统运维' ? '2':'1',
+            assessType: values.assessType === '系统运维' ? '2' : '1',
             assessTime: moment(values.assessTime).format('YYYY-MM-DD HH:mm:ss'),
             applyTime: moment(values.applyTime).format('YYYY-MM-DD HH:mm:ss'),
             attachment: files.ischange ? JSON.stringify(files.arr) : values.attachment,
@@ -303,7 +301,7 @@ function TobedealtForm(props) {
             if (circulation) {
               setUserVisible(true);
             } else {
-              message.info(res.msg);
+              message.success(res.msg);
               openFlow();
             }
           } else {
@@ -311,9 +309,8 @@ function TobedealtForm(props) {
           }
         });
       }
-      return null
-    }
-    );
+      return null;
+    });
   };
 
   //  审核保存流转
@@ -329,7 +326,7 @@ function TobedealtForm(props) {
     const obj = {};
     formRef.current.validateFields((err, values) => {
       if (taskName === '业务负责人复核') {
-        obj["reviewContent"] = values.verifyContent || values.verifyContent2 || '';
+        obj['reviewContent'] = values.verifyContent || values.verifyContent2 || '';
         obj['reviewer'] = values.verifier;
         obj['reviewTime'] = moment(values.verifyTime).format('YYYY-MM-DD HH:mm:ss');
       } else {
@@ -352,7 +349,7 @@ function TobedealtForm(props) {
           if (res.code === 200) {
             switch (circulation) {
               case undefined:
-                message.info(res.msg);
+                message.success(res.msg);
                 openFlow();
                 break;
               case 'circula':
@@ -391,12 +388,13 @@ function TobedealtForm(props) {
               openFlow();
               setUserVisible(true);
             } else {
-              message.info(res.msg);
+              message.success(res.msg);
               openFlow();
             }
           }
         });
       }
+      return [];
     });
   };
 
@@ -422,13 +420,14 @@ function TobedealtForm(props) {
               gotoCirapi();
             } else {
               openFlow();
-              message.info(res.msg);
+              message.success(res.msg);
             }
           } else {
             message.error('保存失败');
           }
         });
       }
+      return [];
     });
   };
 
@@ -438,7 +437,7 @@ function TobedealtForm(props) {
       payload: taskId,
     }).then(res => {
       if (res.code === 200) {
-        message.info(res.msg);
+        message.success(res.msg);
         router.push({
           pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform`,
           query: { mainId, closetab: true },
@@ -523,7 +522,7 @@ function TobedealtForm(props) {
           state: { cache: false },
         });
       }
-      message.info(res.msg);
+      message.success(res.msg);
     });
   };
 
@@ -585,16 +584,20 @@ function TobedealtForm(props) {
         <>
           {taskName && !search && (
             <>
-              {taskName === '服务绩效考核登记' && hisTasks && hisTasks.length <= 3 && tabActiveKey === 'workorder' && (
-                <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete}>
-                  删除
-                </Button>
-              )}
+              {taskName === '服务绩效考核登记' &&
+                hisTasks &&
+                hisTasks.length <= 3 &&
+                tabActiveKey === 'workorder' && (
+                  <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete}>
+                    删除
+                  </Button>
+                )}
 
               {taskName === '业务负责人审核' &&
                 taskData &&
                 taskData.currentTask &&
-                !currentTask.verifyValue && tabActiveKey === 'workorder' && (
+                !currentTask.verifyValue &&
+                tabActiveKey === 'workorder' && (
                   <Button type="danger" ghost onClick={handleBacksubmit}>
                     回退
                   </Button>
@@ -609,7 +612,8 @@ function TobedealtForm(props) {
               {taskName &&
                 taskName !== '服务绩效考核确认' &&
                 taskName !== '业务负责人复核' &&
-                noselect === '1' && tabActiveKey === 'workorder' && (
+                noselect === '1' &&
+                tabActiveKey === 'workorder' && (
                   <Button type="primary" onClick={() => onClickSubmit(taskName, 'circula')}>
                     {taskName === '业务负责人复核' ? '确认复核' : '流转'}
                   </Button>
@@ -622,7 +626,8 @@ function TobedealtForm(props) {
                 taskName !== '服务绩效考核确认' &&
                 (taskName === '业务负责人审核' ||
                   taskName === '自动化科专责审核' ||
-                  taskName === '服务绩效考核确认') && tabActiveKey === 'workorder' &&  (
+                  taskName === '服务绩效考核确认') &&
+                tabActiveKey === 'workorder' && (
                   <Button type="primary" onClick={() => onClickSubmit(taskName, '流转不选人')}>
                     {buttonContent}
                   </Button>
@@ -634,17 +639,20 @@ function TobedealtForm(props) {
                 </Button>
               )}
 
-              {taskName && taskName === '业务负责人复核' && tabActiveKey === 'workorder' &&  (
+              {taskName && taskName === '业务负责人复核' && tabActiveKey === 'workorder' && (
                 <Button type="primary" onClick={() => onClickSubmit(taskName, 'circula')}>
                   确认复核
                 </Button>
               )}
 
-              {taskName && noselect === '0' && taskName === '服务商确认' && tabActiveKey === 'workorder' && ( 
-                <Button type="primary" onClick={() => onClickSubmit(taskName, 'circula')}>
-                  流转
-                </Button>
-              )}
+              {taskName &&
+                noselect === '0' &&
+                taskName === '服务商确认' &&
+                tabActiveKey === 'workorder' && (
+                  <Button type="primary" onClick={() => onClickSubmit(taskName, 'circula')}>
+                    流转
+                  </Button>
+                )}
             </>
           )}
 
@@ -909,12 +917,7 @@ function TobedealtForm(props) {
       )}
 
       {tabActiveKey === 'associatedWorkorder' && (
-        <Relatedorder 
-        orderId={mainId}
-         location={location}
-         assessNo={assessNo}
-          relation
-           />
+        <Relatedorder orderId={mainId} location={location} assessNo={assessNo} relation />
       )}
 
       <User

@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
-import { Calendar, Card, Button, Layout, Tree, message,Select } from 'antd';
-import SettingDetails from './components/SettingDetails';
+import { Calendar, Card, Button, Layout, Tree, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import moment from 'moment';
 import SysDict from '@/components/SysDict';
+import SettingDetails from './components/SettingDetails';
 import Dutyexcel from './components/Dutyexcel';
 
 const { Sider, Content } = Layout;
 const { TreeNode } = Tree;
-const { Option } = Select;
 
 function DutyaccordingSetting(props) {
   const pagetitle = props.route.name;
@@ -195,9 +194,7 @@ function DutyaccordingSetting(props) {
             currentYear={currentYear}
             pagetitle={pagetitle}
           >
-            <li key={item.id}>
-              <span>{item.staffName + '(' + item.shiftType + ')'}</span>
-            </li>
+            <span>{item.staffName}({item.shiftType})</span>
           </SettingDetails>
         ))}
       </ul>
@@ -228,7 +225,7 @@ function DutyaccordingSetting(props) {
       },
     }).then(res => {
       if (res.code === 200) {
-        message.info(res.msg);
+        message.success(res.msg);
         getTable(currentYear, month);
       } else {
         message.error(res.msg);
@@ -367,7 +364,7 @@ function DutyaccordingSetting(props) {
                     <span
                       key={obj.key}
                       values={obj.title}
-                      style={{marginRight:5}}
+                      style={{ marginRight: 5 }}
                     >
                       {obj.title}
                     </span>

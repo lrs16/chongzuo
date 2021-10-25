@@ -20,8 +20,8 @@ import {
   message
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import AddDutyclassesSetting from './components/AddDutyclassesSetting';
 import SysDict from '@/components/SysDict';
+import AddDutyclassesSetting from './components/AddDutyclassesSetting';
 
 const { Option } = Select;
 
@@ -178,7 +178,7 @@ function DutyclassesSetting(props) {
       payload: submitdata
     }).then(res => {
       if (res.code === 200) {
-        message.info(res.msg);
+        message.success(res.msg);
         searchdata({}, 1, 15)
       }
     })
@@ -190,7 +190,7 @@ function DutyclassesSetting(props) {
       payload: id
     }).then(res => {
       if (res.code === 200) {
-        message.info(res.msg);
+        message.success(res.msg);
         searchdata({}, 1, 15)
       } else {
         message.error(res.msg);

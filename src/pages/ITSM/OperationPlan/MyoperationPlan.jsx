@@ -11,11 +11,11 @@ import {
   DatePicker,
   Select,
   message,
-  Tree,
   Popover,
   Checkbox,
   Icon,
-  Badge
+  Badge,
+  Tooltip,
 } from 'antd';
 import router from 'umi/router';
 import User from '@/components/SelectUser/User';
@@ -37,9 +37,7 @@ const formItemLayout = {
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
-const { TreeNode } = Tree;
 
-let searchParams;
 const statusMap = ['green', 'gold', 'red'];
 const statusContent = ['未超时', '即将超时', '已超时'];
 
@@ -59,7 +57,7 @@ function MyoperationPlan(props) {
   const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
   const [userchoice, setUserChoice] = useState(false); // 已经选择人员
   const [changorder, setChangeOrder] = useState(undefined);
-
+  const [selectedKeys, setSelectedKeys] = useState([]);
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
   const [selectdata, setSelectData] = useState('');
@@ -79,8 +77,8 @@ function MyoperationPlan(props) {
         status: record.status,
         checkStatus: record.checkStatus,
         orderNo: record.operationNo,
-      }
-    })
+      },
+    });
   };
 
   const initialColumns = [
@@ -91,15 +89,14 @@ function MyoperationPlan(props) {
       width: 180,
       fixed: 'left',
       render: (text, record) => {
-        return <a onClick={() => gotoDetail(record)}>{text}</a>
+        return <a onClick={() => gotoDetail(record)}>{text}</a>;
       },
     },
     {
       title: '填报时间',
       dataIndex: 'addTime',
       key: 'addTime',
-      width: 150,
-
+      width: 200,
     },
     {
       title: '作业系统名称',
@@ -141,18 +138,24 @@ function MyoperationPlan(props) {
       title: '作业内容',
       dataIndex: 'content',
       key: 'content',
-      width: 400,
+      width: 150,
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '超时状态',
       dataIndex: 'timeoutStatus',
       key: 'timeoutStatus',
       width: 150,
-      render: (text) => (
+      render: text => (
         <span>
-          <Badge
-            status={statusMap[statusContent.indexOf(text)]}
-            text={text} />
+          <Badge status={statusMap[statusContent.indexOf(text)]} text={text} />
         </span>
       ),
     },
@@ -160,13 +163,13 @@ function MyoperationPlan(props) {
       title: '计划开始时间',
       dataIndex: 'plannedStartTime',
       key: 'plannedStartTime',
-      width: 150,
+      width: 200,
     },
     {
       title: '计划结束时间',
       dataIndex: 'plannedEndTime',
       key: 'plannedEndTime',
-      width: 150,
+      width: 200,
     },
     {
       title: '作业状态',
@@ -196,25 +199,33 @@ function MyoperationPlan(props) {
       title: '实际开始时间',
       dataIndex: 'startTime',
       key: 'startTime',
-      width: 150,
+      width: 200,
     },
     {
       title: '实际结束时间',
       dataIndex: 'endTime',
       key: 'endTime',
-      width: 150,
+      width: 200,
     },
     {
       title: '作业执行情况说明',
       dataIndex: 'executeContent',
       key: 'executeContent',
       width: 150,
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '执行操作时间',
       dataIndex: 'executeOperationTime',
       key: 'executeOperationTime',
-      width: 150,
+      width: 200,
     },
     {
       title: '填报人',
@@ -227,6 +238,14 @@ function MyoperationPlan(props) {
       dataIndex: 'addUnit',
       key: 'addUnit',
       width: 150,
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '审核人',
@@ -244,30 +263,54 @@ function MyoperationPlan(props) {
       title: '审核时间',
       dataIndex: 'checkTime',
       key: 'checkTime',
-      width: 150,
+      width: 200,
     },
     {
       title: '审核说明',
       dataIndex: 'checkContent',
       key: 'checkContent',
       width: 150,
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '超时信息',
       dataIndex: 'timeoutMsg',
       key: 'timeoutMsg',
       width: 150,
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '回退信息',
       dataIndex: 'fallbackMsg',
       key: 'fallbackMsg',
       width: 150,
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
   ];
 
   const defaultAllkey = columns.map(item => {
-    return item.title
+    return item.title;
   });
 
   const getTobolist = () => {
@@ -280,13 +323,6 @@ function MyoperationPlan(props) {
     });
   };
 
-  // // 上传删除附件触发保存
-  // useEffect(() => {
-  //   if (files.ischange) {
-  //     getTobolist();
-  //   }
-  // }, [files]);
-
   const handleReset = () => {
     resetFields();
     dispatch({
@@ -295,13 +331,13 @@ function MyoperationPlan(props) {
         pageIndex: 0,
         pageSize: paginations.pageSize,
       },
-    })
+    });
   };
 
   useEffect(() => {
     if (location.state && location.state.reset) {
       handleReset();
-      getTobolist({}, 1, 15)
+      getTobolist({}, 1, 15);
     }
   }, [location.state]);
 
@@ -310,23 +346,47 @@ function MyoperationPlan(props) {
       ...values,
       time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
       time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-      checkTime1: values.checkTime?.length ? moment(values.checkTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      checkTime2: values.checkTime?.length ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      checkTime1: values.checkTime?.length
+        ? moment(values.checkTime[0]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      checkTime2: values.checkTime?.length
+        ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
       checkTime: '',
-      executeOperationTime1: values.executeOperationTime?.length ? moment(values.executeOperationTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      executeOperationTime2: values.executeOperationTime?.length ? moment(values.executeOperationTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      executeOperationTime1: values.executeOperationTime?.length
+        ? moment(values.executeOperationTime[0]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      executeOperationTime2: values.executeOperationTime?.length
+        ? moment(values.executeOperationTime[1]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
       executeOperationTime: '',
-      plannedStartTime1: values.plannedStartTime?.length ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      plannedStartTime2: values.plannedStartTime?.length ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      plannedStartTime1: values.plannedStartTime?.length
+        ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      plannedStartTime2: values.plannedStartTime?.length
+        ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
       plannedStartTime: '',
-      startTime1: values.startTime?.length ? moment(values.startTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      startTime2: values.startTime?.length ? moment(values.startTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      startTime1: values.startTime?.length
+        ? moment(values.startTime[0]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      startTime2: values.startTime?.length
+        ? moment(values.startTime[1]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
       startTime: '',
-      plannedEndTime1: values.plannedendTime?.length ? moment(values.plannedendTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      plannedEndTime2: values.plannedendTime?.length ? moment(values.plannedendTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      plannedEndTime1: values.plannedendTime?.length
+        ? moment(values.plannedendTime[0]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      plannedEndTime2: values.plannedendTime?.length
+        ? moment(values.plannedendTime[1]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
       plannedendTime: '',
-      endTime1: values.endTime?.length ? moment(values.endTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      endTime2: values.endTime?.length ? moment(values.endTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      endTime1: values.endTime?.length
+        ? moment(values.endTime[0]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      endTime2: values.endTime?.length
+        ? moment(values.endTime[1]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
       endTime: '',
       addTime: '',
     };
@@ -336,7 +396,7 @@ function MyoperationPlan(props) {
       payload: {
         ...newvalues,
         pageIndex: page - 1,
-        pageSize
+        pageSize,
       },
     });
   };
@@ -358,19 +418,18 @@ function MyoperationPlan(props) {
     dispatch({
       type: 'processmodel/operationPerson',
     });
-  }
+  };
 
   // 处理作业负责人数据
   if (operationPersonArr.length) {
     operationPersonSelect = operationPersonArr.map(item => {
       return {
         key: item.id,
-        value: item.userName
-      }
-    })
+        value: item.userName,
+      };
+    });
   }
   const changePage = page => {
-
     validateFields((err, values) => {
       if (!err) {
         searchdata(values, page, paginations.pageSize);
@@ -389,7 +448,7 @@ function MyoperationPlan(props) {
     pageSize: paginations.pageSize,
     total: myTaskplanlist.total,
     showTotal: total => `总共  ${total}  条记录`,
-    onChange: (page) => changePage(page),
+    onChange: page => changePage(page),
   };
   const handleSearch = () => {
     setPaginations({
@@ -408,37 +467,58 @@ function MyoperationPlan(props) {
     const exportColumns = columns.map(item => {
       return {
         column: item.dataIndex,
-        field: item.title
-      }
-    })
+        field: item.title,
+      };
+    });
     validateFields((err, values) => {
       dispatch({
         type: 'processmodel/downloadMyOperationExcel',
         payload: {
           columns: JSON.stringify(exportColumns),
+          ids: selectedKeys.toString(),
           ...values,
           time1: values.addTime ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
           time2: values.addTime ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-          checkTime1: values.checkTime ? moment(values.checkTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-          checkTime2: values.checkTime ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          checkTime1: values.checkTime
+            ? moment(values.checkTime[0]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          checkTime2: values.checkTime
+            ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
           checkTime: '',
-          executeOperationTime1: values.executeOperationTime ? moment(values.executeOperationTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-          executeOperationTime2: values.executeOperationTime ? moment(values.executeOperationTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          executeOperationTime1: values.executeOperationTime
+            ? moment(values.executeOperationTime[0]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          executeOperationTime2: values.executeOperationTime
+            ? moment(values.executeOperationTime[1]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
           executeOperationTime: '',
-          plannedStartTime1: values.plannedStartTime ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-          plannedStartTime2: values.plannedStartTime ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          plannedStartTime1: values.plannedStartTime
+            ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          plannedStartTime2: values.plannedStartTime
+            ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
           plannedStartTime: '',
-          startTime1: values.startTime ? moment(values.startTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-          startTime2: values.startTime ? moment(values.startTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          startTime1: values.startTime
+            ? moment(values.startTime[0]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          startTime2: values.startTime
+            ? moment(values.startTime[1]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
           startTime: '',
-          plannedEndTime1: values.plannedendTime ? moment(values.plannedendTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-          plannedEndTime2: values.plannedendTime ? moment(values.plannedendTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          plannedEndTime1: values.plannedendTime
+            ? moment(values.plannedendTime[0]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          plannedEndTime2: values.plannedendTime
+            ? moment(values.plannedendTime[1]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
           plannedendTime: '',
           endTime1: values.endTime ? moment(values.endTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
           endTime2: values.endTime ? moment(values.endTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
           endTime: '',
           addTime: '',
-        }
+        },
       }).then(res => {
         const filename = '下载.xls';
         const blob = new Blob([res]);
@@ -448,72 +528,68 @@ function MyoperationPlan(props) {
         a.download = filename;
         a.click();
         window.URL.revokeObjectURL(url);
-      })
-    })
-  }
+      });
+    });
+  };
 
   const rowSelection = {
     onChange: (index, handleSelect) => {
-      setSelectedRows([...handleSelect])
-    }
-  }
+      setSelectedKeys([...index]);
+      setSelectedRows([...handleSelect]);
+    },
+  };
 
   const handleDelay = () => {
-
     if (selectedRows.length !== 1) {
-      message.info('请选择一条数据')
+      message.info('请选择一条数据');
       return false;
     }
 
     const res = selectedRows.every(item => {
-
       if (item.status !== '延期中' && item.checkStatus === '已审核') {
-        return true
+        return true;
       }
 
-      if ((item.status === '延期中') || item.checkStatus !== '已审核') {
+      if (item.status === '延期中' || item.checkStatus !== '已审核') {
         message.info('延期的条件为:执行状态不可以是延期中,且审核状态为:已审核');
         return false;
       }
       return null;
-
-    })
+    });
 
     if (res === false) {
       return false;
     }
 
     if (res === true) {
-      gotoDetail(selectedRows[0], 'delay')
+      gotoDetail(selectedRows[0], 'delay');
     }
 
     return null;
-  }
+  };
 
   const handleCopy = () => {
     if (selectedRows.length !== 1) {
-      message.info('请选择一条数据')
+      message.info('请选择一条数据');
       return false;
     }
 
     if (selectedRows.length > 1) {
-      message.info('只能选择一条数据复制哦')
+      message.info('只能选择一条数据复制哦');
       return false;
     }
 
     if (selectedRows.length === 1) {
-      message.info('复制成功')
-      sessionStorage.setItem('copyrecord', selectedRows[0].mainId)
+      message.info('复制成功');
+      sessionStorage.setItem('copyrecord', selectedRows[0].mainId);
     }
 
-    return null
-  }
-
-
+    return null;
+  };
 
   const handleDelete = () => {
     if (selectedRows.length === 0) {
-      message.info('至少选择一条数据')
+      message.info('至少选择一条数据');
       return false;
     }
 
@@ -524,12 +600,11 @@ function MyoperationPlan(props) {
       }
 
       if (!item.checkResult && !item.fallbackMsg) {
-        return true
+        return true;
       }
 
       return null;
-    })
-
+    });
 
     if (deleteJudge === false) {
       return false;
@@ -537,14 +612,14 @@ function MyoperationPlan(props) {
 
     if (deleteJudge === true) {
       const deleteIds = selectedRows.map(res => {
-        return res.mainId
-      })
+        return res.mainId;
+      });
 
       return dispatch({
         type: 'processmodel/taskDelete',
         payload: {
-          mainIds: deleteIds.toString()
-        }
+          mainIds: deleteIds.toString(),
+        },
       }).then(res => {
         if (res.code === 200) {
           message.info(res.msg);
@@ -553,11 +628,11 @@ function MyoperationPlan(props) {
           message.info(res.msg);
           getTobolist();
         }
-      })
+      });
     }
 
     return null;
-  }
+  };
 
   const creataColumns = () => {
     // columns
@@ -567,46 +642,59 @@ function MyoperationPlan(props) {
         key: val.key,
         title: val.title,
         dataIndex: val.key,
-        width: 150
+        width: 150,
       };
       if (key === 0) {
+        obj.width = 180;
         obj.render = (text, record) => {
-          return (
-            <a onClick={() => gotoDetail(record)}>{text}</a>
-          )
-        }
-        obj.fixed = 'left'
+          return <a onClick={() => gotoDetail(record)}>{text}</a>;
+        };
+        obj.fixed = 'left';
       }
 
       if (val.title === '超时状态') {
-        obj.render = (text, record) => {
+        obj.render = text => {
           return (
             <span>
-              <Badge
-                status={statusMap[statusContent.indexOf(text)]}
-                text={text} />
+              <Badge status={statusMap[statusContent.indexOf(text)]} text={text} />
             </span>
-          )
-        }
+          );
+        };
       }
+
+      if (
+        val.title === '填报单位' ||
+        val.title === '超时信息' ||
+        val.title === '回退信息' ||
+        val.title === '审核说明' ||
+        val.title === '作业执行情况说明' ||
+        val.title === '作业内容'
+      ) {
+        obj.ellipsis = true;
+        obj.render = (text, records) => {
+          return (
+            <Tooltip placement="topLeft" title={text}>
+              {key === 0 ? <a onClick={() => gotoDetail(records)}>{text}</a> : <span>{text}</span>}
+            </Tooltip>
+          );
+        };
+      }
+
       initialColumns.push(obj);
       setColumns(initialColumns);
       return null;
-    }
-    )
-  }
-
-  const onCheckAllChange = e => {
-    setColumns(e.target.checked ? initialColumns : [])
+    });
   };
 
-  const onCheck = (checkedValues) => {
-    formThead = initialColumns.filter(i =>
-      checkedValues.indexOf(i.title) >= 0
-    );
+  const onCheckAllChange = e => {
+    setColumns(e.target.checked ? initialColumns : []);
+  };
+
+  const onCheck = checkedValues => {
+    formThead = initialColumns.filter(i => checkedValues.indexOf(i.title) >= 0);
 
     if (formThead.length === 0) {
-      setColumns([])
+      setColumns([]);
     }
     creataColumns();
   };
@@ -620,32 +708,31 @@ function MyoperationPlan(props) {
 
   const gotoCensorship = () => {
     const allmainId = selectedRows.map(obj => {
-      return obj.mainId
+      return obj.mainId;
     });
     return dispatch({
       type: 'processmodel/censorshipSubmit',
       payload: {
         mainIds: allmainId.toString(),
-        userId: sessionStorage.getItem('NextflowUserId')
-      }
+        userId: sessionStorage.getItem('NextflowUserId'),
+      },
     }).then(res => {
       if (res.code === 200) {
-        message.info('送审成功');
-
-        getTobolist()
+        message.success('送审成功');
+        getTobolist();
       } else {
         message.error('送审失败');
-        getTobolist()
+        getTobolist();
       }
-    })
-  }
+    });
+  };
 
   //  送审选人
   useEffect(() => {
     if (userchoice) {
-      gotoCensorship()
+      gotoCensorship();
     }
-  }, [userchoice])
+  }, [userchoice]);
 
   const handleCheck = () => {
     if (selectedRows.length === 0) {
@@ -660,17 +747,17 @@ function MyoperationPlan(props) {
       }
 
       if (item.checkStatus === '待送审') {
-        return true
+        return true;
       }
       return null;
-    })
+    });
 
     if (checkJudge) {
-      setUserVisible(true)
+      setUserVisible(true);
     }
 
     return null;
-  }
+  };
 
   const executeStatus = getTypebyTitle('作业状态');
   const taskType = getTypebyTitle('作业类型');
@@ -684,27 +771,20 @@ function MyoperationPlan(props) {
 
   useEffect(() => {
     sessionStorage.setItem('Processtype', 'task');
-    // getTobolist();
+    sessionStorage.setItem('Nextflowmane', '送审');
     getoperationPerson();
-    setColumns(initialColumns)
+    setColumns(initialColumns);
     sessionStorage.removeItem('copyrecord');
   }, []);
 
   const handleFillin = () => {
-    // let allmainIds;
-    // if (selectedRows.length) {
-    //   allmainIds = selectedRows.map(res => {
-    //     return res.mainId
-    //   })
-    // };
     router.push({
       pathname: '/ITSM/operationplan/operationplanfillin',
       query: {
-        //  mainId: selectedRows.length ? allmainIds : '',
         addtab: true,
       },
-    })
-  }
+    });
+  };
 
   // 设置初始值
   const record = {
@@ -727,22 +807,22 @@ function MyoperationPlan(props) {
               paginations,
               expand,
             },
-            tabid: sessionStorage.getItem('tabid')
+            tabid: sessionStorage.getItem('tabid'),
           },
         });
-      };
+      }
       // 点击菜单刷新
       if (location.state.reset) {
         handleReset();
         setExpand(false);
-      };
+      }
       if (location.state.cacheinfo) {
         if (location.state.cacheinfo.paginations) {
           const { current, pageSize } = location.state.cacheinfo.paginations;
           setPaginations({ ...paginations, current, pageSize });
-        };
+        }
         setExpand(location.state.cacheinfo.expand);
-      };
+      }
     }
   }, [location.state]);
 
@@ -769,12 +849,16 @@ function MyoperationPlan(props) {
         addTime: time1 ? [moment(time1), moment(time2)] : '',
         checkTime: checkTime1 ? [moment(checkTime1), moment(checkTime2)] : '',
         endTime: endTime1 ? [moment(endTime1), moment(endTime2)] : '',
-        executeOperationTime: executeOperationTime1 ? [moment(executeOperationTime1), moment(executeOperationTime2)] : '',
+        executeOperationTime: executeOperationTime1
+          ? [moment(executeOperationTime1), moment(executeOperationTime2)]
+          : '',
         plannedendTime: plannedEndTime1 ? [moment(plannedEndTime1), moment(plannedEndTime2)] : '',
         startTime: startTime1 ? [moment(startTime1), moment(startTime2)] : '',
-        plannedStartTime: plannedStartTime1 ? [moment(plannedStartTime1), moment(plannedStartTime2)] : '',
-      })
-    };
+        plannedStartTime: plannedStartTime1
+          ? [moment(plannedStartTime1), moment(plannedStartTime2)]
+          : '',
+      });
+    }
   }, [location.state]);
 
   // 获取数据
@@ -782,7 +866,7 @@ function MyoperationPlan(props) {
     if (cacheinfo !== undefined) {
       validateFields((err, values) => {
         searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize);
-      })
+      });
     }
   }, []);
 
@@ -801,10 +885,7 @@ function MyoperationPlan(props) {
               <Form.Item label="作业计划编号">
                 {getFieldDecorator('operationNo', {
                   initialValue: cacheinfo.operationNo,
-                })
-                  (
-                    <Input allowClear />
-                  )}
+                })(<Input allowClear />)}
               </Form.Item>
             </Col>
 
@@ -812,42 +893,38 @@ function MyoperationPlan(props) {
               <Form.Item label="作业系统名称">
                 {getFieldDecorator('systemName', {
                   initialValue: cacheinfo.systemName,
-                })(
-                  <Input allowClear />
-                )}
+                })(<Input allowClear />)}
               </Form.Item>
             </Col>
             <span style={{ display: expand ? 'block' : 'none' }}>
               <Col span={8}>
-                <Form.Item label="作业类型" >
+                <Form.Item label="作业类型">
                   {getFieldDecorator('type', {
                     initialValue: cacheinfo.type,
-                  })
-                    (
-                      <Select placeholder="请选择" allowClear>
-                        {taskType.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {taskType.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
                 </Form.Item>
               </Col>
               <Col span={8}>
                 <Form.Item label="作业性质">
                   {getFieldDecorator('nature', {
                     initialValue: cacheinfo.nature,
-                  })
-                    (
-                      <Select placeholder="请选择" allowClear>
-                        {taskNature.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {taskNature.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
                 </Form.Item>
               </Col>
 
@@ -855,19 +932,15 @@ function MyoperationPlan(props) {
                 <Form.Item label="作业单位">
                   {getFieldDecorator('operationUnit', {
                     initialValue: cacheinfo.operationUnit,
-                  })
-                    (
-                      <Select
-                        placeholder="请选择"
-                        allowClear
-                      >
-                        {taskCompany.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {taskCompany.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
                 </Form.Item>
               </Col>
 
@@ -875,33 +948,30 @@ function MyoperationPlan(props) {
                 <Form.Item label="作业负责人">
                   {getFieldDecorator('operationUser', {
                     initialValue: cacheinfo.operationUser || '',
-                  })
-                    (
-                      <Select allowClear>
-                        {operationPersonSelect.map(obj => [
-                          <Option key={obj.key} value={obj.value}>
-                            {obj.value}
-                          </Option>
-                        ])}
-
-                      </Select>
-                    )}</Form.Item>
+                  })(
+                    <Select allowClear>
+                      {operationPersonSelect.map(obj => [
+                        <Option key={obj.key} value={obj.value}>
+                          {obj.value}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
               </Col>
               <Col span={8}>
                 <Form.Item label="是否开票">
                   {getFieldDecorator('billing', {
-                    initialValue: cacheinfo.billing
-                  })
-                    (
-                      <Select placeholder="请选择" allowClear>
-                        {taskBilling.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )
-                  }
+                    initialValue: cacheinfo.billing,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {taskBilling.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
                 </Form.Item>
               </Col>
 
@@ -909,10 +979,7 @@ function MyoperationPlan(props) {
                 <Form.Item label="作业对象">
                   {getFieldDecorator('object', {
                     initialValue: cacheinfo.object,
-                  })
-                    (
-                      <Input allowClear />
-                    )}
+                  })(<Input allowClear />)}
                 </Form.Item>
               </Col>
 
@@ -920,27 +987,26 @@ function MyoperationPlan(props) {
                 <Form.Item label="作业内容">
                   {getFieldDecorator('content', {
                     initialValue: cacheinfo.content,
-                  })
-                    (
-                      <Input allowClear />
-                    )}
+                  })(<Input allowClear />)}
                 </Form.Item>
               </Col>
               <Col span={8}>
                 <Form.Item label="计划开始时间">
                   {getFieldDecorator('plannedStartTime', {
                     initialValue: '',
-                  })
-                    (
-                      <RangePicker
-                        showTime={{
-                          hideDisabledOptions: true,
-                          defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                        }}
-                        format="YYYY-MM-DD HH:mm:ss"
-                        style={{ width: '100%' }}
-                      />
-                    )}
+                  })(
+                    <RangePicker
+                      showTime={{
+                        hideDisabledOptions: true,
+                        defaultValue: [
+                          moment('00:00:00', 'HH:mm:ss'),
+                          moment('23:59:59', 'HH:mm:ss'),
+                        ],
+                      }}
+                      format="YYYY-MM-DD HH:mm:ss"
+                      style={{ width: '100%' }}
+                    />,
+                  )}
                 </Form.Item>
               </Col>
 
@@ -948,17 +1014,19 @@ function MyoperationPlan(props) {
                 <Form.Item label="计划结束时间">
                   {getFieldDecorator('plannedendTime', {
                     initialValue: '',
-                  })
-                    (
-                      <RangePicker
-                        showTime={{
-                          hideDisabledOptions: true,
-                          defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                        }}
-                        format="YYYY-MM-DD HH:mm:ss"
-                        style={{ width: '100%' }}
-                      />
-                    )}
+                  })(
+                    <RangePicker
+                      showTime={{
+                        hideDisabledOptions: true,
+                        defaultValue: [
+                          moment('00:00:00', 'HH:mm:ss'),
+                          moment('23:59:59', 'HH:mm:ss'),
+                        ],
+                      }}
+                      format="YYYY-MM-DD HH:mm:ss"
+                      style={{ width: '100%' }}
+                    />,
+                  )}
                 </Form.Item>
               </Col>
 
@@ -966,32 +1034,30 @@ function MyoperationPlan(props) {
                 <Form.Item label="作业状态">
                   {getFieldDecorator('status', {
                     initialValue: cacheinfo.status,
-                  })
-                    (
-                      <Select placeholder="请选择" allowClear>
-                        {executeStatus.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {executeStatus.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
                 </Form.Item>
               </Col>
               <Col span={8}>
                 <Form.Item label="审核状态">
                   {getFieldDecorator('checkStatus', {
                     initialValue: cacheinfo.checkStatus,
-                  })
-                    (
-                      <Select placeholder="请选择" allowClear>
-                        {checkStatus.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {checkStatus.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
                 </Form.Item>
               </Col>
 
@@ -999,16 +1065,15 @@ function MyoperationPlan(props) {
                 <Form.Item label="超时状态">
                   {getFieldDecorator('timeoutStatus', {
                     initialValue: cacheinfo.timeoutStatus,
-                  })
-                    (
-                      <Select placeholder="请选择" allowClear>
-                        {timeoutStatus.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {timeoutStatus.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
                 </Form.Item>
               </Col>
 
@@ -1016,16 +1081,15 @@ function MyoperationPlan(props) {
                 <Form.Item label="作业结果">
                   {getFieldDecorator('executeResult', {
                     initialValue: cacheinfo.executeResult,
-                  })
-                    (
-                      <Select placeholder="请选择" allowClear>
-                        {taskResult.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {taskResult.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
                 </Form.Item>
               </Col>
 
@@ -1033,10 +1097,7 @@ function MyoperationPlan(props) {
                 <Form.Item label="作业执行情况说明">
                   {getFieldDecorator('executeContent', {
                     initialValue: cacheinfo.executeContent,
-                  })
-                    (
-                      <Input allowClear />
-                    )}
+                  })(<Input allowClear />)}
                 </Form.Item>
               </Col>
 
@@ -1044,33 +1105,34 @@ function MyoperationPlan(props) {
                 <Form.Item label="审核结果">
                   {getFieldDecorator('checkResult', {
                     initialValue: cacheinfo.checkResult,
-                  })
-                    (
-                      <Select placeholder="请选择" allowClear>
-                        {checkResult.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {checkResult.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
                 </Form.Item>
               </Col>
               <Col span={8}>
                 <Form.Item label="实际开始时间">
                   {getFieldDecorator('startTime', {
                     initialValue: '',
-                  })
-                    (
-                      <RangePicker
-                        showTime={{
-                          hideDisabledOptions: true,
-                          defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                        }}
-                        format="YYYY-MM-DD HH:mm:ss"
-                        style={{ width: '100%' }}
-                      />
-                    )}
+                  })(
+                    <RangePicker
+                      showTime={{
+                        hideDisabledOptions: true,
+                        defaultValue: [
+                          moment('00:00:00', 'HH:mm:ss'),
+                          moment('23:59:59', 'HH:mm:ss'),
+                        ],
+                      }}
+                      format="YYYY-MM-DD HH:mm:ss"
+                      style={{ width: '100%' }}
+                    />,
+                  )}
                 </Form.Item>
               </Col>
 
@@ -1078,44 +1140,47 @@ function MyoperationPlan(props) {
                 <Form.Item label="实际结束时间">
                   {getFieldDecorator('endTime', {
                     initialValue: '',
-                  })
-                    (
-                      <RangePicker
-                        showTime={{
-                          hideDisabledOptions: true,
-                          defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                        }}
-                        format="YYYY-MM-DD HH:mm:ss"
-                        style={{ width: '100%' }}
-                      />
-                    )}
+                  })(
+                    <RangePicker
+                      showTime={{
+                        hideDisabledOptions: true,
+                        defaultValue: [
+                          moment('00:00:00', 'HH:mm:ss'),
+                          moment('23:59:59', 'HH:mm:ss'),
+                        ],
+                      }}
+                      format="YYYY-MM-DD HH:mm:ss"
+                      style={{ width: '100%' }}
+                    />,
+                  )}
                 </Form.Item>
               </Col>
               <Col span={8}>
                 <Form.Item label="执行操作时间">
                   {getFieldDecorator('executeOperationTime', {
                     initialValue: cacheinfo.executeOperationTime,
-                  })
-                    (<RangePicker
+                  })(
+                    <RangePicker
                       showTime={{
                         hideDisabledOptions: true,
-                        defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                        defaultValue: [
+                          moment('00:00:00', 'HH:mm:ss'),
+                          moment('23:59:59', 'HH:mm:ss'),
+                        ],
                       }}
                       format="YYYY-MM-DD HH:mm:ss"
                       style={{ width: '100%' }}
-                      allowClear />)}
+                      allowClear
+                    />,
+                  )}
                 </Form.Item>
               </Col>
-
 
               <Col span={8}>
                 <Form.Item label="填报人">
                   {getFieldDecorator('addUser', {
                     initialValue: cacheinfo.addUser,
-                  })
-                    (
-                      <Input allowClear />
-                    )}
+                  })(<Input allowClear />)}
                 </Form.Item>
               </Col>
 
@@ -1123,44 +1188,41 @@ function MyoperationPlan(props) {
                 <Form.Item label="填报单位">
                   {getFieldDecorator('addUnit', {
                     initialValue: cacheinfo.addUnit,
-                  })
-                    (
-                      <Input allowClear />
-                    )}
+                  })(<Input allowClear />)}
                 </Form.Item>
               </Col>
               <Col span={8}>
                 <Form.Item label="审核人">
                   {getFieldDecorator('checkUser', {
                     initialValue: cacheinfo.checkUser,
-                  })
-                    (<Input allowClear />)}
+                  })(<Input allowClear />)}
                 </Form.Item>
               </Col>
               <Col span={8}>
                 <Form.Item label="审核时间">
                   {getFieldDecorator('checkTime', {
                     initialValue: '',
-                  })
-                    (
-                      (<RangePicker
-                        showTime={{
-                          hideDisabledOptions: true,
-                          defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                        }}
-                        format="YYYY-MM-DD HH:mm:ss"
-                        style={{ width: '100%' }}
-                        allowClear />)
-                    )}
+                  })(
+                    <RangePicker
+                      showTime={{
+                        hideDisabledOptions: true,
+                        defaultValue: [
+                          moment('00:00:00', 'HH:mm:ss'),
+                          moment('23:59:59', 'HH:mm:ss'),
+                        ],
+                      }}
+                      format="YYYY-MM-DD HH:mm:ss"
+                      style={{ width: '100%' }}
+                      allowClear
+                    />,
+                  )}
                 </Form.Item>
               </Col>
               <Col span={8}>
                 <Form.Item label="审核说明">
                   {getFieldDecorator('checkContent', {
                     initialValue: cacheinfo.checkContent,
-                  })
-                    (<Input allowClear />)
-                  }
+                  })(<Input allowClear />)}
                 </Form.Item>
               </Col>
 
@@ -1172,12 +1234,15 @@ function MyoperationPlan(props) {
                     <RangePicker
                       showTime={{
                         hideDisabledOptions: true,
-                        defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                        defaultValue: [
+                          moment('00:00:00', 'HH:mm:ss'),
+                          moment('23:59:59', 'HH:mm:ss'),
+                        ],
                       }}
-                      format='YYYY-MM-DD HH:mm:ss'
+                      format="YYYY-MM-DD HH:mm:ss"
                       style={{ width: '100%' }}
                       allowClear
-                    />
+                    />,
                   )}
                 </Form.Item>
               </Col>
@@ -1243,7 +1308,7 @@ function MyoperationPlan(props) {
           </Form>
         </Row>
 
-        <div style={{ display: 'flex', flexDirection: 'row' }} >
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
           <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleFillin()}>
             填报
           </Button>
@@ -1260,12 +1325,7 @@ function MyoperationPlan(props) {
             复制
           </Button>
 
-          <Button
-            type="danger"
-            ghost
-            style={{ marginRight: 8 }}
-            onClick={handleDelete}
-          >
+          <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete}>
             删除
           </Button>
 
@@ -1283,25 +1343,17 @@ function MyoperationPlan(props) {
                 <div style={{ borderBottom: '1px solid #E9E9E9' }}>
                   <Checkbox
                     onChange={onCheckAllChange}
-                    checked={columns.length === initialColumns.length === true}
+                    checked={(columns.length === initialColumns.length) === true}
                   >
                     列表展示
                   </Checkbox>
                   <br />
                 </div>
 
-                <Checkbox.Group
-                  onChange={onCheck}
-                  value={defaultAllkey}
-                  defaultValue={columns}
-                >
+                <Checkbox.Group onChange={onCheck} value={defaultAllkey} defaultValue={columns}>
                   {initialColumns.map(item => (
                     <Col key={`item_${item.key}`} style={{ marginBottom: '8px' }}>
-                      <Checkbox
-                        value={item.title}
-                        key={item.key}
-                        checked={columns}
-                      >
+                      <Checkbox value={item.title} key={item.key} checked={columns}>
                         {item.title}
                       </Checkbox>
                     </Col>
@@ -1321,8 +1373,8 @@ function MyoperationPlan(props) {
           loading={loading}
           columns={columns}
           dataSource={myTaskplanlist.rows}
-          scroll={{ x: 1500 }}
-          rowKey={record => record.id}
+          scroll={{ x: 1500, y: 700 }}
+          rowKey={records => records.id}
           rowSelection={rowSelection}
           pagination={pagination}
         />

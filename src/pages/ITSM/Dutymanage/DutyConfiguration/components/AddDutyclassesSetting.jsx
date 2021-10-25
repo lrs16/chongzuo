@@ -10,7 +10,6 @@ import {
   Select,
   Row,
   Col,
-  message
 } from 'antd';
 import moment from 'moment';
 import SysDict from '@/components/SysDict';
@@ -42,8 +41,6 @@ function AddDutyclassesSetting(props) {
     title,
     children,
     onSubmit,
-    id,
-    onDelete,
     classSetting,
   } = props;
   const format = 'HH:mm';
@@ -64,8 +61,6 @@ function AddDutyclassesSetting(props) {
 
   const handleOk = () => {
     validateFields((err, values) => {
-      const start = (new Date(moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss'))).valueOf();
-      const end = (new Date(moment(values.endTime).format('YYYY-MM-DD HH:mm:ss'))).valueOf();
       const newValue = {
         id: classSetting.id || '',
         ...values,
@@ -80,18 +75,6 @@ function AddDutyclassesSetting(props) {
         setVisible(false);
       }
     });
-  };
-
-  const handleDelete = id => {
-    onDelete(id);
-  };
-
-  const startOnchange = (time, timeString) => {
-    startTime = timeString;
-  };
-
-  const endOnchange = (time, timeString) => {
-    endTime = timeString;
   };
 
   // const disabledHours = (time1, time2, time3) => {
@@ -125,9 +108,9 @@ function AddDutyclassesSetting(props) {
     )
   }
 
-  const getTypebyTitle = title => {
+  const getTypebyTitle = titles => {
     if (selectdata.ischange) {
-      return selectdata.arr.filter(item => item.title === title)[0].children;
+      return selectdata.arr.filter(item => item.title === titles)[0].children;
     }
     return []
   };
@@ -282,7 +265,7 @@ function AddDutyclassesSetting(props) {
               })(<Switch
                 checkedChildren='开启'
                 unCheckedChildren='停用'
-                defaultChecked={classSetting.status === '启动' ? true : false}
+                defaultChecked={classSetting.status === '启动'}
               />)}</Form.Item>
 
             <Form.Item label="创建人">
@@ -322,11 +305,6 @@ function AddDutyclassesSetting(props) {
             确定
           </Button>
 
-          {id && (
-            <Button onClick={handleDelete} type="danger" ghost>
-              删除
-            </Button>
-          )}
         </div>
       </Drawer>
     </>

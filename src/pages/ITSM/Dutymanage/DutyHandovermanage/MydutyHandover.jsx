@@ -449,30 +449,6 @@ function MydutyHandover(props) {
     })
   }
 
-  const handleDelete = () => { // 删除
-    // const len = selectedRows.length;
-    // const deleteIds = selectedRows.map(res => {
-    //   return res.mainId
-    // })
-    // if (len === 0) {
-    //   message.info('至少选择一条数据');
-    //   return false;
-    // }
-    // return dispatch({
-    //   type: 'supervisemodel/taskDelete',
-    //   payload: {
-    //     mainIds: deleteIds.toString()
-    //   }
-    // }).then(res => {
-    //   if (res.code === 200) {
-    //     message.success(res.msg);
-    //     getList();
-    //   } else {
-    //     message.info(res.msg);
-    //     getList();
-    //   }
-    // })
-  };
 
   const creataColumns = () => { // 创建列表
     // columns

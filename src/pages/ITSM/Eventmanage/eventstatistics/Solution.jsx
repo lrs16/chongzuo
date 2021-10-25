@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'dva';
 import {
   Card,
@@ -98,7 +98,7 @@ const columns = [
 function Solution(props) {
   const { pagetitle } = props.route.name;
   const {
-    form: { getFieldDecorator, setFieldsValue, validateFields },
+    form: { getFieldDecorator, validateFields },
     soluteArr,
     dispatch
   } = props;

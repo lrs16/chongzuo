@@ -1,15 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
-import {
-  Card,
-  Row,
-  Col,
-  Form,
-  DatePicker,
-  Button,
-  Table
-} from 'antd';
+import { Card, Row, Col, Form, DatePicker, Button, Table } from 'antd';
 import moment from 'moment';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
@@ -23,10 +15,10 @@ const columns = [
     key: 'user',
     render: (text, record) => {
       if (record.user !== '合计') {
-        return <span>{text}</span>
+        return <span>{text}</span>;
       }
-      return <span style={{ fontWeight: 700 }}>{text}</span>
-    }
+      return <span style={{ fontWeight: 700 }}>{text}</span>;
+    },
   },
   {
     title: '计划中',
@@ -41,72 +33,65 @@ const columns = [
             time2: record.time2,
             operationUser: record.user === '合计' ? '' : record.user,
             status: '计划中',
-            pathpush: true
+            pathpush: true,
           },
-          state: { cache: false, }
-        })
+          state: { cache: false },
+        });
       };
-      return <a onClick={() => gotoDetail(record)}>{text}</a>
-    }
+      return <a onClick={() => gotoDetail(record)}>{text}</a>;
+    },
   },
   {
     title: '延期中',
     dataIndex: 'yqz',
     key: 'yqz',
     render: (text, record) => {
-      const gotoDetail = (record) => {
+      const gotoDetail = records => {
         router.push({
           pathname: `/ITSM/operationplan/operationplansearch`,
           query: {
-            time1: record.time1,
-            time2: record.time2,
-            operationUser: record.user === '合计' ? '' : record.user,
+            time1: records.time1,
+            time2: records.time2,
+            operationUser: records.user === '合计' ? '' : records.user,
             status: '延期中',
-            pathpush: true
+            pathpush: true,
           },
-          state: { cache: false, }
-        })
+          state: { cache: false },
+        });
       };
-      return <a onClick={() => gotoDetail(record)}>{text}</a>
-    }
+      return <a onClick={() => gotoDetail(record)}>{text}</a>;
+    },
   },
   {
     title: '已完成',
     dataIndex: 'ywc',
     key: 'ywc',
     render: (text, record) => {
-      const gotoDetail = (record) => {
+      const gotoDetail = records => {
         router.push({
           pathname: `/ITSM/operationplan/operationplansearch`,
           query: {
-            time1: record.time1,
-            time2: record.time2,
-            operationUser: record.user === '合计' ? '' : record.user,
+            time1: records.time1,
+            time2: records.time2,
+            operationUser: records.user === '合计' ? '' : records.user,
             status: '已完成',
-            pathpush: true
+            pathpush: true,
           },
-          state: { cache: false, }
-        })
+          state: { cache: false },
+        });
       };
-      return <a onClick={() => gotoDetail(record)}>{text}</a>
-    }
+      return <a onClick={() => gotoDetail(record)}>{text}</a>;
+    },
   },
-
 ];
 
 function Execute(props) {
   const { pagetitle } = props.route.name;
   const {
-    form: { getFieldDecorator, setFieldsValue, validateFields },
+    form: { getFieldDecorator, validateFields },
     userExecuteStatusArr,
-    dispatch
+    dispatch,
   } = props;
-
-  const onChange = (date, dateString) => {
-    startTime = dateString;
-    endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
-    setFieldsValue({ time2: moment(endTime) });
-  }
 
   const handleListdata = () => {
     validateFields((err, value) => {
@@ -114,10 +99,10 @@ function Execute(props) {
       endTime = moment(value.time1[1]).format('YYYY-MM-DD');
       dispatch({
         type: 'taskstatistics/userExecuteStatus',
-        payload: { startTime, endTime }
-      })
-    })
-  }
+        payload: { startTime, endTime },
+      });
+    });
+  };
 
   const download = () => {
     validateFields((err, value) => {
@@ -128,7 +113,7 @@ function Execute(props) {
         payload: {
           time1: startTime,
           time2: endTime,
-        }
+        },
       }).then(res => {
         const filename = '下载.xls';
         const blob = new Blob([res]);
@@ -138,64 +123,54 @@ function Execute(props) {
         a.download = filename;
         a.click();
         window.URL.revokeObjectURL(url);
-      })
-    })
-
-  }
+      });
+    });
+  };
 
   const defaultTime = () => {
-    startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
+    startTime = moment()
+      .subtract('days', 6)
+      .format('YYYY-MM-DD');
     endTime = moment().format('YYYY-MM-DD');
     // startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD');
     // endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
-  }
-
-
+  };
 
   useEffect(() => {
     defaultTime();
     dispatch({
       type: 'taskstatistics/userExecuteStatus',
-      payload: { startTime, endTime }
-    })
-  }, [])
-
+      payload: { startTime, endTime },
+    });
+  }, []);
 
   return (
-    <PageHeaderWrapper
-      title={pagetitle}
-    >
+    <PageHeaderWrapper title={pagetitle}>
       <Card>
         <Row gutter={24}>
-          <Form layout='inline'>
+          <Form layout="inline">
             <>
               <Col span={24}>
-                <Form.Item label='起始时间'>
+                <Form.Item label="起始时间">
                   {getFieldDecorator('time1', {
-                    initialValue: [moment(startTime), moment(endTime)]
-                  })(<RangePicker
-                  
-                  />)}
+                    initialValue: [moment(startTime), moment(endTime)],
+                  })(<RangePicker />)}
                 </Form.Item>
 
                 <Button
-                  type='primary'
+                  type="primary"
                   style={{ marginTop: 6 }}
                   onClick={() => handleListdata('search')}
                 >
                   查询
-                    </Button>
+                </Button>
               </Col>
             </>
           </Form>
         </Row>
 
         <div>
-          <Button
-            type='primary'
-            style={{ marginBottom: 24, marginTop: 5 }}
-            onClick={download}
-          >
+          <Button type="primary" style={{ marginBottom: 24, marginTop: 5 }} onClick={download}>
             导出数据
           </Button>
         </div>
@@ -207,11 +182,11 @@ function Execute(props) {
         />
       </Card>
     </PageHeaderWrapper>
-  )
+  );
 }
 
 export default Form.create({})(
   connect(({ taskstatistics }) => ({
-    userExecuteStatusArr: taskstatistics.userExecuteStatusArr
+    userExecuteStatusArr: taskstatistics.userExecuteStatusArr,
   }))(Execute),
 );

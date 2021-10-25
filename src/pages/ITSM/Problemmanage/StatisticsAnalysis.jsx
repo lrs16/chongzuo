@@ -157,71 +157,71 @@ function StatisticsAnalysis(props) {
     }
   }, [loading])
 
-  const statpieData = (values) => {
+  const statpieData = (value) => {
     dispatch({
       type: 'problemstatistics/fetchstatpieData',
-      payload: { ...values },
+      payload: { ...value },
     });
   }
 
-  const statratioData = (values) => {
+  const statratioData = (value) => {
     dispatch({
       type: 'problemstatistics/fetchstatratioData',
-      payload: { ...values },
+      payload: { ...value },
     });
   }
 
-  const lineData = (values) => {
+  const lineData = (value) => {
     dispatch({
       type: 'problemstatistics/fetchlineData',
-      payload: { ...values },
+      payload: { ...value },
     });
   }
 
-  const timeoutarr = (values) => {
+  const timeoutarr = (value) => {
     dispatch({
       type: 'problemstatistics/timeoutLists',
       payload: { 
-        statTimeBegin:values.begin,
-        statTimeEnd:values.end
+        statTimeBegin:value.begin,
+        statTimeEnd:value.end
        }
     })
   }
 
   // 分开的TOP
-  const resgisterstatTop = (values) => {
+  const resgisterstatTop = (value) => {
     dispatch({
       type: 'problemstatistics/fetchresgisterstatTop',
       payload: {
-        ...values,
+        ...value,
         type: '登记人'
       }
     })
   }
 
-  const handlerstatTop = (values) => {
+  const handlerstatTop = (value) => {
     dispatch({
       type: 'problemstatistics/fetchhandlerstatTop',
       payload: {
-        ...values,
+        ...value,
         type: '处理人'
       }
     })
   }
-  const resgisterunitstatTop = (values) => {
+  const resgisterunitstatTop = (value) => {
     dispatch({
       type: 'problemstatistics/fetchresgisterunitstatTop',
       payload: {
-        ...values,
+        ...value,
         type: '登记单位'
       }
     })
   }
-  const handleunitstatTop = (values) => {
+  const handleunitstatTop = (value) => {
     dispatch({
       type: 'problemstatistics/fetchhandleunitstatTop',
       payload: {
-        ...values,
+        ...value,
         type: '处理单位'
       }
     })

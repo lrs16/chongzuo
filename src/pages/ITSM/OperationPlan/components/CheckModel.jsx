@@ -1,24 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import {
-  Form,
-  Input,
-  Modal,
-  DatePicker,
-  Tag,
-  Radio,
-  Row,
-  Col,
-  message
-} from 'antd';
+import { Form, Input, Modal, DatePicker, Tag, Radio, Row, Col, message } from 'antd';
 
-
-let title = '';
+const title = '';
 const { TextArea } = Input;
-const color = ['blue', 'green','blue']
+const color = ['blue', 'green', 'blue'];
 // 克隆子元素按钮，并添加事件
-const withClick = (element, handleClick = () => { }) => {
+const withClick = (element, handleClick = () => {}) => {
   return <element.type {...element.props} onClick={handleClick} />;
 };
 
@@ -53,11 +42,11 @@ function CheckModel(props) {
   } = props;
   const required = true;
   const [state, setState] = useState(false);
-  const [checktype, setChecktype] = useState('001')
+  const [checktype, setChecktype] = useState('001');
 
   const handleopenClick = () => {
     if (selectedRows.length === 0) {
-      message.info('请至少选择一条数据')
+      message.info('请至少选择一条数据');
       return false;
     }
 
@@ -67,13 +56,14 @@ function CheckModel(props) {
       }
 
       message.info('请选择执行状态:待审核');
-      return false
-    })
+      return false;
+    });
 
     if (res === false) {
       return false;
     }
     setState(true);
+    return [];
   };
 
   const handleSubmit = () => {
@@ -82,12 +72,12 @@ function CheckModel(props) {
         props.checkSubmit(values);
         setState(false);
       }
-    })
-  }
+    });
+  };
 
-  const onChange = (e) => {
-    setChecktype(e.target.value)
-  }
+  const onChange = e => {
+    setChecktype(e.target.value);
+  };
 
   const hanldleCancel = () => {
     setState(false);
@@ -100,33 +90,32 @@ function CheckModel(props) {
         title={title}
         visible={state}
         width={1000}
-        centered={true}
-        maskClosable={true}
+        centered
+        maskClosable
         onCancel={hanldleCancel}
         onOk={handleSubmit}
       >
         <Row gutter={16}>
           <Form {...formItemLayout}>
             <Col span={8}>
-              <Form.Item label='审核结果'>
+              <Form.Item label="审核结果">
                 {getFieldDecorator('check_result', {
                   rules: [
                     {
                       required,
-                      message: '请输入审核结果'
-                    }
+                      message: '请输入审核结果',
+                    },
                   ],
-                  initialValue: '001'
+                  initialValue: '001',
                 })(
                   <Radio.Group
                     // disabled={type === 'list'}
                     onChange={onChange}
                   >
-                    <Radio value='001'>通过</Radio>
-                    <Radio value='002'>不通过</Radio>
-                  </Radio.Group>
-                )
-                }
+                    <Radio value="001">通过</Radio>
+                    <Radio value="002">不通过</Radio>
+                  </Radio.Group>,
+                )}
               </Form.Item>
             </Col>
 
@@ -136,8 +125,8 @@ function CheckModel(props) {
                   rules: [
                     {
                       required,
-                      message: '请输入审核时间'
-                    }
+                      message: '请输入审核时间',
+                    },
                   ],
                   initialValue: moment(new Date()),
                 })(
@@ -145,66 +134,54 @@ function CheckModel(props) {
                     // disabled={type === 'list'}
                     showTime
                     format="YYYY-MM-DD HH:mm:ss"
-                  />)}
+                  />,
+                )}
               </Form.Item>
             </Col>
 
             {/* {
           flowtype === '1' && ( */}
             <Col span={8}>
-              <Form.Item label='审核状态'>
-                {
-                  getFieldDecorator('check_status', {
-                  })(
-                    <Tag
-                      color={color[0]}>待审核</Tag>
-                  )
-                }
+              <Form.Item label="审核状态">
+                {getFieldDecorator('check_status', {})(<Tag color={color[0]}>待审核</Tag>)}
               </Form.Item>
             </Col>
             {/* )
          } */}
 
-            {
-              checktype === '002' && (
-                <Col span={23}>
-                  <Form.Item label='审核说明' {...forminladeLayout}>
-                    {
-                      getFieldDecorator('check_content', {
-                        rules: [
-                          {
-                            required,
-                            message: '请输入审核说明'
-                          }
-                        ],
-                      })(
-                        <TextArea
-                        // disabled={type === 'list'}
-                        />
-                      )
-                    }
-                  </Form.Item>
-                </Col>
-              )
-            }
+            {checktype === '002' && (
+              <Col span={23}>
+                <Form.Item label="审核说明" {...forminladeLayout}>
+                  {getFieldDecorator('check_content', {
+                    rules: [
+                      {
+                        required,
+                        message: '请输入审核说明',
+                      },
+                    ],
+                  })(
+                    <TextArea
+                    // disabled={type === 'list'}
+                    />,
+                  )}
+                </Form.Item>
+              </Col>
+            )}
 
-            {
-              checktype === '001' && (
-                <Col span={23}>
-                  <Form.Item label='审核说明' {...forminladeLayout}>
-                    {
-                      getFieldDecorator('check_content', {
-                      })(
-                        <TextArea
-                        // disabled={type === 'list'}
-                        />
-                      )
-                    }
-                  </Form.Item>
-                </Col>
-              )
-            }
-
+            {checktype === '001' && (
+              <Col span={23}>
+                <Form.Item label="审核说明" {...forminladeLayout}>
+                  {getFieldDecorator(
+                    'check_content',
+                    {},
+                  )(
+                    <TextArea
+                    // disabled={type === 'list'}
+                    />,
+                  )}
+                </Form.Item>
+              </Col>
+            )}
 
             <Col span={8}>
               <Form.Item label="审核人">
@@ -221,14 +198,10 @@ function CheckModel(props) {
                 })(<Input disabled />)}
               </Form.Item>
             </Col>
-
           </Form>
-
         </Row>
       </Modal>
-
     </>
-
   );
 }
 

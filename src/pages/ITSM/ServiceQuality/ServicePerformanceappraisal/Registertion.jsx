@@ -1,15 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
-import {
-  Form,
-  Button,
-  Collapse
-} from 'antd';
+import { Form, Button, Collapse } from 'antd';
 import moment from 'moment';
 import router from 'umi/router';
-import { contractProvider } from '../services/quality';
 import { connect } from 'dva';
-import Register from './components/Register';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { contractProvider } from '../services/quality';
+import Register from './components/Register';
 
 import styles from './index.less';
 
@@ -38,14 +34,7 @@ const forminladeLayout = {
 const { Panel } = Collapse;
 function Registertion(props) {
   const pagetitle = props.route.name;
-  const {
-    userinfo,
-    dispatch,
-    target1,
-    target2,
-    clauseList,
-    loading
-  } = props;
+  const { userinfo, dispatch, target1, target2, clauseList, loading } = props;
   const RegistratRef = useRef();
   const [contractArr, setContractArr] = useState([]);
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
@@ -53,9 +42,9 @@ function Registertion(props) {
   const handleClose = () => {
     router.push({
       pathname: `/ITSM/servicequalityassessment/creditcard/creditcardregister`,
-      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true, }
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true },
     });
-  }
+  };
 
   const callback = key => {
     setActiveKey(key);
@@ -71,36 +60,36 @@ function Registertion(props) {
           type: 'performanceappraisal/assessRegister',
           payload: {
             ...submitIfnfo,
-            assessType:values.assessType === '系统运维' ? '2':'1',
+            assessType: values.assessType === '系统运维' ? '2' : '1',
             assessTime: moment(values.assessTime).format('YYYY-MM-DD HH:mm:ss'),
             applyTime: moment(values.applyTime).format('YYYY-MM-DD HH:mm:ss'),
-            attachment: files.ischange ? JSON.stringify(files.arr) : ''
-          }
-        })
+            attachment: files.ischange ? JSON.stringify(files.arr) : '',
+          },
+        });
       }
-    })
-  }
+    });
+  };
 
   const getUserinfo = () => {
     dispatch({
-      type: 'itsmuser/fetchuser'
-    })
-  }
+      type: 'itsmuser/fetchuser',
+    });
+  };
 
   //  根据考核类型查询一级指标
-  const getTarget1 = (type) => {
+  const getTarget1 = type => {
     dispatch({
       type: 'qualityassessment/scoreGetTarget1',
-      payload: type
-    })
-  }
+      payload: type,
+    });
+  };
   //  根据考核类型查询二级指标
-  const getTarget2 = (id) => {
+  const getTarget2 = id => {
     dispatch({
       type: 'qualityassessment/scoreGetTarget2',
-      payload: id
-    })
-  }
+      payload: id,
+    });
+  };
 
   //  获取详细条款数据
   const getclausedetail = (targetId, scoreId) => {
@@ -110,65 +99,52 @@ function Registertion(props) {
         targetId,
         scoreId,
         pageNum: 1,
-        pageSize: 1000
-      }
-    })
-  }
+        pageSize: 1000,
+      },
+    });
+  };
 
   //  获取合同名称
-  const getContrractname = (id) => {
-    contractProvider({id,status:'1'}).then(res => {
+  const getContrractname = id => {
+    contractProvider({ id, status: '1' }).then(res => {
       if (res) {
-        const arr = [...(res.data)];
+        const arr = [...res.data];
         setContractArr(arr);
       }
     });
-  }
-
+  };
 
   useEffect(() => {
     getUserinfo();
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (files.ischange) {
-      handleSubmit(0)
+      handleSubmit(0);
     }
-  }, [files])
+  }, [files]);
 
   return (
     <PageHeaderWrapper
       title={pagetitle}
       extra={
         <>
-          <Button
-            type='primary'
-            style={{ marginRight: 8 }}
-            onClick={handleSubmit}
-          >
+          <Button type="primary" style={{ marginRight: 8 }} onClick={handleSubmit}>
             保存
           </Button>
 
-          <Button
-            onClick={handleClose}
-          >
-            关闭
-          </Button>
+          <Button onClick={handleClose}>关闭</Button>
         </>
       }
     >
-      
       <div className={styles.collapse}>
         <Collapse
-          expandIconPosition='right'
+          expandIconPosition="right"
           defaultActiveKey={['1']}
           bordered={false}
           onChange={callback}
         >
-          <Panel
-            header='服务绩效考核登记'
-            key='1'
-          >
+          <Panel header="服务绩效考核登记" key="1">
             <Register
               formItemLayout={formItemLayout}
               forminladeLayout={forminladeLayout}
@@ -191,9 +167,8 @@ function Registertion(props) {
           </Panel>
         </Collapse>
       </div>
-
     </PageHeaderWrapper>
-  )
+  );
 }
 
 export default Form.create({})(
@@ -202,7 +177,6 @@ export default Form.create({})(
     target1: qualityassessment.target1,
     clauseList: qualityassessment.clauseList,
     userinfo: itsmuser.userinfo,
-    loading: loading.models.qualityassessment
-  }))(Registertion)
-)
-
+    loading: loading.models.qualityassessment,
+  }))(Registertion),
+);

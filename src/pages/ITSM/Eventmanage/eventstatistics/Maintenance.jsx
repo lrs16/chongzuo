@@ -7,7 +7,6 @@ import {
   Form,
   DatePicker,
   Button,
-  Table,
   Icon,
   Divider
 } from 'antd';
@@ -21,7 +20,7 @@ let startTime;
 let monthStarttime;
 let endTime;
 const sign = 'maintenanceservice';
-const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
+const { MonthPicker} = DatePicker;
 const mergeCell = 'first_object';
 
 const IconFont = Icon.createFromIconfontCN({
@@ -119,6 +118,7 @@ function Maintenance(props) {
         if (record.second_object === '合计') {
           return <span style={{ fontWeight: 700 }}>{text}</span>
         }
+        return []
       }
     },
     {

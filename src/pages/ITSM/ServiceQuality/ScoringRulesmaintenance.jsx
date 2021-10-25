@@ -24,9 +24,9 @@ const formItemLayout = {
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 16 }
-  }
-}
+    sm: { span: 16 },
+  },
+};
 
 const { Option } = Select;
 
@@ -37,15 +37,13 @@ function ScoringRulesmaintenance(props) {
     scoreList,
     dispatch,
     location,
-    loading
+    loading,
   } = props;
 
-  const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 })
+  const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 });
   const [selectdata, setSelectData] = useState('');
   const [tabrecord, setTabRecord] = useState({});
   const [selectedKeys, setSelectedKeys] = useState([]);
-  const [selectedRows, setSelectedRows] = useState([]);
-
 
   const searchdata = (values, page, pageSize) => {
     dispatch({
@@ -53,25 +51,25 @@ function ScoringRulesmaintenance(props) {
       payload: {
         ...values,
         pageNum: page,
-        pageSize
-      }
+        pageSize,
+      },
     });
-    setTabRecord({ ...values })
-  }
+    setTabRecord({ ...values });
+  };
 
-  const handleDelete = (id) => {
+  const handleDelete = id => {
     return dispatch({
       type: 'qualityassessment/scoreDel',
-      payload: id
+      payload: id,
     }).then(res => {
       if (res.code === 200) {
         message.info(res.msg);
-        searchdata({}, 1, paginations.pageSize)
+        searchdata({}, 1, paginations.pageSize);
       } else {
         message.error(res.msg);
       }
-    })
-  }
+    });
+  };
 
   const download = () => {
     validateFields((err, value) => {
@@ -79,8 +77,8 @@ function ScoringRulesmaintenance(props) {
         type: 'qualityassessment/scoreExport',
         payload: {
           id: selectedKeys.toString(),
-          ...value
-        }
+          ...value,
+        },
       }).then(res => {
         const filename = '下载.xls';
         const blob = new Blob([res]);
@@ -89,10 +87,10 @@ function ScoringRulesmaintenance(props) {
         a.href = url;
         a.download = filename;
         a.click();
-        window.URL.revokeObjectURL(url)
-      })
-    })
-  }
+        window.URL.revokeObjectURL(url);
+      });
+    });
+  };
 
   const columns = [
     {
@@ -107,34 +105,32 @@ function ScoringRulesmaintenance(props) {
             query: {
               Id: record.scoreNo,
               id: record.id,
-              scoreSearch: true
+              scoreSearch: true,
             },
             state: {
               dynamicpath: true,
               menuDesc: '评分细则详情',
-            }
-          })
-        }
+            },
+          });
+        };
         if (pagetitle === '评分细则查询') {
-          return (
-            <a onClick={() => gotoDetail()}>{text}</a>
-          )
+          return <a onClick={() => gotoDetail()}>{text}</a>;
         }
 
-        return <span>{text}</span>
-      }
+        return <span>{text}</span>;
+      },
     },
     {
       title: '评分细则名称',
       dataIndex: 'scoreName',
       key: 'scoreName',
-      width: 150
+      width: 150,
     },
     {
       title: '考核类型',
       dataIndex: 'assessType',
       key: 'assessType',
-      width: 150
+      width: 150,
     },
     {
       title: '操作',
@@ -152,87 +148,82 @@ function ScoringRulesmaintenance(props) {
             state: {
               dynamicpath: true,
               menuDesc: '评分细则详情',
-            }
-          })
-        }
+            },
+          });
+        };
         if (pagetitle === '评分细则维护') {
           return (
             <span>
               <a onClick={() => gotoDetail()}>编辑</a>
               <>
-                <Divider type='vertical' />
-                <Popconfirm
-                  title='是否要删除此行？'
-                  onConfirm={() => handleDelete(record.id)}
-                >
+                <Divider type="vertical" />
+                <Popconfirm title="是否要删除此行？" onConfirm={() => handleDelete(record.id)}>
                   <a>删除</a>
                 </Popconfirm>
-                <Divider type='vertical' />
+                <Divider type="vertical" />
               </>
             </span>
-          )
+          );
         }
 
-        return null
-
-      }
-    }
-  ]
+        return null;
+      },
+    },
+  ];
   const getTypebyTitle = title => {
     if (selectdata.ischange) {
-      return selectdata.arr.filter(
-        item => item.title === title)[0].children;
+      return selectdata.arr.filter(item => item.title === title)[0].children;
     }
-    return []
-  }
+    return [];
+  };
 
   useEffect(() => {
     validateFields((err, value) => {
-      searchdata(value, paginations.current, paginations.pageSize)
-    })
-  }, [])
+      searchdata(value, paginations.current, paginations.pageSize);
+    });
+  }, []);
 
   const handleReset = () => {
     router.push({
       pathname: location.pathname,
       query: {},
-      state: {}
+      state: {},
     });
     resetFields();
-    searchdata({}, 1, 15)
-  }
+    searchdata({}, 1, 15);
+  };
 
   useEffect(() => {
     if (location.state && location.state.reset) {
       handleReset();
-      searchdata({}, 1, 15)
+      searchdata({}, 1, 15);
     }
   }, [location.state]);
 
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
       if (!err) {
-        searchdata(values, page, pageSize)
+        searchdata(values, page, pageSize);
       }
-    })
+    });
     setPaginations({
       ...paginations,
-      pageSize
-    })
-  }
+      pageSize,
+    });
+  };
 
   const changePage = page => {
     validateFields((err, values) => {
       if (!err) {
-        searchdata(values, page, paginations.pageSize)
+        searchdata(values, page, paginations.pageSize);
       }
-    })
+    });
 
     setPaginations({
       ...paginations,
-      current: page
-    })
-  }
+      current: page,
+    });
+  };
 
   const newScoringrules = () => {
     router.push({
@@ -240,22 +231,20 @@ function ScoringRulesmaintenance(props) {
       query: {
         addtab: true,
       },
-    })
-  }
+    });
+  };
 
   const handlesearch = () => {
     validateFields((err, value) => {
-      searchdata(value, 1, 15)
-    })
-  }
+      searchdata(value, 1, 15);
+    });
+  };
 
   const rowSelection = {
-    onChange: (index, handleSelect) => {
-      setSelectedKeys([...index])
-      setSelectedRows([...handleSelect])
-    }
-  }
-
+    onChange: index => {
+      setSelectedKeys([...index]);
+    },
+  };
 
   const pagination = {
     showSizeChanger: true,
@@ -264,14 +253,14 @@ function ScoringRulesmaintenance(props) {
     pageSize: paginations.pageSize,
     total: scoreList.total,
     showTotal: total => `总共 ${total}条记录`,
-    onChange: (page) => changePage(page)
-  }
+    onChange: page => changePage(page),
+  };
 
   const record = {
     scoreNo: '',
     scoreName: '',
     assessType: '',
-  }
+  };
 
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
 
@@ -286,15 +275,15 @@ function ScoringRulesmaintenance(props) {
               ...tabrecord,
               paginations,
             },
-            tabid: sessionStorage.getItem('tabid')
+            tabid: sessionStorage.getItem('tabid'),
           },
         });
-      };
+      }
       // 点击菜单刷新,并获取数据
       if (location.state.reset) {
         handleReset();
         // setExpand(false);
-      };
+      }
     }
   }, [location.state]);
 
@@ -303,7 +292,7 @@ function ScoringRulesmaintenance(props) {
   return (
     <PageHeaderWrapper title={pagetitle}>
       <SysDict
-        typeid='576'
+        typeid="576"
         commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
@@ -312,76 +301,60 @@ function ScoringRulesmaintenance(props) {
         <Row>
           <Form {...formItemLayout}>
             <Col span={8}>
-              <Form.Item label='评分细则编号'>
-                {
-                  getFieldDecorator('scoreNo', {
-                    initialValue: cacheinfo.scoreNo
-                  })
-                    (<Input />)
-                }
+              <Form.Item label="评分细则编号">
+                {getFieldDecorator('scoreNo', {
+                  initialValue: cacheinfo.scoreNo,
+                })(<Input />)}
               </Form.Item>
             </Col>
 
             <Col span={8}>
-              <Form.Item label='评分细则名称'>
-                {
-                  getFieldDecorator('scoreName', {
-                    initialValue: cacheinfo.scoreName
-                  })
-                    (<Input />)
-                }
-
+              <Form.Item label="评分细则名称">
+                {getFieldDecorator('scoreName', {
+                  initialValue: cacheinfo.scoreName,
+                })(<Input />)}
               </Form.Item>
             </Col>
 
             <Col span={8}>
-              <Form.Item label='考核类型'>
-                {
-                  getFieldDecorator('assessType', {
-                    initialValue: cacheinfo.assessType
-                  })
-                    (
-                      <Select placeholder='请选择' allowClear>
-                        {assessmentType.map(obj => [
-                          <Option key={obj.key} value={obj.dict_code}>
-                            {obj.title}
-                          </Option>
-                        ])}
-                      </Select>
-                    )
-                }
+              <Form.Item label="考核类型">
+                {getFieldDecorator('assessType', {
+                  initialValue: cacheinfo.assessType,
+                })(
+                  <Select placeholder="请选择" allowClear>
+                    {assessmentType.map(obj => [
+                      <Option key={obj.key} value={obj.dict_code}>
+                        {obj.title}
+                      </Option>,
+                    ])}
+                  </Select>,
+                )}
               </Form.Item>
             </Col>
           </Form>
 
           <Col span={24} style={{ textAlign: 'right' }}>
-            <Button
-              type='primary'
-              style={{ marginRight: 8 }}
-              onClick={handlesearch}
-            >
+            <Button type="primary" style={{ marginRight: 8 }} onClick={handlesearch}>
               查询
             </Button>
 
-            <Button onClick={handleReset}>
-              重置
-            </Button>
+            <Button onClick={handleReset}>重置</Button>
           </Col>
 
-          <Button type='primary' onClick={() => download()}>导出数据</Button>
+          <Button type="primary" onClick={() => download()}>
+            导出数据
+          </Button>
         </Row>
 
-        {
-          pagetitle === '评分细则维护' && (
-            <Button
-              style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-              onClick={newScoringrules}
-              icon='plus'
-            >
-              新增评分细则
-            </Button>
-          )
-        }
+        {pagetitle === '评分细则维护' && (
+          <Button
+            style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+            onClick={newScoringrules}
+            icon="plus"
+          >
+            新增评分细则
+          </Button>
+        )}
 
         <Table
           loading={loading}
@@ -394,14 +367,12 @@ function ScoringRulesmaintenance(props) {
         />
       </Card>
     </PageHeaderWrapper>
-  )
+  );
 }
 
 export default Form.create({})(
   connect(({ qualityassessment, loading }) => ({
     scoreList: qualityassessment.scoreList,
     loading: loading.models.qualityassessment,
-  }))(ScoringRulesmaintenance)
-)
-
-
+  }))(ScoringRulesmaintenance),
+);

@@ -9,14 +9,13 @@ import {
   Button,
   Table
 } from 'antd';
-import Link from 'umi/link';
 import moment from 'moment';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 let startTime;
 let endTime;
 const sign = 'maintenanceservice';
-const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
+const { MonthPicker } = DatePicker;
 
 
 function Maintenanceservice(props) {
@@ -26,7 +25,6 @@ function Maintenanceservice(props) {
     form: { getFieldDecorator, setFieldsValue },
     maintenanceService,
     dispatch,
-    loading
   } = props;
   const tableHeadweek = tabActiveKey === 'week' ? '上周' : '上月';
   const tableHeadmonth = tabActiveKey === 'week' ? '本周' : '本月';

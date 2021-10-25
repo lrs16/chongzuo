@@ -1,15 +1,7 @@
 import React, { useEffect } from 'react';
 import router from 'umi/router';
 import { connect } from 'dva';
-import {
-  Card,
-  Row,
-  Col,
-  Form,
-  DatePicker,
-  Button,
-  Table
-} from 'antd';
+import { Card, Row, Col, Form, DatePicker, Button, Table } from 'antd';
 import moment from 'moment';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
@@ -34,27 +26,23 @@ const columns = [
             time1: record.time1,
             time2: record.time2,
             status: record.status === '合计' ? '' : record.status,
-            pathpush: true
+            pathpush: true,
           },
-          state: { cache: false, }
-        })
+          state: { cache: false },
+        });
       };
-      return <a onClick={() => gotoDetail(record)}>{text}</a>
-    }
+      return <a onClick={() => gotoDetail(record)}>{text}</a>;
+    },
   },
 ];
 
 function Status(props) {
   const { pagetitle } = props.route.name;
   const {
-    form: {
-      getFieldDecorator,
-      validateFields,
-      resetFields
-    },
+    form: { getFieldDecorator, validateFields },
     operationStatusArr,
     dispatch,
-    location
+    location,
   } = props;
 
   const handleListdata = () => {
@@ -63,11 +51,10 @@ function Status(props) {
       endTime = moment(value.time1[1]).format('YYYY-MM-DD');
       dispatch({
         type: 'taskstatistics/operationStatus',
-        payload: { startTime, endTime }
-      })
-    })
-
-  }
+        payload: { startTime, endTime },
+      });
+    });
+  };
 
   const download = () => {
     validateFields((err, value) => {
@@ -78,7 +65,7 @@ function Status(props) {
         payload: {
           time1: startTime,
           time2: endTime,
-        }
+        },
       }).then(res => {
         const filename = '下载.xls';
         const blob = new Blob([res]);
@@ -88,54 +75,51 @@ function Status(props) {
         a.download = filename;
         a.click();
         window.URL.revokeObjectURL(url);
-      })
-    })
-  }
+      });
+    });
+  };
 
   const defaultTime = () => {
-    startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
+    startTime = moment()
+      .subtract('days', 6)
+      .format('YYYY-MM-DD');
     endTime = moment().format('YYYY-MM-DD');
     // startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD');
     // endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
-  }
+  };
 
   useEffect(() => {
     defaultTime();
     dispatch({
       type: 'taskstatistics/operationStatus',
-      payload: { startTime, endTime }
-    })
-  }, [])
+      payload: { startTime, endTime },
+    });
+  }, []);
 
   useEffect(() => {
     if (location.state && location.state.reset) {
       dispatch({
         type: 'taskstatistics/operationStatus',
-        payload: { startTime, endTime }
-      })
+        payload: { startTime, endTime },
+      });
     }
   }, [location.state]);
 
   return (
-    <PageHeaderWrapper
-      title={pagetitle}
-    >
+    <PageHeaderWrapper title={pagetitle}>
       <Card>
         <Row gutter={24}>
-          <Form layout='inline'>
+          <Form layout="inline">
             <>
               <Col span={24}>
-                <Form.Item label='起始时间'>
+                <Form.Item label="起始时间">
                   {getFieldDecorator('time1', {
-                    initialValue: [moment(startTime), moment(endTime)]
-                  })(
-                    <RangePicker
-                    />)
-                  }
+                    initialValue: [moment(startTime), moment(endTime)],
+                  })(<RangePicker />)}
                 </Form.Item>
 
                 <Button
-                  type='primary'
+                  type="primary"
                   style={{ marginTop: 6 }}
                   onClick={() => handleListdata('search')}
                 >
@@ -143,17 +127,11 @@ function Status(props) {
                 </Button>
               </Col>
             </>
-
-
           </Form>
         </Row>
 
         <div>
-          <Button
-            type='primary'
-            style={{ marginBottom: 24, marginTop: 5 }}
-            onClick={download}
-          >
+          <Button type="primary" style={{ marginBottom: 24, marginTop: 5 }} onClick={download}>
             导出数据
           </Button>
         </div>
@@ -161,15 +139,17 @@ function Status(props) {
         <Table
           columns={columns}
           dataSource={operationStatusArr}
-          rowKey={record => record.statName}
+          rowKey={(record, index) => {
+            return index;
+          }}
         />
       </Card>
     </PageHeaderWrapper>
-  )
+  );
 }
 
 export default Form.create({})(
   connect(({ taskstatistics }) => ({
-    operationStatusArr: taskstatistics.operationStatusArr
+    operationStatusArr: taskstatistics.operationStatusArr,
   }))(Status),
 );

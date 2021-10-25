@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   Table,
   Button,
@@ -12,13 +12,12 @@ import {
   message,
   Radio,
 } from 'antd';
-import { operationPerson } from '@/services/common';
 import { phone_reg } from '@/utils/Regexp';
 import moment from 'moment';
 import { connect } from 'dva';
-import Contract from './Contract';
 import router from 'umi/router';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import Contract from './Contract';
 
 const formItemLayout = {
   labelCol: {
@@ -44,7 +43,6 @@ function AddProviderMaintenance(props) {
     location,
     loading,
   } = props;
-  const [performanceLeader, setPerformanceLeader] = useState('');
   const required = true;
 
   //  服务商详情页
@@ -57,10 +55,9 @@ function AddProviderMaintenance(props) {
 
   useEffect(() => {
     if (location.state && location.state.reset && id) {
-      providerDetail()
+      providerDetail();
     }
   }, [location.state]);
-
 
   //  服务商绑定的合同
   const contractProviderdata = () => {
@@ -85,7 +82,7 @@ function AddProviderMaintenance(props) {
       }).then(res => {
         if (res.code === 200) {
           if (!providerSearch) {
-            message.info(res.msg);
+            message.success(res.msg);
           }
           contractProviderdata();
         } else {
@@ -103,7 +100,7 @@ function AddProviderMaintenance(props) {
         },
       }).then(res => {
         if (res.code === 200) {
-          message.info(res.msg);
+          message.success(res.msg);
           contractProviderdata();
         } else {
           message.error(res.msg);
@@ -119,7 +116,7 @@ function AddProviderMaintenance(props) {
       payload: contractId,
     }).then(res => {
       if (res.code === 200) {
-        message.info(res.msg);
+        message.success(res.msg);
         contractProviderdata();
       } else {
         message.error(res.msg);
@@ -185,18 +182,6 @@ function AddProviderMaintenance(props) {
     },
   ];
 
-  const getPerformanceleader = () => {
-    operationPerson().then(res => {
-      const result = res.data.map(item => {
-        return {
-          key: item.id,
-          value: item.userName,
-        };
-      });
-      setPerformanceLeader(result);
-    });
-  };
-
   useEffect(() => {
     if (id) {
       providerDetail();
@@ -206,7 +191,6 @@ function AddProviderMaintenance(props) {
         type: 'qualityassessment/clearProviderdata',
       });
     }
-    getPerformanceleader();
   }, [id]);
 
   const handleBack = () => {
@@ -236,7 +220,7 @@ function AddProviderMaintenance(props) {
           },
         }).then(res => {
           if (res.code === 200) {
-            message.info(res.msg);
+            message.success(res.msg);
             providerDetail();
           } else {
             message.error(res.msg);
@@ -278,7 +262,7 @@ function AddProviderMaintenance(props) {
                 <Form.Item label="服务商编号">
                   {getFieldDecorator('providerNo', {
                     initialValue: searchProviderobj.providerNo,
-                  })(<Input disabled={true} />)}
+                  })(<Input disabled />)}
                 </Form.Item>
               </Col>
 
@@ -356,7 +340,12 @@ function AddProviderMaintenance(props) {
         )}
 
         {loading === false && (
-          <Table loading={loading} columns={columns} dataSource={contractProviderobj} />
+          <Table
+            loading={loading}
+            columns={columns}
+            dataSource={contractProviderobj}
+            rowKey={r => r.id}
+          />
         )}
       </Card>
     </PageHeaderWrapper>

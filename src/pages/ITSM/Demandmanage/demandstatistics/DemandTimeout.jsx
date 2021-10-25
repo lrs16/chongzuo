@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'dva';
 import {
   Card,
@@ -69,7 +69,7 @@ function DemandTimeout(props) {
         if (record.status === '合计') {
           return <span>{text}</span>
         }
-
+        return []
       }
     },
   ];

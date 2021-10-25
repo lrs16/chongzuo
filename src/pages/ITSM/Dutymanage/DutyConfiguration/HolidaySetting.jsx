@@ -12,11 +12,10 @@ import {
   Form,
   Popconfirm
 } from 'antd';
-import moment from 'moment';
-import router from 'umi/router';
 import { connect } from 'dva';
-import AddholidaySetting from './components/AddholidaySetting';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import AddHolidaySetting from './components/AddHolidaySetting';
+
 
 function HolidaySetting(props) {
   const {
@@ -24,12 +23,10 @@ function HolidaySetting(props) {
     dispatch,
     location,
     holidaySearcharr,
-    form: { getFieldsValue }
   } = props;
   const { pagetitle } = props.route.name;
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
   const [selectedKeys, setSelectedKeys] = useState([]);
-  const [tabrecord, setTabRecord] = useState({});
 
   const searchdata = (current, size) => {
     const newdata = {
@@ -54,7 +51,7 @@ function HolidaySetting(props) {
       payload: id
     }).then(res => {
       if (res.code === 200) {
-        message.info(res.msg);
+        message.success(res.msg);
         searchdata(paginations.current, paginations.pageSize)
       } else {
         message.error(res.msg);
@@ -68,7 +65,7 @@ function HolidaySetting(props) {
       payload: value
     }).then(res => {
       if (res.code === 200) {
-        message.info(res.msg)
+        message.success(res.msg)
         searchdata(1, 15)
       } else {
         message.error(res.msg)
@@ -83,7 +80,7 @@ function HolidaySetting(props) {
       payload: id
     }).then(res => {
       if (res.code === 200) {
-        message.info(res.msg);
+        message.success(res.msg);
         searchdata(1, 15)
       } else {
         message.error('操作失败')
@@ -104,7 +101,7 @@ function HolidaySetting(props) {
       render: (text, record) => {
         return (
           <Switch
-            defaultChecked={(record.status === '1') ? true : false}
+            defaultChecked={record.status === '1'}
             onChange={() => switchOnchange(record, record.id)}
           />
         )
@@ -121,13 +118,13 @@ function HolidaySetting(props) {
       render: (text, record) => {
         return (
           <>
-            <AddholidaySetting
+            <AddHolidaySetting
               title='编辑节假日'
               id={record.id}
               onSubmit={handleSubmit}
             >
               <a>编辑</a>
-            </AddholidaySetting>
+            </AddHolidaySetting>
             <Divider type='vertical' />
             <Popconfirm
               title='是否要删除该条数据'
@@ -185,7 +182,7 @@ function HolidaySetting(props) {
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
-        <AddholidaySetting
+        <AddHolidaySetting
           title='新建节假日'
           onSubmit={handleSubmit}
           id=''
@@ -196,7 +193,7 @@ function HolidaySetting(props) {
           >
             新建节假日
           </Button>
-        </AddholidaySetting>
+        </AddHolidaySetting>
 
         {
           loading === false && (

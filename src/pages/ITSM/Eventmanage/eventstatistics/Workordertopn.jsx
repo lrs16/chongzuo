@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import {
@@ -8,7 +8,6 @@ import {
   Form,
   DatePicker,
   Button,
-  Table,
   Select
 } from 'antd';
 import Link from 'umi/link';
@@ -73,7 +72,7 @@ const columns = [
 function Workordertopn(props) {
   const { pagetitle } = props.route.name;
   const {
-    form: { getFieldDecorator, setFieldsValue, validateFields },
+    form: { getFieldDecorator, validateFields },
     ordertopnArr,
     dispatch,
     loading

@@ -2,24 +2,11 @@ import React, { useState } from 'react';
 import {
   Drawer,
   Form,
-  Input,
   Button,
-  DatePicker,
   Table
 } from 'antd';
 import moment from 'moment';
 import { connect } from 'dva';
-
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 6 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 18 }
-  }
-}
 
 const columns = [
   {
@@ -125,7 +112,6 @@ const columns = [
 ];
 
 const withClick = (element, handleClick = () => { }) => {
-  console.log(<element.type {...element.props} onClick={handleClick} />, 'll')
   return <element.type {...element.props} onClick={handleClick} />
 }
 
@@ -134,13 +120,10 @@ const withClick = (element, handleClick = () => { }) => {
 function TreatmentrateDetail(props) {
   const [visible, setVisible] = useState(false);
   const {
-    form: { getFieldDecorator, validateFields },
     children,
-    contract,
     title,
     eventHandleRatearr,
     detailParams,
-    onSumit,
     dispatch,
     loading
   } = props;
@@ -189,44 +172,9 @@ function TreatmentrateDetail(props) {
     setVisible(true)
   }
 
-  const handleOk = () => {
-    props.form.validateFields((err, values) => {
-      if (!err) {
-        onSumit(values);
-        setVisible(false)
-      }
-    })
-  }
-
   const handleCancel = () => {
     setVisible(false)
   }
-
-  // const onShowSizeChange = (page, size) => {
-  //   searchdata(page, size);
-  //   setPageinations({
-  //     ...paginations,
-  //     pageSize: size,
-  //   });
-  // };
-
-  // const changePage = page => {
-  //   searchdata(page - 1, paginations.pageSize);
-  //   setPageinations({
-  //     ...paginations,
-  //     current: page,
-  //   });
-  // };
-
-  // const pagination = {
-  //   showSizeChanger: true,
-  //   onShowSizeChange: (page, size) => onShowSizeChange(page, size),
-  //   current: paginations.current,
-  //   pageSize: paginations.pageSize,
-  //   total: eventHandleRatearr.total,
-  //   showTotal: total => `总共  ${total}  条记录`,
-  //   onChange: page => changePage(page),
-  // };
 
   //  下载
   const download = () => {

@@ -1,33 +1,18 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { connect } from 'dva';
-import {
-  Form,
-  Card,
-  Button,
-  message,
-} from 'antd';
+import { Form, Card, Button, message } from 'antd';
 import router from 'umi/router';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import OperationPlanfillin from './components/OperationPlanfillin';
 
 function OperationPlanfillintion(props) {
   const pagetitle = props.route.name;
-  const {
-    location,
-    dispatch,
-    userinfo,
-    openFlowList,
-    operationPersonArr,
-    loading,
-    tabdata,
-    tabnew
-  } = props;
+  const { location, dispatch, userinfo, operationPersonArr, tabdata } = props;
   let operationPersonSelect;
 
   const PlanfillinRef = useRef();
-  const [richtext, setRichtext] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  const [copyData, setCopyData] = useState('')
+  const [copyData, setCopyData] = useState('');
 
   const formItemLayout = {
     labelCol: {
@@ -39,7 +24,6 @@ function OperationPlanfillintion(props) {
       sm: { span: 15 },
     },
   };
-
 
   const forminladeLayout = {
     labelCol: {
@@ -63,35 +47,40 @@ function OperationPlanfillintion(props) {
     dispatch({
       type: 'processmodel/operationPerson',
     });
-  }
+  };
 
   // 处理作业负责人数据
   if (operationPersonArr.length) {
     operationPersonSelect = operationPersonArr.map(item => {
       return {
         key: item.id,
-        value: item.userName
-      }
-    })
+        value: item.userName,
+      };
+    });
   }
 
   useEffect(() => {
     queryDept();
     getoperationPerson();
-  }, [])
-
+  }, []);
 
   //  点击保存触发事件
-  const handlesubmit = (params) => {
+  const handlesubmit = params => {
     PlanfillinRef.current.validateFields((err, values) => {
       if (params ? true : !err) {
         dispatch({
           type: 'processmodel/saveallForm',
           payload: {
             ...values,
-            main_addTime: values.main_addTime ? values.main_addTime.format('YYYY-MM-DD HH:mm:ss') : '',
-            main_plannedStartTime: values.main_plannedStartTime ? values.main_plannedStartTime.format('YYYY-MM-DD HH:mm:ss') : '',
-            main_plannedEndTime: values.main_plannedEndTime ? values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss') : '',
+            main_addTime: values.main_addTime
+              ? values.main_addTime.format('YYYY-MM-DD HH:mm:ss')
+              : '',
+            main_plannedStartTime: values.main_plannedStartTime
+              ? values.main_plannedStartTime.format('YYYY-MM-DD HH:mm:ss')
+              : '',
+            main_plannedEndTime: values.main_plannedEndTime
+              ? values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss')
+              : '',
             main_fileIds: files.ischange ? JSON.stringify(files.arr) : null,
             flowNodeName: '计划登记',
             editState: 'add',
@@ -99,9 +88,9 @@ function OperationPlanfillintion(props) {
             main_status: '1',
             main_addUserId: userinfo.userId,
             main_addUnitId: userinfo.unitId,
-            main_addUser: userinfo.userName
-          }
-        })
+            main_addUser: userinfo.userName,
+          },
+        });
       }
     });
   };
@@ -117,15 +106,15 @@ function OperationPlanfillintion(props) {
     router.push({
       pathname: `/ITSM/operationplan/myoperationplan`,
       query: { pathpush: true },
-      state: { cach: false }
+      state: { cach: false },
     });
-  }
+  };
 
   const handlePaste = () => {
     const mainId = sessionStorage.getItem('copyrecord');
     if (!mainId) {
       message.info('请在列表页复制');
-      return false
+      return false;
     }
     // if (mainId.length > 1) {
     //   message.info('只能复制一条数据粘贴哦');
@@ -134,17 +123,17 @@ function OperationPlanfillintion(props) {
 
     return dispatch({
       type: 'processmodel/pasteFlow',
-      payload: mainId
+      payload: mainId,
     }).then(res => {
       if (res.code === 200) {
         const resData = res.main;
         delete resData.operationNo;
-        setCopyData(resData)
+        setCopyData(resData);
       } else {
-        message.info('您无法复制该条记录，请返回列表重新选择')
+        message.info('您无法复制该条记录，请返回列表重新选择');
       }
-    })
-  }
+    });
+  };
 
   // 获取页签信息
   useEffect(() => {
@@ -167,20 +156,20 @@ function OperationPlanfillintion(props) {
                 plannedEndTime: values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss'),
                 addTime: values.main_addTime.format('YYYY-MM-DD HH:mm:ss'),
               },
-              tabid: sessionStorage.getItem('tabid')
+              tabid: sessionStorage.getItem('tabid'),
             },
           });
         });
         PlanfillinRef.current.resetFields();
-      };
+      }
     }
   }, [location]);
 
   useEffect(() => {
     if (tabdata !== undefined) {
-      setCopyData(tabdata)
+      setCopyData(tabdata);
     }
-  }, [tabdata])
+  }, [tabdata]);
 
   return (
     <PageHeaderWrapper
@@ -199,14 +188,12 @@ function OperationPlanfillintion(props) {
         </>
       }
     >
-
       <Card>
         <OperationPlanfillin
           ref={PlanfillinRef}
           useInfo={userinfo}
           formItemLayout={formItemLayout}
           forminladeLayout={forminladeLayout}
-          getRichtext={(richText => setRichtext(richText))}
           ChangeFiles={newvalue => {
             setFiles(newvalue);
           }}
@@ -215,7 +202,6 @@ function OperationPlanfillintion(props) {
           main={copyData}
         />
       </Card>
-
     </PageHeaderWrapper>
   );
 }

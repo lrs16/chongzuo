@@ -1,13 +1,5 @@
-import React, { useContext, useRef, useImperativeHandle,useEffect } from 'react';
-import {
-  Row,
-  Col,
-  Form,
-  Input,
-  DatePicker,
-  Radio,
-  Tag
-} from 'antd';
+import React, { useContext, useRef, useImperativeHandle, useEffect } from 'react';
+import { Row, Col, Form, Input, DatePicker, Radio, Tag } from 'antd';
 import moment from 'moment';
 import { FatherContext } from '../Work';
 
@@ -22,7 +14,7 @@ const TaskCheck = React.forwardRef((props, ref) => {
     userinfo,
   } = props;
   const { flowtype, setFlowtype } = useContext(FatherContext);
- 
+
   const attRef = useRef();
   useImperativeHandle(
     ref,
@@ -32,16 +24,15 @@ const TaskCheck = React.forwardRef((props, ref) => {
     [],
   );
 
-  const statusContent = ['001', '002',null];
   const color = ['blue', 'green'];
 
-  const onChange = (e) => {
+  const onChange = e => {
     setFlowtype(e.target.value);
-  }
+  };
 
   useEffect(() => {
-    setFlowtype(check.result === null ? '001' : check.result)
-  },[])
+    setFlowtype(check.result === null ? '001' : check.result);
+  }, []);
 
   const required = true;
 
@@ -49,24 +40,21 @@ const TaskCheck = React.forwardRef((props, ref) => {
     <Row gutter={16}>
       <Form {...formItemLayout}>
         <Col span={8}>
-          <Form.Item label='审核结果'>
+          <Form.Item label="审核结果">
             {getFieldDecorator('check_result', {
               rules: [
                 {
                   required,
-                  message: '请输入审核结果'
-                }
+                  message: '请输入审核结果',
+                },
               ],
-              initialValue: check.result === null ? '001' : check.result
+              initialValue: check.result === null ? '001' : check.result,
             })(
-              <Radio.Group
-                onChange={onChange}
-              >
-                <Radio value='001'>通过</Radio>
-                <Radio value='002'>不通过</Radio>
-              </Radio.Group>
-            )
-            }
+              <Radio.Group onChange={onChange}>
+                <Radio value="001">通过</Radio>
+                <Radio value="002">不通过</Radio>
+              </Radio.Group>,
+            )}
           </Form.Item>
         </Col>
 
@@ -76,70 +64,47 @@ const TaskCheck = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请输入审核时间'
-                }
+                  message: '请输入审核时间',
+                },
               ],
-              initialValue: check.checkTime ? moment(check.checkTime) :moment(new Date()),
-            })(
-              <DatePicker
-                showTime
-                format="YYYY-MM-DD HH:mm:ss"
-              />)}
+              initialValue: check.checkTime ? moment(check.checkTime) : moment(new Date()),
+            })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
           </Form.Item>
         </Col>
 
         <Col span={8}>
-          <Form.Item label='审核状态'>
-            {
-              getFieldDecorator('check_status', {
-                initialValue: check.status
-              })(
-                <Tag
-                  color={color[0]}>待审核</Tag>
-              )
-            }
+          <Form.Item label="审核状态">
+            {getFieldDecorator('check_status', {
+              initialValue: check.status,
+            })(<Tag color={color[0]}>待审核</Tag>)}
           </Form.Item>
         </Col>
 
-        {
-          flowtype === '002' && (
-            <Col span={23}>
-              <Form.Item label='审核说明' {...forminladeLayout}>
-                {
-                  getFieldDecorator('check_content', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入审核说明'
-                      }
-                    ],
-                    initialValue: check.content
-                  })(
-                    <TextArea
-                    />
-                  )
-                }
-              </Form.Item>
-            </Col>
-          )
-        }
+        {flowtype === '002' && (
+          <Col span={23}>
+            <Form.Item label="审核说明" {...forminladeLayout}>
+              {getFieldDecorator('check_content', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入审核说明',
+                  },
+                ],
+                initialValue: check.content,
+              })(<TextArea />)}
+            </Form.Item>
+          </Col>
+        )}
 
-        {
-          flowtype === '001' && (
-            <Col span={23}>
-              <Form.Item label='审核说明' {...forminladeLayout}>
-                {
-                  getFieldDecorator('check_content', {
-                    initialValue:check.content
-                  })(
-                    <TextArea
-                    />
-                  )
-                }
-              </Form.Item>
-            </Col>
-          )
-        }
+        {flowtype === '001' && (
+          <Col span={23}>
+            <Form.Item label="审核说明" {...forminladeLayout}>
+              {getFieldDecorator('check_content', {
+                initialValue: check.content,
+              })(<TextArea />)}
+            </Form.Item>
+          </Col>
+        )}
 
         <Col span={8}>
           <Form.Item label="审核人">
@@ -156,19 +121,17 @@ const TaskCheck = React.forwardRef((props, ref) => {
             })(<Input disabled />)}
           </Form.Item>
         </Col>
-
       </Form>
-    
     </Row>
   );
 });
 
 TaskCheck.defaultProps = {
   check: {
-    content:'',
-    checkTime:new Date(),
-    result:'001',
-  }
-}
+    content: '',
+    checkTime: new Date(),
+    result: '001',
+  },
+};
 
 export default Form.create({})(TaskCheck);

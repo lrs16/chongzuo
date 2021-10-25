@@ -1,11 +1,6 @@
 import React, { useEffect, useState, createContext, useRef } from 'react';
 import { connect } from 'dva';
-import {
-  Button,
-  Collapse,
-  Form,
-  message
-} from 'antd';
+import { Button, Collapse, Form, message } from 'antd';
 import User from '@/components/SelectUser/User';
 import router from 'umi/router';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -45,11 +40,8 @@ const forminladeLayout = {
   },
 };
 
-
-
 export const FatherContext = createContext();
 function Work(props) {
-  const pagetitle = props.route.name;
   const [flowtype, setFlowtype] = useState('001');
   const [selectdata, setSelectData] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
@@ -62,30 +54,21 @@ function Work(props) {
   const [changorder, setChangeOrder] = useState(undefined);
   const [modalvisible, setModalVisible] = useState(false);
 
-
   const {
-    location: { query: {
-      mainId,
-      status,
-      checkStatus,
-      auditLink,
-      delay,
-      taskName,
-      flowNodeName
-    } },
+    location: {
+      query: { mainId, status, checkStatus, auditLink, delay, flowNodeName },
+    },
     userinfo,
     openFlowList,
     operationPersonArr,
     dispatch,
     loading,
-    location
+    location,
   } = props;
   let operationPersonSelect;
-  let headTitle = '作业计划填写';
 
   const { data } = openFlowList;
   const { edit } = openFlowList;
-
 
   if (loading === false) {
     if (openFlowList.code === -1) {
@@ -93,23 +76,21 @@ function Work(props) {
       router.push({
         pathname: `/ITSM/operationplan/myoperationplan`,
         query: { pathpush: true },
-        state: { cache: false, closetabid: mainId }
+        state: { cache: false, closetabid: mainId },
       });
     }
-
   }
 
-  if (loading === false && openFlowList.code !== -1) {
-    const resgister = data && data.length && edit.main !== undefined;
-    if (resgister) {
-      headTitle = status || taskName;
-    }
+  // if (loading === false && openFlowList.code !== -1) {
+  //   const resgister = data && data.length && edit.main !== undefined;
+  //   if (resgister) {
+  //     headTitle = status || taskName;
+  //   }
 
-    const checkParams = data && data.length && (edit.check || taskName === '计划审核')
-    if (checkParams) {
-      headTitle = '作业计划审核';
-    }
-  }
+  //   const checkParams = data && data.length && (edit.check || taskName === '计划审核')
+  //   if (checkParams) {
+  //   }
+  // }
 
   // panel详情
   const Panelheadermap = new Map([
@@ -132,19 +113,18 @@ function Work(props) {
     dispatch({
       type: 'processmodel/operationPerson',
     });
-  }
+  };
 
   const getInformation = () => {
     dispatch({
       type: 'processmodel/openFlow',
-      payload: mainId
-    })
-  }
-
+      payload: mainId,
+    });
+  };
 
   useEffect(() => {
     if (location.state && location.state.reset && mainId) {
-      getInformation()
+      getInformation();
     }
   }, [location.state]);
 
@@ -157,28 +137,28 @@ function Work(props) {
   const taskResult = getTypebyTitle('作业结果');
 
   useEffect(() => {
+    sessionStorage.setItem('Nextflowmane', '送审');
     queryDept();
-    getoperationPerson()
+    getoperationPerson();
     sessionStorage.setItem('Processtype', 'task');
-    headTitle = '';
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (mainId !== undefined) {
       dispatch({
         type: 'processmodel/openFlow',
-        payload: mainId
-      })
+        payload: mainId,
+      });
     }
-  }, [mainId])
+  }, [mainId]);
 
   // 点击页签右键刷新
   useEffect(() => {
     if (location.state && location.state.reset && mainId) {
       dispatch({
         type: 'processmodel/openFlow',
-        payload: mainId
-      })
+        payload: mainId,
+      });
     }
   }, [location.state]);
 
@@ -187,34 +167,33 @@ function Work(props) {
     operationPersonSelect = operationPersonArr.map(item => {
       return {
         key: item.id,
-        value: item.userName
-      }
-    })
+        value: item.userName,
+      };
+    });
   }
-
 
   const formerr = () => {
-    message.error('请将信息填写完整')
-  }
+    message.error('请将信息填写完整');
+  };
 
   //  保存统一接口
   const saveApi = (params, tobatch) => {
     return dispatch({
       type: 'processmodel/formSave',
-      payload: params
+      payload: params,
     }).then(res => {
       if (res.code === 200) {
         if (tobatch) {
           getInformation();
         } else {
-          message.info(res.msg);
+          message.success(res.msg);
           getInformation();
         }
       } else {
         message.error(res.msg);
       }
     });
-  }
+  };
 
   //  执行保存
   const executeSave = () => {
@@ -230,12 +209,12 @@ function Work(props) {
           execute_startTime: value.execute_startTime.format('YYYY-MM-DD HH:mm:ss'),
           execute_endTime: value.execute_endTime.format('YYYY-MM-DD HH:mm:ss'),
           execute_operationTime: value.execute_operationTime.format('YYYY-MM-DD HH:mm:ss'),
-        }
+        };
         delete result.execute_operationUnit;
         saveApi(result);
       }
-    })
-  }
+    });
+  };
 
   //  登记保存
   const fillinSave = (params, tobatch) => {
@@ -243,9 +222,15 @@ function Work(props) {
       if (params ? !err : true) {
         const result = {
           ...values,
-          main_addTime: values.main_addTime ? values.main_addTime.format('YYYY-MM-DD HH:mm:ss') : '',
-          main_plannedStartTime: values.main_plannedStartTime ? values.main_plannedStartTime.format('YYYY-MM-DD HH:mm:ss') : '',
-          main_plannedEndTime: values.main_plannedEndTime ? values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss') : '',
+          main_addTime: values.main_addTime
+            ? values.main_addTime.format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          main_plannedStartTime: values.main_plannedStartTime
+            ? values.main_plannedStartTime.format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          main_plannedEndTime: values.main_plannedEndTime
+            ? values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss')
+            : '',
           main_fileIds: files.ischange ? JSON.stringify(files.arr) : values.main_fileIds,
           flowNodeName: '计划登记',
           editState: openFlowList.editState,
@@ -254,34 +239,33 @@ function Work(props) {
           main_addUser: userinfo.userName,
           main_id: edit.main.id,
           mainId,
-        }
+        };
         saveApi(result, tobatch);
         if (params) {
           setUserVisible(true);
         }
       }
       if (params && err) {
-        formerr()
+        formerr();
       }
-
-    })
-  }
+    });
+  };
 
   //  审核保存
   const checkSave = () => {
     SaveRef.current.validateFields((err, value) => {
       const result = {
         ...value,
-        check_checkTime: (value.check_checkTime).format('YYYY-MM-DD HH:mm:ss'),
+        check_checkTime: value.check_checkTime.format('YYYY-MM-DD HH:mm:ss'),
         flowNodeName: '计划审核',
         editState: openFlowList.editState,
         mainId,
         check_id: edit.check.id,
         check_checkUserId: userinfo.userId,
-      }
-      saveApi(result)
-    })
-  }
+      };
+      saveApi(result);
+    });
+  };
 
   //  判断是属于那个保存状态下
   const handleSave = (params, tobatch) => {
@@ -298,35 +282,34 @@ function Work(props) {
       default:
         break;
     }
-  }
+  };
 
-  // 送审提交 
+  // 送审提交
   const gotoCensorship = () => {
     return dispatch({
       type: 'processmodel/censorshipSubmit',
       payload: {
         mainIds: mainId,
-        userId: sessionStorage.getItem('NextflowUserId')
-      }
+        userId: sessionStorage.getItem('NextflowUserId'),
+      },
     }).then(res => {
       if (res.code === 200) {
-        message.info('送审成功');
-        router.push({
-          pathname: `/ITSM/operationplan/operationplanform`,
-          query: { mainId, closetab: true },
-          state: { cache: false }
-        });
-      } else {
-        message.error('送审失败 ');
-        // router.push(`/ITSM/operationplan/myoperationplan/`)
+        message.success(res.msg);
         router.push({
           pathname: `/ITSM/operationplan/myoperationplan`,
           query: { pathpush: true },
-          state: { cache: false }
-        })
+          state: { cache: false, closetabid: mainId },
+        });
+      } else {
+        message.error(res.msg);
+        router.push({
+          pathname: `/ITSM/operationplan/myoperationplan`,
+          query: { pathpush: true },
+          state: { cache: false, closetabid: mainId },
+        });
       }
-    })
-  }
+    });
+  };
 
   // 上传附件触发保存
   useEffect(() => {
@@ -335,29 +318,28 @@ function Work(props) {
     }
   }, [files]);
 
-
   //  送审选人
   useEffect(() => {
     if (userchoice) {
-      gotoCensorship()
+      gotoCensorship();
     }
-  }, [userchoice])
+  }, [userchoice]);
 
   const handleClose = () => {
     if (auditLink) {
       router.push({
         pathname: `/ITSM/operationplan/operationplancheck`,
         query: { pathpush: true },
-        state: { cache: false, closetabid: mainId }
-      })
+        state: { cache: false, closetabid: mainId },
+      });
     } else {
       router.push({
         pathname: `/ITSM/operationplan/myoperationplan`,
         query: { pathpush: true },
-        state: { cache: false, closetabid: mainId }
-      })
+        state: { cache: false, closetabid: mainId },
+      });
     }
-  }
+  };
 
   //  回退
   const reasonSubmit = values => {
@@ -369,12 +351,12 @@ function Work(props) {
       },
     }).then(res => {
       if (res.code === 200) {
-        message.info(res.msg);
+        message.success(res.msg);
         router.push({
           pathname: `/ITSM/operationplan/operationplancheck`,
           query: { pathpush: true },
-          state: { cache: false, closetabid: mainId }
-        })
+          state: { cache: false, closetabid: mainId },
+        });
       } else {
         message.error(res.msg);
       }
@@ -390,29 +372,28 @@ function Work(props) {
           payload: {
             mainIds: mainId,
             ...value,
-            check_checkTime: (value.check_checkTime).format('YYYY-MM-DD HH:mm:ss'),
+            check_checkTime: value.check_checkTime.format('YYYY-MM-DD HH:mm:ss'),
             flowNodeName: '计划审核',
             editState: openFlowList.editState,
             check_id: edit.check.id,
             check_checkUserId: userinfo.userId,
-          }
+          },
         }).then(res => {
           router.push({
             pathname: `/ITSM/operationplan/operationplancheck`,
             query: { pathpush: true },
-            state: { cache: false, closetabid: mainId }
+            state: { cache: false, closetabid: mainId },
           });
           if (res.code === 200) {
-            message.info(res.msg);
+            message.success(res.msg);
           } else {
             message.error(res.msg);
           }
         });
       }
       return null;
-    }
-    )
-  }
+    });
+  };
 
   // 执行
   const handleSaveexecute = () => {
@@ -433,47 +414,50 @@ function Work(props) {
             execute_startTime: value.execute_startTime.format('YYYY-MM-DD HH:mm:ss'),
             execute_endTime: value.execute_endTime.format('YYYY-MM-DD HH:mm:ss'),
             execute_operationTime: value.execute_operationTime.format('YYYY-MM-DD HH:mm:ss'),
-          }
+          },
         }).then(res => {
           router.push({
             pathname: `/ITSM/operationplan/myoperationplan`,
             query: { pathpush: true },
-            state: { cache: false, closetabid: mainId }
+            state: { cache: false, closetabid: mainId },
           });
           if (res.code === 200) {
-            message.info(res.msg);
+            message.success(res.msg);
           } else {
             message.error(res.msg);
           }
         });
       }
-    })
-  }
+      return [];
+    });
+  };
 
   // 点击执行前判断是否超时
   const handleExecute = () => {
     judgeTimeoutStatus(edit.execute.id).then(res => {
       if (res.code === 200 && res.status === 'yes' && res.timeoutMsg === '') {
-        message.info('已超时，请填写超时原因...')
+        message.info('已超时，请填写超时原因...');
         setModalVisible(true);
       } else {
         handleSaveexecute();
       }
-    })
-  }
+    });
+  };
 
   //  保存超时信息
-  const postTimeOutMsg = (v) => {
+  const postTimeOutMsg = v => {
     saveTimeoutMsg({
       taskId: edit.execute.id,
       msgType: 'timeout',
       orderId: mainId,
       orderType: 'operation',
-      ...v
+      ...v,
     }).then(res => {
-      handleSaveexecute();
+      if (res.code === 200) {
+        handleSaveexecute();
+      }
     });
-  }
+  };
 
   //  延期
   const handleDelay = () => {
@@ -482,110 +466,128 @@ function Work(props) {
         type: 'processmodel/delay',
         payload: {
           mainId,
-          plannedEndTime: value.plannedEndTime.format('YYYY-MM-DD HH:mm:ss')
-        }
+          plannedEndTime: value.plannedEndTime.format('YYYY-MM-DD HH:mm:ss'),
+        },
       }).then(res => {
         router.push({
           pathname: `/ITSM/operationplan/myoperationplan`,
           query: { pathpush: true },
-          state: { cache: false, closetabid: mainId }
+          state: { cache: false, closetabid: mainId },
         });
         if (res.code === 200) {
-          message.info(res.msg);
+          message.success(res.msg);
         } else {
           message.error(res.msg);
         }
       });
-    })
-  }
+    });
+  };
 
   //  删除
   const handleDelete = () => {
     return dispatch({
       type: 'processmodel/taskDelete',
       payload: {
-        mainIds: mainId
-      }
+        mainIds: mainId,
+      },
     }).then(res => {
       router.push({
         pathname: `/ITSM/operationplan/myoperationplan`,
         query: { pathpush: true },
-        state: { cache: false, closetabid: mainId }
+        state: { cache: false, closetabid: mainId },
       });
       if (res.code === 200) {
         message.info(res.msg);
       } else {
         message.info(res.msg);
       }
-    })
-  }
+    });
+  };
 
   return (
     <PageHeaderWrapper
       title={flowNodeName}
       extra={
         <>
-          {
-            loading === false && taskResult && taskResult.length > 0 && !delay && (openFlowList && edit.main !== undefined && data.length === 1) && (
-              <Button
-                type="danger"
-                ghost
-                style={{ marginRight: 8 }}
-                onClick={handleDelete}
-              >
+          {loading === false &&
+            taskResult &&
+            taskResult.length > 0 &&
+            !delay &&
+            openFlowList &&
+            edit.main !== undefined &&
+            data.length === 1 && (
+              <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete}>
                 删除
               </Button>
-            )
-          }
+            )}
 
-          {
-            loading === false && taskResult && taskResult.length > 0 && !delay && (
-              <Button type='primary' onClick={() => handleSave(false)}>保存</Button>
-            )
-          }
+          {loading === false && taskResult && taskResult.length > 0 && !delay && (
+            <Button type="primary" onClick={() => handleSave(false)}>
+              保存
+            </Button>
+          )}
 
-          {
-            loading === false && taskResult && taskResult.length > 0 && !delay && (openFlowList && edit.main !== undefined) && taskResult && taskResult.length > 0 && (
-              <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSave(true, 'tobatch')}>
+          {loading === false &&
+            taskResult &&
+            taskResult.length > 0 &&
+            !delay &&
+            openFlowList &&
+            edit.main !== undefined &&
+            taskResult &&
+            taskResult.length > 0 && (
+              <Button
+                type="primary"
+                style={{ marginRight: 8 }}
+                onClick={() => handleSave(true, 'tobatch')}
+              >
                 送审
               </Button>
-            )
-          }
+            )}
 
-          {
-            taskResult && taskResult.length > 0 && flowNodeName === '计划审核' && !delay && (
+          {loading === false &&
+            taskResult &&
+            taskResult.length > 0 &&
+            flowNodeName === '计划审核' &&
+            !delay && (
               <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleExamine()}>
                 审核
               </Button>
-            )
-          }
+            )}
 
-          {
-            loading === false && taskResult && taskResult.length > 0 && !delay && edit.check && edit.check.result === null && taskResult && taskResult.length > 0 && (
-              <Back
-                reasonSubmit={values => reasonSubmit(values)}
-                detailPage='true'
-              >
+          {loading === false &&
+            taskResult &&
+            taskResult.length > 0 &&
+            !delay &&
+            edit.check &&
+            edit.check.result === null &&
+            taskResult &&
+            taskResult.length > 0 && (
+              <Back reasonSubmit={values => reasonSubmit(values)} detailPage="true">
                 <Button type="primary" style={{ marginRight: 8 }}>
                   回退
                 </Button>
               </Back>
-            )
-          }
+            )}
 
-          {
-            loading === false && taskResult && taskResult.length > 0 && !delay && (openFlowList && edit.execute !== undefined) && flowNodeName === '计划执行' && taskResult && taskResult.length > 0 && (
-              <Button
-                type="primary"
-                onClick={() => handleExecute()}>确认执行</Button>
-            )
-          }
+          {loading === false &&
+            taskResult &&
+            taskResult.length > 0 &&
+            !delay &&
+            openFlowList &&
+            edit.execute !== undefined &&
+            flowNodeName === '计划执行' &&
+            taskResult &&
+            taskResult.length > 0 && (
+              <Button type="primary" onClick={() => handleExecute()}>
+                确认执行
+              </Button>
+            )}
 
-          {
-            loading === false && taskResult && taskResult.length > 0 && delay && (
-              <Button type='primary' onClick={handleDelay}>确定延期</Button>
-            )
-          }
+          {loading === false && taskResult && taskResult.length > 0 && delay && (
+            <Button type="primary" onClick={handleDelay}>
+              确定延期
+            </Button>
+          )}
 
           <Button onClick={handleClose}>返回</Button>
         </>
@@ -598,127 +600,118 @@ function Work(props) {
         style={{ display: 'none' }}
       />
 
-      {
-        loading === false && taskResult && taskResult.length > 0 && data && (
-          <div className={styles.collapse}>
-            <Collapse
-              expandIconPosition="right"
-              defaultActiveKey={['1']}
-              onChange={callback}
-              bordered='true'
-            >
-              <>
-                {!delay && (edit.check || flowNodeName === '计划审核') && (
+      {loading === false && taskResult && taskResult.length > 0 && data && (
+        <div className={styles.collapse}>
+          <Collapse
+            expandIconPosition="right"
+            defaultActiveKey={['1']}
+            onChange={callback}
+            bordered="true"
+          >
+            <>
+              {!delay && (edit.check || flowNodeName === '计划审核') && (
+                <Panel header="作业计划审核" key="1" style={{ backgroundColor: 'white' }}>
+                  <FatherContext.Provider value={{ flowtype, setFlowtype }}>
+                    <TaskCheck
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                      check={edit.check}
+                      userinfo={userinfo}
+                      checkStatus={checkStatus}
+                      ref={SaveRef}
+                    />
+                  </FatherContext.Provider>
+                </Panel>
+              )}
+
+              {loading === false &&
+                !delay &&
+                openFlowList &&
+                openFlowList.edit.execute !== undefined &&
+                (checkStatus === '已审核' || flowNodeName === '计划执行') && (
                   <Panel
-                    header='作业计划审核'
-                    key='1'
+                    header="作业计划执行"
+                    key="1"
                     style={{ backgroundColor: 'white' }}
+                    bordered
                   >
-                    <FatherContext.Provider value={{ flowtype, setFlowtype }}>
-                      <TaskCheck
-                        formItemLayout={formItemLayout}
-                        forminladeLayout={forminladeLayout}
-                        check={edit.check}
-                        userinfo={userinfo}
-                        checkStatus={checkStatus}
-                        ref={SaveRef}
-                      />
-                    </FatherContext.Provider>
+                    <TaskExecute
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                      type=""
+                      userinfo={userinfo}
+                      taskResult={taskResult}
+                      ref={SaveRef}
+                      execute={edit.execute}
+                      files={
+                        edit.execute.fileIds && edit.execute.fileIds
+                          ? JSON.parse(edit.execute.fileIds)
+                          : []
+                      }
+                      ChangeFiles={newvalue => {
+                        setFiles(newvalue);
+                      }}
+                    />
                   </Panel>
                 )}
 
-                {
-                  loading === false && !delay && (openFlowList && openFlowList.edit.execute !== undefined) && (checkStatus === '已审核' || flowNodeName === '计划执行') && (
-                    <Panel
-                      header='作业计划执行'
-                      key='1'
-                      style={{ backgroundColor: 'white' }}
-                      bordered
-                    >
-                      <TaskExecute
-                        formItemLayout={formItemLayout}
-                        forminladeLayout={forminladeLayout}
-                        type=''
-                        userinfo={userinfo}
-                        taskResult={taskResult}
-                        ref={SaveRef}
-                        execute={edit.execute}
-                        files={
-                          (edit.execute.fileIds) && (edit.execute.fileIds) ? JSON.parse(edit.execute.fileIds) : []
-                        }
-                        ChangeFiles={newvalue => {
-                          setFiles(newvalue);
-                        }}
-                      />
-                    </Panel>
-                  )
-                }
-
-                {
-                  loading === false && (edit && edit.main !== undefined || delay) && (
-                    <Panel
-                      header={status || flowNodeName}
-                      key='1'
-                      bordered
-                      style={{ backgroundColor: 'white' }}
-                    >
-                      <OperationPlanfillin
-                        formItemLayout={formItemLayout}
-                        forminladeLayout={forminladeLayout}
-                        main={delay ? openFlowList.main : edit.main}
-                        type={delay}
-                        status={status}
-                        useInfo={userinfo}
-                        ref={SaveRef}
-                        operationPersonSelect={operationPersonSelect}
-                        files={
-                          (openFlowList.main.fileIds) !== '' && (openFlowList.main.fileIds) ? JSON.parse(openFlowList.main.fileIds) : []
-                        }
-                        ChangeFiles={newvalue => {
-                          setFiles(newvalue);
-                        }}
-                      />
-                    </Panel>
-                  )}
-              </>
-            </Collapse>
-
-          </div>
-
-
-        )
-      }
+              {loading === false && ((edit && edit.main !== undefined) || delay) && (
+                <Panel
+                  header={status || flowNodeName}
+                  key="1"
+                  bordered
+                  style={{ backgroundColor: 'white' }}
+                >
+                  <OperationPlanfillin
+                    formItemLayout={formItemLayout}
+                    forminladeLayout={forminladeLayout}
+                    main={delay ? openFlowList.main : edit.main}
+                    type={delay}
+                    status={status}
+                    useInfo={userinfo}
+                    ref={SaveRef}
+                    operationPersonSelect={operationPersonSelect}
+                    files={
+                      openFlowList.main.fileIds !== '' && openFlowList.main.fileIds
+                        ? JSON.parse(openFlowList.main.fileIds)
+                        : []
+                    }
+                    ChangeFiles={newvalue => {
+                      setFiles(newvalue);
+                    }}
+                  />
+                </Panel>
+              )}
+            </>
+          </Collapse>
+        </div>
+      )}
 
       <div className={styles.collapse}>
         {loading === false && taskResult && taskResult.length > 0 && data && (
-          <Collapse
-            expandIconPosition="right"
-            // defaultActiveKey={['0']}
-            bordered={false}
-          >
+          <Collapse expandIconPosition="right" bordered={false}>
             {data.map((obj, index) => {
               // panel详情组件
               const Paneldesmap = new Map([
-                ['main', <OperationPlanfillindes
-                  info={Object.values(obj)[0]}
-                  main={data[0].main}
-                  key='0'
-                />],
-                ['check', <TaskCheckdes
-                  info={Object.values(obj)[0]}
-                  main={data[0].main}
-                  key='1'
-                />],
-                ['execute', <TaskExecutedes
-                  info={Object.values(obj)[0]}
-                  main={data[0].main}
-                  key='2'
-                />],
+                [
+                  'main',
+                  <OperationPlanfillindes
+                    info={Object.values(obj)[0]}
+                    main={data[0].main}
+                    key="0"
+                  />,
+                ],
+                [
+                  'check',
+                  <TaskCheckdes info={Object.values(obj)[0]} main={data[0].main} key="1" />,
+                ],
+                [
+                  'execute',
+                  <TaskExecutedes info={Object.values(obj)[0]} main={data[0].main} key="2" />,
+                ],
               ]);
               return (
-                <Panel
-                  header={Panelheadermap.get(Object.keys(obj)[0])}
-                  key={index}>
+                <Panel header={Panelheadermap.get(Object.keys(obj)[0])} key={index}>
                   {Paneldesmap.get(Object.keys(obj)[0])}
                 </Panel>
               );
@@ -734,7 +727,7 @@ function Work(props) {
         changorder={changorder}
         ChangeChoice={v => setUserChoice(v)}
         ChangeType={() => 0}
-        describe=''
+        describe=""
       />
 
       <TimeoutModal
@@ -742,8 +735,8 @@ function Work(props) {
         ChangeModalVisible={v => setModalVisible(v)}
         ChangeTimeOutMsg={v => postTimeOutMsg(v)}
       />
-    </PageHeaderWrapper >
-  )
+    </PageHeaderWrapper>
+  );
 }
 
 export default Form.create({})(
@@ -752,5 +745,5 @@ export default Form.create({})(
     openFlowList: processmodel.openFlowList,
     operationPersonArr: processmodel.operationPersonArr,
     loading: loading.models.processmodel,
-  }))(Work)
-)
+  }))(Work),
+);

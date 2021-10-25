@@ -1,11 +1,5 @@
 import React, { useEffect, useRef, useState, createContext } from 'react';
-import {
-  Form,
-  Button,
-  message,
-  Collapse,
-  Steps,
-} from 'antd';
+import { Form, Button, message, Collapse, Steps } from 'antd';
 import moment from 'moment';
 import { connect } from 'dva';
 import Link from 'umi/link';
@@ -25,11 +19,10 @@ import Reasonregression from './components/Reasonregression';
 import Problemflow from './components/Problemflow';
 import Systemoperatorsecond from './components/Systemoperatorsecond';
 
-import TimeoutModal from '../components/TimeoutModal';                // 超时信息填写
+import TimeoutModal from '../components/TimeoutModal'; // 超时信息填写
 import { judgeTimeoutStatus, saveTimeoutMsg } from '../services/api'; // 超时接口
 
-import RelationOrder from './RelationOrder';       
-import SysDict from '@/components/SysDict';                   // 关联工单
+import RelationOrder from './RelationOrder';
 
 import styles from './index.less';
 
@@ -79,13 +72,13 @@ function Workorder(props) {
   //  const [changorder, setChangeOrder] = useState(undefined);
   const [problemHandle, setProblemHandle] = useState('');
   const [userchoice, setUserChoice] = useState(false); // 已经选择人员
-  const [butandorder, setButandOrder] = useState('');    // 暂存按钮类型
+  const [butandorder, setButandOrder] = useState(''); // 暂存按钮类型
   const [tabActiveKey, setTabActiveKey] = useState('workorder');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
 
   const [buttontype, setButtonType] = useState('');
   const [modalvisible, setModalVisible] = useState(false);
-  const [modalrollback, setModalRollBack] = useState(false);   // 回退信息modle
+  const [modalrollback, setModalRollBack] = useState(false); // 回退信息modle
 
   const {
     dispatch,
@@ -101,7 +94,7 @@ function Workorder(props) {
     projectList,
     userinfo,
     loading,
-    location
+    location,
   } = props;
 
   let showback = true;
@@ -109,13 +102,12 @@ function Workorder(props) {
     if (flowNodeName === '系统开发商处理') {
       selSign = '0';
     } else {
-      selSign = problemlist.selSign
+      selSign = problemlist.selSign;
     }
   }
 
   const { id, taskName, mainId } = props.location.query;
   const { problemFlowLogs, problemFlowNodeRows } = todoDetail;
-
 
   const selectNextflow = () => {
     switch (flowNodeName) {
@@ -140,10 +132,10 @@ function Workorder(props) {
       default:
         break;
     }
-  }
+  };
 
   const solvingDisbled = () => {
-    const statueList = (currntStatus === 29 || currntStatus === 9 || currntStatus === 40);
+    const statueList = currntStatus === 29 || currntStatus === 9 || currntStatus === 40;
     if (statueList) {
       showEdit = true;
     } else {
@@ -156,7 +148,7 @@ function Workorder(props) {
     const editstate = todoDetail.editState;
     problemFlowid = todoDetail.main.id;
     flowNodeName = todoDetail.flowNodeName;
-    const backbutton = (currntStatus === 25 || (currntStatus === 65 && editstate === 'edit'));
+    const backbutton = currntStatus === 25 || (currntStatus === 65 && editstate === 'edit');
     if (backbutton) {
       showback = false;
     }
@@ -168,7 +160,7 @@ function Workorder(props) {
     dispatch({
       type: 'itsmuser/fetchuser',
     });
-  }
+  };
   const getNewno = () => {
     dispatch({
       type: 'problemmanage/getregisterNo',
@@ -179,7 +171,7 @@ function Workorder(props) {
     dispatch({
       type: 'problemmanage/ToDodetails',
       payload: { id },
-    })
+    });
   };
 
   // 表单校验提示信息
@@ -200,25 +192,25 @@ function Workorder(props) {
       sessionStorage.setItem('Processtype', 'problem');
       setTabActiveKey('workorder');
     }
-  }, [location.state])
+  }, [location.state]);
 
-
-
-  const gotoCirapi = (closessign) => {
+  const gotoCirapi = closessign => {
     let result;
     if (closessign) {
-      result = 255
+      result = 255;
     } else {
       result = flowtype;
     }
 
     if (flowNodeName === '系统开发商处理' && changeOrder === '') {
-      result = 1
+      result = 1;
     }
 
     let selectPerson;
     if (flowNodeName === '系统运维商审核' && flowtype === '1') {
-      selectPerson = `${sessionStorage.getItem('NextflowUserId')},${sessionStorage.getItem('AutoflowUserId')}`;
+      selectPerson = `${sessionStorage.getItem('NextflowUserId')},${sessionStorage.getItem(
+        'AutoflowUserId',
+      )}`;
     } else {
       selectPerson = sessionStorage.getItem('NextflowUserId');
     }
@@ -230,7 +222,7 @@ function Workorder(props) {
           taskId: id,
           result,
           userIds: selectPerson,
-        }
+        },
       },
     }).then(res => {
       if (res.code === 200) {
@@ -240,23 +232,23 @@ function Workorder(props) {
           query: {
             mainId,
             closetab: true,
-          }
+          },
         });
         router.push({
           pathname: `/ITSM/problemmanage/besolved`,
           query: { pathpush: true },
-          state: { cache: false }
-        })
+          state: { cache: false },
+        });
       } else {
         message.success(res.error);
       }
-    })
+    });
   };
 
   const closeOrder = () => {
     const closeWork = '关闭';
     gotoCirapi(closeWork);
-  }
+  };
 
   const saveApi = (saveData, params2) => {
     return dispatch({
@@ -265,7 +257,7 @@ function Workorder(props) {
     }).then(res => {
       if (res.code === 200) {
         showback = false;
-        if(!params2) {
+        if (!params2) {
           message.success(res.msg);
         }
         getInformation();
@@ -273,14 +265,13 @@ function Workorder(props) {
         if (params2 && params2 !== '系统开发商处理' && flowtype === '1' && !files.ischange) {
           setUserVisible(true);
         }
-        if ((params2 === '系统开发商处理' && changeOrder === '' && !files.ischange)) {
+        if (params2 === '系统开发商处理' && changeOrder === '' && !files.ischange) {
           gotoCirapi();
         }
 
-        if ((params2 && params2 !== '系统开发商处理' && flowtype === '0' && !files.ischange)) {
+        if (params2 && params2 !== '系统开发商处理' && flowtype === '0' && !files.ischange) {
           gotoCirapi();
         }
-
       } else {
         message.error(res.msg);
       }
@@ -291,29 +282,29 @@ function Workorder(props) {
     if (userchoice || butandorder) {
       gotoCirapi();
     }
-  }, [userchoice, butandorder])
+  }, [userchoice, butandorder]);
 
   //  问题登记
-  const saveRegister = (params2) => {
+  const saveRegister = params2 => {
     RegistratRef.current.validateFields((err, values) => {
       if (!err) {
         return dispatch({
           type: 'problemmanage/tobeSave',
           payload: {
             ...values,
-            registerTime: (values.registerTime).format('YYYY-MM-DD HH:mm:ss'),
-            registerOccurTime: (values.registerOccurTime).format('YYYY-MM-DD HH:mm:ss'),
-            registerExpectTime: (values.registerExpectTime).format('YYYY-MM-DD HH:mm:ss'),
+            registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+            registerOccurTime: values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
+            registerExpectTime: values.registerExpectTime.format('YYYY-MM-DD HH:mm:ss'),
             taskId: id,
-            type: (values.type).toString(),
+            type: values.type.toString(),
             editState: todoDetail.editState === 'edit' ? 'edit' : 'add',
-            registerId: todoDetail.editState === 'edit' ? todoDetail.register.id : todoDetail.editGuid,
+            registerId:
+              todoDetail.editState === 'edit' ? todoDetail.register.id : todoDetail.editGuid,
             registerAttachments: files.ischange ? JSON.stringify(files.arr) : null,
-            developmentLead: (values.developmentLead).toString(),
+            developmentLead: values.developmentLead.toString(),
           },
         }).then(res => {
           if (res.code === 200) {
-            
             setFiles({ ...files, ischange: false });
             getInformation();
             if (params2) {
@@ -326,10 +317,12 @@ function Workorder(props) {
           }
         });
       }
+
       if (params2 && uservisible === false) {
         return formerr();
       }
 
+      return [];
     });
   };
 
@@ -339,7 +332,7 @@ function Workorder(props) {
       if (params2 ? !err : true) {
         const saveData = {
           ...values,
-          checkTime: values.checkTime ? (values.checkTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          checkTime: values.checkTime ? values.checkTime.format('YYYY-MM-DD HH:mm:ss') : '',
           taskId: id,
           editState: todoDetail.editState === 'edit' ? 'edit' : 'add',
           checkId: todoDetail.editState === 'edit' ? todoDetail.check.id : todoDetail.editGuid,
@@ -347,14 +340,16 @@ function Workorder(props) {
           checkAttachments: files.ischange ? JSON.stringify(files.arr) : null,
           checkOpinion: values.checkOpinion1 || values.checkOpinion2,
           checkOpinion1: '',
-          checkOpinion2: ''
-        }
+          checkOpinion2: '',
+        };
         saveApi(saveData, params2, uploadSive);
       }
+
       if (params2 && err) {
         return formerr();
       }
 
+      return [];
     });
   };
 
@@ -364,25 +359,29 @@ function Workorder(props) {
       if (params2 ? !err : true) {
         const saveData = {
           ...values,
-          handleTime: values.handleTime ? (values.handleTime).format('YYYY-MM-DD HH:mm:ss') : '',
-          orderReceivingtime: values.orderReceivingtime ? (values.orderReceivingtime).format('YYYY-MM-DD HH:mm:ss') : '',
-          planEndTime: values.planEndTime ? (values.planEndTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          handleTime: values.handleTime ? values.handleTime.format('YYYY-MM-DD HH:mm:ss') : '',
+          orderReceivingtime: values.orderReceivingtime
+            ? values.orderReceivingtime.format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          planEndTime: values.planEndTime ? values.planEndTime.format('YYYY-MM-DD HH:mm:ss') : '',
           taskId: id,
           editState: todoDetail.editState === 'edit' ? 'edit' : 'add',
           handleId: todoDetail.editState === 'edit' ? todoDetail.handle.id : todoDetail.editGuid,
-          handleAttachments: files.ischange ? JSON.stringify(files.arr) : null
-        }
+          handleAttachments: files.ischange ? JSON.stringify(files.arr) : null,
+        };
         saveApi(saveData, params2, uploadSive);
         if (params2 && changeOrder) {
           setUserVisible(true);
         }
       }
+
       if (params2 && err) {
         return formerr();
       }
+
+      return [];
     });
   };
-
 
   //  确认保存
   const saveConfirm = (params2, uploadSive) => {
@@ -397,8 +396,8 @@ function Workorder(props) {
           confirmAttachments: files.ischange ? JSON.stringify(files.arr) : null,
           confirmContent: values.confirmContent1 || values.confirmContent2,
           confirmContent1: '',
-          confirmContent2: ''
-        }
+          confirmContent2: '',
+        };
         switch (todoDetail.flowNodeName) {
           case '系统运维商确认':
             saveData.confirmType = 1;
@@ -410,13 +409,15 @@ function Workorder(props) {
             saveData.confirmType = 3;
             break;
           default:
-            break
+            break;
         }
         saveApi(saveData, params2, uploadSive);
       }
       if (params2 && uservisible === true) {
         return formerr();
       }
+
+      return [];
     });
   };
 
@@ -427,19 +428,19 @@ function Workorder(props) {
       payload: {
         id,
         values,
-        userIds: sessionStorage.getItem('NextflowUserId')
+        userIds: sessionStorage.getItem('NextflowUserId'),
       },
     }).then(res => {
       if (res.code === 200) {
         message.success(res.msg);
         router.push({
           pathname: `/ITSM/problemmanage/besolveddetail/workorder`,
-          query: { mainId, closetab: true, }
+          query: { mainId, closetab: true },
         });
         router.push({
           pathname: `/ITSM/problemmanage/besolved`,
-          query: { pathpush: true, },
-          state: { cach: false }
+          query: { pathpush: true },
+          state: { cach: false },
         });
       } else {
         message.error(res.msg);
@@ -460,13 +461,13 @@ function Workorder(props) {
           query: {
             mainId,
             closetab: true,
-          }
+          },
         });
         router.push({
           pathname: `/ITSM/problemmanage/besolved`,
           query: { pathpush: true },
-          state: { cache: false }
-        })
+          state: { cache: false },
+        });
       } else {
         message.error(res.msg);
       }
@@ -519,55 +520,52 @@ function Workorder(props) {
     }
   }, [files]);
 
-
-
-
   const gethandle = () => {
     const dictModule = 'problem';
     const dictType = 'handleresult';
     dispatch({
       type: 'problemdropdown/keyvalsource',
-      payload: { dictModule, dictType }
+      payload: { dictModule, dictType },
     });
-  }
+  };
 
   const getSourceapi = (dictModule, dictType) => {
     dispatch({
       type: 'problemdropdown/keyvalsource',
-      payload: { dictModule, dictType }
+      payload: { dictModule, dictType },
     });
-  }
+  };
   //  问题来源
   const getSource = () => {
     const dictModule = 'problem';
     const dictType = 'source';
     getSourceapi(dictModule, dictType);
-  }
+  };
   //  问题分类
   const gettype = () => {
     const dictModule = 'problem';
     const dictType = 'type';
     getSourceapi(dictModule, dictType);
-  }
+  };
   //  重要程度
   const getpriority = () => {
     const dictModule = 'public';
     const dictType = 'priority';
     getSourceapi(dictModule, dictType);
-  }
+  };
   //  影响范围
   const getscope = () => {
     const dictModule = 'public';
     const dictType = 'effect';
     getSourceapi(dictModule, dictType);
-  }
+  };
 
   // 所属项目
   const getProject = () => {
     const dictModule = 'public';
     const dictType = 'project';
     getSourceapi(dictModule, dictType);
-  }
+  };
 
   const getSelectperson = () => {
     const taskId = id;
@@ -578,7 +576,7 @@ function Workorder(props) {
         result: 1,
       },
     });
-  }
+  };
 
   useEffect(() => {
     getInformation();
@@ -594,7 +592,7 @@ function Workorder(props) {
     queryDept();
     sessionStorage.setItem('Processtype', 'problem');
     sessionStorage.setItem('Nextflowmane', '');
-    setTabActiveKey('workorder')
+    setTabActiveKey('workorder');
   }, [mainId]);
 
   // 点击页签右键刷新
@@ -613,7 +611,7 @@ function Workorder(props) {
       queryDept();
       sessionStorage.setItem('Processtype', 'problem');
       sessionStorage.setItem('Nextflowmane', '');
-      setTabActiveKey('workorder')
+      setTabActiveKey('workorder');
     }
   }, [location.state]);
 
@@ -652,69 +650,42 @@ function Workorder(props) {
     {
       key: 'relevancy',
       tab: '关联工单',
-    }
+    },
   ];
 
-  const handleTabChange = (key) => { // tab切换
+  const handleTabChange = key => {
+    // tab切换
     setTabActiveKey(key);
   };
 
-
   const changeorderFunction = () => {
     changeOrder = '转单';
-  }
+  };
 
   const cancelChangeorder = () => {
-    changeOrder = ''
-  }
+    changeOrder = '';
+  };
 
   const setChange = () => {
     files.ischange = false;
-  }
+  };
 
   // 点击回退,接单,流转、结束
-  const onClickSubmit = (buttype) => {
+  const onClickSubmit = buttype => {
     const taskId = id;
     judgeTimeoutStatus(taskId).then(res => {
       if (res.code === 200 && res.status === 'yes' && res.timeoutMsg === '') {
-        message.success('该故问题单已超时，请填写超时原因...')
+        message.success('该故问题单已超时，请填写超时原因...');
         setModalVisible(true);
         setButtonType(buttype);
-      };
-      if (res.code === 200 && ((res.status === 'yes' && res.timeoutMsg !== '') || res.status === 'no')) {
+      }
+      if (
+        res.code === 200 &&
+        ((res.status === 'yes' && res.timeoutMsg !== '') || res.status === 'no')
+      ) {
         switch (buttype) {
           case 'accpt':
-            problemHandleOrder()
-            break;
-          case 'goback':
-            setModalRollBack(true);
-            break;
-          case 'flowNodeName':
-            handleSubmit(flowNodeName);
-            break;
-          case 'circaSign':
-            handleSubmit(circaSign);
-            break;
-          default:
-            break;
-        }
-      }
-    })
-  };
-
-  // 保存超时信息,成功校验表单
-  const postTimeOutMsg = (v) => {
-    saveTimeoutMsg({
-      taskId: id,
-      msgType: 'timeout',
-      orderId: mainId,
-      orderType: 'problem',
-      ...v
-    }).then(res => {
-      if (res.code === 200) {
-        switch (buttontype) {
-          case 'accpt':
-            problemHandleOrder()
+            problemHandleOrder();
             break;
           case 'goback':
             setModalRollBack(true);
@@ -730,10 +701,37 @@ function Workorder(props) {
         }
       }
     });
-  }
+  };
 
-
- 
+  // 保存超时信息,成功校验表单
+  const postTimeOutMsg = v => {
+    saveTimeoutMsg({
+      taskId: id,
+      msgType: 'timeout',
+      orderId: mainId,
+      orderType: 'problem',
+      ...v,
+    }).then(res => {
+      if (res.code === 200) {
+        switch (buttontype) {
+          case 'accpt':
+            problemHandleOrder();
+            break;
+          case 'goback':
+            setModalRollBack(true);
+            break;
+          case 'flowNodeName':
+            handleSubmit(flowNodeName);
+            break;
+          case 'circaSign':
+            handleSubmit(circaSign);
+            break;
+          default:
+            break;
+        }
+      }
+    });
+  };
 
   return (
     <PageHeaderWrapper
@@ -742,145 +740,172 @@ function Workorder(props) {
         <>
           {tabActiveKey === 'workorder' && (
             <>
-              {(flowNodeName === '问题登记' && problemFlowLogs && problemFlowLogs.length === 1) && (
-                <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete}>
-                  删除
-                </Button>
-              )}
+              {loading === false &&
+                flowNodeName === '问题登记' &&
+                problemFlowLogs &&
+                problemFlowLogs.length === 1 && (
+                  <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete}>
+                    删除
+                  </Button>
+                )}
 
-              {(flowNodeName === '问题登记' && problemFlowLogs && problemFlowLogs.length >= 3 && problemFlowLogs[problemFlowLogs.length - 2].status === '退回') && (
-                <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete}>
-                  删除
-                </Button>
-              )}
+              {loading === false &&
+                flowNodeName === '问题登记' &&
+                problemFlowLogs &&
+                problemFlowLogs.length >= 3 &&
+                problemFlowLogs[problemFlowLogs.length - 2].status === '退回' && (
+                  <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete}>
+                    删除
+                  </Button>
+                )}
 
-              {
-                (flowNodeName === '系统运维商审核' || flowNodeName === '系统运维商确认'
-                  || flowNodeName === '自动化科业务人员确认' || flowNodeName === '问题登记人员确认')
-                && showback === true && (
-                  <Button type="primary" style={{ marginRight: 8 }} onClick={() => onClickSubmit('goback')}>
+              {loading === false &&
+                (flowNodeName === '系统运维商审核' ||
+                  flowNodeName === '系统运维商确认' ||
+                  flowNodeName === '自动化科业务人员确认' ||
+                  flowNodeName === '问题登记人员确认') &&
+                showback === true && (
+                  <Button
+                    type="primary"
+                    style={{ marginRight: 8 }}
+                    onClick={() => onClickSubmit('goback')}
+                  >
                     回退
                   </Button>
                 )}
 
-              {
-                flowNodeName !== '系统开发商处理' && (currntStatus !== 29 && currntStatus !== 40) && tabActiveKey === 'workorder' && (
+              {loading === false &&
+                flowNodeName !== '系统开发商处理' &&
+                currntStatus !== 29 &&
+                currntStatus !== 40 &&
+                tabActiveKey === 'workorder' && (
+                  <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSubmit()}>
+                    保存
+                  </Button>
+                )}
+              {loading === false &&
+                flowNodeName === '系统开发商处理' &&
+                currntStatus !== 29 &&
+                currntStatus !== 40 &&
+                handle !== undefined &&
+                tabActiveKey === 'workorder' && (
                   <Button
                     type="primary"
                     style={{ marginRight: 8 }}
-                    onClick={() => handleSubmit()}
+                    onClick={() => {
+                      handleSubmit();
+                    }}
                   >
                     保存
                   </Button>
-                )
-              }
-              {
-                flowNodeName === '系统开发商处理' && (currntStatus !== 29 && currntStatus !== 40 && handle !== undefined) && tabActiveKey === 'workorder' && (
-                  <Button
-                    type="primary"
-                    style={{ marginRight: 8 }}
-                    onClick={() => { handleSubmit() }}
-                  >
-                    保存
-                  </Button>
-                )
-              }
-              {
-                (currntStatus === 45) && handle !== undefined && (
-                  <Button
-                    type="primary"
-                    style={{ marginRight: 8 }}
-                    onClick={() => { changeorderFunction(); onClickSubmit('flowNodeName'); }}
-                  >
-                    转单
-                  </Button>
-                )
-              }
-
-              {(currntStatus === 29 || currntStatus === 40 || currntStatus === 45) && handle === undefined && (
-                <Button type="primary" style={{ marginRight: 8 }} onClick={() => onClickSubmit('accpt')}>
-                  接单
+                )}
+              {loading === false && currntStatus === 45 && handle !== undefined && (
+                <Button
+                  type="primary"
+                  style={{ marginRight: 8 }}
+                  onClick={() => {
+                    changeorderFunction();
+                    onClickSubmit('flowNodeName');
+                  }}
+                >
+                  转单
                 </Button>
               )}
 
-              {
+              {loading === false &&
+                (currntStatus === 29 || currntStatus === 40 || currntStatus === 45) &&
+                handle === undefined && (
+                  <Button
+                    type="primary"
+                    style={{ marginRight: 8 }}
+                    onClick={() => onClickSubmit('accpt')}
+                  >
+                    接单
+                  </Button>
+                )}
+
+              {loading === false &&
                 flowtype === '1' &&
-                (selSign === '1') &&
-                tabActiveKey === 'workorder' && loading === false &&
-                (
+                selSign === '1' &&
+                tabActiveKey === 'workorder' &&
+                loading === false && (
                   <Button
                     type="primary"
                     style={{ marginRight: 8 }}
                     onFocus={() => 0}
-                    onClick={() => { onClickSubmit('circaSign'); setProblemHandle('handle'); setChange() }}>
+                    onClick={() => {
+                      onClickSubmit('circaSign');
+                      setProblemHandle('handle');
+                      setChange();
+                    }}
+                  >
                     流转
                   </Button>
-                )
-              }
+                )}
 
-              {
-                flowNodeName === '问题登记' && (problemFlowLogs && problemFlowLogs.length > 2) && (
-                  <Button
-                    type='primary'
-                    onClick={closeOrder}
-                  >
+              {loading === false &&
+                flowNodeName === '问题登记' &&
+                problemFlowLogs &&
+                problemFlowLogs.length > 2 && (
+                  <Button type="primary" onClick={closeOrder}>
                     关闭工单
                   </Button>
-                )
-              }
+                )}
 
-              {
-                (
-                  flowtype === '0'
-                )
-                &&
-                (flowNodeName !== '系统开发商处理' && flowNodeName !== '问题登记') && loading === false &&
-                (currntStatus !== 29 && currntStatus !== 40) &&
-                tabActiveKey === 'workorder' &&
-                (
+              {loading === false &&
+                flowtype === '0' &&
+                flowNodeName !== '系统开发商处理' &&
+                flowNodeName !== '问题登记' &&
+                loading === false &&
+                currntStatus !== 29 &&
+                currntStatus !== 40 &&
+                tabActiveKey === 'workorder' && (
                   <Button
                     type="primary"
                     style={{ marginRight: 8 }}
-                    onClick={() => { onClickSubmit('flowNodeName') }}
+                    onClick={() => {
+                      onClickSubmit('flowNodeName');
+                    }}
                   >
-                    {
-                      (flowNodeName === '自动化科审核' || flowNodeName === '系统运维商审核')
-                        ? '重新登记' : '重新处理'}
+                    {flowNodeName === '自动化科审核' || flowNodeName === '系统运维商审核'
+                      ? '重新登记'
+                      : '重新处理'}
                   </Button>
-                )
-              }
-              {
-                selSign === '0' && flowtype === '1' && flowNodeName !== '系统开发商处理' && loading === false && (
+                )}
+              {loading === false &&
+                selSign === '0' &&
+                flowtype === '1' &&
+                flowNodeName !== '系统开发商处理' &&
+                loading === false && (
                   <Button
                     type="primary"
                     style={{ marginRight: 8 }}
-                    onClick={() => { handleSubmit('noSelectperson'); setButandOrder('end') }}
+                    onClick={() => {
+                      handleSubmit();
+                      setButandOrder('end');
+                    }}
                   >
-                    {
-                      flowNodeName === '问题登记人员确认' ? '结束' : '流转'
-                    }
+                    {flowNodeName === '问题登记人员确认' ? '结束' : '流转'}
                   </Button>
-                )
-              }
-              {
-                (
-                  flowtype === '0' ||
-                  (problemlist && selSign === '0')
-                )
-                && handle !== undefined && loading === false &&
+                )}
+              {((loading === false && flowtype === '0') || (problemlist && selSign === '0')) &&
+                handle !== undefined &&
+                loading === false &&
                 flowNodeName === '系统开发商处理' &&
-                (currntStatus !== 29 && currntStatus !== 40) &&
-                tabActiveKey === 'workorder' &&
-                (
+                currntStatus !== 29 &&
+                currntStatus !== 40 &&
+                tabActiveKey === 'workorder' && (
                   <Button
                     type="primary"
                     style={{ marginRight: 8 }}
-                    onClick={() => { cancelChangeorder(); onClickSubmit('flowNodeName') }}
+                    onClick={() => {
+                      cancelChangeorder();
+                      onClickSubmit('flowNodeName');
+                    }}
                   >
                     流转
                   </Button>
-                )
-              }
+                )}
             </>
           )}
           <Button type="default">
@@ -888,7 +913,7 @@ function Workorder(props) {
               to={{
                 pathname: '/ITSM/problemmanage/besolved',
                 query: { pathpush: true },
-                state: { cache: false }
+                state: { cache: false },
               }}
             >
               返回
@@ -901,334 +926,316 @@ function Workorder(props) {
       tabActiveKey={tabActiveKey}
     >
       {/* 编辑页 */}
-      {
-        (tabActiveKey === 'workorder' && todoDetail &&
-          <>
-            <div className={styles.collapse}>
-              {problemFlowLogs && (
-                <Steps
-                  current={problemFlowLogs.length - 1}
-                  size="small"
-                  style={{
-                    background: '#fff',
-                    padding: 24,
-                    border: '1px solid #e8e8e8',
-                    overflowX: 'auto',
-                    marginBottom: 24
-                  }}
-                >
-                  {
-                    problemFlowLogs && problemFlowLogs.map(({ key, name, status, timeText, formHandler, startTime }) => [
-                      name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})${'\xa0'}${'\xa0'}${timeText}`} description={
-                        <div className={styles.stepDescription}>
-                          处理人：{formHandler}
-                          <div>结束时间：{moment(startTime).format('YYYY-MM-DD HH:mm:ss')}</div>
-                        </div>
-                      } />
-                    ])}
-                </Steps>
-              )
-              }
-            </div>
-
-            <div className={styles.collapse}>
-              <Collapse
-                expandIconPosition="right"
-                defaultActiveKey={['1']}
-                bordered={false}
+      {tabActiveKey === 'workorder' && todoDetail && (
+        <>
+          <div className={styles.collapse}>
+            {problemFlowLogs && (
+              <Steps
+                current={problemFlowLogs.length - 1}
+                size="small"
+                style={{
+                  background: '#fff',
+                  padding: 24,
+                  border: '1px solid #e8e8e8',
+                  overflowX: 'auto',
+                  marginBottom: 24,
+                }}
               >
-                {
-                  (currntStatus === 5 || currntStatus === 0) && loading === false && (
-                    <Panel
-                      header="问题登记"
-                      key='1'
-                      style={{ backgroundColor: 'white' }}
-                    >
-                      <Registrat
-                        formItemLayout={formItemLayout}
-                        forminladeLayout={forminladeLayout}
-                        ref={RegistratRef}
-                        registerno={newno}
-                        useInfo={userinfo}
-                        register={register}
-                        main={main}
-                        // location={location}
-                        files={
-                          todoDetail.register !== undefined && todoDetail.register.registerAttachments ? JSON.parse(todoDetail.register.registerAttachments) : []
+                {problemFlowLogs &&
+                  problemFlowLogs.map(({ key, name, status, timeText, formHandler, startTime }) => [
+                    name !== '开始节点' && name !== '结束节点' && (
+                      <Step
+                        key={key}
+                        title={`${name}${'\xa0'}${'\xa0'}(${status})${'\xa0'}${'\xa0'}${timeText}`}
+                        description={
+                          <div className={styles.stepDescription}>
+                            处理人：{formHandler}
+                            <div>结束时间：{moment(startTime).format('YYYY-MM-DD HH:mm:ss')}</div>
+                          </div>
                         }
-                        ChangeFiles={newvalue => {
-                          setFiles(newvalue);
-                        }}
-                        source={keyVallist.source}
-                        type={typelist.type}
-                        priority={prioritylist.priority}
-                        scope={scopeList.effect}
-                        project={projectList.project}
                       />
-                    </Panel>
-                  )
-                }
+                    ),
+                  ])}
+              </Steps>
+            )}
+          </div>
 
-                {
-                  flowNodeName === '系统运维商审核' && loading === false && (
-                    <Panel
-                      header="系统运维商审核环节"
-                      key='1'
-                      style={{ backgroundColor: 'white' }}
-                    >
-                      <FatherContext.Provider value={{ flowtype, setFlowtype }}>
-                        <Systemoperatoredit
-                          formItemLayout={formItemLayout}
-                          forminladeLayout={forminladeLayout}
-                          ref={PreviesRef}
-                          useInfo={userinfo}
-                          check={check}
-                          loading={loading}
-                          flowNodeName={flowNodeName}
-                          allInfo={todoDetail}
-                          files={
-                            todoDetail.check !== undefined && todoDetail.check.checkAttachments ? JSON.parse(todoDetail.check.checkAttachments) : []
-                          }
-                          ChangeFiles={newvalue => {
-                            setFiles(newvalue);
-                          }}
-                        // location={location}
-                        />
-                      </FatherContext.Provider>
-                    </Panel>
-                  )
-                }
+          <div className={styles.collapse}>
+            <Collapse expandIconPosition="right" defaultActiveKey={['1']} bordered={false}>
+              {(currntStatus === 5 || currntStatus === 0) && loading === false && (
+                <Panel header="问题登记" key="1" style={{ backgroundColor: 'white' }}>
+                  <Registrat
+                    formItemLayout={formItemLayout}
+                    forminladeLayout={forminladeLayout}
+                    ref={RegistratRef}
+                    registerno={newno}
+                    useInfo={userinfo}
+                    register={register}
+                    main={main}
+                    // location={location}
+                    files={
+                      todoDetail.register !== undefined && todoDetail.register.registerAttachments
+                        ? JSON.parse(todoDetail.register.registerAttachments)
+                        : []
+                    }
+                    ChangeFiles={newvalue => {
+                      setFiles(newvalue);
+                    }}
+                    source={keyVallist.source}
+                    type={typelist.type}
+                    priority={prioritylist.priority}
+                    scope={scopeList.effect}
+                    project={projectList.project}
+                  />
+                </Panel>
+              )}
 
-                {
-                  flowNodeName === '自动化科审核' && loading === false && (
-                    <Panel
-                      header="自动化科审核"
-                      key='1'
-                      style={{ backgroundColor: 'white' }}
-                    >
-                      <FatherContext.Provider value={{ flowtype, setFlowtype }}>
-                        <Systemoperatoredit
-                          formItemLayout={formItemLayout}
-                          forminladeLayout={forminladeLayout}
-                          ref={PreviesRef}
-                          useInfo={userinfo}
-                          check={check}
-                          loading={loading}
-                          flowNodeName={flowNodeName}
-                          allInfo={todoDetail}
-                          files={
-                            todoDetail.check !== undefined && todoDetail.check.checkAttachments ? JSON.parse(todoDetail.check.checkAttachments) : []
-                          }
-                          ChangeFiles={newvalue => {
-                            setFiles(newvalue);
-                          }}
-                        />
-                      </FatherContext.Provider>
+              {flowNodeName === '系统运维商审核' && loading === false && (
+                <Panel header="系统运维商审核环节" key="1" style={{ backgroundColor: 'white' }}>
+                  <FatherContext.Provider value={{ flowtype, setFlowtype }}>
+                    <Systemoperatoredit
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                      ref={PreviesRef}
+                      useInfo={userinfo}
+                      check={check}
+                      loading={loading}
+                      flowNodeName={flowNodeName}
+                      allInfo={todoDetail}
+                      files={
+                        todoDetail.check !== undefined && todoDetail.check.checkAttachments
+                          ? JSON.parse(todoDetail.check.checkAttachments)
+                          : []
+                      }
+                      ChangeFiles={newvalue => {
+                        setFiles(newvalue);
+                      }}
+                      // location={location}
+                    />
+                  </FatherContext.Provider>
+                </Panel>
+              )}
 
-                    </Panel>
-                  )
-                }
+              {flowNodeName === '自动化科审核' && loading === false && (
+                <Panel header="自动化科审核" key="1" style={{ backgroundColor: 'white' }}>
+                  <FatherContext.Provider value={{ flowtype, setFlowtype }}>
+                    <Systemoperatoredit
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                      ref={PreviesRef}
+                      useInfo={userinfo}
+                      check={check}
+                      loading={loading}
+                      flowNodeName={flowNodeName}
+                      allInfo={todoDetail}
+                      files={
+                        todoDetail.check !== undefined && todoDetail.check.checkAttachments
+                          ? JSON.parse(todoDetail.check.checkAttachments)
+                          : []
+                      }
+                      ChangeFiles={newvalue => {
+                        setFiles(newvalue);
+                      }}
+                    />
+                  </FatherContext.Provider>
+                </Panel>
+              )}
 
-                {
-                  flowNodeName === '系统开发商处理' && handle !== undefined && loading === false && (
-                    <Panel
-                      header='系统开发商处理'
-                      key='1'
-                      style={{ backgroundColor: 'white' }}
-                    >
-                      <Developerprocessdit
-                        formItemLayout={formItemLayout}
-                        forminladeLayout={forminladeLayout}
-                        showEdit={showEdit}
-                        ref={HandleRef}
-                        useInfo={userinfo}
-                        handle={handle}
-                        handleresult={handleList.handleresult}
-                        files={
-                          todoDetail.handle !== undefined && todoDetail.handle.handleAttachments ? JSON.parse(todoDetail.handle.handleAttachments) : []
-                        }
-                        ChangeFiles={newvalue => {
-                          setFiles(newvalue);
-                        }}
-                        loading={loading}
-                        mainId={mainId}
-                      />
-                    </Panel>
-                  )
-                }
+              {flowNodeName === '系统开发商处理' && handle !== undefined && loading === false && (
+                <Panel header="系统开发商处理" key="1" style={{ backgroundColor: 'white' }}>
+                  <Developerprocessdit
+                    formItemLayout={formItemLayout}
+                    forminladeLayout={forminladeLayout}
+                    showEdit={showEdit}
+                    ref={HandleRef}
+                    useInfo={userinfo}
+                    handle={handle}
+                    handleresult={handleList.handleresult}
+                    files={
+                      todoDetail.handle !== undefined && todoDetail.handle.handleAttachments
+                        ? JSON.parse(todoDetail.handle.handleAttachments)
+                        : []
+                    }
+                    ChangeFiles={newvalue => {
+                      setFiles(newvalue);
+                    }}
+                    loading={loading}
+                    mainId={mainId}
+                  />
+                </Panel>
+              )}
 
-                {
-                  flowNodeName === '系统运维商确认' && loading === false && (
-                    <Panel
-                      header='系统运维商确认'
-                      key='1'
-                      style={{ backgroundColor: 'white' }}
-                    >
-                      <FatherContext.Provider value={{ flowtype, setFlowtype }}>
-                        <Systemoperatorsecond
-                          formItemLayout={formItemLayout}
-                          forminladeLayout={forminladeLayout}
-                          showEdit={showEdit}
-                          ref={ProblemconfirmRef}
-                          useInfo={userinfo}
-                          handle={confirm}
-                          flowNodeName={flowNodeName}
-                          files={
-                            todoDetail.confirm !== undefined && todoDetail.confirm.confirmAttachments ? JSON.parse(todoDetail.confirm.confirmAttachments) : []
-                          }
-                          ChangeFiles={newvalue => {
-                            setFiles(newvalue);
-                          }}
-                          loading={loading}
-                          confirm={confirm}
-                        />
-                      </FatherContext.Provider>
-                    </Panel>
-                  )
-                }
+              {flowNodeName === '系统运维商确认' && loading === false && (
+                <Panel header="系统运维商确认" key="1" style={{ backgroundColor: 'white' }}>
+                  <FatherContext.Provider value={{ flowtype, setFlowtype }}>
+                    <Systemoperatorsecond
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                      showEdit={showEdit}
+                      ref={ProblemconfirmRef}
+                      useInfo={userinfo}
+                      handle={confirm}
+                      flowNodeName={flowNodeName}
+                      files={
+                        todoDetail.confirm !== undefined && todoDetail.confirm.confirmAttachments
+                          ? JSON.parse(todoDetail.confirm.confirmAttachments)
+                          : []
+                      }
+                      ChangeFiles={newvalue => {
+                        setFiles(newvalue);
+                      }}
+                      loading={loading}
+                      confirm={confirm}
+                    />
+                  </FatherContext.Provider>
+                </Panel>
+              )}
 
-                {
-                  flowNodeName === '自动化科业务人员确认' && loading === false && (
-                    <Panel
-                      header='自动化科业务负责人确认'
-                      key='1'
-                      style={{ backgroundColor: 'white' }}
-                    >
-                      <FatherContext.Provider value={{ flowtype, setFlowtype }}>
-                        <Systemoperatorsecond
-                          formItemLayout={formItemLayout}
-                          forminladeLayout={forminladeLayout}
-                          showEdit={showEdit}
-                          ref={ProblemconfirmRef}
-                          useInfo={userinfo}
-                          confirm={confirm}
-                          flowNodeName={flowNodeName}
-                          files={
-                            todoDetail.confirm !== undefined && todoDetail.confirm.confirmAttachments ? JSON.parse(todoDetail.confirm.confirmAttachments) : []
-                          }
-                          ChangeFiles={newvalue => {
-                            setFiles(newvalue);
-                          }}
-                          loading={loading}
-                        />
-                      </FatherContext.Provider>
+              {flowNodeName === '自动化科业务人员确认' && loading === false && (
+                <Panel header="自动化科业务负责人确认" key="1" style={{ backgroundColor: 'white' }}>
+                  <FatherContext.Provider value={{ flowtype, setFlowtype }}>
+                    <Systemoperatorsecond
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                      showEdit={showEdit}
+                      ref={ProblemconfirmRef}
+                      useInfo={userinfo}
+                      confirm={confirm}
+                      flowNodeName={flowNodeName}
+                      files={
+                        todoDetail.confirm !== undefined && todoDetail.confirm.confirmAttachments
+                          ? JSON.parse(todoDetail.confirm.confirmAttachments)
+                          : []
+                      }
+                      ChangeFiles={newvalue => {
+                        setFiles(newvalue);
+                      }}
+                      loading={loading}
+                    />
+                  </FatherContext.Provider>
+                </Panel>
+              )}
 
-                    </Panel>
-                  )
-                }
+              {flowNodeName === '问题登记人员确认' && loading === false && (
+                <Panel header="问题登记人员确认" key="1" style={{ backgroundColor: 'white' }}>
+                  <FatherContext.Provider value={{ flowtype, setFlowtype }}>
+                    <Operatorconfirmaedit
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                      showEdit={showEdit}
+                      ref={ProblemconfirmRef}
+                      useInfo={userinfo}
+                      handle={confirm}
+                      flowNodeName={flowNodeName}
+                      files={
+                        todoDetail.confirm !== undefined && todoDetail.confirm.confirmAttachments
+                          ? JSON.parse(todoDetail.confirm.confirmAttachments)
+                          : []
+                      }
+                      ChangeFiles={newvalue => {
+                        setFiles(newvalue);
+                      }}
+                      confirm={confirm}
+                      loading={loading}
+                    />
+                  </FatherContext.Provider>
+                </Panel>
+              )}
+            </Collapse>
+          </div>
 
-                {
-                  flowNodeName === '问题登记人员确认' && loading === false && (
-                    <Panel
-                      header='问题登记人员确认'
-                      key='1'
-                      style={{ backgroundColor: 'white' }}
-                    >
-                      <FatherContext.Provider value={{ flowtype, setFlowtype }}>
-                        <Operatorconfirmaedit
-                          formItemLayout={formItemLayout}
-                          forminladeLayout={forminladeLayout}
-                          showEdit={showEdit}
-                          ref={ProblemconfirmRef}
-                          useInfo={userinfo}
-                          handle={confirm}
-                          flowNodeName={flowNodeName}
-                          files={
-                            todoDetail.confirm !== undefined && todoDetail.confirm.confirmAttachments ? JSON.parse(todoDetail.confirm.confirmAttachments) : []
-                          }
-                          ChangeFiles={newvalue => {
-                            setFiles(newvalue);
-                          }}
-                          confirm={confirm}
-                          loading={loading}
-                        />
-                      </FatherContext.Provider>
-                    </Panel>
-                  )
-                }
-              </Collapse>
-            </div>
-
-            <div className={styles.collapse}>
-              {problemFlowNodeRows && loading === false && (
-                <Collapse
-                  expandIconPosition="right"
-                  bordered={false}
-                  defaultActiveKey={['0']}
-                >
-                  {problemFlowNodeRows.map((obj, index) => {
-                    // panel详情组件
-                    const Paneldesmap = new Map([
-                      ['问题登记', <Problemregistration
+          <div className={styles.collapse}>
+            {problemFlowNodeRows && loading === false && (
+              <Collapse expandIconPosition="right" bordered={false} defaultActiveKey={['0']}>
+                {problemFlowNodeRows.map((obj, index) => {
+                  // panel详情组件
+                  const Paneldesmap = new Map([
+                    [
+                      '问题登记',
+                      <Problemregistration
                         info={obj}
                         statue={currntStatus}
                         problemFlowNodeRows={problemFlowNodeRows}
                         main={main}
-                        key='0'
+                        key="0"
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}
-                      />],
-                      ['系统运维商审核', <Problemreview
+                      />,
+                    ],
+                    [
+                      '系统运维商审核',
+                      <Problemreview
                         info={obj}
-                        key='1'
+                        key="1"
                         main={main}
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}
-                      />],
-                      ['自动化科审核', <Problemreview
+                      />,
+                    ],
+                    [
+                      '自动化科审核',
+                      <Problemreview
                         info={obj}
-                        key='2'
+                        key="2"
                         main={main}
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}
-                      />],
-                      ['系统开发商处理', <Problemsolving
+                      />,
+                    ],
+                    [
+                      '系统开发商处理',
+                      <Problemsolving
                         info={obj}
-                        key='3'
+                        key="3"
                         main={main}
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}
-                      />],
-                      ['系统运维商确认', <Operatorconfirmades
+                      />,
+                    ],
+                    [
+                      '系统运维商确认',
+                      <Operatorconfirmades
                         info={obj}
-                        key='4'
+                        key="4"
                         main={main}
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}
-                      />],
-                      ['自动化科业务人员确认', <Operatorconfirmades
+                      />,
+                    ],
+                    [
+                      '自动化科业务人员确认',
+                      <Operatorconfirmades
                         info={obj}
-                        key='5'
+                        key="5"
                         main={main}
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}
-                      />],
-                      ['问题登记人员确认', <Operatorconfirmades
+                      />,
+                    ],
+                    [
+                      '问题登记人员确认',
+                      <Operatorconfirmades
                         info={obj}
-                        key='6'
+                        key="6"
                         main={main}
                         formItemLayout={formItemLayout}
                         forminladeLayout={forminladeLayout}
-                      />],
-                    ]);
-                    return (
-                      <Panel Panel header={obj.fnname} key={index}>
-                        {Paneldesmap.get(obj.fnname)}
-                      </Panel>
-                    );
-                  })}
-                </Collapse>
-              )}
-            </div>
-          </>
-        )
-      }
+                      />,
+                    ],
+                  ]);
+                  return (
+                    <Panel Panel header={obj.fnname} key={index}>
+                      {Paneldesmap.get(obj.fnname)}
+                    </Panel>
+                  );
+                })}
+              </Collapse>
+            )}
+          </div>
+        </>
+      )}
 
-      {
-        (tabActiveKey === 'process' && (
-          <Problemflow id={problemFlowid} />
-        ))
-      }
+      {tabActiveKey === 'process' && <Problemflow id={problemFlowid} />}
 
       {tabActiveKey === 'relevancy' && <RelationOrder orderId={location.query.mainId} relation />}
       <User

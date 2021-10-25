@@ -18,8 +18,6 @@ import { connect } from 'dva';
 import router from 'umi/router';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-import styles from '../index.less';
-
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -47,6 +45,7 @@ function CreditcardTobe(props) {
   const [tabrecord, setTabRecord] = useState({});
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [selectdata, setSelectData] = useState('');
+  const [debouncedValue, setDebouncedValue] = useState('');
 
   const searchdata = (values, page, pageSize) => {
     const newValue = {
@@ -61,7 +60,11 @@ function CreditcardTobe(props) {
       locked: '0',
     };
     dispatch({
-      type: `${pagetitle === '计分卡登记' ? 'performanceappraisal/getMycardtobe' : 'performanceappraisal/getscorecardlistPage'}`,
+      type: `${
+        pagetitle === '计分卡登记'
+          ? 'performanceappraisal/getMycardtobe'
+          : 'performanceappraisal/getscorecardlistPage'
+      }`,
       payload: {
         ...values,
         beginTime: values.evaluationInterval?.length
@@ -118,7 +121,7 @@ function CreditcardTobe(props) {
             query: {
               Id: record.cardNo,
               paramId: record.id,
-              search: pagetitle === '计分卡查询' ? true : ''
+              search: pagetitle === '计分卡查询' ? true : '',
             },
             state: {
               dynamicpath: true,
@@ -143,7 +146,7 @@ function CreditcardTobe(props) {
       title: '合同名称',
       dataIndex: 'contractName',
       key: 'contractName',
-      width: 150,
+      width: 250,
     },
     {
       title: '考核类型',
@@ -205,7 +208,6 @@ function CreditcardTobe(props) {
           );
         }
         return null;
-
       },
     },
   ];
@@ -223,7 +225,7 @@ function CreditcardTobe(props) {
   useEffect(() => {
     if (location.state && location.state.reset) {
       handleReset();
-      searchdata({}, 1, 15)
+      searchdata({}, 1, 15);
     }
   }, [location.state]);
 
@@ -332,7 +334,7 @@ function CreditcardTobe(props) {
   }, [location.state]);
 
   const rowSelection = {
-    onChange: (index, handleSelect) => {
+    onChange: index => {
       setSelectedKeys([...index]);
     },
   };
@@ -351,7 +353,7 @@ function CreditcardTobe(props) {
       return selectdata.arr.filter(item => item.title === title)[0].children;
     }
     return [];
-  }
+  };
 
   const assessmentType = getTypebyTitle('考核类型');
 
@@ -359,7 +361,7 @@ function CreditcardTobe(props) {
     <PageHeaderWrapper title={pagetitle}>
       <Card>
         <SysDict
-          typeid='576'
+          typeid="576"
           commonid="335"
           ChangeSelectdata={newvalue => setSelectData(newvalue)}
           style={{ display: 'none' }}
@@ -390,25 +392,19 @@ function CreditcardTobe(props) {
               </Form.Item>
             </Col>
 
-
             <Col span={8}>
-              <Form.Item label='考核类型'>
-                {
-                  getFieldDecorator('assessType', {
-                    initialValue: cacheinfo.assessType
-                  })
-                    (
-                      <Select
-                        placeholder="请选择"
-                      >
-                        {(assessmentType || []).map(obj => [
-                          <Option key={obj.dict_code} value={obj.dict_code}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )
-                }
+              <Form.Item label="考核类型">
+                {getFieldDecorator('assessType', {
+                  initialValue: cacheinfo.assessType,
+                })(
+                  <Select placeholder="请选择">
+                    {(assessmentType || []).map(obj => [
+                      <Option key={obj.dict_code} value={obj.dict_code}>
+                        {obj.title}
+                      </Option>,
+                    ])}
+                  </Select>,
+                )}
               </Form.Item>
             </Col>
 

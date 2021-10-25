@@ -121,59 +121,59 @@ function EventAnalysis(props) {
   //   return newArr;
   // };
 
-  const getTypeConditions = (values) => {
+  const getTypeConditions = (value) => {
     dispatch({
       type: 'eventstatistics/fetchgetTypeConditions',
-      payload: { ...values }
+      payload: { ...value }
     })
   }
 
-  const getObjectConditions = (values) => {
+  const getObjectConditions = (value) => {
     dispatch({
       type: 'eventstatistics/fetchgetObjectConditions',
-      payload: { ...values }
+      payload: { ...value }
     })
   }
 
-  const getTimeOutConditions = (values) => {
+  const getTimeOutConditions = (value) => {
     dispatch({
       type: 'eventstatistics/fetchgetTimeOutConditions',
-      payload: { ...values }
+      payload: { ...value }
     })
   }
 
-  const getRegisterUserTop = (values) => {
+  const getRegisterUserTop = (value) => {
     dispatch({
       type: 'eventstatistics/fetchgetRegisterUserTop',
-      payload: { ...values }
+      payload: { ...value }
     })
   }
 
-  const getHandlerTop = (values) => {
+  const getHandlerTop = (value) => {
     dispatch({
       type: 'eventstatistics/fetchgetHandlerTop',
-      payload: { ...values }
+      payload: { ...value }
     })
   }
 
-  const getRegisterUnitTop = (values) => {
+  const getRegisterUnitTop = (value) => {
     dispatch({
       type: 'eventstatistics/fetchgetRegisterUnitTop',
-      payload: { ...values }
+      payload: { ...value }
     })
   }
 
-  const getHandleUnitTop = (values) => {
+  const getHandleUnitTop = (value) => {
     dispatch({
       type: 'eventstatistics/fetchgetHandleUnitTop',
-      payload: { ...values }
+      payload: { ...value }
     })
   }
 
-  const getOrderConditions = (values) => {
+  const getOrderConditions = (value) => {
     dispatch({
       type: 'eventstatistics/fetchgetOrderConditions',
-      payload: { ...values }
+      payload: { ...value }
     })
   }
 

@@ -13,6 +13,9 @@ import {
   message,
   Spin,
   Tooltip,
+  Popover,
+  Checkbox,
+  Icon,
 } from 'antd';
 import moment from 'moment';
 import router from 'umi/router';
@@ -20,8 +23,9 @@ import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { connect } from 'dva';
 import { operationPerson } from '@/services/common';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { providerList, scoreListpage, contractProvider, clauseListpage } from '../services/quality';
 import SysDict from '@/components/SysDict';
+import { providerList, scoreListpage, contractProvider, clauseListpage } from '../services/quality';
+
 import styles from './index.less';
 
 const formItemLayout = {
@@ -49,8 +53,7 @@ const forminladeLayout = {
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 const { Search } = Input;
-
-
+let formThead;
 
 function TobedealtList(props) {
   const pagetitle = props.route.name;
@@ -78,83 +81,83 @@ function TobedealtList(props) {
   const [tabrecord, setTabRecord] = useState({});
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [selectdata, setSelectData] = useState('');
+  const [columns, setColumns] = useState([]);
 
-  const columns = [
+  const todetail = record => {
+    switch (pagetitle) {
+      case '服务绩效考核待办':
+        router.push({
+          pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
+          query: {
+            assessNo: record.assessNo,
+            mainId: record.instanceId,
+            taskId: record.currentTaskId,
+            instanceId: record.instanceId,
+            taskName: record.currentTaskName,
+            orderNo: record.assessNo,
+            tobelist: true,
+          },
+        });
+        break;
+      case '服务绩效考核查询':
+        router.push({
+          pathname:
+            '/ITSM/servicequalityassessment/serviceperformanceappraisal/performancequerydetail',
+          query: {
+            assessNo: record.assessNo,
+            mainId: record.instanceId,
+            taskId: record.currentTaskId,
+            instanceId: record.instanceId,
+            taskName: record.currentTaskName,
+            orderNo: record.assessNo,
+            search: true,
+          },
+        });
+        break;
+      case '我的服务绩效考核':
+        if (record.status === '完成') {
+          router.push({
+            pathname:
+              '/ITSM/servicequalityassessment/serviceperformanceappraisal/performancequerydetail',
+            query: {
+              assessNo: record.assessNo,
+              mainId: record.instanceId,
+              taskId: record.currentTaskId,
+              instanceId: record.instanceId,
+              taskName: record.currentTaskName,
+              orderNo: record.assessNo,
+              myOrder: true,
+              search: true,
+            },
+          });
+        } else {
+          router.push({
+            pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
+            query: {
+              assessNo: record.assessNo,
+              mainId: record.instanceId,
+              taskId: record.currentTaskId,
+              instanceId: record.instanceId,
+              taskName: record.currentTaskName,
+              orderNo: record.assessNo,
+              myOrder: true,
+            },
+          });
+        }
+        break;
+      default:
+        break;
+    }
+  };
+
+  const initialColumns = [
     {
       title: '服务绩效编号',
       dataIndex: 'assessNo',
       key: 'assessNo',
       width: 200,
       render: (text, record) => {
-        const todetail = () => {
-          switch (pagetitle) {
-            case '服务绩效考核待办':
-              router.push({
-                pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
-                query: {
-                  assessNo: record.assessNo,
-                  mainId: record.instanceId,
-                  taskId: record.currentTaskId,
-                  instanceId: record.instanceId,
-                  taskName: record.currentTaskName,
-                  // providerId:record.providerId,rou
-                  orderNo: text,
-                  tobelist: true,
-                },
-              });
-              break;
-            case '服务绩效考核查询':
-              router.push({
-                pathname:
-                  '/ITSM/servicequalityassessment/serviceperformanceappraisal/performancequerydetail',
-                query: {
-                  assessNo: record.assessNo,
-                  mainId: record.instanceId,
-                  taskId: record.currentTaskId,
-                  instanceId: record.instanceId,
-                  taskName: record.currentTaskName,
-                  orderNo: text,
-                  search: true,
-                },
-              });
-              break;
-            case '我的服务绩效考核':
-              if (record.status === '完成') {
-                router.push({
-                  pathname:
-                    '/ITSM/servicequalityassessment/serviceperformanceappraisal/performancequerydetail',
-                  query: {
-                    assessNo: record.assessNo,
-                    mainId: record.instanceId,
-                    taskId: record.currentTaskId,
-                    instanceId: record.instanceId,
-                    taskName: record.currentTaskName,
-                    orderNo: text,
-                    myOrder: true,
-                    search: true,
-                  },
-                });
-              } else {
-                router.push({
-                  pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
-                  query: {
-                    assessNo: record.assessNo,
-                    mainId: record.instanceId,
-                    taskId: record.currentTaskId,
-                    instanceId: record.instanceId,
-                    taskName: record.currentTaskName,
-                    orderNo: text,
-                    myOrder: true,
-                  },
-                });
-              }
-              break;
-            default:
-              break;
-          }
-
-        };
-        return <a onClick={todetail}>{text}</a>;
+        return <a onClick={() => todetail(record)}>{text}</a>;
       },
     },
     {
@@ -175,7 +178,7 @@ function TobedealtList(props) {
       key: 'assessContent',
       width: 150,
       ellipsis: true,
-      render: (text) => {
+      render: text => {
         return (
           <Tooltip placement="topLeft" title={text}>
             <span>{text}</span>
@@ -213,7 +216,7 @@ function TobedealtList(props) {
       key: 'clauseName',
       width: 150,
       ellipsis: true,
-      render: (text) => {
+      render: text => {
         return (
           <Tooltip title={text} placement="topLeft">
             <span>{text}</span>
@@ -225,7 +228,7 @@ function TobedealtList(props) {
       title: '发生时间',
       dataIndex: 'assessTime',
       key: 'assessTime',
-      width: 150,
+      width: 200,
     },
     {
       title: '考核得分',
@@ -244,6 +247,14 @@ function TobedealtList(props) {
       dataIndex: 'contractName',
       key: 'contractName',
       width: 150,
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip title={text} placement="topLeft">
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '考核状态',
@@ -261,22 +272,27 @@ function TobedealtList(props) {
       title: '登记时间',
       dataIndex: 'applyTime',
       key: 'applyTime',
-      width: 150,
+      width: 200,
     },
     {
       title: '业务负责人审核结果',
       dataIndex: 'directorVerifyValue',
       key: 'directorVerifyValue',
       width: 180,
-      // render: (text, record) => {
-      //   return <span>{text === '1' ? '通过' : text === '0' ? '不通过' : ''}</span>
-      // }
     },
     {
       title: '业务负责人审核说明',
       dataIndex: 'directorVerifyContent',
       key: 'directorVerifyContent',
       width: 180,
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '业务负责人审核状态',
@@ -294,22 +310,27 @@ function TobedealtList(props) {
       title: '业务负责人审核时间',
       dataIndex: 'directorVerifyTime',
       key: 'directorVerifyTime',
-      width: 180,
+      width: 200,
     },
     {
       title: '自动化科专责审核结果',
       dataIndex: 'expertVerifyValue',
       key: 'expertVerifyValue',
       width: 180,
-      // render: (text, record) => {
-      //   return <span>{text === '1' ? '通过' : text === '0' ? '不通过' : ''}</span>
-      // }
     },
     {
       title: '自动化科专责审核说明',
       dataIndex: 'expertVerifyContent',
       key: 'expertVerifyContent',
       width: 180,
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '自动化科专责审核状态',
@@ -327,7 +348,7 @@ function TobedealtList(props) {
       title: '自动化科专责审核时间',
       dataIndex: 'expertVerifyTime',
       key: 'expertVerifyTime',
-      width: 180,
+      width: 200,
     },
     {
       title: '是否申诉',
@@ -341,7 +362,7 @@ function TobedealtList(props) {
       key: 'appealContent',
       width: 150,
       ellipsis: true,
-      render: (text) => {
+      render: text => {
         return (
           <Tooltip title={text} placement="topLeft">
             <span>{text}</span>
@@ -359,7 +380,7 @@ function TobedealtList(props) {
       title: '服务商确认时间',
       dataIndex: 'providerConfirmTime',
       key: 'providerConfirmTime',
-      width: 150,
+      width: 200,
     },
     {
       title: '业务负责人复核结果',
@@ -376,7 +397,7 @@ function TobedealtList(props) {
       key: 'directorReviewContent',
       width: 180,
       ellipsis: true,
-      render: (text) => {
+      render: text => {
         return (
           <Tooltip title={text} placement="topLeft">
             <span>{text}</span>
@@ -394,7 +415,7 @@ function TobedealtList(props) {
       title: '业务负责人复核时间',
       dataIndex: 'directorReviewTime',
       key: 'directorReviewTime',
-      width: 180,
+      width: 200,
     },
     {
       title: '服务绩效考核确认结果',
@@ -408,7 +429,7 @@ function TobedealtList(props) {
       key: 'finallyConfirmContent',
       width: 180,
       ellipsis: true,
-      render: (text) => {
+      render: text => {
         return (
           <Tooltip title={text} placement="topLeft">
             <span>{text}</span>
@@ -426,7 +447,7 @@ function TobedealtList(props) {
       title: '服务绩效考核确认时间',
       dataIndex: 'finallyConfirmTime',
       key: 'finallyConfirmTime',
-      width: 180,
+      width: 200,
     },
   ];
   const getPerformanceleader = () => {
@@ -549,12 +570,7 @@ function TobedealtList(props) {
 
   // 选择服务商，信息回填
   const handleDisableduser = (v, opt, type) => {
-    const {
-      id,
-      providerName,
-      scoreName,
-      assessType,
-    } = opt.props.disableuser;
+    const { id, providerName, scoreName, assessType } = opt.props.disableuser;
     switch (type) {
       case 'provider':
         setFieldsValue({
@@ -672,7 +688,7 @@ function TobedealtList(props) {
         });
         break;
       default:
-        break
+        break;
     }
 
     setTabRecord({ ...newvalues });
@@ -826,6 +842,7 @@ function TobedealtList(props) {
   }, []);
 
   useEffect(() => {
+    setColumns(initialColumns);
     getPerformanceleader();
     validateFields((err, value) => {
       searchdata(value, 1, 15);
@@ -959,35 +976,6 @@ function TobedealtList(props) {
     }
   };
 
-  const selectOnchange = (value, option, type) => {
-    const {
-      props: { children },
-    } = option;
-    switch (type) {
-      case 'director':
-        setFieldsValue({
-          directorName: children,
-          directorId: value,
-        });
-        break;
-      case 'providerConfirmer':
-        setFieldsValue({
-          providerConfirmerName: children,
-          providerConfirmer: value,
-        });
-        break;
-      case 'finallyConfirmerName':
-        setFieldsValue({
-          finallyConfirmerName: children,
-          finallyConfirmer: value,
-        });
-        break;
-
-      default:
-        break;
-    }
-  };
-
   const download = () => {
     validateFields((err, values) => {
       const newValue = {
@@ -1048,7 +1036,7 @@ function TobedealtList(props) {
           dispatch({
             type: 'performanceappraisal/exportTodolist',
             payload: {
-              ...newValue
+              ...newValue,
             },
           }).then(res => {
             const filename = `${pagetitle}_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
@@ -1065,7 +1053,7 @@ function TobedealtList(props) {
           dispatch({
             type: 'performanceappraisal/exportSearch',
             payload: {
-              ...newValue
+              ...newValue,
             },
           }).then(res => {
             const filename = `${pagetitle}_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
@@ -1082,7 +1070,7 @@ function TobedealtList(props) {
           dispatch({
             type: 'performanceappraisal/exportmyAssess',
             payload: {
-              ...newValue
+              ...newValue,
             },
           }).then(res => {
             const filename = `${pagetitle}_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
@@ -1097,14 +1085,12 @@ function TobedealtList(props) {
           break;
         default:
           break;
-
       }
-
     });
   };
 
   const rowSelection = {
-    onChange: (index) => {
+    onChange: index => {
       setSelectedKeys([...index]);
     },
   };
@@ -1137,11 +1123,69 @@ function TobedealtList(props) {
     </>
   );
 
+  const creataColumns = () => {
+    // columns
+    initialColumns.length = 0;
+    formThead.map((val, key) => {
+      const obj = {
+        key: val.key,
+        title: val.title,
+        dataIndex: val.key,
+        width: 150,
+      };
+      if (key === 0) {
+        obj.render = (text, records) => {
+          return <a onClick={() => todetail(records)}>{text}</a>;
+        };
+        obj.fixed = 'left';
+        obj.width = 200;
+      }
+      if (
+        val.title === '考核内容说明' ||
+        val.title === '申诉内容' ||
+        val.title === '业务负责人复核说明' ||
+        val.title === '服务绩效考核确认说明' ||
+        val.title === '业务负责人审核说明' ||
+        val.title === '关联合同名称'
+      ) {
+        obj.render = (text, records) => {
+          obj.ellipsis = true;
+          obj.width = 200;
+          return (
+            <Tooltip placement="topLeft" title={text}>
+              {key === 0 ? <a onClick={() => todetail(records)}>{text}</a> : <span>{text}</span>}
+            </Tooltip>
+          );
+        };
+      }
+      initialColumns.push(obj);
+      setColumns(initialColumns);
+      return null;
+    });
+  };
+
+  const onCheckAllChange = e => {
+    setColumns(e.target.checked ? initialColumns : []);
+  };
+
+  const onCheck = checkedValues => {
+    formThead = initialColumns.filter(i => checkedValues.indexOf(i.title) >= 0);
+
+    if (formThead.length === 0) {
+      setColumns([]);
+    }
+    creataColumns();
+  };
+
+  const defaultAllkey = columns.map(item => {
+    return item.title;
+  });
+
   const getTypebyTitle = title => {
     if (selectdata.ischange) {
       return selectdata.arr.filter(item => item.title === title)[0].children;
     }
-    return []
+    return [];
   };
 
   const assessmentObject = getTypebyTitle('考核对象');
@@ -1149,7 +1193,7 @@ function TobedealtList(props) {
   return (
     <PageHeaderWrapper title={pagetitle}>
       <SysDict
-        typeid='576'
+        typeid="576"
         commonid="335"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
@@ -1289,7 +1333,7 @@ function TobedealtList(props) {
                     //     </Option>,
                     //   ])}
                     // </Select>,
-                    <Input />
+                    <Input />,
                   )}
                 </Form.Item>
               </Col>
@@ -1309,7 +1353,8 @@ function TobedealtList(props) {
                   })(
                     <Select
                       getPopupContainer={e => e.parentNode}
-                      onChange={(value, option) => handleChange(value, option, 'assessType')}>
+                      onChange={(value, option) => handleChange(value, option, 'assessType')}
+                    >
                       <Option key="1" value="1">
                         功能开发
                       </Option>
@@ -1450,14 +1495,9 @@ function TobedealtList(props) {
                 </Form.Item>
               </Col> */}
 
-
               <Col span={8} style={{ display: 'none' }}>
-                <Form.Item label='登记人id'>
-                  {
-                    getFieldDecorator('register', {
-                    })
-                      (<Input />)
-                  }
+                <Form.Item label="登记人id">
+                  {getFieldDecorator('register', {})(<Input />)}
                 </Form.Item>
               </Col>
 
@@ -1530,7 +1570,8 @@ function TobedealtList(props) {
                       <Option key="已审核" value="已审核">
                         已审核
                       </Option>
-                    </Select>)}
+                    </Select>,
+                  )}
                 </Form.Item>
               </Col>
 
@@ -1547,9 +1588,9 @@ function TobedealtList(props) {
                   {getFieldDecorator('directorVerifyTime', {
                     initialValue: cacheinfo.directorVerifyBeginTime
                       ? [
-                        moment(cacheinfo.directorVerifyBeginTime),
-                        moment(cacheinfo.directorVerifyEndTime),
-                      ]
+                          moment(cacheinfo.directorVerifyBeginTime),
+                          moment(cacheinfo.directorVerifyEndTime),
+                        ]
                       : '',
                   })(
                     <RangePicker
@@ -1624,9 +1665,9 @@ function TobedealtList(props) {
                   {getFieldDecorator('expertVerifyTime', {
                     initialValue: cacheinfo.expertVerifyBeginTime
                       ? [
-                        moment(cacheinfo.expertVerifyBeginTime),
-                        moment(cacheinfo.expertVerifyEndTime),
-                      ]
+                          moment(cacheinfo.expertVerifyBeginTime),
+                          moment(cacheinfo.expertVerifyEndTime),
+                        ]
                       : '',
                   })(
                     <RangePicker
@@ -1688,7 +1729,7 @@ function TobedealtList(props) {
                       //     </Option>,
                       //   ])}
                       // </Select>,
-                      <Input />
+                      <Input />,
                     )}
                   </Form.Item>
                 </Col>
@@ -1707,9 +1748,9 @@ function TobedealtList(props) {
                   {getFieldDecorator('providerConfirmTime', {
                     initialValue: cacheinfo.providerConfirmBeginTime
                       ? [
-                        moment(cacheinfo.providerConfirmBeginTime),
-                        moment(cacheinfo.providerConfirmEndTime),
-                      ]
+                          moment(cacheinfo.providerConfirmBeginTime),
+                          moment(cacheinfo.providerConfirmEndTime),
+                        ]
                       : '',
                   })(
                     <RangePicker
@@ -1783,9 +1824,9 @@ function TobedealtList(props) {
                   {getFieldDecorator('directorReviewTime', {
                     initialValue: cacheinfo.directorReviewBeginTime
                       ? [
-                        moment(cacheinfo.directorReviewBeginTime),
-                        moment(cacheinfo.directorReviewEndTime),
-                      ]
+                          moment(cacheinfo.directorReviewBeginTime),
+                          moment(cacheinfo.directorReviewEndTime),
+                        ]
                       : '',
                   })(
                     <RangePicker
@@ -1847,7 +1888,7 @@ function TobedealtList(props) {
                       //     </Option>,
                       //   ])}
                       // </Select>,
-                      <Input />
+                      <Input />,
                     )}
                   </Form.Item>
                 </Col>
@@ -1866,9 +1907,9 @@ function TobedealtList(props) {
                   {getFieldDecorator('finallyConfirmTime', {
                     initialValue: cacheinfo.finallyConfirmBeginTime
                       ? [
-                        moment(cacheinfo.finallyConfirmBeginTime),
-                        moment(cacheinfo.finallyConfirmEndTime),
-                      ]
+                          moment(cacheinfo.finallyConfirmBeginTime),
+                          moment(cacheinfo.finallyConfirmEndTime),
+                        ]
                       : '',
                   })(
                     <RangePicker
@@ -1906,6 +1947,52 @@ function TobedealtList(props) {
             导出数据
           </Button>
         </div>
+
+        <div style={{ textAlign: 'right', marginBottom: 8 }}>
+          <Popover
+            placement="bottomRight"
+            trigger="click"
+            content={
+              <>
+                <div style={{ borderBottom: '1px solid #E9E9E9' }}>
+                  <Checkbox
+                    // indeterminate={this.state.indeterminate}
+                    onChange={onCheckAllChange}
+                    checked={(columns.length === initialColumns.length) === true}
+                  >
+                    列表展示
+                  </Checkbox>
+                  <br />
+                </div>
+
+                <Checkbox.Group
+                  onChange={onCheck}
+                  value={defaultAllkey}
+                  defaultValue={columns}
+                  style={{ overflowY: 'auto', height: 800 }}
+                >
+                  {initialColumns.map(item => (
+                    <Col key={`item_${item.key}`} style={{ marginBottom: '8px' }}>
+                      <Checkbox
+                        value={item.title}
+                        key={item.key}
+                        checked={columns}
+                        // disabled={item.disabled}
+                        // className={styles.checkboxStyle}
+                      >
+                        {item.title}
+                      </Checkbox>
+                    </Col>
+                  ))}
+                </Checkbox.Group>
+              </>
+            }
+          >
+            <Button>
+              <Icon type="setting" theme="filled" style={{ fontSize: '14px' }} />
+            </Button>
+          </Popover>
+        </div>
         <Table
           loading={loading}
           columns={columns}
@@ -1921,7 +2008,7 @@ function TobedealtList(props) {
 }
 
 export default Form.create({})(
-  connect(({ performanceappraisal, qualityassessment, itsmuser, loading }) => ({
+  connect(({ performanceappraisal, qualityassessment, loading }) => ({
     tobeDealtarr: performanceappraisal.tobeDealtarr,
     clauseList: qualityassessment.clauseList,
     target2: qualityassessment.target2,

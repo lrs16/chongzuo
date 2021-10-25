@@ -9,7 +9,6 @@ import {
   Button,
   Table
 } from 'antd';
-import Link from 'umi/link';
 import moment from 'moment';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import TreatmentrateDetail from './TreatmentrateDetail';
@@ -75,17 +74,10 @@ function Workordertreatmentrate(props) {
   const { pagetitle } = props.route.name;
   const [tabActiveKey, setTabActiveKey] = useState('week');
   const {
-    form: { getFieldDecorator, setFieldsValue, validateFields },
+    form: { getFieldDecorator, validateFields },
     orderrateArr,
     dispatch
   } = props;
-
-  const onChange = (date, dateString) => {
-    startTime = dateString;
-    endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
-    setFieldsValue({ time2: moment(endTime) });
-  }
-
 
   const handleListdata = () => {
     validateFields((err, value) => {

@@ -145,23 +145,23 @@ function SettingDetails(props) {
 
   // 选择下拉值，信息回填
   const handleDisableduser = (v, opt, type) => {
-    const { id, phone, deptNameExt, groupName, shiftName, staffName, beginTime, endTime, shiftType } = opt.props.disableuser;
+    const { ids, phone, deptNameExt, groupNames, shiftName, staffName, beginTime, endTime, shiftType } = opt.props.disableuser;
     switch (type) {
       case 'director':
         setFieldsValue({
           staffName, // 用户名称
           teststaffName: staffName,
-          staffId: id, // 用户id
+          staffId: ids, // 用户id
           deptName: deptNameExt,
           staffPhone: phone,
-          groupName
+          groupName:groupNames
         });
         break;
       case 'shiftName':
         setFieldsValue({
           shiftName, // 用户名称
           shiftType,
-          shiftId: id,
+          shiftId: ids,
           beginTime: moment(beginTime, format),
           endTime: moment(endTime, format),
         });
@@ -187,7 +187,7 @@ function SettingDetails(props) {
       }).then(res => {
         if (res.code === 200) {
           getTable(currentYear, month)
-          message.info(res.msg)
+          message.success(res.msg)
         } else {
           message.error(res.msg)
         }
@@ -201,7 +201,7 @@ function SettingDetails(props) {
       }).then(res => {
         if (res.code === 200) {
           getTable(currentYear, month)
-          message.info(res.msg)
+          message.success(res.msg)
         } else {
           message.error(res.msg)
         }

@@ -3,8 +3,8 @@ import { Collapse, Button, message } from 'antd';
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
-import Register from './components/Register';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import Register from './components/Register';
 import { contractProvider } from '../services/quality';
 import styles from '../ServicePerformanceappraisal/index.less';
 
@@ -47,18 +47,18 @@ function CreditCardRegister(props) {
   const RegistratRef = useRef();
   const [contractArr, setContractArr] = useState([]);
   const [editTablesource, setEditTablesource] = useState([]);
-  const [rangerTime, setRangerTime] = useState({ start: '', end: '' })
+  const [rangerTime, setRangerTime] = useState({ start: '', end: '' });
 
   //  获取合同名称
 
-  const timeOK = (data) => {
-    const startTime = moment(data[0]).format('YYYY-MM-DD HH:mm:ss')
+  const timeOK = data => {
+    const startTime = moment(data[0]).format('YYYY-MM-DD HH:mm:ss');
     const endTime = moment(data[1]).format('YYYY-MM-DD HH:mm:ss');
     setRangerTime({
       start: startTime,
-      end: endTime
-    })
-  }
+      end: endTime,
+    });
+  };
 
   const getContrractname = providerId => {
     contractProvider({ id: providerId, status: '1' }).then(res => {
@@ -69,7 +69,6 @@ function CreditCardRegister(props) {
     });
   };
 
-
   const registerDetail = () => {
     dispatch({
       type: 'performanceappraisal/getScorecardetail',
@@ -79,7 +78,7 @@ function CreditCardRegister(props) {
 
   useEffect(() => {
     if (location.state && location.state.reset && paramId) {
-      registerDetail()
+      registerDetail();
     }
   }, [location.state]);
 
@@ -100,14 +99,22 @@ function CreditCardRegister(props) {
               //   ? moment(values.evaluationInterval[1]).format('YYYY-MM-DD HH:mm:ss')
               //   : '', // 发生时间
 
-              beginTime: rangerTime.start || (values.evaluationInterval?.length ? moment(values.evaluationInterval[0]).format('YYYY-MM-DD HH:mm:ss') : ''),
-              endTime: rangerTime.end || (values.evaluationInterval?.length ? moment(values.evaluationInterval[1]).format('YYYY-MM-DD HH:mm:ss') : ''),
+              beginTime:
+                rangerTime.start ||
+                (values.evaluationInterval?.length
+                  ? moment(values.evaluationInterval[0]).format('YYYY-MM-DD HH:mm:ss')
+                  : ''),
+              endTime:
+                rangerTime.end ||
+                (values.evaluationInterval?.length
+                  ? moment(values.evaluationInterval[1]).format('YYYY-MM-DD HH:mm:ss')
+                  : ''),
               evaluationInterval: '',
               assessType: values.assessType && values.assessType === '功能开发' ? '1' : '2',
             },
           }).then(res => {
             if (res.code === 200) {
-              message.info(res.msg)
+              message.info(res.msg);
               registerDetail();
             }
           });
@@ -120,8 +127,16 @@ function CreditCardRegister(props) {
               id: paramId,
               ...values,
               details: editTablesource,
-              beginTime: rangerTime.start || (values.evaluationInterval?.length ? moment(values.evaluationInterval[0]).format('YYYY-MM-DD HH:mm:ss') : ''),
-              endTime: rangerTime.end || (values.evaluationInterval?.length ? moment(values.evaluationInterval[1]).format('YYYY-MM-DD HH:mm:ss') : ''),
+              beginTime:
+                rangerTime.start ||
+                (values.evaluationInterval?.length
+                  ? moment(values.evaluationInterval[0]).format('YYYY-MM-DD HH:mm:ss')
+                  : ''),
+              endTime:
+                rangerTime.end ||
+                (values.evaluationInterval?.length
+                  ? moment(values.evaluationInterval[1]).format('YYYY-MM-DD HH:mm:ss')
+                  : ''),
               evaluationInterval: '',
               assessType: values.assessType && values.assessType === '功能开发' ? '1' : '2',
             },
@@ -180,7 +195,6 @@ function CreditCardRegister(props) {
       },
     });
   };
-
 
   const changeTablesource = (editid, target) => {
     // let timeout = null
@@ -286,7 +300,6 @@ function CreditCardRegister(props) {
           </Collapse>
         </div>
       )}
-
     </PageHeaderWrapper>
   );
 }

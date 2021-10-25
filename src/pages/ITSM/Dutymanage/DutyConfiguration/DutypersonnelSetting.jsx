@@ -3,7 +3,6 @@ import React, {
   useEffect
 } from 'react';
 import { connect } from 'dva';
-import AdddutyPersonnelSetting from './components/AdddutyPersonnelSetting';
 import {
   Card,
   Row,
@@ -19,8 +18,8 @@ import {
 } from 'antd';
 import SysDict from '@/components/SysDict';
 import router from 'umi/router';
-import styles from './index.less';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import AdddutyPersonnelSetting from './components/AdddutyPersonnelSetting';
 
 const { Option } = Select;
 
@@ -49,7 +48,6 @@ function DutypersonnelSetting(props) {
     location,
     loading
   } = props;
-  const [directorlist, setDirectorlist] = useState([]); // 详细条款
   const [selectdata, setSelectData] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [paginations, setPageinations] = useState({ current: 1, size: 15 });
@@ -59,8 +57,6 @@ function DutypersonnelSetting(props) {
   const searchdata = (values, current, size) => {
     const newdata = {
       ...values,
-      // beginTime: values.beginTime ? moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
-      // endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
       current,
       size
     }
@@ -132,7 +128,7 @@ function DutypersonnelSetting(props) {
       payload: submitdata
     }).then(res => {
       if (res.code === 200) {
-        message.info(res.msg);
+        message.success(res.msg);
         searchdata({}, 1, 15)
       } else {
         message.error(res.msg);
@@ -195,7 +191,7 @@ function DutypersonnelSetting(props) {
       payload: id
     }).then(res => {
       if (res.code === 200) {
-        message.info(res.msg);
+        message.success(res.msg);
         searchdata({}, 1, 15)
       } else {
         message.error(res.msg);
@@ -315,26 +311,6 @@ function DutypersonnelSetting(props) {
       <Card>
         <Row gutter={8}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
-            {/* <Col span={8}>
-              <Form.Item label="值班人员">
-                {getFieldDecorator('staffName', {
-                  initialValue: cacheinfo.staffName,
-                })(
-                  <AutoComplete
-                    dataSource={directoruser}
-                    dropdownMatchSelectWidth={false}
-                    dropdownStyle={{ width: 600 }}
-                    onSelect={(v, opt) => handleDisableduser(v, opt, 'director')}
-                  >
-                    <Search
-                      placeholder="可输入人名称搜索"
-                      onSearch={values => SearchDisableduser(values, 'director')}
-                      allowClear
-                    />
-                  </AutoComplete>,
-                )}
-              </Form.Item>
-            </Col> */}
             <Col span={8}>
               <Form.Item label="值班人员">
                 {getFieldDecorator('staffName', {

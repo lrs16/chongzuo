@@ -12,9 +12,8 @@ import {
   message,
   Form,
 } from 'antd';
-import Reasonregression from '../../Problemmanage/components/Reasonregression';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import EditContext from '@/layouts/MenuContext';
+import Reasonregression from '../../Problemmanage/components/Reasonregression';
 import Registrat from './components/Registrat';
 
 const forminladeLayout = {
@@ -38,7 +37,6 @@ function NewHandover(props) {
     dispatch,
     location,
     location: { query: { id, type, addtab } },
-    tabdata,
     loading,
     currentUserarr,
     shiftGrouparr,
@@ -65,6 +63,59 @@ function NewHandover(props) {
     }
   },[location.state])
 
+  const handlelogbookTransfer = () => {
+    return dispatch({
+      type: 'shifthandover/fetchlogbookTransfer',
+      payload: { id }
+    }).then(res => {
+      if (res.code === 200) {
+        router.push({
+          pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/handoverdetail`,
+          query: {
+            mainId: id,
+            closetab: true,
+          },
+        });
+
+        router.push({
+          pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover`,
+          query: { pathpush: true },
+          state: { cache: false },
+        });
+        message.success(res.msg);
+      } else {
+        message.error(res.msg);
+      }
+    })
+  }
+
+  const handlelogbookReceive = () => {
+    const values = ContentRef.current.getVal();
+    return dispatch({
+      type: 'shifthandover/fetchlogbookReceive',
+      payload: { id, remark: values.receiveRemark }
+    }).then(res => {
+      if (res.code === 200) {
+        router.push({
+          pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/handoverdetail`,
+          query: {
+            mainId: id,
+            closetab: true,
+          },
+        });
+
+        router.push({
+          pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover`,
+          query: { pathpush: true },
+          state: { cache: false },
+        });
+        message.success(res.msg);
+      } else {
+        message.error(res.msg);
+      }
+    })
+  }
+
   const handleSave = (params) => { // 保存
     const values = ContentRef.current.getVal();
     if ((values.dutyBeginTime && !values.dutyEndTime)) {
@@ -76,7 +127,6 @@ function NewHandover(props) {
           message.error('开始时间必须小于结束时间');
           return false
         }
-
 
         return dispatch({
           type: 'shifthandover/fetchlogbookSave',
@@ -106,12 +156,22 @@ function NewHandover(props) {
               default:
                 break;
             }
-            message.info(res.msg)
+            message.success(res.msg)
           }
         })
       }
-
+      return []
     })
+  }
+
+  const logbookTransfer = () => {
+    handleSave('logbookTransfer');
+  }
+
+ 
+
+  const logbookReceive = () => {
+    handleSave('logbookReceive');
   }
 
   useEffect(() => {
@@ -222,6 +282,7 @@ function NewHandover(props) {
       payload: { id }
     }).then(res => {
       if (res.code === 200) {
+        message.success(res.msg);
         router.push({
           pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/handoverdetail`,
           query: {
@@ -241,66 +302,6 @@ function NewHandover(props) {
     })
   }
 
-  const handlelogbookTransfer = () => {
-    return dispatch({
-      type: 'shifthandover/fetchlogbookTransfer',
-      payload: { id }
-    }).then(res => {
-      if (res.code === 200) {
-        router.push({
-          pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/handoverdetail`,
-          query: {
-            mainId: id,
-            closetab: true,
-          },
-        });
-
-        router.push({
-          pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover`,
-          query: { pathpush: true },
-          state: { cache: false },
-        });
-        message.info(res.msg);
-      } else {
-        message.error(res.msg);
-      }
-    })
-  }
-
-  const logbookTransfer = () => {
-    handleSave('logbookTransfer');
-  }
-
-  const handlelogbookReceive = () => {
-    const values = ContentRef.current.getVal();
-    return dispatch({
-      type: 'shifthandover/fetchlogbookReceive',
-      payload: { id, remark: values.receiveRemark }
-    }).then(res => {
-      if (res.code === 200) {
-        router.push({
-          pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/handoverdetail`,
-          query: {
-            mainId: id,
-            closetab: true,
-          },
-        });
-
-        router.push({
-          pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover`,
-          query: { pathpush: true },
-          state: { cache: false },
-        });
-        message.info(res.msg);
-      } else {
-        message.error(res.msg);
-      }
-    })
-  }
-
-  const logbookReceive = () => {
-    handleSave('logbookReceive');
-  }
 
   const download = () => {
     dispatch({
@@ -331,7 +332,7 @@ function NewHandover(props) {
       }
     }).then(res => {
       if (res.code === 200) {
-        message.info(res.msg);
+        message.success(res.msg);
         router.push({
           pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/handoverdetail`,
           query: {
@@ -443,7 +444,7 @@ function NewHandover(props) {
             wrappedComponentRef={ContentRef}
             currentUserarr={currentUserarr}
             formrecord={id ? logbookIddetail : {}}
-            statue={((logbookIddetail && logbookIddetail.handoverStatus === '待接班' && !addtab) || type === 'search') ? true : false}
+            statue={((logbookIddetail && logbookIddetail.handoverStatus === '待接班' && !addtab) || type === 'search')}
             shiftinfo={shift}
             successioninfo={succession}
             shiftNameinfo={shiftName}

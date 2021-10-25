@@ -1,19 +1,19 @@
 import React, { useState, useRef, useImperativeHandle, useEffect } from 'react';
-import { Row, Col, Form, Input, Select, DatePicker, AutoComplete, Spin, Cascader, } from 'antd';
+import { Row, Col, Form, Input, Select, DatePicker, AutoComplete, Spin, Cascader } from 'antd';
 import moment from 'moment';
 import SysUpload from '@/components/SysUpload';
 import { getAndField } from '@/pages/SysManage/services/api';
 import { queryDisableduserByUser } from '@/services/common';
-import styles from '../index.less';
 import SysDict from '@/components/SysDict';
 import { querkeyVal } from '@/services/api';
+import styles from '../index.less';
 
 const { Option } = Select;
 const { TextArea, Search } = Input;
 let occurtime;
 
 const Registrat = React.forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, files, ChangeFiles, location } = props;
+  const { formItemLayout, forminladeLayout, files, ChangeFiles } = props;
   const { getFieldDecorator, setFieldsValue } = props.form;
   const [fileslist, setFilesList] = useState([]);
   const [titleautodata, setTitleAutoData] = useState([]);
@@ -37,7 +37,7 @@ const Registrat = React.forwardRef((props, ref) => {
     [],
   );
 
-  const { useInfo, register, main, } = props;
+  const { useInfo, register, main } = props;
 
   if (register) {
     if (register.registerOccurTime !== null) {
@@ -78,7 +78,7 @@ const Registrat = React.forwardRef((props, ref) => {
     handledesSearch({ module: '问题单', field: '描述', key: '' });
     querkeyVal('public', 'devdirector').then(res => {
       if (res.code === 200) {
-        setPersondata(res.data.devdirector)
+        setPersondata(res.data.devdirector);
       }
     });
   }, []);
@@ -111,7 +111,7 @@ const Registrat = React.forwardRef((props, ref) => {
   // 选择报障用户，信息回填
   const handleDisableduser = (v, opt) => {
     const { user, phone } = opt.props.disableuser;
-    setFieldsValue({ complainUser: user });
+    setFieldsValue({ complainUser: user, selectcomplainUser: user });
     setFieldsValue({ registerUserPhone: phone });
   };
 
@@ -145,8 +145,8 @@ const Registrat = React.forwardRef((props, ref) => {
   };
 
   const handlobjectChange = value => {
-    setFieldsValue({ type: value?.slice(-1)[0] }, () => { })
-  }
+    setFieldsValue({ type: value?.slice(-1)[0] }, () => {});
+  };
 
   const getTypebyTitle = title => {
     if (selectdata.ischange) {
@@ -214,7 +214,7 @@ const Registrat = React.forwardRef((props, ref) => {
 
           <Col span={8}>
             <Form.Item label="问题申报人">
-              {getFieldDecorator('complainUser', {
+              {getFieldDecorator('selectcomplainUser', {
                 rules: [
                   {
                     required,
@@ -236,6 +236,14 @@ const Registrat = React.forwardRef((props, ref) => {
                   />
                 </AutoComplete>,
               )}
+            </Form.Item>
+          </Col>
+
+          <Col span={8} style={{ display: 'none' }}>
+            <Form.Item>
+              {getFieldDecorator('complainUser', {
+                initialValue: register.complainUser,
+              })(<Input />)}
             </Form.Item>
           </Col>
 
@@ -270,7 +278,7 @@ const Registrat = React.forwardRef((props, ref) => {
                     message: '请输入问题分类',
                   },
                 ],
-                initialValue: main.type ? (main.type).split(',') : '',
+                initialValue: main.type ? main.type.split(',') : '',
               })(
                 <Cascader
                   fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
@@ -278,7 +286,7 @@ const Registrat = React.forwardRef((props, ref) => {
                   placeholder="请选择"
                   onChange={() => handlobjectChange()}
                 />,
-                <Input />
+                <Input />,
               )}
             </Form.Item>
           </Col>
@@ -387,20 +395,20 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请输入开发负责人',
                     },
                   ],
-                  initialValue: register.developmentLead &&  (register.developmentLead).split(',')|| undefined,
+                  initialValue:
+                    (register.developmentLead && register.developmentLead.split(',')) || undefined,
                 })(
                   <Select placeholder="请选择" mode="multiple">
-                    {(persondata).map(obj => [
+                    {persondata.map(obj => [
                       <Option key={obj.key} value={obj.val}>
                         {obj.val}
                       </Option>,
                     ])}
-                  </Select>
+                  </Select>,
                 )}
               </Form.Item>
             </Col>
           )}
-
 
           <Col span={24}>
             <Form.Item label="问题标题" {...forminladeLayout}>
@@ -512,11 +520,11 @@ Registrat.defaultProps = {
     no: '',
     title: '',
     content: '',
-    type: ''
+    type: '',
   },
   register: {
     complainUser: '',
-    developmentLead: undefined
+    developmentLead: undefined,
   },
   useInfo: {
     userName: '',

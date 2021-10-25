@@ -1,15 +1,5 @@
 import React, { useState, useRef, useImperativeHandle, useEffect } from 'react';
-import {
-  Row,
-  Col,
-  Form,
-  Input,
-  Select,
-  DatePicker,
-  AutoComplete,
-  Radio,
-  Tag
-} from 'antd';
+import { Row, Col, Form, Input, Select, DatePicker, AutoComplete, Radio, Tag } from 'antd';
 import moment from 'moment';
 import SysUpload from '@/components/SysUpload';
 import { getAndField } from '@/pages/SysManage/services/api';
@@ -18,10 +8,9 @@ import SysDict from '@/components/SysDict';
 // import 'braft-editor/dist/index.css';
 
 const { Option } = Select;
-const { TextArea, Search } = Input;
+const { TextArea } = Input;
 let startTime;
 let endTime;
-let htmlContent;
 let taskperson = true;
 
 const OperationPlanfillin = React.forwardRef((props, ref) => {
@@ -38,7 +27,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
     operationPersonSelect,
   } = props;
 
-  const statusContent = ['计划中', '延期中', '已超时', '已完成']
+  const statusContent = ['计划中', '延期中', '已超时', '已完成'];
   const color = ['blue', 'yellow', 'red', 'green'];
   const [titlerecords, setTitleRecords] = useState([]);
   const [selectdata, setSelectData] = useState('');
@@ -66,14 +55,14 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
   );
 
   const onChange = (date, dateString) => {
-    setFieldsValue({ plannedStarTtime: moment(dateString) })
+    setFieldsValue({ plannedStarTtime: moment(dateString) });
     startTime = dateString;
-  }
+  };
 
   const endtimeonChange = (date, dateString) => {
-    setFieldsValue({ plannedEndTime: moment(dateString) })
+    setFieldsValue({ plannedEndTime: moment(dateString) });
     endTime = dateString;
-  }
+  };
 
   const handletitleSearch = values => {
     getAndField(values).then(res => {
@@ -86,47 +75,48 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
     });
   };
 
-
   const handleSearch = (value, selectType) => {
     switch (selectType) {
-      case 'obj': {
-        const newArr = titlerecords.filter(item => {
-          return item.includes(value);
-        })
-        if (newArr.length > 0) {
-          setObjautodata(newArr);
-        } else {
-          setObjautodata([])
+      case 'obj':
+        {
+          const newArr = titlerecords.filter(item => {
+            return item.includes(value);
+          });
+          if (newArr.length > 0) {
+            setObjautodata(newArr);
+          } else {
+            setObjautodata([]);
+          }
         }
-      }
         break;
       default:
         break;
     }
-  }
+  };
 
-  const startdisabledDate = (current) => {
+  const startdisabledDate = current => {
     if (startTime || endTime) {
-      return current > moment(endTime)
+      return current > moment(endTime);
     }
-  }
+    return [];
+  };
 
-  const enddisabledDate = (current) => {
+  const enddisabledDate = current => {
     if (startTime || endTime) {
-      return current < moment(startTime)
+      return current < moment(startTime);
     }
-  }
-
+    return [];
+  };
 
   useEffect(() => {
-    startTime = new Date()
-    endTime = new Date()
-    handletitleSearch({ module: '作业单', field: '对象', key: '' })
+    startTime = new Date();
+    endTime = new Date();
+    handletitleSearch({ module: '作业单', field: '对象', key: '' });
     // 此处从服务端获取html格式的编辑器内容
     // const editContent = main.content;
     // 使用BraftEditor.createEditorState将html字符串转换为编辑器需要的editorStat
     // setEditorState(BraftEditor.createEditorState(editContent))
-  }, [])
+  }, []);
 
   // const handleEditorChange = (params) => {
   //   htmlContent = editorState.toHTML();
@@ -148,14 +138,14 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
     taskperson = false;
     setFieldsValue({
       main_operationUser: value,
-      main_operationUserId: option.key
+      main_operationUserId: option.key,
     });
-  }
+  };
 
   const taskType = getTypebyTitle('作业类型');
   const taskNature = getTypebyTitle('作业性质');
   const taskCompany = getTypebyTitle('作业单位');
-  const WorkOrder = getTypebyTitle('是否开票')
+  const WorkOrder = getTypebyTitle('是否开票');
 
   const required = true;
 
@@ -177,7 +167,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                     message: '请输入问题编号',
                   },
                 ],
-                initialValue: main.operationNo
+                initialValue: main.operationNo,
               })(<Input disabled />)}
             </Form.Item>
           </Col>
@@ -185,32 +175,22 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
           <Col span={8}>
             <Form.Item label="填报时间">
               {getFieldDecorator('main_addTime', {
-                initialValue: moment(new Date())
-              })(
-                <DatePicker
-                  showTime
-                  format="YYYY-MM-DD HH:mm:ss"
-                  disabled />
-              )}
+                initialValue: moment(new Date()),
+              })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" disabled />)}
             </Form.Item>
           </Col>
 
           <Col span={8}>
-            <Form.Item label="作业系统名称" >
+            <Form.Item label="作业系统名称">
               {getFieldDecorator('main_systemName', {
                 rules: [
                   {
                     required,
-                    message: '请输入作业系统名称'
-                  }
+                    message: '请输入作业系统名称',
+                  },
                 ],
-                initialValue: main.systemName
-              })(
-                <Input
-                  placeholder='请输入'
-                  allowClear
-                  disabled={type}
-                />)}
+                initialValue: main.systemName,
+              })(<Input placeholder="请输入" allowClear disabled={type} />)}
             </Form.Item>
           </Col>
 
@@ -220,24 +200,19 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    message: '请输入作业类型'
-                  }
+                    message: '请输入作业类型',
+                  },
                 ],
-                initialValue: main.type
-              })
-                (
-                  <Select
-                    placeholder="请选择"
-                    allowClear
-                    disabled={type}
-                  >
-                    {taskType.map(obj => [
-                      <Option key={obj.key} value={obj.dict_code}>
-                        {obj.title}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
+                initialValue: main.type,
+              })(
+                <Select placeholder="请选择" allowClear disabled={type}>
+                  {taskType.map(obj => [
+                    <Option key={obj.key} value={obj.dict_code}>
+                      {obj.title}
+                    </Option>,
+                  ])}
+                </Select>,
+              )}
             </Form.Item>
           </Col>
 
@@ -247,25 +222,19 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    message: '请输入作业性质'
-                  }
+                    message: '请输入作业性质',
+                  },
                 ],
-                initialValue: main.nature
-              })
-                (
-                  <Select
-                    placeholder="请选择"
-                    allowClear
-                    disabled={type}
-                  >
-                    {taskNature.map(obj => [
-                      <Option key={obj.key} value={obj.dict_code}>
-                        {obj.title}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )
-              }
+                initialValue: main.nature,
+              })(
+                <Select placeholder="请选择" allowClear disabled={type}>
+                  {taskNature.map(obj => [
+                    <Option key={obj.key} value={obj.dict_code}>
+                      {obj.title}
+                    </Option>,
+                  ])}
+                </Select>,
+              )}
             </Form.Item>
           </Col>
 
@@ -275,54 +244,45 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    message: '请输入作业单位'
-                  }
+                    message: '请输入作业单位',
+                  },
                 ],
-                initialValue: main.operationUnit
+                initialValue: main.operationUnit,
               })(
-                <Select
-                  placeholder="请选择"
-                  allowClear
-                  disabled={type}
-                >
+                <Select placeholder="请选择" allowClear disabled={type}>
                   {taskCompany.map(obj => [
                     <Option key={obj.key} value={obj.dict_code}>
                       {obj.title}
                     </Option>,
                   ])}
                 </Select>,
-              )
-              }</Form.Item>
+              )}
+            </Form.Item>
           </Col>
 
-          {
-            operationPersonSelect && operationPersonSelect.length && (
-              <Col span={8}>
-                <Form.Item label="作业负责人">
-                  {getFieldDecorator('main_operationUser', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入作业负责人'
-                      }
-                    ],
-                    initialValue: main.operationUser
-                  })
-                    (
-                      <Select onChange={selectOnchange} disabled={type} >
-                        {operationPersonSelect.map(obj => [
-                          <Option key={obj.key} value={obj.value}>
-                            {obj.value}
-                          </Option>
-                        ])}
-
-                      </Select>
-                    )}
-                </Form.Item>
-              </Col>
-            )
-          }
-
+          {operationPersonSelect && operationPersonSelect.length && (
+            <Col span={8}>
+              <Form.Item label="作业负责人">
+                {getFieldDecorator('main_operationUser', {
+                  rules: [
+                    {
+                      required,
+                      message: '请输入作业负责人',
+                    },
+                  ],
+                  initialValue: main.operationUser,
+                })(
+                  <Select onChange={selectOnchange} disabled={type}>
+                    {operationPersonSelect.map(obj => [
+                      <Option key={obj.key} value={obj.value}>
+                        {obj.value}
+                      </Option>,
+                    ])}
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
+          )}
 
           <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="开工作票">
@@ -330,29 +290,21 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    message: '请输入开工作票'
-                  }
+                    message: '请输入开工作票',
+                  },
                 ],
-                initialValue: main.operationUserId
-              })
-                (
-                  <Radio.Group
-                  >
-                    {
-                      WorkOrder.map(obj => [
-                        <Radio
-                          key={obj.key}
-                          value={obj.dict_code} >
-                          {obj.title}
-                        </Radio>
-                      ])
-                    }
-                  </Radio.Group>
-                )
-              }
+                initialValue: main.operationUserId,
+              })(
+                <Radio.Group>
+                  {WorkOrder.map(obj => [
+                    <Radio key={obj.key} value={obj.dict_code}>
+                      {obj.title}
+                    </Radio>,
+                  ])}
+                </Radio.Group>,
+              )}
             </Form.Item>
           </Col>
-
 
           <Col span={8}>
             <Form.Item label="开工作票">
@@ -360,35 +312,32 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    message: '请输入开工作票'
-                  }
+                    message: '请输入开工作票',
+                  },
                 ],
-                initialValue: main.billing
-              })
-                (
-                  <Radio.Group disabled={type}>
-                    {
-                      WorkOrder.map(obj => [
-                        <Radio key={obj.key} value={obj.dict_code}>
-                          {obj.title}
-                        </Radio>
-                      ])
-                    }
-                  </Radio.Group>
-                )
-              }
+                initialValue: main.billing,
+              })(
+                <Radio.Group disabled={type}>
+                  {WorkOrder.map(obj => [
+                    <Radio key={obj.key} value={obj.dict_code}>
+                      {obj.title}
+                    </Radio>,
+                  ])}
+                </Radio.Group>,
+              )}
             </Form.Item>
           </Col>
 
           <Col span={8}>
             <Form.Item label="作业状态">
-              {getFieldDecorator('main_status', {})
-                (
-                  <Tag
-                    color={status ? color[statusContent.indexOf(status)] : "blue"}>
-                    {status || '计划中'}
-                  </Tag>
-                )}
+              {getFieldDecorator(
+                'main_status',
+                {},
+              )(
+                <Tag color={status ? color[statusContent.indexOf(status)] : 'blue'}>
+                  {status || '计划中'}
+                </Tag>,
+              )}
             </Form.Item>
           </Col>
 
@@ -398,24 +347,23 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    message: '请输入作业对象'
-                  }
+                    message: '请输入作业对象',
+                  },
                 ],
-                initialValue: main.object
-              })
-                (
-                  <AutoComplete
+                initialValue: main.object,
+              })(
+                <AutoComplete
+                  disabled={type}
+                  dataSource={objautodata}
+                  onSearch={value => handleSearch(value, 'obj')}
+                >
+                  <TextArea
+                    // autoSize={{ minRows: 3 }}
+                    placeholder="请输入"
                     disabled={type}
-                    dataSource={objautodata}
-                    onSearch={value => handleSearch(value, 'obj')}
-                  >
-                    <TextArea
-                      // autoSize={{ minRows: 3 }}
-                      placeholder="请输入"
-                      disabled={type}
-                    />
-                  </AutoComplete>,
-                )}
+                  />
+                </AutoComplete>,
+              )}
             </Form.Item>
           </Col>
 
@@ -425,21 +373,18 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    message: '请输入作业内容'
-                  }
+                    message: '请输入作业内容',
+                  },
                 ],
-                initialValue: main.content
-              })
-                (
-                  // <BraftEditor
-                  //   value={editorState}
-                  //   onChange={handleEditorChange}
-                  //   disabled={type}
-                  // />
-                  <TextArea
-                    disabled={type}
-                    rows={4} />
-                )}
+                initialValue: main.content,
+              })(
+                // <BraftEditor
+                //   value={editorState}
+                //   onChange={handleEditorChange}
+                //   disabled={type}
+                // />
+                <TextArea disabled={type} rows={4} />,
+              )}
             </Form.Item>
           </Col>
 
@@ -449,20 +394,19 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    message: '请输入计划开始时间'
-                  }
+                    message: '请输入计划开始时间',
+                  },
                 ],
-                initialValue: moment(main.plannedStartTime)
-              })
-                (
-                  <DatePicker
-                    disabled={type}
-                    showTime
-                    onChange={onChange}
-                    format="YYYY-MM-DD HH:mm:ss"
-                    disabledDate={startdisabledDate}
-                  />
-                )}
+                initialValue: moment(main.plannedStartTime),
+              })(
+                <DatePicker
+                  disabled={type}
+                  showTime
+                  onChange={onChange}
+                  format="YYYY-MM-DD HH:mm:ss"
+                  disabledDate={startdisabledDate}
+                />,
+              )}
             </Form.Item>
           </Col>
 
@@ -472,89 +416,78 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    message: '请输入计划结束时间'
-                  }
+                    message: '请输入计划结束时间',
+                  },
                 ],
-                initialValue: moment(main.plannedEndTime)
-              })
-                (
-                  <DatePicker
-                    disabled={type}
-                    showTime
-                    onChange={endtimeonChange}
-                    format="YYYY-MM-DD HH:mm:ss"
-                    disabledDate={enddisabledDate}
-                  />
-                )}
+                initialValue: moment(main.plannedEndTime),
+              })(
+                <DatePicker
+                  disabled={type}
+                  showTime
+                  onChange={endtimeonChange}
+                  format="YYYY-MM-DD HH:mm:ss"
+                  disabledDate={enddisabledDate}
+                />,
+              )}
             </Form.Item>
           </Col>
 
-          {(type !== '计划中' && type) && (
+          {type !== '计划中' && type && (
             <Col span={8}>
               <Form.Item label="延期结束时间">
                 {getFieldDecorator('plannedEndTime', {
                   rules: [
                     {
                       required,
-                      message: '请输入计划结束时间'
-                    }
+                      message: '请输入计划结束时间',
+                    },
                   ],
-                  initialValue: moment(main.plannedEndTime)
-                })
-                  (
-                    <DatePicker
-                      showTime
-                      // disabled={type === 'list'}
-                      onChange={endtimeonChange}
-                      format="YYYY-MM-DD HH:mm:ss"
-                      disabledDate={enddisabledDate}
-                    />
-                  )}
+                  initialValue: moment(main.plannedEndTime),
+                })(
+                  <DatePicker
+                    showTime
+                    // disabled={type === 'list'}
+                    onChange={endtimeonChange}
+                    format="YYYY-MM-DD HH:mm:ss"
+                    disabledDate={enddisabledDate}
+                  />,
+                )}
               </Form.Item>
             </Col>
           )}
 
-          <Col span={24} style={{ display: (taskperson || type) ? 'none' : 'block' }}>
+          <Col span={24} style={{ display: taskperson || type ? 'none' : 'block' }}>
             <Form.Item label="上传附件" {...forminladeLayout}>
               {getFieldDecorator('main_fileIds', {
                 initialValue: main && main.fileIds ? main.fileIds : '',
-              })
-                (
-                  <div style={{ width: 400 }}>
-                    <SysUpload
-                      disabled={type}
-                      fileslist={files}
-                      ChangeFileslist={newvalue => setFilesList(newvalue)}
-                    />
-                  </div>
-                )}
+              })(
+                <div style={{ width: 400 }}>
+                  <SysUpload
+                    disabled={type}
+                    fileslist={files}
+                    ChangeFileslist={newvalue => setFilesList(newvalue)}
+                  />
+                </div>,
+              )}
             </Form.Item>
           </Col>
 
           <Col span={8}>
             <Form.Item label="填报人">
               {getFieldDecorator('main_addUser', {
-                initialValue: useInfo.userName
-              })
-                (
-                  <Input disabled />
-                )}
+                initialValue: useInfo.userName,
+              })(<Input disabled />)}
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item label="填报单位">
               {getFieldDecorator('main_addUnit', {
-                initialValue: useInfo.unitName
-              })
-                (
-                  <Input disabled />
-                )}
+                initialValue: useInfo.unitName,
+              })(<Input disabled />)}
             </Form.Item>
           </Col>
-
         </Form>
       </Row>
-
     </>
   );
 });
@@ -576,8 +509,8 @@ OperationPlanfillin.defaultProps = {
   },
   useInfo: {
     userName: '',
-    unitName: ''
-  }
+    unitName: '',
+  },
 };
 
 export default Form.create({})(OperationPlanfillin);
