@@ -286,7 +286,7 @@ function LocalScriptList(props) {
       render: (_, record) => {
         return (
           <div>
-            <a type="link" onClick={() => handleShowDrawer('编辑本地脚本', 'update', record)}>编辑脚本</a>
+            <a type="link" onClick={() => handleShowDrawer('编辑服务器脚本', 'update', record)}>编辑脚本</a>
             <Divider type="vertical" />
             <Popconfirm title="确定删除此脚本吗？" onConfirm={() => handleDelete(record.id)}>
               <a type="link" style={{ color: 'red' }}>删除脚本</a>
@@ -345,7 +345,7 @@ function LocalScriptList(props) {
         obj.render = (_, record) => {
           return (
             <div>
-              <a type="link" onClick={() => handleShowDrawer('编辑本地脚本', 'update', record)}>编辑脚本</a>
+              <a type="link" onClick={() => handleShowDrawer('编辑服务器脚本', 'update', record)}>编辑脚本</a>
               <Divider type="vertical" />
               <Popconfirm title="确定删除此脚本吗？" onConfirm={() => handleDelete(record.id)}>
                 <a type="link" style={{ color: 'red' }}>删除脚本</a>
@@ -533,7 +533,7 @@ function LocalScriptList(props) {
         </Row>
         <div style={{ marginBottom: 8 }}>
           <Button type="primary" style={{ marginRight: 8 }}
-            onClick={() => handleShowDrawer('新增本地脚本', 'add')}
+            onClick={() => handleShowDrawer('新增服务器脚本', 'add')}
           >新增</Button>
         </div>
         {/* 列表设置 */}

@@ -312,7 +312,7 @@ function SystemScriptList(props) {
                 return (
                     <div>
                         <a type="link"
-                            onClick={() => handleShowDrawer('编辑系统脚本', 'update', record)}
+                            onClick={() => handleShowDrawer('编辑作业脚本', 'update', record)}
                         >
                             编辑脚本</a>
                         <Divider type="vertical" />
@@ -374,7 +374,7 @@ function SystemScriptList(props) {
                     return (
                         <div>
                             <a type="link"
-                                onClick={() => handleShowDrawer('编辑系统脚本', 'update', record)}
+                                onClick={() => handleShowDrawer('编辑作业脚本', 'update', record)}
                             >
                                 编辑脚本</a>
                             <Divider type="vertical" />
@@ -579,7 +579,7 @@ function SystemScriptList(props) {
                 </Row>
                 <div style={{ marginBottom: 8 }}>
                     <Button type="primary" style={{ marginRight: 8 }}
-                        onClick={() => handleShowDrawer('新增系统脚本', 'add')}
+                        onClick={() => handleShowDrawer('新增作业脚本', 'add')}
                     >新增</Button>
                     <Button type="danger" ghost style={{ marginRight: 8 }}
                         onClick={() => Handlerecall()}

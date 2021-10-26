@@ -819,7 +819,7 @@ function EquipmentManege(props) {
                     columns={columns}
                     dataSource={equipList.rows}
                     loading={loading}
-                    rowKey={(_, index) => index.toString()}
+                    rowKey={r => r.id}
                     pagination={pagination}
                     scroll={{ x: 1300 }}
                 />

@@ -18,11 +18,11 @@ const formItemLayout = {
 const tabList = [
     {
         key: 'systemscript',
-        tab: '系统脚本',
+        tab: '作业脚本',
     },
     {
         key: 'localscript',
-        tab: '本地脚本',
+        tab: '服务器脚本',
     },
 ];
 

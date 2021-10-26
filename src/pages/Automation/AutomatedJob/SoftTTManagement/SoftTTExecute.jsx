@@ -558,7 +558,7 @@ function SoftTTExecute(props) {
           columns={columns}
           dataSource={autosoftworklist.rows.filter(item => item.workStatus !== '已登记')}
           loading={loading}
-          rowKey={(_, index) => index.toString()}
+          rowKey={r => r.id}
           pagination={pagination}
           scroll={{ x: 1300 }}
         />)}

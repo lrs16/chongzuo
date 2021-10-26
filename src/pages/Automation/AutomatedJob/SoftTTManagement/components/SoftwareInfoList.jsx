@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Table } from 'antd';
 
-function SoftwareInfoList(props) {
+function SoftwareInfoList() {
     // const { } = props;
     const columns = [
         {

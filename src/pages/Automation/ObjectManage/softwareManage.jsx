@@ -414,7 +414,6 @@ function SoftwareManage(props) {
                                 dynamicnamemap={dynamicnamemap}
                                 ChangeValue={v => setFieldsValue({ dynamicList: v })}
                                 softId={record.id}
-
                             >
                                 <a type="link">
                                     其他属性
@@ -701,7 +700,7 @@ function SoftwareManage(props) {
                     columns={columns}
                     dataSource={softList.rows}
                     loading={loading}
-                    rowKey={(_, index) => index.toString()}
+                    rowKey={r => r.id}
                     pagination={pagination}
                     scroll={{ x: 1300 }}
                 />

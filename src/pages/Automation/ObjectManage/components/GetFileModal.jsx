@@ -69,7 +69,7 @@ function GetFileModal(props) {
                 onCancel={() => handleCancel()}
                 visible={visible}
                 width={350}
-                footer={[
+                footer={
                     <span style={{ borderTop: 0 }}>
                         <Button type="primary" onClick={() => handleBackupFiles()}>
                             备份后获取
@@ -79,8 +79,9 @@ function GetFileModal(props) {
                         </Button>
                         <Button type="back" onClick={() => handleCancel()}>
                             取消
-                        </Button></span>
-                ]}
+                        </Button>
+                    </span>
+                }
             >
                 <p>获取最新文件，建议备份文件后再获取，若直接获取文件会覆盖当前列表数据！</p>
             </Modal>

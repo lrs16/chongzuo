@@ -2092,7 +2092,7 @@ function QueryList(props) {
           rowKey={r => r.id}
           pagination={pagination}
           rowSelection={rowSelection}
-          scroll={{ x: 800, y: 700 }}
+          scroll={{ x: 800 }}
         />
       </Card>
     </PageHeaderWrapper>

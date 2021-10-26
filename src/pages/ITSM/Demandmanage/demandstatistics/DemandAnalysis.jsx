@@ -4,10 +4,11 @@ import moment from 'moment';
 import { Card, Row, Col, Avatar, Empty, Spin, InputNumber } from 'antd';
 import StatisticsCard from '@/components/StatisticsCard';
 import SelectTime from '@/components/SelectTime/SelectTime';
-import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
+// import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
 import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
 import ColumnarY from '@/components/CustomizeCharts/ColumnarY';
 import styles from '../index.less';
+import DonutPCT from '../components/ChartFiles/DonutPCT';
 
 const Issuedscale = {
   total: {
@@ -246,6 +247,7 @@ function Statistics(props) {
                   totaltitle='需求总数'
                   total={piesum(piedatalist['功能模块情况'])}
                   padding={[10, 30, 30, 30]}
+                  staticName='功能模块情况'
                   onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
                 />
               )
@@ -284,6 +286,7 @@ function Statistics(props) {
                   height={300}
                   totaltitle='需求总数'
                   total={piesum(piedatalist['需求类型统计分析'])}
+                  staticName='需求类型统计分析'
                   padding={[10, 30, 30, 30]}
                   onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
                 />
@@ -321,7 +324,8 @@ function Statistics(props) {
                 data={piedataArr(demandtomeoutArr) || []}
                 height={300}
                 totaltitle='需求总数'
-                total={demandtomeoutArr[demandtomeoutArr.length -1].quantity}
+                total={demandtomeoutArr[demandtomeoutArr.length - 1].quantity}
+                staticName='需求工单超时情况'
                 padding={[10, 30, 30, 30]}
                 onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
               />
