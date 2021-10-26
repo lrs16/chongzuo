@@ -12,24 +12,27 @@ class NoticHistory extends Component {
       },
       {
         title: '发送时间',
-        dataIndex: 'sendingtime',
-        key: 'sendingtime',
+        dataIndex: 'sendTime',
+        key: 'sendTime',
+        width: 180,
       },
       {
         title: '接收人',
         dataIndex: 'username',
         key: 'username',
+        width: 100,
       },
       {
         title: '接收号码',
         dataIndex: 'tel',
         key: 'tel',
+        width: 120,
       },
       {
         title: '状态',
         dataIndex: 'success',
         key: 'success',
-        width: 100,
+        width: 120,
         render: (text) => {
           const status = new Map([
             [-1, '待发送'],

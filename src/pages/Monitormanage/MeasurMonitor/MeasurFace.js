@@ -106,21 +106,7 @@ const changefacetree = datas => {
   return newArr;
 };
 const Filecontent = '阈值：电能表<2000   终端<1000   采集关系<10000';
-const Tablecontent = '理论值曲线';
-const Donutdata = [
-  {
-    type: '已处理',
-    count: 600,
-  },
-  {
-    type: '未处理',
-    count: 200,
-  },
-  {
-    type: '处理中',
-    count: 100,
-  },
-];
+const Tablecontent = '';
 
 let tjsj = {
   zdzc: '', // 自动召测测试
@@ -247,7 +233,6 @@ class MeasurFace extends Component {
     const archdatas = changearchdata(archdata);
     const orderdatas = changehour(orderdata);
     const tabledatas = changetable(tabledata);
-    // console.log('打印',tabledata.records);
     const facetree = changefacetree(filetdata);
     return (
       <PageHeaderWrapper title="接口数据核查情况">

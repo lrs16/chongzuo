@@ -12,7 +12,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 const { RangePicker } = DatePicker;
 
-let tjsj = {
+const tjsj = {
   xzl: '', // 在线率 统计时间
   xzl_sjsj: '', // 在线率 数据时间
 };
@@ -23,25 +23,25 @@ const dataArr = datas => {
     return newArr;
   }
   for (let i = 0; i < datas.length; i += 1) {
-    let vote = {};
+    const vote = {};
     vote.rate = datas[i].zbzxl; // Math.floor(datas[i].rate * 100);
     vote.type = '专变';
     vote.name = datas[i].gddwmc.substring(0, 2);
     newArr.push(vote);
 
-    let gbzxl = {};
+    const gbzxl = {};
     gbzxl.rate = datas[i].gbzxl; // Math.floor(datas[i].rate * 100);
     gbzxl.type = '公变'; // Math.floor(datas[i].rate * 100);
     gbzxl.name = datas[i].gddwmc.substring(0, 2);
     newArr.push(gbzxl);
 
-    let dyzxl = {};
+    const dyzxl = {};
     dyzxl.rate = datas[i].dyzxl; // Math.floor(datas[i].rate * 100);
     dyzxl.type = '低压'; // Math.floor(datas[i].rate * 100);
     dyzxl.name = datas[i].gddwmc.substring(0, 2);
     newArr.push(dyzxl);
 
-    let czzxl = {};
+    const czzxl = {};
     czzxl.rate = datas[i].czzxl; // Math.floor(datas[i].rate * 100);
     czzxl.type = '厂站'; // Math.floor(datas[i].rate * 100);
     czzxl.name = datas[i].gddwmc.substring(0, 2);
@@ -200,7 +200,7 @@ class DatabaseTerminal extends Component {
     const operatingmodes = dataArr(operatingmode);
     const storagechecks = dataLine(storagecheck);
     const thehours = {}; // dataLine(thehour);
-    // console.log(operatingmode);
+
     return (
       <PageHeaderWrapper title="终端在线和入库">
         <h3>终端在线 {`${tjsj.xzl_sjsj}`}</h3>

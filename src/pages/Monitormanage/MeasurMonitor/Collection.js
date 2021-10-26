@@ -267,7 +267,6 @@ class Collection extends Component {
     const hourreads = changehour(hourread);
     const salesdatas = changesales(salesdata, 'sdl');
     const supplydatas = changesales(supplydata, 'gdl');
-    console.log(zeroread)
 
     return (
       <PageHeaderWrapper title="采集指标情况">
