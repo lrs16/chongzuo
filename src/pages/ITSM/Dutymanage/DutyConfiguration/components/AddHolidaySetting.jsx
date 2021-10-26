@@ -4,7 +4,6 @@ import {
   Form,
   Input,
   Button,
-  TimePicker,
   DatePicker,
   Switch,
   Table,
@@ -54,9 +53,6 @@ function AddholidaySetting(props) {
     children,
     onSubmit,
     id,
-    onDelete,
-    holidaySetting,
-    records,
   } = props;
 
   const handleopenClick = () => {
@@ -101,10 +97,6 @@ function AddholidaySetting(props) {
         setData([])
       }
     })
-  }
-
-  const handleDelete = () => {
-    onDelete(id)
   }
 
   //  新增一条记录
@@ -152,7 +144,7 @@ function AddholidaySetting(props) {
     setNewButton(false)
   }
 
-  const toggleEditable = (e, key, record) => {
+  const toggleEditable = (e, key) => {
     e.preventDefault();
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData);
@@ -366,7 +358,6 @@ function AddholidaySetting(props) {
       key: 'duringTime',
       width: 300,
       render: (text, record) => {
-        const dateFormat = 'YYYY-MM-DD HH:mm:ss';
         if (record.editable) {
           return (
             <Row>
@@ -407,7 +398,7 @@ function AddholidaySetting(props) {
           )
         }
 
-        return <span>{(record.beginDate || moment(new Date()).format('YYYY-MM-DD')) + '-' + (record.endDate || moment(new Date()).format('YYYY-MM-DD'))}</span>
+        return <span>{record.beginDate} - {record.endDate}</span>
       }
     },
     {
@@ -442,7 +433,6 @@ function AddholidaySetting(props) {
             </Popconfirm>
           </span>
         )
-
       }
     }
   ]
@@ -553,7 +543,7 @@ AddholidaySetting.defaultProps = {
 }
 
 export default Form.create({})(
-  connect(({ dutyandtypesetting, loading }) => ({
+  connect(({ loading }) => ({
     loading: loading.models.dutyandtypesetting
   }))(AddholidaySetting)
 )

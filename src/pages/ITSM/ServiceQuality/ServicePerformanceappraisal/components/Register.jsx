@@ -13,14 +13,15 @@ import {
 import SysUpload from '@/components/SysUpload';
 import moment from 'moment';
 import { operationPerson, searchUsers } from '@/services/common';
+import SysDict from '@/components/SysDict';
+import Downloadfile from '@/components/SysUpload/Downloadfile';
 import {
   providerList,
   scoreListpage,
   contractProvider,
 } from '../../services/quality';
-import SysDict from '@/components/SysDict';
 import styles from '../index.less';
-import Downloadfile from '@/components/SysUpload/Downloadfile';
+
 
 const { TextArea, Search } = Input;
 const { Option } = Select;
@@ -290,7 +291,8 @@ const Register = React.forwardRef((props, ref) => {
 
       case 'director':
         setFieldsValue({
-          directorName: userName, // 服务商
+          directorName: userName, // 服务商,
+          directorNamesign:userName,
           directorId: id, // 服务商id
         });
         break;
@@ -342,7 +344,7 @@ const Register = React.forwardRef((props, ref) => {
           <Form.Item label="服务绩效编号">
             {getFieldDecorator('assessNo', {
               initialValue: register.assessNo,
-            })(<Input disabled={true} />)}
+            })(<Input disabled />)}
           </Form.Item>
         </Col>
 
@@ -457,14 +459,14 @@ const Register = React.forwardRef((props, ref) => {
 
         <Col span={8}>
           <Form.Item label="责任人">
-            {getFieldDecorator('directorName', {
+            {getFieldDecorator('directorNamesign', {
               rules: [
                 {
                   required,
                   message: '请选择责任人',
                 },
               ],
-              initialValue: register.directorName,
+              initialValue: register.registerName,
             })(
               <AutoComplete
                 getPopupContainer={e => e.parentNode}
@@ -481,6 +483,14 @@ const Register = React.forwardRef((props, ref) => {
                 />
               </AutoComplete>,
             )}
+          </Form.Item>
+        </Col>
+
+        <Col span={8} style={{ display: 'none' }}>
+          <Form.Item label="责任人id">
+            {getFieldDecorator('directorName', {
+              initialValue: register.registerName,
+            })(<Input />)}
           </Form.Item>
         </Col>
 
@@ -533,7 +543,7 @@ const Register = React.forwardRef((props, ref) => {
           <Form.Item label="考核类型">
             {getFieldDecorator('assessType', {
               initialValue: register.assessType === '1' ? '功能开发' : '系统运维',
-            })(<Input disabled={true} />)}
+            })(<Input disabled />)}
           </Form.Item>
         </Col>
 

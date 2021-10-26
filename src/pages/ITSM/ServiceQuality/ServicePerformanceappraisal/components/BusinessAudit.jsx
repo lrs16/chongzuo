@@ -148,7 +148,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
               //   />
               // </div>
               <DatePicker
-                disabled={true}
+                disabled
                 // defaultValue={moment(businessAudit.checktime || businessAudit.reviewTime || businessAudit.verifyTime || new Date())}
                 showTime
                 format="YYYY-MM-DD HH:mm"

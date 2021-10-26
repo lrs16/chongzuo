@@ -176,7 +176,7 @@ function Workordertreatmentrate(props) {
         <Table
           columns={columns}
           dataSource={orderrateArr}
-          rowKey={record => record.statName}
+          rowKey={(record,index) => {return index}}
         />
       </Card>
     </PageHeaderWrapper>

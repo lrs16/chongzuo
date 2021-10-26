@@ -131,7 +131,11 @@ function Result(props) {
           </Button>
         </div>
 
-        <Table columns={columns} dataSource={resultArr} rowKey={record => record.statName} />
+        <Table
+          columns={columns}
+          dataSource={resultArr}
+          rowKey={(record, index) => { return index }}
+        />
       </Card>
     </PageHeaderWrapper>
   );

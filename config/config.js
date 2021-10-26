@@ -1233,7 +1233,7 @@ export default {
                           routes: [
                             {
                               path: '/ITSM/servicequalityassessment/creditcard/creditcardregister',
-                              name: '计分卡登记',
+                              name: '新建计分卡登记',
                               icon: 'fork',
                               component: './ITSM/ServiceQuality/CreditCard/CreditCardRegister'
                             },

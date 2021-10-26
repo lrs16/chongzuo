@@ -182,7 +182,10 @@ function DutyaccordingSetting(props) {
   const dateCellRender = value => {
     const listData = getListData(value);
     return (
-      <ul className="events">
+      // <ul className="events">
+
+      // </ul>
+      <>
         {(listData || []).map(item => (
           <SettingDetails
             title="编辑排班信息"
@@ -194,10 +197,10 @@ function DutyaccordingSetting(props) {
             currentYear={currentYear}
             pagetitle={pagetitle}
           >
-            <span>{item.staffName}({item.shiftType})</span>
+            <p style={{margin:0}}>{item.staffName}({item.shiftType})</p>
           </SettingDetails>
         ))}
-      </ul>
+      </>
     );
   };
 

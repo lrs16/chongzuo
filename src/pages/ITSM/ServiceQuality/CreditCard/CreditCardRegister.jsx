@@ -114,7 +114,7 @@ function CreditCardRegister(props) {
             },
           }).then(res => {
             if (res.code === 200) {
-              message.info(res.msg);
+              message.success(res.msg);
               registerDetail();
             }
           });
@@ -153,6 +153,7 @@ function CreditCardRegister(props) {
       payload: paramId,
     }).then(res => {
       if (res.code === 200) {
+        message.success(res.msg);
         router.push({
           pathname: `/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail`,
           query: {
