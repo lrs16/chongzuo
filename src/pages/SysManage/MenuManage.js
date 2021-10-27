@@ -153,12 +153,12 @@ class MenuManage extends Component {
     data.map(item => {
       if (item.children) {
         return (
-          <TreeNode title={item.title} key={item.key} dataRef={item}>
+          <TreeNode title={item.menuDesc} key={item.key} dataRef={item}>
             {this.renderTreeNodes(item.children)}
           </TreeNode>
         );
       }
-      return <TreeNode key={item.key} {...item} dataRef={item} />;
+      return <TreeNode key={item.key} title={item.menuDesc} dataRef={item} />;
     });
 
   getlist = () => {
