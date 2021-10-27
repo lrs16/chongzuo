@@ -1,4 +1,12 @@
-import { queryList, queryOpenView, querydownload, querydownloadbyids } from '../services/api';
+import { 
+  queryList,
+  queryOpenView,
+  querydownload,
+  querydownloadbyids,
+  getOrderObjectByRoot,
+  querytimeout,
+  downloadOrderObjectByRoot
+     } from '../services/api';
 
 export default {
   namespace: 'eventquery',
@@ -31,6 +39,26 @@ export default {
       }
       return yield call(querydownloadbyids, ids);
     },
+
+    *fetchgetOrderObjectByRoot({ payload }, { call, put }) {
+      const response = yield call(getOrderObjectByRoot, payload);
+      yield put({
+        type: 'save',
+        payload: response.data,
+      });
+    },
+
+    *fetchquerytimeout({ payload }, { call, put }) {
+      const response = yield call(querytimeout, payload);
+      yield put({
+        type: 'save',
+        payload: response.data,
+      });
+    },
+    
+    *fetchdownloadOrderObjectByRoot({ payload }, { call, put }) {
+      return yield call(downloadOrderObjectByRoot,payload)
+    }
   },
 
   reducers: {

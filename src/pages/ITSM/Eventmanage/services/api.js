@@ -180,4 +180,24 @@ export async function saveTimeoutMsg(params) {
   });
 }
 
+// 根据对象第一层查询
+export async function getOrderObjectByRoot(params) {
+  return request(`/event/analysis/getOrderObjectByRoot`,{
+    method:'POST',
+    data:params,
+    requestType:'form'
+  }); 
+}
+
+// 根据对象第一层查询下载
+export async function downloadOrderObjectByRoot(params) {
+  return request(`/event/analysis/downloadOrderObjectByRoot`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+    responseType: 'blob',
+  });
+}
+
+
 

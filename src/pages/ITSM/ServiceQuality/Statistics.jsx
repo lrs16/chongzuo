@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Icon,
   Card,
   Tag,
   DatePicker,
@@ -14,41 +13,31 @@ import moment from 'moment';
 import StatisticsCard from '@/components/StatisticsCard';
 import { ChartCard } from '@/components/Charts';
 import Barchart from '@/components/CustomizeCharts/Barchart';
-import Donut from '@/components/CustomizeCharts/Donut';
-import OrdinaryLine from '@/components/CustomizeCharts/OrdinaryLine';
 import styles from './index.less';
-// import StatisticsModal from './components/StatisticsModal';
 
 const { CheckableTag } = Tag;
-const { RangePicker, MonthPicker } = DatePicker;
-const format = 'YYYY-MM-DD 00:00:00'
+const { RangePicker } = DatePicker;
 const tagsFromServer = ['按日', '按月'];
 function Statistics(props) {
   const {
     statisticData,
     statsSumdata,
-    location,
     dispatch,
     loading
   } = props;
 
   const [selectedTags, setSelectedTags] = useState(['按月']);
-  // .format('YYYY-MM-DD 00:00:00')
-  // .format('YYYY-MM-DD 23:59:59')
   const [selectTime, setSelectTime] = [{ start: moment(new Date()).format('YYYY-MM-DD 00:00:00'), end: moment(new Date).format('YYYY-MM-DD 23:59:59') }]
   const [time, setTime] = useState({
     startValue: moment(new Date(moment(new Date()).format('YYYY-MM-DD 00:00:00'))),
     endValue: moment(new Date(moment(new Date()).format('YYYY-MM-DD 23:59:59'))),
     endOpen: false,
   })
-
-
   const [monthTime, setMonthTime] = useState({
     mode: ['month', 'month'],
     // value:[]
     value: [moment(moment().startOf('month').format('YYYY-MM-DD'), 'YYYY-MM-DD'), moment(moment().endOf('month').format('YYYY-MM-DD'), 'YYYY-MM-DD')]
   })
-
   const [currentDatatype, setCurrentDatatype] = useState('按月');
   const [bardata, setBardata] = useState([])
   const getlist = (obj, tag) => {
@@ -71,7 +60,6 @@ function Statistics(props) {
         }
       })
     }
-
   }
 
   const projectAssessment = (obj, tag) => {
@@ -107,7 +95,6 @@ function Statistics(props) {
   };
 
   const handleChange = (tag, checked) => {
-    console.log('tag: ', tag);
     if (checked) {
       const obj = {
         startValue: tag === "按日" ? moment(new Date()).format('YYYY-MM-DD 00:00:00') : moment().startOf('month').format('YYYY-MM-DD 00:00:00'),
@@ -192,11 +179,11 @@ function Statistics(props) {
     projectAssessment('', currentDatatype)
   }, [])
 
-  useEffect(() => {
-    if (location.state && location.state.reset) {
-      getlist()
-    }
-  }, [location.state]);
+  // useEffect(() => {
+  //   if (location.state && location.state.reset) {
+  //     getlist()
+  //   }
+  // }, [location.state]);
 
   useEffect(() => {
     if (statsSumdata && statsSumdata.length > 0) {
@@ -318,14 +305,11 @@ function Statistics(props) {
               <Barchart
                 data={bardata}
                 position='contractName*分值'
-              // height={315}
-              // detailParams={newdata => { showDetaillist(newdata, 'barchart') }}
               />
             </ChartCard>
           </div>
         )
       }
-
     </div >
 
   )

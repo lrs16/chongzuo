@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'dva';
 import {
   Card,
@@ -14,7 +14,6 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 const { RangePicker } = DatePicker;
 let statTimeBegin = '';
 let statTimeEnd = '';
-const sign = 'solution';
 
 function DemandSchedule(props) {
   const { pagetitle } = props.route.name;
@@ -29,7 +28,7 @@ function DemandSchedule(props) {
   const uniqueObjArr = (arr, fieldName) => {
     const result = [];
     const resultArr = [];
-    arr.map(function (item, index, value) {
+    arr.map(function (item) {
       if (result.indexOf(item[fieldName]) === -1) {
         result.push(item[fieldName]);
         resultArr.push(item);
@@ -44,7 +43,7 @@ function DemandSchedule(props) {
       ({ month: item.month })
     );
     const orgArr = uniqueObjArr(orgArrRe, 'month');// 数组去重
-    orgArr.map(function (childOne, index, value) {
+    orgArr.map(function (childOne) {
       childOne.children = [];
       dataArr.map(function (childTwo) {
         if (childOne.month === childTwo.month) {
@@ -130,7 +129,7 @@ function DemandSchedule(props) {
       },
     },
     {
-      title: '已实现',
+      title: '已发布',
       dataIndex: 'countAchieve',
       align: 'center',
       render: (text, record) => {
@@ -143,7 +142,7 @@ function DemandSchedule(props) {
       },
     },
     {
-      title: '需求实现率',
+      title: '发布率',
       dataIndex: 'countRate',
       align: 'center',
       render: (text, record) => {
@@ -235,7 +234,7 @@ function DemandSchedule(props) {
                   onClick={handleReset}
                 >
                   重置
-              </Button>
+                </Button>
               </Col>
             </>
 
@@ -258,8 +257,9 @@ function DemandSchedule(props) {
           columns={columns}
           dataSource={makeData(demandscheduleArr)}
           pagination={false}
-          rowKey={(record,index) =>{ return index}}
+          rowKey={(record, index) => { return index }}
         />
+
       </Card>
     </PageHeaderWrapper>
   )
