@@ -114,7 +114,7 @@ function ToDodetails(props) {
   // 保存超时信息,成功校验表单
   const postTimeOutMsg = (v) => {
     if (currentTaskStatus && currentTaskStatus.processInstanceId) {
-      saveReleaseTimeoutMsg({
+      saveTimeoutMsg({
         taskId,
         msgType: 'timeout',
         orderId: currentTaskStatus.processInstanceId,
