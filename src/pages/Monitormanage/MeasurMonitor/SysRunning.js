@@ -17,14 +17,26 @@ const tjsj = {
   cz: '', // 厂站
 };
 
+const statusMap = new Map([
+  ['失败', '0'],
+  ['成功', '1'],
+])
+
 const changeTree = datas => {
   const newArr = [];
+  const childrendatas = [];
   if (!Array.isArray(datas)) {
     return newArr;
   }
+  for (let i = 0; i < datas.length; i += 1) {
+    const childrenvote = {};
+    childrenvote.nodeName = datas[i].ip;
+    childrenvote.nodeStatus = statusMap.get(datas[i].state);
+    childrendatas.push(childrenvote);
+  }
   const vote = {};
   vote.name = 'login';
-  vote.children = datas;
+  vote.children = childrendatas;
   newArr.push(vote);
   if (datas.length > 0) {
     tjsj.webOnline = datas[0].date;
@@ -96,7 +108,6 @@ class SysRunning extends Component {
     const ZCcontrols = changefacetree(ZCcontrol, 'dy'); // 低压
     const ZCdowns = changefacetree(ZCdown, 'cz'); // 厂站
 
-    console.log(onlinestate)
     return (
       <div>
         <Row gutter={24} type="flex">

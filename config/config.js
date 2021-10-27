@@ -288,7 +288,7 @@ export default {
                         },
                         {
                           path: '/ITSM/eventmanage/to-do/record',
-                          name: '事件办理',
+                          name: '事件工单 ',
                           icon: 'cloud-server',
                           component: './ITSM/Eventmanage/ToDodetails',
                           routes: [

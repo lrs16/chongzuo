@@ -64,7 +64,7 @@ const soncolumns = [
     dataIndex: 'topicStatus',
     key: 'topicStatus',
     render: text => {
-      let s = (text == 1 ? '正常' : '积压');
+      const s = (text == 1 ? '正常' : '积压');
       // style={{ color: s == '正常' ? '' : '#f00' }}
       return <a style={{ color: text == 1 ? '' : '#f00' }}>{s}</a>
     }
@@ -183,8 +183,6 @@ class Fafak extends Component {
         payload: this.state,
       });
     };
-    console.log(newzone3data)
-
     return (
       <PageHeaderWrapper title="KAFKA消费">
 
@@ -224,7 +222,7 @@ class Fafak extends Component {
               }
             />
           </Form.Item>
-          <Form.Item label={'统计步长'}>
+          <Form.Item label="统计步长">
             <Select defaultValue="M60" style={{ width: 120 }} onChange={value => { this.setState({ step: value }) }}>
               <Option value="M30">30分</Option>
               <Option value="M60">1小时</Option>
