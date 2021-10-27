@@ -5,7 +5,7 @@ import {
   Table,
   Card,
   Button,
-  Message,
+  // Message,
   Tooltip,
   Form,
   Input,
@@ -20,7 +20,7 @@ import {
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
-import AgentDrawer from './components/AgentDrawer';
+// import AgentDrawer from './components/AgentDrawer';
 
 const { Option } = Select;
 
@@ -46,10 +46,10 @@ function TestEnvironmentManage(props) {
 
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
-  const [visible, setVisible] = useState(false); // 抽屉是否显示
-  const [title, setTitle] = useState('');
+  // const [visible, setVisible] = useState(false); // 抽屉是否显示
+  // const [title, setTitle] = useState('');
   // const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
-  const [data, setData] = useState('');
+  // const [data, setData] = useState('');
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [columns, setColumns] = useState([]); // 动态表格
 
@@ -67,27 +67,27 @@ function TestEnvironmentManage(props) {
     });
   };
 
-  const handleShowDrawer = (drwertitle, type, record) => {
-    setVisible(!visible);
-    setTitle(drwertitle);
-    // setSaveType(type);
-    setData(record);
-  };
+  // const handleShowDrawer = (drwertitle, type, record) => {
+  //   setVisible(!visible);
+  //   setTitle(drwertitle);
+  //   // setSaveType(type);
+  //   setData(record);
+  // };
 
   // 提交
-  const handleSubmit = values => {
-    dispatch({
-      type: 'agentmanage/update',
-      payload: {
-        ...values,
-      },
-    }).then(res => {
-      if (res.code === 200) {
-        Message.success(res.msg);
-        searchdata(1, 15);
-      }
-    });
-  };
+  // const handleSubmit = values => {
+  //   dispatch({
+  //     type: 'agentmanage/update',
+  //     payload: {
+  //       ...values,
+  //     },
+  //   }).then(res => {
+  //     if (res.code === 200) {
+  //       Message.success(res.msg);
+  //       searchdata(1, 15);
+  //     }
+  //   });
+  // };
 
   const handleReset = () => {
     resetFields();
@@ -226,22 +226,22 @@ function TestEnvironmentManage(props) {
       key: 'updateTime',
       width: 250,
     },
-    {
-      title: '操作',
-      dataIndex: 'action',
-      key: 'action',
-      fixed: 'right',
-      width: 150,
-      render: (_, record) => {
-        return (
-          <div>
-            <a type="link" onClick={() => handleShowDrawer('编辑agent', 'update', record)}>
-              编辑
-            </a>
-          </div>
-        );
-      },
-    },
+    // {
+    //   title: '操作',
+    //   dataIndex: 'action',
+    //   key: 'action',
+    //   fixed: 'right',
+    //   width: 150,
+    //   render: (_, record) => {
+    //     return (
+    //       <div>
+    //         <a type="link" onClick={() => handleShowDrawer('编辑agent', 'update', record)}>
+    //           编辑
+    //         </a>
+    //       </div>
+    //     );
+    //   },
+    // },
   ];
 
   // 动态列表名称
@@ -279,18 +279,18 @@ function TestEnvironmentManage(props) {
           )
         }
       }
-      if (val.title === '操作') {
-        obj.render = (_, record) => {
-          return (
-            <div>
-              <a type="link" onClick={() => handleShowDrawer('编辑agent', 'update', record)}>
-                编辑
-              </a>
-            </div>
-          )
-        }
-        obj.fixed = 'right'
-      }
+      // if (val.title === '操作') {
+      //   obj.render = (_, record) => {
+      //     return (
+      //       <div>
+      //         <a type="link" onClick={() => handleShowDrawer('编辑agent', 'update', record)}>
+      //           编辑
+      //         </a>
+      //       </div>
+      //     )
+      //   }
+      //   obj.fixed = 'right'
+      // }
       initialColumns.push(obj);
       setColumns(initialColumns);
       return null;
@@ -529,18 +529,18 @@ function TestEnvironmentManage(props) {
           loading={loading}
           rowKey={(_, index) => index.toString()}
           pagination={pagination}
-          scroll={{ x: 1300 }}
+          scroll={{ x: 1150 }}
         />
       </Card>
       {/* 抽屉 */}
-      <AgentDrawer
+      {/* <AgentDrawer
         visible={visible}
         ChangeVisible={newvalue => setVisible(newvalue)}
         title={title}
         handleSubmit={newvalue => handleSubmit(newvalue)}
         record={data}
         destroyOnClose
-      />
+      /> */}
     </PageHeaderWrapper>
   );
 }
