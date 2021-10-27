@@ -43,18 +43,22 @@ const tjsj = {
 };
 const dataArr = datas => {
   const newArr = [];
+  let maxtime = '';
   if (!Array.isArray(datas.records)) {
     return newArr;
   }
   const { records } = datas;
   for (let i = 0; i < records.length; i += 1) {
+    const cur = records[i].tjsj;
+    maxtime = cur > maxtime ? cur : maxtime;
+  };
+  for (let i = 0; i < records.length; i += 1) {
     const vote = {};
-    vote.rate = records[i].value;
+    vote.rate = maxtime === records[i].tjsj ? records[i].value : 0
     vote.type = records[i].type;
     vote.alertvalue = records[i].alarm;
     newArr.push(vote);
-  }
-
+  };
   tjsj.cjwzl = records[0].tjsj;
   return newArr;
 };
@@ -144,7 +148,7 @@ const changesales = (datas, type) => {
   }
   return newArr;
 };
-const clock = '2020-2-15 15:58';
+// const clock = '2020-2-15 15:58';
 
 // 有用
 const Labecols = {
@@ -309,7 +313,7 @@ class Collection extends Component {
           <Row gutter={24} type="flex">
             <Col xl={12} lg={24} style={{ marginBottom: 24 }}>
               <ChartCard
-                title={`采集完整率 ${tjsj.cjwzl}`}
+                title={`采集完整率 （采集时间：${tjsj.cjwzl}）`}
                 action={
                   <Tooltip title="指标说明">
                     <Icon type="info-circle-o" />
@@ -327,7 +331,7 @@ class Collection extends Component {
             </Col>
             <Col xl={12} lg={24} style={{ marginBottom: 24 }}>
               <ChartCard
-                title={`终端覆盖率 ${tjsj.zdfgl}`}
+                title={`终端覆盖率 （采集时间：${tjsj.zdfgl}）`}
                 action={
                   <Tooltip title="指标说明">
                     <Icon type="info-circle-o" />
@@ -336,16 +340,15 @@ class Collection extends Component {
                 contentHeight={350}
               >
                 <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                  {coverages === undefined && <Empty style={{ height: '250px' }} />}
-                  {coverages !== undefined && coverages.length > 0 && (
+                  {coverages && coverages.length > 0 ? (
                     <Columncolor height={350} data={coverages} padding={[30, 50, 30, 50]} />
-                  )}
+                  ) : (<Empty style={{ height: '250px' }} />)}
                 </Spin>
               </ChartCard>
             </Col>
             <Col xl={12} lg={24} style={{ marginBottom: 24 }}>
               <ChartCard
-                title={`自动抄表率 ${tjsj.zdcbl}`}
+                title={`自动抄表率 （采集时间：${tjsj.zdcbl}）`}
                 action={
                   <Tooltip title="指标说明">
                     <Icon type="info-circle-o" />
@@ -363,7 +366,7 @@ class Collection extends Component {
             </Col>
             <Col xl={12} lg={24} style={{ marginBottom: 24 }}>
               <ChartCard
-                title={`关口0点采集 ${tjsj.gk0dcj}`}
+                title={`关口0点采集 （采集时间：${tjsj.gk0dcj}）`}
                 action={
                   <Tooltip title="指标说明">
                     <Icon type="info-circle-o" />
@@ -385,7 +388,7 @@ class Collection extends Component {
             </Col>
             <Col xl={12} lg={24} style={{ marginBottom: 24 }}>
               <ChartCard
-                title={`关口整点采集 ${tjsj.gkzdcj}`}
+                title={`关口整点采集 （采集时间：${tjsj.gkzdcj}）`}
                 action={
                   <Tooltip title="指标说明">
                     <Icon type="info-circle-o" />
@@ -409,7 +412,7 @@ class Collection extends Component {
 
             <Col xl={12} lg={24} style={{ marginBottom: 24 }}>
               <ChartCard
-                title={`全网区-售电量分析${tjsj.sdlfx}（昨日售电量-前日售电量)/前日售电量`}
+                title={`全网区-售电量分析（昨日售电量-前日售电量)/前日售电量  （采集时间：${tjsj.sdlfx}）`}
                 action={
                   <Tooltip title="指标说明">
                     <Icon type="info-circle-o" />
@@ -433,7 +436,7 @@ class Collection extends Component {
 
             <Col xl={12} lg={24} style={{ marginBottom: 24 }}>
               <ChartCard
-                title={`供电量分析${tjsj.gdlfx}（昨日供电量-前日供电量)/前日供电量`}
+                title={`供电量分析（昨日供电量-前日供电量)/前日供电量 （采集时间：${tjsj.gdlfx}）`}
                 action={
                   <Tooltip title="指标说明">
                     <Icon type="info-circle-o" />

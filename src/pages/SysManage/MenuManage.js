@@ -283,15 +283,15 @@ class MenuManage extends Component {
         key: 'id',
       },
       {
-        title: '中文名称',
+        title: '菜单名称',
         dataIndex: 'menuDesc',
         key: 'menuDesc',
       },
-      {
-        title: '英文名称',
-        dataIndex: 'menuName',
-        key: 'menuName',
-      },
+      // {
+      //   title: '英文名称',
+      //   dataIndex: 'menuName',
+      //   key: 'menuName',
+      // },
       {
         title: '路由',
         dataIndex: 'menuUrl',

@@ -73,7 +73,7 @@ class MenuModal extends Component {
                 initialValue: id,
               })(<Input placeholder="系统生成" disabled />)}
             </Form.Item>
-            <Form.Item label="Pid">
+            <Form.Item label="父级Id">
               {getFieldDecorator('pid', {
                 rules: [
                   {
@@ -84,7 +84,7 @@ class MenuModal extends Component {
                 initialValue: pidkey,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
-            <Form.Item label="menuSort">
+            <Form.Item label="菜单排序">
               {getFieldDecorator('menuSort', {
                 rules: [
                   {
@@ -95,7 +95,7 @@ class MenuModal extends Component {
                 initialValue: menuSort,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
-            <Form.Item label="图标Cord">
+            <Form.Item label="图标代码">
               {getFieldDecorator('menuIcon', {
                 rules: [
                   {
@@ -117,18 +117,18 @@ class MenuModal extends Component {
                 initialValue: menuUrl,
               })(<Input placeholder="例:/sysmanage" />)}
             </Form.Item>
-            <Form.Item label="英文名称">
+            <Form.Item label="路由代码">
               {getFieldDecorator('menuName', {
                 rules: [
                   {
                     required,
-                    message: '请输入菜单名称',
+                    message: '请输入路由代码',
                   },
                 ],
                 initialValue: menuName,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
-            <Form.Item label="中文名称">
+            <Form.Item label="菜单名称">
               {getFieldDecorator('menuDesc', {
                 rules: [
                   {

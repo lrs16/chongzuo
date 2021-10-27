@@ -2174,7 +2174,7 @@ export default {
       changeOrigin: true,
     },
     '/monitor/': {
-      target: ' http://172.16.10.132:9901/', // 计量业务监控
+      target: ' http://172.16.10.33:9901/', // 计量业务监控
       changeOrigin: true,
     },
     '/inspection/': {

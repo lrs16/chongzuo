@@ -239,7 +239,7 @@ class MeasurFace extends Component {
         <div>
           <Row gutter={24} type="flex">
             <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-              <ChartCard title={`抄表结算接口 ${settl.tjsj}`}>
+              <ChartCard title={`抄表结算接口  （采集时间：${settl.tjsj}）`}>
                 <div
                   style={{
                     position: 'absolute',
@@ -299,7 +299,7 @@ class MeasurFace extends Component {
             </Col>
             <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
               <ChartCard
-                title={`参数下发  ${issuedata.length > 0 ? issuedata[0].date : ''}`}
+                title={`参数下发  ${issuedata.length > 0 ? `  （采集时间：${issuedata[0].date}）` : ''}`}
                 contentHeight={350}
               >
                 <Spin spinning={loading} style={{ background: '#ffffff' }}>

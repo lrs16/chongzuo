@@ -243,7 +243,10 @@ function ClockPatrolList(props) {
       key: 'confirmStatus',
       width: 90,
       render: (text) => (
-        <Badge status={text === '已确认' ? 'success' : 'error'} text={text} />
+        <>
+          <Badge status={text === '已确认' ? 'success' : 'error'} text="" />
+          <span style={{ color: text === '已确认' ? '#87d068' : '#f50' }} >{text}</span>
+        </>
       ),
     },
     {
@@ -252,7 +255,10 @@ function ClockPatrolList(props) {
       key: 'clearStatus',
       width: 120,
       render: (text) => (
-        <Badge status={text === '待消除' ? 'error' : 'default'} text={text} />
+        <>
+          <Badge status={text === '待消除' ? 'error' : 'default'} text="" />
+          <span style={{ color: text === '待消除' ? '#f50' : '' }} >{text}</span>
+        </>
       ),
     },
     {

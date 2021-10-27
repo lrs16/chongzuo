@@ -10,7 +10,7 @@ import { ChartCard } from '@/components/Charts';
 // import SelectArea from '@/components/Selects/SelectArea';
 // import GridContent from '@/components/PageHeaderWrapper/GridContent';
 
-let tjsj = {
+const tjsj = {
   webOnline: '', // 主站在线
   fkpb: '', // 负控配变数据召测
   dy: '', // 低压
@@ -51,9 +51,9 @@ const changefacetree = (datas, type) => {
 
   // 设置统计时间
   if (datas.length > 0) {
-    if ('fkpb' === type) tjsj.fkpb = datas[0].date;
-    if ('dy' === type) tjsj.dy = datas[0].date;
-    if ('cz' === type) tjsj.cz = datas[0].date;
+    if (type === 'fkpb') tjsj.fkpb = datas[0].date;
+    if (type === 'dy') tjsj.dy = datas[0].date;
+    if (type === 'cz') tjsj.cz = datas[0].date;
   }
 
   return newArr;
@@ -95,11 +95,13 @@ class SysRunning extends Component {
     const ZCdists = changefacetree(ZCdist, 'fkpb'); // 负控配变数据召测
     const ZCcontrols = changefacetree(ZCcontrol, 'dy'); // 低压
     const ZCdowns = changefacetree(ZCdown, 'cz'); // 厂站
+
+    console.log(onlinestate)
     return (
       <div>
         <Row gutter={24} type="flex">
           <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title={`登录检测  ${tjsj.webOnline}`} contentHeight={350}>
+            <ChartCard title={`登录检测  （采集时间：${tjsj.webOnline}）`} contentHeight={350}>
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
                 {onlinestates.length === 0 && <Empty style={{ height: '250px' }} />}
                 {onlinestates.length > 0 && (
@@ -113,7 +115,7 @@ class SysRunning extends Component {
             </ChartCard>
           </Col>
           <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title={`数据召测-低压`} contentHeight={350}>
+            <ChartCard title="数据召测-低压" contentHeight={350}>
               {/* <div
                 style={{
                   margin: '10px',
@@ -135,7 +137,7 @@ class SysRunning extends Component {
             </ChartCard>
           </Col>
           <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title={`数据召测-负控配变`} contentHeight={350}>
+            <ChartCard title="数据召测-负控配变" contentHeight={350}>
               {/* <div
                 style={{
                   margin: '10px',
@@ -158,7 +160,7 @@ class SysRunning extends Component {
           </Col>
 
           <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title={`数据召测-厂站`} contentHeight={350}>
+            <ChartCard title="数据召测-厂站" contentHeight={350}>
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
                 {ZCdowns.length === 0 && <Empty style={{ height: '250px' }} />}
                 {ZCdowns.length > 0 && (

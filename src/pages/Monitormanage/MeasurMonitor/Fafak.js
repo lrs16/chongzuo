@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 // import numeral from 'numeral';
-import { Row, Col, Icon, Popover, Alert, Empty, Spin, Table, DatePicker,  Form, Input, Select, Button } from 'antd';
+import { Row, Col, Icon, Popover, Alert, Empty, Spin, Table, DatePicker, Form, Input, Select, Button } from 'antd';
 import Treecompactbox from '@/components/CustomizeCharts/Treecompactbox';
 import SeriesLine from '@/components/CustomizeCharts/SeriesLine';
 import { ChartCard } from '@/components/Charts';
@@ -64,9 +64,9 @@ const soncolumns = [
     dataIndex: 'topicStatus',
     key: 'topicStatus',
     render: text => {
-      let s = (text == 1 ? '正常' : '积压') ;
+      let s = (text == 1 ? '正常' : '积压');
       // style={{ color: s == '正常' ? '' : '#f00' }}
-     return <a style={{ color: text == 1 ? '' : '#f00' }}>{s}</a>
+      return <a style={{ color: text == 1 ? '' : '#f00' }}>{s}</a>
     }
   },
 ];
@@ -98,7 +98,7 @@ class Fafak extends Component {
     });
     dispatch({
       type: 'fafak/fetchsafezone',
-      payload: this.state ,
+      payload: this.state,
     });
     // dispatch({
     //   type: 'fafak/fetch2zone',
@@ -128,9 +128,9 @@ class Fafak extends Component {
         dataIndex: title,
         key: title,
         render: (text) => {
-          let newtext ='';
-          let batchNo ='';
-          if(text){
+          let newtext = '';
+          let batchNo = '';
+          if (text) {
             newtext = text.split("|")[0];
             batchNo = text.split("|")[1];
           }
@@ -166,7 +166,7 @@ class Fafak extends Component {
     const Setcolumns = (datas) => {
       const data = datas.slice(0);
       data.shift();
-      const newArr = [{ title: '时间', dataIndex: 'time', key: 'time',fixed:'left', width: 180 }];
+      const newArr = [{ title: '时间', dataIndex: 'time', key: 'time', fixed: 'left', width: 180 }];
       if (!Array.isArray(data)) {
         return newArr;
       }
@@ -177,12 +177,13 @@ class Fafak extends Component {
     }
     const newcolumns = Setcolumns(safezonedata.columns || [])
 
-    const handleSearch = ()=> {
+    const handleSearch = () => {
       this.props.dispatch({
         type: 'fafak/fetchsafezone',
         payload: this.state,
       });
     };
+    console.log(newzone3data)
 
     return (
       <PageHeaderWrapper title="KAFKA消费">
@@ -204,16 +205,16 @@ class Fafak extends Component {
             <RangePicker
               showTime
               format='YYYY-MM-DD HH:mm:ss'
-              allowClear = {false}
-              onChange={(v1, v2)=>{
-                          this.setState(
-                            {
-                              beginTime: v2[0],
-                              endTime: v2[1]
-                            }
-                          )
-                        }
-                      }
+              allowClear={false}
+              onChange={(v1, v2) => {
+                this.setState(
+                  {
+                    beginTime: v2[0],
+                    endTime: v2[1]
+                  }
+                )
+              }
+              }
               defaultValue={
                 // this.state.rangePicker
                 [
@@ -224,24 +225,24 @@ class Fafak extends Component {
             />
           </Form.Item>
           <Form.Item label={'统计步长'}>
-            <Select defaultValue="M60" style={{ width: 120 }} onChange={value => {this.setState({step: value})}}>
+            <Select defaultValue="M60" style={{ width: 120 }} onChange={value => { this.setState({ step: value }) }}>
               <Option value="M30">30分</Option>
               <Option value="M60">1小时</Option>
             </Select>
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit"  onClick={() => handleSearch()}>
+            <Button type="primary" htmlType="submit" onClick={() => handleSearch()}>
               查询
             </Button>
           </Form.Item>
         </Form>
 
         <Table dataSource={safezonedata.dataSource}
-               columns={newcolumns}
-               bordered
-               pagination={false}
-               size="middle"
-               scroll={{ x: 1500 }} />
+          columns={newcolumns}
+          bordered
+          pagination={false}
+          size="middle"
+          scroll={{ x: 1500 }} />
       </PageHeaderWrapper>
     );
   }

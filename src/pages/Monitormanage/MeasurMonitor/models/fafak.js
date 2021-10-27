@@ -80,7 +80,6 @@ export default {
     *fetchsafezone({ payload }, { call, put }) {
       //  表格数据请求
       const response = yield call(getKafkaSafeZone, payload);
-      console.log('topic请求', response)
       yield put({
         type: 'getsafezone',
         payload: response.data,

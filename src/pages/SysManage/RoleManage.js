@@ -123,11 +123,11 @@ class RoleManage extends Component {
     }
 
     const columns = [
-      {
-        title: '角色代码',
-        dataIndex: 'roleCode',
-        key: 'roleCode',
-      },
+      // {
+      //   title: '角色代码',
+      //   dataIndex: 'roleCode',
+      //   key: 'roleCode',
+      // },
       {
         title: '角色名',
         dataIndex: 'roleName',
