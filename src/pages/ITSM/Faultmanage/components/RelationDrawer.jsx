@@ -127,9 +127,9 @@ function RelationDrawer(props) {
         setEventstatus(res.data.status)
       }
     });
-    querkeyVal('problem', 'current').then(res => {
+    querkeyVal('problem', 'orderstate').then(res => {
       if (res.code === 200) {
-        setproblemstatus(res.data.current)
+        setproblemstatus(res.data.orderstate)
       }
     })
   }, [])

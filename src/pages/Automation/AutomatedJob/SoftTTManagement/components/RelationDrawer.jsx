@@ -103,12 +103,12 @@ function RelationDrawer(props) {
 
   const handleSumit = () => {
     const values = getFieldsValue();
-    const status = values.status?values.status:'';
+    const status = values.status ? values.status : '';
     handleSearch(values.no, status, 0, 15);
   }
 
   // 重置
-  const handleReset = () => { 
+  const handleReset = () => {
     resetFields();
     const values = getFieldsValue();
     handleSearch(values.no, values.status, 0, 15);
@@ -152,9 +152,9 @@ function RelationDrawer(props) {
         setTroublestatus(res.data.status)
       }
     });
-    querkeyVal('problem', 'status').then(res => {
+    querkeyVal('problem', 'orderstate').then(res => {
       if (res.code === 200) {
-        setproblemstatus(res.data.status)
+        setproblemstatus(res.data.orderstate)
       }
     })
     querkeyVal('release', 'status').then(res => {
