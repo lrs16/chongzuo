@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
-import { Drawer, Button, Table, Row, Col, Input, Form, Select, Layout } from 'antd';
+import { Drawer, Button, Table, Row, Col, Input, Form, Select, Layout, Tooltip } from 'antd';
 import { querkeyVal } from '@/services/api'
 
 const { Option } = Select;
@@ -145,12 +145,24 @@ function RelationDrawer(props) {
       title: '标题',
       dataIndex: 'title',
       key: 'title',
+      width: 180,
+      onCell: () => {
+        return {
+          style: {
+            maxWidth: 180,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            cursor: 'pointer'
+          }
+        }
+      },
+      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
     {
       title: '状态',
       dataIndex: orderTypeSuf === 'trouble' ? 'status' : 'eventStatus',
       key: 'status',
-      with: 180,
     },
   ];
   return (

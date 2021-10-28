@@ -147,9 +147,10 @@ function ToDolist(props) {
 
   const onShowSizeChange = (page, size) => {
     const values = getFieldsValue();
-    searchdata(values, page, size);
+    searchdata(values, 1, size);
     setPageinations({
       ...paginations,
+      current: 1,
       pageSize: size,
     });
   };

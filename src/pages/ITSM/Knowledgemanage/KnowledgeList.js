@@ -343,9 +343,10 @@ function KnowledgeList(props) {
     onChange: (key, record) => onSelectChange(key, record),
   };
   const onShowSizeChange = (page, size) => {
-    handleSearch(page, size);
+    handleSearch(1, size);
     setPageinations({
       ...paginations,
+      current: 1,
       pageSize: size,
     });
   };

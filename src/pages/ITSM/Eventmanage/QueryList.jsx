@@ -309,9 +309,10 @@ function QueryList(props) {
 
   const onShowSizeChange = (page, size) => {
     const values = getFieldsValue();
-    searchdata(values, page - 1, size);
+    searchdata(values, 0, size);
     setPageinations({
       ...paginations,
+      current: 1,
       pageSize: size,
     });
   };
