@@ -202,12 +202,12 @@ class DeptManage extends Component {
       payload: {
         queKey: this.state.queKey,
         pid: this.state.pidkey,
-        page: current,
+        page: 0,
         limit: pageSize,
       },
     });
     setTimeout(() => {
-      this.setState({ pageSize });
+      this.setState({ current: 1, pageSize });
     }, 0);
   };
 

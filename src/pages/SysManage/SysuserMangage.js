@@ -125,12 +125,12 @@ class SysuserMangage extends Component {
       type: 'usermanage/search',
       payload: {
         queKey: this.state.queKey,
-        page: current,
+        page: 1,
         limit: pageSize,
       },
     });
     setTimeout(() => {
-      this.setState({ pageSize });
+      this.setState({ current: 1, pageSize });
     }, 0);
   };
 

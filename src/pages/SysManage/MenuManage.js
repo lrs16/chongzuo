@@ -212,13 +212,13 @@ class MenuManage extends Component {
       type: 'upmsmenu/search',
       payload: {
         queKey: this.state.queKey,
-        page: current,
+        page: 1,
         limit: pageSize,
         pid: this.state.pidkey,
       },
     });
     setTimeout(() => {
-      this.setState({ pageSize });
+      this.setState({ current: 1, pageSize });
     }, 0);
   };
 

@@ -178,11 +178,12 @@ function Expressions(props) {
   const onShowSizeChange = (page, size) => {
     validateFields((err, values) => {
       if (!err) {
-        searchdata(values, page, size);
+        searchdata(values, 1, size);
       }
     });
     setPageinations({
       ...paginations,
+      current: 1,
       pageSize: size,
     });
   };
