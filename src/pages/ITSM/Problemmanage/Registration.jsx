@@ -4,7 +4,6 @@ import { Form, Button, Card } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
 import Registrat from './components/Registrat';
-import { message } from '_antd@4.5.2@antd';
 
 const formItemLayout = {
   labelCol: {
