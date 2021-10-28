@@ -6,6 +6,7 @@ import {
   Button,
   AutoComplete,
   Select,
+  message
 } from 'antd';
 import { phone_reg } from '@/utils/Regexp';
 import { searchUsers } from '@/services/common';
@@ -38,7 +39,6 @@ function AdddutyPersonnelSetting(props) {
     title,
     children,
     onSubmit,
-    onDelete,
     personnelSetting
   } = props;
   const [directorlist, setDirectorlist] = useState([]);
@@ -47,7 +47,7 @@ function AdddutyPersonnelSetting(props) {
   const required = true;
 
   // 自动完成责任人
-  const directoruser = directorlist.map((opt, index) => (
+  const directoruser = directorlist.map((opt) => (
     <Option key={opt.id} value={opt.id} disableuser={opt}>
       {/* <Spin spinning={spinloading}> */}
       <div className={styles.disableuser}>
@@ -89,8 +89,13 @@ function AdddutyPersonnelSetting(props) {
         ...values
       }
       if (!err) {
-        onSubmit(newdata);
-        setVisible(false)
+        if(values.staffName) {
+          onSubmit(newdata);
+          setVisible(false)
+        } else {
+          message.error('请通过值班人员下拉值形式选择值班人员')
+        }
+     
       }
     })
   }
@@ -138,9 +143,9 @@ function AdddutyPersonnelSetting(props) {
     }
   };
 
-  const getTypebyTitle = title => {
+  const getTypebyTitle = titles => {
     if (selectdata.ischange) {
-      return selectdata.arr.filter(item => item.title === title)[0].children;
+      return selectdata.arr.filter(item => item.title === titles)[0].children;
     }
     return []
   };
@@ -162,9 +167,9 @@ function AdddutyPersonnelSetting(props) {
         visible={visible}
         title={title}
         width={720}
-        centered={true}
-        destroyOnClose={true}
-        maskClosable={true}
+        centered
+        destroyOnClose
+        maskClosable
         onClose={handleCancel}
       >
         <Form {...formItemLayout}>
@@ -349,7 +354,6 @@ AdddutyPersonnelSetting.defaultProps = {
     groupId: '',
     jobName: '',
     jobId: '',
-    deptId: ''
   }
 }
 

@@ -127,7 +127,7 @@ export default {
     clear(state,action) {
       return {
         ...state,
-        settingDetails:[]
+        settingDetails:''
       }
     },
 

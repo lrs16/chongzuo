@@ -145,13 +145,13 @@ function SettingDetails(props) {
 
   // 选择下拉值，信息回填
   const handleDisableduser = (v, opt, type) => {
-    const { ids, phone, deptNameExt, groupNames, shiftName, staffName, beginTime, endTime, shiftType } = opt.props.disableuser;
+    const { id, phone, deptNameExt, groupNames, shiftName, staffName, beginTime, endTime, shiftType } = opt.props.disableuser;
     switch (type) {
       case 'director':
         setFieldsValue({
           staffName, // 用户名称
           teststaffName: staffName,
-          staffId: ids, // 用户id
+          staffId: id, // 用户id
           deptName: deptNameExt,
           staffPhone: phone,
           groupName:groupNames
@@ -159,9 +159,10 @@ function SettingDetails(props) {
         break;
       case 'shiftName':
         setFieldsValue({
+          testshiftName:shiftName,
           shiftName, // 用户名称
           shiftType,
-          shiftId: ids,
+          shiftId: id,
           beginTime: moment(beginTime, format),
           endTime: moment(endTime, format),
         });
@@ -222,11 +223,20 @@ function SettingDetails(props) {
         dutyDate: values.dutyDate ? moment(values.dutyDate).format('YYYY-MM-DD HH:mm:ss') : '',
       }
       if (!err) {
-        handleSubmit(newValue);
-        setVisible(false);
-        dispatch({
-          type: 'shiftsandholidays/clearstaff',
-        })
+        if(values.staffName) {
+          if(values.shiftName) {
+            handleSubmit(newValue);
+            setVisible(false);
+            dispatch({
+              type: 'shiftsandholidays/clearstaff',
+            })
+          } else {
+            message.error('请通过班次名称下拉值形式选择班次名称')
+          }
+        } else {
+          message.error('请通过值班人下拉值形式选择值班人')
+        }
+     
       }
     })
   }
@@ -237,7 +247,7 @@ function SettingDetails(props) {
       payload: { id }
     }).then(res => {
       if (res.code === 200) {
-        message.info(res.msg);
+        message.success(res.msg);
         getTable(moment(new Date()).format('YYYY'), moment(new Date()).format('MM'))
         setVisible(false);
         dispatch({
@@ -297,22 +307,6 @@ function SettingDetails(props) {
             )}
           </Form.Item>
 
-          <Form.Item style={{ display: 'none' }}>
-            {
-              getFieldDecorator('staffName', {
-                initialValue: settingDetails.staffName
-              })
-            }
-          </Form.Item>
-
-          <Form.Item style={{ display: 'none' }}>
-            {
-              getFieldDecorator('staffId', {
-                initialValue: settingDetails.staffId
-              })
-            }
-          </Form.Item>
-
           <Form.Item label='联系电话'>
             {
               getFieldDecorator('staffPhone', {
@@ -330,7 +324,7 @@ function SettingDetails(props) {
           </Form.Item>
 
           <Form.Item label="班次名称">
-            {getFieldDecorator('shiftName', {
+            {getFieldDecorator('testshiftName', {
               rules: [
                 {
                   required,
@@ -358,6 +352,14 @@ function SettingDetails(props) {
 
           <Form.Item style={{ display: 'none' }}>
             {
+              getFieldDecorator('shiftName', {
+                initialValue: settingDetails.shiftName
+              })(<Input />)
+            }
+          </Form.Item>
+
+          <Form.Item style={{ display: 'none' }}>
+            {
               getFieldDecorator('shiftId', {
                 initialValue: settingDetails.shiftId
               })(<Input />)
@@ -368,6 +370,22 @@ function SettingDetails(props) {
             {
               getFieldDecorator('groupName', {
                 initialValue: settingDetails.groupName
+              })(<Input />)
+            }
+          </Form.Item>
+
+          <Form.Item style={{ display: 'none' }}>
+            {
+              getFieldDecorator('staffName', {
+                initialValue: settingDetails.staffName
+              })(<Input />)
+            }
+          </Form.Item>
+
+          <Form.Item style={{ display: 'none' }}>
+            {
+              getFieldDecorator('staffId', {
+                initialValue: settingDetails.staffId
               })(<Input />)
             }
           </Form.Item>
@@ -530,8 +548,6 @@ function SettingDetails(props) {
 
 SettingDetails.defaultProps = {
   settingDetails: {
-    staffName: '',
-    staffId: '',
     staffPhone: '',
     dutyDate: '',
     weekday: '',

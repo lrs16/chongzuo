@@ -89,6 +89,8 @@ export default {
           }, // 这里要加mainId
           state: {closetabid: tabid},
         });
+      } else {
+        message.error(response.msg);
       }
     },
 

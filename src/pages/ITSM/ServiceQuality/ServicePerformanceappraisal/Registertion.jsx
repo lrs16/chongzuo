@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Form, Button, Collapse } from 'antd';
+import { Form, Button, Collapse,message } from 'antd';
 import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
@@ -53,19 +53,24 @@ function Registertion(props) {
   const handleSubmit = () => {
     RegistratRef.current.validateFields((err, values) => {
       if (!err) {
-        const submitIfnfo = values;
-        delete submitIfnfo.provider;
-        delete submitIfnfo.score;
-        dispatch({
-          type: 'performanceappraisal/assessRegister',
-          payload: {
-            ...submitIfnfo,
-            assessType: values.assessType === '系统运维' ? '2' : '1',
-            assessTime: moment(values.assessTime).format('YYYY-MM-DD HH:mm:ss'),
-            applyTime: moment(values.applyTime).format('YYYY-MM-DD HH:mm:ss'),
-            attachment: files.ischange ? JSON.stringify(files.arr) : '',
-          },
-        });
+        if(values.directorName) {
+          const submitIfnfo = values;
+          delete submitIfnfo.provider;
+          delete submitIfnfo.score;
+          dispatch({
+            type: 'performanceappraisal/assessRegister',
+            payload: {
+              ...submitIfnfo,
+              assessType: values.assessType === '系统运维' ? '2' : '1',
+              assessTime: moment(values.assessTime).format('YYYY-MM-DD HH:mm:ss'),
+              applyTime: moment(values.applyTime).format('YYYY-MM-DD HH:mm:ss'),
+              attachment: files.ischange ? JSON.stringify(files.arr) : '',
+            },
+          });
+        } else {
+          message.error('请通过责任人下拉值形式选择责任人')
+        }
+      
       }
     });
   };

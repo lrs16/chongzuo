@@ -28,7 +28,7 @@ const { Option } = Select;
 
 const Register = React.forwardRef((props, ref) => {
   const {
-    form: { getFieldDecorator, setFieldsValue, getFieldsValue },
+    form: { getFieldDecorator, setFieldsValue },
     formItemLayout,
     forminladeLayout,
     userinfo,
@@ -489,7 +489,7 @@ const Register = React.forwardRef((props, ref) => {
         <Col span={8} style={{ display: 'none' }}>
           <Form.Item label="责任人id">
             {getFieldDecorator('directorName', {
-              initialValue: register.registerName,
+              initialValue: register.directorName,
             })(<Input />)}
           </Form.Item>
         </Col>

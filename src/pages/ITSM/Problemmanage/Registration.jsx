@@ -4,6 +4,7 @@ import { Form, Button, Card } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
 import Registrat from './components/Registrat';
+import { message } from '_antd@4.5.2@antd';
 
 const formItemLayout = {
   labelCol: {
@@ -58,21 +59,28 @@ function Registration(props) {
 
   //  点击保存触发事件
   const handlesubmit = () => {
-    RegistratRef.current.validateFields((_, values) => {
-      dispatch({
-        type: 'problemmanage/getAddid',
-        payload: {
-          ...values,
-          registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-          registerOccurTime: values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
-          registerExpectTime: values.registerExpectTime.format('YYYY-MM-DD HH:mm:ss'),
-          registerAttachments: files.ischange ? JSON.stringify(files.arr) : null,
-          importance: Number(values.importance) ? values.importance : '001',
-          type: (values.type).toString(),
-          developmentLead:(values.developmentLead).toString(),
-          editState: 'add'
-        },
-      });
+    RegistratRef.current.validateFields((err, values) => {
+      if(!err) {
+        if(values.complainUser){
+          dispatch({
+            type: 'problemmanage/getAddid',
+            payload: {
+              ...values,
+              registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+              registerOccurTime: values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
+              registerExpectTime: values.registerExpectTime.format('YYYY-MM-DD HH:mm:ss'),
+              registerAttachments: files.ischange ? JSON.stringify(files.arr) : null,
+              importance: Number(values.importance) ? values.importance : '001',
+              type: (values.type).toString(),
+              developmentLead:(values.developmentLead).toString(),
+              editState: 'add'
+            },
+          });
+        } else {
+          message.error('请通过问题申报人下拉值形式选择问题申报人')
+        }
+      }
+ 
     });
   };
 
