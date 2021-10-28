@@ -234,7 +234,7 @@ const Registrat = forwardRef((props, ref) => {
                   onChange={(value, option) => handleChange(value, option, 'shiftName')}
                   disabled={statue}
                 >
-                  {(shiftinfo || []).map((obj, index) => [
+                  {(shiftinfo || []).map((obj) => [
                     <Option
                       key={obj.id}
                       value={obj.shiftName}
@@ -265,7 +265,7 @@ const Registrat = forwardRef((props, ref) => {
                   })(
                     <DatePicker
                       disabled
-                      allowClear={true}
+                      allowClear
                       disabledDate={disabledStartDate}
                       onChange={onStartChange}
                       onOpenChange={handleStartOpenChange}
@@ -288,7 +288,7 @@ const Registrat = forwardRef((props, ref) => {
                     initialValue: formrecord.dutyEndTime ? moment(formrecord.dutyEndTime) : '',
                   })(
                     <DatePicker
-                      allowClear={true}
+                      allowClear
                       disabled
                       disabledDate={disabledEndDate}
                       onChange={onEndChange}
@@ -462,7 +462,7 @@ const Registrat = forwardRef((props, ref) => {
                   onChange={(value, option) => handleChange(value, option, 'heirName')}
                   getPopupContainer={e => e.parentNode}
                 >
-                  {(successioninfo || []).map((obj, index) => [
+                  {(successioninfo || []).map((obj) => [
                     <Option key={obj.id} value={obj.heirName} userid={obj.userId}>
                       {obj.heirName}
                     </Option>,
@@ -511,7 +511,7 @@ const Registrat = forwardRef((props, ref) => {
                   getPopupContainer={e => e.parentNode}
                   onChange={(value, option) => handleChange(value, option, 'heirShiftName')}
                 >
-                  {(shiftinfo || []).map((obj, index) => [
+                  {(shiftinfo || []).map((obj) => [
                     <Option key={obj.id} value={obj.shiftName}>
                       {obj.shiftName}
                     </Option>,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Form, Button, Collapse,message } from 'antd';
+import { Form, Button, Collapse, message } from 'antd';
 import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
@@ -34,7 +34,17 @@ const forminladeLayout = {
 const { Panel } = Collapse;
 function Registertion(props) {
   const pagetitle = props.route.name;
-  const { userinfo, dispatch, target1, target2, clauseList, loading } = props;
+  const {
+    userinfo,
+    dispatch,
+    target1,
+    target2,
+    clauseList,
+    tabnew,
+    tabdata,
+    location,
+    loading
+   } = props;
   const RegistratRef = useRef();
   const [contractArr, setContractArr] = useState([]);
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
@@ -53,7 +63,7 @@ function Registertion(props) {
   const handleSubmit = () => {
     RegistratRef.current.validateFields((err, values) => {
       if (!err) {
-        if(values.directorName) {
+        if (values.directorName) {
           const submitIfnfo = values;
           delete submitIfnfo.provider;
           delete submitIfnfo.score;
@@ -70,7 +80,7 @@ function Registertion(props) {
         } else {
           message.error('请通过责任人下拉值形式选择责任人')
         }
-      
+
       }
     });
   };
@@ -128,6 +138,64 @@ function Registertion(props) {
       handleSubmit(0);
     }
   }, [files]);
+ // 重置表单信息
+ useEffect(() => {
+  if (tabnew) {
+    RegistratRef.current.resetFields();
+  }
+}, [tabnew]);
+
+ // 点击页签右键刷新
+ useEffect(() => {
+  if (location.state) {
+    if (location.state.reset) {
+      RegistratRef.current.resetFields();
+    }
+  }
+}, [location.state]);
+
+
+useEffect(() => {
+  if(tabdata) {
+    if(tabdata.providerId) {
+      getContrractname(tabdata.providerId)
+    }
+
+    if(tabdata.assessType) {
+      getTarget1(tabdata.assessType)
+    }
+
+    if(tabdata.target1Id) {
+      getTarget2(tabdata.target1Id)
+    }
+
+    if(tabdata.target2Id) {
+      getclausedetail(tabdata.target2Id)
+    }
+  }
+
+},[tabdata])
+
+    // 获取页签信息
+    useEffect(() => {
+      if (location.state) {
+        if (location.state.cache) {
+          const values = RegistratRef.current.getFieldsValue();
+          dispatch({
+            type: 'viewcache/gettabstate',
+            payload: {
+              cacheinfo: {
+                ...values,
+                applyTime: values.applyTime.format('YYYY-MM-DD HH:mm:ss'),
+                assessTime: values.assessTime.format('YYYY-MM-DD HH:mm:ss'),
+              },
+              tabid: sessionStorage.getItem('tabid')
+            },
+          });
+          RegistratRef.current.resetFields();
+        }
+      }
+    }, [location]);
 
   return (
     <PageHeaderWrapper
@@ -168,6 +236,7 @@ function Registertion(props) {
                 setFiles(newvalue);
               }}
               loading={loading}
+              register={tabdata}
             />
           </Panel>
         </Collapse>
@@ -177,11 +246,13 @@ function Registertion(props) {
 }
 
 export default Form.create({})(
-  connect(({ qualityassessment, itsmuser, loading }) => ({
+  connect(({ qualityassessment, itsmuser,viewcache,loading }) => ({
     target2: qualityassessment.target2,
     target1: qualityassessment.target1,
     clauseList: qualityassessment.clauseList,
     userinfo: itsmuser.userinfo,
     loading: loading.models.qualityassessment,
+    tabnew: viewcache.tabnew,
+    tabdata: viewcache.tabdata,
   }))(Registertion),
 );

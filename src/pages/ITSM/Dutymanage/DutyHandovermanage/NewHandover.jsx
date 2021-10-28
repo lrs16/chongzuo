@@ -42,7 +42,9 @@ function NewHandover(props) {
     shiftGrouparr,
     logbookIddetail,
     shiftSearcharr,
-    searchUsersarr
+    searchUsersarr,
+    tabnew,
+    tabdata,
   } = props;
 
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
@@ -256,26 +258,47 @@ function NewHandover(props) {
     })
   }
 
-  // // 重置表单信息
-  // useEffect(() => {
-  //     if (tabnew) {
-  //         ContentRef.current.resetVal();
-  //     }
-  // }, [tabnew]);
+  // 重置表单信息
+  useEffect(() => {
+    if (tabnew) {
+      ContentRef.current.resetVal();
+    }
+  }, [tabnew]);
+  
+   // 点击页签右键刷新
+   useEffect(() => {
+    if (location.state) {
+      if (location.state.reset) {
+        ContentRef.current.resetVal();
+      }
+    }
+  }, [location.state]);
 
-  // // 获取页签信息
-  // useEffect(() => {
-  //     if (location.state && location.state.cache) {
-  //         const values = ContentRef.current.getVal();
-  //         dispatch({
-  //             type: 'viewcache/gettabstate',
-  //             payload: {
-  //                 cacheinfo: { ...values },
-  //                 tabid: sessionStorage.getItem('tabid')
-  //             },
-  //         });
-  //     }
-  // }, [location])
+  // 获取页签信息
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        const values = ContentRef.current.getVal();
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...values,
+              handoverTime: values.handoverTime.format('YYYY-MM-DD HH:mm:ss'),
+              receiveTime: values.receiveTime.format('YYYY-MM-DD HH:mm:ss'),
+              dutyBeginTime:  values.dutyBeginTime ? values.dutyBeginTime.format('YYYY-MM-DD HH:mm:ss'):'',
+              dutyEndTime: values.dutyEndTime ? values.dutyEndTime.format('YYYY-MM-DD HH:mm:ss'):'',
+              registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+              handoverItems:values.handoverItems ? (values.handoverItems.toString()):''
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+        ContentRef.current.resetVal();
+      }
+    }
+  }, [location]);
+
   const handleDelete = () => {
     return dispatch({
       type: 'shifthandover/fetchlogbookDel',
@@ -443,7 +466,7 @@ function NewHandover(props) {
             files={(logbookIddetail && logbookIddetail.attachment) ? JSON.parse(logbookIddetail.attachment) : []}
             wrappedComponentRef={ContentRef}
             currentUserarr={currentUserarr}
-            formrecord={id ? logbookIddetail : {}}
+            formrecord={id ? logbookIddetail : (tabdata || {})}
             statue={((logbookIddetail && logbookIddetail.handoverStatus === '待接班' && !addtab) || type === 'search')}
             shiftinfo={shift}
             successioninfo={succession}
@@ -467,12 +490,14 @@ function NewHandover(props) {
 }
 
 export default Form.create({})(
-  connect(({ shifthandover, dutyandtypesetting, shiftsandholidays, loading }) => ({
+  connect(({ shifthandover, dutyandtypesetting, shiftsandholidays,viewcache,loading }) => ({
     currentUserarr: shifthandover.currentUserarr,
     searchUsersarr: dutyandtypesetting.searchUsersarr,
     shiftSearcharr: shiftsandholidays.shiftSearcharr,
     shiftGrouparr: shifthandover.shiftGrouparr,
     logbookIddetail: shifthandover.logbookIddetail,
+    tabnew: viewcache.tabnew,
+    tabdata: viewcache.tabdata,
     loading: loading.models.shifthandover
   }))(NewHandover),
 );

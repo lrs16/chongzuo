@@ -381,9 +381,7 @@ const Register = React.forwardRef((props, ref) => {
                   message: '请输入服务商',
                 },
               ],
-              initialValue: register.provider?.providerName
-                ? register.provider.providerName
-                : register.provider,
+              initialValue: register.provider?.providerName || (register && register.providerName)
             })(
               <AutoComplete
                 getPopupContainer={e => e.parentNode}
@@ -745,7 +743,7 @@ const Register = React.forwardRef((props, ref) => {
           <Form.Item label="考核状态">
             {getFieldDecorator('status', {
               initialValue: register.status,
-            })(<Input disabled={true} />)}
+            })(<Input disabled />)}
           </Form.Item>
         </Col>
 
@@ -790,14 +788,12 @@ const Register = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-
-
         <Col span={8}>
           <Form.Item label="登记时间">
             {getFieldDecorator('applyTime', {
               initialValue: moment(register.applyTime || new Date()),
             })(<DatePicker
-              disabled={true}
+              disabled
               showTime
               format="YYYY-MM-DD HH:mm"
             />)}
