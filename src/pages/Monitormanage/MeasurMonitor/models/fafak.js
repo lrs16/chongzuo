@@ -71,6 +71,9 @@ export default {
 
   effects: {
     *fetch3zone(_, { call, put }) {
+      yield put({
+        type: 'clearcache'
+      });
       const response = yield call(getKafka3Zone);
       yield put({
         type: 'get3zone',
@@ -160,6 +163,23 @@ export default {
   },
 
   reducers: {
+    clearcache(state) {
+      return {
+        ...state,
+        zone3data: [], // 3区KAFKA节点
+        safezonedata: {}, // 安全接入区KAFKA节点
+        zone2data: [], // 2区KAFKA节点
+        downdydata: {}, // 下行主题低压相关
+        otherdata: {}, // 其他回复接口（低压相关）
+        zone102_2data: {}, //
+        down102: {},
+        updydata: {},
+        upotherdata: {},
+        up102_2zonedata: {},
+        safe102_2zonedata: {},
+        up102safezone: {},
+      };
+    },
     get3zone(state, action) {
       return {
         ...state,

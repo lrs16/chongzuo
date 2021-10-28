@@ -49,7 +49,7 @@ function SmoothLine(props) {
       }
     }}>
       <Line shape="smooth" position="date*value" color="name" />
-      <Point position="date*value" color="name" shape="circle" />
+      <Point position="date*value" color="name" shape="circle" size={dv.rows && dv.rows.length > 120 ? 3 : 4} />
       <Tooltip shared showCrosshairs />
       <Axis name="date"  {...axisConfig} tickLine={tickLine} label={{ offset: 25 }} />
       <Axis name="value"   {...axisConfig} label={{ offset: 10 }} />

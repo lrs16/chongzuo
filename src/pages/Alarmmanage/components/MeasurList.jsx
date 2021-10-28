@@ -217,6 +217,20 @@ function MeasurList(props) {
     });
   };
 
+  const handlePage = (pageIndex, pageSize) => {
+    const values = getvalues();
+    dispatch({
+      type: 'measuralarm/fetchlist',
+      payload: {
+        ...values,
+        confirmStatus: (activeKey === '已确认' || activeKey === '待确认') ? activeKey : '',
+        clearStatus: (activeKey === '待消除' || activeKey === '人工消除' || activeKey === '自动消除') ? activeKey : '',
+        pageIndex,
+        pageSize,
+      },
+    });
+  };
+
   const handleReset = () => {
     ChangeActiveTabKey('告警概览');
     resetFields();
@@ -236,7 +250,7 @@ function MeasurList(props) {
         pageSize: 10,
       },
     });
-    setPageinations({ current: 1, pageSize: 2 })
+    setPageinations({ current: 1, pageSize: 10 })
   };
 
   const handleChange = (val) => {
@@ -286,7 +300,7 @@ function MeasurList(props) {
   };
 
   const onShowSizeChange = (page, size) => {
-    handleSearch(page, size);
+    handlePage(page, size);
     setPageinations({
       ...paginations,
       pageSize: size,
@@ -294,7 +308,7 @@ function MeasurList(props) {
   };
 
   const changePage = page => {
-    handleSearch(page, paginations.pageSize);
+    handlePage(page, paginations.pageSize);
     setPageinations({
       ...paginations,
       current: page,

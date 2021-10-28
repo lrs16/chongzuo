@@ -1,5 +1,6 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
+import router from 'umi/router';
 import { connect } from 'dva';
 // import numeral from 'numeral';
 import moment from 'moment';
@@ -106,6 +107,17 @@ class DatabaseTerminal extends Component {
     this.interval = setInterval(() => this.getdatas(), 60000);
   }
 
+  componentDidUpdate() {
+    const propsstate = this.props.location.state;
+    if (propsstate && propsstate.reset) {
+      this.getdatas();
+      router.push({
+        pathname: `/monitormanage/measurmonitor/databaseterminal`,
+        state: { cach: false, reset: false }
+      });
+    }
+  }
+
   componentWillUnmount() {
     clearInterval(this.interval);
   }
@@ -206,24 +218,20 @@ class DatabaseTerminal extends Component {
         <h3>终端在线 {`${tjsj.xzl_sjsj}`}</h3>
         <ChartCard title={`统计时间 ${tjsj.xzl}`} contentHeight={350} style={{ marginBottom: 24 }}>
           <Spin spinning={loading} style={{ background: '#ffffff' }}>
-            {(operatingmodes.length === 0 || operatingmode === undefined) && (
-              <Empty style={{ height: '250px' }} />
-            )}
-            {operatingmodes.length > 0 && (
+            {operatingmode && operatingmodes.length > 0 ? (
               <GroupColumnar
                 data={operatingmodes}
                 height={350}
                 scale={scale}
                 padding={[60, 20, 40, 60]}
               />
-            )}
+            ) : (<Empty style={{ height: '250px' }} />)}
           </Spin>
         </ChartCard>
         <h3>日冻结电能量(非厂站采集入库) 数量</h3>
         <ChartCard contentHeight={350} style={{ marginBottom: 24 }}>
           <Spin spinning={loading} style={{ background: '#ffffff' }}>
-            {storagechecks.length === 0 && <Empty style={{ height: '250px' }} />}
-            {storagechecks.length > 0 && (
+            {storagechecks && storagechecks.length > 0 ? (
               <SeriesLine
                 cols={Tablecols}
                 data={storagechecks}
@@ -231,7 +239,7 @@ class DatabaseTerminal extends Component {
                 height={350}
                 padding={[30, 20, 70, 80]}
               />
-            )}
+            ) : (<Empty style={{ height: '250px' }} />)}
           </Spin>
         </ChartCard>
         {/*

@@ -89,6 +89,9 @@ export default {
 
   effects: {
     *fetchoperat(_, { call, put }) {
+      yield put({
+        type: 'clearcache'
+      });
       const response = yield call(getOnlinerate);
       // const response = Mockoperatingmode();
       yield put({
@@ -125,6 +128,15 @@ export default {
   },
 
   reducers: {
+    clearcache(state) {
+      return {
+        ...state,
+        operatingmode: {},
+        storagecheck: {},
+        thehour: {},
+        list: {},
+      };
+    },
     getoperat(state, action) {
       return {
         ...state,

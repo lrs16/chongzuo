@@ -1,5 +1,6 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
+import router from 'umi/router';
 import { connect } from 'dva';
 import moment from 'moment';
 // import numeral from 'numeral';
@@ -12,22 +13,6 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 
-
-
-const dataSource = [
-  {
-    key: '1',
-    name: '胡彦斌',
-    age: 32,
-    address: '西湖区湖底公园1号',
-  },
-  {
-    key: '2',
-    name: '胡彦祖',
-    age: 42,
-    address: '西湖区湖底公园1号',
-  },
-];
 const soncolumns = [
   {
     title: '区域',
@@ -85,6 +70,17 @@ class Fafak extends Component {
   componentDidMount() {
     this.getdatas();
     this.interval = setInterval(() => this.getdatas(), 600000);
+  }
+
+  componentDidUpdate() {
+    const propsstate = this.props.location.state;
+    if (propsstate && propsstate.reset) {
+      this.getdatas();
+      router.push({
+        pathname: `/monitormanage/measurmonitor/fafka`,
+        state: { cach: false, reset: false }
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -240,7 +236,10 @@ class Fafak extends Component {
           bordered
           pagination={false}
           size="middle"
-          scroll={{ x: 1500 }} />
+          scroll={{ x: 1500 }}
+          style={{ background: '#fff' }}
+        />
+
       </PageHeaderWrapper>
     );
   }

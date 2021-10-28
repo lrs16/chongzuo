@@ -25,6 +25,9 @@ export default {
   // 核心需要关注下 put, call, select。
   effects: {
     *fetchcomplete({ payload: { area } }, { call, put }) {
+      yield put({
+        type: 'clearcache'
+      });
       // call 触发service里面的方法
       // call的第一个参数是你要调用的函数，第二个参数开始是你要传递的参数，可一 一传递。
       const response = yield call(queryCompleterate, area);
@@ -82,6 +85,18 @@ export default {
   },
 
   reducers: {
+    clearcache(state) {
+      return {
+        ...state,
+        complete: {},
+        coverage: {},
+        meterread: {},
+        zeroread: [],
+        hourread: [],
+        salesdata: [],
+        supplydata: [],
+      };
+    },
     getcomplete(state, action) {
       return {
         ...state,

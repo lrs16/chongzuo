@@ -12,6 +12,9 @@ export default {
 
   effects: {
     *fetchOnlinestate(_, { call, put }) {
+      yield put({
+        type: 'clearcache'
+      });
       const response = yield call(getOnlineState);
       yield put({
         type: 'getonline',
@@ -32,7 +35,7 @@ export default {
         payload: response.data,
       });
     },
-    //后端反馈取不到
+    // 后端反馈取不到
     *fetchZCdown({ payload: { type } }, { call, put }) {
       const response = yield call(getZC, type);
       yield put({
@@ -43,6 +46,15 @@ export default {
   },
 
   reducers: {
+    clearcache(state) {
+      return {
+        ...state,
+        onlinestate: '',
+        ZCdist: '',
+        ZCcontrol: '',
+        ZCdown: '',
+      };
+    },
     getonline(state, action) {
       return {
         ...state,

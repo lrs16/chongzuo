@@ -1,5 +1,6 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
+import router from 'umi/router';
 import { connect } from 'dva';
 import numeral from 'numeral';
 import moment from 'moment';
@@ -77,6 +78,22 @@ const changefacetree = (datas, type) => {
 class SysRunning extends Component {
   componentDidMount() {
     this.getdatas();
+    this.interval = setInterval(() => this.getdatas(), 600000);
+  }
+
+  componentDidUpdate() {
+    const propsstate = this.props.location.state;
+    if (propsstate && propsstate.reset) {
+      this.getdatas();
+      router.push({
+        pathname: `/monitormanage/measurmonitor/sysrunning`,
+        state: { cach: false, reset: false }
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   getdatas() {
@@ -114,14 +131,13 @@ class SysRunning extends Component {
           <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
             <ChartCard title={`登录检测  （采集时间：${tjsj.webOnline}）`} contentHeight={350}>
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {onlinestates.length === 0 && <Empty style={{ height: '250px' }} />}
-                {onlinestates.length > 0 && (
+                {onlinestates && onlinestates.length > 0 ? (
                   <Treecompactbox
                     datas={onlinestates[0]}
                     height={350}
                     padding={[15, 180, 15, 20]}
                   />
-                )}
+                ) : (<Empty style={{ height: '250px' }} />)}
               </Spin>
             </ChartCard>
           </Col>
@@ -140,10 +156,9 @@ class SysRunning extends Component {
                 <Button type="primary">手工召测</Button>
               </div> */}
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {ZCcontrols.length === 0 && <Empty style={{ height: '250px' }} />}
-                {ZCcontrols.length > 0 && (
+                {ZCcontrols && ZCcontrols.length > 0 ? (
                   <EdgeLine datas={ZCcontrols[0]} height={350} padding={[15, 90, 15, 50]} />
-                )}
+                ) : (<Empty style={{ height: '250px' }} />)}
               </Spin>
             </ChartCard>
           </Col>
@@ -162,10 +177,9 @@ class SysRunning extends Component {
                 <Button type="primary">手工召测</Button>
               </div> */}
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {ZCdists.length === 0 && <Empty style={{ height: '250px' }} />}
-                {ZCdists.length > 0 && (
+                {ZCdists && ZCdists.length > 0 ? (
                   <EdgeLine datas={ZCdists[0]} height={350} padding={[15, 90, 15, 50]} />
-                )}
+                ) : (<Empty style={{ height: '250px' }} />)}
               </Spin>
             </ChartCard>
           </Col>
@@ -173,10 +187,9 @@ class SysRunning extends Component {
           <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
             <ChartCard title="数据召测-厂站" contentHeight={350}>
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {ZCdowns.length === 0 && <Empty style={{ height: '250px' }} />}
-                {ZCdowns.length > 0 && (
+                {ZCdowns && ZCdowns.length > 0 ? (
                   <EdgeLine datas={ZCdowns[0]} height={350} padding={[15, 90, 15, 50]} />
-                )}
+                ) : (<Empty style={{ height: '250px' }} />)}
               </Spin>
             </ChartCard>
           </Col>

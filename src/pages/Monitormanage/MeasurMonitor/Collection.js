@@ -1,5 +1,6 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
+import router from 'umi/router';
 import { connect } from 'dva';
 import moment from 'moment';
 import { Row, Col, Icon, Tooltip, Select, Spin, Empty } from 'antd';
@@ -219,13 +220,24 @@ class Collection extends Component {
     this.interval = setInterval(() => this.getdatas(area), 600000);
   }
 
+  componentDidUpdate() {
+    const propsstate = this.props.location.state;
+    if (propsstate && propsstate.reset) {
+      const area = '南宁供电局';
+      this.getdatas(area);
+      router.push({
+        pathname: `/monitormanage/measurmonitor/collection`,
+        state: { cach: false, reset: false }
+      });
+    }
+  }
+
   componentWillUnmount() {
     clearInterval(this.interval);
   }
 
   getdatas(area) {
     const { dispatch } = this.props;
-    const sortarea = area.substring(0, 2);
     dispatch({
       type: 'collection/fetchcomplete',
       payload: { area },
@@ -290,7 +302,7 @@ class Collection extends Component {
         </div>
         <div style={{ marginBottom: 12 }}>
           <span>统计口径：</span>
-          <Select
+          {(!this.props.location.state || (this.props.location.state && !this.props.location.state.reset)) && (<Select
             showSearch
             style={{ width: 300 }}
             placeholder="南宁供电局"
@@ -307,36 +319,35 @@ class Collection extends Component {
                 </Option>
               );
             })}
-          </Select>
+          </Select>)}
         </div>
         <div>
           <Row gutter={24} type="flex">
             <Col xl={12} lg={24} style={{ marginBottom: 24 }}>
               <ChartCard
                 title={`采集完整率 （采集时间：${tjsj.cjwzl}）`}
-                action={
-                  <Tooltip title="指标说明">
-                    <Icon type="info-circle-o" />
-                  </Tooltip>
-                }
+                // action={
+                //   <Tooltip title="指标说明">
+                //     <Icon type="info-circle-o" />
+                //   </Tooltip>
+                // }
                 contentHeight={350}
               >
                 <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                  {completedata.length === 0 && <Empty style={{ height: '250px' }} />}
-                  {completedata.length > 0 && (
+                  {completedata && completedata.length > 0 ? (
                     <Columncolor height={350} data={completedata} padding={[30, 30, 30, 50]} />
-                  )}
+                  ) : (<Empty style={{ height: '250px' }} />)}
                 </Spin>
               </ChartCard>
             </Col>
             <Col xl={12} lg={24} style={{ marginBottom: 24 }}>
               <ChartCard
                 title={`终端覆盖率 （采集时间：${tjsj.zdfgl}）`}
-                action={
-                  <Tooltip title="指标说明">
-                    <Icon type="info-circle-o" />
-                  </Tooltip>
-                }
+                // action={
+                //   <Tooltip title="指标说明">
+                //     <Icon type="info-circle-o" />
+                //   </Tooltip>
+                // }
                 contentHeight={350}
               >
                 <Spin spinning={loading} style={{ background: '#ffffff' }}>
@@ -349,18 +360,17 @@ class Collection extends Component {
             <Col xl={12} lg={24} style={{ marginBottom: 24 }}>
               <ChartCard
                 title={`自动抄表率 （采集时间：${tjsj.zdcbl}）`}
-                action={
-                  <Tooltip title="指标说明">
-                    <Icon type="info-circle-o" />
-                  </Tooltip>
-                }
+                // action={
+                //   <Tooltip title="指标说明">
+                //     <Icon type="info-circle-o" />
+                //   </Tooltip>
+                // }
                 contentHeight={350}
               >
                 <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                  {meterreads === undefined && <Empty style={{ height: '250px' }} />}
-                  {meterreads !== undefined && meterreads.length > 0 && (
+                  {meterreads && meterreads.length > 0 ? (
                     <Columncolor height={350} data={meterreads} padding={[30, 50, 30, 50]} />
-                  )}
+                  ) : (<Empty style={{ height: '250px' }} />)}
                 </Spin>
               </ChartCard>
             </Col>

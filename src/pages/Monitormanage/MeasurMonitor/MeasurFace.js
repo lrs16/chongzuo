@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import router from 'umi/router';
 import { connect } from 'dva';
 import moment from 'moment';
 import { Row, Col, Icon, Tooltip, Switch, Select, Button, Spin, Empty } from 'antd';
@@ -176,6 +177,17 @@ class MeasurFace extends Component {
   componentDidMount() {
     this.getdatas();
     this.interval = setInterval(() => this.getdatas(), 600000);
+  }
+
+  componentDidUpdate() {
+    const propsstate = this.props.location.state;
+    if (propsstate && propsstate.reset) {
+      this.getdatas();
+      router.push({
+        pathname: `/monitormanage/measurmonitor/measurface`,
+        state: { cach: false, reset: false }
+      });
+    }
   }
 
   componentWillUnmount() {
