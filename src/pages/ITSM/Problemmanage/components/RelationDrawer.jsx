@@ -139,6 +139,7 @@ function RelationDrawer(props) {
       title: orderTypeSuf === 'trouble' ? '问题单编号' : '事件单编码',
       dataIndex: orderTypeSuf === 'trouble' ? 'no' : 'eventNo',
       key: 'no',
+      with: 150,
     },
     {
       title: '标题',
@@ -149,6 +150,7 @@ function RelationDrawer(props) {
       title: '状态',
       dataIndex: orderTypeSuf === 'trouble' ? 'status' : 'eventStatus',
       key: 'status',
+      with: 180,
     },
   ];
   return (

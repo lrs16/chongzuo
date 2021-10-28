@@ -127,9 +127,9 @@ function RelationDrawer(props) {
         setEventstatus(res.data.status)
       }
     });
-    querkeyVal('problem', 'status').then(res => {
+    querkeyVal('problem', 'current').then(res => {
       if (res.code === 200) {
-        setproblemstatus(res.data.status)
+        setproblemstatus(res.data.current)
       }
     })
   }, [])
@@ -139,6 +139,7 @@ function RelationDrawer(props) {
       title: orderTypeSuf === 'problem' ? '问题单编号' : '事件单编码',
       dataIndex: orderTypeSuf === 'problem' ? 'no' : 'eventNo',
       key: 'no',
+      with: 150,
     },
     {
       title: '标题',
@@ -149,6 +150,7 @@ function RelationDrawer(props) {
       title: '状态',
       dataIndex: orderTypeSuf === 'problem' ? 'status' : 'eventStatus',
       key: 'status',
+      with: 150,
     },
   ];
   return (

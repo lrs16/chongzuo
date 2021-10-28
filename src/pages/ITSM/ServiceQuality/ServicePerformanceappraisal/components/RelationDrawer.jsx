@@ -99,20 +99,20 @@ function RelationDrawer(props) {
     if (orderTypeSuf === 'trouble') {
       dispatch({
         type: 'relationorder/fetchtrouble',
-        payload: { no, status: status === undefined ? '' : status, pageIndex, pageSize },
+        payload: { no, status, pageIndex, pageSize },
       })
     };
     if (orderTypeSuf === 'problem') {
       dispatch({
         type: 'relationorder/fetchproblem',
-        payload: { no, status: status === undefined ? '' : status, pageIndex, pageSize },
+        payload: { no, status, pageIndex, pageSize },
       })
     }
 
     if (orderTypeSuf === 'release') {
       dispatch({
         type: 'relationorder/fetchlist',
-        payload: { releaseNo: no, status: status === undefined ? '' : status, pageIndex, pageSize },
+        payload: { releaseNo: no, status, pageIndex, pageSize },
       })
     }
   }

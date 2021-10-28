@@ -137,12 +137,12 @@ function RelationDrawer(props) {
     });
     querkeyVal('problem', 'current').then(res => {
       if (res.code === 200) {
-        setproblemstatus(res.data.status)
+        setproblemstatus(res.data.current)
       }
     })
     querkeyVal('release', 'statu').then(res => {
       if (res.code === 200) {
-        setReleasestatus(res.data.status)
+        setReleasestatus(res.data.statu)
       }
     })
   }, [])
@@ -152,6 +152,7 @@ function RelationDrawer(props) {
       title: orderTypeSuf === 'problem' ? '问题单编号' : '故障单编码',
       dataIndex: 'no',
       key: 'no',
+      with: 150,
     },
     {
       title: '标题',
@@ -162,6 +163,7 @@ function RelationDrawer(props) {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
+      with: 180,
     },
   ];
   return (
@@ -194,7 +196,7 @@ function RelationDrawer(props) {
                         initialValue: '',
                       })(
                         <Select placeholder="请选择" allowClear>
-                          {troublestatus.map(obj => (
+                          {troublestatus && troublestatus.map(obj => (
                             <Option key={obj.key} value={obj.val}>
                               {obj.val}
                             </Option>
@@ -209,7 +211,7 @@ function RelationDrawer(props) {
                         initialValue: '',
                       })(
                         <Select placeholder="请选择" allowClear>
-                          {problemstatus.map(obj => (
+                          {problemstatus && problemstatus.map(obj => (
                             <Option key={obj.key} value={obj.val}>
                               {obj.val}
                             </Option>
