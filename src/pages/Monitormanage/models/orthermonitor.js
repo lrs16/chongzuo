@@ -11,6 +11,9 @@ export default {
   effects: {
     // 获取图表列表
     *fetchchart({ payload }, { call, put }) {
+      yield put({
+        type: 'clearcache'
+      });
       const response = yield call(getAppMonitorData, payload);
       yield put({
         type: 'savechart',
@@ -18,6 +21,9 @@ export default {
       });
     },
     *fetchmessagechart({ payload }, { call, put }) {
+      yield put({
+        type: 'clearcache'
+      });
       const response = yield call(getBarChart, payload);
       yield put({
         type: 'savemessage',
@@ -27,6 +33,13 @@ export default {
   },
 
   reducers: {
+    clearcache(state) {
+      return {
+        ...state,
+        chartdata: [],
+        messagechart: {},
+      };
+    },
     savechart(state, action) {
       return {
         ...state,

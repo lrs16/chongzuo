@@ -50,6 +50,7 @@ function AppRunning(props) {
   };
 
   useEffect(() => {
+    handleTabChange('安全接入区');
     dispatch({
       type: 'measuralarm/fetchtotalinfo',
       payload: {
