@@ -56,9 +56,10 @@ function NoticeSetting(props) {
   };
 
   const onShowSizeChange = (page, size) => {
-    handleSearch(page, size);
+    handleSearch(1, size);
     setPageinations({
       ...paginations,
+      current: 1,
       pageSize: size,
     });
   };

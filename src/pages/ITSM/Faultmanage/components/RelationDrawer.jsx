@@ -73,13 +73,13 @@ function RelationDrawer(props) {
     if (orderTypeSuf === 'event') {
       dispatch({
         type: 'relationorder/fetchevent',
-        payload: { no, status, pageIndex, pageSize },
+        payload: { no, status: status === undefined ? '' : status, pageIndex, pageSize },
       })
     };
     if (orderTypeSuf === 'problem') {
       dispatch({
         type: 'relationorder/fetchproblem',
-        payload: { no, status, pageIndex, pageSize },
+        payload: { no, status: status === undefined ? '' : status, pageIndex, pageSize },
       })
     }
   }

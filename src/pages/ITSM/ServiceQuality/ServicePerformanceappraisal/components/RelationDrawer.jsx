@@ -74,17 +74,17 @@ function RelationDrawer(props) {
     } else {
       const arryNew = [];
       selectRecord.map((item) => {
-        arryNew.push(Object.assign({}, item, { assessNo,orderType:'FB',relationType:'2',title:'发布单转为服务绩效考核单'}))
+        arryNew.push({ ...item, assessNo, orderType: 'FB', relationType: '2', title: '发布单转为服务绩效考核单' })
       })
-      const result = JSON.parse(JSON.stringify(arryNew).replace(/releaseNo/g,"orderNo"));
+      const result = JSON.parse(JSON.stringify(arryNew).replace(/releaseNo/g, "orderNo"));
       return dispatch({
         type: 'relationorder/saveelease',
         payload: result,
       }).then(res => {
-        if(res.code === 200)  {
+        if (res.code === 200) {
           dispatch({
-            type:'relationorder/relesefetcht',
-            payload:{assessNo,orderType:'FB'}
+            type: 'relationorder/relesefetcht',
+            payload: { assessNo, orderType: 'FB' }
           })
         }
       })
@@ -99,20 +99,20 @@ function RelationDrawer(props) {
     if (orderTypeSuf === 'trouble') {
       dispatch({
         type: 'relationorder/fetchtrouble',
-        payload: { no, status, pageIndex, pageSize },
+        payload: { no, status: status === undefined ? '' : status, pageIndex, pageSize },
       })
     };
     if (orderTypeSuf === 'problem') {
       dispatch({
         type: 'relationorder/fetchproblem',
-        payload: { no, status, pageIndex, pageSize },
+        payload: { no, status: status === undefined ? '' : status, pageIndex, pageSize },
       })
     }
 
     if (orderTypeSuf === 'release') {
       dispatch({
         type: 'relationorder/fetchlist',
-        payload: { releaseNo:no, status, pageIndex, pageSize },
+        payload: { releaseNo: no, status: status === undefined ? '' : status, pageIndex, pageSize },
       })
     }
   }
@@ -275,7 +275,7 @@ function RelationDrawer(props) {
 
                 <Col span={6} style={{ paddingTop: 4 }}>
                   <Button type='primary' style={{ marginLeft: 16 }} onClick={() => handleSumit()} >查询</Button>
-                  <Button style={{ marginLeft: 8 }} onClick={() => { resetFields(); handleSearch('','',1,15) }}>重置</Button>
+                  <Button style={{ marginLeft: 8 }} onClick={() => { resetFields(); handleSearch('', '', 1, 15) }}>重置</Button>
                 </Col>
               </Form>
             </Row>

@@ -151,9 +151,10 @@ function ClockPatrolList(props) {
   };
 
   const onShowSizeChange = (page, size) => {
-    handlePage(page, size);
+    handlePage(1, size);
     setPageinations({
       ...paginations,
+      current: 1,
       pageSize: size,
     });
   };
