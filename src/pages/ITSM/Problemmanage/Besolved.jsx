@@ -38,7 +38,7 @@ const { RangePicker } = DatePicker;
 function Besolved(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, resetFields,getFieldsValue, validateFields, setFieldsValue },
+    form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
     dispatch,
     besolveList,
     loading,
@@ -325,12 +325,12 @@ function Besolved(props) {
     }
   }, []);
 
-  const rowSelection = {
-    onChange: (index, handleSelect) => {
-      setSelectedKeys([...index])
-      setSelectedRows([...handleSelect])
-    }
-  }
+  // const rowSelection = {
+  //   onChange: (index, handleSelect) => {
+  //     setSelectedKeys([...index])
+  //     setSelectedRows([...handleSelect])
+  //   }
+  // }
 
   // 不要用查询标题的方式，人家改了名字就查不到了，用id
   const getTypebyTitle = title => {

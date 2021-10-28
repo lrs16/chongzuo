@@ -466,7 +466,7 @@ const Register = React.forwardRef((props, ref) => {
                   message: '请选择责任人',
                 },
               ],
-              initialValue: register.registerName,
+              initialValue: register.directorName,
             })(
               <AutoComplete
                 getPopupContainer={e => e.parentNode}
