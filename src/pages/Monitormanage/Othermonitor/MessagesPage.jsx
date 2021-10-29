@@ -66,7 +66,10 @@ function MessagesPage(props) {
         setSelectdata(res.data.company)
       }
     })
-    onChange({ key: '0401', label: '南宁供电局' })
+    onChange({ key: '0401', label: '南宁供电局' });
+    setInterval(() => {
+      onChange({ key: '0401', label: '南宁供电局' });
+    }, 600000)
   }, []);
 
   useEffect(() => {

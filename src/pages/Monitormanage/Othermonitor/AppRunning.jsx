@@ -9,6 +9,28 @@ import TotalInfo from '../../Alarmmanage/components/TotalInfo';
 
 const { TabPane } = Tabs;
 
+const changeArr = (datas) => {
+  const newArr = [];
+  if (!Array.isArray(datas)) {
+    return newArr;
+  }
+  for (let i = 0; i < datas.length; i += 1) {
+    const vote = {};
+    vote.date = datas[i].date;
+    vote.name = datas[i].name;
+    vote.value = Number(datas[i].value);
+    newArr.push(vote);
+  }
+  return newArr;
+};
+
+const hostZone = new Map([
+  ['安全接入区', '4'],
+  ['安全Ⅰ区', '1'],
+  ['安全Ⅱ区', '2'],
+  ['安全Ⅲ区', '3']
+])
+
 function AppRunning(props) {
   const { dispatch, location, totalinfo, chartdata, chartloading } = props;
   const pagetitle = props.route.name;
@@ -29,12 +51,6 @@ function AppRunning(props) {
   const handleTabChange = (key) => {
     setActiveTabKey(key);
     handleClick('0');
-    const hostZone = new Map([
-      ['安全接入区', '4'],
-      ['安全Ⅰ区', '1'],
-      ['安全Ⅱ区', '2'],
-      ['安全Ⅲ区', '3']
-    ])
     dispatch({
       type: 'orthermonitor/fetchchart',
       payload: {
@@ -56,7 +72,7 @@ function AppRunning(props) {
       payload: {
         beginDate: moment().format('YYYY-MM-DD 00:00:00'),
         endDate: moment().format('YYYY-MM-DD HH:mm:ss'),
-        warnModule: 'configFile',
+        warnModule: 'app',
       },
     });
     querkeyVal('tabkey', 'hostalarm').then(res => {
@@ -69,8 +85,18 @@ function AppRunning(props) {
         setTabkeyDist(newData);
       }
     });
+    setInterval(() => {
+      dispatch({
+        type: 'measuralarm/fetchtotalinfo',
+        payload: {
+          beginDate: moment().format('YYYY-MM-DD 00:00:00'),
+          endDate: moment().format('YYYY-MM-DD HH:mm:ss'),
+          warnModule: 'app',
+        },
+      });
+      handleTabChange('安全接入区');
+    }, 600000)
   }, []);
-
 
   useEffect(() => {
     if (location.state && location.state.reset) {
@@ -139,51 +165,53 @@ function AppRunning(props) {
                                   )}
                                 </div>
                               </Card>
-                              <Card style={{ marginTop: 16, height: 130 }}>
+                            </Col>
+                            <Col span={12}>
+                              <Card style={{ height: 130 }}>
                                 <h3>运行时长</h3>
                                 <div>
                                   <span style={{ color: '#1890ff', fontWeight: 700, fontSize: ' 2.0em' }}>{item.softRunDay}</span>day
                                 </div>
                               </Card>
                             </Col>
-                            <Col span={12}>
+                            <Col span={24} style={{ marginTop: 16 }}>
                               <Card>
                                 <h3>进程CPU使用率（%）</h3>
                                 <SmoothLine
-                                  data={item.cpuUse || []}
+                                  data={changeArr(item.cpuUse) || []}
                                   height={200}
                                   padding={[30, 0, 60, 60]}
                                   onGetVal={() => { }}
                                 />
                               </Card>
                             </Col>
-                            <Col span={12} style={{ marginTop: 16 }}>
+                            <Col span={24} style={{ marginTop: 16 }}>
                               <Card>
                                 <h3>进程内存使用率（%）</h3>
                                 <SmoothLine
-                                  data={item.memoryUse || []}
+                                  data={changeArr(item.memoryUse) || []}
                                   height={200}
                                   padding={[30, 0, 60, 60]}
                                   onGetVal={() => { }}
                                 />
                               </Card>
                             </Col>
-                            <Col span={12} style={{ marginTop: 16 }}>
+                            <Col span={24} style={{ marginTop: 16 }}>
                               <Card>
                                 <h3>进程使用物理内存（MB）</h3>
                                 <SmoothLine
-                                  data={item.physicalMemory || []}
+                                  data={changeArr(item.physicalMemory) || []}
                                   height={200}
                                   padding={[30, 0, 60, 60]}
                                   onGetVal={() => { }}
                                 />
                               </Card>
                             </Col>
-                            <Col span={12} style={{ marginTop: 16 }}>
+                            <Col span={24} style={{ marginTop: 16 }}>
                               <Card>
                                 <h3>进程使用虚拟内存（MB）</h3>
                                 <SmoothLine
-                                  data={item.virtualMemory || []}
+                                  data={changeArr(item.virtualMemory) || []}
                                   height={200}
                                   padding={[30, 0, 60, 60]}
                                   onGetVal={() => { }}
