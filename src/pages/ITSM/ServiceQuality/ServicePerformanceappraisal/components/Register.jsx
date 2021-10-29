@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, useRef, useState, useEffect } from 'react';
+import React, { useImperativeHandle, forwardRef, useState, useEffect } from 'react';
 import {
   Form,
   Input,
@@ -26,9 +26,9 @@ import styles from '../index.less';
 const { TextArea, Search } = Input;
 const { Option } = Select;
 
-const Register = React.forwardRef((props, ref) => {
+const Register = forwardRef((props, ref) => {
   const {
-    form: { getFieldDecorator, setFieldsValue },
+    form: { getFieldDecorator, setFieldsValue,getFieldsValue,resetFields },
     formItemLayout,
     forminladeLayout,
     userinfo,
@@ -44,6 +44,7 @@ const Register = React.forwardRef((props, ref) => {
     files,
     ChangeFiles,
     noEdit,
+    tabdata,
     loading,
   } = props;
 
@@ -53,7 +54,8 @@ const Register = React.forwardRef((props, ref) => {
   const [disablelist, setDisabledList] = useState([]); // 服务商
   const [contractlist, setContractlist] = useState([]); // 合同
   const [scorelist, setScorelist] = useState([]); // 评分细则
-  const [directorlist, setDirectorlist] = useState([]); // 详细条款
+  const [directorlist, setDirectorlist] = useState([]); // 责任人
+
   const [providerId, setProviderId] = useState(''); //  设置服务商的id
   const [scoreId, setScoreId] = useState(''); //  设置服务商的id
   const [target2Type, setTarget2Type] = useState('');
@@ -61,14 +63,18 @@ const Register = React.forwardRef((props, ref) => {
 
   const required = true;
 
+
+
   useEffect(() => {
     ChangeFiles(fileslist);
   }, [fileslist]);
-  const attRef = useRef();
+
   useImperativeHandle(
     ref,
     () => ({
-      attRef,
+      getVal: () => getFieldsValue(),
+      resetVal: () => resetFields(),
+      Forms: props.form.validateFieldsAndScroll,
     }),
     [],
   );
@@ -166,17 +172,6 @@ const Register = React.forwardRef((props, ref) => {
     </Option>
   ));
 
-  // 自动完成责任人
-  const directoruser = directorlist.map(opt => (
-    <Option key={opt.id} value={opt.id} disableuser={opt}>
-      <Spin spinning={spinloading}>
-        <div className={styles.disableuser}>
-          <span>{opt.userName}</span>
-        </div>
-      </Spin>
-    </Option>
-  ));
-
   // 自动完成评分细则
   const scorenameList = scorelist.map(opt => (
     <Option key={opt.id} value={opt.id} disableuser={opt}>
@@ -189,7 +184,7 @@ const Register = React.forwardRef((props, ref) => {
     </Option>
   ));
 
-  // 请求服务商
+  // 请求搜索框
   const SearchDisableduser = (value, type) => {
     const requestData = {
       providerName: value,
@@ -247,7 +242,7 @@ const Register = React.forwardRef((props, ref) => {
         searchUsers({ userName: value }).then(res => {
           if (res) {
             const arr = [...res.data];
-            setSpinLoading(false);
+            // setSpinLoading(false);
             setDirectorlist(arr);
           }
         });
@@ -292,7 +287,7 @@ const Register = React.forwardRef((props, ref) => {
       case 'director':
         setFieldsValue({
           directorName: userName, // 服务商,
-          directorNamesign:userName,
+          directorNamesign: userName,
           directorId: id, // 服务商id
         });
         break;
@@ -301,6 +296,15 @@ const Register = React.forwardRef((props, ref) => {
         break;
     }
   };
+
+   // // 自动完成责任人
+   const directoruser = directorlist.map(opt => (
+    <Option key={opt.id} value={opt.id} disableuser={opt}>
+      <div className={styles.disableuser}>
+        <span>{opt.userName}</span>
+      </div>
+    </Option>
+  ));
 
   const getTypebyTitle = title => {
     if (selectdata.ischange) {
@@ -322,12 +326,19 @@ const Register = React.forwardRef((props, ref) => {
   };
 
   useEffect(() => {
+    searchUsers({ userName:(tabdata && tabdata.directorName) || ''}).then(res => {
+      if (res) {
+        const arr = [...res.data];
+        // setSpinLoading(false);
+        setDirectorlist(arr);
+      }
+    });
     getPerformanceleader();
-  }, []);
-
-  const onChange = (date, dateString) => {
-    setFieldsValue({ assessTime: moment(dateString) })
-  }
+  }, [tabdata]);
+  
+  // const onChange = (date, dateString) => {
+  //   setFieldsValue({ assessTime: moment(dateString) })
+  // }
 
   const assessmentObject = getTypebyTitle('考核对象');
 
@@ -340,6 +351,7 @@ const Register = React.forwardRef((props, ref) => {
         style={{ display: 'none' }}
       />
       <Form {...formItemLayout}>
+
         <Col span={8}>
           <Form.Item label="服务绩效编号">
             {getFieldDecorator('assessNo', {
@@ -463,12 +475,12 @@ const Register = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="责任人">
             {getFieldDecorator('directorNamesign', {
-              rules: [
-                {
-                  required,
-                  message: '请选择责任人',
-                },
-              ],
+              // rules: [
+              //   {
+              //     required,
+              //     message: '请选择责任人',
+              //   },
+              // ],
               initialValue: register.directorName,
             })(
               <AutoComplete
@@ -482,6 +494,7 @@ const Register = React.forwardRef((props, ref) => {
                 <Search
                   placeholder="可输入人名称搜索"
                   onSearch={values => SearchDisableduser(values, 'director')}
+                  // onSearch={values => getpersonLiable(values)}
                   allowClear
                 />
               </AutoComplete>,
@@ -545,7 +558,7 @@ const Register = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="考核类型">
             {getFieldDecorator('assessType', {
-              initialValue: register.assessType === '1' ? '功能开发' : '系统运维',
+              initialValue: (register && register.assessType) ? (register.assessType === '1' ? '功能开发' : '系统运维') : '',
             })(<Input disabled />)}
           </Form.Item>
         </Col>
@@ -648,8 +661,7 @@ const Register = React.forwardRef((props, ref) => {
               <Select
                 disabled={noEdit}
                 onChange={(value, option) => handleChange(value, option, 'target2Name')}
-                onFo
-                cus={() => handleFocus('two')}
+                onFocus={() => handleFocus('two')}
                 placeholder="请选择"
                 allowClear
               >

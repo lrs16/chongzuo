@@ -321,6 +321,13 @@ export default {
         payload: response,
       });
     },
+
+    //  清除登记页面下拉值选择
+    *clearRegister({ payload }, { call, put}) {
+      yield put({
+        type:'clearregister'
+      })
+    }
   },
 
   reducers: {
@@ -436,6 +443,13 @@ export default {
       return {
         ...state,
         statsSumdata: action.payload.data,
+      };
+    },
+    clearregister(state, action) {
+      return {
+        target1: [],
+        target2: [],
+        clauseList: [],
       };
     },
   },

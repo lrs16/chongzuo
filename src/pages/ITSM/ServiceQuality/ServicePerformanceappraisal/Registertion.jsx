@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Form, Button, Collapse, message } from 'antd';
+import { Form, Button, Collapse, message, } from 'antd';
 import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
@@ -44,11 +44,12 @@ function Registertion(props) {
     tabdata,
     location,
     loading
-   } = props;
-  const RegistratRef = useRef();
+  } = props;
+  const RegistratRef = useRef(null);
   const [contractArr, setContractArr] = useState([]);
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [activeKey, setActiveKey] = useState(['registratform']);
+ 
   const handleClose = () => {
     router.push({
       pathname: `/ITSM/servicequalityassessment/creditcard/creditcardregister`,
@@ -61,8 +62,9 @@ function Registertion(props) {
   };
 
   const handleSubmit = () => {
-    RegistratRef.current.validateFields((err, values) => {
-      if (!err) {
+    const values =  RegistratRef.current.getVal();
+    RegistratRef.current.Forms((err) => {
+      if(!err) {
         if (values.directorName) {
           const submitIfnfo = values;
           delete submitIfnfo.provider;
@@ -80,9 +82,8 @@ function Registertion(props) {
         } else {
           message.error('请通过责任人下拉值形式选择责任人')
         }
-
       }
-    });
+    })
   };
 
   const getUserinfo = () => {
@@ -130,7 +131,11 @@ function Registertion(props) {
   };
 
   useEffect(() => {
+    dispatch({
+      type: 'qualityassessment/clearRegister'
+    })
     getUserinfo();
+    setContractArr([])
   }, []);
 
   useEffect(() => {
@@ -138,64 +143,68 @@ function Registertion(props) {
       handleSubmit(0);
     }
   }, [files]);
- // 重置表单信息
- useEffect(() => {
-  if (tabnew) {
-    RegistratRef.current.resetFields();
-  }
-}, [tabnew]);
 
- // 点击页签右键刷新
- useEffect(() => {
-  if (location.state) {
-    if (location.state.reset) {
-      RegistratRef.current.resetFields();
+  // 重置表单信息
+  useEffect(() => {
+    if (tabnew) {
+      RegistratRef.current.resetVal();
     }
-  }
-}, [location.state]);
+  }, [tabnew]);
 
-
-useEffect(() => {
-  if(tabdata) {
-    if(tabdata.providerId) {
-      getContrractname(tabdata.providerId)
-    }
-
-    if(tabdata.assessType) {
-      getTarget1(tabdata.assessType)
-    }
-
-    if(tabdata.target1Id) {
-      getTarget2(tabdata.target1Id)
-    }
-
-    if(tabdata.target2Id) {
-      getclausedetail(tabdata.target2Id)
-    }
-  }
-
-},[tabdata])
-
-    // 获取页签信息
-    useEffect(() => {
-      if (location.state) {
-        if (location.state.cache) {
-          const values = RegistratRef.current.getFieldsValue();
-          dispatch({
-            type: 'viewcache/gettabstate',
-            payload: {
-              cacheinfo: {
-                ...values,
-                applyTime: values.applyTime.format('YYYY-MM-DD HH:mm:ss'),
-                assessTime: values.assessTime.format('YYYY-MM-DD HH:mm:ss'),
-              },
-              tabid: sessionStorage.getItem('tabid')
-            },
-          });
-          RegistratRef.current.resetFields();
-        }
+  // 点击页签右键刷新
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.reset) {
+        RegistratRef.current.resetVal();
+      } else {
+        dispatch({
+          type: 'qualityassessment/clearRegister'
+        });
+        setContractArr([])
       }
-    }, [location]);
+    }
+  }, [location.state]);
+
+  useEffect(() => {
+    if (tabdata) {
+      if (tabdata.providerId) {
+        getContrractname(tabdata.providerId)
+      }
+
+      if (tabdata.assessType) {
+        getTarget1(tabdata.assessType === '功能开发' ? '1' : '2')
+      }
+
+      if (tabdata.target1Id) {
+        getTarget2(tabdata.target1Id)
+      }
+
+      if (tabdata.target2Id) {
+        getclausedetail(tabdata.target2Id)
+      }
+    }
+  }, [tabdata])
+
+  // 获取页签信息
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        const values = RegistratRef.current.getVal();
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...values,
+              applyTime: values.applyTime.format('YYYY-MM-DD HH:mm:ss'),
+              assessTime: values.assessTime.format('YYYY-MM-DD HH:mm:ss'),
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+        RegistratRef.current.resetVal();
+      }
+    }
+  }, [location]);
 
   return (
     <PageHeaderWrapper
@@ -221,7 +230,7 @@ useEffect(() => {
             <Register
               formItemLayout={formItemLayout}
               forminladeLayout={forminladeLayout}
-              ref={RegistratRef}
+              wrappedComponentRef={RegistratRef}
               userinfo={userinfo}
               getTarget1={getTarget1}
               getTarget2={getTarget2}
@@ -237,6 +246,7 @@ useEffect(() => {
               }}
               loading={loading}
               register={tabdata}
+              tabdata={tabdata}
             />
           </Panel>
         </Collapse>
@@ -246,7 +256,7 @@ useEffect(() => {
 }
 
 export default Form.create({})(
-  connect(({ qualityassessment, itsmuser,viewcache,loading }) => ({
+  connect(({ qualityassessment, itsmuser, viewcache, loading }) => ({
     target2: qualityassessment.target2,
     target1: qualityassessment.target1,
     clauseList: qualityassessment.clauseList,
