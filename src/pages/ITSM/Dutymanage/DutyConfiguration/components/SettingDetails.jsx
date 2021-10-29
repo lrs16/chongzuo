@@ -56,6 +56,8 @@ function SettingDetails(props) {
     pagetitle
   } = props;
 
+  console.log(settingDetails,'settingDetails')
+
   const [directorlist, setDirectorlist] = useState([]);// 值班人
   const [shiftlist, setShiftlist] = useState([]);// 值班人
 
@@ -320,7 +322,6 @@ function SettingDetails(props) {
               }
               )(<Input disabled={pagetitle === '排班查询' || new Date().valueOf() > new Date(settingDetails.dutyDate).valueOf()} />)
             }
-
           </Form.Item>
 
           <Form.Item label="班次名称">

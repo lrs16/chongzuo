@@ -148,6 +148,8 @@ function DutyaccordingSetting(props) {
     return result;
   };
 
+  console.log(loading,'loading')
+
   //  年月日面板的切换
   const onPanelChange = (value, mode) => {
     const nowYear = moment(value).format('YYYY');
@@ -182,9 +184,6 @@ function DutyaccordingSetting(props) {
   const dateCellRender = value => {
     const listData = getListData(value);
     return (
-      // <ul className="events">
-
-      // </ul>
       <>
         {(listData || []).map(item => (
           <SettingDetails

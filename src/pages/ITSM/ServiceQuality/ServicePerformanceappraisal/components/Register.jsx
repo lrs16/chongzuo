@@ -357,17 +357,22 @@ const Register = React.forwardRef((props, ref) => {
                   message: '请选择发生时间',
                 },
               ],
-              initialValue: moment(register.assessTime || new Date()),
+              initialValue: moment(register.assessTime),
             })(
-              <div>
-                <DatePicker
-                  disabled={noEdit}
-                  defaultValue={moment(register.assessTime || new Date())}
-                  showTime
-                  format="YYYY-MM-DD HH:mm"
-                  onChange={onChange}
-                />
-              </div>
+              <DatePicker
+                disabled={noEdit}
+                showTime
+                format="YYYY-MM-DD HH:mm"
+              />
+              // <div>
+              //   <DatePicker
+              //     disabled={noEdit}
+              //     // defaultValue={moment(register.assessTime)}
+              //     showTime
+              //     format="YYYY-MM-DD HH:mm:ss"
+              //     // onChange={onChange}
+              //   />
+              // </div>
             )}
           </Form.Item>
         </Col>
@@ -791,7 +796,7 @@ const Register = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="登记时间">
             {getFieldDecorator('applyTime', {
-              initialValue: moment(register.applyTime || new Date()),
+              initialValue: moment(register.applyTime),
             })(<DatePicker
               disabled
               showTime
@@ -807,8 +812,6 @@ const Register = React.forwardRef((props, ref) => {
 Register.defaultProps = {
   register: {
     assessNo: '',
-    assessTime: '',
-    applyTime: '',
     provider: '',
     providerId: '',
     target1Name: '',

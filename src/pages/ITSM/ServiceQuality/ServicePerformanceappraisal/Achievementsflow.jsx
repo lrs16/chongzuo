@@ -7,12 +7,19 @@ import styles from '../index.less';
 
 const { Step } = Steps;
 function Achievementsflow(props) {
-  const { taskId, imageSource, flowlog,flowhisTaskArr, dispatch } = props;
+  const {
+    taskId,
+    imageSource,
+    flowlog,
+    flowhisTaskArr,
+    loading,
+    dispatch
+  } = props;
   const list = [];
 
-  if(flowlog) {
+  if (flowlog) {
     flowlog.forEach((item) => {
-          list.push(
+      list.push(
         <Step
           key={item.id}
           title={`处理人:${item.formHandler}`}
@@ -25,7 +32,7 @@ function Achievementsflow(props) {
 
   const imgsrc = () => {
     const img = document.createElement('img');
-    if(img){
+    if (img) {
       img.src = window.URL.createObjectURL(imageSource);
       document.getElementById('divimg').appendChild(img);
     }
@@ -35,7 +42,7 @@ function Achievementsflow(props) {
     if (imageSource !== '' && imageSource.type && document.getElementsByTagName('img').length < 2) {
       imgsrc();
     }
-  }, [imageSource]);
+  }, [loading, imageSource]);
 
   const getFlowImage = () => {
     dispatch({
@@ -69,7 +76,7 @@ function Achievementsflow(props) {
                   <div>当前环节:{obj.name}</div>
                   <div>处理人：{obj.assignee}</div>
                   <div>开始时间:{moment(obj.startTime).format('YYYY-MM-DD HH:mm')}</div>
-                  <div>结束时间:{obj.endTime?moment(obj.endTime).format('YYYY-MM-DD HH:mm'):''}</div>
+                  <div>结束时间:{obj.endTime ? moment(obj.endTime).format('YYYY-MM-DD HH:mm') : ''}</div>
                   <div>状态:{obj.taskStatus}</div>
                   {
                     obj.taskStatus === '退回' && (
