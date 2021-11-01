@@ -53,8 +53,7 @@ function TodelayExamine(props) {
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [tabrecord, setTabRecord] = useState({});
+  // const [tabrecord, setTabRecord] = useState({});
   const [columns, setColumns] = useState([]);
 
   const onSelectChange = (RowKeys, Rows) => {
@@ -67,7 +66,8 @@ function TodelayExamine(props) {
     onChange: onSelectChange,
   };
 
-  const gotoDetail = (record, type) => { // 跳转详情页
+  // 跳转详情页
+  const gotoDetail = (record, type) => {
     router.push({
       pathname: `/ITSM/supervisework/workplandetail`,
       query: {
@@ -85,13 +85,15 @@ function TodelayExamine(props) {
     })
   };
 
-  const queryDept = () => { // 登录信息
+  // 填报人 审核人
+  const queryDept = () => {
     dispatch({
       type: 'itsmuser/fetchuser',
     });
   };
 
-  const getList = () => { // 列表
+  // 获取列表
+  const getList = () => {
     dispatch({
       type: 'supervisemodel/getWorkQueryLists',
       payload: {
@@ -103,17 +105,8 @@ function TodelayExamine(props) {
     });
   };
 
-  // const handleCheck = () => { // 审核操作
-  //     const len = selectedRowKeys.length;
-  //     if(len === 0) {
-  //         message.info('请选择一条数据');
-  //     } else {
-  //         gotoDetail(selectedRows[0], 'check');
-  //     }
-  //     setSelectedRowKeys([]);
-  // }
-
-  const tocheckSubmit = values => { // 批量审核
+  // 批量审核
+  const tocheckSubmit = values => {
     const mainids = selectedRows.map(obj => {
       return obj.mainId;
     });
@@ -140,9 +133,10 @@ function TodelayExamine(props) {
         message.error(res.msg);
       }
     });
-  }
+  };
 
-  const reasonSubmit = values => { // 回退
+  // 回退操作
+  const reasonSubmit = values => {
     const ids = selectedRows.map(item => {
       return item.id;
     })
@@ -188,7 +182,7 @@ function TodelayExamine(props) {
       executeTime1: values.executeOperationTime?.length ? moment(values.executeOperationTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
       executeTime2: values.executeOperationTime?.length ? moment(values.executeOperationTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
     };
-    setTabRecord({ ...newvalues });
+    // setTabRecord({ ...newvalues });
     dispatch({
       type: 'supervisemodel/getWorkQueryLists',
       payload: {
@@ -201,6 +195,7 @@ function TodelayExamine(props) {
     });
   };
 
+  // 点击查询
   const handleSearch = () => {
     setPaginations({
       ...paginations,
@@ -214,6 +209,7 @@ function TodelayExamine(props) {
     });
   };
 
+  // 点击重置
   const handleReset = () => {
     resetFields();
     dispatch({
@@ -250,7 +246,8 @@ function TodelayExamine(props) {
     </Button></>
   );
 
-  const initialColumns = [ // 列表
+  // 列表
+  const initialColumns = [
     {
       title: '工作任务编号',
       dataIndex: 'no',
@@ -421,17 +418,18 @@ function TodelayExamine(props) {
   ];
 
   const defaultAllkey = columns.map(item => {
-    return item.title
+    return item.title;
   });
 
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
       if (!err) {
-        searchdata(values, page, pageSize);
+        searchdata(values, 1, pageSize);
       }
     });
     setPaginations({
       ...paginations,
+      current: 1,
       pageSize,
     });
   };
@@ -517,15 +515,16 @@ function TodelayExamine(props) {
     })
   };
 
-  const creataColumns = () => { // 创建列表
-    // columns
+  // 创建列表
+  const creataColumns = () => {
     initialColumns.length = 0;
     formThead.map((val, key) => {
       const obj = {
         key: val.key,
         title: val.title,
         dataIndex: val.key,
-        width: 150
+        width: 250,
+        ellipsis: true,
       };
       if (key === 0) {
         obj.render = (text, record) => {
@@ -865,7 +864,6 @@ function TodelayExamine(props) {
             {expand ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
           </Form>
         </Row>
-
         <div>
           <CheckModel
             userinfo={userinfo}
@@ -876,7 +874,6 @@ function TodelayExamine(props) {
             <Button
               type="primary"
               style={{ marginRight: 8 }}
-            // onClick={() => handleCheck()}
             >
               审核
             </Button>

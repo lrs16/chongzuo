@@ -21,6 +21,7 @@ const formItemLayout = {
     sm: { span: 18 },
   },
 };
+
 const overtimestatusmap = [
   { key: '0', title: '未超时' },
   { key: '1', title: '即将超时' },
@@ -55,7 +56,7 @@ function MycreateWork(props) {
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
-  // const [tabrecord, setTabRecord] = useState({});
+  const [tabrecord, setTabRecord] = useState({});
   const [columns, setColumns] = useState([]);
 
   const onSelectChange = (RowKeys, Rows) => {
@@ -68,6 +69,7 @@ function MycreateWork(props) {
     onChange: onSelectChange,
   };
 
+  // 填报人
   const queryDept = () => {
     dispatch({
       type: 'itsmuser/fetchuser',
@@ -113,7 +115,7 @@ function MycreateWork(props) {
       executeTime1: values.executeTime?.length ? moment(values.executeTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
       executeTime2: values.executeTime?.length ? moment(values.executeTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
     };
-    // setTabRecord({ ...newvalues });
+    setTabRecord({ ...newvalues });
     dispatch({
       type: 'supervisemodel/getWorkQueryLists',
       payload: {
@@ -126,6 +128,7 @@ function MycreateWork(props) {
     });
   };
 
+  // 点击查询
   const handleSearch = () => {
     setPaginations({
       ...paginations,
@@ -139,6 +142,7 @@ function MycreateWork(props) {
     });
   };
 
+  // 点击重置
   const handleReset = () => {
     resetFields();
     dispatch({
@@ -160,8 +164,11 @@ function MycreateWork(props) {
       const obj = selectedRows[0];
       const strObj = JSON.stringify(obj);
       sessionStorage.setItem('copyrecord', strObj);
+      sessionStorage.setItem('nocopyrecord', selectedRows[0].id);
     } else if (len > 1) {
-      message.info('仅能选择一条数据进行复制操作')
+      message.info('仅能选择一条数据进行复制操作');
+      setSelectedRowKeys([]);
+      setSelectedRows([]);
       return false;
     } else {
       message.info('您还没有选择数据');
@@ -198,7 +205,7 @@ function MycreateWork(props) {
     })
   };
 
-  // 工作任务填报
+  // 跳转工作任务填报
   const handleFillin = () => { 
     router.push({
       pathname: '/ITSM/supervisework/mycreatework/taskworkfillin',
@@ -208,9 +215,9 @@ function MycreateWork(props) {
     })
   };
 
+  // 点击菜单刷新,并获取数据
   useEffect(() => {
     if (location.state) {
-      // 点击菜单刷新,并获取数据
       if (location.state.reset) {
         handleReset();
       };
@@ -232,7 +239,8 @@ function MycreateWork(props) {
     </Button></>
   );
 
-  const gotoDetail = (record) => {  // 跳转详情页
+  // 跳转详情页
+  const gotoDetail = (record) => {
     router.push({
       pathname: `/ITSM/supervisework/workplandetail`,
       query: {
@@ -249,7 +257,8 @@ function MycreateWork(props) {
     })
   };
 
-  const gotoView = (record) => {  // openViews
+  // openViews查询详情
+  const gotoView = (record) => {
     router.push({
       pathname: `/ITSM/supervisework/queryworkdetails`,
       query: {
@@ -259,6 +268,7 @@ function MycreateWork(props) {
     })
   };
 
+  // 列表数据
   const initialColumns = [
     {
       title: '工作任务编号',
@@ -433,6 +443,7 @@ function MycreateWork(props) {
     },
   ];
 
+  // 列表展示listName
   const defaultAllkey = columns.map(item => {
     return item.title;
   });
@@ -440,11 +451,12 @@ function MycreateWork(props) {
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
       if (!err) {
-        searchdata(values, page, pageSize);
+        searchdata(values, 1, pageSize);
       }
     });
     setPaginations({
       ...paginations,
+      current: 1,
       pageSize,
     });
   };
@@ -554,7 +566,8 @@ function MycreateWork(props) {
         key: val.key,
         title: val.title,
         dataIndex: val.key,
-        width: 150
+        width: 250,
+        ellipsis: true,
       };
       if (key === 0) {
         obj.render = (text, record) => {
@@ -608,10 +621,13 @@ function MycreateWork(props) {
     creataColumns();
   };
 
+  // 数据初始化
   useEffect(() => {
     getList();
     queryDept();
     setColumns(initialColumns);
+    sessionStorage.removeItem('copyrecord');
+    sessionStorage.removeItem('nocopyrecord');
   }, []);
 
   // 数据字典匹配
@@ -627,98 +643,68 @@ function MycreateWork(props) {
   const result = getTypebyTitle('执行结果');
   const executestatus = getTypebyTitle('执行状态');
 
-  // // 设置初始值
-  // const record = {
-  //     executeStatus: '',
-  //     status: '',
-  //     content: '',
-  //     workUser: '',
-  //     checkStatus: '',
-  //     timeoutStatus: '',
-  //     executeResult: '',
-  //     executeContent: '',
-  //     executeUser: '',
-  //     addUser: '',
-  //     addUnit: '',
-  //     checkUser: '',
-  //     checkResult: '',
-  //     checkContent: '',
-  //     no: '',
-  //     paginations,
-  //     expand,
-  // };
-  // const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+  // 设置初始值
+  const record = {
+    executeStatus: '',
+    status: '',
+    content: '',
+    workUser: '',
+    checkStatus: '',
+    timeoutStatus: '',
+    executeResult: '',
+    executeContent: '',
+    executeUser: '',
+    addUser: '',
+    addUnit: '',
+    checkUser: '',
+    checkResult: '',
+    checkContent: '',
+    no: '',
+    paginations,
+    expand,
+  };
 
-  // useEffect(() => {
-  //     if (location.state) {
-  //         if (location.state.cache) {
-  //             // 传表单数据到页签
-  //             dispatch({
-  //                 type: 'viewcache/gettabstate',
-  //                 payload: {
-  //                     cacheinfo: {
-  //                         ...tabrecord,
-  //                         paginations,
-  //                         expand,
-  //                     },
-  //                     tabid: sessionStorage.getItem('tabid')
-  //                 },
-  //             });
-  //         };
-  //         // 点击菜单刷新
-  //         if (location.state.reset) {
-  //             handleReset();
-  //             setExpand(false);
-  //         };
-  //         if (location.state.cacheinfo) {
-  //             if (location.state.cacheinfo.paginations) {
-  //                 const { current, pageSize } = location.state.cacheinfo.paginations;
-  //                 setPaginations({ ...paginations, current, pageSize });
-  //             };
-  //             setExpand(location.state.cacheinfo.expand);
-  //         };
-  //     }
-  // }, [location.state]);
+  const cacheinfo = location.state && location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
 
-  // // 设置时间
-  // useEffect(() => {
-  //     if (location.state.cacheinfo) {
-  //         const {
-  //             checkTime1,
-  //             checkTime2,
-  //             endTime1,
-  //             endTime2,
-  //             executeTime1,
-  //             executeTime2,
-  //             plannedEndTime1,
-  //             plannedEndTime2,
-  //             plannedStartTime1,
-  //             plannedStartTime2,
-  //             startTime1,
-  //             startTime2,
-  //             time1,
-  //             time2,
-  //         } = location.state.cacheinfo;
-  //         setFieldsValue({
-  //             addTime: time1 ? [moment(time1), moment(time2)] : '',
-  //             checkTime: checkTime1 ? [moment(checkTime1), moment(checkTime2)] : '',
-  //             endTime: endTime1 ? [moment(endTime1), moment(endTime2)] : '',
-  //             executeTime: executeTime1 ? [moment(executeTime1), moment(executeTime2)] : '',
-  //             plannedendTime: plannedEndTime1 ? [moment(plannedEndTime1), moment(plannedEndTime2)] : '',
-  //             startTime: startTime1 ? [moment(startTime1), moment(startTime2)] : '',
-  //             plannedStartTime: plannedStartTime1 ? [moment(plannedStartTime1), moment(plannedStartTime2)] : '',
-  //         })
-  //     };
-  // }, [location.state]);
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+              expand,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新
+      if (location.state.reset) {
+        handleReset();
+        setExpand(false);
+      };
+      if (location.state.cacheinfo) {
+        if (location.state.cacheinfo.paginations) {
+          const { current, pageSize } = location.state.cacheinfo.paginations;
+          setPaginations({ ...paginations, current, pageSize });
+        };
+        setExpand(location.state.cacheinfo.expand);
+      };
+    }
+  }, [location.state]);
 
-  // // 获取数据
-  // useEffect(() => {
-  //     if (cacheinfo !== undefined) {
-  //         validateFields((err, values) => {
-  //             searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize);
-  //         })
-  //     }
-  // }, []);
+  // 获取数据
+  useEffect(() => {
+    if (cacheinfo !== undefined) {
+      validateFields((err, values) => {
+        searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize);
+      })
+    }
+  }, []);
 
   return (
     <PageHeaderWrapper title={pagetitle}>

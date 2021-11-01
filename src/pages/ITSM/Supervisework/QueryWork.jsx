@@ -30,7 +30,7 @@ const overtimestatusmap = [
 const statusMap = ['green', 'gold', 'red'];
 const statusContent = ['未超时', '即将超时', '已超时'];
 
-function TodelayExamine(props) {
+function QueryWork(props) {
   const pagetitle = props.route.name;
   const {
     location,
@@ -44,18 +44,19 @@ function TodelayExamine(props) {
   let formThead;
 
   const [expand, setExpand] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectdata, setSelectData] = useState('');
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [tabrecord, setTabRecord] = useState({});
+  // const [tabrecord, setTabRecord] = useState({});
   const [columns, setColumns] = useState([]);
 
+  const onSelectChange = (RowKeys) => {
+    setSelectedRowKeys(RowKeys);
+  };
+
   const rowSelection = {
-    onChange: (index, handleSelect) => {
-      setSelectedRows([...handleSelect])
-    }
+    selectedRowKeys,
+    onChange: onSelectChange,
   };
 
   const queryDept = () => {
@@ -64,6 +65,7 @@ function TodelayExamine(props) {
     });
   };
 
+  // 列表请求
   const getList = () => {
     dispatch({
       type: 'supervisemodel/getWorkQueryLists',
@@ -115,7 +117,7 @@ function TodelayExamine(props) {
       executeTime1: values.executeOperationTime?.length ? moment(values.executeOperationTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
       executeTime2: values.executeOperationTime?.length ? moment(values.executeOperationTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
     };
-    setTabRecord({ ...newvalues });
+    // setTabRecord({ ...newvalues });
     dispatch({
       type: 'supervisemodel/getWorkQueryLists',
       payload: {
@@ -127,6 +129,7 @@ function TodelayExamine(props) {
     });
   };
 
+  // 点击查询
   const handleSearch = () => {
     setPaginations({
       ...paginations,
@@ -140,6 +143,7 @@ function TodelayExamine(props) {
     });
   };
 
+  // 点击重置
   const handleReset = () => {
     resetFields();
     dispatch({
@@ -334,17 +338,18 @@ function TodelayExamine(props) {
   ];
 
   const defaultAllkey = columns.map(item => {
-    return item.title
+    return item.title;
   });
 
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
       if (!err) {
-        searchdata(values, page, pageSize);
+        searchdata(values, 1, pageSize);
       }
     });
     setPaginations({
       ...paginations,
+      current: 1,
       pageSize,
     });
   };
@@ -380,7 +385,8 @@ function TodelayExamine(props) {
   //     }
   // }, []);
 
-  const download = () => { // 导出
+  // 导出
+  const download = () => {
     const exportColumns = columns.map(item => {
       return {
         column: item.dataIndex,
@@ -429,40 +435,16 @@ function TodelayExamine(props) {
     })
   };
 
-  // const handleDelete = () => { // 删除
-  //     const len = selectedRows.length;
-  //     const deleteIds = selectedRows.map(res => {
-  //         return res.mainId
-  //     })
-  //     if (len === 0) {
-  //         message.info('至少选择一条数据');
-  //         return false;
-  //     }
-  //     return dispatch({
-  //         type: 'supervisemodel/taskDelete',
-  //         payload: {
-  //             mainIds: deleteIds.toString()
-  //         }
-  //     }).then(res => {
-  //         if (res.code === 200) {
-  //             message.success(res.msg);
-  //             getList();
-  //         } else {
-  //             message.info(res.msg);
-  //             getList();
-  //         }
-  //     })
-  // };
-
-  const creataColumns = () => { // 创建列表
-    // columns
+  // 创建列表
+  const creataColumns = () => {
     initialColumns.length = 0;
     formThead.map((val, key) => {
       const obj = {
         key: val.key,
         title: val.title,
         dataIndex: val.key,
-        width: 150
+        width: 250,
+        ellipsis: true,
       };
       if (key === 0) {
         obj.render = (text, record) => {
@@ -489,7 +471,7 @@ function TodelayExamine(props) {
     );
 
     if (formThead.length === 0) {
-      setColumns([])
+      setColumns([]);
     }
     creataColumns();
   };
@@ -802,10 +784,8 @@ function TodelayExamine(props) {
             {expand ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
           </Form>
         </Row>
-
         <div>
           <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>导出数据</Button>
-          {/* <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleDelete()}>删除</Button> */}
         </div>
         <div style={{ textAlign: 'right', marginBottom: 8 }}>
           <Popover
@@ -867,5 +847,5 @@ export default Form.create({})(
     getWorkQueryLists: supervisemodel.getworkqueryList,
     userinfo: itsmuser.userinfo,
     loading: loading.models.supervisemodel,
-  }))(TodelayExamine),
+  }))(QueryWork),
 );

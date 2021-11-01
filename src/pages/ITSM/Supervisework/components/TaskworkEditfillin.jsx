@@ -77,11 +77,10 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
     }
 
     const newplannedEndTime = main.plannedEndTime !== undefined ? main.plannedEndTime : moment(main.plannedStartTime);
-
     const newplannedEndTime1 = main.plannedEndTime !== undefined ? main.plannedEndTime : moment().add(1, 'days'); // 延期审核时间
 
     return (
-        <div style={{ paddingRight: 24 }}>
+        <div style={{ paddingRight: 24, marginTop: 24 }}>
             <Row gutter={24}>
                 <Form {...formItemLayout} >
                     <Col span={8}>
@@ -132,7 +131,7 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
                                                 message: '请输入'
                                             }
                                         ],
-                                        initialValue: main && main.workUser ? main.workUser.split(",") : []
+                                        initialValue: main && main.workUser ? main.workUser.split(',') : []
                                     })
                                         (
                                             <Select

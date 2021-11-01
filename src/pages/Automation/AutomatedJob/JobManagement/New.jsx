@@ -17,6 +17,7 @@ function New(props) {
       }
     },
     tabnew,
+    tabdata,
     Info,
   } = props;
 
@@ -143,6 +144,15 @@ function New(props) {
     }
   }, [tabnew]);
 
+  // 点击页签右键刷新
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.reset) {
+        ContentRef.current.resetVal();
+      }
+    }
+  }, [location.state]);
+
   useEffect(() => {
     // 获取页签信息
     if (location.state) {
@@ -151,7 +161,13 @@ function New(props) {
         dispatch({
           type: 'viewcache/gettabstate',
           payload: {
-            cacheinfo: { ...values },
+            cacheinfo: {
+              taskName: values.taskName,
+              agentIds: values.agentIds,
+              scriptIds: values.scriptIds,
+              taskRemarks: values.taskRemarks,
+              taskModes: values.taskModes,
+            },
             tabid: sessionStorage.getItem('tabid')
           },
         });
@@ -202,7 +218,7 @@ function New(props) {
         }}>
           <Content
             wrappedComponentRef={ContentRef}
-            formrecord={Info}
+            formrecord={(Id && (Id !== '' || Id !== undefined)) ? Info : tabdata}
           />
         </EditContext.Provider>
       </Card>

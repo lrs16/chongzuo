@@ -50,8 +50,7 @@ function MyresponWork(props) {
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [tabrecord, setTabRecord] = useState({});
+  // const [tabrecord, setTabRecord] = useState({});
   const [columns, setColumns] = useState([]);
 
   const onSelectChange = (RowKeys, Rows) => {
@@ -64,7 +63,8 @@ function MyresponWork(props) {
     onChange: onSelectChange,
   };
 
-  const gotoDetail = (record, delay) => { // 跳转详情页
+  // 跳转详情页
+  const gotoDetail = (record, delay) => {
     router.push({
       pathname: `/ITSM/supervisework/workplandetail`,
       query: {
@@ -83,7 +83,8 @@ function MyresponWork(props) {
     })
   };
 
-  const handleExecute = () => { // 执行操作
+  // 执行操作
+  const handleExecute = () => {
     const len = selectedRowKeys.length;
     if (len === 1) { // 单条数据
       if (selectedRows[0].flowNodeName === '工作执行' && selectedRows[0].status !== '已完成') {
@@ -99,9 +100,10 @@ function MyresponWork(props) {
     }
     setSelectedRowKeys([]);
     return null;
-  }
+  };
 
-  const handleDelay = () => { // 延期操作
+  // 延期操作
+  const handleDelay = () => {
     const len = selectedRowKeys.length;
     if (len === 1) { // 单条数据
       if (selectedRows[0].status === '计划中' && selectedRows[0].status !== '已完成') {
@@ -119,13 +121,15 @@ function MyresponWork(props) {
     return null;
   };
 
-  const queryDept = () => { // 登录信息
+  // 负责人 登陆人
+  const queryDept = () => {
     dispatch({
       type: 'itsmuser/fetchuser',
     });
   };
 
-  const getList = () => { // 列表
+  // 获取列表数据
+  const getList = () => {
     dispatch({
       type: 'supervisemodel/getWorkQueryLists',
       payload: {
@@ -162,7 +166,7 @@ function MyresponWork(props) {
       executeTime1: values.executeOperationTime?.length ? moment(values.executeOperationTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
       executeTime2: values.executeOperationTime?.length ? moment(values.executeOperationTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
     };
-    setTabRecord({ ...newvalues });
+    // setTabRecord({ ...newvalues });
     dispatch({
       type: 'supervisemodel/getWorkQueryLists',
       payload: {
@@ -175,6 +179,7 @@ function MyresponWork(props) {
     });
   };
 
+  // 点击查询
   const handleSearch = () => {
     setPaginations({
       ...paginations,
@@ -188,6 +193,7 @@ function MyresponWork(props) {
     });
   };
 
+  // 点击重置
   const handleReset = () => {
     resetFields();
     dispatch({
@@ -224,7 +230,8 @@ function MyresponWork(props) {
     </Button></>
   );
 
-  const initialColumns = [ // 列表
+  // 列表
+  const initialColumns = [
     {
       title: '工作任务编号',
       dataIndex: 'no',
@@ -401,11 +408,12 @@ function MyresponWork(props) {
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
       if (!err) {
-        searchdata(values, page, pageSize);
+        searchdata(values, 1, pageSize);
       }
     });
     setPaginations({
       ...paginations,
+      current: 1,
       pageSize,
     });
   };
@@ -491,15 +499,16 @@ function MyresponWork(props) {
     })
   };
 
-  const creataColumns = () => { // 创建列表
-    // columns
+  // 创建列表
+  const creataColumns = () => {
     initialColumns.length = 0;
     formThead.map((val, key) => {
       const obj = {
         key: val.key,
         title: val.title,
         dataIndex: val.key,
-        width: 150
+        width: 250,
+        ellipsis: true,
       };
       if (key === 0) {
         obj.render = (text, record) => {
@@ -839,7 +848,6 @@ function MyresponWork(props) {
             {expand ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
           </Form>
         </Row>
-
         <div>
           <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleExecute()}>执行</Button>
           <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleDelay()}>延期</Button>

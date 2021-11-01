@@ -77,7 +77,7 @@ const Content = forwardRef((props, ref) => {
             <Form.Item label="启停对象" {...formItemLayout1}>
               {getFieldDecorator('workSoftIds', {
                 rules: [{ required: true, message: '请选择作业对象' }],
-                initialValue: [""] || registrat.workSoftIds,
+                initialValue: registrat.workSoftIds,
               })(<Button block onClick={() => {
                 handleShowDrawer('添加作业对象');
               }} disabled={Noediting}>+添加对象</Button>)}
@@ -153,7 +153,7 @@ const Content = forwardRef((props, ref) => {
 Content.defaultProps = {
   registrat: {
     workRemarks: '',
-    workSoftIds: [""],
+    // workSoftIds: [""],
     createTime: new Date(),
   },
   userinfo: {}

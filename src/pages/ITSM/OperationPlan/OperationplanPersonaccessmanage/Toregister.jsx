@@ -337,11 +337,12 @@ function Toregister(props) {
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
       if (!err) {
-        searchdata(values, page, pageSize);
+        searchdata(values, 1, pageSize);
       }
     });
     setPaginations({
       ...paginations,
+      current: 1,
       pageSize,
     });
   };

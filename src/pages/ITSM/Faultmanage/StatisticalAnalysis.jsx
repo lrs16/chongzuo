@@ -5,11 +5,11 @@ import moment from 'moment';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { ChartCard } from '@/components/Charts';
 import SelectTime from '@/components/SelectTime/SelectTime';
-import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
 import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
 import ColumnarY from '@/components/CustomizeCharts/ColumnarY';
 import styles from './index.less'
 import StatisticsCard from './components/StatisticsCard';
+import DonutPCT from './components/ChartFiles/DonutPCT';
 
 const Issuedscale = {
   total: {
@@ -200,6 +200,7 @@ function StatisticalAnalysis(props) {
                       data={blameconditlist.pieChart || []}
                       height={300}
                       totaltitle='故障总数'
+                      staticName="故障责任单位情况"
                       total={piesum(blameconditlist.pieChart)}
                       padding={[10, 30, 30, 30]}
                       onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
@@ -242,6 +243,7 @@ function StatisticalAnalysis(props) {
                     height={300}
                     total={piesum(typeconditlist.allPieChart)}
                     totaltitle='故障总数'
+                    staticName="故障类型总情况"
                     padding={[10, 30, 30, 30]}
                     onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
                   />
@@ -276,6 +278,7 @@ function StatisticalAnalysis(props) {
                     height={300}
                     total={piesum(typeconditlist.hardwarePieChart)}
                     totaltitle='硬件故障总数'
+                    staticName="硬件故障情况"
                     padding={[10, 30, 30, 30]}
                     onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
                   />
@@ -310,6 +313,7 @@ function StatisticalAnalysis(props) {
                     height={300}
                     total={piesum(typeconditlist.softPieChart)}
                     totaltitle='软件故障总数'
+                    staticName="软件故障情况"
                     padding={[10, 30, 30, 30]}
                     onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
                   />
@@ -350,6 +354,7 @@ function StatisticalAnalysis(props) {
                     height={300}
                     total={piesum(modelconditlist.pieChart)}
                     totaltitle='总工单数'
+                    staticName="故障系统模块情况"
                     padding={[10, 30, 30, 30]}
                     onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
                   />
@@ -387,6 +392,7 @@ function StatisticalAnalysis(props) {
                     height={364.5}
                     total={piesum(timeoutconditlist)}
                     totaltitle='总工单数'
+                    staticName="故障工单超时情况"
                     padding={[10, 30, 30, 30]}
                     onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
                   />

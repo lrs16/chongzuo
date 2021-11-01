@@ -65,7 +65,7 @@ function ToCheck(props) {
 
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
-  // const [tabrecord, setTabrecord] = useState({});
+  const [tabrecord, setTabrecord] = useState({});
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
 
@@ -276,7 +276,7 @@ function ToCheck(props) {
       checkTime2: values.checkTime ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
       checkTime: ''
     }
-    // setTabrecord({ ...newValue });
+    setTabrecord({ ...newValue });
     dispatch({
       type: 'apply/findCheckList',
       payload: {
@@ -290,11 +290,12 @@ function ToCheck(props) {
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
       if (!err) {
-        searchdata(values, page, pageSize);
+        searchdata(values, 1, pageSize);
       }
     });
     setPaginations({
       ...paginations,
+      current: 1,
       pageSize,
     });
   };
@@ -351,7 +352,7 @@ function ToCheck(props) {
       }}
     >
       {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
-    </Button></>)
+    </Button></>);
 
   // 下载、导出
   const exportDownload = () => {
@@ -387,16 +388,64 @@ function ToCheck(props) {
       a.click();
       window.URL.revokeObjectURL(url);
     });
-  }
+  };
 
-  useEffect(() => {
-    if (location.state) {
-      // 点击菜单刷新,并获取数据
-      if (location.state.reset) {
-        handleReset();
-      };
-    }
-  }, [location.state]);
+  // 传给多标签的数据
+  // const record = {
+  //   registNo: '',
+  //   name,
+  //   sex: modulestatus,
+  //   phone: '',
+  //   content: '',
+  // }
+
+  // const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+
+  // useEffect(() => {
+  //   if (location.state) {
+  //     if (location.state.cache) {
+  //       dispatch({
+  //         type: 'viewcache/gettabstate',
+  //         payload: {
+  //           cacheinfo: {
+  //             ...tabrecord,
+  //             paginations,
+  //             expand,
+  //           },
+  //           tabid: sessionStorage.getItem('tabid')
+  //         }
+  //       })
+  //     };
+
+  //     if (location.state.reset) {
+  //       handleReset();
+  //     }
+  //     if (location.state.cacheinfo) {
+  //       const { current, pageSize } = location.state.cacheinfo.paginations;
+  //       setExpand(location.state.cacheinfo.expand);
+  //       setPaginations({ ...paginations, current, pageSize });
+  //     };
+  //   }
+  // }, [location.state]);
+
+  // // 设置时间
+  // useEffect(() => {
+  //   if (location && location.state && location.state.cacheinfo) {
+  //     setFieldsValue({
+  //       registerTime: location.state.cacheinfo.registerBeginTime ? [moment(location.state.cacheinfo.registerBeginTime), moment(location.state.cacheinfo.registerEndTime)] : '',
+  //     })
+  //   }
+  // }, [location.state])
+
+  // // 获取数据
+  // useEffect(() => {
+  //   const value = getFieldsValue();
+  //   if (cacheinfo && cacheinfo.paginations && cacheinfo.paginations.current) {
+  //     searchdata(value, cacheinfo.paginations.current, cacheinfo.paginations.pageSize)
+  //   } else {
+  //     searchdata({}, 1, 15)
+  //   }
+  // }, []);
 
   return (
     <PageHeaderWrapper title={pagetitle}>

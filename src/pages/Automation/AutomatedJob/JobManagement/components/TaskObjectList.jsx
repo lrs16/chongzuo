@@ -100,9 +100,10 @@ function TaskObjectList(props) {
     };
 
     const onShowSizeChange = (page, size) => {
-        searchdata(page, size);
+        searchdata(1, size);
         setPageinations({
             ...paginations,
+            current: 1,
             pageSize: size,
         });
     };
@@ -240,7 +241,7 @@ function TaskObjectList(props) {
                 ChangeSelectdata={newvalue => setSelectData(newvalue)}
                 style={{ display: 'none' }}
             />
-            <Row gutter={8} style={{ marginLeft: 70 }}>
+            <Row gutter={8}>
                 <Form {...formItemLayout} onSubmit={handleSearch}>
                     <Col span={8}>
                         <Form.Item label="agent名称">

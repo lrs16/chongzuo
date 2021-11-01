@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 import {
     Form,
     Card,
@@ -13,14 +14,13 @@ import TaskworkEditfillin from './components/TaskworkEditfillin';
 function TaskworkFillin(props) {
     const pagetitle = props.route.name;
     const {
-        // location,
+        location,
         dispatch,
         userinfo,
-        // openFlowList,
         superviseworkPersonArr,
         // loading,
-        // tabdata,
-        // tabnew
+        tabdata,
+        tabnew
     } = props;
 
     let superviseworkPersonSelect;
@@ -28,7 +28,7 @@ function TaskworkFillin(props) {
     const TaskworkfillinRef = useRef();
     //   const [richtext, setRichtext] = useState('');
     const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-    const [copyData, setCopyData] = useState('');
+    const [copyData, setCopyData] = useState(''); // 复制的数据
 
     const formItemLayout = {
         labelCol: {
@@ -63,7 +63,7 @@ function TaskworkFillin(props) {
         dispatch({
             type: 'supervisemodel/getWorkUserList',
         });
-    }
+    };
 
     // 处理工作负责人数据
     if (superviseworkPersonArr.length) {
@@ -78,7 +78,7 @@ function TaskworkFillin(props) {
     useEffect(() => {
         queryDept();
         getsuperviseworkPerson();
-    }, [])
+    }, []);
 
     //  点击保存触发事件
     const handlesubmitSave = (params) => {
@@ -179,56 +179,64 @@ function TaskworkFillin(props) {
     const handlePaste = () => { // 粘贴
         const strObj = sessionStorage.getItem('copyrecord');
         const result = JSON.parse(strObj);
-        const deleteno = delete result.no;
-        if(strObj !== '' && strObj !== undefined && deleteno === true) {
-            setCopyData(result);
-        }else {
+        const mainId = sessionStorage.getItem('nocopyrecord');
+        if (!mainId) {
             message.info('请在列表页复制');
-            return false;
+        } else {
+            const deleteno = delete result.no;
+            if (strObj !== '' && strObj !== undefined && deleteno === true) {
+                setCopyData(result);
+            } else {
+                message.info('请在列表页复制');
+                return false;
+            }
         }
         return null;
-    }
+    };
+
+    // 重置表单信息
+    useEffect(() => {
+        if (tabnew) {
+            TaskworkfillinRef.current.resetFields();
+        }
+    }, [tabnew]);
 
     // 获取页签信息
-    // useEffect(() => {
-    //     if (location.state) {
-    //         if (location.state.cache) {
-    //             const values = TaskworkfillinRef.current.getVal();
-    //             dispatch({
-    //                 type: 'viewcache/gettabstate',
-    //                 payload: {
-    //                     cacheinfo: {
-    //                         ...values,
-    //                         addUser: values.main_addUser,
-    //                         status: values.main_status,
-    //                         workUser: values.main_workUser,
-    //                         fileIds: values.main_fileIds,
-    //                         addUnit: values.main_addUnit,
-    //                         content: values.main_content,
-    //                         plannedStartTime: values.main_plannedStartTime.format('YYYY-MM-DD HH:mm:ss'),
-    //                         plannedEndTime: values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss'),
-    //                         addTime: values.main_addTime.format('YYYY-MM-DD HH:mm:ss'),
-    //                     },
-    //                     tabid: sessionStorage.getItem('tabid')
-    //                 },
-    //             });
-    //             TaskworkfillinRef.current.resetVal();
-    //         };
-    //     }
-    // }, [location]);
+    useEffect(() => {
+        if (location.state) {
+            if (location.state.cache) {
+                TaskworkfillinRef.current.validateFields((_, values) => {
+                    dispatch({
+                        type: 'viewcache/gettabstate',
+                        payload: {
+                            cacheinfo: {
+                                workUser: values.main_workUser.toString(), // 工作负责人
+                                workUserId: values.main_workUserId,
+                                addTime: moment(values.main_addTime).format('YYYY-MM-DD HH:mm:ss'),
+                                plannedStartTime: moment(values.main_plannedStartTime).format('YYYY-MM-DD HH:mm:ss'),
+                                plannedEndTime: moment(values.main_plannedEndTime).format('YYYY-MM-DD HH:mm:ss'),
+                                status: values.main_status, // 工作状态
+                                content: values.main_content, // 工作内容
+                                addUser: values.main_addUser, // 填报人
+                                addUserId: userinfo.userId,
+                                addUnit: values.main_addUnit, // 填报单位
+                                addUnitId: userinfo.unitId,
+                            },
+                            tabid: sessionStorage.getItem('tabid'),
+                        },
+                    });
+                });
+                TaskworkfillinRef.current.resetFields();
+            }
+        }
+    }, [location]);
 
-    // // 重置表单信息
-    // useEffect(() => {
-    //     if (tabnew) {
-    //         TaskworkfillinRef.current.resetVal();
-    //     }
-    // }, [tabnew]);
+    useEffect(() => {
+        if (tabdata !== undefined) {
+            setCopyData(tabdata);
+        }
+    }, [tabdata]);
 
-    // useEffect(() => {
-    //     if (tabdata !== undefined) {
-    //         setCopyData(tabdata)
-    //     }
-    // }, [tabdata])
 
     const extrabuttons = (
         <>
@@ -271,7 +279,6 @@ function TaskworkFillin(props) {
             title={pagetitle}
             extra={extrabuttons}
         >
-
             <Card>
                 <TaskworkEditfillin
                     ref={TaskworkfillinRef}
@@ -287,7 +294,6 @@ function TaskworkFillin(props) {
                     main={copyData}
                 />
             </Card>
-            
         </PageHeaderWrapper>
     );
 }

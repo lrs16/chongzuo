@@ -34,7 +34,7 @@ const formItemLayout1 = {
 
 const formItemLayout444 = {
   labelCol: {
-    xs: { span: 2 },
+    xs: { span: 0 },
   },
   wrapperCol: {
     xs: { span: 24 },
@@ -110,7 +110,7 @@ const Content = forwardRef((props, ref) => {
         <Form.Item label="作业对象" {...formItemLayout1}>
           {getFieldDecorator('agentIds', {
             rules: [{ required, message: '请选择作业对象' }],
-            initialValue: [""] || formrecord.agentIds,
+            initialValue: formrecord.agentIds,
           })(<Button block onClick={() => {
             handleShowObjDrawer('添加作业对象');
           }}>+作业对象</Button>)}
@@ -121,7 +121,7 @@ const Content = forwardRef((props, ref) => {
         <Form.Item label="作业脚本"  {...formItemLayout1}>
           {getFieldDecorator('scriptIds', {
             rules: [{ required, message: '请选择作业脚本' }],
-            initialValue: [""] || formrecord.scriptIds,
+            initialValue: formrecord.scriptIds,
           })(<Button block onClick={() => {
             handleShowScriptDrawer('添加作业脚本');
           }}>+作业脚本</Button>)}

@@ -42,6 +42,7 @@ function Newregist(props) {
     dispatch,
     userinfo,
     loading,
+    location,
     location: {
       query: {
         Id,
@@ -49,6 +50,8 @@ function Newregist(props) {
       }
     },
     Info, // 作业方案数据
+    tabnew,
+    tabdata,
   } = props;
 
   const [activeKey, setActiveKey] = useState(['formpanel', 'formpanel2']);
@@ -158,7 +161,7 @@ function Newregist(props) {
   };
 
   // 提交（新增、编辑）
-  const handleSubmit = (buttonype) => {  
+  const handleSubmit = (buttonype) => {
     if (activeKey.length === 2) {
       ContentRef.current.Forms((err) => {
         const values = ContentRef.current?.getVal();
@@ -293,6 +296,48 @@ function Newregist(props) {
     });
   }, []);
 
+  // 重置表单信息
+  useEffect(() => {
+    if (tabnew) {
+      ContentRef.current.resetVal();
+    }
+  }, [tabnew]);
+
+  // 点击页签右键刷新
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.reset) {
+        ContentRef.current.resetVal();
+      }
+    }
+  }, [location.state]);
+
+  // 获取页签信息
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        const values = ContentRef.current.getVal();
+        const checkval = ExmaineRef.current?.getVal();
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              workSoftIds: values.workSoftIds,
+              workRemarks: values.workRemarks,
+              createTime: values.createTime.format('YYYY-MM-DD HH:mm:ss'),
+              examineStatus: checkval.examineStatus,
+              examineTime: checkval.examineTime.format('YYYY-MM-DD HH:mm:ss'),
+              examineRemarks: checkval.examineRemarks,
+              examineFiles: checkval.examineFiles,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+        ContentRef.current.resetVal();
+      }
+    }
+  }, [location]);
+
   const operations = (
     <>
       <Button
@@ -336,7 +381,7 @@ function Newregist(props) {
                   <Content
                     wrappedComponentRef={ContentRef}
                     userinfo={userinfo}
-                    registrat={Info.autoSoftWork}
+                    registrat={(Id && (Id !== '' || Id !== undefined)) ? Info.autoSoftWork : tabdata}
                   />
                 </EditContext.Provider>
               </Panel>
@@ -350,7 +395,7 @@ function Newregist(props) {
                     userinfo={userinfo}
                   />)) : (<Examine
                     wrappedComponentRef={ExmaineRef}
-                    check={Info.autoSoftWorkExamine}
+                      check={tabdata}
                     formItemLayout={formItemLayout}
                     forminladeLayout={forminladeLayout}
                     userinfo={userinfo}
@@ -369,8 +414,10 @@ function Newregist(props) {
   );
 }
 
-export default connect(({ itsmuser, autosoftwork, loading }) => ({
+export default connect(({ itsmuser, autosoftwork, viewcache, loading }) => ({
   userinfo: itsmuser.userinfo,
+  tabnew: viewcache.tabnew,
+  tabdata: viewcache.tabdata,
   Info: autosoftwork.geteditinfo,
   loading: loading.models.autosoftwork,
 }))(Newregist);

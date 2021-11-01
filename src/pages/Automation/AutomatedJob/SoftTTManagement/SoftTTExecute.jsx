@@ -87,9 +87,10 @@ function SoftTTExecute(props) {
   };
 
   const onShowSizeChange = (page, size) => {
-    searchdata(page, size);
+    searchdata(1, size);
     setPageinations({
       ...paginations,
+      current: 1,
       pageSize: size,
     });
   };
