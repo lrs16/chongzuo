@@ -11,6 +11,7 @@ import {
 
 function GroupedColumn(props) {
   const { height, padding, data, scale } = props;
+  const annotationdata = data[data.length - 1];
   return (
     <Chart padding={padding} height={height} data={data} scale={scale} autoFit>
       <Interval
@@ -81,20 +82,15 @@ function GroupedColumn(props) {
           leave: true, // 关闭 leave 销毁动画
         }}
       />
-      {/* 没有 <Annotation.Line />Text不显示原因待查 */}
-      <Annotation.Line />
-      <Annotation.Text
-        position={['max', 'max']}
-        content="警戒值"
-        style={{
-          fill: '#ff0000',
-          fontSize: 14,
-          textAlign: 'end',
-          textBaseline: 'center',
-        }}
-        offsetX={60} // x 方向的偏移量
-        offsetY={0} // y 方向偏移量
-      />
+      {data && (<>
+        <Annotation.Line />
+        <Annotation.DataMarker
+          position={[annotationdata.type, annotationdata.alertvalue]}
+          text={{ content: '警戒值', style: { fill: '#ff0000', } }}
+          point={{ style: { fill: '#ff0000', stroke: '#fff' } }}
+          line={{ length: 0 }}
+        />
+      </>)}
       <Tooltip shared />
     </Chart>
   );

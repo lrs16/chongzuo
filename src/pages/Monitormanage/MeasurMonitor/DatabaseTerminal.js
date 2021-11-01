@@ -78,19 +78,7 @@ const scale = {
     alias: '终端在线率',
   },
 };
-const Tablecols = {
-  clock: {
-    min: 0,
-    range: [0.02, 0.95],
-    alias: '时刻',
-    tickCount: 24,
-  },
-  value: {
-    min: 0,
-    range: [0, 0.9],
-    alias: '入库数量',
-  },
-};
+
 const Tablecolor = ['#4061d7', '#f00'];
 @connect(({ databaseterminal, loading }) => ({
   databaseterminal,
@@ -212,6 +200,32 @@ class DatabaseTerminal extends Component {
     const operatingmodes = dataArr(operatingmode);
     const storagechecks = dataLine(storagecheck);
     const thehours = {}; // dataLine(thehour);
+
+    const minVal = (datas) => {
+      let min = 15000000;
+      if (!Array.isArray(datas)) {
+        return min;
+      }
+      for (let i = 0; i < datas.length; i += 1) {
+        const cur = datas[i].value;
+        min = cur < min ? cur : min;
+      }
+      return min
+    };
+
+    const Tablecols = {
+      clock: {
+        min: 0,
+        range: [0.02, 0.95],
+        alias: '时刻',
+        tickCount: 12,
+      },
+      value: {
+        min: minVal(storagechecks),
+        range: [0, 0.9],
+        alias: '入库数量',
+      },
+    };
 
     return (
       <PageHeaderWrapper title="终端在线和入库">

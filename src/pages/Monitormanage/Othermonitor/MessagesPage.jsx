@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
-import { Card, Select } from 'antd';
+import { Card, Select, Empty } from 'antd';
 import GroupedColumn from '@/components/CustomizeCharts/GroupedColumn';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { querkeyVal } from '@/services/api';
@@ -36,12 +36,12 @@ function MessagesPage(props) {
     for (let i = 0; i < datas.length; i += 1) {
       const votesx = {};
       votesx.type = datas[i].zddz;
-      votesx.name = '上行报文';
+      votesx.name = '连续上行报文';
       votesx.value = datas[i].sxcs;
       votesx.alertvalue = datas[i].jjz;
       const votexx = {};
       votexx.type = datas[i].zddz;
-      votexx.name = '下行报文';
+      votexx.name = '连续下行报文';
       votexx.value = datas[i].xxcs;
       votexx.alertvalue = datas[i].jjz;
       newArr.push(votesx);
@@ -114,13 +114,13 @@ function MessagesPage(props) {
           </Select>
           <span style={{ marginLeft: 48 }}>监测时间：{messagechart.kssj}--{messagechart.jssj}</span>
         </div>
-        {messagechart && messagechart.packets && (
+        {messagechart && messagechart.packets && messagechart.packets.length > 0 ? (
           <GroupedColumn
-            height={350}
+            height={450}
             padding={[30, 10, 60, 60]}
             data={changeArrdata(messagechart.packets)}
             scale={scale}
-          />)}
+          />) : <Empty style={{ height: '350px' }} />}
       </Card>
     </PageHeaderWrapper>
   );
