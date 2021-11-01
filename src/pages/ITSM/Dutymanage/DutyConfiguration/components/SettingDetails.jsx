@@ -154,12 +154,12 @@ function SettingDetails(props) {
           staffId: id, // 用户id
           deptName: deptNameExt,
           staffPhone: phone,
-          groupName:groupNames
+          groupName: groupNames
         });
         break;
       case 'shiftName':
         setFieldsValue({
-          testshiftName:shiftName,
+          testshiftName: shiftName,
           shiftName, // 用户名称
           shiftType,
           shiftId: id,
@@ -223,8 +223,8 @@ function SettingDetails(props) {
         dutyDate: values.dutyDate ? moment(values.dutyDate).format('YYYY-MM-DD HH:mm:ss') : '',
       }
       if (!err) {
-        if(values.staffName) {
-          if(values.shiftName) {
+        if (values.staffName) {
+          if (values.shiftName) {
             handleSubmit(newValue);
             setVisible(false);
             dispatch({
@@ -236,7 +236,7 @@ function SettingDetails(props) {
         } else {
           message.error('请通过值班人下拉值形式选择值班人')
         }
-     
+
       }
     })
   }
@@ -264,7 +264,10 @@ function SettingDetails(props) {
   }
 
   const handleSelecttime = (value) => {
-    setFieldsValue({ weekday: moment(value).format('dddd') })
+    setFieldsValue({
+      weekday: moment(value).format('dddd'),
+      dutyDate: value
+    })
   }
 
   return (
@@ -274,20 +277,14 @@ function SettingDetails(props) {
         visible={visible}
         title={title}
         width={720}
-        centered='true'
-        maskClosable='true'
-        destroyOnClose='true'
+        centered
+        maskClosable
+        destroyOnClose
         onClose={handleCancel}
       >
         <Form {...formItemLayout}>
           <Form.Item label="值班人">
             {getFieldDecorator('teststaffName', {
-              rules: [
-                {
-                  required,
-                  message: '请选择值班人',
-                },
-              ],
               initialValue: settingDetails.staffName,
             })(
               <AutoComplete
@@ -324,12 +321,6 @@ function SettingDetails(props) {
 
           <Form.Item label="班次名称">
             {getFieldDecorator('testshiftName', {
-              rules: [
-                {
-                  required,
-                  message: '请选择班次名称',
-                },
-              ],
               initialValue: settingDetails.shiftName,
             })(
               <AutoComplete
@@ -398,14 +389,19 @@ function SettingDetails(props) {
                     message: '请选择值班日期',
                   },
                 ],
-                initialValue: settingDetails.dutyDate ? moment(settingDetails.dutyDate) : '',
+                initialValue: moment(settingDetails.dutyDate),
               }
               )(
-                <DatePicker
-                  disabled={title === '编辑排班信息'}
-                  format='YYYY-MM-DD'
-                  onChange={handleSelecttime}
-                />)
+                <div>
+                  <DatePicker
+                    defaultValue={moment(settingDetails.dutyDate)}
+                    disabled={title === '编辑排班信息'}
+                    format='YYYY-MM-DD'
+                    onChange={handleSelecttime}
+                  />
+                </div>
+
+              )
             }
 
           </Form.Item>
@@ -548,7 +544,7 @@ function SettingDetails(props) {
 SettingDetails.defaultProps = {
   settingDetails: {
     staffPhone: '',
-    dutyDate: '',
+    dutyDate: new Date(),
     weekday: '',
     shift: { beginTime: '', endTime: '' },
     creatorName: sessionStorage.getItem('userName'),

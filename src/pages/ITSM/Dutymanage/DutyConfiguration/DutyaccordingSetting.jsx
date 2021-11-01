@@ -9,6 +9,7 @@ import Dutyexcel from './components/Dutyexcel';
 
 const { Sider, Content } = Layout;
 const { TreeNode } = Tree;
+let tabledata = [];
 
 function DutyaccordingSetting(props) {
   const pagetitle = props.route.name;
@@ -24,7 +25,6 @@ function DutyaccordingSetting(props) {
   const [currentMode, setCurrentMode] = useState(moment(new Date()).format('YYYY'));
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [selectdata, setSelectData] = useState('');
-  const [tabledata, setTabledata] = useState([]);
   const [currentYear, setCurrentYear] = useState(moment(new Date()).format('YYYY'));
   const [month, setMonth] = useState(moment(new Date()).format('MM'));
   const [groupName, setGroupName] = useState('计量中心组');
@@ -148,8 +148,6 @@ function DutyaccordingSetting(props) {
     return result;
   };
 
-  console.log(loading,'loading')
-
   //  年月日面板的切换
   const onPanelChange = (value, mode) => {
     const nowYear = moment(value).format('YYYY');
@@ -185,20 +183,24 @@ function DutyaccordingSetting(props) {
     const listData = getListData(value);
     return (
       <>
-        {(listData || []).map(item => (
-          <SettingDetails
-            title="编辑排班信息"
-            key={item.id}
-            id={item.id}
-            getTable={getTable}
-            groupId={item.groupId}
-            month={month}
-            currentYear={currentYear}
-            pagetitle={pagetitle}
-          >
-            <p style={{margin:0}}>{item.staffName}({item.shiftType})</p>
-          </SettingDetails>
-        ))}
+        {
+          listData && listData.length > 0 && (
+            (listData).map(item => (
+              <SettingDetails
+                title="编辑排班信息"
+                key={item.id}
+                id={item.id}
+                getTable={getTable}
+                groupId={item.groupId}
+                month={month}
+                currentYear={currentYear}
+                pagetitle={pagetitle}
+              >
+                <p style={{ margin: 0 }}  key={item.id}>{item.staffName}({item.shiftType})</p>
+              </SettingDetails>
+            ))
+          )
+        }
       </>
     );
   };
@@ -267,6 +269,7 @@ function DutyaccordingSetting(props) {
   useEffect(() => {
     sessionStorage.setItem('groupId', '1031');
     getTable(currentYear, month);
+    tabledata = [];
   }, []);
 
   const getTypebyTitle = title => {
@@ -289,7 +292,7 @@ function DutyaccordingSetting(props) {
         parentId: '-1',
       },
     ];
-    setTabledata(resutlteam);
+    tabledata = resutlteam;
   }, [teamname]);
 
   return (
@@ -301,89 +304,94 @@ function DutyaccordingSetting(props) {
         style={{ display: 'none' }}
       />
       <>
-        <div id="alldom">
-          <Layout>
-            <Card title="所属班组">
-              <Sider theme="light">
-                {teamname && teamname.length > 0 && (
-                  <Tree
-                    defaultSelectedKeys={['1031']}
-                    onSelect={handleClick}
-                    defaultExpandAll
-                  >
-                    {renderTreeNodes(tabledata)}
-                  </Tree>
-                )}
-              </Sider>
-            </Card>
-
-            <Card style={{ marginLeft: 10 }}>
-              <Content>
-                {pagetitle === '排班设置' && add && (
-                  <div style={{ backgroundColor: 'white', paddingBottom: 7 }}>
-                    <Button type="danger" style={{ marginRight: 8 }} ghost onClick={handleDelete}>
-                      删除
-                    </Button>
-
-                    <SettingDetails
-                      title="新增排班信息"
-                      settingDetails=""
-                      id=""
-                      groupId={sessionStorage.getItem('groupId')}
-                      groupName={groupName}
-                      month={month}
-                      currentYear={currentYear}
-                      getTable={getTable}
-                      pagetitle={pagetitle}
-                    >
-                      <Button type="primary" style={{ marginRight: 8 }}>
-                        新增
-                      </Button>
-                    </SettingDetails>
-
-                    <Button type="primary" style={{ marginRight: 8 }} onClick={download}>
-                      下载导入模板
-                    </Button>
-
-                    <Button type="primary" style={{ marginRight: 8 }} onClick={handlePrint}>
-                      导出
-                    </Button>
-
-                    {loading === false && (
-                      <Dutyexcel fileslist={[]} ChangeFileslist={newvalue => setFiles(newvalue)} />
+        {
+          teamname && teamname.length > 0 && (
+            <div id="alldom">
+              <Layout>
+                <Card title="所属班组">
+                  <Sider theme="light">
+                    {teamname && teamname.length > 0 && (
+                      <Tree
+                        defaultSelectedKeys={['1031']}
+                        onSelect={handleClick}
+                        defaultExpandAll
+                      >
+                        {renderTreeNodes(tabledata)}
+                      </Tree>
                     )}
-                  </div>
-                )}
-
-                {pagetitle === '排班查询' && (
-                  <Button type="primary" style={{ marginRight: 8 }} onClick={handlePrint}>
-                    导出
-                  </Button>
-                )}
-
-                <div placeholder="请选择">
-                  {(shiftperiod || []).map(obj => [
-                    <span
-                      key={obj.key}
-                      values={obj.title}
-                      style={{ marginRight: 5 }}
-                    >
-                      {obj.title}
-                    </span>
-                  ])}
-                </div>
-
-                <Card id="calendar">
-                  <Calendar
-                    onPanelChange={onPanelChange}
-                    dateCellRender={dateCellRender}
-                    shownextprevmonth={false}
-                  />
+                  </Sider>
                 </Card>
-              </Content>
-            </Card>
-          </Layout>
-        </div>
+
+                <Card style={{ marginLeft: 10 }}>
+                  <Content>
+                    {pagetitle === '排班设置' && add && (
+                      <div style={{ backgroundColor: 'white', paddingBottom: 7 }}>
+                        <Button type="danger" style={{ marginRight: 8 }} ghost onClick={handleDelete}>
+                          删除
+                        </Button>
+
+                        <SettingDetails
+                          title="新增排班信息"
+                          settingDetails=""
+                          id=""
+                          groupId={sessionStorage.getItem('groupId')}
+                          groupName={groupName}
+                          month={month}
+                          currentYear={currentYear}
+                          getTable={getTable}
+                          pagetitle={pagetitle}
+                        >
+                          <Button type="primary" style={{ marginRight: 8 }}>
+                            新增
+                          </Button>
+                        </SettingDetails>
+
+                        <Button type="primary" style={{ marginRight: 8 }} onClick={download}>
+                          下载导入模板
+                        </Button>
+
+                        <Button type="primary" style={{ marginRight: 8 }} onClick={handlePrint}>
+                          导出
+                        </Button>
+
+                        {loading === false && (
+                          <Dutyexcel fileslist={[]} ChangeFileslist={newvalue => setFiles(newvalue)} />
+                        )}
+                      </div>
+                    )}
+
+                    {pagetitle === '排班查询' && (
+                      <Button type="primary" style={{ marginRight: 8 }} onClick={handlePrint}>
+                        导出
+                      </Button>
+                    )}
+
+                    <div placeholder="请选择">
+                      {(shiftperiod || []).map(obj => [
+                        <span
+                          key={obj.key}
+                          values={obj.title}
+                          style={{ marginRight: 5 }}
+                        >
+                          {obj.title}
+                        </span>
+                      ])}
+                    </div>
+
+                    <Card id="calendar">
+                      <Calendar
+                        onPanelChange={onPanelChange}
+                        dateCellRender={dateCellRender}
+                        shownextprevmonth={false}
+                      />
+                    </Card>
+                  </Content>
+                </Card>
+              </Layout>
+            </div>
+          )
+        }
+
       </>
     </PageHeaderWrapper>
   );

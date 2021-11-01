@@ -251,7 +251,7 @@ function ScoringRulesmaintenance(props) {
     onShowSizeChange: (page, pagesize) => onShowSizeChange(page, pagesize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    total: scoreList.total,
+    total: scoreList && scoreList.total,
     showTotal: total => `总共 ${total}条记录`,
     onChange: page => changePage(page),
   };
@@ -359,7 +359,7 @@ function ScoringRulesmaintenance(props) {
         <Table
           loading={loading}
           columns={columns}
-          dataSource={scoreList.records}
+          dataSource={scoreList && scoreList.records}
           rowKey={records => records.id}
           pagination={pagination}
           rowSelection={rowSelection}

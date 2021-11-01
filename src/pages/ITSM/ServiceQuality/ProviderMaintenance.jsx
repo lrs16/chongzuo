@@ -13,7 +13,6 @@ import {
   Radio,
 } from 'antd';
 import ContractList from './components/ContractList';
-import { operationPerson } from '@/services/common';
 import { connect } from 'dva';
 import router from 'umi/router';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -285,7 +284,7 @@ function ProviderMaintenance(props) {
     onShowSizeChange: (page, pagesize) => onShowSizeChange(page, pagesize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    total: providerArr.total,
+    total: providerArr && providerArr.total,
     showTotal: total => `总共 ${total} 条记录`,
     onChange: page => changePage(page),
   };
@@ -383,16 +382,16 @@ function ProviderMaintenance(props) {
             新增服务商
           </Button>
         )}
-
-        <Table
-          loading={loading}
-          columns={columns}
-          dataSource={providerArr.records}
-          rowKey={records => records.id}
-          pagination={pagination}
-          rowSelection={rowSelection}
-          scroll={{ x: 800, y: 700 }}
-        />
+     
+            <Table
+            loading={loading}
+            columns={columns}
+            dataSource={providerArr && providerArr.records}
+            rowKey={records => records.id}
+            pagination={pagination}
+            rowSelection={rowSelection}
+            scroll={{ x: 800, y: 700 }}
+          />
       </Card>
     </PageHeaderWrapper>
   );

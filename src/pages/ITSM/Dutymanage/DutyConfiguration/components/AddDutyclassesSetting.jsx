@@ -67,7 +67,7 @@ function AddDutyclassesSetting(props) {
         beginTime: moment(values.beginTime).format('HH:mm'),
         endTime: moment(values.endTime).format('HH:mm'),
         ctime: moment(values.ctime).format('YYYY-MM-DD HH:mm:ss'),
-        status: values.status === true ? '1' : '0'
+        status: values.status === '启动' ? '1' : '0'
       }
 
       if (!err) {
@@ -261,12 +261,13 @@ function AddDutyclassesSetting(props) {
 
             <Form.Item label="启用状态">
               {getFieldDecorator('status', {
-                initialValue: classSetting.status
+                valuePropName: classSetting.status === '启动' ?'checked' : 'unchecked',
+                initialValue: classSetting.status  
               })(<Switch
                 checkedChildren='开启'
                 unCheckedChildren='停用'
-                defaultChecked={classSetting.status === '启动'}
-              />)}</Form.Item>
+              />)}
+            </Form.Item>
 
             <Form.Item label="创建人">
               {getFieldDecorator('creatorName', {

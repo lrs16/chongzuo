@@ -285,7 +285,7 @@ function CreditcardTobe(props) {
     onShowSizeChange: (page, pagesize) => onShowSizeChange(page, pagesize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    total: scorecardArr.total,
+    total: scorecardArr && scorecardArr.total,
     showTotal: total => `总共 ${total} 条记录`,
     onChange: page => changePage(page),
   };
@@ -509,7 +509,7 @@ function CreditcardTobe(props) {
           <Table
             loading={loading}
             columns={columns}
-            dataSource={scorecardArr.records}
+            dataSource={scorecardArr && scorecardArr.records}
             rowKey={records => records.id}
             scroll={{ x: 1500, y: 700 }}
             rowSelection={rowSelection}
