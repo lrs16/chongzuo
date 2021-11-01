@@ -376,7 +376,7 @@ function DutypersonnelSetting(props) {
             <>
               <AdddutyPersonnelSetting
                 title='新建值班人员设置'
-                onSubmit={(submitdata => handleSubmit(submitdata))}
+                onSubmit={submitdata => handleSubmit(submitdata)}
                 personnelSetting=''
               >
                 <Button
@@ -386,18 +386,19 @@ function DutypersonnelSetting(props) {
                   新建值班人员设置
                 </Button>
               </AdddutyPersonnelSetting>
-
-              <Table
-                columns={columns}
-                pagination={pagination}
-                dataSource={searchUsersarr.records}
-                // rowKey={(_, index) => index.toString()}
-                rowSelection={rowSelection}
-                scroll={{ x: 1300 }}
-              />
             </>
           )
         }
+
+        <Table
+          loading={loading}
+          columns={columns}
+          pagination={pagination}
+          dataSource={searchUsersarr.records}
+          rowKey={(_, index) => index.toString()}
+          rowSelection={rowSelection}
+          scroll={{ x: 1300 }}
+        />
 
       </Card>
     </PageHeaderWrapper >

@@ -12,7 +12,7 @@ import {
 } from 'antd';
 import SysUpload from '@/components/SysUpload';
 import moment from 'moment';
-import { operationPerson, searchUsers } from '@/services/common';
+import { searchUsers } from '@/services/common';
 import SysDict from '@/components/SysDict';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
 import {
@@ -48,7 +48,6 @@ const Register = forwardRef((props, ref) => {
     loading,
   } = props;
 
-  const [performanceLeader, setPerformanceLeader] = useState('');
   const [fileslist, setFilesList] = useState([]);
   const [selectdata, setSelectData] = useState('');
   const [disablelist, setDisabledList] = useState([]); // 服务商
@@ -62,8 +61,6 @@ const Register = forwardRef((props, ref) => {
   const [spinloading, setSpinLoading] = useState(true);
 
   const required = true;
-
-
 
   useEffect(() => {
     ChangeFiles(fileslist);
@@ -297,7 +294,7 @@ const Register = forwardRef((props, ref) => {
     }
   };
 
-   // // 自动完成责任人
+ // 自动完成责任人
    const directoruser = directorlist.map(opt => (
     <Option key={opt.id} value={opt.id} disableuser={opt}>
       <div className={styles.disableuser}>
@@ -313,27 +310,13 @@ const Register = forwardRef((props, ref) => {
     return []
   };
 
-  const getPerformanceleader = () => {
-    operationPerson().then(res => {
-      const result = res.data.map(item => {
-        return {
-          key: item.id,
-          value: item.userName,
-        };
-      });
-      setPerformanceLeader(result);
-    });
-  };
-
   useEffect(() => {
     searchUsers({ userName:(tabdata && tabdata.directorName) || ''}).then(res => {
       if (res) {
         const arr = [...res.data];
-        // setSpinLoading(false);
         setDirectorlist(arr);
       }
     });
-    getPerformanceleader();
   }, [tabdata]);
   
   // const onChange = (date, dateString) => {

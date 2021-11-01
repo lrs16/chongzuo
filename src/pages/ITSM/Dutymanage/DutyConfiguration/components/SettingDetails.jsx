@@ -277,7 +277,7 @@ function SettingDetails(props) {
         visible={visible}
         title={title}
         width={720}
-        centered
+        centered="true"
         maskClosable
         destroyOnClose
         onClose={handleCancel}
@@ -403,7 +403,6 @@ function SettingDetails(props) {
 
               )
             }
-
           </Form.Item>
 
           <Form.Item label='值班星期'>
@@ -432,7 +431,7 @@ function SettingDetails(props) {
                 <Col span={11}>
                   {getFieldDecorator('beginTime',
                     {
-                      initialValue: (settingDetails.shift && settingDetails.shift.beginTime) ? moment(settingDetails.shift.beginTime, format) : ''
+                      initialValue: (settingDetails.shift && settingDetails.shift.beginTime) ? moment(settingDetails.shift.beginTime, format) : undefined
                     },
                   )(
                     <TimePicker
@@ -448,7 +447,7 @@ function SettingDetails(props) {
                   {getFieldDecorator(
                     'endTime',
                     {
-                      initialValue: (settingDetails.shift && settingDetails.shift.endTime) ? moment(settingDetails.shift.endTime, format) : ''
+                      initialValue: (settingDetails.shift && settingDetails.shift.endTime) ? moment(settingDetails.shift.endTime, format) : undefined
                     },
                   )(
                     <TimePicker

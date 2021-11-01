@@ -160,12 +160,6 @@ function DutyclassesSetting(props) {
     onChange: page => changePage(page),
   };
 
-
-  useEffect(() => {
-    const value = getFieldsValue();
-    searchdata(value, 1, 15)
-  }, [])
-
   // 查询
   const extra = (<>
     <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
@@ -390,7 +384,7 @@ function DutyclassesSetting(props) {
     directorPhone: '',
     status: '',
     groupId: '',
-    groupName: ''
+    groupName: '',
   }
 
   const cacheinfo = (location.state && location.state.cacheinfo === undefined) ? record : location.state.cacheinfo;
@@ -412,19 +406,24 @@ function DutyclassesSetting(props) {
 
       if (location.state.reset) {
         handleReset();
+      };
+
+      if(location.state.cacheinfo) {
+        const { beginTime, endTime } = location.state.cacheinfo;
+        setFieldsValue({
+          beginTime: beginTime ? moment(beginTime):'',
+          endTime: endTime ? moment(endTime):'',
+        })
       }
     }
   }, [location.state])
 
-  // 设置时间
+  
   useEffect(() => {
-    if (location && location.state && location.state.cacheinfo) {
-      setFieldsValue({
-        beginTime: moment(location.state.cacheinfo.beginTime),
-        endTime: moment(location.state.cacheinfo.endTime),
-      })
-    }
-  }, [location.state])
+    const value = getFieldsValue();
+    searchdata(value, 1, 15)
+  }, [])
+
 
   const getTypebyTitle = title => {
     if (selectdata.ischange) {
@@ -458,7 +457,7 @@ function DutyclassesSetting(props) {
                 <Row>
                   <Col span={11}>
                     {getFieldDecorator('beginTime', {
-                      initialValue: (cacheinfo && cacheinfo.beginTime) ? moment(cacheinfo.beginTime) : '',
+                      initialValue:''
                     })(
                       <DatePicker
                         disabledDate={(value) => disabledStartDate(value, 'create')}
@@ -477,7 +476,7 @@ function DutyclassesSetting(props) {
                   <Col span={2} style={{ textAlign: 'center' }}>-</Col>
                   <Col span={11}>
                     {getFieldDecorator('endTime', {
-                      initialValue: (cacheinfo && cacheinfo.endTime) ? moment(cacheinfo.endTime) : '',
+                      initialValue:''
                     })(
                       <DatePicker
                         disabledDate={(value) => disabledEndDate(value, 'create')}
@@ -497,6 +496,7 @@ function DutyclassesSetting(props) {
                 </Row>
               </Form.Item>
             </Col>
+
             <Col span={8}>
               <Form.Item label="创建人">
                 {getFieldDecorator('creatorName', {
@@ -504,6 +504,7 @@ function DutyclassesSetting(props) {
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
+
             <Col span={8}>
               <Form.Item label="班次名称">
                 {getFieldDecorator('shiftName', {
@@ -626,7 +627,7 @@ function DutyclassesSetting(props) {
           dataSource={shiftSearcharr.records}
           pagination={pagination}
           rowSelection={rowSelection}
-          rowKey={r => r.No}
+          rowKey={r => r.id}
           scroll={{ x: 1300 }}
         />
       </Card>

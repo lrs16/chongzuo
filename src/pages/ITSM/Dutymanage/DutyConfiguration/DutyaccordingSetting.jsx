@@ -170,12 +170,16 @@ function DutyaccordingSetting(props) {
     data.map(item => {
       if (item.children) {
         return (
-          <TreeNode title={item.title} key={item.id} dataRef={item}>
+          <TreeNode 
+          title={item.title}
+           key={item.key}
+            dataRef={item}
+            >
             {renderTreeNodes(item.children)}
           </TreeNode>
         );
       }
-      return <TreeNode key={item.id} {...item} dataRef={item} />;
+      return <TreeNode key={item.key} {...item} dataRef={item} />;
     });
 
   //  单元格渲染
@@ -213,6 +217,7 @@ function DutyaccordingSetting(props) {
       sessionStorage.setItem('groupId', selectkeys.toString());
       getTable(currentYear, month);
       setAdd(true);
+      setGroupName(title);
     }
     if (title === '班组信息') {
       message.info('点击该层是没有数据的哦，您现在看到的是上一次您点击节点的数据');
@@ -333,7 +338,6 @@ function DutyaccordingSetting(props) {
                         <SettingDetails
                           title="新增排班信息"
                           settingDetails=""
-                          id=""
                           groupId={sessionStorage.getItem('groupId')}
                           groupName={groupName}
                           month={month}

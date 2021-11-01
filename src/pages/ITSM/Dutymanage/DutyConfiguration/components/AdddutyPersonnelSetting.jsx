@@ -6,13 +6,15 @@ import {
   Button,
   AutoComplete,
   Select,
-  message
+  message,
+  Spin
 } from 'antd';
 import { phone_reg } from '@/utils/Regexp';
 import { searchUsers } from '@/services/common';
 import { connect } from 'dva';
-import styles from '../index.less';
 import SysDict from '@/components/SysDict';
+import styles from '../index.less';
+
 
 const { Search } = Input;
 const { Option } = Select;
@@ -49,11 +51,11 @@ function AdddutyPersonnelSetting(props) {
   // 自动完成责任人
   const directoruser = directorlist.map((opt) => (
     <Option key={opt.id} value={opt.id} disableuser={opt}>
-      {/* <Spin spinning={spinloading}> */}
-      <div className={styles.disableuser}>
-        <span>{opt.userName}</span>
-      </div>
-      {/* </Spin> */}
+      <Spin spinning={spinloading}>
+        <div className={styles.disableuser}>
+          <span>{opt.userName}</span>
+        </div>
+      </Spin>
     </Option>
   ));
 
@@ -62,7 +64,7 @@ function AdddutyPersonnelSetting(props) {
     switch (type) {
       case 'director':
         searchUsers({ userName: value }).then(res => {
-          if (res) {
+          if (res.code === 200) {
             const arr = [...res.data];
             setSpinLoading(false);
             setDirectorlist(arr);
@@ -89,13 +91,12 @@ function AdddutyPersonnelSetting(props) {
         ...values
       }
       if (!err) {
-        if(values.staffName) {
+        if (values.staffName) {
           onSubmit(newdata);
           setVisible(false)
         } else {
           message.error('请通过值班人员下拉值形式选择值班人员')
         }
-     
       }
     })
   }
@@ -110,6 +111,7 @@ function AdddutyPersonnelSetting(props) {
           }
         )
         break;
+
       case 'group':
         setFieldsValue(
           {
@@ -117,10 +119,10 @@ function AdddutyPersonnelSetting(props) {
           }
         )
         break;
+
       default:
         break;
     }
-
   }
 
   // 选择下拉值，信息回填
@@ -153,7 +155,6 @@ function AdddutyPersonnelSetting(props) {
   const teamname = getTypebyTitle('班组名称');
   const teamjobName = getTypebyTitle('所属岗位');
 
-
   return (
     <>
       <SysDict
@@ -167,7 +168,7 @@ function AdddutyPersonnelSetting(props) {
         visible={visible}
         title={title}
         width={720}
-        centered
+        centered="true"
         destroyOnClose
         maskClosable
         onClose={handleCancel}
@@ -203,7 +204,7 @@ function AdddutyPersonnelSetting(props) {
             {
               getFieldDecorator('staffName', {
                 initialValue: personnelSetting.staffName
-              })
+              })(<Input />)
             }
           </Form.Item>
 
@@ -211,7 +212,7 @@ function AdddutyPersonnelSetting(props) {
             {
               getFieldDecorator('userId', {
                 initialValue: personnelSetting.userId
-              })
+              })(<Input />)
             }
           </Form.Item>
 
@@ -219,7 +220,7 @@ function AdddutyPersonnelSetting(props) {
             {
               getFieldDecorator('deptId', {
                 initialValue: personnelSetting.deptId
-              })
+              })(<Input />)
             }
           </Form.Item>
 
@@ -272,8 +273,6 @@ function AdddutyPersonnelSetting(props) {
               })(<Input />)
             }
           </Form.Item>
-
-
 
           <Form.Item label='所属班组'>
             {getFieldDecorator('groupId', {
@@ -345,6 +344,7 @@ function AdddutyPersonnelSetting(props) {
     </>
   )
 }
+
 AdddutyPersonnelSetting.defaultProps = {
   personnelSetting: {
     staffName: '',
@@ -356,7 +356,6 @@ AdddutyPersonnelSetting.defaultProps = {
     jobId: '',
   }
 }
-
 
 export default Form.create({})(
   connect(({ dutyandtypesetting, loading }) => ({

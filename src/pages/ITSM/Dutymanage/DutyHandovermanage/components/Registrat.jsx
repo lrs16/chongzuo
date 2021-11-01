@@ -261,7 +261,7 @@ const Registrat = forwardRef((props, ref) => {
               <Row>
                 <Col span={11}>
                   {getFieldDecorator('dutyBeginTime', {
-                    initialValue: formrecord.dutyBeginTime ? moment(formrecord.dutyBeginTime) : '',
+                    initialValue: formrecord.dutyBeginTime ? moment(formrecord.dutyBeginTime) : undefined,
                   })(
                     <DatePicker
                       disabled
@@ -285,7 +285,7 @@ const Registrat = forwardRef((props, ref) => {
                 </Col>
                 <Col span={11}>
                   {getFieldDecorator('dutyEndTime', {
-                    initialValue: formrecord.dutyEndTime ? moment(formrecord.dutyEndTime) : '',
+                    initialValue: formrecord.dutyEndTime ? moment(formrecord.dutyEndTime) : undefined,
                   })(
                     <DatePicker
                       allowClear
