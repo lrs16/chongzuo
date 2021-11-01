@@ -10,7 +10,7 @@ import User from '@/components/SelectUser/User';
 import TimeoutModal from '../components/TimeoutModal';
 import Registrat from './components/Registrat';
 import { saveRegister, getTimeoutInfo } from './services/api';
-import { saveTimeoutMsg, saveReleaseTimeoutMsg } from '../services/api';
+import { saveTimeoutMsg } from '../services/api';
 
 
 const Attaches = [
@@ -77,7 +77,8 @@ function Registration(props) {
       releaseRegister: {
         testStart: moment(testStart).format('YYYY-MM-DD HH:mm:ss'),
         testEnd: moment(testEnd).format('YYYY-MM-DD HH:mm:ss'),
-        testPlace, testUnit, testOperator, influenceScope, testResult, registerTime, registerUnit, registerUnitId, registerUser, registerUserId,
+        testUnit: testUnit.toString(),
+        testPlace, testOperator, influenceScope, testResult, registerTime, registerUnit, registerUnitId, registerUser, registerUserId,
       },
       releaseAttaches,
       releaseEnvs,
@@ -91,7 +92,7 @@ function Registration(props) {
   // 保存超时信息,成功校验表单
   const postTimeOutMsg = (v) => {
     if (taskId) {
-      saveReleaseTimeoutMsg({
+      saveTimeoutMsg({
         taskId,
         msgType: 'timeout',
         orderId,

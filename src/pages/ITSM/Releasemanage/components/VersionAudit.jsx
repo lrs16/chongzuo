@@ -6,7 +6,7 @@ import SubmitTypeContext from '@/layouts/MenuContext';
 import DocumentAtt from './DocumentAtt';
 import EditeTable from './EditeTable';
 import TimeoutModal from '../../components/TimeoutModal';
-import { saveTimeoutMsg, saveReleaseTimeoutMsg } from '../../services/api';
+import { saveTimeoutMsg } from '../../services/api';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -189,7 +189,7 @@ function VersionAudit(props, ref) {
     }
     return [];
   };
-  const unitmap = getTypebyId(1052);       // 责任单位
+  const docunitmap = getTypebyId(1280);       // 出具文档单位
   const functionmap = getTypebyId(451);   // 功能类型
   const modulamap = getTypebyId(466);     // 模块
   const grademap = getTypebyId(514);      // 发布等级
@@ -233,7 +233,7 @@ function VersionAudit(props, ref) {
 
   // 保存超时信息,成功校验表单
   const postTimeOutMsg = (v) => {
-    saveReleaseTimeoutMsg({
+    saveTimeoutMsg({
       taskId: timeoutPost.taskId,
       orderId: timeoutPost.id,
       msgType: 'timeout',
@@ -420,7 +420,7 @@ function VersionAudit(props, ref) {
             <DocumentAtt
               rowkey={rowkey}
               isEdit={isEdit}
-              unitmap={unitmap}
+              unitmap={docunitmap}
               dataSource={attaches}
               Unit={{ dutyUnit: undefined }}
               ChangeValue={(v, files) => changeatt(v, files)}

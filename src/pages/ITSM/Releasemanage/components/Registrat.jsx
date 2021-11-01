@@ -171,6 +171,8 @@ function Registrat(props, ref) {
   const unitmap = getTypebyId(1052);       // 责任单位
   const functionmap = getTypebyId(451);   // 功能类型
   const modulamap = getTypebyId(466);     // 模块
+  const testunitmap = getTypebyId(1276);     // 参与测试单位
+  const docunitmap = getTypebyId(1280);     // 出具文档单位
 
   return (
     <>
@@ -247,9 +249,17 @@ function Registrat(props, ref) {
           <Col span={24}>
             <Form.Item label="参与测试单位" {...formuintLayout}>
               {getFieldDecorator('testUnit', {
-                rules: [{ required, message: `请填写参与测试单位` }],
-                initialValue: formmap.get(taskName).testUnit,
-              })(<TextArea autoSize disabled={!isEdit} />)}
+                rules: [{ required, message: `请选择参与测试单位` }],
+                initialValue: formmap.get(taskName).testUnit && formmap.get(taskName).testUnit.length ? formmap.get(taskName).testUnit.split(',') : [],
+              })(
+                <Select placeholder="请选择" disabled={!isEdit} mode="multiple">
+                  {testunitmap.map(obj => [
+                    <Option key={obj.key} value={obj.title}>
+                      {obj.title}
+                    </Option>,
+                  ])}
+                </Select>
+              )}
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -324,7 +334,7 @@ function Registrat(props, ref) {
                   )}
                 </Form.Item>
               </Col>
-              {adopt === '通过' ? (
+              {/* {adopt === '通过' ? (
                 <Col span={24}>
                   <Form.Item label='验证意见' {...forminladeLayout} labelAlign='left'>
                     {getFieldDecorator('validComments', {
@@ -340,7 +350,7 @@ function Registrat(props, ref) {
                       initialValue: formmap.get(taskName).validComments,
                     })(<TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />)}
                   </Form.Item>
-                </Col>)}
+                </Col>)} */}
             </>
           )}
           {taskName !== '业务验证' && (
@@ -357,7 +367,7 @@ function Registrat(props, ref) {
             <DocumentAtt
               rowkey={statumap.get(taskName)}
               isEdit={isEdit}
-              unitmap={unitmap}
+              unitmap={docunitmap}
               dataSource={info && info.releaseAttaches && info.releaseAttaches.length > 0 ? info.releaseAttaches : Attaches}
               Unit={getFieldsValue(['dutyUnit'])}
               ChangeValue={(v, files) => changeatt(v, files)}

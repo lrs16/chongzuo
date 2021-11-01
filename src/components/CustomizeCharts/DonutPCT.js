@@ -68,7 +68,7 @@ class DonutPCT extends Component {
               'value',
               {
                 content: picdata => {
-                  return `${picdata.type}: ${(picdata.percent * 100).toFixed(0)}%`;
+                  return `${picdata.type}: ${(picdata.percent * 100).toFixed(2)}%`;
                 },
                 offset: '25',
               },

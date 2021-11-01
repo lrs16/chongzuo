@@ -73,16 +73,16 @@ function BusinessReview(props, ref) {
     return [];
   };
 
-  const unitmap = getTypebyId(1052);       // 责任单位
+  const docunitmap = getTypebyId(1280);    // 出具文档单位
 
   return (
     <Row gutter={12} style={{ paddingTop: 24, }}>
       {alertvisible && (<Alert message={alertmessage.mes} type='warning' showIcon style={{ marginBottom: 12 }} />)}
       <Form ref={formRef} {...formItemLayout}>
-        <Col span={24}>
+        {/* <Col span={24}>
           <h4>发布结论：</h4>
           <p>{info.releaseBizCheck.checkResult}</p>
-        </Col>
+        </Col> */}
         <Col span={24}>
           <Form.Item label="复核说明" {...formuintLayout} labelAlign='left'>
             {getFieldDecorator('checkComments', {
@@ -109,7 +109,7 @@ function BusinessReview(props, ref) {
           <DocumentAtt
             rowkey='0'
             isEdit={isEdit}
-            unitmap={unitmap}
+            unitmap={docunitmap}
             dataSource={info && info.releaseAttaches ? info.releaseAttaches : []}
             Unit={{ dutyUnit: undefined }}
             ChangeValue={(v, files) => changeatt(v, files)}

@@ -87,7 +87,7 @@ function Implementation(props, ref) {
     }
     return [];
   };
-  const unitmap = getTypebyId(1052);       // 责任单位
+  const docunitmap = getTypebyId(1280);       // 出具文档单位
   return (
     <>
       {alertvisible && (<Alert message={alertmessage.mes} type='warning' showIcon />)}
@@ -161,7 +161,7 @@ function Implementation(props, ref) {
             <DocumentAtt
               rowkey='8'
               isEdit={isEdit}
-              unitmap={unitmap}
+              unitmap={docunitmap}
               dataSource={info && info.releaseAttaches ? info.releaseAttaches : []}
               Unit={{ dutyUnit: undefined }}
               ChangeValue={(v, files) => changeatt(v, files)}

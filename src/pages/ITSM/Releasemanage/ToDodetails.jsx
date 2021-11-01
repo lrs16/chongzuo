@@ -10,7 +10,7 @@ import TimeoutModal from '../components/TimeoutModal';
 import WorkOrder from './WorkOrder';
 import Process from './Process';
 import Backoff from './components/Backoff';
-import { saveTimeoutMsg, saveReleaseTimeoutMsg } from '../services/api';
+import { saveTimeoutMsg } from '../services/api';
 
 function ToDodetails(props) {
   const { location, dispatch, loading, loadingopen, allloading, currentTaskStatus, relationCount, submitTimes, info } = props;

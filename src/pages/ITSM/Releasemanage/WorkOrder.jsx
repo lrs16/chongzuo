@@ -57,7 +57,8 @@ function WorkOrder(props) {
         saveItems: 'releaseRegister,releaseEnvs,releaseLists,releaseAttaches',
         releaseMain: { releaseType, dutyUnit, releaseNo },
         releaseRegister: {
-          testStart, testEnd, testPlace, testUnit, testOperator, influenceScope, testResult, registerTime, registerUnit, registerUnitId, registerUser, registerUserId,
+          testUnit: testUnit.toString(),
+          testStart, testEnd, testPlace, testOperator, influenceScope, testResult, registerTime, registerUnit, registerUnitId, registerUser, registerUserId,
         },
         releaseAttaches,
         releaseEnvs,
@@ -69,8 +70,9 @@ function WorkOrder(props) {
     const validform = {
       releaseNo: Id,
       formValid: {
-        testStart, testEnd, testOperator, testPlace, testResult, testUnit, validResult,
-        validComments: val.validResult === '通过' ? val.validComments : val.validComments1,
+        testUnit: testUnit.toString(),
+        testStart, testEnd, testOperator, testPlace, testResult, validResult,
+        //  validComments: val.validResult === '通过' ? val.validComments : val.validComments1,
       },
       releaseAttaches,
       releaseEnvs,

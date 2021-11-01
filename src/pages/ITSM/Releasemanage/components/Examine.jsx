@@ -44,7 +44,7 @@ function Examine(props, ref) {
   };
   const functionmap = getTypebyId(451);   // 功能类型
   const modulamap = getTypebyId(466);     // 模块
-  const unitmap = getTypebyId(1052);       // 责任单位
+  const docunitmap = getTypebyId(1280);       // 出具文档单位
 
   return (
     <Row gutter={12} style={{ paddingTop: 24, }}>
@@ -91,7 +91,7 @@ function Examine(props, ref) {
           </Form.Item>
         </Col>
         <Col span={24} style={{ marginBottom: 24 }}>
-          <DocumentAtt rowkey={null} unitmap={unitmap} isEdit={isEdit} />
+          <DocumentAtt rowkey={null} unitmap={docunitmap} isEdit={isEdit} />
         </Col>
         <Col span={8}>
           <Form.Item label="审批人" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>

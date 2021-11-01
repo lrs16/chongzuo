@@ -22,7 +22,7 @@ import DataSet from '@antv/data-set';
 class Donut extends Component {
   render() {
     const { DataView } = DataSet;
-    const { data, height, padding, total,detailParams } = this.props;
+    const { data, height, padding, total, detailParams } = this.props;
     const dv = new DataView();
     dv.source(data).transform({
       type: 'percent',
@@ -41,18 +41,18 @@ class Donut extends Component {
     return (
       <div>
         {/* <Chart height={height} data={data} scale={cols} padding={padding} forceFit>  */}
-        <Chart 
-        height={height}
-         data={data}
+        <Chart
+          height={height}
+          data={data}
           scale={cols}
-           padding={padding}
-            autoFit 
-            onClick={ev => {
-              const dataparams  = ev.data;
-              if(detailParams) {
-                detailParams(dataparams);
-              }
-            }}  
+          padding={padding}
+          autoFit
+          onClick={ev => {
+            const dataparams = ev.data;
+            if (detailParams) {
+              detailParams(dataparams);
+            }
+          }}
         >
           <Legend visible={false} />
           <View data={dv.rows}>
@@ -106,7 +106,7 @@ class Donut extends Component {
                 {
                   content: data => {
                     // return `${data.type}: ${(data.percent * 100).toFixed(2)}%`;
-                    return `${(data.percent * 100).toFixed(0)}%`;
+                    return `${(data.percent * 100).toFixed(2)}%`;
                   },
                   offset: '-10',
                 },

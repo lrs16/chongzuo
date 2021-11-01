@@ -19,10 +19,10 @@ export async function saveTimeoutMsg(params) {
 }
 
 // 保存发布超时信息（临时使用接口）
-export async function saveReleaseTimeoutMsg(params) {
-  return request(`http://172.16.10.132:9901/common/msg/save`, {
-    method: 'POST',
-    data: params,
-    requestType: 'form',
-  });
-}
+// export async function saveReleaseTimeoutMsg(params) {
+//   return request(`http://172.16.10.132:9901/common/msg/save`, {
+//     method: 'POST',
+//     data: params,
+//     requestType: 'form',
+//   });
+// }

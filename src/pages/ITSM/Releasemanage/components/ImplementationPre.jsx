@@ -152,7 +152,7 @@ function ImplementationPre(props, ref) {
     };
   }
 
-  const unitmap = getTypebyId(1052);       // 责任单位
+  const docunitmap = getTypebyId(1280);       // 出具文档单位
   const functionmap = getTypebyId(451);   // 功能类型
   const modulamap = getTypebyId(466);  // 模块
 
@@ -379,7 +379,7 @@ function ImplementationPre(props, ref) {
             <DocumentAtt
               rowkey='5'
               isEdit={isEdit}
-              unitmap={unitmap}
+              unitmap={docunitmap}
               dataSource={info && info.releaseAttaches ? info.releaseAttaches : []}
               Unit={{ dutyUnit: undefined }}
               ChangeValue={(v, files) => changeatt(v, files)}
