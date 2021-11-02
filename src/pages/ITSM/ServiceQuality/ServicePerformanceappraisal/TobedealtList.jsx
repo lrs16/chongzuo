@@ -917,62 +917,64 @@ function TobedealtList(props) {
   };
 
   const handleChange = (values, option, params) => {
-    const {
-      key,
-      props: { value },
-    } = option;
-    switch (params) {
-      case 'assessType':
-        setFieldsValue({
-          target1Name: '',
-          target1Id: '',
-          target2Name: '',
-          target2Id: '',
-        });
-        getTarget1(key);
-        break;
-      case 'contract':
-        setFieldsValue({
-          contractName: key,
-          contractId: value,
-        });
-        break;
-      case 'target1Name':
-        setFieldsValue({
-          target1Name: value,
-          target1Id: key,
-          target2Name: '',
-          target2Id: '',
-          clauseName: '',
-        });
-        getTarget2(key);
-        setTarget2Type(key);
-        break;
-      case 'target2Name':
-        getclausedetail(key, scoreId);
-        setFieldsValue({
-          target2Name: value,
-          target2Id: key,
-          clauseId: '',
-          clauseName: '',
-        });
-        break;
-      case 'clause': {
-        const {
-          props: {
-            children: {
-              props: { children },
+    if (values && option) {
+      const {
+        key,
+        props: { value },
+      } = option;
+      switch (params) {
+        case 'assessType':
+          setFieldsValue({
+            target1Name: '',
+            target1Id: '',
+            target2Name: '',
+            target2Id: '',
+          });
+          getTarget1(key);
+          break;
+        case 'contract':
+          setFieldsValue({
+            contractName: key,
+            contractId: value,
+          });
+          break;
+        case 'target1Name':
+          setFieldsValue({
+            target1Name: value,
+            target1Id: key,
+            target2Name: '',
+            target2Id: '',
+            clauseName: '',
+          });
+          getTarget2(key);
+          setTarget2Type(key);
+          break;
+        case 'target2Name':
+          getclausedetail(key, scoreId);
+          setFieldsValue({
+            target2Name: value,
+            target2Id: key,
+            clauseId: '',
+            clauseName: '',
+          });
+          break;
+        case 'clause': {
+          const {
+            props: {
+              children: {
+                props: { children },
+              },
             },
-          },
-        } = option;
-        setFieldsValue({
-          clauseId: value,
-          assessValue: children[3].props.children,
-        });
-        break;
+          } = option;
+          setFieldsValue({
+            clauseId: value,
+            assessValue: children[3].props.children,
+          });
+          break;
+        }
+        default:
+          break;
       }
-      default:
-        break;
     }
   };
 
@@ -1296,7 +1298,6 @@ function TobedealtList(props) {
                     <Select
                       getPopupContainer={e => e.parentNode}
                       placeholder="请选择"
-                      allowClear
                       onChange={(value, option) => handleChange(value, option, 'contractId')}
                       onFocus={() => handleFocus('contract')}
                     >
@@ -1384,7 +1385,6 @@ function TobedealtList(props) {
                       onChange={(value, option) => handleChange(value, option, 'target1Name')}
                       onFocus={() => handleFocus('one')}
                       placeholder="请选择"
-                      allowClear
                     >
                       {target1.map(obj => [
                         <Option key={obj.id} value={obj.title}>
@@ -1414,7 +1414,6 @@ function TobedealtList(props) {
                       onChange={(value, option) => handleChange(value, option, 'target2Name')}
                       onFocus={() => handleFocus('two')}
                       placeholder="请选择"
-                      allowClear
                     >
                       {target2.map(obj => [
                         <Option key={obj.id} value={obj.title}>
@@ -1588,9 +1587,9 @@ function TobedealtList(props) {
                   {getFieldDecorator('directorVerifyTime', {
                     initialValue: cacheinfo.directorVerifyBeginTime
                       ? [
-                          moment(cacheinfo.directorVerifyBeginTime),
-                          moment(cacheinfo.directorVerifyEndTime),
-                        ]
+                        moment(cacheinfo.directorVerifyBeginTime),
+                        moment(cacheinfo.directorVerifyEndTime),
+                      ]
                       : '',
                   })(
                     <RangePicker
@@ -1665,9 +1664,9 @@ function TobedealtList(props) {
                   {getFieldDecorator('expertVerifyTime', {
                     initialValue: cacheinfo.expertVerifyBeginTime
                       ? [
-                          moment(cacheinfo.expertVerifyBeginTime),
-                          moment(cacheinfo.expertVerifyEndTime),
-                        ]
+                        moment(cacheinfo.expertVerifyBeginTime),
+                        moment(cacheinfo.expertVerifyEndTime),
+                      ]
                       : '',
                   })(
                     <RangePicker
@@ -1748,9 +1747,9 @@ function TobedealtList(props) {
                   {getFieldDecorator('providerConfirmTime', {
                     initialValue: cacheinfo.providerConfirmBeginTime
                       ? [
-                          moment(cacheinfo.providerConfirmBeginTime),
-                          moment(cacheinfo.providerConfirmEndTime),
-                        ]
+                        moment(cacheinfo.providerConfirmBeginTime),
+                        moment(cacheinfo.providerConfirmEndTime),
+                      ]
                       : '',
                   })(
                     <RangePicker
@@ -1824,9 +1823,9 @@ function TobedealtList(props) {
                   {getFieldDecorator('directorReviewTime', {
                     initialValue: cacheinfo.directorReviewBeginTime
                       ? [
-                          moment(cacheinfo.directorReviewBeginTime),
-                          moment(cacheinfo.directorReviewEndTime),
-                        ]
+                        moment(cacheinfo.directorReviewBeginTime),
+                        moment(cacheinfo.directorReviewEndTime),
+                      ]
                       : '',
                   })(
                     <RangePicker
@@ -1907,9 +1906,9 @@ function TobedealtList(props) {
                   {getFieldDecorator('finallyConfirmTime', {
                     initialValue: cacheinfo.finallyConfirmBeginTime
                       ? [
-                          moment(cacheinfo.finallyConfirmBeginTime),
-                          moment(cacheinfo.finallyConfirmEndTime),
-                        ]
+                        moment(cacheinfo.finallyConfirmBeginTime),
+                        moment(cacheinfo.finallyConfirmEndTime),
+                      ]
                       : '',
                   })(
                     <RangePicker
@@ -1977,8 +1976,8 @@ function TobedealtList(props) {
                         value={item.title}
                         key={item.key}
                         checked={columns}
-                        // disabled={item.disabled}
-                        // className={styles.checkboxStyle}
+                      // disabled={item.disabled}
+                      // className={styles.checkboxStyle}
                       >
                         {item.title}
                       </Checkbox>

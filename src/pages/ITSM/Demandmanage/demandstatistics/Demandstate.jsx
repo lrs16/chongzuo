@@ -23,27 +23,39 @@ const columns = [
     dataIndex: 'statusName',
     key: 'statusName',
   },
-
   {
     title: '工单数',
     dataIndex: 'number',
     key: 'number',
-    render: (text, record) => (
-      <Link
-        to={{
-          pathname: '/ITSM/demandmanage/query',
-          query: {
-            taskName: record.statusName,
-            startTime: searchSign ? statTimeBegin : '',
-            endTime: searchSign ? statTimeEnd : '',
-            pathpush: true
-          },
-          state: { cache: false }
-        }}
-      >
-        {text}
-      </Link>
-    )
+    render: (text, record) => {
+      if(record.statusName !== '合计') {
+        return (
+          <Link
+          to={{
+            pathname: '/ITSM/demandmanage/query',
+            query: {
+              taskName: record.statusName,
+              startTime: searchSign ? statTimeBegin : '',
+              endTime: searchSign ? statTimeEnd : '',
+              pathpush: true
+            },
+            state: { cache: false }
+          }}
+        >
+          {text}
+        </Link>
+        )
+      }
+
+      if(record.statusName === '合计') {
+        return <span>{text}</span>
+      }
+
+      return []
+    } 
+
+
+    
   },
 ];
 
@@ -55,6 +67,7 @@ function Demandstate(props) {
     dispatch,
     location
   } = props;
+
 
   const onChange = (date, dateString) => {
     [statTimeBegin, statTimeEnd] = dateString;
