@@ -4,8 +4,9 @@ import SysUpload from '@/components/SysUpload';
 import { Row, Col, Form, Input, DatePicker, Select, Card } from 'antd';
 import SysDict from '@/components/SysDict';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
+
 import styles from '../index.less';
-// const RadioGroup = Radio.Group; Radio,
+
 const { TextArea } = Input;
 const { Option } = Select;
 
@@ -43,6 +44,10 @@ const Registrat = forwardRef((props, ref) => {
   });
 
   const required = true;
+  
+  useEffect(() => {
+    ChangeFiles(fileslist);
+  }, [fileslist]);
 
   useImperativeHandle(
     ref,
@@ -53,10 +58,6 @@ const Registrat = forwardRef((props, ref) => {
     }),
     [],
   );
-
-  useEffect(() => {
-    ChangeFiles(fileslist);
-  }, [fileslist]);
 
   const disabledStartDate = startValue => {
     const { endValue } = time;

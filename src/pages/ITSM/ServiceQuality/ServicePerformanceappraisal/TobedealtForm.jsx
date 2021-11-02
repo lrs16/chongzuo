@@ -326,13 +326,13 @@ function TobedealtForm(props) {
     const obj = {};
     formRef.current.validateFields((err, values) => {
       if (taskName === '业务负责人复核') {
-        obj['reviewContent'] = values.verifyContent || values.verifyContent2 || '';
-        obj['reviewer'] = values.verifier;
-        obj['reviewTime'] = moment(values.verifyTime).format('YYYY-MM-DD HH:mm:ss');
+        obj.reviewContent = values.verifyContent || values.verifyContent2 || '';
+        obj.reviewer = values.verifier;
+        obj.reviewTime = moment(values.verifyTime).format('YYYY-MM-DD HH:mm:ss');
       } else {
-        obj['verifyContent'] = values.verifyContent || values.verifyContent2 || '';
-        obj['verifier'] = values.verifier;
-        obj['verifyTime'] = moment(values.verifyTime).format('YYYY-MM-DD HH:mm:ss');
+        obj.verifyContent = values.verifyContent || values.verifyContent2 || '';
+        obj.verifier = values.verifier;
+        obj.verifyTime = moment(values.verifyTime).format('YYYY-MM-DD HH:mm:ss');
       }
       if (!err) {
         return dispatch({
@@ -364,6 +364,7 @@ function TobedealtForm(props) {
           }
         });
       }
+      return []
     });
   };
 

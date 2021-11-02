@@ -452,12 +452,12 @@ function DutyclassesSetting(props) {
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
+
             <Col span={8}>
               <Form.Item label="创建时间" >
                 <Row>
                   <Col span={11}>
                     {getFieldDecorator('beginTime', {
-                      initialValue:''
                     })(
                       <DatePicker
                         disabledDate={(value) => disabledStartDate(value, 'create')}
@@ -476,7 +476,6 @@ function DutyclassesSetting(props) {
                   <Col span={2} style={{ textAlign: 'center' }}>-</Col>
                   <Col span={11}>
                     {getFieldDecorator('endTime', {
-                      initialValue:''
                     })(
                       <DatePicker
                         disabledDate={(value) => disabledEndDate(value, 'create')}

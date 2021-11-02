@@ -50,7 +50,6 @@ function Besolved(props) {
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [tabrecord, setTabRecord] = useState({});
   const [selectedKeys, setSelectedKeys] = useState([]);
-  const [selectedRows, setSelectedRows] = useState([]);
 
   const columns = [
     // {
@@ -478,7 +477,7 @@ function Besolved(props) {
                 </Form.Item>
               </Col>
             </span>
-            {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8}><Form.Item wrapperCol={24}>{extra}</Form.Item></Col>)}
+            {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
           </Form>
         </Row>
 

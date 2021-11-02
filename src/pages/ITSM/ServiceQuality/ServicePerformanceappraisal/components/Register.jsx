@@ -430,14 +430,15 @@ const Register = forwardRef((props, ref) => {
                 getPopupContainer={e => e.parentNode}
                 disabled={noEdit}
                 placeholder="请选择"
-                allowClear
+                dropdownMatchSelectWidth={false}
+                dropdownStyle={{ width: 600 }}
                 onChange={(value, option) => handleChange(value, option, 'contract')}
                 onFocus={() => handleFocus('contract')}
               >
                 {contractArr.map(obj => [
                   <Option key={obj.contractName} value={obj.id}>
                     <div className={styles.disableuser}>
-                      <span>{obj.contractNo}</span>
+                      {/* <span>{obj.contractNo}</span> */}
                       <span>{obj.contractName}</span>
                     </div>
                   </Option>,
@@ -610,7 +611,6 @@ const Register = forwardRef((props, ref) => {
                 onChange={(value, option) => handleChange(value, option, 'target1Name')}
                 onFocus={() => handleFocus('one')}
                 placeholder="请选择"
-                allowClear
               >
                 {target1.map(obj => [
                   <Option key={obj.id} value={obj.title}>
@@ -646,7 +646,6 @@ const Register = forwardRef((props, ref) => {
                 onChange={(value, option) => handleChange(value, option, 'target2Name')}
                 onFocus={() => handleFocus('two')}
                 placeholder="请选择"
-                allowClear
               >
                 {target2.map(obj => [
                   <Option key={obj.id} value={obj.title}>

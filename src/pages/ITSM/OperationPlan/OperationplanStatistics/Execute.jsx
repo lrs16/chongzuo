@@ -178,7 +178,7 @@ function Execute(props) {
         <Table
           columns={columns}
           dataSource={userExecuteStatusArr}
-          rowKey={record => record.statName}
+          rowKey={(record,index) => { return index}}
         />
       </Card>
     </PageHeaderWrapper>

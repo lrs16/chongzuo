@@ -116,7 +116,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
                 businessAudit.verifierName ||
                 businessAudit.reviewerName ||
                 userinfo.userName,
-            })(<Input disabled={noEdit} />)}
+            })(<Input disabled />)}
           </Form.Item>
         </Col>
 
