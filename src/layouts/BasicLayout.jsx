@@ -634,7 +634,16 @@ const BasicLayout = props => {
           route={leftRoute}
         // footerRender={footerRender}
         >
-          <Button href="#toTop" size="large" type="danger" icon="arrow-up" style={{ zIndex: 9999, position: 'fixed', right: 20, bottom: 0 }} />
+          <Button
+            // href="#toTop"
+            size="large"
+            type="danger"
+            icon="arrow-up"
+            style={{ zIndex: 9999, position: 'fixed', right: 20, bottom: 0 }}
+            onClick={() => {
+              document.getElementById('toTop').scrollIntoView({ block: 'start', behavior: 'smooth' })
+            }}
+          />
           <div
             id='toTop'
             onMouseDown={(e) => {

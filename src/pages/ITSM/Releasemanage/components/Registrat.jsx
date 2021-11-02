@@ -66,7 +66,7 @@ function Registrat(props, ref) {
   const [alertvisible, setAlertVisible] = useState(false);  // 超时告警是否显示
   const [alertmessage, setAlertMessage] = useState('');
   const [check, setCheck] = useState(false);
-  const [adopt, setAdopt] = useState('通过');
+  // const [adopt, setAdopt] = useState('通过');
   const { ChangeSubmitType, ChangeButtype } = useContext(SubmitTypeContext);
 
   const formmap = new Map([
@@ -112,7 +112,7 @@ function Registrat(props, ref) {
   }
 
   const handleAdopt = e => {
-    setAdopt(e.target.value);
+    // setAdopt(e.target.value);
     if (e.target.value === '通过') {
       ChangeSubmitType(1)
     };
@@ -123,7 +123,7 @@ function Registrat(props, ref) {
 
   useEffect(() => {
     if (info && info.platformValid && info.platformValid.validResult && isEdit) {
-      setAdopt(info.platformValid.validResult);
+      // setAdopt(info.platformValid.validResult);
       if (info.platformValid.validResult === '通过') {
         ChangeSubmitType(1)
       };
@@ -132,7 +132,7 @@ function Registrat(props, ref) {
       }
     };
     if (info && info.releaseBizValid && info.releaseBizValid.validResult && isEdit) {
-      setAdopt(info.releaseBizValid.validResult);
+      // setAdopt(info.releaseBizValid.validResult);
       if (info.releaseBizValid.validResult === '通过') {
         ChangeSubmitType(1)
       };
