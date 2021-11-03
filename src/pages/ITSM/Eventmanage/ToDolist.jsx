@@ -214,15 +214,7 @@ function ToDolist(props) {
     });
   };
 
-  const handleReset = () => {
-    resetFields();
-    validateFields((err, values) => {
-      if (!err) {
-        searchdata(values, 1, 15)
-      }
-    });
-    setPageinations({ current: 1, pageSize: 15 });
-  };
+
 
   // 设置表单初始值
   const record = {
@@ -239,6 +231,12 @@ function ToDolist(props) {
     expand,
   };
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+
+  const handleReset = () => {
+    resetFields();
+    searchdata(record, 1, 15);
+    setPageinations({ current: 1, pageSize: 15 });
+  };
 
   useEffect(() => {
     if (location.state) {

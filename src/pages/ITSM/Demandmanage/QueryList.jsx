@@ -274,6 +274,22 @@ function QueryList(props) {
     });
   };
 
+
+  const time = startTime ? [moment(startTime), moment(endTime)] : '';
+  const modulestatus = !module ? [] : module.split('/');
+  const record = {
+    demandId: '',
+    taskName,
+    module: modulestatus,
+    demandTitle: '',
+    demandType: '',
+    sender: '',
+    completeStatus,
+    createTime: time,
+    paginations,
+  };
+  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+
   const handleReset = () => {
     router.push({
       pathname: location.pathname,
@@ -281,11 +297,7 @@ function QueryList(props) {
       state: {}
     });
     resetFields();
-    validateFields((err, values) => {
-      if (!err) {
-        searchdata(values, 1, 15)
-      }
-    });
+    searchdata(record, 1, 15)
     setPageinations({ current: 1, pageSize: 15 });
   };
 
@@ -350,22 +362,6 @@ function QueryList(props) {
       }
     })
   };
-
-
-  const time = startTime ? [moment(startTime), moment(endTime)] : '';
-  const modulestatus = !module ? [] : module.split('/');
-  const record = {
-    demandId: '',
-    taskName,
-    module: modulestatus,
-    demandTitle: '',
-    demandType: '',
-    sender: '',
-    completeStatus,
-    createTime: time,
-    paginations,
-  };
-  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
 
   // 设置时间
   useEffect(() => {
@@ -592,7 +588,7 @@ function QueryList(props) {
               <Button type="primary" onClick={handleSearch}>
                 查 询
               </Button>
-              <Button style={{ marginLeft: 8 }} onClick={handleReset}>
+              <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>
                 重 置
               </Button>
               <Button

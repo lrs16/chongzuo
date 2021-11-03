@@ -296,7 +296,7 @@ function RelationDrawer(props) {
             zIndex: 999
           }}
         >
-          <Button type='primary' onClick={() => handleSave()} style={{ marginRight: 8 }}>保存</Button>
+          <Button type='primary' onClick={() => handleSave()} style={{ marginRight: 8 }} disabled={selectedRowKeys.length === 0}>保存</Button>
           <Button onClick={() => hanldleCancel()} style={{ marginRight: 8 }}>关闭</Button>
         </div>
       </Drawer>

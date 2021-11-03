@@ -178,21 +178,6 @@ function ToDolist(props) {
     });
   };
 
-  const handleReset = () => {
-    router.push({
-      pathname: location.pathname,
-      query: {},
-      state: {}
-    });
-    resetFields();
-    validateFields((err, values) => {
-      if (!err) {
-        searchdata(values, 1, 15)
-      }
-    });
-    setPageinations({ current: 1, pageSize: 15 });
-  };
-
   // 设置初始值
   const record = {
     demandId: '',
@@ -206,6 +191,17 @@ function ToDolist(props) {
   };
 
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+
+  const handleReset = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: {}
+    });
+    resetFields();
+    searchdata(record, 1, 15);
+    setPageinations({ current: 1, pageSize: 15 });
+  };
 
   useEffect(() => {
     if (location.state) {

@@ -354,29 +354,6 @@ function QueryList(props) {
     searchdata(values, 0, paginations.pageSize, params);
   };
 
-  const handleReset = () => {
-    router.push({
-      pathname: location.pathname,
-      query: {},
-      state: {}
-    });
-    resetFields();
-    if (time1 || time2 || eventObject || selfhandle || registerUser || eventStatus || applicationUnit) {
-      setFieldsValue({
-        time1: '',
-        time2: '',
-        eventObject: '',
-        selfhandle: '',
-        registerUser: '',
-        eventStatus: '',
-        applicationUnit: ''
-      })
-    }
-    const values = getFieldsValue();
-    searchdata(values, 0, 15);
-    setPageinations({ current: 1, pageSize: 15 });
-  };
-
   const displayRender = label => {
     return label[label.length - 1];
   };
@@ -420,6 +397,28 @@ function QueryList(props) {
     paginations
   }
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+
+  const handleReset = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: {}
+    });
+    resetFields();
+    if (time1 || time2 || eventObject || selfhandle || registerUser || eventStatus || applicationUnit) {
+      setFieldsValue({
+        time1: '',
+        time2: '',
+        eventObject: '',
+        selfhandle: '',
+        registerUser: '',
+        eventStatus: '',
+        applicationUnit: ''
+      })
+    }
+    searchdata(record, 0, 15);
+    setPageinations({ current: 1, pageSize: 15 });
+  };
 
   useEffect(() => {
     if (location.state) {
