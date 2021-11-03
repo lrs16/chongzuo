@@ -5,11 +5,11 @@ import moment from 'moment';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { ChartCard } from '@/components/Charts';
 import SelectTime from '@/components/SelectTime/SelectTime';
-import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
-import ColumnarY from '@/components/CustomizeCharts/ColumnarY';
-import styles from './index.less'
-import StatisticsCard from './components/StatisticsCard';
+import StatisticsCard from './components/ChartFiles/StatisticsCard';
 import DonutPCT from './components/ChartFiles/DonutPCT';
+import SmoothLine from './components/ChartFiles/SmoothLine';
+import ColumnarY from './components/ChartFiles/ColumnarY';
+import styles from './index.less'
 
 const Issuedscale = {
   total: {
@@ -146,7 +146,7 @@ function StatisticalAnalysis(props) {
                 analysislist && analysislist !== undefined && (
                   <Row>
                     <Col span={8}><StatisticsCard title='故障总数：' value={analysislist.allNum} suffix='单' des='环比' desval={`${analysislist.allRingPoints}%`} type={Number(analysislist.allRingPoints) > 0 ? 'up' : 'down'} /></Col>
-                    <Col span={8}><StatisticsCard title='已处理：' value={analysislist.closeNum} suffix='单' des='环比' desval={`${analysislist.closeRingPoints}%`} type={Number(analysislist.closeRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                    <Col span={8}><StatisticsCard staticName="已处理" title='已处理：' value={analysislist.closeNum} suffix='单' des='环比' desval={`${analysislist.closeRingPoints}%`} type={Number(analysislist.closeRingPoints) > 0 ? 'up' : 'down'} /></Col>
                     <Col span={8}><StatisticsCard title='解决率：' value={analysislist.point} suffix='%' des='环比' desval={`${analysislist.ringPoints}%`} type={Number(analysislist.ringPoints) > 0 ? 'up' : 'down'} /></Col>
                   </Row>
                 )
@@ -177,9 +177,9 @@ function StatisticalAnalysis(props) {
               {
                 analysislist && analysislist !== undefined && (
                   <Row>
-                    <Col span={8}><StatisticsCard title='功能开发：' value={analysislist.development} suffix='单' des='环比' desval={`${analysislist.developmentRingPoints}%`} type={Number(analysislist.developmentRingPoints) > 0 ? 'up' : 'down'} /></Col>
-                    <Col span={8}><StatisticsCard title='软件运维：' value={analysislist.soft} suffix='单' des='环比' desval={`${analysislist.softRingPoints}%`} type={Number(analysislist.softRingPoints) > 0 ? 'up' : 'down'} /></Col>
-                    <Col span={8}><StatisticsCard title='硬件运维：' value={analysislist.hardware} suffix='单' des='环比' desval={`${analysislist.hardwareRingPoints}%`} type={Number(analysislist.hardwareRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                    <Col span={8}><StatisticsCard staticName="功能开发" title='功能开发：' value={analysislist.development} suffix='单' des='环比' desval={`${analysislist.developmentRingPoints}%`} type={Number(analysislist.developmentRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                    <Col span={8}><StatisticsCard staticName="软件运维" title='软件运维：' value={analysislist.soft} suffix='单' des='环比' desval={`${analysislist.softRingPoints}%`} type={Number(analysislist.softRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                    <Col span={8}><StatisticsCard staticName="硬件运维" title='硬件运维：' value={analysislist.hardware} suffix='单' des='环比' desval={`${analysislist.hardwareRingPoints}%`} type={Number(analysislist.hardwareRingPoints) > 0 ? 'up' : 'down'} /></Col>
                   </Row>
                 )
               }
@@ -218,6 +218,7 @@ function StatisticalAnalysis(props) {
                       data={blameconditlist.lineChart || []}
                       height={300}
                       padding={[30, 0, 70, 60]}
+                      staticName="故障责任单位情况"
                       onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
                     />
                   )
@@ -261,6 +262,7 @@ function StatisticalAnalysis(props) {
                     data={typeconditlist.allLineChart || []}
                     height={300}
                     padding={[30, 0, 70, 60]}
+                    staticName="故障类型总情况"
                     onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
                   />
                 )
@@ -296,6 +298,7 @@ function StatisticalAnalysis(props) {
                     data={typeconditlist.hardwareLineChart || []}
                     height={300}
                     padding={[30, 0, 70, 60]}
+                    staticName="硬件故障情况"
                     onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
                   />
                 )
@@ -331,6 +334,7 @@ function StatisticalAnalysis(props) {
                     data={typeconditlist.softLineChart || []}
                     height={300}
                     padding={[30, 0, 70, 60]}
+                    staticName="软件故障情况"
                     onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
                   />
                 )
@@ -370,6 +374,7 @@ function StatisticalAnalysis(props) {
                   data={modelconditlist.lineChart || []}
                   height={300}
                   padding={[30, 0, 70, 60]}
+                  staticName="故障系统模块情况"
                   onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
                 />
               )}
@@ -413,6 +418,7 @@ function StatisticalAnalysis(props) {
                   height={350}
                   data={dataCylinder(registeruserlist, 'val1') || []}
                   padding={[30, 60, 50, 100]}
+                  staticName="故障登记人"
                   cols={Issuedscale}
                   onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
                 />
@@ -435,6 +441,7 @@ function StatisticalAnalysis(props) {
                   height={350}
                   data={dataCylinder(handlerlist, 'val2') || []}
                   padding={[30, 60, 50, 100]}
+                  staticName="故障处理人"
                   cols={Issuedscale}
                   onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
                 />
@@ -454,6 +461,7 @@ function StatisticalAnalysis(props) {
                   height={350}
                   data={dataCylinder(registeruserunitlist, 'val3') || []}
                   padding={[30, 60, 50, 200]}
+                  staticName="故障登记单位"
                   cols={Issuedscale}
                   onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
                 />
@@ -476,6 +484,7 @@ function StatisticalAnalysis(props) {
                   height={350}
                   data={dataCylinder(handleunitlist, 'val4') || []}
                   padding={[30, 60, 50, 210]}
+                  staticName="故障处理单位"
                   cols={Issuedscale}
                   onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
                 />

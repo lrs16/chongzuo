@@ -49,6 +49,10 @@ function DonutPCT(props) {
   const handleGetDrawerVal = val => {
     setVisible(!visible);
     onGetDrawerVal(val);
+    if (val.staticName === undefined) {
+      setVisible(false);
+      onGetDrawerVal({});
+    }
   }
 
   return (

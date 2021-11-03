@@ -51,96 +51,98 @@ const CheckdelayworkEditfillin = React.forwardRef((props, ref) => {
     const required = true;
 
     return (
-        <Row gutter={16}>
-            <Form {...formItemLayout}>
-                <Col span={8}>
-                    <Form.Item label='延期审核结果'>
-                        {getFieldDecorator('check_result', {
-                            rules: [
-                                {
-                                    required,
-                                    message: '请输入审核结果'
-                                }
-                            ],
-                            initialValue: (check === '' || check.result === null || check.result === '') ? '001' : check.result
-                        })(
-                            <Radio.Group
-                                onChange={handleAdopt}
-                            >
-                                <Radio value='001'>通过</Radio>
-                                <Radio value='002'>不通过</Radio>
-                            </Radio.Group>
-                        )
-                        }
-                    </Form.Item>
-                </Col>
-
-                <Col span={8}>
-                    <Form.Item label="延期审核时间">
-                        {getFieldDecorator('check_checkTime', {
-                            rules: [
-                                {
-                                    required,
-                                    message: '请输入审核时间'
-                                }
-                            ],
-                            initialValue: check.checkTime ? moment(check.checkTime) : moment(new Date()),
-                        })(
-                            <DatePicker
-                                showTime
-                                format="YYYY-MM-DD HH:mm:ss"
-                            />)}
-                    </Form.Item>
-                </Col>
-
-                <Col span={8}>
-                    <Form.Item label='延期审核状态'>
-                        {
-                            getFieldDecorator('check_status', {
-                                initialValue: check.status ? check.status : ''
+        <div style={{ paddingRight: 24, marginTop: 24 }}>
+            <Row gutter={16}>
+                <Form {...formItemLayout}>
+                    <Col span={8}>
+                        <Form.Item label='延期审核结果'>
+                            {getFieldDecorator('check_result', {
+                                rules: [
+                                    {
+                                        required,
+                                        message: '请输入审核结果'
+                                    }
+                                ],
+                                initialValue: (check === '' || check.result === null || check.result === '') ? '001' : check.result
                             })(
-                                <Tag
-                                    color={color[0]}>待审核</Tag>
+                                <Radio.Group
+                                    onChange={handleAdopt}
+                                >
+                                    <Radio value='001'>通过</Radio>
+                                    <Radio value='002'>不通过</Radio>
+                                </Radio.Group>
                             )
-                        }
-                    </Form.Item>
-                </Col>
-
-                <Col span={24}>
-                    {adopt === '001' && (
-                        <Form.Item label="审核说明" {...forminladeLayout}>
-                            {getFieldDecorator('check_content', {
-                                rules: [{ required: false, message: '请输入', }],
-                                initialValue: check.content
-                            })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+                            }
                         </Form.Item>
-                    )}
-                    {adopt === '002' && (
-                        <Form.Item label="审核说明" {...forminladeLayout}>
-                            {getFieldDecorator('check_content', {
-                                rules: [{ required: true, message: '请输入', }],
-                                initialValue: check.content
-                            })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
-                        </Form.Item>
-                    )}
-                </Col>
-                <Col span={8}>
-                    <Form.Item label="延期审核人">
-                        {getFieldDecorator('check_checkUser', {
-                            initialValue: userinfo.userName,
-                        })(<Input disabled />)}
-                    </Form.Item>
-                </Col>
+                    </Col>
 
-                <Col span={8}>
-                    <Form.Item label="延期审核单位">
-                        {getFieldDecorator('check_checkUnit', {
-                            initialValue: userinfo.unitName,
-                        })(<Input disabled />)}
-                    </Form.Item>
-                </Col>
-            </Form>
-        </Row>
+                    <Col span={8}>
+                        <Form.Item label="延期审核时间">
+                            {getFieldDecorator('check_checkTime', {
+                                rules: [
+                                    {
+                                        required,
+                                        message: '请输入审核时间'
+                                    }
+                                ],
+                                initialValue: check.checkTime ? moment(check.checkTime) : moment(new Date()),
+                            })(
+                                <DatePicker
+                                    showTime
+                                    format="YYYY-MM-DD HH:mm:ss"
+                                />)}
+                        </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                        <Form.Item label='延期审核状态'>
+                            {
+                                getFieldDecorator('check_status', {
+                                    initialValue: check.status ? check.status : ''
+                                })(
+                                    <Tag
+                                        color={color[0]}>待审核</Tag>
+                                )
+                            }
+                        </Form.Item>
+                    </Col>
+
+                    <Col span={24}>
+                        {adopt === '001' && (
+                            <Form.Item label="审核说明" {...forminladeLayout}>
+                                {getFieldDecorator('check_content', {
+                                    rules: [{ required: false, message: '请输入', }],
+                                    initialValue: check.content
+                                })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+                            </Form.Item>
+                        )}
+                        {adopt === '002' && (
+                            <Form.Item label="审核说明" {...forminladeLayout}>
+                                {getFieldDecorator('check_content', {
+                                    rules: [{ required: true, message: '请输入', }],
+                                    initialValue: check.content
+                                })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+                            </Form.Item>
+                        )}
+                    </Col>
+                    <Col span={8}>
+                        <Form.Item label="延期审核人">
+                            {getFieldDecorator('check_checkUser', {
+                                initialValue: userinfo.userName,
+                            })(<Input disabled />)}
+                        </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                        <Form.Item label="延期审核单位">
+                            {getFieldDecorator('check_checkUnit', {
+                                initialValue: userinfo.unitName,
+                            })(<Input disabled />)}
+                        </Form.Item>
+                    </Col>
+                </Form>
+            </Row>
+        </div>
     );
 });
 

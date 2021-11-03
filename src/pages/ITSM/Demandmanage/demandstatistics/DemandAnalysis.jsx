@@ -2,13 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import { Card, Row, Col, Avatar, Empty, Spin, InputNumber } from 'antd';
-import StatisticsCard from '@/components/StatisticsCard';
 import SelectTime from '@/components/SelectTime/SelectTime';
-// import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
-import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
-import ColumnarY from '@/components/CustomizeCharts/ColumnarY';
-import styles from '../index.less';
 import DonutPCT from '../components/ChartFiles/DonutPCT';
+import StatisticsCard from '../components/ChartFiles/StatisticsCard'
+import SmoothLine from '../components/ChartFiles/SmoothLine';
+import ColumnarY from '../components/ChartFiles/ColumnarY';
+import styles from '../index.less';
 
 const Issuedscale = {
   total: {
@@ -180,8 +179,8 @@ function Statistics(props) {
             ratiodatalist && ratiodatalist !== undefined && (
               <Row type="flex" justify="space-around">
                 <Col span={4}><StatisticsCard title='需求总数：' value={ratiodatalist.total} suffix='单' des='环比' desval={`${ratiodatalist.totalMom}%`} type={Number(ratiodatalist.totalMom) > 0 ? 'up' : 'down'} /></Col>
-                <Col span={5}><StatisticsCard title='已开发：' value={ratiodatalist.dev} suffix='单' des='环比' desval={`${ratiodatalist.devMom}%`} type={Number(ratiodatalist.devMom) > 0 ? 'up' : 'down'} /></Col>
-                <Col span={5}><StatisticsCard title='已发布：' value={ratiodatalist.release} suffix='单' des='环比' desval={`${ratiodatalist.releaseMom}%`} type={Number(ratiodatalist.releaseMom) > 0 ? 'up' : 'down'} /></Col>
+                <Col span={5}><StatisticsCard title='已开发：' staticName="已开发" value={ratiodatalist.dev} suffix='单' des='环比' desval={`${ratiodatalist.devMom}%`} type={Number(ratiodatalist.devMom) > 0 ? 'up' : 'down'} /></Col>
+                <Col span={5}><StatisticsCard title='已发布：' staticName="已发布" value={ratiodatalist.release} suffix='单' des='环比' desval={`${ratiodatalist.releaseMom}%`} type={Number(ratiodatalist.releaseMom) > 0 ? 'up' : 'down'} /></Col>
                 <Col span={5}><StatisticsCard title='开发率：' value={ratiodatalist.devRate} suffix='' des='环比' desval={`${ratiodatalist.devRateMom}%`} type={Number(ratiodatalist.devRateMom) > 0 ? 'up' : 'down'} /></Col>
                 <Col span={5}><StatisticsCard title='发布率：' value={ratiodatalist.releaseRate} suffix='' des='环比' desval={`${ratiodatalist.releaseRateMom}%`} type={Number(ratiodatalist.releaseRateMom) > 0 ? 'up' : 'down'} /></Col>
               </Row>
@@ -263,6 +262,7 @@ function Statistics(props) {
                   data={linedataArr(linedatalist['功能模块情况趋势']) || []}
                   height={300}
                   padding={[30, 0, 60, 60]}
+                  staticName="功能模块情况"
                   onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
                 />
               )
@@ -303,6 +303,7 @@ function Statistics(props) {
                   data={linedataArr(linedatalist['需求类型趋势']) || []}
                   height={300}
                   padding={[30, 0, 60, 60]}
+                  staticName='需求类型统计分析'
                   onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
                 />
               )
@@ -345,6 +346,7 @@ function Statistics(props) {
                 height={300}
                 data={dataCylindertop(piedatalist['需求申请人TOP'], 'val1') || []}
                 padding={[30, 60, 50, 100]}
+                staticName="需求申请人"
                 cols={Issuedscale}
                 onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
               />
@@ -367,6 +369,7 @@ function Statistics(props) {
                 height={300}
                 data={dataCylindertop(piedatalist['需求处理人TOP'], 'val2') || []}
                 padding={[30, 60, 50, 100]}
+                staticName="需求处理人"
                 cols={Issuedscale}
                 onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
               />
@@ -386,6 +389,7 @@ function Statistics(props) {
                 height={300}
                 data={dataCylindertop(piedatalist['需求申请单位TOP'], 'val3') || []}
                 padding={[30, 60, 50, 200]}
+                staticName="需求申请单位"
                 cols={Issuedscale}
                 onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
               />
@@ -408,6 +412,7 @@ function Statistics(props) {
                 height={300}
                 data={dataCylindertop(piedatalist['需求处理单位TOP'], 'val4') || []}
                 padding={[30, 60, 50, 200]}
+                staticName="需求处理单位"
                 cols={Issuedscale}
                 onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
               />

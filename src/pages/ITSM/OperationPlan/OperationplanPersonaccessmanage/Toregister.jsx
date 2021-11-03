@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
+import router from 'umi/router';
 import moment from 'moment';
 import {
   Form,
@@ -67,20 +68,29 @@ function Toregister(props) {
 
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
-  // const [tabrecord, setTabrecord] = useState({});
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
-  // const [selectdata, setSelectData] = useState('');
 
-  // const getApplayTitle = title => { // 数据字典
-  //   if (selectdata.ischange) {
-  //     return selectdata.arr.filter(item => item.title === title)[0].children;
-  //   }
-  //   return [];
-  // }
-
-  // const checkStatus = getApplayTitle('审核状态');
-  // const checkResult = getApplayTitle('审核结果');
+  // 缓存页签查询条件
+  const [tabrecord, setTabRecord] = useState({});
+  const searchrecord = {
+    registNo: '',
+    checkStatus: '',
+    name: '',
+    sex: '',
+    phone: '',
+    content: '',
+    carryTool: '',
+    applyUser: '',
+    checkResult: '',
+    checkContent: '',
+    checker: '',
+    checkUnit: '',
+    paginations,
+    expand,
+  };
+  let cacheinfo = {};
+  cacheinfo = location.state && location.state.cacheinfo ? location.state.cacheinfo : searchrecord;
 
   const columns = [
     {
@@ -189,12 +199,6 @@ function Toregister(props) {
     },
   ];
 
-  const queryItsmuser = () => {
-    dispatch({
-      type: 'itsmuser/fetchuser',
-    });
-  };
-
   const getfindRegistList = () => {
     dispatch({
       type: 'apply/findRegistList',
@@ -205,10 +209,11 @@ function Toregister(props) {
     });
   };
 
-  useEffect(() => {
-    getfindRegistList();
-    queryItsmuser();
-  }, []);
+  const queryItsmuser = () => {
+    dispatch({
+      type: 'itsmuser/fetchuser',
+    });
+  };
 
   const onSelectChange = (RowKeys, Rows) => {
     setSelectedRowKeys(RowKeys);
@@ -222,85 +227,6 @@ function Toregister(props) {
 
   const hasSelected = selectedRows.length === 1;
   const hasSelected1 = selectedRows.length > 0;
-
-  // 申请人员进出添加
-  const handleAdd = values => {
-    dispatch({
-      type: 'apply/saveApplyForm',
-      payload: {
-        ...values,
-        planInTime: (values.planInTime === '' || values.planInTime === 'Invalid date') ? '' : moment(values.planInTime).format('YYYY-MM-DD HH:mm:ss'),
-        planOutTime: (values.planOutTime === '' || values.planOutTime === 'Invalid date') ? '' : moment(values.planOutTime).format('YYYY-MM-DD HH:mm:ss'),
-        applyTime: (values.applyTime === '' || values.applyTime === 'Invalid date') ? '' : moment(values.applyTime).format('YYYY-MM-DD HH:mm:ss'),
-      },
-    }).then(res => {
-      if (res.code === 200) {
-        Message.success(res.msg);
-        getfindRegistList();
-      } else {
-        Message.error(res.msg);
-      }
-    });
-    setSelectedRowKeys([]);
-    setSelectedRows([]);
-  };
-
-  // 申请人员进出编辑
-  const handleEdite = values => {
-    dispatch({
-      type: 'apply/saveApplyForm',
-      payload: {
-        ...values,
-        id: selectedRows[0].id,
-        planInTime: (values.planInTime === '' || values.planInTime === 'Invalid date') ? '' : moment(values.planInTime).format('YYYY-MM-DD HH:mm:ss'),
-        planOutTime: (values.planOutTime === '' || values.planOutTime === 'Invalid date') ? '' : moment(values.planOutTime).format('YYYY-MM-DD HH:mm:ss'),
-      },
-    }).then(res => {
-      if (res.code === 200) {
-        Message.success(res.msg);
-        getfindRegistList();
-      } else {
-        Message.error(res.msg);
-      }
-    });
-    setSelectedRowKeys([]);
-    setSelectedRows([]);
-  };
-
-  // 申请人员进出删除
-  const handleDelete = () => {
-    const len = selectedRowKeys.length;
-    if (len === 0) { // 未选择数据
-      Message.info('您还没有选择数据');
-    } else { // 单条、多条
-      const ids = selectedRows.map(item => { return item.id; });
-      dispatch({
-        type: 'apply/deleteApplyForms',
-        payload: { registIds: ids.toString() },
-      }).then(res => {
-        if (res.code === 200) {
-          Message.success(res.msg);
-          getfindRegistList();
-        } else {
-          Message.error(res.msg);
-        }
-      });
-    }
-    setSelectedRowKeys([]);
-    setSelectedRows([]);
-  };
-
-  // 重置
-  const handleReset = () => {
-    resetFields();
-    dispatch({
-      type: 'apply/findRegistList',
-      payload: {
-        pageIndex: 0,
-        pageSize: paginations.pageSize,
-      },
-    })
-  };
 
   // 查询请求数据
   const searchdata = (values, page, pageSize) => {
@@ -323,7 +249,7 @@ function Toregister(props) {
       checkTime2: values.checkTime ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
       checkTime: ''
     }
-    // setTabrecord({ ...newValue });
+    setTabRecord({ ...newValue });
     dispatch({
       type: 'apply/findRegistList',
       payload: {
@@ -332,6 +258,73 @@ function Toregister(props) {
         pageIndex: page - 1,
       },
     });
+  };
+
+  // 申请人员进出添加
+  const handleAdd = values => {
+    dispatch({
+      type: 'apply/saveApplyForm',
+      payload: {
+        ...values,
+        planInTime: (values.planInTime === '' || values.planInTime === 'Invalid date') ? '' : moment(values.planInTime).format('YYYY-MM-DD HH:mm:ss'),
+        planOutTime: (values.planOutTime === '' || values.planOutTime === 'Invalid date') ? '' : moment(values.planOutTime).format('YYYY-MM-DD HH:mm:ss'),
+        applyTime: (values.applyTime === '' || values.applyTime === 'Invalid date') ? '' : moment(values.applyTime).format('YYYY-MM-DD HH:mm:ss'),
+      },
+    }).then(res => {
+      if (res.code === 200) {
+        Message.success(res.msg);
+        searchdata({}, 1, 15);
+      } else {
+        Message.error(res.msg);
+      }
+    });
+    setSelectedRowKeys([]);
+    setSelectedRows([]);
+  };
+
+  // 申请人员进出编辑
+  const handleEdite = values => {
+    dispatch({
+      type: 'apply/saveApplyForm',
+      payload: {
+        ...values,
+        id: selectedRows[0].id,
+        planInTime: (values.planInTime === '' || values.planInTime === 'Invalid date') ? '' : moment(values.planInTime).format('YYYY-MM-DD HH:mm:ss'),
+        planOutTime: (values.planOutTime === '' || values.planOutTime === 'Invalid date') ? '' : moment(values.planOutTime).format('YYYY-MM-DD HH:mm:ss'),
+      },
+    }).then(res => {
+      if (res.code === 200) {
+        Message.success(res.msg);
+        searchdata({}, 1, 15);
+      } else {
+        Message.error(res.msg);
+      }
+    });
+    setSelectedRowKeys([]);
+    setSelectedRows([]);
+  };
+
+  // 申请人员进出删除
+  const handleDelete = () => {
+    const len = selectedRowKeys.length;
+    if (len === 0) { // 未选择数据
+      Message.info('您还没有选择数据');
+    } else { // 单条、多条
+      const ids = selectedRows.map(item => { return item.id; });
+      dispatch({
+        type: 'apply/deleteApplyForms',
+        payload: { registIds: ids.toString() },
+      }).then(res => {
+        if (res.code === 200) {
+          Message.success(res.msg);
+          searchdata({}, 1, 15);
+        } else {
+          Message.error(res.msg);
+        }
+      });
+    }
+    setSelectedRowKeys([]);
+    setSelectedRows([]);
   };
 
   const onShowSizeChange = (page, pageSize) => {
@@ -387,28 +380,57 @@ function Toregister(props) {
     });
   };
 
+  // 重置
+  const handleReset = () => {
+    router.push({
+      pathname: `/ITSM/operationplan/personaccessmanage/toregister`,
+      query: { pathpush: true },
+      state: { cach: false, }
+    });
+    resetFields();
+    searchdata(searchrecord, 1, 15);
+  };
+
   useEffect(() => {
     if (location.state) {
-      // 点击菜单刷新,并获取数据
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+              expand,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新
       if (location.state.reset) {
         handleReset();
+      };
+      // 标签切回设置初始值
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        setExpand(location.state.cacheinfo.expand);
+        setPaginations({ ...paginations, current, pageSize })
       };
     }
   }, [location.state]);
 
-  // 设置展开收起
-  const extra = (<>
-    <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
-    <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
-    <Button
-      style={{ marginLeft: 8 }}
-      type="link"
-      onClick={() => {
-        setExpand(!expand);
-      }}
-    >
-      {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
-    </Button></>)
+  // 获取数据
+  useEffect(() => {
+    queryItsmuser();
+    if (cacheinfo) {
+      const values = getFieldsValue();
+      searchdata(values, paginations.current, paginations.pageSize);
+    }
+    return () => {
+      setExpand(false);
+    };
+  }, []);
 
   // 下载、导出
   const exportDownload = () => {
@@ -446,6 +468,20 @@ function Toregister(props) {
     });
   }
 
+  // 设置展开收起
+  const extra = (<>
+    <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
+    <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
+    <Button
+      style={{ marginLeft: 8 }}
+      type="link"
+      onClick={() => {
+        setExpand(!expand);
+      }}
+    >
+      {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
+    </Button></>)
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       {/* <SysDict
@@ -461,14 +497,14 @@ function Toregister(props) {
               <Col span={8}>
                 <Form.Item label="进出申请编号">
                   {getFieldDecorator('registNo', {
-                    // initialValue: a.registNo,
+                    initialValue: cacheinfo.registNo,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
               <Col span={8}>
                 <Form.Item label="审核状态">
                   {getFieldDecorator('checkStatus', {
-                    // initialValue: a.checkStatus,
+                    initialValue: cacheinfo.checkStatus,
                   })(
                     <Select placeholder="请选择" allowClear>
                       {checkStatus1.map(obj => [
@@ -481,17 +517,18 @@ function Toregister(props) {
                 </Form.Item>
               </Col>
             </>
-            <span style={{ display: expand ? 'block' : 'none' }}>
+            <span style={{ display: (expand || cacheinfo.expand) ? 'block' : 'none' }}>
               <Col span={8}>
                 <Form.Item label="姓名">
                   {getFieldDecorator('name', {
-                    // initialValue: a.name,
+                    initialValue: cacheinfo.name,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
               <Col span={8}>
                 <Form.Item label="性别">
                   {getFieldDecorator('sex', {
+                    initialValue: cacheinfo.sex,
                   })(
                     <Select placeholder="请选择" allowClear>
                       {sexselectmap.map(({ key, title }) => [
@@ -506,13 +543,14 @@ function Toregister(props) {
               <Col span={8}>
                 <Form.Item label="联系电话">
                   {getFieldDecorator('phone', {
+                    initialValue: cacheinfo.phone,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
               <Col span={8}>
                 <Form.Item label="进出事由">
                   {getFieldDecorator('content', {
-                    initialValue: '',
+                    initialValue: cacheinfo.content,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
@@ -553,14 +591,14 @@ function Toregister(props) {
               <Col span={8}>
                 <Form.Item label="携带工具">
                   {getFieldDecorator('carryTool', {
-                    initialValue: '',
+                    initialValue: cacheinfo.carryTool,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
               <Col span={8}>
                 <Form.Item label="申请人">
                   {getFieldDecorator('applyUser', {
-                    initialValue: '',
+                    initialValue: cacheinfo.applyUser,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
@@ -584,7 +622,7 @@ function Toregister(props) {
               <Col span={8}>
                 <Form.Item label="审核结果">
                   {getFieldDecorator('checkResult', {
-                    initialValue: '',
+                    initialValue: cacheinfo.checkResult,
                   })(
                     <Select placeholder="请选择" allowClear>
                       {checkResult1.map(({ key, title }) => [
@@ -616,26 +654,26 @@ function Toregister(props) {
               <Col span={8}>
                 <Form.Item label="审核说明">
                   {getFieldDecorator('checkContent', {
-                    initialValue: '',
+                    initialValue: cacheinfo.checkContent,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
               <Col span={8}>
                 <Form.Item label="审核人">
                   {getFieldDecorator('checker', {
-                    initialValue: '',
+                    initialValue: cacheinfo.checker,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
               <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
                 <Form.Item label="审核单位">
                   {getFieldDecorator('checkUnit', {
-                    initialValue: '',
+                    initialValue: cacheinfo.checkUnit,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
             </span>
-            {expand ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
+            {(expand || cacheinfo.expand) ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>

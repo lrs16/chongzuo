@@ -42,10 +42,12 @@ function MycreateWork(props) {
     getWorkQueryLists,
     dispatch,
     userinfo,
-    form: { 
+    form: {
       getFieldDecorator,
-       resetFields, 
-       validateFields, 
+      resetFields,
+      validateFields,
+      getFieldsValue,
+      // setFieldsValue
     },
   } = props;
 
@@ -56,8 +58,31 @@ function MycreateWork(props) {
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
-  const [tabrecord, setTabRecord] = useState({});
   const [columns, setColumns] = useState([]);
+
+  // 缓存页签查询条件
+  const [tabrecord, setTabRecord] = useState({});
+  const searchrecord = {
+    executeStatus: '',
+    status: '',
+    content: '',
+    workUser: '',
+    checkStatus: '',
+    timeoutStatus: '',
+    executeResult: '',
+    executeContent: '',
+    executeUser: '',
+    addUser: '',
+    addUnit: '',
+    checkUser: '',
+    checkResult: '',
+    checkContent: '',
+    no: '',
+    paginations,
+    expand,
+  };
+  let cacheinfo = {};
+  cacheinfo = location.state && location.state.cacheinfo ? location.state.cacheinfo : searchrecord;
 
   const onSelectChange = (RowKeys, Rows) => {
     setSelectedRowKeys(RowKeys);
@@ -73,19 +98,6 @@ function MycreateWork(props) {
   const queryDept = () => {
     dispatch({
       type: 'itsmuser/fetchuser',
-    });
-  };
-
-  // 列表请求
-  const getList = () => {
-    dispatch({
-      type: 'supervisemodel/getWorkQueryLists',
-      payload: {
-        flowNodeName: '工作登记',
-        tab: '1',
-        pageIndex: paginations.current,
-        pageSize: paginations.pageSize,
-      },
     });
   };
 
@@ -138,26 +150,93 @@ function MycreateWork(props) {
       if (err) {
         return;
       }
-      searchdata(values, 1, paginations.pageSize);
+      searchdata(values, paginations.current, paginations.pageSize);
     });
   };
 
   // 点击重置
   const handleReset = () => {
+    router.push({
+      pathname: `/ITSM/supervisework/mycreatework`,
+      query: { pathpush: true },
+      state: { cach: false, }
+    });
     resetFields();
-    dispatch({
-      type: 'supervisemodel/getWorkQueryLists',
-      payload: {
-        flowNodeName: '工作登记',
-        tab: '1',
-        pageIndex: 1,
-        pageSize: paginations.pageSize,
-      },
-    })
+    searchdata(searchrecord, 1, 15);
   };
 
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+              expand,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新
+      if (location.state.reset) {
+        handleReset();
+      };
+      // 标签切回设置初始值
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        // const {
+        //   checkTime1,
+        //   checkTime2,
+        //   endTime1,
+        //   endTime2,
+        //   executeTime1,
+        //   executeTime2,
+        //   plannedEndTime1,
+        //   plannedEndTime2,
+        //   plannedStartTime1,
+        //   plannedStartTime2,
+        //   startTime1,
+        //   startTime2,
+        //   time1,
+        //   time2,
+        // } = location.state.cacheinfo;
+        // setFieldsValue({
+        //   addTime: time1 ? [moment(time1), moment(time2)] : '',
+        //   checkTime: checkTime1 ? [moment(checkTime1), moment(checkTime2)] : '',
+        //   endTime: endTime1 ? [moment(endTime1), moment(endTime2)] : '',
+        //   executeTime: executeTime1
+        //     ? [moment(executeTime1), moment(executeTime2)]
+        //     : '',
+        //   plannedendTime: plannedEndTime1 ? [moment(plannedEndTime1), moment(plannedEndTime2)] : '',
+        //   startTime: startTime1 ? [moment(startTime1), moment(startTime2)] : '',
+        //   plannedStartTime: plannedStartTime1
+        //     ? [moment(plannedStartTime1), moment(plannedStartTime2)]
+        //     : '',
+        // });
+        setExpand(location.state.cacheinfo.expand);
+        setPaginations({ ...paginations, current, pageSize });
+      };
+    }
+  }, [location.state]);
+
+  // 获取数据
+  useEffect(() => {
+    if (cacheinfo) {
+      const values = getFieldsValue();
+      searchdata(values, paginations.current, paginations.pageSize);
+    }
+    return () => {
+      setSelectData([]);
+      setExpand(false);
+    };
+  }, []);
+
   // 复制
-  const handleCopy = () => { 
+  const handleCopy = () => {
     const len = selectedRows.length;
     if (len === 1) {
       message.success('复制成功');
@@ -180,13 +259,15 @@ function MycreateWork(props) {
   };
 
   // 删除
-  const handleDelete = () => { 
+  const handleDelete = () => {
     const len = selectedRows.length;
     const deleteIds = selectedRows.map(res => {
       return res.mainId;
     })
     if (len === 0) {
       message.info('至少选择一条数据');
+      setSelectedRowKeys([]);
+      setSelectedRows([]);
       return false;
     }
     return dispatch({
@@ -197,16 +278,18 @@ function MycreateWork(props) {
     }).then(res => {
       if (res.code === 200) {
         message.success(res.msg);
-        getList();
+        searchdata({}, 1, 15);
       } else {
         message.info(res.msg);
-        getList();
+        searchdata({}, 1, 15);
       }
+      setSelectedRowKeys([]);
+      setSelectedRows([]);
     })
   };
 
   // 跳转工作任务填报
-  const handleFillin = () => { 
+  const handleFillin = () => {
     router.push({
       pathname: '/ITSM/supervisework/mycreatework/taskworkfillin',
       query: {
@@ -214,30 +297,6 @@ function MycreateWork(props) {
       },
     })
   };
-
-  // 点击菜单刷新,并获取数据
-  useEffect(() => {
-    if (location.state) {
-      if (location.state.reset) {
-        handleReset();
-      };
-    }
-  }, [location.state]);
-
-  // 查询
-  const extra = (<>
-    <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
-    <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
-    <Button
-      style={{ marginLeft: 8 }}
-      type="link"
-      onClick={() => {
-        setExpand(!expand);
-      }}
-    >
-      {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
-    </Button></>
-  );
 
   // 跳转详情页
   const gotoDetail = (record) => {
@@ -484,7 +543,7 @@ function MycreateWork(props) {
   };
 
   // 导出
-  const download = () => { 
+  const download = () => {
     const exportColumns = columns.map(item => {
       return {
         column: item.dataIndex,
@@ -535,7 +594,7 @@ function MycreateWork(props) {
   };
 
   // 督办提交
-  const superSubmit = values => { 
+  const superSubmit = values => {
     const mainids = selectedRows.map(obj => {
       return obj.mainId;
     });
@@ -549,7 +608,7 @@ function MycreateWork(props) {
     }).then(res => {
       if (res.code === 200) {
         message.success(res.msg);
-        getList();
+        searchdata({}, 1, 15);
       } else {
         message.error(res.msg);
       }
@@ -559,7 +618,7 @@ function MycreateWork(props) {
   };
 
   // 创建列表
-  const creataColumns = () => { 
+  const creataColumns = () => {
     initialColumns.length = 0;
     formThead.map((val, key) => {
       const obj = {
@@ -623,7 +682,6 @@ function MycreateWork(props) {
 
   // 数据初始化
   useEffect(() => {
-    getList();
     queryDept();
     setColumns(initialColumns);
     sessionStorage.removeItem('copyrecord');
@@ -637,74 +695,27 @@ function MycreateWork(props) {
     }
     return [];
   };
+
   const status = getTypebyTitle('工作状态');
   const checkresult = getTypebyTitle('审核结果');
   const checkstatus = getTypebyTitle('审核状态');
   const result = getTypebyTitle('执行结果');
   const executestatus = getTypebyTitle('执行状态');
 
-  // 设置初始值
-  const record = {
-    executeStatus: '',
-    status: '',
-    content: '',
-    workUser: '',
-    checkStatus: '',
-    timeoutStatus: '',
-    executeResult: '',
-    executeContent: '',
-    executeUser: '',
-    addUser: '',
-    addUnit: '',
-    checkUser: '',
-    checkResult: '',
-    checkContent: '',
-    no: '',
-    paginations,
-    expand,
-  };
-
-  const cacheinfo = location.state && location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
-
-  useEffect(() => {
-    if (location.state) {
-      if (location.state.cache) {
-        // 传表单数据到页签
-        dispatch({
-          type: 'viewcache/gettabstate',
-          payload: {
-            cacheinfo: {
-              ...tabrecord,
-              paginations,
-              expand,
-            },
-            tabid: sessionStorage.getItem('tabid')
-          },
-        });
-      };
-      // 点击菜单刷新
-      if (location.state.reset) {
-        handleReset();
-        setExpand(false);
-      };
-      if (location.state.cacheinfo) {
-        if (location.state.cacheinfo.paginations) {
-          const { current, pageSize } = location.state.cacheinfo.paginations;
-          setPaginations({ ...paginations, current, pageSize });
-        };
-        setExpand(location.state.cacheinfo.expand);
-      };
-    }
-  }, [location.state]);
-
-  // 获取数据
-  useEffect(() => {
-    if (cacheinfo !== undefined) {
-      validateFields((err, values) => {
-        searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize);
-      })
-    }
-  }, []);
+  // 查询
+  const extra = (<>
+    <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
+    <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
+    <Button
+      style={{ marginLeft: 8 }}
+      type="link"
+      onClick={() => {
+        setExpand(!expand);
+      }}
+    >
+      {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
+    </Button></>
+  );
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -737,7 +748,7 @@ function MycreateWork(props) {
             <Col span={8}>
               <Form.Item label="工作状态">
                 {getFieldDecorator('status', {
-                  initialValue: '',
+                  initialValue: cacheinfo.status,
                 })(
                   <Select placeholder="请选择" allowClear>
                     {status.map(obj => (
@@ -749,12 +760,12 @@ function MycreateWork(props) {
                 )}
               </Form.Item>
             </Col>
-            {expand && (
+            {(expand || cacheinfo.expand) && (
               <>
                 <Col span={8}>
                   <Form.Item label="执行状态">
                     {getFieldDecorator('executeStatus', {
-                      initialValue: '',
+                      initialValue: cacheinfo.executeStatus,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {executestatus.map(obj => (
@@ -769,14 +780,14 @@ function MycreateWork(props) {
                 <Col span={8}>
                   <Form.Item label="工作内容">
                     {getFieldDecorator('content', {
-                      initialValue: '',
+                      initialValue: cacheinfo.content,
                     })(<Input placeholder="请输入" allowClear />,)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="工作负责人">
                     {getFieldDecorator('workUser', {
-                      initialValue: '',
+                      initialValue: cacheinfo.workUser,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
@@ -817,7 +828,7 @@ function MycreateWork(props) {
                 <Col span={8}>
                   <Form.Item label="延期审核状态">
                     {getFieldDecorator('checkStatus', {
-                      initialValue: '',
+                      initialValue: cacheinfo.checkStatus,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {checkstatus.map(obj => (
@@ -832,7 +843,7 @@ function MycreateWork(props) {
                 <Col span={8}>
                   <Form.Item label="超时状态">
                     {getFieldDecorator('timeoutStatus', {
-                      initialValue: '',
+                      initialValue: cacheinfo.timeoutStatus,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {overtimestatusmap.map(obj => (
@@ -847,7 +858,7 @@ function MycreateWork(props) {
                 <Col span={8}>
                   <Form.Item label="工作执行结果">
                     {getFieldDecorator('executeResult', {
-                      initialValue: '',
+                      initialValue: cacheinfo.executeResult,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {result.map(obj => (
@@ -896,6 +907,7 @@ function MycreateWork(props) {
                 <Col span={8}>
                   <Form.Item label="工作执行情况说明">
                     {getFieldDecorator('executeContent', {
+                      initialValue: cacheinfo.executeContent,
                     })(<Input placeholder="请输入" allowClear />,)}
                   </Form.Item>
                 </Col>
@@ -919,35 +931,35 @@ function MycreateWork(props) {
                 <Col span={8}>
                   <Form.Item label="执行人">
                     {getFieldDecorator('executeUser', {
-                      initialValue: '',
+                      initialValue: cacheinfo.executeUser,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="填报人">
                     {getFieldDecorator('addUser', {
-                      initialValue: '',
+                      initialValue: cacheinfo.addUser,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="填报单位">
                     {getFieldDecorator('addUnit', {
-                      initialValue: '',
+                      initialValue: cacheinfo.addUnit,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="延期审核人">
                     {getFieldDecorator('checkUser', {
-                      initialValue: '',
+                      initialValue: cacheinfo.checkUser,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="延期审核结果">
                     {getFieldDecorator('checkResult', {
-                      initialValue: '',
+                      initialValue: cacheinfo.checkResult,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {checkresult.map(obj => (
@@ -979,19 +991,20 @@ function MycreateWork(props) {
                 <Col span={8}>
                   <Form.Item label="延期审核意见">
                     {getFieldDecorator('checkContent', {
-                      initialValue: '',
+                      initialValue: cacheinfo.checkContent,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="工作任务编号">
                     {getFieldDecorator('no', {
+                      initialValue: cacheinfo.no,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
               </>
             )}
-            {expand ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
+            {(expand || cacheinfo.expand) ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
           </Form>
         </Row>
         <div>

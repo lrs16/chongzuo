@@ -65,9 +65,29 @@ function ToCheck(props) {
 
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
-  const [tabrecord, setTabrecord] = useState({});
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
+
+  // 缓存页签查询条件
+  const [tabrecord, setTabRecord] = useState({});
+  const searchrecord = {
+    registNo: '',
+    checkStatus: '',
+    name: '',
+    sex: '',
+    phone: '',
+    content: '',
+    carryTool: '',
+    applyUser: '',
+    checkResult: '',
+    checkContent: '',
+    checker: '',
+    checkUnit: '',
+    paginations,
+    expand,
+  };
+  let cacheinfo = {};
+  cacheinfo = location.state && location.state.cacheinfo ? location.state.cacheinfo : searchrecord;
 
   const columns = [
     {
@@ -185,26 +205,11 @@ function ToCheck(props) {
     },
   ];
 
-  const getfindCheckList = () => {
-    dispatch({
-      type: 'apply/findCheckList',
-      payload: {
-        pageIndex: paginations.current - 1,
-        pageSize: paginations.pageSize,
-      },
-    });
-  };
-
   const queryItsmuser = () => {
     dispatch({
       type: 'itsmuser/fetchuser',
     });
   };
-
-  useEffect(() => {
-    getfindCheckList();
-    queryItsmuser();
-  }, []);
 
   const onSelectChange = (RowKeys, Rows) => {
     setSelectedRowKeys(RowKeys);
@@ -216,16 +221,36 @@ function ToCheck(props) {
     onChange: onSelectChange,
   };
 
-  // 重置
-  const handleReset = () => {
-    resetFields();
+  // 查询请求数据
+  const searchdata = (values, page, pageSize) => {
+    const newValue = {
+      ...values,
+      // 计划进入时间
+      planInTime1: values.planInTime ? moment(values.planInTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      planInTime2: values.planInTime ? moment(values.planInTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      planInTime: '',
+      // 计划离开时间
+      planOutTime1: values.planOutTime ? moment(values.planOutTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      planOutTime2: values.planOutTime ? moment(values.planOutTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      planOutTime: '',
+      // 申请时间
+      applyTime1: values.applyTime ? moment(values.applyTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      applyTime2: values.applyTime ? moment(values.applyTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      applyTime: '',
+      // 审核时间
+      checkTime1: values.checkTime ? moment(values.checkTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      checkTime2: values.checkTime ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      checkTime: ''
+    }
+    setTabRecord({ ...newValue });
     dispatch({
       type: 'apply/findCheckList',
       payload: {
-        pageIndex: 0,
-        pageSize: paginations.pageSize,
+        ...newValue,
+        pageSize,
+        pageIndex: page - 1,
       },
-    })
+    });
   };
 
   // 添加新的页签并跳转
@@ -255,37 +280,71 @@ function ToCheck(props) {
     setSelectedRowKeys([]);
   }
 
-  // 查询请求数据
-  const searchdata = (values, page, pageSize) => {
-    const newValue = {
-      ...values,
-      // 计划进入时间
-      planInTime1: values.planInTime ? moment(values.planInTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      planInTime2: values.planInTime ? moment(values.planInTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-      planInTime: '',
-      // 计划离开时间
-      planOutTime1: values.planOutTime ? moment(values.planOutTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      planOutTime2: values.planOutTime ? moment(values.planOutTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-      planOutTime: '',
-      // 申请时间
-      applyTime1: values.applyTime ? moment(values.applyTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      applyTime2: values.applyTime ? moment(values.applyTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-      applyTime: '',
-      // 审核时间
-      checkTime1: values.checkTime ? moment(values.checkTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      checkTime2: values.checkTime ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-      checkTime: ''
-    }
-    setTabrecord({ ...newValue });
-    dispatch({
-      type: 'apply/findCheckList',
-      payload: {
-        ...newValue,
-        pageSize,
-        pageIndex: page - 1,
-      },
+  // 查询传数据
+  const handleSearch = () => {
+    setPaginations({
+      ...paginations,
+      current: 1
+    })
+    validateFields((err, values) => {
+      if (err) {
+        return;
+      }
+      searchdata(values, paginations.current, paginations.pageSize);
     });
   };
+
+  // 重置
+  const handleReset = () => {
+    router.push({
+      pathname: `/ITSM/operationplan/personaccessmanage/tocheck`,
+      query: { pathpush: true },
+      state: { cach: false, }
+    });
+    resetFields();
+    searchdata(searchrecord, 1, 15);
+  };
+
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+              expand,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新
+      if (location.state.reset) {
+        handleReset();
+      };
+      // 标签切回设置初始值
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        setExpand(location.state.cacheinfo.expand);
+        setPaginations({ ...paginations, current, pageSize })
+      };
+    }
+  }, [location.state]);
+
+  // 获取数据
+  useEffect(() => {
+    queryItsmuser();
+    if (cacheinfo) {
+      const values = getFieldsValue();
+      searchdata(values, paginations.current, paginations.pageSize);
+    }
+    return () => {
+      setExpand(false);
+    };
+  }, []);
 
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
@@ -324,20 +383,6 @@ function ToCheck(props) {
     showTotal: total => `总共 ${total} 条记录`,
     // 页码改变的回调，参数是改变后的页码及每页条数
     onChange: (page) => changePage(page),
-  };
-
-  // 查询传数据
-  const handleSearch = () => {
-    setPaginations({
-      ...paginations,
-      current: 1
-    })
-    validateFields((err, values) => {
-      if (err) {
-        return;
-      }
-      searchdata(values, paginations.current, paginations.pageSize);
-    });
   };
 
   // 查询
@@ -390,63 +435,6 @@ function ToCheck(props) {
     });
   };
 
-  // 传给多标签的数据
-  // const record = {
-  //   registNo: '',
-  //   name,
-  //   sex: modulestatus,
-  //   phone: '',
-  //   content: '',
-  // }
-
-  // const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
-
-  // useEffect(() => {
-  //   if (location.state) {
-  //     if (location.state.cache) {
-  //       dispatch({
-  //         type: 'viewcache/gettabstate',
-  //         payload: {
-  //           cacheinfo: {
-  //             ...tabrecord,
-  //             paginations,
-  //             expand,
-  //           },
-  //           tabid: sessionStorage.getItem('tabid')
-  //         }
-  //       })
-  //     };
-
-  //     if (location.state.reset) {
-  //       handleReset();
-  //     }
-  //     if (location.state.cacheinfo) {
-  //       const { current, pageSize } = location.state.cacheinfo.paginations;
-  //       setExpand(location.state.cacheinfo.expand);
-  //       setPaginations({ ...paginations, current, pageSize });
-  //     };
-  //   }
-  // }, [location.state]);
-
-  // // 设置时间
-  // useEffect(() => {
-  //   if (location && location.state && location.state.cacheinfo) {
-  //     setFieldsValue({
-  //       registerTime: location.state.cacheinfo.registerBeginTime ? [moment(location.state.cacheinfo.registerBeginTime), moment(location.state.cacheinfo.registerEndTime)] : '',
-  //     })
-  //   }
-  // }, [location.state])
-
-  // // 获取数据
-  // useEffect(() => {
-  //   const value = getFieldsValue();
-  //   if (cacheinfo && cacheinfo.paginations && cacheinfo.paginations.current) {
-  //     searchdata(value, cacheinfo.paginations.current, cacheinfo.paginations.pageSize)
-  //   } else {
-  //     searchdata({}, 1, 15)
-  //   }
-  // }, []);
-
   return (
     <PageHeaderWrapper title={pagetitle}>
       {/* <SysDict
@@ -462,14 +450,14 @@ function ToCheck(props) {
               <Col span={8}>
                 <Form.Item label="进出申请编号">
                   {getFieldDecorator('registNo', {
-                    // initialValue: a.registNo,
+                    initialValue: cacheinfo.registNo,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
               <Col span={8}>
                 <Form.Item label="审核状态">
                   {getFieldDecorator('checkStatus', {
-                    // initialValue: a.checkStatus,
+                    initialValue: cacheinfo.checkStatus,
                   })(
                     <Select placeholder="请选择" allowClear>
                       {checkStatus1.map(obj => [
@@ -482,17 +470,18 @@ function ToCheck(props) {
                 </Form.Item>
               </Col>
             </>
-            <span style={{ display: expand ? 'block' : 'none' }}>
+            <span style={{ display: (expand || cacheinfo.expand) ? 'block' : 'none' }}>
               <Col span={8}>
                 <Form.Item label="姓名">
                   {getFieldDecorator('name', {
-                    // initialValue: a.name,
+                    initialValue: cacheinfo.name,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
               <Col span={8}>
                 <Form.Item label="性别">
                   {getFieldDecorator('sex', {
+                    initialValue: cacheinfo.sex,
                   })(
                     <Select placeholder="请选择" allowClear>
                       {sexselectmap.map(({ key, title }) => [
@@ -507,13 +496,14 @@ function ToCheck(props) {
               <Col span={8}>
                 <Form.Item label="联系电话">
                   {getFieldDecorator('phone', {
+                    initialValue: cacheinfo.phone,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
               <Col span={8}>
                 <Form.Item label="进出事由">
                   {getFieldDecorator('content', {
-                    initialValue: '',
+                    initialValue: cacheinfo.content,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
@@ -554,14 +544,14 @@ function ToCheck(props) {
               <Col span={8}>
                 <Form.Item label="携带根据">
                   {getFieldDecorator('carryTool', {
-                    initialValue: '',
+                    initialValue: cacheinfo.carryTool,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
               <Col span={8}>
                 <Form.Item label="申请人">
                   {getFieldDecorator('applyUser', {
-                    initialValue: '',
+                    initialValue: cacheinfo.applyUser,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
@@ -585,7 +575,7 @@ function ToCheck(props) {
               <Col span={8}>
                 <Form.Item label="审核结果">
                   {getFieldDecorator('checkResult', {
-                    initialValue: '',
+                    initialValue: cacheinfo.checkResult,
                   })(
                     <Select placeholder="请选择" allowClear>
                       {checkResult1.map(({ key, title }) => [
@@ -617,26 +607,26 @@ function ToCheck(props) {
               <Col span={8}>
                 <Form.Item label="审核说明">
                   {getFieldDecorator('checkContent', {
-                    initialValue: '',
+                    initialValue: cacheinfo.checkContent,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
               <Col span={8}>
                 <Form.Item label="审核人">
                   {getFieldDecorator('checker', {
-                    initialValue: '',
+                    initialValue: cacheinfo.checker,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
               <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
                 <Form.Item label="审核单位">
                   {getFieldDecorator('checkUnit', {
-                    initialValue: '',
+                    initialValue: cacheinfo.checkUnit,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
             </span>
-            {expand ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
+            {(expand || cacheinfo.expand) ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>

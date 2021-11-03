@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 import {
     Drawer,
     Button,
     Table,
-    Tooltip
+    Tooltip,
+    Popconfirm
 } from 'antd';
 
 const columns = [
@@ -957,6 +959,13 @@ function ChartDrawer(props) {
     } = props;
 
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+    const [selectedKeys, setSelectedKeys] = useState([]);
+
+    const rowSelection = {
+        onChange: index => {
+            setSelectedKeys([...index])
+        }
+    };
 
     const searchdata = (value, page, size) => {
         switch (value.staticName) {
@@ -966,7 +975,29 @@ function ChartDrawer(props) {
                     payload: {
                         pageNum: page,
                         pageSize: size,
-                        blame: value.type
+                        blame: value.type || value.name
+                    }
+                })
+                break;
+            case '功能开发':
+            case '软件运维':
+            case '硬件运维':
+                dispatch({
+                    type: 'fault/getfaultQueryList',
+                    payload: {
+                        pageNum: page,
+                        pageSize: size,
+                        blame: value.staticName
+                    }
+                })
+                break;
+            case '已处理':
+                dispatch({
+                    type: 'fault/getfaultQueryList',
+                    payload: {
+                        pageNum: page,
+                        pageSize: size,
+                        status: '255'
                     }
                 })
                 break;
@@ -978,7 +1009,7 @@ function ChartDrawer(props) {
                     payload: {
                         pageNum: page,
                         pageSize: size,
-                        type: value.type
+                        type: value.type || value.name
                     }
                 })
                 break;
@@ -988,7 +1019,7 @@ function ChartDrawer(props) {
                     payload: {
                         pageNum: page,
                         pageSize: size,
-                        registerModel: value.type
+                        registerModel: value.type || value.name
                     }
                 })
                 break;
@@ -1004,10 +1035,50 @@ function ChartDrawer(props) {
                     }
                 })
                 break;
+            case '故障登记人':
+                dispatch({
+                    type: 'fault/getfaultQueryList',
+                    payload: {
+                        pageNum: page,
+                        pageSize: size,
+                        registerUser: value.type
+                    }
+                })
+                break;
+            case '故障处理人':
+                dispatch({
+                    type: 'fault/getfaultQueryList',
+                    payload: {
+                        pageNum: page,
+                        pageSize: size,
+                        handler: value.type
+                    }
+                })
+                break;
+            case '故障登记单位':
+                dispatch({
+                    type: 'fault/getfaultQueryList',
+                    payload: {
+                        pageNum: page,
+                        pageSize: size,
+                        registerUnit: value.type
+                    }
+                })
+                break;
+            case '故障处理单位':
+                dispatch({
+                    type: 'fault/getfaultQueryList',
+                    payload: {
+                        pageNum: page,
+                        pageSize: size,
+                        handleUnit: value.type
+                    }
+                })
+                break;
             default:
                 break;
         }
-    }
+    };
 
     // 获取数据
     useEffect(() => {
@@ -1047,6 +1118,38 @@ function ChartDrawer(props) {
         ChangeVisible(false);
     };
 
+    //  下载 /导出功能
+    const download = (page, pageSize) => {
+        const filterColumns = columns.filter((currentValue) => {
+            return currentValue.title !== '操作'
+        })
+
+        const exportColumns = filterColumns.map(item => {
+            return {
+                column: item.dataIndex,
+                field: item.title
+            }
+        })
+        dispatch({
+            type: 'fault/faultQuerydownload',
+            payload: {
+                columns: JSON.stringify(exportColumns),
+                ids: selectedKeys.toString(),
+                pageSize,
+                current: page,
+            },
+        }).then(res => {
+            const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+            const blob = new Blob([res]);
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        });
+    };
+
     return (
         <>
             <Drawer
@@ -1056,17 +1159,18 @@ function ChartDrawer(props) {
                 bodyStyle={{ paddingBottom: 60 }}
                 destroyOnClose
             >
-                <Button
-                    type="primary">
-                    导出数据
-                </Button>
-
+                <div style={{ marginBottom: 24 }}>
+                    <Popconfirm title="确定导出数据？" onConfirm={() => download()}>
+                        <Button type="primary">导出数据</Button>
+                    </Popconfirm>
+                </div>
                 <Table
                     columns={columns}
                     loading={loading}
                     dataSource={faultQueryList.rows || []}
                     rowKey={record => record.id}
                     pagination={pagination}
+                    rowSelection={rowSelection}
                     scroll={{ x: 1300 }}
                 />
             </Drawer>

@@ -49,7 +49,7 @@ function DonutPCT(props) {
   const handleGetDrawerVal = val => {
     setVisible(!visible);
     onGetDrawerVal(val);
-  }
+  };
 
   return (
     <div>

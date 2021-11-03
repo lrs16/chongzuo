@@ -66,7 +66,27 @@ function Toregister(props) {
 
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
-  // const [tabrecord, setTabrecord] = useState({});
+
+  // 缓存页签查询条件
+  const [tabrecord, setTabRecord] = useState({});
+  const searchrecord = {
+    registNo: '',
+    checkStatus: '',
+    name: '',
+    sex: '',
+    phone: '',
+    content: '',
+    carryTool: '',
+    applyUser: '',
+    checkResult: '',
+    checkContent: '',
+    checker: '',
+    checkUnit: '',
+    paginations,
+    expand,
+  };
+  let cacheinfo = {};
+  cacheinfo = location.state && location.state.cacheinfo ? location.state.cacheinfo : searchrecord;
 
   const columns = [
     {
@@ -186,47 +206,10 @@ function Toregister(props) {
     },
   ];
 
-  const getfindRegistList = () => {
-    dispatch({
-      type: 'apply/findRegistList',
-      payload: {
-        pageIndex: paginations.current - 1,
-        pageSize: paginations.pageSize,
-      },
-    });
-  };
-
   const queryItsmuser = () => {
     dispatch({
       type: 'itsmuser/fetchuser',
     });
-  };
-
-  useEffect(() => {
-    getfindRegistList();
-    queryItsmuser();
-  }, []);
-
-  // const onSelectChange = (RowKeys, Rows) => {
-  //   setSelectedRowKeys(RowKeys);
-  //   setSelectedRows(Rows);
-  // };
-
-  // const rowSelection = {
-  //   selectedRowKeys,
-  //   onChange: onSelectChange,
-  // };
-
-  // 重置
-  const handleReset = () => {
-    resetFields();
-    dispatch({
-      type: 'apply/findRegistList',
-      payload: {
-        pageIndex: 0,
-        pageSize: paginations.pageSize,
-      },
-    })
   };
 
   // 查询请求数据
@@ -250,7 +233,7 @@ function Toregister(props) {
       checkTime2: values.checkTime ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
       checkTime: ''
     }
-    // setTabrecord({ ...newValue });
+    setTabRecord({ ...newValue });
     dispatch({
       type: 'apply/findRegistList',
       payload: {
@@ -314,19 +297,57 @@ function Toregister(props) {
     });
   };
 
-  // 设置展开收起
-  const extra = (<>
-    <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
-    <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
-    <Button
-      style={{ marginLeft: 8 }}
-      type="link"
-      onClick={() => {
-        setExpand(!expand);
-      }}
-    >
-      {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
-    </Button></>)
+  // 重置
+  const handleReset = () => {
+    router.push({
+      pathname: `/ITSM/operationplan/personaccessmanage/toquery`,
+      query: { pathpush: true },
+      state: { cach: false, }
+    });
+    resetFields();
+    searchdata(searchrecord, 1, 15);
+  };
+
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+              expand,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新
+      if (location.state.reset) {
+        handleReset();
+      };
+      // 标签切回设置初始值
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        setExpand(location.state.cacheinfo.expand);
+        setPaginations({ ...paginations, current, pageSize })
+      };
+    }
+  }, [location.state]);
+
+  // 获取数据
+  useEffect(() => {
+    queryItsmuser();
+    if (cacheinfo) {
+      const values = getFieldsValue();
+      searchdata(values, paginations.current, paginations.pageSize);
+    }
+    return () => {
+      setExpand(false);
+    };
+  }, []);
 
   // 下载、导出
   const exportDownload = () => {
@@ -362,16 +383,21 @@ function Toregister(props) {
       a.click();
       window.URL.revokeObjectURL(url);
     });
-  }
+  };
 
-  useEffect(() => {
-    if (location.state) {
-      // 点击菜单刷新,并获取数据
-      if (location.state.reset) {
-        handleReset();
-      };
-    }
-  }, [location.state]);
+  // 设置展开收起
+  const extra = (<>
+    <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
+    <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
+    <Button
+      style={{ marginLeft: 8 }}
+      type="link"
+      onClick={() => {
+        setExpand(!expand);
+      }}
+    >
+      {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
+    </Button></>)
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -388,12 +414,14 @@ function Toregister(props) {
               <Col span={8}>
                 <Form.Item label="进出申请编号">
                   {getFieldDecorator('registNo', {
+                    initialValue: cacheinfo.registNo,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
               <Col span={8}>
                 <Form.Item label="审核状态">
                   {getFieldDecorator('checkStatus', {
+                    initialValue: cacheinfo.checkStatus,
                   })(
                     <Select placeholder="请选择" allowClear>
                       {checkStatus1.map(obj => [
@@ -406,16 +434,18 @@ function Toregister(props) {
                 </Form.Item>
               </Col>
             </>
-            <span style={{ display: expand ? 'block' : 'none' }}>
+            <span style={{ display: (expand || cacheinfo.expand) ? 'block' : 'none' }}>
               <Col span={8}>
                 <Form.Item label="姓名">
                   {getFieldDecorator('name', {
+                    initialValue: cacheinfo.name,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
               <Col span={8}>
                 <Form.Item label="性别">
                   {getFieldDecorator('sex', {
+                    initialValue: cacheinfo.sex,
                   })(
                     <Select placeholder="请选择" allowClear>
                       {sexselectmap.map(({ key, title }) => [
@@ -430,12 +460,14 @@ function Toregister(props) {
               <Col span={8}>
                 <Form.Item label="联系电话">
                   {getFieldDecorator('phone', {
+                    initialValue: cacheinfo.phone,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
               <Col span={8}>
                 <Form.Item label="进出事由">
                   {getFieldDecorator('content', {
+                    initialValue: cacheinfo.content,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
@@ -474,12 +506,14 @@ function Toregister(props) {
               <Col span={8}>
                 <Form.Item label="携带工具">
                   {getFieldDecorator('carryTool', {
+                    initialValue: cacheinfo.carryTool,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
               <Col span={8}>
                 <Form.Item label="申请人">
                   {getFieldDecorator('applyUser', {
+                    initialValue: cacheinfo.applyUser,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
@@ -502,6 +536,7 @@ function Toregister(props) {
               <Col span={8}>
                 <Form.Item label="审核结果">
                   {getFieldDecorator('checkResult', {
+                    initialValue: cacheinfo.checkResult,
                   })(
                     <Select placeholder="请选择" allowClear>
                       {checkResult1.map(({ key, title }) => [
@@ -532,23 +567,26 @@ function Toregister(props) {
               <Col span={8}>
                 <Form.Item label="审核说明">
                   {getFieldDecorator('checkContent', {
+                    initialValue: cacheinfo.checkContent,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
               <Col span={8}>
                 <Form.Item label="审核人">
                   {getFieldDecorator('checker', {
+                    initialValue: cacheinfo.checker,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
               <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
                 <Form.Item label="审核单位">
                   {getFieldDecorator('checkUnit', {
+                    initialValue: cacheinfo.checkUnit,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
             </span>
-            {expand ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
+            {(expand || cacheinfo.expand) ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>
@@ -563,7 +601,6 @@ function Toregister(props) {
           scroll={{ x: 1600 }}
           rowKey={r => r.registNo}
           pagination={pagination}
-        // rowSelection={rowSelection}
         />
       </Card>
     </PageHeaderWrapper >

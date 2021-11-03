@@ -131,7 +131,7 @@ function Work(props) {
                                         return (
                                             <Panel
                                                 header={Panelheadermap.get(Object.keys(obj)[0])}
-                                                key={index}>
+                                                key={index.toString()}>
                                                 {Paneldesmap.get(Object.keys(obj)[0])}
                                             </Panel>
                                         );

@@ -35,7 +35,7 @@ function QueryWork(props) {
   const {
     location,
     loading,
-    form: { getFieldDecorator, resetFields, validateFields },
+    form: { getFieldDecorator, resetFields, validateFields, getFieldsValue },
     getWorkQueryLists,
     dispatch,
     // userinfo,
@@ -47,8 +47,31 @@ function QueryWork(props) {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectdata, setSelectData] = useState('');
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
-  // const [tabrecord, setTabRecord] = useState({});
   const [columns, setColumns] = useState([]);
+
+  // 缓存页签查询条件
+  const [tabrecord, setTabRecord] = useState({});
+  const searchrecord = {
+    executeStatus: '',
+    status: '',
+    content: '',
+    workUser: '',
+    checkStatus: '',
+    timeoutStatus: '',
+    executeResult: '',
+    executeContent: '',
+    executeUser: '',
+    addUser: '',
+    addUnit: '',
+    checkUser: '',
+    checkResult: '',
+    checkContent: '',
+    no: '',
+    paginations,
+    expand,
+  };
+  let cacheinfo = {};
+  cacheinfo = location.state && location.state.cacheinfo ? location.state.cacheinfo : searchrecord;
 
   const onSelectChange = (RowKeys) => {
     setSelectedRowKeys(RowKeys);
@@ -62,18 +85,6 @@ function QueryWork(props) {
   const queryDept = () => {
     dispatch({
       type: 'itsmuser/fetchuser',
-    });
-  };
-
-  // 列表请求
-  const getList = () => {
-    dispatch({
-      type: 'supervisemodel/getWorkQueryLists',
-      payload: {
-        tab: '4',
-        pageIndex: paginations.current,
-        pageSize: paginations.pageSize,
-      },
     });
   };
 
@@ -117,7 +128,7 @@ function QueryWork(props) {
       executeTime1: values.executeOperationTime?.length ? moment(values.executeOperationTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
       executeTime2: values.executeOperationTime?.length ? moment(values.executeOperationTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
     };
-    // setTabRecord({ ...newvalues });
+    setTabRecord({ ...newvalues });
     dispatch({
       type: 'supervisemodel/getWorkQueryLists',
       payload: {
@@ -139,46 +150,61 @@ function QueryWork(props) {
       if (err) {
         return;
       }
-      searchdata(values, 1, paginations.pageSize);
+      searchdata(values, paginations.current, paginations.pageSize);
     });
   };
 
   // 点击重置
   const handleReset = () => {
+    router.push({
+      pathname: `/ITSM/supervisework/querywork`,
+      query: { pathpush: true },
+      state: { cach: false, }
+    });
     resetFields();
-    dispatch({
-      type: 'supervisemodel/getWorkQueryLists',
-      payload: {
-        tab: '4',
-        pageIndex: 1,
-        pageSize: paginations.pageSize,
-      },
-    })
+    searchdata(searchrecord, 1, 15);
   };
 
   useEffect(() => {
     if (location.state) {
-      // 点击菜单刷新,并获取数据
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+              expand,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新
       if (location.state.reset) {
         handleReset();
+      };
+      // 标签切回设置初始值
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        setExpand(location.state.cacheinfo.expand);
+        setPaginations({ ...paginations, current, pageSize })
       };
     }
   }, [location.state]);
 
-  // 查询
-  const extra = (<>
-    <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
-    <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
-    <Button
-      style={{ marginLeft: 8 }}
-      type="link"
-      onClick={() => {
-        setExpand(!expand);
-      }}
-    >
-      {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
-    </Button></>
-  );
+  // 获取数据
+  useEffect(() => {
+    if (cacheinfo) {
+      const values = getFieldsValue();
+      searchdata(values, paginations.current, paginations.pageSize);
+    }
+    return () => {
+      setSelectData([]);
+      setExpand(false);
+    };
+  }, []);
 
   const initialColumns = [
     {
@@ -376,15 +402,6 @@ function QueryWork(props) {
     onChange: (page) => changePage(page),
   };
 
-  // 获取数据
-  // useEffect(() => {
-  //     if (cacheinfo !== undefined) {
-  //     validateFields((err, values) => {
-  //         searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize);
-  //     })
-  //     }
-  // }, []);
-
   // 导出
   const download = () => {
     const exportColumns = columns.map(item => {
@@ -477,7 +494,6 @@ function QueryWork(props) {
   };
 
   useEffect(() => {
-    getList();
     queryDept();
     setColumns(initialColumns);
   }, []);
@@ -495,6 +511,21 @@ function QueryWork(props) {
   const checkstatus = getTypebyTitle('审核状态');
   const result = getTypebyTitle('执行结果');
   const executestatus = getTypebyTitle('执行状态');
+
+  // 查询
+  const extra = (<>
+    <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
+    <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
+    <Button
+      style={{ marginLeft: 8 }}
+      type="link"
+      onClick={() => {
+        setExpand(!expand);
+      }}
+    >
+      {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
+    </Button></>
+  );
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -527,7 +558,7 @@ function QueryWork(props) {
             <Col span={8}>
               <Form.Item label="工作状态">
                 {getFieldDecorator('status', {
-                  initialValue: '',
+                  initialValue: cacheinfo.status,
                 })(
                   <Select placeholder="请选择" allowClear>
                     {status.map(obj => (
@@ -539,12 +570,12 @@ function QueryWork(props) {
                 )}
               </Form.Item>
             </Col>
-            {expand && (
+            {(expand || cacheinfo.expand) && (
               <>
                 <Col span={8}>
                   <Form.Item label="执行状态">
                     {getFieldDecorator('executeStatus', {
-                      initialValue: '',
+                      initialValue: cacheinfo.executeStatus,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {executestatus.map(obj => (
@@ -559,14 +590,14 @@ function QueryWork(props) {
                 <Col span={8}>
                   <Form.Item label="工作内容">
                     {getFieldDecorator('content', {
-                      initialValue: '',
+                      initialValue: cacheinfo.content,
                     })(<Input placeholder="请输入" allowClear />,)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="工作负责人">
                     {getFieldDecorator('workUser', {
-                      initialValue: '',
+                      initialValue: cacheinfo.workUser,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
@@ -607,7 +638,7 @@ function QueryWork(props) {
                 <Col span={8}>
                   <Form.Item label="延期审核状态">
                     {getFieldDecorator('checkStatus', {
-                      initialValue: '',
+                      initialValue: cacheinfo.checkStatus,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {checkstatus.map(obj => (
@@ -622,7 +653,7 @@ function QueryWork(props) {
                 <Col span={8}>
                   <Form.Item label="超时状态">
                     {getFieldDecorator('timeoutStatus', {
-                      initialValue: '',
+                      initialValue: cacheinfo.timeoutStatus,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {overtimestatusmap.map(obj => (
@@ -637,7 +668,7 @@ function QueryWork(props) {
                 <Col span={8}>
                   <Form.Item label="工作执行结果">
                     {getFieldDecorator('executeResult', {
-                      initialValue: '',
+                      initialValue: cacheinfo.executeResult,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {result.map(obj => (
@@ -686,6 +717,7 @@ function QueryWork(props) {
                 <Col span={8}>
                   <Form.Item label="工作执行情况说明">
                     {getFieldDecorator('executeContent', {
+                      initialValue: cacheinfo.executeContent,
                     })(<Input placeholder="请输入" allowClear />,)}
                   </Form.Item>
                 </Col>
@@ -709,35 +741,35 @@ function QueryWork(props) {
                 <Col span={8}>
                   <Form.Item label="执行人">
                     {getFieldDecorator('executeUser', {
-                      initialValue: '',
+                      initialValue: cacheinfo.executeUser,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="填报人">
                     {getFieldDecorator('addUser', {
-                      initialValue: '',
+                      initialValue: cacheinfo.addUser,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="填报单位">
                     {getFieldDecorator('addUnit', {
-                      initialValue: '',
+                      initialValue: cacheinfo.addUnit,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="延期审核人">
                     {getFieldDecorator('checkUser', {
-                      initialValue: '',
+                      initialValue: cacheinfo.checkUser,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="延期审核结果">
                     {getFieldDecorator('checkResult', {
-                      initialValue: '',
+                      initialValue: cacheinfo.checkResult,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {checkresult.map(obj => (
@@ -769,19 +801,20 @@ function QueryWork(props) {
                 <Col span={8}>
                   <Form.Item label="延期审核意见">
                     {getFieldDecorator('checkContent', {
-                      initialValue: '',
+                      initialValue: cacheinfo.checkContent,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="工作任务编号">
                     {getFieldDecorator('no', {
+                      initialValue: cacheinfo.no,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
               </>
             )}
-            {expand ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
+            {(expand || cacheinfo.expand) ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
           </Form>
         </Row>
         <div>
