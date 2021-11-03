@@ -378,11 +378,37 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                 ],
                 initialValue: main.content,
               })(
-                // <BraftEditor
-                //   value={editorState}
-                //   onChange={handleEditorChange}
-                //   disabled={type}
-                // />
+                <TextArea disabled={type} rows={4} />,
+              )}
+            </Form.Item>
+          </Col>
+
+          <Col span={24}>
+            <Form.Item label="风险分析" {...forminladeLayout}>
+              {getFieldDecorator('main_content', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入风险分析',
+                  },
+                ],
+                initialValue: main.content,
+              })(
+                <TextArea disabled={type} rows={4} />,
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item label="风险应对措施" {...forminladeLayout}>
+              {getFieldDecorator('main_content', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入风险应对措施',
+                  },
+                ],
+                initialValue: main.content,
+              })(
                 <TextArea disabled={type} rows={4} />,
               )}
             </Form.Item>

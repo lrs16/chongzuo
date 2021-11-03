@@ -72,7 +72,7 @@ function WeeklySearch(props) {
 
   const columns = [
     {
-      title: '周报类型33',
+      title: '周报类型',
       dataIndex: 'type',
       key: 'type',
       render: (text, record) => {

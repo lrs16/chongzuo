@@ -152,6 +152,14 @@ function TobedealtList(props) {
 
   const initialColumns = [
     {
+      title: '序号',
+      dataIndex: 'index',
+      key: 'index',
+      width: 100,
+      render: (text, record, index) =>
+        `${(paginations.current - 1) * paginations.pageSize + (index + 1)}`,
+    },
+    {
       title: '服务绩效编号',
       dataIndex: 'assessNo',
       key: 'assessNo',
@@ -450,6 +458,7 @@ function TobedealtList(props) {
       width: 200,
     },
   ];
+
   const getPerformanceleader = () => {
     operationPerson().then(res => {
       const result = res.data.map(item => {
@@ -751,6 +760,7 @@ function TobedealtList(props) {
     resetFields();
     searchdata({}, 1, 15);
   };
+
   useEffect(() => {
     if (location.state) {
       if (location.state.cache) {
@@ -1159,6 +1169,13 @@ function TobedealtList(props) {
             </Tooltip>
           );
         };
+      }
+
+      if (val.title === '序号') {
+        obj.render = (text, records, index) => {
+          return <a onClick={() => todetail(records)}>{(paginations.current - 1) * paginations.pageSize + (index + 1)}</a>;
+        }
+          // `${(paginations.current - 1) * paginations.pageSize + (index + 1)}`
       }
       initialColumns.push(obj);
       setColumns(initialColumns);
@@ -1994,7 +2011,7 @@ function TobedealtList(props) {
         </div>
         <Table
           loading={loading}
-          columns={columns}
+          columns={columns && columns.length === (initialColumns && initialColumns.length) ? initialColumns : columns}
           dataSource={tobeDealtarr.records}
           scroll={{ x: 1500, y: 700 }}
           rowKey={records => records.assessNo}

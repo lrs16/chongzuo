@@ -583,7 +583,7 @@ function TobedealtForm(props) {
       title={taskName}
       extra={
         <>
-          {taskName && !search && (
+          {loading === false && taskName && !search && (
             <>
               {taskName === '服务绩效考核登记' &&
                 hisTasks &&
@@ -657,9 +657,14 @@ function TobedealtForm(props) {
             </>
           )}
 
-          <Button type="default" onClick={handleBack}>
-            返回
-          </Button>
+          {
+            loading === false && (
+              <Button type="default" onClick={handleBack}>
+                返回
+              </Button>
+            )
+          }
+
         </>
       }
       tabList={tabList}
