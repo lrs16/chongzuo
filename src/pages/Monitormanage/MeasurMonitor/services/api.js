@@ -84,7 +84,7 @@ export async function getKafka3Zone() {
 export async function getKafkaSafeZone(param) {
   // 表格数据请求
   // console.log('表格数据请求', param);
-  return request(`/monitor/kafka/getKafkaTopicData?beginTime=${param.beginTime}&endTime=${param.endTime}&step=${param.step}`);
+  return request(`/monitor/kafka/getKafkaTopicData?beginTime=${param.beginTime}&endTime=${param.endTime}&step=${param.step}&zone=${param.zone}`);
 
 }
 
@@ -92,7 +92,7 @@ export async function getKafkaSafeZone(param) {
 // 根据批次号 获取主题数据
 export async function getKafka2Zone(param) {
   // console.log('根据批次号 获取主题数据参数', param)
-  return request(`/monitor/kafka/getDataByBatchNo?batchNo=`+param);
+  return request(`/monitor/kafka/getDataByBatchNo?batchNo=${param}`);
 
 }
 

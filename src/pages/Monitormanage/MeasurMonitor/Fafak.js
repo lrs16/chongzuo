@@ -63,7 +63,7 @@ class Fafak extends Component {
   state = {
     visible: false,
     step: 'M60',
-    area: '安全Ⅲ区',
+    zone: '2',
     beginTime: moment().startOf('day').format('YYYY-MM-DD HH:mm:ss'),
     endTime: moment().format('YYYY-MM-DD HH:mm:ss'),
   };
@@ -113,11 +113,6 @@ class Fafak extends Component {
       },
 
     } = this.props;
-
-    const newzone3data = {
-      name: '计量中心',
-      children: [...zone3data]
-    }
 
     const addcolumns = (title) => {
       return ({
@@ -182,30 +177,26 @@ class Fafak extends Component {
     };
     return (
       <PageHeaderWrapper title="KAFKA消费">
-
         <h3>KAFKA节点监控</h3>
         <Row gutter={24} type="flex" style={{ marginBottom: 24 }}>
-          <Col xl={8} xs={24}>
-            {zone3data.length > 0 && (
-              <ChartCard title="3区KAFKA节点" contentHeight={200}>
-                <Treecompactbox datas={newzone3data} height={200} padding={[15, 80, 10, 40]} />
-              </ChartCard>
-            )}
-          </Col>
-          <Col xl={8} xs={24}>
-            {zone3data.length > 0 && (
-              <ChartCard title="3区KAFKA节点" contentHeight={200}>
-                <Treecompactbox datas={newzone3data} height={200} padding={[15, 80, 10, 40]} />
-              </ChartCard>
-            )}
-          </Col>
-          <Col xl={8} xs={24}>
-            {zone3data.length > 0 && (
-              <ChartCard title="3区KAFKA节点" contentHeight={200}>
-                <Treecompactbox datas={newzone3data} height={200} padding={[15, 80, 10, 40]} />
-              </ChartCard>
-            )}
-          </Col>
+          {zone3data && zone3data.length > 0 && zone3data.map((obj) => {
+            const newzone3data = {
+              name: '计量中心',
+              children: obj.node
+            };
+            return (
+              <Col xl={8} xs={24}>
+                <ChartCard title={obj.zone} contentHeight={200}>
+                  <Treecompactbox
+                    datas={newzone3data}
+                    height={200}
+                    padding={[15, 80, 10, 40]}
+                  />
+                </ChartCard>
+              </Col>
+            )
+          }
+          )}
         </Row>
         <h3>KAFKA主题消费监控</h3>
         <Form layout="inline">
@@ -239,9 +230,10 @@ class Fafak extends Component {
             </Select>
           </Form.Item>
           <Form.Item label="区域">
-            <Select defaultValue="M60" style={{ width: 120 }} onChange={value => { this.setState({ step: value }) }}>
-              <Option value="M30">30分</Option>
-              <Option value="M60">1小时</Option>
+            <Select defaultValue="2" style={{ width: 120 }} onChange={value => { this.setState({ zone: value }) }}>
+              <Option value="2">安全Ⅱ区</Option>
+              <Option value="3">安全Ⅲ区</Option>
+              <Option value="4">安全接入区</Option>
             </Select>
           </Form.Item>
           <Form.Item>
@@ -251,7 +243,9 @@ class Fafak extends Component {
           </Form.Item>
         </Form>
 
-        <Table dataSource={safezonedata.dataSource}
+        <Table
+          loading={loading}
+          dataSource={safezonedata.dataSource}
           columns={newcolumns}
           bordered
           pagination
