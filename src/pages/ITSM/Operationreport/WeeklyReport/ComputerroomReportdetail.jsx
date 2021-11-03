@@ -16,10 +16,10 @@ import router from 'umi/router';
 import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysUpload from '@/components/SysUpload';
+import Downloadfile from '@/components/SysUpload/Downloadfile';
 import InspectionSummary from './components/ComputerroomComponent/InspectionSummary';
 import NewTroublelist from './components/ComputerroomComponent/NewTroublelist';
 import UnCloseTroublelist from './components/ComputerroomComponent/UnCloseTroublelist';
-import Downloadfile from '@/components/SysUpload/Downloadfile';
 import LastweekHomework from './components/LastweekHomework';
 import WeeklyMeeting from './components/ComputerroomComponent/WeeklyMeeting';
 import AddForm from './components/AddForm';
@@ -181,9 +181,7 @@ function ComputerroomReportdetail(props) {
       setStartTime(saveInitlatime1)
       setEndTime(saveInitlatime2)
     }
-
   }, [loading])
-
 
   useEffect(() => {
     saveSign = true;
@@ -543,7 +541,6 @@ function ComputerroomReportdetail(props) {
                 <InspectionSummary
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
-                  // remainingDefectslist={remainingDefectslist}
                   maintenanceArr={[]}
                   startTime={startTime}
                   endTime={endTime}

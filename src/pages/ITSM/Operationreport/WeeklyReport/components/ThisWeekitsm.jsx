@@ -10,12 +10,11 @@ import {
   Select,
   AutoComplete,
   Spin,
-  Button,
   message
 } from 'antd';
 import { queryOrder } from '@/services/common';
-import styles from '../index.less';
 import moment from 'moment';
+import styles from '../index.less';
 
 const { Search, TextArea } = Input;
 const { Option } = Select;
@@ -24,9 +23,8 @@ let deleteSign = false;
 function ThisWeekitsm(props) {
 
   const {
-    form: { getFieldDecorator, setFieldsValue },
+    form: { getFieldDecorator },
     formItemLayout,
-    formincontentLayout,
     eventList,
     eventArr,
     type,
@@ -38,7 +36,7 @@ function ThisWeekitsm(props) {
   const [disablelist, setDisabledList] = useState([]);
   const [spinloading, setSpinLoading] = useState(true);
   const [newbutton, setNewButton] = useState(false);
-  const [value, setValue] = useState('event');
+  // const [value, setValue] = useState('event');
 
   // 自动完成报障用户
   const disableduser = disablelist.map(obj => (
@@ -46,7 +44,6 @@ function ThisWeekitsm(props) {
       key={obj.no}
       value={obj.no}
       disableuser={obj}
-      // getPopupContainer={triggerNode => triggerNode.parentNode}
       style={{ 'overflow-y': 'hidden' }}
     >
       <Spin spinning={spinloading}>
@@ -63,7 +60,6 @@ function ThisWeekitsm(props) {
         </div>
       </Spin>
     </Option>
-
   ));
 
   // 请求关键字
@@ -84,7 +80,7 @@ function ThisWeekitsm(props) {
   // 选择报障用户，信息回填
   const handleDisableduser = (v, opt,) => {
     const newData = data.map(item => ({ ...item }));
-    const { type, no, content, startTime, endTime, systemName, submit, handleContent } = opt.props.disableuser;
+    const { no, content, startTime, endTime, systemName, submit, handleContent } = opt.props.disableuser;
     const searchObj = {
       key: newData.length + 1,
       field1: newData.length + 1,
@@ -118,13 +114,10 @@ function ThisWeekitsm(props) {
     const newarr = target.map((item, index) => {
       return Object.assign(item, { editable: true, isNew: false, key: index, field1: index + 1 })
     });
-
     deleteSign = true;
     setData(newarr);
     eventList(newarr)
   };
-
-
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
@@ -298,9 +291,9 @@ function ThisWeekitsm(props) {
     }
   ];
 
-  const selectOnchange = (selectvalue) => {
-    setValue(selectvalue);
-  }
+  // const selectOnchange = (selectvalue) => {
+  //   setValue(selectvalue);
+  // }
 
   return (
     <>

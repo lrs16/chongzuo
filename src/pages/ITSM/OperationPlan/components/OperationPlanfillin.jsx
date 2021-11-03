@@ -385,14 +385,14 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
 
           <Col span={24}>
             <Form.Item label="风险分析" {...forminladeLayout}>
-              {getFieldDecorator('main_content', {
+              {getFieldDecorator('riskAnalysis', {
                 rules: [
                   {
                     required,
                     message: '请输入风险分析',
                   },
                 ],
-                initialValue: main.content,
+                initialValue: main.riskAnalysis,
               })(
                 <TextArea disabled={type} rows={4} />,
               )}
@@ -400,14 +400,14 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
           </Col>
           <Col span={24}>
             <Form.Item label="风险应对措施" {...forminladeLayout}>
-              {getFieldDecorator('main_content', {
+              {getFieldDecorator('riskMeasures', {
                 rules: [
                   {
                     required,
                     message: '请输入风险应对措施',
                   },
                 ],
-                initialValue: main.content,
+                initialValue: main.riskMeasures,
               })(
                 <TextArea disabled={type} rows={4} />,
               )}

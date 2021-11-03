@@ -18,11 +18,8 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysUpload from '@/components/SysUpload';
 import InspectionSummary from './components/ComputerroomComponent/InspectionSummary';
 import NewTroublelist from './components/ComputerroomComponent/NewTroublelist';
-import CopyNewTroublelist from './components/ComputerroomComponent/CopyNewTroublelist';
-import CopyUnCloseTroublelist from './components/ComputerroomComponent/CopyUnCloseTroublelist';
 import UnCloseTroublelist from './components/ComputerroomComponent/UnCloseTroublelist';
 import LastweekHomework from './components/LastweekHomework';
-import CopyLast from './components/CopyLast';
 import WeeklyMeeting from './components/ComputerroomComponent/WeeklyMeeting';
 import AddForm from './components/AddForm';
 
@@ -280,8 +277,8 @@ function ComputerroomReport(props) {
     dispatch({
       type: 'softreport/lastweekHomework',
       payload: {
-        plannedEndTime1: reporttype === 'week' ? `${startTime} 00:00:00`: moment(startTime).startOf('month').format('YYYY-MM-DD 00:00:00'),
-        plannedEndTime2: reporttype === 'week' ?`${endTime} 23:59:59`: moment(endTime).endOf('month').format('YYYY-MM-DD 00:00:00'),
+        plannedEndTime1: reporttype === 'week' ? `${startTime} 00:00:00` : moment(startTime).startOf('month').format('YYYY-MM-DD 00:00:00'),
+        plannedEndTime2: reporttype === 'week' ? `${endTime} 23:59:59` : moment(endTime).endOf('month').format('YYYY-MM-DD 00:00:00'),
         type: '机房作业',
         pageIndex: 0,
         pageSize: 1000,
@@ -415,7 +412,6 @@ function ComputerroomReport(props) {
     <PageHeaderWrapper
       title={reporttype === 'week' ? '新建机房运维周报' : '新建机房运维月报'}
       extra={
-        // loading === false && (
         <>
           <Button type='primary' onClick={computerReportform}>保存</Button>
           <Button type='primary' onClick={handlePaste}>粘贴</Button>
@@ -423,18 +419,14 @@ function ComputerroomReport(props) {
             返回
           </Button>
         </>
-        // )
       }
     >
 
       {
         loading && (
           <div style={{ textAlign: 'center' }}>
-            <Spin spinning={loading}>
-              {/* {message.info('数据正在加载中，请稍等')} */}
-            </Spin>
+            <Spin spinning={loading} />
           </div>
-
         )
       }
 
@@ -462,7 +454,7 @@ function ComputerroomReport(props) {
             </Col>
 
             {
-              reporttype === 'week' && startTime && timeshow &&(
+              reporttype === 'week' && startTime && timeshow && (
                 <Col span={24}>
                   <div>
                     <span style={{ marginLeft: 10 }}>填报时间 :</span>
@@ -472,7 +464,7 @@ function ComputerroomReport(props) {
                           style={{ marginRight: 10, marginLeft: 10 }}
                         >
                           <DatePicker
-                             allowClear={false}
+                            allowClear={false}
                             format={dateFormat}
                             defaultValue={moment(startTime)}
                             onChange={onChange}
@@ -489,7 +481,7 @@ function ComputerroomReport(props) {
                       timeshow && (
                         <span>
                           <DatePicker
-                             allowClear={false}
+                            allowClear={false}
                             format={dateFormat}
                             defaultValue={moment(endTime)}
                             onChange={endonChange}
@@ -570,7 +562,7 @@ function ComputerroomReport(props) {
                       {...formincontentLayout}
                     >
                       {getFieldDecorator('contentFiles', {
-                        initialValue: copyData.contentFiles ? copyData.contentFiles : ''
+                        initialValue: copyData && copyData.contentFiles
                       })
                         (
                           <div style={{ width: 400 }}>
@@ -593,7 +585,7 @@ function ComputerroomReport(props) {
                     <Form.Item label=''>
                       {
                         getFieldDecorator('patrolAndExamineContent', {
-                          initialValue: copyData.patrolAndExamineContent ? copyData.patrolAndExamineContent : ''
+                          initialValue: copyData && copyData.patrolAndExamineContent
                         })
                           (<TextArea autoSize={{ minRows: 3 }} />)
                       }
@@ -621,12 +613,12 @@ function ComputerroomReport(props) {
                       {...formincontentLayout}
                     >
                       {getFieldDecorator('materialsFiles', {
-                        initialValue: copyData.materialsFiles ? copyData.materialsFiles : ''
+                        initialValue: copyData && copyData.materialsFiles
                       })
                         (
                           <div style={{ width: 400 }}>
                             <SysUpload
-                              fileslist={copyData.materialsFiles ? JSON.parse(copyData.materialsFiles) : []}
+                              fileslist={copyData && copyData.materialsFiles ? JSON.parse(copyData.materialsFiles) : []}
                               ChangeFileslist={newvalue => {
                                 setFieldsValue({ materialsFiles: JSON.stringify(newvalue.arr) })
                                 setFilesList(newvalue);
@@ -639,28 +631,6 @@ function ComputerroomReport(props) {
                     </Form.Item>
                   </Col>
 
-
-                  {/* 3 本周新增故障及故障修复情况统计 */}
-
-                  {/* {
-                    copyData.operationList !== undefined && (
-                      <Col span={24}>
-                        <CopyNewTroublelist
-                          forminladeLayout={forminladeLayout}
-                          faultlist={copyData.newTroubleList}
-                          type={reporttype}
-                          startTime={startTime}
-                          endTime={endTime}
-                          newTroubleList={contentrowdata => {
-                            setNewTroubleList(contentrowdata)
-                          }}
-                        />
-                      </Col>
-                    )
-                  } */}
-
-                  {/* {
-                    copyData.operationList === undefined && ( */}
                   <Col span={24}>
                     <NewTroublelist
                       forminladeLayout={forminladeLayout}
@@ -674,8 +644,6 @@ function ComputerroomReport(props) {
                       }}
                     />
                   </Col>
-                  {/* //   )
-                  // } */}
 
                   <Col span={24}>
                     <UnCloseTroublelist
@@ -697,12 +665,12 @@ function ComputerroomReport(props) {
                       {...formincontentLayout}
                     >
                       {getFieldDecorator('troubleFiles', {
-                        initialValue: copyData.troubleFiles ? copyData.troubleFiles : ''
+                        initialValue: copyData && copyData.troubleFiles
                       })
                         (
                           <div style={{ width: 400 }}>
                             <SysUpload
-                              fileslist={copyData.troubleFiles ? JSON.parse(copyData.troubleFiles) : []}
+                              fileslist={copyData && copyData.troubleFiles ? JSON.parse(copyData.troubleFiles) : []}
                               ChangeFileslist={newvalue => {
                                 setFieldsValue({ troubleFiles: JSON.stringify(newvalue.arr) })
                                 setFilesList(newvalue);
@@ -724,31 +692,13 @@ function ComputerroomReport(props) {
                     <Form.Item label=''>
                       {
                         getFieldDecorator('operationContent', {
-                          initialValue: copyData.operationContent ? copyData.operationContent : ''
+                          initialValue: copyData && copyData.operationContent
                         })
                           (<TextArea autoSize={{ minRows: 3 }} />)
                       }
                     </Form.Item>
                   </Col>
 
-                  {/* 4.本周作业完成情况 */}
-                  {/* {
-                    copyData.operationList !== undefined && (
-                      <Col span={24}>
-                        <CopyLast
-                          forminladeLayout={forminladeLayout}
-                          operationArr={copyData.operationList}
-                          type={reporttype}
-                          operationList={contentrowdata => {
-                            setOperationList(contentrowdata)
-                          }}
-                        />
-                      </Col>
-                    )
-                  } */}
-
-                  {/* {
-                    copyData.operationList === undefined && ( */}
                   <Col span={24}>
                     <LastweekHomework
                       forminladeLayout={forminladeLayout}
@@ -763,8 +713,6 @@ function ComputerroomReport(props) {
                       databaseParams='true'
                     />
                   </Col>
-                  {/* //   )
-                  // } */}
 
                   <Col span={24}><p style={{ marginTop: 20 }}>{reporttype === 'week' ? '(2)本周工作票开具情况及服务器查询操作票情况统计' : '(2)本月工作票开具情况及服务器查询操作票情况统计'}</p></Col>
 
@@ -772,7 +720,7 @@ function ComputerroomReport(props) {
                     <Form.Item label=''>
                       {
                         getFieldDecorator('billingContent', {
-                          initialValue: copyData.billingContent ? copyData.billingContent : ''
+                          initialValue: copyData && copyData.billingContent
                         })
                           (<TextArea autoSize={{ minRows: 3 }} />)
                       }
@@ -781,24 +729,8 @@ function ComputerroomReport(props) {
 
                   <Col span={24}>{reporttype === 'week' ? '(3)下周作业完成情况' : '(3)下月作业完成情况'}</Col>
 
-                  {/* {
-                    copyData.operationList !== undefined && (
-                      <Col span={24}>
-                        <CopyLast
-                          forminladeLayout={forminladeLayout}
-                          operationArr={copyData.nextOperationList}
-                          type={reporttype}
-                          operationList={contentrowdata => {
-                            setNextOperationList(contentrowdata)
-                          }}
-                        />
-                      </Col>
-                    )
-                  } */}
-
+           
                   {/* 下周工作计划 */}
-                  {/* {
-                    copyData.operationList === undefined && ( */}
                   <Col span={24}>
                     <LastweekHomework
                       forminladeLayout={forminladeLayout}
@@ -810,8 +742,6 @@ function ComputerroomReport(props) {
                       databaseParams='true'
                     />
                   </Col>
-                  {/* //   )
-                  // } */}
 
                   <Col span={24} style={{ marginTop: 20 }}>
                     <Form.Item
@@ -819,12 +749,12 @@ function ComputerroomReport(props) {
                       {...formincontentLayout}
                     >
                       {getFieldDecorator('nextOperationFiles', {
-                        initialValue: copyData.nextOperationFiles ? copyData.nextOperationFiles : ''
+                        initialValue: copyData && copyData.nextOperationFiles
                       })
                         (
                           <div style={{ width: 400 }}>
                             <SysUpload
-                              fileslist={copyData.nextOperationFiles ? JSON.parse(copyData.nextOperationFiles) : []}
+                              fileslist={copyData && copyData.nextOperationFiles ? JSON.parse(copyData.nextOperationFiles) : []}
                               ChangeFileslist={newvalue => {
                                 setFieldsValue({ meetingSummaryFiles: JSON.stringify(newvalue.arr) })
                                 setFilesList(newvalue);
@@ -857,12 +787,12 @@ function ComputerroomReport(props) {
                       {...formincontentLayout}
                     >
                       {getFieldDecorator('meetingSummaryFiles', {
-                        initialValue: copyData.meetingSummaryFiles ? copyData.meetingSummaryFiles : ''
+                        initialValue: copyData && copyData.meetingSummaryFiles
                       })
                         (
                           <div style={{ width: 400 }}>
                             <SysUpload
-                              fileslist={copyData.meetingSummaryFiles ? JSON.parse(copyData.meetingSummaryFiles) : []}
+                              fileslist={copyData && copyData.meetingSummaryFiles ? JSON.parse(copyData.meetingSummaryFiles) : []}
                               ChangeFileslist={newvalue => {
                                 setFieldsValue({ meetingSummaryFiles: JSON.stringify(newvalue.arr) })
                                 setFilesList(newvalue);
@@ -871,7 +801,6 @@ function ComputerroomReport(props) {
                             />
                           </div>
                         )}
-
                     </Form.Item>
                   </Col>
 
@@ -892,7 +821,6 @@ function ComputerroomReport(props) {
                         }}
                         index={index}
                         dynamicData={list.length ? list[index] : {}}
-                        // dynamicData={undefined}
                         loading={loading}
                         ChangeAddRow={v => setAddrow(v)}
                         sign={deleteSign}

@@ -14,17 +14,15 @@ import {
 import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import SysUpload from '@/components/SysUpload';
 import Diskgroup from './components/DatabaseComponent/Diskgroup';
 import Top10Surface from './components/DatabaseComponent/Top10Surface';
 import Top10Increase from './components/DatabaseComponent/Top10Increase';
 import Morethan5g from './components/DatabaseComponent/Morethan5g';
 import QuestionsComments from './components/DatabaseComponent/QuestionsComments';
 import LastweekHomework from './components/LastweekHomework';
-import CopyLast from './components/CopyLast';
 import AddForm from './components/AddForm';
-
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import SysUpload from '@/components/SysUpload';
 
 const forminladeLayout = {
   labelCol: {
@@ -151,7 +149,6 @@ function DatabaseReport(props) {
     }
   }, [files]);
 
-
   useEffect(() => {
     setOperationList(copyData.operationList ? copyData.operationList : lastweekHomeworklist);
     setNextOperationList(copyData.nextOperationList ? copyData.nextOperationList : nextweekHomeworklist);
@@ -272,7 +269,8 @@ function DatabaseReport(props) {
       }
     }).then(res => {
       if (res.code === 200) {
-        setCopyData(res)
+        setCopyData(res);
+        initial = true;
       } else {
         message.info('您无法复制该条记录，请返回列表重新选择')
       }
@@ -378,7 +376,6 @@ function DatabaseReport(props) {
     <PageHeaderWrapper
       title={pagetitle}
       extra={
-        // loading === false && (
         <>
           <Button type='primary' onClick={databaseReportform}>保存</Button>
           <Button type='primary' onClick={handlePaste}>粘贴</Button>
@@ -386,22 +383,17 @@ function DatabaseReport(props) {
             返回
           </Button>
         </>
-        // )
-
       }
     >
       {
         loading && (
           <div style={{ textAlign: 'center' }}>
-            <Spin spinning={loading}>
-              {/* {message.info('数据正在加载中，请稍等')} */}
-            </Spin>
+            <Spin spinning={loading} />
           </div>
-
         )
       }
+
       <Card style={{ padding: 24 }}>
-        {/* {loading === false && ( */}
         <Row gutter={24}>
           <Form>
             <Col span={24}>
@@ -448,7 +440,6 @@ function DatabaseReport(props) {
                     <span>
                       <DatePicker
                         allowClear={false}
-                        // defaultValue={moment(endTime, dateFormat)}
                         format={dateFormat}
                         defaultValue={moment(endTime)}
                         onChange={endonChange}
@@ -465,7 +456,6 @@ function DatabaseReport(props) {
                     </Button>
                   </div>
                 </Col>
-
               )
             }
 
@@ -486,8 +476,6 @@ function DatabaseReport(props) {
                       initialValue: copyData.main ? moment(copyData.main.time1) : moment(startTime)
                     })(<MonthPicker
                       allowClear={false}
-                      // disabledDate={startdisabledDate}
-                      // placeholder='请选择'
                       onChange={onChange}
                     />)}
                   </Form.Item>
@@ -515,7 +503,7 @@ function DatabaseReport(props) {
                     <Form.Item label=''>
                       {
                         getFieldDecorator('content', {
-                          initialValue: copyData.main ? copyData.main.content : ''
+                          initialValue: copyData && copyData.main ? copyData.main.content : ''
                         })
                           (<TextArea autoSize={{ minRows: 3 }} />)
                       }
@@ -528,12 +516,12 @@ function DatabaseReport(props) {
                       {...formincontentLayout}
                     >
                       {getFieldDecorator('contentFiles', {
-                        initialValue: ''
+                        initialValue: copyData && copyData.contentFiles
                       })
                         (
                           <div style={{ width: 400 }}>
                             <SysUpload
-                              fileslist={[]}
+                              fileslist={copyData && copyData.contentFiles ? JSON.parse(copyData.contentFiles) : []}
                               ChangeFileslist={newvalue => {
                                 setFieldsValue({ contentFiles: JSON.stringify(newvalue.arr) })
                                 setFilesList(newvalue);
@@ -614,12 +602,12 @@ function DatabaseReport(props) {
                       {...formincontentLayout}
                     >
                       {getFieldDecorator('tableUpFiles', {
-                        initialValue: '[]'
+                        initialValue: copyData && copyData.tableUpFiles
                       })
                         (
                           <div style={{ width: 400 }}>
                             <SysUpload
-                              fileslist={[]}
+                              fileslist={copyData && copyData.tableUpFiles ? JSON.parse(copyData.tableUpFiles) : []}
                               ChangeFileslist={newvalue => {
                                 setFieldsValue({ tableUpFiles: JSON.stringify(newvalue.arr) })
                                 setFilesList(newvalue);
@@ -651,12 +639,12 @@ function DatabaseReport(props) {
                       {...formincontentLayout}
                     >
                       {getFieldDecorator('defectFiles', {
-                        initialValue: '[]'
+                        initialValue: copyData && copyData.defectFiles
                       })
                         (
                           <div style={{ width: 400 }}>
                             <SysUpload
-                              fileslist={[]}
+                              fileslist={copyData && copyData.defectFiles ? JSON.parse(copyData.defectFiles) : []}
                               ChangeFileslist={newvalue => {
                                 setFieldsValue({ defectFiles: JSON.stringify(newvalue.arr) })
                                 setFilesList(newvalue);
@@ -674,24 +662,6 @@ function DatabaseReport(props) {
                     <p style={{ fontWeight: '900', fontSize: '16px' }}>{reporttype === 'week' ? '四、上周作业完成情况' : '四、上月作业完成情况'}</p>
                   </Col>
 
-                  {/* {
-                    copyData.operationList !== undefined && (
-                      <Col span={24}>
-                        <CopyLast
-                          forminladeLayout={forminladeLayout}
-                          operationArr={copyData.operationList}
-                          type={reporttype}
-                          operationList={contentrowdata => {
-                            setOperationList(contentrowdata)
-                          }}
-                          mainId={mainId}
-                        />
-                      </Col>
-                    )
-                  } */}
-
-                  {/* {
-                    copyData.operationList === undefined && ( */}
                   <Col span={24}>
                     <LastweekHomework
                       forminladeLayout={forminladeLayout}
@@ -703,9 +673,6 @@ function DatabaseReport(props) {
                       databaseParams='true'
                     />
                   </Col>
-                  {/* //   )
-                  // } */}
-
 
                   <Col span={24} style={{ marginTop: 20 }}>
                     <Form.Item
@@ -713,12 +680,12 @@ function DatabaseReport(props) {
                       {...formincontentLayout}
                     >
                       {getFieldDecorator('operationFiles', {
-                        initialValue: '[]'
+                        initialValue: copyData && copyData.operationFiles
                       })
                         (
                           <div style={{ width: 400 }}>
                             <SysUpload
-                              fileslist={[]}
+                              fileslist={copyData && copyData.operationFiles ? JSON.parse(copyData.operationFiles) : []}
                               ChangeFileslist={newvalue => {
                                 setFieldsValue({ operationFiles: JSON.stringify(newvalue.arr) })
                                 setFilesList(newvalue);
@@ -736,24 +703,6 @@ function DatabaseReport(props) {
                     <p style={{ fontWeight: '900', fontSize: '16px' }}>{reporttype === 'week' ? '五、下周作业计划' : '五、下月作业计划'}</p>
                   </Col>
 
-                  {/* {
-                    copyData.operationList !== undefined && (
-                      <Col span={24}>
-                        <CopyLast
-                          forminladeLayout={forminladeLayout}
-                          type={reporttype}
-                          operationList={contentrowdata => {
-                            setNextOperationList(contentrowdata)
-                          }}
-                          operationArr={copyData.nextOperationList}
-                          mainId={mainId}
-                        />
-                      </Col>
-                    )
-                  } */}
-
-                  {/* {
-                    copyData.operationList === undefined && ( */}
                   <Col span={24}>
                     <LastweekHomework
                       forminladeLayout={forminladeLayout}
@@ -766,8 +715,6 @@ function DatabaseReport(props) {
                       databaseParams='true'
                     />
                   </Col>
-                  {/* //   )
-                  // } */}
 
                   <Col span={24} style={{ marginTop: 20 }}>
                     <Form.Item
@@ -775,12 +722,12 @@ function DatabaseReport(props) {
                       {...formincontentLayout}
                     >
                       {getFieldDecorator('nextOperationFiles', {
-                        initialValue: '[]'
+                        initialValue: copyData && copyData.operationFiles
                       })
                         (
                           <div style={{ width: 400 }}>
                             <SysUpload
-                              fileslist={[]}
+                              fileslist={copyData && copyData.operationFiles ? JSON.parse(copyData.operationFiles) : []}
                               ChangeFileslist={newvalue => {
                                 setFieldsValue({ nextOperationFiles: JSON.stringify(newvalue.arr) })
                                 setFilesList(newvalue);
@@ -808,7 +755,6 @@ function DatabaseReport(props) {
                         }}
                         index={index}
                         dynamicData={list.length ? list[index] : {}}
-                        // dynamicData={undefined}
                         loading={loading}
                         ChangeAddRow={v => setAddrow(v)}
                         sign={deleteSign}
@@ -843,7 +789,6 @@ function DatabaseReport(props) {
             </Button>
           </Form>
         </Row>
-        {/* // )} */}
       </Card>
     </PageHeaderWrapper>
   )

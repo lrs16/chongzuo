@@ -5,7 +5,6 @@ import {
   Input,
   Button,
   Popconfirm,
-  message,
   DatePicker
 } from 'antd';
 import moment from 'moment';
@@ -17,7 +16,6 @@ function LastweekHomework(props) {
     operationArr,
     detailParams,
     databaseParams,
-    loading
   } = props;
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);

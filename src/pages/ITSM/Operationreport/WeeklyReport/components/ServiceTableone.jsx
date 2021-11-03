@@ -5,7 +5,6 @@ import {
   Input,
   Col,
   Row,
-  message,
   Button,
   Popconfirm
 } from 'antd';
@@ -16,7 +15,6 @@ function ServiceTableone(props) {
     maintenanceArr,
     typeList,
     tabActiveKey,
-    mainId,
     detailParams
   } = props;
   const [data, setData] = useState([]);

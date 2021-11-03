@@ -6,7 +6,6 @@ import {
   Button,
   Popconfirm,
   DatePicker,
-  message
 } from 'antd';
 import moment from 'moment';
 

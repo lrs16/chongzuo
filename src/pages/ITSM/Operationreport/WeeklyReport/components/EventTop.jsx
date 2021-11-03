@@ -7,7 +7,6 @@ import {
   Row,
   Popconfirm,
   Button,
-  message
 } from 'antd';
 
 const { TextArea } = Input;
@@ -17,7 +16,6 @@ function EventTop(props) {
     topNList,
     topArr,
     detailParams,
-    loading,
   } = props;
 
   const [data, setData] = useState([]);
@@ -166,8 +164,8 @@ function EventTop(props) {
             </span>
           )
         }
+        return []
       }
-
     }
   ];
 

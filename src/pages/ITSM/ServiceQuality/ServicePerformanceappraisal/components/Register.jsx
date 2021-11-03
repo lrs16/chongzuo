@@ -362,10 +362,11 @@ const Register = forwardRef((props, ref) => {
               // <div>
               //   <DatePicker
               //     disabled={noEdit}
-              //     // defaultValue={moment(register.assessTime)}
+              //     defaultValue={moment(register.assessTime)}
               //     showTime
+              //     allowClear={false}
               //     format="YYYY-MM-DD HH:mm:ss"
-              //     // onChange={onChange}
+              //     onChange={onChange}
               //   />
               // </div>
             )}

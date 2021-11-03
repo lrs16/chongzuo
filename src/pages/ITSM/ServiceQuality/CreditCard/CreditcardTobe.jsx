@@ -33,7 +33,6 @@ const formItemLayout = {
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
-const { TabPane } = Tabs;
 
 function CreditcardTobe(props) {
   const pagetitle = props.route.name;
@@ -111,6 +110,14 @@ function CreditcardTobe(props) {
   };
 
   const columns = [
+    {
+      title: '序号',
+      dataIndex: 'index',
+      key: 'index',
+      width: 100,
+      render: (text, record, index) =>
+        `${(paginations.current - 1) * paginations.pageSize + (index + 1)}`,
+    },
     {
       title: '记分卡编号',
       dataIndex: 'cardNo',

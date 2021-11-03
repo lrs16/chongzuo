@@ -13,8 +13,8 @@ import {
 import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
-import AddForm from './components/AddForm';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import AddForm from './components/AddForm';
 
 const formincontentLayout = {
   labelCol: {
@@ -340,7 +340,6 @@ function OtherReport(props) {
                         style={{ marginRight: 10 }}
                       >-</span>
 
-
                       <span>
                         <DatePicker
                           allowClear={false}
@@ -350,11 +349,8 @@ function OtherReport(props) {
 
                         />
                       </span>
-
-
                     </div>
                   </Col>
-
                 )
               }
 
@@ -392,7 +388,6 @@ function OtherReport(props) {
                           }}
                           index={index}
                           dynamicData={list.length ? list[index] : {}}
-                          // dynamicData={undefined}
                           loading={loading}
                           ChangeAddRow={v => setAddrow(v)}
                           sign={deleteSign}
@@ -420,21 +415,16 @@ function OtherReport(props) {
                 style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
                 type="primary"
                 ghost
-                // onClick={() => {newMember(); setAddrow(true)}}
                 onClick={() => { newMember() }}
-                // disabled={addrow}
                 icon="plus"
               >
                 新增其他内容
               </Button>
-
-
             </Form>
           </Row>
         )}
       </Card>
     </PageHeaderWrapper>
-
   )
 }
 

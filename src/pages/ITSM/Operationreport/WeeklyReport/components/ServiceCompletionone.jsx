@@ -4,7 +4,6 @@ import {
   Table,
   Form,
   Button,
-  message,
   Popconfirm
 } from 'antd';
 
@@ -15,7 +14,6 @@ function ServiceCompletionone(props) {
     tabActiveKey,
     maintenanceService,
     statisList,
-    mainId,
     detailParams
   } = props;
 
@@ -134,7 +132,7 @@ function ServiceCompletionone(props) {
           <Input
             disabled={detailParams}
             defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+            onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
           />
         )
       }

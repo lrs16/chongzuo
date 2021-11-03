@@ -5,8 +5,6 @@ import {
   Input,
   Button,
   Popconfirm,
-  message,
-  Col,
   DatePicker,
 } from 'antd';
 import moment from 'moment';
@@ -19,10 +17,8 @@ function UpgradeList(props) {
     upgradeArr,
     upgradeList,
     detailParams,
-    reporttype
   } = props;
   const [data, setData] = useState([]);
-  const [cacheOriginData, setcacheOriginData] = useState({});
   const [newbutton, setNewButton] = useState(false);
 
   // 新增一条记录
@@ -69,9 +65,8 @@ function UpgradeList(props) {
   const remove = key => {
     const target = deleteObj(key) || {};
     const newarr = target.map((item, index) => {
-      return Object.assign(item, { editable: true, isNew: false, key: index, field1: index + 1 })
+      return Object.assign(item, { editable: true, isNew: false, key: index })
     });
-
     deleteSign = true;
     setData(newarr);
     upgradeList(newarr);
@@ -177,7 +172,6 @@ function UpgradeList(props) {
 
   return (
     <>
-
       {deleteSign === false && (
         <Table
           columns={column}

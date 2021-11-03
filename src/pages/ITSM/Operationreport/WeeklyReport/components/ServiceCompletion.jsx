@@ -1,4 +1,4 @@
-import React, { useEffect, useImperativeHandle, useContext, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   Form,
@@ -7,13 +7,10 @@ import {
   Row
 } from 'antd';
 
-const { TextArea } = Input;
 function ServiceCompletion(props) {
   const {
-    form: { getFieldDecorator },
     selfhandleRow,
     soluteArr,
-    mainId,
     detailParams,
   } = props;
 

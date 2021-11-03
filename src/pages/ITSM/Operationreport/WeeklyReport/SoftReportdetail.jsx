@@ -14,14 +14,13 @@ import {
 import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import SysUpload from '@/components/SysUpload';
+import Downloadfile from '@/components/SysUpload/Downloadfile';
 import Development from './components/Development';
 import ThisweekMaintenance from './components/ThisweekMaintenance';
-import CopyLast from './components/CopyLast';
 import ServiceCompletion from './components/ServiceCompletion';
-import CopyServiceCompletion from './components/CopyServiceCompletion';
 import ServiceCompletionone from './components/ServiceCompletionone';
-import CopyServiceCompletionone from './components/CopyServiceCompletionone';
-import CopyServiceTableone from './components/CopyServiceTableone';
 import ThisWeekitsm from './components/ThisWeekitsm';
 import DefectTracking from './components/DefectTracking';
 import LastweekHomework from './components/LastweekHomework';
@@ -30,10 +29,6 @@ import EventTop from './components/EventTop';
 import PatrolAndExamine from './components/PatrolAndExamine';
 import UpgradeList from './components/UpgradeList';
 import AddForm from './components/AddForm';
-import Downloadfile from '@/components/SysUpload/Downloadfile';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import SysUpload from '@/components/SysUpload';
-import { submit } from '../../OperationPlan/services/processapi';
 
 const forminladeLayout = {
   labelCol: {
@@ -105,7 +100,6 @@ function SoftReportdetail(props) {
   const [typeList, setTypeList] = useState([]) // TOPN列表
   const [nextOperationList, setNextOperationList] = useState([]) // 下周作业列表
   const [list, setList] = useState([]);
-  const [buttonVisible, setButtonVisible] = useState(false);
 
   const [newbutton, setNewButton] = useState(false);
   const [addrow, setAddrow] = useState(false);
@@ -159,7 +153,7 @@ function SoftReportdetail(props) {
         payload: savedata
       }).then(res => {
         if (res.code === 200) {
-          message.info(res.msg);
+          message.success(res.msg);
           getopenFlow();
         } else {
           message.info('保存失败')

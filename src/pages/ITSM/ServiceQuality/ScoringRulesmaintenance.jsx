@@ -40,7 +40,7 @@ function ScoringRulesmaintenance(props) {
     loading,
   } = props;
 
-  const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 });
+  const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
   const [selectdata, setSelectData] = useState('');
   const [tabrecord, setTabRecord] = useState({});
   const [selectedKeys, setSelectedKeys] = useState([]);
@@ -93,6 +93,14 @@ function ScoringRulesmaintenance(props) {
   };
 
   const columns = [
+    {
+      title: '序号',
+      dataIndex: 'index',
+      key: 'index',
+      width: 100,
+      render: (text, record, index) =>
+        `${(paginations.current - 1) * paginations.pageSize + (index + 1)}`,
+    },
     {
       title: '评分细则编号',
       dataIndex: 'scoreNo',

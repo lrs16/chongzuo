@@ -5,7 +5,6 @@ import {
   Input,
   Button,
   Popconfirm,
-  message,
   DatePicker
 } from 'antd';
 import moment from 'moment';
@@ -214,5 +213,4 @@ function DefectTracking(props) {
   )
 }
 
-export default Form.create({})(DefectTracking)
-  ;
+export default Form.create({})(DefectTracking);

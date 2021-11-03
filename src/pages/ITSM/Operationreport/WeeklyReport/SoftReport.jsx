@@ -15,25 +15,20 @@ import {
 import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import SysUpload from '@/components/SysUpload';
 import Development from './components/Development';
 import ThisweekMaintenance from './components/ThisweekMaintenance';
 import ServiceCompletion from './components/ServiceCompletion';
-import CopyServiceCompletion from './components/CopyServiceCompletion';
 import ThisWeekitsm from './components/ThisWeekitsm';
 import DefectTracking from './components/DefectTracking';
 import LastweekHomework from './components/LastweekHomework';
-import CopyLast from './components/CopyLast';
-import CopyEventtop from './components/CopyEventtop';
 import ServiceTableone from './components/ServiceTableone';
-import CopyServiceTableone from './components/CopyServiceTableone';
 import EventTop from './components/EventTop';
 import PatrolAndExamine from './components/PatrolAndExamine';
 import UpgradeList from './components/UpgradeList';
 import ServiceCompletionone from './components/ServiceCompletionone';
-import CopyServiceCompletionone from './components/CopyServiceCompletionone';
 import AddForm from './components/AddForm';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import SysUpload from '@/components/SysUpload';
 
 const forminladeLayout = {
   labelCol: {
@@ -57,7 +52,6 @@ const formItemLayout = {
   },
 };
 
-const { Option } = Select;
 const formincontentLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -253,7 +247,6 @@ function SoftReport(props) {
   const [typeList, setTypeList] = useState([]) // TOPN列表
   const [nextOperationList, setNextOperationList] = useState([]) // 下周作业列表
   const [list, setList] = useState([]);
-  const [buttonVisible, setButtonVisible] = useState(false)
   const [copyData, setCopyData] = useState('');
 
   const [newbutton, setNewButton] = useState(false);
@@ -319,7 +312,6 @@ function SoftReport(props) {
       }
 
     })
-
   }
 
   //   七、上周作业完成情况--表格
@@ -595,7 +587,6 @@ function SoftReport(props) {
     initial = false;
   }, []);
 
-
   const getReportdata = () => {
     lastweekHomework();
     nextweekHomework();
@@ -623,7 +614,7 @@ function SoftReport(props) {
   }, [loading]);
 
   const dateFormat = 'YYYY-MM-DD';
-  
+
   return (
     <PageHeaderWrapper
       title={reporttype === 'week' ? '新建软件运维周报' : '新建软件运维月报'}
@@ -653,8 +644,6 @@ function SoftReport(props) {
       }
 
       <Card style={{ padding: 24 }}>
-
-        {/* {maintenanceArr && (maintenanceArr.data || copyData.main !== undefined ) && ( */}
         <Row gutter={24}>
           <Form>
             <Col span={24}>
@@ -701,7 +690,6 @@ function SoftReport(props) {
                     <span>
                       <DatePicker
                         allowClear={false}
-                        // defaultValue={moment(endTime, dateFormat)}
                         format={dateFormat}
                         defaultValue={moment(endTime)}
                         onChange={endonChange}
@@ -790,7 +778,7 @@ function SoftReport(props) {
                     <Form.Item label=''>
                       {
                         getFieldDecorator('content', {
-                          initialValue: ''
+                          initialValue: copyData && copyData.content
                         })
                           (<TextArea autoSize={{ minRows: 3 }} />)
                       }
@@ -803,12 +791,12 @@ function SoftReport(props) {
                       {...formincontentLayout}
                     >
                       {getFieldDecorator('contentFiles', {
-                        initialValue: ''
+                        initialValue: copyData && copyData.contentFiles
                       })
                         (
                           <div style={{ width: 400 }}>
                             <SysUpload
-                              fileslist={[]}
+                              fileslist={copyData && copyData.contentFiles ? JSON.parse(copyData.contentFiles) : []}
                               ChangeFileslist={newvalue => {
                                 setFieldsValue({ contentFiles: JSON.stringify(newvalue.arr) })
                                 setFilesList(newvalue);
@@ -840,7 +828,7 @@ function SoftReport(props) {
                     <Form.Item label=''>
                       {
                         getFieldDecorator('security', {
-                          initialValue: ''
+                          initialValue: copyData && copyData.security
                         })(<TextArea autoSize={{ minRows: 3 }} />)
                       }
                     </Form.Item>
@@ -862,12 +850,12 @@ function SoftReport(props) {
                       {...formincontentLayout}
                     >
                       {getFieldDecorator('materialsFiles', {
-                        initialValue: ''
+                        initialValue: copyData && copyData.materialsFiles
                       })
                         (
                           <div style={{ width: 400 }}>
                             <SysUpload
-                              fileslist={[]}
+                              fileslist={copyData && copyData.materialsFiles ? JSON.parse(copyData.materialsFiles) : []}
                               ChangeFileslist={newvalue => {
                                 setFieldsValue({ materialsFiles: JSON.stringify(newvalue.arr) })
                                 setFilesList(newvalue);
@@ -876,30 +864,9 @@ function SoftReport(props) {
                             />
                           </div>
                         )}
-
                     </Form.Item>
                   </Col>
 
-                  {/* 三、运维服务指标完成情况 */}
-                  {/* 运维分类统计情况列表 */}
-                  {/* {
-                    copyData.typeList !== undefined && (
-                      <Col span={24}>
-                        <ServiceTableone
-                          forminladeLayout={forminladeLayout}
-                          maintenanceArr={copyData.typeList}
-                          tabActiveKey={reporttype}
-                          typeList={contentrowdata => {
-                            setTypeList(contentrowdata)
-                          }}
-                          mainId={mainId}
-                        />
-                      </Col>
-                    )
-                  } */}
-
-                  {/* {
-                    copyData.typeList === undefined && ( */}
                   <Col span={24}>
                     <ServiceTableone
                       forminladeLayout={forminladeLayout}
@@ -912,15 +879,13 @@ function SoftReport(props) {
                       mainId={mainId}
                     />
                   </Col>
-                  {/* //    )
-                  //  } */}
 
                   {/* 运维统计 */}
                   <Col span={24} style={{ marginTop: 15 }}>
                     <Form.Item label=''>
                       {
                         getFieldDecorator('typeContent', {
-                          initialValue: ''
+                          initialValue: copyData && copyData.typeContent
                         })(<TextArea autoSize={{ minRows: 3 }} />)
                       }
                     </Form.Item>
@@ -928,8 +893,6 @@ function SoftReport(props) {
 
                   {/* 软件运维付服务指标完成情况 */}
                   {/* 一线问题解决情况汇总统计 */}
-                  {/* {
-                    copyData.statisList === undefined && ( */}
                   <Col span={24}>
                     <ServiceCompletionone
                       forminladeLayout={forminladeLayout}
@@ -940,26 +903,7 @@ function SoftReport(props) {
                       }}
                     />
                   </Col>
-                  {/* //   )
-                  // } */}
 
-                  {/* {
-                    copyData.statisList !== undefined && (
-                      <Col span={24}>
-                        <CopyServiceCompletionone
-                          forminladeLayout={forminladeLayout}
-                          maintenanceService={copyData.statisList}
-                          tabActiveKey={reporttype}
-                          statisList={contentrowdata => {
-                            setStatisList(contentrowdata)
-                          }}
-                        />
-                      </Col>
-                    )
-                  } */}
-
-                  {/* {
-                    copyData.selfhandleRow === undefined && ( */}
                   <Col span={24}>
                     <ServiceCompletion
                       forminladeLayout={forminladeLayout}
@@ -972,34 +916,13 @@ function SoftReport(props) {
                       }}
                     />
                   </Col>
-                  {/* //   )
-                  // } */}
-
-                  {/* {
-                    copyData.selfhandleRow !== undefined && (
-                      <Col span={24}>
-                        <CopyServiceCompletion
-                          forminladeLayout={forminladeLayout}
-                          soluteArr={copyData.selfhandleRow}
-                          startTime={startTime}
-                          endTime={endTime}
-                          tabActiveKey={reporttype}
-                          selfhandleRow={contentrowdata => {
-                            setSelfhandleRow(contentrowdata)
-                          }}
-                        />
-                      </Col>
-                    )
-                  } */}
-
-
 
                   {/* 服务指标 */}
                   <Col span={24} style={{ marginTop: 24 }}>
                     <Form.Item label=''>
                       {
                         getFieldDecorator('selfhandleContent', {
-                          initialValue: ''
+                          initialValue: copyData && copyData.selfhandleContent
                         })
                           (<TextArea autoSize={{ minRows: 3 }} />)
                       }
@@ -1021,12 +944,12 @@ function SoftReport(props) {
                       {...formincontentLayout}
                     >
                       {getFieldDecorator('topNFiles', {
-                        initialValue: ''
+                        initialValue: copyData && copyData.topNFiles
                       })
                         (
                           <div style={{ width: 400 }}>
                             <SysUpload
-                              fileslist={[]}
+                              fileslist={copyData && copyData.topNFiles ? JSON.parse(copyData.topNFiles) : []}
                               ChangeFileslist={newvalue => {
                                 setFieldsValue({ topNFiles: JSON.stringify(newvalue.arr) })
                                 setFilesList(newvalue);
@@ -1059,12 +982,12 @@ function SoftReport(props) {
                       {...formincontentLayout}
                     >
                       {getFieldDecorator('eventFiles', {
-                        initialValue: ''
+                        initialValue: copyData && copyData.eventFiles
                       })
                         (
                           <div style={{ width: 400 }}>
                             <SysUpload
-                              fileslist={[]}
+                              fileslist={copyData && copyData.eventFiles ? JSON.parse(copyData.eventFiles) : []}
                               ChangeFileslist={newvalue => {
                                 setFieldsValue({ eventFiles: JSON.stringify(newvalue.arr) })
                                 setFilesList(newvalue);
@@ -1090,7 +1013,7 @@ function SoftReport(props) {
                     >
                       {
                         getFieldDecorator('completeContent', {
-                          initialValue: ''
+                          initialValue: copyData && copyData.completeContent
                         })
                           (<TextArea autoSize={{ minRows: 3 }} />)
                       }
@@ -1123,7 +1046,6 @@ function SoftReport(props) {
                     />
                   </Col>
 
-
                   <Col span={24}>
                     <p>(2)计划{startTime}至{endTime},计量自动化系统开展 次发布变更（消缺），变更内容如下</p>
                   </Col>
@@ -1146,12 +1068,12 @@ function SoftReport(props) {
                       {...formincontentLayout}
                     >
                       {getFieldDecorator('updateFiles', {
-                        initialValue: ''
+                        initialValue: copyData && copyData.updateFiles
                       })
                         (
                           <div style={{ width: 400 }}>
                             <SysUpload
-                              fileslist={[]}
+                              fileslist={copyData && copyData.updateFiles ? JSON.parse(copyData.updateFiles) : []}
                               ChangeFileslist={newvalue => {
                                 setFieldsValue({ updateFiles: JSON.stringify(newvalue.arr) })
                                 setFilesList(newvalue);
@@ -1183,12 +1105,12 @@ function SoftReport(props) {
                       {...formincontentLayout}
                     >
                       {getFieldDecorator('legacyFiles', {
-                        initialValue: ''
+                        initialValue: copyData && copyData.legacyFiles
                       })
                         (
                           <div style={{ width: 400 }}>
                             <SysUpload
-                              fileslist={[]}
+                              fileslist={copyData && copyData.legacyFiles ? JSON.parse(copyData.legacyFiles) : []}
                               ChangeFileslist={newvalue => {
                                 setFieldsValue({ legacyFiles: JSON.stringify(newvalue.arr) })
                                 setFilesList(newvalue);
@@ -1205,24 +1127,6 @@ function SoftReport(props) {
                     <p style={{ fontWeight: '900', fontSize: '16px' }}>{reporttype === 'week' ? '七、上周作业完成情况' : '七、上月作业完成情况'}</p>
                   </Col>
 
-                  {/* {copyData.operationList !== undefined && (
-                    <Col span={24}>
-                      <CopyLast
-                        forminladeLayout={forminladeLayout}
-                        startTime={startTime}
-                        endTime={endTime}
-                        type={reporttype}
-                        operationList={contentrowdata => {
-                          setOperationList(contentrowdata)
-                        }}
-                        operationArr={copyData.operationList}
-                        // mainId={copyData.operationList?true:''}
-                        loading={loading}
-                      />
-                    </Col>
-                  )} */}
-
-                  {/* {copyData.operationList === undefined && ( */}
                   <Col span={24}>
                     <LastweekHomework
                       forminladeLayout={forminladeLayout}
@@ -1233,11 +1137,9 @@ function SoftReport(props) {
                         setOperationList(contentrowdata)
                       }}
                       operationArr={copyData.operationList ? copyData.operationList : lastweekHomeworklist}
-                      // mainId={copyData.operationList?true:''}
                       loading={loading}
                     />
                   </Col>
-                  {/* // )} */}
 
                   <Col span={24} style={{ marginTop: 20 }}>
                     <Form.Item
@@ -1245,12 +1147,12 @@ function SoftReport(props) {
                       {...formincontentLayout}
                     >
                       {getFieldDecorator('operationFiles', {
-                        initialValue: ''
+                        initialValue: copyData && copyData.operationFiles
                       })
                         (
                           <div style={{ width: 400 }}>
                             <SysUpload
-                              fileslist={[]}
+                              fileslist={copyData && copyData.operationFiles ? JSON.parse(copyData.operationFiles) : []}
                               ChangeFileslist={newvalue => {
                                 setFieldsValue({ operationFiles: JSON.stringify(newvalue.arr) })
                                 setFilesList(newvalue);
@@ -1266,23 +1168,6 @@ function SoftReport(props) {
                     <p style={{ fontWeight: '900', fontSize: '16px' }}>{reporttype === 'week' ? '八、下周作业计划' : '八、下月作业计划'}</p>
                   </Col>
 
-                  {/* 八、 下周作业计划 */}
-                  {/* {copyData.operationList !== undefined && (
-                    <Col span={24}>
-                      <CopyLast
-                        forminladeLayout={forminladeLayout}
-                        type={reporttype}
-                        operationList={contentrowdata => {
-                          setNextOperationList(contentrowdata)
-                        }}
-                        operationArr={copyData.nextOperationList}
-                        loading={loading}
-                      />
-                    </Col>
-                  )} */}
-
-                  {/* { */}
-                  {/* // copyData.operationList === undefined && ( */}
                   <Col span={24}>
                     <LastweekHomework
                       forminladeLayout={forminladeLayout}
@@ -1296,8 +1181,6 @@ function SoftReport(props) {
                       loading={loading}
                     />
                   </Col>
-                  {/* //   ) */}
-                  {/* // } */}
 
                   <Col span={24} style={{ marginTop: 20 }}>
                     <Form.Item
@@ -1305,12 +1188,12 @@ function SoftReport(props) {
                       {...formincontentLayout}
                     >
                       {getFieldDecorator('nextOperationFiles', {
-                        initialValue: ''
+                        initialValue: copyData && copyData.nextOperationFiles
                       })
                         (
                           <div style={{ width: 400 }}>
                             <SysUpload
-                              fileslist={[]}
+                              fileslist={copyData && copyData.nextOperationFiles ? JSON.parse(copyData.nextOperationFiles) : []}
                               ChangeFileslist={newvalue => {
                                 setFieldsValue({ nextOperationFiles: JSON.stringify(newvalue.arr) })
                                 setFilesList(newvalue);
@@ -1321,11 +1204,9 @@ function SoftReport(props) {
                         )}
                     </Form.Item>
                   </Col>
-
                 </>
               )
             }
-
 
             {loading === false && list && list.length > 0 && (
               list.map((item, index) => {
@@ -1340,7 +1221,6 @@ function SoftReport(props) {
                         }}
                         index={index}
                         dynamicData={list.length ? list[index] : {}}
-                        // dynamicData={undefined}
                         loading={loading}
                         ChangeAddRow={v => setAddrow(v)}
                         sign={deleteSign}

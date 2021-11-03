@@ -419,7 +419,6 @@ function DatabaseReportdetail(props) {
                         />
                       </span>
 
-
                       <span
                         style={{ marginRight: 10 }}
                       >-</span>

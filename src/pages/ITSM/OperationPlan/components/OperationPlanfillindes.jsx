@@ -84,6 +84,21 @@ function OperationPlanfillindes(props) {
             <TextArea autoSize={{ minRows: 3 }} defaultValue={info.content} disabled />
           </Form.Item>
         </Col>
+        <Col span={24}>
+          <Form.Item label="风险分析" {...forminladeLayout}>
+            <TextArea autoSize={{ minRows: 3 }} defaultValue={info.content} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={24}>
+          <Form.Item label="作业内容" {...forminladeLayout}>
+            <TextArea autoSize={{ minRows: 3 }} defaultValue={info.riskAnalysis} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={24}>
+          <Form.Item label="风险应对措施" {...forminladeLayout}>
+            <TextArea autoSize={{ minRows: 3 }} defaultValue={info.风险应对措施} disabled />
+          </Form.Item>
+        </Col>
         <Col span={8}>
           <Form.Item label="计划开始时间"><Input defaultValue=
             {info.plannedStartTime} disabled /></Form.Item>

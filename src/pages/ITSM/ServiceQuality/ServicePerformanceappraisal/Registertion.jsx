@@ -49,7 +49,8 @@ function Registertion(props) {
   const [contractArr, setContractArr] = useState([]);
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [activeKey, setActiveKey] = useState(['registratform']);
- 
+  // const [show, setShow] = useState(false);
+
   const handleClose = () => {
     router.push({
       pathname: `/ITSM/servicequalityassessment/creditcard/creditcardregister`,
@@ -62,9 +63,9 @@ function Registertion(props) {
   };
 
   const handleSubmit = () => {
-    const values =  RegistratRef.current.getVal();
+    const values = RegistratRef.current.getVal();
     RegistratRef.current.Forms((err) => {
-      if(!err) {
+      if (!err) {
         if (values.directorName) {
           const submitIfnfo = values;
           delete submitIfnfo.provider;
@@ -131,6 +132,7 @@ function Registertion(props) {
   };
 
   useEffect(() => {
+    // setShow(true)
     dispatch({
       type: 'qualityassessment/clearRegister'
     })
@@ -148,8 +150,12 @@ function Registertion(props) {
   useEffect(() => {
     if (tabnew) {
       RegistratRef.current.resetVal();
+      // setShow(false)
     }
   }, [tabnew]);
+  
+
+
 
   // 点击页签右键刷新
   useEffect(() => {
@@ -220,37 +226,38 @@ function Registertion(props) {
       }
     >
       <div className={styles.collapse}>
-        <Collapse
-          expandIconPosition="right"
-          defaultActiveKey={['1']}
-          bordered={false}
-          onChange={callback}
-        >
-          <Panel header="服务绩效考核登记" key="1">
-            <Register
-              formItemLayout={formItemLayout}
-              forminladeLayout={forminladeLayout}
-              wrappedComponentRef={RegistratRef}
-              userinfo={userinfo}
-              getTarget1={getTarget1}
-              getTarget2={getTarget2}
-              target1={target1}
-              target2={target2}
-              getclausedetail={getclausedetail}
-              clauseList={clauseList}
-              contractArr={contractArr}
-              getContrractname={getContrractname}
-              files={[]}
-              ChangeFiles={newvalue => {
-                setFiles(newvalue);
-              }}
-              loading={loading}
-              register={tabdata}
-              tabdata={tabdata}
-            />
-          </Panel>
-        </Collapse>
-      </div>
+            <Collapse
+              expandIconPosition="right"
+              defaultActiveKey={['1']}
+              bordered={false}
+              onChange={callback}
+            >
+              <Panel header="服务绩效考核登记" key="1">
+                <Register
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
+                  wrappedComponentRef={RegistratRef}
+                  userinfo={userinfo}
+                  getTarget1={getTarget1}
+                  getTarget2={getTarget2}
+                  target1={target1}
+                  target2={target2}
+                  getclausedetail={getclausedetail}
+                  clauseList={clauseList}
+                  contractArr={contractArr}
+                  getContrractname={getContrractname}
+                  files={[]}
+                  ChangeFiles={newvalue => {
+                    setFiles(newvalue);
+                  }}
+                  loading={loading}
+                  register={tabdata}
+                  tabdata={tabdata}
+                />
+              </Panel>
+            </Collapse>
+          </div>
+
     </PageHeaderWrapper>
   );
 }

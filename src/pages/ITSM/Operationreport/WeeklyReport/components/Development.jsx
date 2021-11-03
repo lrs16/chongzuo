@@ -6,7 +6,6 @@ import {
   Button,
   Popconfirm,
   Select,
-  message
 } from 'antd';
 
 let deleteSign = false;
@@ -27,8 +26,6 @@ const Development = React.forwardRef((props, ref) => {
     detailParams
   } = props;
   const [data, setData] = useState([]);
-  const [uploadkey, setKeyUpload] = useState('');
-  const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
   // 新增一条记录
