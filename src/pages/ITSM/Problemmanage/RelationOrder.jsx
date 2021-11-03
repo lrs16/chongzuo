@@ -16,7 +16,18 @@ function RelevancyOrder(props) {
   const [searchrow, setSearchRow] = useState(undefined);
 
   const callback = (key) => {
-    setActiveKey(key)
+    setActiveKey(key);
+    setSearchRow(undefined);
+    dispatch({
+      type: 'relationorder/fetcht',
+      payload: {
+        orderId,
+        orderType: 'problem',
+        pageIndex: 1,
+        pageSize: 15,
+        relationType: key,
+      },
+    });
   }
 
   const getlist = (pageIndex, pageSize) => {

@@ -63,6 +63,7 @@ class Fafak extends Component {
   state = {
     visible: false,
     step: 'M60',
+    area: '安全Ⅲ区',
     beginTime: moment().startOf('day').format('YYYY-MM-DD HH:mm:ss'),
     endTime: moment().format('YYYY-MM-DD HH:mm:ss'),
   };
@@ -183,15 +184,28 @@ class Fafak extends Component {
       <PageHeaderWrapper title="KAFKA消费">
 
         <h3>KAFKA节点监控</h3>
-        <Row gutter={24} type="flex">
-          <Col xl={24} xs={24} style={{ marginBottom: 24 }}>
+        <Row gutter={24} type="flex" style={{ marginBottom: 24 }}>
+          <Col xl={8} xs={24}>
             {zone3data.length > 0 && (
               <ChartCard title="3区KAFKA节点" contentHeight={200}>
                 <Treecompactbox datas={newzone3data} height={200} padding={[15, 80, 10, 40]} />
               </ChartCard>
             )}
           </Col>
-
+          <Col xl={8} xs={24}>
+            {zone3data.length > 0 && (
+              <ChartCard title="3区KAFKA节点" contentHeight={200}>
+                <Treecompactbox datas={newzone3data} height={200} padding={[15, 80, 10, 40]} />
+              </ChartCard>
+            )}
+          </Col>
+          <Col xl={8} xs={24}>
+            {zone3data.length > 0 && (
+              <ChartCard title="3区KAFKA节点" contentHeight={200}>
+                <Treecompactbox datas={newzone3data} height={200} padding={[15, 80, 10, 40]} />
+              </ChartCard>
+            )}
+          </Col>
         </Row>
         <h3>KAFKA主题消费监控</h3>
         <Form layout="inline">
@@ -224,6 +238,12 @@ class Fafak extends Component {
               <Option value="M60">1小时</Option>
             </Select>
           </Form.Item>
+          <Form.Item label="区域">
+            <Select defaultValue="M60" style={{ width: 120 }} onChange={value => { this.setState({ step: value }) }}>
+              <Option value="M30">30分</Option>
+              <Option value="M60">1小时</Option>
+            </Select>
+          </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" onClick={() => handleSearch()}>
               查询
@@ -234,7 +254,7 @@ class Fafak extends Component {
         <Table dataSource={safezonedata.dataSource}
           columns={newcolumns}
           bordered
-          pagination={false}
+          pagination
           size="middle"
           scroll={{ x: 1500 }}
           style={{ background: '#fff' }}
