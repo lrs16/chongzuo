@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import moment from 'moment';
-import { Card, Row, Col, Form, Input, Button, Table, Select, DatePicker, Message } from 'antd';
+// import moment from 'moment';
+import { Card, Row, Col, Form, Input, Button, Table, Select, DatePicker } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 const { Option } = Select;
@@ -23,7 +23,7 @@ const statisticstypemap = [
   { key: 'zb', value: '专变' },
 ];
 
-const toTime = moment().format('YYYY-MM-DD');
+// const toTime = moment().format('YYYY-MM-DD');
 
 @connect(({ indicatorchain, loading }) => ({
   indicatorchain,
@@ -104,54 +104,54 @@ class IndicatorChain extends Component {
     this.props.form.resetFields();
   };
 
-  handleextractData = () => {
-    const { dispatch } = this.props;
-    return dispatch({
-      type: 'indicatorchain/fetchextractData',
-    }).then(res => {
-      if (res.code === 200) {
-        Message.success('抽数成功');
-      } else {
-        Message.error('抽数失败');
-      }
-    });
-  };
+  // handleextractData = () => {
+  //   const { dispatch } = this.props;
+  //   return dispatch({
+  //     type: 'indicatorchain/fetchextractData',
+  //   }).then(res => {
+  //     if (res.code === 200) {
+  //       Message.success('抽数成功');
+  //     } else {
+  //       Message.error('抽数失败');
+  //     }
+  //   });
+  // };
 
-  handleDownload = () => {
-    this.props.form.validateFields((err, values) => {
-      if (err) {
-        return;
-      }
-      const { gddwmc, gldwlxbm, lb, mc, sjsj } = values;
-      const { dispatch } = this.props;
-      if (sjsj === undefined || sjsj === null) {
-        return dispatch({
-          type: 'indicatorchain/downloads',
-          payload: {
-            ...values,
-            sjsj: '',
-          },
-        }).then(() => {
-          const url = `/monitor/kpiData/download?gddwmc=${gddwmc}&gldwlxbm=${gldwlxbm}&lb=${lb}&mc=${mc}&sjsj=`;
-          window.location.href = url;
-        });
-      } else {
-        return dispatch({
-          type: 'indicatorchain/downloads',
-          payload: {
-            ...values,
-            sjsj: sjsj.format('YYYY-MM-DD'),
-          },
-        }).then(() => {
-          const url = `/monitor/kpiData/download?gddwmc=${gddwmc}&gldwlxbm=${gldwlxbm}&lb=${lb}&mc=${mc}&sjsj=${sjsj}`;
-          window.location.href = url;
-        });
-      }
-    });
-  };
+  // handleDownload = () => {
+  //   this.props.form.validateFields((err, values) => {
+  //     if (err) {
+  //       return;
+  //     }
+  //     const { gddwmc, gldwlxbm, lb, mc, sjsj } = values;
+  //     const { dispatch } = this.props;
+  //     if (sjsj === undefined || sjsj === null) {
+  //       return dispatch({
+  //         type: 'indicatorchain/downloads',
+  //         payload: {
+  //           ...values,
+  //           sjsj: '',
+  //         },
+  //       }).then(() => {
+  //         const url = `/monitor/kpiData/download?gddwmc=${gddwmc}&gldwlxbm=${gldwlxbm}&lb=${lb}&mc=${mc}&sjsj=`;
+  //         window.location.href = url;
+  //       });
+  //     } else {
+  //       return dispatch({
+  //         type: 'indicatorchain/downloads',
+  //         payload: {
+  //           ...values,
+  //           sjsj: sjsj.format('YYYY-MM-DD'),
+  //         },
+  //       }).then(() => {
+  //         const url = `/monitor/kpiData/download?gddwmc=${gddwmc}&gldwlxbm=${gldwlxbm}&lb=${lb}&mc=${mc}&sjsj=${sjsj}`;
+  //         window.location.href = url;
+  //       });
+  //     }
+  //   });
+  // };
 
   changePage = page => {
-    const pageSize = this.state.pageSize;
+    const { pageSize } = this.state;
     this.props.form.validateFields((err, values) => {
       if (!err) {
         this.searchdata(values, page, pageSize);
@@ -344,12 +344,12 @@ class IndicatorChain extends Component {
                 <Button style={{ marginLeft: 8 }} onClick={this.handleReset}>
                   重 置
                 </Button>
-                <Button style={{ marginLeft: 8 }} onClick={this.handleDownload}>
+                {/* <Button style={{ marginLeft: 8 }} onClick={this.handleDownload}>
                   下 载
                 </Button>
                 <Button style={{ marginLeft: 8 }} type="link" onClick={this.handleextractData}>
                   抽 数
-                </Button>
+                </Button> */}
               </Col>
             </Row>
           </Form>

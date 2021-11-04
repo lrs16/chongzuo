@@ -285,114 +285,113 @@ function AddagentObjDrawer(props) {
                 style={{ display: 'none' }}
             />
             <>
-            <Row gutter={8} style={{ marginLeft: 70 }}>
-                <Form {...formItemLayout} onSubmit={handleSearch}>
-                    <Col span={8}>
-                        <Form.Item label="agent名称">
-                            {getFieldDecorator('agentName', {
-                                initialValue: '',
-                            })(<Input placeholder="请输入" allowClear />)}
-                        </Form.Item>
-                    </Col>
-                    <Col span={8}>
-                        <Form.Item label="agent区域">
-                            {getFieldDecorator('agentZone', {
-                                initialValue: '',
-                            })(
-                                <Select placeholder="请选择" allowClear>
-                                    {zonemap.map(obj => (
-                                        <Option key={obj.key} value={obj.dict_code}>
-                                            {obj.title}
-                                        </Option>
-                                    ))}
-                                </Select>)}
-                        </Form.Item>
-                    </Col>
-                    <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
-                        <Form.Item label="agent类型">
-                            {getFieldDecorator('agentType', {
-                                initialValue: '',
-                            })(
-                                <Select placeholder="请选择" allowClear>
-                                    {typemap.map(obj => (
-                                        <Option key={obj.key} value={obj.dict_code}>
-                                            {obj.title}
-                                        </Option>
-                                    ))}
-                                </Select>)}
-                        </Form.Item>
-                    </Col>
-                    <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
-                        <Form.Item label="agent状态">
-                            {getFieldDecorator('agentStatus', {
-                                initialValue: '',
-                            })(
-                                <Select placeholder="请选择" allowClear>
-                                    {statusmap.map(obj => (
-                                        <Option key={obj.key} value={obj.dict_code}>
-                                            {obj.title}
-                                        </Option>
-                                    ))}
-                                </Select>)}
-                        </Form.Item>
-                    </Col>
-                    <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
-                        <Form.Item label="agent地址">
-                            {getFieldDecorator('agentHost', {
-                                initialValue: '',
-                            })(
-                                <Input placeholder="请输入" allowClear />
-                            )}
-                        </Form.Item>
-                    </Col>
-                    <Col span={8}>
-                        <Form.Item label="节点地址" style={{ display: expand ? 'block' : 'none' }}>
-                            {getFieldDecorator('nodeHost', {
-                                initialValue: '',
-                            })(
-                                <Input placeholder="请输入" allowClear />
-                            )}
-                        </Form.Item>
-                    </Col>
-                    <Col span={8}>
-                        <Form.Item label="agent备注" style={{ display: expand ? 'block' : 'none' }}>
-                            {getFieldDecorator('agentRemarks', {
-                                initialValue: '',
-                            })(<Input placeholder="请输入" allowClear />)}
-                        </Form.Item>
-                    </Col>
-                    <Col span={8} style={{ paddingLeft: expand ? '8.36%' : '24px' }}>{extra}</Col>
-                </Form>
-            </Row>
-            <Table
-                dataSource={taskobjectlist.rows}
-                style={{ marginLeft: 118 }}
-                columns={columns}
-                rowKey={record => record.id}
-                scroll={{ x: 1300 }}
-                rowSelection={rowSelection}
-                paginations={pagination}
-                loading={loading}
-            />
-            <div
-                style={{
-                    position: 'absolute',
-                    right: 0,
-                    bottom: 0,
-                    width: '100%',
-                    borderTop: '1px solid #e9e9e9',
-                    padding: '10px 16px',
-                    background: '#fff',
-                    textAlign: 'right',
-                }}
-            >
-                <Button onClick={() => hanldleCancel()} style={{ marginRight: 8 }}>
-                    取消
-                </Button>
-                <Button onClick={() => handleOk()} type="primary">
-                    确认
-                </Button>
-            </div>
+                <Row gutter={8}>
+                    <Form {...formItemLayout} onSubmit={handleSearch}>
+                        <Col span={8}>
+                            <Form.Item label="agent名称">
+                                {getFieldDecorator('agentName', {
+                                    initialValue: '',
+                                })(<Input placeholder="请输入" allowClear />)}
+                            </Form.Item>
+                        </Col>
+                        <Col span={8}>
+                            <Form.Item label="agent区域">
+                                {getFieldDecorator('agentZone', {
+                                    initialValue: '',
+                                })(
+                                    <Select placeholder="请选择" allowClear>
+                                        {zonemap.map(obj => (
+                                            <Option key={obj.key} value={obj.dict_code}>
+                                                {obj.title}
+                                            </Option>
+                                        ))}
+                                    </Select>)}
+                            </Form.Item>
+                        </Col>
+                        <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                            <Form.Item label="agent类型">
+                                {getFieldDecorator('agentType', {
+                                    initialValue: '',
+                                })(
+                                    <Select placeholder="请选择" allowClear>
+                                        {typemap.map(obj => (
+                                            <Option key={obj.key} value={obj.dict_code}>
+                                                {obj.title}
+                                            </Option>
+                                        ))}
+                                    </Select>)}
+                            </Form.Item>
+                        </Col>
+                        <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                            <Form.Item label="agent状态">
+                                {getFieldDecorator('agentStatus', {
+                                    initialValue: '',
+                                })(
+                                    <Select placeholder="请选择" allowClear>
+                                        {statusmap.map(obj => (
+                                            <Option key={obj.key} value={obj.dict_code}>
+                                                {obj.title}
+                                            </Option>
+                                        ))}
+                                    </Select>)}
+                            </Form.Item>
+                        </Col>
+                        <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                            <Form.Item label="agent地址">
+                                {getFieldDecorator('agentHost', {
+                                    initialValue: '',
+                                })(
+                                    <Input placeholder="请输入" allowClear />
+                                )}
+                            </Form.Item>
+                        </Col>
+                        <Col span={8}>
+                            <Form.Item label="节点地址" style={{ display: expand ? 'block' : 'none' }}>
+                                {getFieldDecorator('nodeHost', {
+                                    initialValue: '',
+                                })(
+                                    <Input placeholder="请输入" allowClear />
+                                )}
+                            </Form.Item>
+                        </Col>
+                        <Col span={8}>
+                            <Form.Item label="agent备注" style={{ display: expand ? 'block' : 'none' }}>
+                                {getFieldDecorator('agentRemarks', {
+                                    initialValue: '',
+                                })(<Input placeholder="请输入" allowClear />)}
+                            </Form.Item>
+                        </Col>
+                        {expand ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.36%' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 2, paddingLeft: '24px' }}>{extra}</Col>)}
+                    </Form>
+                </Row>
+                <Table
+                    dataSource={taskobjectlist.rows}
+                    columns={columns}
+                    rowKey={record => record.id}
+                    scroll={{ x: 1300 }}
+                    rowSelection={rowSelection}
+                    paginations={pagination}
+                    loading={loading}
+                />
+                <div
+                    style={{
+                        position: 'absolute',
+                        right: 0,
+                        bottom: 0,
+                        width: '100%',
+                        borderTop: '1px solid #e9e9e9',
+                        padding: '10px 16px',
+                        background: '#fff',
+                        textAlign: 'right',
+                    }}
+                >
+                    <Button onClick={() => hanldleCancel()} style={{ marginRight: 8 }}>
+                        取消
+                    </Button>
+                    <Button onClick={() => handleOk()} type="primary">
+                        确认
+                    </Button>
+                </div>
             </>
         </Drawer>
     );

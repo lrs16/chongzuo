@@ -45,13 +45,13 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
     };
 
     // 开始时间限制
-    const disastartbledDate = (current) => {
-        return current && current > moment();
-    }
-    // // 结束时间限制
-    const disaendbledDate = (current) => {
-        return current && current < moment() && startdates && current < startdates;
-    }
+    // const disastartbledDate = (current) => {
+    //     return current && current > moment();
+    // }
+    // // // 结束时间限制
+    // const disaendbledDate = (current) => {
+    //     return current && current < moment() && startdates && current < startdates;
+    // }
 
     useEffect(() => {
         ChangeFiles(fileslist);
@@ -206,7 +206,7 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
                                         disabled={type}
                                         allowClear={false}
                                         onChange={onStartChange}
-                                        disabledDate={disastartbledDate}
+                                        // disabledDate={disastartbledDate}
                                         showTime
                                         format="YYYY-MM-DD HH:mm:ss"
                                     />
@@ -231,7 +231,7 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
                                         showTime
                                         allowClear={false}
                                         format="YYYY-MM-DD HH:mm:ss"
-                                        disabledDate={disaendbledDate}
+                                        // disabledDate={disaendbledDate}
                                     />
                                 )}
                         </Form.Item>

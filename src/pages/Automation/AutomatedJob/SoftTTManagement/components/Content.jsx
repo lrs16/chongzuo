@@ -153,7 +153,7 @@ const Content = forwardRef((props, ref) => {
 Content.defaultProps = {
   registrat: {
     workRemarks: '',
-    // workSoftIds: [""],
+    workSoftIds: '',
     createTime: new Date(),
   },
   userinfo: {}

@@ -264,7 +264,7 @@ function AddsystermScriptDrawer(props) {
             destroyOnClose
         >
             <>
-                <Row gutter={8} style={{ marginLeft: 70 }}>
+                <Row gutter={8}>
                     <Form {...formItemLayout} onSubmit={handleSearch}>
                         <Col span={8}>
                             <Form.Item label="脚本名称">
@@ -383,11 +383,10 @@ function AddsystermScriptDrawer(props) {
                                 </Row>
                             </Form.Item>
                         </Col>
-                        {expand ? (<Col span={24} style={{ marginTop: 4, textAlign: 'right' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
+                        {expand ? (<Col span={24} style={{ marginTop: 4, textAlign: 'right' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 3, paddingLeft: '24px' }}>{extra}</Col>)}
                     </Form>
                 </Row>
                 <Table
-                    style={{ marginLeft: 118 }}
                     columns={columns}
                     dataSource={taskscriptlist.rows}
                     rowKey={record => record.id}

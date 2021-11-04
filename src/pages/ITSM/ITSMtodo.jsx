@@ -74,6 +74,22 @@ const columns = [
               }
             })
             break;
+          case 'work':
+            router.push({
+              pathname: `/ITSM/supervisework/workplandetail`,
+              query: {
+                mainId: record.instanceId,
+                flowNodeName: record.nodeName,
+                status: record.itemWorkStatus,
+                checkStatus: record.itemCheckStatus,
+                Id: text,
+              },
+              state: {
+                dynamicpath: true,
+                menuDesc: '工作任务',
+              }
+            })
+            break;
           default:
             break;
         }

@@ -1,7 +1,4 @@
-import React, {
-  // useState
-} from 'react';
-// import { connect } from 'dva';
+import React from 'react';
 import {
   Modal,
   Button,
@@ -241,9 +238,3 @@ TaskModal.defaultProps = {
 };
 
 export default Form.create()(TaskModal);
-// export default Form.create({})(
-//   connect(({ equipmanage, loading }) => ({
-//       list: equipmanage.hostList,
-//       loading: loading.models.equipmanage,
-//   }))(TaskModal),
-// );
