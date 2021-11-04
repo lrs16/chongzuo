@@ -399,45 +399,45 @@ function TaskSearch(props) {
       ...values,
       addTime: values.addTime?.length
         ? [
-            moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss'),
-            moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss'),
-          ]
+          moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+          moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+        ]
         : '',
       checkTime: values.checkTime?.length
         ? [
-            moment(values.checkTime[0]).format('YYYY-MM-DD HH:mm:ss'),
-            moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss'),
-          ]
+          moment(values.checkTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+          moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+        ]
         : '',
       executeOperationTime: values.executeOperationTime?.length
         ? [
-            moment(values.executeOperationTime[0]).format('YYYY-MM-DD HH:mm:ss'),
-            moment(values.executeOperationTime[1]).format('YYYY-MM-DD HH:mm:ss'),
-          ]
+          moment(values.executeOperationTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+          moment(values.executeOperationTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+        ]
         : '',
       plannedStartTime: values.plannedStartTime?.length
         ? [
-            moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss'),
-            moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss'),
-          ]
+          moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+          moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+        ]
         : '',
       startTime: values.startTime?.length
         ? [
-            moment(values.startTime[0]).format('YYYY-MM-DD HH:mm:ss'),
-            moment(values.startTime[1]).format('YYYY-MM-DD HH:mm:ss'),
-          ]
+          moment(values.startTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+          moment(values.startTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+        ]
         : '',
       plannedendTime: values.plannedendTime?.length
         ? [
-            moment(values.plannedendTime[0]).format('YYYY-MM-DD HH:mm:ss'),
-            moment(values.plannedendTime[1]).format('YYYY-MM-DD HH:mm:ss'),
-          ]
+          moment(values.plannedendTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+          moment(values.plannedendTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+        ]
         : '',
       endTime: values.endTime?.length
         ? [
-            moment(values.endTime[0]).format('YYYY-MM-DD HH:mm:ss'),
-            moment(values.endTime[1]).format('YYYY-MM-DD HH:mm:ss'),
-          ]
+          moment(values.endTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+          moment(values.endTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+        ]
         : '',
       pageIndex: page - 1,
       pageSize,
@@ -475,6 +475,38 @@ function TaskSearch(props) {
     });
   };
 
+  // 设置时间
+  useEffect(() => {
+    if (location && location.state && location.state.cacheinfo) {
+      const { addTime } = location.state.cacheinfo;
+      const { checkTime } = location.state.cacheinfo;
+      const { executeOperationTime } = location.state.cacheinfo;
+      const { plannedStartTime } = location.state.cacheinfo;
+      const { plannedendTime } = location.state.cacheinfo;
+      const { startTime } = location.state.cacheinfo;
+      const { endTime } = location.state.cacheinfo;
+      setFieldsValue({
+        addTime: addTime?.length ? [moment(addTime[0]), moment(addTime[1])] : '',
+        checkTime: checkTime?.length ? [moment(checkTime[0]), moment(checkTime[1])] : '',
+        executeOperationTime: executeOperationTime?.length
+          ? [moment(executeOperationTime[0]), moment(executeOperationTime[1])]
+          : '',
+        plannedStartTime: plannedStartTime?.length
+          ? [moment(plannedStartTime[0]), moment(plannedStartTime[1])]
+          : '',
+        plannedendTime: plannedendTime?.length
+          ? [moment(plannedendTime[0]), moment(plannedendTime[1])]
+          : '',
+        startTime: startTime?.length ? [moment(startTime[0]), moment(startTime[1])] : '',
+        endTime: endTime?.length ? [moment(endTime[0]), moment(endTime[1])] : '',
+      });
+    } else {
+      setFieldsValue({
+        addTime: time1 ? [moment(time1), moment(time2)] : '',
+      });
+    }
+  }, [location.state]);
+
   const time = time1 ? [moment(time1), moment(time2)] : '';
   // 设置初始值
   const record = {
@@ -507,42 +539,7 @@ function TaskSearch(props) {
     checkContent: '',
   };
 
-  let cacheinfo = {};
-  if (location && location.state) {
-    cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
-  }
-
-  // 设置时间
-  useEffect(() => {
-    if (location && location.state && location.state.cacheinfo) {
-      const { addTime } = location.state.cacheinfo;
-      const { checkTime } = location.state.cacheinfo;
-      const { executeOperationTime } = location.state.cacheinfo;
-      const { plannedStartTime } = location.state.cacheinfo;
-      const { plannedendTime } = location.state.cacheinfo;
-      const { startTime } = location.state.cacheinfo;
-      const { endTime } = location.state.cacheinfo;
-      setFieldsValue({
-        addTime: addTime?.length ? [moment(addTime[0]), moment(addTime[1])] : '',
-        checkTime: checkTime?.length ? [moment(checkTime[0]), moment(checkTime[1])] : '',
-        executeOperationTime: executeOperationTime?.length
-          ? [moment(executeOperationTime[0]), moment(executeOperationTime[1])]
-          : '',
-        plannedStartTime: plannedStartTime?.length
-          ? [moment(plannedStartTime[0]), moment(plannedStartTime[1])]
-          : '',
-        plannedendTime: plannedendTime?.length
-          ? [moment(plannedendTime[0]), moment(plannedendTime[1])]
-          : '',
-        startTime: startTime?.length ? [moment(startTime[0]), moment(startTime[1])] : '',
-        endTime: endTime?.length ? [moment(endTime[0]), moment(endTime[1])] : '',
-      });
-    } else {
-      setFieldsValue({
-        addTime: time1 ? [moment(time1), moment(time2)] : '',
-      });
-    }
-  }, [location.state]);
+  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
 
   useEffect(() => {
     if (location.state) {
@@ -1317,8 +1314,8 @@ function TaskSearch(props) {
                         value={item.title}
                         key={item.key}
                         checked={columns}
-                        // disabled={item.disabled}
-                        // className={styles.checkboxStyle}
+                      // disabled={item.disabled}
+                      // className={styles.checkboxStyle}
                       >
                         {item.title}
                       </Checkbox>
