@@ -137,7 +137,7 @@ function ComputerroomReportdetail(props) {
           payload: savedata
         }).then(res => {
           if (res.code === 200) {
-            message.info(res.msg);
+            message.success(res.msg);
             getopenFlow();
           } else {
             message.info('保存失败')

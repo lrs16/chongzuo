@@ -149,7 +149,8 @@ function OtherReport(props) {
       }
     }).then(res => {
       if (res.code === 200) {
-        setCopyData(res)
+        setCopyData(res);
+        setList(res.addData);
       } else {
         message.info('您无法复制该条记录，请返回列表重新选择')
       }
@@ -167,8 +168,6 @@ function OtherReport(props) {
 
   // 上传删除附件触发保存
   useEffect(() => {
-    // startTime = '';
-    // endTime = '';
     setTimeshow(false);
     defaultTime();
   }, []);
@@ -266,8 +265,6 @@ function OtherReport(props) {
     setDeleteSign(false);
   }
 
-
-
   const removeForm = (tableIndex) => {
     list.splice(tableIndex, 1);
     const resultArr = list.map((item, index) => {
@@ -277,7 +274,6 @@ function OtherReport(props) {
     })
     setList(resultArr);
   }
-
 
   return (
     <PageHeaderWrapper

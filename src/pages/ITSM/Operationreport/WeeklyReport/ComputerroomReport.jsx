@@ -61,7 +61,6 @@ const { TextArea } = Input;
 let initial = false;
 
 function ComputerroomReport(props) {
-  const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, setFieldsValue },
     location: { query: {
@@ -123,12 +122,13 @@ function ComputerroomReport(props) {
           mainId,
           time1: reporttype === 'week' ? moment(startTime).format('YYYY-MM-DD') : moment(startTime).startOf('month').format('YYYY-MM-DD'),
           time2: reporttype === 'week' ? moment(endTime).format('YYYY-MM-DD') : moment(endTime).endOf('month').format('YYYY-MM-DD'),
-          materialsList: JSON.stringify(materialsList || ''),
-          meetingSummaryList: JSON.stringify(meetingSummaryList || ''),
-          newTroubleList: JSON.stringify(newTroubleList || ''),
-          nextOperationList: JSON.stringify(nextOperationList || ''),
-          operationList: JSON.stringify(operationList || ''),
-          unCloseTroubleList: JSON.stringify(unCloseTroubleList || ''),
+          materialsList: JSON.stringify(materialsList || []),
+          meetingSummaryList: JSON.stringify(meetingSummaryList || []),
+          newTroubleList: JSON.stringify(newTroubleList || []),
+          nextOperationList: JSON.stringify(nextOperationList || []),
+          operationList: JSON.stringify(operationList || []),
+          unCloseTroubleList: JSON.stringify(unCloseTroubleList || []),
+
         }
         dispatch({
           type: 'softreport/saveComputer',
@@ -159,7 +159,13 @@ function ComputerroomReport(props) {
       }
     }).then(res => {
       if (res.code === 200) {
-        setCopyData(res)
+        setCopyData(res);
+        setList(res.addData);
+        setMaterialsList(res.materialsList);
+        setNewTroubleList(res.newTroubleList);
+        setUnCloseTroubleList(res.unCloseTroubleList);
+        setOperationList(res.operationList);
+        setNextOperationList(res.nextOperationList);
         initial = true;
       } else {
         message.info('您无法复制该条记录，请返回列表重新选择')
@@ -244,12 +250,17 @@ function ComputerroomReport(props) {
   }, [timeshow])
 
   useEffect(() => {
-    setMaterialsList(copyData.materialsList ? copyData.materialsList : []);
-    setNewTroubleList(copyData.newTroubleList ? copyData.newTroubleList : faultQueryList);
-    setUnCloseTroubleList(copyData.unCloseTroubleList ? copyData.unCloseTroubleList : nofaultQueryList);
-    setOperationList(copyData.operationList ? copyData.operationList : lastweekHomeworklist);
-    setNextOperationList(copyData.nextOperationList ? copyData.nextOperationList : nextweekHomeworklist);
+    setMaterialsList(copyData.materialsList);
+    setNewTroubleList(copyData.newTroubleList);
+    setUnCloseTroubleList(copyData.unCloseTroubleList);
+    setOperationList(copyData.operationList);
+    setNextOperationList(copyData.nextOperationList);
   }, [loading])
+  // console.log(materialsList,'materialsList');
+  // console.log(newTroubleList,'newTroubleList');
+  // console.log(unCloseTroubleList,'unCloseTroubleList');
+  // console.log(operationList,'operationList');
+  // console.log(nextOperationList,'nextOperationList');
 
   const getQuerylist = () => {
     dispatch({
@@ -315,8 +326,13 @@ function ComputerroomReport(props) {
     nextweekHomework();
     getQuerylist();
     initial = true;
+    // const result = copyData;
+    // result.operationList = '';
+    // result.nextOperationList = '';
+    // result.newTroubleList = '';
+    // result.unCloseTroubleList = '';
+    // setCopyData(result)
   }
-
 
   const handleBack = () => {
     router.push({
@@ -488,7 +504,6 @@ function ComputerroomReport(props) {
 
                           />
                         </span>
-
                       )
                     }
 
@@ -501,7 +516,6 @@ function ComputerroomReport(props) {
                     </Button>
                   </div>
                 </Col>
-
               )
             }
 
@@ -537,10 +551,8 @@ function ComputerroomReport(props) {
               )
             }
 
-
-
             {
-              initial && loading === false && faultQueryList && startTime && (
+              initial && loading === false && startTime && (
                 <>
                   <Col span={24}><p style={{ fontWeight: '900', fontSize: '16px', marginTop: 24 }}>{reporttype === 'week' ? '一、本周运维总结' : '一、本月运维总结'}</p></Col>
                   {/* 本周运维总结 */}
@@ -627,7 +639,6 @@ function ComputerroomReport(props) {
                             />
                           </div>
                         )}
-
                     </Form.Item>
                   </Col>
 
@@ -702,7 +713,7 @@ function ComputerroomReport(props) {
                   <Col span={24}>
                     <LastweekHomework
                       forminladeLayout={forminladeLayout}
-                      operationArr={copyData.operationList !== undefined ? copyData.operationList : lastweekHomeworklist}
+                      operationArr={copyData.operationList ? copyData.operationList : lastweekHomeworklist}
                       startTime={startTime}
                       endTime={endTime}
                       type={reporttype}
@@ -729,7 +740,7 @@ function ComputerroomReport(props) {
 
                   <Col span={24}>{reporttype === 'week' ? '(3)下周作业完成情况' : '(3)下月作业完成情况'}</Col>
 
-           
+
                   {/* 下周工作计划 */}
                   <Col span={24}>
                     <LastweekHomework

@@ -9,7 +9,6 @@ import {
   DatePicker,
   Icon,
   message,
-  Select,
   Spin
 } from 'antd';
 import moment from 'moment';
@@ -563,7 +562,21 @@ function SoftReport(props) {
       }
     }).then(res => {
       if (res.code === 200) {
-        setCopyData(res)
+        setCopyData(res);
+        setList(res.addData);
+        setContentRow(res.contentRow);
+        setPatrolAndExamine(res.patrolAndExamineList);
+        setMaterialsList(res.materialsList);
+        setTypeList(res.typeList);
+        setStatisList(res.statisList);
+        setSelfhandleRow(res.selfhandleRow);
+        setTopNList(res.topNList);
+        setEventList(res.eventList);
+        setUpgradeList(res.upgradeList);
+        setUpdateList(res.updateList);
+        setLegacyList(res.legacyList);
+        setOperationList(res.operationList);
+        setNextOperationList(res.nextOperationList);
         setAddTitle(res.addData);
         initial = true;
       } else {

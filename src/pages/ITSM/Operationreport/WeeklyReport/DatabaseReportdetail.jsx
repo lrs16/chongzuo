@@ -123,7 +123,6 @@ function DatabaseReportdetail(props) {
           nextOperationList: JSON.stringify(nextOperationList || ''),
           table5GList: JSON.stringify(table5GList || ''),
         }
-        console.log(savedata,'savedata')
         return dispatch({
           type: 'softreport/saveDataBase',
           payload: savedata

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, createContext, useRef } from 'react';
 import router from 'umi/router';
-import { Form, Button, Card } from 'antd';
+import { Form, Button, Card,message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
 import Registrat from './components/Registrat';

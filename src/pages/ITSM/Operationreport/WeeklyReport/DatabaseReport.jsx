@@ -118,7 +118,6 @@ function DatabaseReport(props) {
           nextOperationList: JSON.stringify(nextOperationList || ''),
           table5GList: JSON.stringify(table5GList || ''),
         }
-        console.log(savedata,'savedata')
         dispatch({
           type: 'softreport/saveDataBase',
           payload: savedata
@@ -151,7 +150,12 @@ function DatabaseReport(props) {
 
   useEffect(() => {
     setOperationList(copyData.operationList ? copyData.operationList : lastweekHomeworklist);
-    setNextOperationList(copyData.nextOperationList ? copyData.nextOperationList : nextweekHomeworklist);
+    setDiscList(copyData.discList ? copyData.discList : discList);
+    setTablespaceList(copyData.tablespaceList ? copyData.tablespaceList : tablespaceList);
+    setDefectList(copyData.defectList ? copyData.defectList : defectList);
+    setOperationList(copyData.operationList ? copyData.operationList : operationList);
+    setNextOperationList(copyData.nextOperationList ? copyData.nextOperationList : tableUpList);
+    setTable5GList(copyData.table5GList ? copyData.table5GList : table5GList);
   }, [loading])
 
 
@@ -271,6 +275,13 @@ function DatabaseReport(props) {
       if (res.code === 200) {
         setCopyData(res);
         setList(res.addData);
+        setOperationList(res.operationList);
+        setDiscList(res.discList);
+        setTablespaceList(res.tablespaceList);
+        setDefectList(res.defectList);
+        setOperationList(res.operationList);
+        setNextOperationList(res.nextOperationList);
+        setTable5GList(res.table5GList);
         initial = true;
       } else {
         message.info('您无法复制该条记录，请返回列表重新选择')
@@ -553,7 +564,7 @@ function DatabaseReport(props) {
                   <Col span={24}>
                     <Diskgroup
                       forminladeLayout={forminladeLayout}
-                      discArr={[]}
+                      discArr={discList}
                       discList={contentrowdata => {
                         setDiscList(contentrowdata)
                       }}
@@ -755,6 +766,7 @@ function DatabaseReport(props) {
                           handleaddTable(newdata, addpx, rowdelete)
                         }}
                         index={index}
+                        key={index}
                         dynamicData={list.length ? list[index] : {}}
                         loading={loading}
                         ChangeAddRow={v => setAddrow(v)}

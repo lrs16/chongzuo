@@ -381,7 +381,7 @@ function LastweekHomework(props) {
           <Input
             disabled={detailParams}
             defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field10', record.key)}
+            onChange={e => handleFieldChange(e.target.value, 'field9', record.key)}
           />
         )
       }
