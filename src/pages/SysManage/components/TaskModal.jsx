@@ -43,17 +43,18 @@ const taskName = [
 ];
 
 function TaskModal(props) {
-  const { visible, ChangeVisible, title, handleSubmit, record } = props;
+  const { visible, ChangeVisible, title, handleSubmit } = props;
   const { getFieldDecorator, validateFields } = props.form;
   const required = true;
   const {
-    jobName, 
-    jobGroup, 
+    jobName,
+    jobGroup,
     invokeTarget,
-    cronExpression,  
-    concurrent, 
-    misfirePolicy, 
+    cronExpression,
+    concurrent,
+    misfirePolicy,
     status,
+    jobId,
   } = props.record;
 
   const hanldleCancel = () => {
@@ -80,9 +81,25 @@ function TaskModal(props) {
       onCancel={hanldleCancel}
       maskClosable={false}
       visible={visible}
+      destroyOnClose
     >
       <Row gutter={16}>
         <Form {...formItemLayout}>
+          <Col span={12} style={{ display: 'none' }}>
+            <Form.Item label='jobId'>
+              {getFieldDecorator('jobId', {
+                rules: [
+                  {
+                    required,
+                    message: ''
+                  }
+                ],
+                initialValue: jobId
+              })(
+                <Input />
+              )}
+            </Form.Item>
+          </Col>
           <Col span={12}>
             <Form.Item label='任务名称'>
               {getFieldDecorator('jobName', {
@@ -212,12 +229,13 @@ function TaskModal(props) {
 
 TaskModal.defaultProps = {
   record: {
+    jobId: '',
     jobName: '',
     jobGroup: '',
-    invokeTarget: '', 
-    cronExpression: '',  
-    concurrent: '', 
-    misfirePolicy: '', 
+    invokeTarget: '',
+    cronExpression: '',
+    concurrent: '',
+    misfirePolicy: '',
     status: '',
   },
 };
