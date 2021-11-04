@@ -1,4 +1,7 @@
 import {
+  message
+} from 'antd';
+import {
   logbookSave,
   logbookSearch,
   currentUser,
@@ -11,7 +14,7 @@ import {
   logbookReceive,
   logbookDownload,
   statsIndex,
-  fallback
+  fallback,
 } from '../services/api';
 import router from 'umi/router';
 
@@ -33,31 +36,36 @@ export default {
         return yield call(logbookSave,payload)
       } 
       if(!payload.logbookNo) {
-        const response = yield call(logbookSave,payload);
-        if(response.code === 200) {
-          router.push({
-            pathname:'/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/newhandover',
-            query:{
-              tabid: sessionStorage.getItem('tabid'),
-              closecurrent: true,
-            }
-          });
-          const { id } = response.data;
-          router.push({
-            pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/handoverdetail`,
-            query: { 
-              id,
-              Id:id,
-              },
-              state: {
-                dynamicpath: true,
-                menuDesc: '我的交接班详情',
-              },
-          })
-        }
+        const res = yield call(logbookMy,{current:1,size:15});
+        const { data } = res;
+        if(data && data.records && data.records.length) {
+          message.error('我的值班交接列表只能有一条数据哦，请先处理值班交接列表的数据再新增')
+        } else {
+          const response = yield call(logbookSave,payload);
+          if(response.code === 200) {
+            router.push({
+              pathname:'/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/newhandover',
+              query:{
+                tabid: sessionStorage.getItem('tabid'),
+                closecurrent: true,
+              }
+            });
+            const { id } = response.data;
+            router.push({
+              pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/handoverdetail`,
+              query: { 
+                id,
+                Id:id,
+                },
+                state: {
+                  dynamicpath: true,
+                  menuDesc: '我的交接班详情',
+                },
+            })
+          }
+        } 
       }
       return []
-    
     },
 
     *fetchlogbookSearch({payload},{call,put}) {

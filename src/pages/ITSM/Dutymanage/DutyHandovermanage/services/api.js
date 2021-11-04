@@ -69,7 +69,8 @@ import request from '@/utils/request';
     export async function logbookMy(params) {
       return request(`/duty/logbook/my`,{
         method:'POST',
-        requestType:'form'
+        requestType:'form',
+        data:params
       })
     }
 

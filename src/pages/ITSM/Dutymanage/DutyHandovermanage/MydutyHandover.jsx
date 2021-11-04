@@ -1022,7 +1022,7 @@ function MydutyHandover(props) {
                   <Col span={8}>
                     <Form.Item label="交接物品">
                       {getFieldDecorator('handoverItems', {
-                        initialValue: cacheinfo.handoverItems && ( cacheinfo.handoverItems).split(',') || undefined,
+                        initialValue: cacheinfo.handoverItems && (cacheinfo.handoverItems).split(',') || undefined,
                       })(
                         <Select
                           placeholder="请选择"
@@ -1145,19 +1145,15 @@ function MydutyHandover(props) {
           </Popover>
         </div>
 
-        {
-          loading === false && (
-            < Table
-              loading={loading}
-              columns={columns}
-              dataSource={logbookSearcharr.records}
-              rowSelection={rowSelection}
-              pagination={pagetitle === '我的值班交接' ? false : pagination}
-              rowKey={r => r.id}
-              scroll={{ x: 800, y: 700 }}
-            />
-          )
-        }
+        <Table
+          loading={loading}
+          columns={columns}
+          dataSource={logbookSearcharr.records}
+          rowSelection={rowSelection}
+          pagination={pagetitle === '我的值班交接' ? false : pagination}
+          rowKey={r => r.id}
+          scroll={{ x: 800, y: 700 }}
+        />
       </Card>
     </PageHeaderWrapper >
   );
