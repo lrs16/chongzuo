@@ -191,9 +191,7 @@ function CheckModel(props) {
           </Form>
         </Row>
       </Modal>
-
     </>
-
   );
 }
 

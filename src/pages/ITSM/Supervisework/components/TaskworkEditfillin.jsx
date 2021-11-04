@@ -10,7 +10,6 @@ import {
 } from 'antd';
 import moment from 'moment';
 import SysUpload from '@/components/SysUpload';
-// import RichTextEditor from '@/components/RichTextEditor';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -32,8 +31,6 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
     const statusContent = ['计划中', '延期中', '已超时', '已完成']
     const color = ['blue', 'orange', 'red', 'green'];
     const [fileslist, setFilesList] = useState([]);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [taskperson, setTaskperson] = useState(true);
     const [startdates, setStartDates] = useState(undefined);
     const [enddates, setEndDates] = useState(undefined);
 
@@ -60,12 +57,6 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
         ChangeFiles(fileslist);
     }, [fileslist]);
 
-    useEffect(() => {
-        if (main.workUser) {
-            setTaskperson(false);
-        }
-    }, []);
-
     const attRef = useRef();
     useImperativeHandle(ref, () => ({
         getVal: () => getFieldsValue(),
@@ -75,7 +66,6 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
     }), []);
 
     const selectOnchange = (value, option) => {
-        setTaskperson(false);
         const optionkey = option.map(item => {
             return item.key;
         });

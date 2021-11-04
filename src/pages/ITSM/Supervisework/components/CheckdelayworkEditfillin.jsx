@@ -9,7 +9,6 @@ import {
     Tag
 } from 'antd';
 import moment from 'moment';
-// import { FatherContext } from '../WorkplanDetail';
 
 const { TextArea } = Input;
 
@@ -25,7 +24,7 @@ const CheckdelayworkEditfillin = React.forwardRef((props, ref) => {
 
     const {
         form: { getFieldDecorator },
-        ChangeResult,
+        // ChangeResult,
         check,
         formItemLayout,
         forminladeLayout,
@@ -39,13 +38,13 @@ const CheckdelayworkEditfillin = React.forwardRef((props, ref) => {
     useEffect(() => {
         if (check.result !== null) {
             setAdopt(check.result);
-            ChangeResult(check.result);
+            // ChangeResult(check.result);
         }
     }, []);
 
     const handleAdopt = e => {
         setAdopt(e.target.value);
-        ChangeResult(e.target.value);
+        // ChangeResult(e.target.value);
     }
 
     const required = true;

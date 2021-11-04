@@ -53,16 +53,10 @@ const forminladeLayout = {
 
 export const FatherContext = createContext();
 function WorkplanDetail(props) {
-  // const pagetitle = props.route.name;
   const [selectdata, setSelectData] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [show, setShow] = useState(false);
-  // const [editshow, seteditShow] = useState(true);
   const SaveRef = useRef();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [result, setResult] = useState('001'); // 审核结果
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [activeKey, setActiveKey] = useState([]);
   const [tabActivekey, settabActivekey] = useState('taskwork'); // 打开标签
   const [modalvisible, setModalVisible] = useState(false);
 
@@ -114,10 +108,6 @@ function WorkplanDetail(props) {
     return [];
   };
   const executeResult = getTypebyTitle('执行结果');
-
-  const callback = key => {
-    setActiveKey(key);
-  };
 
   const queryDept = () => {
     dispatch({
@@ -707,8 +697,7 @@ function WorkplanDetail(props) {
                 <div className={styles.collapse}>
                   <Collapse
                     expandIconPosition="right"
-                    defaultActiveKey={['1']}
-                    onChange={callback}
+                    defaultActiveKey={['1', '2', '3']}
                     bordered={false}
                   >
                     <>
@@ -743,7 +732,7 @@ function WorkplanDetail(props) {
                         loading === false && !delay && (edit && edit.execute !== undefined) && flowNodeName === '工作执行' && (
                           <Panel
                             header='工作执行'
-                            key='1'
+                            key='2'
                             style={{ backgroundColor: 'white' }}
                             bordered
                           >
@@ -768,16 +757,13 @@ function WorkplanDetail(props) {
                       {loading === false && !delay && (edit && edit.check !== undefined) && flowNodeName === '工作审核' && (
                         <Panel
                           header='工作延期审核'
-                          key='1'
+                          key='3'
                           style={{ backgroundColor: 'white' }}
                           bordered
                         >
                           <CheckdelayworkEditfillin
                             formItemLayout={formItemLayout}
                             forminladeLayout={forminladeLayout}
-                            ChangeResult={newvalue => {
-                              setResult(newvalue);
-                            }}
                             check={edit.check}
                             userinfo={userinfo}
                             ref={SaveRef}
@@ -813,7 +799,7 @@ function WorkplanDetail(props) {
                       return (
                         <Panel
                           header={Panelheadermap.get(Object.keys(obj)[0])}
-                          key={index}>
+                          key={index.toString()}>
                           {Paneldesmap.get(Object.keys(obj)[0])}
                         </Panel>
                       );

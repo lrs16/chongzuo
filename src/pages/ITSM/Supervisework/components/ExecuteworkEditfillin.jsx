@@ -47,8 +47,6 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
     return current && current < moment(execute.startTime);
   }
 
-  const newendTime = execute && execute.endTime !== null ? moment(new Date()) : moment(execute.startTime);
-
   return (
     <div style={{ paddingRight: 24, marginTop: 24 }}>
       <Row gutter={16}>
@@ -108,7 +106,7 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
                     message: '请输入实际结束时间'
                   }
                 ],
-                initialValue: execute.endTime === null ? moment(new Date()) : moment(newendTime),
+                initialValue: execute.endTime === null ? moment(new Date()) : moment(execute.endTime),
               })(<DatePicker
                 showTime
                 disabled={!showEdit}
@@ -176,8 +174,8 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
 
 ExecuteworkEditfillin.defaultProps = {
   execute: {
-    startTime: new Date(),
-    endTime: new Date(),
+    startTime: moment(new Date()),
+    endTime: moment(new Date()),
     result: '',
   }
 }
