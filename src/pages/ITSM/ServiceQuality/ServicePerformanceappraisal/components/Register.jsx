@@ -460,12 +460,12 @@ const Register = forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="责任人">
             {getFieldDecorator('directorNamesign', {
-              // rules: [
-              //   {
-              //     required,
-              //     message: '请选择责任人',
-              //   },
-              // ],
+              rules: [
+                {
+                  required,
+                  message: '请选择责任人',
+                },
+              ],
               initialValue: register.directorName,
             })(
               <AutoComplete

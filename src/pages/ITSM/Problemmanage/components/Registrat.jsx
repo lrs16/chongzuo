@@ -215,12 +215,12 @@ const Registrat = React.forwardRef((props, ref) => {
           <Col span={8}>
             <Form.Item label="问题申报人">
               {getFieldDecorator('selectcomplainUser', {
-                // rules: [
-                //   {
-                //     required,
-                //     message: '请输入问题申报人',
-                //   },
-                // ],
+                rules: [
+                  {
+                    required,
+                    message: '请输入问题申报人',
+                  },
+                ],
                 initialValue: register.complainUser,
               })(
                 <AutoComplete
