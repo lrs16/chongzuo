@@ -34,6 +34,27 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
     const [fileslist, setFilesList] = useState([]);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [taskperson, setTaskperson] = useState(true);
+    const [startdates, setStartDates] = useState(undefined);
+    const [enddates, setEndDates] = useState(undefined);
+
+    // 选择计划开始时间
+    const onStartChange = (dateString) => {
+        setStartDates(dateString)
+    };
+
+    // 选择计划结束时间
+    const onEndChange = (dateString) => {
+        setEndDates(dateString)
+    };
+
+    // 开始时间限制
+    const disastartbledDate = (current) => {
+        return current && current > moment();
+    }
+    // // 结束时间限制
+    const disaendbledDate = (current) => {
+        return current && current < moment() && startdates && current < startdates;
+    }
 
     useEffect(() => {
         ChangeFiles(fileslist);
@@ -66,18 +87,11 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
 
     const required = true;
 
-    const disabledDate = (current) => { // 结束时间大于开始时间
-        // return current && current < moment().add(1, 'days').endOf('day');
-        // const newplannedEndTime = main.plannedEndTime !== undefined ? main.plannedEndTime : moment().add(1, 'days');
-        return current && current < moment(main.plannedStartTime);
-    }
-
     const disabledendDate = (current) => { // 延期审核时间大于结束时间
         return current && current < moment(main.plannedEndTime);
     }
 
-    const newplannedEndTime = main.plannedEndTime !== undefined ? main.plannedEndTime : moment(main.plannedStartTime);
-    const newplannedEndTime1 = main.plannedEndTime !== undefined ? main.plannedEndTime : moment().add(1, 'days'); // 延期审核时间
+    const newplannedEndTime = main.plannedEndTime !== undefined ? main.plannedEndTime : moment().add(1, 'days'); // 延期审核时间
 
     return (
         <div style={{ paddingRight: 24, marginTop: 24 }}>
@@ -195,11 +209,14 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
                                         message: '请输入计划开始时间'
                                     }
                                 ],
-                                initialValue: moment(main.plannedStartTime),
+                                initialValue: main.plannedStartTime ? moment(main.plannedStartTime) : startdates
                             })
                                 (
                                     <DatePicker
                                         disabled={type}
+                                        allowClear={false}
+                                        onChange={onStartChange}
+                                        disabledDate={disastartbledDate}
                                         showTime
                                         format="YYYY-MM-DD HH:mm:ss"
                                     />
@@ -215,14 +232,16 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
                                         message: '请输入计划结束时间'
                                     }
                                 ],
-                                initialValue: moment(newplannedEndTime),
+                                initialValue: main.plannedEndTime ? moment(main.plannedEndTime) : enddates
                             })
                                 (
                                     <DatePicker
                                         disabled={type}
+                                        onChange={onEndChange}
                                         showTime
+                                        allowClear={false}
                                         format="YYYY-MM-DD HH:mm:ss"
-                                        disabledDate={disabledDate}
+                                        disabledDate={disaendbledDate}
                                     />
                                 )}
                         </Form.Item>
@@ -237,7 +256,7 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
                                             message: '请输入延期结束时间'
                                         }
                                     ],
-                                    initialValue: moment(newplannedEndTime1)
+                                    initialValue: moment(newplannedEndTime)
                                 })
                                     (
                                         <DatePicker
@@ -298,8 +317,8 @@ TaskworkEditfillin.defaultProps = {
         addUnit: '',
         addUser: '',
         content: '',
-        plannedStartTime: new Date(),
-        plannedEndTime: new Date(),
+        plannedStartTime: undefined,
+        plannedEndTime: undefined,
         status: '',
         type: ''
     },
