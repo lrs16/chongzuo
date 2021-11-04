@@ -258,7 +258,7 @@ function NewHandover(props) {
     })
   }
 
-  // 重置表单信息
+  // // 重置表单信息
   useEffect(() => {
     if (tabnew) {
       ContentRef.current.resetVal();
@@ -460,7 +460,7 @@ function NewHandover(props) {
   return (
     <PageHeaderWrapper title={pagetitle} extra={extrabutton}>
       {
-        loading === false && (
+       !id && (
           <Registrat
             forminladeLayout={forminladeLayout}
             files={(logbookIddetail && logbookIddetail.attachment) ? JSON.parse(logbookIddetail.attachment) : []}
@@ -476,6 +476,26 @@ function NewHandover(props) {
             }}
             type={type}
           />
+        )
+      }
+
+      {
+        id && loading === false && (
+          <Registrat
+          forminladeLayout={forminladeLayout}
+          files={(logbookIddetail && logbookIddetail.attachment) ? JSON.parse(logbookIddetail.attachment) : []}
+          wrappedComponentRef={ContentRef}
+          currentUserarr={currentUserarr}
+          formrecord={id ? logbookIddetail : (tabdata || {})}
+          statue={((logbookIddetail && logbookIddetail.handoverStatus === '待接班' && !addtab) || type === 'search')}
+          shiftinfo={shift}
+          successioninfo={succession}
+          shiftNameinfo={shiftName}
+          ChangeFiles={newvalue => {
+            setFiles(newvalue);
+          }}
+          type={type}
+        />
         )
       }
 
