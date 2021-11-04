@@ -1,5 +1,9 @@
 import route from 'umi/router';
 import {
+message
+}from 'antd';
+
+import {
   maintenanceList,//  从统计获取数据,事件类
   eventtopnList,
   eventServiceList,
@@ -229,6 +233,7 @@ export default {
                 },
                 state: {}
               })
+              message.success(response.msg)
             } else {
               route.push({
                 pathname: `/ITSM/operationreport/monthlyreport/monthdatabasereport`,
@@ -246,8 +251,8 @@ export default {
                 },
                 state: {}
               })
+              message.success(response.msg)
             }
-           
           }
         }
       } else {

@@ -123,23 +123,22 @@ function DatabaseReportdetail(props) {
           nextOperationList: JSON.stringify(nextOperationList || ''),
           table5GList: JSON.stringify(table5GList || ''),
         }
+        console.log(savedata,'savedata')
         return dispatch({
           type: 'softreport/saveDataBase',
           payload: savedata
         }).then(res => {
           if (res.code === 200) {
-            message.info(res.msg);
+            message.success(res.msg);
             getopenFlow();
           } else {
             message.info('保存失败')
           }
         })
       }
-
+      return []
     })
-
   }
-
 
   // 上传删除附件触发保存
   useEffect(() => {
@@ -147,8 +146,6 @@ function DatabaseReportdetail(props) {
       databaseReportform();
     }
   }, [files]);
-
-
 
   // 新增一条记录
   const handleaddTable = (params, px, rowdelete) => {

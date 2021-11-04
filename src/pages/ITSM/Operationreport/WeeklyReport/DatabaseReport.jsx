@@ -118,12 +118,12 @@ function DatabaseReport(props) {
           nextOperationList: JSON.stringify(nextOperationList || ''),
           table5GList: JSON.stringify(table5GList || ''),
         }
+        console.log(savedata,'savedata')
         dispatch({
           type: 'softreport/saveDataBase',
           payload: savedata
         })
       }
-
     })
   }
 
@@ -270,6 +270,7 @@ function DatabaseReport(props) {
     }).then(res => {
       if (res.code === 200) {
         setCopyData(res);
+        setList(res.addData);
         initial = true;
       } else {
         message.info('您无法复制该条记录，请返回列表重新选择')

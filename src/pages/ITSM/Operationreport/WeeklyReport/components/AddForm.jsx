@@ -7,11 +7,8 @@ import {
   Popconfirm,
   Table,
   Button,
-  message,
-  Icon,
   Descriptions
 } from 'antd';
-// import AddTable from './AddTable';
 import SysUpload from '@/components/SysUpload';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
 
@@ -29,7 +26,6 @@ const AddForm = React.forwardRef((props, ref) => {
 
   const {
     form: { getFieldDecorator, setFieldsValue },
-    loading,
     formincontentLayout,
     detailParams,
     dynamicData,
@@ -37,9 +33,7 @@ const AddForm = React.forwardRef((props, ref) => {
     addTable,
     ChangeAddRow,
     sign,
-    changeDeletesign,
   } = props;
-  const [addTitle, setAddTitle] = useState([]);
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
@@ -418,8 +412,6 @@ const AddForm = React.forwardRef((props, ref) => {
 
         </Form>
       </Row>
-      {/* //   )
-      // } */}
     </>
   )
 });

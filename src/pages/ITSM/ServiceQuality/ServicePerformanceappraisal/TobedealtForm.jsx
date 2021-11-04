@@ -586,8 +586,6 @@ function TobedealtForm(props) {
           {loading === false && taskName && !search && (
             <>
               {taskName === '服务绩效考核登记' &&
-                hisTasks &&
-                hisTasks.length <= 3 &&
                 tabActiveKey === 'workorder' && (
                   <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete}>
                     删除

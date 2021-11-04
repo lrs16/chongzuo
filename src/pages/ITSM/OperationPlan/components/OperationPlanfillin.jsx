@@ -385,7 +385,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
 
           <Col span={24}>
             <Form.Item label="风险分析" {...forminladeLayout}>
-              {getFieldDecorator('riskAnalysis', {
+              {getFieldDecorator('main_riskAnalysis', {
                 rules: [
                   {
                     required,
@@ -400,7 +400,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
           </Col>
           <Col span={24}>
             <Form.Item label="风险应对措施" {...forminladeLayout}>
-              {getFieldDecorator('riskMeasures', {
+              {getFieldDecorator('main_riskMeasures', {
                 rules: [
                   {
                     required,
