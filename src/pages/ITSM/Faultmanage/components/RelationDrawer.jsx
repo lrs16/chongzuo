@@ -223,7 +223,7 @@ function RelationDrawer(props) {
 
                 <Col span={6} style={{ paddingTop: 4 }}>
                   <Button type='primary' style={{ marginLeft: 16 }} onClick={() => handleSumit()} >查询</Button>
-                  <Button style={{ marginLeft: 8 }} onClick={() => { resetFields(); handleSearch() }}>重置</Button>
+                  <Button style={{ marginLeft: 8 }} onClick={() => { resetFields(); handleSearch('', '', 0, 15) }}>重置</Button>
                 </Col>
               </Form>
             </Row>

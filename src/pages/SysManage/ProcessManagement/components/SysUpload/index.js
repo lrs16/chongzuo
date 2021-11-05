@@ -25,7 +25,7 @@ function SysUpload(props) {
       Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
     },
     showUploadList: { showDownloadIcon: true },
-  //  defaultFileList: fileslist,
+    //  defaultFileList: fileslist,
     multiple: false,
 
     beforeUpload(file) {
@@ -33,8 +33,8 @@ function SysUpload(props) {
         const type = file.name.lastIndexOf('.');
         const filesuffix = file.name.substring(type + 1, file.name.length);
         const correctfiletype = filetype.indexOf(filesuffix);
-        if (correctfiletype !== -1) {
-          message.error(`${file.name}文件上传失败，不可上传${filetype.join('/')}类型文件！`);
+        if (correctfiletype === -1) {
+          message.error(`${file.name}文件不符合上传规则,禁止上传...`);
           return reject();
         }
         return resolve(file);

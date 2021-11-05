@@ -563,7 +563,7 @@ const Registrat = forwardRef((props, ref) => {
           <Col span={8}>
             <Form.Item label="所属项目">
               {getFieldDecorator('project', {
-                rules: [{ required, message: '请选择所属项目' }],
+                // rules: [{ required, message: '请选择所属项目' }],
                 initialValue: register.project,
               })(
                 <Select placeholder="请选择">

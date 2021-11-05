@@ -57,30 +57,30 @@ function Problemexcel(props) {
     },
     // showUploadList: { showDownloadIcon: true },
     // defaultFileList: fileslist,
-    multiple: true,
+    multiple: false,
 
-    beforeUpload(file) {
-      return new Promise((resolve, reject) => {
-        const type = file.name.lastIndexOf('.');
-        const filesuffix = file.name.substring(type + 1, file.name.length);
-        const correctfiletype = filetype.indexOf(filesuffix);
-        if (correctfiletype !== -1) {
-          message.error(`${file.name}文件上传失败，不可上传${filetype.join('/')}类型文件！`);
-          return reject();
-        }
-        return resolve(file);
-      });
-    },
+    // beforeUpload(file) {
+    //   return new Promise((resolve, reject) => {
+    //     const type = file.name.lastIndexOf('.');
+    //     const filesuffix = file.name.substring(type + 1, file.name.length);
+    //     const correctfiletype = filetype.indexOf(filesuffix);
+    //     if (correctfiletype !== -1) {
+    //       message.error(`${file.name}文件上传失败，不可上传${filetype.join('/')}类型文件！`);
+    //       return reject();
+    //     }
+    //     return resolve(file);
+    //   });
+    // },
     onChange({ file, fileList }) {
-      const alldone = fileList.map(item => item.status !== 'done');
-      if (file.status === 'done' && alldone.indexOf(true) === -1) {
+      // const alldone = fileList.map(item => item.status !== 'done');
+      if (file.status === 'done' && file.response) {
         // message.success(`文件上传成功`);
-        if(file.response.code === 200) {
+        if (file.response.code === 200) {
           message.success('导入数据成功');
         } else {
           message.error('文件格式不正确，请按照文件下载模板上传');
         }
-  
+
         const arr = [...fileList];
         const newarr = [];
         // for (let i = 0; i < arr.length; i += 1) {

@@ -87,7 +87,7 @@ function Implementation(props, ref) {
     }
     return [];
   };
-  const docunitmap = getTypebyId(1280);       // 出具文档单位
+  const docunitmap = getTypebyId(1289);       // 出具文档单位
   return (
     <>
       {alertvisible && (<Alert message={alertmessage.mes} type='warning' showIcon />)}

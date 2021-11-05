@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { connect } from 'dva';
 import { Upload, Button, message } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
-import { getFileSecuritySuffix } from '@/services/upload';
+// import { getFileSecuritySuffix } from '@/services/upload';
 import UploadContext from '@/layouts/MenuContext';
 
 function SysUpload(props) {
@@ -58,16 +58,16 @@ function SysUpload(props) {
         const type = file.name.lastIndexOf('.');
         const filesuffix = file.name.substring(type + 1, file.name.length);
         const correctfiletype = filetype.indexOf(filesuffix);
-        if (correctfiletype !== -1) {
-          message.error(`${file.name}文件上传失败，不可上传${filetype.join('/')}类型文件！`);
+        if (correctfiletype === -1) {
+          message.error(`${file.name}文件不符合上传规则,禁止上传...`);
           return reject();
         }
         return resolve(file);
       });
     },
     onChange({ file, fileList }) {
-      const alldone = fileList.map(item => item.status !== 'done');
-      if (file.status === 'done' && alldone.indexOf(true) === -1) {
+      const alldone = fileList.map(item => item.response && item.response.fileUploadInfo && item.response.fileUploadInfo.length > 0);
+      if (file.status === 'done' && file.response && file.response.code === 200 && alldone.indexOf(true) === -1) {
         message.success(`文件上传成功`);
         const arr = [...fileList];
         const newarr = [];

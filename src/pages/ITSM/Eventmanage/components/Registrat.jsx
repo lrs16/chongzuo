@@ -16,6 +16,7 @@ import {
   message,
   Spin,
   Drawer,
+  Alert
 } from 'antd';
 import { phone_reg } from '@/utils/Regexp';
 // import SysUpload from '@/components/SysUpload';
@@ -418,8 +419,8 @@ const Registrat = forwardRef((props, ref) => {
         const type = file.name.lastIndexOf('.');
         const filesuffix = file.name.substring(type + 1, file.name.length);
         const correctfiletype = filetype.indexOf(filesuffix);
-        if (correctfiletype !== -1) {
-          message.error(`${file.name}文件上传失败，不可上传${filetype.join('/')}类型文件！`);
+        if (correctfiletype === -1) {
+          message.error(`${file.name}文件不符合上传规则,禁止上传...`);
           return reject();
         }
         return resolve(file);
@@ -427,8 +428,8 @@ const Registrat = forwardRef((props, ref) => {
     },
 
     onChange({ file, fileList }) {
-      const alldone = fileList.map(item => item.status !== 'done');
-      if (file.status === 'done' && alldone.indexOf(true) === -1) {
+      const alldone = fileList.map(item => item.response && item.response.fileUploadInfo && item.response.fileUploadInfo.length > 0);
+      if (file.status === 'done' && file.response && file.response.code === 200 && alldone.indexOf(true) === -1) {
         const arr = [...fileList];
         const newarr = [];
         for (let i = 0; i < arr.length; i += 1) {
@@ -923,7 +924,6 @@ const Registrat = forwardRef((props, ref) => {
             <Form.Item
               label="上传附件"
               {...forminladeLayout}
-            // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
             >
               <div style={{ width: 400 }}>
                 <Upload {...uploadprops}>
@@ -931,6 +931,7 @@ const Registrat = forwardRef((props, ref) => {
                     <DownloadOutlined /> 上传附件
                   </Button>
                 </Upload>
+                <span style={{ paddingTop: 12, color: '#ccc' }}>仅能上传{filetype}格式文件</span>
               </div>
             </Form.Item>
           </Col>

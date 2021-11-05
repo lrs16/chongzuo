@@ -152,7 +152,7 @@ function ImplementationPre(props, ref) {
     };
   }
 
-  const docunitmap = getTypebyId(1280);       // 出具文档单位
+  const docunitmap = getTypebyId(1289);       // 出具文档单位
   const functionmap = getTypebyId(451);   // 功能类型
   const modulamap = getTypebyId(466);  // 模块
 

@@ -69,7 +69,7 @@ function SysUpload(props) {
         const filesuffix = file.name.substring(type + 1, file.name.length);
         // const correctfiletype = filetype.indexOf(filesuffix);
         if (filesuffix !== 'sh') {
-          message.error(`${file.name}文件上传失败，不可上传${filetype.join('/')}类型文件！`);
+          message.error(`${file.name}文件上传失败，仅可以上传‘sh’格式文件！`);
           return reject();
         }
         return resolve(file);
@@ -84,9 +84,9 @@ function SysUpload(props) {
         for (let i = 0; i < arr.length; i += 1) {
           const vote = {};
           vote.uid = arr[i].uid;
-            // arr[i]?.response?.data[0]?.id !== undefined
-            //   ? arr[i]?.response?.data[0]?.id
-            //   : arr[i].uid;
+          // arr[i]?.response?.data[0]?.id !== undefined
+          //   ? arr[i]?.response?.data[0]?.id
+          //   : arr[i].uid;
           vote.name = arr[i].name;
           // vote.nowtime =
           //   arr[i]?.response?.data[0]?.createTime !== undefined
