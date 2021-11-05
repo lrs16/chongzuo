@@ -541,6 +541,7 @@ function WorkOrder(props) {
             releases: Number(values.releases),
             attachment: JSON.stringify(files.arr),
             registerId: info.demandForm.id,
+            developmentLead: values.developmentLead && values.developmentLead.length > 0 ? values.developmentLead.toString() : '',
             id,
             taskName: info.taskName,
           },
