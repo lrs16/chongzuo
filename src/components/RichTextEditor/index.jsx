@@ -54,7 +54,7 @@ function Editor(props, ref) {
           body: formData,
         }).then(response => response.json())
           .then((data) => {
-            if (data.code === 200) {
+            if (data.code === 200 && data.data && data.data.length > 0) {
               const arr = data.data[0].fileUrl?.split('\\');
               const imgsrc = `/image/${arr[arr.length - 2]}/${arr[arr.length - 1]}`;
               insert(imgsrc)

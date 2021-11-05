@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { connect } from 'dva';
 import { Upload, Button, message } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
-// import { getFileSecuritySuffix } from '@/services/upload';
+import { getFileSecuritySuffix } from '@/services/upload';
 import UploadContext from '@/layouts/MenuContext';
 
 function SysUpload(props) {
