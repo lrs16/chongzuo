@@ -935,7 +935,7 @@ const Registrat = forwardRef((props, ref) => {
                     <DownloadOutlined /> 上传附件
                   </Button>
                 </Upload>
-                {filetype && filetype.length > 0 && (<div style={{ paddingTop: 12, color: '#ccc' }}>仅能上传{filetype.join('，')}格式文件</div>)}
+                {filetype && filetype.length > 0 && (<div style={{ color: '#ccc' }}>仅能上传{filetype.join('，')}格式文件</div>)}
               </div>
             </Form.Item>
           </Col>

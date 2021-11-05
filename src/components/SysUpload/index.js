@@ -124,8 +124,8 @@ function SysUpload(props) {
         <Button type="primary">
           <DownloadOutlined /> 上传附件
         </Button>
-        {filetype && filetype.length > 0 && (<div style={{ paddingTop: 12, color: '#ccc' }}>仅能上传{filetype.join('，')}格式文件</div>)}
       </Upload>
+      {filetype && filetype.length > 0 && (<div style={{ color: '#ccc' }}>仅能上传{filetype.join('，')}格式文件</div>)}
     </>
   );
 }
