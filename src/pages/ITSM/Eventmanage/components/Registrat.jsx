@@ -416,14 +416,18 @@ const Registrat = forwardRef((props, ref) => {
     multiple: true,
     beforeUpload(file) {
       return new Promise((resolve, reject) => {
-        const type = file.name.lastIndexOf('.');
-        const filesuffix = file.name.substring(type + 1, file.name.length);
-        const correctfiletype = filetype.indexOf(filesuffix);
-        if (correctfiletype === -1) {
-          message.error(`${file.name}文件不符合上传规则,禁止上传...`);
-          return reject();
+        const objval = getFieldsValue(['main_eventObject']);
+        if (objval.main_eventObject && objval.main_eventObject.length > 0) {
+          const type = file.name.lastIndexOf('.');
+          const filesuffix = file.name.substring(type + 1, file.name.length);
+          const correctfiletype = filetype.indexOf(filesuffix);
+          if (correctfiletype === -1) {
+            message.error(`${file.name}文件不符合上传规则,禁止上传...`);
+            return reject();
+          }
+          return resolve(file);
         }
-        return resolve(file);
+        message.error('请先选择事件对象')
       });
     },
 
@@ -931,7 +935,7 @@ const Registrat = forwardRef((props, ref) => {
                     <DownloadOutlined /> 上传附件
                   </Button>
                 </Upload>
-                <span style={{ paddingTop: 12, color: '#ccc' }}>仅能上传{filetype}格式文件</span>
+                <div style={{ paddingTop: 12, color: '#ccc' }}>仅能上传{filetype}格式文件</div>
               </div>
             </Form.Item>
           </Col>
