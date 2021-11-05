@@ -174,7 +174,7 @@ function MydutyHandover(props) {
 
   const todetail = (record, type) => {
     router.push({
-      pathname: '/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/handoverdetail',
+      pathname: `${pagetitle === '我的值班交接' ? '/ITSM/dutymanage/dutyhandovermanage/edithandoverdetail' :'/ITSM/dutymanage/dutyhandovermanage/handoverdetail'}`,
       query: {
         Id: record.id,
         id: record.id,

@@ -1339,7 +1339,19 @@ export default {
                               component: './ITSM/Dutymanage/DutyHandovermanage/NewHandover'
                             },
                             {
-                              path: '/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/handoverdetail',
+                              path: '/ITSM/dutymanage/dutyhandovermanage/mydutyhandover',
+                              name: '我的值班交接',
+                              icon: 'fork',
+                              component: './ITSM/Dutymanage/DutyHandovermanage/MydutyHandover',
+                            },
+                            {
+                              path: '/ITSM/dutymanage/dutyhandovermanage/edithandoverdetail',
+                              name: '编辑值班交接',
+                              icon: 'fork',
+                              component: './ITSM/Dutymanage/DutyHandovermanage/NewHandover'
+                            },
+                            {
+                              path: '/ITSM/dutymanage/dutyhandovermanage/handoverdetail',
                               name: '值班交接详情',
                               icon: 'fork',
                               component: './ITSM/Dutymanage/DutyHandovermanage/NewHandover'

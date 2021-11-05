@@ -183,11 +183,25 @@ function NewHandover(props) {
   }, [files])
 
   const handleclose = () => { // 返回
-    router.push({
-      pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover`,
-      query: { pathpush: true },
-      state: { cach: false }
-    });
+    switch(pagetitle) {
+      case '新增值班交接':
+      case '编辑值班交接':
+        router.push({
+          pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover`,
+          query: { pathpush: true },
+          state: { cach: false }
+        });
+        break;
+      case '值班交接详情':
+        router.push({
+          pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandoversearch`,
+          query: { pathpush: true },
+          state: { cach: false }
+        });
+        break;
+      default:
+        break;
+    }
   };
 
   useEffect(() => {

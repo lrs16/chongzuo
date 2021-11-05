@@ -52,14 +52,14 @@ export default {
             });
             const { id } = response.data;
             router.push({
-              pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/handoverdetail`,
+              pathname: '/ITSM/dutymanage/dutyhandovermanage/edithandoverdetail',
               query: { 
                 id,
                 Id:id,
                 },
                 state: {
                   dynamicpath: true,
-                  menuDesc: '我的交接班详情',
+                  menuDesc: '编辑值班交接',
                 },
             })
           }
