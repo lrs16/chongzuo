@@ -929,7 +929,7 @@ const Registrat = forwardRef((props, ref) => {
               label="上传附件"
               {...forminladeLayout}
             >
-              <div style={{ width: 400 }}>
+              <div style={{ width: '50%' }}>
                 <Upload {...uploadprops}>
                   <Button type="primary">
                     <DownloadOutlined /> 上传附件

@@ -30,7 +30,7 @@ export default {
 
   state: {
     list: [],
-    info: '',
+    info: {},
     records: [],
     imgblob: '',
     download: '',
@@ -53,6 +53,9 @@ export default {
     },
     // 打开编辑
     *eventopenflow({ payload: { taskId } }, { call, put }) {
+      yield put({
+        type: 'clear',
+      });
       const response = yield call(EventopenFlow, taskId);
       if (response.code === -1) {
         message.error(response.msg, 5);
@@ -276,7 +279,7 @@ export default {
       return {
         ...state,
         list: [],
-        info: '',
+        info: {},
         records: [],
         imgblob: '',
         download: '',

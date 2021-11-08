@@ -227,7 +227,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
               }],
               initialValue: finish && finish.fileIds && finish.fileIds !== '[]' ? finish.fileIds : '',
             })(
-              <div style={{ width: 400 }}>
+              <div style={{ width: '50%' }}>
                 <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
               </div>
             )}

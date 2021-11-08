@@ -548,14 +548,14 @@ const Registrat = forwardRef((props, ref) => {
           <Col span={8}>
             <Form.Item label="联系电话">
               {getFieldDecorator('proposerPhone', {
-                rules: [
-                  {
-                    required,
-                    // len: 11,
-                    // validator: phone_reg,
-                    message: '请输入联系电话',
-                  },
-                ],
+                // rules: [
+                //   {
+                //     required,
+                //     // len: 11,
+                //     // validator: phone_reg,
+                //     message: '请输入联系电话',
+                //   },
+                // ],
                 initialValue: register.proposerPhone,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
@@ -668,7 +668,7 @@ const Registrat = forwardRef((props, ref) => {
               {...forminladeLayout}
             // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
             >
-              <div style={{ width: 400 }}>
+              <div style={{ width: '50%' }}>
                 <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
               </div>
             </Form.Item>

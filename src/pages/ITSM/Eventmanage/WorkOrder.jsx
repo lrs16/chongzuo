@@ -533,7 +533,7 @@ function WorkOrder2(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      {recordsloading === false && records !== '' && (
+      <Spin spinning={loading}>
         <Steps
           current={records.length - 1}
           size="small"
@@ -570,192 +570,186 @@ function WorkOrder2(props) {
             return <Step title={obj.nodeName} description={desc} key={index.toString()} />;
           })}
         </Steps>
-      )}
-      <Spin spinning={loading}>
-        {loading === false &&
-          data !== undefined &&
-          edit !== undefined && (
-            <Collapse
-              expandIconPosition="right"
-              // defaultActiveKey={['1']}
-              activeKey={activeKey}
-              bordered={false}
-              onChange={callback}
-              style={{ marginTop: '-25px' }}
-            >
-              {taskName === '已登记' && edit.register !== undefined && (
-                <Panel header="事件登记" key="registratform">
-                  <Registrat
-                    ChangeShow={isshow => setShow(isshow)}
-                    ChangeCheck={checked => setCheck(checked)}
-                    ChangeActiveKey={keys => setActiveKey(keys)}
-                    ChangeFiles={newvalue => {
-                      setRegistratFiles(newvalue);
-                    }}
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    show={show}
-                    wrappedComponentRef={RegistratRef}
-                    info={edit}
-                    main={main}
-                    userinfo={userinfo}
-                    location={location}
-                    files={edit.register.fileIds === '[]' ? [] : JSON.parse(edit.register.fileIds)}
-                    selectdata={selectdata}
-                  />
-                </Panel>
-              )}
-              {show === true && taskName === '已登记' && (
-                <Panel header="事件处理" key="handleform">
-                  <Handle
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    wrappedComponentRef={HandleRef}
-                    main={main}
-                    userinfo={userinfo}
-                    location={location}
-                    ChangeFiles={newvalue => {
-                      setFiles(newvalue);
-                    }}
-                    files={[]}
-                    show={show}
-                    selectdata={selectdata}
-                    mainId={mainId}
-                  />
-                </Panel>
-              )}
-              {taskName === '待审核' && (
-                <Panel header="事件审核" key="checkform">
-                  <Check
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    wrappedComponentRef={CheckRef}
-                    main={main}
-                    userinfo={userinfo}
-                    location={location}
-                    ChangeFiles={newvalue => {
-                      setFiles(newvalue);
-                    }}
-                    files={[]}
-                    selectdata={selectdata}
-                  />
-                </Panel>
-              )}
-              {taskName === '审核中' && edit.check !== undefined && (
-                <Panel header="事件审核" key="checkform">
-                  <Check
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    wrappedComponentRef={CheckRef}
-                    info={edit}
-                    main={main}
-                    userinfo={userinfo}
-                    location={location}
-                    ChangeFiles={newvalue => {
-                      setFiles(newvalue);
-                    }}
-                    files={edit.check.fileIds === '[]' ? [] : JSON.parse(edit.check.fileIds)}
-                    selectdata={selectdata}
-                  />
-                </Panel>
-              )}
-              {taskName === '处理中' && edit.handle === null && (
-                <Panel header="事件处理" key="handleform">
-                  <Handle
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    wrappedComponentRef={HandleRef}
-                    main={main}
-                    userinfo={userinfo}
-                    location={location}
-                    ChangeFiles={newvalue => {
-                      setFiles(newvalue);
-                    }}
-                    files={[]}
-                    show={show}
-                    selectdata={selectdata}
-                    mainId={mainId}
-                  />
-                </Panel>
-              )}
-              {taskName === '处理中' && edit.handle !== null && edit.handle !== undefined && (
-                <Panel header="事件处理" key="handleform">
-                  <Handle
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    wrappedComponentRef={HandleRef}
-                    info={edit === null ? undefined : edit}
-                    main={main}
-                    userinfo={userinfo}
-                    location={location}
-                    ChangeFiles={newvalue => {
-                      setFiles(newvalue);
-                    }}
-                    files={edit.handle.fileIds === '[]' ? [] : JSON.parse(edit.handle.fileIds)}
-                    show={show}
-                    selectdata={selectdata}
-                    mainId={mainId}
-                  />
-                </Panel>
-              )}
-              {taskName === '待确认' && (
-                <Panel header="事件确认" key="visitform">
-                  <ReturnVisit
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    wrappedComponentRef={ReturnVisitRef}
-                    main={main}
-                    userinfo={userinfo}
-                    location={location}
-                    ChangeFiles={newvalue => {
-                      setFiles(newvalue);
-                    }}
-                    files={[]}
-                    selectdata={selectdata}
-                  />
-                </Panel>
-              )}
-              {taskName === '确认中' && edit.finish !== null && edit.finish !== undefined && (
-                <Panel header="事件确认" key="visitform">
-                  <ReturnVisit
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    wrappedComponentRef={ReturnVisitRef}
-                    info={edit}
-                    main={main}
-                    userinfo={userinfo}
-                    location={location}
-                    ChangeFiles={newvalue => {
-                      setFiles(newvalue);
-                    }}
-                    files={edit.finish.fileIds === '[]' ? [] : JSON.parse(edit.finish.fileIds)}
-                    selectdata={selectdata}
-                  />
-                </Panel>
-              )}
-
-              {data.map((obj, index) => {
-                // panel详情组件
-                const Paneldesmap = new Map([
-                  ['register', <Registratdes info={Object.values(obj)[0]} main={data[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                  ['handle', <Handledes info={Object.values(obj)[0]} main={data[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                  ['check', <Checkdes info={Object.values(obj)[0]} main={data[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                  ['finish', <ReturnVisitdes info={Object.values(obj)[0]} main={data[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                ]);
-                if (index > 0)
-                  return (
-                    <Panel
-                      Panel
-                      header={Panelheadermap.get(Object.keys(obj)[0])}
-                      key={index.toString()}
-                    >
-                      {Paneldesmap.get(Object.keys(obj)[0])}
-                    </Panel>
-                  );
-              }
-              )}
-            </Collapse>
+        <Collapse
+          expandIconPosition="right"
+          // defaultActiveKey={['1']}
+          activeKey={activeKey}
+          bordered={false}
+          onChange={callback}
+          style={{ marginTop: '-25px' }}
+        >
+          {taskName === '已登记' && edit && edit.register && (
+            <Panel header="事件登记" key="registratform">
+              <Registrat
+                ChangeShow={isshow => setShow(isshow)}
+                ChangeCheck={checked => setCheck(checked)}
+                ChangeActiveKey={keys => setActiveKey(keys)}
+                ChangeFiles={newvalue => {
+                  setRegistratFiles(newvalue);
+                }}
+                formItemLayout={formItemLayout}
+                forminladeLayout={forminladeLayout}
+                show={show}
+                wrappedComponentRef={RegistratRef}
+                info={edit}
+                main={main}
+                userinfo={userinfo}
+                location={location}
+                files={edit.register.fileIds === '[]' ? [] : JSON.parse(edit.register.fileIds)}
+                selectdata={selectdata}
+              />
+            </Panel>
           )}
+          {show === true && taskName === '已登记' && (
+            <Panel header="事件处理" key="handleform">
+              <Handle
+                formItemLayout={formItemLayout}
+                forminladeLayout={forminladeLayout}
+                wrappedComponentRef={HandleRef}
+                main={main}
+                userinfo={userinfo}
+                location={location}
+                ChangeFiles={newvalue => {
+                  setFiles(newvalue);
+                }}
+                files={[]}
+                show={show}
+                selectdata={selectdata}
+                mainId={mainId}
+              />
+            </Panel>
+          )}
+          {taskName === '待审核' && (
+            <Panel header="事件审核" key="checkform">
+              <Check
+                formItemLayout={formItemLayout}
+                forminladeLayout={forminladeLayout}
+                wrappedComponentRef={CheckRef}
+                main={main}
+                userinfo={userinfo}
+                location={location}
+                ChangeFiles={newvalue => {
+                  setFiles(newvalue);
+                }}
+                files={[]}
+                selectdata={selectdata}
+              />
+            </Panel>
+          )}
+          {taskName === '审核中' && edit && edit.check && (
+            <Panel header="事件审核" key="checkform">
+              <Check
+                formItemLayout={formItemLayout}
+                forminladeLayout={forminladeLayout}
+                wrappedComponentRef={CheckRef}
+                info={edit}
+                main={main}
+                userinfo={userinfo}
+                location={location}
+                ChangeFiles={newvalue => {
+                  setFiles(newvalue);
+                }}
+                files={edit.check.fileIds === '[]' ? [] : JSON.parse(edit.check.fileIds)}
+                selectdata={selectdata}
+              />
+            </Panel>
+          )}
+          {taskName === '处理中' && edit && !edit.handle && (
+            <Panel header="事件处理" key="handleform">
+              <Handle
+                formItemLayout={formItemLayout}
+                forminladeLayout={forminladeLayout}
+                wrappedComponentRef={HandleRef}
+                main={main}
+                userinfo={userinfo}
+                location={location}
+                ChangeFiles={newvalue => {
+                  setFiles(newvalue);
+                }}
+                files={[]}
+                show={show}
+                selectdata={selectdata}
+                mainId={mainId}
+              />
+            </Panel>
+          )}
+          {taskName === '处理中' && edit && edit.handle && (
+            <Panel header="事件处理" key="handleform">
+              <Handle
+                formItemLayout={formItemLayout}
+                forminladeLayout={forminladeLayout}
+                wrappedComponentRef={HandleRef}
+                info={edit === null ? undefined : edit}
+                main={main}
+                userinfo={userinfo}
+                location={location}
+                ChangeFiles={newvalue => {
+                  setFiles(newvalue);
+                }}
+                files={edit.handle.fileIds === '[]' ? [] : JSON.parse(edit.handle.fileIds)}
+                show={show}
+                selectdata={selectdata}
+                mainId={mainId}
+              />
+            </Panel>
+          )}
+          {taskName === '待确认' && (
+            <Panel header="事件确认" key="visitform">
+              <ReturnVisit
+                formItemLayout={formItemLayout}
+                forminladeLayout={forminladeLayout}
+                wrappedComponentRef={ReturnVisitRef}
+                main={main}
+                userinfo={userinfo}
+                location={location}
+                ChangeFiles={newvalue => {
+                  setFiles(newvalue);
+                }}
+                files={[]}
+                selectdata={selectdata}
+              />
+            </Panel>
+          )}
+          {taskName === '确认中' && edit && edit.finish && (
+            <Panel header="事件确认" key="visitform">
+              <ReturnVisit
+                formItemLayout={formItemLayout}
+                forminladeLayout={forminladeLayout}
+                wrappedComponentRef={ReturnVisitRef}
+                info={edit}
+                main={main}
+                userinfo={userinfo}
+                location={location}
+                ChangeFiles={newvalue => {
+                  setFiles(newvalue);
+                }}
+                files={edit.finish.fileIds === '[]' ? [] : JSON.parse(edit.finish.fileIds)}
+                selectdata={selectdata}
+              />
+            </Panel>
+          )}
+
+          {data && data.map((obj, index) => {
+            // panel详情组件
+            const Paneldesmap = new Map([
+              ['register', <Registratdes info={Object.values(obj)[0]} main={data[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+              ['handle', <Handledes info={Object.values(obj)[0]} main={data[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+              ['check', <Checkdes info={Object.values(obj)[0]} main={data[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+              ['finish', <ReturnVisitdes info={Object.values(obj)[0]} main={data[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+            ]);
+            if (index > 0)
+              return (
+                <Panel
+                  Panel
+                  header={Panelheadermap.get(Object.keys(obj)[0])}
+                  key={index.toString()}
+                >
+                  {Paneldesmap.get(Object.keys(obj)[0])}
+                </Panel>
+              );
+          }
+          )}
+        </Collapse>
       </Spin>
     </div>
   );

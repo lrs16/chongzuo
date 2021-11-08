@@ -138,7 +138,7 @@ const Check = forwardRef((props, ref) => {
             {...forminladeLayout}
           // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
           >
-            <div style={{ width: 400 }}>
+            <div style={{ width: '50%' }}>
               <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
             </div>
           </Form.Item>
