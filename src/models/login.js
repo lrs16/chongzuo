@@ -1,8 +1,11 @@
 import { routerRedux } from 'dva/router';
-import { stringify } from 'querystring';
-import { fakeAccountLogin, getFakeCaptcha, fakeLogout } from '@/services/login';
+// import { notification, Icon } from 'antd';
+import Base64 from 'base-64';
+import JSEncrypt from 'jsencrypt';
+// import { stringify } from 'querystring';
+import { fakeAccountLogin, getFakeCaptcha, fakeLogout, getSerialNumberKey } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
-import { getPageQuery } from '@/utils/utils';
+// import { getPageQuery } from '@/utils/utils';
 
 const Model = {
   namespace: 'login',
@@ -14,46 +17,48 @@ const Model = {
 
   effects: {
     *login({ payload }, { call, put }) {
-      const { logincode } = payload;
-      const response = yield call(fakeAccountLogin, payload);
-
-      if (response.code === -1) {
+      const keyres = yield call(getSerialNumberKey);
+      if (keyres.code === 200) {
+        const encrypt = new JSEncrypt();
+        encrypt.setPublicKey(keyres.data.key);
+        const { logincode, password, Authorization } = payload;
+        const value = {
+          logincode: Base64.encode(logincode),
+          password: encrypt.encrypt(password),
+          Authorization,
+          serial: keyres.data.serial,
+        }
+        const response = yield call(fakeAccountLogin, value);
+        if (response.code === -1) {
+          yield put({
+            type: 'changeLoginStatus',
+            payload: response,
+          });
+        }
+        if (response.code === 200) {
+          sessionStorage.setItem('access_token', response.data.access_token);
+          yield put({
+            type: 'changeLoginStatus',
+            payload: {
+              currentAuthority: logincode,
+              // currentAuthority: response.currentAuthority,
+              response,
+            },
+          });
+          yield put(routerRedux.replace('/'));
+        }
+      } else {
         yield put({
           type: 'changeLoginStatus',
-          payload: response,
+          payload: keyres,
         });
+        // notification.open({
+        //   message: '登录失败',
+        //   description: keyres.msg,
+        //   icon: <Icon type="exclamation-circle" style={{ color: '#F00' }} />,
+        // });
       }
 
-      if (response.code === 200) {
-        sessionStorage.setItem('access_token', response.data.access_token);
-        yield put({
-          type: 'changeLoginStatus',
-          payload: {
-            currentAuthority: logincode,
-            // currentAuthority: response.currentAuthority,
-            response,
-          },
-        });
-        // const urlParams = new URL(window.location.href); // 本地记录路由
-        // const params = getPageQuery();
-        // let { redirect } = params;
-        // if (redirect) {
-        //   const redirectUrlParams = new URL(redirect);
-
-        //   if (redirectUrlParams.origin === urlParams.origin) {
-        //     redirect = redirect.substr(urlParams.origin.length);
-
-        //     if (redirect.match(/^\/.*#/)) {
-        //       redirect = redirect.substr(redirect.indexOf('#') + 1);
-        //     }
-        //   } else {
-        //     window.location.href = '/';
-        //     return;
-        //   }
-        // }
-
-        yield put(routerRedux.replace('/'));
-      }
     },
 
     *getCaptcha({ payload }, { call }) {

@@ -70,7 +70,7 @@ const Registrat = forwardRef((props, ref) => {
   const [deptopen, setDeptopen] = useState(false);
 
   useEffect(() => {
-    if (files.length > 0) {
+    if (files && files.length > 0) {
       setFilesList(files);
     };
     if (register.applicationUnitId !== '') {

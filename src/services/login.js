@@ -5,6 +5,11 @@ export async function getFakeCaptcha(mobile) {
   return request(`/api/login/captcha?mobile=${mobile}`);
 }
 
+// 请求序列号 /auth/getSerialNumberKey
+export async function getSerialNumberKey() {
+  return request('/auth/getSerialNumberKey');
+}
+
 // 登录请求
 export async function fakeAccountLogin(params) {
   return request('/auth/doLogin', {
