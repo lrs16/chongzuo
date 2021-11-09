@@ -156,6 +156,12 @@ function TestEnvironmentManage(props) {
       width: 80,
     },
     {
+      title: '操作系统',
+      dataIndex: 'agentOsType',
+      key: 'agentOsType',
+      width: 100,
+    },
+    {
       title: '区域',
       dataIndex: 'agentZone',
       key: 'agentZone',

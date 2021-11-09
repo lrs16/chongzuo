@@ -2190,7 +2190,7 @@ export default {
       changeOrigin: true,
     },
     '/inspection/': {
-      target: 'http://172.16.10.109:8083/', //  巡检
+      target: 'http://172.16.10.132:8083/', //  巡检
       changeOrigin: true,
       pathRewrite: { '^/inspection': '' },
     },

@@ -45,16 +45,17 @@ function OnSitemanage(props) {
     //   }
     // });
 
-    const url = 'http://10.172.210.132:8083/inspection/wholeNet/check';
+    const url = 'http://172.16.10.132:8083/inspection/wholeNet/check';
     axios
       .get(url, {
         headers: {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Credentials': 'true',
+          'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`
         },
       })
       .then(res => {
-        let data = res.data;
+        const { data } = res;
         if (data.code === 200) {
           Message.success(res.msg);
           getdata(1, 10);
@@ -95,16 +96,17 @@ function OnSitemanage(props) {
     //   payload: checkNo
     // })
 
-    const url = 'http://10.172.210.132:8083/inspection/wholeNet/check?checkNo=' + checkNo;
+    const url = `http://172.16.10.132:8083/inspection/wholeNet/check?checkNo=${checkNo}`;
     axios
       .get(url, {
         headers: {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Credentials': 'true',
+          'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`,
         },
       })
       .then(res => {
-        let data = res.data;
+        const { data } = res;
         if (data.code === 200) {
           Message.success(data.msg);
           getdata(1, 10);

@@ -432,8 +432,9 @@ const Registrat = forwardRef((props, ref) => {
     },
 
     onChange({ file, fileList }) {
-      const alldone = fileList.map(item => item.response && item.response.fileUploadInfo && item.response.fileUploadInfo.length > 0);
-      if (file.status === 'done' && file.response && file.response.code === 200 && alldone.indexOf(true) === -1) {
+      const allsuccess = fileList.map(item => item.response && item.response.fileUploadInfo && item.response.fileUploadInfo.length > 0);
+      const alldone = fileList.map(item => item.status !== 'done');
+      if (file.status === 'done' && alldone.indexOf(true) === -1 && file.response && file.response.code === 200 && allsuccess.indexOf(true) === -1) {
         const arr = [...fileList];
         const newarr = [];
         for (let i = 0; i < arr.length; i += 1) {
