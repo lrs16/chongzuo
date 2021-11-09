@@ -100,6 +100,7 @@ function Registertion(props) {
       payload: type,
     });
   };
+
   //  根据考核类型查询二级指标
   const getTarget2 = id => {
     dispatch({
@@ -153,9 +154,6 @@ function Registertion(props) {
       // setShow(false)
     }
   }, [tabnew]);
-  
-
-
 
   // 点击页签右键刷新
   useEffect(() => {

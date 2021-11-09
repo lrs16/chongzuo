@@ -42,9 +42,11 @@ function CreditCardRegister(props) {
     },
     scorecardetail,
     maintenanceArr,
+    tabnew,
+    tabdata,
   } = props;
 
-  const RegistratRef = useRef();
+  const RegistratRef = useRef(null);
   const [contractArr, setContractArr] = useState([]);
   const [editTablesource, setEditTablesource] = useState([]);
   const [rangerTime, setRangerTime] = useState({ start: '', end: '' });
@@ -83,7 +85,8 @@ function CreditCardRegister(props) {
   }, [location.state]);
 
   const handleSave = () => {
-    RegistratRef.current.validateFields((err, values) => {
+    const values = RegistratRef.current.getVal();
+    RegistratRef.current.Forms((err) => {
       if (!err) {
         if (paramId) {
           return dispatch({
@@ -92,13 +95,6 @@ function CreditCardRegister(props) {
               id: paramId,
               ...values,
               details: editTablesource,
-              // beginTime: values.evaluationInterval?.length
-              //   ? moment(values.evaluationInterval[0]).format('YYYY-MM-DD HH:mm:ss')
-              //   : '',
-              // endTime: values.evaluationInterval?.length
-              //   ? moment(values.evaluationInterval[1]).format('YYYY-MM-DD HH:mm:ss')
-              //   : '', // 发生时间
-
               beginTime:
                 rangerTime.start ||
                 (values.evaluationInterval?.length
@@ -198,25 +194,6 @@ function CreditCardRegister(props) {
   };
 
   const changeTablesource = (editid, target) => {
-    // let timeout = null
-    // // if (timeout) clearTimeout(timeout)
-    // // timeout = setTimeout(() => {
-    // //   console.log(11)
-    // //   //在这里调用请求的方法
-    // //   // scorecardUpdateRemark(editid, target);
-    // // }, 1000)
-    // return () => {
-    //   // clearTimeout(timeout)
-    //   // timeout = setTimeout(() => {
-    //   //   console.log(454)
-    //   //   // scorecardUpdateRemark(editid, target);
-    //   // }, 1000)
-    //   clearTimeout(timeout);
-    //   timeout = setTimeout(() => {
-    //   // func;
-    //   console.log(99)
-    // }, 1000);
-    // }
     scorecardUpdateRemark(editid, target);
   };
 
@@ -247,6 +224,53 @@ function CreditCardRegister(props) {
     });
   };
 
+  const handleback = () => {
+    if (search) {
+      router.push({
+        pathname: `/ITSM/servicequalityassessment/creditcard/creditcardsearch`,
+        query: { pathpush: true },
+        state: { cach: false }
+      });
+    } else {
+      router.push({
+        pathname: `/ITSM/servicequalityassessment/creditcard/creditcardtobe`,
+        query: { pathpush: true },
+        state: { cach: false }
+      });
+    }
+  };
+
+  // useEffect(() => {
+  //   if (tabdata) {
+  //     if (tabdata.providerId) {
+  //       getContrractname(tabdata.providerId)
+  //     }
+  //   }
+  // }, [tabdata])
+
+  // 获取页签信息
+  // useEffect(() => {
+  //   if (location.state) {
+  //     if (location.state.cache) {
+  //       const values = RegistratRef.current.getVal();
+  //       console.log('values:', values.evaluationInterval?.length ? moment(values.evaluationInterval[0]).format('YYYY-MM-DD HH:mm:ss'):'');
+  //       dispatch({
+  //         type: 'viewcache/gettabstate',
+  //         payload: {
+  //           cacheinfo: {
+  //             ...values,
+  //             beginTime:values.evaluationInterval?.length ? moment(values.evaluationInterval[0]).format('YYYY-MM-DD HH:mm:ss'):'',
+  //             endTime:values.evaluationInterval?.length ? moment(values.evaluationInterval[1]).format('YYYY-MM-DD HH:mm:ss'):'',
+  //             // evaluationInterval: values.evaluationInterval?.length ? [moment(values.evaluationInterval[0]), moment(values.evaluationInterval[1])]:'',
+  //           },
+  //           tabid: sessionStorage.getItem('tabid')
+  //         },
+  //       });
+  //       RegistratRef.current.resetVal();
+  //     }
+  //   }
+  // }, [location]);
+
   return (
     <PageHeaderWrapper
       title={pagetitle}
@@ -274,7 +298,19 @@ function CreditCardRegister(props) {
             </Button>
           )}
 
-          <Button onClick={handleClose}>关闭</Button>
+          {
+            !paramId && (
+
+              <Button onClick={handleClose}>关闭</Button>
+            )
+          }
+
+          {
+            paramId && (
+              <Button onClick={handleback}>返回</Button>
+            )
+          }
+
         </>
       }
     >
@@ -288,7 +324,7 @@ function CreditCardRegister(props) {
                 tableSource={maintenanceArr.data}
                 formItemLayout={formItemLayout}
                 formItemdeLayout={formItemdeLayout}
-                ref={RegistratRef}
+                wrappedComponentRef={RegistratRef}
                 register={scorecardetail}
                 clauseList={clauseList}
                 contractArr={contractArr}
@@ -307,13 +343,13 @@ function CreditCardRegister(props) {
 
 export default connect(
   ({ eventstatistics, performanceappraisal, qualityassessment, viewcache, loading }) => ({
-    tabnew: viewcache.tabnew,
-    // tabdata: viewcache.tabdata,
     maintenanceArr: eventstatistics.maintenanceArr,
     target2: performanceappraisal.target2,
     target1: performanceappraisal.target1,
     clauseList: qualityassessment.clauseList,
     scorecardetail: performanceappraisal.scorecardetail,
+    tabnew: viewcache.tabnew,
+    tabdata: viewcache.tabdata,
     loading: loading.models.performanceappraisal,
   }),
 )(CreditCardRegister);

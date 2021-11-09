@@ -170,8 +170,6 @@ function NewHandover(props) {
     handleSave('logbookTransfer');
   }
 
- 
-
   const logbookReceive = () => {
     handleSave('logbookReceive');
   }
@@ -338,7 +336,6 @@ function NewHandover(props) {
       }
     })
   }
-
 
   const download = () => {
     dispatch({

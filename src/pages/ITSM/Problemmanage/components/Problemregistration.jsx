@@ -20,13 +20,13 @@ function Problemregistration(props) {
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="问题申报人">
-            <Input defaultValue={info.complainUser} disabled />
+          <Form.Item label="发生时间">
+            <Input defaultValue={info.registerOccurTime} disabled />
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="发生时间">
-            <Input defaultValue={info.registerOccurTime} disabled />
+          <Form.Item label="问题申报人">
+            <Input defaultValue={info.complainUser} disabled />
           </Form.Item>
         </Col>
         <Col span={8}>

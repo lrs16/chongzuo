@@ -90,6 +90,36 @@ const columns = [
               }
             })
             break;
+          case 'quality':
+            if(record.itemWorkStatus === '绩效考核已完成') {
+              router.push({
+                pathname:'/ITSM/servicequalityassessment/serviceperformanceappraisal/performancequerydetail',
+                query: {
+                  assessNo: record.itemWorkId,
+                  mainId: record.instanceId,
+                  taskId: record.taskId,
+                  instanceId: record.instanceId,
+                  taskName: record.nodeName,
+                  orderNo: record.itemWorkId,
+                  search: true,
+                },
+              });
+            } else {
+              router.push({
+                pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform`,
+                query: {
+                  assessNo: record.itemWorkId,
+                  mainId: record.instanceId,
+                  taskId: record.taskId,
+                  instanceId: record.instanceId,
+                  taskName: record.nodeName,
+                  orderNo: record.itemWorkId,
+                  tobelist: true,
+                },
+              })
+            }
+          
+            break;
           default:
             break;
         }
@@ -111,7 +141,8 @@ const columns = [
         ['problem', '问题'],
         ['demand', '需求'],
         ['operation', '作业计划'],
-        ['work', '工作督办']
+        ['work', '工作督办'],
+        ['quality', '服务绩效'],
       ]);
       return typemap.get(text);
     },

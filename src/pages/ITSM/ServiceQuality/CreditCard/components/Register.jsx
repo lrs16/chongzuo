@@ -1,18 +1,18 @@
-import React, { useImperativeHandle, useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { Form, Input, Row, Col, AutoComplete, Select, DatePicker, Spin, message } from 'antd';
 import MergeTable from '@/components/MergeTable';
-import { providerList, scoreListpage } from '../../services/quality';
 import moment from 'moment';
 import SysDict from '@/components/SysDict';
+import { providerList, scoreListpage } from '../../services/quality';
 import styles from '../../index.less';
 
 const { Search } = Input;
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 
-const Register = React.forwardRef((props, ref) => {
+const Register = forwardRef((props, ref) => {
   const {
-    form: { getFieldDecorator, setFieldsValue },
+    form: { getFieldDecorator, setFieldsValue, getFieldsValue, resetFields },
     formItemLayout,
     formItemdeLayout,
     contractArr,
@@ -27,7 +27,6 @@ const Register = React.forwardRef((props, ref) => {
 
   const required = true;
 
-  const attRef = useRef();
   const [data, setData] = useState([]);
   const [disablelist, setDisabledList] = useState([]); // 服务商
   const [scorelist, setScorelist] = useState([]); // 评分细则
@@ -38,7 +37,9 @@ const Register = React.forwardRef((props, ref) => {
   useImperativeHandle(
     ref,
     () => ({
-      attRef,
+      getVal: () => getFieldsValue(),
+      resetVal: () => resetFields(),
+      Forms: props.form.validateFieldsAndScroll,
     }),
     [],
   );
@@ -56,10 +57,6 @@ const Register = React.forwardRef((props, ref) => {
       target[fieldName] = e;
       setData(newData);
     }
-  };
-
-  const test = e => {
-    changeTablesource(e, e);
   };
 
   const handleTabledata = () => {
@@ -158,7 +155,6 @@ const Register = React.forwardRef((props, ref) => {
       scoreName,
       contractName,
       assessType,
-      clauseName,
     } = opt.props.disableuser;
     switch (type) {
       case 'provider':
@@ -218,6 +214,7 @@ const Register = React.forwardRef((props, ref) => {
         break;
     }
   };
+
   // 自动完成评分细则
   const scorenameList = scorelist.map(opt => (
     <Option key={opt.id} value={opt.id} disableuser={opt}>
@@ -273,7 +270,7 @@ const Register = React.forwardRef((props, ref) => {
             <Form.Item label="计分卡编号">
               {getFieldDecorator('cardNo', {
                 initialValue: register.cardNo,
-              })(<Input disabled="true" />)}
+              })(<Input disabled />)}
             </Form.Item>
           </Col>
 
@@ -297,7 +294,7 @@ const Register = React.forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    message: '请输入服务商',
+                    message: '请选择服务商',
                   },
                 ],
                 initialValue: register.providerName,
@@ -311,7 +308,7 @@ const Register = React.forwardRef((props, ref) => {
                 >
                   <Search
                     placeholder="可输入服务商名称搜索"
-                    onSearch={values => SearchDisableduser(values, 'provider')}
+                    onSearch={values => SearchDisableduser({ providerName: values }, 'provider')}
                     allowClear
                   />
                 </AutoComplete>,
@@ -334,7 +331,7 @@ const Register = React.forwardRef((props, ref) => {
                   rules: [
                     {
                       required,
-                      message: '请输入关联合同名称',
+                      message: '请选择关联合同名称',
                     },
                   ],
                   initialValue: register.contractId,
@@ -380,7 +377,7 @@ const Register = React.forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    message: '请输入评分细则名称',
+                    message: '请选择评分细则名称',
                   },
                 ],
                 initialValue: register.scoreName,
@@ -394,7 +391,7 @@ const Register = React.forwardRef((props, ref) => {
                 >
                   <Search
                     placeholder="请输入评分细则名称"
-                    onSearch={values => SearchDisableduser(values, 'score')}
+                    onSearch={values => SearchDisableduser({ scoreName: values }, 'score')}
                     allowClear
                   />
                 </AutoComplete>,
@@ -424,8 +421,8 @@ const Register = React.forwardRef((props, ref) => {
                   register && register.assessType && register.assessType === '1'
                     ? '功能开发'
                     : register.assessType === '2'
-                    ? '系统运维'
-                    : '',
+                      ? '系统运维'
+                      : '',
               })(<Input disabled />)}
             </Form.Item>
           </Col>
@@ -466,29 +463,43 @@ const Register = React.forwardRef((props, ref) => {
                     ? [moment(register.beginTime), moment(register.endTime)]
                     : '',
               })(
-                <div>
-                  <RangePicker
-                    allowClear={false}
-                    defaultValue={
-                      register && register.beginTime
-                        ? [
-                            moment(register.beginTime, 'YYYY-MM-DD HH:mm:ss'),
-                            moment(register.endTime, 'YYYY-MM-DD HH:mm:ss'),
-                          ]
-                        : []
-                    }
-                    disabled={search}
-                    showTime
-                    // showTime={{
-                    //   hideDisabledOptions: true,
-                    //   defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                    // }}
-                    format="YYYY-MM-DD HH:mm:ss"
-                    style={{ width: '100%' }}
-                    placeholder="请选择"
-                    onOk={timeOK}
-                  />
-                </div>,
+                <RangePicker
+                  allowClear={false}
+
+                  disabled={search}
+                  showTime
+                  // showTime={{
+                  //   hideDisabledOptions: true,
+                  //   defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                  // }}
+                  format="YYYY-MM-DD HH:mm:ss"
+                  style={{ width: '100%' }}
+                  placeholder="请选择"
+                  // onOk={timeOK}
+                />
+                // <div>
+                //   <RangePicker
+                //     allowClear={false}
+                //     defaultValue={
+                //       register && register.beginTime
+                //         ? [
+                //             moment(register.beginTime, 'YYYY-MM-DD HH:mm:ss'),
+                //             moment(register.endTime, 'YYYY-MM-DD HH:mm:ss'),
+                //           ]
+                //         : []
+                //     }
+                //     disabled={search}
+                //     showTime
+                //     // showTime={{
+                //     //   hideDisabledOptions: true,
+                //     //   defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                //     // }}
+                //     format="YYYY-MM-DD HH:mm:ss"
+                //     style={{ width: '100%' }}
+                //     placeholder="请选择"
+                //     onOk={timeOK}
+                //   />
+                // </div>,
               )}
             </Form.Item>
           </Col>
@@ -508,7 +519,7 @@ const Register = React.forwardRef((props, ref) => {
                 <Form.Item label="评价得分">
                   {getFieldDecorator('totalScore', {
                     initialValue: register.totalScore,
-                  })(<Input disabled="true" />)}
+                  })(<Input disabled />)}
                 </Form.Item>
               </Col>
 
@@ -516,7 +527,7 @@ const Register = React.forwardRef((props, ref) => {
                 <Form.Item label="评价等级">
                   {getFieldDecorator('grade', {
                     initialValue: register.grade,
-                  })(<Input disabled="true" />)}
+                  })(<Input disabled />)}
                 </Form.Item>
               </Col>
 

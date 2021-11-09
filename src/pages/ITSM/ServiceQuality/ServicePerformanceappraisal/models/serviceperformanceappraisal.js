@@ -41,7 +41,7 @@ export default {
     target1: [],
     target2: [],
     taskData: '',
-    scorecardetail: [],
+    scorecardetail: '',
     scorecardArr: [],
     listPagetobe: [],
     hisTaskArr: [],
@@ -333,7 +333,7 @@ export default {
     clearparams(state, action) {
       return {
         ...state,
-        scorecardetail: [],
+        scorecardetail: '',
       };
     },
 

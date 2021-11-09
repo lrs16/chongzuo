@@ -218,7 +218,7 @@ const Registrat = React.forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    message: '请输入问题申报人',
+                    message: '请选择问题申报人',
                   },
                 ],
                 initialValue: register.complainUser,
@@ -322,7 +322,7 @@ const Registrat = React.forwardRef((props, ref) => {
                     message: '请选择期望完成时间',
                   },
                 ],
-                initialValue: occurtime,
+                initialValue:  (register && register.registerExpectTime) ? moment(register.registerExpectTime):moment(new Date()),
               })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
             </Form.Item>
           </Col>
