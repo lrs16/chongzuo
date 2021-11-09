@@ -51,7 +51,7 @@ function OnSitemanage(props) {
     //   }
     // });
 
-    const url = 'http://172.16.10.132:8083/wholeNet/check';
+    const url = 'http://10.172.210.132:8083/inspection/wholeNet/check';
     axios
       .get(url, {
         headers: {
@@ -102,7 +102,7 @@ function OnSitemanage(props) {
     //   payload: checkNo
     // })
 
-    const url = `http://172.16.10.132:8083/wholeNet/check?checkNo=${checkNo}`;
+    const url = `http://10.172.210.132:8083/inspection/wholeNet/check?checkNo=${checkNo}`;
     axios
       .get(url, {
         headers: {
@@ -185,7 +185,7 @@ function OnSitemanage(props) {
         };
         const status = record.checkStatus;
         // const statustext = status.length === 4 ? '下载报告' : '';
-        const { checkNo } = record;
+        const { checkNo } = record
         return (
           <>
             {status.length === 4 && status !== 'ERRR' && <a onClick={download}> 下载报告</a>}
