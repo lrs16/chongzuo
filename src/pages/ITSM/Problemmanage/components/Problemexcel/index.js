@@ -78,7 +78,7 @@ function Problemexcel(props) {
         if (file.response.code === 200) {
           message.success('导入数据成功');
         } else {
-          message.error('文件格式不正确，请按照文件下载模板上传');
+          message.error(file.response.msg);
         }
 
         const arr = [...fileList];

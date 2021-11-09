@@ -20,6 +20,7 @@ function Dutyexcel(props) {
     getFileSecuritySuffix().then(res => {
       if (res.code === 200) {
         const arr = [...res.data];
+        console.log('arr: ', arr);
         setFileType(arr);
       }
     });
