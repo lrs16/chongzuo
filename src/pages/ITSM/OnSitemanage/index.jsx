@@ -30,7 +30,13 @@ function OnSitemanage(props) {
   const handleCheck = () => {
     return dispatch({
       type: 'checkmanage/docheck',
-    }).then(getdata(1, 10));
+    }).then(res => {
+      if (res.cood === 200) {
+        getdata(1, 10)
+      }
+    }
+
+    );
   };
 
   const handlewholeNet = () => {
@@ -45,7 +51,7 @@ function OnSitemanage(props) {
     //   }
     // });
 
-    const url = 'http://172.16.10.132:8083/inspection/wholeNet/check';
+    const url = 'http://172.16.10.132:8083/wholeNet/check';
     axios
       .get(url, {
         headers: {
@@ -96,7 +102,7 @@ function OnSitemanage(props) {
     //   payload: checkNo
     // })
 
-    const url = `http://172.16.10.132:8083/inspection/wholeNet/check?checkNo=${checkNo}`;
+    const url = `http://172.16.10.132:8083/wholeNet/check?checkNo=${checkNo}`;
     axios
       .get(url, {
         headers: {
@@ -207,7 +213,7 @@ function OnSitemanage(props) {
             </Button>
           </Col>
           <Col span={12}>
-            <Button onClick={handleCheck} block type="dashed">
+            <Button onClick={() => handleCheck()} block type="dashed">
               计量主站巡检
             </Button>
           </Col>

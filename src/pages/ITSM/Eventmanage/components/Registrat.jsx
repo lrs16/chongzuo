@@ -442,13 +442,11 @@ const Registrat = forwardRef((props, ref) => {
         const newarr = [];
         for (let i = 0; i < arr.length; i += 1) {
           const vote = {};
-          vote.uid = arr[i]?.response?.data[0]?.id;
+          vote.uid = arr[i]?.response?.data[0]?.id !== undefined ? arr[i]?.response?.data[0]?.id : arr[i].uid;
           vote.name = arr[i].name;
           vote.fileUrl = '';
           vote.status = arr[i].status;
-          if (arr[i]?.response?.data[0]?.id) {
-            newarr.push(vote);
-          }
+          newarr.push(vote);
         }
         setFilesList([...newarr]);
         ChangeFiles({ arr: [...newarr], ischange: true });
@@ -459,6 +457,7 @@ const Registrat = forwardRef((props, ref) => {
       if (showIcon) {
         handledownload(filesinfo);
       }
+
     },
     onDownload(filesinfo) {
       handledownload(filesinfo);
