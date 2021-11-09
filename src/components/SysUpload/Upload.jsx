@@ -55,6 +55,7 @@ function SysUpload(props) {
 
     beforeUpload(file) {
       return new Promise((resolve, reject) => {
+        setShowIcon(false);
         const type = file.name.lastIndexOf('.');
         const filesuffix = file.name.substring(type + 1, file.name.length);
         const correctfiletype = filetype.indexOf(filesuffix);
@@ -74,18 +75,14 @@ function SysUpload(props) {
         const newarr = [];
         for (let i = 0; i < arr.length; i += 1) {
           const vote = {};
-          vote.uid =
-            arr[i]?.response?.data[0]?.id !== undefined
-              ? arr[i]?.response?.data[0]?.id
-              : arr[i].uid;
+          vote.uid = arr[i]?.response?.data[0]?.id;
           vote.name = arr[i].name;
-          vote.nowtime =
-            arr[i]?.response?.data[0]?.createTime !== undefined
-              ? arr[i]?.response?.data[0]?.createTime
-              : arr[i].createTime;
+          vote.nowtime = arr[i]?.response?.data[0]?.createTime;
           vote.fileUrl = '';
           vote.status = arr[i].status;
-          newarr.push(vote);
+          if (arr[i]?.response?.data[0]?.id) {
+            newarr.push(vote);
+          };
         }
         ChangeFiles(newarr)
       }

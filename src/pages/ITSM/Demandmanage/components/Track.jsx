@@ -50,6 +50,7 @@ function Track(props) {
   const [trackslist, setTracksList] = useState('');
   const [filetype, setFileType] = useState('');
   const [status, setStatus] = useState('open');
+  const [showIcon, setShowIcon] = useState(true);
   const { ChangeReleaseTaskName } = useContext(EditContext);
 
   // 加载列表
@@ -252,11 +253,12 @@ function Track(props) {
       Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
     },
     multiple: true,
-    showUploadList: { showDownloadIcon: true },
+    showUploadList: { showDownloadIcon: showIcon, showRemoveIcon: showIcon },
     defaultFileList: fileslist,
 
     beforeUpload(file) {
       return new Promise((resolve, reject) => {
+        setShowIcon(false);
         const type = file.name.lastIndexOf('.');
         const filesuffix = file.name.substring(type + 1, file.name.length);
         const correctfiletype = filetype.indexOf(filesuffix);
@@ -277,14 +279,13 @@ function Track(props) {
         const newarr = [];
         for (let i = 0; i < arr.length; i += 1) {
           const vote = {};
-          vote.uid =
-            arr[i]?.response?.data[0]?.id !== undefined
-              ? arr[i]?.response?.data[0]?.id
-              : arr[i].uid;
+          vote.uid = arr[i]?.response?.data[0]?.id;
           vote.name = arr[i].name;
           vote.fileUrl = '';
           vote.status = arr[i].status;
-          newarr.push(vote);
+          if (arr[i]?.response?.data[0]?.id) {
+            newarr.push(vote);
+          }
         }
         setFilesList([...newarr]);
         const newData = data.map(item => ({ ...item }));
@@ -294,6 +295,7 @@ function Track(props) {
         target.editable = false;
         const id = target.id === '' ? '' : target.id;
         savedata(target, id);
+        setShowIcon(true);
       }
     },
     onPreview(info) {

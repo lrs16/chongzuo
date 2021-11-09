@@ -8,6 +8,7 @@ function SysUpload(props) {
   const { dispatch, fileslist, ChangeFileslist } = props;
   const [uploadfiles, setUploadFiles] = useState([]);
   const [filetype, setFileType] = useState('');
+  const [showIcon, setShowIcon] = useState(true);
 
   useEffect(() => {
     let doCancel = false;
@@ -57,12 +58,13 @@ function SysUpload(props) {
     headers: {
       Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
     },
-    showUploadList: { showDownloadIcon: true },
+    showUploadList: { showDownloadIcon: showIcon, showRemoveIcon: showIcon },
     defaultFileList: fileslist,
     multiple: true,
 
     beforeUpload(file) {
       return new Promise((resolve, reject) => {
+        setShowIcon(false);
         const type = file.name.lastIndexOf('.');
         const filesuffix = file.name.substring(type + 1, file.name.length);
         const correctfiletype = filetype.indexOf(filesuffix);
@@ -82,18 +84,14 @@ function SysUpload(props) {
         const newarr = [];
         for (let i = 0; i < arr.length; i += 1) {
           const vote = {};
-          vote.uid =
-            arr[i]?.response?.data[0]?.id !== undefined
-              ? arr[i]?.response?.data[0]?.id
-              : arr[i].uid;
+          vote.uid = arr[i]?.response?.data[0]?.id;
           vote.name = arr[i].name;
-          vote.nowtime =
-            arr[i]?.response?.data[0]?.createTime !== undefined
-              ? arr[i]?.response?.data[0]?.createTime
-              : arr[i].createTime;
+          vote.nowtime = arr[i]?.response?.data[0]?.createTime;
           vote.fileUrl = '';
           vote.status = arr[i].status;
-          newarr.push(vote);
+          if (arr[i]?.response?.data[0]?.id) {
+            newarr.push(vote);
+          };
         }
         setUploadFiles([...newarr]);
         ChangeFileslist({ arr: newarr, ischange: true });

@@ -69,6 +69,7 @@ const Registrat = forwardRef((props, ref) => {
   const [deptdata, setDeptdata] = useState([]); // 自动完成部门下拉表
   const [unitopen, setUnitopen] = useState(false);
   const [deptopen, setDeptopen] = useState(false);
+  const [showIcon, setShowIcon] = useState(true);
 
   useEffect(() => {
     if (files && files.length > 0) {
@@ -412,11 +413,12 @@ const Registrat = forwardRef((props, ref) => {
     headers: {
       Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
     },
-    showUploadList: { showDownloadIcon: true },
+    showUploadList: { showDownloadIcon: showIcon, showRemoveIcon: showIcon },
     defaultFileList: files,
     multiple: true,
     beforeUpload(file) {
       return new Promise((resolve, reject) => {
+        setShowIcon(false);
         const objval = getFieldsValue(['main_eventObject']);
         if (objval.main_eventObject && objval.main_eventObject.length > 0) {
           const type = file.name.lastIndexOf('.');
@@ -440,17 +442,17 @@ const Registrat = forwardRef((props, ref) => {
         const newarr = [];
         for (let i = 0; i < arr.length; i += 1) {
           const vote = {};
-          vote.uid =
-            arr[i]?.response?.data[0]?.id !== undefined
-              ? arr[i]?.response?.data[0]?.id
-              : arr[i].uid;
+          vote.uid = arr[i]?.response?.data[0]?.id;
           vote.name = arr[i].name;
           vote.fileUrl = '';
           vote.status = arr[i].status;
-          newarr.push(vote);
+          if (arr[i]?.response?.data[0]?.id) {
+            newarr.push(vote);
+          }
         }
         setFilesList([...newarr]);
         ChangeFiles({ arr: [...newarr], ischange: true });
+        setShowIcon(true);
       }
     },
     onPreview(filesinfo) {
