@@ -299,7 +299,9 @@ function Track(props) {
       }
     },
     onPreview(info) {
-      handledownload(info);
+      if (showIcon) {
+        handledownload(info);
+      }
     },
     onDownload(info) {
       handledownload(info);

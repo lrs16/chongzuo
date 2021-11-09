@@ -8,8 +8,8 @@ import UploadContext from '@/layouts/MenuContext';
 function SysUpload(props) {
   const { dispatch, filelist } = props;
   const [filetype, setFileType] = useState('');
+  const [showIcon, setShowIcon] = useState(true);
   const { files, ChangeFiles } = useContext(UploadContext);
-
 
   // 不允许上传类型
   useEffect(() => {
@@ -48,7 +48,7 @@ function SysUpload(props) {
     headers: {
       Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
     },
-    showUploadList: { showDownloadIcon: true },
+    showUploadList: { showDownloadIcon: showIcon, showRemoveIcon: showIcon },
     defaultFileList: filelist || files,
     // fileList: filelist || files,
     multiple: true,
@@ -84,11 +84,14 @@ function SysUpload(props) {
             newarr.push(vote);
           };
         }
-        ChangeFiles(newarr)
+        ChangeFiles(newarr);
+        setShowIcon(true);
       }
     },
     onPreview(file) {
-      handledownload(file);
+      if (showIcon) {
+        handledownload(file);
+      }
     },
     onDownload(file) {
       handledownload(file);

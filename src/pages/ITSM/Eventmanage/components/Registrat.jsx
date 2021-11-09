@@ -456,7 +456,9 @@ const Registrat = forwardRef((props, ref) => {
       }
     },
     onPreview(filesinfo) {
-      handledownload(filesinfo);
+      if (showIcon) {
+        handledownload(filesinfo);
+      }
     },
     onDownload(filesinfo) {
       handledownload(filesinfo);

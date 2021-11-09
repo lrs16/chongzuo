@@ -95,10 +95,13 @@ function SysUpload(props) {
         }
         setUploadFiles([...newarr]);
         ChangeFileslist({ arr: newarr, ischange: true });
+        setShowIcon(true);
       }
     },
     onPreview(file) {
-      handledownload(file);
+      if (showIcon) {
+        handledownload(file);
+      }
     },
     onDownload(file) {
       handledownload(file);
