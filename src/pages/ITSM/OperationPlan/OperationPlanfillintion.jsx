@@ -68,29 +68,33 @@ function OperationPlanfillintion(props) {
   const handlesubmit = params => {
     PlanfillinRef.current.validateFields((err, values) => {
       if (params ? true : !err) {
-        dispatch({
-          type: 'processmodel/saveallForm',
-          payload: {
-            ...values,
-            main_addTime: values.main_addTime
-              ? values.main_addTime.format('YYYY-MM-DD HH:mm:ss')
-              : '',
-            main_plannedStartTime: values.main_plannedStartTime
-              ? values.main_plannedStartTime.format('YYYY-MM-DD HH:mm:ss')
-              : '',
-            main_plannedEndTime: values.main_plannedEndTime
-              ? values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss')
-              : '',
-            main_fileIds: files.ischange ? JSON.stringify(files.arr) : null,
-            flowNodeName: '计划登记',
-            editState: 'add',
-            main_id: '',
-            main_status: '1',
-            main_addUserId: userinfo.userId,
-            main_addUnitId: userinfo.unitId,
-            main_addUser: userinfo.userName,
-          },
-        });
+        if((values.main_plannedStartTime).valueOf() > (values.main_plannedEndTime).valueOf()) {
+          message.error('计划开始时间必须小于计划结束时间')
+        } else {
+          dispatch({
+            type: 'processmodel/saveallForm',
+            payload: {
+              ...values,
+              main_addTime: values.main_addTime
+                ? values.main_addTime.format('YYYY-MM-DD HH:mm:ss')
+                : '',
+              main_plannedStartTime: values.main_plannedStartTime
+                ? values.main_plannedStartTime.format('YYYY-MM-DD 09:00:00')
+                : '',
+              main_plannedEndTime: values.main_plannedEndTime
+                ? values.main_plannedEndTime.format('YYYY-MM-DD 18:00:00')
+                : '',
+              main_fileIds: files.ischange ? JSON.stringify(files.arr) : null,
+              flowNodeName: '计划登记',
+              editState: 'add',
+              main_id: '',
+              main_status: '1',
+              main_addUserId: userinfo.userId,
+              main_addUnitId: userinfo.unitId,
+              main_addUser: userinfo.userName,
+            },
+          });
+        }
       }
     });
   };

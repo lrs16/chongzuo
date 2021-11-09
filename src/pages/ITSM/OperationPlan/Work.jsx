@@ -220,31 +220,36 @@ function Work(props) {
   const fillinSave = (params, tobatch) => {
     SaveRef.current.validateFields((err, values) => {
       if (params ? !err : true) {
-        const result = {
-          ...values,
-          main_addTime: values.main_addTime
-            ? values.main_addTime.format('YYYY-MM-DD HH:mm:ss')
-            : '',
-          main_plannedStartTime: values.main_plannedStartTime
-            ? values.main_plannedStartTime.format('YYYY-MM-DD HH:mm:ss')
-            : '',
-          main_plannedEndTime: values.main_plannedEndTime
-            ? values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss')
-            : '',
-          main_fileIds: files.ischange ? JSON.stringify(files.arr) : values.main_fileIds,
-          flowNodeName: '计划登记',
-          editState: openFlowList.editState,
-          main_status: '1',
-          main_addUserId: userinfo.userId,
-          main_addUser: userinfo.userName,
-          main_id: edit.main.id,
-          mainId,
-        };
-        saveApi(result, tobatch);
-        if (params) {
-          setUserVisible(true);
+        if ((values.main_plannedStartTime).valueOf() > (values.main_plannedEndTime).valueOf()) {
+          message.error('计划开始时间必须小于计划结束时间')
+        } else {
+          const result = {
+            ...values,
+            main_addTime: values.main_addTime
+              ? values.main_addTime.format('YYYY-MM-DD HH:mm:ss')
+              : '',
+            main_plannedStartTime: values.main_plannedStartTime
+              ? values.main_plannedStartTime.format('YYYY-MM-DD HH:mm:ss')
+              : '',
+            main_plannedEndTime: values.main_plannedEndTime
+              ? values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss')
+              : '',
+            main_fileIds: files.ischange ? JSON.stringify(files.arr) : values.main_fileIds,
+            flowNodeName: '计划登记',
+            editState: openFlowList.editState,
+            main_status: '1',
+            main_addUserId: userinfo.userId,
+            main_addUser: userinfo.userName,
+            main_id: edit.main.id,
+            mainId,
+          };
+          saveApi(result, tobatch);
+          if (params) {
+            setUserVisible(true);
+          }
         }
       }
+
       if (params && err) {
         formerr();
       }

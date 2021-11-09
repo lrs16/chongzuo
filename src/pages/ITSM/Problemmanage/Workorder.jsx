@@ -972,6 +972,7 @@ function Workorder(props) {
                     useInfo={userinfo}
                     register={register}
                     main={main}
+                    loading={loading}
                     // location={location}
                     files={
                       todoDetail.register !== undefined && todoDetail.register.registerAttachments

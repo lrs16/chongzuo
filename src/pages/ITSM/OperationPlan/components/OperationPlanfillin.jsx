@@ -55,12 +55,12 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
   );
 
   const onChange = (date, dateString) => {
-    setFieldsValue({ plannedStarTtime: moment(dateString) });
+    setFieldsValue({ main_plannedStartTime: moment(dateString) });
     startTime = dateString;
   };
 
   const endtimeonChange = (date, dateString) => {
-    setFieldsValue({ plannedEndTime: moment(dateString) });
+    setFieldsValue({ main_plannedEndTime: moment(dateString) });
     endTime = dateString;
   };
 
@@ -423,15 +423,18 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                     message: '请输入计划开始时间',
                   },
                 ],
-                initialValue: moment(main.plannedStartTime),
+                initialValue: main && main.plannedStartTime ? moment(main.plannedStartTime):moment(new Date()),
               })(
-                <DatePicker
-                  disabled={type}
-                  showTime
-                  onChange={onChange}
-                  format="YYYY-MM-DD HH:mm:ss"
-                  disabledDate={startdisabledDate}
-                />,
+                <div>
+                  <DatePicker
+                    defaultValue={main && main.plannedStartTime ? moment(main.plannedStartTime) : moment(new Date())}
+                    disabled={type}
+                    onChange={onChange}
+                    format="YYYY-MM-DD 09:00:00"
+                    allowClear={false}
+                  // disabledDate={startdisabledDate}
+                  />,
+                </div>
               )}
             </Form.Item>
           </Col>
@@ -445,15 +448,19 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                     message: '请输入计划结束时间',
                   },
                 ],
-                initialValue: moment(main.plannedEndTime),
+                initialValue: main && main.plannedEndTime ? moment(main.plannedEndTime):moment(new Date()),
               })(
-                <DatePicker
-                  disabled={type}
-                  showTime
-                  onChange={endtimeonChange}
-                  format="YYYY-MM-DD HH:mm:ss"
-                  disabledDate={enddisabledDate}
-                />,
+                <div>
+                  <DatePicker
+                   defaultValue={main && main.plannedEndTime ? moment(main.plannedEndTime) : moment(new Date())}
+                    disabled={type}
+                    onChange={endtimeonChange}
+                    allowClear={false}
+                    format="YYYY-MM-DD 18:00:00"
+                    disabledDate={enddisabledDate}
+                  />,
+                </div>
+
               )}
             </Form.Item>
           </Col>
