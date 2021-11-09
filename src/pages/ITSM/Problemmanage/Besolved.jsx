@@ -116,8 +116,8 @@ function Besolved(props) {
     },
     {
       title: '发生时间',
-      dataIndex: 'createTime',
-      key: 'createTime',
+      dataIndex: 'registerOccurTime',
+      key: 'registerOccurTime',
     },
     {
       title: '重要程度',
