@@ -110,7 +110,8 @@ const columns = [
         ['trouble', '故障'],
         ['problem', '问题'],
         ['demand', '需求'],
-        ['operation', '作业计划']
+        ['operation', '作业计划'],
+        ['work', '工作督办']
       ]);
       return typemap.get(text);
     },

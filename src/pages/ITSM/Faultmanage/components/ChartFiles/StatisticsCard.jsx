@@ -3,7 +3,7 @@ import { Card, Statistic, Row, Col, Icon } from 'antd';
 import ChartDrawer from '../ChartDrawer';
 
 function StatisticsCard(props) {
-  const { title, value, suffix, des, desval, type, staticName } = props;
+  const { title, value, suffix, des, desval, type, staticName, time1, time2 } = props;
   const [visible, setVisible] = useState(false); // 抽屉是否显示
   const [drawerval, onGetDrawerVal] = useState({});
   const hanlestaticard = val => {
@@ -22,7 +22,7 @@ function StatisticsCard(props) {
           <Col span={24}
             style={{ cursor: 'pointer' }}
             onClick={() =>
-              hanlestaticard({ value, staticName })
+              hanlestaticard({ value, staticName, time1, time2 })
             }>
             <Statistic
               value={value}

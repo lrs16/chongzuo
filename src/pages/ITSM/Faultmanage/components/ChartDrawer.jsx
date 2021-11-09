@@ -968,17 +968,22 @@ function ChartDrawer(props) {
     };
 
     const searchdata = (value, page, size) => {
+        const pointdate = value.date && Array.from(value.date).length === 2;
         switch (value.staticName) {
+            // 故障责任单位情况 饼+线
             case '故障责任单位情况':
                 dispatch({
                     type: 'fault/getfaultQueryList',
                     payload: {
                         pageNum: page,
                         pageSize: size,
-                        blame: value.type || value.name
+                        blame: value.type || value.name,
+                        addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
+                        addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
                     }
                 })
                 break;
+            // 故障责任单位情况（card）
             case '功能开发':
             case '软件运维':
             case '硬件运维':
@@ -987,20 +992,26 @@ function ChartDrawer(props) {
                     payload: {
                         pageNum: page,
                         pageSize: size,
-                        blame: value.staticName
+                        blame: value.staticName,
+                        addTimeBegin: value.time1,
+                        addTimeEnd: value.time2,
                     }
                 })
                 break;
+            // 故障工单情况（card）
             case '已处理':
                 dispatch({
                     type: 'fault/getfaultQueryList',
                     payload: {
                         pageNum: page,
                         pageSize: size,
-                        status: '255'
+                        status: '255',
+                        addTimeBegin: value.time1,
+                        addTimeEnd: value.time2,
                     }
                 })
                 break;
+            // 故障类型统计分析
             case '故障类型总情况':
             case '硬件故障情况':
             case '软件故障情况':
@@ -1009,17 +1020,22 @@ function ChartDrawer(props) {
                     payload: {
                         pageNum: page,
                         pageSize: size,
-                        type: value.type || value.name
+                        type: value.type || value.name,
+                        addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
+                        addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
                     }
                 })
                 break;
+            // 故障系统模块情况（饼+线）
             case '故障系统模块情况':
                 dispatch({
                     type: 'fault/getfaultQueryList',
                     payload: {
                         pageNum: page,
                         pageSize: size,
-                        registerModel: value.type || value.name
+                        registerModel: value.type || value.name,
+                        addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
+                        addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
                     }
                 })
                 break;
@@ -1041,7 +1057,9 @@ function ChartDrawer(props) {
                     payload: {
                         pageNum: page,
                         pageSize: size,
-                        registerUser: value.type
+                        registerUser: value.type,
+                        addTimeBegin: value.startdate,
+                        addTimeEnd: value.enddate,
                     }
                 })
                 break;
@@ -1051,7 +1069,9 @@ function ChartDrawer(props) {
                     payload: {
                         pageNum: page,
                         pageSize: size,
-                        handler: value.type
+                        handler: value.type,
+                        addTimeBegin: value.startdate,
+                        addTimeEnd: value.enddate,
                     }
                 })
                 break;
@@ -1061,7 +1081,9 @@ function ChartDrawer(props) {
                     payload: {
                         pageNum: page,
                         pageSize: size,
-                        registerUnit: value.type
+                        registerUnit: value.type,
+                        addTimeBegin: value.startdate,
+                        addTimeEnd: value.enddate,
                     }
                 })
                 break;
@@ -1071,7 +1093,9 @@ function ChartDrawer(props) {
                     payload: {
                         pageNum: page,
                         pageSize: size,
-                        handleUnit: value.type
+                        handleUnit: value.type,
+                        addTimeBegin: value.startdate,
+                        addTimeEnd: value.enddate,
                     }
                 })
                 break;

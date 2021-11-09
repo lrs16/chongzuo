@@ -65,6 +65,8 @@ function StatisticalAnalysis(props) {
       vote.type = datas[i].type;
       vote.total = datas[i].total;
       vote.expected = datas[0].total;
+      vote.startdate = datas[i].startTime;
+      vote.enddate = datas[i].endTime;
       newArr.push(vote);
     }
     newArr.sort(arrCompare("total"));
@@ -74,8 +76,8 @@ function StatisticalAnalysis(props) {
   useEffect(() => {
     if (values && values.type) {
       const val = {
-        time1: moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss'),
-        time2: moment(values.endTime).format('YYYY-MM-DD HH:mm:ss'),
+        time1: moment(values.beginTime).format('YYYY-MM-DD 00:00:00'),
+        time2: moment(values.endTime).format('YYYY-MM-DD 23:59:59'),
         type: values.type
       };
 
@@ -146,7 +148,7 @@ function StatisticalAnalysis(props) {
                 analysislist && analysislist !== undefined && (
                   <Row>
                     <Col span={8}><StatisticsCard title='故障总数：' value={analysislist.allNum} suffix='单' des='环比' desval={`${analysislist.allRingPoints}%`} type={Number(analysislist.allRingPoints) > 0 ? 'up' : 'down'} /></Col>
-                    <Col span={8}><StatisticsCard staticName="已处理" title='已处理：' value={analysislist.closeNum} suffix='单' des='环比' desval={`${analysislist.closeRingPoints}%`} type={Number(analysislist.closeRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                    <Col span={8}><StatisticsCard staticName="已处理" title='已处理：' time1={analysislist.time1} time2={analysislist.time2} value={analysislist.closeNum} suffix='单' des='环比' desval={`${analysislist.closeRingPoints}%`} type={Number(analysislist.closeRingPoints) > 0 ? 'up' : 'down'} /></Col>
                     <Col span={8}><StatisticsCard title='解决率：' value={analysislist.point} suffix='%' des='环比' desval={`${analysislist.ringPoints}%`} type={Number(analysislist.ringPoints) > 0 ? 'up' : 'down'} /></Col>
                   </Row>
                 )
@@ -177,9 +179,9 @@ function StatisticalAnalysis(props) {
               {
                 analysislist && analysislist !== undefined && (
                   <Row>
-                    <Col span={8}><StatisticsCard staticName="功能开发" title='功能开发：' value={analysislist.development} suffix='单' des='环比' desval={`${analysislist.developmentRingPoints}%`} type={Number(analysislist.developmentRingPoints) > 0 ? 'up' : 'down'} /></Col>
-                    <Col span={8}><StatisticsCard staticName="软件运维" title='软件运维：' value={analysislist.soft} suffix='单' des='环比' desval={`${analysislist.softRingPoints}%`} type={Number(analysislist.softRingPoints) > 0 ? 'up' : 'down'} /></Col>
-                    <Col span={8}><StatisticsCard staticName="硬件运维" title='硬件运维：' value={analysislist.hardware} suffix='单' des='环比' desval={`${analysislist.hardwareRingPoints}%`} type={Number(analysislist.hardwareRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                    <Col span={8}><StatisticsCard staticName="功能开发" title='功能开发：' time1={analysislist.time1} time2={analysislist.time2} value={analysislist.development} suffix='单' des='环比' desval={`${analysislist.developmentRingPoints}%`} type={Number(analysislist.developmentRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                    <Col span={8}><StatisticsCard staticName="软件运维" title='软件运维：' time1={analysislist.time1} time2={analysislist.time2} value={analysislist.soft} suffix='单' des='环比' desval={`${analysislist.softRingPoints}%`} type={Number(analysislist.softRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                    <Col span={8}><StatisticsCard staticName="硬件运维" title='硬件运维：' time1={analysislist.time1} time2={analysislist.time2} value={analysislist.hardware} suffix='单' des='环比' desval={`${analysislist.hardwareRingPoints}%`} type={Number(analysislist.hardwareRingPoints) > 0 ? 'up' : 'down'} /></Col>
                   </Row>
                 )
               }
@@ -262,6 +264,8 @@ function StatisticalAnalysis(props) {
                     data={typeconditlist.allLineChart || []}
                     height={300}
                     padding={[30, 0, 70, 60]}
+                    beginTime={moment(values.beginTime).format('YYYY-MM-DD')}
+                    endTime={moment(values.endTime).format('YYYY-MM-DD')}
                     staticName="故障类型总情况"
                     onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
                   />
@@ -298,6 +302,8 @@ function StatisticalAnalysis(props) {
                     data={typeconditlist.hardwareLineChart || []}
                     height={300}
                     padding={[30, 0, 70, 60]}
+                    beginTime={moment(values.beginTime).format('YYYY-MM-DD')}
+                    endTime={moment(values.endTime).format('YYYY-MM-DD')}
                     staticName="硬件故障情况"
                     onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
                   />
@@ -334,6 +340,8 @@ function StatisticalAnalysis(props) {
                     data={typeconditlist.softLineChart || []}
                     height={300}
                     padding={[30, 0, 70, 60]}
+                    beginTime={moment(values.beginTime).format('YYYY-MM-DD')}
+                    endTime={moment(values.endTime).format('YYYY-MM-DD')}
                     staticName="软件故障情况"
                     onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
                   />
@@ -374,6 +382,8 @@ function StatisticalAnalysis(props) {
                   data={modelconditlist.lineChart || []}
                   height={300}
                   padding={[30, 0, 70, 60]}
+                  beginTime={moment(values.beginTime).format('YYYY-MM-DD')}
+                  endTime={moment(values.endTime).format('YYYY-MM-DD')}
                   staticName="故障系统模块情况"
                   onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
                 />

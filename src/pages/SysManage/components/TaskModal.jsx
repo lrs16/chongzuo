@@ -188,14 +188,14 @@ function TaskModal(props) {
             </Col>
           </Col>
 
-          <Col span={8}>
+          <Col span={12}>
             <Form.Item label="状态">
               {getFieldDecorator('status', {
                 initialValue: status || '0',
               })(<Radio.Group
               >
-                <Radio value='0'>正常</Radio>
-                <Radio value='1'>暂停</Radio>
+                <Radio value='0'>停止</Radio>
+                <Radio value='1'>启动</Radio>
               </Radio.Group>)}
             </Form.Item>
           </Col>
