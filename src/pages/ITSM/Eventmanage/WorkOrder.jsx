@@ -597,6 +597,7 @@ function WorkOrder2(props) {
                 location={location}
                 files={edit.register.fileIds === '[]' ? [] : JSON.parse(edit.register.fileIds)}
                 selectdata={selectdata}
+                loading={loading}
               />
             </Panel>
           )}
@@ -616,6 +617,7 @@ function WorkOrder2(props) {
                 show={show}
                 selectdata={selectdata}
                 mainId={mainId}
+                loading={loading}
               />
             </Panel>
           )}
@@ -633,6 +635,7 @@ function WorkOrder2(props) {
                 }}
                 files={[]}
                 selectdata={selectdata}
+                loading={loading}
               />
             </Panel>
           )}
@@ -651,6 +654,7 @@ function WorkOrder2(props) {
                 }}
                 files={edit.check.fileIds === '[]' ? [] : JSON.parse(edit.check.fileIds)}
                 selectdata={selectdata}
+                loading={loading}
               />
             </Panel>
           )}
@@ -670,6 +674,7 @@ function WorkOrder2(props) {
                 show={show}
                 selectdata={selectdata}
                 mainId={mainId}
+                loading={loading}
               />
             </Panel>
           )}
@@ -690,6 +695,7 @@ function WorkOrder2(props) {
                 show={show}
                 selectdata={selectdata}
                 mainId={mainId}
+                loading={loading}
               />
             </Panel>
           )}
@@ -707,6 +713,7 @@ function WorkOrder2(props) {
                 }}
                 files={[]}
                 selectdata={selectdata}
+                loading={loading}
               />
             </Panel>
           )}
@@ -725,6 +732,7 @@ function WorkOrder2(props) {
                 }}
                 files={edit.finish.fileIds === '[]' ? [] : JSON.parse(edit.finish.fileIds)}
                 selectdata={selectdata}
+                loading={loading}
               />
             </Panel>
           )}

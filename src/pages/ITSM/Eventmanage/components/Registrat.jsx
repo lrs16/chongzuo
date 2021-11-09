@@ -46,6 +46,7 @@ const Registrat = forwardRef((props, ref) => {
     files,
     ChangeFiles,
     selectdata,
+    loading
   } = props;
   const { register } = info;
   const { taskName, taskId, mainId, orderNo } = location.query;
@@ -930,14 +931,16 @@ const Registrat = forwardRef((props, ref) => {
               label="上传附件"
               {...forminladeLayout}
             >
-              <div style={{ width: '50%' }}>
-                <Upload {...uploadprops}>
-                  <Button type="primary">
-                    <DownloadOutlined /> 上传附件
-                  </Button>
-                </Upload>
-                {filetype && filetype.length > 0 && (<div style={{ color: '#ccc' }}>仅能上传{filetype.join('，')}格式文件</div>)}
-              </div>
+              {!loading && (
+                <div style={{ width: '50%' }}>
+                  <Upload {...uploadprops}>
+                    <Button type="primary">
+                      <DownloadOutlined /> 上传附件
+                    </Button>
+                  </Upload>
+                  {filetype && filetype.length > 0 && (<div style={{ color: '#ccc' }}>仅能上传{filetype.join('，')}格式文件</div>)}
+                </div>
+              )}
             </Form.Item>
           </Col>
           <Col span={8}>

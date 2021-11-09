@@ -17,7 +17,7 @@ const typemaps = new Map([
 ]);
 
 const Check = forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, info, userinfo, location, files, ChangeFiles } = props;
+  const { formItemLayout, forminladeLayout, info, userinfo, location, files, ChangeFiles, loading } = props;
   const { taskName, taskId, mainId, orderNo } = location.query;
   const { check } = info;
   const { getFieldDecorator, getFieldsValue, resetFields } = props.form;
@@ -139,7 +139,9 @@ const Check = forwardRef((props, ref) => {
           // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
           >
             <div style={{ width: '50%' }}>
-              <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+              {!loading && (
+                <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+              )}
             </div>
           </Form.Item>
         </Col>

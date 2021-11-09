@@ -31,6 +31,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
     files,
     ChangeFiles,
     selectdata,
+    loading,
   } = props;
   const { taskName, taskId, mainId, check, orderNo } = location.query;
   const { finish } = info;
@@ -228,7 +229,9 @@ const ReturnVisit = React.forwardRef((props, ref) => {
               initialValue: finish && finish.fileIds && finish.fileIds !== '[]' ? finish.fileIds : '',
             })(
               <div style={{ width: '50%' }}>
-                <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                {!loading && (
+                  <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                )}
               </div>
             )}
             </Form.Item>
