@@ -146,16 +146,19 @@ function SoftwarePatrol(props) {
       title: '巡检编号',
       dataIndex: 'no',
       key: 'no',
+      width: 200,
     },
     {
       title: '巡检人',
       dataIndex: 'user',
       key: 'user',
+      width: 200,
     },
     {
       title: '巡检状态',
       dataIndex: 'status',
       key: 'status',
+      width: 200,
       render: (text, record) => (
         <span>
           <Badge status={colormap.get(record.status)} text={text} />
@@ -166,21 +169,25 @@ function SoftwarePatrol(props) {
       title: '巡检类型',
       dataIndex: 'type',
       key: 'type',
+      width: 200,
     },
     {
       title: '开始时间',
       dataIndex: 'beginTime',
       key: 'beginTime',
+      width: 250,
     },
     {
       title: '结束时间',
       dataIndex: 'endTime',
       key: 'endTime',
+      width: 250,
     },
     {
       title: '操作',
       dataIndex: 'action',
       key: 'action',
+      width: 200,
       render: (_, record) => {
         return (
           <span style={{ marginTop: 7 }}>
@@ -285,6 +292,7 @@ function SoftwarePatrol(props) {
           columns={columns}
           dataSource={softlist.rows}
           pagination={pagination}
+          scroll={{ x: 1300 }}
         />
       </Card>
     </PageHeaderWrapper>
