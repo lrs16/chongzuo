@@ -324,6 +324,7 @@ function HostPatrol(props) {
             onClick={() => createInspectionall().then(res => {
               if (res.code === 200) {
                 message.success(res.msg);
+                searchdata(1, 15);
               } else {
                 message.error(res.msg);
               }
