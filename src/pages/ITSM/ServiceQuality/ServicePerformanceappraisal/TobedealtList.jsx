@@ -115,35 +115,20 @@ function TobedealtList(props) {
         });
         break;
       case '我的服务绩效考核':
-        if (record.status === '完成') {
-          router.push({
-            pathname:
-              '/ITSM/servicequalityassessment/serviceperformanceappraisal/performancequerydetail',
-            query: {
-              assessNo: record.assessNo,
-              mainId: record.instanceId,
-              taskId: record.currentTaskId,
-              instanceId: record.instanceId,
-              taskName: record.currentTaskName,
-              orderNo: record.assessNo,
-              myOrder: true,
-              search: true,
-            },
-          });
-        } else {
-          router.push({
-            pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
-            query: {
-              assessNo: record.assessNo,
-              mainId: record.instanceId,
-              taskId: record.currentTaskId,
-              instanceId: record.instanceId,
-              taskName: record.currentTaskName,
-              orderNo: record.assessNo,
-              myOrder: true,
-            },
-          });
-        }
+        router.push({
+          pathname:
+            '/ITSM/servicequalityassessment/serviceperformanceappraisal/performancequerydetail',
+          query: {
+            assessNo: record.assessNo,
+            mainId: record.instanceId,
+            taskId: record.currentTaskId,
+            instanceId: record.instanceId,
+            taskName: record.currentTaskName,
+            orderNo: record.assessNo,
+            myOrder: true,
+            search: true,
+          },
+        });
         break;
       default:
         break;
@@ -1175,7 +1160,7 @@ function TobedealtList(props) {
         obj.render = (text, records, index) => {
           return <a onClick={() => todetail(records)}>{(paginations.current - 1) * paginations.pageSize + (index + 1)}</a>;
         }
-          // `${(paginations.current - 1) * paginations.pageSize + (index + 1)}`
+        // `${(paginations.current - 1) * paginations.pageSize + (index + 1)}`
       }
       initialColumns.push(obj);
       setColumns(initialColumns);

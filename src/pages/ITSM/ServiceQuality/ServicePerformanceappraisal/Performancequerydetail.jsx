@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Button, Collapse } from 'antd';
+import { Form, Button, Collapse, Steps } from 'antd';
 import router from 'umi/router';
 import { contractProvider } from '../services/quality';
 import { connect } from 'dva';
+import moment from 'moment';
 import BusinessAudit from './components/BusinessAudit';
 import Register from './components/Register';
 import ProviderConfirmation from './components/ProviderConfirmation';
@@ -35,6 +36,7 @@ const forminladeLayout = {
 };
 
 const { Panel } = Collapse;
+const { Step } = Steps;
 
 function Performancequerydetail(props) {
   const {
@@ -201,6 +203,50 @@ function Performancequerydetail(props) {
       onTabChange={handleTabChange}
       tabActiveKey={tabActiveKey}
     >
+
+      {
+        loading === false && hisTasks && hisTasks.length > 0 && (
+          <div className={styles.collapse}>
+            {hisTaskArr && (
+              <Steps
+                current={hisTaskArr.length - 1}
+                size="small"
+                style={{
+                  background: '#fff',
+                  padding: 24,
+                  border: '1px solid #e8e8e8',
+                  overflowX: 'auto',
+                  marginBottom: 24,
+                }}
+              >
+                {hisTaskArr &&
+                  hisTaskArr.map(
+                    ({ key, name, taskStatus, totalTime, assignee, startTime, endTime }) => [
+                      name !== '开始节点' && name !== '结束节点' && (
+                        <Step
+                          key={key}
+                          title={`${name}${'\xa0'}${'\xa0'}(${taskStatus})${'\xa0'}${'\xa0'}${totalTime ||
+                            ''}`}
+                          description={
+                            <div className={styles.stepDescription}>
+                              处理人：{assignee}
+                              <div>开始时间：{moment(startTime).format('YYYY-MM-DD HH:mm')}</div>
+                              <div>
+                                结束时间：
+                                {endTime ? moment(endTime).format('YYYY-MM-DD HH:mm') : ''}
+                              </div>
+                            </div>
+                          }
+                        />
+                      ),
+                    ],
+                  )}
+              </Steps>
+            )}
+          </div>
+
+        )
+      }
       {loading === false && taskData && taskData.hisTasks && tabActiveKey === 'workorder' && (
         <>
           {hisTasks && hisTasks.length > 0 && (
