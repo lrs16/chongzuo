@@ -75,20 +75,70 @@ const columns = [
             })
             break;
           case 'work':
-            router.push({
-              pathname: `/ITSM/supervisework/workplandetail`,
-              query: {
-                mainId: record.instanceId,
-                flowNodeName: record.nodeName,
-                status: record.itemWorkStatus,
-                checkStatus: record.itemCheckStatus,
-                Id: text,
-              },
-              state: {
-                dynamicpath: true,
-                menuDesc: '工作任务',
-              }
-            })
+            if (record.taskName === '工作登记') {
+              router.push({
+                pathname: `/ITSM/supervisework/workplandetail`,
+                query: {
+                  mainId: record.instanceId,
+                  flowNodeName: record.nodeName,
+                  status: record.itemWorkStatus,
+                  checkStatus: record.itemCheckStatus,
+                  Id: text,
+                },
+                state: {
+                  dynamicpath: true,
+                  menuDesc: '工作任务',
+                }
+              })
+            }
+            if (record.taskName === '工作执行') {
+              router.push({
+                pathname: `/ITSM/supervisework/workplandetail`,
+                query: {
+                  delay: 'delay',
+                  mainId: record.instanceId,
+                  flowNodeName: record.nodeName,
+                  status: record.itemWorkStatus,
+                  checkStatus: record.itemCheckStatus,
+                  Id: text,
+                  workUser: record.workUser
+                },
+                state: {
+                  dynamicpath: true,
+                  menuDesc: '工作执行',
+                }
+              })
+            }
+            if (record.taskName === '工作审核') {
+              router.push({
+                pathname: `/ITSM/supervisework/workplandetail`,
+                query: {
+                  // type,
+                  mainId: record.instanceId,
+                  flowNodeName: record.nodeName,
+                  status: record.itemWorkStatus,
+                  checkStatus: record.itemCheckStatus,
+                  Id: text,
+                },
+                state: {
+                  dynamicpath: true,
+                  menuDesc: '工作审核',
+                }
+              })
+            }
+            if (record.taskName === '工作查询') {
+              router.push({
+                pathname: `/ITSM/supervisework/queryworkdetails`,
+                query: {
+                  mainId: record.instanceId,
+                  Id: text,
+                },
+                state: {
+                  dynamicpath: true,
+                  menuDesc: '工作查询',
+                }
+              })
+            }
             break;
           case 'quality':
             if(record.itemWorkStatus === '绩效考核已完成') {
