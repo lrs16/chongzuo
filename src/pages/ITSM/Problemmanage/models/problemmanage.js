@@ -125,6 +125,7 @@ export default {
 
     //  待办保存
     *tobeSave({ payload }, { call }) {
+      console.log('payload: ', payload);
       return yield call(saveRegister, payload);
     },
 

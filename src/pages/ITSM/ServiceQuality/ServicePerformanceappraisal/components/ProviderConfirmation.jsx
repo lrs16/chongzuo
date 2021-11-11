@@ -25,7 +25,10 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
     selectPersonstate,
     files,
     ChangeFiles,
+    search
   } = props;
+
+  console.log(search,'search')
 
   const [showContent, setShowContent] = useState('1');
   const [fileslist, setFilesList] = useState([]);
@@ -74,7 +77,7 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
                 initialValue: providerConfirmation.isAppeal || '1'
               })
                 (
-                  <Radio.Group disabled={noEdit} onChange={handleChange}>
+                  <Radio.Group disabled={search || noEdit} onChange={handleChange}>
                     <Radio value='1'>
                       是
                     </Radio>
@@ -103,7 +106,7 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
                     initialValue: providerConfirmation.appealContent
                   })
                     (<TextArea
-                      disabled={noEdit}
+                      disabled={search || noEdit}
                       autoSize={{ minRows: 3 }}
                       placeholder='请输入申诉内容'
                     />)
@@ -122,7 +125,7 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
                     initialValue: providerConfirmation.appealContent
                   })
                     (<TextArea
-                      disabled={noEdit}
+                      disabled={search || noEdit}
                       autoSize={{ minRows: 3 }}
                       placeholder='请输入申诉内容'
                     />)
@@ -134,7 +137,7 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
         }
 
         {
-          !noEdit && (
+          !search && (
             <Col span={24}>
               <Form.Item label='上传附件'  {...forminladeLayout}>
                 {
@@ -155,7 +158,7 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
           )
         }
 
-        {noEdit && (
+        {search && (
           <Col span={24}>
             <Form.Item label="附件" {...forminladeLayout}>
               {providerConfirmation.annex && <Downloadfile files={providerConfirmation.annex} />}
@@ -167,15 +170,9 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
           <Form.Item label='确认人'>
             {
               getFieldDecorator('confirmer', {
-                rules: [
-                  {
-                    required,
-                    message: '请输入确认人'
-                  }
-                ],
                 initialValue: providerConfirmation.confirmerName || userinfo.userName
               })
-                (<Input disabled={true} />)
+                (<Input disabled />)
             }
 
           </Form.Item>
@@ -207,7 +204,7 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
                     showTime
                     // defaultValue={moment(providerConfirmation.confirmTime || new Date())}
                     format='YYYY-MM-DD HH:mm'
-                    disabled={true}
+                    disabled='true'
                     onChange={onChange}
                   />
                 )

@@ -287,35 +287,42 @@ function Workorder(props) {
   //  问题登记
   const saveRegister = params2 => {
     RegistratRef.current.validateFields((err, values) => {
-      if (!err) {
-        return dispatch({
-          type: 'problemmanage/tobeSave',
-          payload: {
-            ...values,
-            registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-            registerOccurTime: values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
-            registerExpectTime: values.registerExpectTime.format('YYYY-MM-DD HH:mm:ss'),
-            taskId: id,
-            type: values.type.toString(),
-            editState: todoDetail.editState === 'edit' ? 'edit' : 'add',
-            registerId:
+      if (params2 ? !err:true) {
+        if(params2 ? values.complainUser : true) {
+          return dispatch({
+            type: 'problemmanage/tobeSave',
+            payload: {
+              ...values,
+              registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+              registerOccurTime: values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
+              registerExpectTime: values.registerExpectTime.format('YYYY-MM-DD HH:mm:ss'),
+              taskId: id,
+              type: values.type.toString(),
+              editState: todoDetail.editState === 'edit' ? 'edit' : 'add',
+              registerId:
               todoDetail.editState === 'edit' ? todoDetail.register.id : todoDetail.editGuid,
-            registerAttachments: files.ischange ? JSON.stringify(files.arr) : null,
-            developmentLead: values.developmentLead.toString(),
-          },
-        }).then(res => {
-          if (res.code === 200) {
-            setFiles({ ...files, ischange: false });
-            getInformation();
-            if (params2) {
-              setUserVisible(true);
+              registerAttachments: files.ischange ? JSON.stringify(files.arr) : null,
+              developmentLead: values && values.developmentLead ? (values.developmentLead).toString() : undefined,
+            },
+          }).then(res => {
+            if (res.code === 200) {
+              setFiles({ ...files, ischange: false });
+              getInformation();
+              if (params2) {
+                setUserVisible(true);
+              } else {
+                message.success(res.msg);
+              }
             } else {
-              message.success(res.msg);
+              message.error(res.msg);
             }
-          } else {
-            message.error(res.msg);
-          }
-        });
+          });
+        }
+
+        if(params2 && !values.complainUser) {
+          message.error('请通过问题申报人下拉值形式选择问题申报人')
+        }
+    
       }
 
       if (params2 && uservisible === false) {

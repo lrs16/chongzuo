@@ -1,6 +1,6 @@
 import React, { useEffect, useState, createContext, useRef } from 'react';
 import router from 'umi/router';
-import { Form, Button, Card,message } from 'antd';
+import { Form, Button, Card, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
 import Registrat from './components/Registrat';
@@ -58,28 +58,21 @@ function Registration(props) {
 
   //  点击保存触发事件
   const handlesubmit = () => {
-    RegistratRef.current.validateFields((err, values) => {
-      if(!err) {
-        if(values.complainUser){
-          dispatch({
-            type: 'problemmanage/getAddid',
-            payload: {
-              ...values,
-              registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-              registerOccurTime: values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
-              registerExpectTime: values.registerExpectTime.format('YYYY-MM-DD HH:mm:ss'),
-              registerAttachments: files.ischange ? JSON.stringify(files.arr) : null,
-              importance: Number(values.importance) ? values.importance : '001',
-              type: (values.type).toString(),
-              developmentLead:(values.developmentLead).toString(),
-              editState: 'add'
-            },
-          });
-        } else {
-          message.error('请通过问题申报人下拉值形式选择问题申报人')
-        }
-      }
- 
+    const values = RegistratRef.current.getFieldsValue()
+    console.log('values: ', values);
+    dispatch({
+      type: 'problemmanage/getAddid',
+      payload: {
+        ...values,
+        registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+        registerOccurTime: values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
+        registerExpectTime: values.registerExpectTime.format('YYYY-MM-DD HH:mm:ss'),
+        registerAttachments: files.ischange ? JSON.stringify(files.arr) : null,
+        importance: Number(values.importance) ? values.importance : '001',
+        type: (values.type).toString(),
+        developmentLead: values && values.developmentLead ? (values.developmentLead).toString() : undefined,
+        editState: 'add'
+      },
     });
   };
 

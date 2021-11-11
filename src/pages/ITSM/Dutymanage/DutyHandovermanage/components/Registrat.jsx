@@ -407,7 +407,7 @@ const Registrat = forwardRef((props, ref) => {
             <Col span={24}>
               <Form.Item label="上传附件" {...forminladeLayout}>
                 {getFieldDecorator('attachment', {
-                  initialValue: formrecord.attachment,
+                  initialValue: formrecord.attachment || [],
                 })(
                   <div style={{ width: 400 }}>
                     <SysUpload

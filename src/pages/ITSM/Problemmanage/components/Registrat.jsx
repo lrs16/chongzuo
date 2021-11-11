@@ -145,7 +145,7 @@ const Registrat = React.forwardRef((props, ref) => {
   };
 
   const handlobjectChange = value => {
-    setFieldsValue({ type: value?.slice(-1)[0] }, () => {});
+    setFieldsValue({ type: value?.slice(-1)[0] }, () => { });
   };
 
   const getTypebyTitle = title => {
@@ -224,6 +224,7 @@ const Registrat = React.forwardRef((props, ref) => {
                 initialValue: register.complainUser,
               })(
                 <AutoComplete
+                  getPopupContainer={e => e.parentNode}
                   dataSource={disableduser}
                   dropdownMatchSelectWidth={false}
                   dropdownStyle={{ width: 600 }}
@@ -258,7 +259,7 @@ const Registrat = React.forwardRef((props, ref) => {
                 ],
                 initialValue: main.source,
               })(
-                <Select placeholder="请选择">
+                <Select placeholder="请选择" getPopupContainer={e => e.parentNode}>
                   {(source || []).map(obj => [
                     <Option key={obj.key} value={obj.dict_code}>
                       {obj.title}
@@ -302,7 +303,7 @@ const Registrat = React.forwardRef((props, ref) => {
                 ],
                 initialValue: main.importance ? main.importance : '一般',
               })(
-                <Select placeholder="请选择">
+                <Select placeholder="请选择" getPopupContainer={e => e.parentNode}>
                   {(priority || []).map(obj => [
                     <Option key={obj.title} value={obj.dict_code}>
                       {obj.title}
@@ -322,7 +323,7 @@ const Registrat = React.forwardRef((props, ref) => {
                     message: '请选择期望完成时间',
                   },
                 ],
-                initialValue:  (register && register.registerExpectTime) ? moment(register.registerExpectTime):moment(new Date()),
+                initialValue: (register && register.registerExpectTime) ? moment(register.registerExpectTime) : moment(new Date()),
               })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
             </Form.Item>
           </Col>
@@ -332,7 +333,7 @@ const Registrat = React.forwardRef((props, ref) => {
               {getFieldDecorator('registerProject', {
                 initialValue: register.registerProject,
               })(
-                <Select placeholder="请选择">
+                <Select placeholder="请选择" getPopupContainer={e => e.parentNode}>
                   {(project || []).map(obj => [
                     <Option key={obj.key} value={obj.dict_code}>
                       {obj.title}
@@ -354,7 +355,7 @@ const Registrat = React.forwardRef((props, ref) => {
                 ],
                 initialValue: register.registerScope,
               })(
-                <Select placeholder="请选择">
+                <Select placeholder="请选择" getPopupContainer={e => e.parentNode}>
                   {(scope || []).map(obj => [
                     <Option key={obj.key} value={obj.dict_code}>
                       {obj.title}
@@ -392,7 +393,7 @@ const Registrat = React.forwardRef((props, ref) => {
                   initialValue:
                     (register.developmentLead && register.developmentLead.split(',')) || undefined,
                 })(
-                  <Select placeholder="请选择" mode="multiple">
+                  <Select placeholder="请选择" mode="multiple" getPopupContainer={e => e.parentNode}>
                     {persondata.map(obj => [
                       <Option key={obj.key} value={obj.val}>
                         {obj.val}
@@ -416,6 +417,7 @@ const Registrat = React.forwardRef((props, ref) => {
                 initialValue: main.title,
               })(
                 <AutoComplete
+                  getPopupContainer={e => e.parentNode}
                   dataSource={titleautodata}
                   onSearch={value => handleSearch(value, 'title')}
                 >
@@ -437,6 +439,7 @@ const Registrat = React.forwardRef((props, ref) => {
                 initialValue: main.content,
               })(
                 <AutoComplete
+                  getPopupContainer={e => e.parentNode}
                   dataSource={desautodata}
                   onSearch={value => handleSearch(value, 'des')}
                 >

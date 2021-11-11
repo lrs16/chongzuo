@@ -28,7 +28,7 @@ const { Option } = Select;
 
 const Register = forwardRef((props, ref) => {
   const {
-    form: { getFieldDecorator, setFieldsValue,getFieldsValue,resetFields },
+    form: { getFieldDecorator, setFieldsValue, getFieldsValue, resetFields },
     formItemLayout,
     forminladeLayout,
     userinfo,
@@ -45,6 +45,7 @@ const Register = forwardRef((props, ref) => {
     ChangeFiles,
     noEdit,
     tabdata,
+    search,
     loading,
   } = props;
 
@@ -294,8 +295,8 @@ const Register = forwardRef((props, ref) => {
     }
   };
 
- // 自动完成责任人
-   const directoruser = directorlist.map(opt => (
+  // 自动完成责任人
+  const directoruser = directorlist.map(opt => (
     <Option key={opt.id} value={opt.id} disableuser={opt}>
       <div className={styles.disableuser}>
         <span>{opt.userName}</span>
@@ -311,14 +312,14 @@ const Register = forwardRef((props, ref) => {
   };
 
   useEffect(() => {
-    searchUsers({ userName:(tabdata && tabdata.directorName) || ''}).then(res => {
+    searchUsers({ userName: (tabdata && tabdata.directorName) || '' }).then(res => {
       if (res) {
         const arr = [...res.data];
         setDirectorlist(arr);
       }
     });
   }, [tabdata]);
-  
+
   // const onChange = (date, dateString) => {
   //   setFieldsValue({ assessTime: moment(dateString) })
   // }
@@ -355,7 +356,7 @@ const Register = forwardRef((props, ref) => {
               initialValue: moment(register.assessTime),
             })(
               <DatePicker
-                disabled={noEdit}
+                disabled={search || noEdit}
                 showTime
                 format="YYYY-MM-DD HH:mm"
               />
@@ -386,7 +387,7 @@ const Register = forwardRef((props, ref) => {
             })(
               <AutoComplete
                 getPopupContainer={e => e.parentNode}
-                disabled={noEdit}
+                disabled={search || noEdit}
                 dataSource={disableduser}
                 dropdownMatchSelectWidth={false}
                 dropdownStyle={{ width: 600 }}
@@ -429,7 +430,7 @@ const Register = forwardRef((props, ref) => {
             })(
               <Select
                 getPopupContainer={e => e.parentNode}
-                disabled={noEdit}
+                disabled={search || noEdit}
                 placeholder="请选择"
                 dropdownMatchSelectWidth={false}
                 dropdownStyle={{ width: 600 }}
@@ -470,7 +471,7 @@ const Register = forwardRef((props, ref) => {
             })(
               <AutoComplete
                 getPopupContainer={e => e.parentNode}
-                disabled={noEdit}
+                disabled={search || noEdit}
                 dataSource={directoruser}
                 dropdownMatchSelectWidth={false}
                 dropdownStyle={{ width: 600 }}
@@ -516,7 +517,7 @@ const Register = forwardRef((props, ref) => {
             })(
               <AutoComplete
                 getPopupContainer={e => e.parentNode}
-                disabled={noEdit}
+                disabled={search || noEdit}
                 dataSource={scorenameList}
                 dropdownMatchSelectWidth={false}
                 dropdownStyle={{ width: 600 }}
@@ -561,7 +562,7 @@ const Register = forwardRef((props, ref) => {
             })(
               <Select
                 placeholder="请选择"
-                disabled={noEdit}
+                disabled={search || noEdit}
                 getPopupContainer={e => e.parentNode}
               >
                 {(assessmentObject || []).map(obj => [
@@ -586,7 +587,7 @@ const Register = forwardRef((props, ref) => {
               initialValue: register.assessContent,
             })(
               <TextArea
-                disabled={noEdit}
+                disabled={search || noEdit}
                 autoSize={{ minRows: 3 }}
                 placeholder="请控制字数在500字以内"
                 maxLength="500"
@@ -608,7 +609,7 @@ const Register = forwardRef((props, ref) => {
             })(
               <Select
                 getPopupContainer={e => e.parentNode}
-                disabled={noEdit}
+                disabled={search || noEdit}
                 onChange={(value, option) => handleChange(value, option, 'target1Name')}
                 onFocus={() => handleFocus('one')}
                 placeholder="请选择"
@@ -643,7 +644,7 @@ const Register = forwardRef((props, ref) => {
               initialValue: register.target2Name,
             })(
               <Select
-                disabled={noEdit}
+                disabled={search || noEdit}
                 onChange={(value, option) => handleChange(value, option, 'target2Name')}
                 onFocus={() => handleFocus('two')}
                 placeholder="请选择"
@@ -681,7 +682,7 @@ const Register = forwardRef((props, ref) => {
                 })(
                   <Select
                     getPopupContainer={e => e.parentNode}
-                    disabled={noEdit}
+                    disabled={search || noEdit}
                     onChange={(value, option) => handleChange(value, option, 'clause')}
                     onFocus={() => handleFocus('clause')}
                   >
@@ -735,7 +736,7 @@ const Register = forwardRef((props, ref) => {
                 },
               ],
               initialValue: register.assessValue,
-            })(<Input disabled={noEdit} type="number" />)}
+            })(<Input disabled={search || noEdit} type="number" />)}
           </Form.Item>
         </Col>
 
@@ -776,7 +777,7 @@ const Register = forwardRef((props, ref) => {
           <Form.Item label="登记人">
             {getFieldDecorator('registerName', {
               initialValue: register.registerName || userinfo.userName,
-            })(<Input disabled={noEdit} />)}
+            })(<Input disabled  />)}
           </Form.Item>
         </Col>
 
@@ -784,7 +785,7 @@ const Register = forwardRef((props, ref) => {
           <Form.Item label="登记人">
             {getFieldDecorator('register', {
               initialValue: register.register || userinfo.userauthorityid,
-            })(<Input disabled={noEdit} />)}
+            })(<Input disabled={search || noEdit} />)}
           </Form.Item>
         </Col>
 

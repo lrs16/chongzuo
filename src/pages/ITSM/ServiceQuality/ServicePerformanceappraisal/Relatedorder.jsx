@@ -171,24 +171,20 @@ function RelevancyOrder(props) {
           </Col>
 
 
-          {
-            (
-              <Col span={8}>
-                <Button type="primary" style={{ marginLeft: 16 }} onClick={() => handleSearch()} >本页查询</Button>
-                <Button style={{ marginLeft: 16 }} onClick={() => setSearchRow(undefined)} >重 置</Button>
+          <Col span={8}>
+            <Button type="primary" style={{ marginLeft: 16 }} onClick={() => handleSearch()} >本页查询</Button>
+            <Button style={{ marginLeft: 16 }} onClick={() => setSearchRow(undefined)} >重 置</Button>
 
-                {relation && !search && (
-                  <Button
-                    type="primary"
-                    style={{ marginLeft: 8 }}
-                    onClick={() => { setVisible(true); setTitle('故障'); }}
-                  >
-                    关联工单
-                  </Button>
-                )}
-              </Col>
-            )
-          }
+            {relation && !search && (
+              <Button
+                type="primary"
+                style={{ marginLeft: 8 }}
+                onClick={() => { setVisible(true); setTitle('故障'); }}
+              >
+                关联工单
+              </Button>
+            )}
+          </Col>
 
         </Row>
       )}

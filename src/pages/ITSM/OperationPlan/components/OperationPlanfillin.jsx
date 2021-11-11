@@ -205,7 +205,11 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                 ],
                 initialValue: main.type,
               })(
-                <Select placeholder="请选择" allowClear disabled={type}>
+                <Select
+                  placeholder="请选择"
+                  disabled={type}
+                  getPopupContainer={e => e.parentNode}
+                >
                   {taskType.map(obj => [
                     <Option key={obj.key} value={obj.dict_code}>
                       {obj.title}
@@ -227,7 +231,11 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                 ],
                 initialValue: main.nature,
               })(
-                <Select placeholder="请选择" allowClear disabled={type}>
+                <Select
+                  placeholder="请选择"
+                  disabled={type}
+                  getPopupContainer={e => e.parentNode}
+                >
                   {taskNature.map(obj => [
                     <Option key={obj.key} value={obj.dict_code}>
                       {obj.title}
@@ -249,7 +257,11 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                 ],
                 initialValue: main.operationUnit,
               })(
-                <Select placeholder="请选择" allowClear disabled={type}>
+                <Select
+                  placeholder="请选择"
+                  disabled={type}
+                  getPopupContainer={e => e.parentNode}
+                >
                   {taskCompany.map(obj => [
                     <Option key={obj.key} value={obj.dict_code}>
                       {obj.title}
@@ -272,7 +284,11 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                   ],
                   initialValue: main.operationUser,
                 })(
-                  <Select onChange={selectOnchange} disabled={type}>
+                  <Select
+                    onChange={selectOnchange}
+                    disabled={type}
+                    getPopupContainer={e => e.parentNode}
+                  >
                     {operationPersonSelect.map(obj => [
                       <Option key={obj.key} value={obj.value}>
                         {obj.value}
@@ -423,16 +439,16 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                     message: '请输入计划开始时间',
                   },
                 ],
-                initialValue: main && main.plannedStartTime ? moment(main.plannedStartTime):moment(new Date()),
+                initialValue: main && main.plannedStartTime ? moment(main.plannedStartTime) : moment(new Date(moment(new Date()).format('YYYY-MM-DD 09:00:00'))),
               })(
                 <div>
                   <DatePicker
-                    defaultValue={main && main.plannedStartTime ? moment(main.plannedStartTime) : moment(new Date())}
+                    defaultValue={main && main.plannedStartTime ? moment(main.plannedStartTime) : moment(new Date(moment(new Date()).format('YYYY-MM-DD 09:00:00')))}
                     disabled={type}
                     onChange={onChange}
-                    format="YYYY-MM-DD 09:00:00"
+                    format="YYYY-MM-DD HH:mm:ss"
                     allowClear={false}
-                  // disabledDate={startdisabledDate}
+                    showTime
                   />,
                 </div>
               )}
@@ -448,16 +464,17 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                     message: '请输入计划结束时间',
                   },
                 ],
-                initialValue: main && main.plannedEndTime ? moment(main.plannedEndTime):moment(new Date()),
+                initialValue: main && main.plannedEndTime ? moment(main.plannedEndTime) : moment(new Date(moment(new Date()).format('YYYY-MM-DD 18:00:00'))),
               })(
                 <div>
                   <DatePicker
-                   defaultValue={main && main.plannedEndTime ? moment(main.plannedEndTime) : moment(new Date())}
+                    defaultValue={main && main.plannedEndTime ? moment(main.plannedEndTime) : moment(new Date(moment(new Date()).format('YYYY-MM-DD 18:00:00')))}
                     disabled={type}
                     onChange={endtimeonChange}
                     allowClear={false}
-                    format="YYYY-MM-DD 18:00:00"
-                    disabledDate={enddisabledDate}
+                    format="YYYY-MM-DD HH:mm:ss"
+                    showTime
+                  // disabledDate={enddisabledDate}
                   />,
                 </div>
 

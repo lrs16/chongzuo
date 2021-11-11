@@ -141,34 +141,18 @@ const columns = [
             }
             break;
           case 'quality':
-            if(record.itemWorkStatus === '绩效考核已完成') {
-              router.push({
-                pathname:'/ITSM/servicequalityassessment/serviceperformanceappraisal/performancequerydetail',
-                query: {
-                  assessNo: record.itemWorkId,
-                  mainId: record.instanceId,
-                  taskId: record.taskId,
-                  instanceId: record.instanceId,
-                  taskName: record.nodeName,
-                  orderNo: record.itemWorkId,
-                  search: true,
-                },
-              });
-            } else {
-              router.push({
-                pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform`,
-                query: {
-                  assessNo: record.itemWorkId,
-                  mainId: record.instanceId,
-                  taskId: record.taskId,
-                  instanceId: record.instanceId,
-                  taskName: record.nodeName,
-                  orderNo: record.itemWorkId,
-                  tobelist: true,
-                },
-              })
-            }
-          
+            router.push({
+              pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
+              query: {
+                assessNo: record.itemWorkId,
+                mainId: record.instanceId,
+                taskId: record.taskId,
+                instanceId: record.instanceId,
+                taskName: record.nodeName,
+                orderNo: record.itemWorkId,
+                search: record.itemWorkStatus === '绩效考核已完成',
+              },
+            });
             break;
           default:
             break;

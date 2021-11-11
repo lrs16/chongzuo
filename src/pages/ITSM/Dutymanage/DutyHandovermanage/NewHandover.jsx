@@ -11,6 +11,7 @@ import {
   Popconfirm,
   message,
   Form,
+  Spin
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Reasonregression from '../../Problemmanage/components/Reasonregression';
@@ -60,10 +61,10 @@ function NewHandover(props) {
   }
 
   useEffect(() => {
-    if(location.state && location.state.reset && id) {
+    if (location.state && location.state.reset && id) {
       formDetail()
     }
-  },[location.state])
+  }, [location.state])
 
   const handlelogbookTransfer = () => {
     return dispatch({
@@ -140,8 +141,8 @@ function NewHandover(props) {
             registerTime: moment(values.registerTime).format('YYYY-MM-DD HH:mm:ss'),
             handoverTime: moment(values.handoverTime).format('YYYY-MM-DD HH:mm:ss'),
             receiveTime: '',
-            attachment: files.ischange ? JSON.stringify(files.arr) : '',
-            handoverItems:values.handoverItems ? values.handoverItems.toString():''
+            attachment: JSON.stringify(files.arr),
+            handoverItems: values.handoverItems ? values.handoverItems.toString() : ''
           }
         }).then(res => {
           if (res.code === 200) {
@@ -181,7 +182,7 @@ function NewHandover(props) {
   }, [files])
 
   const handleclose = () => { // 返回
-    switch(pagetitle) {
+    switch (pagetitle) {
       case '新增值班交接':
       case '编辑值班交接':
         router.push({
@@ -276,9 +277,9 @@ function NewHandover(props) {
       ContentRef.current.resetVal();
     }
   }, [tabnew]);
-  
-   // 点击页签右键刷新
-   useEffect(() => {
+
+  // 点击页签右键刷新
+  useEffect(() => {
     if (location.state) {
       if (location.state.reset) {
         ContentRef.current.resetVal();
@@ -298,10 +299,10 @@ function NewHandover(props) {
               ...values,
               handoverTime: values.handoverTime.format('YYYY-MM-DD HH:mm:ss'),
               receiveTime: values.receiveTime.format('YYYY-MM-DD HH:mm:ss'),
-              dutyBeginTime:  values.dutyBeginTime ? values.dutyBeginTime.format('YYYY-MM-DD HH:mm:ss'):'',
-              dutyEndTime: values.dutyEndTime ? values.dutyEndTime.format('YYYY-MM-DD HH:mm:ss'):'',
+              dutyBeginTime: values.dutyBeginTime ? values.dutyBeginTime.format('YYYY-MM-DD HH:mm:ss') : '',
+              dutyEndTime: values.dutyEndTime ? values.dutyEndTime.format('YYYY-MM-DD HH:mm:ss') : '',
               registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-              handoverItems:values.handoverItems ? (values.handoverItems.toString()):''
+              handoverItems: values.handoverItems ? (values.handoverItems.toString()) : ''
             },
             tabid: sessionStorage.getItem('tabid')
           },
@@ -439,89 +440,95 @@ function NewHandover(props) {
       {
         id && (logbookIddetail && logbookIddetail.handoverStatus === '未交接' || logbookIddetail.handoverStatus === '已退回') && (
           <Button
-              type="primary"
-              style={{ marginRight: 8 }}
-              onClick={() => logbookTransfer()}
-            >
-              确认交班
-            </Button>
+            type="primary"
+            style={{ marginRight: 8 }}
+            onClick={() => logbookTransfer()}
+          >
+            确认交班
+          </Button>
         )
       }
 
       {
         id && logbookIddetail.handoverStatus === '待接班' && type === 'listButton' && (
           <Popconfirm
-          title='接班后不可回退，确认是否接班？'
-          onConfirm={() => logbookReceive()}
-        >
-        <Button
-            type="primary"
-            style={{ marginRight: 8 }}
-            // onClick={() => logbookReceive()}
+            title='接班后不可回退，确认是否接班？'
+            onConfirm={() => logbookReceive()}
           >
-            确认接班
-          </Button>
-        </Popconfirm>
+            <Button
+              type="primary"
+              style={{ marginRight: 8 }}
+            // onClick={() => logbookReceive()}
+            >
+              确认接班
+            </Button>
+          </Popconfirm>
         )
       }
       <Button onClick={handleclose}>返回</Button>
     </>
   )
 
+
   return (
-    <PageHeaderWrapper title={pagetitle} extra={extrabutton}>
-      {
-       !id && (
-          <Registrat
-            forminladeLayout={forminladeLayout}
-            files={(logbookIddetail && logbookIddetail.attachment) ? JSON.parse(logbookIddetail.attachment) : []}
-            wrappedComponentRef={ContentRef}
-            currentUserarr={currentUserarr}
-            formrecord={id ? logbookIddetail : (tabdata || {})}
-            statue={((logbookIddetail && logbookIddetail.handoverStatus === '待接班' && !addtab) || type === 'search')}
-            shiftinfo={shift}
-            successioninfo={succession}
-            shiftNameinfo={shiftName}
-            ChangeFiles={newvalue => {
-              setFiles(newvalue);
-            }}
-            type={type}
-          />
-        )
-      }
+    <Spin spinning={loading}>
+      <PageHeaderWrapper title={pagetitle} extra={extrabutton}>
+        {
+          !id && (
+            <Registrat
+              forminladeLayout={forminladeLayout}
+              files={[]}
+              wrappedComponentRef={ContentRef}
+              currentUserarr={currentUserarr}
+              formrecord={id ? logbookIddetail : (tabdata || {})}
+              statue={((logbookIddetail && logbookIddetail.handoverStatus === '待接班' && !addtab) || type === 'search')}
+              shiftinfo={shift}
+              successioninfo={succession}
+              shiftNameinfo={shiftName}
+              ChangeFiles={newvalue => {
+                setFiles(newvalue);
+              }}
+              type={type}
+            />
+          )
+        }
 
-      {
-        id && loading === false && (
-          <Registrat
-          forminladeLayout={forminladeLayout}
-          files={(logbookIddetail && logbookIddetail.attachment) ? JSON.parse(logbookIddetail.attachment) : []}
-          wrappedComponentRef={ContentRef}
-          currentUserarr={currentUserarr}
-          formrecord={id ? logbookIddetail : (tabdata || {})}
-          statue={((logbookIddetail && logbookIddetail.handoverStatus === '待接班' && !addtab) || type === 'search')}
-          shiftinfo={shift}
-          successioninfo={succession}
-          shiftNameinfo={shiftName}
-          ChangeFiles={newvalue => {
-            setFiles(newvalue);
-          }}
-          type={type}
+        {
+          id && loading === false && (
+            <Registrat
+              forminladeLayout={forminladeLayout}
+              files={(logbookIddetail && logbookIddetail.attachment) ? JSON.parse(logbookIddetail.attachment) : []}
+              wrappedComponentRef={ContentRef}
+              currentUserarr={currentUserarr}
+              formrecord={id ? logbookIddetail : (tabdata || {})}
+              statue={((logbookIddetail && logbookIddetail.handoverStatus === '待接班' && !addtab) || type === 'search')}
+              shiftinfo={shift}
+              successioninfo={succession}
+              shiftNameinfo={shiftName}
+              ChangeFiles={newvalue => {
+                setFiles(newvalue);
+              }}
+              type={type}
+            />
+          )
+        }
+
+        <Reasonregression
+          title="填写回退意见"
+          visible={modalrollback}
+          ChangeVisible={v => setModalRollBack(v)}
+          rollbackSubmit={v => reasonSubmit(v)}
         />
-        )
-      }
 
-      <Reasonregression
-        title="填写回退意见"
-        visible={modalrollback}
-        ChangeVisible={v => setModalRollBack(v)}
-        rollbackSubmit={v => reasonSubmit(v)}
-      />
-    </PageHeaderWrapper>
+
+      </PageHeaderWrapper>
+    </Spin>
+
   );
 }
 
 export default Form.create({})(
-  connect(({ shifthandover, dutyandtypesetting, shiftsandholidays,viewcache,loading }) => ({
+  connect(({ shifthandover, dutyandtypesetting,shiftsandholidays, viewcache, loading }) => ({
     currentUserarr: shifthandover.currentUserarr,
     searchUsersarr: dutyandtypesetting.searchUsersarr,
     shiftSearcharr: shiftsandholidays.shiftSearcharr,
@@ -529,6 +536,6 @@ export default Form.create({})(
     logbookIddetail: shifthandover.logbookIddetail,
     tabnew: viewcache.tabnew,
     tabdata: viewcache.tabdata,
-    loading: loading.models.shifthandover
+    loading: loading.models.shifthandover,
   }))(NewHandover),
 );

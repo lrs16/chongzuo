@@ -14,6 +14,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
     selectPersonstate,
     userinfo,
     noEdit,
+    search
   } = props;
 
   const [showContent, setShowContent] = useState('1');
@@ -56,7 +57,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
               ],
               initialValue: businessAudit.verifyValue || '1',
             })(
-              <Radio.Group disabled={noEdit} onChange={handleChange}>
+              <Radio.Group disabled={search || noEdit} onChange={handleChange}>
                 <Radio value="1">通过</Radio>
                 <Radio value="0">不通过</Radio>
               </Radio.Group>,
@@ -69,7 +70,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
             <Form.Item label="审核说明" {...forminladeLayout}>
               {getFieldDecorator('verifyContent', {
                 initialValue: businessAudit.verifyContent || businessAudit.reviewContent,
-              })(<TextArea disabled={noEdit} autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+              })(<TextArea disabled={search || noEdit} autoSize={{ minRows: 3 }} placeholder="请输入" />)}
             </Form.Item>
           </Col>
         )}
@@ -87,7 +88,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
                 initialValue: businessAudit.verifyContent || businessAudit.reviewContent,
               })(
                 <TextArea
-                  disabled={noEdit}
+                  disabled={search || noEdit}
                   autoSize={{ minRows: 3 }}
                   placeholder="请输入"
                 />,

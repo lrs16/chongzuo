@@ -102,7 +102,7 @@ function TobedealtList(props) {
       case '服务绩效考核查询':
         router.push({
           pathname:
-            '/ITSM/servicequalityassessment/serviceperformanceappraisal/performancequerydetail',
+            '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
           query: {
             assessNo: record.assessNo,
             mainId: record.instanceId,
@@ -117,7 +117,7 @@ function TobedealtList(props) {
       case '我的服务绩效考核':
         router.push({
           pathname:
-            '/ITSM/servicequalityassessment/serviceperformanceappraisal/performancequerydetail',
+            '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
           query: {
             assessNo: record.assessNo,
             mainId: record.instanceId,
