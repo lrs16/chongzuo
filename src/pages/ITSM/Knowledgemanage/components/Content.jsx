@@ -1,6 +1,6 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import moment from 'moment';
-import { Row, Col, Form, Input, Select } from 'antd';
+import { Row, Col, Form, Input, Select, message } from 'antd';
 import RichTextEditor from '@/components/RichTextEditor';
 import SysUpload from '@/components/SysUpload/Upload';
 import DictLower from '@/components/SysDict/DictLower';
@@ -30,9 +30,11 @@ const forItemLayout = {
 const Content = forwardRef((props, ref) => {
   const {
     formrecord, isedit, Noediting,
-    form: { getFieldDecorator, getFieldsValue, resetFields, setFieldsValue }
+    form: { getFieldDecorator, getFieldsValue, resetFields, setFieldsValue, validateFields }
   } = props;
   const [selectdata, setSelectData] = useState('');
+  const [banOpenFileDialog, setBanOpenFileDialog] = useState(true);
+
   const required = true;
 
   useImperativeHandle(ref, () => ({
@@ -126,8 +128,20 @@ const Content = forwardRef((props, ref) => {
               <Col span={2} style={{ paddingTop: 4, textAlign: 'right' }}>上传附件：</Col>
               <Col span={22} >
                 {!Noediting && (
-                  <div style={{ width: 400, paddingLeft: 12, float: 'left' }}>
-                    <SysUpload />
+                  <div
+                    style={{ width: '50%', paddingLeft: 12, float: 'left' }}
+                    onMouseDown={() => {
+                      setBanOpenFileDialog(true);
+                      validateFields((err) => {
+                        if (err) {
+                          message.error('请将信息填写完整');
+                        } else {
+                          setBanOpenFileDialog(false)
+                        }
+                      })
+                    }}
+                  >
+                    <SysUpload banOpenFileDialog={banOpenFileDialog} />
                   </div>
                 )}
                 {formrecord.fileIds !== '' && Noediting && <Downloadfile files={formrecord.fileIds} />}

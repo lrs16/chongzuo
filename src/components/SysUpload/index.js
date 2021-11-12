@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { connect } from 'dva';
 import { Upload, Button, message } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import { getFileSecuritySuffix } from '@/services/upload';
+import UploadContext from '@/layouts/MenuContext';
 
 function SysUpload(props) {
-  const { dispatch, fileslist, ChangeFileslist } = props;
+  const { dispatch, fileslist, ChangeFileslist, banOpenFileDialog } = props;
   const [uploadfiles, setUploadFiles] = useState([]);
   const [filetype, setFileType] = useState('');
   const [showIcon, setShowIcon] = useState(true);
+  const { getUploadStatus } = useContext(UploadContext);
 
   useEffect(() => {
     let doCancel = false;
@@ -58,13 +60,15 @@ function SysUpload(props) {
     headers: {
       Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
     },
-    showUploadList: { showDownloadIcon: showIcon, showRemoveIcon: showIcon },
+    showUploadList: { showDownloadIcon: showIcon, showRemoveIcon: true },
     defaultFileList: fileslist,
     multiple: true,
+    openFileDialogOnClick: !banOpenFileDialog,
 
     beforeUpload(file) {
       return new Promise((resolve, reject) => {
         setShowIcon(false);
+        if (getUploadStatus) { getUploadStatus(true) };
         const type = file.name.lastIndexOf('.');
         const filesuffix = file.name.substring(type + 1, file.name.length);
         const correctfiletype = filetype.indexOf(filesuffix);
@@ -100,6 +104,7 @@ function SysUpload(props) {
         setUploadFiles([...newarr]);
         ChangeFileslist({ arr: newarr, ischange: true });
         setShowIcon(true);
+        if (getUploadStatus) { getUploadStatus(false) };
       }
     },
     onPreview(file) {
@@ -113,14 +118,20 @@ function SysUpload(props) {
     onRemove(file) {
       // 删除记录,更新父级fileslist
       const newfilelist = fileslist.filter(item => item.uid !== file.uid);
-      ChangeFileslist({ arr: newfilelist, ischange: true });
-      // 删除文件
-      dispatch({
-        type: 'sysfile/deletefile',
-        payload: {
-          id: file.uid,
-        },
-      });
+      if (file && !file.lastModified) {
+        ChangeFileslist({ arr: newfilelist, ischange: true });
+        // 删除文件
+        dispatch({
+          type: 'sysfile/deletefile',
+          payload: {
+            id: file.uid,
+          },
+        });
+      } else {
+        message.success('已中止文件上传');
+        setShowIcon(true);
+        if (getUploadStatus) { getUploadStatus(false) };
+      }
     },
   };
 

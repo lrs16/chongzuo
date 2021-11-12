@@ -14,6 +14,8 @@ function New(props) {
   const [choiceUser, setChoiceUser] = useState({ users: '', ischange: false });
   const [userlist, setUserList] = useState([]);
   const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
+  const [fileslist, setFileslist] = useState([]);
+  const [uploadStatus, setUploadStatus] = useState(false);
   const ContentRef = useRef(null);
 
   const handleClick = (buttype) => {
@@ -24,7 +26,7 @@ function New(props) {
         dispatch({
           type: 'knowledg/add',
           payload: {
-            payvalue: { ...values },
+            payvalue: { ...values, fileIds: fileslist && fileslist.length ? JSON.stringify(fileslist) : null },
             buttype,
             userId: choiceUser.users,
             menuDes,
@@ -60,12 +62,13 @@ function New(props) {
   const ChangeFiles = (v) => {
     ContentRef.current.Forms((err, values) => {
       if (err) {
-        message.error('请将信息填写完整')
+        message.error('请将信息填写完整');
+        setFileslist(v)
       } else {
         dispatch({
           type: 'knowledg/add',
           payload: {
-            payvalue: { ...values, fileIds: v.length ? JSON.stringify(v) : null },
+            payvalue: { ...values, fileIds: v.length ? JSON.stringify(v) : JSON.stringify(fileslist) },
             buttype: 'save',
           },
         });
@@ -111,6 +114,7 @@ function New(props) {
         type="primary"
         style={{ marginRight: 8 }}
         onClick={() => handleClick('save')}
+        disabled={uploadStatus}
       >
         保存
       </Button>
@@ -118,6 +122,7 @@ function New(props) {
         type="primary"
         style={{ marginRight: 8 }}
         onClick={() => { handleSubmit() }}
+        disabled={uploadStatus}
       >
         提交
       </Button>
@@ -126,6 +131,7 @@ function New(props) {
         type="primary"
         style={{ marginRight: 8 }}
         onClick={() => { handleClick('release') }}
+        disabled={uploadStatus}
       >
         发布
       </Button>
@@ -141,6 +147,7 @@ function New(props) {
           editable: true,
           files: [],
           ChangeFiles,
+          getUploadStatus: (v) => { setUploadStatus(v) },
         }}>
           <Content
             wrappedComponentRef={ContentRef}

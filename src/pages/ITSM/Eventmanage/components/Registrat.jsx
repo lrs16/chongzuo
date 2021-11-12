@@ -46,7 +46,8 @@ const Registrat = forwardRef((props, ref) => {
     files,
     ChangeFiles,
     selectdata,
-    loading
+    loading,
+    getUploadStatus,
   } = props;
   const { register } = info;
   const { taskName, taskId, mainId, orderNo } = location.query;
@@ -70,6 +71,8 @@ const Registrat = forwardRef((props, ref) => {
   const [unitopen, setUnitopen] = useState(false);
   const [deptopen, setDeptopen] = useState(false);
   const [showIcon, setShowIcon] = useState(true);
+  const [banOpenFileDialog, setBanOpenFileDialog] = useState(true);
+  const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     if (files && files.length > 0) {
@@ -413,25 +416,25 @@ const Registrat = forwardRef((props, ref) => {
     headers: {
       Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
     },
-    showUploadList: { showDownloadIcon: showIcon, showRemoveIcon: showIcon },
+    showUploadList: { showDownloadIcon: showIcon, showRemoveIcon: true },
     defaultFileList: files,
     multiple: true,
+    openFileDialogOnClick: !banOpenFileDialog,
+
     beforeUpload(file) {
       return new Promise((resolve, reject) => {
         setShowIcon(false);
-        const objval = getFieldsValue(['main_eventObject']);
-        if (objval.main_eventObject && objval.main_eventObject.length > 0) {
-          const type = file.name.lastIndexOf('.');
-          const filesuffix = file.name.substring(type + 1, file.name.length);
-          const correctfiletype = filetype.indexOf(filesuffix);
-          if (correctfiletype === -1) {
-            message.error(`${file.name}文件不符合上传规则,禁止上传...`);
-            return reject();
-          }
-          return resolve(file);
+        getUploadStatus(true);
+        const type = file.name.lastIndexOf('.');
+        const filesuffix = file.name.substring(type + 1, file.name.length);
+        const correctfiletype = filetype.indexOf(filesuffix);
+        if (correctfiletype === -1) {
+          message.error(`${file.name}文件不符合上传规则,禁止上传...`);
+          return reject();
         }
-        message.error('请先选择事件对象')
-      });
+        return resolve(file);
+      }
+      );
     },
 
     onChange({ file, fileList }) {
@@ -451,6 +454,7 @@ const Registrat = forwardRef((props, ref) => {
         setFilesList([...newarr]);
         ChangeFiles({ arr: [...newarr], ischange: true });
         setShowIcon(true);
+        getUploadStatus(false);
       }
     },
     onPreview(filesinfo) {
@@ -464,13 +468,18 @@ const Registrat = forwardRef((props, ref) => {
     },
     onRemove(filesinfo) {
       const newfilelist = fileslist.filter(item => item.uid !== filesinfo.uid);
-
       // 删除文件
-      FileDelete(filesinfo.uid).then(res => {
-        if (res.code === 200) {
-          ChangeFiles({ arr: newfilelist, ischange: true });
-        }
-      });
+      if (filesinfo && !filesinfo.lastModified) {
+        FileDelete(filesinfo.uid).then(res => {
+          if (res.code === 200) {
+            ChangeFiles({ arr: newfilelist, ischange: true });
+          }
+        });
+      } else {
+        message.success('已中止文件上传');
+        setShowIcon(true);
+        getUploadStatus(false);
+      }
     },
   };
 
@@ -915,7 +924,18 @@ const Registrat = forwardRef((props, ref) => {
                 {getFieldDecorator('register_selfhandle', {
                   valuePropName: 'checked',
                   initialValue: Boolean(Number(register.selfhandle)),
-                })(<Checkbox onClick={handleself} />)}
+                })(<Checkbox
+                  checked={Boolean(Number(register.selfhandle)) || checked}
+                  onClick={() => {
+                    validateFields((err, val) => {
+                      if (!err) {
+                        handleself()
+                      } else {
+                        message.error('请先将登记信息填写完整')
+                      }
+                    })
+                  }}
+                />)}
               </Form.Item>
             </Col>
           )}
@@ -934,16 +954,26 @@ const Registrat = forwardRef((props, ref) => {
               label="上传附件"
               {...forminladeLayout}
             >
-              {!loading && (
-                <div style={{ width: '50%' }}>
-                  <Upload {...uploadprops}>
-                    <Button type="primary">
-                      <DownloadOutlined /> 上传附件
-                    </Button>
-                  </Upload>
-                  {filetype && filetype.length > 0 && (<div style={{ color: '#ccc' }}>仅能上传{filetype.join('，')}格式文件</div>)}
-                </div>
-              )}
+              <div
+                style={{ width: '50%' }}
+                onMouseDown={() => {
+                  setBanOpenFileDialog(true);
+                  validateFields(['main_eventObject'], err => {
+                    if (err) {
+                      message.error('请先选择事件对象');
+                    } else {
+                      setBanOpenFileDialog(false)
+                    }
+                  })
+                }}
+              >
+                <Upload {...uploadprops}>
+                  <Button type="primary">
+                    <DownloadOutlined /> 上传附件
+                  </Button>
+                </Upload>
+                {filetype && filetype.length > 0 && (<div style={{ color: '#ccc' }}>仅能上传{filetype.join('，')}格式文件</div>)}
+              </div>
             </Form.Item>
           </Col>
           <Col span={8}>

@@ -204,17 +204,11 @@ function WorkOrder2(props) {
       register_mobilePhone: values.main_revisitWay === '002' ? values.mobilePhone1 : values.mobilePhone2,
       register_applicationUnit: values.applicationUnit,
       register_applicationUnitId: values.applicationUnit === '' ? '' : values.register_applicationUnitId,
-      register_applicationDept:
-        values.applicationDept !== ''
-          ? values.register_applicationDept
-          : values.register_applicationUnit,
-      register_applicationDeptId:
-        values.applicationDept !== ''
-          ? values.register_applicationDeptId
-          : values.register_applicationUnitId,
+      register_applicationDept: values.applicationDept ? values.register_applicationDept : values.register_applicationUnit,
+      register_applicationDeptId: values.applicationDept ? values.register_applicationDeptId : values.register_applicationUnitId,
       register_selfhandle: String(Number(values.register_selfhandle)),
       register_supplement: String(Number(values.register_supplement)),
-      register_fileIds: JSON.stringify(registratfiles.arr),
+      register_fileIds: (registratfiles.arr && registratfiles.arr.length) ? JSON.stringify(registratfiles.arr) : null,
     });
     if (type === 'save') {
       noverification();

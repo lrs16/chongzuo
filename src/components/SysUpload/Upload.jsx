@@ -6,10 +6,10 @@ import { getFileSecuritySuffix } from '@/services/upload';
 import UploadContext from '@/layouts/MenuContext';
 
 function SysUpload(props) {
-  const { dispatch, filelist } = props;
+  const { dispatch, filelist, banOpenFileDialog } = props;
   const [filetype, setFileType] = useState('');
   const [showIcon, setShowIcon] = useState(true);
-  const { files, ChangeFiles } = useContext(UploadContext);
+  const { files, ChangeFiles, getUploadStatus } = useContext(UploadContext);
 
   // 不允许上传类型
   useEffect(() => {
@@ -48,14 +48,16 @@ function SysUpload(props) {
     headers: {
       Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
     },
-    showUploadList: { showDownloadIcon: showIcon, showRemoveIcon: showIcon },
+    showUploadList: { showDownloadIcon: showIcon, showRemoveIcon: true },
     defaultFileList: filelist || files,
     // fileList: filelist || files,
     multiple: true,
+    openFileDialogOnClick: !banOpenFileDialog,
 
     beforeUpload(file) {
       return new Promise((resolve, reject) => {
         setShowIcon(false);
+        if (getUploadStatus) { getUploadStatus(true) };
         const type = file.name.lastIndexOf('.');
         const filesuffix = file.name.substring(type + 1, file.name.length);
         const correctfiletype = filetype.indexOf(filesuffix);
@@ -75,21 +77,16 @@ function SysUpload(props) {
         const newarr = [];
         for (let i = 0; i < arr.length; i += 1) {
           const vote = {};
-          vote.uid =
-            arr[i]?.response?.data[0]?.id !== undefined
-              ? arr[i]?.response?.data[0]?.id
-              : arr[i].uid;
+          vote.uid = arr[i]?.response?.data[0]?.id ? arr[i]?.response?.data[0]?.id : arr[i].uid;
           vote.name = arr[i].name;
-          vote.nowtime =
-            arr[i]?.response?.data[0]?.createTime !== undefined
-              ? arr[i]?.response?.data[0]?.createTime
-              : arr[i].createTime;
+          vote.nowtime = arr[i]?.response?.data[0]?.createTime ? arr[i]?.response?.data[0]?.createTime : arr[i].createTime;
           vote.fileUrl = '';
           vote.status = arr[i].status;
           newarr.push(vote);
         }
         ChangeFiles(newarr);
         setShowIcon(true);
+        if (getUploadStatus) { getUploadStatus(false) };
       }
     },
     onPreview(file) {
@@ -103,14 +100,20 @@ function SysUpload(props) {
     onRemove(file) {
       // 删除记录,更新父级fileslist
       const newfilelist = (filelist || files).filter(item => file.response ? item.uid !== file.response.data[0].id : item.uid !== file.uid);
-      ChangeFiles(newfilelist);
-      // 删除文件
-      dispatch({
-        type: 'sysfile/deletefile',
-        payload: {
-          id: file.uid,
-        },
-      });
+      if (file && !file.lastModified) {
+        ChangeFiles(newfilelist);
+        // 删除文件
+        dispatch({
+          type: 'sysfile/deletefile',
+          payload: {
+            id: file.uid,
+          },
+        });
+      } else {
+        message.success('已中止文件上传');
+        setShowIcon(true);
+        if (getUploadStatus) { getUploadStatus(false) };
+      }
     },
   };
 

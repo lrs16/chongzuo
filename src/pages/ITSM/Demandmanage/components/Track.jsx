@@ -259,10 +259,14 @@ function Track(props) {
     beforeUpload(file) {
       return new Promise((resolve, reject) => {
         setShowIcon(false);
+        const target = getRowByKey(uploadkey) || {};
         const type = file.name.lastIndexOf('.');
         const filesuffix = file.name.substring(type + 1, file.name.length);
         const correctfiletype = filetype.indexOf(filesuffix);
-        if (correctfiletype === -1) {
+        if (!target.developSchedule || !target.trackDirections) {
+          message.error('请填写完整信息。');
+          return reject();
+        } if (correctfiletype === -1) {
           message.error(`${file.name}文件不符合上传规则,禁止上传...`);
           return reject();
         }
@@ -279,10 +283,7 @@ function Track(props) {
         const newarr = [];
         for (let i = 0; i < arr.length; i += 1) {
           const vote = {};
-          vote.uid =
-            arr[i]?.response?.data[0]?.id !== undefined
-              ? arr[i]?.response?.data[0]?.id
-              : arr[i].uid;
+          vote.uid = arr[i]?.response?.data[0]?.id !== undefined ? arr[i]?.response?.data[0]?.id : arr[i].uid;
           vote.name = arr[i].name;
           vote.fileUrl = '';
           vote.status = arr[i].status;
@@ -309,19 +310,25 @@ function Track(props) {
     },
     onRemove(info) {
       // 删除记录，并保存信息
-      const newfilelist = fileslist.filter(item => item.uid !== info.uid);
-      const target = getRowByKey(uploadkey) || {};
-      target.attachment = JSON.stringify(newfilelist);
-      delete target.isNew;
-      target.editable = false;
-      savedata(target, target.id);
-      // 删除文件
-      dispatch({
-        type: 'sysfile/deletefile',
-        payload: {
-          id: info.uid,
-        },
-      });
+      return new Promise((resolve, reject) => {
+        const target = getRowByKey(uploadkey) || {};
+        if (!target.developSchedule || !target.trackDirections) {
+          message.error('请填写完整信息。');
+          return reject();
+        }
+        const newfilelist = fileslist.filter(item => item.uid !== info.uid);
+        target.attachment = JSON.stringify(newfilelist);
+        delete target.isNew;
+        target.editable = false;
+        // 删除文件
+        dispatch({
+          type: 'sysfile/deletefile',
+          payload: {
+            id: info.uid,
+          },
+        });
+        savedata(target, target.id);
+      })
     },
   };
 
@@ -519,10 +526,10 @@ function Track(props) {
               onFocus={() => 0}
             >
               <a onClick={e => saveRow(e, record.key)}>保存</a>
-              <Divider type="vertical" />
+              {/* <Divider type="vertical" />
               <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
                 <a>删除</a>
-              </Popconfirm>
+              </Popconfirm> */}
             </span>
           );
         }

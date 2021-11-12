@@ -4,6 +4,7 @@ import moment from 'moment';
 import router from 'umi/router';
 import { Button, Collapse, message, Spin } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import HadleContext from '@/layouts/MenuContext';
 // import SelectUser from '@/components/SelectUser';
 import SysDict from '@/components/SysDict';
 import styles from './index.less';
@@ -48,6 +49,8 @@ function Registration(props) {
   const [registratfiles, setRegistratFiles] = useState({ arr: [], ischange: false }); // 登记上传
   const [handlefiles, setHandleFiles] = useState({ arr: [], ischange: false }); // 处理上传
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
+  const [uploadStatus, setUploadStatus] = useState(false);
+  const [handleUploadStatus, setHandleUploadStatus] = useState(false);
   const RegistratRef = useRef(null);
   const HandleRef = useRef(null);
 
@@ -84,14 +87,8 @@ function Registration(props) {
       register_applicationUnit: values.applicationUnit,
       register_applicationUnitId: values.applicationUnit === '' ? '' : values.register_applicationUnitId,
       register_mobilePhone: values.main_revisitWay === '002' ? values.mobilePhone1 : values.mobilePhone2,
-      register_applicationDept:
-        values.register_applicationDept !== ''
-          ? values.register_applicationDept
-          : values.register_applicationUnit,
-      register_applicationDeptId:
-        values.register_applicationDeptId !== ''
-          ? values.register_applicationDeptId
-          : values.register_applicationUnitId,
+      register_applicationDept: values.register_applicationDept ? values.register_applicationDept : values.register_applicationUnit,
+      register_applicationDeptId: values.register_applicationDeptId ? values.register_applicationDeptId : values.register_applicationUnitId,
       register_fileIds: JSON.stringify(registratfiles.arr),
       register_selfhandle: String(Number(values.register_selfhandle)),
       register_supplement: String(Number(values.register_supplement)),
@@ -122,14 +119,8 @@ function Registration(props) {
         register_applicationUnit: values.applicationUnit,
         register_applicationUnitId: values.applicationUnit === '' ? '' : values.register_applicationUnitId,
         register_mobilePhone: values.main_revisitWay === '002' ? values.mobilePhone1 : values.mobilePhone2,
-        register_applicationDept:
-          values.register_applicationDept !== ''
-            ? values.register_applicationDept
-            : values.register_applicationUnit,
-        register_applicationDeptId:
-          values.register_applicationDeptId !== ''
-            ? values.register_applicationDeptId
-            : values.register_applicationUnitId,
+        register_applicationDept: values.register_applicationDept ? values.register_applicationDept : values.register_applicationUnit,
+        register_applicationDeptId: values.register_applicationDeptId ? values.register_applicationDeptId : values.register_applicationUnitId,
         register_fileIds: JSON.stringify(registratfiles.arr),
         register_selfhandle: String(Number(values.register_selfhandle)),
         register_supplement: String(Number(values.register_supplement)),
@@ -198,7 +189,7 @@ function Registration(props) {
 
   // 登记上传附件触发保存
   useEffect(() => {
-    if (registratfiles.ischange) {
+    if (registratfiles.ischange && !handleUploadStatus) {
       handlesubmit();
     }
   }, [registratfiles]);
@@ -211,7 +202,7 @@ function Registration(props) {
 
   // 自行处理上传附件触发保存
   useEffect(() => {
-    if (handlefiles.ischange) {
+    if (handlefiles.ischange && !uploadStatus) {
       handlesubmit();
     }
   }, [handlefiles]);
@@ -321,11 +312,11 @@ function Registration(props) {
 
   const operations = (
     <>
-      {!loading && (<Button type="primary" style={{ marginRight: 8 }} onClick={handlesubmit}>
-        保 存
+      {!loading && (<Button type="primary" style={{ marginRight: 8 }} onClick={handlesubmit} disabled={uploadStatus || handleUploadStatus}>
+        保存
       </Button>)}
       <Button type="default" onClick={() => handleclose()}>
-        关 闭
+        关闭
       </Button>
     </>
   );
@@ -339,51 +330,56 @@ function Registration(props) {
       />
       <Spin tip="正在提交数据..." spinning={!!loading}>
         <div className={styles.collapse}>
-          <Collapse
-            expandIconPosition="right"
-            // defaultActiveKey={['1']}
-            activeKey={activeKey}
-            bordered={false}
-            onChange={callback}
-          >
-            <Panel header="事件登记" key="registratform">
-              <Registrat
-                ChangeShow={isshow => setShow(isshow)}
-                ChangeCheck={checked => setCheck(checked)}
-                ChangeActiveKey={keys => setActiveKey(keys)}
-                changeDefaultvalue={values => setDefaultvalue(values)}
-                ChangeFiles={newvalue => { setRegistratFiles(newvalue) }}
-                formItemLayout={formItemLayout}
-                forminladeLayout={forminladeLayout}
-                show={show}
-                wrappedComponentRef={RegistratRef}
-                userinfo={userinfo}
-                location={location}
-                files={registratfiles.arr}
-                selectdata={selectdata}
-                info={tabdata !== undefined ? { register: tabdata.register } : undefined}
-                main={tabdata !== undefined ? tabdata.main : undefined}
-              />
-            </Panel>
-            {show && check === false && (
-              <Panel header="事件处理" key="handleform">
-                <Handle
+          <HadleContext.Provider value={{
+            getUploadStatus: (v) => { setHandleUploadStatus(v) },
+          }}>
+            <Collapse
+              expandIconPosition="right"
+              // defaultActiveKey={['1']}
+              activeKey={activeKey}
+              bordered={false}
+              onChange={callback}
+            >
+              <Panel header="事件登记" key="registratform">
+                <Registrat
+                  ChangeShow={isshow => setShow(isshow)}
+                  ChangeCheck={checked => setCheck(checked)}
+                  ChangeActiveKey={keys => setActiveKey(keys)}
+                  changeDefaultvalue={values => setDefaultvalue(values)}
+                  ChangeFiles={newvalue => { setRegistratFiles(newvalue) }}
+                  getUploadStatus={v => { setUploadStatus(v) }}
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
-                  wrappedComponentRef={HandleRef}
-                  userinfo={userinfo}
-                  defaultvalue={defaultvalue}
-                  location={location}
-                  ChangeFiles={newvalue => { setHandleFiles(newvalue) }}
                   show={show}
+                  wrappedComponentRef={RegistratRef}
+                  userinfo={userinfo}
+                  location={location}
+                  files={registratfiles.arr}
                   selectdata={selectdata}
-                  files={[]}
-                  info={(tabdata === undefined || tabdata.handle === undefined) ? undefined : { handle: tabdata.handle }}
-                  main={(tabdata === undefined || tabdata.handlemain === undefined) ? undefined : tabdata.handlemain}
+                  info={tabdata !== undefined ? { register: tabdata.register } : undefined}
+                  main={tabdata !== undefined ? tabdata.main : undefined}
                 />
               </Panel>
-            )}
-          </Collapse>
+              {show && check === false && (
+                <Panel header="事件处理" key="handleform">
+                  <Handle
+                    formItemLayout={formItemLayout}
+                    forminladeLayout={forminladeLayout}
+                    wrappedComponentRef={HandleRef}
+                    userinfo={userinfo}
+                    defaultvalue={defaultvalue}
+                    location={location}
+                    ChangeFiles={newvalue => { setHandleFiles(newvalue) }}
+                    show={show}
+                    selectdata={selectdata}
+                    files={[]}
+                    info={(tabdata === undefined || tabdata.handle === undefined) ? undefined : { handle: tabdata.handle }}
+                    main={(tabdata === undefined || tabdata.handlemain === undefined) ? undefined : tabdata.handlemain}
+                  />
+                </Panel>
+              )}
+            </Collapse>
+          </HadleContext.Provider>
         </div>
       </Spin>
     </PageHeaderWrapper>
