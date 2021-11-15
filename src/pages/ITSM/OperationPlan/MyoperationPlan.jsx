@@ -149,6 +149,34 @@ function MyoperationPlan(props) {
       },
     },
     {
+      title: '风险分析',
+      dataIndex: 'riskAnalysis',
+      key: 'riskAnalysis',
+      width: 150,
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '风险应对措施',
+      dataIndex: 'riskMeasures',
+      key: 'riskMeasures',
+      width: 150,
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
       title: '超时状态',
       dataIndex: 'timeoutStatus',
       key: 'timeoutStatus',
@@ -624,6 +652,7 @@ function MyoperationPlan(props) {
         if (res.code === 200) {
           message.success(res.msg);
           getTobolist();
+          setSelectedRows([])
         } else {
           message.info(res.msg);
           getTobolist();
@@ -668,7 +697,9 @@ function MyoperationPlan(props) {
         val.title === '回退信息' ||
         val.title === '审核说明' ||
         val.title === '作业执行情况说明' ||
-        val.title === '作业内容'
+        val.title === '作业内容' || 
+        val.title === '风险分析' || 
+        val.title === '风险应对措施'
       ) {
         obj.ellipsis = true;
         obj.render = (text, records) => {

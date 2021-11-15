@@ -43,7 +43,6 @@ export default {
         } else {
           const response = yield call(logbookSave,payload);
           if(response.code === 200) {
-            console.log(11)
             router.push({
               pathname:'/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/newhandover',
               query:{
@@ -60,7 +59,7 @@ export default {
                 },
                 state: {
                   dynamicpath: true,
-                  menuDesc: '编辑值班交接',
+                  menuDesc: '值班交接',
                 },
             })
           }

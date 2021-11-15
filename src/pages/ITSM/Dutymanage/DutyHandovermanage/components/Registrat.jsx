@@ -44,7 +44,7 @@ const Registrat = forwardRef((props, ref) => {
   });
 
   const required = true;
-  
+
   useEffect(() => {
     ChangeFiles(fileslist);
   }, [fileslist]);
@@ -504,6 +504,12 @@ const Registrat = forwardRef((props, ref) => {
           <Col span={8}>
             <Form.Item label="接班班次">
               {getFieldDecorator('heirShiftName', {
+                rules: [
+                  {
+                    required,
+                    message: '请选择接班班次',
+                  },
+                ],
                 initialValue: formrecord.heirShiftName,
               })(
                 <Select
@@ -541,6 +547,12 @@ const Registrat = forwardRef((props, ref) => {
           <Col span={24}>
             <Form.Item label="交接物品" {...forminladeLayout}>
               {getFieldDecorator('handoverItems', {
+                    rules: [
+                      {
+                        required,
+                        message: '请选择交接物品',
+                      },
+                    ],
                 initialValue: formrecord.handoverItems && (formrecord.handoverItems).split(',') || undefined,
               })(
                 <Select
@@ -562,6 +574,12 @@ const Registrat = forwardRef((props, ref) => {
           <Col span={24}>
             <Form.Item label="需注意事项" {...forminladeLayout}>
               {getFieldDecorator('attention', {
+                   rules: [
+                    {
+                      required,
+                      message: '请输入需注意事项',
+                    },
+                  ],
                 initialValue: formrecord.attention,
               })(<TextArea disabled={statue} rows={4} />)}
             </Form.Item>

@@ -182,7 +182,7 @@ function MydutyHandover(props) {
       },
       state: {
         dynamicpath: true,
-        menuDesc: '我的交接班详情',
+        menuDesc: '值班交接',
       }
     })
   }

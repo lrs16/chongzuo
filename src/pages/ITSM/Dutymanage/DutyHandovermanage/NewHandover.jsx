@@ -120,51 +120,54 @@ function NewHandover(props) {
   }
 
   const handleSave = (params) => { // 保存
-    const values = ContentRef.current.getVal();
-    if ((values.dutyBeginTime && !values.dutyEndTime)) {
-      message.error('请选择完整时间')
-    }
-    ContentRef.current.Forms((err) => {
-      if (!err) {
-        if (values.dutyBeginTime.valueOf() > values.dutyEndTime.valueOf()) {
-          message.error('开始时间必须小于结束时间');
-          return false
+    const value = ContentRef.current.getVal();
+    const saveValues = (values,param) => {
+      return dispatch({
+        type: 'shifthandover/fetchlogbookSave',
+        payload: {
+          id,
+          ...values,
+          dutyBeginTime: values.dutyBeginTime ? moment(values.dutyBeginTime).format('YYYY-MM-DD HH:mm:ss'):'',
+          dutyEndTime: values.dutyEndTime ? moment(values.dutyEndTime).format('YYYY-MM-DD HH:mm:ss'):'',
+          registerTime: moment(values.registerTime).format('YYYY-MM-DD HH:mm:ss'),
+          handoverTime: moment(values.handoverTime).format('YYYY-MM-DD HH:mm:ss'),
+          receiveTime: '',
+          attachment: JSON.stringify(files.arr),
+          handoverItems: values.handoverItems ? values.handoverItems.toString() : ''
         }
+      }).then(res => {
+        if (res.code === 200) {
+          switch (param) {
+            case 'logbookTransfer':
+              handlelogbookTransfer();
+              break;
+            case 'logbookReceive':
+              handlelogbookReceive();
+              break;
+            case undefined:
+              formDetail();
+              break;
+            default:
+              break;
+          }
+          message.success(res.msg)
+        }
+      })
+    }
 
-        return dispatch({
-          type: 'shifthandover/fetchlogbookSave',
-          payload: {
-            id,
-            ...values,
-            dutyBeginTime: moment(values.dutyBeginTime).format('YYYY-MM-DD HH:mm:ss'),
-            dutyEndTime: moment(values.dutyEndTime).format('YYYY-MM-DD HH:mm:ss'),
-            registerTime: moment(values.registerTime).format('YYYY-MM-DD HH:mm:ss'),
-            handoverTime: moment(values.handoverTime).format('YYYY-MM-DD HH:mm:ss'),
-            receiveTime: '',
-            attachment: JSON.stringify(files.arr),
-            handoverItems: values.handoverItems ? values.handoverItems.toString() : ''
-          }
-        }).then(res => {
-          if (res.code === 200) {
-            switch (params) {
-              case 'logbookTransfer':
-                handlelogbookTransfer();
-                break;
-              case 'logbookReceive':
-                handlelogbookReceive();
-                break;
-              case undefined:
-                formDetail();
-                break;
-              default:
-                break;
-            }
-            message.success(res.msg)
-          }
-        })
-      }
-      return []
-    })
+    if (params) {
+      ContentRef.current.Forms((err) => {
+        if (!err) {
+          saveValues(value,params)
+        }
+        if(err) {
+          message.error('请将信息填写完整...');
+        }
+        return []
+      })
+    } else {
+      saveValues(value,params)
+    }
   }
 
   const logbookTransfer = () => {
@@ -528,7 +531,7 @@ function NewHandover(props) {
 }
 
 export default Form.create({})(
-  connect(({ shifthandover, dutyandtypesetting,shiftsandholidays, viewcache, loading }) => ({
+  connect(({ shifthandover, dutyandtypesetting, shiftsandholidays, viewcache, loading }) => ({
     currentUserarr: shifthandover.currentUserarr,
     searchUsersarr: dutyandtypesetting.searchUsersarr,
     shiftSearcharr: shiftsandholidays.shiftSearcharr,
