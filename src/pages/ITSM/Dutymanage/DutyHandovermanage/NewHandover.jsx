@@ -121,14 +121,14 @@ function NewHandover(props) {
 
   const handleSave = (params) => { // 保存
     const value = ContentRef.current.getVal();
-    const saveValues = (values,param) => {
+    const saveValues = (values, param) => {
       return dispatch({
         type: 'shifthandover/fetchlogbookSave',
         payload: {
           id,
           ...values,
-          dutyBeginTime: values.dutyBeginTime ? moment(values.dutyBeginTime).format('YYYY-MM-DD HH:mm:ss'):'',
-          dutyEndTime: values.dutyEndTime ? moment(values.dutyEndTime).format('YYYY-MM-DD HH:mm:ss'):'',
+          dutyBeginTime: values.dutyBeginTime ? moment(values.dutyBeginTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          dutyEndTime: values.dutyEndTime ? moment(values.dutyEndTime).format('YYYY-MM-DD HH:mm:ss') : '',
           registerTime: moment(values.registerTime).format('YYYY-MM-DD HH:mm:ss'),
           handoverTime: moment(values.handoverTime).format('YYYY-MM-DD HH:mm:ss'),
           receiveTime: '',
@@ -158,15 +158,15 @@ function NewHandover(props) {
     if (params) {
       ContentRef.current.Forms((err) => {
         if (!err) {
-          saveValues(value,params)
+          saveValues(value, params)
         }
-        if(err) {
+        if (err) {
           message.error('请将信息填写完整...');
         }
         return []
       })
     } else {
-      saveValues(value,params)
+      saveValues(value, params)
     }
   }
 
@@ -429,7 +429,7 @@ function NewHandover(props) {
       }
 
       {
-        type !== 'search' && (
+        !type && (
           <Button
             type="primary"
             style={{ marginRight: 8 }}
@@ -472,7 +472,6 @@ function NewHandover(props) {
     </>
   )
 
-
   return (
     <Spin spinning={loading}>
       <PageHeaderWrapper title={pagetitle} extra={extrabutton}>
@@ -480,6 +479,7 @@ function NewHandover(props) {
           !id && (
             <Registrat
               forminladeLayout={forminladeLayout}
+              loading={loading}
               files={[]}
               wrappedComponentRef={ContentRef}
               currentUserarr={currentUserarr}
@@ -500,6 +500,7 @@ function NewHandover(props) {
           id && loading === false && (
             <Registrat
               forminladeLayout={forminladeLayout}
+              loading={loading}
               files={(logbookIddetail && logbookIddetail.attachment) ? JSON.parse(logbookIddetail.attachment) : []}
               wrappedComponentRef={ContentRef}
               currentUserarr={currentUserarr}
@@ -522,8 +523,6 @@ function NewHandover(props) {
           ChangeVisible={v => setModalRollBack(v)}
           rollbackSubmit={v => reasonSubmit(v)}
         />
-
-
       </PageHeaderWrapper>
     </Spin>
 

@@ -32,6 +32,7 @@ const Registrat = forwardRef((props, ref) => {
     files,
     ChangeFiles,
     type,
+    loading
   } = props;
 
   const [fileslist, setFilesList] = useState([]);
@@ -403,7 +404,7 @@ const Registrat = forwardRef((props, ref) => {
             </Form.Item>
           </Col>
 
-          {!statue && (
+          {!statue && loading === false &&(
             <Col span={24}>
               <Form.Item label="上传附件" {...forminladeLayout}>
                 {getFieldDecorator('attachment', {

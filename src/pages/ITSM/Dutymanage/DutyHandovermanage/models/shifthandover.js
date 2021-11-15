@@ -39,7 +39,11 @@ export default {
         const res = yield call(logbookMy,{current:1,size:15});
         const { data } = res;
         if(data && data.records && data.records.length) {
-          message.error('我的值班交接列表只能有一条数据哦，请先处理值班交接列表的数据再新增')
+          message.error('我的值班交接列表只能有一条数据哦，请先处理值班交接列表的数据再新增');
+          yield put ({
+            type:'logbookSearcharr',
+            payload:res
+          })
         } else {
           const response = yield call(logbookSave,payload);
           if(response.code === 200) {

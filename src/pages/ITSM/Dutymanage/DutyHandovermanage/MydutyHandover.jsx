@@ -195,7 +195,7 @@ function MydutyHandover(props) {
       width: 250,
       render: (text, record) => {
         if (pagetitle === '我的值班交接') {
-          return <a onClick={() => todetail(record)}>{text}</a>
+          return <a onClick={() => todetail(record,record.handoverStatus === '待接班')}>{text}</a>
         }
 
         if (pagetitle === '值班交接查询') {
@@ -292,6 +292,12 @@ function MydutyHandover(props) {
       title: '其他情况记录',
       dataIndex: 'otherNotes',
       key: 'otherNotes',
+      width: 250,
+    },
+    {
+      title: '交接班说明',
+      dataIndex: 'receiveRemark',
+      key: 'receiveRemark',
       width: 250,
     },
     {
