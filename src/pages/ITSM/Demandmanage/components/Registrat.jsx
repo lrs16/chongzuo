@@ -48,7 +48,7 @@ const forminladeLayout = {
 };
 
 const Registrat = forwardRef((props, ref) => {
-  const { register, userinfo, files, ChangeFiles, location, selectdata } = props;
+  const { register, userinfo, files, ChangeFiles, location, selectdata, loading } = props;
   const { getFieldDecorator, setFieldsValue, validateFields, setFields, getFieldsValue, resetFields } = props.form;
   const required = true;
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 附件上传下载
@@ -90,7 +90,7 @@ const Registrat = forwardRef((props, ref) => {
   }), []);
 
   useEffect(() => {
-    if (location !== undefined) {
+    if (location && location.query && location.query.mainId) {
       const { taskName, taskId, mainId } = location.query;
       router.push({
         pathname: location.pathname,
@@ -295,7 +295,6 @@ const Registrat = forwardRef((props, ref) => {
   const prioritymap = getTypebyTitle(270);  // 需求优先级
   const projectmap = getTypebyTitle(329);   // 所属项目
   const modulemap = getTypebyTitle(198);    // 功能模块
-
 
   const disabledDate = (current) => {
     return current && current < moment().add(45, 'days').endOf('day');
@@ -669,7 +668,9 @@ const Registrat = forwardRef((props, ref) => {
             // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
             >
               <div style={{ width: '50%' }}>
-                <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                {location && ((location.state && !location.state.cache) || (location.query && location.query.mainId)) && !loading && (
+                  <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                )}
               </div>
             </Form.Item>
           </Col>

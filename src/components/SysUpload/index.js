@@ -12,12 +12,25 @@ function SysUpload(props) {
   const [showIcon, setShowIcon] = useState(true);
   const { getUploadStatus } = useContext(UploadContext);
 
+  const sendUploadStatus = (v) => {
+    dispatch({
+      type: 'viewcache/getolduploadstatus',
+      payload: {
+        olduploadstatus: v
+      }
+    })
+  };
+
   useEffect(() => {
+    sendUploadStatus(false);
     let doCancel = false;
-    if (fileslist.length > 0 && !doCancel) {
+    if (fileslist && fileslist.length && fileslist.length > 0 && !doCancel) {
       setUploadFiles(fileslist);
     }
-    return () => { doCancel = true };
+    return () => {
+      doCancel = true;
+      sendUploadStatus(false);
+    };
   }, []);
 
   // 不允许上传类型
@@ -69,6 +82,7 @@ function SysUpload(props) {
       return new Promise((resolve, reject) => {
         setShowIcon(false);
         if (getUploadStatus) { getUploadStatus(true) };
+        sendUploadStatus(true)
         const type = file.name.lastIndexOf('.');
         const filesuffix = file.name.substring(type + 1, file.name.length);
         const correctfiletype = filetype.indexOf(filesuffix);
@@ -88,15 +102,9 @@ function SysUpload(props) {
         const newarr = [];
         for (let i = 0; i < arr.length; i += 1) {
           const vote = {};
-          vote.uid =
-            arr[i]?.response?.data[0]?.id !== undefined
-              ? arr[i]?.response?.data[0]?.id
-              : arr[i].uid;
+          vote.uid = arr[i]?.response?.data[0]?.id ? arr[i]?.response?.data[0]?.id : arr[i].uid;
           vote.name = arr[i].name;
-          vote.nowtime =
-            arr[i]?.response?.data[0]?.createTime !== undefined
-              ? arr[i]?.response?.data[0]?.createTime
-              : arr[i].createTime;
+          vote.nowtime = arr[i]?.response?.data[0]?.createTime ? arr[i]?.response?.data[0]?.createTime : arr[i].createTime;
           vote.fileUrl = '';
           vote.status = arr[i].status;
           newarr.push(vote);
@@ -105,6 +113,7 @@ function SysUpload(props) {
         ChangeFileslist({ arr: newarr, ischange: true });
         setShowIcon(true);
         if (getUploadStatus) { getUploadStatus(false) };
+        sendUploadStatus(false)
       }
     },
     onPreview(file) {
@@ -131,6 +140,7 @@ function SysUpload(props) {
         message.success('已中止文件上传');
         setShowIcon(true);
         if (getUploadStatus) { getUploadStatus(false) };
+        sendUploadStatus(false)
       }
     },
   };
@@ -142,7 +152,7 @@ function SysUpload(props) {
           <DownloadOutlined /> 上传附件
         </Button>
       </Upload>
-      {filetype && filetype.length > 0 && (<div style={{ color: '#ccc' }}>仅能上传{filetype.join('，')}格式文件</div>)}
+      {filetype && filetype.length > 0 && (<div style={{ color: '#ccc' }}>仅能上传{filetype.join('，')}类型文件</div>)}
     </>
   );
 }

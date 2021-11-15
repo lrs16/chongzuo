@@ -9,7 +9,9 @@ const UserModel = {
     tabid: '',              // 写入的页签的id 
     savecache: false,       // true可以改变页签state
     tolink: false,          // true可以跳转路由
-    tabdata: undefined      //  从页签传回表单的信息
+    tabdata: undefined,      //  从页签传回表单的信息
+    olduploadstatus: false,    // 旧的附件上传组件状态
+    uploadstatus: false,       // 新的附件上传组件状态
   },
   effects: {
     *fetch({ payload: { newtab, tabid } }, { put }) {
@@ -31,6 +33,18 @@ const UserModel = {
         type: 'send',
         tabdata: tabdata === undefined ? undefined : { ...tabdata },
         tabid,
+      });
+    },
+    *getolduploadstatus({ payload: { olduploadstatus } }, { put }) {
+      yield put({
+        type: 'saveolduploadstatus',
+        olduploadstatus,
+      });
+    },
+    *getuploadstatus({ payload: { uploadstatus } }, { put }) {
+      yield put({
+        type: 'saveuploadstatus',
+        uploadstatus,
       });
     },
     *cleardata(_, { put }) {
@@ -68,6 +82,18 @@ const UserModel = {
         tabdata: action.tabdata,
         tabid: action.tabid,
         //      tabnew: false
+      };
+    },
+    saveolduploadstatus(state, action) {
+      return {
+        ...state,
+        olduploadstatus: action.olduploadstatus,
+      };
+    },
+    saveuploadstatus(state, action) {
+      return {
+        ...state,
+        uploadstatus: action.uploadstatus,
       };
     },
     clearcache(state) {

@@ -11,8 +11,18 @@ function SysUpload(props) {
   const [showIcon, setShowIcon] = useState(true);
   const { files, ChangeFiles, getUploadStatus } = useContext(UploadContext);
 
+  const sendUploadStatus = (v) => {
+    dispatch({
+      type: 'viewcache/getolduploadstatus',
+      payload: {
+        olduploadstatus: v
+      }
+    })
+  };
+
   // 不允许上传类型
   useEffect(() => {
+    sendUploadStatus(false);
     getFileSecuritySuffix().then(res => {
       if (res.code === 200) {
         const arr = [...res.data];
@@ -58,6 +68,7 @@ function SysUpload(props) {
       return new Promise((resolve, reject) => {
         setShowIcon(false);
         if (getUploadStatus) { getUploadStatus(true) };
+        sendUploadStatus(true);
         const type = file.name.lastIndexOf('.');
         const filesuffix = file.name.substring(type + 1, file.name.length);
         const correctfiletype = filetype.indexOf(filesuffix);
@@ -87,6 +98,7 @@ function SysUpload(props) {
         ChangeFiles(newarr);
         setShowIcon(true);
         if (getUploadStatus) { getUploadStatus(false) };
+        sendUploadStatus(false)
       }
     },
     onPreview(file) {
@@ -113,6 +125,7 @@ function SysUpload(props) {
         message.success('已中止文件上传');
         setShowIcon(true);
         if (getUploadStatus) { getUploadStatus(false) };
+        sendUploadStatus(false)
       }
     },
   };
@@ -124,7 +137,7 @@ function SysUpload(props) {
           <DownloadOutlined /> 上传附件
         </Button>
       </Upload>
-      {filetype && filetype.length > 0 && (<div style={{ color: '#ccc' }}>仅能上传{filetype.join('，')}格式文件</div>)}
+      {filetype && filetype.length > 0 && (<div style={{ color: '#ccc' }}>仅能上传{filetype.join('，')}类型文件</div>)}
     </>
   );
 }

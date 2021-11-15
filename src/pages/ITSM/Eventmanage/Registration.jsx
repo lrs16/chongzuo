@@ -219,6 +219,8 @@ function Registration(props) {
   useEffect(() => {
     if (tabnew) {
       RegistratRef.current.resetVal();
+      setRegistratFiles([]);
+      setHandleFiles([]);
       setShow(false)
     }
   }, [tabnew]);
@@ -226,6 +228,11 @@ function Registration(props) {
   useEffect(() => {
     if (location.state) {
       if (location.state.cache) {
+        if (uploadStatus || handleUploadStatus) {
+          setUploadStatus(false);
+          setHandleUploadStatus(false);
+        };
+        if (uploadStatus) { message.info('页签切换，中止文件上传...') }
         const values = RegistratRef.current.getVal();
         const main = {
           addTime: values.main_addTime,
@@ -253,8 +260,8 @@ function Registration(props) {
           selfhandle: values.register_selfhandle,
           supplement: values.register_supplement,
           mobilePhone: values.mobilePhone2 ? values.mobilePhone2 : values.mobilePhone1,
+          fileIds: JSON.stringify(registratfiles.arr),
         }
-
         if (show) {
           const val = HandleRef.current.getVal();
           const handle = {
@@ -262,6 +269,7 @@ function Registration(props) {
             content: val.handle_content,
             endTime: moment(val.handle_endTime).format('YYYY-MM-DD HH:mm:ss'),
             handle_id: '',
+            fileIds: JSON.stringify(handlefiles.arr),
           };
           const handlemain = {
             eventObject: val.main_eventObject?.slice(-1)[0],
@@ -282,6 +290,9 @@ function Registration(props) {
               tabid: sessionStorage.getItem('tabid')
             },
           });
+          RegistratRef.current?.resetVal();
+          HandleRef.current?.resetVal();
+          setShow(false);
         } else {
           dispatch({
             type: 'viewcache/gettabstate',
@@ -293,14 +304,14 @@ function Registration(props) {
               tabid: sessionStorage.getItem('tabid')
             },
           });
+          RegistratRef.current?.resetVal();
         };
-        RegistratRef.current.resetVal();
       }
     }
   }, [location]);
 
   useEffect(() => {
-    if (tabdata !== undefined && tabdata.show) {
+    if (tabdata && tabdata.show) {
       setShow(true);
       setActiveKey(["registratform", "handleform"]);
       setDefaultvalue({
@@ -308,13 +319,16 @@ function Registration(props) {
         main_eventObject: tabdata.handlemain.main_eventObject,
       })
     }
-  }, [tabdata])
+    if (tabdata && tabdata.handle && tabdata.handle.fileIds) {
+      setHandleFiles({ arr: JSON.parse(tabdata.handle.fileIds), ischange: false })
+    }
+  }, [tabdata]);
 
   const operations = (
     <>
-      {!loading && (<Button type="primary" style={{ marginRight: 8 }} onClick={handlesubmit} disabled={uploadStatus || handleUploadStatus}>
+      <Button type="primary" style={{ marginRight: 8 }} onClick={handlesubmit} disabled={uploadStatus || handleUploadStatus}>
         保存
-      </Button>)}
+      </Button>
       <Button type="default" onClick={() => handleclose()}>
         关闭
       </Button>
@@ -332,6 +346,7 @@ function Registration(props) {
         <div className={styles.collapse}>
           <HadleContext.Provider value={{
             getUploadStatus: (v) => { setHandleUploadStatus(v) },
+            getRegistUploadStatus: (v) => { setUploadStatus(v) }
           }}>
             <Collapse
               expandIconPosition="right"
@@ -347,7 +362,7 @@ function Registration(props) {
                   ChangeActiveKey={keys => setActiveKey(keys)}
                   changeDefaultvalue={values => setDefaultvalue(values)}
                   ChangeFiles={newvalue => { setRegistratFiles(newvalue) }}
-                  getUploadStatus={v => { setUploadStatus(v) }}
+                  // getUploadStatus={v => { setUploadStatus(v) }}
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
                   show={show}
@@ -356,8 +371,8 @@ function Registration(props) {
                   location={location}
                   files={registratfiles.arr}
                   selectdata={selectdata}
-                  info={tabdata !== undefined ? { register: tabdata.register } : undefined}
-                  main={tabdata !== undefined ? tabdata.main : undefined}
+                  info={tabdata ? { register: tabdata.register } : undefined}
+                  main={tabdata ? tabdata.main : undefined}
                 />
               </Panel>
               {show && check === false && (
@@ -372,9 +387,10 @@ function Registration(props) {
                     ChangeFiles={newvalue => { setHandleFiles(newvalue) }}
                     show={show}
                     selectdata={selectdata}
-                    files={[]}
-                    info={(tabdata === undefined || tabdata.handle === undefined) ? undefined : { handle: tabdata.handle }}
-                    main={(tabdata === undefined || tabdata.handlemain === undefined) ? undefined : tabdata.handlemain}
+                    files={handlefiles.arr}
+                    info={(!tabdata || !tabdata.handle) ? undefined : { handle: tabdata.handle }}
+                    main={(!tabdata || !tabdata.handlemain) ? undefined : tabdata.handlemain}
+                    uploadStatus={uploadStatus}
                   />
                 </Panel>
               )}

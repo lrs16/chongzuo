@@ -601,6 +601,7 @@ function WorkOrder(props) {
                   userinfo={userinfo}
                   location={location}
                   selectdata={selectdata}
+                  loading={loading}
                 />
               )}
               {info.taskName === '业务科室领导审核' && info.historys.length === 0 && (

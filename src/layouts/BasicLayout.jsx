@@ -82,6 +82,8 @@ const BasicLayout = props => {
     cacheinfo,
     tabid,
     savecache,
+    olduploadstatus,
+    uploadstatus,
   } = props;
 
   const url = location.pathname;
@@ -517,6 +519,9 @@ const BasicLayout = props => {
             return defaultDom;
           };
           const rutersave = () => {
+            if (olduploadstatus || uploadstatus) {
+              message.info('页签切换，中止文件上传...');
+            };
             router.push({
               pathname: location.pathname,
               state: { ...location.state, cache: true },
@@ -566,6 +571,9 @@ const BasicLayout = props => {
               return null
             };
             const rutersave = () => {
+              if (olduploadstatus || uploadstatus) {
+                message.info('页签切换，中止文件上传...');
+              };
               router.push({
                 pathname: location.pathname,
                 state: { ...location.state, cache: true },
@@ -649,6 +657,9 @@ const BasicLayout = props => {
             onMouseDown={(e) => {
               e.preventDefault();
               if (e.button === 0) {
+                if (olduploadstatus || uploadstatus) {
+                  message.info('页签切换，中止文件上传...');
+                };
                 router.push({
                   pathname: location.pathname,
                   query: location.query,
@@ -805,6 +816,8 @@ export default connect(({ global, settings, user, viewcache, loading }) => ({
   cacheinfo: viewcache.cacheinfo,
   tabid: viewcache.tabid,
   savecache: viewcache.savecache,
+  olduploadstatus: viewcache.olduploadstatus,
+  uploadstatus: viewcache.uploadstatus,
   settings,
   Userauth: user.Userauth,
   menuData: user.menuData,

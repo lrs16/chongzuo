@@ -1,4 +1,4 @@
-import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect } from 'react';
+import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect, useContext } from 'react';
 import router from 'umi/router';
 import moment from 'moment';
 import {
@@ -20,6 +20,7 @@ import {
 } from 'antd';
 import { phone_reg } from '@/utils/Regexp';
 // import SysUpload from '@/components/SysUpload';
+import UploadContext from '@/layouts/MenuContext';
 import { getAndField } from '@/pages/SysManage/services/api';
 import { FileDownload, FileDelete, getFileSecuritySuffix } from '@/services/upload';
 import { queryDisableduserByUser, queryUnitList, queryDeptList } from '@/services/common';
@@ -72,7 +73,8 @@ const Registrat = forwardRef((props, ref) => {
   const [deptopen, setDeptopen] = useState(false);
   const [showIcon, setShowIcon] = useState(true);
   const [banOpenFileDialog, setBanOpenFileDialog] = useState(true);
-  const [checked, setChecked] = useState(false);
+
+  const { getRegistUploadStatus } = useContext(UploadContext);
 
   useEffect(() => {
     if (files && files.length > 0) {
@@ -102,7 +104,7 @@ const Registrat = forwardRef((props, ref) => {
           taskId,
           mainId,
           next: sessionStorage.getItem('Nextflowmane'),
-          orderNo: main.eventNo
+          orderNo: main.eventNo,
         },
       });
     }
@@ -424,7 +426,8 @@ const Registrat = forwardRef((props, ref) => {
     beforeUpload(file) {
       return new Promise((resolve, reject) => {
         setShowIcon(false);
-        getUploadStatus(true);
+        if (getUploadStatus) { getUploadStatus(true) };
+        if (getRegistUploadStatus) { getRegistUploadStatus(true) };
         const type = file.name.lastIndexOf('.');
         const filesuffix = file.name.substring(type + 1, file.name.length);
         const correctfiletype = filetype.indexOf(filesuffix);
@@ -454,7 +457,8 @@ const Registrat = forwardRef((props, ref) => {
         setFilesList([...newarr]);
         ChangeFiles({ arr: [...newarr], ischange: true });
         setShowIcon(true);
-        getUploadStatus(false);
+        if (getUploadStatus) { getUploadStatus(false) };
+        if (getRegistUploadStatus) { getRegistUploadStatus(false) };
       }
     },
     onPreview(filesinfo) {
@@ -478,7 +482,8 @@ const Registrat = forwardRef((props, ref) => {
       } else {
         message.success('已中止文件上传');
         setShowIcon(true);
-        getUploadStatus(false);
+        if (getUploadStatus) { getUploadStatus(false) };
+        if (getRegistUploadStatus) { getRegistUploadStatus(false) };
       }
     },
   };
@@ -924,18 +929,7 @@ const Registrat = forwardRef((props, ref) => {
                 {getFieldDecorator('register_selfhandle', {
                   valuePropName: 'checked',
                   initialValue: Boolean(Number(register.selfhandle)),
-                })(<Checkbox
-                  checked={Boolean(Number(register.selfhandle)) || checked}
-                  onClick={() => {
-                    validateFields((err, val) => {
-                      if (!err) {
-                        handleself()
-                      } else {
-                        message.error('请先将登记信息填写完整')
-                      }
-                    })
-                  }}
-                />)}
+                })(<Checkbox onClick={handleself} />)}
               </Form.Item>
             </Col>
           )}
@@ -967,12 +961,14 @@ const Registrat = forwardRef((props, ref) => {
                   })
                 }}
               >
-                <Upload {...uploadprops}>
-                  <Button type="primary">
-                    <DownloadOutlined /> 上传附件
-                  </Button>
-                </Upload>
-                {filetype && filetype.length > 0 && (<div style={{ color: '#ccc' }}>仅能上传{filetype.join('，')}格式文件</div>)}
+                {((location && location.state && !location.state.cache) || orderNo) && !loading && (
+                  <Upload {...uploadprops} key={localStorage.getItem('tabid')}>
+                    <Button type="primary">
+                      <DownloadOutlined /> 上传附件
+                    </Button>
+                  </Upload>
+                )}
+                {filetype && filetype.length > 0 && (<div style={{ color: '#ccc' }}>仅能上传{filetype.join('，')}类型文件</div>)}
               </div>
             </Form.Item>
           </Col>

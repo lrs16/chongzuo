@@ -70,6 +70,8 @@ function WorkOrder2(props) {
     ChangeType,
     ChangeChoice,
     ChangeUserVisible,
+    registUploadStatus,
+    olduploadstatus
   } = props;
 
   const { mainId, taskId, taskName } = location.query;
@@ -505,7 +507,7 @@ function WorkOrder2(props) {
 
   // 登记上传附件触发保存
   useEffect(() => {
-    if (registratfiles.ischange) {
+    if (registratfiles.ischange && !olduploadstatus) {
       ChangeType('save');
       setRegistratFiles({ ...registratfiles, ischange: false });
     }
@@ -513,7 +515,7 @@ function WorkOrder2(props) {
 
   // 上传附件触发保存
   useEffect(() => {
-    if (files.ischange === true) {
+    if (files.ischange) {
       ChangeType('save');
       setFiles({ ...files, ischange: false });
     }
@@ -578,9 +580,7 @@ function WorkOrder2(props) {
                 ChangeShow={isshow => setShow(isshow)}
                 ChangeCheck={checked => setCheck(checked)}
                 ChangeActiveKey={keys => setActiveKey(keys)}
-                ChangeFiles={newvalue => {
-                  setRegistratFiles(newvalue);
-                }}
+                ChangeFiles={newvalue => setRegistratFiles(newvalue)}
                 formItemLayout={formItemLayout}
                 forminladeLayout={forminladeLayout}
                 show={show}
@@ -612,6 +612,7 @@ function WorkOrder2(props) {
                 selectdata={selectdata}
                 mainId={mainId}
                 loading={loading}
+                uploadStatus={registUploadStatus}
               />
             </Panel>
           )}
@@ -757,7 +758,8 @@ function WorkOrder2(props) {
   );
 }
 
-export default connect(({ eventtodo, itsmuser, loading }) => ({
+export default connect(({ eventtodo, itsmuser, viewcache, loading }) => ({
+  olduploadstatus: viewcache.olduploadstatus,
   userinfo: itsmuser.userinfo,
   errmsg: eventtodo.errmsg,
   info: eventtodo.info,

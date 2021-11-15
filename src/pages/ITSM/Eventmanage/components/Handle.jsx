@@ -1,6 +1,6 @@
 import React, { useRef, useImperativeHandle, useEffect, useState } from 'react';
 import moment from 'moment';
-import { Row, Col, Form, Input, Select, DatePicker, Cascader } from 'antd';
+import { Row, Col, Form, Input, Select, DatePicker, Cascader, message } from 'antd';
 import SysUpload from '@/components/SysUpload';
 import KnowledgCollect from '@/components/KnowledgeCollect';
 
@@ -20,8 +20,11 @@ const Handle = React.forwardRef((props, ref) => {
     selectdata,
     mainId,
     loading,
+    uploadStatus,
+    location
   } = props;
   const { handle } = info;
+  const { orderNo } = location.query;
   const { getFieldDecorator, setFieldsValue, getFieldsValue, resetFields, getFieldValue } = props.form;
   const required = true;
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
@@ -265,12 +268,12 @@ const Handle = React.forwardRef((props, ref) => {
               {...forminladeLayout}
             // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
             >
-              <div style={{ width: '50%' }}>
-                {!loading && (
-                  <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
-                )}
-                <span style={{ color: '#ff0000' }}> 转回访请上传附件 </span>
-              </div>
+              {((location && location.state && !location.state.cache) || orderNo) && !loading && (
+                <div style={{ width: '50%' }} onMouseDown={() => { if (uploadStatus) { message.info('登记信息中的附件正在上传中，请稍后再上传') } }}>
+                  <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} banOpenFileDialog={uploadStatus} />
+                  <span style={{ color: '#ff0000' }}> 转回访请上传附件 </span>
+                </div>
+              )}
             </Form.Item>
           </Col>
         </Form>

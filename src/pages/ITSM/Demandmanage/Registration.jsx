@@ -139,9 +139,9 @@ function Registration(props) {
 
   const operations = (
     <>
-      {!loading && (<Button type="primary" style={{ marginRight: 8 }} onClick={() => getregistrat('save')}>
+      <Button type="primary" style={{ marginRight: 8 }} onClick={() => getregistrat('save')} disabled={loading}>
         保存
-      </Button>)}
+      </Button>
       {/* <SelectUser handleSubmit={() => getregistrat('next')}>
         <Button type="primary" style={{ marginRight: 8 }}>
           流转
@@ -168,6 +168,7 @@ function Registration(props) {
             ChangeFiles={newvalue => { setFiles(newvalue) }}
             selectdata={selectdata}
             register={tabdata}
+            location={location}
           />
         </Card>
       </Spin>
