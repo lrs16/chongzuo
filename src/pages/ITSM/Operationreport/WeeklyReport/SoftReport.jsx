@@ -578,6 +578,7 @@ function SoftReport(props) {
         setOperationList(res.operationList);
         setNextOperationList(res.nextOperationList);
         setAddTitle(res.addData);
+        message.success('粘贴成功')
         initial = true;
       } else {
         message.info('您无法复制该条记录，请返回列表重新选择')
@@ -634,8 +635,8 @@ function SoftReport(props) {
       extra={
         <>
           <div>
-            <Button type='primary' style={{ marginRight: 10 }} onClick={softReportform}>保存</Button>
             <Button type='primary' style={{ marginRight: 10 }} onClick={handlePaste}>粘贴</Button>
+            <Button type='primary' style={{ marginRight: 10 }} onClick={softReportform}>保存</Button>
             <Button onClick={handleBack}>
               返回
             </Button>

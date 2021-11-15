@@ -35,29 +35,30 @@ const TaskExecute = React.forwardRef((props, ref) => {
     ChangeFiles(fileslist);
   }, [fileslist]);
 
-  const onChange = (date, dateString) => {
-    setFieldsValue({ plannedStarTtime: moment(dateString) });
-    startTime = dateString;
-  };
+  // const onChange = (date, dateString) => {
+  //   setFieldsValue({ execute_startTime: moment(dateString) });
+  //   startTime = dateString;
+  // };
+  // 暂时保留
 
-  const endtimeonChange = (date, dateString) => {
-    setFieldsValue({ plannedEndTime: moment(dateString) });
-    endTime = dateString;
-  };
+  // const endtimeonChange = (date, dateString) => {
+  //   setFieldsValue({ execute_endTime: moment(dateString) });
+  //   endTime = dateString;
+  // };
 
-  const startdisabledDate = current => {
-    if (startTime || endTime) {
-      return current > moment(endTime);
-    }
-    return [];
-  };
+  // const startdisabledDate = current => {
+  //   if (startTime || endTime) {
+  //     return current > moment(endTime);
+  //   }
+  //   return [];
+  // };
 
-  const enddisabledDate = current => {
-    if (startTime || endTime) {
-      return current < moment(startTime);
-    }
-    return null;
-  };
+  // const enddisabledDate = current => {
+  //   if (startTime || endTime) {
+  //     return current < moment(startTime);
+  //   }
+  //   return null;
+  // };
 
   const required = true;
 
@@ -75,7 +76,11 @@ const TaskExecute = React.forwardRef((props, ref) => {
               ],
               initialValue: execute.result,
             })(
-              <Select placeholder="请选择" allowClear disabled={type === 'list'}>
+              <Select
+                placeholder="请选择"
+                allowClear={false}
+                disabled={type === 'list'}
+              >
                 {taskResult.map(obj => [
                   <Option key={obj.key} value={obj.dict_code}>
                     {obj.title}
@@ -98,13 +103,17 @@ const TaskExecute = React.forwardRef((props, ref) => {
               initialValue:
                 execute.startTime === null ? moment(new Date()) : moment(execute.startTime),
             })(
+              // <div>
               <DatePicker
-                onChange={onChange}
-                disabledDate={startdisabledDate}
+                // defaultValue={moment(execute.startTime || new Date())}
+                // onChange={onChange}
+                // disabledDate={startdisabledDate}
                 showTime
+                allowClear={false}
                 format="YYYY-MM-DD HH:mm:ss"
                 disabled={type === 'list'}
               />,
+              // </div>
             )}
           </Form.Item>
         </Col>
@@ -120,13 +129,16 @@ const TaskExecute = React.forwardRef((props, ref) => {
               ],
               initialValue: execute.endTime === null ? moment(new Date()) : moment(execute.endTime),
             })(
+              // <div>
               <DatePicker
-                onChange={endtimeonChange}
-                disabledDate={enddisabledDate}
+                // onChange={endtimeonChange}
+                // disabledDate={enddisabledDate}
                 showTime
+                allowClear={false}
                 format="YYYY-MM-DD HH:mm:ss"
                 disabled={type === 'list'}
               />,
+              // </div>
             )}
           </Form.Item>
         </Col>
@@ -161,7 +173,13 @@ const TaskExecute = React.forwardRef((props, ref) => {
           <Form.Item label="执行操作时间" {...forminladeLayout}>
             {getFieldDecorator('execute_operationTime', {
               initialValue: moment(new Date()),
-            })(<DatePicker disabled showTime format="YYYY-MM-DD HH:mm:ss" />)}
+            })(
+              <DatePicker
+                disabled
+                showTime
+                allowClear={false}
+                format="YYYY-MM-DD HH:mm:ss"
+              />)}
           </Form.Item>
         </Col>
 

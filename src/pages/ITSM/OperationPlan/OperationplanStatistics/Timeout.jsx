@@ -173,7 +173,10 @@ function Timeout(props) {
           </Button>
         </div>
 
-        <Table columns={columns} dataSource={timeoutStatusArr} rowKey={record => record.statName} />
+        <Table
+          columns={columns}
+          dataSource={timeoutStatusArr}
+          rowKey={(record, index) => { return index }}/>
       </Card>
     </PageHeaderWrapper>
   );

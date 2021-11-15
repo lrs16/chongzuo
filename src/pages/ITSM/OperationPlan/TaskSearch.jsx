@@ -15,6 +15,7 @@ import {
   Icon,
   Badge,
   Tooltip,
+  message
 } from 'antd';
 import router from 'umi/router';
 import moment from 'moment';
@@ -653,7 +654,7 @@ function TaskSearch(props) {
           addTime: '',
         },
       }).then(res => {
-        const filename = '下载.xls';
+        const filename = '下载作业计划查询.xls';
         const blob = new Blob([res]);
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -669,6 +670,34 @@ function TaskSearch(props) {
     onChange: index => {
       setSelectedKeys([...index]);
     },
+  };
+
+  const handleCopy = () => {
+    if (selectedKeys.length !== 1) {
+      message.info('请选择一条数据');
+      return false;
+    }
+
+    if (selectedKeys.length > 1) {
+      message.info('只能选择一条数据复制哦');
+      return false;
+    }
+
+    if (selectedKeys.length === 1) {
+      message.success('复制成功');
+      sessionStorage.setItem('copyrecord', selectedKeys[0].mainId);
+    }
+
+    return null;
+  };
+
+  const handleFillin = () => {
+    router.push({
+      pathname: '/ITSM/operationplan/operationplanfillin',
+      query: {
+        addtab: true,
+      },
+    });
   };
 
   //  自定义列表
@@ -1284,6 +1313,14 @@ function TaskSearch(props) {
             )}
           </Form>
         </Row>
+
+        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleFillin()}>
+          填报
+        </Button>
+
+        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleCopy()}>
+          复制
+        </Button>
 
         <Button type="primary" style={{ marginRight: 8 }} onClick={exportDownload}>
           导出数据

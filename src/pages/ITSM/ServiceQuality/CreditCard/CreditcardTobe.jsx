@@ -134,7 +134,7 @@ function CreditcardTobe(props) {
             },
             state: {
               dynamicpath: true,
-              menuDesc: '记分详情页',
+              menuDesc: '计分卡详情',
             },
           });
         };
@@ -501,15 +501,16 @@ function CreditcardTobe(props) {
                 </Form>
               </Row>
 
-              {pagetitle === '计分卡登记' && (
+              <div style={{ marginBottom: 10 }}>
                 <Button type="primary" onClick={handleAdd} style={{ marginRight: 10 }}>
                   新建
                 </Button>
-              )}
 
-              <Button type="primary" onClick={exportDownload}>
-                导出数据
-              </Button>
+                <Button type="primary" onClick={exportDownload}>
+                  导出数据
+                </Button>
+              </div>
+
               <Table
                 loading={loading}
                 columns={columns}
@@ -643,15 +644,14 @@ function CreditcardTobe(props) {
                       </Form>
                     </Row>
 
-                    {pagetitle === '计分卡登记' && (
-                      <Button type="primary" onClick={handleAdd} style={{ marginRight: 10 }}>
-                        新建
-                      </Button>
-                    )}
-
-                    <Button type="primary" onClick={exportDownload}>
+                    <Button
+                      type="primary"
+                      onClick={exportDownload}
+                      style={{ marginBottom: 10 }}
+                    >
                       导出数据
                     </Button>
+
                     <Table
                       loading={loading}
                       columns={columns}

@@ -166,6 +166,7 @@ function ComputerroomReport(props) {
         setUnCloseTroubleList(res.unCloseTroubleList);
         setOperationList(res.operationList);
         setNextOperationList(res.nextOperationList);
+        message.success('粘贴成功')
         initial = true;
       } else {
         message.info('您无法复制该条记录，请返回列表重新选择')
@@ -429,8 +430,8 @@ function ComputerroomReport(props) {
       title={reporttype === 'week' ? '新建机房运维周报' : '新建机房运维月报'}
       extra={
         <>
-          <Button type='primary' onClick={computerReportform}>保存</Button>
           <Button type='primary' onClick={handlePaste}>粘贴</Button>
+          <Button type='primary' onClick={computerReportform}>保存</Button>
           <Button onClick={handleBack}>
             返回
           </Button>

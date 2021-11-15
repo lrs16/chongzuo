@@ -94,12 +94,12 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
     }
   };
 
-  const startdisabledDate = current => {
-    if (startTime || endTime) {
-      return current > moment(endTime);
-    }
-    return [];
-  };
+  // const startdisabledDate = current => {
+  //   if (startTime || endTime) {
+  //     return current > moment(endTime);
+  //   }
+  //   return [];
+  // };
 
   const enddisabledDate = current => {
     if (startTime || endTime) {
@@ -175,7 +175,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
           <Col span={8}>
             <Form.Item label="填报时间">
               {getFieldDecorator('main_addTime', {
-                initialValue: moment(new Date()),
+                initialValue: moment(main.addTime || new Date()),
               })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" disabled />)}
             </Form.Item>
           </Col>
@@ -200,7 +200,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    message: '请输入作业类型',
+                    message: '请选择作业类型',
                   },
                 ],
                 initialValue: main.type,
@@ -226,7 +226,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    message: '请输入作业性质',
+                    message: '请选择作业性质',
                   },
                 ],
                 initialValue: main.nature,
@@ -252,7 +252,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    message: '请输入作业单位',
+                    message: '请选择作业单位',
                   },
                 ],
                 initialValue: main.operationUnit,
@@ -279,7 +279,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                   rules: [
                     {
                       required,
-                      message: '请输入作业负责人',
+                      message: '请选择作业负责人',
                     },
                   ],
                   initialValue: main.operationUser,
@@ -306,7 +306,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    message: '请输入开工作票',
+                    message: '请选择是否开工作票',
                   },
                 ],
                 initialValue: main.operationUserId,
@@ -328,7 +328,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    message: '请输入开工作票',
+                    message: '请选择开工作票',
                   },
                 ],
                 initialValue: main.billing,
@@ -436,21 +436,21 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    message: '请输入计划开始时间',
+                    message: '请选择计划开始时间',
                   },
                 ],
-                initialValue: main && main.plannedStartTime ? moment(main.plannedStartTime) : moment(new Date(moment(new Date()).format('YYYY-MM-DD 09:00:00'))),
+                initialValue: moment(main.plannedStartTime || moment(new Date(moment(new Date()).format('YYYY-MM-DD 09:00:00')))),
               })(
-                <div>
-                  <DatePicker
-                    defaultValue={main && main.plannedStartTime ? moment(main.plannedStartTime) : moment(new Date(moment(new Date()).format('YYYY-MM-DD 09:00:00')))}
-                    disabled={type}
-                    onChange={onChange}
-                    format="YYYY-MM-DD HH:mm:ss"
-                    allowClear={false}
-                    showTime
-                  />,
-                </div>
+                // <div>
+                <DatePicker
+                  // defaultValue={moment(main.plannedStartTime || moment(new Date(moment(new Date()).format('YYYY-MM-DD 09:00:00'))))}
+                  disabled={type}
+                  // onChange={onChange}
+                  format="YYYY-MM-DD HH:mm:ss"
+                  allowClear={false}
+                  showTime
+                />,
+                {/* </div> */ }
               )}
             </Form.Item>
           </Col>
@@ -461,22 +461,22 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    message: '请输入计划结束时间',
+                    message: '请选择计划结束时间',
                   },
                 ],
                 initialValue: main && main.plannedEndTime ? moment(main.plannedEndTime) : moment(new Date(moment(new Date()).format('YYYY-MM-DD 18:00:00'))),
               })(
-                <div>
+                // <div>
                   <DatePicker
-                    defaultValue={main && main.plannedEndTime ? moment(main.plannedEndTime) : moment(new Date(moment(new Date()).format('YYYY-MM-DD 18:00:00')))}
+                    // defaultValue={main && main.plannedEndTime ? moment(main.plannedEndTime) : moment(new Date(moment(new Date()).format('YYYY-MM-DD 18:00:00')))}
                     disabled={type}
-                    onChange={endtimeonChange}
+                    // onChange={endtimeonChange}
                     allowClear={false}
                     format="YYYY-MM-DD HH:mm:ss"
                     showTime
                   // disabledDate={enddisabledDate}
                   />,
-                </div>
+                {/* </div> */}
 
               )}
             </Form.Item>
@@ -489,7 +489,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                   rules: [
                     {
                       required,
-                      message: '请输入计划结束时间',
+                      message: '请选择计划结束时间',
                     },
                   ],
                   initialValue: moment(main.plannedEndTime),

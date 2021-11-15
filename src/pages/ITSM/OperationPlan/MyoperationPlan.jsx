@@ -520,7 +520,7 @@ function MyoperationPlan(props) {
           addTime: '',
         },
       }).then(res => {
-        const filename = '下载.xls';
+        const filename = '下载我的作业计划.xls';
         const blob = new Blob([res]);
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -551,7 +551,7 @@ function MyoperationPlan(props) {
       }
 
       if (item.status === '延期中' || item.checkStatus !== '已审核') {
-        message.info('延期的条件为:执行状态不可以是延期中,且审核状态为:已审核');
+        message.info('延期的条件为:作业状态计划中或者已超时,且审核状态为:已审核');
         return false;
       }
       return null;
@@ -622,7 +622,7 @@ function MyoperationPlan(props) {
         },
       }).then(res => {
         if (res.code === 200) {
-          message.info(res.msg);
+          message.success(res.msg);
           getTobolist();
         } else {
           message.info(res.msg);
@@ -731,6 +731,7 @@ function MyoperationPlan(props) {
   useEffect(() => {
     if (userchoice) {
       gotoCensorship();
+      setSelectedRows([])
     }
   }, [userchoice]);
 

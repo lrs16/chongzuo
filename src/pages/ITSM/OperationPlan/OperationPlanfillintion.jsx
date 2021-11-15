@@ -7,7 +7,14 @@ import OperationPlanfillin from './components/OperationPlanfillin';
 
 function OperationPlanfillintion(props) {
   const pagetitle = props.route.name;
-  const { location, dispatch, userinfo, operationPersonArr, tabdata } = props;
+  const {
+    location,
+    dispatch,
+    userinfo,
+    operationPersonArr,
+    tabdata,
+    loading
+  } = props;
   let operationPersonSelect;
 
   const PlanfillinRef = useRef();
@@ -66,12 +73,12 @@ function OperationPlanfillintion(props) {
 
   //  点击保存触发事件
   const handlesubmit = () => {
-    const values =  PlanfillinRef.current.getFieldsValue();
-    if(!values.main_operationUser) {
+    const values = PlanfillinRef.current.getFieldsValue();
+    if (!values.main_operationUser) {
       message.info('保存前请先选择作业负责人');
       return false;
     }
-    if((values.main_plannedStartTime).valueOf() > (values.main_plannedEndTime).valueOf()) {
+    if ((values.main_plannedStartTime).valueOf() > (values.main_plannedEndTime).valueOf()) {
       message.error('计划开始时间必须小于计划结束时间')
     } else {
       dispatch({
@@ -133,9 +140,10 @@ function OperationPlanfillintion(props) {
       if (res.code === 200) {
         const resData = res.main;
         delete resData.operationNo;
+        message.success('粘贴成功')
         setCopyData(resData);
       } else {
-        message.info('您无法复制该条记录，请返回列表重新选择');
+        message.info(`${res.msg},请返回列表页重新选择`);
       }
     });
   };
@@ -193,6 +201,7 @@ function OperationPlanfillintion(props) {
         </>
       }
     >
+
       <Card>
         <OperationPlanfillin
           ref={PlanfillinRef}
@@ -203,10 +212,13 @@ function OperationPlanfillintion(props) {
             setFiles(newvalue);
           }}
           files={[]}
+          loading={loading}
           operationPersonSelect={operationPersonSelect}
           main={copyData}
         />
       </Card>
+
+
     </PageHeaderWrapper>
   );
 }

@@ -325,7 +325,7 @@ const AddForm = React.forwardRef((props, ref) => {
         loading === false && dynamicData  && ( */}
       <Row gutter={24}>
         <Form>
-          <Col><p>注：第一行数据作为表头</p></Col>
+          <Col><p>注：第一行数据作为表头,且动态标题下的附件上传后需点击上方的保存才可下载。</p></Col>
 
 
           <Form.Item label={titleNumber()} {...formincontentLayout}>

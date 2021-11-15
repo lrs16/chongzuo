@@ -517,7 +517,7 @@ function OperationplanCheck(props) {
           addTime: '',
         },
       }).then(res => {
-        const filename = '下载.xls';
+        const filename = '下载作业计划审核.xls';
         const blob = new Blob([res]);
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -667,6 +667,7 @@ function OperationplanCheck(props) {
       if (res.code === 200) {
         message.success(res.msg);
         searchdata({}, 1, paginations.pageSize);
+        setSelectedRows([])
       } else {
         searchdata({}, 1, paginations.pageSize);
         message.error(res.msg);
@@ -688,6 +689,7 @@ function OperationplanCheck(props) {
       if (res.code === 200) {
         message.success(res.msg);
         searchdata({}, 1, paginations.pageSize);
+        setSelectedRows([])
       } else {
         message.error(res.msg);
         searchdata({}, 1, paginations.pageSize);

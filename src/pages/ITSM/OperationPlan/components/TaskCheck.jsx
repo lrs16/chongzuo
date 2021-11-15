@@ -68,7 +68,12 @@ const TaskCheck = React.forwardRef((props, ref) => {
                 },
               ],
               initialValue: check.checkTime ? moment(check.checkTime) : moment(new Date()),
-            })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
+            })(
+              <DatePicker
+                showTime
+                format="YYYY-MM-DD HH:mm:ss"
+                allowClear={false}
+              />)}
           </Form.Item>
         </Col>
 

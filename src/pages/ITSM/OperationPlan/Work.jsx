@@ -196,24 +196,39 @@ function Work(props) {
   };
 
   //  执行保存
-  const executeSave = () => {
-    SaveRef.current.validateFields((err, value) => {
-      if (true) {
-        const result = {
-          ...value,
-          mainId,
-          execute_id: edit.execute.id,
-          flowNodeName: '计划执行',
-          execute_fileIds: files.ischange ? JSON.stringify(files.arr) : value.execute_fileIds,
-          editState: openFlowList.editState,
-          execute_startTime: value.execute_startTime.format('YYYY-MM-DD HH:mm:ss'),
-          execute_endTime: value.execute_endTime.format('YYYY-MM-DD HH:mm:ss'),
-          execute_operationTime: value.execute_operationTime.format('YYYY-MM-DD HH:mm:ss'),
-        };
-        delete result.execute_operationUnit;
-        saveApi(result);
+  const executeSave = (params) => {
+    const saveParams = (value) => {
+      const result = {
+        ...value,
+        mainId,
+        execute_id: edit.execute.id,
+        flowNodeName: '计划执行',
+        execute_fileIds: files.ischange ? JSON.stringify(files.arr) : null,
+        editState: openFlowList.editState,
+        execute_startTime: value.execute_startTime.format('YYYY-MM-DD HH:mm:ss'),
+        execute_endTime: value.execute_endTime.format('YYYY-MM-DD HH:mm:ss'),
+        execute_operationTime: value.execute_operationTime.format('YYYY-MM-DD HH:mm:ss'),
+      };
+      delete result.execute_operationUnit;
+      saveApi(result);
+    }
+    if (params) {
+      SaveRef.current.validateFields((err, value) => {
+        if (!err) {
+          saveParams(value)
+        }
+      });
+    } else {
+      const values = SaveRef.current.getFieldsValue();
+      if ((values.execute_startTime).valueOf() > (values.execute_endTime).valueOf()) {
+        message.info('实际开始时间必须小于实际结束时间');
+        return false;
       }
-    });
+      saveParams(values)
+    }
+
+
+
   };
 
   //  登记保存
@@ -314,7 +329,7 @@ function Work(props) {
         checkSave();
         break;
       case '计划执行':
-        executeSave();
+        executeSave(params);
         break;
       default:
         break;
@@ -534,9 +549,9 @@ function Work(props) {
         state: { cache: false, closetabid: mainId },
       });
       if (res.code === 200) {
-        message.info(res.msg);
+        message.success(res.msg);
       } else {
-        message.info(res.msg);
+        message.error(res.msg);
       }
     });
   };
@@ -556,6 +571,21 @@ function Work(props) {
               <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete}>
                 删除
               </Button>
+            )}
+
+          {loading === false &&
+            taskResult &&
+            taskResult.length > 0 &&
+            !delay &&
+            edit.check &&
+            edit.check.result === null &&
+            taskResult &&
+            taskResult.length > 0 && (
+              <Back reasonSubmit={values => reasonSubmit(values)} detailPage="true">
+                <Button type="danger" ghost style={{ marginRight: 8 }}>
+                  回退
+                </Button>
+              </Back>
             )}
 
           {loading === false && taskResult && taskResult.length > 0 && !delay && (
@@ -591,20 +621,7 @@ function Work(props) {
               </Button>
             )}
 
-          {loading === false &&
-            taskResult &&
-            taskResult.length > 0 &&
-            !delay &&
-            edit.check &&
-            edit.check.result === null &&
-            taskResult &&
-            taskResult.length > 0 && (
-              <Back reasonSubmit={values => reasonSubmit(values)} detailPage="true">
-                <Button type="primary" style={{ marginRight: 8 }}>
-                  回退
-                </Button>
-              </Back>
-            )}
+
 
           {loading === false &&
             taskResult &&

@@ -57,7 +57,6 @@ function OtherReport(props) {
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
 
-
   // 新增一条记录
 
   const handleaddTable = (params, px, rowdelete) => {
@@ -151,6 +150,7 @@ function OtherReport(props) {
       if (res.code === 200) {
         setCopyData(res);
         setList(res.addData);
+        message.success('粘贴成功')
       } else {
         message.info('您无法复制该条记录，请返回列表重新选择')
       }
@@ -281,8 +281,8 @@ function OtherReport(props) {
       extra={
         // loading === false && (
         <>
-          <Button type='primary' onClick={otherReportform}>保存</Button>
           <Button type='primary' onClick={handlePaste}>粘贴</Button>
+          <Button type='primary' onClick={otherReportform}>保存</Button>
           <Button onClick={handleBack}>
             返回
           </Button>
