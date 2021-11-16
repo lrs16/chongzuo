@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { connect } from 'dva';
-import { router } from 'umi';
 import { Upload, Button, message } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import { getFileSecuritySuffix } from '@/services/upload';
@@ -8,7 +7,7 @@ import UploadContext from '@/layouts/MenuContext';
 
 function SysUpload(props) {
   const { dispatch, fileslist, ChangeFileslist, banOpenFileDialog } = props;
-  const [uploadfiles, setUploadFiles] = useState([]);
+  // const [uploadfiles, setUploadFiles] = useState([]);
   const [filetype, setFileType] = useState('');
   const [showIcon, setShowIcon] = useState(true);
   const { getUploadStatus } = useContext(UploadContext);
@@ -24,12 +23,12 @@ function SysUpload(props) {
 
   useEffect(() => {
     sendUploadStatus(false);
-    let doCancel = false;
-    if (fileslist && fileslist.length && fileslist.length > 0 && !doCancel) {
-      setUploadFiles(fileslist);
-    }
+    // let doCancel = false;
+    // if (fileslist && fileslist.length && fileslist.length > 0 && !doCancel) {
+    //   setUploadFiles(fileslist);
+    // }
     return () => {
-      doCancel = true;
+      // doCancel = true;
       sendUploadStatus(false);
     };
   }, []);
@@ -110,7 +109,7 @@ function SysUpload(props) {
           vote.status = arr[i].status;
           newarr.push(vote);
         }
-        setUploadFiles([...newarr]);
+        // setUploadFiles([...newarr]);
         ChangeFileslist({ arr: newarr, ischange: true });
         setShowIcon(true);
         if (getUploadStatus) { getUploadStatus(false) };

@@ -294,6 +294,7 @@ function Operation(props) {
                               wrappedComponentRef={ContentRef}
                               formrecord={info.edit.main}
                               isedit
+                              location={location}
                             />
                           </EditContext.Provider>
                         </Panel>

@@ -186,13 +186,13 @@ function ToDodetails(props) {
 
   const operations = (
     <>
-      {tabActivekey === 'workorder' && !allloading && (
+      {tabActivekey === 'workorder' && (
         <>
           {/* 测试下载功能 */}
           {/* <Button onClick={()=>test()}>下载</Button> */}
           {taskName === '已登记' && !olduploadstatus && (
             <Popconfirm title="确定删除此事件单吗？" onConfirm={() => deleteflow()}>
-              <Button type="danger" ghost style={{ marginRight: 8 }} disabled={olduploadstatus || registUploadStatus}>
+              <Button type="danger" ghost style={{ marginRight: 8 }} disabled={olduploadstatus || registUploadStatus || allloading}>
                 删除
               </Button>
             </Popconfirm>
@@ -200,12 +200,12 @@ function ToDodetails(props) {
           {(taskName === '待审核' ||
             (taskName === '待处理' && check === null) ||
             (taskName === '待确认' && check === null)) && (
-              <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleGoback()} disabled={olduploadstatus}>
+              <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleGoback()} disabled={olduploadstatus || allloading}>
                 回退
               </Button>
             )}
           {taskName !== '待处理' && (
-            <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('save')} disabled={olduploadstatus || registUploadStatus}>
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('save')} disabled={olduploadstatus || registUploadStatus || allloading}>
               保存
             </Button>
           )}
@@ -214,13 +214,13 @@ function ToDodetails(props) {
               type="primary"
               style={{ marginRight: 8 }}
               onClick={() => { handleClick('other') }}
-              disabled={olduploadstatus || registUploadStatus}
+              disabled={registUploadStatus || allloading}
             >
               审核
             </Button>
           )}
           {taskName === '待处理' && (
-            <Button type="primary" style={{ marginRight: 8 }} onClick={eventaccpt} disabled={olduploadstatus}>
+            <Button type="primary" style={{ marginRight: 8 }} onClick={eventaccpt}>
               接单
             </Button>
           )}
@@ -231,13 +231,13 @@ function ToDodetails(props) {
                 type="primary"
                 style={{ marginRight: 8 }}
                 onClick={() => { handleClick('flow') }}
-                disabled={olduploadstatus || registUploadStatus}
+                disabled={olduploadstatus || registUploadStatus || allloading}
               >
                 流转
               </Button>
             )}
           {next === '确认' && taskName !== '处理中' && (
-            <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('check')} disabled={olduploadstatus}>
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('check')} disabled={olduploadstatus || allloading}>
               转回访
             </Button>
           )}
@@ -247,7 +247,7 @@ function ToDodetails(props) {
                 type="primary"
                 style={{ marginRight: 8 }}
                 onClick={() => { handleClick('flowcheck') }}
-                disabled={olduploadstatus}
+                disabled={olduploadstatus || allloading}
               >
                 转回访
               </Button>
@@ -255,7 +255,7 @@ function ToDodetails(props) {
                 type="primary"
                 style={{ marginRight: 8 }}
                 onClick={() => { handleClick('other'); setChangeOrder('处理') }}
-                disabled={olduploadstatus}
+                disabled={olduploadstatus || allloading}
               >
                 转单
               </Button>
@@ -266,7 +266,7 @@ function ToDodetails(props) {
               type="primary"
               style={{ marginRight: 8 }}
               onClick={() => { handleClick('other') }}
-              disabled={olduploadstatus}
+              disabled={olduploadstatus || allloading}
             >
               重分派
             </Button>
@@ -276,13 +276,13 @@ function ToDodetails(props) {
               type="primary"
               style={{ marginRight: 8 }}
               onClick={() => { handleHold('over') }}
-              disabled={olduploadstatus}
+              disabled={olduploadstatus || allloading}
             >
               结束
             </Button>
           )}
         </>)}
-      <Button onClick={handleclose}>返回</Button>
+      <Button onClick={handleclose} disabled={allloading}>返回</Button>
     </>
   );
   const handleTabChange = key => {

@@ -242,7 +242,7 @@ function ToDoregist(props) {
             )}
         </>
       )}
-      <Button onClick={handleclose}>返回</Button>
+      <Button onClick={handleclose} disabled={loading}>返回</Button>
     </>
   );
   const handleTabChange = key => {

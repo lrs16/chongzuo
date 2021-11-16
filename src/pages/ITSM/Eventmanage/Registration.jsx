@@ -326,10 +326,10 @@ function Registration(props) {
 
   const operations = (
     <>
-      <Button type="primary" style={{ marginRight: 8 }} onClick={handlesubmit} disabled={uploadStatus || handleUploadStatus}>
+      <Button type="primary" style={{ marginRight: 8 }} onClick={handlesubmit} disabled={uploadStatus || handleUploadStatus || loading}>
         保存
       </Button>
-      <Button type="default" onClick={() => handleclose()}>
+      <Button type="default" onClick={() => handleclose()} disabled={loading}>
         关闭
       </Button>
     </>

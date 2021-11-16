@@ -7,7 +7,7 @@ import SysDict from '@/components/SysDict';
 import Registrat from './components/Registrat';
 
 function Registration(props) {
-  const { dispatch, userinfo, loading, tabnew, location, tabdata } = props;
+  const { dispatch, userinfo, loading, tabnew, location, tabdata, olduploadstatus } = props;
   const pagetitle = props.route.name;
   // const [flowtype, setFlowtype] = useState('1'); // 流转类型
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
@@ -139,7 +139,7 @@ function Registration(props) {
 
   const operations = (
     <>
-      <Button type="primary" style={{ marginRight: 8 }} onClick={() => getregistrat('save')} disabled={loading}>
+      <Button type="primary" style={{ marginRight: 8 }} onClick={() => getregistrat('save')} disabled={loading || olduploadstatus}>
         保存
       </Button>
       {/* <SelectUser handleSubmit={() => getregistrat('next')}>
@@ -147,7 +147,7 @@ function Registration(props) {
           流转
         </Button>
       </SelectUser> */}
-      <Button type="default" onClick={() => handleclose()}>关闭</Button>
+      <Button type="default" onClick={() => handleclose()} disabled={loading}>关闭</Button>
     </>
   );
 
@@ -179,6 +179,7 @@ function Registration(props) {
 export default connect(({ itsmuser, viewcache, demandregister, loading }) => ({
   tabnew: viewcache.tabnew,
   tabdata: viewcache.tabdata,
+  olduploadstatus: viewcache.olduploadstatus,
   userinfo: itsmuser.userinfo,
   demandregister,
   loading: loading.models.demandregister,

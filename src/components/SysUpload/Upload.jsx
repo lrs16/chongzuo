@@ -30,7 +30,6 @@ function SysUpload(props) {
       }
     });
     return () => {
-      getUploadStatus(false);
       sendUploadStatus(false);
     }
   }, []);
