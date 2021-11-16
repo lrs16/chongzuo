@@ -345,6 +345,7 @@ function Registration(props) {
       <Spin tip="正在提交数据..." spinning={!!loading}>
         <div className={styles.collapse}>
           <HadleContext.Provider value={{
+            handleUploadStatus,
             getUploadStatus: (v) => { setHandleUploadStatus(v) },
             getRegistUploadStatus: (v) => { setUploadStatus(v) }
           }}>

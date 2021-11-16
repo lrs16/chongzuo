@@ -74,7 +74,7 @@ const Registrat = forwardRef((props, ref) => {
   const [showIcon, setShowIcon] = useState(true);
   const [banOpenFileDialog, setBanOpenFileDialog] = useState(true);
 
-  const { getRegistUploadStatus } = useContext(UploadContext);
+  const { getRegistUploadStatus, handleUploadStatus } = useContext(UploadContext);
 
   useEffect(() => {
     if (files && files.length > 0) {
@@ -944,26 +944,24 @@ const Registrat = forwardRef((props, ref) => {
         </Row>
         <Row gutter={24}>
           <Col span={24}>
-            <Form.Item
-              label="上传附件"
-              {...forminladeLayout}
-            >
-              <div
-                style={{ width: '50%' }}
-                onMouseDown={() => {
-                  setBanOpenFileDialog(true);
-                  validateFields(['main_eventObject'], err => {
-                    if (err) {
-                      message.error('请先选择事件对象');
-                    } else {
-                      setBanOpenFileDialog(false)
-                    }
-                  })
-                }}
-              >
+            <Form.Item label="上传附件"  {...forminladeLayout}>
+              <div style={{ width: '50%' }}>
                 {((location && location.state && !location.state.cache) || orderNo) && !loading && (
                   <Upload {...uploadprops} key={localStorage.getItem('tabid')}>
-                    <Button type="primary">
+                    <Button
+                      type="primary"
+                      onClick={() => {
+                        setBanOpenFileDialog(true);
+                        validateFields(['main_eventObject'], err => {
+                          if (err) {
+                            message.error('请先选择事件对象');
+                          } else if (handleUploadStatus) {
+                            message.info('文件正在上传中，请稍后再上传');
+                          } else {
+                            setBanOpenFileDialog(false);
+                          }
+                        })
+                      }}>
                       <DownloadOutlined /> 上传附件
                     </Button>
                   </Upload>

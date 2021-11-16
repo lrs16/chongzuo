@@ -23,7 +23,7 @@ function KnowledgCollect(props) {
           }
         });
       } else {
-        message.error('请先保存信息')
+        message.error('请先输入信息')
       }
       ChangeValuealready(false)
     }

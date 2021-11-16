@@ -204,7 +204,7 @@ class GlobalHeaderRight extends Component {
           showViewMore
         />
         {/* 通知 */}
-        <NoticeIcon.Tab
+        {/* <NoticeIcon.Tab
           tabKey="notification"
           // count={unreadMsg.notification}
           // list={noticeData.notification}
@@ -215,9 +215,9 @@ class GlobalHeaderRight extends Component {
             id: 'component.globalHeader.notification.empty',
           })}
           showViewMore
-        />
+        /> */}
         {/* 消息 */}
-        <NoticeIcon.Tab
+        {/* <NoticeIcon.Tab
           tabKey="message"
           // count={unreadMsg.message}
           // list={noticeData.message}
@@ -228,7 +228,7 @@ class GlobalHeaderRight extends Component {
             id: 'component.globalHeader.message.empty',
           })}
           showViewMore
-        />
+        /> */}
       </NoticeIcon>
     );
   }

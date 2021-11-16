@@ -33,6 +33,7 @@ function SysUpload(props) {
     };
   }, []);
 
+
   // 不允许上传类型
   useEffect(() => {
     getFileSecuritySuffix().then(res => {
@@ -148,7 +149,7 @@ function SysUpload(props) {
   return (
     <>
       <Upload {...uploadprops}>
-        <Button type="primary">
+        <Button type="primary" onClick={() => { if (banOpenFileDialog) { message.info('文件正在上传中，请稍后再上传') } }}>
           <DownloadOutlined /> 上传附件
         </Button>
       </Upload>

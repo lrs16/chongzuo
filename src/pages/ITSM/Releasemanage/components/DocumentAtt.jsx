@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { connect } from 'dva';
-import { Table, Button, Icon, Input, Select } from 'antd';
+import { Table, Button, Icon, Input, Select, message } from 'antd';
 import SysUpload from '@/components/SysUpload/Upload';
 import { PaperClipOutlined } from '@ant-design/icons';
 import FilesContext from '@/layouts/MenuContext';              // 引用上下文管理组件
@@ -31,6 +31,7 @@ const downloadmap = new Map([
 function DocumentAtt(props) {
   const { dispatch, rowkey, unitmap, isEdit, dataSource, Unit, check, ChangeValue } = props;
   const [data, setData] = useState([]);
+  const [uploadStatus, setUploadStatus] = useState(false);
   const { ChangeButtype, addAttaches, ChangeaddAttaches } = useContext(FilesContext);                     // 是否要添加行
   const dutyUnit = dataSource && dataSource.length > 0 ? dataSource[0].dutyUnit : ''
   const Attaches = [
@@ -226,24 +227,26 @@ function DocumentAtt(props) {
       render: (text, record) => {
         if (record.key === '9' && isEdit) {
           return (
-            <div style={{ width: 300, marginTop: 12 }} onMouseDown={() => ChangeButtype('')}>
+            <div style={{ width: 300, marginTop: 12 }} onMouseDown={() => { ChangeButtype(''); }}>
               <FilesContext.Provider value={{
                 files: JSON.parse(text),
                 ChangeFiles: (v => handleFieldChange(JSON.stringify(v), 'attachFile', record.key)),
+                getUploadStatus: (v) => { setUploadStatus(v) },
               }}>
-                <SysUpload key={record.id || record.key} />
+                <SysUpload key={record.id || record.key} banOpenFileDialog={uploadStatus} />
               </FilesContext.Provider>
             </div>
           )
         } if (isEdit && record.editable) {
           return (
             <>
-              <div style={{ width: 300 }} onMouseDown={() => ChangeButtype('')}>
+              <div style={{ width: 300 }} onMouseDown={() => { ChangeButtype(''); }}>
                 <FilesContext.Provider value={{
                   files: JSON.parse(text),
                   ChangeFiles: (v => handleFieldChange(JSON.stringify(v), 'attachFile', record.key)),
+                  getUploadStatus: (v) => { setUploadStatus(v) },
                 }}>
-                  <SysUpload key={record.id || record.key} />
+                  <SysUpload key={record.id || record.key} banOpenFileDialog={uploadStatus} />
                 </FilesContext.Provider>
               </div>
               {check && text === '[]' && (<div style={{ color: '#f5222d' }}>请上传{record.docName}</div>)}

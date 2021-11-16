@@ -269,7 +269,7 @@ const Handle = React.forwardRef((props, ref) => {
             // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
             >
               {((location && location.state && !location.state.cache) || orderNo) && !loading && (
-                <div style={{ width: '50%' }} onMouseDown={() => { if (uploadStatus) { message.info('登记信息中的附件正在上传中，请稍后再上传') } }}>
+                <div style={{ width: '50%' }}>
                   <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} banOpenFileDialog={uploadStatus} />
                   <span style={{ color: '#ff0000' }}> 转回访请上传附件 </span>
                 </div>

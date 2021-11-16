@@ -243,13 +243,13 @@ function Registration(props) {
 
   const operations = (
     <>
-      {!saveloading && (<Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSave('save')}>
+      <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSave('save')} disabled={saveloading || loading}>
         保存
-      </Button>)}
-      {!loading && (<Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSubmit()}>
+      </Button>
+      <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSubmit()} disabled={loading || saveloading}>
         流转
-      </Button>)}
-      <Button type="default" onClick={() => handleclose()}>关闭</Button>
+      </Button>
+      <Button type="default" onClick={() => handleclose()} disabled={loading || saveloading}>关闭</Button>
     </>
   );
 

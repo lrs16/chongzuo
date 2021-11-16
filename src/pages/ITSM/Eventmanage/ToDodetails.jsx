@@ -313,6 +313,7 @@ function ToDodetails(props) {
     >
       {tabActivekey === 'workorder' && (
         <UploadContext.Provider value={{
+          handleUploadStatus: olduploadstatus,
           getRegistUploadStatus: (v) => { setRegistUploadStatus(v) }
         }}>
           <WorkOrder
