@@ -984,6 +984,18 @@ function ChartDrawer(props) {
                 })
                 break;
             // 故障责任单位情况（card）
+            case '故障总数':
+                dispatch({
+                    type: 'fault/getfaultQueryList',
+                    payload: {
+                        pageNum: page,
+                        pageSize: size,
+                        addTimeBegin: value.time1,
+                        addTimeEnd: value.time2,
+                    }
+                })
+                break;
+            // 故障责任单位情况（card）
             case '功能开发':
             case '软件运维':
             case '硬件运维':
@@ -1057,7 +1069,7 @@ function ChartDrawer(props) {
                     payload: {
                         pageNum: page,
                         pageSize: size,
-                        registerUser: value.type,
+                        registerUser: `${value.type}?`,
                         addTimeBegin: value.startdate,
                         addTimeEnd: value.enddate,
                     }
@@ -1069,7 +1081,7 @@ function ChartDrawer(props) {
                     payload: {
                         pageNum: page,
                         pageSize: size,
-                        handler: value.type,
+                        handler: `${value.type}?`,
                         addTimeBegin: value.startdate,
                         addTimeEnd: value.enddate,
                     }
@@ -1081,7 +1093,7 @@ function ChartDrawer(props) {
                     payload: {
                         pageNum: page,
                         pageSize: size,
-                        registerUnit: value.type,
+                        registerUnit: `${value.type}?`,
                         addTimeBegin: value.startdate,
                         addTimeEnd: value.enddate,
                     }
@@ -1093,7 +1105,7 @@ function ChartDrawer(props) {
                     payload: {
                         pageNum: page,
                         pageSize: size,
-                        handleUnit: value.type,
+                        handleUnit: `${value.type}?`,
                         addTimeBegin: value.startdate,
                         addTimeEnd: value.enddate,
                     }

@@ -147,7 +147,7 @@ function StatisticalAnalysis(props) {
               {
                 analysislist && analysislist !== undefined && (
                   <Row>
-                    <Col span={8}><StatisticsCard title='故障总数：' value={analysislist.allNum} suffix='单' des='环比' desval={`${analysislist.allRingPoints}%`} type={Number(analysislist.allRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                    <Col span={8}><StatisticsCard title='故障总数：' staticName="故障总数" time1={analysislist.time1} time2={analysislist.time2} value={analysislist.allNum} suffix='单' des='环比' desval={`${analysislist.allRingPoints}%`} type={Number(analysislist.allRingPoints) > 0 ? 'up' : 'down'} /></Col>
                     <Col span={8}><StatisticsCard staticName="已处理" title='已处理：' time1={analysislist.time1} time2={analysislist.time2} value={analysislist.closeNum} suffix='单' des='环比' desval={`${analysislist.closeRingPoints}%`} type={Number(analysislist.closeRingPoints) > 0 ? 'up' : 'down'} /></Col>
                     <Col span={8}><StatisticsCard title='解决率：' value={analysislist.point} suffix='%' des='环比' desval={`${analysislist.ringPoints}%`} type={Number(analysislist.ringPoints) > 0 ? 'up' : 'down'} /></Col>
                   </Row>

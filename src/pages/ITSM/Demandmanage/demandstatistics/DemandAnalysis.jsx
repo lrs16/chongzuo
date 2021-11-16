@@ -178,7 +178,7 @@ function Statistics(props) {
           {
             ratiodatalist && ratiodatalist !== undefined && (
               <Row type="flex" justify="space-around">
-                <Col span={4}><StatisticsCard title='需求总数：' value={ratiodatalist.total} suffix='单' des='环比' desval={`${ratiodatalist.totalMom}%`} type={Number(ratiodatalist.totalMom) > 0 ? 'up' : 'down'} /></Col>
+                <Col span={4}><StatisticsCard title='需求总数：' staticName="需求总数" value={ratiodatalist.total} suffix='单' des='环比' desval={`${ratiodatalist.totalMom}%`} type={Number(ratiodatalist.totalMom) > 0 ? 'up' : 'down'} /></Col>
                 <Col span={5}><StatisticsCard title='已开发：' staticName="已开发" value={ratiodatalist.dev} suffix='单' des='环比' desval={`${ratiodatalist.devMom}%`} type={Number(ratiodatalist.devMom) > 0 ? 'up' : 'down'} /></Col>
                 <Col span={5}><StatisticsCard title='已发布：' staticName="已发布" value={ratiodatalist.release} suffix='单' des='环比' desval={`${ratiodatalist.releaseMom}%`} type={Number(ratiodatalist.releaseMom) > 0 ? 'up' : 'down'} /></Col>
                 <Col span={5}><StatisticsCard title='开发率：' value={ratiodatalist.devRate} suffix='' des='环比' desval={`${ratiodatalist.devRateMom}%`} type={Number(ratiodatalist.devRateMom) > 0 ? 'up' : 'down'} /></Col>
