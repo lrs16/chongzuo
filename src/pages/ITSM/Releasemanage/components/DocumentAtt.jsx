@@ -32,7 +32,7 @@ function DocumentAtt(props) {
   const { dispatch, rowkey, unitmap, isEdit, dataSource, Unit, check, ChangeValue } = props;
   const [data, setData] = useState([]);
   const [uploadStatus, setUploadStatus] = useState(false);
-  const { ChangeButtype, addAttaches, ChangeaddAttaches } = useContext(FilesContext);                     // 是否要添加行
+  const { ChangeButtype, addAttaches, ChangeaddAttaches, location } = useContext(FilesContext);                     // 是否要添加行
   const dutyUnit = dataSource && dataSource.length > 0 ? dataSource[0].dutyUnit : ''
   const Attaches = [
     { docName: '功能出厂测试报告', attachFile: '[]', dutyUnit, docTemplate: '', remarks: '', editable: true, },
@@ -45,7 +45,7 @@ function DocumentAtt(props) {
     { docName: '功能发布报告', attachFile: '[]', dutyUnit, docTemplate: '', remarks: '', editable: true, },
     { docName: '其它附件', attachFile: '[]', dutyUnit, docTemplate: '', remarks: '', editable: true, },
   ];
-
+  console.log(location);
 
   // 获取行
   const getRowByKey = (key, newData) => {
@@ -228,19 +228,7 @@ function DocumentAtt(props) {
         if (record.key === '9' && isEdit) {
           return (
             <div style={{ width: 300, marginTop: 12 }} onMouseDown={() => { ChangeButtype(''); }}>
-              <FilesContext.Provider value={{
-                files: JSON.parse(text),
-                ChangeFiles: (v => handleFieldChange(JSON.stringify(v), 'attachFile', record.key)),
-                getUploadStatus: (v) => { setUploadStatus(v) },
-              }}>
-                <SysUpload key={record.id || record.key} banOpenFileDialog={uploadStatus} />
-              </FilesContext.Provider>
-            </div>
-          )
-        } if (isEdit && record.editable) {
-          return (
-            <>
-              <div style={{ width: 300 }} onMouseDown={() => { ChangeButtype(''); }}>
+              {location && (!location.state || (location.state && !location.state.cache)) && (
                 <FilesContext.Provider value={{
                   files: JSON.parse(text),
                   ChangeFiles: (v => handleFieldChange(JSON.stringify(v), 'attachFile', record.key)),
@@ -248,6 +236,22 @@ function DocumentAtt(props) {
                 }}>
                   <SysUpload key={record.id || record.key} banOpenFileDialog={uploadStatus} />
                 </FilesContext.Provider>
+              )}
+            </div>
+          )
+        } if (isEdit && record.editable) {
+          return (
+            <>
+              <div style={{ width: 300 }} onMouseDown={() => { ChangeButtype(''); }}>
+                {location && (!location.state || (location.state && !location.state.cache)) && (
+                  <FilesContext.Provider value={{
+                    files: JSON.parse(text),
+                    ChangeFiles: (v => handleFieldChange(JSON.stringify(v), 'attachFile', record.key)),
+                    getUploadStatus: (v) => { setUploadStatus(v) },
+                  }}>
+                    <SysUpload key={record.id || record.key} banOpenFileDialog={uploadStatus} />
+                  </FilesContext.Provider>
+                )}
               </div>
               {check && text === '[]' && (<div style={{ color: '#f5222d' }}>请上传{record.docName}</div>)}
             </>

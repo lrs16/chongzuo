@@ -27,7 +27,7 @@ const Attaches = [
 
 
 function Registration(props) {
-  const { dispatch, userinfo, loading, tabnew, tabdata, location } = props;
+  const { dispatch, userinfo, loading, tabnew, tabdata, location, uploadstatus } = props;
   const pagetitle = props.route.name;
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
   const [uservisible, setUserVisible] = useState(false);        // 是否显示选人组件
@@ -243,13 +243,13 @@ function Registration(props) {
 
   const operations = (
     <>
-      <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSave('save')} disabled={saveloading || loading}>
+      <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSave('save')} disabled={saveloading || loading || uploadstatus}>
         保存
       </Button>
-      <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSubmit()} disabled={loading || saveloading}>
+      <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSubmit()} disabled={loading || saveloading || uploadstatus}>
         流转
       </Button>
-      <Button type="default" onClick={() => handleclose()} disabled={loading || saveloading}>关闭</Button>
+      <Button type="default" onClick={() => handleclose()} disabled={loading || saveloading || uploadstatus}>关闭</Button>
     </>
   );
 
@@ -266,7 +266,8 @@ function Registration(props) {
             ChangeButtype: (() => { }),
             taskId: '',
             addAttaches: false,
-            ChangeaddAttaches: (() => { })
+            ChangeaddAttaches: (() => { }),
+            location,
           }}>
             <Registrat
               wrappedComponentRef={RegistratRef}
@@ -299,6 +300,7 @@ function Registration(props) {
 export default connect(({ itsmuser, viewcache, loading }) => ({
   tabnew: viewcache.tabnew,
   tabdata: viewcache.tabdata,
+  uploadstatus: viewcache.uploadstatus,
   userinfo: itsmuser.userinfo,
   loading: loading.effects['releasetodo/releaseflow'],
 }))(Registration);

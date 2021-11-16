@@ -13,7 +13,7 @@ import Backoff from './components/Backoff';
 import { saveTimeoutMsg } from '../services/api';
 
 function ToDodetails(props) {
-  const { location, dispatch, loading, loadingopen, allloading, currentTaskStatus, relationCount, submitTimes, info } = props;
+  const { location, dispatch, loading, loadingopen, allloading, currentTaskStatus, relationCount, submitTimes, info, uploadstatus } = props;
   const { taskName, taskId, releaseType, Id, } = location.query;
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [buttype, setButtype] = useState('');                    // 点击的按钮类型
@@ -215,51 +215,51 @@ function ToDodetails(props) {
   const operations = (
     <>
       {taskName === '出厂测试' && relationCount === 0 && submitTimes === 0 && (
-        <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => deleteflow()}>
+        <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => deleteflow()} disabled={uploadstatus || allloading}>
           删除
         </Button>
       )}
       {!saved && taskName !== '出厂测试' && taskName !== '发布实施准备' && taskName !== '发布实施' && (
-        <Button type="danger" ghost style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => { handleGoback() }}>
+        <Button type="danger" ghost style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => { handleGoback() }} disabled={uploadstatus || allloading}>
           回退
         </Button>
       )}
       {taskName === '发布实施准备' && (
-        <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => dowloadPre()} >
+        <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => dowloadPre()} disabled={uploadstatus || allloading}>
           导出
         </Button>
       )}
-      <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('save')}  >
+      <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('save')} disabled={uploadstatus || allloading}>
         保存
       </Button>
       {submittype === 1 && (
         <>{(taskName === '版本管理员审核' || taskName === '科室负责人审核' || taskName === '中心领导审核') && info && info.releaseMains && info.releaseMains.length > 1 ? (
-          <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('flow')} >
+          <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('flow')} disabled={uploadstatus || allloading}>
             流转
           </Button>
         ) : (
-          <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => handleClick('flow')} >
+          <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => handleClick('flow')} disabled={uploadstatus || allloading}>
             {taskName === '业务复核' ? '结束' : '流转'}
           </Button>
         )}
         </>
       )}
       {taskName === '出厂测试' && submitTimes !== undefined && submitTimes !== 0 && (
-        <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => handleClick('over')} >
+        <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => handleClick('over')} disabled={uploadstatus || allloading}>
           结束
         </Button>
       )}
       {submittype === 0 && (taskName === '平台验证' || taskName === '业务验证') && (
-        <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => handleClick('noPass')} >
+        <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => handleClick('noPass')} disabled={uploadstatus || allloading}>
           出厂测试
         </Button>
       )}
       {submittype === 0 && (taskName === '科室负责人审核' || taskName === '中心领导审核') && (
-        <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => handleClick('noPass')} >
+        <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => handleClick('noPass')} disabled={uploadstatus || allloading}>
           版本管理员审核
         </Button>
       )}
-      <Button onClick={() => handleClose()}>返回</Button>
+      <Button onClick={() => handleClose()} disabled={uploadstatus || allloading}>返回</Button>
     </>
   )
 
@@ -283,6 +283,7 @@ function ToDodetails(props) {
             ChangeaddAttaches: (v => setAddAttaches(v)),
             saved,
             releaseType,
+            location,
           }}>
             <WorkOrder location={location} buttype={buttype} />
           </SubmitTypeContext.Provider>
@@ -304,12 +305,13 @@ function ToDodetails(props) {
   );
 }
 
-export default connect(({ releasetodo, loading }) => ({
+export default connect(({ releasetodo, viewcache, loading }) => ({
   info: releasetodo.info,
   tasklinks: releasetodo.tasklinks,
   relationCount: releasetodo.relationCount,
   submitTimes: releasetodo.submitTimes,
   currentTaskStatus: releasetodo.currentTaskStatus,
+  uploadstatus: viewcache.uploadstatus,
   loading: loading.effects['releasetodo/releaseflow'],
   loadingopen: loading.effects['releasetodo/openflow'],
   // loadingcheckrelese: loading.effects['releasetodo/checkversion'],
