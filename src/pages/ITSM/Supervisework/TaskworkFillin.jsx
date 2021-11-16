@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import TaskworkContext from '@/layouts/MenuContext';
 import { connect } from 'dva';
 import moment from 'moment';
 import {
@@ -29,6 +30,7 @@ function TaskworkFillin(props) {
     //   const [richtext, setRichtext] = useState('');
     const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
     const [copyData, setCopyData] = useState(''); // 复制的数据
+    const [taskworkUploadStatus, setTaskworkUploadStatus] = useState(false);
 
     const formItemLayout = {
         labelCol: {
@@ -81,27 +83,25 @@ function TaskworkFillin(props) {
     }, []);
 
     //  点击保存触发事件
-    const handlesubmitSave = (params) => {
-        TaskworkfillinRef.current.validateFields((err, values) => {
-            if (params ? true : !err) {
-                dispatch({
-                    type: 'supervisemodel/saveallForm',
-                    payload: {
-                        ...values,
-                        main_workUser: JSON.stringify(values.main_workUser),
-                        main_workUserId: JSON.stringify(values.main_workUserId),
-                        main_addTime: values.main_addTime ? values.main_addTime.format('YYYY-MM-DD HH:mm:ss') : '',
-                        main_plannedStartTime: values.main_plannedStartTime ? values.main_plannedStartTime.format('YYYY-MM-DD HH:mm:ss') : '',
-                        main_plannedEndTime: values.main_plannedEndTime ? values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss') : '',
-                        main_fileIds: files.ischange ? JSON.stringify(files.arr) : null,
-                        flowNodeName: '工作登记',
-                        editState: 'add',
-                        main_status: '1',
-                        main_addUserId: userinfo.userId,
-                        main_addUnitId: userinfo.unitId,
-                    }
-                })
-            }
+    const handlesubmitSave = () => {
+        TaskworkfillinRef.current.validateFields((_, values) => {
+            dispatch({
+                type: 'supervisemodel/saveallForm',
+                payload: {
+                    ...values,
+                    main_workUser: JSON.stringify(values.main_workUser),
+                    main_workUserId: JSON.stringify(values.main_workUserId),
+                    main_addTime: values.main_addTime ? values.main_addTime.format('YYYY-MM-DD HH:mm:ss') : '',
+                    main_plannedStartTime: values.main_plannedStartTime ? values.main_plannedStartTime.format('YYYY-MM-DD HH:mm:ss') : '',
+                    main_plannedEndTime: values.main_plannedEndTime ? values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss') : '',
+                    main_fileIds: files.ischange ? JSON.stringify(files.arr) : null,
+                    flowNodeName: '工作登记',
+                    editState: 'add',
+                    main_status: '1',
+                    main_addUserId: userinfo.userId,
+                    main_addUnitId: userinfo.unitId,
+                }
+            })
         });
     };
 
@@ -143,7 +143,7 @@ function TaskworkFillin(props) {
     // 上传删除附件触发保存
     useEffect(() => {
         if (files.ischange) {
-            handlesubmitSave(true);
+            handlesubmitSave();
         }
     }, [files]);
 
@@ -258,7 +258,8 @@ function TaskworkFillin(props) {
             <Button
                 type="primary"
                 style={{ marginRight: 8 }}
-                onClick={() => handlesubmitSave(false)}
+                onClick={() => handlesubmitSave()}
+                disabled={taskworkUploadStatus}
             >
                 保存
             </Button>
@@ -266,6 +267,7 @@ function TaskworkFillin(props) {
                 type="primary"
                 style={{ marginRight: 8 }}
                 onClick={() => handlesubmit()}
+                disabled={taskworkUploadStatus}
             >
                 提交
             </Button>
@@ -279,19 +281,23 @@ function TaskworkFillin(props) {
             extra={extrabuttons}
         >
             <Card>
-                <TaskworkEditfillin
-                    ref={TaskworkfillinRef}
-                    useInfo={userinfo}
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    //   getRichtext={(richText => setRichtext(richText))}
-                    ChangeFiles={newvalue => {
-                        setFiles(newvalue);
-                    }}
-                    files={[]}
-                    superviseworkPersonSelect={superviseworkPersonSelect}
-                    main={copyData}
-                />
+                <TaskworkContext.Provider value={{
+                    getUploadStatus: (v) => { setTaskworkUploadStatus(v) },
+                }}>
+                    <TaskworkEditfillin
+                        ref={TaskworkfillinRef}
+                        useInfo={userinfo}
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
+                        //   getRichtext={(richText => setRichtext(richText))}
+                        ChangeFiles={newvalue => {
+                            setFiles(newvalue);
+                        }}
+                        files={[]}
+                        superviseworkPersonSelect={superviseworkPersonSelect}
+                        main={copyData}
+                        location={location}
+                    /></TaskworkContext.Provider>
             </Card>
         </PageHeaderWrapper>
     );

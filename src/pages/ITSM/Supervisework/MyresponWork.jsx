@@ -96,7 +96,7 @@ function MyresponWork(props) {
         flowNodeName: record.flowNodeName,
         status: record.status,
         checkStatus: record.checkStatus,
-        Id: record.no,
+        orderNo: record.no,
         workUser: record.workUser
       },
       state: {

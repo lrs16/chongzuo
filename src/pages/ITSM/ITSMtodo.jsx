@@ -83,7 +83,7 @@ const columns = [
                   flowNodeName: record.nodeName,
                   status: record.itemWorkStatus,
                   checkStatus: record.itemCheckStatus,
-                  Id: text,
+                  orderNo: text,
                 },
                 state: {
                   dynamicpath: true,
@@ -95,47 +95,17 @@ const columns = [
               router.push({
                 pathname: `/ITSM/supervisework/workplandetail`,
                 query: {
-                  delay: 'delay',
+                  // delay: 'delay',
                   mainId: record.instanceId,
                   flowNodeName: record.nodeName,
                   status: record.itemWorkStatus,
                   checkStatus: record.itemCheckStatus,
-                  Id: text,
-                  workUser: record.workUser
+                  orderNo: text,
+                  workUser: record.todoUserName
                 },
                 state: {
                   dynamicpath: true,
                   menuDesc: '工作执行',
-                }
-              })
-            }
-            if (record.taskName === '工作审核') {
-              router.push({
-                pathname: `/ITSM/supervisework/workplandetail`,
-                query: {
-                  // type,
-                  mainId: record.instanceId,
-                  flowNodeName: record.nodeName,
-                  status: record.itemWorkStatus,
-                  checkStatus: record.itemCheckStatus,
-                  Id: text,
-                },
-                state: {
-                  dynamicpath: true,
-                  menuDesc: '工作审核',
-                }
-              })
-            }
-            if (record.taskName === '工作查询') {
-              router.push({
-                pathname: `/ITSM/supervisework/queryworkdetails`,
-                query: {
-                  mainId: record.instanceId,
-                  Id: text,
-                },
-                state: {
-                  dynamicpath: true,
-                  menuDesc: '工作查询',
                 }
               })
             }

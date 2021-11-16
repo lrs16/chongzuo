@@ -99,7 +99,7 @@ function TodelayExamine(props) {
         flowNodeName: record.flowNodeName,
         status: record.status,
         checkStatus: record.checkStatus,
-        Id: record.no,
+        orderNo: record.no,
       },
       state: {
         dynamicpath: true,

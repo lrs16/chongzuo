@@ -51,6 +51,7 @@ export default {
     //  登记保存
     *saveallForm({ payload }, { call }) {
       const response = yield call(startFlow);
+      const tabid = sessionStorage.getItem('tabid');
       if (response.code === 200) {
         const saveFormdata = payload;
         saveFormdata.main_id = response.mainId;
@@ -60,9 +61,15 @@ export default {
         if (saveresponse.code === 200) {
           message.success(saveresponse.msg);
           route.push({
-            pathname: `/ITSM/supervisework/mycreatework`,
-            query: { pathpush: true },
-            state: { cache: false }
+            pathname: `/ITSM/supervisework/workplandetail`,
+            query: {
+              mainId: response.mainId,
+              taskId: response.mainId,
+              flowNodeName: '工作登记',
+              status: '工作登记',
+              orderNo: saveresponse.no,
+            },
+            state: { closetabid: tabid },
           })
         } else {
           message.error(saveresponse.msg);
@@ -129,6 +136,9 @@ export default {
 
     //  工作督办查询列表
     *getWorkQueryLists({ payload }, { call, put }) {
+      yield put({
+        type: 'clearcache',
+      })
       const response = yield call(getWorkQueryList, payload);
       yield put({
         type: 'togetworkqueryList',
@@ -235,6 +245,7 @@ export default {
       return {
         ...state,
         openFlowList: [],
+        getworkqueryList: []
       }
     },
     togetMyWorkList(state, action) {

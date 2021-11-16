@@ -26,6 +26,7 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
         type,
         status,
         superviseworkPersonSelect,
+        location
     } = props;
 
     const statusContent = ['计划中', '延期中', '已超时', '已完成']
@@ -265,11 +266,15 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
                             })
                                 (
                                     <div style={{ width: 400 }}>
-                                        <SysUpload
-                                            disabled={type === 'delay'}
-                                            fileslist={files}
-                                            ChangeFileslist={newvalue => setFilesList(newvalue)}
-                                        />
+                                        {
+                                            location && location.state && !location.state.cache && (
+                                                <SysUpload
+                                                    disabled={type === 'delay'}
+                                                    fileslist={files}
+                                                    ChangeFileslist={newvalue => setFilesList(newvalue)}
+                                                />
+                                            )
+                                        }
                                     </div>
                                 )}
                         </Form.Item>

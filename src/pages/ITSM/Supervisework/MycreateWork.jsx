@@ -307,7 +307,7 @@ function MycreateWork(props) {
         flowNodeName: record.flowNodeName,
         status: record.status,
         checkStatus: record.checkStatus,
-        Id: record.no,
+        orderNo: record.no,
       },
       state: {
         dynamicpath: true,
@@ -322,7 +322,7 @@ function MycreateWork(props) {
       pathname: `/ITSM/supervisework/queryworkdetails`,
       query: {
         mainId: record.mainId,
-        No: record.no,
+        orderNo: record.no,
       }
     })
   };
@@ -339,7 +339,6 @@ function MycreateWork(props) {
           return <a onClick={() => gotoDetail(record)}>{text}</a>
         }
         return <a onClick={() => gotoView(record)}>{text}</a>
-
       },
     },
     {
@@ -418,7 +417,7 @@ function MycreateWork(props) {
       title: '超时状态',
       dataIndex: 'timeoutStatus',
       key: 'timeoutStatus',
-      width: 100,
+      width: 200,
       render: (text) => (
         <span>
           <Badge
@@ -431,7 +430,7 @@ function MycreateWork(props) {
       title: '工作状态',
       dataIndex: 'status',
       key: 'status',
-      width: 100,
+      width: 150,
       render: (text) => (
         <span>
           <Badge

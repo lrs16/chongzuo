@@ -94,7 +94,7 @@ function QueryWork(props) {
       pathname: `/ITSM/supervisework/queryworkdetails`,
       query: {
         mainId: record.mainId,
-        Id: record.no,
+        orderNo: record.no,
       },
       state: {
         dynamicpath: true,

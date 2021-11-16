@@ -210,6 +210,7 @@ function SoftTTExecute(props) {
       dataIndex: 'examineStatus',
       key: 'examineStatus',
       width: 150,
+      ellipsis: true,
     },
     {
       title: '申请人',
@@ -246,7 +247,8 @@ function SoftTTExecute(props) {
       title: '审核单位',
       dataIndex: 'examineDept',
       key: 'examineDept',
-      width: 250,
+      width: 260,
+      ellipsis: true,
     },
     {
       title: '操作',
