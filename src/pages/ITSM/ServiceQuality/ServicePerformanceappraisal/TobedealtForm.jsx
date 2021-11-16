@@ -66,7 +66,9 @@ function TobedealtForm(props) {
   const [tabActiveKey, setTabActiveKey] = useState('workorder');
   const [modalvisible, setModalVisible] = useState(false);
   const [modalrollback, setModalRollBack] = useState(false); // 回退信息modle
-
+  const [handleUploadStatus, setHandleUploadStatus] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState(false);
+  
   const {
     taskId,
     assessNo,
@@ -744,6 +746,7 @@ function TobedealtForm(props) {
                       formItemLayout={formItemLayout}
                       forminladeLayout={forminladeLayout}
                       ref={formRef}
+                      getUploadStatus={v => { setUploadStatus(v) }}
                       userinfo={userinfo}
                       getTarget1={getTarget1}
                       getTarget2={getTarget2}

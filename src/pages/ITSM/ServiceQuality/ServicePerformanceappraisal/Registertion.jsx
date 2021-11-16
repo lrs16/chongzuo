@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Form, Button, Collapse, message, } from 'antd';
-import moment from 'moment';
+import { Form, Button, Collapse,message } from 'antd';
 import router from 'umi/router';
+import moment from 'moment';
 import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { contractProvider } from '../services/quality';
@@ -49,8 +49,8 @@ function Registertion(props) {
   const [contractArr, setContractArr] = useState([]);
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [activeKey, setActiveKey] = useState(['registratform']);
-  // const [show, setShow] = useState(false);
-
+  const [uploadStatus, setUploadStatus] = useState(false);
+  const [handleUploadStatus, setHandleUploadStatus] = useState(false);
   const handleClose = () => {
     router.push({
       pathname: `/ITSM/servicequalityassessment/creditcard/creditcardregister`,
@@ -70,6 +70,8 @@ function Registertion(props) {
           const submitIfnfo = values;
           delete submitIfnfo.provider;
           delete submitIfnfo.score;
+          delete values.ifscore;
+          delete values.ifproviderName;
           dispatch({
             type: 'performanceappraisal/assessRegister',
             payload: {
@@ -142,7 +144,7 @@ function Registertion(props) {
   }, []);
 
   useEffect(() => {
-    if (files.ischange) {
+    if (files.ischange && !handleUploadStatus) {
       handleSubmit(0);
     }
   }, [files]);
@@ -236,6 +238,7 @@ function Registertion(props) {
                   forminladeLayout={forminladeLayout}
                   wrappedComponentRef={RegistratRef}
                   userinfo={userinfo}
+                  getUploadStatus={v => { setUploadStatus(v) }}
                   getTarget1={getTarget1}
                   getTarget2={getTarget2}
                   target1={target1}

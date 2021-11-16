@@ -8,9 +8,12 @@ import {
   Col,
   Select,
   AutoComplete,
+  Upload,
   Spin,
+  Button
 } from 'antd';
-import SysUpload from '@/components/SysUpload';
+import { DownloadOutlined, CaretRightOutlined } from '@ant-design/icons';
+import { FileDownload, FileDelete, getFileSecuritySuffix } from '@/services/upload';
 import moment from 'moment';
 import { searchUsers } from '@/services/common';
 import SysDict from '@/components/SysDict';
@@ -22,13 +25,12 @@ import {
 } from '../../services/quality';
 import styles from '../index.less';
 
-
 const { TextArea, Search } = Input;
 const { Option } = Select;
 
 const Register = forwardRef((props, ref) => {
   const {
-    form: { getFieldDecorator, setFieldsValue, getFieldsValue, resetFields },
+    form: { validateFields, getFieldDecorator, setFieldsValue, getFieldsValue, resetFields },
     formItemLayout,
     forminladeLayout,
     userinfo,
@@ -47,6 +49,7 @@ const Register = forwardRef((props, ref) => {
     tabdata,
     search,
     loading,
+    getUploadStatus,
   } = props;
 
   const [fileslist, setFilesList] = useState([]);
@@ -55,17 +58,17 @@ const Register = forwardRef((props, ref) => {
   const [contractlist, setContractlist] = useState([]); // 合同
   const [scorelist, setScorelist] = useState([]); // 评分细则
   const [directorlist, setDirectorlist] = useState([]); // 责任人
+  const [filetype, setFileType] = useState('');
 
   const [providerId, setProviderId] = useState(''); //  设置服务商的id
   const [scoreId, setScoreId] = useState(''); //  设置服务商的id
   const [target2Type, setTarget2Type] = useState('');
   const [spinloading, setSpinLoading] = useState(true);
+  const [showIcon, setShowIcon] = useState(true);
+  const [banOpenFileDialog, setBanOpenFileDialog] = useState(true);
 
   const required = true;
 
-  useEffect(() => {
-    ChangeFiles(fileslist);
-  }, [fileslist]);
 
   useImperativeHandle(
     ref,
@@ -256,6 +259,7 @@ const Register = forwardRef((props, ref) => {
     switch (type) {
       case 'provider':
         setFieldsValue({
+          ifproviderName: providerName,
           providerName, // 服务商
           providerId: id, // 服务商id
           contractName: '',
@@ -267,6 +271,7 @@ const Register = forwardRef((props, ref) => {
 
       case 'score':
         setFieldsValue({
+          ifscore: scoreName,
           score: scoreName, // 评分细则名称
           scoreId: id, // 评分细则id
           assessType,
@@ -326,6 +331,129 @@ const Register = forwardRef((props, ref) => {
 
   const assessmentObject = getTypebyTitle('考核对象');
 
+  useEffect(() => {
+    if (files && files.length > 0) {
+      setFilesList(files);
+    };
+  }, [register]);
+
+  // 附件上传下载
+
+  // 不允许上传类型
+  useEffect(() => {
+    getFileSecuritySuffix().then(res => {
+      if (res.code === 200) {
+        const arr = [...res.data];
+        setFileType(arr);
+      }
+    });
+  }, []);
+
+  const handledownload = filesinfo => {
+    FileDownload(filesinfo.uid).then(res => {
+      const filename = filesinfo.name;
+      const blob = new Blob([res]);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+  };
+
+  const uploadprops = {
+    name: 'file',
+    action: '/sys/file/upload',
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
+    },
+    showUploadList: { showDownloadIcon: showIcon, showRemoveIcon: true },
+    defaultFileList: files,
+    multiple: true,
+    openFileDialogOnClick: !banOpenFileDialog,
+
+    beforeUpload(file) {
+      return new Promise((resolve, reject) => {
+        setShowIcon(false);
+        getUploadStatus(true);
+        const type = file.name.lastIndexOf('.');
+        const filesuffix = file.name.substring(type + 1, file.name.length);
+        const correctfiletype = filetype.indexOf(filesuffix);
+        if (correctfiletype === -1) {
+          message.error(`${file.name}文件不符合上传规则,禁止上传...`);
+          return reject();
+        }
+        return resolve(file);
+      }
+      );
+    },
+
+    onChange({ file, fileList }) {
+      const allsuccess = fileList.map(item => item.response && item.response.fileUploadInfo && item.response.fileUploadInfo.length > 0);
+      const alldone = fileList.map(item => item.status !== 'done');
+      if (file.status === 'done' && alldone.indexOf(true) === -1 && file.response && file.response.code === 200 && allsuccess.indexOf(true) === -1) {
+        const arr = [...fileList];
+        const newarr = [];
+        for (let i = 0; i < arr.length; i += 1) {
+          const vote = {};
+          vote.uid = arr[i]?.response?.data[0]?.id !== undefined ? arr[i]?.response?.data[0]?.id : arr[i].uid;
+          vote.name = arr[i].name;
+          vote.fileUrl = '';
+          vote.status = arr[i].status;
+          newarr.push(vote);
+        }
+        setFilesList([...newarr]);
+        ChangeFiles({ arr: [...newarr], ischange: true });
+        setShowIcon(true);
+        getUploadStatus(false);
+      }
+    },
+
+    onPreview(filesinfo) {
+      if (showIcon) {
+        handledownload(filesinfo);
+      }
+
+    },
+    onDownload(filesinfo) {
+      handledownload(filesinfo);
+    },
+    onRemove(filesinfo) {
+      return new Promise((resolve, reject) => {
+        validateFields((err) => {
+          if (!err) {
+            const newfilelist = fileslist.filter(item => item.uid !== filesinfo.uid);
+            // 删除文件
+            if (filesinfo && !filesinfo.lastModified) {
+              FileDelete(filesinfo.uid).then(res => {
+                if (res.code === 200) {
+                  ChangeFiles({ arr: newfilelist, ischange: true });
+                }
+              });
+            } else {
+              message.success('已中止文件上传');
+              setShowIcon(true);
+              getUploadStatus(false);
+            }
+            return resolve()
+          }
+
+          if (err) {
+            return reject(err)
+          }
+
+          return []
+        })
+      }).catch(() => {
+        return new Promise((resolve) => {
+          return resolve(false)
+        })
+      })
+    },
+  };
+
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>
       <SysDict
@@ -335,7 +463,6 @@ const Register = forwardRef((props, ref) => {
         style={{ display: 'none' }}
       />
       <Form {...formItemLayout}>
-
         <Col span={8}>
           <Form.Item label="服务绩效编号">
             {getFieldDecorator('assessNo', {
@@ -358,6 +485,7 @@ const Register = forwardRef((props, ref) => {
               <DatePicker
                 disabled={search || noEdit}
                 showTime
+                allowClear={false}
                 format="YYYY-MM-DD HH:mm"
               />
               // <div>
@@ -380,7 +508,7 @@ const Register = forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请输入服务商',
+                  message: '请选择服务商',
                 },
               ],
               initialValue: register.provider?.providerName || (register && register.providerName)
@@ -510,7 +638,7 @@ const Register = forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请输入评分细则名称',
+                  message: '请选择评分细则名称',
                 },
               ],
               initialValue: register.score?.scoreName ? register.score.scoreName : register.score,
@@ -748,22 +876,37 @@ const Register = forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-        {!noEdit && (
-          <Col span={24}>
-            <Form.Item label="上传附件" {...forminladeLayout}>
-              {getFieldDecorator('attachment', {
-                initialValue: register.attachment,
-              })(
-                <div style={{ width: 400 }}>
-                  <SysUpload
-                    fileslist={files}
-                    ChangeFileslist={newvalue => setFilesList(newvalue)}
-                  />
-                </div>,
-              )}
-            </Form.Item>
-          </Col>
-        )}
+        {
+          !noEdit && (
+            <Col span={24}>
+              <Form.Item
+                label="上传附件"
+                {...forminladeLayout}
+              >
+                <div
+                  style={{ width: '50%' }}
+                  onMouseDown={() => {
+                    setBanOpenFileDialog(true);
+                    validateFields((err) => {
+                      if (err) {
+                        message.error('请先填写页面中的必填项再上传或者删除附件哦');
+                      } else {
+                        setBanOpenFileDialog(false)
+                      }
+                    })
+                  }}
+                >
+                  <Upload {...uploadprops}>
+                    <Button type="primary">
+                      <DownloadOutlined /> 上传附件
+                    </Button>
+                  </Upload>
+                  {filetype && filetype.length > 0 && (<div style={{ color: '#ccc' }}>仅能上传{filetype.join('，')}格式文件</div>)}
+                </div>
+              </Form.Item>
+            </Col>
+          )
+        }
 
         {noEdit && (
           <Col span={24}>
@@ -777,7 +920,7 @@ const Register = forwardRef((props, ref) => {
           <Form.Item label="登记人">
             {getFieldDecorator('registerName', {
               initialValue: register.registerName || userinfo.userName,
-            })(<Input disabled  />)}
+            })(<Input disabled />)}
           </Form.Item>
         </Col>
 
