@@ -152,6 +152,7 @@ function New(props) {
           <Content
             wrappedComponentRef={ContentRef}
             formrecord={tabdata}
+            location={location}
           />
         </EditContext.Provider>
       </Card>

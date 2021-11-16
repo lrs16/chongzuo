@@ -1062,7 +1062,7 @@ function EditeTable(props) {
           onChange={TableChange}
         />
       </div>
-      {taskName === '新建' && (<Alert message="请先暂存发布清单信息，再保存工单" type="warning" style={{ textAlign: 'center', marginTop: 6, }} />)}
+      {taskName === '新建' && (<Alert message="请先暂存发布清单信息，再保存工单" type="warning" style={{ textAlign: 'center', }} />)}
       <UserContext.Provider value={{ setChoiceUser, uservisible, setUserVisible, title: '分派' }}>
         <CheckOneUser userlist={userlist} />
       </UserContext.Provider>

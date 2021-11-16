@@ -29,7 +29,7 @@ const forItemLayout = {
 
 const Content = forwardRef((props, ref) => {
   const {
-    formrecord, isedit, Noediting,
+    formrecord, isedit, Noediting, location,
     form: { getFieldDecorator, getFieldsValue, resetFields, setFieldsValue, validateFields }
   } = props;
   const [selectdata, setSelectData] = useState('');
@@ -127,7 +127,7 @@ const Content = forwardRef((props, ref) => {
             <Row>
               <Col span={2} style={{ paddingTop: 4, textAlign: 'right' }}>上传附件：</Col>
               <Col span={22} >
-                {!Noediting && (
+                {!Noediting && location && (!location.state || (location.state && !location.state.cache)) && (
                   <div
                     style={{ width: '50%', paddingLeft: 12, float: 'left' }}
                     onMouseDown={() => {

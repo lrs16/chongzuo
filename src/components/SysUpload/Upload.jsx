@@ -13,9 +13,9 @@ function SysUpload(props) {
 
   const sendUploadStatus = (v) => {
     dispatch({
-      type: 'viewcache/getolduploadstatus',
+      type: 'viewcache/getuploadstatus',
       payload: {
-        olduploadstatus: v
+        uploadstatus: v
       }
     })
   };
@@ -29,6 +29,10 @@ function SysUpload(props) {
         setFileType(arr);
       }
     });
+    return () => {
+      getUploadStatus(false);
+      sendUploadStatus(false);
+    }
   }, []);
 
   // 下载附件

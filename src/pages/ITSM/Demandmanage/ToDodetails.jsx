@@ -12,7 +12,7 @@ import TimeoutModal from '../components/TimeoutModal';
 import { judgeTimeoutStatus, saveTimeoutMsg } from '../services/api';
 
 function ToDoregist(props) {
-  const { location, dispatch, workLoad, loading, allloading } = props;
+  const { location, dispatch, workLoad, loading, allloading, olduploadstatus } = props;
   const { taskName, taskId, result, mainId } = location.query;
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [buttontype, setButtonType] = useState('');
@@ -156,12 +156,12 @@ function ToDoregist(props) {
       {tabActivekey === 'workorder' && !allloading && (
         <>
           {taskName === '需求登记' && iscolse === 0 && (
-            <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handledelete()}>
+            <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handledelete()} disabled={olduploadstatus}>
               删除
             </Button>
           )}
           {taskName === '需求登记' && iscolse === 1 && (
-            <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleregisterclose()}>
+            <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleregisterclose()} disabled={olduploadstatus}>
               结束
             </Button>
           )}
@@ -169,12 +169,12 @@ function ToDoregist(props) {
             taskName === '系统开发商审核' ||
             taskName === '自动化科业务人员确认' ||
             taskName === '需求登记人员确认') && histroytaskid !== null && (
-              <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleGoback()}>
+              <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleGoback()} disabled={olduploadstatus}>
                 回退
               </Button>
             )}
           {taskName !== '系统开发商处理' && (
-            <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('save')}>
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('save')} disabled={olduploadstatus}>
               保存
             </Button>
           )}
@@ -182,7 +182,9 @@ function ToDoregist(props) {
             <Button
               type="primary"
               style={{ marginRight: 8 }}
-              onClick={() => { handleClick('flow'); setButandOrder('flow') }}>
+              onClick={() => { handleClick('flow'); setButandOrder('flow') }}
+              disabled={olduploadstatus}
+            >
               流转
             </Button>
           )}
@@ -197,33 +199,33 @@ function ToDoregist(props) {
             </Button>
           )}
           {taskName === '自动化科专责审核' && result !== '0' && result !== '1' && workLoad && (workLoad === '一般' || (workLoad === '重大' && result !== '4')) && (
-            <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleClick('flow'); setButandOrder('flow') }}>
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleClick('flow'); setButandOrder('flow') }} disabled={olduploadstatus}>
               流转
             </Button>
           )}
           {result === '1' && ((taskName === '自动化科专责审核' && workLoad === '一般') || taskName === '市场部领导审核' || taskName === '科室领导审核' || taskName === '中心领导审核') && (
-            <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleClick('toflow') }}>
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleClick('toflow') }} disabled={olduploadstatus}>
               流转
             </Button>
           )}
           {result === '1' && taskName === '自动化科业务人员审核' && (
-            <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('flow')}>
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('flow')} disabled={olduploadstatus}>
               流转
             </Button>
           )}
           {result === '1' && taskName === '自动化科业务人员确认' && (
-            <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('confirm')}>
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('confirm')} disabled={olduploadstatus}>
               登记人确认
             </Button>
           )}
           {result === '0' && (taskName === '自动化科业务人员确认' || taskName === '需求登记人员确认') && (
-            <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleClick('flow'); setButandOrder('flow') }}>
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleClick('flow'); setButandOrder('flow') }} disabled={olduploadstatus}>
               重新处理
             </Button>
           )}
           {((result === '2' && taskName === '自动化科业务人员确认') ||
             (result === '1' && taskName === '需求登记人员确认')) && (
-              <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('over')}>
+              <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('over')} disabled={olduploadstatus}>
                 结束
               </Button>
             )}
@@ -234,7 +236,7 @@ function ToDoregist(props) {
               taskName === '系统开发商审核' ||
               taskName === '自动化科专责审核' ||
               taskName === '自动化科业务人员审核') && (
-              <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('regist')}>
+              <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('regist')} disabled={olduploadstatus}>
                 重新登记
               </Button>
             )}
@@ -318,8 +320,9 @@ function ToDoregist(props) {
   );
 }
 
-export default connect(({ demandtodo, loading }) => ({
+export default connect(({ demandtodo, viewcache, loading }) => ({
   workLoad: demandtodo.workLoad,
+  olduploadstatus: viewcache.olduploadstatus,
   loading: loading.effects['demandtodo/demandopenflow'],
   allloading: loading.models.demandtodo,
 }))(ToDoregist);

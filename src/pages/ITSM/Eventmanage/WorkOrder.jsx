@@ -589,7 +589,7 @@ function WorkOrder2(props) {
                 main={main}
                 userinfo={userinfo}
                 location={location}
-                files={edit.register.fileIds === '[]' ? [] : JSON.parse(edit.register.fileIds)}
+                files={(edit.register.fileIds === '[]' || !edit.register.fileIds) ? [] : JSON.parse(edit.register.fileIds)}
                 selectdata={selectdata}
                 loading={loading}
               />
@@ -647,7 +647,7 @@ function WorkOrder2(props) {
                 ChangeFiles={newvalue => {
                   setFiles(newvalue);
                 }}
-                files={edit.check.fileIds === '[]' ? [] : JSON.parse(edit.check.fileIds)}
+                files={(edit.check.fileIds === '[]' || !edit.check.fileIds) ? [] : JSON.parse(edit.check.fileIds)}
                 selectdata={selectdata}
                 loading={loading}
               />
@@ -686,7 +686,7 @@ function WorkOrder2(props) {
                 ChangeFiles={newvalue => {
                   setFiles(newvalue);
                 }}
-                files={edit.handle.fileIds === '[]' ? [] : JSON.parse(edit.handle.fileIds)}
+                files={(edit.handle.fileIds === '[]' || !edit.handle.fileIds) ? [] : JSON.parse(edit.handle.fileIds)}
                 show={show}
                 selectdata={selectdata}
                 mainId={mainId}
@@ -725,7 +725,7 @@ function WorkOrder2(props) {
                 ChangeFiles={newvalue => {
                   setFiles(newvalue);
                 }}
-                files={edit.finish.fileIds === '[]' ? [] : JSON.parse(edit.finish.fileIds)}
+                files={(edit.finish.fileIds === '[]' || !edit.finish.fileIds) ? [] : JSON.parse(edit.finish.fileIds)}
                 selectdata={selectdata}
                 loading={loading}
               />
