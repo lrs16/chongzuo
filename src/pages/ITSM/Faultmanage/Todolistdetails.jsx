@@ -138,6 +138,7 @@ function Todolistdetails(props) {
     dispatch,
     curruserinfo, // 当前用户登录信息
     curruserinfo: { userId }, // 当前用户登录id
+    olduploadstatus,     // 附件上传状态
   } = props;
 
   const {
@@ -1072,6 +1073,7 @@ function Todolistdetails(props) {
                         }}
                         ChangeFileskey={newvalue => setFileskey(newvalue)}
                         mainId={mainId}
+                        uploadStatus={olduploadstatus}
                       />
                     </Panel>
                   )}
@@ -1230,8 +1232,9 @@ function Todolistdetails(props) {
 }
 
 export default Form.create({})(
-  connect(({ fault, loading }) => ({
+  connect(({ fault, viewcache, loading }) => ({
     tododetailslist: fault.tododetailslist, // 详情的编辑数据
+    olduploadstatus: viewcache.olduploadstatus,
     flowimageview: fault.flowimageview, // 流程图view
     flowlog: fault.flowlog, // 流转日志
     html: fault.html,

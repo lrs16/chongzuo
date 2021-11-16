@@ -31,7 +31,7 @@ const forminladeLayout = {
 };
 
 const HandleChild = React.forwardRef((props, ref) => {
-  const { handle, curruserinfo, ChangeFiles, ChangeFileskey, mainId } = props;
+  const { handle, curruserinfo, ChangeFiles, ChangeFileskey, mainId, uploadStatus } = props;
   const { getFieldDecorator, setFieldsValue, getFieldsValue } = props.form;
   const attRef = useRef();
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
@@ -268,6 +268,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                       setFilesList(newvalue);
                     }
                   }
+                  banOpenFileDialog={uploadStatus}
                 />
               </div>,
             )}
@@ -307,6 +308,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                       setFilesList(newvalue);
                     }
                   }
+                  banOpenFileDialog={uploadStatus}
                 />
               </div>,
             )}
@@ -341,6 +343,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                       setFilesList(newvalue);
                     }
                   }
+                  banOpenFileDialog={uploadStatus}
                 />
               </div>,
             )}
@@ -381,7 +384,7 @@ HandleChild.defaultProps = {
     handleReason: '',
     handleAdvise: '',
     handleResult: '',
-    handleProcess:''
+    handleProcess: ''
   },
   curruserinfo: {
     deptName: '',
