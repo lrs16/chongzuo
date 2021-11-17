@@ -106,6 +106,7 @@ function TaskworkFillin(props) {
     };
 
     const handlesubmit = () => { // 提交传mainId
+        const tabid = sessionStorage.getItem('tabid');
         TaskworkfillinRef.current.validateFields((err, values) => {
             if (!err) {
                 dispatch({
@@ -130,7 +131,7 @@ function TaskworkFillin(props) {
                         router.push({
                             pathname: `/ITSM/supervisework/mycreatework`,
                             query: { pathpush: true },
-                            state: { cache: false }
+                            state: { cache: false, closetabid: tabid }
                         });
                     } else {
                         message.error(res.msg);

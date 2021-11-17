@@ -392,6 +392,10 @@ function ChartDrawer(props) {
     // 取消
     const hanldleCancel = () => {
         ChangeVisible(false);
+        setPageinations({
+            ...paginations,
+            current: 1,
+        });
     };
 
     //  下载 /导出功能

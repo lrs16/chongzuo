@@ -99,6 +99,11 @@ function QueryWork(props) {
       state: {
         dynamicpath: true,
         menuDesc: '工作查询',
+        cacheinfo: {
+          ...tabrecord,
+          paginations,
+          expand,
+        },
       }
     })
   };

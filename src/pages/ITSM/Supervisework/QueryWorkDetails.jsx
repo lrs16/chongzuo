@@ -61,7 +61,7 @@ function Work(props) {
     const handleClose = () => {
         router.push({
             pathname: `/ITSM/supervisework/querywork`,
-            query: { pathpush: true }
+            query: { ...location.state.cacheinfo, pathpush: true }
         });
     }
 

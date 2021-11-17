@@ -312,6 +312,11 @@ function MycreateWork(props) {
       state: {
         dynamicpath: true,
         menuDesc: '工作任务',
+        cacheinfo: {
+          ...tabrecord,
+          paginations,
+          expand,
+        },
       }
     })
   };
@@ -323,6 +328,13 @@ function MycreateWork(props) {
       query: {
         mainId: record.mainId,
         orderNo: record.no,
+      },
+      state: {
+        cacheinfo: {
+          ...tabrecord,
+          paginations,
+          expand,
+        },
       }
     })
   };

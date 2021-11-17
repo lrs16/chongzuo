@@ -303,21 +303,21 @@ function WorkplanDetail(props) {
       router.push({
         pathname: `/ITSM/supervisework/mycreatework`,
         query: { pathpush: true },
-        state: { cache: false, closetabid: mainId }
+        state: { ...location.state.cacheinfo, cache: false, closetabid: mainId }
       })
     }
     if (flowNodeName === '工作执行') {
       router.push({
         pathname: `/ITSM/supervisework/myresponwork`,
         query: { pathpush: true },
-        state: { cache: false, closetabid: mainId }
+        state: { ...location.state.cacheinfo, cache: false, closetabid: mainId }
       })
     }
     if (flowNodeName === '工作审核') {
       router.push({
         pathname: `/ITSM/supervisework/todelayexamine`,
         query: { pathpush: true },
-        state: { cache: false, closetabid: mainId }
+        state: { ...location.state.cacheinfo, cache: false, closetabid: mainId }
       })
     }
   };
@@ -349,7 +349,7 @@ function WorkplanDetail(props) {
             router.push({
               pathname: `/ITSM/supervisework/mycreatework`,
               query: { pathpush: true },
-              state: { cache: false }
+              state: { cache: false, closetabid: mainId }
             });
           } else {
             message.error(res.msg);
@@ -384,7 +384,7 @@ function WorkplanDetail(props) {
             router.push({
               pathname: `/ITSM/supervisework/myresponwork`,
               query: { pathpush: true },
-              state: { cache: false }
+              state: { cache: false, closetabid: mainId }
             });
           } else {
             message.error(res.msg);
@@ -464,7 +464,7 @@ function WorkplanDetail(props) {
         router.push({
           pathname: `/ITSM/supervisework/myresponwork`,
           query: { pathpush: true },
-          state: { cache: false }
+          state: { cache: false, closetabid: mainId }
         });
         if (res.code === 200) {
           message.success(res.msg);
