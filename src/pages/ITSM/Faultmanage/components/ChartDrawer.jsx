@@ -18,21 +18,9 @@ const columns = [
     },
     {
         title: '故障发生时间',
-        dataIndex: 'createTime',
-        key: 'createTime',
+        dataIndex: 'registerOccurTime',
+        key: 'registerOccurTime',
         width: 200,
-        onCell: () => {
-            return {
-                style: {
-                    maxWidth: 200,
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap',
-                    textOverflow: 'ellipsis',
-                    cursor: 'pointer'
-                }
-            }
-        },
-        render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
     {
         title: '故障概要',
@@ -160,6 +148,42 @@ const columns = [
         key: 'handleReport',
         width: 250,
     },
+    {
+        title: '系统运维商处理人',
+        dataIndex: 'handler',
+        key: 'handler',
+        width: 150,
+    },
+    {
+        title: '责任单位',
+        dataIndex: 'confirmBlame',
+        key: 'confirmBlame',
+        width: 150,
+        onCell: () => {
+            return {
+                style: {
+                    maxWidth: 150,
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis',
+                    cursor: 'pointer'
+                }
+            }
+        },
+        render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+    },
+    {
+        title: '系统运维商处理结果',
+        dataIndex: 'handleResult',
+        key: 'handleResult',
+        width: 180,
+    },
+    {
+        title: '故障报告要求上传时间',
+        dataIndex: 'finishRequiredTime',
+        key: 'finishRequiredTime',
+        width: 200,
+    },
 ];
 
 function ChartDrawer(props) {
@@ -232,7 +256,7 @@ function ChartDrawer(props) {
                     payload: {
                         pageNum: page,
                         pageSize: size,
-                        status: '已关闭',
+                        status: '255',
                         addTimeBegin: value.time1,
                         addTimeEnd: value.time2,
                     }
@@ -455,7 +479,7 @@ function ChartDrawer(props) {
                     payload: {
                         columns: JSON.stringify(exportColumns),
                         ids: selectedKeys.toString(),
-                        status: '已关闭',
+                        status: '255',
                         addTimeBegin: value.time1,
                         addTimeEnd: value.time2,
                     },
@@ -469,7 +493,7 @@ function ChartDrawer(props) {
                     a.click();
                     window.URL.revokeObjectURL(url);
                 });
-                // setDownVal({ ...downVal, status: '已关闭' });
+                // setDownVal({ ...downVal, status: '255' });
                 break;
             // 故障类型统计分析
             case '故障类型总情况':
