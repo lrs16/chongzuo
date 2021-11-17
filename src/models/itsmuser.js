@@ -38,6 +38,9 @@ export default {
     },
     // 加载事件下一环节处理人列表
     *eventuserlist({ payload: { taskId, type } }, { call, put }) {
+      yield put({
+        type: 'clearcache',
+      });
       const response = yield call(EventFlowUserList, taskId, type);
       yield put({
         type: 'savelist',
@@ -46,6 +49,9 @@ export default {
     },
     // 加载需求下一环节处理人列表
     *demanduserlist({ payload: { taskId, result } }, { call, put }) {
+      yield put({
+        type: 'clearcache',
+      });
       const response = yield call(DemandFlowUserList, taskId, result);
       yield put({
         type: 'savelist',
@@ -79,6 +85,9 @@ export default {
 
     // 加载发布下一环节处理人
     *releaseuserlist({ payload: { taskId, type } }, { call, put }) {
+      yield put({
+        type: 'clearcache',
+      });
       const response = yield call(releaseUserList, taskId, type);
       yield put({
         type: 'savereleaselist',
@@ -96,6 +105,13 @@ export default {
   },
 
   reducers: {
+    clearcache(state) {
+      return {
+        ...state,
+        userlist: [],
+        describe: '',
+      };
+    },
     saveuser(state, action) {
       return {
         ...state,

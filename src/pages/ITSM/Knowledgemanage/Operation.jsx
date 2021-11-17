@@ -26,6 +26,7 @@ function Operation(props) {
   const [runpath, setRunpath] = useState('');
   const [status, setStatus] = useState('');
   const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
+  const [uploadStatus, setUploadStatus] = useState(false);
   const ContentRef = useRef(null);
   const ExmaineRef = useRef(null);
   const { currenttab } = useContext(EditContext);
@@ -212,6 +213,7 @@ function Operation(props) {
             type="primary"
             style={{ marginRight: 8 }}
             onClick={() => handleClick('save')}
+            disabled={uploadStatus}
           >
             保存
           </Button>
@@ -220,6 +222,7 @@ function Operation(props) {
             type="primary"
             style={{ marginRight: 8 }}
             onClick={() => handleCheck('save')}
+            disabled={uploadStatus}
           >
             保存
           </Button>
@@ -228,6 +231,7 @@ function Operation(props) {
             type="primary"
             style={{ marginRight: 8 }}
             onClick={() => { handleSubmit() }}
+            disabled={uploadStatus}
           >
             提交
           </Button>
@@ -236,6 +240,7 @@ function Operation(props) {
             type="primary"
             style={{ marginRight: 8 }}
             onClick={() => { handleClick('release') }}
+            disabled={uploadStatus}
           >
             发布
           </Button>
@@ -244,14 +249,15 @@ function Operation(props) {
             type="primary"
             style={{ marginRight: 8 }}
             onClick={() => { handleCheck('check') }}
+            disabled={uploadStatus}
           >
             审核
           </Button>
           )}
-          <Button onClick={handleclose}>返回</Button>
+          <Button onClick={handleclose} disabled={uploadStatus}>返回</Button>
         </>
       )}
-      {tabActivekey === 'List' && (<Button onClick={handleclose}>返回</Button>)}
+      {tabActivekey === 'List' && (<Button onClick={handleclose} disabled={uploadStatus}>返回</Button>)}
     </>
   )
   return (
@@ -289,6 +295,7 @@ function Operation(props) {
                             editable: true,
                             files: (info.edit.main && info.edit.main.fileIds) ? JSON.parse(info.edit.main.fileIds) : [],
                             ChangeFiles,
+                            getUploadStatus: (v) => { setUploadStatus(v) },
                           }}>
                             <Content
                               wrappedComponentRef={ContentRef}

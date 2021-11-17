@@ -345,3 +345,12 @@ export async function exportReleaseOrder(params) {
     responseType: 'blob',
   });
 }
+
+// 发布库列表
+export async function repoList(params) {
+  return request(`http://172.16.10.132:9901/release/repo/list`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}

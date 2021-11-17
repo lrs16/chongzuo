@@ -45,7 +45,6 @@ function DocumentAtt(props) {
     { docName: '功能发布报告', attachFile: '[]', dutyUnit, docTemplate: '', remarks: '', editable: true, },
     { docName: '其它附件', attachFile: '[]', dutyUnit, docTemplate: '', remarks: '', editable: true, },
   ];
-  console.log(location);
 
   // 获取行
   const getRowByKey = (key, newData) => {
@@ -214,7 +213,11 @@ function DocumentAtt(props) {
       width: 160,
       render: (text, record) => {
         if (isEdit && record.editable && record.key !== '9') {
-          return (<><span style={{ color: '#f5222d', marginRight: 4, fontWeight: 'normal' }}>*</span>{text} </>)
+          return (
+            <>
+              {/* <span style={{ color: '#f5222d', marginRight: 4, fontWeight: 'normal' }}>*</span> */}
+              {text}
+            </>)
         }
         return text;
       },

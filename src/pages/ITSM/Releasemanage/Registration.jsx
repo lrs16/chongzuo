@@ -27,7 +27,7 @@ const Attaches = [
 
 
 function Registration(props) {
-  const { dispatch, userinfo, loading, tabnew, tabdata, location, uploadstatus } = props;
+  const { dispatch, userinfo, loading, tabnew, tabdata, location, uploadstatus, userlist } = props;
   const pagetitle = props.route.name;
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
   const [uservisible, setUserVisible] = useState(false);        // 是否显示选人组件
@@ -37,6 +37,7 @@ function Registration(props) {
   const [modalvisible, setModalVisible] = useState(false);
   const [saveloading, setSaveloading] = useState(false);
   const [indexvalue, setIndexValue] = useState({ releaseMain: {}, releaseRegister: {}, releaseEnvs: [], releaseLists: [], releaseAttaches: Attaches });
+  console.log(userlist)
   // 初始化用户信息，流程类型
   useEffect(() => {
     dispatch({
@@ -88,6 +89,26 @@ function Registration(props) {
     return register
   };
 
+  const handleclose = () => {
+    router.push({
+      pathname: `/ITSM/releasemanage/registration`,
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true, }
+    });
+  };
+
+  const tosubmit = () => {
+    if (userlist) {
+      const userIds = userlist.map(obj => obj.userId);
+      dispatch({
+        type: 'releaseregistra/fetchsubmit',
+        payload: {
+          taskId,
+          type: 1,
+          userIds,
+        }
+      });
+    }
+  }
 
   // 保存超时信息,成功校验表单
   const postTimeOutMsg = (v) => {
@@ -100,7 +121,8 @@ function Registration(props) {
         ...v
       }).then(res => {
         if (res.code === 200) {
-          setUserVisible(true);
+          // setUserVisible(true);
+          tosubmit()
         }
       });
     }
@@ -120,7 +142,14 @@ function Registration(props) {
             setSaveloading(false);
             sessionStorage.setItem('flowtype', '1');
             setTaskId(res.data.currentTaskStatus.taskId);
-            setOrderId(res.data.currentTaskStatus.processInstanceId)
+            setOrderId(res.data.currentTaskStatus.processInstanceId);
+            dispatch({
+              type: 'itsmuser/releaseuserlist',
+              payload: {
+                taskId: res.data.currentTaskStatus.taskId,
+                type: '1',
+              },
+            });
             getTimeoutInfo({ taskId: res.data.currentTaskStatus.taskId }).then(timeoutres => {
               if (timeoutres.code === 200) {
                 if (timeoutres.data.timeout && !timeoutres.data.reason) {
@@ -128,7 +157,8 @@ function Registration(props) {
                   setModalVisible(true);
                 };
                 if ((timeoutres.data.timeout && res.data.reason) || !timeoutres.data.timeout) {
-                  setUserVisible(true);
+                  // setUserVisible(true);
+                  tosubmit();
                 };
               } else {
                 message.error(res.msg);
@@ -143,23 +173,6 @@ function Registration(props) {
     })
   };
 
-  const handleclose = () => {
-    router.push({
-      pathname: `/ITSM/releasemanage/registration`,
-      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true, }
-    });
-  };
-
-  const tosubmit = () => {
-    dispatch({
-      type: 'releaseregistra/fetchsubmit',
-      payload: {
-        taskId,
-        type: 1,
-        userIds: sessionStorage.getItem('NextflowUserId'),
-      }
-    });
-  }
 
   // 保存获取表单数据
   const handleSave = () => {
@@ -202,11 +215,11 @@ function Registration(props) {
   };
 
   // 选人完成走提交接口
-  useEffect(() => {
-    if (userchoice) {
-      tosubmit()
-    }
-  }, [userchoice])
+  // useEffect(() => {
+  //   if (userchoice) {
+  //     tosubmit()
+  //   }
+  // }, [userchoice])
 
   // 重置表单信息
   useEffect(() => {
@@ -301,6 +314,7 @@ export default connect(({ itsmuser, viewcache, loading }) => ({
   tabnew: viewcache.tabnew,
   tabdata: viewcache.tabdata,
   uploadstatus: viewcache.uploadstatus,
+  userlist: itsmuser.userlist,
   userinfo: itsmuser.userinfo,
   loading: loading.effects['releasetodo/releaseflow'],
 }))(Registration);

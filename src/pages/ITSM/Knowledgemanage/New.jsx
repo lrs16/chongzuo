@@ -136,7 +136,7 @@ function New(props) {
         发布
       </Button>
       )}
-      <Button onClick={handleclose}>返回</Button>
+      <Button onClick={handleclose} disabled={uploadStatus}>返回</Button>
     </>
   )
 

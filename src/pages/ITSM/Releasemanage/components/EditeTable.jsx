@@ -509,17 +509,17 @@ function EditeTable(props) {
       width: 50,
       align: 'center',
     },
-    {
-      title: '清单类型',
-      dataIndex: 'listType',
-      key: 'listType',
-      width: 120,
-      align: 'center',
-      render: (text) => {
-        return text
-      },
-      sorter: (a, b) => a.listType.localeCompare(b.listType),
-    },
+    // {
+    //   title: '清单类型',
+    //   dataIndex: 'listType',
+    //   key: 'listType',
+    //   width: 120,
+    //   align: 'center',
+    //   render: (text) => {
+    //     return text
+    //   },
+    //   sorter: (a, b) => a.listType.localeCompare(b.listType),
+    // },
     {
       title: '功能类型',
       dataIndex: 'abilityType',
@@ -806,9 +806,8 @@ function EditeTable(props) {
             {/* {taskName === '版本管理员审核' && !newbutton && dutyUnits && dutyUnits.length > 1 && !saved && (<Button type='link' onMouseDown={() => { ChangeButtype('') }} onClick={() => ChangeButtype('goback')}>回退</Button>)} */}
           </>
         )
-
       },
-    },
+    }
   ];
 
   const verifyStatus = {
@@ -861,25 +860,25 @@ function EditeTable(props) {
     onFilter: (value, record) => record.releaseNo.indexOf(value) === 0,
   };
 
+  const sclicecolumns = (arr) => {
+    const newarr = arr.slice(0);
+    newarr.pop();
+    return newarr;
+  };
+
   const addorderid = (arr) => {
     if (taskName === '业务验证') {
-      const newarr = arr;
+      const newarr = sclicecolumns(arr);
       newarr.splice(-3, 0, verifyStatus)
       return newarr
     } if ((taskName === '版本管理员审核' || taskName === '科室负责人审核' || taskName === '中心领导审核') && orderNos && orderNos.length > 1) {
-      const newarr = arr;
+      const newarr = sclicecolumns(arr);
       newarr.splice(-1, 0, orderid);
       return newarr
     }
     return arr
   };
   const columns = addorderid(column);
-
-  const sclicecolumns = (arr) => {
-    const newarr = arr.slice(0);
-    newarr.pop();
-    return newarr;
-  }
   const viewcolumns = sclicecolumns(columns);
 
   // 表格操作：清除筛选
@@ -1002,7 +1001,7 @@ function EditeTable(props) {
                   重分派
                 </Button>
               )}
-              <Button type='primary' style={{ marginRight: 8 }} onClick={() => { newMember() }} disabled={newbutton} >新增</Button>
+              {(taskName === '新建' || taskName === '出厂测试') && (<Button type='primary' style={{ marginRight: 8 }} onClick={() => { newMember() }} disabled={newbutton} >新增</Button>)}
               {taskName === '新建' && (
                 <Button
                   type='danger'
@@ -1013,7 +1012,7 @@ function EditeTable(props) {
                   移除
                 </Button>
               )}
-              {taskName !== '新建' && taskName !== '版本管理员审核' && (
+              {taskName === '出厂测试' && (
                 <Button
                   type='danger'
                   style={{ marginRight: 8 }}
@@ -1024,7 +1023,7 @@ function EditeTable(props) {
                   移除
                 </Button>
               )}
-              {taskName === '版本管理员审核' && (
+              {/* {taskName === '版本管理员审核' && (
                 <Tooltip placement="topLeft" title="仅能移除同一个发布工单的数据">
                   <Button
                     type='danger'
@@ -1037,7 +1036,7 @@ function EditeTable(props) {
                     移除
                   </Button>
                 </Tooltip>
-              )}
+              )} */}
             </>
           )}
           {taskName !== '新建' && (<Button type='primary' disabled={newbutton} onClick={() => handleDlownd()}>导出清单</Button>)}

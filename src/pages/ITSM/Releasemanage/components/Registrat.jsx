@@ -375,9 +375,9 @@ function Registrat(props, ref) {
             />
             <Form.Item wrapperCol={{ span: 24 }} >
               {getFieldDecorator('releaseAttaches', {
-                rules: [{ required, message: '请上传附件' }, {
-                  validator: handleAttValidator
-                }],
+                // rules: [{ required, message: '请上传附件' }, {
+                //   validator: handleAttValidator
+                // }],
                 initialValue: info.releaseAttaches,
               })(<></>)}
             </Form.Item>

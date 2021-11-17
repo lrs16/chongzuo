@@ -682,6 +682,12 @@ export default {
                           component: './ITSM/Releasemanage/Details',
                         },
                         {
+                          path: '/ITSM/releasemanage/releaselibrary',
+                          name: '发布库',
+                          icon: 'control',
+                          component: './ITSM/Releasemanage/ReleaseRepo',
+                        },
+                        {
                           path: '/ITSM/releasemanage/library',
                           name: '发布功能统计结果',
                           icon: 'control',
