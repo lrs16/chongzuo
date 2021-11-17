@@ -950,7 +950,7 @@ const Registrat = forwardRef((props, ref) => {
                   <Upload {...uploadprops} key={localStorage.getItem('tabid')}>
                     <Button
                       type="primary"
-                      onClick={() => {
+                      onMouseDown={() => {
                         setBanOpenFileDialog(true);
                         validateFields(['main_eventObject'], err => {
                           if (err) {
