@@ -17,12 +17,12 @@ import styles from './index.less';
 const { Panel } = Collapse;
 
 function WorkOrder(props) {
-  const { location, dispatch, userinfo, info, currentTaskStatus, buttype, statuse, tasklinks, historyinfo, timeoutinfo } = props;
+  const { location, dispatch, userinfo, info, currentTaskStatus, buttype, statuse, tasklinks, historyinfo, timeoutinfo, userlist } = props;
   const { taskName, Id } = location.query;
   const [activeKey, setActiveKey] = useState(['form']);
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
-  const [uservisible, setUserVisible] = useState(false);        // 是否显示选人组件
-  const [userchoice, setUserChoice] = useState(false);          // 已经选择人员  
+  // const [uservisible, setUserVisible] = useState(false);        // 是否显示选人组件
+  // const [userchoice, setUserChoice] = useState(false);          // 已经选择人员  
   const { submittype } = useContext(SubmitTypeContext);
 
   // 保存，保存提交
@@ -34,13 +34,14 @@ function WorkOrder(props) {
 
   // 流程提交
   const tosubmit = () => {
-    if (statuse === 200) {
+    if (statuse === 200 && userlist) {
+      const userIds = userlist.map(obj => obj.userId);
       dispatch({
         type: 'releasetodo/releaseflow',
         payload: {
           taskId: currentTaskStatus.taskId,
           type: submittype,
-          userIds: sessionStorage.getItem('NextflowUserId'),
+          userIds,
         },
       });
     }
@@ -94,7 +95,7 @@ function WorkOrder(props) {
       });
     };
     if (buttype === 'flow') {
-      setUserChoice(false);
+      // setUserChoice(false);
       sessionStorage.removeItem('NextflowUserId');
       RegistratRef.current.Forms((err) => {
         if (err) {
@@ -109,7 +110,8 @@ function WorkOrder(props) {
             },
           });
           sessionStorage.setItem('flowtype', '1');
-          setUserVisible(true);
+          // setUserVisible(true);
+          tosubmit();
         }
       })
     }
@@ -139,7 +141,7 @@ function WorkOrder(props) {
         savelatformValid();
         break;
       case 'flow':
-        setUserChoice(false);
+        // setUserChoice(false);
         sessionStorage.removeItem('NextflowUserId');
         RegistratRef.current.Forms((err) => {
           if (err) {
@@ -147,12 +149,13 @@ function WorkOrder(props) {
           } else {
             savelatformValid();
             sessionStorage.setItem('flowtype', '1');
-            setUserVisible(true);
+            // setUserVisible(true);
+            tosubmit();
           }
         })
         break;
       case 'noPass':
-        setUserChoice(false);
+        // setUserChoice(false);
         sessionStorage.removeItem('NextflowUserId');
         RegistratRef.current.Forms((err) => {
           if (err) {
@@ -191,7 +194,7 @@ function WorkOrder(props) {
         savebizValidate();
         break;
       case 'flow':
-        setUserChoice(false);
+        // setUserChoice(false);
         sessionStorage.removeItem('NextflowUserId');
         RegistratRef.current.Forms((err, values) => {
           if (err) {
@@ -205,7 +208,8 @@ function WorkOrder(props) {
             } else {
               savebizValidate();
               sessionStorage.setItem('flowtype', '1');
-              setUserVisible(true);
+              // setUserVisible(true);
+              tosubmit();
             }
           }
         })
@@ -274,7 +278,7 @@ function WorkOrder(props) {
         savepracticePre();
         break;
       case 'flow':
-        setUserChoice(false);
+        // setUserChoice(false);
         sessionStorage.removeItem('NextflowUserId');
         ImplementationPreRef.current.Forms((err) => {
           if (err) {
@@ -282,7 +286,8 @@ function WorkOrder(props) {
           } else {
             savepracticePre();
             sessionStorage.setItem('flowtype', '1');
-            setUserVisible(true);
+            // setUserVisible(true);
+            tosubmit();
           }
         })
         break;
@@ -316,7 +321,7 @@ function WorkOrder(props) {
         saveVersionAudit()
         break;
       case 'flow': {
-        setUserChoice(false);
+        // setUserChoice(false);
         sessionStorage.removeItem('NextflowUserId');
         const orderkeyAndTimeout = info && info.releaseMains && info.releaseMains.filter(item => item.timeoutResult && item.timeoutResult.timeout && !item.timeoutResult.reason);
         if (orderkeyAndTimeout.length > 0) {
@@ -328,7 +333,8 @@ function WorkOrder(props) {
             } else if (taskName !== '中心领导审核') {
               saveVersionAudit();
               sessionStorage.setItem('flowtype', '1');
-              setUserVisible(true);
+              // setUserVisible(true);
+              tosubmit();
             } else {
               sessionStorage.setItem('flowtype', '1');
               saveVersionAudit();
@@ -376,7 +382,7 @@ function WorkOrder(props) {
         saveracticeDone()
         break;
       case 'flow':
-        setUserChoice(false);
+        // setUserChoice(false);
         sessionStorage.removeItem('NextflowUserId');
         ImplementationRef.current.Forms((err) => {
           if (err) {
@@ -384,7 +390,8 @@ function WorkOrder(props) {
           } else {
             saveracticeDone();
             sessionStorage.setItem('flowtype', '1');
-            setUserVisible(true);
+            // setUserVisible(true);
+            tosubmit();
           }
         })
         break;
@@ -417,7 +424,7 @@ function WorkOrder(props) {
         savebusinessReview()
         break;
       case 'flow':
-        setUserChoice(false);
+        // setUserChoice(false);
         sessionStorage.removeItem('NextflowUserId');
         BusinessReviewRef.current.Forms((err, values) => {
           if (err) {
@@ -477,6 +484,14 @@ function WorkOrder(props) {
         type: 'releasetodo/gettimeoutinfo',
         payload: {
           taskId: location.query.taskId,
+        },
+      });
+      // 获取流转用户列表
+      dispatch({
+        type: 'itsmuser/releaseuserlist',
+        payload: {
+          taskId: location.query.taskId,
+          type: '1',
         },
       });
     }
@@ -552,11 +567,11 @@ function WorkOrder(props) {
   }, [buttype])
 
   // 选人完成走提交接口
-  useEffect(() => {
-    if (userchoice) {
-      tosubmit()
-    }
-  }, [userchoice])
+  // useEffect(() => {
+  //   if (userchoice) {
+  //     tosubmit()
+  //   }
+  // }, [userchoice])
 
   return (
     <>
@@ -694,7 +709,7 @@ function WorkOrder(props) {
         </Collapse>
       </div>
       {historyinfo && <HistoryOrderInfo records={historyinfo} selectdata={selectdata} />}
-      {currentTaskStatus && currentTaskStatus.taskId && (
+      {/* {currentTaskStatus && currentTaskStatus.taskId && (
         <User
           taskId={currentTaskStatus.taskId}
           visible={uservisible}                       // 传参显示选人modle
@@ -703,7 +718,7 @@ function WorkOrder(props) {
           ChangeChoice={v => setUserChoice(v)}         //  选人完成返回状态true，通过true判读，进行
           ChangeType={v => (v)}                        //  取消，重置按钮类型         
         />
-      )}
+      )} */}
     </>
   );
 }
@@ -716,5 +731,6 @@ export default connect(({ releasetodo, releaseview, itsmuser, loading }) => ({
   statuse: releasetodo.statuse,
   historyinfo: releaseview.historyinfo,
   userinfo: itsmuser.userinfo,
+  userlist: itsmuser.userlist,
   loading: loading.models.releasetodo,
 }))(WorkOrder);

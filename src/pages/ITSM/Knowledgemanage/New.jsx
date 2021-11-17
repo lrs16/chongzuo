@@ -70,6 +70,7 @@ function New(props) {
           payload: {
             payvalue: { ...values, fileIds: v.length ? JSON.stringify(v) : JSON.stringify(fileslist) },
             buttype: 'save',
+            menuDes,
           },
         });
       }
