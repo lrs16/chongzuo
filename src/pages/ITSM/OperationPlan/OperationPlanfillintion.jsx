@@ -13,7 +13,8 @@ function OperationPlanfillintion(props) {
     userinfo,
     operationPersonArr,
     tabdata,
-    loading
+    loading,
+    olduploadstatus
   } = props;
   let operationPersonSelect;
 
@@ -123,15 +124,11 @@ function OperationPlanfillintion(props) {
   };
 
   const handlePaste = () => {
-    const mainId = sessionStorage.getItem('copyrecord');
+    const mainId = sessionStorage.getItem('copyrecord') || localStorage.getItem('searchCopy');
     if (!mainId) {
-      message.info('请在列表页复制');
+      message.info('请在列表页复制一条数据进行粘贴哦');
       return false;
     }
-    // if (mainId.length > 1) {
-    //   message.info('只能复制一条数据粘贴哦');
-    //   return false
-    // }
 
     return dispatch({
       type: 'processmodel/pasteFlow',
@@ -189,11 +186,21 @@ function OperationPlanfillintion(props) {
       title={pagetitle}
       extra={
         <>
-          <Button type="primary" style={{ marginRight: 8 }} onClick={() => handlePaste()}>
+          <Button
+            type="primary"
+            style={{ marginRight: 8 }}
+            onClick={() => handlePaste()}
+            disabled={olduploadstatus}
+          >
             粘贴
           </Button>
 
-          <Button type="primary" style={{ marginRight: 8 }} onClick={() => handlesubmit(false)}>
+          <Button
+            type="primary"
+            style={{ marginRight: 8 }}
+            onClick={() => handlesubmit(false)}
+            disabled={olduploadstatus}
+          >
             保存
           </Button>
 
@@ -230,5 +237,6 @@ export default Form.create({})(
     loading: loading.models.processmodel,
     tabnew: viewcache.tabnew,
     tabdata: viewcache.tabdata,
+    olduploadstatus: viewcache.olduploadstatus,
   }))(OperationPlanfillintion),
 );

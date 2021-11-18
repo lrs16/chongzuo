@@ -154,10 +154,10 @@ function TobedealtForm(props) {
       case '服务商确认':
         sessionStorage.setItem(
           'Nextflowmane',
-          `${noselect === '0' ? '服务绩效考核确认' : '业务负责人复核'}`,
+          `${noselect === '0' ? '服务绩效考核确认' : '自动化科复核'}`,
         );
         break;
-      case '业务负责人复核':
+      case '自动化科复核':
         sessionStorage.setItem('Nextflowmane', '服务绩效考核确认人');
         break;
       case '自动化科业务负责人确认':
@@ -340,7 +340,7 @@ function TobedealtForm(props) {
     }
     const obj = {};
     formRef.current.validateFields((err, values) => {
-      if (taskName === '业务负责人复核') {
+      if (taskName === '自动化科复核') {
         obj.reviewContent = values.verifyContent || values.verifyContent2 || '';
         obj.reviewer = values.verifier;
         obj.reviewTime = moment(values.verifyTime).format('YYYY-MM-DD HH:mm:ss');
@@ -482,7 +482,7 @@ function TobedealtForm(props) {
         break;
       case '业务负责人审核':
       case '自动化科专责审核':
-      case '业务负责人复核':
+      case '自动化科复核':
         auditSave(flowType, requestType);
         break;
       case '服务商确认':
@@ -635,17 +635,17 @@ function TobedealtForm(props) {
 
               {taskName &&
                 taskName !== '服务绩效考核确认' &&
-                taskName !== '业务负责人复核' &&
+                taskName !== '自动化科复核' &&
                 noselect === '1' &&
                 tabActiveKey === 'workorder' && (
                   <Button type="primary" onClick={() => onClickSubmit(taskName, 'circula')}>
-                    {taskName === '业务负责人复核' ? '确认复核' : '流转'}
+                    {taskName === '自动化科复核' ? '确认复核' : '流转'}
                   </Button>
                 )}
 
               {taskName &&
                 noselect === '0' &&
-                taskName !== '业务负责人复核' &&
+                taskName !== '自动化科复核' &&
                 taskName !== '服务商确认' &&
                 taskName !== '服务绩效考核确认' &&
                 (taskName === '业务负责人审核' ||
@@ -663,7 +663,7 @@ function TobedealtForm(props) {
                 </Button>
               )}
 
-              {taskName && taskName === '业务负责人复核' && tabActiveKey === 'workorder' && (
+              {taskName && taskName === '自动化科复核' && tabActiveKey === 'workorder' && (
                 <Button type="primary" onClick={() => onClickSubmit(taskName, 'circula')}>
                   确认复核
                 </Button>
@@ -816,8 +816,8 @@ function TobedealtForm(props) {
                   </Panel>
                 )}
 
-                {taskName === '业务负责人复核' && (
-                  <Panel header="业务负责人复核" key="1" style={{ backgroundColor: 'white' }}>
+                {taskName === '自动化科复核' && (
+                  <Panel header="自动化科复核" key="1" style={{ backgroundColor: 'white' }}>
                     <BusinessAudit
                       repeatAudit="true"
                       ref={formRef}
@@ -914,7 +914,7 @@ function TobedealtForm(props) {
                   />,
                 ],
                 [
-                  `业务负责人复核`,
+                  `自动化科复核`,
                   <BusinessAudit
                     key={index}
                     businessAudit={Object.values(obj)[0]}

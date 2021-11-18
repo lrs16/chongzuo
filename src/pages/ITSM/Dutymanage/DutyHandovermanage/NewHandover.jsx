@@ -46,6 +46,7 @@ function NewHandover(props) {
     searchUsersarr,
     tabnew,
     tabdata,
+    olduploadstatus
   } = props;
 
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
@@ -94,30 +95,40 @@ function NewHandover(props) {
 
   const handlelogbookReceive = () => {
     const values = ContentRef.current.getVal();
-    return dispatch({
-      type: 'shifthandover/fetchlogbookReceive',
-      payload: { id, remark: values.receiveRemark }
-    }).then(res => {
-      if (res.code === 200) {
-        router.push({
-          pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/handoverdetail`,
-          query: {
-            mainId: id,
-            closetab: true,
-          },
-        });
-
-        router.push({
-          pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover`,
-          query: { pathpush: true },
-          state: { cache: false },
-        });
-        message.success(res.msg);
-      } else {
-        message.error(res.msg);
+    ContentRef.current.Forms((err) => {
+      if (!err) {
+        return dispatch({
+          type: 'shifthandover/fetchlogbookReceive',
+          payload: { id, remark: values.receiveRemark }
+        }).then(res => {
+          if (res.code === 200) {
+            router.push({
+              pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/handoverdetail`,
+              query: {
+                mainId: id,
+                closetab: true,
+              },
+            });
+    
+            router.push({
+              pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover`,
+              query: { pathpush: true },
+              state: { cache: false },
+            });
+            message.success(res.msg);
+          } else {
+            message.error(res.msg);
+          }
+        })
       }
+      if (err) {
+        message.error('请将信息填写完整...');
+      }
+      return []
     })
   }
+  
+  
 
   const handleSave = (params) => { // 保存
     const value = ContentRef.current.getVal();
@@ -397,6 +408,7 @@ function NewHandover(props) {
             ghost
             style={{ marginRight: 8 }}
             onClick={handleDelete}
+            disabled={olduploadstatus}
           >
             删除
           </Button >
@@ -410,6 +422,7 @@ function NewHandover(props) {
             ghost
             style={{ marginRight: 8 }}
             onClick={handleBack}
+            disabled={olduploadstatus}
           >
             回退
           </Button >
@@ -422,6 +435,7 @@ function NewHandover(props) {
             type="primary"
             style={{ marginRight: 8 }}
             onClick={() => download()}
+            disabled={olduploadstatus}
           >
             导出WORD
           </Button>
@@ -434,6 +448,7 @@ function NewHandover(props) {
             type="primary"
             style={{ marginRight: 8 }}
             onClick={() => handleSave()}
+            disabled={olduploadstatus}
           >
             保存
           </Button>
@@ -446,6 +461,7 @@ function NewHandover(props) {
             type="primary"
             style={{ marginRight: 8 }}
             onClick={() => logbookTransfer()}
+            disabled={olduploadstatus}
           >
             确认交班
           </Button>
@@ -456,12 +472,12 @@ function NewHandover(props) {
         id && logbookIddetail.handoverStatus === '待接班' && type === 'listButton' && (
           <Popconfirm
             title='接班后不可回退，确认是否接班？'
-            onConfirm={() => logbookReceive()}
+            onConfirm={() => handlelogbookReceive()}
           >
             <Button
               type="primary"
               style={{ marginRight: 8 }}
-            // onClick={() => logbookReceive()}
+              disabled={olduploadstatus}
             >
               确认接班
             </Button>
@@ -539,5 +555,6 @@ export default Form.create({})(
     tabnew: viewcache.tabnew,
     tabdata: viewcache.tabdata,
     loading: loading.models.shifthandover,
+    olduploadstatus: viewcache.olduploadstatus,
   }))(NewHandover),
 );

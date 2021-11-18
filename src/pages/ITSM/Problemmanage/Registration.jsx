@@ -1,6 +1,6 @@
 import React, { useEffect, useState, createContext, useRef } from 'react';
 import router from 'umi/router';
-import { Form, Button, Card, message } from 'antd';
+import { Form, Button, Card } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
 import Registrat from './components/Registrat';
@@ -40,7 +40,10 @@ function Registration(props) {
     projectList,
     userinfo,
     antoArr,
-    tabnew, location, tabdata
+    tabnew,
+    location,
+    tabdata,
+    olduploadstatus
   } = props;
 
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
@@ -59,7 +62,6 @@ function Registration(props) {
   //  点击保存触发事件
   const handlesubmit = () => {
     const values = RegistratRef.current.getFieldsValue()
-    console.log('values: ', values);
     dispatch({
       type: 'problemmanage/getAddid',
       payload: {
@@ -135,7 +137,7 @@ function Registration(props) {
       title={pagetitle}
       extra={
         <>
-          <Button type="primary" style={{ marginRight: 8 }} onClick={handleCirculation}>
+          <Button type="primary" style={{ marginRight: 8 }} onClick={handleCirculation} disabled={olduploadstatus}>
             保 存
           </Button>
           <Button type="default" onClick={() => handClose()}>
@@ -188,5 +190,6 @@ export default Form.create({})(
     userinfo: itsmuser.userinfo,
     startid: problemmanage.startid,
     loading: loading.models.problemmanage,
+    olduploadstatus: viewcache.olduploadstatus,
   }))(Registration),
 );

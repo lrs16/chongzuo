@@ -116,8 +116,8 @@ function ToDOlist(props) {
     },
     {
       title: '发生时间',
-      dataIndex: 'createTime',
-      key: 'createTime',
+      dataIndex: 'registerOccurTime',
+      key: 'registerOccurTime',
       width: 180,
     },
     {

@@ -64,6 +64,7 @@ function Work(props) {
     dispatch,
     loading,
     location,
+    olduploadstatus
   } = props;
   let operationPersonSelect;
 
@@ -226,9 +227,7 @@ function Work(props) {
       }
       saveParams(values)
     }
-
-
-
+    return []
   };
 
   //  登记保存
@@ -568,7 +567,13 @@ function Work(props) {
             openFlowList &&
             edit.main !== undefined &&
             data.length === 1 && (
-              <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete}>
+              <Button
+                type="danger"
+                ghost
+                style={{ marginRight: 8 }}
+                onClick={handleDelete}
+                disabled={olduploadstatus}
+              >
                 删除
               </Button>
             )}
@@ -582,14 +587,23 @@ function Work(props) {
             taskResult &&
             taskResult.length > 0 && (
               <Back reasonSubmit={values => reasonSubmit(values)} detailPage="true">
-                <Button type="danger" ghost style={{ marginRight: 8 }}>
+                <Button
+                  type="danger"
+                  ghost
+                  style={{ marginRight: 8 }}
+                  disabled={olduploadstatus}
+                >
                   回退
                 </Button>
               </Back>
             )}
 
           {loading === false && taskResult && taskResult.length > 0 && !delay && (
-            <Button type="primary" onClick={() => handleSave(false)}>
+            <Button
+              type="primary"
+              onClick={() => handleSave(false)}
+              disabled={olduploadstatus}
+            >
               保存
             </Button>
           )}
@@ -606,6 +620,7 @@ function Work(props) {
                 type="primary"
                 style={{ marginRight: 8 }}
                 onClick={() => handleSave(true, 'tobatch')}
+                disabled={olduploadstatus}
               >
                 送审
               </Button>
@@ -616,7 +631,12 @@ function Work(props) {
             taskResult.length > 0 &&
             flowNodeName === '计划审核' &&
             !delay && (
-              <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleExamine()}>
+              <Button
+                type="primary"
+                style={{ marginRight: 8 }}
+                onClick={() => handleExamine()}
+                disabled={olduploadstatus}
+              >
                 审核
               </Button>
             )}
@@ -632,7 +652,11 @@ function Work(props) {
             flowNodeName === '计划执行' &&
             taskResult &&
             taskResult.length > 0 && (
-              <Button type="primary" onClick={() => handleExecute()}>
+              <Button
+                type="primary"
+                onClick={() => handleExecute()}
+                disabled={olduploadstatus}
+              >
                 确认执行
               </Button>
             )}
@@ -794,10 +818,11 @@ function Work(props) {
 }
 
 export default Form.create({})(
-  connect(({ processmodel, itsmuser, loading }) => ({
+  connect(({ processmodel, itsmuser,viewcache, loading }) => ({
     userinfo: itsmuser.userinfo,
     openFlowList: processmodel.openFlowList,
     operationPersonArr: processmodel.operationPersonArr,
     loading: loading.models.processmodel,
+    olduploadstatus: viewcache.olduploadstatus,
   }))(Work),
 );

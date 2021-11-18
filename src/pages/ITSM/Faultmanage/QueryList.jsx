@@ -127,8 +127,8 @@ function QueryList(props) {
     },
     {
       title: '故障发生时间',
-      dataIndex: 'createTime',
-      key: 'createTime',
+      dataIndex: 'registerOccurTime',
+      key: 'registerOccurTime',
       width: 200,
       onCell: () => {
         return {

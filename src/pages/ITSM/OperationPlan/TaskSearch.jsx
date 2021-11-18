@@ -712,8 +712,9 @@ function TaskSearch(props) {
     }
 
     if (selectedKeys.length === 1) {
-      message.success('复制成功');
-      sessionStorage.setItem('copyrecord', selectedKeys[0].mainId);
+      message.success('复制成功，可往填报中粘贴');
+      // sessionStorage.setItem('copyrecord', selectedKeys[0]);
+      localStorage.setItem('searchCopy', selectedKeys);
     }
 
     return null;
@@ -1343,10 +1344,6 @@ function TaskSearch(props) {
             )}
           </Form>
         </Row>
-
-        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleFillin()}>
-          填报
-        </Button>
 
         <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleCopy()}>
           复制

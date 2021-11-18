@@ -95,6 +95,7 @@ function Workorder(props) {
     userinfo,
     loading,
     location,
+    olduploadstatus
   } = props;
 
   let showback = true;
@@ -287,8 +288,8 @@ function Workorder(props) {
   //  问题登记
   const saveRegister = params2 => {
     RegistratRef.current.validateFields((err, values) => {
-      if (params2 ? !err:true) {
-        if(params2 ? values.complainUser : true) {
+      if (params2 ? !err : true) {
+        if (params2 ? values.complainUser : true) {
           return dispatch({
             type: 'problemmanage/tobeSave',
             payload: {
@@ -300,7 +301,7 @@ function Workorder(props) {
               type: values.type.toString(),
               editState: todoDetail.editState === 'edit' ? 'edit' : 'add',
               registerId:
-              todoDetail.editState === 'edit' ? todoDetail.register.id : todoDetail.editGuid,
+                todoDetail.editState === 'edit' ? todoDetail.register.id : todoDetail.editGuid,
               registerAttachments: files.ischange ? JSON.stringify(files.arr) : null,
               developmentLead: values && values.developmentLead ? (values.developmentLead).toString() : undefined,
             },
@@ -319,10 +320,10 @@ function Workorder(props) {
           });
         }
 
-        if(params2 && !values.complainUser) {
+        if (params2 && !values.complainUser) {
           message.error('请通过问题申报人下拉值形式选择问题申报人')
         }
-    
+
       }
 
       if (params2 && uservisible === false) {
@@ -751,7 +752,7 @@ function Workorder(props) {
                 flowNodeName === '问题登记' &&
                 problemFlowLogs &&
                 problemFlowLogs.length === 1 && (
-                  <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete}>
+                  <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete} disabled={olduploadstatus}>
                     删除
                   </Button>
                 )}
@@ -761,7 +762,7 @@ function Workorder(props) {
                 problemFlowLogs &&
                 problemFlowLogs.length >= 3 &&
                 problemFlowLogs[problemFlowLogs.length - 2].status === '退回' && (
-                  <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete}>
+                  <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete} disabled={olduploadstatus}>
                     删除
                   </Button>
                 )}
@@ -773,6 +774,7 @@ function Workorder(props) {
                   flowNodeName === '问题登记人员确认') &&
                 showback === true && (
                   <Button
+                    disabled={olduploadstatus}
                     type="primary"
                     style={{ marginRight: 8 }}
                     onClick={() => onClickSubmit('goback')}
@@ -786,7 +788,12 @@ function Workorder(props) {
                 currntStatus !== 29 &&
                 currntStatus !== 40 &&
                 tabActiveKey === 'workorder' && (
-                  <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSubmit()}>
+                  <Button
+                    type="primary"
+                    style={{ marginRight: 8 }}
+                    onClick={() => handleSubmit()}
+                    disabled={olduploadstatus}
+                  >
                     保存
                   </Button>
                 )}
@@ -802,6 +809,7 @@ function Workorder(props) {
                     onClick={() => {
                       handleSubmit();
                     }}
+                    disabled={olduploadstatus}
                   >
                     保存
                   </Button>
@@ -814,6 +822,7 @@ function Workorder(props) {
                     changeorderFunction();
                     onClickSubmit('flowNodeName');
                   }}
+                  disabled={olduploadstatus}
                 >
                   转单
                 </Button>
@@ -826,6 +835,7 @@ function Workorder(props) {
                     type="primary"
                     style={{ marginRight: 8 }}
                     onClick={() => onClickSubmit('accpt')}
+                    disabled={olduploadstatus}
                   >
                     接单
                   </Button>
@@ -845,6 +855,7 @@ function Workorder(props) {
                       setProblemHandle('handle');
                       setChange();
                     }}
+                    disabled={olduploadstatus}
                   >
                     流转
                   </Button>
@@ -854,7 +865,7 @@ function Workorder(props) {
                 flowNodeName === '问题登记' &&
                 problemFlowLogs &&
                 problemFlowLogs.length > 2 && (
-                  <Button type="primary" onClick={closeOrder}>
+                  <Button type="primary" onClick={closeOrder}  disabled={olduploadstatus}>
                     关闭工单
                   </Button>
                 )}
@@ -873,6 +884,7 @@ function Workorder(props) {
                     onClick={() => {
                       onClickSubmit('flowNodeName');
                     }}
+                    disabled={olduploadstatus}
                   >
                     {flowNodeName === '自动化科审核' || flowNodeName === '系统运维商审核'
                       ? '重新登记'
@@ -891,6 +903,7 @@ function Workorder(props) {
                       handleSubmit();
                       setButandOrder('end');
                     }}
+                    disabled={olduploadstatus}
                   >
                     {flowNodeName === '问题登记人员确认' ? '结束' : '流转'}
                   </Button>
@@ -909,6 +922,7 @@ function Workorder(props) {
                       cancelChangeorder();
                       onClickSubmit('flowNodeName');
                     }}
+                    disabled={olduploadstatus}
                   >
                     流转
                   </Button>
@@ -1018,7 +1032,7 @@ function Workorder(props) {
                       ChangeFiles={newvalue => {
                         setFiles(newvalue);
                       }}
-                      // location={location}
+                    // location={location}
                     />
                   </FatherContext.Provider>
                 </Panel>
@@ -1270,7 +1284,7 @@ function Workorder(props) {
   );
 }
 export default Form.create({})(
-  connect(({ problemmanage, demandtodo, itsmuser, problemdropdown, loading }) => ({
+  connect(({ problemmanage, demandtodo, itsmuser, viewcache, problemdropdown, loading }) => ({
     todoDetail: problemmanage.todoDetail,
     reviewInfo: problemmanage.reviewInfo,
     eventtableList: problemmanage.eventtableList,
@@ -1290,5 +1304,6 @@ export default Form.create({})(
     scopeList: problemdropdown.scopeList,
     projectList: problemdropdown.projectList,
     loading: loading.models.problemmanage,
+    olduploadstatus: viewcache.olduploadstatus,
   }))(Workorder),
 );

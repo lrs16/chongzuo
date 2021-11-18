@@ -35,30 +35,24 @@ const TaskExecute = React.forwardRef((props, ref) => {
     ChangeFiles(fileslist);
   }, [fileslist]);
 
-  // const onChange = (date, dateString) => {
-  //   setFieldsValue({ execute_startTime: moment(dateString) });
-  //   startTime = dateString;
-  // };
+  const onChange = (date, dateString) => {
+    setFieldsValue({ execute_startTime: moment(dateString) });
+    startTime = dateString;
+  };
   // 暂时保留
 
-  // const endtimeonChange = (date, dateString) => {
-  //   setFieldsValue({ execute_endTime: moment(dateString) });
-  //   endTime = dateString;
-  // };
+  const endtimeonChange = (date, dateString) => {
+    setFieldsValue({ execute_endTime: moment(dateString) });
+    endTime = dateString;
+  };
 
-  // const startdisabledDate = current => {
-  //   if (startTime || endTime) {
-  //     return current > moment(endTime);
-  //   }
-  //   return [];
-  // };
+  const startdisabledDate = current => {
+    return current > moment(endTime || (execute && execute.endTime) || new Date());
+  };
 
-  // const enddisabledDate = current => {
-  //   if (startTime || endTime) {
-  //     return current < moment(startTime);
-  //   }
-  //   return null;
-  // };
+  const enddisabledDate = current => {
+    return current < moment(startTime || (execute && execute.startTime) || new Date());
+  };
 
   const required = true;
 
@@ -106,8 +100,8 @@ const TaskExecute = React.forwardRef((props, ref) => {
               // <div>
               <DatePicker
                 // defaultValue={moment(execute.startTime || new Date())}
-                // onChange={onChange}
-                // disabledDate={startdisabledDate}
+                onChange={onChange}
+                disabledDate={startdisabledDate}
                 showTime
                 allowClear={false}
                 format="YYYY-MM-DD HH:mm:ss"
@@ -131,8 +125,8 @@ const TaskExecute = React.forwardRef((props, ref) => {
             })(
               // <div>
               <DatePicker
-                // onChange={endtimeonChange}
-                // disabledDate={enddisabledDate}
+                onChange={endtimeonChange}
+                disabledDate={enddisabledDate}
                 showTime
                 allowClear={false}
                 format="YYYY-MM-DD HH:mm:ss"
