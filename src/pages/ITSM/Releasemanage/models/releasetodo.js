@@ -22,6 +22,24 @@ import {
   getTimeoutInfo,
 } from '../services/api';
 
+const toSubmit = (subres) => {
+  const tabid = sessionStorage.getItem('tabid');
+  if (subres.code === 200) {
+    message.success('操作成功');
+    router.push({
+      pathname: `/ITSM/releasemanage/registration`,
+      query: { tabid, closecurrent: true }
+    });
+    router.push({
+      pathname: `/ITSM/releasemanage/to-do`,
+      query: { pathpush: true },
+      state: { cach: false, }
+    });
+  } else {
+    message.error('操作失败');
+  }
+}
+
 export default {
   namespace: 'releasetodo',
 
@@ -108,7 +126,7 @@ export default {
     },
 
     // 出厂测试保存,结束
-    * factorytest({ payload: { register, buttype } }, { call, put }) {
+    * factorytest({ payload: { register, buttype, submitval } }, { call, put }) {
       yield put({
         type: 'savestatuse',
         payload: { statuse: -1 },
@@ -139,6 +157,10 @@ export default {
           } else {
             message.error('操作失败');
           }
+        };
+        if (buttype === 'flow') {
+          const subres = yield call(flowSubmit, submitval);
+          toSubmit(subres)
         }
         yield put({
           type: 'updateinfo',
@@ -150,7 +172,7 @@ export default {
     },
 
     // 平台验证保存
-    * platformvalid({ payload: { platform, buttype } }, { call, put }) {
+    * platformvalid({ payload: { platform, buttype, submitval } }, { call, put }) {
       yield put({
         type: 'savestatuse',
         payload: { statuse: -1 },
@@ -168,13 +190,9 @@ export default {
         if (buttype === 'save') {
           message.success('保存成功');
         };
-        if (buttype === 'noPass') {
+        if (buttype === 'noPass' || buttype === 'flow') {
           const tabid = sessionStorage.getItem('tabid');
-          const nopasspayload = {
-            taskId: response.data.currentTaskStatus.taskId,
-            type: 0,
-          };
-          const subres = yield call(flowSubmit, nopasspayload);
+          const subres = yield call(flowSubmit, submitval);
           if (subres.code === 200) {
             message.success('操作成功');
             router.push({
@@ -191,8 +209,8 @@ export default {
       }
     },
 
-    // 业务验证保存
-    * bizvalid({ payload: { bizValidate, buttype } }, { call, put }) {
+    // 业务验证保存流转
+    * bizvalid({ payload: { bizValidate, buttype, userIds } }, { call, put }) {
       yield put({
         type: 'savestatuse',
         payload: { statuse: -1 },
@@ -210,13 +228,18 @@ export default {
         if (buttype === 'save') {
           message.success('保存成功');
         };
-        if (buttype === 'noPass') {
+        if (buttype === 'flow') {
           const tabid = sessionStorage.getItem('tabid');
-          const nopasspayload = {
+          // const nopasspayload = {
+          //   taskId: response.data.currentTaskStatus.taskId,
+          //   type: 3,
+          // };
+          const flowpayload = {
             taskId: response.data.currentTaskStatus.taskId,
-            type: 3,
+            type: 1,
+            userIds,
           };
-          const subres = yield call(flowSubmit, nopasspayload);
+          const subres = yield call(flowSubmit, flowpayload);
           if (subres.code === 200) {
             message.success('操作成功');
             router.push({

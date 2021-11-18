@@ -4,7 +4,7 @@ import moment from 'moment';
 import { Collapse, message } from 'antd';
 import SubmitTypeContext from '@/layouts/MenuContext';
 import DictLower from '@/components/SysDict/DictLower';
-import User from '@/components/SelectUser/User';
+// import User from '@/components/SelectUser/User';
 import Registrat from './components/Registrat';
 import ImplementationPre from './components/ImplementationPre';
 import VersionAudit from './components/VersionAudit';
@@ -71,7 +71,7 @@ function WorkOrder(props) {
     const validform = {
       releaseNo: Id,
       formValid: {
-        testUnit: testUnit.toString(),
+        testUnit: testUnit ? testUnit.toString() : '',
         testStart, testEnd, testOperator, testPlace, testResult, validResult,
         //  validComments: val.validResult === '通过' ? val.validComments : val.validComments1,
       },
@@ -101,17 +101,21 @@ function WorkOrder(props) {
         if (err) {
           message.error('请将信息填写完整')
         } else {
+          sessionStorage.setItem('flowtype', '1');
+          const userIds = userlist.map(obj => obj.userId);
           const register = getregistratformvalues();
           dispatch({
             type: 'releasetodo/factorytest',
             payload: {
               register,
               buttype,
+              submitval: {
+                taskId: currentTaskStatus.taskId,
+                type: submittype,
+                userIds: userIds.join(','),
+              }
             },
           });
-          sessionStorage.setItem('flowtype', '1');
-          // setUserVisible(true);
-          tosubmit();
         }
       })
     }
@@ -119,6 +123,7 @@ function WorkOrder(props) {
 
   // 平台验证保存流转
   const savelatformValid = () => {
+    const userIds = userlist.map(obj => obj.userId);
     const platform = getregistratformvalues();
     dispatch({
       type: 'releasetodo/platformvalid',
@@ -132,6 +137,11 @@ function WorkOrder(props) {
           releaseLists: platform.releaseLists,
         },
         buttype,
+        submitval: {
+          taskId: currentTaskStatus.taskId,
+          type: submittype,
+          userIds: userIds.join(','),
+        }
       },
     });
   }
@@ -147,10 +157,10 @@ function WorkOrder(props) {
           if (err) {
             message.error('请将信息填写完整')
           } else {
-            savelatformValid();
             sessionStorage.setItem('flowtype', '1');
+            savelatformValid();
             // setUserVisible(true);
-            tosubmit();
+            // tosubmit();
           }
         })
         break;
@@ -172,6 +182,7 @@ function WorkOrder(props) {
 
   // 业务验证保存流转
   const savebizValidate = () => {
+    const userIds = userlist.map(obj => obj.userId);
     const bizValidate = getregistratformvalues();
     dispatch({
       type: 'releasetodo/bizvalid',
@@ -185,6 +196,7 @@ function WorkOrder(props) {
           releaseLists: bizValidate.releaseLists,
         },
         buttype,
+        userIds: userIds.join(','),
       },
     });
   }
@@ -209,12 +221,13 @@ function WorkOrder(props) {
               savebizValidate();
               sessionStorage.setItem('flowtype', '1');
               // setUserVisible(true);
-              tosubmit();
+              // tosubmit();
             }
           }
         })
         break;
       case 'noPass':
+        // 点击出厂测试按钮（20211118取消该按钮）
         sessionStorage.removeItem('NextflowUserId');
         RegistratRef.current.Forms((err, values) => {
           if (err) {

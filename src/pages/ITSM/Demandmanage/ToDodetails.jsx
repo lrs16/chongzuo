@@ -193,7 +193,7 @@ function ToDoregist(props) {
               type="primary"
               style={{ marginRight: 8 }}
               onClick={() => { handleClick('flow'); setButandOrder('flow') }}
-              disabled={releaseTaskName !== '结束' && releaseTaskName !== ''}
+            // disabled={releaseTaskName !== '结束' && releaseTaskName !== ''}
             >
               流转
             </Button>

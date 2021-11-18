@@ -37,7 +37,6 @@ function Registration(props) {
   const [modalvisible, setModalVisible] = useState(false);
   const [saveloading, setSaveloading] = useState(false);
   const [indexvalue, setIndexValue] = useState({ releaseMain: {}, releaseRegister: {}, releaseEnvs: [], releaseLists: [], releaseAttaches: Attaches });
-  console.log(userlist)
   // 初始化用户信息，流程类型
   useEffect(() => {
     dispatch({
@@ -104,7 +103,7 @@ function Registration(props) {
         payload: {
           taskId,
           type: 1,
-          userIds,
+          userIds: userIds.join(','),
         }
       });
     }

@@ -219,7 +219,7 @@ function ToDodetails(props) {
           删除
         </Button>
       )}
-      {!saved && taskName !== '出厂测试' && taskName !== '发布实施准备' && taskName !== '发布实施' && (
+      {!saved && taskName !== '出厂测试' && taskName !== '发布实施' && (
         <Button type="danger" ghost style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => { handleGoback() }} disabled={uploadstatus || allloading}>
           回退
         </Button>
@@ -249,7 +249,7 @@ function ToDodetails(props) {
           结束
         </Button>
       )}
-      {submittype === 0 && (taskName === '平台验证' || taskName === '业务验证') && (
+      {((submittype === 0 && taskName === '平台验证') || (submittype === 3 && taskName === '发布实施准备')) && (
         <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => handleClick('noPass')} disabled={uploadstatus || allloading}>
           出厂测试
         </Button>

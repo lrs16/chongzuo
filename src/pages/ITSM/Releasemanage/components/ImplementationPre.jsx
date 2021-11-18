@@ -63,8 +63,18 @@ function ImplementationPre(props, ref) {
   const [stopVisit, setStopVisit] = useState('否');
   const [alertvisible, setAlertVisible] = useState(false);  // 超时告警是否显示
   const [alertmessage, setAlertMessage] = useState('');
-  const { ChangeButtype } = useContext(SubmitTypeContext);
+  const { ChangeSubmitType, ChangeButtype } = useContext(SubmitTypeContext);
   const required = true;
+
+  const handleAdopt = e => {
+    // setAdopt(e.target.value);
+    if (e.target.value === '通过') {
+      ChangeSubmitType(1)
+    };
+    if (e.target.value === '不通过') {
+      ChangeSubmitType(3)
+    }
+  };
 
   const formRef = useRef();
   useImperativeHandle(ref, () => ({
@@ -162,6 +172,26 @@ function ImplementationPre(props, ref) {
       <Row gutter={12} style={{ paddingTop: 24, }}>
         <Form ref={formRef}>
           <Col span={24}>
+            <Form.Item label='实施准备结果' {...forminladeLayout} labelAlign='left'>
+              {getFieldDecorator('validResult', {
+                rules: [{ required, message: '请选择验证结果' }],
+                initialValue: info.practicePre && info.practicePre.result ? info.practicePre.result : '通过',
+              })(<RadioGroup onChange={handleAdopt} disabled={!isEdit}>
+                <Radio value='通过'>通过</Radio>
+                <Radio value='不通过'>不通过</Radio>
+              </RadioGroup>
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item label="实施准备意见" {...forminladeLayout} labelAlign='left'>
+              {getFieldDecorator('summary', {
+                rules: [{ required, message: `请填写实施准备意见` }],
+                initialValue: info.practicePre && info.practicePre.opinion ? info.practicePre.opinion : '',
+              })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
+            </Form.Item>
+          </Col>
+          <Col span={24}>
             <Form.Item label="总述" {...forminladeLayout} labelAlign='left'>
               {getFieldDecorator('summary', {
                 rules: [{ required, message: `请填写总述` }],
@@ -226,7 +256,8 @@ function ImplementationPre(props, ref) {
               {getFieldDecorator('beginPlanTime', {
                 rules: [{ required, message: `请选择实施计划开始时间` }],
                 initialValue: moment(info.practicePre && info.practicePre.beginPlanTime ? info.practicePre.beginPlanTime : undefined),
-              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
+              })(
+                <DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
             </Form.Item>
           </Col>
           <Col span={8} style={{ marginTop: 24 }}>

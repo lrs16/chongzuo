@@ -979,7 +979,7 @@ function EditeTable(props) {
         <Col span={8} style={{ textAlign: 'right' }}>
           {isEdit && (
             <>
-              {taskName === '业务验证' && (
+              {/* {taskName === '业务验证' && (
                 <Button
                   type='primary'
                   style={{ marginRight: 8 }}
@@ -989,7 +989,7 @@ function EditeTable(props) {
                 >
                   分派
                 </Button>
-              )}
+              )} */}
               {taskName === '业务验证' && (
                 <Button
                   type='primary'

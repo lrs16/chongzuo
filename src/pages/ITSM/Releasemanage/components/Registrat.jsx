@@ -222,54 +222,58 @@ function Registrat(props, ref) {
               </Col>
             </>
           )}
-          <Col span={8}>
-            <Form.Item label="测试开始时间">
-              {getFieldDecorator('testStart', {
-                rules: [{ required, message: `请选择出厂测试开始时间` }],
-                initialValue: moment(formmap.get(taskName).testStart || undefined),
-              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
-            </Form.Item>
-          </Col>
-          <Col span={8}>
-            <Form.Item label="测试结束时间">
-              {getFieldDecorator('testEnd', {
-                rules: [{ required, message: `请选择出厂测试结束时间` }],
-                initialValue: moment(formmap.get(taskName).testEnd || undefined),
-              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
-            </Form.Item>
-          </Col>
-          <Col span={8}>
-            <Form.Item label="测试地点">
-              {getFieldDecorator('testPlace', {
-                rules: [{ required, message: `请输入出厂测试地点` }],
-                initialValue: formmap.get(taskName).testPlace,
-              })(<Input disabled={!isEdit} />)}
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Form.Item label="参与测试单位" {...formuintLayout}>
-              {getFieldDecorator('testUnit', {
-                rules: [{ required, message: `请选择参与测试单位` }],
-                initialValue: formmap.get(taskName).testUnit && formmap.get(taskName).testUnit.length ? formmap.get(taskName).testUnit.split(',') : [],
-              })(
-                <Select placeholder="请选择" disabled={!isEdit} mode="multiple">
-                  {testunitmap.map(obj => [
-                    <Option key={obj.key} value={obj.title}>
-                      {obj.title}
-                    </Option>,
-                  ])}
-                </Select>
-              )}
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Form.Item label="测试人员" {...formuintLayout}>
-              {getFieldDecorator('testOperator', {
-                rules: [{ required, message: `请输入测试人员` }],
-                initialValue: formmap.get(taskName).testOperator,
-              })(<TextArea autoSize disabled={!isEdit} />)}
-            </Form.Item>
-          </Col>
+          {(taskName === '出厂测试' || taskName === '新建' || taskName === '平台验证') && (
+            <>
+              <Col span={8}>
+                <Form.Item label="测试开始时间">
+                  {getFieldDecorator('testStart', {
+                    rules: [{ required, message: `请选择出厂测试开始时间` }],
+                    initialValue: moment(formmap.get(taskName).testStart || undefined),
+                  })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="测试结束时间">
+                  {getFieldDecorator('testEnd', {
+                    rules: [{ required, message: `请选择出厂测试结束时间` }],
+                    initialValue: moment(formmap.get(taskName).testEnd || undefined),
+                  })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="测试地点">
+                  {getFieldDecorator('testPlace', {
+                    rules: [{ required, message: `请输入出厂测试地点` }],
+                    initialValue: formmap.get(taskName).testPlace,
+                  })(<Input disabled={!isEdit} />)}
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item label="参与测试单位" {...formuintLayout}>
+                  {getFieldDecorator('testUnit', {
+                    rules: [{ required, message: `请选择参与测试单位` }],
+                    initialValue: formmap.get(taskName).testUnit && formmap.get(taskName).testUnit.length ? formmap.get(taskName).testUnit.split(',') : [],
+                  })(
+                    <Select placeholder="请选择" disabled={!isEdit} mode="multiple">
+                      {testunitmap.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item label="测试人员" {...formuintLayout}>
+                  {getFieldDecorator('testOperator', {
+                    rules: [{ required, message: `请输入测试人员` }],
+                    initialValue: formmap.get(taskName).testOperator,
+                  })(<TextArea autoSize disabled={!isEdit} />)}
+                </Form.Item>
+              </Col>
+            </>
+          )}
           {(taskName === '出厂测试' || taskName === '新建') && (
             <Col span={24}>
               <Form.Item label="受影响业务范围" {...formuintLayout}>
@@ -320,7 +324,7 @@ function Registrat(props, ref) {
               )}
             </Form.Item>
           </Col>
-          {(taskName === '平台验证' || taskName === '业务验证') && (
+          {(taskName === '平台验证') && (
             <>
               <Col span={24}>
                 <Form.Item label='验证结果' {...forminladeLayout} labelAlign='left'>
