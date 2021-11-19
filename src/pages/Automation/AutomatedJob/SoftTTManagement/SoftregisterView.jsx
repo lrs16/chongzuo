@@ -43,7 +43,7 @@ function SoftregisterView(props) {
     router.push({
       pathname: '/automation/automatedjob/softstartandstop/softregister',
       query: { pathpush: true },
-      state: { cache: false }
+      state: { cache: false, closetabid: Id }
     });
   };
 

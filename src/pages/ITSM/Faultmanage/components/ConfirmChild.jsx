@@ -17,7 +17,7 @@ const { Option } = Select;
 
 const ConfirmChild = React.forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout, confirm, main, curruserinfo, ChangeFiles, ChangeResult, location } = props;
-  const { getFieldDecorator } = props.form;
+  const { getFieldDecorator, setFieldsValue } = props.form;
   const attRef = useRef();
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
   const [adopt, setAdopt] = useState('1');
@@ -118,7 +118,13 @@ const ConfirmChild = React.forwardRef((props, ref) => {
                 },
               ],
               initialValue: confirm.confirmTime ? moment(confirm.confirmTime) : moment(new Date())
-            })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
+            })(<><DatePicker
+              showTime
+              format="YYYY-MM-DD HH:mm:ss"
+              defaultValue={moment(confirm && confirm.confirmTime ? confirm.confirmTime : new Date())}
+              onChange={(v) => { setFieldsValue({ confirmTime: moment(v) }) }}
+              style={{ width: '100%' }}
+            /></>)}
           </Form.Item>
         </Col>
 

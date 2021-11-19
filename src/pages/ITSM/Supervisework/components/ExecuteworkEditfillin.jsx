@@ -24,7 +24,7 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
     [],
   );
   const {
-    form: { getFieldDecorator },
+    form: { getFieldDecorator, setFieldsValue },
     formItemLayout,
     forminladeLayout,
     files,
@@ -89,12 +89,14 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
                   }
                 ],
                 initialValue: execute.startTime === null ? moment(new Date()) : moment(execute.startTime)
-              })(
+              })(<>
                 <DatePicker
                   disabled={!showEdit}
                   showTime
                   format="YYYY-MM-DD HH:mm:ss"
-                />)}
+                  defaultValue={moment(execute.startTime === null ? new Date() : execute.startTime)}
+                  onChange={(v) => { setFieldsValue({ execute_startTime: moment(v) }) }}
+                /></>)}
             </Form.Item>
           </Col>
 
@@ -108,12 +110,14 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
                   }
                 ],
                 initialValue: execute.endTime === null ? moment(new Date()) : moment(execute.endTime),
-              })(<DatePicker
+              })(<><DatePicker
                 showTime
                 disabled={!showEdit}
                 sabledDate={disabledDate}
                 format="YYYY-MM-DD HH:mm:ss"
-              />)}
+                defaultValue={moment(execute.endTime === null ? new Date() : execute.endTime)}
+                onChange={(v) => { setFieldsValue({ execute_endTime: moment(v) }) }}
+              /></>)}
             </Form.Item>
           </Col>
 

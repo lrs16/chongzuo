@@ -18,7 +18,7 @@ const RadioGroup = Radio.Group;
 
 const ExamineSecondChild = React.forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout, check, curruserinfo, ChangeFiles, ChangeResult, location } = props;
-  const { getFieldDecorator } = props.form;
+  const { getFieldDecorator, setFieldsValue } = props.form;
   const attRef = useRef();
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
   const [adopt, setAdopt] = useState('1');
@@ -117,7 +117,13 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
                 },
               ],
               initialValue: check.checkTime ? moment(check.checkTime) : moment(new Date())
-            })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
+            })(<>
+              <DatePicker
+                showTime
+                format="YYYY-MM-DD HH:mm:ss"
+                defaultValue={moment(check && check.checkTime ? check.checkTime : new Date())}
+                onChange={(v) => { setFieldsValue({ checkTime: moment(v) }) }}
+              /></>)}
           </Form.Item>
         </Col>
 
@@ -139,7 +145,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
             </Form.Item>
           )}
         </Col>
-        
+
         <Col span={24}>
           <Form.Item
             label="上传附件"
@@ -159,7 +165,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
         <Col span={24}>
           <Form.Item label="是否影响计量主站" {...forminladeLayout}>
             {getFieldDecorator('checkMaster', {
-              initialValue: check && check.checkMaster  || '',
+              initialValue: check && check.checkMaster || '',
             })(
               <RadioGroup>
                 <Radio value='0'>是</Radio>

@@ -43,7 +43,7 @@ const forminladeLayout = {
 
 function CheckModel(props) {
   const {
-    form: { getFieldDecorator, validateFields, resetFields },
+    form: { getFieldDecorator, validateFields, resetFields, setFieldsValue },
     children,
     title,
     selectedRows,
@@ -137,11 +137,13 @@ function CheckModel(props) {
                     }
                   ],
                   initialValue: moment(new Date()),
-                })(
+                })(<>
                   <DatePicker
                     showTime
                     format="YYYY-MM-DD HH:mm:ss"
-                  />)}
+                    defaultValue={moment(new Date())}
+                    onChange={(v) => { setFieldsValue({ check_checkTime: moment(v) }) }}
+                  /></>)}
               </Form.Item>
             </Col>
 

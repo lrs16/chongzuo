@@ -23,7 +23,7 @@ const CheckdelayworkEditfillin = React.forwardRef((props, ref) => {
     );
 
     const {
-        form: { getFieldDecorator },
+        form: { getFieldDecorator, setFieldsValue },
         // ChangeResult,
         check,
         formItemLayout,
@@ -85,11 +85,13 @@ const CheckdelayworkEditfillin = React.forwardRef((props, ref) => {
                                     }
                                 ],
                                 initialValue: check.checkTime ? moment(check.checkTime) : moment(new Date()),
-                            })(
+                            })(<>
                                 <DatePicker
                                     showTime
                                     format="YYYY-MM-DD HH:mm:ss"
-                                />)}
+                                    defaultValue={moment(check && check.checkTime ? check.checkTime : new Date())}
+                                    onChange={(v) => { setFieldsValue({ check_checkTime: moment(v) }) }}
+                                /></>)}
                         </Form.Item>
                     </Col>
 

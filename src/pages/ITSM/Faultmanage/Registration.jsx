@@ -66,7 +66,12 @@ function Registration(props) {
   const [faultUploadStatus, setFaultUploadStatus] = useState(false);
 
   const {
-    form: { getFieldDecorator, resetFields, getFieldsValue },
+    form: {
+      getFieldDecorator,
+      resetFields,
+      getFieldsValue,
+      setFieldsValue
+    },
     dispatch,
     // newno, // 新的故障编号
     curruserinfo, // 获取登录用户信息
@@ -269,227 +274,242 @@ function Registration(props) {
         <FaultContext.Provider value={{
           getUploadStatus: (v) => { setFaultUploadStatus(v) },
         }}>
-        <Form {...formItemLayout}>
-          <Row gutter={24} style={{ paddingTop: 24 }}>
-            <Col xl={8} xs={12}>
-              <Form.Item label="故障编号">
-                {getFieldDecorator('no', {
-                  initialValue: '',
-                })(<Input disabled />)}
-              </Form.Item>
-            </Col>
-            <Col xl={8} xs={12}>
-              <Form.Item label="登记时间">
-                {getFieldDecorator('registerTime', {
-                  initialValue: moment(cacheinfo.registerTime) || '',
-                })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
-              </Form.Item>
-            </Col>
+          <Form {...formItemLayout}>
+            <Row gutter={24} style={{ paddingTop: 24 }}>
+              <Col xl={8} xs={12}>
+                <Form.Item label="故障编号">
+                  {getFieldDecorator('no', {
+                    initialValue: '',
+                  })(<Input disabled />)}
+                </Form.Item>
+              </Col>
+              <Col xl={8} xs={12}>
+                <Form.Item label="登记时间">
+                  {getFieldDecorator('registerTime', {
+                    initialValue: moment(cacheinfo && cacheinfo.registerTime ? cacheinfo.registerTime : undefined),
+                  })(<>
+                    <DatePicker
+                      showTime
+                      format="YYYY-MM-DD HH:mm:ss"
+                      style={{ width: '100%' }}
+                      defaultValue={moment(cacheinfo && cacheinfo.registerTime ? cacheinfo.registerTime : undefined)}
+                      onChange={(v) => { setFieldsValue({ registerTime: moment(v) }) }}
+                    /></>
+                  )}
+                </Form.Item>
+              </Col>
 
-            <Col xl={8} xs={12}>
-              <Form.Item label="发生时间">
-                {getFieldDecorator('registerOccurTime', {
-                  initialValue: moment(cacheinfo.registerOccurTime) || '',
-                })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
-              </Form.Item>
-            </Col>
+              <Col xl={8} xs={12}>
+                <Form.Item label="发生时间">
+                  {getFieldDecorator('registerOccurTime', {
+                    initialValue: moment(cacheinfo && cacheinfo.registerOccurTime ? cacheinfo.registerOccurTime : undefined),
+                  })(<>
+                    <DatePicker
+                      showTime
+                      format="YYYY-MM-DD HH:mm:ss"
+                      style={{ width: '100%' }}
+                      defaultValue={moment(cacheinfo && cacheinfo.registerOccurTime ? cacheinfo.registerOccurTime : undefined)}
+                      onChange={(v) => { setFieldsValue({ registerOccurTime: moment(v) }) }}
+                    /></>)}
+                </Form.Item>
+              </Col>
 
-            <Col xl={8} xs={12}>
-              <Form.Item label="故障来源">
-                {getFieldDecorator('source', {
-                  rules: [
-                    {
-                      required,
-                      message: '请选择',
-                    },
-                  ],
-                  initialValue: cacheinfo.source || '',
-                })(
-                  <Select
-                    getPopupContainer={e => e.parentNode}
-                    placeholder="请选择">
-                    {faultSource.map(obj => [
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
+              <Col xl={8} xs={12}>
+                <Form.Item label="故障来源">
+                  {getFieldDecorator('source', {
+                    rules: [
+                      {
+                        required,
+                        message: '请选择',
+                      },
+                    ],
+                    initialValue: cacheinfo.source || '',
+                  })(
+                    <Select
+                      getPopupContainer={e => e.parentNode}
+                      placeholder="请选择">
+                      {faultSource.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
 
-            <Col span={8}>
-              <Form.Item label="系统模块">
-                {getFieldDecorator('registerModel', {
-                  rules: [
-                    {
-                      required,
-                      message: '请选择',
-                    },
-                  ],
-                  initialValue: cacheinfo.registerModel || ''
-                })(
-                  <Select
-                    getPopupContainer={e => e.parentNode}
-                    placeholder="请选择">
-                    {sysmodular.map(obj => [
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
+              <Col span={8}>
+                <Form.Item label="系统模块">
+                  {getFieldDecorator('registerModel', {
+                    rules: [
+                      {
+                        required,
+                        message: '请选择',
+                      },
+                    ],
+                    initialValue: cacheinfo.registerModel || ''
+                  })(
+                    <Select
+                      getPopupContainer={e => e.parentNode}
+                      placeholder="请选择">
+                      {sysmodular.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
 
-            <Col xl={8} xs={12}>
-              <Form.Item label="故障类型">
-                {getFieldDecorator('type', {
-                  rules: [
-                    {
-                      required,
-                      message: '请选择',
-                    },
-                  ],
-                  initialValue: cacheinfo.type || [''],
-                })(
-                  <Cascader
-                    getPopupContainer={e => e.parentNode}
-                    placeholder="请选择"
-                    options={faultType}
-                    fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
-                  />,
-                )}
-              </Form.Item>
-            </Col>
+              <Col xl={8} xs={12}>
+                <Form.Item label="故障类型">
+                  {getFieldDecorator('type', {
+                    rules: [
+                      {
+                        required,
+                        message: '请选择',
+                      },
+                    ],
+                    initialValue: cacheinfo.type || [''],
+                  })(
+                    <Cascader
+                      getPopupContainer={e => e.parentNode}
+                      placeholder="请选择"
+                      options={faultType}
+                      fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
+                    />,
+                  )}
+                </Form.Item>
+              </Col>
 
-            <Col xl={8} xs={12}>
-              <Form.Item label="故障地点">
-                {getFieldDecorator('registerAddress', {
-                  rules: [
-                    {
-                      required,
-                      message: '请输入',
-                    },
-                  ],
-                  initialValue: cacheinfo.registerAddress || '',
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
+              <Col xl={8} xs={12}>
+                <Form.Item label="故障地点">
+                  {getFieldDecorator('registerAddress', {
+                    rules: [
+                      {
+                        required,
+                        message: '请输入',
+                      },
+                    ],
+                    initialValue: cacheinfo.registerAddress || '',
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
+              </Col>
 
-            <Col xl={8} xs={12}>
-              <Form.Item label="严重程度">
-                {getFieldDecorator('registerLevel', {
-                  rules: [
-                    {
-                      required,
-                      message: '请选择',
-                    },
-                  ],
-                  initialValue: cacheinfo.registerLevel || '',
-                })(
-                  <Select
-                    getPopupContainer={e => e.parentNode}
-                    placeholder="请选择">
-                    {priority.map(obj => [
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
+              <Col xl={8} xs={12}>
+                <Form.Item label="严重程度">
+                  {getFieldDecorator('registerLevel', {
+                    rules: [
+                      {
+                        required,
+                        message: '请选择',
+                      },
+                    ],
+                    initialValue: cacheinfo.registerLevel || '',
+                  })(
+                    <Select
+                      getPopupContainer={e => e.parentNode}
+                      placeholder="请选择">
+                      {priority.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
 
-            <Col xl={8} xs={12}>
-              <Form.Item label="影响范围">
-                {getFieldDecorator('registerScope', {
-                  rules: [
-                    {
-                      required,
-                      message: '请选择',
-                    },
-                  ],
-                  initialValue: cacheinfo.registerScope || '',
-                })(
-                  <Select
-                    getPopupContainer={e => e.parentNode}
-                    placeholder="请选择">
-                    {effect.map(obj => [
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
+              <Col xl={8} xs={12}>
+                <Form.Item label="影响范围">
+                  {getFieldDecorator('registerScope', {
+                    rules: [
+                      {
+                        required,
+                        message: '请选择',
+                      },
+                    ],
+                    initialValue: cacheinfo.registerScope || '',
+                  })(
+                    <Select
+                      getPopupContainer={e => e.parentNode}
+                      placeholder="请选择">
+                      {effect.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
 
-            <Col span={24}>
-              <Form.Item label="故障名称"{...forminladeLayout}>
-                {getFieldDecorator('title', {
-                  rules: [
-                    {
-                      required,
-                      message: '请输入',
-                    },
-                  ],
-                  initialValue: cacheinfo.title || '',
-                })(
-                  <AutoComplete
-                    getPopupContainer={e => e.parentNode}
-                    dataSource={titleautodata}
-                    onSearch={value => handleSearch(value, 'title')}
-                  >
-                    <Input placeholder="请输入" />
-                  </AutoComplete>,
-                )}
-              </Form.Item>
-            </Col>
+              <Col span={24}>
+                <Form.Item label="故障名称"{...forminladeLayout}>
+                  {getFieldDecorator('title', {
+                    rules: [
+                      {
+                        required,
+                        message: '请输入',
+                      },
+                    ],
+                    initialValue: cacheinfo.title || '',
+                  })(
+                    <AutoComplete
+                      getPopupContainer={e => e.parentNode}
+                      dataSource={titleautodata}
+                      onSearch={value => handleSearch(value, 'title')}
+                    >
+                      <Input placeholder="请输入" />
+                    </AutoComplete>,
+                  )}
+                </Form.Item>
+              </Col>
 
-            <Col span={24}>
-              <Form.Item label="故障概要" {...forminladeLayout}>
-                {getFieldDecorator('content', {
-                  rules: [
-                    {
-                      required,
-                      message: '请输入',
-                    },
-                  ],
-                  initialValue: cacheinfo.content || '',
-                })(
-                  <AutoComplete
-                    getPopupContainer={e => e.parentNode}
-                    dataSource={desautodata}
-                    filterOption={(inputValue, option) =>
-                      option.props.children.includes(inputValue)
-                    }
-                  >
-                    <TextArea autoSize={{ minRows: 5 }} placeholder="请输入" />
-                  </AutoComplete>,
-                )}
-              </Form.Item>
-            </Col>
+              <Col span={24}>
+                <Form.Item label="故障概要" {...forminladeLayout}>
+                  {getFieldDecorator('content', {
+                    rules: [
+                      {
+                        required,
+                        message: '请输入',
+                      },
+                    ],
+                    initialValue: cacheinfo.content || '',
+                  })(
+                    <AutoComplete
+                      getPopupContainer={e => e.parentNode}
+                      dataSource={desautodata}
+                      filterOption={(inputValue, option) =>
+                        option.props.children.includes(inputValue)
+                      }
+                    >
+                      <TextArea autoSize={{ minRows: 5 }} placeholder="请输入" />
+                    </AutoComplete>,
+                  )}
+                </Form.Item>
+              </Col>
 
-            <Col span={24}>
-              <Form.Item label="是否影响业务" {...forminladeLayout}>
-                {getFieldDecorator('registerEffect', {
-                  initialValue: cacheinfo.registerEffect || '',
-                })(
-                  <RadioGroup>
-                    <Radio value='0'>是</Radio>
-                    <Radio value='1'>否</Radio>
-                  </RadioGroup>,
-                )}
-              </Form.Item>
-            </Col>
+              <Col span={24}>
+                <Form.Item label="是否影响业务" {...forminladeLayout}>
+                  {getFieldDecorator('registerEffect', {
+                    initialValue: cacheinfo.registerEffect || '',
+                  })(
+                    <RadioGroup>
+                      <Radio value='0'>是</Radio>
+                      <Radio value='1'>否</Radio>
+                    </RadioGroup>,
+                  )}
+                </Form.Item>
+              </Col>
 
-            <Col span={24}>
-              <Form.Item
-                label="上传附件"
-                {...forminladeLayout}
-              // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
-              >
+              <Col span={24}>
+                <Form.Item
+                  label="上传附件"
+                  {...forminladeLayout}
+                // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+                >
                   {(location && location.state && !location.state.cache) && !loading && (
                     <div style={{ width: 400 }}>
                       <SysUpload
@@ -498,47 +518,47 @@ function Registration(props) {
                       />
                     </div>
                   )}
-              </Form.Item>
-            </Col>
+                </Form.Item>
+              </Col>
 
-            <Col span={24}>
-              <Form.Item label="是否影响计量主站" {...forminladeLayout}>
-                {getFieldDecorator('registerMaster', {
-                  initialValue: cacheinfo.registerMaster || '0',
-                })(
-                  <RadioGroup>
-                    <Radio value='0'>是</Radio>
-                    <Radio value='1'>否</Radio>
-                  </RadioGroup>,
-                )}
-              </Form.Item>
-            </Col>
+              <Col span={24}>
+                <Form.Item label="是否影响计量主站" {...forminladeLayout}>
+                  {getFieldDecorator('registerMaster', {
+                    initialValue: cacheinfo.registerMaster || '0',
+                  })(
+                    <RadioGroup>
+                      <Radio value='0'>是</Radio>
+                      <Radio value='1'>否</Radio>
+                    </RadioGroup>,
+                  )}
+                </Form.Item>
+              </Col>
 
-            <Col span={8}>
-              <Form.Item label="登记人">
-                {getFieldDecorator('registerUser', {
-                  initialValue: curruserinfo.userName,
-                })(<Input disabled />)}
-              </Form.Item>
-            </Col>
+              <Col span={8}>
+                <Form.Item label="登记人">
+                  {getFieldDecorator('registerUser', {
+                    initialValue: curruserinfo.userName,
+                  })(<Input disabled />)}
+                </Form.Item>
+              </Col>
 
-            <Col span={8}>
-              <Form.Item label="登记人单位">
-                {getFieldDecorator('registerUnit', {
-                  initialValue: curruserinfo.unitName || '',
-                })(<Input disabled />)}
-              </Form.Item>
-            </Col>
+              <Col span={8}>
+                <Form.Item label="登记人单位">
+                  {getFieldDecorator('registerUnit', {
+                    initialValue: curruserinfo.unitName || '',
+                  })(<Input disabled />)}
+                </Form.Item>
+              </Col>
 
-            <Col span={8}>
-              <Form.Item label="登记人部门">
-                {getFieldDecorator('registerDept', {
-                  initialValue: curruserinfo.deptName || '',
-                })(<Input disabled />)}
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form>
+              <Col span={8}>
+                <Form.Item label="登记人部门">
+                  {getFieldDecorator('registerDept', {
+                    initialValue: curruserinfo.deptName || '',
+                  })(<Input disabled />)}
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
         </FaultContext.Provider>
       </Card>
     </PageHeaderWrapper>

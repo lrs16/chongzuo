@@ -126,7 +126,13 @@ const SummaryChild = React.forwardRef((props, ref) => {
                 },
               ],
               initialValue: finish.finishTime ? moment(finish.finishTime) : moment(Date.now())
-            })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
+            })(<>
+              <DatePicker
+                showTime
+                format="YYYY-MM-DD HH:mm:ss"
+                defaultValue={moment(finish && finish.finishTime ? finish.finishTime : Date.now())}
+                onChange={(v) => { setFieldsValue({ finishTime: moment(v) }) }}
+              /></>)}
           </Form.Item>
         </Col>
 

@@ -930,7 +930,7 @@ function Todolistdetails(props) {
               {/* 确认过程的时候不需要选人 1通过直接关闭 */}
               {flowNodeName === '自动化科专责确认'
                 ? resultconfirm === '1' && (
-                  <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleSubmit('over'); }}>
+                  <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleSubmit('over'); }} disabled={faultUploadStatus}>
                     结束
                   </Button>
                 )
@@ -951,17 +951,17 @@ function Todolistdetails(props) {
                   </Button>
                 )}
               {result === '0' && (
-                <Button type="primary" onClick={() => handleSubmit('registback')}>
+                <Button type="primary" onClick={() => handleSubmit('registback')} disabled={faultUploadStatus}>
                   重新登记
                 </Button>
               )}
               {resultsecond === '0' && (
-                <Button type="primary" onClick={() => handleSubmit('handleback')}>
+                <Button type="primary" onClick={() => handleSubmit('handleback')} disabled={faultUploadStatus}>
                   重新处理
                 </Button>
               )}
               {resultconfirm === '0' && (
-                <Button type="primary" onClick={() => handleSubmit('handle')}>
+                <Button type="primary" onClick={() => handleSubmit('handle')} disabled={faultUploadStatus}>
                   重新处理
                 </Button>
               )}
@@ -969,7 +969,7 @@ function Todolistdetails(props) {
               {troubleFlowNodeRows !== undefined &&
                 troubleFlowNodeRows.length !== 0 &&
                 flowNodeName === '故障登记' && (
-                  <Button type="primary" onClick={() => faultcircula('close')}>
+                <Button type="primary" onClick={() => faultcircula('close')} disabled={faultUploadStatus}>
                     结束
                   </Button>
                 )}

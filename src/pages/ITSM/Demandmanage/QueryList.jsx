@@ -25,17 +25,6 @@ const formItemLayout = {
   },
 };
 
-const form10ladeLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 4 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 20 },
-  },
-};
-
 function QueryList(props) {
   const pagetitle = props.route.name;
   const {

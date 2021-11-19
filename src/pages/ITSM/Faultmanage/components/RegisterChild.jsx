@@ -158,7 +158,14 @@ const RegisterChild = React.forwardRef((props, ref) => {
               initialValue: tododetailslist
                 ? moment(tododetailslist.register.registerTime)
                 : moment(Date.now()),
-            })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
+            })(<>
+              <DatePicker
+                showTime
+                format="YYYY-MM-DD HH:mm:ss"
+                defaultValue={moment(tododetailslist && tododetailslist.register.registerTime ? tododetailslist.register.registerTime : Date.now())}
+                onChange={(v) => { setFieldsValue({ registerTime: moment(v) }) }}
+                style={{ width: '100%' }} /></>
+            )}
           </Form.Item>
         </Col>
 
@@ -174,7 +181,13 @@ const RegisterChild = React.forwardRef((props, ref) => {
               initialValue: tododetailslist
                 ? moment(tododetailslist.register.registerOccurTime)
                 : moment(Date.now()),
-            })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
+            })(<><DatePicker
+              showTime
+              format="YYYY-MM-DD HH:mm:ss"
+              defaultValue={moment(tododetailslist && tododetailslist.register.registerOccurTime ? tododetailslist.register.registerOccurTime : Date.now())}
+              onChange={(v) => { setFieldsValue({ registerOccurTime: moment(v) }) }}
+              style={{ width: '100%' }} /></>
+            )}
           </Form.Item>
         </Col>
 

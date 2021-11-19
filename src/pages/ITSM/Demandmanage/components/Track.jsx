@@ -569,7 +569,14 @@ function Track(props) {
               {getFieldDecorator('devFinishTime', {
                 rules: [{ required, message: '请选择预计开发完成时间' }],
                 initialValue: moment(data.length > 0 && data[data.length - 1].devFinishTime ? data[data.length - 1].devFinishTime : undefined),
-              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
+              })(<><DatePicker
+                showTime
+                placeholder="请选择时间"
+                format="YYYY-MM-DD HH:mm:ss"
+                style={{ width: '100%' }}
+                defaultValue={moment(data.length > 0 && data[data.length - 1].devFinishTime ? data[data.length - 1].devFinishTime : undefined)}
+                onChange={(v) => { setFieldsValue({ devFinishTime: moment(v) }) }}
+              /></>)}
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -577,7 +584,14 @@ function Track(props) {
               {getFieldDecorator('releaseTime', {
                 rules: [{ required, message: '请选择预计发布时间' }],
                 initialValue: moment(data.length > 0 && data[data.length - 1].releaseTime ? data[data.length - 1].releaseTime : undefined),
-              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
+              })(<><DatePicker
+                showTime
+                placeholder="请选择时间"
+                format="YYYY-MM-DD HH:mm:ss"
+                style={{ width: '100%' }}
+                defaultValue={moment(data.length > 0 && data[data.length - 1].releaseTime ? data[data.length - 1].releaseTime : undefined)}
+                onChange={(v) => { setFieldsValue({ releaseTime: moment(v) }) }}
+              /></>)}
             </Form.Item>
           </Col>
           <Col span={8} style={{ paddingTop: 4 }}>

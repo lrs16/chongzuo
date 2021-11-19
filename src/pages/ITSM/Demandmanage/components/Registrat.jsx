@@ -351,7 +351,14 @@ const Registrat = forwardRef((props, ref) => {
               {getFieldDecorator('registerTime', {
                 rules: [{ required, message: '请选择申请时间' }],
                 initialValue: moment(register.registerTime),
-              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
+              })(<><DatePicker
+                showTime
+                placeholder="请选择时间"
+                format="YYYY-MM-DD HH:mm:ss"
+                style={{ width: '100%' }}
+                defaultValue={moment(register.registerTime)}
+                onChange={(v) => { setFieldsValue({ registerTime: moment(v) }) }}
+              /></>)}
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -359,13 +366,15 @@ const Registrat = forwardRef((props, ref) => {
               {getFieldDecorator('completeTime', {
                 rules: [{ required, message: '请选择期待完成时间' }],
                 initialValue: moment(newcompleteTime),
-              })(<DatePicker
+              })(<><DatePicker
                 showTime
                 placeholder="请选择时间"
                 format="YYYY-MM-DD HH:mm:ss"
                 disabledDate={disabledDate}
+                efaultValue={moment(newcompleteTime)}
+                onChange={(v) => { setFieldsValue({ completeTime: moment(v) }) }}
                 style={{ width: '100%' }}
-              />)}
+              /></>)}
             </Form.Item>
           </Col>
           <Col span={8}>

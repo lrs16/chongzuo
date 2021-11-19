@@ -168,7 +168,12 @@ const Examine = forwardRef((props, ref) => {
               {getFieldDecorator('reviewTime', {
                 rules: [{ required, message: `请选择${text}时间` }],
                 initialValue: moment(info[0].reviewTime),
-              })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
+              })(<><DatePicker
+                showTime
+                format="YYYY-MM-DD HH:mm:ss"
+                defaultValue={moment(info[0].reviewTime)}
+                onChange={(v) => { setFieldsValue({ reviewTime: moment(v) }) }}
+              /></>)}
             </Form.Item>
           </Col>
           {taskName === '自动化科专责审核' && adopt !== 0 && (

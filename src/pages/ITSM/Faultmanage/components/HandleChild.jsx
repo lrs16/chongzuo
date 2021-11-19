@@ -182,7 +182,13 @@ const HandleChild = React.forwardRef((props, ref) => {
                 handle && handle.handleStartTime
                   ? moment(handle.handleStartTime)
                   : moment(Date.now()),
-            })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
+            })(<>
+              <DatePicker
+                showTime
+                format="YYYY-MM-DD HH:mm:ss"
+                defaultValue={moment(handle && handle.handleStartTime ? handle.handleStartTime : Date.now())}
+                onChange={(v) => { setFieldsValue({ handleStartTime: moment(v) }) }}
+                style={{ width: '100%' }} /></>)}
           </Form.Item>
         </Col>
 
