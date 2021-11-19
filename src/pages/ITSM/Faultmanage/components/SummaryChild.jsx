@@ -7,8 +7,12 @@ import {
   Input,
   DatePicker,
   Alert,
+  Button,
+  Icon
 } from 'antd';
+import router from 'umi/router';
 import SysUpload from '@/components/SysUpload'; // 附件下载组件
+import Downloadfile from '@/components/SysUpload/Downloadfile'; // 下载组件调用
 
 const { TextArea } = Input;
 
@@ -46,12 +50,26 @@ const forminladeLayout = {
 };
 
 const SummaryChild = React.forwardRef((props, ref) => {
-  const { finish, curruserinfo, ChangeFiles, tododetailslist, ChangeFileskey, showFilelist, showFilelist2, uploadStatus } = props;
+  const {
+    form: { getFieldsValue },
+    finish,
+    curruserinfo,
+    ChangeFiles,
+    tododetailslist,
+    ChangeFileskey,
+    showFilelist,
+    showFilelist2,
+    id,
+    mainId,
+    orderNo,
+    editState,
+    finishId,
+    uploadStatus 
+  } = props;
   const message = '上传故障分析报告已超时， 实际上传时间已超过要求上传时间。'
   const { getFieldDecorator, setFieldsValue } = props.form;
   const attRef = useRef();
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
-
 
   useEffect(() => {
     ChangeFiles(fileslist);
@@ -74,6 +92,22 @@ const SummaryChild = React.forwardRef((props, ref) => {
   useEffect(() => {
     sessionStorage.setItem('Nextflowmane', '自动化科业务负责人审核');
   });
+
+  const handleAnalysisReport = (sign) => {
+    const values = getFieldsValue();
+    router.push({
+      pathname: '/ITSM/faultmanage/analysisreport',
+      query: {
+        tobeForm: values,
+        id,
+        mainId,
+        orderNo,
+        tobeeditState: editState,
+        finishId,
+        sign
+      }
+    })
+  }
 
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>
@@ -105,44 +139,85 @@ const SummaryChild = React.forwardRef((props, ref) => {
         </Col>
 
         {
+        ((showFilelist2 && showFilelist2.checkReportSign) ? showFilelist2.checkReportSign === '0' : showFilelist.checkReportSign === '0') && (
+          <Col span={24}>
+          <Form.Item label="上传故障分析报告" {...ItemLayout}>
+            {getFieldDecorator('finishAnalysisAttachments', {
+                   rules: [
+                    {
+                      required,
+                      message: '请生成故障分析报告',
+                    },
+                  ],
+            })(
+              <>
+                {finish.finishAnalysisAttachments && <Downloadfile files={finish.finishAnalysisAttachments} />}
+                {finish.finishAnalysisAttachments && (
+                  <Icon
+                    className="dynamic-delete-button"
+                    type="edit"
+                    onClick={() => handleAnalysisReport('noedit')}
+                  />
+                )}
+
+                {
+                  finish && !finish.finishAnalysisAttachments && (
+                    <Button
+                      type='primary'
+                      onClick={() => handleAnalysisReport('')}
+                    >
+                      自动生成报告
+                    </Button>
+                  )
+                }
+              </>
+            )}
+          </Form.Item>
+        </Col>
+        )
+        }
+
+        {
+        ((showFilelist2 && showFilelist2.checkReportSign) ? showFilelist2.checkReportSign === '1' : showFilelist.checkReportSign === '1') && (
+          <Col span={24}>
+          <Form.Item label="故障分析报告" {...ItemLayout}>
+            {getFieldDecorator('finishAnalysisAttachments', {
+           
+            })(
+              <>
+                {finish.finishAnalysisAttachments && <Downloadfile files={finish.finishAnalysisAttachments} />}
+                {finish.finishAnalysisAttachments && (
+                  <Icon
+                    className="dynamic-delete-button"
+                    type="edit"
+                    onClick={() => handleAnalysisReport('noedit')}
+                  />
+                )}
+
+                {
+                  finish && !finish.finishAnalysisAttachments && (
+                    <Button
+                      type='primary'
+                      onClick={() => handleAnalysisReport('')}
+                    >
+                      自动生成报告
+                    </Button>
+                  )
+                }
+              </>
+            )}
+          </Form.Item>
+        </Col>
+        )
+        }
+       
+        {
           ((showFilelist2 && showFilelist2.checkReportSign) ? showFilelist2.checkReportSign === '0' : showFilelist.checkReportSign === '0') && (
             <>
-              <Col span={24}>
-                <Form.Item label="上传故障分析报告" {...ItemLayout}>
-                  {getFieldDecorator('finishAnalysisAttachments', {
-                    rules: [
-                      {
-                        required,
-                        message: '请上传故障分析报告！'
-                      },
-                    ],
-                  })(
-                    <div
-                      style={{ width: 400 }}
-                      onMouseOver={() => {
-                        ChangeFileskey('1');
-                      }}
-                      onFocus={() => 0}
-                    >
-                      <SysUpload
-                        fileslist={(finish && finish.finishAnalysisAttachments) ? JSON.parse(finish.finishAnalysisAttachments) : []}
-                        ChangeFileslist={
-                          newvalue => {
-                            setFieldsValue({ finishAnalysisAttachments: JSON.stringify(newvalue.arr) });
-                            setFilesList(newvalue)
-                          }
-                        }
-                        banOpenFileDialog={uploadStatus}
-                      />
-                    </div>
-                  )}
-                </Form.Item>
-              </Col>
-
               <Col span={8}>
                 <Form.Item label="要求上传时间" >
                   {getFieldDecorator('finishRequiredTime', {
-                    initialValue: (tododetailslist && tododetailslist.requiredUploadTime) ? moment(tododetailslist.requiredUploadTime) : moment(finish.finishRequiredTime)
+                    initialValue: (tododetailslist && tododetailslist.requiredUploadTime) ? moment(tododetailslist.requiredUploadTime) : (finish.finishRequiredTime ? moment(finish.finishRequiredTime) : '')
                   })(<DatePicker showTime disabled format="YYYY-MM-DD HH:mm:ss" />)}
                 </Form.Item>
               </Col>
@@ -154,11 +229,9 @@ const SummaryChild = React.forwardRef((props, ref) => {
                   })(<DatePicker showTime disabled format="YYYY-MM-DD HH:mm:ss" />)}
                 </Form.Item>
               </Col>
-
             </>
           )
         }
-
 
         <Col span={24}>
           <Form.Item
