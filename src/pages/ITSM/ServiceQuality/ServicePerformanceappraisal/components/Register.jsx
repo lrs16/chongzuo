@@ -425,31 +425,30 @@ const Register = forwardRef((props, ref) => {
     },
     onRemove(filesinfo) {
       return new Promise((resolve, reject) => {
-        const values = getFieldsValue();
-        if ((values.main_plannedStartTime).valueOf() < (values.main_plannedEndTime).valueOf()) {
-          const newfilelist = fileslist.filter(item => item.uid !== filesinfo.uid);
-          // 删除文件
-          if (filesinfo && !filesinfo.lastModified) {
-            FileDelete(filesinfo.uid).then(res => {
-              if (res.code === 200) {
-                ChangeFiles({ arr: newfilelist, ischange: true });
-              }
-            });
-          } else {
-            message.success('已中止文件上传');
-            setShowIcon(true);
-            getUploadStatus(false);
-            if (getUploadStatus) { getUploadStatus(false) };
-            if (getRegistUploadStatus) { getRegistUploadStatus(false) };
+        validateFields((err) => {
+          if (!err) {
+            const newfilelist = fileslist.filter(item => item.uid !== filesinfo.uid);
+            // 删除文件
+            if (filesinfo && !filesinfo.lastModified) {
+              FileDelete(filesinfo.uid).then(res => {
+                if (res.code === 200) {
+                  ChangeFiles({ arr: newfilelist, ischange: true });
+                }
+              });
+            } else {
+              message.success('已中止文件上传');
+              setShowIcon(true);
+              getUploadStatus(false);
+            }
+            return resolve()
           }
-          return resolve()
-        }
 
-        if ((values.main_plannedStartTime).valueOf() > (values.main_plannedEndTime).valueOf()) {
-          return reject()
-        }
+          if (err) {
+            return reject(err)
+          }
 
-        return []
+          return []
+        })
       }).catch(() => {
         return new Promise((resolve) => {
           return resolve(false)
