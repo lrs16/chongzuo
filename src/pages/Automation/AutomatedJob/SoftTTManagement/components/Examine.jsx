@@ -1,4 +1,4 @@
-import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, useEffect, forwardRef, useImperativeHandle, useContext } from 'react';
 import moment from 'moment';
 import { Row, Col, Form, Input, Radio, DatePicker } from 'antd';
 import SysUpload from '@/components/SysUpload/Upload';
@@ -28,6 +28,8 @@ const Examine = forwardRef((props, ref) => {
     userinfo, check, Noediting,
     form: { getFieldDecorator, getFieldsValue, resetFields,setFieldsValue },
   } = props;
+  const [uploadStatus, setUploadStatus] = useState(false);
+  const { ChangeButtype, location } = useContext(FilesContext);
 
   const [adopt, setAdopt] = useState('0');
 
@@ -111,13 +113,18 @@ const Examine = forwardRef((props, ref) => {
               }],
               initialValue: check && check.examineFiles && check.examineFiles !== '[]' ? check.examineFiles : '',
             })(
-              <div style={{ width: 400 }}>
-                <FilesContext.Provider value={{
-                  files: check && check.examineFiles ? JSON.parse(check.examineFiles) : [],
-                  ChangeFiles: (v => {setFieldsValue({ examineFiles: JSON.stringify(v) })}),
-                }}>
-                  <SysUpload />
-                </FilesContext.Provider>
+              <div style={{ width: 400 }} onMouseDown={() => { ChangeButtype(''); }}>
+                {
+                  location && (!location.state || (location.state && !location.state.cache)) && (
+                    <FilesContext.Provider value={{
+                      files: check && check.examineFiles ? JSON.parse(check.examineFiles) : [],
+                      ChangeFiles: (v => { setFieldsValue({ examineFiles: JSON.stringify(v) }) }),
+                      getUploadStatus: (v) => { setUploadStatus(v) },
+                    }}>
+                      <SysUpload banOpenFileDialog={uploadStatus} />
+                    </FilesContext.Provider>
+                  )
+                }
               </div>
             )}
             </Form.Item>

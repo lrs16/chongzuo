@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import FaultContext from '@/layouts/MenuContext';
 import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
@@ -62,6 +63,7 @@ function Registration(props) {
   const [desautodata, setDestoData] = useState([]);
   const [titlerecords, setTitleRecords] = useState([]);
   const [desrecords, setDesRecords] = useState([]);
+  const [faultUploadStatus, setFaultUploadStatus] = useState(false);
 
   const {
     form: { getFieldDecorator, resetFields, getFieldsValue },
@@ -72,7 +74,8 @@ function Registration(props) {
     // saveuserid: { flowTaskId },
     location,
     tabnew,
-    tabdata
+    tabdata,
+    loading
   } = props;
 
 
@@ -243,7 +246,7 @@ function Registration(props) {
 
   const operations = (
     <>
-      <Button type="primary" style={{ marginRight: 8 }} onClick={handleSave}>
+      <Button type="primary" style={{ marginRight: 8 }} onClick={handleSave} disabled={faultUploadStatus}>
         保存
       </Button>
       <Button type="default" onClick={() => close()}>
@@ -263,6 +266,9 @@ function Registration(props) {
         style={{ display: 'none' }}
       />
       <Card>
+        <FaultContext.Provider value={{
+          getUploadStatus: (v) => { setFaultUploadStatus(v) },
+        }}>
         <Form {...formItemLayout}>
           <Row gutter={24} style={{ paddingTop: 24 }}>
             <Col xl={8} xs={12}>
@@ -484,12 +490,14 @@ function Registration(props) {
                 {...forminladeLayout}
               // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
               >
-                <div style={{ width: 400 }}>
-                  <SysUpload
-                    fileslist={files.arr}
-                    ChangeFileslist={newvalue => setFiles(newvalue)}
-                  />
-                </div>
+                  {(location && location.state && !location.state.cache) && !loading && (
+                    <div style={{ width: 400 }}>
+                      <SysUpload
+                        fileslist={files.arr}
+                        ChangeFileslist={newvalue => setFiles(newvalue)}
+                      />
+                    </div>
+                  )}
               </Form.Item>
             </Col>
 
@@ -531,6 +539,7 @@ function Registration(props) {
             </Col>
           </Row>
         </Form>
+        </FaultContext.Provider>
       </Card>
     </PageHeaderWrapper>
   );

@@ -350,6 +350,79 @@ function ChartDrawer(props) {
                     }
                 })
                 break;
+            // 饼图总数
+            case 'blametotal':
+                dispatch({
+                    type: 'fault/getfaultQueryList',
+                    payload: {
+                        pageNum: page,
+                        pageSize: size,
+                        addTimeBegin: value.time1,
+                        addTimeEnd: value.time2,
+                        blame: '总数'
+                    }
+                })
+                break;
+            case 'typetotal':
+                dispatch({
+                    type: 'fault/getfaultQueryList',
+                    payload: {
+                        pageNum: page,
+                        pageSize: size,
+                        addTimeBegin: value.time1,
+                        addTimeEnd: value.time2,
+                        type: '件'
+                    }
+                })
+                break;
+            case 'hardwaretotal':
+                dispatch({
+                    type: 'fault/getfaultQueryList',
+                    payload: {
+                        pageNum: page,
+                        pageSize: size,
+                        addTimeBegin: value.time1,
+                        addTimeEnd: value.time2,
+                        type: '硬件'
+                    }
+                })
+                break;
+            case 'softwaretotal':
+                dispatch({
+                    type: 'fault/getfaultQueryList',
+                    payload: {
+                        pageNum: page,
+                        pageSize: size,
+                        addTimeBegin: value.time1,
+                        addTimeEnd: value.time2,
+                        type: '软件'
+                    }
+                })
+                break;
+            case 'worksystemtotal':
+                dispatch({
+                    type: 'fault/getfaultQueryList',
+                    payload: {
+                        pageNum: page,
+                        pageSize: size,
+                        addTimeBegin: value.time1,
+                        addTimeEnd: value.time2,
+                        registerModel: '总数'
+                    }
+                })
+                break;
+            case 'timeouttotal':
+                dispatch({
+                    type: 'fault/getfaultQueryList',
+                    payload: {
+                        pageNum: page,
+                        pageSize: size,
+                        addTimeBegin: value.time1,
+                        addTimeEnd: value.time2,
+                        timeoutStatus: '总数'
+                    }
+                })
+                break;
             default:
                 break;
         };
@@ -395,6 +468,7 @@ function ChartDrawer(props) {
         setPageinations({
             ...paginations,
             current: 1,
+            pageSize: 15
         });
     };
 
@@ -656,6 +730,133 @@ function ChartDrawer(props) {
                     window.URL.revokeObjectURL(url);
                 });
                 // setDownVal({ ...downVal, handleUnit: value.type });
+                break;
+            // 饼图总数（all）
+            case 'blametotal':
+                dispatch({
+                    type: 'fault/faultQuerydownload',
+                    payload: {
+                        columns: JSON.stringify(exportColumns),
+                        ids: selectedKeys.toString(),
+                        blame: '总数',
+                        addTimeBegin: value.time1,
+                        addTimeEnd: value.time2,
+                    },
+                }).then(res => {
+                    const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+                    const blob = new Blob([res]);
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                });
+                break;
+            case 'typetotal':
+                dispatch({
+                    type: 'fault/faultQuerydownload',
+                    payload: {
+                        columns: JSON.stringify(exportColumns),
+                        ids: selectedKeys.toString(),
+                        type: '件',
+                        addTimeBegin: value.time1,
+                        addTimeEnd: value.time2,
+                    },
+                }).then(res => {
+                    const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+                    const blob = new Blob([res]);
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                });
+                break;
+            case 'hardwaretotal':
+                dispatch({
+                    type: 'fault/faultQuerydownload',
+                    payload: {
+                        columns: JSON.stringify(exportColumns),
+                        ids: selectedKeys.toString(),
+                        type: '硬件',
+                        addTimeBegin: value.time1,
+                        addTimeEnd: value.time2,
+                    },
+                }).then(res => {
+                    const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+                    const blob = new Blob([res]);
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                });
+                break;
+            case 'softwaretotal':
+                dispatch({
+                    type: 'fault/faultQuerydownload',
+                    payload: {
+                        columns: JSON.stringify(exportColumns),
+                        ids: selectedKeys.toString(),
+                        type: '软件',
+                        addTimeBegin: value.time1,
+                        addTimeEnd: value.time2,
+                    },
+                }).then(res => {
+                    const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+                    const blob = new Blob([res]);
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                });
+                break;
+            case 'worksystemtotal':
+                dispatch({
+                    type: 'fault/faultQuerydownload',
+                    payload: {
+                        columns: JSON.stringify(exportColumns),
+                        ids: selectedKeys.toString(),
+                        registerModel: '总数',
+                        addTimeBegin: value.time1,
+                        addTimeEnd: value.time2,
+                    },
+                }).then(res => {
+                    const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+                    const blob = new Blob([res]);
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                });
+                break;
+            case 'timeouttotal':
+                dispatch({
+                    type: 'fault/faultQuerydownload',
+                    payload: {
+                        columns: JSON.stringify(exportColumns),
+                        ids: selectedKeys.toString(),
+                        timeoutStatus: '总数',
+                        addTimeBegin: value.time1,
+                        addTimeEnd: value.time2,
+                    },
+                }).then(res => {
+                    const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+                    const blob = new Blob([res]);
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                });
                 break;
             default:
                 break;

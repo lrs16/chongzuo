@@ -267,7 +267,7 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
                                 (
                                     <div style={{ width: 400 }}>
                                         {
-                                            location && location.state && !location.state.cache && (
+                                            location && (!location.state || (location.state && !location.state.cache)) && (
                                                 <SysUpload
                                                     disabled={type === 'delay'}
                                                     fileslist={files}

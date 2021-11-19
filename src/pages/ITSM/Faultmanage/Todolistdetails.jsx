@@ -5,6 +5,7 @@ import moment from 'moment';
 import { Card, Form, Button, Steps, Collapse, Popconfirm, message, Spin } from 'antd';
 
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import FaultEditContext from '@/layouts/MenuContext';
 import User from '@/components/SelectUser/User';
 import styles from './index.less';
 import ModelRollback from './components/ModelRollback'; // 回退组件
@@ -95,6 +96,7 @@ function Todolistdetails(props) {
   const [tabActiveKey, setTabActiveKey] = useState('faultForm');
 
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [fileskey, setFileskey] = useState('1'); // 下载列表
 
   const [result, setResult] = useState('1');
@@ -110,6 +112,7 @@ function Todolistdetails(props) {
   const [modalvisible, setModalVisible] = useState(false);
 
   const [modalrollback, setModalRollBack] = useState(false);   // 回退信息modle
+  const [faultUploadStatus, setFaultUploadStatus] = useState(false); // 附件状态
 
   const RegisterRef = useRef(); // 故障登记
   const ExamineRef = useRef(); // 系统运维商审核  自动化科业务负责人审核
@@ -893,7 +896,7 @@ function Todolistdetails(props) {
                 check === undefined &&
                 finish === undefined &&
                 confirm === undefined && (
-                  <Button type="danger" style={{ marginRight: 8 }} ghost onClick={() => handleSubmit('goback')}>
+                  <Button type="danger" style={{ marginRight: 8 }} ghost onClick={() => handleSubmit('goback')} disabled={faultUploadStatus}>
                     回退
                   </Button>
                 )}
@@ -904,7 +907,7 @@ function Todolistdetails(props) {
                   </Button>
                 )}
               {main && main.status !== '40' && !(main.status === '45' && editState === 'add') && (
-                <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleSave(tosaveStatus); setButtonType('save') }}>
+                <Button type="primary" style={{ marginRight: 8 }} disabled={faultUploadStatus} onClick={() => { handleSave(tosaveStatus); setButtonType('save') }}>
                   保存
                 </Button>
               )}
@@ -919,6 +922,7 @@ function Todolistdetails(props) {
                       sessionStorage.setItem('flowtype', '9');
                     }}
                     onFocus={() => 0}
+                    disabled={faultUploadStatus}
                   >
                     转单
                   </Button>
@@ -936,6 +940,7 @@ function Todolistdetails(props) {
                 result === '1' &&
                 resultsecond === '1' && (
                   <Button
+                    disabled={faultUploadStatus}
                     type="primary"
                     style={{ marginRight: 8 }}
                     onClick={() => { handleSubmit('flow') }}
@@ -970,7 +975,7 @@ function Todolistdetails(props) {
                 )}
             </>
           )}
-          <Button type="default" onClick={handleClose}>返回</Button>
+          <Button type="default" onClick={handleClose} disabled={faultUploadStatus}>返回</Button>
         </>
       }
       title={flowNodeName}
@@ -1011,6 +1016,9 @@ function Todolistdetails(props) {
           )}
           <Spin spinning={loading}>
             {loading === false && tododetailslist && (
+              <FaultEditContext.Provider value={{
+                getUploadStatus: (v) => { setFaultUploadStatus(v) },
+              }}>
               <Collapse
                 expandIconPosition="right"
                 activeKey={activeKey}
@@ -1034,6 +1042,7 @@ function Todolistdetails(props) {
                         saveType={newvalue => {
                           setType(newvalue);
                         }}
+                          location={location}
                       />
                     </Panel>
                   )}
@@ -1092,7 +1101,8 @@ function Todolistdetails(props) {
                         }}
                         showFilelist={troubleFlowNodeRows[1]}
                         showFilelist2={troubleFlowNodeRows[2]}
-                        ChangeFileskey={newvalue => setFileskey(newvalue)}
+                          ChangeFileskey={newvalue => setFileskey(newvalue)}
+                          uploadStatus={olduploadstatus}
                       />
                     </Panel>
                   )}
@@ -1112,6 +1122,7 @@ function Todolistdetails(props) {
                           setResultsecond(newvalue);
                         }}
                         resultsecond={resultsecond}
+                          location={location}
                       />
                     </Panel>
                   )}
@@ -1131,6 +1142,7 @@ function Todolistdetails(props) {
                         ChangeResult={newvalue => {
                           setResultconfirm(newvalue);
                         }}
+                          location={location}
                       />
                     </Panel>
                   )}
@@ -1153,6 +1165,7 @@ function Todolistdetails(props) {
                     );
                   })}
               </Collapse>
+              </FaultEditContext.Provider>
             )}
           </Spin>
         </div>

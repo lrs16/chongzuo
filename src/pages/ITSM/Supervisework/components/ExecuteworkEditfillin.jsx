@@ -32,7 +32,8 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
     executeResult,
     userinfo,
     execute,
-    showEdit
+    showEdit,
+    location,
   } = props;
 
   const [fileslist, setFilesList] = useState([]);
@@ -136,11 +137,15 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
               })
                 (
                   <div style={{ width: 400 }}>
-                    <SysUpload
-                      fileslist={files}
-                      disabled={!showEdit}
-                      ChangeFileslist={newvalue => setFilesList(newvalue)}
-                    />
+                    {
+                      location && (!location.state || (location.state && !location.state.cache)) && (
+                        <SysUpload
+                          fileslist={files}
+                          disabled={!showEdit}
+                          ChangeFileslist={newvalue => setFilesList(newvalue)}
+                        />
+                      )
+                    }
                   </div>
                 )}
             </Form.Item>

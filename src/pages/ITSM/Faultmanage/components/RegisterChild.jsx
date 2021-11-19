@@ -18,6 +18,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
     main,
     curruserinfo,
     // saveType
+    location,
   } = props;
   const { getFieldDecorator, setFieldsValue } = props.form;
   const attRef = useRef();
@@ -378,14 +379,18 @@ const RegisterChild = React.forwardRef((props, ref) => {
             {...forminladeLayout}
           // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
           >
-            <div style={{ width: 400 }}>
-              <SysUpload
-                fileslist={
-                  (tododetailslist && tododetailslist.register.registerAttachments) ? JSON.parse(tododetailslist.register.registerAttachments) : []
-                }
-                ChangeFileslist={newvalue => setFilesList(newvalue)}
-              />
-            </div>
+            {
+              location && (!location.state || (location.state && !location.state.cache)) && (
+                <div style={{ width: 400 }}>
+                  <SysUpload
+                    fileslist={
+                      (tododetailslist && tododetailslist.register.registerAttachments) ? JSON.parse(tododetailslist.register.registerAttachments) : []
+                    }
+                    ChangeFileslist={newvalue => setFilesList(newvalue)}
+                  />
+                </div>
+              )
+            }
           </Form.Item>
         </Col>
 

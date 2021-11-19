@@ -39,6 +39,7 @@ function StatisticalAnalysis(props) {
   const [picval, setPicVal] = useState({});
   const [values, setValues] = useState({}); // 获取统计周期
   const [topN, setTopN] = useState({ val1: 5, val2: 5, val3: 5, val4: 5, }) // 排序
+  // const [blameTotal, setBlameTotal] = useState('');
 
   const piesum = (arr) => { // 饼图统计总数
     let sum = 0;
@@ -204,8 +205,11 @@ function StatisticalAnalysis(props) {
                       totaltitle='故障总数'
                       staticName="故障责任单位情况"
                       total={piesum(blameconditlist.pieChart)}
+                      time1={moment(values.beginTime).format('YYYY-MM-DD 00:00:00')}
+                      time2={moment(values.endTime).format('YYYY-MM-DD 23:59:59')}
                       padding={[10, 30, 30, 30]}
                       onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
+                      // onGettotalVal={(v) => { setBlameTotal(v); }}
                     />
                   )
                 }
@@ -245,6 +249,8 @@ function StatisticalAnalysis(props) {
                     data={typeconditlist.allPieChart || []}
                     height={300}
                     total={piesum(typeconditlist.allPieChart)}
+                    time1={moment(values.beginTime).format('YYYY-MM-DD 00:00:00')}
+                    time2={moment(values.endTime).format('YYYY-MM-DD 23:59:59')}
                     totaltitle='故障总数'
                     staticName="故障类型总情况"
                     padding={[10, 30, 30, 30]}
@@ -283,6 +289,8 @@ function StatisticalAnalysis(props) {
                     data={typeconditlist.hardwarePieChart || []}
                     height={300}
                     total={piesum(typeconditlist.hardwarePieChart)}
+                    time1={moment(values.beginTime).format('YYYY-MM-DD 00:00:00')}
+                    time2={moment(values.endTime).format('YYYY-MM-DD 23:59:59')}
                     totaltitle='硬件故障总数'
                     staticName="硬件故障情况"
                     padding={[10, 30, 30, 30]}
@@ -321,6 +329,8 @@ function StatisticalAnalysis(props) {
                     data={typeconditlist.softPieChart || []}
                     height={300}
                     total={piesum(typeconditlist.softPieChart)}
+                    time1={moment(values.beginTime).format('YYYY-MM-DD 00:00:00')}
+                    time2={moment(values.endTime).format('YYYY-MM-DD 23:59:59')}
                     totaltitle='软件故障总数'
                     staticName="软件故障情况"
                     padding={[10, 30, 30, 30]}
@@ -365,6 +375,8 @@ function StatisticalAnalysis(props) {
                     data={modelconditlist.pieChart || []}
                     height={300}
                     total={piesum(modelconditlist.pieChart)}
+                    time1={moment(values.beginTime).format('YYYY-MM-DD 00:00:00')}
+                    time2={moment(values.endTime).format('YYYY-MM-DD 23:59:59')}
                     totaltitle='总工单数'
                     staticName="故障系统模块情况"
                     padding={[10, 30, 30, 30]}
@@ -406,6 +418,8 @@ function StatisticalAnalysis(props) {
                     data={timeoutconditlist || []}
                     height={364.5}
                     total={piesum(timeoutconditlist)}
+                    time1={moment(values.beginTime).format('YYYY-MM-DD 00:00:00')}
+                    time2={moment(values.endTime).format('YYYY-MM-DD 23:59:59')}
                     totaltitle='总工单数'
                     staticName="故障工单超时情况"
                     padding={[10, 30, 30, 30]}

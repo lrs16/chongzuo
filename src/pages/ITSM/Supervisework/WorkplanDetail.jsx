@@ -592,6 +592,7 @@ function WorkplanDetail(props) {
                 ghost
                 style={{ marginRight: 8 }}
                 onClick={() => handleDelete()}
+                disabled={taskworkUploadStatus}
               >
                 删除
               </Button>
@@ -638,6 +639,7 @@ function WorkplanDetail(props) {
                 type="primary"
                 style={{ marginRight: 8 }}
                 onClick={() => delaySave()}
+                disabled={taskworkUploadStatus}
               >
                 保存
               </Button>
@@ -684,7 +686,7 @@ function WorkplanDetail(props) {
           >
             审核
           </Button>)}
-          <Button onClick={() => handleclose()}>返回</Button>
+          <Button onClick={() => handleclose()} disabled={taskworkUploadStatus}>返回</Button>
         </>
       }
     >
@@ -759,6 +761,7 @@ function WorkplanDetail(props) {
                                 ChangeFiles={newvalue => {
                                   setFiles(newvalue);
                                 }}
+                                location={location}
                               />
                             </Panel>
                           )

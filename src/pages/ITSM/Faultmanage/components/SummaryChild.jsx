@@ -46,7 +46,7 @@ const forminladeLayout = {
 };
 
 const SummaryChild = React.forwardRef((props, ref) => {
-  const { finish, curruserinfo, ChangeFiles, tododetailslist, ChangeFileskey, showFilelist, showFilelist2 } = props;
+  const { finish, curruserinfo, ChangeFiles, tododetailslist, ChangeFileskey, showFilelist, showFilelist2, uploadStatus } = props;
   const message = '上传故障分析报告已超时， 实际上传时间已超过要求上传时间。'
   const { getFieldDecorator, setFieldsValue } = props.form;
   const attRef = useRef();
@@ -132,6 +132,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
                             setFilesList(newvalue)
                           }
                         }
+                        banOpenFileDialog={uploadStatus}
                       />
                     </div>
                   )}
@@ -181,6 +182,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
                       setFieldsValue({ finishAttachments: JSON.stringify(newvalue.arr) });
                     }
                     }
+                    banOpenFileDialog={uploadStatus}
                   />
                 </div>
               )

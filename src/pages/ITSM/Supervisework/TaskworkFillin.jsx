@@ -253,6 +253,7 @@ function TaskworkFillin(props) {
                 ghost
                 style={{ marginRight: 8 }}
                 onClick={() => handlePaste()}
+                disabled={taskworkUploadStatus}
             >
                 粘贴
             </Button>
@@ -272,7 +273,7 @@ function TaskworkFillin(props) {
             >
                 提交
             </Button>
-            <Button onClick={() => handleclose()}>关闭</Button>
+            <Button onClick={() => handleclose()} disabled={taskworkUploadStatus}>关闭</Button>
         </>
     )
 

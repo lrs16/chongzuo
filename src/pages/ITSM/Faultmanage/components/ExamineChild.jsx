@@ -14,7 +14,7 @@ const { TextArea } = Input;
 const RadioGroup = Radio.Group;
 
 const ExamineChild = React.forwardRef((props, ref) => {
-    const { formItemLayout, forminladeLayout, check, curruserinfo, ChangeFiles, ChangeResult } = props;
+    const { formItemLayout, forminladeLayout, check, curruserinfo, ChangeFiles, ChangeResult, location } = props;
     const { getFieldDecorator } = props.form;
     const attRef = useRef();
     const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
@@ -116,9 +116,13 @@ const ExamineChild = React.forwardRef((props, ref) => {
                         {...forminladeLayout}
                         // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
                     >
-                        <div style={{ width: 400 }}>
-                            <SysUpload fileslist={(check && check.checkAttachments) ? JSON.parse(check.checkAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
-                        </div>
+                        {
+                            location && (!location.state || (location.state && !location.state.cache)) && (
+                                <div style={{ width: 400 }}>
+                                    <SysUpload fileslist={(check && check.checkAttachments) ? JSON.parse(check.checkAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                                </div>
+                            )
+                        }
                     </Form.Item>
                 </Col>
 

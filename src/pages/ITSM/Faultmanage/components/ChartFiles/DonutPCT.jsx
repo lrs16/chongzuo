@@ -33,7 +33,7 @@ registerShape("interval", "sliceShape", {
 });
 
 function DonutPCT(props) {
-  const { data, total, totaltitle, height, padding, onGetVal, staticName } = props;
+  const { data, total, totaltitle, height, padding, onGetVal, staticName, time1, time2 } = props;
   const [visible, setVisible] = useState(false); // 抽屉是否显示
   const [drawerval, onGetDrawerVal] = useState('');
   const { DataView } = DataSet;
@@ -53,7 +53,36 @@ function DonutPCT(props) {
 
   return (
     <div>
-      <div style={{ position: 'absolute', left: '50%', top: '42%', width: 100, textAlign: 'center', marginLeft: '-50px' }} >
+      <div
+        style={{ position: 'absolute', left: '50%', top: '42%', width: 100, textAlign: 'center', marginLeft: '-50px', cursor: 'pointer', zIndex: 9999 }}
+        onClick={() => {
+          switch (staticName) {
+            case '故障责任单位情况':
+              handleGetDrawerVal({ staticName: 'blametotal', time1, time2 });
+              break;
+            case '故障类型总情况':
+              handleGetDrawerVal({ staticName: 'typetotal', time1, time2 });
+              break;
+            case '硬件故障情况':
+              handleGetDrawerVal({ staticName: 'hardwaretotal', time1, time2 });
+              break;
+            case '软件故障情况':
+              handleGetDrawerVal({ staticName: 'softwaretotal', time1, time2 });
+              break;
+            case '故障系统模块情况':
+              handleGetDrawerVal({ staticName: 'worksystemtotal', time1, time2 });
+              break;
+            case '故障工单超时情况':
+              handleGetDrawerVal({ staticName: 'timeouttotal', time1, time2 });
+              break;
+            default:
+              break;
+          }
+          // if (onGettotalVal) {
+          //   onGettotalVal(staticName)
+          // }
+        }}
+      >
         <span style={{ fontSize: 24, fontWeight: 700 }}>{total}</span><br />
         <span>{totaltitle}</span>
       </div>

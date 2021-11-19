@@ -52,6 +52,7 @@ function Newregist(props) {
     Info, // 作业方案数据
     tabnew,
     tabdata,
+    uploadstatus,
   } = props;
 
   const [activeKey, setActiveKey] = useState(['formpanel', 'formpanel2']);
@@ -344,6 +345,7 @@ function Newregist(props) {
         type="primary"
         style={{ marginRight: 8 }}
         onClick={() => handleSaveClick(buttype)}
+        disabled={uploadstatus}
       >
         保存
       </Button>
@@ -351,10 +353,11 @@ function Newregist(props) {
         type="primary"
         style={{ marginRight: 8 }}
         onClick={() => handleSubmit(buttype)}
+        disabled={uploadstatus}
       >
         提交
       </Button>
-      <Button onClick={handleclose}>返回</Button>
+      <Button onClick={handleclose} disabled={uploadstatus}>返回</Button>
     </>
   );
 
@@ -376,7 +379,7 @@ function Newregist(props) {
                 <EditContext.Provider value={{
                   editable: true,
                   workId: Id,
-                  buttype
+                  buttype,
                 }}>
                   <Content
                     wrappedComponentRef={ContentRef}
@@ -386,6 +389,10 @@ function Newregist(props) {
                 </EditContext.Provider>
               </Panel>
               <Panel header='启停审核' key="formpanel2">
+                <EditContext.Provider value={{
+                  location,
+                  ChangeButtype: (() => { }),
+                }}>
                 {
                   (Id && (Id !== '' || Id !== undefined)) ? (Info.autoSoftWorkExamine && (<Examine
                     wrappedComponentRef={ExmaineRef}
@@ -401,7 +408,7 @@ function Newregist(props) {
                     userinfo={userinfo}
                   />)
                 }
-
+                </EditContext.Provider>
               </Panel>
               {/* <Panel header="软件信息" key="formpane3">
               <SoftwareInfoList />
@@ -418,6 +425,7 @@ export default connect(({ itsmuser, autosoftwork, viewcache, loading }) => ({
   userinfo: itsmuser.userinfo,
   tabnew: viewcache.tabnew,
   tabdata: viewcache.tabdata,
+  uploadstatus: viewcache.uploadstatus,
   Info: autosoftwork.geteditinfo,
   loading: loading.models.autosoftwork,
 }))(Newregist);
