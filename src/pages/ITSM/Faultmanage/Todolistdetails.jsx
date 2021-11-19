@@ -145,7 +145,7 @@ function Todolistdetails(props) {
   } = props;
 
   const {
-    query: { id, mainId },
+    query: { id, mainId,orderNo },
   } = props.location; // 获取taskId
 
 
@@ -1099,6 +1099,11 @@ function Todolistdetails(props) {
                         ChangeFiles={newvalue => {
                           setFiles(newvalue);
                         }}
+                        id={id}
+                        mainId={mainId}
+                        orderNo={orderNo}
+                        editState={editState}
+                        finishId={tododetailslist && tododetailslist.finish && tododetailslist.finish.id}
                         showFilelist={troubleFlowNodeRows[1]}
                         showFilelist2={troubleFlowNodeRows[2]}
                           ChangeFileskey={newvalue => setFileskey(newvalue)}

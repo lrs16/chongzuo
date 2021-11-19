@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { connect } from 'dva';
 import { Form, Card, Button, message } from 'antd';
 import router from 'umi/router';
+import HadleContext from '@/layouts/MenuContext';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import OperationPlanfillin from './components/OperationPlanfillin';
 
@@ -14,13 +15,14 @@ function OperationPlanfillintion(props) {
     operationPersonArr,
     tabdata,
     loading,
-    olduploadstatus
   } = props;
   let operationPersonSelect;
 
   const PlanfillinRef = useRef();
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [copyData, setCopyData] = useState('');
+  const [uploadStatus, setUploadStatus] = useState(false);
+  const [handleUploadStatus, setHandleUploadStatus] = useState(false);
 
   const formItemLayout = {
     labelCol: {
@@ -110,7 +112,7 @@ function OperationPlanfillintion(props) {
 
   // 上传删除附件触发保存
   useEffect(() => {
-    if (files.ischange) {
+    if (files.ischange && !handleUploadStatus) {
       handlesubmit(true);
     }
   }, [files]);
@@ -149,6 +151,11 @@ function OperationPlanfillintion(props) {
   useEffect(() => {
     if (location.state) {
       if (location.state.cache) {
+        if (uploadStatus || handleUploadStatus) {
+          setUploadStatus(false);
+          setHandleUploadStatus(false);
+        };
+        if (uploadStatus) { message.info('页签切换，中止文件上传...') }
         PlanfillinRef.current.validateFields((_, values) => {
           dispatch({
             type: 'viewcache/gettabstate',
@@ -190,7 +197,7 @@ function OperationPlanfillintion(props) {
             type="primary"
             style={{ marginRight: 8 }}
             onClick={() => handlePaste()}
-            disabled={olduploadstatus}
+            disabled={uploadStatus || handleUploadStatus || loading}
           >
             粘贴
           </Button>
@@ -199,7 +206,7 @@ function OperationPlanfillintion(props) {
             type="primary"
             style={{ marginRight: 8 }}
             onClick={() => handlesubmit(false)}
-            disabled={olduploadstatus}
+            disabled={uploadStatus || handleUploadStatus || loading}
           >
             保存
           </Button>
@@ -210,19 +217,26 @@ function OperationPlanfillintion(props) {
     >
 
       <Card>
-        <OperationPlanfillin
-          ref={PlanfillinRef}
-          useInfo={userinfo}
-          formItemLayout={formItemLayout}
-          forminladeLayout={forminladeLayout}
-          ChangeFiles={newvalue => {
-            setFiles(newvalue);
-          }}
-          files={[]}
-          loading={loading}
-          operationPersonSelect={operationPersonSelect}
-          main={copyData}
-        />
+        <HadleContext.Provider value={{
+          handleUploadStatus,
+          getUploadStatus: (v) => { setHandleUploadStatus(v) },
+          getRegistUploadStatus: (v) => { setUploadStatus(v) }
+        }}>
+          <OperationPlanfillin
+            ref={PlanfillinRef}
+            useInfo={userinfo}
+            formItemLayout={formItemLayout}
+            forminladeLayout={forminladeLayout}
+            ChangeFiles={newvalue => {
+              setFiles(newvalue);
+            }}
+            files={[]}
+            loading={loading}
+            getUploadStatus={v => { setUploadStatus(v) }}
+            operationPersonSelect={operationPersonSelect}
+            main={copyData}
+          />
+        </HadleContext.Provider>
       </Card>
 
 
@@ -237,6 +251,5 @@ export default Form.create({})(
     loading: loading.models.processmodel,
     tabnew: viewcache.tabnew,
     tabdata: viewcache.tabdata,
-    olduploadstatus: viewcache.olduploadstatus,
   }))(OperationPlanfillintion),
 );

@@ -295,3 +295,25 @@ export async function test(params) {
     requestType: 'form',
   });
 }
+
+//  生成故障分析报告
+export async function addTroubleReport(mainId) {
+  return request(`/trouble/flow/addTroubleReport?mainId=${mainId}`)
+}
+
+//  保存故障分析报告
+export async function saveTroubleReport(params) {
+  return request(`/trouble/flow/saveTroubleReport`,{
+    method:'POST',
+    data:params,
+    requestType:'form'
+  })
+}
+//  提交故障分析报告
+export async function submitTroubleReport(params) {
+  return request(`/trouble/flow/submitTroubleReport`,{
+    method:'POST',
+    data:{mainId:params},
+    requestType:'form'
+  })
+}

@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, forwardRef, useState, useEffect } from 'react';
+import React, { useImperativeHandle,useContext, forwardRef, useState, useEffect } from 'react';
 import {
   Form,
   Input,
@@ -15,6 +15,7 @@ import {
 import { DownloadOutlined, CaretRightOutlined } from '@ant-design/icons';
 import { FileDownload, FileDelete, getFileSecuritySuffix } from '@/services/upload';
 import moment from 'moment';
+import UploadContext from '@/layouts/MenuContext';
 import { searchUsers } from '@/services/common';
 import SysDict from '@/components/SysDict';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
@@ -66,6 +67,7 @@ const Register = forwardRef((props, ref) => {
   const [spinloading, setSpinLoading] = useState(true);
   const [showIcon, setShowIcon] = useState(true);
   const [banOpenFileDialog, setBanOpenFileDialog] = useState(true);
+  const { getRegistUploadStatus, handleUploadStatus } = useContext(UploadContext);
 
   const required = true;
 
@@ -377,7 +379,8 @@ const Register = forwardRef((props, ref) => {
     beforeUpload(file) {
       return new Promise((resolve, reject) => {
         setShowIcon(false);
-        getUploadStatus(true);
+        if (getUploadStatus) { getUploadStatus(true) };
+        if (getRegistUploadStatus) { getRegistUploadStatus(true) };
         const type = file.name.lastIndexOf('.');
         const filesuffix = file.name.substring(type + 1, file.name.length);
         const correctfiletype = filetype.indexOf(filesuffix);
@@ -407,10 +410,10 @@ const Register = forwardRef((props, ref) => {
         setFilesList([...newarr]);
         ChangeFiles({ arr: [...newarr], ischange: true });
         setShowIcon(true);
-        getUploadStatus(false);
+        if (getUploadStatus) { getUploadStatus(false) };
+        if (getRegistUploadStatus) { getRegistUploadStatus(false) };
       }
     },
-
     onPreview(filesinfo) {
       if (showIcon) {
         handledownload(filesinfo);
@@ -422,30 +425,31 @@ const Register = forwardRef((props, ref) => {
     },
     onRemove(filesinfo) {
       return new Promise((resolve, reject) => {
-        validateFields((err) => {
-          if (!err) {
-            const newfilelist = fileslist.filter(item => item.uid !== filesinfo.uid);
-            // 删除文件
-            if (filesinfo && !filesinfo.lastModified) {
-              FileDelete(filesinfo.uid).then(res => {
-                if (res.code === 200) {
-                  ChangeFiles({ arr: newfilelist, ischange: true });
-                }
-              });
-            } else {
-              message.success('已中止文件上传');
-              setShowIcon(true);
-              getUploadStatus(false);
-            }
-            return resolve()
+        const values = getFieldsValue();
+        if ((values.main_plannedStartTime).valueOf() < (values.main_plannedEndTime).valueOf()) {
+          const newfilelist = fileslist.filter(item => item.uid !== filesinfo.uid);
+          // 删除文件
+          if (filesinfo && !filesinfo.lastModified) {
+            FileDelete(filesinfo.uid).then(res => {
+              if (res.code === 200) {
+                ChangeFiles({ arr: newfilelist, ischange: true });
+              }
+            });
+          } else {
+            message.success('已中止文件上传');
+            setShowIcon(true);
+            getUploadStatus(false);
+            if (getUploadStatus) { getUploadStatus(false) };
+            if (getRegistUploadStatus) { getRegistUploadStatus(false) };
           }
+          return resolve()
+        }
 
-          if (err) {
-            return reject(err)
-          }
+        if ((values.main_plannedStartTime).valueOf() > (values.main_plannedEndTime).valueOf()) {
+          return reject()
+        }
 
-          return []
-        })
+        return []
       }).catch(() => {
         return new Promise((resolve) => {
           return resolve(false)

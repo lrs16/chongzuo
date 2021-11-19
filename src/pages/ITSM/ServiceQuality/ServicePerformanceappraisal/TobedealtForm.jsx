@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Form, Button, message, Collapse, Steps } from 'antd';
 import moment from 'moment';
 import router from 'umi/router';
+import HadleContext from '@/layouts/MenuContext';
 import User from '@/components/SelectUser/User';
 import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -54,6 +55,7 @@ function TobedealtForm(props) {
     hisTaskArr,
     loading,
     dispatch,
+    olduploadstatus
   } = props;
 
   const formRef = useRef();
@@ -68,7 +70,7 @@ function TobedealtForm(props) {
   const [modalrollback, setModalRollBack] = useState(false); // 回退信息modle
   const [handleUploadStatus, setHandleUploadStatus] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(false);
-  
+
   const {
     taskId,
     assessNo,
@@ -146,7 +148,7 @@ function TobedealtForm(props) {
         sessionStorage.setItem('Nextflowmane', '业务负责人审核人');
         break;
       case '业务负责人审核':
-        sessionStorage.setItem('Nextflowmane', '自动化科专责审核');
+        sessionStorage.setItem('Nextflowmane', '服务商确认');
         break;
       case '自动化科专责审核':
         sessionStorage.setItem('Nextflowmane', '服务商确认');
@@ -612,7 +614,13 @@ function TobedealtForm(props) {
             <>
               {taskName === '服务绩效考核登记' &&
                 tabActiveKey === 'workorder' && (
-                  <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete}>
+                  <Button
+                    type="danger"
+                    ghost
+                    style={{ marginRight: 8 }}
+                    onClick={handleDelete}
+                    disabled={uploadStatus || handleUploadStatus || loading || olduploadstatus}
+                  >
                     删除
                   </Button>
                 )}
@@ -622,13 +630,22 @@ function TobedealtForm(props) {
                 taskData.currentTask &&
                 !currentTask.verifyValue &&
                 tabActiveKey === 'workorder' && (
-                  <Button type="danger" ghost onClick={handleBacksubmit}>
+                  <Button
+                    type="danger"
+                    ghost
+                    onClick={handleBacksubmit}
+                    disabled={uploadStatus || handleUploadStatus || loading || olduploadstatus}
+                  >
                     回退
                   </Button>
                 )}
 
               {taskName && tabActiveKey === 'workorder' && (
-                <Button type="primary" onClick={() => onClickSubmit(taskName)}>
+                <Button
+                  type="primary"
+                  onClick={() => onClickSubmit(taskName)}
+                  disabled={uploadStatus || handleUploadStatus || loading || olduploadstatus}
+                >
                   保存
                 </Button>
               )}
@@ -638,7 +655,11 @@ function TobedealtForm(props) {
                 taskName !== '自动化科复核' &&
                 noselect === '1' &&
                 tabActiveKey === 'workorder' && (
-                  <Button type="primary" onClick={() => onClickSubmit(taskName, 'circula')}>
+                  <Button
+                    type="primary"
+                    onClick={() => onClickSubmit(taskName, 'circula')}
+                    disabled={uploadStatus || handleUploadStatus || loading || olduploadstatus}
+                  >
                     {taskName === '自动化科复核' ? '确认复核' : '流转'}
                   </Button>
                 )}
@@ -652,19 +673,31 @@ function TobedealtForm(props) {
                   taskName === '自动化科专责审核' ||
                   taskName === '服务绩效考核确认') &&
                 tabActiveKey === 'workorder' && (
-                  <Button type="primary" onClick={() => onClickSubmit(taskName, '流转不选人')}>
+                  <Button
+                    type="primary"
+                    onClick={() => onClickSubmit(taskName, '流转不选人')}
+                    disabled={uploadStatus || handleUploadStatus || loading || olduploadstatus}
+                  >
                     {buttonContent}
                   </Button>
                 )}
 
               {taskName && taskName === '服务绩效考核确认' && tabActiveKey === 'workorder' && (
-                <Button type="primary" onClick={() => onClickSubmit(taskName, '流转不选人')}>
+                <Button
+                  type="primary"
+                  onClick={() => onClickSubmit(taskName, '流转不选人')}
+                  disabled={uploadStatus || handleUploadStatus || loading || olduploadstatus}
+                >
                   确认考核
                 </Button>
               )}
 
               {taskName && taskName === '自动化科复核' && tabActiveKey === 'workorder' && (
-                <Button type="primary" onClick={() => onClickSubmit(taskName, 'circula')}>
+                <Button
+                  type="primary"
+                  onClick={() => onClickSubmit(taskName, 'circula')}
+                  disabled={uploadStatus || handleUploadStatus || loading || olduploadstatus}
+                >
                   确认复核
                 </Button>
               )}
@@ -673,7 +706,11 @@ function TobedealtForm(props) {
                 noselect === '0' &&
                 taskName === '服务商确认' &&
                 tabActiveKey === 'workorder' && (
-                  <Button type="primary" onClick={() => onClickSubmit(taskName, 'circula')}>
+                  <Button
+                    type="primary"
+                    onClick={() => onClickSubmit(taskName, 'circula')}
+                    disabled={uploadStatus || handleUploadStatus || loading || olduploadstatus}
+                  >
                     流转
                   </Button>
                 )}
@@ -742,29 +779,35 @@ function TobedealtForm(props) {
               <Collapse expandIconPosition="right" defaultActiveKey={['1']} bordered={false}>
                 {taskName === '服务绩效考核登记' && (
                   <Panel header="服务绩效考核登记" key="1" style={{ backgroundColor: 'white' }}>
-                    <Register
-                      formItemLayout={formItemLayout}
-                      forminladeLayout={forminladeLayout}
-                      ref={formRef}
-                      getUploadStatus={v => { setUploadStatus(v) }}
-                      userinfo={userinfo}
-                      getTarget1={getTarget1}
-                      getTarget2={getTarget2}
-                      target1={target1}
-                      target2={target2}
-                      getclausedetail={getclausedetail}
-                      clauseList={clauseList}
-                      register={currentTask}
-                      contractArr={contractArr}
-                      getContrractname={getContrractname}
-                      files={currentTask.attachment ? JSON.parse(currentTask.attachment) : []}
-                      ChangeFiles={newvalue => {
-                        setFiles(newvalue);
-                      }}
-                      loading={loading}
-                      noEdit={search}
-                      search={search}
-                    />
+                    <HadleContext.Provider value={{
+                      handleUploadStatus,
+                      getUploadStatus: (v) => { setHandleUploadStatus(v) },
+                      getRegistUploadStatus: (v) => { setUploadStatus(v) }
+                    }}>
+                      <Register
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
+                        ref={formRef}
+                        getUploadStatus={v => { setUploadStatus(v) }}
+                        userinfo={userinfo}
+                        getTarget1={getTarget1}
+                        getTarget2={getTarget2}
+                        target1={target1}
+                        target2={target2}
+                        getclausedetail={getclausedetail}
+                        clauseList={clauseList}
+                        register={currentTask}
+                        contractArr={contractArr}
+                        getContrractname={getContrractname}
+                        files={currentTask.attachment ? JSON.parse(currentTask.attachment) : []}
+                        ChangeFiles={newvalue => {
+                          setFiles(newvalue);
+                        }}
+                        loading={loading}
+                        noEdit={search}
+                        search={search}
+                      />
+                    </HadleContext.Provider>
                   </Panel>
                 )}
 
@@ -1016,7 +1059,7 @@ function TobedealtForm(props) {
 }
 
 export default Form.create({})(
-  connect(({ performanceappraisal, itsmuser, qualityassessment, loading }) => ({
+  connect(({ performanceappraisal, viewcache, itsmuser, qualityassessment, loading }) => ({
     taskData: performanceappraisal.taskData,
     hisTaskArr: performanceappraisal.hisTaskArr,
     clauseList: qualityassessment.clauseList,
@@ -1024,5 +1067,6 @@ export default Form.create({})(
     target2: qualityassessment.target2,
     target1: qualityassessment.target1,
     loading: loading.models.performanceappraisal,
+    olduploadstatus: viewcache.olduploadstatus,
   }))(TobedealtForm),
 );

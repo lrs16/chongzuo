@@ -28,8 +28,6 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
     search
   } = props;
 
-  console.log(search,'search')
-
   const [showContent, setShowContent] = useState('1');
   const [fileslist, setFilesList] = useState([]);
   const [selectdata, setSelectData] = useState('');

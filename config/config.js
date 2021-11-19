@@ -583,12 +583,12 @@ export default {
                           icon: 'cloud-server',
                           component: './ITSM/Faultmanage/Querylistdetails',
                         },
-                        // {
-                        //   path: '/ITSM/faultmanage/analysisreport',
-                        //   name: '故障处理分析报告',
-                        //   icon: 'cloud-server',
-                        //   component: './ITSM/Faultmanage/AnalysisReport',
-                        // },
+                        {
+                          path: '/ITSM/faultmanage/analysisreport',
+                          name: '故障处理分析报告',
+                          icon: 'cloud-server',
+                          component: './ITSM/Faultmanage/AnalysisReport',
+                        },
                         {
                           path: '/ITSM/faultmanage/faultstaticount',
                           name: '故障统计',

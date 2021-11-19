@@ -2,6 +2,9 @@ import {
     queryfaultWorkoderCount, // 数据字典相关字段统计故障工单
     queryfaultWorkoderCount1,
     querycountdownload,
+    addTroubleReport,
+    saveTroubleReport,
+    submitTroubleReport
 } from '../services/api';
 
 export default {
@@ -9,6 +12,7 @@ export default {
 
     state: {
         faultWorkoderCountList: [], // 数据字典相关字段统计故障工单
+        troubleReportdetail:[]
     },
 
     effects: {
@@ -33,6 +37,22 @@ export default {
         *faultcountdownload({ payload: { current, pageSize, values, dictType } }, { call }) {
             return yield call(querycountdownload, current, pageSize, values, dictType);
         },
+
+        *addtroubleReport({ payload:{ mainId }}, { call, put }) {
+          const response = yield call(addTroubleReport, mainId);
+          yield put({
+              type: 'troubleReportdetail',
+              payload: response,
+          });
+      },
+      //  保存生成报告
+      *saveReport({ payload }, { call }) {
+        return yield call(saveTroubleReport, payload);
+      },
+      //  提交
+      *submitReport({ payload }, { call }) {
+        return yield call(submitTroubleReport, payload);
+      },
     },
 
     reducers: {
@@ -41,6 +61,12 @@ export default {
             return {
                 ...state,
                 faultWorkoderCountList: action.payload.data
+            }
+        },
+        troubleReportdetail(state, action) {
+            return {
+                ...state,
+                troubleReportdetail: action.payload
             }
         },
     },

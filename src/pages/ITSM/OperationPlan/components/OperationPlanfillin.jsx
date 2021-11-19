@@ -1,9 +1,13 @@
-import React, { useState, useRef, useImperativeHandle, useEffect } from 'react';
-import { Row, Col, Form, Input, Select, DatePicker, AutoComplete, Radio, Tag } from 'antd';
+import React, { useState, useRef, useImperativeHandle, useEffect, useContext } from 'react';
+import { message, Button, Upload, Row, Col, Form, Input, Select, DatePicker, AutoComplete, Radio, Tag } from 'antd';
 import moment from 'moment';
 import SysUpload from '@/components/SysUpload';
+import UploadContext from '@/layouts/MenuContext';
 import { getAndField } from '@/pages/SysManage/services/api';
 import SysDict from '@/components/SysDict';
+import { DownloadOutlined, CaretRightOutlined } from '@ant-design/icons';
+import { FileDownload, FileDelete, getFileSecuritySuffix } from '@/services/upload';
+import Downloadfile from '@/components/SysUpload/Downloadfile';
 // import BraftEditor from 'braft-editor'
 // import 'braft-editor/dist/index.css';
 
@@ -15,7 +19,7 @@ let taskperson = true;
 
 const OperationPlanfillin = React.forwardRef((props, ref) => {
   const {
-    form: { getFieldDecorator, setFieldsValue },
+    form: { getFieldDecorator, setFieldsValue, validateFields, getFieldsValue },
     formItemLayout,
     forminladeLayout,
     useInfo,
@@ -25,6 +29,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
     type,
     status,
     operationPersonSelect,
+    getUploadStatus,
   } = props;
 
   const statusContent = ['计划中', '延期中', '已超时', '已完成'];
@@ -33,10 +38,17 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
   const [selectdata, setSelectData] = useState('');
   const [fileslist, setFilesList] = useState([]);
   const [objautodata, setObjautodata] = useState([]);
+  const [banOpenFileDialog, setBanOpenFileDialog] = useState(true);
+  const [filetype, setFileType] = useState('');
+  const [showIcon, setShowIcon] = useState(true);
+
+  const { getRegistUploadStatus, handleUploadStatus } = useContext(UploadContext);
 
   useEffect(() => {
-    ChangeFiles(fileslist);
-  }, [fileslist]);
+    if (files && files.length > 0) {
+      setFilesList(files);
+    };
+  }, [main]);
 
   useEffect(() => {
     taskperson = true;
@@ -146,6 +158,144 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
   const taskNature = getTypebyTitle('作业性质');
   const taskCompany = getTypebyTitle('作业单位');
   const WorkOrder = getTypebyTitle('是否开票');
+
+  // const sendUploadStatus = (v) => {
+  //   dispatch({
+  //     type: 'viewcache/getolduploadstatus',
+  //     payload: {
+  //       olduploadstatus: v
+  //     }
+  //   })
+  // };
+
+  // useEffect(() => {
+  //   sendUploadStatus(false);
+  //   // let doCancel = false;
+  //   // if (fileslist && fileslist.length && fileslist.length > 0 && !doCancel) {
+  //   //   setUploadFiles(fileslist);
+  //   // }
+  //   return () => {
+  //     // doCancel = true;
+  //     sendUploadStatus(false);
+  //   };
+  // }, []);
+
+  const handledownload = filesinfo => {
+    FileDownload(filesinfo.uid).then(res => {
+      const filename = filesinfo.name;
+      const blob = new Blob([res]);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+  };
+
+  // 不允许上传类型
+  useEffect(() => {
+    getFileSecuritySuffix().then(res => {
+      if (res.code === 200) {
+        const arr = [...res.data];
+        setFileType(arr);
+      }
+    });
+  }, []);
+
+  const uploadprops = {
+    name: 'file',
+    action: '/sys/file/upload',
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
+    },
+    showUploadList: { showDownloadIcon: showIcon, showRemoveIcon: true },
+    defaultFileList: files,
+    multiple: true,
+    openFileDialogOnClick: !banOpenFileDialog,
+
+    beforeUpload(file) {
+      return new Promise((resolve, reject) => {
+        setShowIcon(false);
+        if (getUploadStatus) { getUploadStatus(true) };
+        if (getRegistUploadStatus) { getRegistUploadStatus(true) };
+        const type = file.name.lastIndexOf('.');
+        const filesuffix = file.name.substring(type + 1, file.name.length);
+        const correctfiletype = filetype.indexOf(filesuffix);
+        if (correctfiletype === -1) {
+          message.error(`${file.name}文件不符合上传规则,禁止上传...`);
+          return reject();
+        }
+        return resolve(file);
+      }
+      );
+    },
+
+    onChange({ file, fileList }) {
+      const allsuccess = fileList.map(item => item.response && item.response.fileUploadInfo && item.response.fileUploadInfo.length > 0);
+      const alldone = fileList.map(item => item.status !== 'done');
+      if (file.status === 'done' && alldone.indexOf(true) === -1 && file.response && file.response.code === 200 && allsuccess.indexOf(true) === -1) {
+        const arr = [...fileList];
+        const newarr = [];
+        for (let i = 0; i < arr.length; i += 1) {
+          const vote = {};
+          vote.uid = arr[i]?.response?.data[0]?.id !== undefined ? arr[i]?.response?.data[0]?.id : arr[i].uid;
+          vote.name = arr[i].name;
+          vote.fileUrl = '';
+          vote.status = arr[i].status;
+          newarr.push(vote);
+        }
+        setFilesList([...newarr]);
+        ChangeFiles({ arr: [...newarr], ischange: true });
+        setShowIcon(true);
+        if (getUploadStatus) { getUploadStatus(false) };
+        if (getRegistUploadStatus) { getRegistUploadStatus(false) };
+      }
+    },
+    onPreview(filesinfo) {
+      if (showIcon) {
+        handledownload(filesinfo);
+      }
+
+    },
+    onDownload(filesinfo) {
+      handledownload(filesinfo);
+    },
+    onRemove(filesinfo) {
+      return new Promise((resolve, reject) => {
+        const values = getFieldsValue();
+        if ((values.main_plannedStartTime).valueOf() < (values.main_plannedEndTime).valueOf()) {
+          const newfilelist = fileslist.filter(item => item.uid !== filesinfo.uid);
+          // 删除文件
+          if (filesinfo && !filesinfo.lastModified) {
+            FileDelete(filesinfo.uid).then(res => {
+              if (res.code === 200) {
+                ChangeFiles({ arr: newfilelist, ischange: true });
+              }
+            });
+          } else {
+            message.success('已中止文件上传');
+            setShowIcon(true);
+            getUploadStatus(false);
+            if (getUploadStatus) { getUploadStatus(false) };
+            if (getRegistUploadStatus) { getRegistUploadStatus(false) };
+          }
+          return resolve()
+        }
+
+        if ((values.main_plannedStartTime).valueOf() > (values.main_plannedEndTime).valueOf()) {
+          return reject()
+        }
+
+        return []
+      }).catch(() => {
+        return new Promise((resolve) => {
+          return resolve(false)
+        })
+      })
+    },
+  };
 
   const required = true;
 
@@ -467,16 +617,16 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                 initialValue: main && main.plannedEndTime ? moment(main.plannedEndTime) : moment(new Date(moment(new Date()).format('YYYY-MM-DD 18:00:00'))),
               })(
                 // <div>
-                  <DatePicker
-                    // defaultValue={main && main.plannedEndTime ? moment(main.plannedEndTime) : moment(new Date(moment(new Date()).format('YYYY-MM-DD 18:00:00')))}
-                    disabled={type}
-                    // onChange={endtimeonChange}
-                    allowClear={false}
-                    format="YYYY-MM-DD HH:mm:ss"
-                    showTime
-                  // disabledDate={enddisabledDate}
-                  />,
-                {/* </div> */}
+                <DatePicker
+                  // defaultValue={main && main.plannedEndTime ? moment(main.plannedEndTime) : moment(new Date(moment(new Date()).format('YYYY-MM-DD 18:00:00')))}
+                  disabled={type}
+                  // onChange={endtimeonChange}
+                  allowClear={false}
+                  format="YYYY-MM-DD HH:mm:ss"
+                  showTime
+                // disabledDate={enddisabledDate}
+                />,
+                {/* </div> */ }
 
               )}
             </Form.Item>
@@ -506,17 +656,41 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
             </Col>
           )}
 
-          <Col span={24} style={{ display: taskperson || type ? 'none' : 'block' }}>
+          <Col span={24}>
             <Form.Item label="上传附件" {...forminladeLayout}>
               {getFieldDecorator('main_fileIds', {
                 initialValue: main && main.fileIds ? main.fileIds : '',
               })(
-                <div style={{ width: 400 }}>
-                  <SysUpload
-                    disabled={type}
-                    fileslist={files}
-                    ChangeFileslist={newvalue => setFilesList(newvalue)}
-                  />
+                <div
+                  style={{ width: 400 }}
+                  onMouseDown={() => {
+                    setBanOpenFileDialog(true);
+                    const values = getFieldsValue()
+                    validateFields(['main_operationUser'], (err) => {
+                      if (err) {
+                        message.error('请先选择作业负责人');
+                      }
+
+                      if (!err) {
+                        if ((values.main_plannedStartTime).valueOf() > (values.main_plannedEndTime).valueOf()) {
+                          message.error('计划开始时间必须小于计划结束时间')
+                        } else {
+                          setBanOpenFileDialog(false)
+                        }
+                        if (handleUploadStatus) {
+                          message.info('文件正在上传中，请稍后再上传');
+                        }
+                      }
+
+                    })
+                  }}
+                >
+                  <Upload {...uploadprops}>
+                    <Button type="primary">
+                      <DownloadOutlined /> 上传附件
+                    </Button>
+                  </Upload>
+                  {filetype && filetype.length > 0 && (<div style={{ color: '#ccc' }}>仅能上传{filetype.join('，')}格式文件</div>)}
                 </div>,
               )}
             </Form.Item>

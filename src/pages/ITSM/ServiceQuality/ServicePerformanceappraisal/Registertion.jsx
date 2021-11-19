@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Form, Button, Collapse,message } from 'antd';
+import { Form, Button, Collapse, message } from 'antd';
 import router from 'umi/router';
 import moment from 'moment';
 import { connect } from 'dva';
+import HadleContext from '@/layouts/MenuContext';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { contractProvider } from '../services/quality';
 import Register from './components/Register';
@@ -51,6 +52,7 @@ function Registertion(props) {
   const [activeKey, setActiveKey] = useState(['registratform']);
   const [uploadStatus, setUploadStatus] = useState(false);
   const [handleUploadStatus, setHandleUploadStatus] = useState(false);
+
   const handleClose = () => {
     router.push({
       pathname: `/ITSM/servicequalityassessment/creditcard/creditcardregister`,
@@ -195,6 +197,11 @@ function Registertion(props) {
   useEffect(() => {
     if (location.state) {
       if (location.state.cache) {
+        if (uploadStatus || handleUploadStatus) {
+          setUploadStatus(false);
+          setHandleUploadStatus(false);
+        };
+        if (uploadStatus) { message.info('页签切换，中止文件上传...') }
         const values = RegistratRef.current.getVal();
         dispatch({
           type: 'viewcache/gettabstate',
@@ -217,7 +224,12 @@ function Registertion(props) {
       title={pagetitle}
       extra={
         <>
-          <Button type="primary" style={{ marginRight: 8 }} onClick={handleSubmit}>
+          <Button
+            type="primary"
+            style={{ marginRight: 8 }}
+            onClick={handleSubmit}
+            disabled={uploadStatus || handleUploadStatus || loading}
+          >
             保存
           </Button>
 
@@ -226,38 +238,44 @@ function Registertion(props) {
       }
     >
       <div className={styles.collapse}>
-            <Collapse
-              expandIconPosition="right"
-              defaultActiveKey={['1']}
-              bordered={false}
-              onChange={callback}
-            >
-              <Panel header="服务绩效考核登记" key="1">
-                <Register
-                  formItemLayout={formItemLayout}
-                  forminladeLayout={forminladeLayout}
-                  wrappedComponentRef={RegistratRef}
-                  userinfo={userinfo}
-                  getUploadStatus={v => { setUploadStatus(v) }}
-                  getTarget1={getTarget1}
-                  getTarget2={getTarget2}
-                  target1={target1}
-                  target2={target2}
-                  getclausedetail={getclausedetail}
-                  clauseList={clauseList}
-                  contractArr={contractArr}
-                  getContrractname={getContrractname}
-                  files={[]}
-                  ChangeFiles={newvalue => {
-                    setFiles(newvalue);
-                  }}
-                  loading={loading}
-                  register={tabdata}
-                  tabdata={tabdata}
-                />
-              </Panel>
-            </Collapse>
-          </div>
+        <Collapse
+          expandIconPosition="right"
+          defaultActiveKey={['1']}
+          bordered={false}
+          onChange={callback}
+        >
+          <Panel header="服务绩效考核登记" key="1">
+            <HadleContext.Provider value={{
+              handleUploadStatus,
+              getUploadStatus: (v) => { setHandleUploadStatus(v) },
+              getRegistUploadStatus: (v) => { setUploadStatus(v) }
+            }}>
+              <Register
+                formItemLayout={formItemLayout}
+                forminladeLayout={forminladeLayout}
+                wrappedComponentRef={RegistratRef}
+                userinfo={userinfo}
+                getUploadStatus={v => { setUploadStatus(v) }}
+                getTarget1={getTarget1}
+                getTarget2={getTarget2}
+                target1={target1}
+                target2={target2}
+                getclausedetail={getclausedetail}
+                clauseList={clauseList}
+                contractArr={contractArr}
+                getContrractname={getContrractname}
+                files={[]}
+                ChangeFiles={newvalue => {
+                  setFiles(newvalue);
+                }}
+                loading={loading}
+                register={tabdata}
+                tabdata={tabdata}
+              />
+            </HadleContext.Provider>
+          </Panel>
+        </Collapse>
+      </div>
 
     </PageHeaderWrapper>
   );

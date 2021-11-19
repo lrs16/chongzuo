@@ -91,7 +91,7 @@ function OperationPlanfillindes(props) {
         </Col>
         <Col span={24}>
           <Form.Item label="风险应对措施" {...forminladeLayout}>
-            <TextArea autoSize={{ minRows: 3 }} defaultValue={info.riskAnalysis} disabled />
+            <TextArea autoSize={{ minRows: 3 }} defaultValue={info.riskMeasures} disabled />
           </Form.Item>
         </Col>
         <Col span={8}>

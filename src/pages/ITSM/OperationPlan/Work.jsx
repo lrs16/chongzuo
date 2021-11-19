@@ -2,6 +2,7 @@ import React, { useEffect, useState, createContext, useRef } from 'react';
 import { connect } from 'dva';
 import { Button, Collapse, Form, message } from 'antd';
 import User from '@/components/SelectUser/User';
+import HadleContext from '@/layouts/MenuContext';
 import router from 'umi/router';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
@@ -53,6 +54,8 @@ function Work(props) {
   const [userchoice, setUserChoice] = useState(false); // 已经选择人员
   const [changorder, setChangeOrder] = useState(undefined);
   const [modalvisible, setModalVisible] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState(false);
+  const [handleUploadStatus, setHandleUploadStatus] = useState(false);
 
   const {
     location: {
@@ -204,7 +207,7 @@ function Work(props) {
         mainId,
         execute_id: edit.execute.id,
         flowNodeName: '计划执行',
-        execute_fileIds: files.ischange ? JSON.stringify(files.arr) : null,
+        execute_fileIds: JSON.stringify(files.arr),
         editState: openFlowList.editState,
         execute_startTime: value.execute_startTime.format('YYYY-MM-DD HH:mm:ss'),
         execute_endTime: value.execute_endTime.format('YYYY-MM-DD HH:mm:ss'),
@@ -248,7 +251,7 @@ function Work(props) {
           main_plannedEndTime: values.main_plannedEndTime
             ? values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss')
             : '',
-          main_fileIds: files.ischange ? JSON.stringify(files.arr) : null,
+          main_fileIds: JSON.stringify(files.arr),
           flowNodeName: '计划登记',
           editState: openFlowList.editState,
           main_status: '1',
@@ -555,6 +558,26 @@ function Work(props) {
     });
   };
 
+  // 初始化附件
+  useEffect(() => {
+    if(flowNodeName === '计划登记' && openFlowList &&  openFlowList.main &&  openFlowList.main.fileIds) {
+      setFiles({
+        ...files,
+        arr: JSON.parse(openFlowList.main.fileIds),
+        ischange: false,
+      });
+    }
+
+    if(flowNodeName === '计划执行' && openFlowList &&  openFlowList.execute &&  openFlowList.execute.fileIds) {
+      setFiles({
+        ...files,
+        arr: JSON.parse(openFlowList.execute.fileIds),
+        ischange: false,
+      });
+    }
+
+  },[openFlowList])
+
   return (
     <PageHeaderWrapper
       title={flowNodeName}
@@ -572,7 +595,7 @@ function Work(props) {
                 ghost
                 style={{ marginRight: 8 }}
                 onClick={handleDelete}
-                disabled={olduploadstatus}
+                disabled={uploadStatus || handleUploadStatus || loading || olduploadstatus}
               >
                 删除
               </Button>
@@ -591,7 +614,7 @@ function Work(props) {
                   type="danger"
                   ghost
                   style={{ marginRight: 8 }}
-                  disabled={olduploadstatus}
+                  disabled={uploadStatus || handleUploadStatus || loading || olduploadstatus}
                 >
                   回退
                 </Button>
@@ -602,7 +625,7 @@ function Work(props) {
             <Button
               type="primary"
               onClick={() => handleSave(false)}
-              disabled={olduploadstatus}
+              disabled={uploadStatus || handleUploadStatus || loading || olduploadstatus}
             >
               保存
             </Button>
@@ -620,7 +643,7 @@ function Work(props) {
                 type="primary"
                 style={{ marginRight: 8 }}
                 onClick={() => handleSave(true, 'tobatch')}
-                disabled={olduploadstatus}
+                disabled={uploadStatus || handleUploadStatus || loading || olduploadstatus}
               >
                 送审
               </Button>
@@ -635,7 +658,7 @@ function Work(props) {
                 type="primary"
                 style={{ marginRight: 8 }}
                 onClick={() => handleExamine()}
-                disabled={olduploadstatus}
+                disabled={uploadStatus || handleUploadStatus || loading || olduploadstatus}
               >
                 审核
               </Button>
@@ -655,7 +678,7 @@ function Work(props) {
               <Button
                 type="primary"
                 onClick={() => handleExecute()}
-                disabled={olduploadstatus}
+                disabled={uploadStatus || handleUploadStatus || loading || olduploadstatus}
               >
                 确认执行
               </Button>
@@ -740,24 +763,30 @@ function Work(props) {
                   bordered
                   style={{ backgroundColor: 'white' }}
                 >
-                  <OperationPlanfillin
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    main={delay ? openFlowList.main : edit.main}
-                    type={delay}
-                    status={status}
-                    useInfo={userinfo}
-                    ref={SaveRef}
-                    operationPersonSelect={operationPersonSelect}
-                    files={
-                      openFlowList.main.fileIds !== '' && openFlowList.main.fileIds
-                        ? JSON.parse(openFlowList.main.fileIds)
-                        : []
-                    }
-                    ChangeFiles={newvalue => {
-                      setFiles(newvalue);
-                    }}
-                  />
+                  <HadleContext.Provider value={{
+                    handleUploadStatus,
+                    getUploadStatus: (v) => { setHandleUploadStatus(v) },
+                    getRegistUploadStatus: (v) => { setUploadStatus(v) }
+                  }}>
+                    <OperationPlanfillin
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                      main={delay ? openFlowList.main : edit.main}
+                      type={delay}
+                      status={status}
+                      useInfo={userinfo}
+                      ref={SaveRef}
+                      operationPersonSelect={operationPersonSelect}
+                      files={
+                        openFlowList.main.fileIds !== '' && openFlowList.main.fileIds
+                          ? JSON.parse(openFlowList.main.fileIds)
+                          : []
+                      }
+                      ChangeFiles={newvalue => {
+                        setFiles(newvalue);
+                      }}
+                    />
+                  </HadleContext.Provider>
                 </Panel>
               )}
             </>
@@ -818,7 +847,7 @@ function Work(props) {
 }
 
 export default Form.create({})(
-  connect(({ processmodel, itsmuser,viewcache, loading }) => ({
+  connect(({ processmodel, itsmuser, viewcache, loading }) => ({
     userinfo: itsmuser.userinfo,
     openFlowList: processmodel.openFlowList,
     operationPersonArr: processmodel.operationPersonArr,
