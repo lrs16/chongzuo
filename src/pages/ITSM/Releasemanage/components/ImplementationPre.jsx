@@ -63,11 +63,12 @@ function ImplementationPre(props, ref) {
   const [stopVisit, setStopVisit] = useState('否');
   const [alertvisible, setAlertVisible] = useState(false);  // 超时告警是否显示
   const [alertmessage, setAlertMessage] = useState('');
+  const [adopt, setAdopt] = useState('通过')
   const { ChangeSubmitType, ChangeButtype } = useContext(SubmitTypeContext);
   const required = true;
 
   const handleAdopt = e => {
-    // setAdopt(e.target.value);
+    setAdopt(e.target.value);
     if (e.target.value === '通过') {
       ChangeSubmitType(1)
     };
@@ -119,8 +120,11 @@ function ImplementationPre(props, ref) {
 
   useEffect(() => {
     if (info && info.practicePre) {
-      setStopVisit(info.practicePre.bizStopVisit)
-    }
+      setStopVisit(info.practicePre.bizStopVisit);
+      if (info.practicePre.preResult) {
+        setAdopt(info.practicePre.preResult)
+      }
+    };
   }, [info])
 
   useEffect(() => {
@@ -133,7 +137,6 @@ function ImplementationPre(props, ref) {
       setAlertMessage({ mes: `超时原因：${timeoutinfo}`, des: `` });
     };
   }, [timeoutinfo])
-
 
   // 校验文档
   const handleAttValidator = (rule, value, callback) => {
@@ -173,9 +176,9 @@ function ImplementationPre(props, ref) {
         <Form ref={formRef}>
           <Col span={24}>
             <Form.Item label='实施准备结果' {...forminladeLayout} labelAlign='left'>
-              {getFieldDecorator('validResult', {
+              {getFieldDecorator('preResult', {
                 rules: [{ required, message: '请选择验证结果' }],
-                initialValue: info.practicePre && info.practicePre.result ? info.practicePre.result : '通过',
+                initialValue: info.practicePre && info.practicePre.preResult ? info.practicePre.preResult : '通过',
               })(<RadioGroup onChange={handleAdopt} disabled={!isEdit}>
                 <Radio value='通过'>通过</Radio>
                 <Radio value='不通过'>不通过</Radio>
@@ -184,12 +187,21 @@ function ImplementationPre(props, ref) {
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item label="实施准备意见" {...forminladeLayout} labelAlign='left'>
-              {getFieldDecorator('summary', {
-                rules: [{ required, message: `请填写实施准备意见` }],
-                initialValue: info.practicePre && info.practicePre.opinion ? info.practicePre.opinion : '',
-              })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
-            </Form.Item>
+            {adopt === '通过' && (
+              <Form.Item label="实施准备意见" {...forminladeLayout} labelAlign='left'>
+                {getFieldDecorator('preAdvise1', {
+                  initialValue: info.practicePre && info.practicePre.preAdvise ? info.practicePre.preAdvise : '',
+                })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
+              </Form.Item>
+            )}
+            {adopt === '不通过' && (
+              <Form.Item label="实施准备意见" {...forminladeLayout} labelAlign='left'>
+                {getFieldDecorator('preAdvise', {
+                  rules: [{ required, message: `请填写实施准备意见` }],
+                  initialValue: info.practicePre && info.practicePre.preAdvise ? info.practicePre.preAdvise : '',
+                })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
+              </Form.Item>
+            )}
           </Col>
           <Col span={24}>
             <Form.Item label="总述" {...forminladeLayout} labelAlign='left'>
@@ -256,8 +268,23 @@ function ImplementationPre(props, ref) {
               {getFieldDecorator('beginPlanTime', {
                 rules: [{ required, message: `请选择实施计划开始时间` }],
                 initialValue: moment(info.practicePre && info.practicePre.beginPlanTime ? info.practicePre.beginPlanTime : undefined),
-              })(
-                <DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
+              })(<div>
+                {info.practicePre && (<DatePicker
+                  showTime
+                  placeholder="请选择时间"
+                  format="YYYY-MM-DD HH:mm:ss"
+                  disabled={!isEdit}
+                  style={{ width: '100%' }}
+                  defaultValue={moment(info.practicePre && info.practicePre.beginPlanTime ? info.practicePre.beginPlanTime : undefined)}
+                  onChange={(v) => { setFieldsValue({ beginPlanTime: moment(v).format('YYYY-MM-DD HH:mm:ss') }) }}
+                  disabledDate={(v) => {
+                    const dates = getFieldsValue(['endPlanTime']);
+                    return v && v > moment(dates.endPlanTime);
+                  }}
+                />
+                )}
+              </div>
+              )}
             </Form.Item>
           </Col>
           <Col span={8} style={{ marginTop: 24 }}>
@@ -266,7 +293,22 @@ function ImplementationPre(props, ref) {
                 rules: [{ required, message: `请选择实施计划结束时间` }],
                 initialValue: moment(info.practicePre && info.practicePre.endPlanTime ? info.practicePre.endPlanTime : undefined),
               })(
-                <DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />
+                <>
+                  {info.practicePre && (<DatePicker
+                    showTime
+                    placeholder="请选择时间"
+                    format="YYYY-MM-DD HH:mm:ss"
+                    disabled={!isEdit}
+                    style={{ width: '100%' }}
+                    defaultValue={moment(info.practicePre && info.practicePre.endPlanTime ? info.practicePre.endPlanTime : undefined)}
+                    onChange={(v) => { setFieldsValue({ endPlanTime: moment(v).format('YYYY-MM-DD HH:mm:ss') }) }}
+                    disabledDate={(v) => {
+                      const dates = getFieldsValue(['beginPlanTime']);
+                      return v && v < moment(dates.beginPlanTime);
+                    }}
+                  />
+                  )}
+                </>
               )}
             </Form.Item>
           </Col>
@@ -306,7 +348,23 @@ function ImplementationPre(props, ref) {
                   {getFieldDecorator('bizStopBegin', {
                     rules: [{ required, message: `请选择中断开始时间` }],
                     initialValue: moment(info.practicePre && info.practicePre.bizStopBegin ? info.practicePre.bizStopBegin : undefined),
-                  })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
+                  })(
+                    <div>
+                      {info.practicePre && (<DatePicker
+                        showTime
+                        placeholder="请选择时间"
+                        format="YYYY-MM-DD HH:mm:ss"
+                        disabled={!isEdit}
+                        style={{ width: '100%' }}
+                        defaultValue={moment(info.practicePre && info.practicePre.bizStopBegin ? info.practicePre.bizStopBegin : undefined)}
+                        onChange={(v) => { setFieldsValue({ bizStopBegin: moment(v).format('YYYY-MM-DD HH:mm:ss') }) }}
+                        disabledDate={(v) => {
+                          const dates = getFieldsValue(['bizStopEnd']);
+                          return v && v > moment(dates.bizStopEnd);
+                        }}
+                      />)}
+                    </div>
+                  )}
                 </Form.Item>
               </Col>
               <Col span={8}>
@@ -314,7 +372,23 @@ function ImplementationPre(props, ref) {
                   {getFieldDecorator('bizStopEnd', {
                     rules: [{ required, message: `请选择中断结束时间` }],
                     initialValue: moment(info.practicePre && info.practicePre.bizStopEnd ? info.practicePre.bizStopEnd : undefined),
-                  })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
+                  })(
+                    <div>
+                      {info.practicePre && (<DatePicker
+                        showTime
+                        placeholder="请选择时间"
+                        format="YYYY-MM-DD HH:mm:ss"
+                        disabled={!isEdit}
+                        style={{ width: '100%' }}
+                        defaultValue={moment(info.practicePre && info.practicePre.bizStopEnd ? info.practicePre.bizStopEnd : undefined)}
+                        onChange={(v) => { setFieldsValue({ bizStopEnd: moment(v).format('YYYY-MM-DD HH:mm:ss') }) }}
+                        disabledDate={(v) => {
+                          const dates = getFieldsValue(['bizStopBegin']);
+                          return v && v < moment(dates.bizStopBegin);
+                        }}
+                      />)}
+                    </div>
+                  )}
                 </Form.Item>
               </Col>
             </>
@@ -418,9 +492,9 @@ function ImplementationPre(props, ref) {
             />
             <Form.Item wrapperCol={{ span: 24 }} style={{ display: 'none' }}>
               {getFieldDecorator('releaseAttaches', {
-                rules: [{ required, message: '请上传附件' }, {
-                  validator: handleAttValidator
-                }],
+                // rules: [{ required, message: '请上传附件' }, {
+                //   validator: handleAttValidator
+                // }],
                 initialValue: info.releaseAttaches,
               })(<></>)}
             </Form.Item>

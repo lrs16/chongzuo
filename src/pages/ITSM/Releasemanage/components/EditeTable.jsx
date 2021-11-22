@@ -44,7 +44,7 @@ function EditeTable(props) {
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 2 });
   const [releaseNoandId, setReleaseNo] = useState({ releaseNo: '', processInstanceId: '' });
   const [classify, setClassify] = useState('');
-  const { ChangeButtype, taskId, ChangeaddAttaches } = useContext(UserContext);
+  const { ChangeButtype, taskId, ChangeaddAttaches, location } = useContext(UserContext);
 
   const listTypeFilter = [{ text: '计划', value: '计划' }, { text: '临时添加', value: '临时添加' }]
 
@@ -107,7 +107,7 @@ function EditeTable(props) {
     setSelectedRecords(record);
     if (taskName === '版本管理员审核') {
       if (RowKeys.length > 0) {
-        const releaseNoList = uniqueNo(record);                                // 工单号数组去重   
+        const releaseNoList = uniqueNo(record);                                // 工单号数组去重
         const target = releaseNoList.filter(item => item.releaseNo !== '');    // 数组中不含空值的
         const releaseNos = target.map((item) => {                              // 取出发布工单号组成新的数组
           return item.releaseNo
@@ -452,10 +452,16 @@ function EditeTable(props) {
         })
       }
     };
-    if (isEdit && dataSource && dataSource.length === 0) {
-      newMember()
-    };
+    // if (isEdit && dataSource && dataSource.length === 0 && data.length === 0) {
+    //   newMember()
+    // };
   }, [dataSource])
+
+  useEffect(() => {
+    if (taskName === '新建' && location && location.state && (location.state.cache || location.state.reset)) {
+      setData([]);
+    }
+  }, [location]);
 
   useEffect(() => {
     if (choiceUser.ischange) {
@@ -814,7 +820,6 @@ function EditeTable(props) {
     title: '状态',
     dataIndex: 'verifyStatus',
     key: 'verifyStatus',
-    fixed: 'right',
     width: 100,
     align: 'center',
   };
@@ -867,6 +872,10 @@ function EditeTable(props) {
   };
 
   const addorderid = (arr) => {
+    if (taskName === '平台验证') {
+      const newarr = sclicecolumns(arr);
+      return newarr
+    }
     if (taskName === '业务验证') {
       const newarr = sclicecolumns(arr);
       newarr.splice(-3, 0, verifyStatus)
@@ -901,7 +910,7 @@ function EditeTable(props) {
       }));
       setData(newData);
       setNewButton(false);
-      const releaseNoList = uniqueNo(newData);                               // 工单号数组去重   
+      const releaseNoList = uniqueNo(newData);                               // 工单号数组去重
       const target = releaseNoList.filter(item => item.releaseNo !== '');    // 数组中不含空值的
       const releaseNos = target.map((item) => {                              // 取出发布工单号组成新的数组
         return { text: item.releaseNo, value: item.releaseNo }
@@ -1051,7 +1060,7 @@ function EditeTable(props) {
           rowKey={(record) => record.key}
           pagination={pagination}
           rowSelection={rowSelection}
-          scroll={{ x: 1740, }}
+          scroll={{ x: 1500, }}
           rowClassName={(record, index) => {
             let className = 'light-row';
             if (index % 2 === 1) className = styles.darkRow;

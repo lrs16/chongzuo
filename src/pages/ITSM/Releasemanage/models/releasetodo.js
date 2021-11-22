@@ -257,7 +257,7 @@ export default {
     },
 
     // 发布实施准备保存
-    * implementationpre({ payload: { formValue, buttype } }, { call, put }) {
+    * implementationpre({ payload: { formValue, buttype, submitval } }, { call, put }) {
       yield put({
         type: 'savestatuse',
         payload: { statuse: -1 },
@@ -268,13 +268,30 @@ export default {
         payload: { statuse: response.code },
       });
       if (response.code === 200) {
-        if (buttype === 'save') {
-          message.success('保存成功');
-        };
         yield put({
           type: 'updateinfo',
           payload: { info: response.data.practicePreParam, currentTaskStatus: response.data.currentTaskStatus, },
         });
+        if (buttype === 'save') {
+          message.success('保存成功');
+        };
+        if (buttype === 'flow' || buttype === 'noPass') {
+          const flowpayload = {
+            ...submitval,
+            userIds: buttype === 'flow' ? submitval.userIds : '',
+          }
+          const subres = yield call(flowSubmit, flowpayload);
+          if (subres.code === 200) {
+            message.success('操作成功');
+            router.push({
+              pathname: `/ITSM/releasemanage/to-do`,
+              query: { pathpush: true },
+              state: { cach: false, closetabid: response.data.currentTaskStatus.taskId }
+            });
+          } else {
+            message.error('操作失败');
+          }
+        }
       } else {
         message.error('操作失败');
       };

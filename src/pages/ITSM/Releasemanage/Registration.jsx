@@ -7,6 +7,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SubmitTypeContext from '@/layouts/MenuContext';              // 引用上下文管理组件
 import DictLower from '@/components/SysDict/DictLower';
 import User from '@/components/SelectUser/User';
+import { releaseUserList } from '@/services/user';
 import TimeoutModal from '../components/TimeoutModal';
 import Registrat from './components/Registrat';
 import { saveRegister, getTimeoutInfo } from './services/api';
@@ -27,7 +28,7 @@ const Attaches = [
 
 
 function Registration(props) {
-  const { dispatch, userinfo, loading, tabnew, tabdata, location, uploadstatus, userlist } = props;
+  const { dispatch, userinfo, loading, tabnew, tabdata, location, uploadstatus } = props;
   const pagetitle = props.route.name;
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
   const [uservisible, setUserVisible] = useState(false);        // 是否显示选人组件
@@ -36,6 +37,7 @@ function Registration(props) {
   const [orderId, setOrderId] = useState('');
   const [modalvisible, setModalVisible] = useState(false);
   const [saveloading, setSaveloading] = useState(false);
+  const [userlist, setUserlist] = useState([]);
   const [indexvalue, setIndexValue] = useState({ releaseMain: {}, releaseRegister: {}, releaseEnvs: [], releaseLists: [], releaseAttaches: Attaches });
   // 初始化用户信息，流程类型
   useEffect(() => {
@@ -142,30 +144,37 @@ function Registration(props) {
             sessionStorage.setItem('flowtype', '1');
             setTaskId(res.data.currentTaskStatus.taskId);
             setOrderId(res.data.currentTaskStatus.processInstanceId);
-            dispatch({
-              type: 'itsmuser/releaseuserlist',
-              payload: {
-                taskId: res.data.currentTaskStatus.taskId,
-                type: '1',
-              },
-            });
-            getTimeoutInfo({ taskId: res.data.currentTaskStatus.taskId }).then(timeoutres => {
-              if (timeoutres.code === 200) {
-                if (timeoutres.data.timeout && !timeoutres.data.reason) {
-                  message.info(timeoutres.data.msg);
-                  setModalVisible(true);
-                };
-                if ((timeoutres.data.timeout && res.data.reason) || !timeoutres.data.timeout) {
-                  // setUserVisible(true);
-                  tosubmit();
-                };
-              } else {
-                message.error(res.msg);
-                setSaveloading(false);
-              };
+            releaseUserList(res.data.currentTaskStatus.taskId, '1').then(resuser => {
+              if (resuser.code === 200) {
+                setUserlist(resuser.data.userList);
+                getTimeoutInfo({ taskId: res.data.currentTaskStatus.taskId }).then(timeoutres => {
+                  if (timeoutres.code === 200) {
+                    if (timeoutres.data.timeout && !timeoutres.data.reason) {
+                      message.info(timeoutres.data.msg);
+                      setModalVisible(true);
+                    };
+                    if ((timeoutres.data.timeout && res.data.reason) || !timeoutres.data.timeout) {
+                      // setUserVisible(true);
+                      tosubmit();
+                    };
+                  } else {
+                    message.error(res.msg);
+                    setSaveloading(false);
+                  };
+                })
+              }
             })
+            // dispatch({
+            //   type: 'itsmuser/releaseuserlist',
+            //   payload: {
+            //     taskId: res.data.currentTaskStatus.taskId,
+            //     type: '1',
+            //   },
+            // });
+
           } else {
             message.error(res.msg)
+            setSaveloading(false);
           }
         })
       }
@@ -228,13 +237,12 @@ function Registration(props) {
   }, [tabnew]);
 
   useEffect(() => {
-    if (location.state) {
+    if (location.state && location.state.reset) {
       // 点击菜单刷新,并获取数据
-      if (location.state.reset) {
-        RegistratRef.current.resetVal();
-      };
+      RegistratRef.current.resetVal();
     }
   }, [location.state]);
+
 
   useEffect(() => {
     // 获取页签信息
@@ -266,7 +274,7 @@ function Registration(props) {
   );
 
   return (
-    <Spin tip="正在提交数据..." spinning={!!loading}>
+    <Spin tip="正在提交数据..." spinning={!!loading || saveloading}>
       <PageHeaderWrapper title={pagetitle} extra={operations}>
         <DictLower
           typeid="443"
@@ -280,6 +288,7 @@ function Registration(props) {
             addAttaches: false,
             ChangeaddAttaches: (() => { }),
             location,
+            taskName: '新建'
           }}>
             <Registrat
               wrappedComponentRef={RegistratRef}
@@ -287,7 +296,7 @@ function Registration(props) {
               selectdata={selectdata}
               isEdit
               taskName='新建'
-              info={tabdata || indexvalue}
+              info={tabdata}
             />
           </SubmitTypeContext.Provider>
         </Card>
@@ -313,7 +322,6 @@ export default connect(({ itsmuser, viewcache, loading }) => ({
   tabnew: viewcache.tabnew,
   tabdata: viewcache.tabdata,
   uploadstatus: viewcache.uploadstatus,
-  userlist: itsmuser.userlist,
   userinfo: itsmuser.userinfo,
   loading: loading.effects['releasetodo/releaseflow'],
 }))(Registration);

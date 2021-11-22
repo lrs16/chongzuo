@@ -8,6 +8,12 @@ const { TextArea } = Input;
 const InputGroup = Input.Group;
 const RadioGroup = Radio.Group;
 
+const typemap = new Map([
+  ['业务验证', '业务审核人'],
+  ['业务复核', '业务复核人'],
+  ['发布实施', '操作人员'],
+])
+
 function getQueryVariable(variable) {
   const query = window.location.search.substring(1);
   const vars = query.split("&");
@@ -19,12 +25,13 @@ function getQueryVariable(variable) {
 }
 
 function BusinessEditTable(props) {
-  const { title, dataSource, type, ChangeValue, loading, isEdit, listmsg } = props;
+  const { title, dataSource, type, ChangeValue, loading, isEdit, listmsg, getSelectedRecords } = props;
   const [data, setData] = useState([]);
   const [classify, setClassify] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRecords, setSelectedRecords] = useState([]);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 2 });
+
 
   useEffect(() => {
     if (dataSource && dataSource.length > 0) {
@@ -67,6 +74,9 @@ function BusinessEditTable(props) {
   const onSelectChange = (RowKeys, record) => {
     setSelectedRowKeys(RowKeys);
     setSelectedRecords(record);
+    if (getSelectedRecords) {
+      getSelectedRecords(record);
+    }
   };
 
   const rowSelection = {
@@ -208,7 +218,7 @@ function BusinessEditTable(props) {
       width: 100,
     },
     {
-      title: '操作人员',
+      title: `${typemap.get(type)}`,
       dataIndex: 'operator',
       key: 'operator',
       align: 'center',
@@ -224,7 +234,7 @@ function BusinessEditTable(props) {
         return (
           <>
             {isEdit ? (
-              <RadioGroup value={text || '通过'} onChange={e => handleFieldChange(e.target.value, 'passTest', record.key)}>
+              <RadioGroup value={text} onChange={e => handleFieldChange(e.target.value, 'passTest', record.key)}>
                 <Radio value='通过'>通过</Radio>
                 <Radio value='不通过'>不通过</Radio>
               </RadioGroup>
@@ -284,7 +294,7 @@ function BusinessEditTable(props) {
       </Row>
 
       <Table
-        rowSelection={type === '发布实施' ? rowSelection : null}
+        rowSelection={rowSelection}
         columns={type === '发布实施' ? practicedonecolumns : columns}
         dataSource={data}
         bordered

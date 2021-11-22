@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { connect } from 'dva';
 import { Table, Row, Button, Select, Input } from 'antd';
+import UserContext from '@/layouts/MenuContext';
 
 const { Option } = Select;
 
@@ -9,6 +10,7 @@ function TestingFacility(props) {
   const [data, setData] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRowrecord, setSelectedRowRecord] = useState([]);
+  const { location, taskName } = useContext(UserContext);
 
   // 新增一条记录
   const newMember = () => {
@@ -84,10 +86,16 @@ function TestingFacility(props) {
       }));
       setData(newData)
     };
-    if (dataSource && dataSource.length === 0) {
-      newMember()
+    // if (dataSource && dataSource.length === 0 && data.length === 0) {
+    //   newMember()
+    // }
+  }, [dataSource]);
+
+  useEffect(() => {
+    if (taskName === '新建' && location && location.state && (location.state.cache || location.state.reset)) {
+      setData([]);
     }
-  }, [dataSource])
+  }, [location]);
 
   const columns = [
     {

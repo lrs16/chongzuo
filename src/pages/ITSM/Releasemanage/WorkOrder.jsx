@@ -251,6 +251,7 @@ function WorkOrder(props) {
 
   // 发布实施准备保存流转
   const savepracticePre = () => {
+    const userIds = userlist.map(obj => obj.userId);
     const val = ImplementationPreRef.current.getVal();
     dispatch({
       type: 'releasetodo/implementationpre',
@@ -273,6 +274,8 @@ function WorkOrder(props) {
             specialRequest: val.specialRequest,
             rollbackPaln: val.rollbackPaln,
             platformCheck: val.platformCheck,
+            preResult: val.preResult,
+            preAdvise: val.preResult === '通过' ? val.preAdvise1 : val.preAdvise,
           },
           practiceDevices: val.practiceDevices,
           practicePersonList: val.practicePersonList,
@@ -282,6 +285,11 @@ function WorkOrder(props) {
           releaseLists: val.releaseLists,
         },
         buttype,
+        submitval: {
+          taskId: currentTaskStatus.taskId,
+          type: submittype,
+          userIds: userIds.join(','),
+        }
       },
     });
   }
@@ -291,6 +299,7 @@ function WorkOrder(props) {
         savepracticePre();
         break;
       case 'flow':
+      case 'noPass':
         // setUserChoice(false);
         sessionStorage.removeItem('NextflowUserId');
         ImplementationPreRef.current.Forms((err) => {
@@ -300,7 +309,7 @@ function WorkOrder(props) {
             savepracticePre();
             sessionStorage.setItem('flowtype', '1');
             // setUserVisible(true);
-            tosubmit();
+            // tosubmit();
           }
         })
         break;

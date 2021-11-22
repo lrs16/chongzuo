@@ -67,7 +67,7 @@ function Registrat(props, ref) {
   const [alertmessage, setAlertMessage] = useState('');
   const [check, setCheck] = useState(false);
   // const [adopt, setAdopt] = useState('通过');
-  const { ChangeSubmitType, ChangeButtype } = useContext(SubmitTypeContext);
+  const { ChangeSubmitType, ChangeButtype, location } = useContext(SubmitTypeContext);
 
   const formmap = new Map([
     ['新建', info.releaseRegister],

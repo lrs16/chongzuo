@@ -331,6 +331,14 @@ function VerificationTodo(props) {
     ];
     const key = Object.keys(viewlist)[0];
 
+    const addcolumn = {
+      title: '业务审核人',
+      dataIndex: 'operator1',
+      key: 'operator1',
+      align: 'center',
+      width: 100,
+    };
+
     return (
       <div style={{ margin: '0 48px 24px 0', }}>
         <div style={{ marginBottom: 12 }}>{viewmsg[key]}</div>

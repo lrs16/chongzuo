@@ -1,7 +1,7 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
-import { Button, message, Card } from 'antd';
+import { Button, message, Card, Popconfirm } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import EditContext from '@/layouts/MenuContext';
 import BusinessEditTable from './components/BusinessEditTable';
@@ -13,7 +13,10 @@ function BusinessDetail(props) {
   const { Id, releaseNo } = props.location.query;
   const pagetitle = props.route.name;
   const [runpath, setRunpath] = useState('');
+  const [selectedRecords, setSelectedRecords] = useState([]);
+  const [visible, setVisible] = useState(false);
   const { currenttab } = useContext(EditContext);
+  const user = sessionStorage.getItem('userName');
 
   useEffect(() => {
     if (currenttab && currenttab.state) {
@@ -29,8 +32,8 @@ function BusinessDetail(props) {
     });
   };
 
-  const handlecompleteverify = () => {
-    const newArr = info.map((item) => {
+  const submitVerify = () => {
+    const newArr = selectedRecords.map((item) => {
       return item.id
     });
     completeVerify({ listIds: newArr.toString() }).then(res => {
@@ -47,6 +50,44 @@ function BusinessDetail(props) {
     })
   }
 
+  const handlecompleteverify = () => {
+    if (selectedRecords && selectedRecords.length > 0) {
+      const Arr = selectedRecords.filter(obj => obj.responsible !== user);
+      if (Arr) {
+        setVisible(true);
+      } else {
+        submitVerify();
+      }
+    } else {
+      message.error('请选择数据...')
+    }
+  };
+
+  const handlemycompleteverify = () => {
+    console.log(user);
+    const Arr = info.filter(obj => obj.responsible === user);
+    console.log(Arr);
+    if (Arr && Arr.length > 0) {
+      const newArr = Arr.map((item) => {
+        return item.id
+      });
+      completeVerify({ listIds: newArr.toString() }).then(res => {
+        if (res.code === 200) {
+          message.success(res.msg);
+          router.push({
+            pathname: runpath,
+            query: { pathpush: true },
+            state: { cache: false, closetabid: Id }
+          });
+        } else {
+          message.error(res.msg)
+        };
+      })
+    } else {
+      message.info('清单中没有您负责的业务...')
+    }
+  };
+
   useEffect(() => {
     if (Id) {
       dispatch({
@@ -61,9 +102,22 @@ function BusinessDetail(props) {
   const operations = (
     <>
       {titletype === taskName && (
-        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handlecompleteverify()}>
-          验证完成
-        </Button>
+        <>
+          <Button type="primary" style={{ marginRight: 8 }} onClick={() => handlemycompleteverify()}>
+            验证我负责的业务
+          </Button>
+          <Popconfirm
+            title="所选的清单有不属于您负责的业务的功能，确定验证吗?"
+            onConfirm={() => submitVerify()}
+            visible={visible}
+            onCancel={() => setVisible(false)}
+            placement="leftTop"
+          >
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => handlecompleteverify()}>
+              验证
+            </Button>
+          </Popconfirm>
+        </>
       )}
       <Button onClick={handleclose} >返回</Button>
     </>
@@ -80,6 +134,7 @@ function BusinessDetail(props) {
           scroll={{ x: 1740 }}
           loading={loading}
           isEdit={titletype === taskName}
+          getSelectedRecords={(v) => setSelectedRecords(v)}
         />
       </Card>
     </PageHeaderWrapper>
