@@ -44,6 +44,16 @@ const columns = [
     key: 'threeLevel',
   },
   {
+    title: '四级功能',
+    dataIndex: 'fourLevel',
+    key: 'fourLevel',
+  },
+  {
+    title: '五级功能',
+    dataIndex: 'fiveLevel',
+    key: 'fiveLevel',
+  },
+  {
     title: '工单数',
     dataIndex: 'number',
     key: 'number',

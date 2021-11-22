@@ -145,7 +145,7 @@ function Todolistdetails(props) {
   } = props;
 
   const {
-    query: { id, mainId,orderNo },
+    query: { id, mainId, orderNo },
   } = props.location; // 获取taskId
 
 
@@ -872,6 +872,12 @@ function Todolistdetails(props) {
     }
   }, [location.state])
 
+  //  发起服务绩效
+  // const createQualityByMainId = () => {
+  //   return dispatch({
+  //     type
+  //   })
+  // }
   return (
     <PageHeaderWrapper
       extra={
@@ -969,7 +975,7 @@ function Todolistdetails(props) {
               {troubleFlowNodeRows !== undefined &&
                 troubleFlowNodeRows.length !== 0 &&
                 flowNodeName === '故障登记' && (
-                <Button type="primary" onClick={() => faultcircula('close')} disabled={faultUploadStatus}>
+                  <Button type="primary" onClick={() => faultcircula('close')} disabled={faultUploadStatus}>
                     结束
                   </Button>
                 )}
@@ -1019,157 +1025,158 @@ function Todolistdetails(props) {
               <FaultEditContext.Provider value={{
                 getUploadStatus: (v) => { setFaultUploadStatus(v) },
               }}>
-              <Collapse
-                expandIconPosition="right"
-                activeKey={activeKey}
-                bordered={false}
-                style={{ marginTop: '-25px' }}
-                onChange={callback}
-              >
-                {// 故障登记编辑页---（故障登记时）
-                  flowNodeName === '故障登记' && (
-                    <Panel header="故障登记" key="RegisterChild">
-                      <RegisterChild
-                        ChangeFiles={newvalue => {
-                          setFiles(newvalue);
-                        }}
-                        ref={RegisterRef}
-                        formItemLayout={formItemLayout}
-                        forminladeLayout={forminladeLayout}
-                        tododetailslist={tododetailslist}
-                        main={main}
-                        curruserinfo={curruserinfo}
-                        saveType={newvalue => {
-                          setType(newvalue);
-                        }}
+                <Collapse
+                  expandIconPosition="right"
+                  activeKey={activeKey}
+                  bordered={false}
+                  style={{ marginTop: '-25px' }}
+                  onChange={callback}
+                >
+                  {// 故障登记编辑页---（故障登记时）
+                    flowNodeName === '故障登记' && (
+                      <Panel header="故障登记" key="RegisterChild">
+                        <RegisterChild
+                          ChangeFiles={newvalue => {
+                            setFiles(newvalue);
+                          }}
+                          ref={RegisterRef}
+                          formItemLayout={formItemLayout}
+                          forminladeLayout={forminladeLayout}
+                          tododetailslist={tododetailslist}
+                          main={main}
+                          curruserinfo={curruserinfo}
+                          saveType={newvalue => {
+                            setType(newvalue);
+                          }}
                           location={location}
-                      />
-                    </Panel>
-                  )}
-                {// 系统运维商审核编辑页
-                  flowNodeName === '系统运维商审核' && ( // 展开系统运维商审核表单时，显示故障登记详情（1）
-                    <Panel header="系统运维商审核" key="ExamineChild">
-                      <ExamineChild
-                        ref={ExamineRef}
-                        formItemLayout={formItemLayout}
-                        forminladeLayout={forminladeLayout}
-                        check={check}
-                        curruserinfo={curruserinfo}
-                        ChangeFiles={newvalue => {
-                          setFiles(newvalue);
-                        }}
-                        ChangeResult={newvalue => {
-                          setResult(newvalue);
-                        }}
-                        location={location}
-                      />
-                    </Panel>
-                  )}
-                {// 系统运维商处理编辑页
-                  flowNodeName === '系统运维商处理' &&
-                  main &&
-                  main.status === '45' &&
-                  editState === 'edit' && ( // 展开处理表单时，显示故障审核详情以及登记详情（2）
-                    <Panel header="系统运维商处理" key="HandleChild">
-                      <HandleChild
-                        ref={HandleRef}
-                        formItemLayout={formItemLayout}
-                        forminladeLayout={forminladeLayout}
-                        handle={handle}
-                        curruserinfo={curruserinfo}
-                        ChangeFiles={newvalue => {
-                          setFiles(newvalue);
-                        }}
-                        ChangeFileskey={newvalue => setFileskey(newvalue)}
-                        mainId={mainId}
-                        uploadStatus={olduploadstatus}
-                      />
-                    </Panel>
-                  )}
-                {// 系统运维商确认总结编辑页
-                  flowNodeName === '系统运维商确认总结' && (
-                    <Panel header="系统运维商确认总结" key="SummaryChild">
-                      <SummaryChild
-                        ref={SummaryRef}
-                        formItemLayout={formItemLayout}
-                        forminladeLayout={forminladeLayout}
-                        tododetailslist={tododetailslist}
-                        finish={finish}
-                        curruserinfo={curruserinfo}
-                        ChangeFiles={newvalue => {
-                          setFiles(newvalue);
-                        }}
-                        id={id}
-                        mainId={mainId}
-                        orderNo={orderNo}
-                        editState={editState}
-                        finishId={tododetailslist && tododetailslist.finish && tododetailslist.finish.id}
-                        showFilelist={troubleFlowNodeRows[1]}
-                        showFilelist2={troubleFlowNodeRows[2]}
+                        />
+                      </Panel>
+                    )}
+                  {// 系统运维商审核编辑页
+                    flowNodeName === '系统运维商审核' && ( // 展开系统运维商审核表单时，显示故障登记详情（1）
+                      <Panel header="系统运维商审核" key="ExamineChild">
+                        <ExamineChild
+                          ref={ExamineRef}
+                          formItemLayout={formItemLayout}
+                          forminladeLayout={forminladeLayout}
+                          check={check}
+                          curruserinfo={curruserinfo}
+                          ChangeFiles={newvalue => {
+                            setFiles(newvalue);
+                          }}
+                          ChangeResult={newvalue => {
+                            setResult(newvalue);
+                          }}
+                          location={location}
+                        />
+                      </Panel>
+                    )}
+                  {// 系统运维商处理编辑页
+                    flowNodeName === '系统运维商处理' &&
+                    main &&
+                    main.status === '45' &&
+                    editState === 'edit' && ( // 展开处理表单时，显示故障审核详情以及登记详情（2）
+                      <Panel header="系统运维商处理" key="HandleChild">
+                        <HandleChild
+                          ref={HandleRef}
+                          formItemLayout={formItemLayout}
+                          forminladeLayout={forminladeLayout}
+                          handle={handle}
+                          curruserinfo={curruserinfo}
+                          ChangeFiles={newvalue => {
+                            setFiles(newvalue);
+                          }}
+                          ChangeFileskey={newvalue => setFileskey(newvalue)}
+                          mainId={mainId}
+                          uploadStatus={olduploadstatus}
+                        />
+                      </Panel>
+                    )}
+                  {// 系统运维商确认总结编辑页
+                    flowNodeName === '系统运维商确认总结' && (
+                      <Panel header="系统运维商确认总结" key="SummaryChild">
+                        <SummaryChild
+                          ref={SummaryRef}
+                          formItemLayout={formItemLayout}
+                          forminladeLayout={forminladeLayout}
+                          tododetailslist={tododetailslist}
+                          finish={finish}
+                          curruserinfo={curruserinfo}
+                          ChangeFiles={newvalue => {
+                            setFiles(newvalue);
+                          }}
+                          id={id}
+                          mainId={mainId}
+                          orderNo={orderNo}
+                          editState={editState}
+                          finishId={tododetailslist && tododetailslist.finish && tododetailslist.finish.id}
+                          showFilelist={troubleFlowNodeRows[1]}
+                          showFilelist2={troubleFlowNodeRows[2]}
                           ChangeFileskey={newvalue => setFileskey(newvalue)}
                           uploadStatus={olduploadstatus}
-                      />
-                    </Panel>
-                  )}
-                {// 自动化科业务负责人审核编辑页
-                  flowNodeName === '自动化科业务负责人审核' && (
-                    <Panel header="自动化科业务负责人审核" key="ExamineSecondChild">
-                      <ExamineSecondChild
-                        ref={ExamineRef}
-                        formItemLayout={formItemLayout}
-                        forminladeLayout={forminladeLayout}
-                        check={check}
-                        curruserinfo={curruserinfo}
-                        ChangeFiles={newvalue => {
-                          setFiles(newvalue);
-                        }}
-                        ChangeResult={newvalue => {
-                          setResultsecond(newvalue);
-                        }}
-                        resultsecond={resultsecond}
-                          location={location}
-                      />
-                    </Panel>
-                  )}
-                {// 自动化科专责确认编辑页
-                  flowNodeName === '自动化科专责确认' && (
-                    <Panel header="自动化科专责确认" key="ConfirmChild">
-                      <ConfirmChild
-                        ref={ConfirmRef}
-                        formItemLayout={formItemLayout}
-                        forminladeLayout={forminladeLayout}
-                        confirm={confirm}
-                        main={main}
-                        curruserinfo={curruserinfo}
-                        ChangeFiles={newvalue => {
-                          setFiles(newvalue);
-                        }}
-                        ChangeResult={newvalue => {
-                          setResultconfirm(newvalue);
-                        }}
-                          location={location}
-                      />
-                    </Panel>
-                  )}
-
-                {troubleFlowNodeRows &&
-                  troubleFlowNodeRows.map((obj, index) => {
-                    // panel详情组件
-                    const Paneldesmap = new Map([
-                      ['故障登记', <RegisterQuery key={1} info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                      ['系统运维商审核', <ExamineQuery key={2} info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                      ['系统运维商处理', <HandleQuery key={3} info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                      ['系统运维商确认总结', <SummaryQuery key={4} info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} showFilelist={troubleFlowNodeRows[1]} showFilelist2={troubleFlowNodeRows[2]} />],
-                      ['自动化科业务负责人审核', <ExamineSecondQuery key={5} info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                      ['自动化科专责确认', <ConfirmQuery key={6} info={obj} maindata={main} />],
-                    ]);
-                    return (
-                      <Panel Panel header={obj.fnname} key={index.toString()}>
-                        {Paneldesmap.get(obj.fnname)}
+                        />
                       </Panel>
-                    );
-                  })}
-              </Collapse>
+                    )}
+                  {// 自动化科业务负责人审核编辑页
+                    flowNodeName === '自动化科业务负责人审核' && (
+                      <Panel header="自动化科业务负责人审核" key="ExamineSecondChild">
+                        <ExamineSecondChild
+                          ref={ExamineRef}
+                          formItemLayout={formItemLayout}
+                          forminladeLayout={forminladeLayout}
+                          check={check}
+                          curruserinfo={curruserinfo}
+                          ChangeFiles={newvalue => {
+                            setFiles(newvalue);
+                          }}
+                          ChangeResult={newvalue => {
+                            setResultsecond(newvalue);
+                          }}
+                          resultsecond={resultsecond}
+                          location={location}
+                          // createQualityByMainId={createQualityByMainId}
+                        />
+                      </Panel>
+                    )}
+                  {// 自动化科专责确认编辑页
+                    flowNodeName === '自动化科专责确认' && (
+                      <Panel header="自动化科专责确认" key="ConfirmChild">
+                        <ConfirmChild
+                          ref={ConfirmRef}
+                          formItemLayout={formItemLayout}
+                          forminladeLayout={forminladeLayout}
+                          confirm={confirm}
+                          main={main}
+                          curruserinfo={curruserinfo}
+                          ChangeFiles={newvalue => {
+                            setFiles(newvalue);
+                          }}
+                          ChangeResult={newvalue => {
+                            setResultconfirm(newvalue);
+                          }}
+                          location={location}
+                        />
+                      </Panel>
+                    )}
+
+                  {troubleFlowNodeRows &&
+                    troubleFlowNodeRows.map((obj, index) => {
+                      // panel详情组件
+                      const Paneldesmap = new Map([
+                        ['故障登记', <RegisterQuery key={1} info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                        ['系统运维商审核', <ExamineQuery key={2} info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                        ['系统运维商处理', <HandleQuery key={3} info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                        ['系统运维商确认总结', <SummaryQuery key={4} info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} showFilelist={troubleFlowNodeRows[1]} showFilelist2={troubleFlowNodeRows[2]} />],
+                        ['自动化科业务负责人审核', <ExamineSecondQuery key={5} info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                        ['自动化科专责确认', <ConfirmQuery key={6} info={obj} maindata={main} />],
+                      ]);
+                      return (
+                        <Panel Panel header={obj.fnname} key={index.toString()}>
+                          {Paneldesmap.get(obj.fnname)}
+                        </Panel>
+                      );
+                    })}
+                </Collapse>
               </FaultEditContext.Provider>
             )}
           </Spin>

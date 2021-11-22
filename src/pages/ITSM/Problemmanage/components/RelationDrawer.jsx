@@ -82,6 +82,13 @@ function RelationDrawer(props) {
         payload: { no, status: status === undefined ? '' : status, pageIndex, pageSize },
       })
     }
+
+    if (orderTypeSuf === 'release') {
+      dispatch({
+        type: 'relationorder/fetchtrouble',
+        payload: { no, status: status === undefined ? '' : status, pageIndex, pageSize },
+      })
+    }
   }
 
   const handleSumit = () => {

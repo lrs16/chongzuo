@@ -332,6 +332,7 @@ const Register = forwardRef((props, ref) => {
   // }
 
   const assessmentObject = getTypebyTitle('考核对象');
+  const assessmentSource = getTypebyTitle('考核来源');
 
   useEffect(() => {
     if (files && files.length > 0) {
@@ -697,6 +698,32 @@ const Register = forwardRef((props, ref) => {
                 getPopupContainer={e => e.parentNode}
               >
                 {(assessmentObject || []).map(obj => [
+                  <Option key={obj.dict_code} value={obj.dict_code}>
+                    {obj.title}
+                  </Option>,
+                ])}
+              </Select>,
+            )}
+          </Form.Item>
+        </Col>
+
+        <Col span={8}>
+          <Form.Item label="考核来源">
+            {getFieldDecorator('source', {
+              rules: [
+                {
+                  required,
+                  message: '请选择考核来源',
+                },
+              ],
+              initialValue: register.source,
+            })(
+              <Select
+                placeholder="请选择"
+                disabled={search || noEdit}
+                getPopupContainer={e => e.parentNode}
+              >
+                {(assessmentSource || []).map(obj => [
                   <Option key={obj.dict_code} value={obj.dict_code}>
                     {obj.title}
                   </Option>,

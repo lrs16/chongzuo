@@ -306,6 +306,12 @@ function QueryList(props) {
       width: 200,
     },
     {
+      title: '当前环节处理人',
+      dataIndex: 'taskUser',
+      key: 'taskUser',
+      width: 150,
+    },
+    {
       title: '故障名称',
       dataIndex: 'title',
       key: 'title',
@@ -1306,6 +1312,7 @@ function QueryList(props) {
   // 设置初始值
   const record = {
     checkUnit: '',
+    taskUser:'',
     checkUser: '',
     confirmUnit: '',
     createTime: '',
@@ -1706,6 +1713,17 @@ function QueryList(props) {
                 )}
               </Form.Item>
             </Col>
+
+            <Col span={8}>
+                <Form.Item label='当前环节处理人'>
+                  {
+                    getFieldDecorator('taskUser',{
+                      initialValue:cacheinfo.taskUser
+                    })(<Input />)
+                  }
+
+                </Form.Item>
+              </Col>
 
             <Col span={8}>
               <Form.Item label="工单状态">

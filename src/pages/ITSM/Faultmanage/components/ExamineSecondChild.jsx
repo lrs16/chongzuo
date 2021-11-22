@@ -8,6 +8,7 @@ import {
   DatePicker,
   Radio,
   Select,
+  Button,
 } from 'antd';
 import SysUpload from '@/components/SysUpload'; // 附件下载组件
 import SysDict from '@/components/SysDict';
@@ -17,7 +18,16 @@ const { Option } = Select;
 const RadioGroup = Radio.Group;
 
 const ExamineSecondChild = React.forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, check, curruserinfo, ChangeFiles, ChangeResult, location } = props;
+  const {
+    formItemLayout,
+    forminladeLayout,
+    check,
+    curruserinfo,
+    ChangeFiles,
+    ChangeResult,
+    location,
+    // createQualityByMainId
+  } = props;
   const { getFieldDecorator, setFieldsValue } = props.form;
   const attRef = useRef();
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
@@ -161,6 +171,10 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
             }
           </Form.Item>
         </Col>
+
+        {/* <Col span={8}>
+          <Button onClick={createQualityByMainId}>发起绩效考核</Button>
+        </Col> */}
 
         <Col span={24}>
           <Form.Item label="是否影响计量主站" {...forminladeLayout}>

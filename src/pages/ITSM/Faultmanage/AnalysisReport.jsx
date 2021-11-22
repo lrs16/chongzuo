@@ -193,6 +193,7 @@ function AnalysisReport(props) {
           <Popconfirm
             title='确定提交报告吗？提交后不可再编辑报告'
             onConfirm={() => handleSubmit()}
+            disabled={sign}
           >
             <Button
               type='primary'

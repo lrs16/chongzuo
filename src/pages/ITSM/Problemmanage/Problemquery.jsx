@@ -207,6 +207,12 @@ function Besolved(props) {
       align: 'center',
     },
     {
+      title: '当前环节处理人',
+      dataIndex: 'taskUser',
+      key: 'taskUser',
+      width: 150,
+    },
+    {
       title: '问题名称',
       dataIndex: 'title',
       key: 'title',
@@ -944,6 +950,7 @@ function Besolved(props) {
   const record = {
     no: '',
     currentNode,
+    taskUser:'',
     title: '',
     confirmUser: '',
     source: '',
@@ -1360,6 +1367,17 @@ function Besolved(props) {
               </Col>
 
               <Col span={8}>
+                <Form.Item label='当前环节处理人'>
+                  {
+                    getFieldDecorator('taskUser',{
+                      initialValue:cacheinfo.taskUser
+                    })(<Input />)
+                  }
+
+                </Form.Item>
+              </Col>
+
+              <Col span={8}>
                 <Form.Item label="处理状态">
                   {getFieldDecorator('timeStatus', {
                     initialValue: cacheinfo.timeStatus,
@@ -1500,7 +1518,7 @@ function Besolved(props) {
               </Col>
             </>
             {expand === false && (
-              <Col span={8}>
+              <Col span={24} style={{ textAlign: 'right' }}>
                 <Button type="primary" onClick={() => handleSearch('search')}>
                   查询
                 </Button>
