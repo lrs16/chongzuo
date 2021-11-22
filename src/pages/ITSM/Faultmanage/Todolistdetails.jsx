@@ -2,7 +2,17 @@ import React, { useState, useRef, useEffect } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
-import { Card, Form, Button, Steps, Collapse, Popconfirm, message, Spin } from 'antd';
+import {
+  Card,
+  Form,
+  Button,
+  Steps,
+  Collapse,
+  Popconfirm,
+  message,
+  Spin,
+  Modal
+} from 'antd';
 
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import FaultEditContext from '@/layouts/MenuContext';
@@ -26,7 +36,7 @@ import SummaryQuery from './components/SummaryQuery'; // 系统运维商总结
 import ExamineSecondQuery from './components/ExamineSecondQuery'; // 自动化科业务负责人审核
 import ConfirmQuery from './components/ConfirmQuery'; // 自动化科专责确认
 
-import TimeoutModal from '../components/TimeoutModal';                // 超时信息填写
+import TimeoutModal from '../components/TimeoutModal';
 import { judgeTimeoutStatus, saveTimeoutMsg } from '../services/api'; // 超时接口
 
 // 关联工单
@@ -113,6 +123,8 @@ function Todolistdetails(props) {
 
   const [modalrollback, setModalRollBack] = useState(false);   // 回退信息modle
   const [faultUploadStatus, setFaultUploadStatus] = useState(false); // 附件状态
+
+  const [createQualityvisible, setcreateQualityvisible] = useState(false);
 
   const RegisterRef = useRef(); // 故障登记
   const ExamineRef = useRef(); // 系统运维商审核  自动化科业务负责人审核
@@ -873,11 +885,32 @@ function Todolistdetails(props) {
   }, [location.state])
 
   //  发起服务绩效
-  // const createQualityByMainId = () => {
-  //   return dispatch({
-  //     type
-  //   })
-  // }
+  const createQualityByMainId = (status) => {
+    let obj = {};
+    if(status) {
+      obj = {
+        mainId,
+        status,
+      }
+    } else {
+      obj = {
+        mainId,
+      }
+    }
+    return dispatch({
+      type: 'faultcount/createQualityByMainId',
+      payload: {
+        ...obj
+      }
+    }).then(res => {
+      if (res.code === 200) {
+        message.success('发起服务绩效考核成功')
+        setcreateQualityvisible(false);
+      } else {
+        setcreateQualityvisible(true);
+      }
+    })
+  }
   return (
     <PageHeaderWrapper
       extra={
@@ -1134,7 +1167,7 @@ function Todolistdetails(props) {
                           }}
                           resultsecond={resultsecond}
                           location={location}
-                          // createQualityByMainId={createQualityByMainId}
+                          createQualityByMainId={() => createQualityByMainId('')}
                         />
                       </Panel>
                     )}
@@ -1252,6 +1285,16 @@ function Todolistdetails(props) {
         ChangeVisible={v => setModalRollBack(v)}
         rollbackSubmit={v => postRollBackmsg(v)}
       />
+
+      <Modal
+        visible={createQualityvisible}
+        onOk={() => createQualityByMainId('yes')}
+        onCancel={() => setcreateQualityvisible(false)}
+      >
+        <p>该故障单已发起过服务绩效考核，是否需要再次发起服务绩效考核？</p>
+      </Modal>
+
+
     </PageHeaderWrapper>
   );
 }

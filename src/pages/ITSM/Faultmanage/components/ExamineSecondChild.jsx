@@ -26,7 +26,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
     ChangeFiles,
     ChangeResult,
     location,
-    // createQualityByMainId
+    createQualityByMainId
   } = props;
   const { getFieldDecorator, setFieldsValue } = props.form;
   const attRef = useRef();
@@ -172,9 +172,9 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-        {/* <Col span={8}>
-          <Button onClick={createQualityByMainId}>发起绩效考核</Button>
-        </Col> */}
+        <Col span={8}>
+          <Button onClick={createQualityByMainId} type='primary'>发起绩效考核</Button>
+        </Col>
 
         <Col span={24}>
           <Form.Item label="是否影响计量主站" {...forminladeLayout}>

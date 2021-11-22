@@ -4,7 +4,8 @@ import {
     querycountdownload,
     addTroubleReport,
     saveTroubleReport,
-    submitTroubleReport
+    submitTroubleReport,
+    createQualityByMainId
 } from '../services/api';
 
 export default {
@@ -53,6 +54,10 @@ export default {
       *submitReport({ payload }, { call }) {
         return yield call(submitTroubleReport, payload);
       },
+
+      *createQualityByMainId({ payload }, { call }) {
+        return yield call(createQualityByMainId, payload)
+      }
     },
 
     reducers: {

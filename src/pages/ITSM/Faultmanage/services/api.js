@@ -317,3 +317,12 @@ export async function submitTroubleReport(params) {
     requestType:'form'
   })
 }
+
+//  发起服务绩效
+export async function createQualityByMainId(params) {
+  return request(`/trouble/flow/createQualityByMainId`,{
+    method:'POST',
+    data:params,
+    requestType:'form'
+  })
+}
