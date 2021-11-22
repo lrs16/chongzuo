@@ -37,7 +37,7 @@ function SummaryQuery(props) {
                 </Col>
                 <Col span={8}>
                   <Form.Item label="实际上传时间">
-                    <Input defaultValue={info.finishAnalysisAttachments === null || info.finishAnalysisAttachments === '[]' ? '' : (JSON.parse(info.finishAnalysisAttachments))[0].nowtime} disabled />
+                    <Input defaultValue={info.finishPracticeTime || ''} disabled />
                   </Form.Item>
                 </Col>
               </>

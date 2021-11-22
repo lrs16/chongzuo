@@ -227,14 +227,15 @@ const SummaryChild = React.forwardRef((props, ref) => {
                   })(<DatePicker showTime disabled format="YYYY-MM-DD HH:mm:ss" />)}
                 </Form.Item>
               </Col>
-
+              
               <Col span={8}>
-                <Form.Item label="实际上传时间">
+                <Form.Item label="实际上传时间" >
                   {getFieldDecorator('finishPracticeTime', {
-                    initialValue: (finish.finishAnalysisAttachments !== undefined && finish.finishAnalysisAttachments !== null && finish.finishAnalysisAttachments !== '[]') ? (moment((JSON.parse(finish.finishAnalysisAttachments))[0].nowtime) || '[]') : ''
+                    initialValue: (tododetailslist && tododetailslist.finishPracticeTime) ? moment(tododetailslist.finishPracticeTime) : (finish.finishPracticeTime ? moment(finish.finishPracticeTime) : '')
                   })(<DatePicker showTime disabled format="YYYY-MM-DD HH:mm:ss" />)}
                 </Form.Item>
               </Col>
+
             </>
           )
         }

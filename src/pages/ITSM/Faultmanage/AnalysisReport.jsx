@@ -11,7 +11,8 @@ import {
   DatePicker,
   Input,
   Card,
-  message
+  message,
+  Popconfirm
 } from 'antd';
 
 const formItemLayout = {
@@ -64,7 +65,7 @@ function AnalysisReport(props) {
     const tobeSave = (fileid, filename) => {
       const formValues = {
         ...tobeForm,
-        finishPracticeTime: tobeForm.finishPracticeTime ? moment(tobeForm.finishPracticeTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        finishPracticeTime: tobeForm.finishPracticeTime ? moment(tobeForm.finishPracticeTime).format('YYYY-MM-DD HH:mm:ss') : moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
         finishRequiredTime: tobeForm.finishRequiredTime ? moment(tobeForm.finishRequiredTime).format('YYYY-MM-DD HH:mm:ss') : '',
         finishTime: tobeForm.finishTime ? moment(tobeForm.finishTime).format('YYYY-MM-DD HH:mm:ss') : '',
         taskId: id,
@@ -110,7 +111,7 @@ function AnalysisReport(props) {
           type: 'faultcount/saveReport',
           payload: {
             ...values,
-            registerOccurTime: values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
+            occurTime: values.occurTime.format('YYYY-MM-DD HH:mm:ss'),
             registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
             handleStartTime: values.handleStartTime.format('YYYY-MM-DD HH:mm:ss'),
             handleEndTime: values.handleEndTime.format('YYYY-MM-DD HH:mm:ss'),
@@ -143,7 +144,7 @@ function AnalysisReport(props) {
       type: 'faultcount/saveReport',
       payload: {
         ...values,
-        registerOccurTime: values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
+        occurTime: values.occurTime.format('YYYY-MM-DD HH:mm:ss'),
         registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
         handleStartTime: values.handleStartTime.format('YYYY-MM-DD HH:mm:ss'),
         handleEndTime: values.handleEndTime.format('YYYY-MM-DD HH:mm:ss'),
@@ -152,7 +153,7 @@ function AnalysisReport(props) {
       }
     }).then(res => {
       if (res.code === 200) {
-          getDetail()
+        getDetail()
         message.success(res.msg)
       } else {
         message.error(res.msg)
@@ -189,14 +190,19 @@ function AnalysisReport(props) {
           >
             保 存
           </Button>
-          <Button
-            type='primary'
-            style={{ marginRight: 8 }}
-            onClick={() => handleSubmit()}
-            disabled={sign}
+          <Popconfirm
+            title='确定提交报告吗？提交后不可再编辑报告'
+            onConfirm={() => handleSubmit()}
           >
-            提交报告
-          </Button>
+            <Button
+              type='primary'
+              style={{ marginRight: 8 }}
+              disabled={sign}
+            >
+              提交报告
+            </Button>
+          </Popconfirm>
+
           <Button type='default' onClick={handleBack}>
             返 回
           </Button>
@@ -213,7 +219,7 @@ function AnalysisReport(props) {
                     {
                       getFieldDecorator('title', {
                         initialValue: data.title
-                      })(<Input disabled/>)
+                      })(<Input disabled />)
                     }
                   </Form.Item>
                 </Col>
@@ -231,8 +237,8 @@ function AnalysisReport(props) {
                 <Col span={8}>
                   <Form.Item label='故障发生时间'>
                     {
-                      getFieldDecorator('registerOccurTime', {
-                        initialValue: moment(data.registerOccurTime || Date.now())
+                      getFieldDecorator('occurTime', {
+                        initialValue: moment(data.occurTime || Date.now())
                       })(<DatePicker format="YYYY-MM-DD HH:mm:ss" disabled />)
                     }
                   </Form.Item>
@@ -269,7 +275,7 @@ function AnalysisReport(props) {
                           },
                         ],
                         initialValue: data.contactPerson
-                      })(<Input disabled={sign}/>)
+                      })(<Input disabled={sign} />)
                     }
                   </Form.Item>
                 </Col>
@@ -279,7 +285,7 @@ function AnalysisReport(props) {
                     {
                       getFieldDecorator('type', {
                         initialValue: data.type
-                      })(<Input disabled/>)
+                      })(<Input disabled />)
                     }
                   </Form.Item>
                 </Col>
@@ -295,7 +301,7 @@ function AnalysisReport(props) {
                           },
                         ],
                         initialValue: data.systemName
-                      })(<Input disabled={sign}/>)
+                      })(<Input disabled={sign} />)
                     }
                   </Form.Item>
                 </Col>
@@ -315,7 +321,7 @@ function AnalysisReport(props) {
                     {
                       getFieldDecorator('level', {
                         initialValue: data.level
-                      })(<Input disabled/>)
+                      })(<Input disabled />)
                     }
                   </Form.Item>
                 </Col>
@@ -331,7 +337,7 @@ function AnalysisReport(props) {
                           },
                         ],
                         initialValue: data.scopeContent
-                      })(<TextArea disabled={sign}/>)
+                      })(<TextArea disabled={sign} />)
                     }
                   </Form.Item>
                 </Col>
@@ -367,7 +373,7 @@ function AnalysisReport(props) {
                           },
                         ],
                         initialValue: data.handleContent
-                      })(<TextArea disabled={sign}/>)
+                      })(<TextArea disabled={sign} />)
                     }
                   </Form.Item>
                 </Col>
@@ -397,7 +403,7 @@ function AnalysisReport(props) {
                     {
                       getFieldDecorator('handleStartTime', {
                         initialValue: moment(data.handleStartTime || new Date())
-                      })(<DatePicker disabled />)
+                      })(<DatePicker disabled format="YYYY-MM-DD HH:mm:ss" />)
                     }
                   </Form.Item>
                 </Col>
@@ -407,7 +413,7 @@ function AnalysisReport(props) {
                     {
                       getFieldDecorator('handleEndTime', {
                         initialValue: moment(data.handleEndTime || new Date())
-                      })(<DatePicker disabled />)
+                      })(<DatePicker disabled format="YYYY-MM-DD HH:mm:ss" />)
                     }
                   </Form.Item>
                 </Col>
