@@ -1406,107 +1406,7 @@ export default {
                   routes: [
                     {
                       path: '/automation',
-                      // redirect: '/automation/STT/hostlist',
-                      // redirect: '/automation/automatedjob/jobmanagement/jobconfig'
                       redirect: '/automation/objectmanage/equip'
-                    },
-                    // {
-                    //   path: '/automation/monitor',
-                    //   name: '作业总览',
-                    //   icon: 'dashboard',
-                    //   component: './Automation/Monitor',
-                    // },
-                    {
-                      path: '/automation/opsscene',
-                      name: '运维场景',
-                      icon: 'control',
-                      component: './Automation/Scenarios/OpsScene',
-                    },
-                    {
-                      path: '/automation/opsscene/workflow',
-                      name: '脚本编排',
-                      icon: 'control',
-                      hideInMenu: true,
-                      component: './Automation/Scenarios/WorkFlow',
-                    },
-                    {
-                      path: '/automation/opsscene/jobexecut',
-                      name: '脚本执行历史',
-                      icon: 'profile',
-                      hideInMenu: true,
-                      component: './Automation/Scenarios/JobExecut',
-                    },
-                    {
-                      path: '/automation/jobexecut/viewjob/:id',
-                      name: '脚本详情',
-                      hideInMenu: true,
-                      component: './Automation/Scenarios/ViewJob',
-                    },
-                    // {
-                    //   path: '/automation/timedjob',
-                    //   name: '定时作业',
-                    //   icon: 'history',
-                    //   dynamic: true,
-                    //   component: './Automation/TimedJob',
-                    // },
-                    {
-                      path: '/automation/scriptmanage',
-                      name: '脚本管理',
-                      icon: 'database',
-                      component: './Automation/ScriptManage',
-                    },
-                    // {
-                    //   path: '/automation/resourcemanage',
-                    //   name: '资源管理',
-                    //   icon: 'cloud-server',
-                    //   component: './Automation/ResourceManage',
-                    // },
-                    {
-                      path: '/automation/STT',
-                      name: '软件启停',
-                      icon: 'cloud-server',
-                      routes: [
-                        {
-                          path: '/automation/STT',
-                          redirect: '/automation/STT/hostlist',
-                        },
-                        {
-                          path: '/automation/STT/hostlist',
-                          name: '主机管理',
-                          icon: 'cloud-server',
-                          component: './Automation/SoftTT/HostManage',
-                        },
-                        {
-                          path: '/automation/STT/soft',
-                          name: '软件管理',
-                          icon: 'cloud-server',
-                          component: './Automation/SoftTT/SoftManage',
-                        },
-                        {
-                          path: '/automation/STT/process',
-                          name: '进程管理',
-                          icon: 'cloud-server',
-                          component: './Automation/SoftTT/ProcessManage',
-                        },
-                        {
-                          path: '/automation/STT/softexetute',
-                          name: '主机操作',
-                          icon: 'cloud-server',
-                          component: './Automation/SoftTT/SoftExetute',
-                        },
-                        {
-                          path: '/automation/STT/execlog',
-                          name: '执行日志',
-                          icon: 'cloud-server',
-                          component: './Automation/SoftTT/ExeclogView',
-                        },
-                        {
-                          path: '/automation/STT/commandconfigurate',
-                          name: '命令配置',
-                          icon: 'cloud-server',
-                          component: './Automation/SoftTT/CommandConfigurate',
-                        },
-                      ],
                     },
                     {
                       path: '/automation/objectmanage',
@@ -1719,12 +1619,6 @@ export default {
                       path: '/monitormanage',
                       redirect: '/monitormanage/measurmonitor',
                     },
-                    // {
-                    //   path: '/monitormanage/home',
-                    //   name: '监控台',
-                    //   icon: 'cloud-server',
-                    //   component: './Monitormanage/MonitorStation',
-                    // },
                     {
                       path: '/monitormanage/measurmonitor',
                       name: '计量业务监控',
@@ -1793,29 +1687,7 @@ export default {
                         },
                       ],
                     },
-                    {
-                      path: '/monitormanage/basicmonitor',
-                      name: '基础平台监测',
-                      icon: 'cloud-server',
-                      routes: [
-                        {
-                          path: '/monitormanage/basicmonitor/host',
-                          name: '主机监测',
-                          component: './Monitormanage/BasicMonitor/Host',
-                        },
-                        {
-                          path: '/monitormanage/basicmonitor/database',
-                          name: '数据库监测',
-                          component: './Monitormanage/BasicMonitor/Database',
-                        },
-                        {
-                          path: '/monitormanage/basicmonitor/:type/detail/:id',
-                          name: '监测详情',
-                          hideInMenu: true,
-                          component: './Monitormanage/BasicMonitor/Detail',
-                        },
-                      ],
-                    },
+
                     {
                       path: '/monitormanage/other',
                       name: '其它监测',
@@ -2012,28 +1884,10 @@ export default {
                       component: './SysManage/DropdownValueset',
                     },
                     {
-                      // 采控管理
-                      path: '/sysmanage/agent',
-                      name: '采控管理',
-                      icon: 'smile',
-                      routes: [
-                        {
-                          path: '/sysmanage/agent/monitorConfig',
-                          name: '监控配置',
-                          icon: 'smile',
-                          component: './collection/monitorConfig',
-                        },
-                      ],
-                    },
-                    {
                       path: '/sysmanage/processmanagement',
                       name: '流程管理',
                       icon: 'smile',
                       routes: [
-                        // {
-                        //   path:'/sysmanage/processmanagement',
-                        //   redirect:'/sysmanage/processmanagement/processmodel'
-                        // },
                         {
                           path: '/sysmanage/processmanagement/processmodel',
                           name: '流程模型',

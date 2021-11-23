@@ -64,9 +64,7 @@ function BusinessDetail(props) {
   };
 
   const handlemycompleteverify = () => {
-    console.log(user);
     const Arr = info.filter(obj => obj.responsible === user);
-    console.log(Arr);
     if (Arr && Arr.length > 0) {
       const newArr = Arr.map((item) => {
         return item.id

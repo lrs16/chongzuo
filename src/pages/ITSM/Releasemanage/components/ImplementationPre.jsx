@@ -172,7 +172,7 @@ function ImplementationPre(props, ref) {
   return (
     <>
       {alertvisible && (<Alert message={alertmessage.mes} type='warning' showIcon />)}
-      <Row gutter={12} style={{ paddingTop: 24, }}>
+      <Row gutter={12}>
         <Form ref={formRef}>
           <Col span={24}>
             <Form.Item label='实施准备结果' {...forminladeLayout} labelAlign='left'>

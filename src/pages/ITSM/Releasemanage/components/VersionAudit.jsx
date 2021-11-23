@@ -311,6 +311,16 @@ function VersionAudit(props, ref) {
         <Form ref={formRef} {...formItemLayout}>
           {taskName === '版本管理员审核' && (<>
             <Col span={8} >
+              <Form.Item label="版本号">
+                {getFieldDecorator('currentVersion', {
+                  rules: [{ required, message: `版本号不能为空` }],
+                  initialValue: info.mergeOrder ? info.mergeOrder.releaseLevel : '',
+                })(
+                  <Input />
+                )}
+              </Form.Item>
+            </Col>
+            {/* <Col span={8} >
               <Form.Item label="申请发布等级">
                 {getFieldDecorator('releaseLevel', {
                   rules: [{ required, message: `请选择发布等级` }],
@@ -325,7 +335,7 @@ function VersionAudit(props, ref) {
                   </Select>
                 )}
               </Form.Item>
-            </Col>
+            </Col> */}
             <Col span={8}>
               <Form.Item label="发布开始时间">
                 {getFieldDecorator('releaseBeginTime', {
