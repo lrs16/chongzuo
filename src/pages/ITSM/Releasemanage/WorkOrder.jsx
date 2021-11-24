@@ -320,6 +320,7 @@ function WorkOrder(props) {
 
   // 版本管理员审核,科室负责人审核，中心领导审核保存流转
   const saveVersionAudit = () => {
+    const userIds = userlist.map(obj => obj.userId);
     const values = VersionAuditRef.current.getVal();
     dispatch({
       type: 'releasetodo/checkversion',
@@ -334,6 +335,7 @@ function WorkOrder(props) {
         releaseNo: Id,
         buttype,
         taskName,
+        userIds: userIds.join(','),
       },
     });
   }
@@ -353,10 +355,10 @@ function WorkOrder(props) {
             if (err) {
               message.error('请将信息填写完整')
             } else if (taskName !== '中心领导审核') {
-              saveVersionAudit();
               sessionStorage.setItem('flowtype', '1');
+              saveVersionAudit();
               // setUserVisible(true);
-              tosubmit();
+              // tosubmit();
             } else {
               sessionStorage.setItem('flowtype', '1');
               saveVersionAudit();
@@ -380,8 +382,9 @@ function WorkOrder(props) {
     }
   };
 
-  // 发布实施
+  // 发布验证
   const saveracticeDone = () => {
+    const userIds = userlist.map(obj => obj.userId);
     const values = ImplementationRef.current.getVal();
     const { releaseAttaches, releaseLists, practiceTime, practicer, doneDesc, legacyDesc } = values;
     dispatch({
@@ -395,6 +398,7 @@ function WorkOrder(props) {
           practiceDone: { practiceTime: moment(practiceTime).format('YYYY-MM-DD HH:mm:ss'), practicer, doneDesc, legacyDesc },
         },
         buttype,
+        userIds: userIds.join(','),
       },
     });
   }
@@ -410,10 +414,10 @@ function WorkOrder(props) {
           if (err) {
             message.error('请将信息填写完整')
           } else {
-            saveracticeDone();
             sessionStorage.setItem('flowtype', '1');
             // setUserVisible(true);
-            tosubmit();
+            // tosubmit();
+            saveracticeDone();
           }
         })
         break;
@@ -437,6 +441,7 @@ function WorkOrder(props) {
           releaseBizCheck: { practiceTime: moment(practiceTime).format('YYYY-MM-DD HH:mm:ss'), practicer, doneDesc, legacyDesc },
         },
         buttype,
+        userIds: '',
       },
     });
   }
@@ -509,13 +514,15 @@ function WorkOrder(props) {
         },
       });
       // 获取流转用户列表
-      dispatch({
-        type: 'itsmuser/releaseuserlist',
-        payload: {
-          taskId: location.query.taskId,
-          type: '1',
-        },
-      });
+      if (taskName !== '业务复核') {
+        dispatch({
+          type: 'itsmuser/releaseuserlist',
+          payload: {
+            taskId: location.query.taskId,
+            type: '1',
+          },
+        });
+      }
     }
   }, [Id])
 
@@ -574,7 +581,7 @@ function WorkOrder(props) {
           case '中心领导审核':
             VersionAuditSubmit();
             break;
-          case '发布实施':
+          case '发布验证':
             racticeDoneSubmit();
             break;
           case '业务复核':
@@ -700,7 +707,7 @@ function WorkOrder(props) {
               </div>
             </Panel>
           )}
-          {taskName === '发布实施' && info && info.practiceDone && (
+          {taskName === '发布验证' && info && info.practiceDone && (
             <Panel header={taskName} key="form">
               <div style={{ marginTop: 12 }}>
                 <Implementation

@@ -219,7 +219,7 @@ function ToDodetails(props) {
           删除
         </Button>
       )}
-      {!saved && taskName !== '出厂测试' && taskName !== '发布实施' && (
+      {!saved && taskName !== '出厂测试' && taskName !== '发布实施' && taskName !== '业务复核' && (
         <Button type="danger" ghost style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => { handleGoback() }} disabled={uploadstatus || allloading}>
           回退
         </Button>

@@ -27,7 +27,7 @@ export default {
       const summaryres = yield call(analysisSummary, payload);
       const platres = yield call(taskStatistical, { ...payload, taskName: '平台验证' });
       const bizres = yield call(taskStatistical, { ...payload, taskName: '业务验证' });
-      const doneres = yield call(taskStatistical, { ...payload, taskName: '发布实施' });
+      const doneres = yield call(taskStatistical, { ...payload, taskName: '发布验证' });
       const bizcheckres = yield call(taskStatistical, { ...payload, taskName: '业务复核' });
       yield put({
         type: 'save',

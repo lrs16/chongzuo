@@ -75,6 +75,29 @@ function BusinessReview(props, ref) {
 
   const docunitmap = getTypebyId(1289);    // 出具文档单位
 
+  // 数组去重
+  const uniqueName = (arr) => {
+    const res = new Map();
+    return arr.filter((item) => !res.has(item) && res.set(item, 1))
+  }
+  const indexVal = () => {
+    const Arr = [];
+    const names = info.releaseLists.map(item => {
+      return item.operator;
+    });
+    const nameArr = uniqueName(names);
+    for (let i = 0; i < nameArr.length; i += 1) {
+      const textVal = [];
+      for (let j = 0; j < info.releaseLists.length; j += 1) {
+        if (info.releaseLists[j].operator === nameArr[i]) {
+          const vote = `序号${j + 1}. 复核待办里面的是“${info.releaseLists[j].passTest}”`;
+          textVal.push(vote);
+        }
+      }
+      Arr.push(`业务复核人${nameArr[i]}：${textVal.join(',')}`)
+    }
+    return Arr.join('\n')
+  }
   return (
     <Row gutter={12} style={{ paddingTop: 24, }}>
       {alertvisible && (<Alert message={alertmessage.mes} type='warning' showIcon style={{ marginBottom: 12 }} />)}
@@ -87,7 +110,7 @@ function BusinessReview(props, ref) {
           <Form.Item label="复核说明" {...formuintLayout} labelAlign='left'>
             {getFieldDecorator('checkComments', {
               rules: [{ required, message: `请填写复核说明` }],
-              initialValue: info.releaseBizCheck && info.releaseBizCheck.checkComments || '',
+              initialValue: info.releaseBizCheck && info.releaseBizCheck.checkComments || indexVal(),
             })(<TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />)}
           </Form.Item>
         </Col>

@@ -7,6 +7,7 @@ import DocumentAtt from './DocumentAtt';
 import EditeTable from './EditeTable';
 import TimeoutModal from '../../components/TimeoutModal';
 import { saveTimeoutMsg } from '../../services/api';
+import { saveVersion } from '../services/api';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -301,24 +302,56 @@ function VersionAudit(props, ref) {
     }
   }, [info]);
 
+  const VersionChange = (versionNo, releaseNo) => {
+    if (!versionNo) {
+      message.error('版本号不能为空')
+    } else {
+      saveVersion({ versionNo, releaseNo }).then(res => {
+        if (res.code !== 200) {
+          message.error(res.msg)
+        }
+      })
+    }
+  }
+
   return (
     <>
+
       {info.releaseMains && info.releaseMains.length === 1 && alertvisible && (<Alert message={alertmessage.mes} type='warning' showIcon style={{ marginBottom: 12 }} />)}
       {info.releaseMains && info.releaseMains.length > 1 && (
-        <Alert message='已合并工单' description={descriptionopion} type='info' />
+        <Alert message='已合并工单' description={descriptionopion} type='info' style={{ marginBottom: 24 }} />
       )}
-      <Row gutter={12} style={{ paddingTop: 24, }}>
+      <Row gutter={12}>
         <Form ref={formRef} {...formItemLayout}>
           {taskName === '版本管理员审核' && (<>
-            <Col span={8} >
-              <Form.Item label="版本号">
-                {getFieldDecorator('currentVersion', {
-                  rules: [{ required, message: `版本号不能为空` }],
-                  initialValue: info.mergeOrder ? info.mergeOrder.releaseLevel : '',
-                })(
-                  <Input />
-                )}
-              </Form.Item>
+            <Col span={info.releaseMains && info.releaseMains.length > 1 ? 24 : 8} >
+              <Row gutter={24}>
+                {info.releaseMains && info.releaseMains.map((obj) => {
+                  return (
+                    <>
+                      {info.releaseMains.length > 1 ? (
+                        <Col span={8} style={{ marginBottom: 24 }}>
+                          <Input
+                            defaultValue={obj.currentVersion}
+                            addonBefore={`工单${obj.releaseNo}版本号：`}
+                            onChange={(e) => VersionChange(e.target.value, obj.releaseNo)} />
+                        </Col>
+                      ) : (
+                        <Col span={24}>
+                          <Form.Item label='版本号' labelAlign='right'>
+                            {getFieldDecorator('currentVersion', {
+                              rules: [{ required, message: `版本号不能为空` }],
+                              initialValue: obj.currentVersion,
+                            })(
+                              < Input onChange={(e) => VersionChange(e.target.value, obj.releaseNo)} />
+                            )}
+                          </Form.Item>
+                        </Col>
+                      )}
+                    </>
+                  )
+                })}
+              </Row>
             </Col>
             {/* <Col span={8} >
               <Form.Item label="申请发布等级">
@@ -365,6 +398,7 @@ function VersionAudit(props, ref) {
                 )}
               </Form.Item>
             </Col>
+
           </>)}
           {(taskName === '科室负责人审核' || taskName === '中心领导审核') && (
             <>
@@ -438,9 +472,9 @@ function VersionAudit(props, ref) {
             />
             <Form.Item wrapperCol={{ span: 24 }}>
               {getFieldDecorator('releaseAttaches', {
-                rules: [{ required, message: '请上传附件' }, {
-                  validator: handleAttValidator
-                }],
+                // rules: [{ required, message: '请上传附件' }, {
+                //   validator: handleAttValidator
+                // }],
                 initialValue: info.releaseAttaches,
               })(<></>)}
             </Form.Item>

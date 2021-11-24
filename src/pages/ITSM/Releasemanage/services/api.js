@@ -55,7 +55,7 @@ export async function savereleaseBizValid(params) {
   });
 }
 
-// 发布实施准备保存
+// 发布验证准备保存
 export async function savePracticePre(params) {
   return request(`/release/flow/savePracticePre`, {
     method: 'POST',
@@ -352,5 +352,14 @@ export async function repoList(params) {
     method: 'POST',
     data: JSON.stringify(params),
     requestType: 'formjosn',
+  });
+}
+
+// 修改版本号
+export async function saveVersion(params) {
+  return request(`/release/from/saveVersion`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
   });
 }

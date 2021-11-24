@@ -87,7 +87,7 @@ export default {
           ['版本管理员审核', response.data.checkVersionParam],
           ['科室负责人审核', response.data.checkDirectorParam],
           ['中心领导审核', response.data.checkLeaderParam],
-          ['发布实施', response.data.practiceDoneParam],
+          ['发布验证', response.data.practiceDoneParam],
           ['业务复核', response.data.bizCheckParam],
         ]);
         yield put({
@@ -374,7 +374,7 @@ export default {
     // },
 
     // 版本管理员审核，科室负责人审核,中心领导审核
-    * checkversion({ payload: { values, releaseAttaches, buttype, releaseNo, taskName, } }, { call, put }) {
+    * checkversion({ payload: { values, releaseAttaches, buttype, releaseNo, taskName, userIds } }, { call, put }) {
       yield put({
         type: 'savestatuse',
         payload: { statuse: -1 },
@@ -449,14 +449,33 @@ export default {
               message.error('操作失败');
             }
           };
+          if (buttype === 'flow' && (taskName === '版本管理员审核' || taskName === '科室负责人审核')) {
+            const tabid = sessionStorage.getItem('tabid');
+            const flowpayload = {
+              taskId: response.data.currentTaskStatus.taskId,
+              type: 1,
+              userIds,
+            };
+            const subres = yield call(flowSubmit, flowpayload);
+            if (subres.code === 200) {
+              message.success('操作成功');
+              router.push({
+                pathname: `/ITSM/releasemanage/to-do`,
+                query: { pathpush: true },
+                state: { cach: false, closetabid: tabid }
+              });
+            } else {
+              message.error('操作失败');
+            }
+          };
         } else {
           message.error(response.msg)
         }
       }
     },
 
-    // 发布实施
-    * racticedone({ payload: { practicedoneparam, buttype } }, { call, put }) {
+    // 发布验证
+    * racticedone({ payload: { practicedoneparam, buttype, userIds } }, { call, put }) {
       yield put({
         type: 'savestatuse',
         payload: { statuse: -1 },
@@ -467,13 +486,32 @@ export default {
         payload: { statuse: response.code },
       });
       if (response.code === 200) {
-        if (buttype === 'save') {
-          message.success('保存成功');
-        };
         yield put({
           type: 'updateinfo',
           payload: { info: response.data.saveRegister, currentTaskStatus: response.data.currentTaskStatus, },
         });
+        if (buttype === 'save') {
+          message.success('保存成功');
+        };
+        if (buttype === 'flow') {
+          const tabid = sessionStorage.getItem('tabid');
+          const flowpayload = {
+            taskId: response.data.currentTaskStatus.taskId,
+            type: 1,
+            userIds,
+          };
+          const subres = yield call(flowSubmit, flowpayload);
+          if (subres.code === 200) {
+            message.success('操作成功');
+            router.push({
+              pathname: `/ITSM/releasemanage/to-do`,
+              query: { pathpush: true },
+              state: { cach: false, closetabid: tabid }
+            });
+          } else {
+            message.error('操作失败');
+          }
+        }
       } else {
         message.error(response.msg)
       };

@@ -180,13 +180,13 @@ function ReleseList(props) {
       key: 'developer',
       width: 100,
     },
-    // {
-    //   title: '操作人员',
-    //   dataIndex: 'operator',
-    //   key: 'operator',
-    //   align: 'center',
-    //   width: 100,
-    // },
+    {
+      title: '操作人',
+      dataIndex: 'operator',
+      key: 'operator',
+      align: 'center',
+      width: 100,
+    },
   ];
   return (
     <>
