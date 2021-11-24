@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
-import { Table, Input, Radio, Divider, Row, Col, Button } from 'antd';
-import { releaseListEdit, classifyList, releaseListsDownload } from '../services/api'
+import { Table, Input, Radio, Divider, Row, Col, Button, } from 'antd';
+import { releaseListEdit, classifyList, releaseListsDownload, } from '../services/api'
 import styles from '../index.less';
 
 const { TextArea } = Input;
@@ -31,7 +31,7 @@ function BusinessEditTable(props) {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRecords, setSelectedRecords] = useState([]);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 2 });
-
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     if (dataSource && dataSource.length > 0) {
@@ -245,8 +245,8 @@ function BusinessEditTable(props) {
     },
     {
       title: '验证意见',
-      dataIndex: 'verifyComment',
-      key: 'verifyComment',
+      dataIndex: 'operat',
+      key: 'operat',
       fixed: 'right',
       width: 200,
       render: (text, record) => {
@@ -267,14 +267,16 @@ function BusinessEditTable(props) {
       }
     },
   ];
-  const practicedone = columns.filter(item => item.key !== 'verifyStatus');
 
-  const sclicecolumns = (arr) => {
-    const newarr = arr.slice(0);
-    newarr.pop();
-    return newarr;
+  const sclicecolumns = () => {
+    if (type === '发布实施') {
+      const practicedone = columns.filter(item => item.key !== 'verifyStatus');
+      const newarr = practicedone.slice(0);
+      newarr.pop();
+      return newarr;
+    }
+    return columns
   }
-  const practicedonecolumns = sclicecolumns(practicedone);
 
   return (
     <>
@@ -295,7 +297,7 @@ function BusinessEditTable(props) {
 
       <Table
         rowSelection={rowSelection}
-        columns={type === '发布实施' ? practicedonecolumns : columns}
+        columns={sclicecolumns()}
         dataSource={data}
         bordered
         size='middle'

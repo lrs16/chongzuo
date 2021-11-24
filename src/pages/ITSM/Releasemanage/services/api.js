@@ -348,7 +348,7 @@ export async function exportReleaseOrder(params) {
 
 // 发布库列表
 export async function repoList(params) {
-  return request(`http://172.16.10.132:9901/release/repo/list`, {
+  return request(`/release/repo/list`, {
     method: 'POST',
     data: JSON.stringify(params),
     requestType: 'formjosn',
@@ -358,6 +358,15 @@ export async function repoList(params) {
 // 修改版本号
 export async function saveVersion(params) {
   return request(`/release/from/saveVersion`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 发起服务绩效 /release/external/releaseToQuality
+export async function releaseToQuality(params) {
+  return request(`/release/external/releaseToQuality`, {
     method: 'POST',
     data: params,
     requestType: 'form',

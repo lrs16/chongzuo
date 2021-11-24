@@ -5,7 +5,7 @@ import { Button, message, Card, Popconfirm } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import EditContext from '@/layouts/MenuContext';
 import BusinessEditTable from './components/BusinessEditTable';
-import { completeVerify } from './services/api';
+import { completeVerify, releaseToQuality } from './services/api';
 
 function BusinessDetail(props) {
   const { dispatch, info, loading, taskName, location } = props;
@@ -15,6 +15,7 @@ function BusinessDetail(props) {
   const [runpath, setRunpath] = useState('');
   const [selectedRecords, setSelectedRecords] = useState([]);
   const [visible, setVisible] = useState(false);
+  const [visibleQuality, setVisibleQuality] = useState(false);
   const { currenttab } = useContext(EditContext);
   const user = sessionStorage.getItem('userName');
 
@@ -53,7 +54,7 @@ function BusinessDetail(props) {
   const handlecompleteverify = () => {
     if (selectedRecords && selectedRecords.length > 0) {
       const Arr = selectedRecords.filter(obj => obj.responsible !== user);
-      if (Arr) {
+      if (Arr && Arr.length && Arr.length > 0) {
         setVisible(true);
       } else {
         submitVerify();
@@ -95,7 +96,34 @@ function BusinessDetail(props) {
         },
       });
     }
-  }, [Id])
+  }, [Id]);
+
+
+  const ToQuality = () => {
+    if (selectedRecords[0].id) {
+      releaseToQuality({ id: selectedRecords[0].id }).then(res => {
+        if (res.code === 200) {
+          message.success('操作成功！');
+          dispatch({
+            type: 'releaseverificat/openflow',
+            payload: {
+              todoCode: Id,
+            },
+          });
+        } else {
+          message.error('操作失败！')
+        }
+      })
+    }
+  }
+
+  const openToQuality = () => {
+    if (selectedRecords[0].assessNo) {
+      setVisibleQuality(true)
+    } else {
+      ToQuality()
+    }
+  }
 
   const operations = (
     <>
@@ -107,7 +135,7 @@ function BusinessDetail(props) {
           <Popconfirm
             title="所选的清单有不属于您负责的业务的功能，确定验证吗?"
             onConfirm={() => submitVerify()}
-            visible={visible}
+            visible={visibleQuality}
             onCancel={() => setVisible(false)}
             placement="leftTop"
           >
@@ -117,7 +145,19 @@ function BusinessDetail(props) {
           </Popconfirm>
         </>
       )}
+      {titletype === '业务复核' && (
+        <Popconfirm
+          title="该功能已发在发有服务绩效，确认再次发起服务绩效吗?"
+          onConfirm={() => ToQuality()}
+          visible={visible}
+          onCancel={() => setVisibleQuality(false)}
+          placement="leftTop"
+        >
+          <Button type='primary' onClick={() => openToQuality()} disabled={selectedRecords.length !== 1}>发起服务绩效</Button>
+        </Popconfirm>
+      )}
       <Button onClick={handleclose} >返回</Button>
+
     </>
   )
 

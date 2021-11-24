@@ -264,7 +264,7 @@ function DocumentAtt(props) {
           <>
             {text !== '[]' && text !== '' && (
               <div className={styles.greylink}>
-                {JSON.parse(text).map((obj, index) => {
+                {JSON.parse(text) && JSON.parse(text).length && JSON.parse(text).map((obj, index) => {
                   return (
                     <div key={index.toString()} style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', width: 280, overflow: 'hidden' }}>
                       <PaperClipOutlined
