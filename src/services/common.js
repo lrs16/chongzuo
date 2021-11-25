@@ -121,3 +121,12 @@ export async function relationlist(params) {
   return request(`/quality/relation/list?assessNo=${params.assessNo}&orderType=FB`);
 }
 
+// 关联工单 发布
+export async function relationReleaseLists(params) {
+  return request(`/common/relation/getReleaseList`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+

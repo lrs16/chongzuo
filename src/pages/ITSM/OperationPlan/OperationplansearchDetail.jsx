@@ -1,4 +1,4 @@
-import React, { useEffect, createContext } from 'react';
+import React, { useEffect,useState,createContext } from 'react';
 import { connect } from 'dva';
 import {
   Button,
@@ -11,6 +11,7 @@ import OperationPlanfillindes from './components/OperationPlanfillindes';
 import TaskCheckdes from './components/TaskCheckdes';
 import TaskExecutedes from './components/TaskExecutedes';
 import styles from './index.less';
+import RelationOrder from './components/RelationOrder';
 
 const { Panel } = Collapse;
 
@@ -25,6 +26,7 @@ function Work(props) {
     loading,
     location
   } = props;
+  const [tabActiveKey, setTabActiveKey] = useState('workorder');
 
   // panel详情
   const Panelheadermap = new Map([
@@ -66,6 +68,22 @@ function Work(props) {
     });
   }
 
+  const handleTabChange = key => {
+    // tab切换
+    setTabActiveKey(key);
+  };
+
+  const tabList = [
+    {
+      key: 'workorder',
+      tab: '作业计划工单',
+    },
+    {
+      key: 'relevancy',
+      tab: '关联工单',
+    },
+  ];
+
   return (
     <PageHeaderWrapper
       title={headTitle}
@@ -74,41 +92,53 @@ function Work(props) {
           <Button onClick={handleClose}>返回</Button>
         </>
       }
+      tabList={tabList}
+      onTabChange={handleTabChange}
+      tabActiveKey={tabActiveKey}
     >
-      <div className={styles.collapse}>
-        {openViewlist && loading === false && (
-          <Collapse
-            expandIconPosition="right"
-            defaultActiveKey={['0']}
-            bordered={false}
-          >
-            {openViewlist.map((obj, index) => {
-              // panel详情组件
-              const Paneldesmap = new Map([
-                ['main', <OperationPlanfillindes
-                  info={Object.values(obj)[0]}
-                  main={openViewlist[0].main}
-                />],
-                ['check', <TaskCheckdes
-                  info={Object.values(obj)[0]}
-                  main={openViewlist[0].main}
-                />],
-                ['execute', <TaskExecutedes
-                  info={Object.values(obj)[0]}
-                  main={openViewlist[0].main}
-                />],
-              ]);
-              return (
-                <Panel
-                  header={Panelheadermap.get(Object.keys(obj)[0])}
-                  key={index}>
-                  {Paneldesmap.get(Object.keys(obj)[0])}
-                </Panel>
-              );
-            })}
-          </Collapse>
-        )}
-      </div>
+      {
+        tabActiveKey === 'workorder' && (
+          <div className={styles.collapse}>
+            {openViewlist && loading === false && (
+              <Collapse
+                expandIconPosition="right"
+                defaultActiveKey={['0']}
+                bordered={false}
+              >
+                {openViewlist.map((obj, index) => {
+                  // panel详情组件
+                  const Paneldesmap = new Map([
+                    ['main', <OperationPlanfillindes
+                      info={Object.values(obj)[0]}
+                      main={openViewlist[0].main}
+                    />],
+                    ['check', <TaskCheckdes
+                      info={Object.values(obj)[0]}
+                      main={openViewlist[0].main}
+                    />],
+                    ['execute', <TaskExecutedes
+                      info={Object.values(obj)[0]}
+                      main={openViewlist[0].main}
+                    />],
+                  ]);
+                  return (
+                    <Panel
+                      header={Panelheadermap.get(Object.keys(obj)[0])}
+                      key={index}>
+                      {Paneldesmap.get(Object.keys(obj)[0])}
+                    </Panel>
+                  );
+                })}
+              </Collapse>
+            )}
+          </div>
+        )
+      }
+
+      {
+        tabActiveKey === 'relevancy' && <RelationOrder orderId={location.query.mainId} relation search/>
+      }
+
     </PageHeaderWrapper >
   )
 }

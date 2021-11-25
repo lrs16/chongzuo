@@ -16,6 +16,7 @@ import Back from './components/Back';
 import styles from './index.less';
 import TimeoutModal from './components/TimeoutModel';
 import { judgeTimeoutStatus, saveTimeoutMsg } from '../services/api';
+import RelationOrder from './components/RelationOrder';
 
 const { Panel } = Collapse;
 
@@ -56,6 +57,7 @@ function Work(props) {
   const [modalvisible, setModalVisible] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(false);
   const [handleUploadStatus, setHandleUploadStatus] = useState(false);
+  const [tabActiveKey, setTabActiveKey] = useState('workorder');
 
   const {
     location: {
@@ -560,7 +562,7 @@ function Work(props) {
 
   // 初始化附件
   useEffect(() => {
-    if(flowNodeName === '计划登记' && openFlowList &&  openFlowList.main &&  openFlowList.main.fileIds) {
+    if (flowNodeName === '计划登记' && openFlowList && openFlowList.main && openFlowList.main.fileIds) {
       setFiles({
         ...files,
         arr: JSON.parse(openFlowList.main.fileIds),
@@ -568,7 +570,7 @@ function Work(props) {
       });
     }
 
-    if(flowNodeName === '计划执行' && openFlowList &&  openFlowList.execute &&  openFlowList.execute.fileIds) {
+    if (flowNodeName === '计划执行' && openFlowList && openFlowList.execute && openFlowList.execute.fileIds) {
       setFiles({
         ...files,
         arr: JSON.parse(openFlowList.execute.fileIds),
@@ -576,12 +578,28 @@ function Work(props) {
       });
     }
 
-  },[openFlowList])
+  }, [openFlowList])
+
+  const tabList = [
+    {
+      key: 'workorder',
+      tab: '作业计划工单',
+    },
+    {
+      key: 'relevancy',
+      tab: '关联工单',
+    },
+  ];
+
+  const handleTabChange = key => {
+    // tab切换
+    setTabActiveKey(key);
+  };
 
   return (
     <PageHeaderWrapper
       title={flowNodeName}
-      extra={
+      extra={tabActiveKey === 'workorder' && (
         <>
           {loading === false &&
             taskResult &&
@@ -692,7 +710,12 @@ function Work(props) {
 
           <Button onClick={handleClose}>返回</Button>
         </>
+      )
       }
+
+      tabList={tabList}
+      onTabChange={handleTabChange}
+      tabActiveKey={tabActiveKey}
     >
       <SysDict
         typeid="481"
@@ -701,131 +724,142 @@ function Work(props) {
         style={{ display: 'none' }}
       />
 
-      {loading === false && taskResult && taskResult.length > 0 && data && (
-        <div className={styles.collapse}>
-          <Collapse
-            expandIconPosition="right"
-            defaultActiveKey={['1']}
-            onChange={callback}
-            bordered="true"
-          >
-            <>
-              {!delay && (edit.check || flowNodeName === '计划审核') && (
-                <Panel header="作业计划审核" key="1" style={{ backgroundColor: 'white' }}>
-                  <FatherContext.Provider value={{ flowtype, setFlowtype }}>
-                    <TaskCheck
-                      formItemLayout={formItemLayout}
-                      forminladeLayout={forminladeLayout}
-                      check={edit.check}
-                      userinfo={userinfo}
-                      checkStatus={checkStatus}
-                      ref={SaveRef}
-                    />
-                  </FatherContext.Provider>
-                </Panel>
-              )}
-
-              {loading === false &&
-                !delay &&
-                openFlowList &&
-                openFlowList.edit.execute !== undefined &&
-                (checkStatus === '已审核' || flowNodeName === '计划执行') && (
-                  <Panel
-                    header="作业计划执行"
-                    key="1"
-                    style={{ backgroundColor: 'white' }}
-                    bordered
-                  >
-                    <TaskExecute
-                      formItemLayout={formItemLayout}
-                      forminladeLayout={forminladeLayout}
-                      type=""
-                      userinfo={userinfo}
-                      taskResult={taskResult}
-                      ref={SaveRef}
-                      execute={edit.execute}
-                      files={
-                        edit.execute.fileIds && edit.execute.fileIds
-                          ? JSON.parse(edit.execute.fileIds)
-                          : []
-                      }
-                      ChangeFiles={newvalue => {
-                        setFiles(newvalue);
-                      }}
-                    />
-                  </Panel>
-                )}
-
-              {loading === false && ((edit && edit.main !== undefined) || delay) && (
-                <Panel
-                  header={status || flowNodeName}
-                  key="1"
-                  bordered
-                  style={{ backgroundColor: 'white' }}
+      {
+        tabActiveKey === 'workorder' && (
+          <>
+            {loading === false && taskResult && taskResult.length > 0 && data && (
+              <div className={styles.collapse}>
+                <Collapse
+                  expandIconPosition="right"
+                  defaultActiveKey={['1']}
+                  onChange={callback}
+                  bordered="true"
                 >
-                  <HadleContext.Provider value={{
-                    handleUploadStatus,
-                    getUploadStatus: (v) => { setHandleUploadStatus(v) },
-                    getRegistUploadStatus: (v) => { setUploadStatus(v) }
-                  }}>
-                    <OperationPlanfillin
-                      formItemLayout={formItemLayout}
-                      forminladeLayout={forminladeLayout}
-                      main={delay ? openFlowList.main : edit.main}
-                      type={delay}
-                      status={status}
-                      useInfo={userinfo}
-                      ref={SaveRef}
-                      operationPersonSelect={operationPersonSelect}
-                      files={
-                        openFlowList.main.fileIds !== '' && openFlowList.main.fileIds
-                          ? JSON.parse(openFlowList.main.fileIds)
-                          : []
-                      }
-                      ChangeFiles={newvalue => {
-                        setFiles(newvalue);
-                      }}
-                    />
-                  </HadleContext.Provider>
-                </Panel>
-              )}
-            </>
-          </Collapse>
-        </div>
-      )}
+                  <>
+                    {!delay && (edit.check || flowNodeName === '计划审核') && (
+                      <Panel header="作业计划审核" key="1" style={{ backgroundColor: 'white' }}>
+                        <FatherContext.Provider value={{ flowtype, setFlowtype }}>
+                          <TaskCheck
+                            formItemLayout={formItemLayout}
+                            forminladeLayout={forminladeLayout}
+                            check={edit.check}
+                            userinfo={userinfo}
+                            checkStatus={checkStatus}
+                            ref={SaveRef}
+                          />
+                        </FatherContext.Provider>
+                      </Panel>
+                    )}
 
-      <div className={styles.collapse}>
-        {loading === false && taskResult && taskResult.length > 0 && data && (
-          <Collapse expandIconPosition="right" bordered={false}>
-            {data.map((obj, index) => {
-              // panel详情组件
-              const Paneldesmap = new Map([
-                [
-                  'main',
-                  <OperationPlanfillindes
-                    info={Object.values(obj)[0]}
-                    main={data[0].main}
-                    key="0"
-                  />,
-                ],
-                [
-                  'check',
-                  <TaskCheckdes info={Object.values(obj)[0]} main={data[0].main} key="1" />,
-                ],
-                [
-                  'execute',
-                  <TaskExecutedes info={Object.values(obj)[0]} main={data[0].main} key="2" />,
-                ],
-              ]);
-              return (
-                <Panel header={Panelheadermap.get(Object.keys(obj)[0])} key={index}>
-                  {Paneldesmap.get(Object.keys(obj)[0])}
-                </Panel>
-              );
-            })}
-          </Collapse>
-        )}
-      </div>
+                    {loading === false &&
+                      !delay &&
+                      openFlowList &&
+                      openFlowList.edit.execute !== undefined &&
+                      (checkStatus === '已审核' || flowNodeName === '计划执行') && (
+                        <Panel
+                          header="作业计划执行"
+                          key="1"
+                          style={{ backgroundColor: 'white' }}
+                          bordered
+                        >
+                          <TaskExecute
+                            formItemLayout={formItemLayout}
+                            forminladeLayout={forminladeLayout}
+                            type=""
+                            userinfo={userinfo}
+                            taskResult={taskResult}
+                            ref={SaveRef}
+                            execute={edit.execute}
+                            files={
+                              edit.execute.fileIds && edit.execute.fileIds
+                                ? JSON.parse(edit.execute.fileIds)
+                                : []
+                            }
+                            ChangeFiles={newvalue => {
+                              setFiles(newvalue);
+                            }}
+                          />
+                        </Panel>
+                      )}
+
+                    {loading === false && ((edit && edit.main !== undefined) || delay) && (
+                      <Panel
+                        header={status || flowNodeName}
+                        key="1"
+                        bordered
+                        style={{ backgroundColor: 'white' }}
+                      >
+                        <HadleContext.Provider value={{
+                          handleUploadStatus,
+                          getUploadStatus: (v) => { setHandleUploadStatus(v) },
+                          getRegistUploadStatus: (v) => { setUploadStatus(v) }
+                        }}>
+                          <OperationPlanfillin
+                            formItemLayout={formItemLayout}
+                            forminladeLayout={forminladeLayout}
+                            main={delay ? openFlowList.main : edit.main}
+                            type={delay}
+                            status={status}
+                            useInfo={userinfo}
+                            ref={SaveRef}
+                            operationPersonSelect={operationPersonSelect}
+                            files={
+                              openFlowList.main.fileIds !== '' && openFlowList.main.fileIds
+                                ? JSON.parse(openFlowList.main.fileIds)
+                                : []
+                            }
+                            ChangeFiles={newvalue => {
+                              setFiles(newvalue);
+                            }}
+                          />
+                        </HadleContext.Provider>
+                      </Panel>
+                    )}
+                  </>
+                </Collapse>
+              </div>
+            )}
+
+            <div className={styles.collapse}>
+              {loading === false && taskResult && taskResult.length > 0 && data && (
+                <Collapse expandIconPosition="right" bordered={false}>
+                  {data.map((obj, index) => {
+                    // panel详情组件
+                    const Paneldesmap = new Map([
+                      [
+                        'main',
+                        <OperationPlanfillindes
+                          info={Object.values(obj)[0]}
+                          main={data[0].main}
+                          key="0"
+                        />,
+                      ],
+                      [
+                        'check',
+                        <TaskCheckdes info={Object.values(obj)[0]} main={data[0].main} key="1" />,
+                      ],
+                      [
+                        'execute',
+                        <TaskExecutedes info={Object.values(obj)[0]} main={data[0].main} key="2" />,
+                      ],
+                    ]);
+                    return (
+                      <Panel header={Panelheadermap.get(Object.keys(obj)[0])} key={index}>
+                        {Paneldesmap.get(Object.keys(obj)[0])}
+                      </Panel>
+                    );
+                  })}
+                </Collapse>
+              )}
+            </div>
+          </>
+        )
+      }
+
+      {
+        tabActiveKey === 'relevancy' && <RelationOrder orderId={location.query.mainId} relation />
+      }
+
 
       {/* 选人组件 */}
       <User
@@ -842,7 +876,7 @@ function Work(props) {
         ChangeModalVisible={v => setModalVisible(v)}
         ChangeTimeOutMsg={v => postTimeOutMsg(v)}
       />
-    </PageHeaderWrapper>
+    </PageHeaderWrapper >
   );
 }
 

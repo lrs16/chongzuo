@@ -6,7 +6,9 @@ import {
   saveRelation,
   getReleaseList,
   saveRelationrelease,
-  relationlist
+  relationlist,
+  relationReleaseLists,
+  getDemandList
      } from '@/services/common';
 import { message } from 'antd';
 
@@ -84,6 +86,22 @@ export default {
         payload: response.data,
       });
     },
+
+    * fetchrelease({ payload }, { put, call }) {
+      const response = yield call(relationReleaseLists, payload);
+      yield put({
+      type: "saveorder",
+      payload: response.data
+    })
+  },
+
+    * fetchDemandList({ payload }, { put, call }) {
+      const response = yield call(getDemandList, payload);
+      yield put({
+      type: "saveorder",
+      payload: response.data
+    })
+},
   },
 
   reducers: {
