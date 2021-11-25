@@ -148,7 +148,7 @@ function HostPatrol(props) {
   };
 
   // 下载报告
-  const handledownFileToZip = (id, no) => { 
+  const handledownFileToZip = (id, no) => {
     createReport(id).then(res => {
       const filename = `${no}_报告.docx`;
       const blob = new Blob([res]);

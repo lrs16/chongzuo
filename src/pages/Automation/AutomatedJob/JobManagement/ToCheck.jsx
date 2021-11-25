@@ -216,11 +216,11 @@ function ToCheck(props) {
                 />
               </Panel>
               <Panel header="作业任务" key="formpanel1">
-                <Contentdes 
-                  formItemLayout={formItemLayout} 
-                  forminladeLayout={forminladeLayout} 
-                  contentInfo={selectedRows} 
-                  dispatch={dispatch} 
+                <Contentdes
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
+                  contentInfo={selectedRows}
+                  dispatch={dispatch}
                 />
               </Panel>
             </Collapse>

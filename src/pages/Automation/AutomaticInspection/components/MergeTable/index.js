@@ -74,8 +74,8 @@ function MergeTable(props) {
           pagination={pagination}
           rowKey={record => record.id}
         />
-      ) : (<Table 
-        columns={column} pagination={pagination}/>)}
+      ) : (<Table
+        columns={column} pagination={pagination} />)}
     </>
   )
 

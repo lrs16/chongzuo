@@ -33,15 +33,15 @@ function Contentdes(props) {
     dispatch({
       type: 'autotask/findtaskObjectList1',
       payload: {
-          taskId: contentInfo[0].id,
-          pageNum: 1,
-          pageSize: 15,
+        taskId: contentInfo[0].id,
+        pageNum: 1,
+        pageSize: 15,
       },
-  }).then(res => {
+    }).then(res => {
       if (res.code === 200) {
         settaskobjectData(res.data);
       }
-  });
+    });
   }, [contentInfo[0].id]);
 
   const handleShowscriptModel = (modeltitle, itemdata) => {
@@ -144,7 +144,7 @@ function Contentdes(props) {
           </Col>
           <Col span={24}>
             <Form.Item label='作业对象'>
-            <Alert message={`已选择【${contentInfo[0].taskObjectNum}】个agent` || `已选择【0】个agent`} type="info" style={{marginBottom: 10}} />
+              <Alert message={`已选择【${contentInfo[0].taskObjectNum}】个agent` || `已选择【0】个agent`} type="info" style={{ marginBottom: 10 }} />
               <Table
                 dataSource={taskobjectdata.rows}
                 columns={columns}

@@ -209,7 +209,7 @@ function StatisticalAnalysis(props) {
                       time2={moment(values.endTime).format('YYYY-MM-DD 23:59:59')}
                       padding={[10, 30, 30, 30]}
                       onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
-                      // onGettotalVal={(v) => { setBlameTotal(v); }}
+                    // onGettotalVal={(v) => { setBlameTotal(v); }}
                     />
                   )
                 }

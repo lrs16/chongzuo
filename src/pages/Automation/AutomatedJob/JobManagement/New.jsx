@@ -43,7 +43,7 @@ function New(props) {
   }, [Id]);
 
   // 保存（新增、编辑）
-  const handleClick = (buttonype) => { 
+  const handleClick = (buttonype) => {
     ContentRef.current.Forms((err, values) => {
       if (err) {
         message.error('请将信息填写完整')
@@ -91,8 +91,8 @@ function New(props) {
     })
   };
 
-   // 提交（新增、编辑）
-  const handleSubmit = (buttonype) => { 
+  // 提交（新增、编辑）
+  const handleSubmit = (buttonype) => {
     ContentRef.current.Forms((err, values) => {
       if (err) {
         message.error('请将信息填写完整')
@@ -110,7 +110,7 @@ function New(props) {
   };
 
   // 删除
-  const handleDelete = () => { 
+  const handleDelete = () => {
     dispatch({
       type: 'autotask/todeleteTask',
       payload: { taskId: Id },
@@ -129,7 +129,7 @@ function New(props) {
   };
 
   // 返回
-  const handleclose = () => { 
+  const handleclose = () => {
     router.push({
       pathname: `/automation/automatedjob/jobmanagement/jobconfig`,
       query: { pathpush: true },

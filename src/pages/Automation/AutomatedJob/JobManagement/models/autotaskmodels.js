@@ -102,7 +102,7 @@ export default {
         scriptArgs: "",
         scriptStatus: "",
       };
-      return yield call(taskScriptList, newvalues, pageNum, pageSize, taskId );
+      return yield call(taskScriptList, newvalues, pageNum, pageSize, taskId);
     },
 
     *togetUseTaskObjectandAgent({ payload: { taskId } }, { call }) {

@@ -148,7 +148,7 @@ function CabinetDrawer(props) {
         <Form.Item label="剩余容量">
           {getFieldDecorator('cabinetResidueU', {
             initialValue: cabinetResidueU,
-          })(<Input placeholder="请输入" disabled/>)}
+          })(<Input placeholder="请输入" disabled />)}
         </Form.Item>
         <Form.Item label="负责人">
           {getFieldDecorator('director', {
@@ -160,12 +160,12 @@ function CabinetDrawer(props) {
             ],
             initialValue: director,
           })(<Select placeholder="请选择" allowClear>
-          {directormap.map(obj => (
-            <Option key={obj.userId} value={obj.userName}>
-              {obj.userName}
-            </Option>
-          ))}
-        </Select>)}
+            {directormap.map(obj => (
+              <Option key={obj.userId} value={obj.userName}>
+                {obj.userName}
+              </Option>
+            ))}
+          </Select>)}
         </Form.Item>
         <Form.Item label="机柜排序">
           {getFieldDecorator('cabinetSorts', {

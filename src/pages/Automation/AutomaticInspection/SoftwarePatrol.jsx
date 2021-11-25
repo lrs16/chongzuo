@@ -122,7 +122,7 @@ function SoftwarePatrol(props) {
   };
 
   // 报告下载
-  const handledownFileToZip = (id, no) => { 
+  const handledownFileToZip = (id, no) => {
     createsoftReport(id).then(res => {
       const filename = `${no}_报告.docx`;
       const blob = new Blob([res]);
@@ -192,11 +192,11 @@ function SoftwarePatrol(props) {
         return (
           <span style={{ marginTop: 7 }}>
             {(record.status === '成功') ?
-            <span>
-              <a type="link"
-                onClick={() => handledownFileToZip(record.id, record.no)}
-              >报告下载</a>
-              <Divider type="vertical" /></span>
+              <span>
+                <a type="link"
+                  onClick={() => handledownFileToZip(record.id, record.no)}
+                >报告下载</a>
+                <Divider type="vertical" /></span>
               : null}
             <a type="link"
               onClick={() => newDetailView(record.id)}

@@ -47,7 +47,7 @@ export default {
     *downloadTemplate(_, { call }) {
       return yield call(downloadEquipTemplate)
     }
-    
+
   },
 
   reducers: {

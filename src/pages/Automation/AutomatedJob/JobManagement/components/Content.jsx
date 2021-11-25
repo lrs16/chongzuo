@@ -1,5 +1,5 @@
 import React, { useState, forwardRef, useImperativeHandle, useEffect } from 'react';
-import { Form, Input, Radio, Button,} from 'antd';
+import { Form, Input, Radio, Button, } from 'antd';
 import DictLower from '@/components/SysDict/DictLower';
 import SystemScriptList from './SystemScriptList';
 import TaskObjectList from './TaskObjectList';
@@ -152,7 +152,7 @@ const Content = forwardRef((props, ref) => {
               rules: [{ required, message: '请输入core表达式' }],
               initialValue: formrecord.taskCores,
             })(
-              <CronGenerator GetCronData={(v) => { setFieldsValue({ taskCores: v });}}
+              <CronGenerator GetCronData={(v) => { setFieldsValue({ taskCores: v }); }}
                 cronText={formrecord.taskCores}
               />
             )}
@@ -176,7 +176,7 @@ const Content = forwardRef((props, ref) => {
         title={scripttitle}
         GetRowsData={newvalue => setScriptRows(newvalue)}
         GetRowskeysData={(v) => { setFieldsValue({ scriptIds: v }); }}
-        rows={scriptrows} 
+        rows={scriptrows}
         destroyOnClose
       />
     </div>

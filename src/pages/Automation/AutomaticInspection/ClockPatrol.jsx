@@ -112,7 +112,7 @@ function ClockPatrol(props) {
   };
 
   // 查看报告
-  const newDetailView = (Id) => { 
+  const newDetailView = (Id) => {
     router.push({
       pathname: '/automation/automaticinspection/clockpatrol/clockview',
       query: {
@@ -179,9 +179,9 @@ function ClockPatrol(props) {
       render: (_, record) => {
         return (
           <span>
-              <a type="link"
-                onClick={() => newDetailView(record.id)}
-              >查看报告</a>
+            <a type="link"
+              onClick={() => newDetailView(record.id)}
+            >查看报告</a>
           </span>
         );
       },

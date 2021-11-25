@@ -79,6 +79,13 @@ function ToDOlist(props) {
               mainId: record.mainId,
               orderNo: text,
             },
+            state: {
+              cacheinfo: {
+                ...tabrecord,
+                paginations,
+                expand,
+              },
+            }
           });
         };
         return <a onClick={() => handleClick()}>{text}</a>;

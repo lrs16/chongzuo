@@ -101,7 +101,7 @@ function SuperviseModel(props) {
                       }
                     ],
                     initialValue: ''
-                  })(<TextArea rows={4}  />)
+                  })(<TextArea rows={4} />)
                 }
               </Form.Item>
             </Col>
@@ -111,7 +111,7 @@ function SuperviseModel(props) {
                   initialValue: userinfo.userName,
                 })(<Input disabled />)}
               </Form.Item>
-              <Form.Item label="督办id" style={{ display:'none' }}>
+              <Form.Item label="督办id" style={{ display: 'none' }}>
                 {getFieldDecorator('superviseUserId', {
                   initialValue: userinfo.userId,
                 })(<Input disabled />)}

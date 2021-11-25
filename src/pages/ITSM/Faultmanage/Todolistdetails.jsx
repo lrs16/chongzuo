@@ -186,7 +186,7 @@ function Todolistdetails(props) {
     router.push({
       pathname: `/ITSM/faultmanage/todolist`,
       query: { pathpush: true },
-      state: { cache: false }
+      state: { cacheinfo: { ...location.state.cacheinfo }, cache: false }
     });
   };
 

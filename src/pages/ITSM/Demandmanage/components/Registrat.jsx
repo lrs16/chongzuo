@@ -1,4 +1,4 @@
-import React, { useRef, useImperativeHandle, forwardRef, useEffect, useState } from 'react';
+import React, { useImperativeHandle, forwardRef, useEffect, useState } from 'react';
 import router from 'umi/router';
 import moment from 'moment';
 import {
@@ -371,7 +371,7 @@ const Registrat = forwardRef((props, ref) => {
                 placeholder="请选择时间"
                 format="YYYY-MM-DD HH:mm:ss"
                 disabledDate={disabledDate}
-                efaultValue={moment(newcompleteTime)}
+                defaultValue={moment(newcompleteTime)}
                 onChange={(v) => { setFieldsValue({ completeTime: moment(v) }) }}
                 style={{ width: '100%' }}
               /></>)}
