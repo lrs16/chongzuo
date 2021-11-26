@@ -75,6 +75,7 @@ function ComputerroomReportdetail(props) {
     dispatch,
     openReportlist,
     loading,
+    olduploadstatus
   } = props;
   const tabActiveKey = 'week';
 
@@ -362,11 +363,19 @@ function ComputerroomReportdetail(props) {
       extra={
         <>
           {loading === false && (
-            <Button type='primary' onClick={exportWord}>导出</Button>
+            <Button
+              type='primary'
+              onClick={exportWord}
+              disabled={olduploadstatus}
+            >导出</Button>
           )}
 
           {loading === false && !reportSearch && main && main.time1 && unCloseTroubleList !== undefined && (
-            <Button type='primary' onClick={() => { saveSign = false; computerReportform() }}>保存</Button>
+            <Button
+              type='primary'
+              onClick={() => { saveSign = false; computerReportform() }}
+              disabled={olduploadstatus}
+            >保存</Button>
           )}
 
           <Button onClick={handleBack}>
@@ -394,7 +403,7 @@ function ComputerroomReportdetail(props) {
                     initialValue: main ? main.name : ''
                   })
                     (
-                      <Input disabled={reportSearch} style={{ width: 700 }} />
+                      <Input disabled={reportSearch} style={{ width: 700 }} placeholder={`省级集中计量自动化系统机房运维${reporttype === 'week'? '周':'月'}报`} />
                     )}
                 </Form.Item>
               </Col>
@@ -494,6 +503,7 @@ function ComputerroomReportdetail(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -572,6 +582,7 @@ function ComputerroomReportdetail(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -644,6 +655,7 @@ function ComputerroomReportdetail(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -760,6 +772,7 @@ function ComputerroomReportdetail(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -818,6 +831,7 @@ function ComputerroomReportdetail(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -861,6 +875,7 @@ function ComputerroomReportdetail(props) {
                           ChangeAddRow={v => setAddrow(v)}
                           sign={deleteSign}
                           detailParams={reportSearch}
+                          uploadStatus={olduploadstatus}
                         />
                       </Col>
 
@@ -887,7 +902,7 @@ function ComputerroomReportdetail(props) {
                 ghost
                 onClick={() => newMember()}
                 icon="plus"
-                disabled={reportSearch}
+                disabled={olduploadstatus || reportSearch}
               >
                 新增其他内容
               </Button>
@@ -904,8 +919,9 @@ function ComputerroomReportdetail(props) {
 }
 
 export default Form.create({})(
-  connect(({ softreport, loading }) => ({
+  connect(({ softreport, viewcache, loading }) => ({
     openReportlist: softreport.openReportlist,
     loading: loading.models.softreport,
+    olduploadstatus: viewcache.olduploadstatus,
   }))(ComputerroomReportdetail),
 );

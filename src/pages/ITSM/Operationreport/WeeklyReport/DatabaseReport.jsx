@@ -65,6 +65,7 @@ function DatabaseReport(props) {
     lastweekHomeworklist,
     nextweekHomeworklist,
     loading,
+    olduploadstatus
   } = props;
 
 
@@ -390,8 +391,18 @@ function DatabaseReport(props) {
       title={pagetitle}
       extra={
         <>
-          <Button type='primary' onClick={handlePaste}>粘贴</Button>
-          <Button type='primary' onClick={databaseReportform}>保存</Button>
+          <Button
+            type='primary'
+            onClick={handlePaste}
+            disabled={olduploadstatus}
+          >
+            粘贴
+          </Button>
+          <Button
+            type='primary'
+            onClick={databaseReportform}
+            disabled={olduploadstatus}
+          >保存</Button>
           <Button onClick={handleBack}>
             返回
           </Button>
@@ -424,7 +435,7 @@ function DatabaseReport(props) {
                   initialValue: copyData.main ? copyData.main.name : ''
                 })
                   (
-                    <Input style={{ width: 700 }} />
+                    <Input style={{ width: 700 }} placeholder={`省级集中计量自动化系统数据库运维${reporttype === 'week'? '周':'月'}报`} />
                   )}
               </Form.Item>
             </Col>
@@ -540,6 +551,7 @@ function DatabaseReport(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -626,6 +638,7 @@ function DatabaseReport(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -663,6 +676,7 @@ function DatabaseReport(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -704,6 +718,7 @@ function DatabaseReport(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -746,6 +761,7 @@ function DatabaseReport(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -772,6 +788,7 @@ function DatabaseReport(props) {
                         loading={loading}
                         ChangeAddRow={v => setAddrow(v)}
                         sign={deleteSign}
+                        uploadStatus={olduploadstatus}
                       />
                     </Col>
 
@@ -798,6 +815,7 @@ function DatabaseReport(props) {
               ghost
               onClick={() => newMember()}
               icon="plus"
+              disabled={olduploadstatus}
             >
               新增其他内容
             </Button>
@@ -809,7 +827,7 @@ function DatabaseReport(props) {
 }
 
 export default Form.create({})(
-  connect(({ softreport, loading }) => ({
+  connect(({ softreport, viewcache, loading }) => ({
     maintenanceArr: softreport.maintenanceArr,
     ordertopnArr: softreport.ordertopnArr,
     maintenanceService: softreport.maintenanceService,
@@ -818,5 +836,6 @@ export default Form.create({})(
     lastweekHomeworklist: softreport.lastweekHomeworklist,
     nextweekHomeworklist: softreport.nextweekHomeworklist,
     loading: loading.models.softreport,
+    olduploadstatus: viewcache.olduploadstatus,
   }))(DatabaseReport),
 );

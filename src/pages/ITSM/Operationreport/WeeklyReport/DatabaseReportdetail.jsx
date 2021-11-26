@@ -68,6 +68,7 @@ function DatabaseReportdetail(props) {
     submitdevelopmentlist,
     remainingDefectslist,
     loading,
+    olduploadstatus
   } = props;
 
   const required = true;
@@ -359,12 +360,20 @@ function DatabaseReportdetail(props) {
       extra={
         <>
           {loading === false && openReportlist.main !== undefined && (
-            <Button type='primary' onClick={exportWord}>导出</Button>
+            <Button
+              type='primary'
+              onClick={exportWord}
+              disabled={olduploadstatus}
+            >导出</Button>
           )}
 
           {
             loading === false && !reportSearch && main && main.time1 && nextOperationList !== undefined && (
-              <Button type='primary' onClick={() => { saveSign = false; showTimecomponent = false; databaseReportform() }}>保存</Button>
+              <Button
+                type='primary'
+                onClick={() => { saveSign = false; showTimecomponent = false; databaseReportform() }}
+                disabled={olduploadstatus}
+              >保存</Button>
             )
           }
 
@@ -393,7 +402,7 @@ function DatabaseReportdetail(props) {
                     initialValue: main?.name ? main.name : ''
                   })
                     (
-                      <Input disabled={reportSearch} style={{ width: 700 }} />
+                      <Input disabled={reportSearch} style={{ width: 700 }} placeholder={`省级集中计量自动化系统数据库运维${reporttype === 'week'? '周':'月'}报`} />
                     )}
                 </Form.Item>
               </Col>
@@ -497,6 +506,7 @@ function DatabaseReportdetail(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -608,6 +618,7 @@ function DatabaseReportdetail(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -665,6 +676,7 @@ function DatabaseReportdetail(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -727,6 +739,7 @@ function DatabaseReportdetail(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -790,6 +803,7 @@ function DatabaseReportdetail(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -831,6 +845,7 @@ function DatabaseReportdetail(props) {
                           ChangeAddRow={v => setAddrow(v)}
                           sign={deleteSign}
                           detailParams={reportSearch}
+                          uploadStatus={olduploadstatus}
                         />
                       </Col>
 
@@ -857,7 +872,7 @@ function DatabaseReportdetail(props) {
                 ghost
                 onClick={() => newMember()}
                 icon="plus"
-                disabled={reportSearch}
+                disabled={olduploadstatus || reportSearch}
               >
                 新增其他内容
               </Button>
@@ -871,8 +886,9 @@ function DatabaseReportdetail(props) {
 }
 
 export default Form.create({})(
-  connect(({ softreport, loading }) => ({
+  connect(({ softreport,viewcache, loading }) => ({
     openReportlist: softreport.openReportlist,
     loading: loading.models.softreport,
+    olduploadstatus: viewcache.olduploadstatus,
   }))(DatabaseReportdetail),
 );

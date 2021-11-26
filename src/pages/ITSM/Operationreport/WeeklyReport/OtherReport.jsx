@@ -42,6 +42,7 @@ function OtherReport(props) {
     } },
     dispatch,
     loading,
+    olduploadstatus
   } = props;
 
 
@@ -281,8 +282,22 @@ function OtherReport(props) {
       extra={
         // loading === false && (
         <>
-          <Button type='primary' onClick={handlePaste}>粘贴</Button>
-          <Button type='primary' onClick={otherReportform}>保存</Button>
+          <Button
+            type='primary'
+            onClick={handlePaste}
+            disabled={olduploadstatus}
+          >
+            粘贴
+          </Button>
+
+          <Button
+            type='primary'
+            onClick={otherReportform}
+            disabled={olduploadstatus}
+          >
+            保存
+          </Button>
+
           <Button onClick={handleBack}>
             返回
           </Button>
@@ -309,7 +324,7 @@ function OtherReport(props) {
                     initialValue: copyData.main ? copyData.main.name : ''
                   })
                     (
-                      <Input style={{ width: 700 }} />
+                      <Input style={{ width: 700 }} placeholder={`省级集中计量自动化系统其他运维${reporttype === 'week'? '周':'月'}报`} />
                     )}
                 </Form.Item>
               </Col>
@@ -387,6 +402,7 @@ function OtherReport(props) {
                           loading={loading}
                           ChangeAddRow={v => setAddrow(v)}
                           sign={deleteSign}
+                          uploadStatus={olduploadstatus}
                         />
                       </Col>
 
@@ -425,7 +441,8 @@ function OtherReport(props) {
 }
 
 export default Form.create({})(
-  connect(({ loading }) => ({
+  connect(({ loading, viewcache }) => ({
     loading: loading.models.softreport,
+    olduploadstatus: viewcache.olduploadstatus,
   }))(OtherReport),
 );

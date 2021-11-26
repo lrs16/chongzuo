@@ -44,6 +44,7 @@ function OtherReportdetail(props) {
     openReportlist,
     dispatch,
     loading,
+    olduploadstatus
   } = props;
 
   const required = true;
@@ -298,11 +299,23 @@ function OtherReportdetail(props) {
       extra={
         <>
           {loading === false && (
-            <Button type='primary' onClick={exportWord}>导出</Button>
+            <Button
+              type='primary'
+              onClick={exportWord}
+              disabled={olduploadstatus}
+            >
+              导出
+            </Button>
           )}
 
           {loading === false && !reportSearch && (
-            <Button type='primary' onClick={() => { saveSign = false; otherReportform() }}>保存</Button>
+            <Button
+              type='primary'
+              onClick={() => { saveSign = false; otherReportform() }}
+              disabled={olduploadstatus}
+            >
+              保存
+            </Button>
           )}
 
           <Button onClick={handleBack}>
@@ -330,7 +343,7 @@ function OtherReportdetail(props) {
                     initialValue: main ? main.name : ''
                   })
                     (
-                      <Input disabled={reportSearch} style={{ width: 700 }} />
+                      <Input disabled={reportSearch} style={{ width: 700 }} placeholder={`省级集中计量自动化系统其他运维${reporttype === 'week'? '周':'月'}报`} />
                     )}
                 </Form.Item>
               </Col>
@@ -412,6 +425,7 @@ function OtherReportdetail(props) {
                           ChangeAddRow={v => setAddrow(v)}
                           sign={deleteSign}
                           detailParams={reportSearch}
+                          uploadStatus={olduploadstatus}
                         />
                       </Col>
 
@@ -438,7 +452,7 @@ function OtherReportdetail(props) {
                 ghost
                 onClick={() => { newMember() }}
                 icon="plus"
-                disabled={reportSearch}
+                disabled={olduploadstatus || reportSearch}
               >
                 新增其他内容
               </Button>
@@ -451,8 +465,9 @@ function OtherReportdetail(props) {
 }
 
 export default Form.create({})(
-  connect(({ softreport, loading }) => ({
+  connect(({ softreport, viewcache, loading }) => ({
     openReportlist: softreport.openReportlist,
     loading: loading.models.softreport,
+    olduploadstatus: viewcache.olduploadstatus,
   }))(OtherReportdetail),
 );

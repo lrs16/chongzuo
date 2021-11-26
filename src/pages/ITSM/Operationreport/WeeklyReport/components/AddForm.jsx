@@ -33,6 +33,7 @@ const AddForm = React.forwardRef((props, ref) => {
     addTable,
     ChangeAddRow,
     sign,
+    uploadStatus
   } = props;
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
@@ -325,9 +326,7 @@ const AddForm = React.forwardRef((props, ref) => {
         loading === false && dynamicData  && ( */}
       <Row gutter={24}>
         <Form>
-          <Col><p>注：第一行数据作为表头,且动态标题下的附件上传后需点击上方的保存才可下载。</p></Col>
-
-
+          <Col><p>注：第一行数据作为表头,动态标题下的附件上传后（删除）需点击上方的保存才可下载（删除）</p></Col>
           <Form.Item label={titleNumber()} {...formincontentLayout}>
             {getFieldDecorator(`title`, {
               initialValue: dynamicData.title ? dynamicData.title : ''
@@ -366,6 +365,7 @@ const AddForm = React.forwardRef((props, ref) => {
                       })
                       handleSubmit();
                     }}
+                    banOpenFileDialog={uploadStatus}
                   />
                 )}
               </Form.Item>

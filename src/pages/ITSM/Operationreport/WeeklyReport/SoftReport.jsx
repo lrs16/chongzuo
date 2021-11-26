@@ -226,6 +226,7 @@ function SoftReport(props) {
     contentRowlist,
     patrolAndExamineArr,
     loading,
+    olduploadstatus
   } = props;
 
   const required = true;
@@ -635,8 +636,22 @@ function SoftReport(props) {
       extra={
         <>
           <div>
-            <Button type='primary' style={{ marginRight: 10 }} onClick={handlePaste}>粘贴</Button>
-            <Button type='primary' style={{ marginRight: 10 }} onClick={softReportform}>保存</Button>
+            <Button
+              type='primary'
+              style={{ marginRight: 10 }}
+              onClick={handlePaste}
+              disabled={olduploadstatus}
+            >粘贴
+            </Button>
+
+            <Button
+              type='primary'
+              style={{ marginRight: 10 }}
+              onClick={softReportform}
+              disabled={olduploadstatus}
+            >保存
+            </Button>
+
             <Button onClick={handleBack}>
               返回
             </Button>
@@ -675,7 +690,7 @@ function SoftReport(props) {
                   initialValue: copyData.main ? copyData.main.name : ''
                 })
                   (
-                    <Input style={{ width: 700 }} />
+                    <Input style={{ width: 700 }} placeholder={`省级集中计量自动化系统软件运维${reporttype === 'week'? '周':'月'}报`} />
                   )}
               </Form.Item>
             </Col>
@@ -715,6 +730,7 @@ function SoftReport(props) {
                       type='primary'
                       style={{ marginLeft: 10, marginTop: 5 }}
                       onClick={getReportdata}
+                      disabled={olduploadstatus}
                     >
                       获取数据
                     </Button>
@@ -816,6 +832,7 @@ function SoftReport(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -875,6 +892,7 @@ function SoftReport(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -969,6 +987,7 @@ function SoftReport(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -1007,6 +1026,7 @@ function SoftReport(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -1093,6 +1113,7 @@ function SoftReport(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -1130,6 +1151,7 @@ function SoftReport(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -1172,6 +1194,7 @@ function SoftReport(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -1213,6 +1236,7 @@ function SoftReport(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -1238,6 +1262,7 @@ function SoftReport(props) {
                         loading={loading}
                         ChangeAddRow={v => setAddrow(v)}
                         sign={deleteSign}
+                        uploadStatus={olduploadstatus}
                       />
                     </Col>
 
@@ -1264,6 +1289,7 @@ function SoftReport(props) {
               ghost
               onClick={() => newMember()}
               icon="plus"
+              disabled={olduploadstatus}
             >
               新增其他内容
             </Button>
@@ -1276,7 +1302,7 @@ function SoftReport(props) {
 }
 
 export default Form.create({})(
-  connect(({ softreport, loading }) => ({
+  connect(({ softreport,viewcache, loading }) => ({
     maintenanceArr: softreport.maintenanceArr,
     maintenanceService: softreport.maintenanceService,
     soluteArr: softreport.soluteArr,
@@ -1286,5 +1312,6 @@ export default Form.create({})(
     contentRowlist: softreport.contentRowlist,
     patrolAndExamineArr: softreport.patrolAndExamineArr,
     loading: loading.models.softreport,
+    olduploadstatus: viewcache.olduploadstatus,
   }))(SoftReport),
 );

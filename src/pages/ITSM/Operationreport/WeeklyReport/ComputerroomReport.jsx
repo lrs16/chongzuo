@@ -76,6 +76,7 @@ function ComputerroomReport(props) {
     lastweekHomeworklist,
     nextweekHomeworklist,
     loading,
+    olduploadstatus
   } = props;
   const tabActiveKey = 'week';
 
@@ -424,14 +425,23 @@ function ComputerroomReport(props) {
 
   const dateFormat = 'YYYY-MM-DD';
 
-
   return (
     <PageHeaderWrapper
       title={reporttype === 'week' ? '新建机房运维周报' : '新建机房运维月报'}
       extra={
         <>
-          <Button type='primary' onClick={handlePaste}>粘贴</Button>
-          <Button type='primary' onClick={computerReportform}>保存</Button>
+          <Button
+            type='primary'
+            onClick={handlePaste}
+            disabled={olduploadstatus}
+          >粘贴</Button>
+          <Button
+            type='primary'
+            onClick={computerReportform}
+            disabled={olduploadstatus}
+          >
+            保存
+          </Button>
           <Button onClick={handleBack}>
             返回
           </Button>
@@ -465,7 +475,7 @@ function ComputerroomReport(props) {
                   initialValue: copyData.main ? copyData.main.name : ''
                 })
                   (
-                    <Input style={{ width: 700 }} />
+                    <Input style={{ width: 700 }} placeholder={`省级集中计量自动化系统机房运维${reporttype === 'week'? '周':'月'}报`} />
                   )}
               </Form.Item>
             </Col>
@@ -512,6 +522,7 @@ function ComputerroomReport(props) {
                       type='primary'
                       style={{ marginLeft: 10, marginTop: 5 }}
                       onClick={getReportdata}
+                      disabled={olduploadstatus}
                     >
                       获取数据
                     </Button>
@@ -586,6 +597,7 @@ function ComputerroomReport(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -637,6 +649,7 @@ function ComputerroomReport(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -688,6 +701,7 @@ function ComputerroomReport(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -772,6 +786,7 @@ function ComputerroomReport(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -810,6 +825,7 @@ function ComputerroomReport(props) {
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
+                              banOpenFileDialog={olduploadstatus}
                             />
                           </div>
                         )}
@@ -836,6 +852,7 @@ function ComputerroomReport(props) {
                         loading={loading}
                         ChangeAddRow={v => setAddrow(v)}
                         sign={deleteSign}
+                        uploadStatus={olduploadstatus}
                       />
                     </Col>
 
@@ -860,10 +877,9 @@ function ComputerroomReport(props) {
               style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
               type="primary"
               ghost
-              // onClick={() => {newMember(); setAddrow(true)}}
               onClick={() => { newMember() }}
-              // disabled={addrow}
               icon="plus"
+              disabled={olduploadstatus}
             >
               新增其他内容
             </Button>
@@ -876,11 +892,12 @@ function ComputerroomReport(props) {
 }
 
 export default Form.create({})(
-  connect(({ softreport, loading }) => ({
+  connect(({ softreport, viewcache,loading }) => ({
     lastweekHomeworklist: softreport.lastweekHomeworklist,
     nextweekHomeworklist: softreport.nextweekHomeworklist,
     faultQueryList: softreport.faultQueryList,
     nofaultQueryList: softreport.nofaultQueryList,
     loading: loading.models.softreport,
+    olduploadstatus: viewcache.olduploadstatus,
   }))(ComputerroomReport),
 );
