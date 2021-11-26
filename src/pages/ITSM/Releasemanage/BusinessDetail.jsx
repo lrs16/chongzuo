@@ -101,6 +101,7 @@ function BusinessDetail(props) {
 
   const ToQuality = () => {
     if (selectedRecords[0].id) {
+      setVisibleQuality(false);
       releaseToQuality({ id: selectedRecords[0].id }).then(res => {
         if (res.code === 200) {
           message.success('操作成功！');
@@ -112,7 +113,8 @@ function BusinessDetail(props) {
           });
         } else {
           message.error('操作失败！')
-        }
+        };
+        setSelectedRecords([])
       })
     }
   }
@@ -135,7 +137,7 @@ function BusinessDetail(props) {
           <Popconfirm
             title="所选的清单有不属于您负责的业务的功能，确定验证吗?"
             onConfirm={() => submitVerify()}
-            visible={visibleQuality}
+            visible={visible}
             onCancel={() => setVisible(false)}
             placement="leftTop"
           >
@@ -147,9 +149,9 @@ function BusinessDetail(props) {
       )}
       {titletype === '业务复核' && (
         <Popconfirm
-          title="该功能已发在发有服务绩效，确认再次发起服务绩效吗?"
+          title="该功能曾发起服务绩效，确定再次发起服务绩效吗?"
           onConfirm={() => ToQuality()}
-          visible={visible}
+          visible={visibleQuality}
           onCancel={() => setVisibleQuality(false)}
           placement="leftTop"
         >

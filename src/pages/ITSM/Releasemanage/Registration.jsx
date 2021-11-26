@@ -10,22 +10,8 @@ import User from '@/components/SelectUser/User';
 import { releaseUserList } from '@/services/user';
 import TimeoutModal from '../components/TimeoutModal';
 import Registrat from './components/Registrat';
-import { saveRegister, getTimeoutInfo } from './services/api';
-import { saveTimeoutMsg } from '../services/api';
-
-
-const Attaches = [
-  { docName: '功能出厂测试报告', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '' },
-  { docName: '平台验证测试报告', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '' },
-  { docName: '业务功能测试报告', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '' },
-  { docName: '功能清单终稿', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '' },
-  { docName: '发布实施方案', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '' },
-  { docName: '计划发布申请审批表', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '' },
-  { docName: '临时发布申请审批表', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '' },
-  { docName: '功能发布报告', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '' },
-  { docName: '其它附件', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '' },
-];
-
+import { saveRegister, getTimeoutInfo, getBlankAttachList } from './services/api';
+import { saveTimeoutMsg, } from '../services/api';
 
 function Registration(props) {
   const { dispatch, userinfo, loading, tabnew, tabdata, location, uploadstatus } = props;
@@ -38,12 +24,17 @@ function Registration(props) {
   const [modalvisible, setModalVisible] = useState(false);
   const [saveloading, setSaveloading] = useState(false);
   const [userlist, setUserlist] = useState([]);
-  const [indexvalue, setIndexValue] = useState({ releaseMain: {}, releaseRegister: {}, releaseEnvs: [], releaseLists: [], releaseAttaches: Attaches });
-  // 初始化用户信息，流程类型
+  const [indexvalue, setIndexValue] = useState({ releaseMain: {}, releaseRegister: {}, releaseEnvs: [], releaseLists: [], releaseAttaches: [] });
+  // 初始化用户信息，流程类型,附件列表
   useEffect(() => {
     dispatch({
       type: 'itsmuser/fetchuser',
     });
+    getBlankAttachList().then(res => {
+      if (res.code === 200) {
+        setIndexValue({ ...indexvalue, releaseAttaches: res.data })
+      }
+    })
     sessionStorage.setItem('Processtype', 'release');
     return () => {
       sessionStorage.removeItem('Processtype');
@@ -86,7 +77,7 @@ function Registration(props) {
       releaseEnvs,
       releaseLists,
     };
-    setIndexValue(register);
+    // setIndexValue(register);
     return register
   };
 
@@ -243,6 +234,12 @@ function Registration(props) {
     }
   }, [location.state]);
 
+  // useEffect(() => {
+  //   if (location && location.state && location.state.cache) {
+  //     setIndexValue({ ...indexvalue, releaseAttaches: [] })
+  //   }
+  // }, [location])
+
 
   useEffect(() => {
     // 获取页签信息
@@ -296,7 +293,7 @@ function Registration(props) {
               selectdata={selectdata}
               isEdit
               taskName='新建'
-              info={tabdata}
+              info={tabdata || indexvalue}
             />
           </SubmitTypeContext.Provider>
         </Card>

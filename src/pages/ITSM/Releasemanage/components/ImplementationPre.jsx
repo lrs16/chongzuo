@@ -3,7 +3,7 @@ import moment from 'moment';
 import { Row, Col, Form, Input, Alert, DatePicker, Select, Radio, Divider } from 'antd';
 import SubmitTypeContext from '@/layouts/MenuContext';
 import EditeTable from './EditeTable';
-import DocumentAtt from './DocumentAtt';
+import DocumentAtt from './NewDocAtt';
 import ImplementationEditTalbe from './ImplementationEditTalbe';
 import Implementationsteps from './Implementationsteps';
 

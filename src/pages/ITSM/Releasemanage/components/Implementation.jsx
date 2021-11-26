@@ -2,7 +2,7 @@ import React, { useRef, useImperativeHandle, forwardRef, useEffect, useState, us
 import moment from 'moment';
 import { Row, Col, Form, Input, DatePicker, Select, Radio, Alert } from 'antd';
 import SubmitTypeContext from '@/layouts/MenuContext';
-import DocumentAtt from './DocumentAtt';
+import DocumentAtt from './NewDocAtt';
 import BusinessEditTable from './BusinessEditTable';
 
 const { TextArea } = Input;

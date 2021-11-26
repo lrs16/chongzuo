@@ -372,3 +372,10 @@ export async function releaseToQuality(params) {
     requestType: 'form',
   });
 }
+
+// 发布登记获取新的附件列表 /release/from/getBlankAttachList
+export async function getBlankAttachList() {
+  return request(`/release/from/getBlankAttachList`, {
+    method: 'GET',
+  });
+}

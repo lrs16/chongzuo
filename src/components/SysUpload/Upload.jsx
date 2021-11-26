@@ -77,6 +77,7 @@ function SysUpload(props) {
         const correctfiletype = filetype.indexOf(filesuffix);
         if (correctfiletype === -1) {
           message.error(`${file.name}文件不符合上传规则,禁止上传...`);
+          sendUploadStatus(false);
           return reject();
         }
         return resolve(file);

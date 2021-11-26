@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import moment from 'moment';
 import { Row, Col, Form, Input, Alert, DatePicker, Select, Checkbox, Button, Radio, Tabs, message } from 'antd';
 import SubmitTypeContext from '@/layouts/MenuContext';
-import DocumentAtt from './DocumentAtt';
+import DocumentAtt from './NewDocAtt';
 import EditeTable from './EditeTable';
 import TimeoutModal from '../../components/TimeoutModal';
 import { saveTimeoutMsg } from '../../services/api';
@@ -60,6 +60,7 @@ function VersionAudit(props, ref) {
   const [timeoutPost, setTimeoutPost] = useState({});
   const { ChangeSubmitType, ChangeButtype, releaseType } = useContext(SubmitTypeContext);
   const required = true;
+  // console.log(info.releaseAttaches);
 
   const formmap = new Map([
     ['版本管理员审核', info.mergeOrder],
@@ -98,6 +99,7 @@ function VersionAudit(props, ref) {
   const handleTabChange = (key) => {
     setActiveKey(key);
     setAttaches(info.releaseAttaches[key]);
+
   }
   // 初始化附件页签
   useEffect(() => {
@@ -121,6 +123,8 @@ function VersionAudit(props, ref) {
       ChangeButtype('save')
     };
   };
+
+  console.log(attaches);
 
   // 数组扁平
   const toAllCheck = (arr) => {
@@ -475,7 +479,7 @@ function VersionAudit(props, ref) {
                 // rules: [{ required, message: '请上传附件' }, {
                 //   validator: handleAttValidator
                 // }],
-                initialValue: info.releaseAttaches,
+                initialValue: attaches,
               })(<></>)}
             </Form.Item>
           </Col>

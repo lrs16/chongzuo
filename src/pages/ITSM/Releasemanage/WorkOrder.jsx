@@ -160,7 +160,7 @@ function WorkOrder(props) {
             sessionStorage.setItem('flowtype', '1');
             savelatformValid();
             // setUserVisible(true);
-            // tosubmit();
+            // tosubmit();  
           }
         })
         break;
@@ -354,11 +354,6 @@ function WorkOrder(props) {
           VersionAuditRef.current.Forms((err) => {
             if (err) {
               message.error('请将信息填写完整')
-            } else if (taskName !== '中心领导审核') {
-              sessionStorage.setItem('flowtype', '1');
-              saveVersionAudit();
-              // setUserVisible(true);
-              // tosubmit();
             } else {
               sessionStorage.setItem('flowtype', '1');
               saveVersionAudit();
@@ -562,7 +557,7 @@ function WorkOrder(props) {
             taskName
           },
         });
-      } else {
+      } else if (userlist) {
         switch (taskName) {
           case '出厂测试':
             FactorytestSubmit();
@@ -610,7 +605,7 @@ function WorkOrder(props) {
           ChangeSelectdata={newvalue => setSelectData(newvalue)}
           style={{ display: 'none' }}
         />
-        {taskName !== '版本管理员审核' && <TaskLinks records={tasklinks || []} />}
+        {(taskName !== '版本管理员审核' || taskName === '版本管理员审核' && info && info.releaseMains && info.releaseMains.length === 1) && <TaskLinks records={tasklinks || []} />}
         <Collapse
           expandIconPosition="right"
           activeKey={activeKey}

@@ -50,7 +50,14 @@ function BusinessEditTable(props) {
     if (dataSource && dataSource.length === 0) {
       setData(dataSource);
     };
-  }, [dataSource])
+  }, [dataSource]);
+
+  useEffect(() => {
+    if (loading) {
+      setSelectedRowKeys([]);
+      setSelectedRecords([]);
+    }
+  }, [loading])
 
   // 获取行
   const getRowByKey = (key, newData) => {
@@ -245,8 +252,8 @@ function BusinessEditTable(props) {
     },
     {
       title: '验证意见',
-      dataIndex: 'operat',
-      key: 'operat',
+      dataIndex: 'verifyComment',
+      key: 'verifyComment',
       fixed: 'right',
       width: 200,
       render: (text, record) => {

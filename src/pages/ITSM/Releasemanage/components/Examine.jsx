@@ -1,7 +1,7 @@
 import React, { useRef, useImperativeHandle, forwardRef } from 'react';
 import moment from 'moment';
 import { Row, Col, Form, Input, DatePicker, Select, Radio } from 'antd';
-import DocumentAtt from './DocumentAtt';
+import DocumentAtt from './NewDocAtt';
 import EditeTable from './EditeTable';
 
 const { TextArea } = Input;

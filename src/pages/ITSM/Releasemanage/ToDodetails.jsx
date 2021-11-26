@@ -13,7 +13,7 @@ import Backoff from './components/Backoff';
 import { saveTimeoutMsg } from '../services/api';
 
 function ToDodetails(props) {
-  const { location, dispatch, loading, loadingopen, allloading, currentTaskStatus, relationCount, submitTimes, info, uploadstatus } = props;
+  const { location, dispatch, loading, loadingopen, allloading, currentTaskStatus, relationCount, submitTimes, info, uploadstatus, loadinguserloading } = props;
   const { taskName, taskId, releaseType, Id, } = location.query;
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [buttype, setButtype] = useState('');                    // 点击的按钮类型
@@ -219,7 +219,7 @@ function ToDodetails(props) {
           删除
         </Button>
       )}
-      {!saved && taskName !== '出厂测试' && taskName !== '发布实施' && taskName !== '业务复核' && (
+      {!saved && taskName !== '出厂测试' && taskName !== '发布验证' && taskName !== '业务复核' && (
         <Button type="danger" ghost style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => { handleGoback() }} disabled={uploadstatus || allloading}>
           回退
         </Button>
@@ -264,7 +264,7 @@ function ToDodetails(props) {
   )
 
   return (
-    <Spin tip="正在加载数据..." spinning={!!loading || !!loadingopen}>
+    <Spin tip="正在加载数据..." spinning={(!!loading || !!loadingopen || loadinguserloading)}>
       <PageHeaderWrapper
         title={taskName}
         extra={operations}
@@ -283,7 +283,9 @@ function ToDodetails(props) {
             ChangeaddAttaches: (v => setAddAttaches(v)),
             saved,
             releaseType,
+            taskName,
             location,
+
           }}>
             <WorkOrder location={location} buttype={buttype} />
           </SubmitTypeContext.Provider>
@@ -305,15 +307,16 @@ function ToDodetails(props) {
   );
 }
 
-export default connect(({ releasetodo, viewcache, loading }) => ({
+export default connect(({ releasetodo, viewcache, itsmuser, loading }) => ({
   info: releasetodo.info,
   tasklinks: releasetodo.tasklinks,
   relationCount: releasetodo.relationCount,
   submitTimes: releasetodo.submitTimes,
   currentTaskStatus: releasetodo.currentTaskStatus,
   uploadstatus: viewcache.uploadstatus,
+  userlist: itsmuser.userlist,
   loading: loading.effects['releasetodo/releaseflow'],
   loadingopen: loading.effects['releasetodo/openflow'],
-  // loadingcheckrelese: loading.effects['releasetodo/checkversion'],
+  loadinguserloading: loading.effects['itsmuser/releaseuserlist'],
   allloading: loading.models.releasetodo,
 }))(ToDodetails);

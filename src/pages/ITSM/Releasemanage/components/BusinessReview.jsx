@@ -2,7 +2,7 @@ import React, { useRef, useImperativeHandle, forwardRef, useState, useContext, u
 import moment from 'moment';
 import { Row, Col, Form, Input, Button, Select, Radio, Alert } from 'antd';
 import SubmitTypeContext from '@/layouts/MenuContext';
-import DocumentAtt from './DocumentAtt';
+import DocumentAtt from './NewDocAtt';
 import ReleseList from './ReleseList';
 
 const { TextArea } = Input;
