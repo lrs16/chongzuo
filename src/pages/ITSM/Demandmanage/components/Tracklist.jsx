@@ -150,7 +150,7 @@ function Tracklist(props) {
             </Form.Item>
           </Col>
           <Col span={8} style={{ paddingTop: 4 }}>
-            {status !== '' && (<Radio checked style={{ marginTop: 8 }}>已启动发布流程</Radio>)}
+            {status !== '' && (<Radio checked style={{ marginTop: 8 }}>已到发布库</Radio>)}
           </Col>
         </Form>
       </Row>

@@ -355,6 +355,24 @@ export async function repoList(params) {
   });
 }
 
+// 发布库删除
+export async function repoDel(params) {
+  return request(`/release/repo/del`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 发布库生成出厂测试
+export async function repoRegister(params) {
+  return request(`/release/repo/register`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
 // 修改版本号
 export async function saveVersion(params) {
   return request(`/release/from/saveVersion`, {

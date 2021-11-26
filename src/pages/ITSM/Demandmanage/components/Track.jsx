@@ -335,7 +335,7 @@ function Track(props) {
   const torelease = () => {
     demandToRelease(demandId).then(res => {
       if (res.code === 200) {
-        message.success('发布流程启动成功')
+        message.success('已到发布库')
         setStatus(res.data.taskName);
         ChangeReleaseTaskName(res.data.taskName);
       } else {
@@ -596,8 +596,8 @@ function Track(props) {
           </Col>
           <Col span={8} style={{ paddingTop: 4 }}>
             {status === '' ? (
-              <Button type='primary' onClick={() => torelease()}>启动发布</Button>
-            ) : <Radio checked style={{ marginTop: 8 }}>已启动发布流程</Radio>}
+              <Button type='primary' onClick={() => torelease()}>到发布</Button>
+            ) : <Radio checked style={{ marginTop: 8 }}>已到发布库</Radio>}
           </Col>
         </Row>
       </Form>

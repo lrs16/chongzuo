@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Form, Card, Row, Col, Input, Select, DatePicker, Button, Table } from 'antd';
+import { Form, Card, Row, Col, Input, Select, DatePicker, Button, Table, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import AdminAuth from '@/components/AdminAuth';
+import { repoDel, repoRegister } from './services/api'
 
 const { Option } = Select;
 
@@ -17,7 +19,23 @@ const formItemLayout = {
   },
 };
 
-const statumap = [];
+const typemap = [
+  { key: 1, title: '计划发布' },
+  { key: 2, title: '临时发布' },
+];
+
+const statumap = [
+  { key: 1, title: '未出厂' },
+  { key: 2, title: '已出厂' },
+  { key: 3, title: '发布成功' },
+  { key: 4, title: '发布失败' },
+];
+
+const sourcemap = [
+  { key: 1, title: '故障转发布' },
+  { key: 2, title: '问题转发布' },
+  { key: 3, title: '需求转发布' },
+]
 
 const columns = [
   {
@@ -95,6 +113,7 @@ function ReleaseRepo(props) {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRecords, setSelectedRecords] = useState([]);
   const [tabrecord, setTabRecord] = useState({});
+  const [username, setUserName] = useState('');
 
   const searchrecord = { releaseNo: '', releaseStatus: '' };
   let cacheinfo = {};
@@ -127,7 +146,7 @@ function ReleaseRepo(props) {
       current: 1,
     });
     const values = getFieldsValue();
-    searchdata(values, paginations.current, paginations.pageSize);
+    searchdata(values, 1, paginations.pageSize);
   };
 
   // 重置
@@ -135,6 +154,43 @@ function ReleaseRepo(props) {
     resetFields();
     searchdata(searchrecord, 1, 15);
   };
+
+  // 删除
+  const handleDel = () => {
+    if (selectedRowKeys.length > 0) {
+      repoDel({ ids: selectedRowKeys.join(',') }).then(res => {
+        if (res.code === 200) {
+          message.success(res.msg);
+          handleSearch();
+          setSelectedRowKeys([])
+        } else {
+          message.error('删除失败')
+        }
+      })
+    }
+  };
+
+  // 启动发布流程
+  const handlerepoRegister = () => {
+    if (selectedRowKeys.length > 0) {
+      const newArr = selectedRecords.filter(item => item.status === '未出厂');
+      const ids = newArr.map(item => { return item.id })
+      if (newArr && newArr.length > 0) {
+        repoRegister({ ids: ids.join(',') }).then(res => {
+          if (res.code === 200) {
+            message.success(res.msg);
+            handleSearch()
+            setSelectedRowKeys([])
+          } else {
+            message.error('启动流程失败')
+          }
+        })
+      } else {
+        message.error('请选择发布状态为‘未出厂’的数据')
+      }
+
+    }
+  }
 
   useEffect(() => {
     if (location.state) {
@@ -223,15 +279,22 @@ function ReleaseRepo(props) {
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>
               <Form.Item label="发布来源">
-                {getFieldDecorator('releaseNo', {
-                  initialValue: cacheinfo.releaseNo,
-                })(<Input placeholder="请输入" allowClear />)}
+                {getFieldDecorator('source', {
+                  initialValue: cacheinfo.source,
+                })(
+                  <Select placeholder="请选择" allowClear>
+                    {sourcemap.map(obj => (
+                      <Option key={obj.key} value={obj.title}>
+                        {obj.title}
+                      </Option>
+                    ))}
+                  </Select>)}
               </Form.Item>
             </Col>
             <Col span={8}>
               <Form.Item label="发布状态">
-                {getFieldDecorator('releaseStatus', {
-                  initialValue: cacheinfo.releaseStatus,
+                {getFieldDecorator('status', {
+                  initialValue: cacheinfo.status,
                 })(
                   <Select placeholder="请选择" allowClear>
                     {statumap.map(obj => (
@@ -245,11 +308,11 @@ function ReleaseRepo(props) {
             </Col>
             <Col span={8}>
               <Form.Item label="发布类型">
-                {getFieldDecorator('releaseStatus', {
+                {getFieldDecorator('releaseType', {
                   initialValue: cacheinfo.releaseStatus,
                 })(
                   <Select placeholder="请选择" allowClear>
-                    {statumap.map(obj => (
+                    {typemap.map(obj => (
                       <Option key={obj.key} value={obj.title}>
                         {obj.title}
                       </Option>
@@ -260,16 +323,16 @@ function ReleaseRepo(props) {
             </Col>
             <Col span={8}>
               <Form.Item label="出厂测试登记人">
-                {getFieldDecorator('releaseNo', {
-                  initialValue: cacheinfo.releaseNo,
+                {getFieldDecorator('register', {
+                  initialValue: cacheinfo.register,
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item label="发送时间">
+              <Form.Item label="登记时间">
                 <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                  {getFieldDecorator('beginTime', {
-                    initialValue: cacheinfo.beginTime ? moment(cacheinfo.beginTime * 1000) : '',
+                  {getFieldDecorator('beginRegisterTime', {
+                    initialValue: cacheinfo.beginRegisterTime ? moment(cacheinfo.beginRegisterTime * 1000) : '',
                   })(
                     <DatePicker
                       showTime={{
@@ -284,8 +347,8 @@ function ReleaseRepo(props) {
                 </div>
                 <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
                 <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                  {getFieldDecorator('endTime', {
-                    initialValue: cacheinfo.endTime ? moment(cacheinfo.endTime * 1000) : '',
+                  {getFieldDecorator('endRegisterTime', {
+                    initialValue: cacheinfo.endRegisterTime ? moment(cacheinfo.endRegisterTime * 1000) : '',
                   })(
                     <DatePicker
                       showTime={{
@@ -302,16 +365,30 @@ function ReleaseRepo(props) {
             </Col>
             <Col span={8}>
               <Form.Item label="关联工单编号">
-                {getFieldDecorator('releaseNo', {
-                  initialValue: cacheinfo.releaseNo,
+                {getFieldDecorator('sourceNo', {
+                  initialValue: cacheinfo.sourceNo,
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
           </Form>
         </Row>
+        <div style={{ textAlign: 'right' }}>
+          <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
+          <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
+        </div>
         <div style={{ marginBottom: 24 }}>
-          <Button type="primary" style={{ marginRight: 8 }}>出厂测试</Button >
-          <Button type="danger" ghost style={{ marginRight: 8 }}>删 除</Button >
+          <Button type="primary" style={{ marginRight: 8 }} onClick={() => handlerepoRegister()} disabled={selectedRowKeys.length === 0}>出厂测试</Button >
+          <AdminAuth getAuth={v => setUserName(v)} code='admin' />
+          {username === 'admin' && (
+            <Button type="danger"
+              ghost
+              style={{ marginRight: 8 }}
+              onClick={() => handleDel()}
+              disabled={selectedRowKeys.length === 0}
+            >
+              删 除
+            </Button >
+          )}
         </div>
         < Table
           loading={loading}
