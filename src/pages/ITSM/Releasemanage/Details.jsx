@@ -93,9 +93,7 @@ function Details(props) {
         />
         {tabActivekey === 'workorder' && historyinfo && (
           <>
-            <div className={styles.collapse}>
-              <TaskLinks records={tasklinks || []} />
-            </div>
+            <TaskLinks records={tasklinks || []} taskName={taskName} />
             <SubmitTypeContext.Provider value={{
               addAttaches: '',                                   // 清单临时添加，fasle文档列表不需要加列，true文档列表需要加列
               ChangeaddAttaches: (v => { }),

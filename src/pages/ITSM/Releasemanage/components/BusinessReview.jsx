@@ -68,7 +68,7 @@ function BusinessReview(props, ref) {
 
   const getTypebyId = key => {
     if (selectdata.ischange) {
-      return selectdata.arr.filter(item => item.key === key)[0].children;
+      return selectdata.arr.filter(item => item.key === key)[0]?.children;
     }
     return [];
   };

@@ -599,13 +599,15 @@ function WorkOrder(props) {
 
   return (
     <>
+      <DictLower
+        typeid="443"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'none' }}
+      />
+      {(taskName !== '版本管理员审核' || taskName === '版本管理员审核' && info && info.releaseMains && info.releaseMains.length === 1) && (
+        <TaskLinks records={tasklinks || []} taskName={taskName} />
+      )}
       <div className={styles.collapse}>
-        <DictLower
-          typeid="443"
-          ChangeSelectdata={newvalue => setSelectData(newvalue)}
-          style={{ display: 'none' }}
-        />
-        {(taskName !== '版本管理员审核' || taskName === '版本管理员审核' && info && info.releaseMains && info.releaseMains.length === 1) && <TaskLinks records={tasklinks || []} />}
         <Collapse
           expandIconPosition="right"
           activeKey={activeKey}
@@ -717,7 +719,7 @@ function WorkOrder(props) {
               </div>
             </Panel>
           )}
-          {taskName === '业务复核' && info && info.releaseAttaches && (
+          {taskName === '业务复核' && info && info.releaseBizCheck && (
             <Panel header={taskName} key="form">
               <BusinessReview
                 wrappedComponentRef={BusinessReviewRef}

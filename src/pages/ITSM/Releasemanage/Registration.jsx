@@ -234,14 +234,11 @@ function Registration(props) {
     }
   }, [location.state]);
 
-  // useEffect(() => {
-  //   if (location && location.state && location.state.cache) {
-  //     setIndexValue({ ...indexvalue, releaseAttaches: [] })
-  //   }
-  // }, [location])
-
-
   useEffect(() => {
+    // 清除待办tasklinks值
+    dispatch({
+      type: 'releasetodo/cleardata',
+    });
     // 获取页签信息
     if (location.state) {
       if (location.state.cache) {
@@ -315,7 +312,8 @@ function Registration(props) {
   );
 }
 
-export default connect(({ itsmuser, viewcache, loading }) => ({
+export default connect(({ itsmuser, viewcache, releasetodo, loading }) => ({
+  releasetodo,
   tabnew: viewcache.tabnew,
   tabdata: viewcache.tabdata,
   uploadstatus: viewcache.uploadstatus,

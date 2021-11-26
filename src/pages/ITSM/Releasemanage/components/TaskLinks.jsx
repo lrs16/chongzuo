@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import { Steps } from 'antd';
 import styles from '../index.less';
@@ -6,10 +6,22 @@ import styles from '../index.less';
 const { Step } = Steps;
 
 function TaskLinks(props) {
-  const { records } = props;
+  const { records, taskName } = props;
+  const [current, setCurrent] = useState(0);
+  useEffect(() => {
+    if (records) {
+      if (taskName === '结束') {
+        setCurrent(9)
+      } else {
+        const taskNames = records.map(item => { return item.taskName });
+        setCurrent(taskNames.indexOf(taskName));
+      }
+    }
+  }, [records]);
+
   return (
     <Steps
-      current={records.length - 1}
+      current={current}
       size="small"
       // progressDot
       style={{
@@ -43,7 +55,7 @@ function TaskLinks(props) {
         );
         return <Step
           title={obj.taskName}
-          description={desc}
+          // description={desc}
           key={index.toString()}
         // status={obj.timeoutReason ? 'error' : 'finish'}
         // icon={obj.timeoutReason ? 'clock-circle' : 'check-circle'}

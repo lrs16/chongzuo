@@ -1,4 +1,4 @@
-import { 
+import {
   getEventList,
   getTroubleList,
   getProblemList,
@@ -8,8 +8,9 @@ import {
   saveRelationrelease,
   relationlist,
   relationReleaseLists,
-  getDemandList
-     } from '@/services/common';
+  getDemandList,
+  getOperationList,
+} from '@/services/common';
 import { message } from 'antd';
 
 export default {
@@ -22,6 +23,9 @@ export default {
 
   effects: {
     * fetcht({ payload }, { put, call }) {
+      yield put({
+        type: "clearlist",
+      });
       const response = yield call(queryOrderRelationList, payload);
       yield put({
         type: "save",
@@ -51,10 +55,10 @@ export default {
 
     // 保存发布
     * saveelease({ payload }, { put, call }) {
-     return yield call(saveRelationrelease, payload);
-    
-  },
+      return yield call(saveRelationrelease, payload);
 
+    },
+    // 弹窗获取事件列表
     * fetchevent({ payload }, { put, call }) {
       const response = yield call(getEventList, payload);
       yield put({
@@ -62,7 +66,7 @@ export default {
         payload: response.data
       })
     },
-
+    // 弹窗获取故障列表
     * fetchtrouble({ payload }, { put, call }) {
       const response = yield call(getTroubleList, payload);
       yield put({
@@ -70,9 +74,26 @@ export default {
         payload: response.data
       })
     },
-
+    // 弹窗获取问题
     * fetchproblem({ payload }, { put, call }) {
       const response = yield call(getProblemList, payload);
+      yield put({
+        type: "saveorder",
+        payload: response.data
+      })
+    },
+    // 弹窗获取需求
+    * fetchdemand({ payload }, { put, call }) {
+      const response = yield call(getDemandList, payload);
+      yield put({
+        type: "saveorder",
+        payload: response.data
+      })
+    },
+
+    // 弹窗获取作业计划
+    * fetchoperation({ payload }, { put, call }) {
+      const response = yield call(getOperationList, payload);
       yield put({
         type: "saveorder",
         payload: response.data
@@ -90,21 +111,27 @@ export default {
     * fetchrelease({ payload }, { put, call }) {
       const response = yield call(relationReleaseLists, payload);
       yield put({
-      type: "saveorder",
-      payload: response.data
-    })
-  },
+        type: "saveorder",
+        payload: response.data
+      })
+    },
 
     * fetchDemandList({ payload }, { put, call }) {
       const response = yield call(getDemandList, payload);
       yield put({
-      type: "saveorder",
-      payload: response.data
-    })
-},
+        type: "saveorder",
+        payload: response.data
+      })
+    },
   },
 
   reducers: {
+    clearlist(state) {
+      return {
+        ...state,
+        list: [],
+      };
+    },
     save(state, action) {
       return {
         ...state,

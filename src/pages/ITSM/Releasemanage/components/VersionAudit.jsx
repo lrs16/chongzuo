@@ -124,8 +124,6 @@ function VersionAudit(props, ref) {
     };
   };
 
-  console.log(attaches);
-
   // 数组扁平
   const toAllCheck = (arr) => {
     let newArr = [];

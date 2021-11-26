@@ -10,6 +10,7 @@ import TimeoutModal from '../components/TimeoutModal';
 import WorkOrder from './WorkOrder';
 import Process from './Process';
 import Backoff from './components/Backoff';
+import RelationOrder from './RelationOrder';
 import { saveTimeoutMsg } from '../services/api';
 
 function ToDodetails(props) {
@@ -202,7 +203,7 @@ function ToDodetails(props) {
       tab: '发布流程',
     },
     {
-      key: 'correlation',
+      key: 'relevancy',
       tab: '关联工单',
     },
   ];
@@ -264,7 +265,7 @@ function ToDodetails(props) {
   )
 
   return (
-    <Spin tip="正在加载数据..." spinning={(!!loading || !!loadingopen || loadinguserloading)}>
+    <Spin tip="正在加载数据..." spinning={(!!loading || !!loadingopen || !!loadinguserloading)}>
       <PageHeaderWrapper
         title={taskName}
         extra={operations}
@@ -291,6 +292,7 @@ function ToDodetails(props) {
           </SubmitTypeContext.Provider>
         )}
         {tabActivekey === 'process' && (<Process />)}
+        {tabActivekey === 'relevancy' && currentTaskStatus && currentTaskStatus.processInstanceId && <RelationOrder relation mainId={currentTaskStatus.processInstanceId} />}
       </PageHeaderWrapper>
       <TimeoutModal
         modalvisible={modalvisible}
