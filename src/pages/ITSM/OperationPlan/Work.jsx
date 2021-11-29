@@ -602,12 +602,7 @@ function Work(props) {
       extra={tabActiveKey === 'workorder' && (
         <>
           {loading === false &&
-            taskResult &&
-            taskResult.length > 0 &&
-            !delay &&
-            openFlowList &&
-            edit.main !== undefined &&
-            data.length === 1 && (
+            flowNodeName === '计划登记' && (
               <Button
                 type="danger"
                 ghost

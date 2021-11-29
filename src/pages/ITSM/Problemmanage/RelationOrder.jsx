@@ -133,6 +133,20 @@ function RelevancyOrder(props) {
             });
           };
 
+          if (activeKey === 'release') {
+            router.push({
+              pathname: `/ITSM/releasemanage/query/details`,
+              query: {
+                Id: record.orderNo,
+                taskName: record.status,
+              },
+              state: {
+                dynamicpath: true,
+                menuDesc: '发布工单详情',
+              }
+            });
+          };
+
         };
         return <a onClick={handleClick}>{text}</a>;
       },
@@ -158,7 +172,7 @@ function RelevancyOrder(props) {
       <Tabs onChange={callback} activeKey={activeKey}>
         <TabPane tab="事件单" key="event" />
         <TabPane tab="故障单" key="trouble" />
-        {/* <TabPane tab="发布单" key="release" /> */}
+        <TabPane tab="发布单" key="release" />
       </Tabs>
       {activeKey === 'event' && (
         <Row>
@@ -200,7 +214,7 @@ function RelevancyOrder(props) {
           </Col>
         </Row>
       )}
-      {/* {activeKey === 'release' && (
+      {activeKey === 'release' && (
         <Row>
           <Col span={8}>
             <Input onChange={e => setSearchKey(e.target.value)} placeholder="请输入问题单号" allowClear />
@@ -219,7 +233,7 @@ function RelevancyOrder(props) {
             )}
           </Col>
         </Row>
-      )} */}
+      )}
       <Table
         style={{ marginTop: 16 }}
         columns={columns}

@@ -73,6 +73,7 @@ function Queryworkdetail(props) {
 
   useEffect(() => {
     getInformation()
+    setTabActiveKey('workorder')
   }, [id]);
 
   useEffect(() => {
@@ -80,9 +81,6 @@ function Queryworkdetail(props) {
       getInformation()
     }
   }, [location.state]);
-
-
-
 
   const tabList = [
     {

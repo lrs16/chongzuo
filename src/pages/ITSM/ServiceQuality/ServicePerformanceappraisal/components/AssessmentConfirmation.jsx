@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, useRef, useState } from 'react';
+import React, { useImperativeHandle,useEffect,useRef, useState } from 'react';
 import { Form, Input, Radio, Row, Col, DatePicker, Select } from 'antd';
 import moment from 'moment';
 import SysDict from '@/components/SysDict';
@@ -26,6 +26,8 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
     search
   } = props;
   const [selectdata, setSelectData] = useState('');
+  const [providerId, setProviderId] = useState(''); //  设置服务商的id
+  const [scoreId, setScoreId] = useState(''); //  设置服务商的id
 
   const required = true;
   const attRef = useRef();
@@ -36,6 +38,11 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
     }),
     [],
   );
+
+  useEffect(() => {
+    setProviderId(assessmentConfirmation.providerId);
+    setScoreId(assessmentConfirmation.scoreId);
+  },[assessmentConfirmation])
 
   const getTypebyTitle = title => {
     if (selectdata.ischange) {
@@ -86,7 +93,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
         } = option;
         setFieldsValue({
           clauseId: value,
-          clauseName: children[4].props.children,
+          clauseName: children[1].props.children,
           assessValue: children[3].props.children,
         });
       }
@@ -327,6 +334,14 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
               })(<Input disabled={editSign} />)}
             </Form.Item>
           </Col>
+
+          <Col span={24} style={{ display: 'none' }}>
+          <Form.Item label="详细条款" {...forminladeLayout}>
+            {getFieldDecorator('clauseName', {
+              initialValue: assessmentConfirmation.clause && assessmentConfirmation.clause.detailed,
+            })(<Input />)}
+          </Form.Item>
+        </Col>
 
           <Col span={8}>
             <Form.Item label="考核得分">

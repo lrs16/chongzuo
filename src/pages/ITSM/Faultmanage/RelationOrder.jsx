@@ -91,9 +91,24 @@ function RelevancyOrder(props) {
     }
   }, [statuscode])
 
+  let orderNotype;
+  switch (activeKey) {
+    case 'problem':
+      orderNotype = '问题单编号';
+      break;
+    case 'event':
+      orderNotype = '事件单编号';
+      break;
+    case 'release':
+      orderNotype = '发布单编号';
+      break;
+    default:
+      break
+  }
+
   const columns = [
     {
-      title: activeKey === 'problem' ? '问题单编号' : '事件单编码',
+      title: orderNotype,
       dataIndex: 'orderNo',
       key: 'orderNo',
       render: (text, record) => {
@@ -117,7 +132,20 @@ function RelevancyOrder(props) {
                 No: text,
               },
             });
+          };
 
+          if (activeKey === 'release') {
+            router.push({
+              pathname: `/ITSM/releasemanage/query/details`,
+              query: {
+                Id: record.orderNo,
+                taskName: record.status,
+              },
+              state: {
+                dynamicpath: true,
+                menuDesc: '发布工单详情',
+              }
+            });
           };
 
         };
@@ -145,6 +173,7 @@ function RelevancyOrder(props) {
       <Tabs onChange={callback} activeKey={activeKey}>
         <TabPane tab="事件单" key="event" />
         <TabPane tab="问题单" key="problem" />
+        <TabPane tab="发布单" key="release" />
       </Tabs>
       {activeKey === 'event' && (
         <Row>
@@ -179,6 +208,26 @@ function RelevancyOrder(props) {
                 type="primary"
                 style={{ marginLeft: 8 }}
                 onClick={() => { setVisible(true); setTitle('问题') }}
+              >
+                关联工单
+              </Button>
+            )}
+          </Col>
+        </Row>
+      )}
+      {activeKey === 'release' && (
+        <Row>
+          <Col span={8}>
+            <Input onChange={e => setSearchKey(e.target.value)} placeholder="请输入事件单号" allowClear />
+          </Col>
+          <Col span={8}>
+            <Button type="primary" style={{ marginLeft: 16 }} onClick={() => handleSearch()} >本页查询</Button>
+            <Button style={{ marginLeft: 16 }} onClick={() => setSearchRow(undefined)} >重 置</Button>
+            {relation && (
+              <Button
+                type="primary"
+                style={{ marginLeft: 8 }}
+                onClick={() => { setVisible(true); setTitle('发布'); }}
               >
                 关联工单
               </Button>

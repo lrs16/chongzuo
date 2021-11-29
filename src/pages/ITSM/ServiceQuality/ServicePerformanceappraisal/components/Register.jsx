@@ -1,4 +1,4 @@
-import React, { useImperativeHandle,useContext, forwardRef, useState, useEffect } from 'react';
+import React, { useImperativeHandle, useContext, forwardRef, useState, useEffect } from 'react';
 import {
   Form,
   Input,
@@ -82,6 +82,12 @@ const Register = forwardRef((props, ref) => {
     [],
   );
 
+
+  useEffect(() => {
+    setProviderId(register.providerId);
+    setScoreId(register.scoreId);
+  },[register])
+
   const handleChange = (values, option, params) => {
     const {
       key,
@@ -124,7 +130,7 @@ const Register = forwardRef((props, ref) => {
         } = option;
         setFieldsValue({
           clauseId: value,
-          clauseName: children[4].props.children,
+          clauseName: children[1].props.children,
           assessValue: children[3].props.children,
         });
         break;
@@ -802,6 +808,7 @@ const Register = forwardRef((props, ref) => {
               initialValue: register.target2Name,
             })(
               <Select
+                getPopupContainer={e => e.parentNode}
                 disabled={search || noEdit}
                 onChange={(value, option) => handleChange(value, option, 'target2Name')}
                 onFocus={() => handleFocus('two')}

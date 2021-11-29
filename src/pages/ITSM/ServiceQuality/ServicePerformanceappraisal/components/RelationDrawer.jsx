@@ -38,8 +38,10 @@ function RelationDrawer(props) {
       getFieldsValue,
       resetFields,
     }, } = props;
+  const [eventstatus, setEventstatus] = useState([]);
   const [troublestatus, setTroublestatus] = useState([]);
   const [problemstatus, setproblemstatus] = useState([]);
+  const [demandstatus, setdemandstatus] = useState([]);
   const [releasestatus, setReleasestatus] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [paginations, setPaginating] = useState({ current: 1, pageSize: 15 });
@@ -75,7 +77,7 @@ function RelationDrawer(props) {
           },
         });
         break;
-      case 'release':{
+      case 'release': {
         const arryNew = [];
         selectRecord.map((item) => {
           arryNew.push({ ...item, assessNo, orderType: 'FB', relationType: '2', title: '发布单转为服务绩效考核单' })
@@ -125,14 +127,14 @@ function RelationDrawer(props) {
         break;
       case 'release':
         dispatch({
-          type: 'relationorder/fetchlist',
-          payload: { releaseNo: no, status, pageIndex, pageSize },
+          type: 'relationorder/fetchrelease',
+          payload: { no, status:status === undefined ? '' : status, pageIndex, pageSize },
         })
         break;
       case 'demand':
         dispatch({
           type: 'relationorder/fetchDemandList',
-          payload: { no, status, pageIndex:pageIndex+1, pageSize },
+          payload: { no, status, pageIndex: pageIndex + 1, pageSize },
         })
         break;
       default:
@@ -178,27 +180,36 @@ function RelationDrawer(props) {
   }, [orderTypeSuf])
 
   useEffect(() => {
+    querkeyVal('event', 'status').then(res => {
+      if (res.code === 200) {
+        setEventstatus(res.data.status)
+      }
+    });
     querkeyVal('trouble', 'status').then(res => {
       if (res.code === 200) {
         setTroublestatus(res.data.status)
       }
     });
-    querkeyVal('problem', 'status').then(res => {
+    querkeyVal('problem', 'orderstate').then(res => {
       if (res.code === 200) {
-        setproblemstatus(res.data.status)
+        setproblemstatus(res.data.orderstate)
       }
     })
-    querkeyVal('release', 'status').then(res => {
+    querkeyVal('release', 'statu').then(res => {
       if (res.code === 200) {
-        setReleasestatus(res.data.status)
+        setReleasestatus(res.data.statu)
       }
-    })
+    });
+    querkeyVal('demand', 'status').then(res => {
+      if (res.code === 200) {
+        setdemandstatus(res.data.status)
+      }
+    });
   }, [])
 
   let notype;
   let indexType;
   let currentStatus;
-  // let titleType = '标题';
   switch (orderTypeSuf) {
     case 'event':
       notype = '事件单';
@@ -224,7 +235,7 @@ function RelationDrawer(props) {
       notype = '发布单';
       indexType = 'releaseNo';
       // titleType = '发布类型';
-      currentStatus = 'taskName';
+      currentStatus = 'releaseStatus';
       break;
     default:
       break;
@@ -237,9 +248,9 @@ function RelationDrawer(props) {
       key: indexType,
     },
     {
-      title: `${orderTypeSuf === 'release' ? '发布类型':'标题'}`,
-      dataIndex: `${orderTypeSuf === 'release' ? 'releaseType':'title'}`,
-      key: `${orderTypeSuf === 'release' ? 'releaseType':'title'}`,
+      title: `${orderTypeSuf === 'release' ? '发布类型' : '标题'}`,
+      dataIndex: `${orderTypeSuf === 'release' ? 'releaseType' : 'title'}`,
+      key: `${orderTypeSuf === 'release' ? 'releaseType' : 'title'}`,
     },
     {
       title: '状态',
@@ -247,33 +258,6 @@ function RelationDrawer(props) {
       key: currentStatus,
     },
   ];
-
-  // const releaseColumns = [
-  //   {
-  //     title: `${notype}编码`,
-  //     dataIndex: 'releaseNo',
-  //     key: 'releaseNo',
-  //   },
-  //   {
-  //     title: '发布类型',
-  //     dataIndex: 'releaseType',
-  //     key: 'releaseType',
-  //   },
-  //   {
-  //     title: '状态',
-  //     dataIndex: 'taskName',
-  //     key: 'taskName',
-  //   },
-  // ];
-
-  // useEffect(() => {
-  //   if (title === '故障' || title === '故障' || title === '故障' || title === '故障' ) {
-  //     setNewcolumn(columns)
-  //   } else {
-  //     setNewcolumn(releaseColumns)
-  //   }
-  // }, [title])
-
 
   return (
     <>
@@ -299,6 +283,22 @@ function RelationDrawer(props) {
                   </Form.Item>
                 </Col>
                 <Col span={8}>
+                  {orderTypeSuf === 'event' && (
+                    <Form.Item label='状态' >
+                      {getFieldDecorator('status', {
+                        initialValue: '',
+                      })(
+                        <Select placeholder="请选择" allowClear>
+                          {eventstatus.map(obj => (
+                            <Option key={obj.key} value={obj.val}>
+                              {obj.val}
+                            </Option>
+                          ))}
+                        </Select>,
+                      )}
+                    </Form.Item>
+                  )}
+
                   {orderTypeSuf === 'trouble' && (
                     <Form.Item label='状态' >
                       {getFieldDecorator('status', {
@@ -314,6 +314,7 @@ function RelationDrawer(props) {
                       )}
                     </Form.Item>
                   )}
+
                   {orderTypeSuf === 'problem' && (
                     <Form.Item label='状态' >
                       {getFieldDecorator('status', {
@@ -321,6 +322,38 @@ function RelationDrawer(props) {
                       })(
                         <Select placeholder="请选择" allowClear>
                           {problemstatus.map(obj => (
+                            <Option key={obj.key} value={obj.val}>
+                              {obj.val}
+                            </Option>
+                          ))}
+                        </Select>,
+                      )}
+                    </Form.Item>
+                  )}
+
+                  {orderTypeSuf === 'release' && (
+                    <Form.Item label='状态' >
+                      {getFieldDecorator('status', {
+                        initialValue: '',
+                      })(
+                        <Select placeholder="请选择" allowClear>
+                          {releasestatus.map(obj => (
+                            <Option key={obj.key} value={obj.val}>
+                              {obj.val}
+                            </Option>
+                          ))}
+                        </Select>,
+                      )}
+                    </Form.Item>
+                  )}
+
+                  {orderTypeSuf === 'demand' && (
+                    <Form.Item label='状态' >
+                      {getFieldDecorator('status', {
+                        initialValue: '',
+                      })(
+                        <Select placeholder="请选择" allowClear>
+                          {demandstatus.map(obj => (
                             <Option key={obj.key} value={obj.val}>
                               {obj.val}
                             </Option>
@@ -347,11 +380,11 @@ function RelationDrawer(props) {
               // } else {
               //   return r.id
               // }}}
-              rowKey={ r => {
-                if(orderTypeSuf === 'demand') {
-                    return r.processId
-                } 
-                if(orderTypeSuf !== 'demand') {
+              rowKey={r => {
+                if (orderTypeSuf === 'demand') {
+                  return r.processId
+                }
+                if (orderTypeSuf !== 'demand') {
                   return r.id
                 }
               }}
@@ -376,11 +409,11 @@ function RelationDrawer(props) {
               <h4 style={{ padding: '8px 0' }}>{title}编号</h4>
               <Input value={rowrecord.no || rowrecord.releaseNo || rowrecord.eventNo || rowrecord.demandId} />
               <h4 style={{ padding: '8px 0' }}>{title}来源</h4>
-              <Input value={rowrecord.source || rowrecord.eventSource || rowrecord.dataSource} />
+              <Input value={rowrecord.source || rowrecord.eventSource || rowrecord.dataSource || rowrecord.releaseType} />
               <h4 style={{ padding: '8px 0' }}>{title}分类</h4>
-              <Input value={rowrecord.type || rowrecord.eventType || rowrecord.demandType} />
+              <Input value={rowrecord.type || rowrecord.eventType || rowrecord.demandType || rowrecord.releaseStatus} />
               <h4 style={{ padding: '8px 0' }}>建单时间</h4>
-              <Input value={rowrecord.addTime || rowrecord.sendTime || rowrecord.creationTime} />
+              <Input value={rowrecord.addTime || rowrecord.sendTime || rowrecord.creationTime || rowrecord.ctime} />
               <h4 style={{ padding: '8px 0' }}>{title}标题</h4>
               <Input value={rowrecord.title} />
               <h4 style={{ padding: '8px 0' }}>{title}描述</h4>
@@ -404,7 +437,7 @@ function RelationDrawer(props) {
             zIndex: 999
           }}
         >
-          <Button type='primary' onClick={() => handleSave()} style={{ marginRight: 8 }}>保存</Button>
+          <Button type='primary' onClick={() => handleSave()} style={{ marginRight: 8 }} disabled={selectedRowKeys.length === 0}>保存</Button>
           <Button onClick={() => hanldleCancel()} style={{ marginRight: 8 }}>关闭</Button>
         </div>
       </Drawer>

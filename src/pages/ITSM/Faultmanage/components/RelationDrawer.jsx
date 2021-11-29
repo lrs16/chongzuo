@@ -38,6 +38,7 @@ function RelationDrawer(props) {
     }, } = props;
   const [eventstatus, setEventstatus] = useState([]);
   const [problemstatus, setproblemstatus] = useState([]);
+  const [releasestatus, setreleasestatus] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [collapsed, setCollapsed] = useState(false);
@@ -79,6 +80,13 @@ function RelationDrawer(props) {
     if (orderTypeSuf === 'problem') {
       dispatch({
         type: 'relationorder/fetchproblem',
+        payload: { no, status: status === undefined ? '' : status, pageIndex, pageSize },
+      })
+    }
+
+    if (orderTypeSuf === 'release') {
+      dispatch({
+        type: 'relationorder/fetchrelease',
         payload: { no, status: status === undefined ? '' : status, pageIndex, pageSize },
       })
     }
@@ -132,37 +140,53 @@ function RelationDrawer(props) {
         setproblemstatus(res.data.orderstate)
       }
     })
+    querkeyVal('release', 'statu').then(res => {
+      if (res.code === 200) {
+        setreleasestatus(res.data.statu)
+      }
+    })
   }, [])
+
+  let notype;
+  let indexType;
+  let currentStatus;
+
+  switch (orderTypeSuf) {
+    case 'event':
+      notype = '事件单';
+      indexType = 'eventNo';
+      currentStatus = 'flowNodeName'
+      break;
+    case 'problem':
+      notype = '问题单';
+      indexType = 'no';
+      currentStatus = 'flowNodeName'
+      break;
+    case 'release':
+      notype = '发布单';
+      indexType = 'releaseNo';
+      // titleType = '发布类型';
+      currentStatus = 'releaseStatus';
+      break;
+    default:
+      break;
+  }
 
   const columns = [
     {
-      title: orderTypeSuf === 'problem' ? '问题单编号' : '事件单编码',
-      dataIndex: orderTypeSuf === 'problem' ? 'no' : 'eventNo',
-      key: 'no',
-      with: 150,
+      title: `${notype}编号`,
+      dataIndex: indexType,
+      key: indexType,
     },
     {
-      title: '标题',
-      dataIndex: 'title',
-      key: 'title',
-      width: 180,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 180,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      title: `${orderTypeSuf === 'release' ? '发布类型' : '标题'}`,
+      dataIndex: `${orderTypeSuf === 'release' ? 'releaseType' : 'title'}`,
+      key: `${orderTypeSuf === 'release' ? 'releaseType' : 'title'}`,
     },
     {
       title: '状态',
-      dataIndex: orderTypeSuf === 'problem' ? 'status' : 'eventStatus',
-      key: 'status',
+      dataIndex: currentStatus,
+      key: currentStatus,
     },
   ];
   return (
@@ -219,6 +243,21 @@ function RelationDrawer(props) {
                       )}
                     </Form.Item>
                   )}
+                  {orderTypeSuf === 'release' && (
+                    <Form.Item label='状态' >
+                      {getFieldDecorator('status', {
+                        initialValue: '',
+                      })(
+                        <Select placeholder="请选择" allowClear>
+                          {releasestatus.map(obj => (
+                            <Option key={obj.key} value={obj.val}>
+                              {obj.val}
+                            </Option>
+                          ))}
+                        </Select>,
+                      )}
+                    </Form.Item>
+                  )}
                 </Col>
 
                 <Col span={6} style={{ paddingTop: 4 }}>
@@ -252,18 +291,18 @@ function RelationDrawer(props) {
             <h3 style={{ background: '#f8f8f8', padding: 20, border: '1px solid #e8e8e8', borderLeft: 0 }}>工单详情</h3>
             <div style={{ padding: '8px 0 0 24px' }}>
               <h4 style={{ padding: '8px 0' }}>{title}编号</h4>
-              <Input value={orderTypeSuf === 'problem' ? rowrecord.no : rowrecord.eventNo} />
+              <Input value={rowrecord.no || rowrecord.releaseNo || rowrecord.eventNo} />
               <h4 style={{ padding: '8px 0' }}>{title}来源</h4>
-              <Input value={orderTypeSuf === 'problem' ? rowrecord.source : rowrecord.eventSource} />
-              <h4 style={{ padding: '8px 0' }}>{title}分类</h4>
-              <Input value={orderTypeSuf === 'problem' ? rowrecord.type : rowrecord.eventType} />
+              <Input value={rowrecord.source || rowrecord.eventSource || rowrecord.dataSource || rowrecord.releaseType} />
+              <h4 style={{ padding: '8px 0' }}>{title}{orderTypeSuf === 'release' ? '状态' : '类型'}</h4>
+              <Input value={rowrecord.type || rowrecord.eventType || rowrecord.releaseStatus} />
               <h4 style={{ padding: '8px 0' }}>建单时间</h4>
-              <Input value={orderTypeSuf === 'problem' ? rowrecord.addTime : rowrecord.occurTime} />
+              <Input value={rowrecord.addTime || rowrecord.sendTime || rowrecord.creationTime || rowrecord.ctime} />
               <h4 style={{ padding: '8px 0' }}>{title}标题</h4>
               <Input value={rowrecord.title} />
               <h4 style={{ padding: '8px 0' }}>{title}描述</h4>
               <TextArea
-                value={rowrecord.content}
+                value={rowrecord.content || rowrecord.detail}
                 autoSize={{ minRows: 5, maxRows: 10 }}
               />
             </div>

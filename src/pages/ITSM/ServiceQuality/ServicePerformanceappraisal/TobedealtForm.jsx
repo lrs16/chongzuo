@@ -176,6 +176,7 @@ function TobedealtForm(props) {
       openFlow();
       gethisTask();
     }
+    setTabActiveKey('workorder');
   }, [assessNo]);
 
   useEffect(() => {

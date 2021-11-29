@@ -36,8 +36,7 @@ function RelationDrawer(props) {
       getFieldsValue,
       resetFields,
     }, } = props;
-  const [eventstatus, setEventstatus] = useState([]);
-  const [troublestatus, settroublestatus] = useState([]);
+  const [releasestatus, setreleasestatus] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [collapsed, setCollapsed] = useState(false);
@@ -116,16 +115,12 @@ function RelationDrawer(props) {
   }, [orderTypeSuf])
 
   useEffect(() => {
-    querkeyVal('event', 'status').then(res => {
+    querkeyVal('release', 'statu').then(res => {
       if (res.code === 200) {
-        setEventstatus(res.data.status)
+        setreleasestatus(res.data.statu)
       }
     });
-    querkeyVal('trouble', 'status').then(res => {
-      if (res.code === 200) {
-        settroublestatus(res.data.status)
-      }
-    })
+   
   }, [])
 
   const columns = [
@@ -155,7 +150,7 @@ function RelationDrawer(props) {
     },
     {
       title: '状态',
-      dataIndex:'releaseStatus',
+      dataIndex: 'releaseStatus',
       key: 'releaseStatus',
     },
   ];
@@ -182,29 +177,15 @@ function RelationDrawer(props) {
                     )}
                   </Form.Item>
                 </Col>
+
                 <Col span={8}>
-                  {orderTypeSuf === 'event' && (
+                  {orderTypeSuf === 'release' && (
                     <Form.Item label='状态' >
                       {getFieldDecorator('status', {
                         initialValue: '',
                       })(
                         <Select placeholder="请选择" allowClear>
-                          {eventstatus.map(obj => (
-                            <Option key={obj.key} value={obj.val}>
-                              {obj.val}
-                            </Option>
-                          ))}
-                        </Select>,
-                      )}
-                    </Form.Item>
-                  )}
-                  {orderTypeSuf === 'trouble' && (
-                    <Form.Item label='状态' >
-                      {getFieldDecorator('status', {
-                        initialValue: '',
-                      })(
-                        <Select placeholder="请选择" allowClear>
-                          {troublestatus.map(obj => (
+                          {releasestatus.map(obj => (
                             <Option key={obj.key} value={obj.val}>
                               {obj.val}
                             </Option>
@@ -249,7 +230,7 @@ function RelationDrawer(props) {
               <Input value={rowrecord.releaseNo} />
               <h4 style={{ padding: '8px 0' }}>{title}类型</h4>
               <Input value={rowrecord.releaseType} />
-              <h4 style={{ padding: '8px 0' }}>{title}环节</h4>
+              <h4 style={{ padding: '8px 0' }}>{title}状态</h4>
               <Input value={rowrecord.releaseStatus} />
               <h4 style={{ padding: '8px 0' }}>发送时间</h4>
               <Input value={rowrecord.utime} />

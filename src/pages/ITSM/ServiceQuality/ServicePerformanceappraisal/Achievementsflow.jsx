@@ -6,13 +6,13 @@ import styles from '../index.less';
 
 
 const { Step } = Steps;
+let image;
 function Achievementsflow(props) {
   const {
     taskId,
     imageSource,
     flowlog,
     flowhisTaskArr,
-    loading,
     dispatch
   } = props;
   const list = [];
@@ -30,19 +30,8 @@ function Achievementsflow(props) {
     })
   }
 
-  const imgsrc = () => {
-    const img = document.createElement('img');
-    if (img) {
-      img.src = window.URL.createObjectURL(imageSource);
-      document.getElementById('divimg').appendChild(img);
-    }
-  };
-
-  useEffect(() => {
-    if (imageSource !== '' && imageSource.type && document.getElementsByTagName('img').length < 2) {
-      imgsrc();
-    }
-  }, [loading, imageSource]);
+  const blob = new Blob([imageSource]);
+  image = (window.URL || window.webkitURL).createObjectURL(blob);
 
   const getFlowImage = () => {
     dispatch({
@@ -59,7 +48,9 @@ function Achievementsflow(props) {
   return (
     <>
       <Card title="流程图">
-        <div style={{ background: '#fff' }} id="divimg" />
+        <div style={{ background: '#fff' }} className={styles.blobimg} >
+          <img src={image} alt="" />
+        </div>
       </Card>
 
       <Card title='流转日志'>
