@@ -156,6 +156,7 @@ function Work(props) {
         payload: mainId,
       });
     }
+    setTabActiveKey('workorder')
   }, [mainId]);
 
   // 点击页签右键刷新
