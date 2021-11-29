@@ -269,7 +269,7 @@ function ToDodetails(props) {
       <PageHeaderWrapper
         title={taskName}
         extra={operations}
-        tabList={taskName === '版本管理员审核' ? editiontabList : tabList}
+        tabList={taskName === '版本管理员审核' && info && info.releaseMains && info.releaseMains.length > 1 ? editiontabList : tabList}
         tabActiveKey={tabActivekey}
         onTabChange={handleTabChange}
       >
@@ -311,7 +311,6 @@ function ToDodetails(props) {
 
 export default connect(({ releasetodo, viewcache, itsmuser, loading }) => ({
   info: releasetodo.info,
-  tasklinks: releasetodo.tasklinks,
   relationCount: releasetodo.relationCount,
   submitTimes: releasetodo.submitTimes,
   currentTaskStatus: releasetodo.currentTaskStatus,

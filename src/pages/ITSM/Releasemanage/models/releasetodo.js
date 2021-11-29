@@ -52,6 +52,7 @@ export default {
     relationCount: undefined,
     submitTimes: undefined,
     timeoutinfo: undefined,
+    processLinks: undefined,
   },
 
   effects: {
@@ -98,6 +99,7 @@ export default {
             tasklinks: response.data.tasklinks,
             relationCount: response.data.relationCount,
             submitTimes: response.data.submitTimes,
+            processLinks: response.data.processLinks,
           },
         });
       } else {
@@ -584,6 +586,7 @@ export default {
         relationCount: undefined,
         submitTimes: undefined,
         timeoutinfo: undefined,
+        processLinks: undefined,
       };
     },
     save(state, action) {
@@ -600,6 +603,7 @@ export default {
         tasklinks: action.payload.tasklinks || [],
         relationCount: action.payload.relationCount,
         submitTimes: action.payload.submitTimes,
+        processLinks: action.payload.processLinks || [],
       };
     },
     updateinfo(state, action) {

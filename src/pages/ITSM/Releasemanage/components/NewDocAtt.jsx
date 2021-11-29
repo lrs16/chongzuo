@@ -285,7 +285,7 @@ function NewDocAtt(props) {
 }
 
 export default connect(({ sysfile, releasetodo, loading }) => ({
-  tasklinks: releasetodo.tasklinks,
+  tasklinks: releasetodo.processLinks,
   sysfile,
   loading: loading.models.sysfile,
 }))(NewDocAtt);

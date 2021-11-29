@@ -10,6 +10,7 @@ export default {
     currentTaskStatus: undefined,
     tasklinks: [],
     imgblob: '',
+    processLinks: undefined,
   },
 
   effects: {
@@ -26,7 +27,12 @@ export default {
       if (response.code === 200)
         yield put({
           type: 'saveinfo',
-          payload: { historyinfo: response.data.data, currentTaskStatus: response.data.currentTaskStatus, tasklinks: response.data.tasklinks },
+          payload: {
+            historyinfo: response.data.data,
+            currentTaskStatus: response.data.currentTaskStatus,
+            tasklinks: response.data.tasklinks,
+            processLinks: response.data.processLinks,
+          },
         });
     },
 
@@ -49,6 +55,7 @@ export default {
         currentTaskStatus: undefined,
         tasklinks: [],
         imgblob: '',
+        processLinks: [],
       };
     },
     save(state, action) {
@@ -63,6 +70,7 @@ export default {
         historyinfo: action.payload.historyinfo,
         currentTaskStatus: action.payload.currentTaskStatus,
         tasklinks: action.payload.tasklinks,
+        processLinks: action.payload.processLinks,
       };
     },
     saveimg(state, action) {

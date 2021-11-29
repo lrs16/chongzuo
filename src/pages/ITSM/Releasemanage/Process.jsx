@@ -31,13 +31,13 @@ function Process(props) {
               style={{ background: '#fff', padding: 24 }}
             >
               {records.map((obj, index) => {
-                const backoff = obj.timeoutReason ? '（回退）' : '';
+                const backoff = obj.fallbackReason ? '（回退）' : '';
                 const desc = (
                   <div>
                     <div>处理人：{obj.assignee}</div>
                     <div>{obj.prevCompleteTime}</div>
                     <div>{obj.completeTime}</div>
-                    {obj.timeoutReason && <div>回退原因：{obj.timeoutReason}</div>}
+                    {obj.fallbackReason && <div>回退原因：{obj.fallbackReason}</div>}
                   </div>
                 );
                 return (
@@ -58,6 +58,6 @@ function Process(props) {
 
 export default connect(({ releaseview, loading }) => ({
   imgblob: releaseview.imgblob,
-  records: releaseview.tasklinks || [],
+  records: releaseview.processLinks || [],
   loading: loading.models.releasetodo,
 }))(Process);

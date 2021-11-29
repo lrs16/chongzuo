@@ -8,6 +8,7 @@ import DictLower from '@/components/SysDict/DictLower';
 import HistoryOrderInfo from './components/HistoryOrderInfo';
 import Process from './Process';
 import TaskLinks from './components/TaskLinks';
+import RelationOrder from './RelationOrder';
 import styles from './index.less';
 
 function Details(props) {
@@ -30,7 +31,7 @@ function Details(props) {
       tab: '发布流程',
     },
     {
-      key: 'correlation',
+      key: 'relevancy',
       tab: '关联工单',
     },
   ];
@@ -96,13 +97,14 @@ function Details(props) {
             <TaskLinks records={tasklinks || []} taskName={taskName} />
             <SubmitTypeContext.Provider value={{
               addAttaches: '',                                   // 清单临时添加，fasle文档列表不需要加列，true文档列表需要加列
-              ChangeaddAttaches: (v => { }),
+              ChangeaddAttaches: (() => { }),
             }}>
               <HistoryOrderInfo records={historyinfo} selectdata={selectdata} view taskName={taskName} />
             </SubmitTypeContext.Provider>
           </>
         )}
         {tabActivekey === 'process' && (<Process />)}
+        {tabActivekey === 'relevancy' && currentTaskStatus && currentTaskStatus.processInstanceId && <RelationOrder mainId={currentTaskStatus.processInstanceId} />}
       </PageHeaderWrapper>
     </Spin>
   );
