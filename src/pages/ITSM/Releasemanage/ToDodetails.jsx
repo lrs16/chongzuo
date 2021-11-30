@@ -186,6 +186,12 @@ function ToDodetails(props) {
         });
       } else {
         message.error(res.msg);
+        const tabid = sessionStorage.getItem('tabid');
+        router.push({
+          pathname: `/ITSM/releasemanage/to-do`,
+          query: { pathpush: true },
+          state: { cach: false, closetabid: tabid }
+        });
       }
     })
   };

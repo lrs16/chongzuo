@@ -1,4 +1,3 @@
-import { getResponsiveTheme } from '@/components/Charts/bizcharts';
 import { message } from 'antd';
 import router from 'umi/router';
 import {
