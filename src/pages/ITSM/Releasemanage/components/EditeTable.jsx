@@ -217,7 +217,7 @@ function EditeTable(props) {
       target.verification = false;
       newData.sort((a, b) => a.key - b.key);
       setData(newData);
-      setPageinations({ ...paginations, pageSize: 2 });
+      // setPageinations({ ...paginations, pageSize: 2 });
       ChangeValue(newData);
       if (taskName !== '新建') {
         ChangeButtype('save');
@@ -539,7 +539,7 @@ function EditeTable(props) {
       render: (text, record) => {
         if (record.isNew || record.editable) {
           return (
-            <div className={text === '' ? styles.requiredform : ''}>
+            <div className={!text ? styles.requiredform : ''}>
               <Cascader
                 fieldNames={{ label: 'title', value: 'title', children: 'children' }}
                 options={functionmap}
@@ -560,7 +560,7 @@ function EditeTable(props) {
       render: (text, record) => {
         if (record.isNew || record.editable) {
           return (
-            <div className={text === '' ? styles.requiredselect : ''}>
+            <div className={!text ? styles.requiredselect : ''}>
               <Select
                 defaultValue={record.module}
                 placeholder="请选择"
@@ -586,7 +586,7 @@ function EditeTable(props) {
       render: (text, record) => {
         if (record.isNew || record.editable) {
           return (
-            <div className={text === '' ? styles.requiredform : ''}>
+            <div className={!text ? styles.requiredform : ''}>
               <TextArea
                 onChange={e => handleFieldChange(e.target.value, 'appName', record.key)}
                 defaultValue={text}
@@ -607,7 +607,7 @@ function EditeTable(props) {
       render: (text, record) => {
         if (record.isNew || record.editable) {
           return (
-            <div className={text === '' ? styles.requiredform : ''}>
+            <div className={!text ? styles.requiredform : ''}>
               <TextArea
                 defaultValue={text}
                 autoSize
@@ -629,7 +629,7 @@ function EditeTable(props) {
         if (record.isNew || record.editable) {
           return (
             <>
-              <div className={record.testMenu === '' ? styles.requiredform : ''}>
+              <div className={!record.testMenu ? styles.requiredform : ''}>
                 <InputGroup compact style={{ marginBottom: 12 }}>
                   <span style={{ width: 70, textAlign: 'right', paddingTop: 4 }}>功能菜单：</span>
                   <TextArea
@@ -640,7 +640,7 @@ function EditeTable(props) {
                   />
                 </InputGroup>
               </div>
-              <div className={record.testResult === '' ? styles.requiredform : ''}>
+              <div className={!record.testResult ? styles.requiredform : ''}>
                 <InputGroup compact style={{ marginBottom: 12 }}>
                   <span style={{ width: 70, textAlign: 'right', paddingTop: 4 }}>预期效果：</span>
                   <TextArea
@@ -651,7 +651,7 @@ function EditeTable(props) {
                   />
                 </InputGroup>
               </div>
-              <div className={record.testStep === '' ? styles.requiredform : ''}>
+              <div className={!record.testStep ? styles.requiredform : ''}>
                 <InputGroup compact>
                   <span style={{ width: 70, textAlign: 'right', paddingTop: 4 }}>验证步骤：</span>
                   <TextArea
@@ -693,7 +693,7 @@ function EditeTable(props) {
       render: (text, record) => {
         if (record.isNew || record.editable) {
           return (
-            <div className={text === '' ? styles.requiredform : ''}>
+            <div className={!text ? styles.requiredform : ''}>
               <TextArea
                 defaultValue={text}
                 autoSize
@@ -723,7 +723,7 @@ function EditeTable(props) {
         if ((record.isNew || record.editable || record.verification) && isEdit) {
           return (
             <>
-              <RadioGroup value={text || '通过'} onChange={e => handleFieldChange(e.target.value, 'passTest', record.key)}>
+              <RadioGroup value={text} onChange={e => handleFieldChange(e.target.value, 'passTest', record.key)}>
                 <Radio value='通过'>通过</Radio>
                 <Radio value='不通过'>不通过</Radio>
               </RadioGroup>

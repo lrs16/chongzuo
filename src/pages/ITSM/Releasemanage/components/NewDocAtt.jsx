@@ -186,7 +186,7 @@ function NewDocAtt(props) {
       render: (text, record) => {
         const dowload = () => {
           downloadAttachTemplate(downloadmap.get(record.docName)).then(res => {
-            if (res.code === 200) {
+            if (res) {
               const filename = `${record.docName}.zip`;
               const blob = new Blob([res], { type: 'application/octet-stream' });
               const url = window.URL.createObjectURL(blob);
