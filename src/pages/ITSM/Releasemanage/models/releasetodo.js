@@ -108,24 +108,15 @@ export default {
       };
     },
 
-    // 通用流转
+    // 通用流转,回退
     *releaseflow({ payload }, { call }) {
-      const tabid = sessionStorage.getItem('tabid');
       const subres = yield call(flowSubmit, payload);
       if (subres.code === 200) {
         message.success('操作成功');
-        router.push({
-          pathname: `/ITSM/releasemanage/registration`,
-          query: { tabid, closecurrent: true }
-        });
-        router.push({
-          pathname: `/ITSM/releasemanage/to-do`,
-          query: { pathpush: true },
-          state: { cach: false, }
-        });
       } else {
-        message.error('操作失败');
-      }
+        message.error(subres.msg);
+      };
+      closeTab();
     },
 
     // 出厂测试保存,结束,流转

@@ -145,7 +145,10 @@ function ToDodetails(props) {
       if (res.code === 200 && ((res.status === 'yes' && res.timeoutMsg !== '') || res.status === 'no')) {
         handleHold(type);
         setChangeOrder(order);
-      }
+      };
+      if (res.code === -1) {
+        message.error(res.msg)
+      };
     })
   };
 

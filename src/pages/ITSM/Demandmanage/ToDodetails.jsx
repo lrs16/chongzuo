@@ -77,7 +77,7 @@ function ToDoregist(props) {
       if (res.code === 200 && ((res.status === 'yes' && res.timeoutMsg !== '') || res.status === 'no')) {
         handleHold(type);
         setChangeOrder(order);
-      }
+      };
     })
   };
 
@@ -134,6 +134,9 @@ function ToDoregist(props) {
       };
       if (res.code === 200 && ((res.status === 'yes' && res.timeoutMsg !== '') || res.status === 'no')) {
         setVisible(true);
+      };
+      if (res.code === -1) {
+        message.error(res.msg)
       };
     })
   };

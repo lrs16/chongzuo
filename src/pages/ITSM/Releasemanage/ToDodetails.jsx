@@ -46,15 +46,15 @@ function ToDodetails(props) {
     const tabid = sessionStorage.getItem('tabid');
     deleteFlow({ releaseNo: Id }).then(res => {
       if (res.code === 200) {
-        router.push({
-          pathname: `/ITSM/releasemanage/to-do`,
-          query: { pathpush: true },
-          state: { cach: false, closetabid: tabid }
-        });
         message.success(res.msg)
       } else {
         message.error(res.msg)
-      }
+      };
+      router.push({
+        pathname: `/ITSM/releasemanage/to-do`,
+        query: { pathpush: true },
+        state: { cach: false, closetabid: tabid }
+      });
     })
   }
   const handleClose = () => {
@@ -96,7 +96,7 @@ function ToDodetails(props) {
   // 点击流转，出厂测试，版本管理员审核，结束
   const handleClick = (type) => {
     getTimeoutInfo({ taskId }).then(res => {
-      if (res.code === 200) {
+      if (res.code === 200 && res.todoTask) {
         if (res.data.timeout && !res.data.reason) {
           message.info(res.data.msg);
           setModalVisible(true);
@@ -106,7 +106,13 @@ function ToDodetails(props) {
           setButtype(type);
         };
       } else {
-        message.error(res.msg)
+        message.error('操作失败');
+        const tabid = sessionStorage.getItem('tabid');
+        router.push({
+          pathname: `/ITSM/releasemanage/to-do`,
+          query: { pathpush: true },
+          state: { cach: false, closetabid: tabid }
+        });
       };
     })
   };
@@ -149,7 +155,7 @@ function ToDodetails(props) {
       }
     } else {
       getTimeoutInfo({ taskId }).then(res => {
-        if (res.code === 200) {
+        if (res.code === 200 && res.todoTask) {
           if (res.data.timeout && !res.data.reason) {
             message.info(res.data.msg);
             setModalVisible(true);
@@ -159,7 +165,13 @@ function ToDodetails(props) {
             setVisible(true);
           }
         } else {
-          message.error(res.msg)
+          message.error('操作失败');
+          const tabid = sessionStorage.getItem('tabid');
+          router.push({
+            pathname: `/ITSM/releasemanage/to-do`,
+            query: { pathpush: true },
+            state: { cach: false, closetabid: tabid }
+          });
         }
       })
     }
@@ -173,7 +185,6 @@ function ToDodetails(props) {
       msgType: 'fallback',
       orderId: currentTaskStatus.processInstanceId,
       orderType: 'release',
-
     }).then(res => {
       if (res.code === 200) {
         dispatch({
