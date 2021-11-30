@@ -436,6 +436,9 @@ const Registrat = forwardRef((props, ref) => {
           message.error(`最多可上传10个文件`);
           setShowIcon(true);
           return reject();
+        } if (type > 30) {
+          message.error('附件名过长，附件名称最长30个字符');
+          return reject();
         } if (correctfiletype === -1) {
           message.error(`${file.name}文件不符合上传规则,禁止上传...`);
           return reject();
@@ -972,9 +975,10 @@ const Registrat = forwardRef((props, ref) => {
                   </Upload>
                 )}
                 {filetype && filetype.length > 0 && (
-                  <div style={{ color: '#ccc' }}>
-                    <p style={{ marginBottom: 0 }}>1、仅能上传{filetype.join('，')}类型文件;</p>
-                    <p style={{ marginBottom: 0 }}>2、最多可上传10个文件;</p>
+                  <div style={{ color: '#ccc', lineHeight: '20px' }}>
+                    <p style={{ marginBottom: '6px', }}>1、仅能上传{filetype.join('，')}类型文件;</p>
+                    <p style={{ marginBottom: '6px', }}>2、最多可上传10个文件;</p>
+                    <p style={{ marginBottom: '6px', }}>3、附件名称最长30个字符;</p>
                   </div>
                 )}
               </div>
