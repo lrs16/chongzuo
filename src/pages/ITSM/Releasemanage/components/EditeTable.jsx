@@ -211,14 +211,13 @@ function EditeTable(props) {
         e.target.focus();
         return;
       };
-    }
+    };
     if (target && (target.editable || target.verification)) {
       target.editable = !target.editable;
       target.verification = false;
       newData.sort((a, b) => a.key - b.key);
       setData(newData);
-
-      setPageinations({ current: Math.ceil(newData.length / 2), pageSize: 2 });
+      setPageinations({ ...paginations, pageSize: 2 });
       ChangeValue(newData);
       if (taskName !== '新建') {
         ChangeButtype('save');
