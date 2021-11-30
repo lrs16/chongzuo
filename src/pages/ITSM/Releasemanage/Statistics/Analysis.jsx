@@ -180,7 +180,7 @@ function Statistics(props) {
           <Col span={12} style={{ marginTop: 24 }}>
             <div className={styles.statisticscard}>
               <Avatar icon="control" />
-              <b>发布实施情况</b>
+              <b>发布验证情况</b>
             </div>
             {(!donesum || (donesum && donesum.length === 0)) && <Empty style={{ height: '100px' }} />}
             <Row>

@@ -190,10 +190,6 @@ function Registration(props) {
         message.success('保存成功');
         setSaveloading(false);
         router.push({
-          pathname: `/ITSM/releasemanage/registration`,
-          query: { tabid, closecurrent: true }
-        })
-        router.push({
           pathname: `/ITSM/releasemanage/to-do/record`,
           query: {
             Id: response.data.currentTaskStatus.businessKey,
@@ -206,6 +202,10 @@ function Registration(props) {
             menuDesc: '发布工单',
           },
         });
+        router.push({
+          pathname: `/ITSM/releasemanage/registration`,
+          query: { tabid, closecurrent: true }
+        })
       } else {
         message.error(response.msg);
         setSaveloading(false);
