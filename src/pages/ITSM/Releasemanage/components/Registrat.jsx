@@ -371,7 +371,7 @@ function Registrat(props, ref) {
             </Col>
           )}
           <Col span={24} style={{ marginBottom: 24 }}>
-            {location && location.state && !location.state.cache && (
+            {((location && location.state && !location.state.cache && isEdit) || !isEdit) && (
               <DocumentAtt
                 // rowkey={statumap.get(taskName)}
                 isEdit={isEdit}

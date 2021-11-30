@@ -173,7 +173,7 @@ function ReleaseRepo(props) {
   // 启动发布流程
   const handlerepoRegister = () => {
     if (selectedRowKeys.length > 0) {
-      const newArr = selectedRecords.filter(item => item.status === '未出厂');
+      const newArr = selectedRecords.filter(item => item.status !== '已出厂');
       const ids = newArr.map(item => { return item.id })
       if (newArr && newArr.length > 0) {
         repoRegister({ ids: ids.join(',') }).then(res => {
@@ -186,9 +186,8 @@ function ReleaseRepo(props) {
           }
         })
       } else {
-        message.error('请选择发布状态为‘未出厂’的数据')
+        message.error('请选择发布状态为‘未出厂，发布成功，发布失败’的数据')
       }
-
     }
   }
 

@@ -277,7 +277,7 @@ function Registration(props) {
         />
         <Card>
           <SubmitTypeContext.Provider value={{
-            ChangeButtype: (() => { }),
+            ChangeButtype: ((v) => { if (v === 'save') { handleSave('save'); } }),
             taskId: '',
             addAttaches: false,
             ChangeaddAttaches: (() => { }),

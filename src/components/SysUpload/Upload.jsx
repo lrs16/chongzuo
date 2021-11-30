@@ -5,10 +5,17 @@ import { DownloadOutlined } from '@ant-design/icons';
 import { getFileSecuritySuffix } from '@/services/upload';
 import UploadContext from '@/layouts/MenuContext';
 
+message.config({
+  top: 100,
+  duration: 2,
+  maxCount: 2,
+});
+
 function SysUpload(props) {
   const { dispatch, filelist, banOpenFileDialog } = props;
   const [filetype, setFileType] = useState('');
   const [showIcon, setShowIcon] = useState(true);
+  const [nowFiles, setNowFiles] = useState([]);
   const { files, ChangeFiles, getUploadStatus } = useContext(UploadContext);
 
   const sendUploadStatus = (v) => {
@@ -61,13 +68,13 @@ function SysUpload(props) {
     headers: {
       Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
     },
-    showUploadList: { showDownloadIcon: showIcon, showRemoveIcon: true },
+    showUploadList: { showDownloadIcon: showIcon, showRemoveIcon: showIcon },
     defaultFileList: filelist || files,
     // fileList: filelist || files,
     multiple: true,
     openFileDialogOnClick: !banOpenFileDialog,
 
-    beforeUpload(file) {
+    beforeUpload(file, fileList) {
       return new Promise((resolve, reject) => {
         setShowIcon(false);
         if (getUploadStatus) { getUploadStatus(true) };
@@ -75,8 +82,14 @@ function SysUpload(props) {
         const type = file.name.lastIndexOf('.');
         const filesuffix = file.name.substring(type + 1, file.name.length);
         const correctfiletype = filetype.indexOf(filesuffix);
-        if (correctfiletype === -1) {
+        if ((!filelist && !files && fileList.length > 10) || (!files && filelist && (filelist.length + fileList.length) > 10) || (!filelist && files && (files.length + fileList.length) > 10)) {
+          if (getUploadStatus) { getUploadStatus(false) };
+          sendUploadStatus(false);
+          message.error(`最多可上传10个文件`);
+          return reject();
+        } if (correctfiletype === -1) {
           message.error(`${file.name}文件不符合上传规则,禁止上传...`);
+          if (getUploadStatus) { getUploadStatus(false) };
           sendUploadStatus(false);
           return reject();
         }
@@ -100,6 +113,7 @@ function SysUpload(props) {
           newarr.push(vote);
         }
         ChangeFiles(newarr);
+        setNowFiles(newarr);
         setShowIcon(true);
         if (getUploadStatus) { getUploadStatus(false) };
         sendUploadStatus(false)
@@ -115,15 +129,8 @@ function SysUpload(props) {
     },
     onRemove(file) {
       // 删除记录,更新父级fileslist
-      if (file && file.response && file.response.code === 200) {
-        dispatch({
-          type: 'sysfile/deletefile',
-          payload: {
-            id: file.uid,
-          },
-        });
-      } if (filelist || files) {
-        const newfilelist = (filelist || files).filter(item => file.response ? item.uid !== file.response.data[0].id : item.uid !== file.uid);
+      const newfilelist = (filelist || files).filter(item => file.response ? item.uid !== file.response.data[0].id : item.uid !== file.uid);
+      if (file && !file.lastModified) {
         ChangeFiles(newfilelist);
         // 删除文件
         dispatch({

@@ -22,23 +22,25 @@ import {
   getTimeoutInfo,
 } from '../services/api';
 
-const toSubmit = (subres) => {
+const closeTab = () => {
   const tabid = sessionStorage.getItem('tabid');
+  router.push({
+    pathname: `/ITSM/releasemanage/to-do`,
+    query: { pathpush: true },
+    state: { cach: false, closetabid: tabid }
+  });
+}
+
+const toSubmit = (subres) => {
   if (subres.code === 200) {
     message.success('操作成功');
   } else {
     message.error(subres.res);
   };
-  router.push({
-    pathname: `/ITSM/releasemanage/registration`,
-    query: { tabid, closecurrent: true }
-  });
-  router.push({
-    pathname: `/ITSM/releasemanage/to-do`,
-    query: { pathpush: true },
-    state: { cach: false, }
-  });
-}
+  closeTab();
+};
+
+
 
 export default {
   namespace: 'releasetodo',
@@ -127,7 +129,7 @@ export default {
       }
     },
 
-    // 出厂测试保存,结束
+    // 出厂测试保存,结束,流转
     * factorytest({ payload: { register, buttype, submitval } }, { call, put }) {
       yield put({
         type: 'savestatuse',
@@ -147,22 +149,12 @@ export default {
           });
         };
         if (buttype === 'over') {
-          const tabid = sessionStorage.getItem('tabid');
           const overpayload = {
             taskId: response.data.currentTaskStatus.taskId,
             type: 4,
           };
           const subres = yield call(flowSubmit, overpayload);
-          if (subres.code === 200) {
-            message.success('操作成功');
-          } else {
-            message.error(subres.msg);
-          };
-          router.push({
-            pathname: `/ITSM/releasemanage/to-do`,
-            query: { pathpush: true },
-            state: { cach: false, closetabid: tabid }
-          });
+          toSubmit(subres)
         };
         if (buttype === 'flow') {
           const subres = yield call(flowSubmit, submitval);
@@ -193,21 +185,12 @@ export default {
           });
         };
         if (buttype === 'noPass' || buttype === 'flow') {
-          const tabid = sessionStorage.getItem('tabid');
           const subres = yield call(flowSubmit, submitval);
-          if (subres.code === 200) {
-            message.success('操作成功');
-          } else {
-            message.error(subres.msg);
-          };
-          router.push({
-            pathname: `/ITSM/releasemanage/to-do`,
-            query: { pathpush: true },
-            state: { cach: false, closetabid: tabid }
-          });
+          toSubmit(subres);
         };
       } else {
         message.error(response.msg);
+        closeTab();
       }
     },
 
@@ -231,7 +214,6 @@ export default {
           });
         };
         if (buttype === 'flow') {
-          const tabid = sessionStorage.getItem('tabid');
           // const nopasspayload = {
           //   taskId: response.data.currentTaskStatus.taskId,
           //   type: 3,
@@ -242,19 +224,11 @@ export default {
             userIds,
           };
           const subres = yield call(flowSubmit, flowpayload);
-          if (subres.code === 200) {
-            message.success('操作成功');
-          } else {
-            message.error(subres.msg);
-          };
-          router.push({
-            pathname: `/ITSM/releasemanage/to-do`,
-            query: { pathpush: true },
-            state: { cach: false, closetabid: tabid }
-          });
+          toSubmit(subres);
         };
       } else {
         message.error(response.msg);
+        closeTab();
       }
     },
 
@@ -283,19 +257,11 @@ export default {
             userIds: buttype === 'flow' ? submitval.userIds : '',
           }
           const subres = yield call(flowSubmit, flowpayload);
-          if (subres.code === 200) {
-            message.success('操作成功');
-          } else {
-            message.error(subres.msg);
-          };
-          router.push({
-            pathname: `/ITSM/releasemanage/to-do`,
-            query: { pathpush: true },
-            state: { cach: false, closetabid: response.data.currentTaskStatus.taskId }
-          });
+          toSubmit(subres)
         }
       } else {
         message.error(response.msg);
+        closeTab();
       };
       return response.code
     },
@@ -333,7 +299,7 @@ export default {
           message.error(openres.msg)
         }
       } else {
-        message.error('操作失败');
+        message.error(response.res);
       }
     },
 
@@ -416,62 +382,33 @@ export default {
             }
           };
           if (buttype === 'noPass') {
-            const tabid = sessionStorage.getItem('tabid');
             const nopasspayload = {
               taskId,
               type: taskName === '中心领导审核' ? 3 : 0,
             };
             const subres = yield call(flowSubmit, nopasspayload);
-            if (subres.code === 200) {
-              message.success('操作成功');
-            } else {
-              message.error(subres.msg);
-            };
-            router.push({
-              pathname: `/ITSM/releasemanage/to-do`,
-              query: { pathpush: true },
-              state: { cach: false, closetabid: tabid }
-            });
+            toSubmit(subres)
           };
           if (buttype === 'flow' && taskName === '中心领导审核') {
-            const tabid = sessionStorage.getItem('tabid');
             const nopasspayload = {
               taskId,
               type: 1,
             };
             const subres = yield call(flowSubmit, nopasspayload);
-            if (subres.code === 200) {
-              message.success('操作成功');
-            } else {
-              message.error(subres.msg);
-            };
-            router.push({
-              pathname: `/ITSM/releasemanage/to-do`,
-              query: { pathpush: true },
-              state: { cach: false, closetabid: tabid }
-            });
+            toSubmit(subres)
           };
           if (buttype === 'flow' && (taskName === '版本管理员审核' || taskName === '科室负责人审核')) {
-            const tabid = sessionStorage.getItem('tabid');
             const flowpayload = {
               taskId,
               type: 1,
               userIds,
             };
             const subres = yield call(flowSubmit, flowpayload);
-            if (subres.code === 200) {
-              message.success('操作成功');
-            } else {
-              message.error(subres.msg);
-            };
-            router.push({
-              pathname: `/ITSM/releasemanage/to-do`,
-              query: { pathpush: true },
-              state: { cach: false, closetabid: tabid }
-            });
+            toSubmit(subres)
           };
         } else {
-          message.error(response.msg)
+          message.error(response.msg);
+          closeTab();
         }
       }
     },
@@ -496,26 +433,17 @@ export default {
           });
         };
         if (buttype === 'flow') {
-          const tabid = sessionStorage.getItem('tabid');
           const flowpayload = {
             taskId,
             type: 1,
             userIds,
           };
           const subres = yield call(flowSubmit, flowpayload);
-          if (subres.code === 200) {
-            message.success('操作成功');
-          } else {
-            message.error(subres.msg);
-          };
-          router.push({
-            pathname: `/ITSM/releasemanage/to-do`,
-            query: { pathpush: true },
-            state: { cach: false, closetabid: tabid }
-          });
+          toSubmit(subres)
         }
       } else {
-        message.error(response.msg)
+        message.error(response.msg);
+        closeTab();
       };
     },
 
@@ -540,25 +468,16 @@ export default {
           });
         };
         if (buttype === 'flow') {
-          const tabid = sessionStorage.getItem('tabid');
           const nopasspayload = {
             taskId,
             type: 1,
           };
           const subres = yield call(flowSubmit, nopasspayload);
-          if (subres.code === 200) {
-            message.success('操作成功');
-          } else {
-            message.error(subres.msg);
-          };
-          router.push({
-            pathname: `/ITSM/releasemanage/to-do`,
-            query: { pathpush: true },
-            state: { cach: false, closetabid: tabid }
-          });
+          toSubmit(subres)
         }
       } else {
         message.error(response.msg)
+        closeTab();
       }
     },
     // 获取超时信息
