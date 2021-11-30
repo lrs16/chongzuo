@@ -418,12 +418,12 @@ const Registrat = forwardRef((props, ref) => {
     headers: {
       Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
     },
-    showUploadList: { showDownloadIcon: showIcon, showRemoveIcon: true },
+    showUploadList: { showDownloadIcon: showIcon, showRemoveIcon: showIcon },
     defaultFileList: files,
     multiple: true,
     openFileDialogOnClick: !banOpenFileDialog,
 
-    beforeUpload(file) {
+    beforeUpload(file, fileList) {
       return new Promise((resolve, reject) => {
         setShowIcon(false);
         if (getUploadStatus) { getUploadStatus(true) };
@@ -431,7 +431,12 @@ const Registrat = forwardRef((props, ref) => {
         const type = file.name.lastIndexOf('.');
         const filesuffix = file.name.substring(type + 1, file.name.length);
         const correctfiletype = filetype.indexOf(filesuffix);
-        if (correctfiletype === -1) {
+        if ((!fileslist && fileList.length > 10) || (fileslist && (fileslist.length + fileList.length) > 10)) {
+          if (getUploadStatus) { getUploadStatus(false) };
+          message.error(`最多可上传10个文件`);
+          setShowIcon(true);
+          return reject();
+        } if (correctfiletype === -1) {
           message.error(`${file.name}文件不符合上传规则,禁止上传...`);
           return reject();
         }
@@ -966,7 +971,12 @@ const Registrat = forwardRef((props, ref) => {
                     </Button>
                   </Upload>
                 )}
-                {filetype && filetype.length > 0 && (<div style={{ color: '#ccc' }}>仅能上传{filetype.join('，')}类型文件</div>)}
+                {filetype && filetype.length > 0 && (
+                  <div style={{ color: '#ccc' }}>
+                    <p style={{ marginBottom: 0 }}>1、仅能上传{filetype.join('，')}类型文件;</p>
+                    <p style={{ marginBottom: 0 }}>2、最多可上传10个文件;</p>
+                  </div>
+                )}
               </div>
             </Form.Item>
           </Col>

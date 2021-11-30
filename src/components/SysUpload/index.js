@@ -91,6 +91,7 @@ function SysUpload(props) {
           if (getUploadStatus) { getUploadStatus(false) };
           sendUploadStatus(false);
           message.error(`最多可上传10个文件`);
+          setShowIcon(true);
           return reject();
         } if (correctfiletype === -1) {
           message.error(`${file.name}文件不符合上传规则,禁止上传...`);
@@ -158,7 +159,12 @@ function SysUpload(props) {
           <DownloadOutlined /> 上传附件
         </Button>
       </Upload>
-      {filetype && filetype.length > 0 && (<div style={{ color: '#ccc' }}>仅能上传{filetype.join('，')}类型文件</div>)}
+      {filetype && filetype.length > 0 && (
+        <div style={{ color: '#ccc' }}>
+          <p style={{ marginBottom: 0 }}>1、仅能上传{filetype.join('，')}类型文件;</p>
+          <p style={{ marginBottom: 0 }}>2、最多可上传10个文件;</p>
+        </div>
+      )}
     </>
   );
 }
