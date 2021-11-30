@@ -115,8 +115,15 @@ function SysUpload(props) {
     },
     onRemove(file) {
       // 删除记录,更新父级fileslist
-      const newfilelist = (filelist || files).filter(item => file.response ? item.uid !== file.response.data[0].id : item.uid !== file.uid);
-      if (file && !file.lastModified) {
+      if (file && file.response && file.response.code === 200) {
+        dispatch({
+          type: 'sysfile/deletefile',
+          payload: {
+            id: file.uid,
+          },
+        });
+      } if (filelist || files) {
+        const newfilelist = (filelist || files).filter(item => file.response ? item.uid !== file.response.data[0].id : item.uid !== file.uid);
         ChangeFiles(newfilelist);
         // 删除文件
         dispatch({

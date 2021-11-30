@@ -23,10 +23,10 @@ const downloadmap = new Map([
 
 
 function NewDocAtt(props) {
-  const { dispatch, rowkey, unitmap, isEdit, dataSource, Unit, check, ChangeValue, tasklinks } = props;
+  const { dispatch, rowkey, unitmap, isEdit, dataSource, Unit, check, ChangeValue, tasklinks, taskName } = props;
   const [data, setData] = useState([]);
   const [uploadStatus, setUploadStatus] = useState(false);
-  const { ChangeButtype, addAttaches, ChangeaddAttaches, taskName } = useContext(FilesContext);                     // 是否要添加行
+  const { ChangeButtype, addAttaches, ChangeaddAttaches, } = useContext(FilesContext);                     // 是否要添加行
   // const dutyUnit = dataSource && dataSource.length > 0 ? dataSource[0].dutyUnit : '';
   // console.log('dataSource:', dataSource);
   // console.log('data:', data);
@@ -92,7 +92,7 @@ function NewDocAtt(props) {
       render: (text, record) => {
         return (
           <>
-            {text === '1' && (<Icon type="check" style={{ color: '#52c41a' }} />)}
+            {(text === '1' || text === '0') && (<Icon type="check" style={{ color: '#52c41a' }} />)}
             {text === '2' && (<Icon type="close" style={{ color: '#f50' }} />)}
           </>)
       },
@@ -162,7 +162,7 @@ function NewDocAtt(props) {
           return (
             <Select
               placeholder="请选择"
-              defaultValue={text || Unit.dutyUnit || data[0].dutyUnit}
+              defaultValue={text || Unit.dutyUnit}
               key={text || Unit.dutyUnit}
               onChange={e => { handleFieldChange(e, 'dutyUnit', record.sn) }}
             >
@@ -228,42 +228,63 @@ function NewDocAtt(props) {
   ];
 
   useEffect(() => {
-    if (dataSource && dataSource.length > 0 && (taskName === '新建' || taskName === '出厂测试')) {
-      const newData = dataSource.map(item => ({ ...item, taskStatus: item.docName === '出厂测试' ? '1' : null }));
-      setData(newData);
-    }
+    if (dataSource && dataSource.length > 0) {
+      if (taskName === '新建') {
+        const newData = dataSource.map(item => ({ ...item, taskStatus: item.docName === '出厂测试' ? '1' : null }));
+        setData(newData);
+        ChangeValue(newData, '');
+      } else {
+        const newData = dataSource.map(item => ({ ...item }));
+        setData(newData);
+      }
+    };
   }, [dataSource]);
 
-  useEffect(() => {
-    if (tasklinks && tasklinks.length && tasklinks.length > 1 && dataSource && dataSource.length > 0) {
-      const nodePic = tasklinks.slice(-2);
-      const taskNames = dataSource.map(item => { return item.docName });
-      const rowNum = taskNames.indexOf(nodePic[0].taskName.split('(')[0]);
-      const rowLastNum = taskNames.indexOf(nodePic[1].taskName.split('(')[0]);
-      if (rowLastNum < rowNum) {
-        const listAtt = dataSource.map((item, index) => {
-          if (index < rowNum) {
-            return { ...item, taskStatus: '1' }
-          } if (index === rowNum) {
-            return { ...item, taskStatus: '2' }
-          }
-          return { ...item, taskStatus: null }
-        });
-        setData(listAtt);
-      } else {
-        const listAtt = dataSource.map((item, index) => {
-          if (index < rowLastNum) {
-            return { ...item, taskStatus: '1' }
-          } if (index === rowLastNum) {
-            return { ...item, taskStatus: '1', dutyUnit: dataSource[0].dutyUnit }
-          }
-          return { ...item, taskStatus: null }
-        });
-        setData(listAtt);
-        ChangeValue(listAtt, '')
-      };
-    };
-  }, [tasklinks, dataSource]);
+  // const getBigNum = (datas, taskNames) => {
+  //   let max = 1;
+  //   if (!Array.isArray(datas)) {
+  //     return max;
+  //   }
+  //   for (let i = 0; i < datas.length; i += 1) {
+  //     const cur = taskNames.indexOf(datas[i].taskName.split('(')[0]);
+  //     max = cur > max ? cur : max;
+  //   }
+  //   return max
+  // }
+
+  // useEffect(() => {
+  //   if (isEdit && tasklinks && tasklinks.length && tasklinks.length > 1 && dataSource && dataSource.length > 0) {
+  //     console.log('3:', taskName);
+  //     const nodePic = tasklinks.slice(-2);
+  //     const taskNames = dataSource.map(item => { return item.docName });
+  //     const rowNum = getBigNum(tasklinks, taskNames);
+  //     console.log(rowNum);
+  //     // const rowNum = taskNames.indexOf(nodePic[0].taskName.split('(')[0]);
+  //     const rowLastNum = taskNames.indexOf(nodePic[1].taskName.split('(')[0]);
+  //     if (rowLastNum < rowNum) {
+  //       const listAtt = dataSource.map((item, index) => {
+  //         if (index < rowNum) {
+  //           return { ...item, taskStatus: '1' }
+  //         } if (index === rowNum) {
+  //           return { ...item, taskStatus: '2' }
+  //         }
+  //         return { ...item, taskStatus: null }
+  //       });
+  //       setData(listAtt);
+  //     } else {
+  //       const listAtt = dataSource.map((item, index) => {
+  //         if (index <= rowLastNum) {
+  //           return { ...item, taskStatus: '1' }
+  //         } if (index === rowLastNum) {
+  //           return { ...item, taskStatus: '1' }
+  //         }
+  //         return { ...item, taskStatus: null }
+  //       });
+  //       setData(listAtt);
+  //       ChangeValue(listAtt, '')
+  //     };
+  //   };
+  // }, [tasklinks, dataSource]);
 
   // 出厂测试出具文档责任单位为空，表单有选择责任单位时修改列表值
   useEffect(() => {
@@ -284,8 +305,8 @@ function NewDocAtt(props) {
   );
 }
 
-export default connect(({ sysfile, releasetodo, loading }) => ({
-  tasklinks: releasetodo.processLinks,
+export default connect(({ sysfile, releaseview, loading }) => ({
+  tasklinks: releaseview.processLinks,
   sysfile,
   loading: loading.models.sysfile,
 }))(NewDocAtt);

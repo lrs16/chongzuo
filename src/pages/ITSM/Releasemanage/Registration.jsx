@@ -235,9 +235,9 @@ function Registration(props) {
   }, [location.state]);
 
   useEffect(() => {
-    // 清除待办tasklinks值
+    // 清除tasklinks值
     dispatch({
-      type: 'releasetodo/cleardata',
+      type: 'releaseview/cleardata',
     });
     // 获取页签信息
     if (location.state) {
@@ -282,7 +282,6 @@ function Registration(props) {
             addAttaches: false,
             ChangeaddAttaches: (() => { }),
             location,
-            taskName: '新建'
           }}>
             <Registrat
               wrappedComponentRef={RegistratRef}

@@ -197,6 +197,7 @@ function WorkOrder(props) {
         },
         buttype,
         userIds: userIds.join(','),
+        taskId: currentTaskStatus.taskId,
       },
     });
   }
@@ -336,6 +337,7 @@ function WorkOrder(props) {
         buttype,
         taskName,
         userIds: userIds.join(','),
+        taskId: currentTaskStatus.taskId,
       },
     });
   }
@@ -394,6 +396,7 @@ function WorkOrder(props) {
         },
         buttype,
         userIds: userIds.join(','),
+        taskId: currentTaskStatus.taskId,
       },
     });
   }
@@ -437,6 +440,7 @@ function WorkOrder(props) {
         },
         buttype,
         userIds: '',
+        taskId: currentTaskStatus.taskId,
       },
     });
   }

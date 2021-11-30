@@ -130,13 +130,14 @@ function BusinessReview(props, ref) {
         {/* <Col span={24}><Button type='primary'>发起服务绩效考核</Button></Col> */}
         <Col span={24} style={{ marginBottom: 24, marginTop: 24 }}>
           <DocumentAtt
-            rowkey='0'
+            // rowkey='0'
             isEdit={isEdit}
             unitmap={docunitmap}
             dataSource={info && info.releaseAttaches ? info.releaseAttaches : []}
             Unit={{ dutyUnit: undefined }}
             ChangeValue={(v, files) => changeatt(v, files)}
             check={check}
+            taskName={taskName}
           />
           <Form.Item wrapperCol={{ span: 24 }} style={{ display: 'none' }}>
             {getFieldDecorator('releaseAttaches', {

@@ -464,13 +464,14 @@ function VersionAudit(props, ref) {
                 })}
               </Tabs>)}
             <DocumentAtt
-              rowkey={rowkey}
+              // rowkey={rowkey}
               isEdit={isEdit}
               unitmap={docunitmap}
               dataSource={attaches}
               Unit={{ dutyUnit: undefined }}
               ChangeValue={(v, files) => changeatt(v, files)}
               check={check}
+              taskName={taskName}
             />
             <Form.Item wrapperCol={{ span: 24 }}>
               {getFieldDecorator('releaseAttaches', {

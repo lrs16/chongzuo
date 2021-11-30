@@ -215,51 +215,54 @@ function ToDodetails(props) {
   ];
   const operations = (
     <>
-      {taskName === '出厂测试' && relationCount === 0 && submitTimes === 0 && (
-        <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => deleteflow()} disabled={uploadstatus || allloading}>
-          删除
-        </Button>
-      )}
-      {!saved && taskName !== '出厂测试' && taskName !== '发布验证' && taskName !== '业务复核' && (
-        <Button type="danger" ghost style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => { handleGoback() }} disabled={uploadstatus || allloading}>
-          回退
-        </Button>
-      )}
-      {taskName === '发布实施准备' && (
-        <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => dowloadPre()} disabled={uploadstatus || allloading}>
-          导出
-        </Button>
-      )}
-      <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('save')} disabled={uploadstatus || allloading}>
-        保存
-      </Button>
-      {submittype === 1 && (
-        <>{(taskName === '版本管理员审核' || taskName === '科室负责人审核' || taskName === '中心领导审核') && info && info.releaseMains && info.releaseMains.length > 1 ? (
-          <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('flow')} disabled={uploadstatus || allloading}>
-            流转
+      {tabActivekey === 'workorder' && (
+        <>
+          {taskName === '出厂测试' && relationCount === 0 && submitTimes === 0 && (
+            <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => deleteflow()} disabled={uploadstatus || allloading}>
+              删除
+            </Button>
+          )}
+          {!saved && taskName !== '出厂测试' && taskName !== '发布验证' && taskName !== '业务复核' && (
+            <Button type="danger" ghost style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => { handleGoback() }} disabled={uploadstatus || allloading}>
+              回退
+            </Button>
+          )}
+          {taskName === '发布实施准备' && (
+            <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => dowloadPre()} disabled={uploadstatus || allloading}>
+              导出
+            </Button>
+          )}
+          <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('save')} disabled={uploadstatus || allloading}>
+            保存
           </Button>
-        ) : (
-          <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => handleClick('flow')} disabled={uploadstatus || allloading}>
-            {taskName === '业务复核' ? '结束' : '流转'}
-          </Button>
-        )}
-        </>
-      )}
-      {taskName === '出厂测试' && submitTimes !== undefined && submitTimes !== 0 && (
-        <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => handleClick('over')} disabled={uploadstatus || allloading}>
-          结束
-        </Button>
-      )}
-      {((submittype === 0 && taskName === '平台验证') || (submittype === 3 && taskName === '发布实施准备')) && (
-        <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => handleClick('noPass')} disabled={uploadstatus || allloading}>
-          出厂测试
-        </Button>
-      )}
-      {submittype === 0 && (taskName === '科室负责人审核' || taskName === '中心领导审核') && (
-        <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => handleClick('noPass')} disabled={uploadstatus || allloading}>
-          版本管理员审核
-        </Button>
-      )}
+          {submittype === 1 && (
+            <>{(taskName === '版本管理员审核' || taskName === '科室负责人审核' || taskName === '中心领导审核') && info && info.releaseMains && info.releaseMains.length > 1 ? (
+              <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('flow')} disabled={uploadstatus || allloading}>
+                流转
+              </Button>
+            ) : (
+              <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => handleClick('flow')} disabled={uploadstatus || allloading}>
+                {taskName === '业务复核' ? '结束' : '流转'}
+              </Button>
+            )}
+            </>
+          )}
+          {taskName === '出厂测试' && submitTimes !== undefined && submitTimes !== 0 && (
+            <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => handleClick('over')} disabled={uploadstatus || allloading}>
+              结束
+            </Button>
+          )}
+          {((submittype === 0 && taskName === '平台验证') || (submittype === 3 && taskName === '发布实施准备')) && (
+            <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => handleClick('noPass')} disabled={uploadstatus || allloading}>
+              出厂测试
+            </Button>
+          )}
+          {submittype === 0 && (taskName === '科室负责人审核' || taskName === '中心领导审核') && (
+            <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => handleClick('noPass')} disabled={uploadstatus || allloading}>
+              版本管理员审核
+            </Button>
+          )}
+        </>)}
       <Button onClick={() => handleClose()} disabled={uploadstatus || allloading}>返回</Button>
     </>
   )
@@ -284,9 +287,7 @@ function ToDodetails(props) {
             ChangeaddAttaches: (v => setAddAttaches(v)),
             saved,
             releaseType,
-            taskName,
             location,
-
           }}>
             <WorkOrder location={location} buttype={buttype} />
           </SubmitTypeContext.Provider>

@@ -298,16 +298,22 @@ function EditeTable(props) {
   // 编辑、验证取消
   const cancel = (e, key) => {
     e.preventDefault();
-    const newData = data.map(item => ({ ...item }));
-    const target = getRowByKey(key, newData);
-    if (target) {
-      target.verification = false;
-      target.editable = false;
-      target.options = sessionStorage.getItem('userName');
-      target.optionsId = sessionStorage.getItem('userauthorityid');
-      setData(newData);
-      setNewButton(false);
-    };
+    const newData = dataSource.map((item, index) => ({
+      ...item,
+      editable: false,
+      key: (index + 1).toString(),
+    }));
+    setData(newData);
+    // const target = getRowByKey(key, newData);
+    setNewButton(false);
+    // if (target) {
+    //   target.verification = false;
+    //   target.editable = false;
+    //   target.options = sessionStorage.getItem('userName');
+    //   target.optionsId = sessionStorage.getItem('userauthorityid');
+    //   setData(newData);
+    //   setNewButton(false);
+    // };
   };
 
   // 移除按钮,新建的时候
@@ -538,7 +544,7 @@ function EditeTable(props) {
               <Cascader
                 fieldNames={{ label: 'title', value: 'title', children: 'children' }}
                 options={functionmap}
-                defaultValue={record.isNew ? [] : text.split('/')}
+                defaultValue={record.isNew || !text ? [] : text.split('/')}
                 onChange={e => handleFieldChange(e.join('/'), 'abilityType', record.key)}
               />
             </div>
