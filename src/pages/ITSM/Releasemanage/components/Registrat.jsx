@@ -74,7 +74,9 @@ function Registrat(props, ref) {
 
   // 校验发布清单
   const releaseListsValidator = (rule, value, callback) => {
-    if (value && isEdit) {
+    if (!value || value.length === 0) {
+      callback()
+    } if (isEdit) {
       const target = value.filter(item => !item.module || !item.abilityType || !item.module || !item.appName || !item.problemType || !item.testMenu || !item.testResult || !item.testStep || !item.developer || !item.responsible);
       if (target.length > 0) {
         setCheck(true);

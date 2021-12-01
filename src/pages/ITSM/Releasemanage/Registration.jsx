@@ -88,13 +88,13 @@ function Registration(props) {
     });
   };
 
-  const tosubmit = () => {
+  const tosubmit = (id) => {
     if (userlist) {
       const userIds = userlist.map(obj => obj.userId);
       dispatch({
         type: 'releaseregistra/fetchsubmit',
         payload: {
-          taskId,
+          taskId: id || taskId,
           type: 1,
           userIds: userIds.join(','),
         }
@@ -146,7 +146,7 @@ function Registration(props) {
                     };
                     if ((timeoutres.data.timeout && res.data.reason) || !timeoutres.data.timeout) {
                       // setUserVisible(true);
-                      tosubmit();
+                      tosubmit(res.data.currentTaskStatus.taskId);
                     };
                   } else {
                     message.error(res.msg);
