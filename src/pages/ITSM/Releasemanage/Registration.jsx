@@ -88,18 +88,16 @@ function Registration(props) {
     });
   };
 
-  const tosubmit = (id) => {
-    if (userlist) {
-      const userIds = userlist.map(obj => obj.userId);
-      dispatch({
-        type: 'releaseregistra/fetchsubmit',
-        payload: {
-          taskId: id || taskId,
-          type: 1,
-          userIds: userIds.join(','),
-        }
-      });
-    }
+  const tosubmit = (id, users) => {
+    const userIds = (users || userlist).map(obj => obj.userId);
+    dispatch({
+      type: 'releaseregistra/fetchsubmit',
+      payload: {
+        taskId: id || taskId,
+        type: 1,
+        userIds: userIds.join(','),
+      }
+    });
   }
 
   // 保存超时信息,成功校验表单
@@ -146,7 +144,7 @@ function Registration(props) {
                     };
                     if ((timeoutres.data.timeout && res.data.reason) || !timeoutres.data.timeout) {
                       // setUserVisible(true);
-                      tosubmit(res.data.currentTaskStatus.taskId);
+                      tosubmit(res.data.currentTaskStatus.taskId, resuser.data.userList);
                     };
                   } else {
                     message.error(res.msg);
