@@ -37,11 +37,12 @@ function ToDoregist(props) {
     setButtonType(type);
   };
   const handleclose = () => {
-    router.push({
-      pathname: `/ITSM/demandmanage/to-do`,
-      query: { pathpush: true },
-      state: { cache: false }
-    });
+    // router.push({
+    //   pathname: `/ITSM/demandmanage/to-do`,
+    //   query: { pathpush: true },
+    //   state: { cache: false }
+    // });
+    console.log(location);
   };
 
   const handledelete = () => {

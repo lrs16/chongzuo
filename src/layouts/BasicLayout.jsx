@@ -220,7 +220,8 @@ const BasicLayout = props => {
           id: location.query.No,
           itemPath: url,
           query: location.query,
-          closable: true
+          closable: true,
+          state: location.state,
         };
         toptabs.push(panels);
         setActiveKey(location.query.No);
@@ -231,7 +232,8 @@ const BasicLayout = props => {
           id: location.query.mainId,
           itemPath: url,
           query: location.query,
-          closable: true
+          closable: true,
+          state: location.state,
         };
         toptabs.push(panels);
         setActiveKey(location.query.mainId);

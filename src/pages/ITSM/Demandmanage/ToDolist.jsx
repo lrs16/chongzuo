@@ -20,82 +20,7 @@ const formItemLayout = {
   },
 };
 
-const columns = [
-  {
-    title: '需求编号',
-    dataIndex: 'demandId',
-    key: 'demandId',
-    with: 100,
-    fixed: 'left',
-    render: (text, record) => {
-      const handleClick = () => {
-        router.push({
-          pathname: `/ITSM/demandmanage/to-do/record/workorder`,
-          query: {
-            taskName: record.taskName,
-            taskId: record.taskId,
-            mainId: record.processInstanceId,
-            result: '1',
-            orderNo: text,
-          },
-        });
-      };
-      return <a onClick={handleClick}>{text}</a>;
-    },
-  },
-  {
-    title: '需求标题',
-    dataIndex: 'demandTitle',
-    key: 'demandTitle',
-    with: 250,
-  },
-  {
-    title: '需求类型',
-    dataIndex: 'demandType',
-    key: 'demandType',
-    with: 150,
-  },
-  {
-    title: '功能模块',
-    dataIndex: 'module',
-    key: 'module',
-    with: 150,
-  },
 
-  {
-    title: '当前处理环节',
-    dataIndex: 'taskName',
-    key: 'taskName',
-    with: 200,
-  },
-  {
-    title: '提出人',
-    dataIndex: 'proposer',
-    key: 'proposer',
-    with: 100,
-  },
-  {
-    title: '登记人',
-    dataIndex: 'sender',
-    key: 'sender',
-    with: 100,
-  },
-  {
-    title: '创建时间',
-    dataIndex: 'sendTime',
-    key: 'sendTime',
-    with: 150,
-    render: text => {
-      return <>{moment(text).format('YYYY-MM-DD HH:mm')}</>;
-    },
-  },
-  {
-    title: '优先级',
-    dataIndex: 'priority',
-    key: 'priority',
-    with: 80,
-  },
-];
 
 function ToDolist(props) {
   const pagetitle = props.route.name;
@@ -104,7 +29,7 @@ function ToDolist(props) {
     loading,
     list,
     dispatch,
-    location
+    location,
   } = props;
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [expand, setExpand] = useState(false);
@@ -191,6 +116,101 @@ function ToDolist(props) {
   };
 
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+
+  const columns = [
+    {
+      title: '需求编号',
+      dataIndex: 'demandId',
+      key: 'demandId',
+      with: 100,
+      fixed: 'left',
+      render: (text, record) => {
+        const handleClick = () => {
+          dispatch({
+            type: 'viewcache/gettabstate',
+            payload: {
+              cacheinfo: {
+                ...tabrecord,
+                paginations,
+                expand,
+              },
+              tabid: sessionStorage.getItem('tabid')
+            },
+          });
+          router.push({
+            pathname: `/ITSM/demandmanage/to-do/record/workorder`,
+            query: {
+              taskName: record.taskName,
+              taskId: record.taskId,
+              mainId: record.processInstanceId,
+              result: '1',
+              orderNo: text,
+            },
+            state: {
+              cacheinfo: {
+                ...tabrecord,
+                paginations,
+                expand,
+              },
+            }
+          });
+        };
+        return <a onClick={handleClick}>{text}</a>;
+      },
+    },
+    {
+      title: '需求标题',
+      dataIndex: 'demandTitle',
+      key: 'demandTitle',
+      with: 250,
+    },
+    {
+      title: '需求类型',
+      dataIndex: 'demandType',
+      key: 'demandType',
+      with: 150,
+    },
+    {
+      title: '功能模块',
+      dataIndex: 'module',
+      key: 'module',
+      with: 150,
+    },
+
+    {
+      title: '当前处理环节',
+      dataIndex: 'taskName',
+      key: 'taskName',
+      with: 200,
+    },
+    {
+      title: '提出人',
+      dataIndex: 'proposer',
+      key: 'proposer',
+      with: 100,
+    },
+    {
+      title: '登记人',
+      dataIndex: 'sender',
+      key: 'sender',
+      with: 100,
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'sendTime',
+      key: 'sendTime',
+      with: 150,
+      render: text => {
+        return <>{moment(text).format('YYYY-MM-DD HH:mm')}</>;
+      },
+    },
+    {
+      title: '优先级',
+      dataIndex: 'priority',
+      key: 'priority',
+      with: 80,
+    },
+  ];
 
   const handleReset = () => {
     router.push({
