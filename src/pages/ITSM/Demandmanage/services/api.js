@@ -160,3 +160,17 @@ export async function demandToRelease(demandId) {
     method: 'POST',
   });
 }
+
+// 需求统计分析数据攥取
+// //demand/statisstics/detail 工单明细
+export async function demandstatidetailData(params) {
+  return request(`/demand/statisstics/detail/${params.pageNum}/${params.pageSize}?begin=${params.begin}&end=${params.end}&model=${params.model}&type=${params.type}`);
+}
+// 需求统计分析数据攥取
+// /demand/statisstics / download 工单明细导出
+export async function demandstatidetailDownload(params) {
+  return request(`/demand/statisstics/download?begin=${params.begin}&end=${params.end}&model=${params.model}&type=${params.type}`, {
+    method: 'GET',
+    responseType: 'blob'
+  });
+}

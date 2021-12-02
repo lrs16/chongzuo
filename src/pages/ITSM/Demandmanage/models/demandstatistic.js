@@ -10,6 +10,7 @@ import {
   demandstatipieData, // 统计分析 -饼图
   demandstatilineData, // 统计分析 -趋势折线图
   demandstatiratioData, // 统计分析-工单情况
+  // demandstatidetailData, // 统计分析-工单明细-数据钻取
 } from '../services/statisticapi';
 
 export default {
@@ -23,6 +24,7 @@ export default {
     piedatalist: [], // 统计分析 -饼图
     linedatalist: [], // 统计分析 -趋势折线图
     ratiodatalist: [], // 统计分析 -工单数
+    // demandquerylists: [], // 统计分析-工单明细-数据钻取
   },
 
   effects: {
@@ -111,6 +113,18 @@ export default {
       });
     },
 
+    // 需求统计分析-工单明细-数据钻取
+    // *getdemandstatidetailData({ payload }, { call, put }) {
+    //   yield put({
+    //     type: 'clearcache'
+    //   })
+    //   const response = yield call(demandstatidetailData, payload);
+    //   yield put({
+    //     type: 'demandquerylist',
+    //     payload: response,
+    //   });
+    // },
+
   },
 
   reducers: {
@@ -119,6 +133,7 @@ export default {
         ...state,
         piedatalist: [], // 统计分析 -饼图
         linedatalist: [], // 统计分析 -趋势折线图
+        // demandquerylists: [], // 统计分析-工单明细
       }
     },
     // 功能需求统计列表
@@ -172,5 +187,13 @@ export default {
         ratiodatalist: action.payload.data,
       };
     },
+
+    // 统计分析-工单明细
+    // demandquerylist(state, action) {
+    //   return {
+    //     ...state,
+    //     demandquerylists: action.payload.data,
+    //   };
+    // },
   },
 };

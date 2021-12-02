@@ -33,7 +33,7 @@ registerShape("interval", "sliceShape", {
 });
 
 function DonutPCT(props) {
-  const { data, total, totaltitle, height, padding, onGetVal, staticName } = props;
+  const { data, total, totaltitle, height, padding, onGetVal, staticName, time1, time2 } = props;
   const [visible, setVisible] = useState(false); // 抽屉是否显示
   const [drawerval, onGetDrawerVal] = useState('');
   const { DataView } = DataSet;
@@ -49,15 +49,28 @@ function DonutPCT(props) {
   const handleGetDrawerVal = val => {
     setVisible(!visible);
     onGetDrawerVal(val);
-    if (val.staticName === undefined) {
-      setVisible(false);
-      onGetDrawerVal({});
-    }
   }
 
   return (
     <div>
-      <div style={{ position: 'absolute', left: '50%', top: '42%', width: 100, textAlign: 'center', marginLeft: '-50px' }} >
+      <div
+        style={{ position: 'absolute', left: '50%', top: '42%', width: 100, textAlign: 'center', marginLeft: '-50px', cursor: 'pointer', zIndex: 9999 }}
+        onClick={() => {
+          switch (staticName) {
+            case '需求工单总情况':
+              handleGetDrawerVal({ staticName: 'sumtotal', time1, time2 });
+              break;
+            case '功能模块情况':
+              handleGetDrawerVal({ staticName: 'moduletotal', time1, time2 });
+              break;
+            case '需求类型统计分析':
+              handleGetDrawerVal({ staticName: 'typetotal', time1, time2 });
+              break;
+            default:
+              break;
+          }
+        }}
+      >
         <span style={{ fontSize: 24, fontWeight: 700 }}>{total}</span><br />
         <span>{totaltitle}</span>
       </div>
@@ -65,7 +78,7 @@ function DonutPCT(props) {
         const linkdata = ev.data;
         if (linkdata && linkdata.data) {
           onGetVal(linkdata.data);
-          handleGetDrawerVal({ ...linkdata.data, staticName });
+          handleGetDrawerVal({ ...linkdata.data, staticName, time1, time2 });
         }
       }}>
         <Coordinate type="theta" radius={0.8} innerRadius={0.7} />

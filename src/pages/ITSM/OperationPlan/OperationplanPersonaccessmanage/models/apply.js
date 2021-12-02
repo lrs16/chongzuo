@@ -68,7 +68,7 @@ export default {
     // *sendCheckAdd({ payload }, { call }) {
     //   return yield call(sendCheckAdd, payload);
     // },
-    
+
     *checkRegist({ payload }, { call }) {
       return yield call(checkRegist, payload);
     },

@@ -391,23 +391,22 @@ function Newregist(props) {
               <Panel header='启停审核' key="formpanel2">
                 <EditContext.Provider value={{
                   location,
-                  ChangeButtype: (() => { }),
                 }}>
-                {
-                  (Id && (Id !== '' || Id !== undefined)) ? (Info.autoSoftWorkExamine && (<Examine
-                    wrappedComponentRef={ExmaineRef}
-                    check={Info.autoSoftWorkExamine}
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    userinfo={userinfo}
-                  />)) : (<Examine
-                    wrappedComponentRef={ExmaineRef}
+                  {
+                    (Id && (Id !== '' || Id !== undefined)) ? (Info.autoSoftWorkExamine && (<Examine
+                      wrappedComponentRef={ExmaineRef}
+                      check={Info.autoSoftWorkExamine}
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                      userinfo={userinfo}
+                    />)) : (<Examine
+                      wrappedComponentRef={ExmaineRef}
                       check={tabdata}
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    userinfo={userinfo}
-                  />)
-                }
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                      userinfo={userinfo}
+                    />)
+                  }
                 </EditContext.Provider>
               </Panel>
               {/* <Panel header="软件信息" key="formpane3">

@@ -2,7 +2,7 @@ import React, { useState, useEffect, forwardRef, useImperativeHandle, useContext
 import moment from 'moment';
 import { Row, Col, Form, Input, Radio, DatePicker } from 'antd';
 import SysUpload from '@/components/SysUpload/Upload';
-import FilesContext from '@/layouts/MenuContext'; 
+import FilesContext from '@/layouts/MenuContext';
 
 const { TextArea } = Input;
 
@@ -26,10 +26,10 @@ const formItemLayout = {
 const Examine = forwardRef((props, ref) => {
   const {
     userinfo, check, Noediting,
-    form: { getFieldDecorator, getFieldsValue, resetFields,setFieldsValue },
+    form: { getFieldDecorator, getFieldsValue, resetFields, setFieldsValue },
   } = props;
   const [uploadStatus, setUploadStatus] = useState(false);
-  const { ChangeButtype, location } = useContext(FilesContext);
+  const { location } = useContext(FilesContext);
 
   const [adopt, setAdopt] = useState('0');
 
@@ -113,7 +113,7 @@ const Examine = forwardRef((props, ref) => {
               }],
               initialValue: check && check.examineFiles && check.examineFiles !== '[]' ? check.examineFiles : '',
             })(
-              <div style={{ width: 400 }} onMouseDown={() => { ChangeButtype(''); }}>
+              <div style={{ width: 400 }}>
                 {
                   location && (!location.state || (location.state && !location.state.cache)) && (
                     <FilesContext.Provider value={{

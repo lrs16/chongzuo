@@ -21,7 +21,7 @@ const formItemLayout = {
 };
 function EquipDrawer(props) {
   const { visible, ChangeVisible, title, handleSubmit, dispatch, directormap, savetype } = props;
-  const { getFieldDecorator, validateFields } = props.form;
+  const { getFieldDecorator, validateFields, setFieldsValue } = props.form;
   const required = true;
   const {
     hostZoneId,
@@ -312,9 +312,15 @@ function EquipDrawer(props) {
         </Form.Item>
         <Form.Item label="维保结束时间">
           {getFieldDecorator('maintainEndTime', {
-            rules: [{ required }],
+            rules: [{ required, message: '请选择', }],
             initialValue: maintainEndTime ? moment(maintainEndTime) : '',
-          })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
+          })(<><DatePicker
+            showTime
+            format="YYYY-MM-DD HH:mm:ss"
+            style={{ width: '100%' }}
+            defaultValue={maintainEndTime ? moment(maintainEndTime) : ''}
+            onChange={(v) => { setFieldsValue({ maintainEndTime: moment(v) }) }}
+          /></>)}
         </Form.Item>
         <Form.Item label="设备排序">
           {getFieldDecorator('hostSorts', {

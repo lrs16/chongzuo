@@ -65,7 +65,7 @@ function SoftregisterView(props) {
                 onChange={callback}
               >
                 <Panel header='启停登记' key="formpanel">
-                  <EditContext.Provider value={{ editable: false, workId, buttype}}>
+                  <EditContext.Provider value={{ editable: false, workId, buttype }}>
                     <Content
                       wrappedComponentRef={ContentRef}
                       userinfo={userinfo}

@@ -3,7 +3,7 @@ import { Chart, Geom, Axis, Coord, Label, Tooltip, Legend } from 'bizcharts';
 import ChartDrawer from '../ChartDrawer';
 
 function ColumnarY(props) {
-  const { data, cols, height, padding, onGetVal, staticName } = props;
+  const { data, cols, height, padding, onGetVal, staticName, time1, time2 } = props;
   const [visible, setVisible] = useState(false); // 抽屉是否显示
   const [drawerval, onGetDrawerVal] = useState('');
 
@@ -25,7 +25,7 @@ function ColumnarY(props) {
           const clickdata = ev.data;
           if (clickdata && clickdata.data) {
             onGetVal(clickdata.data);
-            handleGetDrawerVal({ ...clickdata.data, staticName });
+            handleGetDrawerVal({ ...clickdata.data, staticName, time1, time2 });
           }
         }}
       >

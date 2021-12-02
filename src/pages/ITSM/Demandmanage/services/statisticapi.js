@@ -134,3 +134,9 @@ export async function demandstatiratioData(params) {
     requestType:'form'
   });
 }
+
+// // 需求统计分析数据攥取
+// // //demand/statisstics/detail 工单明细
+// export async function demandstatidetailData(params) {
+//   return request(`/demand/statisstics/detail?begin=${params.begin}&end=${params.end}&model=${params.model}&type=${params.type}`);
+// }

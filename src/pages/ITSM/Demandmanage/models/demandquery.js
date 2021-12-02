@@ -1,6 +1,4 @@
-import router from 'umi/router';
-import { message } from 'antd';
-import { DemandQuery, QueryDetail, QueryExport } from '../services/api';
+import { DemandQuery, QueryDetail, QueryExport, demandstatidetailData, demandstatidetailDownload } from '../services/api';
 
 export default {
   namespace: 'demandquery',
@@ -8,6 +6,7 @@ export default {
   state: {
     list: [],
     info: undefined,
+    demandquerylists: [], // 统计分析-工单明细-数据钻取
   },
 
   effects: {
@@ -34,6 +33,23 @@ export default {
     *download({ payload }, { call }) {
       return yield call(QueryExport, payload);
     },
+
+    // 需求统计分析-工单明细-数据钻取
+    *getdemandstatidetailData({ payload }, { call, put }) {
+      yield put({
+        type: 'clearcache'
+      })
+      const response = yield call(demandstatidetailData, payload);
+      yield put({
+        type: 'demandquerylist',
+        payload: response,
+      });
+    },
+
+    // 需求统计分析-工单明细-数据钻取
+    *statidetailDownload({ payload }, { call }) {
+      return yield call(demandstatidetailDownload, payload);
+    },
   },
 
   reducers: {
@@ -41,6 +57,7 @@ export default {
       return {
         ...state,
         info: undefined,
+        demandquerylists: []
       };
     },
     save(state, action) {
@@ -53,6 +70,13 @@ export default {
       return {
         ...state,
         info: action.payload,
+      };
+    },
+    // 统计分析-工单明细
+    demandquerylist(state, action) {
+      return {
+        ...state,
+        demandquerylists: action.payload.data,
       };
     },
   },

@@ -34,7 +34,7 @@ const tickLine = {
 }
 
 function SmoothLine(props) {
-  const { data, cols, height, padding, onGetVal, staticName } = props;
+  const { data, cols, height, padding, onGetVal, staticName, time1, time2 } = props;
   const [visible, setVisible] = useState(false); // 抽屉是否显示
   const [drawerval, onGetDrawerVal] = useState('');
   const dv = new DataSet.View().source(data);
@@ -54,7 +54,7 @@ function SmoothLine(props) {
       const linkdata = ev.data;
       if (linkdata && linkdata.data && !Array.isArray(linkdata.data)) {
         onGetVal(linkdata.data);
-        handleGetDrawerVal({ ...linkdata.data, staticName });
+        handleGetDrawerVal({ ...linkdata.data, staticName, time1, time2 });
       }
     }}>
       <Line shape="smooth" position="date*value" color="name" />

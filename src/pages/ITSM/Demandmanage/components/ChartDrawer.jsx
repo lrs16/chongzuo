@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-// import moment from 'moment';
+import moment from 'moment';
 import {
   Drawer,
   Button,
@@ -154,103 +154,219 @@ function ChartDrawer(props) {
     ChangeVisible,
     drawerdata,
     dispatch,
-    list,
+    demandquerylists,
     loading
   } = props;
 
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+  // const [selectedRowKeys, setSelectedKeys] = useState([]);
+
+  // const rowSelection = {
+  //   onChange: index => {
+  //     setSelectedKeys([...index])
+  //   }
+  // };
 
   const searchdata = (value, page, size) => {
-    // console.log(value, 'value')
-    // startTime endTime
+    const pointdate = value.date && Array.from(value.date).length === 2;
     switch (value.staticName) {
+      // Card 需求工单情况
       case '需求总数':
+      case 'sumtotal':
         dispatch({
-          type: 'demandquery/querylist',
+          type: 'demandquery/getdemandstatidetailData',
           payload: {
             pageNum: page,
             pageSize: size,
+            model: '工单情况',
+            type: 'all',
+            begin: value.time1,
+            end: value.time2
           }
         })
         break;
       case '已开发':
       case '已发布':
         dispatch({
-          type: 'demandquery/querylist',
+          type: 'demandquery/getdemandstatidetailData',
           payload: {
             pageNum: page,
             pageSize: size,
-            developSchedule: value.staticName
+            model: '工单情况',
+            type: value.staticName,
+            begin: value.time1,
+            end: value.time2
           }
         })
         break;
+      // 需求工单总情况(饼+线)1
+      case '需求工单总情况':
+        dispatch({
+          type: 'demandquery/getdemandstatidetailData',
+          payload: {
+            pageNum: page,
+            pageSize: size,
+            model: '工单情况',
+            type: value.type,
+            begin: value.time1,
+            end: value.time2
+          }
+        })
+        break;
+      case '需求工单总情况线':
+        dispatch({
+          type: 'demandquery/getdemandstatidetailData',
+          payload: {
+            model: '工单情况',
+            type: value.name,
+            begin: pointdate === true ? moment(value.time1).format(`YYYY-MM-DD ${value.date}:00:00`) : moment(value.date).format('YYYY-MM-DD 00:00:00'),
+            end: pointdate === true ? moment(value.time2).format(`YYYY-MM-DD ${value.date}:59:59`) : moment(value.date).format('YYYY-MM-DD 23:59:59'),
+            pageNum: page,
+            pageSize: size,
+          }
+        })
+        break;
+      // module 功能模块(饼+线)2
       case '功能模块情况':
         dispatch({
-          type: 'demandquery/querylist',
+          type: 'demandquery/getdemandstatidetailData',
           payload: {
-            module: value.type || value.name,
-            limit: size,
-            page
+            type: value.type,
+            begin: value.time1,
+            end: value.time2,
+            model: '功能模块',
+            pageNum: page,
+            pageSize: size,
           }
         })
         break;
-      case '需求工单超时情况':
+      case '功能模块情况线':
         dispatch({
-          type: 'demandquery/querylist',
+          type: 'demandquery/getdemandstatidetailData',
           payload: {
-            completeStatus: value.type,
-            limit: size,
-            page
+            type: value.name,
+            begin: pointdate === true ? moment(value.time1).format(`YYYY-MM-DD ${value.date}:00:00`) : moment(value.date).format('YYYY-MM-DD 00:00:00'),
+            end: pointdate === true ? moment(value.time2).format(`YYYY-MM-DD ${value.date}:59:59`) : moment(value.date).format('YYYY-MM-DD 23:59:59'),
+            pageNum: page,
+            pageSize: size,
+            model: '功能模块',
           }
         })
         break;
+      // 需求类型统计分析（饼+线）3
       case '需求类型统计分析':
         dispatch({
-          type: 'demandquery/querylist',
+          type: 'demandquery/getdemandstatidetailData',
           payload: {
-            demandType: value.type || value.name,
-            limit: size,
-            page
+            type: value.type,
+            begin: value.time1,
+            end: value.time2,
+            model: '需求类型',
+            pageNum: page,
+            pageSize: size,
           }
         })
         break;
+      case '需求类型统计分析线':
+        dispatch({
+          type: 'demandquery/getdemandstatidetailData',
+          payload: {
+            type: value.name,
+            begin: pointdate === true ? moment(value.time1).format(`YYYY-MM-DD ${value.date}:00:00`) : moment(value.date).format('YYYY-MM-DD 00:00:00'),
+            end: pointdate === true ? moment(value.time2).format(`YYYY-MM-DD ${value.date}:59:59`) : moment(value.date).format('YYYY-MM-DD 23:59:59'),
+            model: '需求类型',
+            pageNum: page,
+            pageSize: size,
+          }
+        })
+        break;
+      // 需求工单超时情况（饼）
+      // case '需求工单超时情况':
+      //   dispatch({
+      //     type: 'demandquery/getdemandstatidetailData',
+      //     payload: {
+      //       completeStatus: value.type,
+      //       limit: size,
+      //       page
+      //     }
+      //   })
+      //   break;
       case '需求申请人':
         dispatch({
-          type: 'demandquery/querylist',
+          type: 'demandquery/getdemandstatidetailData',
           payload: {
-            proposer: value.type,
-            limit: size,
-            page
+            type: value.type,
+            begin: value.time1,
+            end: value.time2,
+            model: '申请人',
+            pageNum: page,
+            pageSize: size,
           }
         })
         break;
       case '需求处理人':
         dispatch({
-          type: 'demandquery/querylist',
+          type: 'demandquery/getdemandstatidetailData',
           payload: {
-            proposer: value.type,
-            limit: size,
-            page
+            type: value.type,
+            begin: value.time1,
+            end: value.time2,
+            model: '处理人',
+            pageNum: page,
+            pageSize: size,
           }
         })
         break;
       case '需求申请单位':
         dispatch({
-          type: 'demandquery/querylist',
+          type: 'demandquery/getdemandstatidetailData',
           payload: {
-            proposer: value.type,
-            limit: size,
-            page
+            type: value.type,
+            begin: value.time1,
+            end: value.time2,
+            model: '申请单位',
+            pageNum: page,
+            pageSize: size,
           }
         })
         break;
       case '需求处理单位':
         dispatch({
-          type: 'demandquery/querylist',
+          type: 'demandquery/getdemandstatidetailData',
           payload: {
-            proposer: value.type,
-            limit: size,
-            page
+            type: value.type,
+            begin: value.time1,
+            end: value.time2,
+            model: '处理单位',
+            pageNum: page,
+            pageSize: size,
+          }
+        })
+        break;
+      // 饼图总数
+      case 'moduletotal':
+        dispatch({
+          type: 'demandquery/getdemandstatidetailData',
+          payload: {
+            type: 'all',
+            begin: value.time1,
+            end: value.time2,
+            model: '功能模块',
+            pageNum: page,
+            pageSize: size,
+          }
+        })
+        break;
+      case 'typetotal':
+        dispatch({
+          type: 'demandquery/getdemandstatidetailData',
+          payload: {
+            type: 'all',
+            begin: value.time1,
+            end: value.time2,
+            model: '需求类型',
+            pageNum: page,
+            pageSize: size,
           }
         })
         break;
@@ -262,7 +378,7 @@ function ChartDrawer(props) {
   // 获取数据
   useEffect(() => {
     if (drawerdata)
-      searchdata(drawerdata, 1, 15);
+      searchdata(drawerdata, paginations.current, paginations.pageSize);
   }, [drawerdata]);
 
   const onShowSizeChange = (page, size) => {
@@ -287,7 +403,7 @@ function ChartDrawer(props) {
     onShowSizeChange: (page, size) => onShowSizeChange(page, size),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    total: list.total,
+    total: demandquerylists.total,
     showTotal: total => `总共  ${total}  条记录`,
     onChange: page => changePage(page),
   };
@@ -298,7 +414,311 @@ function ChartDrawer(props) {
   };
 
   //  下载 /导出功能
-  const download = () => { };
+  const download = value => {
+    const pointdate = value.date && Array.from(value.date).length === 2;
+    switch (value.staticName) {
+      // Card 需求工单情况
+      case '需求总数':
+      case 'sumtotal':
+        dispatch({
+          type: 'demandquery/statidetailDownload',
+          payload: {
+            model: '工单情况',
+            type: 'all',
+            begin: value.time1,
+            end: value.time2
+          }
+        }).then(res => {
+          const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+        break;
+      case '已开发':
+      case '已发布':
+        dispatch({
+          type: 'demandquery/statidetailDownload',
+          payload: {
+            model: '工单情况',
+            type: value.staticName,
+            begin: value.time1,
+            end: value.time2
+          }
+        }).then(res => {
+          const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+        break;
+      // 需求工单总情况(饼+线)1
+      case '需求工单总情况':
+        dispatch({
+          type: 'demandquery/statidetailDownload',
+          payload: {
+            model: '工单情况',
+            type: value.type,
+            begin: value.time1,
+            end: value.time2
+          }
+        }).then(res => {
+          const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+        break;
+      case '需求工单总情况线':
+        dispatch({
+          type: 'demandquery/statidetailDownload',
+          payload: {
+            model: '工单情况',
+            type: value.name,
+            begin: pointdate === true ? moment(value.time1).format(`YYYY-MM-DD ${value.date}:00:00`) : moment(value.date).format('YYYY-MM-DD 00:00:00'),
+            end: pointdate === true ? moment(value.time2).format(`YYYY-MM-DD ${value.date}:59:59`) : moment(value.date).format('YYYY-MM-DD 23:59:59'),
+          }
+        }).then(res => {
+          const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+        break;
+      // module 功能模块(饼+线)2
+      case '功能模块情况':
+        dispatch({
+          type: 'demandquery/statidetailDownload',
+          payload: {
+            type: value.type,
+            begin: value.time1,
+            end: value.time2,
+            model: '功能模块',
+          }
+        }).then(res => {
+          const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+        break;
+      case '功能模块情况线':
+        dispatch({
+          type: 'demandquery/statidetailDownload',
+          payload: {
+            type: value.name,
+            begin: pointdate === true ? moment(value.time1).format(`YYYY-MM-DD ${value.date}:00:00`) : moment(value.date).format('YYYY-MM-DD 00:00:00'),
+            end: pointdate === true ? moment(value.time2).format(`YYYY-MM-DD ${value.date}:59:59`) : moment(value.date).format('YYYY-MM-DD 23:59:59'),
+            model: '功能模块',
+          }
+        }).then(res => {
+          const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+        break;
+      // 需求类型统计分析（饼+线）3
+      case '需求类型统计分析':
+        dispatch({
+          type: 'demandquery/statidetailDownload',
+          payload: {
+            type: value.type,
+            begin: value.time1,
+            end: value.time2,
+            model: '需求类型',
+          }
+        }).then(res => {
+          const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+        break;
+      case '需求类型统计分析线':
+        dispatch({
+          type: 'demandquery/statidetailDownload',
+          payload: {
+            type: value.name,
+            begin: pointdate === true ? moment(value.time1).format(`YYYY-MM-DD ${value.date}:00:00`) : moment(value.date).format('YYYY-MM-DD 00:00:00'),
+            end: pointdate === true ? moment(value.time2).format(`YYYY-MM-DD ${value.date}:59:59`) : moment(value.date).format('YYYY-MM-DD 23:59:59'),
+            model: '需求类型',
+          }
+        }).then(res => {
+          const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+        break;
+      // 需求工单超时情况（饼）
+      // case '需求工单超时情况':
+      //   dispatch({
+      //     type: 'demandquery/statidetailDownload',
+      //     payload: {
+      //       completeStatus: value.type,
+      //       limit: size,
+      //       page
+      //     }
+      //   })
+      //   break;
+      case '需求申请人':
+        dispatch({
+          type: 'demandquery/statidetailDownload',
+          payload: {
+            type: value.type,
+            begin: value.time1,
+            end: value.time2,
+            model: '申请人',
+          }
+        }).then(res => {
+          const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+        break;
+      case '需求处理人':
+        dispatch({
+          type: 'demandquery/statidetailDownload',
+          payload: {
+            type: value.type,
+            begin: value.time1,
+            end: value.time2,
+            model: '处理人',
+          }
+        }).then(res => {
+          const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+        break;
+      case '需求申请单位':
+        dispatch({
+          type: 'demandquery/statidetailDownload',
+          payload: {
+            type: value.type,
+            begin: value.time1,
+            end: value.time2,
+            model: '申请单位',
+          }
+        }).then(res => {
+          const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+        break;
+      case '需求处理单位':
+        dispatch({
+          type: 'demandquery/statidetailDownload',
+          payload: {
+            type: value.type,
+            begin: value.time1,
+            end: value.time2,
+            model: '处理单位',
+          }
+        }).then(res => {
+          const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+        break;
+      // 饼图总数
+      case 'moduletotal':
+        dispatch({
+          type: 'demandquery/statidetailDownload',
+          payload: {
+            type: 'all',
+            begin: value.time1,
+            end: value.time2,
+            model: '功能模块',
+          }
+        }).then(res => {
+          const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+        break;
+      case 'typetotal':
+        dispatch({
+          type: 'demandquery/statidetailDownload',
+          payload: {
+            type: 'all',
+            begin: value.time1,
+            end: value.time2,
+            model: '需求类型',
+          }
+        }).then(res => {
+          const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
     <>
@@ -310,7 +730,7 @@ function ChartDrawer(props) {
         destroyOnClose
       >
         <div style={{ marginBottom: 24 }}>
-          <Popconfirm title="确定导出数据？" onConfirm={() => download()}>
+          <Popconfirm title="确定导出数据？" onConfirm={() => download(drawerdata)}>
             <Button
               type="primary">
               导出数据
@@ -320,9 +740,10 @@ function ChartDrawer(props) {
         <Table
           columns={columns}
           loading={loading}
-          dataSource={list.rows || []}
+          dataSource={demandquerylists.rows || []}
           rowKey={record => record.id}
           pagination={pagination}
+          // rowSelection={rowSelection}
           scroll={{ x: 3200 }}
         />
       </Drawer>
@@ -331,6 +752,6 @@ function ChartDrawer(props) {
 }
 
 export default connect(({ demandquery, loading }) => ({
-  list: demandquery.list,
+  demandquerylists: demandquery.demandquerylists, // 工单数
   loading: loading.models.demandquery,
 }))(ChartDrawer);
