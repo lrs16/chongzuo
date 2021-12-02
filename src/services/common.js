@@ -80,6 +80,15 @@ export async function getOperationList(params) {
   });
 }
 
+// 关联工单 服务绩效（用的查询接口）
+export async function assessSearch(params) {
+  const val = { assessNo: params.assessNo, currentTaskName: params.assessNo }
+  return request(`/quality/assess/search/${params.pageIndex + 1}/${params.pageSize}`, {
+    method: 'POST',
+    body: JSON.stringify(val)
+  })
+}
+
 // 关联工单列表
 export async function queryOrderRelationList(params) {
   return request(`/common/relation/queryOrderRelationList`, {

@@ -8,27 +8,13 @@ const { Content, Sider } = Layout;
 const { TextArea } = Input;
 
 const rowkey = new Map([
-  ['故障', 'id'],
-  ['问题', 'id'],
-  ['需求', 'processId'],
+  ['发布', 'id'],
   ['服务绩效', 'instanceId'],
-  ['作业计划', 'id'],
 ]);
 const titlekey = new Map([
-  ['故障', 'no'],
-  ['问题', 'no'],
-  ['需求', 'demandId'],
+  ['发布', 'releaseNo'],
   ['服务绩效', 'assessNo'],
-  ['作业计划', 'operationNo']
 ]);
-
-const statuskey = new Map([
-  ['故障', 'status'],
-  ['问题', 'status'],
-  ['需求', 'taskName'],
-  ['服务绩效', 'assessStatus'],
-  ['作业计划', 'status']
-])
 
 const formItemLayout = {
   labelCol: {
@@ -93,21 +79,9 @@ function RelationDrawer(props) {
 
   const handleSearch = (no, status, pageIndex, pageSize) => {
     switch (orderTypeSuf) {
-      case 'trouble':
+      case 'release':
         dispatch({
-          type: 'relationorder/fetchtrouble',
-          payload: { no: no || '', status: status || '', pageIndex, pageSize },
-        })
-        break;
-      case 'problem':
-        dispatch({
-          type: 'relationorder/fetchproblem',
-          payload: { no: no || '', status: status || '', pageIndex, pageSize },
-        })
-        break;
-      case 'demand':
-        dispatch({
-          type: 'relationorder/fetchdemand',
+          type: 'relationorder/fetchrelease',
           payload: { no: no || '', status: status || '', pageIndex, pageSize },
         })
         break;
@@ -115,12 +89,6 @@ function RelationDrawer(props) {
         dispatch({
           type: 'relationorder/fetchquality',
           payload: { assessNo: no || '', currentTaskName: status || '', pageIndex, pageSize },
-        })
-        break;
-      case 'operation':
-        dispatch({
-          type: 'relationorder/fetchoperation',
-          payload: { no: no || '', status: status || '', pageIndex, pageSize },
         })
         break;
       default:
@@ -172,16 +140,7 @@ function RelationDrawer(props) {
   const typeTokeyVal = (key) => {
     switch (key) {
       case 'trouble':
-        getKeyVal('trouble', 'status');
-        break;
-      case 'problem':
-        getKeyVal('problem', 'orderstate');
-        break;
-      case 'demand':
-        getKeyVal('demand', 'status');
-        break;
-      case 'operation':
-        getKeyVal('operation', 'status');
+        getKeyVal('release', 'statu');
         break;
       case 'quality':
         getKeyVal('servicequality', 'appraisalstatus');
@@ -205,8 +164,8 @@ function RelationDrawer(props) {
       with: 150,
     },
     {
-      title: title === '服务绩效' ? '描述' : '标题',
-      dataIndex: title === '服务绩效' ? 'assessContent' : 'title',
+      title: title === '服务绩效' ? '描述' : '类型',
+      dataIndex: title === '服务绩效' ? 'assessContent' : 'releaseType',
       key: 'title',
       width: 180,
       onCell: () => {
@@ -234,7 +193,7 @@ function RelationDrawer(props) {
     },
     {
       title: '状态',
-      dataIndex: statuskey.get(title),
+      dataIndex: title === '服务绩效' ? 'assessStatus' : 'releaseStatus',
       key: 'status',
     },
   ];
@@ -307,18 +266,18 @@ function RelationDrawer(props) {
             <h3 style={{ background: '#f8f8f8', padding: 20, border: '1px solid #e8e8e8', borderLeft: 0 }}>工单详情</h3>
             <div style={{ padding: '8px 0 0 24px' }}>
               <h4 style={{ padding: '8px 0' }}>{title}编号</h4>
-              <Input value={rowrecord.no || rowrecord.demandId || rowrecord.assessNo} />
+              <Input value={rowrecord.assessNo || rowrecord.releaseNo} />
               <h4 style={{ padding: '8px 0' }}>{title}来源</h4>
-              <Input value={rowrecord.source} />
+              <Input value={rowrecord.assessStatus} />
               <h4 style={{ padding: '8px 0' }}>{title}分类</h4>
-              <Input value={rowrecord.type || rowrecord.demandType} />
+              <Input value={rowrecord.releaseType} />
               <h4 style={{ padding: '8px 0' }}>建单时间</h4>
-              <Input value={rowrecord.addTime || rowrecord.gmtCreate || rowrecord.applyTime} />
-              <h4 style={{ padding: '8px 0' }}>{title}标题</h4>
-              <Input value={rowrecord.title} />
+              <Input value={rowrecord.applyTime || rowrecord.ctime} />
+              {/* <h4 style={{ padding: '8px 0' }}>{title}标题</h4>
+              <Input value={rowrecord.title} /> */}
               <h4 style={{ padding: '8px 0' }}>{title}描述</h4>
               <TextArea
-                value={rowrecord.content || rowrecord.reason || rowrecord.assessContent}
+                value={rowrecord.assessContent}
                 autoSize={{ minRows: 5, maxRows: 10 }}
               />
             </div>

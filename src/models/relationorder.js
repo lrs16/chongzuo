@@ -10,6 +10,7 @@ import {
   relationReleaseLists,
   getDemandList,
   getOperationList,
+  assessSearch,
 } from '@/services/common';
 import { message } from 'antd';
 
@@ -100,6 +101,15 @@ export default {
       })
     },
 
+    // 弹窗获取服务绩效
+    * fetchquality({ payload }, { put, call }) {
+      const response = yield call(assessSearch, payload);
+      yield put({
+        type: "saveorder",
+        payload: { total: response.data.total, rows: response.data.records }
+      })
+    },
+
     *fetchlist({ payload }, { call, put }) {
       const response = yield call(getReleaseList, payload);
       yield put({
@@ -107,7 +117,7 @@ export default {
         payload: response.data,
       });
     },
-
+    // 弹窗获取发布单
     * fetchrelease({ payload }, { put, call }) {
       const response = yield call(relationReleaseLists, payload);
       yield put({

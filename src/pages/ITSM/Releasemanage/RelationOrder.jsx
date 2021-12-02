@@ -24,20 +24,20 @@ function RelevancyOrder(props) {
   const [clearsearchkey, setClearsearchkey] = useState(false);
 
   const callback = (key) => {
-    setActiveKey(key);
     setSearchRow(undefined);
     setClearsearchkey(false);
-    dispatch({
-      type: 'relationorder/fetcht',
-      payload: {
-        orderId: mainId,
-        orderType: 'release',
-        pageIndex: 0,
-        pageSize: 15,
-        relationType: key,
-      },
-    });
+    // dispatch({
+    //   type: 'relationorder/fetcht',
+    //   payload: {
+    //     orderId: mainId,
+    //     orderType: 'release',
+    //     pageIndex: 0,
+    //     pageSize: 15,
+    //     relationType: key,
+    //   },
+    // });
     setPageinations({ current: 1, pageSize: 15 });
+    setActiveKey(key);
   }
 
   const getlist = (pageIndex, pageSize) => {
@@ -92,11 +92,13 @@ function RelevancyOrder(props) {
   }
 
   useEffect(() => {
-    getlist(paginations.current - 1, paginations.pageSize)
+    if (activeKey) {
+      getlist(paginations.current - 1, paginations.pageSize)
+    }
   }, [activeKey])
 
   useEffect(() => {
-    if (statuscode === 200) {
+    if (statuscode === 200 && visible) {
       getlist(paginations.current - 1, paginations.pageSize)
     }
   }, [statuscode])
@@ -201,15 +203,7 @@ function RelevancyOrder(props) {
           <Col span={8}>
             <Button type="primary" style={{ marginLeft: 16 }} onClick={() => handleSearch()} >本页查询</Button>
             <Button style={{ marginLeft: 16 }} onClick={() => setSearchRow(undefined)} >重 置</Button>
-            {relation && activeKey !== 'quality' && (
-              <Button
-                type="primary"
-                style={{ marginLeft: 8 }}
-                onClick={() => { setVisible(true) }}
-              >
-                关联工单
-              </Button>
-            )}
+            {relation && <Button type="primary" style={{ marginLeft: 8 }} onClick={() => { setVisible(true) }} >关联工单</Button>}
           </Col>
         </Row>
       )}

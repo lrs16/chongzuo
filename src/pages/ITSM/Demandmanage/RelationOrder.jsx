@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
-import { Form, Card, Tabs, Input, Row, Col, Button, Table, } from 'antd';
+import { Card, Tabs, Input, Row, Col, Button, Table, } from 'antd';
 import RelationDrawer from './components/RelationDrawer';
 
 const { TabPane } = Tabs;
 
 const typemap = new Map([
-  ['trouble', '故障'],
-  ['problem', '问题'],
+  ['release', '发布'],
   ['quality', '服务绩效'],
 ])
 
 function RelevancyOrder(props) {
-  const { location, list, dispatch, relation, statuscode } = props;
-  const [activeKey, setActiveKey] = useState('trouble');
+  const { location: { query: { mainId } }, list, dispatch, relation, statuscode, loading } = props;
+  const [activeKey, setActiveKey] = useState('release');
   const [visible, setVisible] = useState(false);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [searchkey, setSearchKey] = useState('');
@@ -22,18 +21,18 @@ function RelevancyOrder(props) {
   const [clearsearchkey, setClearsearchkey] = useState(false);
 
   const callback = (key) => {
-    setPageinations({ current: 1, pageSize: 15 });
     setSearchRow(undefined);
-    setActiveKey(key);
     setClearsearchkey(false);
+    setPageinations({ current: 1, pageSize: 15 });
+    setActiveKey(key);
   }
 
   const getlist = (pageIndex, pageSize) => {
     dispatch({
       type: 'relationorder/fetcht',
       payload: {
-        orderId: location.query.mainId,
-        orderType: 'event',
+        orderId: mainId,
+        orderType: 'demand',
         pageIndex,
         pageSize,
         relationType: activeKey,
@@ -98,25 +97,18 @@ function RelevancyOrder(props) {
       key: 'orderNo',
       render: (text, record) => {
         const handleClick = () => {
-          if (activeKey === 'trouble') {
+          if (activeKey === 'release') {
             router.push({
-              pathname: `/ITSM/faultmanage/querylist/record`,
+              pathname: `/ITSM/releasemanage/query/details`,
               query: {
-                id: record.mainId,
-                No: text,
-              },
-            });
-          };
-          if (activeKey === 'problem') {
-            router.push({
-              pathname: `/ITSM/problemmanage/problemquery/detail`,
-              query: {
-                id: record.mainId,
+                Id: text,
                 taskName: record.status,
-                No: text,
               },
+              state: {
+                dynamicpath: true,
+                menuDesc: '发布工单详情',
+              }
             });
-
           };
           if (activeKey === 'quality') {
             router.push({
@@ -158,8 +150,7 @@ function RelevancyOrder(props) {
     <Card>
       <div onMouseDown={() => setClearsearchkey(true)} onMouseUp={() => setClearsearchkey(false)}>
         <Tabs onChange={callback} activeKey={activeKey}>
-          <TabPane tab="故障单" key="trouble" />
-          <TabPane tab="问题单" key="problem" />
+          <TabPane tab="发布单" key="release" />
           <TabPane tab="服务绩效" key="quality" />
         </Tabs>
       </div>
@@ -171,7 +162,7 @@ function RelevancyOrder(props) {
           <Col span={8}>
             <Button type="primary" style={{ marginLeft: 16 }} onClick={() => handleSearch()} >本页查询</Button>
             <Button style={{ marginLeft: 16 }} onClick={() => setSearchRow(undefined)} >重 置</Button>
-            {relation && <Button type="primary" style={{ marginLeft: 8 }} onClick={() => { setVisible(true) }}>关联工单</Button>}
+            {relation && <Button type="primary" style={{ marginLeft: 8 }} onClick={() => { setVisible(true) }} >关联工单</Button>}
           </Col>
         </Row>
       )}
@@ -181,13 +172,14 @@ function RelevancyOrder(props) {
         dataSource={searchrow === undefined ? list.rows : searchrow}
         rowKey={r => r.id}
         pagination={pagination}
+        loading={loading}
       />
       {relation && visible && (
         <RelationDrawer
           title={typemap.get(activeKey)}
           visible={visible}
-          orderIdPre={location.query.mainId}
-          orderTypePre='event'
+          orderIdPre={mainId}
+          orderTypePre='demand'
           orderTypeSuf={activeKey}
           ChangeVisible={(v) => setVisible(v)}
         />

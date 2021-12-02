@@ -38,11 +38,17 @@ const sourcemap = [
 ]
 
 const columns = [
+  // {
+  //   title: '编号',
+  //   dataIndex: 'id',
+  //   key: 'id',
+  //   with: 100,
+  // },
   {
-    title: '编号',
-    dataIndex: 'id',
-    key: 'id',
-    with: 100,
+    title: '关联工单',
+    dataIndex: 'sourceNo',
+    key: 'sourceNo',
+    with: 150,
   },
   {
     title: '发布来源',
@@ -57,6 +63,12 @@ const columns = [
     key: 'status',
     with: 120,
     sorter: (a, b) => a.status.localeCompare(b.status),
+  },
+  {
+    title: '发布编号',
+    dataIndex: 'releaseNo',
+    key: 'releaseNo',
+    with: 150,
   },
   {
     title: '问题类型',
@@ -75,12 +87,7 @@ const columns = [
     key: 'testResult',
     with: 150,
   },
-  {
-    title: '发布编号',
-    dataIndex: 'releaseNo',
-    key: 'releaseNo',
-    with: 150,
-  },
+
   {
     title: '出厂测试登记人',
     dataIndex: 'register',
@@ -93,12 +100,7 @@ const columns = [
     key: 'registerTime',
     with: 150,
   },
-  {
-    title: '关联工单',
-    dataIndex: 'sourceNo',
-    key: 'sourceNo',
-    with: 150,
-  },
+
 ]
 
 function ReleaseRepo(props) {
@@ -305,7 +307,7 @@ function ReleaseRepo(props) {
                 )}
               </Form.Item>
             </Col>
-            <Col span={8}>
+            {/* <Col span={8}>
               <Form.Item label="发布类型">
                 {getFieldDecorator('releaseType', {
                   initialValue: cacheinfo.releaseStatus,
@@ -319,7 +321,7 @@ function ReleaseRepo(props) {
                   </Select>,
                 )}
               </Form.Item>
-            </Col>
+            </Col> */}
             <Col span={8}>
               <Form.Item label="出厂测试登记人">
                 {getFieldDecorator('register', {
@@ -369,12 +371,14 @@ function ReleaseRepo(props) {
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
+            <Col span={8} style={{ paddingTop: 4 }}>
+              <div style={{ paddingLeft: '25%' }}>
+                <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
+                <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
+              </div>
+            </Col>
           </Form>
         </Row>
-        <div style={{ textAlign: 'right' }}>
-          <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
-          <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
-        </div>
         <div style={{ marginBottom: 24 }}>
           <Button type="primary" style={{ marginRight: 8 }} onClick={() => handlerepoRegister()} disabled={selectedRowKeys.length === 0}>出厂测试</Button >
           <AdminAuth getAuth={v => setUserName(v)} code='admin' />

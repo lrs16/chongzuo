@@ -9,6 +9,7 @@ import WorkOrder from './WorkOrder';
 import Process from './Process';
 import Backoff from './components/Backoff';
 import TimeoutModal from '../components/TimeoutModal';
+import RelationOrder from './RelationOrder';
 import { judgeTimeoutStatus, saveTimeoutMsg } from '../services/api';
 
 function ToDoregist(props) {
@@ -249,16 +250,7 @@ function ToDoregist(props) {
     </>
   );
   const handleTabChange = key => {
-    switch (key) {
-      case 'workorder':
-        settabActivekey('workorder');
-        break;
-      case 'process':
-        settabActivekey('process');
-        break;
-      default:
-        break;
-    }
+    settabActivekey(key);
   };
 
   const tabList = [
@@ -269,6 +261,10 @@ function ToDoregist(props) {
     {
       key: 'process',
       tab: '需求流程',
+    },
+    {
+      key: 'relevancy',
+      tab: '关联工单',
     },
   ];
   return (
@@ -298,6 +294,7 @@ function ToDoregist(props) {
           </EditContext.Provider>
         )}
         {tabActivekey === 'process' && <Process location={location} />}
+        {tabActivekey === 'relevancy' && <RelationOrder location={location} relation />}
         <User
           taskId={taskId}
           visible={uservisible}

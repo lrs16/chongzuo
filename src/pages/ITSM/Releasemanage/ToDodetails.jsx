@@ -96,7 +96,7 @@ function ToDodetails(props) {
   // 点击流转，出厂测试，版本管理员审核，结束
   const handleClick = (type) => {
     getTimeoutInfo({ taskId }).then(res => {
-      if (res.code === 200 && res.todoTask) {
+      if (res.code === 200 && res.data.todoTask) {
         if (res.data.timeout && !res.data.reason) {
           message.info(res.data.msg);
           setModalVisible(true);
@@ -155,7 +155,7 @@ function ToDodetails(props) {
       }
     } else {
       getTimeoutInfo({ taskId }).then(res => {
-        if (res.code === 200 && res.todoTask) {
+        if (res.code === 200 && res.data.todoTask) {
           if (res.data.timeout && !res.data.reason) {
             message.info(res.data.msg);
             setModalVisible(true);

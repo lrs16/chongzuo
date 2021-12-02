@@ -9,6 +9,7 @@ import Process from './Process';
 import Registratdes from './components/Registratdes';
 import Examinedes from './components/Examinedes';
 import Tracklist from './components/Tracklist';
+import RelationOrder from './RelationOrder';
 
 const { Panel } = Collapse;
 const { Step } = Steps;
@@ -47,16 +48,7 @@ function Details(props) {
     });
   };
   const handleTabChange = key => {
-    switch (key) {
-      case 'workorder':
-        settabActivekey('workorder');
-        break;
-      case 'process':
-        settabActivekey('process');
-        break;
-      default:
-        break;
-    }
+    settabActivekey(key)
   };
   const tabList = [
     {
@@ -66,6 +58,10 @@ function Details(props) {
     {
       key: 'process',
       tab: '需求流程',
+    },
+    {
+      key: 'relevancy',
+      tab: '关联工单',
     },
   ];
 
@@ -178,6 +174,7 @@ function Details(props) {
         </div>
       )}
       {tabActivekey === 'process' && <Process location={location} />}
+      {tabActivekey === 'relevancy' && <RelationOrder location={location} />}
     </PageHeaderWrapper>
   );
 }
