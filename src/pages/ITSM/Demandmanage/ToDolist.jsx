@@ -124,7 +124,7 @@ function ToDolist(props) {
       key: 'demandId',
       with: 100,
       fixed: 'left',
-      render: (text, record) => {
+      render: (text, r) => {
         const handleClick = () => {
           dispatch({
             type: 'viewcache/gettabstate',
@@ -140,13 +140,14 @@ function ToDolist(props) {
           router.push({
             pathname: `/ITSM/demandmanage/to-do/record/workorder`,
             query: {
-              taskName: record.taskName,
-              taskId: record.taskId,
-              mainId: record.processInstanceId,
+              taskName: r.taskName,
+              taskId: r.taskId,
+              mainId: r.processInstanceId,
               result: '1',
               orderNo: text,
             },
             state: {
+              runpath: '/ITSM/demandmanage/to-do',
               cacheinfo: {
                 ...tabrecord,
                 paginations,

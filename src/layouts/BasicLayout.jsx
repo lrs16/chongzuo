@@ -96,6 +96,7 @@ const BasicLayout = props => {
   const [currenttab, setCurrentTab] = useState('');
   const [networkLoading, setNetworkLoading] = useState(false)
 
+
   const clearcache = () => {
     dispatch({
       type: 'viewcache/cleardata',
@@ -155,12 +156,15 @@ const BasicLayout = props => {
     }
   }
 
+
   // 更新页签信息
-  const ChangetabQuery = (newquery) => {
-    const target = toptabs.filter(item => item.id === newquery.mainId)[0];
+  const ChangetabQuery = (newquery, newstate) => {
+    console.log('更新页签');
+    const target = toptabs.filter(item => item.id === newquery.mainId || item.id === newquery.No || item.id === newquery.Id)[0];
     if (target) {
       delete target.query.updatetab;
       target.query = newquery;
+      if (newstate) { target.data = newstate; }
       // target.id = newquery.mainId;
       const newData = toptabs.map(item => {
         return item.id === target.id ? target : item
@@ -211,6 +215,7 @@ const BasicLayout = props => {
     if (tabtargetid) {
       // 已有标签的工单详情或工单
       const id = location.query.No ? location.query.No : location.query.mainId;
+      ChangetabQuery(location.query, location.state);
       setActiveKey(id);
     } else if (target && menutarget) {
       // 属于工单详情
@@ -221,7 +226,7 @@ const BasicLayout = props => {
           itemPath: url,
           query: location.query,
           closable: true,
-          state: location.state,
+          data: location.state,
         };
         toptabs.push(panels);
         setActiveKey(location.query.No);
@@ -233,7 +238,7 @@ const BasicLayout = props => {
           itemPath: url,
           query: location.query,
           closable: true,
-          state: location.state,
+          data: location.state,
         };
         toptabs.push(panels);
         setActiveKey(location.query.mainId);
@@ -662,6 +667,7 @@ const BasicLayout = props => {
                 if (olduploadstatus || uploadstatus) {
                   message.info('页签切换，中止文件上传...');
                 };
+                console.log(location);
                 router.push({
                   pathname: location.pathname,
                   query: location.query,

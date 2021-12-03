@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import router from 'umi/router';
 import { connect } from 'dva';
 import { Button, Popover, message, Spin } from 'antd';
@@ -37,12 +37,12 @@ function ToDoregist(props) {
     setButtonType(type);
   };
   const handleclose = () => {
-    // router.push({
-    //   pathname: `/ITSM/demandmanage/to-do`,
-    //   query: { pathpush: true },
-    //   state: { cache: false }
-    // });
     console.log(location);
+    router.push({
+      pathname: location && location.state && location.state.runpath ? location.state.runpath : `/ITSM/demandmanage/to-do`,
+      query: { pathpush: true },
+      state: { ...location.state, cache: false, }
+    });
   };
 
   const handledelete = () => {

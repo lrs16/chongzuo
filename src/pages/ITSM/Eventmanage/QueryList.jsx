@@ -123,6 +123,13 @@ function QueryList(props) {
               mainId: record.id,
               No: text,
             },
+            state: {
+              cacheinfo: {
+                ...tabrecord,
+                paginations,
+                expand,
+              },
+            }
           });
         };
         return <a onClick={handleClick}>{text}</a>;

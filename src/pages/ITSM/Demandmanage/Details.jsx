@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
@@ -40,12 +40,15 @@ function Details(props) {
   const { taskName, taskId, mainId } = location.query;
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [activeKey, setActiveKey] = useState(['registdes']);
+
   const handleclose = () => {
-    router.push({
-      pathname: `/ITSM/demandmanage/query`,
-      query: { pathpush: true },
-      state: { cache: false }
-    });
+    if (currenttab) {
+      router.push({
+        pathname: `/ITSM/demandmanage/query`,
+        query: { pathpush: true },
+        state: { ...location.state, cache: false, }
+      });
+    }
   };
   const handleTabChange = key => {
     settabActivekey(key)

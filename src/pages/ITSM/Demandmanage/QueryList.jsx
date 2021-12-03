@@ -192,6 +192,13 @@ function QueryList(props) {
                 taskName: record.taskName,
                 No: text,
               },
+              state: {
+                cacheinfo: {
+                  ...tabrecord,
+                  paginations,
+                  expand,
+                }
+              },
             });
           };
           return <a onClick={handleClick}>{text}</a>;
@@ -514,35 +521,37 @@ function QueryList(props) {
                 )}
               </Form.Item>
             </Col>
-            <span style={{ display: expand ? 'block' : 'none' }}>
-              <Col span={8}>
-                <Form.Item label="需求标题">
-                  {getFieldDecorator('demandTitle', {
-                    initialValue: cacheinfo.demandTitle,
-                  })(<Input placeholder="请输入" allowClear />)}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="需求类型">
-                  {getFieldDecorator('demandType', { initialValue: cacheinfo.demandType })(
-                    <Select placeholder="请选择" allowClear>
-                      {demandtype.map(obj => [
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="登记人">
-                  {getFieldDecorator('sender', {
-                    initialValue: cacheinfo.sender,
-                  })(<Input placeholder="请输入" allowClear />)}
-                </Form.Item>
-              </Col>
-            </span>
+            {(expand || (location && location.state && location.state.expand)) && (
+              <>
+                <Col span={8}>
+                  <Form.Item label="需求标题">
+                    {getFieldDecorator('demandTitle', {
+                      initialValue: cacheinfo.demandTitle,
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="需求类型">
+                    {getFieldDecorator('demandType', { initialValue: cacheinfo.demandType })(
+                      <Select placeholder="请选择" allowClear>
+                        {demandtype.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="登记人">
+                    {getFieldDecorator('sender', {
+                      initialValue: cacheinfo.sender,
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+              </>
+            )}
             <Col span={8}>
               <Form.Item label="超时状态">
                 {getFieldDecorator('completeStatus', {
