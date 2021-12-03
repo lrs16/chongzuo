@@ -709,14 +709,15 @@ function QueryList(props) {
                   )}
                 </Form.Item>
               </Col>
-              <Col span={8}>
-                <Form.Item label="事件标题">
-                  {getFieldDecorator('eventTitle', {
-                    initialValue: cacheinfo.eventTitle,
-                  })(<Input placeholder="请输入" allowClear />)}
-                </Form.Item>
-              </Col>
             </span>
+            <Col span={8}>
+              <Form.Item label="事件标题">
+                {getFieldDecorator('eventTitle', {
+                  initialValue: cacheinfo.eventTitle,
+                })(<Input placeholder="请输入" allowClear />)}
+              </Form.Item>
+            </Col>
+
             <Col span={8}>
               <Form.Item label="申报人">
                 {getFieldDecorator('applicationUser', {

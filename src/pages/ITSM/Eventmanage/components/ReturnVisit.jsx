@@ -69,6 +69,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
         check,
         orderNo
       },
+      state: { ...location.state }
     });
   };
   useEffect(() => {

@@ -42,13 +42,11 @@ function Details(props) {
   const [activeKey, setActiveKey] = useState(['registdes']);
 
   const handleclose = () => {
-    if (currenttab) {
-      router.push({
-        pathname: `/ITSM/demandmanage/query`,
-        query: { pathpush: true },
-        state: { ...location.state, cache: false, }
-      });
-    }
+    router.push({
+      pathname: `/ITSM/demandmanage/query`,
+      query: { pathpush: true },
+      state: { ...location.state, cache: false, }
+    });
   };
   const handleTabChange = key => {
     settabActivekey(key)

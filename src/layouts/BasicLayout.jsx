@@ -159,7 +159,6 @@ const BasicLayout = props => {
 
   // 更新页签信息
   const ChangetabQuery = (newquery, newstate) => {
-    console.log('更新页签');
     const target = toptabs.filter(item => item.id === newquery.mainId || item.id === newquery.No || item.id === newquery.Id)[0];
     if (target) {
       delete target.query.updatetab;

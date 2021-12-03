@@ -62,6 +62,20 @@ const columns = [
               },
             });
             break;
+          case 'release':
+            router.push({
+              pathname: `/ITSM/releasemanage/to-do/record`,
+              query: {
+                taskName: record.taskName,
+                Id: record.itemWorkId,
+                taskId: record.taskId,
+              },
+              state: {
+                dynamicpath: true,
+                menuDesc: '发布工单',
+              }
+            });
+            break;
           case 'operation':
             router.push({
               pathname: `/ITSM/operationplan/operationplanform`,
@@ -144,6 +158,7 @@ const columns = [
         ['trouble', '故障'],
         ['problem', '问题'],
         ['demand', '需求'],
+        ['release', '发布'],
         ['operation', '作业计划'],
         ['work', '工作督办'],
         ['quality', '服务绩效'],

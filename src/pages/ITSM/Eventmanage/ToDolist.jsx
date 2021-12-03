@@ -31,79 +31,6 @@ const forminladeLayout = {
   },
 };
 
-const columns = [
-  {
-    title: '事件编号',
-    dataIndex: 'eventNo',
-    key: 'eventNo',
-    width: 180,
-    fixed: 'left',
-    render: (text, record) => {
-      const handleClick = () => {
-        router.push({
-          pathname: `/ITSM/eventmanage/to-do/record/workorder`,
-          query: {
-            taskName: record.eventStatus,
-            taskId: record.taskId,
-            mainId: record.mainId,
-            check: record.checkResult,
-            orderNo: text,
-          },
-        });
-      };
-      return <a onClick={handleClick}>{text}</a>;
-    },
-  },
-  {
-    title: '事件标题',
-    dataIndex: 'title',
-    key: 'title',
-    with: 250,
-  },
-  {
-    title: '事件来源',
-    dataIndex: 'eventSource',
-    key: 'eventSource',
-    width: 160,
-  },
-  {
-    title: '事件分类',
-    dataIndex: 'eventType',
-    key: 'eventType',
-    width: 150,
-  },
-  {
-    title: '登记人',
-    dataIndex: 'registerUser',
-    key: 'registerUser',
-    width: 100,
-  },
-  {
-    title: '申报人',
-    dataIndex: 'applicationUser',
-    key: 'applicationUser',
-    width: 100,
-  },
-  {
-    title: '工单状态',
-    dataIndex: 'eventStatus',
-    key: 'eventStatus',
-    width: 100,
-  },
-  {
-    title: '发送时间',
-    dataIndex: 'createTime',
-    key: 'createTime',
-    width: 180,
-  },
-  {
-    title: '优先级',
-    dataIndex: 'eventPrior',
-    key: 'eventPrior',
-    width: 100,
-  },
-];
-
 function ToDolist(props) {
   const pagetitle = props.route.name;
   const {
@@ -231,6 +158,98 @@ function ToDolist(props) {
     expand,
   };
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+
+  const columns = [
+    {
+      title: '事件编号',
+      dataIndex: 'eventNo',
+      key: 'eventNo',
+      width: 180,
+      fixed: 'left',
+      render: (text, r) => {
+        const handleClick = () => {
+          dispatch({
+            type: 'viewcache/gettabstate',
+            payload: {
+              cacheinfo: {
+                ...tabrecord,
+                paginations,
+                expand,
+              },
+              tabid: sessionStorage.getItem('tabid')
+            },
+          });
+          router.push({
+            pathname: `/ITSM/eventmanage/to-do/record/workorder`,
+            query: {
+              taskName: r.eventStatus,
+              taskId: r.taskId,
+              mainId: r.mainId,
+              check: r.checkResult,
+              orderNo: text,
+            },
+            state: {
+              runpath: '/ITSM/eventmanage/to-do',
+              cacheinfo: {
+                ...tabrecord,
+                paginations,
+                expand,
+              },
+            }
+          });
+        };
+        return <a onClick={handleClick}>{text}</a>;
+      },
+    },
+    {
+      title: '事件标题',
+      dataIndex: 'title',
+      key: 'title',
+      with: 250,
+    },
+    {
+      title: '事件来源',
+      dataIndex: 'eventSource',
+      key: 'eventSource',
+      width: 160,
+    },
+    {
+      title: '事件分类',
+      dataIndex: 'eventType',
+      key: 'eventType',
+      width: 150,
+    },
+    {
+      title: '登记人',
+      dataIndex: 'registerUser',
+      key: 'registerUser',
+      width: 100,
+    },
+    {
+      title: '申报人',
+      dataIndex: 'applicationUser',
+      key: 'applicationUser',
+      width: 100,
+    },
+    {
+      title: '工单状态',
+      dataIndex: 'eventStatus',
+      key: 'eventStatus',
+      width: 100,
+    },
+    {
+      title: '发送时间',
+      dataIndex: 'createTime',
+      key: 'createTime',
+      width: 180,
+    },
+    {
+      title: '优先级',
+      dataIndex: 'eventPrior',
+      key: 'eventPrior',
+      width: 100,
+    },
+  ];
 
   const handleReset = () => {
     resetFields();

@@ -106,7 +106,9 @@ const Registrat = forwardRef((props, ref) => {
           next: sessionStorage.getItem('Nextflowmane'),
           orderNo: main.eventNo,
         },
+        state: { ...location.state }
       });
+
     }
   };
 

@@ -41,15 +41,14 @@ function ToDodetails(props) {
     setUserChoice(false)
     setButtonType(type);
   };
-
   const handleclose = () => {
     if (olduploadstatus || registUploadStatus) {
       message.info('页签切换，中止文件上传...')
     }
     router.push({
-      pathname: `/ITSM/eventmanage/to-do`,
+      pathname: location && location.state && location.state.runpath ? location.state.runpath : `/ITSM/eventmanage/to-do`,
       query: { pathpush: true },
-      state: { cache: false }
+      state: { ...location.state, cache: false, }
     });
   };
 

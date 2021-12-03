@@ -50,6 +50,7 @@ const Check = forwardRef((props, ref) => {
         next: sessionStorage.getItem('Nextflowmane'),
         orderNo,
       },
+      state: { ...location.state }
     });
   };
 
