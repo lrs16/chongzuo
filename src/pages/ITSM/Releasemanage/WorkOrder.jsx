@@ -561,7 +561,7 @@ function WorkOrder(props) {
             taskName
           },
         });
-      } else if (userlist) {
+      } else if (userlist || taskName === '业务复核') {
         switch (taskName) {
           case '出厂测试':
             FactorytestSubmit();
