@@ -210,9 +210,6 @@ function RelevancyOrder(props) {
       title: '关联类型',
       dataIndex: 'relationType',
       key: 'relationType',
-      render: (text) => {
-        return <span>{text}</span>
-      }
     },
   ];
 

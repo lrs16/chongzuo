@@ -5,14 +5,13 @@ import {
   Row,
   Col,
   Avatar,
-  Select,
   Empty,
   InputNumber,
 } from 'antd';
-import styles from '../SysManage/index.less';
 import moment from 'moment';
-import ColumnarY from '../ITSM/Eventmanage/eventstatistics/ColumnarY';
 import SelectTime from '@/components/SelectTime/SelectTime';
+import styles from './index.less';
+import ColumnarY from '../ITSM/Eventmanage/Eventstatistics/ColumnarY';
 
 function UsageRanking(props) {
   const {
@@ -20,8 +19,6 @@ function UsageRanking(props) {
     tabClickNumToparr,
     dispatch
   } = props;
-  console.log(loginUserToparr, 'loginUserToparr')
-  console.log(tabClickNumToparr, 'tabClickNumToparr')
   const [values, setValues] = useState({});
   const [topN1, setTopN1] = useState(5) // 排序
   const [topN2, setTopN2] = useState(5) // 排序
