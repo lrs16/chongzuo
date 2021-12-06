@@ -222,3 +222,24 @@ export async function exportExcel() {
   });
 }
 
+//  钻取
+export async function statDetail(params) {
+  return request(`/problem/stat/detail`,{
+    method:'POST',
+    data:params,
+    requestType:'form'
+  })
+  // return request(`/problem/stat/detail?begin=${params.begin}&end=${params.end}&model=${params.model}&type=${params.type}`)
+}
+
+// 导出钻取
+
+export async function statDownload(params) {
+  return request(`/problem/stat/download`,{
+    method:'POST',
+    data:params,
+    requestType:'form',
+    responseType:'blob'
+  })
+}
+

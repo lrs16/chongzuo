@@ -16,7 +16,7 @@ import {
   resgisterstatTop,
   handlerstatTop,
   resgisterunitstatTop,
-  handleunitstatTop
+  handleunitstatTop,
 } from '../services/statistics';
 
 export default {
@@ -35,7 +35,7 @@ export default {
     resgisterarr:[],
     handlerarr:[],
     resgisterunitarr:[],
-    handlerunitarr:[]
+    handlerunitarr:[],
   },
 
   effects: {
@@ -172,6 +172,7 @@ export default {
         payload: response,
       });
     },
+
   },
 
   reducers: {

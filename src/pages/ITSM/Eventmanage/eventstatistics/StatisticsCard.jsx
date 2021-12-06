@@ -2,13 +2,13 @@ import React from 'react';
 import { Card, Statistic, Row, Col, Icon } from 'antd';
 
 function StatisticsCard(props) {
-  const { title, value, suffix, des, desval, type } = props;
+  const { title, value, suffix, des, desval, type,onGetVal } = props;
   return (
     <Card style={{ marginLeft: '-1px' }}>
       <Row type="flex" justify="space-between" align="bottom">
         <Col span={24}>{title}</Col>
-        <Col span={24}>
-          <Statistic value={value} suffix={suffix} />
+        <Col span={24} onClick={()=>onGetVal()}>
+          <Statistic value={value} suffix={suffix}/>
         </Col>
         <Col span={24} style={{ paddingBottom: 8 }}>
           <span style={{ paddingRight: 12 }}>{des}</span>

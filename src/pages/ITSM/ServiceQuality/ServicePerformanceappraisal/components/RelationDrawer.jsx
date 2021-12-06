@@ -110,7 +110,7 @@ function RelationDrawer(props) {
       case 'event':
         dispatch({
           type: 'relationorder/fetchevent',
-          payload: { no, status: status === undefined ? '' : status, pageIndex, pageSize },
+          payload: { no, status: status === undefined ? '' : status, pageIndex:pageIndex-1, pageSize },
         })
         break;
       case 'trouble':
@@ -134,7 +134,7 @@ function RelationDrawer(props) {
       case 'demand':
         dispatch({
           type: 'relationorder/fetchDemandList',
-          payload: { no, status, pageIndex: pageIndex + 1, pageSize },
+          payload: { no, status, pageIndex, pageSize },
         })
         break;
       default:
@@ -144,12 +144,12 @@ function RelationDrawer(props) {
 
   const handleSumit = () => {
     const values = getFieldsValue();
-    handleSearch(values.no, values.status, 0, 15);
+    handleSearch(values.no, values.status, 1, 15);
   }
 
   const onShowSizeChange = (page, size) => {
     const values = getFieldsValue();
-    handleSearch(values.no, values.status || '', page - 1, size);
+    handleSearch(values.no, values.status || '', page, size);
     setPaginating({
       ...paginations,
       pageSize: size,
@@ -158,7 +158,7 @@ function RelationDrawer(props) {
 
   const changePage = page => {
     const values = getFieldsValue();
-    handleSearch(values.no, values.status || '', page - 1, paginations.pageSize);
+    handleSearch(values.no, values.status || '', page, paginations.pageSize);
     setPaginating({
       ...paginations,
       current: page,
@@ -176,7 +176,7 @@ function RelationDrawer(props) {
   };
 
   useEffect(() => {
-    handleSearch('', '', 0, 15)
+    handleSearch('', '', 1, 15)
   }, [orderTypeSuf])
 
   useEffect(() => {

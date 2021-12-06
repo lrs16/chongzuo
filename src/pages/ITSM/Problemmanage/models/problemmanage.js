@@ -28,7 +28,9 @@ import {
   handleGratelist,
   timeoutlist,
   exportExcel,
-  startandsave
+  startandsave,
+  statDetail,
+  statDownload
 } from '../services/api';
 
 export default {
@@ -59,7 +61,8 @@ export default {
     keyVallist: [],
     handleList: [],
     queryArr: [],
-    handleArr: []
+    handleArr: [],
+    statDetailarr:[]
   },
 
   effects: {
@@ -272,7 +275,18 @@ export default {
     //  批量导入
     *exportdownloadExcel(_, { call }) {
       return yield call(exportExcel)
-    }
+    },
+
+    *fetchstatDetail({ payload }, { call, put }) {
+      const response = yield call(statDetail,payload);
+      yield put ({
+        type:'statDetailarr',
+        payload:response
+      })
+    },
+    *fetchstatDownload({ payload }, { call }) {
+      return yield call(statDownload, payload);
+    },
   },
 
   reducers: {
@@ -419,6 +433,11 @@ export default {
         handleArr: action.payload.data
       }
     },
-
+    statDetailarr(state,action) {
+      return {
+        ...state,
+        statDetailarr:action.payload.data
+      }
+    },
   },
 };

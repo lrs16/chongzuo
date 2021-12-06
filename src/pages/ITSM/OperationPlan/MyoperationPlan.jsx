@@ -111,6 +111,12 @@ function MyoperationPlan(props) {
       width: 150,
     },
     {
+      title: '当前处理环节',
+      dataIndex: 'flowNodeName',
+      key: 'flowNodeName',
+      width: 150,
+    },
+    {
       title: '作业性质',
       dataIndex: 'nature',
       key: 'nature',
@@ -622,12 +628,12 @@ function MyoperationPlan(props) {
     }
 
     const deleteJudge = selectedRows.every(item => {
-      if (item.checkResult || item.fallbackMsg) {
-        message.info('请选择审核状态:待送审，审核结果为空，回退信息为空');
+      if (item.flowNodeName !== '计划登记') {
+        message.info('请选择当前处理环节为:计划登记');
         return false;
       }
 
-      if (!item.checkResult && !item.fallbackMsg) {
+      if (item.flowNodeName === '计划登记') {
         return true;
       }
 

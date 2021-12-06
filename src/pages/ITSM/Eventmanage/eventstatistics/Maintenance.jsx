@@ -8,7 +8,8 @@ import {
   DatePicker,
   Button,
   Icon,
-  Divider
+  Divider,
+  message
 } from 'antd';
 import Link from 'umi/link';
 import moment from 'moment';
@@ -20,7 +21,7 @@ let startTime;
 let monthStarttime;
 let endTime;
 const sign = 'maintenanceservice';
-const { MonthPicker} = DatePicker;
+const { MonthPicker } = DatePicker;
 const mergeCell = 'first_object';
 
 const IconFont = Icon.createFromIconfontCN({
@@ -30,7 +31,7 @@ function Maintenance(props) {
   const { pagetitle } = props.route.name;
   const [tabActiveKey, setTabActiveKey] = useState('week');
   const {
-    form: { getFieldDecorator, setFieldsValue },
+    form: { getFieldDecorator, setFieldsValue, validateFields },
     maintenanceArr,
     dispatch,
     loading
@@ -135,29 +136,111 @@ function Maintenance(props) {
     },
   ];
 
-  const onChange = (date, dateString) => {
+  const otherColumns = [
+    {
+      title: '问题对象',
+      dataIndex: mergeCell,
+      key: mergeCell,
+      align: 'center',
+      render: (text, record) => {
+        if (record.first_object !== '合计') {
+          const obj = {
+            children: text,
+            props: {},
+          };
+          obj.props.rowSpan = record.rowSpan;
+          return obj;
+        }
 
-    if (tabActiveKey === 'week') {
-      startTime = dateString;
-      endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
-      setFieldsValue({ time2: moment(endTime) });
-    } else {
-      startTime = date.startOf('month').format('YYYY-MM-DD');
-      endTime = date.endOf('month').format('YYYY-MM-DD');
+        return <span style={{ fontWeight: 700 }}>{text}</span>
+      },
+    },
+    {
+      title: '问题分类',
+      dataIndex: 'second_object',
+      key: 'second_object',
+      align: 'center',
+      render: (text, record) => {
+        if (record.second_object === '合计') {
+          return <span style={{ fontWeight: 700 }}>{text}</span>
+        }
+        return <span>{text}</span>
+      }
+    },
+    {
+      title: '工单数',
+      dataIndex: 'num',
+      key: 'num',
+      align: 'center',
+      render: (text, record) => {
+        if (record.first_object !== '合计') {
+          return <Link
+            to={{
+              pathname: '/ITSM/eventmanage/query',
+              query: {
+                sign: 'last',
+                time1: moment(startTime).format('YYYY-MM-DD'),
+                time2: moment(endTime).format('YYYY-MM-DD'),
+                eventObject: [record.first_object, record.object_name],
+                pathpush: true
+              },
+              state: { cache: false, }
+            }}
+          >
+            {text}
+          </Link>
+        }
+        return <span style={{ fontWeight: 700 }}>{text}</span>
+      }
+    },
+  ];
+
+  const onChange = (date, dateString) => {
+    switch (tabActiveKey) {
+      case 'week':
+        startTime = dateString;
+        endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
+        setFieldsValue({ time2: moment(endTime) });
+        break;
+      case 'month':
+        startTime = date.startOf('month').format('YYYY-MM-DD');
+        endTime = date.endOf('month').format('YYYY-MM-DD');
+        break;
+      case 'other':
+        startTime = dateString;
+        setFieldsValue({ time1: moment(startTime) });
+        break;
+      default:
+        break;
     }
   }
 
   const endonChange = (date, dateString) => {
-    endTime = dateString;
-    startTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
-    setFieldsValue({ time1: moment(startTime) })
+    switch (tabActiveKey) {
+      case 'week':
+        endTime = dateString;
+        startTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
+        setFieldsValue({ time1: moment(startTime) })
+        break;
+      case 'other':
+        endTime = dateString;
+        setFieldsValue({ time2: moment(endTime) })
+        break;
+      default:
+        break;
+    }
   }
 
   const handleListdata = () => {
-    dispatch({
-      type: 'eventstatistics/fetchMaintenancelist',
-      payload: { sign, tabActiveKey, startTime, monthStarttime, endTime }
-    })
+    if (moment(startTime).valueOf() > moment(endTime).valueOf()) {
+      message.error('开始时间必须小于结束时间')
+    } else {
+      dispatch({
+        type: 'eventstatistics/fetchMaintenancelist',
+        payload: { sign, tabActiveKey, startTime, monthStarttime, endTime }
+      })
+    }
+
   }
 
   const download = () => {
@@ -187,11 +270,14 @@ function Maintenance(props) {
     if (tabActiveKey === 'week') {
       startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD');
       endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
-      //  endTime = `${endTime} 00:00:00`;
     } else { // 月统计
       startTime = moment().startOf('month').format('YYYY-MM-DD');
       endTime = moment().endOf('month').format('YYYY-MM-DD');
     }
+    setFieldsValue({
+      time1: moment(startTime),
+      time2: moment(endTime)
+    });
   }
 
   useEffect(() => {
@@ -216,10 +302,15 @@ function Maintenance(props) {
       key: 'month',
       tab: '运维分类统计情况(月)',
     },
+    {
+      key: 'other',
+      tab: '运维分类统计情况',
+    },
   ];
 
   const handleTabChange = (key) => { // tab切换
     setTabActiveKey(key);
+    defaultTime()
   };
 
   return (
@@ -229,57 +320,62 @@ function Maintenance(props) {
       onTabChange={handleTabChange}
       tabActiveKey={tabActiveKey}
     >
-      <Card style={{ margin: '24px 0' }}>
-        <Row gutter={16}>
-          <Col className="gutter-row" span={8}>
-            <div className="gutter-box">
-              <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <IconFont
-                  type="iconshangzhoudingdan"
-                  style={{ fontSize: '4em' }}
-                />
-                <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '16px' }}>
-                  <span>{tabActiveKey === 'week' ? '上周' : '上月'}</span>
-                  <span style={{ fontWeight: 500, fontSize: 22 }}>{maintenanceArr.last_count}</span>
+      {
+        tabActiveKey !== 'other' && (
+          <Card style={{ margin: '24px 0' }}>
+            <Row gutter={16}>
+              <Col className="gutter-row" span={8}>
+                <div className="gutter-box">
+                  <div style={{ display: 'flex', flexDirection: 'row' }}>
+                    <IconFont
+                      type="iconshangzhoudingdan"
+                      style={{ fontSize: '4em' }}
+                    />
+                    <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '16px' }}>
+                      <span>{tabActiveKey === 'week' ? '上周' : '上月'}</span>
+                      <span style={{ fontWeight: 500, fontSize: 22 }}>{maintenanceArr.last_count}</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </Col>
+              </Col>
 
-          <Col className="gutter-row" span={8}>
+              <Col className="gutter-row" span={8}>
 
-            <div className="gutter-box">
+                <div className="gutter-box">
 
-              <div style={{ display: 'flex', flexDirection: 'row', postion: 'relative' }}>
-                <Divider type="vertical" style={{ height: '50px', postion: 'position', marginRight: '50px' }} />
-                <IconFont
-                  type="icondingdan"
-                  style={{ fontSize: '4em' }}
-                />
-                <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '16px', textAlign: 'center' }}>
-                  <span>{tabActiveKey === 'month' ? '本月' : '本周'}</span>
-                  <span style={{ fontWeight: 500, fontSize: 22 }}>{maintenanceArr.now_count}</span>
+                  <div style={{ display: 'flex', flexDirection: 'row', postion: 'relative' }}>
+                    <Divider type="vertical" style={{ height: '50px', postion: 'position', marginRight: '50px' }} />
+                    <IconFont
+                      type="icondingdan"
+                      style={{ fontSize: '4em' }}
+                    />
+                    <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '16px', textAlign: 'center' }}>
+                      <span>{tabActiveKey === 'month' ? '本月' : '本周'}</span>
+                      <span style={{ fontWeight: 500, fontSize: 22 }}>{maintenanceArr.now_count}</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </Col>
-          <Col className="gutter-row" span={8}>
-            <div className="gutter-box">
-              <div style={{ display: 'flex', flexDirection: 'row', postion: 'relative', marginLeft: '16px', textAlign: 'center' }}>
-                <Divider type="vertical" style={{ height: '50px', postion: 'position', marginRight: '50px' }} />
-                <IconFont
-                  type="iconicon-huanbifenxi"
-                  style={{ fontSize: '4em' }}
-                />
-                <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '16px', textAlign: 'center' }}>
-                  <span>环比</span>
-                  <span style={{ fontWeight: 500, fontSize: 22 }}>{maintenanceArr.points_count}</span>
+              </Col>
+              <Col className="gutter-row" span={8}>
+                <div className="gutter-box">
+                  <div style={{ display: 'flex', flexDirection: 'row', postion: 'relative', marginLeft: '16px', textAlign: 'center' }}>
+                    <Divider type="vertical" style={{ height: '50px', postion: 'position', marginRight: '50px' }} />
+                    <IconFont
+                      type="iconicon-huanbifenxi"
+                      style={{ fontSize: '4em' }}
+                    />
+                    <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '16px', textAlign: 'center' }}>
+                      <span>环比</span>
+                      <span style={{ fontWeight: 500, fontSize: 22 }}>{maintenanceArr.points_count}</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </Col>
-        </Row>
-      </Card>
+              </Col>
+            </Row>
+          </Card>
+        )
+      }
+
       <Card>
         <Row gutter={24}>
           <Form layout='inline'>
@@ -293,10 +389,10 @@ function Maintenance(props) {
                       })(<DatePicker
                         allowClear={false}
                         disabledDate={startdisabledDate}
-                        // placeholder='请选择'
                         onChange={onChange}
                       />)}
                     </Form.Item>
+
 
                     <p style={{ display: 'inline', marginRight: 8 }}>-</p>
 
@@ -321,7 +417,6 @@ function Maintenance(props) {
                       查询
                     </Button>
                   </Col>
-
                 </>
               )
             }
@@ -352,6 +447,46 @@ function Maintenance(props) {
                 </>
               )
             }
+
+            {
+              tabActiveKey === 'other' && (
+                <>
+                  <Col span={24}>
+                    <Form.Item label='起始时间'>
+                      {getFieldDecorator('time1', {
+                        initialValue: moment(startTime)
+                      })(<DatePicker
+                        allowClear={false}
+                        onChange={onChange}
+                      />)}
+                    </Form.Item>
+
+                    <p style={{ display: 'inline', marginRight: 8 }}>-</p>
+
+                    <Form.Item label=''>
+                      {
+                        getFieldDecorator('time2', {
+                          initialValue: moment(endTime)
+                        })
+                          (<DatePicker
+                            allowClear={false}
+                            onChange={endonChange}
+                          />)
+                      }
+                    </Form.Item>
+
+                    <Button
+                      type='primary'
+                      style={{ marginTop: 6 }}
+                      onClick={() => handleListdata('search')}
+                    >
+                      查询
+                    </Button>
+                  </Col>
+                </>
+              )
+            }
+
           </Form>
         </Row>
 
@@ -365,22 +500,9 @@ function Maintenance(props) {
           </Button>
         </div>
 
-        {/* {
-          loading === false && (
-            <Table
-              bordered
-              columns={columns}
-              dataSource={makeData(maintenanceArr.data)}
-              pagination={false}
-              rowKey={record => record.event_object}
-            />
-          )
-        } */}
-
-
         {loading === false && (
           <MergeTable
-            column={columns}
+            column={tabActiveKey === 'other' ? otherColumns : columns}
             tableSource={maintenanceArr.data}
             mergecell={mergeCell}
           />

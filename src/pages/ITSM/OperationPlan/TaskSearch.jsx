@@ -136,6 +136,12 @@ function TaskSearch(props) {
       width: 150,
     },
     {
+      title: '当前处理环节',
+      dataIndex: 'flowNodeName',
+      key: 'flowNodeName',
+      width: 150,
+    },
+    {
       title: '作业性质',
       dataIndex: 'nature',
       key: 'nature',

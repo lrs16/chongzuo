@@ -6,16 +6,17 @@ import {
   Row,
   Col,
   Avatar,
-  Select,
   Empty,
   Spin,
   InputNumber
 } from 'antd';
-import StatisticsCard from '../eventstatistics/StatisticsCard';
+
 import SelectTime from '@/components/SelectTime/SelectTime';
-import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
 import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
-import ColumnarY from '../eventstatistics/ColumnarY';
+import StatisticsCard from './StatisticsCard';
+import DonutPCT from './DonutPCT';
+import ColumnarY from './ColumnarY';
+import AnalysisPopup from './AnalysisPopup';
 import styles from '../../Problemmanage/index.less';
 
 function EventAnalysis(props) {
@@ -37,6 +38,8 @@ function EventAnalysis(props) {
   const [topN1, setTopN1] = useState(5) // 排序
   const [topN2, setTopN2] = useState(5) // 排序
   const [topN3, setTopN3] = useState(5) // 排序
+  const [visible, setVisible] = useState(false);
+  const [typeName, setTypename] = useState('');
 
   const piesum = (arr) => {
     let sum = 0;
@@ -228,16 +231,68 @@ function EventAnalysis(props) {
                       <b>事件工单总情况</b>
                     </div>
                     <Col span={6} >
-                      <StatisticsCard  title='事件总数' value={getOrderConditionsobj && getOrderConditionsobj.allNum} suffix='单' des='环比' desval={`${getOrderConditionsobj && getOrderConditionsobj.allRingPoints}%`} type={Number((getOrderConditionsobj && getOrderConditionsobj.allRingPoints)) > 0 ? 'up' : 'down'} />
+                      <StatisticsCard
+                        title='事件总数'
+                        value={getOrderConditionsobj && getOrderConditionsobj.allNum}
+                        suffix='单'
+                        des='环比'
+                        desval={`${getOrderConditionsobj && getOrderConditionsobj.allRingPoints}%`} type={Number((getOrderConditionsobj && getOrderConditionsobj.allRingPoints)) > 0 ? 'up' : 'down'}
+                        onGetVal={() => {
+                          setPicVal({
+                            time1: values.beginTime,
+                            time2: values.endTime,
+                          });
+                          setVisible(true)
+                        }}
+                      />
                     </Col>
                     <Col span={6} >
-                      <StatisticsCard title='已完成' value={getOrderConditionsobj && getOrderConditionsobj.closeNum} suffix='单' des='环比' desval={`${getOrderConditionsobj && getOrderConditionsobj.closeRingPoints}%`} type={Number((getOrderConditionsobj && getOrderConditionsobj.closeRingPoints)) > 0 ? 'up' : 'down'} />
+                      <StatisticsCard
+                        title='已完成'
+                        value={getOrderConditionsobj && getOrderConditionsobj.closeNum}
+                        suffix='单'
+                        des='环比'
+                        desval={`${getOrderConditionsobj && getOrderConditionsobj.closeRingPoints}%`}
+                        type={Number((getOrderConditionsobj && getOrderConditionsobj.closeRingPoints)) > 0 ? 'up' : 'down'}
+                        onGetVal={() => {
+                          setPicVal({
+                            time1: values.beginTime,
+                            time2: values.endTime,
+                            eventStatus: '已关闭'
+                          });
+                          setVisible(true)
+                        }}
+                      />
                     </Col>
                     <Col span={6} >
-                      <StatisticsCard title='未完成' value={getOrderConditionsobj && getOrderConditionsobj.unCloseNum} suffix='单' des='环比' desval={`${getOrderConditionsobj && getOrderConditionsobj.unCloseRingPoints}%`} type={Number((getOrderConditionsobj && getOrderConditionsobj.unCloseRingPoints)) > 0 ? 'up' : 'down'} />
+                      <StatisticsCard
+                        title='未完成'
+                        value={getOrderConditionsobj && getOrderConditionsobj.unCloseNum}
+                        suffix='单'
+                        des='环比'
+                        desval={`${getOrderConditionsobj && getOrderConditionsobj.unCloseRingPoints}%`}
+                        type={Number((getOrderConditionsobj && getOrderConditionsobj.unCloseRingPoints)) > 0 ? 'up' : 'down'}
+                        onGetVal={() => {
+                          setPicVal({
+                            time1: values.beginTime,
+                            time2: values.endTime,
+                            eventStatus: '未完成'
+                          });
+                          setVisible(true)
+                        }}
+                      />
                     </Col>
                     <Col span={6} >
-                      <StatisticsCard key={4} title='解决率' value={getOrderConditionsobj && getOrderConditionsobj.point} suffix='%' des='环比' desval={`${getOrderConditionsobj && getOrderConditionsobj.ringPoints}%`} type={Number((getOrderConditionsobj && getOrderConditionsobj.ringPoints)) > 0 ? 'up' : 'down'} />
+                      <StatisticsCard
+                        key={4}
+                        title='解决率'
+                        value={getOrderConditionsobj && getOrderConditionsobj.point}
+                        suffix='%'
+                        des='环比'
+                        desval={`${getOrderConditionsobj && getOrderConditionsobj.ringPoints}%`}
+                        type={Number((getOrderConditionsobj && getOrderConditionsobj.ringPoints)) > 0 ? 'up' : 'down'}
+                        onGetVal={() => { }}
+                      />
                     </Col>
                   </Row>
                 </Col>
@@ -250,13 +305,50 @@ function EventAnalysis(props) {
                     </div>
                     <Col span={24}>
                       <Col span={8}>
-                        <StatisticsCard title='受理总数' value={getOrderConditionsobj && getOrderConditionsobj.allNum} suffix='单' des='环比' desval={`${getOrderConditionsobj && getOrderConditionsobj.allRingPoints}%`} type={Number((getOrderConditionsobj && getOrderConditionsobj.allRingPoints)) > 0 ? 'up' : 'down'} />
+                        <StatisticsCard
+                          title='受理总数'
+                          value={getOrderConditionsobj && getOrderConditionsobj.allNum}
+                          suffix='单'
+                          des='环比'
+                          desval={`${getOrderConditionsobj && getOrderConditionsobj.allRingPoints}%`}
+                          type={Number((getOrderConditionsobj && getOrderConditionsobj.allRingPoints)) > 0 ? 'up' : 'down'}
+                          onGetVal={v => {
+                            setPicVal({
+                              time1: values.beginTime,
+                              time2: values.endTime,
+                            });
+                            setVisible(true)
+                          }}
+                        />
                       </Col>
                       <Col span={8}>
-                        <StatisticsCard title='一线处理量' value={getOrderConditionsobj && getOrderConditionsobj.selfHandleNum} suffix='单' des='环比' desval={`${getOrderConditionsobj && getOrderConditionsobj.selfHandleNumRingPoints}%`} type={Number((getOrderConditionsobj && getOrderConditionsobj.selfHandleRingPoints)) > 0 ? 'up' : 'down'} />
+                        <StatisticsCard
+                          title='一线处理量'
+                          value={getOrderConditionsobj && getOrderConditionsobj.selfHandleNum}
+                          suffix='单'
+                          des='环比'
+                          desval={`${getOrderConditionsobj && getOrderConditionsobj.selfHandleNumRingPoints}%`}
+                          type={Number((getOrderConditionsobj && getOrderConditionsobj.selfHandleRingPoints)) > 0 ? 'up' : 'down'}
+                          onGetVal={() => {
+                            setPicVal({
+                              selfhandle:'是',
+                              time1: values.beginTime,
+                              time2: values.endTime,
+                            });
+                            setVisible(true)
+                          }}
+                        />
                       </Col>
                       <Col span={8}>
-                        <StatisticsCard title='一线解决率' value={getOrderConditionsobj && getOrderConditionsobj.selfHandlePoint} suffix='%' des='环比' desval={`${getOrderConditionsobj && getOrderConditionsobj.selfHandlePointRingPoints}%`} type={Number((getOrderConditionsobj && getOrderConditionsobj.selfHandleRingPoints)) > 0 ? 'up' : 'down'} />
+                        <StatisticsCard
+                          title='一线解决率'
+                          value={getOrderConditionsobj && getOrderConditionsobj.selfHandlePoint}
+                          suffix='%'
+                          des='环比'
+                          desval={`${getOrderConditionsobj && getOrderConditionsobj.selfHandlePointRingPoints}%`}
+                          type={Number((getOrderConditionsobj && getOrderConditionsobj.selfHandleRingPoints)) > 0 ? 'up' : 'down'}
+                          onGetVal={() => { }}
+                        />
                       </Col>
                     </Col>
                   </Row>
@@ -281,8 +373,12 @@ function EventAnalysis(props) {
                       totaltitle="事件总数"
                       padding={[10, 30, 10, 30]}
                       onGetVal={v => {
-                        console.log('饼图', v);
-                        setPicVal({ ...picval, dutyUnit: v });
+                        setPicVal({
+                          eventType: v === 'center' ? '总数' : v.type,
+                          time1: values.beginTime,
+                          time2: values.endTime,
+                        });
+                        setVisible(true)
                       }}
                     />
                   )}
@@ -297,8 +393,12 @@ function EventAnalysis(props) {
                       height={300}
                       padding={[30, 0, 50, 60]}
                       onGetVal={v => {
-                        setPicVal({ ...picval, type: v });
-                        console.log('曲线图', v);
+                        setPicVal({
+                          eventType: v.name,
+                          time1: `${v.date} 00:00:00`,
+                          time2: `${v.date} 23:59:59`,
+                        });
+                        setVisible(true)
                       }}
                     />
                   )}
@@ -325,8 +425,20 @@ function EventAnalysis(props) {
                       totaltitle="事件总数"
                       padding={[10, 30, 10, 30]}
                       onGetVal={v => {
-                        console.log('饼图', v);
-                        setPicVal({ ...picval, dutyUnit: v });
+                        const obj = {
+                          time1: values.beginTime,
+                          time2: values.endTime,
+                        }
+                        if (v === 'center') {
+                          obj.eventObject = '总数'
+                        } else {
+                          obj.object = v.type;
+                        }
+                        setPicVal({
+                          ...obj
+                        });
+                        setTypename(v === 'center' ? '' : '事件总数');
+                        setVisible(true)
                       }}
                     />
                   )}
@@ -342,8 +454,13 @@ function EventAnalysis(props) {
                       height={300}
                       padding={[30, 0, 50, 60]}
                       onGetVal={v => {
-                        setPicVal({ ...picval, type: v });
-                        console.log('曲线图', v);
+                        setPicVal({
+                          object: v.name,
+                          time1: `${v.date} 00:00:00`,
+                          time2: `${v.date} 23:59:59`,
+                        });
+                        setTypename('事件总数');
+                        setVisible(true)
                       }}
                     />
                   )}
@@ -368,8 +485,34 @@ function EventAnalysis(props) {
                       totaltitle="总工单数"
                       padding={[10, 30, 10, 30]}
                       onGetVal={v => {
-                        console.log('饼图', v);
-                        setPicVal({ ...picval, dutyUnit: v });
+                        let result;
+                        switch (v.type) {
+                          case '超时未处理':
+                            result = 'notHandle'
+                            break;
+                          case '即将超时':
+                            result = 'remind'
+                            break;
+                          case '超时已处理':
+                            result = 'timeout'
+                            break;
+                          default:
+                            break;
+                        }
+                        const obj = {
+                          time1: values.beginTime,
+                          time2: values.endTime,
+                        };
+                        if (v === 'center') {
+                          obj.type = 'all'
+                        } else {
+                          obj.tabType = result;
+                        }
+                        setPicVal({
+                          ...obj
+                        });
+                        setTypename(v === 'center' ? '' : '超时情况');
+                        setVisible(true)
                       }}
                     />
                   )}
@@ -392,7 +535,14 @@ function EventAnalysis(props) {
                           data={dataCylinder(getRegisterUserTopdata)}
                           height={300}
                           padding={[30, 60, 50, 100]}
-                          onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
+                          onGetVal={v => {
+                            setPicVal({
+                              registerUser: v.type,
+                              time1: values.beginTime,
+                              time2: values.endTime,
+                            });
+                            setVisible(true)
+                          }}
                         />
                       </Col>
                     </>
@@ -418,7 +568,14 @@ function EventAnalysis(props) {
                           data={dataCylinder1(getHandlerTopdata)}
                           height={300}
                           padding={[30, 60, 50, 100]}
-                          onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
+                          onGetVal={v => {
+                            setPicVal({
+                              handler: v.type,
+                              time1: values.beginTime,
+                              time2: values.endTime,
+                            });
+                            setVisible(true)
+                          }}
                         />
                       </Col>
                     </>
@@ -442,7 +599,14 @@ function EventAnalysis(props) {
                           data={dataCylinder2(getRegisterUnitTopdata)}
                           height={300}
                           padding={[30, 60, 50, 200]}
-                          onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
+                          onGetVal={v => {
+                            setPicVal({
+                              registerUnit: v.type,
+                              time1: values.beginTime,
+                              time2: values.endTime,
+                            });
+                            setVisible(true)
+                          }}
                         />
                       </Col>
                     </>
@@ -468,7 +632,14 @@ function EventAnalysis(props) {
                           data={dataCylinder3(getHandleUnitTopdata)}
                           height={300}
                           padding={[30, 60, 50, 210]}
-                          onGetVal={(v) => { setPicVal({ ...picval, type: v }); console.log('Y向柱形图', v) }}
+                          onGetVal={v => {
+                            setPicVal({
+                              handleUnit: v.type,
+                              time1: values.beginTime,
+                              time2: values.endTime,
+                            });
+                            setVisible(true)
+                          }}
                         />
                       </Col>
                     </>
@@ -476,6 +647,13 @@ function EventAnalysis(props) {
                 </Card>
               </Col>
             </Row>
+
+            <AnalysisPopup
+              visible={visible}
+              typeName={typeName}
+              popupParameters={picval}
+              closePop={() => { setVisible(false); setTypename('') }}
+            />
           </>
         )
       }

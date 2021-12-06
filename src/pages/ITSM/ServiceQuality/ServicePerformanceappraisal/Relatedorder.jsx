@@ -211,7 +211,7 @@ function RelevancyOrder(props) {
       dataIndex: 'relationType',
       key: 'relationType',
       render: (text) => {
-        return <span>普通关联</span>
+        return <span>{text}</span>
       }
     },
   ];

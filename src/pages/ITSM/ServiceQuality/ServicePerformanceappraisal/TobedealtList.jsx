@@ -235,6 +235,12 @@ function TobedealtList(props) {
       key: 'currentTaskName',
       width: 150,
     },
+    // {
+    //   title: '当前环节处理人',
+    //   dataIndex: 'assignee',
+    //   key: 'assignee',
+    //   width: 150,
+    // },
     {
       title: '关联合同名称',
       dataIndex: 'contractName',
@@ -443,6 +449,17 @@ function TobedealtList(props) {
       width: 200,
     },
   ];
+
+  const obj = {
+    title: '当前环节处理人',
+    dataIndex: 'assignee',
+    key: 'assignee',
+    width: 150,
+  }
+
+  if(pagetitle === '服务绩效考核查询') {
+    initialColumns.splice(13, 0, obj)
+  }
 
   const getPerformanceleader = () => {
     operationPerson().then(res => {
@@ -689,6 +706,7 @@ function TobedealtList(props) {
   };
 
   const record = {
+    assignee: '',
     registerName: '',
     expertVerifierName: '',
     providerConfirmerName: '',
@@ -1239,7 +1257,24 @@ function TobedealtList(props) {
               </Form.Item>
             </Col>
 
+
+
             <div style={{ display: expand ? 'block' : 'none' }}>
+
+              {
+                pagetitle === '服务绩效考核查询' && (
+                  <Col span={8}>
+                    <Form.Item label="当前环节处理人">
+                      {getFieldDecorator('assignee', {
+                        initialValue: cacheinfo.assignee,
+                      })(
+                        <Input />,
+                      )}
+                    </Form.Item>
+                  </Col>
+                )
+              }
+
               <Col span={8}>
                 <Form.Item label="发生时间">
                   {getFieldDecorator('timeoccurrence', {
@@ -1327,27 +1362,10 @@ function TobedealtList(props) {
                   {getFieldDecorator('directorName', {
                     initialValue: cacheinfo.directorName,
                   })(
-                    // <Select
-                    //   onSelect={(value, option) => selectOnchange(value, option, 'director')}
-                    // >
-                    //   {performanceLeader.map(obj => [
-                    //     <Option key={obj.key} value={obj.key}>
-                    //       {obj.value}
-                    //     </Option>,
-                    //   ])}
-                    // </Select>,
                     <Input />,
                   )}
                 </Form.Item>
               </Col>
-
-              {/* <Col span={8} style={{ display: 'none' }}>
-                <Form.Item label="责任人id">
-                  {getFieldDecorator('directorId', {
-                    initialValue: cacheinfo.directorId,
-                  })(<Input />)}
-                </Form.Item>
-              </Col> */}
 
               <Col span={8}>
                 <Form.Item label="考核类型">
@@ -1978,8 +1996,6 @@ function TobedealtList(props) {
                         value={item.title}
                         key={item.key}
                         checked={columns}
-                      // disabled={item.disabled}
-                      // className={styles.checkboxStyle}
                       >
                         {item.title}
                       </Checkbox>
