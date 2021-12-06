@@ -1188,6 +1188,7 @@ function Todolistdetails(props) {
                             setResultconfirm(newvalue);
                           }}
                           location={location}
+                          createQualityByMainId={() => createQualityByMainId('')}
                         />
                       </Panel>
                     )}
