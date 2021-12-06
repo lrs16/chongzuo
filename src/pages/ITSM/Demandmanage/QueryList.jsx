@@ -545,13 +545,20 @@ function QueryList(props) {
                 </Col>
                 <Col span={8}>
                   <Form.Item label="登记人">
-                    {getFieldDecorator('sender', {
-                      initialValue: cacheinfo.sender,
+                    {getFieldDecorator('taskUser', {
+                      initialValue: cacheinfo.taskUser,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
               </>
             )}
+            <Col span={8}>
+              <Form.Item label="当前环节处理人">
+                {getFieldDecorator('taskUser', {
+                  initialValue: cacheinfo.sender,
+                })(<Input placeholder="请输入" allowClear />)}
+              </Form.Item>
+            </Col>
             <Col span={8}>
               <Form.Item label="超时状态">
                 {getFieldDecorator('completeStatus', {
@@ -582,7 +589,7 @@ function QueryList(props) {
                 />)}
               </Form.Item>
             </Col>
-            <Col span={8} style={{ textAlign: 'right' }}>
+            <Col span={24} style={{ textAlign: 'right' }}>
               <Button type="primary" onClick={handleSearch}>
                 查 询
               </Button>
@@ -635,7 +642,7 @@ function QueryList(props) {
           scroll={{ x: 1500 }}
         />
       </Card>
-    </PageHeaderWrapper>
+    </PageHeaderWrapper >
   );
 }
 

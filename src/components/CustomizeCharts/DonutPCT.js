@@ -8,6 +8,7 @@ import {
   Interval,
   Interaction,
   Coordinate,
+  Legend,
 } from "bizcharts";
 import DataSet from '@antv/data-set';
 
@@ -56,6 +57,7 @@ class DonutPCT extends Component {
             onGetVal(linkdata.data)
           }
         }}>
+          {/* <Legend visible={false} /> */}
           <Coordinate type="theta" radius={0.8} innerRadius={0.7} />
           <Axis visible={false} />
           <Tooltip showTitle={false} />
@@ -70,7 +72,7 @@ class DonutPCT extends Component {
                 content: picdata => {
                   return `${picdata.type}: ${(picdata.percent * 100).toFixed(2)}%`;
                 },
-                offset: '25',
+                offset: '15',
               },
             ]}
           />

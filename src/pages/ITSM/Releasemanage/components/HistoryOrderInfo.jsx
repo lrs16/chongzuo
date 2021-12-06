@@ -18,7 +18,7 @@ const Panelheadermap = new Map([
   ['checkVersion', '版本管理员审核'],
   ['checkDirector', '科室负责人审核'],
   ['checkLeader', '中心领导审核'],
-  ['practiceDone', '发布实施'],
+  ['practiceDone', '发布验证'],
   ['bizCheck', '业务复核'],
 ]);
 
@@ -77,7 +77,7 @@ function HistoryOrderInfo(props) {
             ['checkVersion', <VersionAudit info={Object.values(obj)[1]} timeoutinfo={Object.values(obj)[0]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='版本管理员审核' />],
             ['checkDirector', <VersionAudit info={Object.values(obj)[1]} timeoutinfo={Object.values(obj)[0]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='科室负责人审核' />],
             ['checkLeader', <VersionAudit info={Object.values(obj)[1]} timeoutinfo={Object.values(obj)[0]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='中心领导审核' />],
-            ['practiceDone', <Implementation info={Object.values(obj)[1]} timeoutinfo={Object.values(obj)[0]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='发布实施' />],
+            ['practiceDone', <Implementation info={Object.values(obj)[1]} timeoutinfo={Object.values(obj)[0]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='发布验证' />],
             ['bizCheck', <BusinessReview info={Object.values(obj)[1]} timeoutinfo={Object.values(obj)[0]} listmsg={Object.values(obj)[2].dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='业务复核' />],
           ]);
           return (

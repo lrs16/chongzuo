@@ -186,9 +186,9 @@ function Statistics(props) {
             <Row>
               {donesum && donesum.length > 0 && donesum.map(({ name, total, prevTotal, ringRatio }) => {
                 const suffixmap = new Map([
-                  ['发布实施通过项', '项'],
-                  ['发布实施未通过项', '项'],
-                  ['发布实施通过率', '%'],
+                  ['发布验证通过项', '项'],
+                  ['发布验证未通过项', '项'],
+                  ['发布验证通过率', '%'],
                 ])
                 return (
                   <Col span={8}>

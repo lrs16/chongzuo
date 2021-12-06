@@ -666,7 +666,6 @@ const BasicLayout = props => {
                 if (olduploadstatus || uploadstatus) {
                   message.info('页签切换，中止文件上传...');
                 };
-                console.log(location);
                 router.push({
                   pathname: location.pathname,
                   query: location.query,

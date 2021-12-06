@@ -44,7 +44,7 @@ export async function analysisSummary(params) {
     requestType: 'form',
   });
 }
-// 统计分析 环节统计情况（平台验证、业务验证、发布实施、业务复核情况）
+// 统计分析 环节统计情况（平台验证、业务验证、发布验证、业务复核情况）
 export async function taskStatistical(params) {
   return request(`/release/analysis/taskStatistical`, {
     method: 'POST',

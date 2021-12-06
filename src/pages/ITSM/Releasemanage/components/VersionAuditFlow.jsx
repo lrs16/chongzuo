@@ -12,7 +12,7 @@ const records = [
   { "taskName": "版本管理员审批", "userName": "Elin", "startTime": "2021-04-13 11:21:11", "endTime": "2021-04-13 11:21:34" },
   { "taskName": "科室负责人审批", "userName": "Elin", "startTime": "2021-04-13 11:21:34", "endTime": "2021-04-13 11:21:44" },
   { "taskName": "中心领导审批", "userName": "Elin", "startTime": "2021-04-13 11:21:34", "endTime": "2021-04-13 11:21:50" },
-  { "taskName": "发布实施", "userName": "Elin", "startTime": "2021-04-13 11:21:50", "endTime": "2021-04-13 11:22:16" },
+  { "taskName": "发布验证", "userName": "Elin", "startTime": "2021-04-13 11:21:50", "endTime": "2021-04-13 11:22:16" },
   { "taskName": "业务复核", "userName": "Elin", "startTime": "2021-04-13 11:22:16", "endTime": null }
 ];
 

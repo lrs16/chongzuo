@@ -144,7 +144,7 @@ function Implementation(props, ref) {
           <Col span={24}>
             <BusinessEditTable
               title='发布清单'
-              type='发布实施'
+              type='发布验证'
               dataSource={info.releaseLists || []}
               ChangeValue={v => { setFieldsValue({ releaseLists: v }); }}
               scroll={{ x: 1740 }}

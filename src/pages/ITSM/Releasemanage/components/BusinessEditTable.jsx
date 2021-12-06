@@ -11,7 +11,7 @@ const RadioGroup = Radio.Group;
 const typemap = new Map([
   ['业务验证', '业务审核人'],
   ['业务复核', '业务复核人'],
-  ['发布实施', '操作人员'],
+  ['发布验证', '操作人员'],
 ])
 
 function getQueryVariable(variable) {
@@ -70,7 +70,7 @@ function BusinessEditTable(props) {
     if (target) {
       target[fieldName] = e;
       setData(newData);
-      if (type === '发布实施') {
+      if (type === '发布验证') {
         ChangeValue(newData);
       } else {
         releaseListEdit(target);
@@ -276,7 +276,7 @@ function BusinessEditTable(props) {
   ];
 
   const sclicecolumns = () => {
-    if (type === '发布实施') {
+    if (type === '发布验证') {
       const practicedone = columns.filter(item => item.key !== 'verifyStatus');
       const newarr = practicedone.slice(0);
       newarr.pop();
@@ -296,7 +296,7 @@ function BusinessEditTable(props) {
           {classify && isEdit && (<div>{Object.values(classify)[0]}</div>)}
           {listmsg && (<div>{Object.values(listmsg)[0]}</div>)}
         </Col>
-        {type === '发布实施' && (
+        {type === '发布验证' && (
           <Col span={4} style={{ textAlign: 'right' }}>
             <Button type='primary' onClick={() => { handleDlownd() }}>导出清单</Button>
           </Col>)}
@@ -309,7 +309,7 @@ function BusinessEditTable(props) {
         bordered
         size='middle'
         rowKey={(_, index) => index.toString()}
-        pagination={type === '发布实施' ? pagination : false}
+        pagination={type === '发布验证' ? pagination : false}
         scroll={{ x: 1700 }}
         loading={loading}
         style={{ marginTop: 12 }}
