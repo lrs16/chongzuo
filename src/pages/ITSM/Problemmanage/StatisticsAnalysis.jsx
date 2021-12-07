@@ -689,7 +689,7 @@ function StatisticsAnalysis(props) {
                         setPicVal({
                           addTimeBegin: values.beginTime,
                           addTimeEnd: values.endTime,
-                          timeStatus: v === 'center' ? '' : timeStatus
+                          timeStatus: v === 'center' ? '3' : timeStatus
                         });
                         setTypename('问题工单超时情况')
                         setVisible(true)
