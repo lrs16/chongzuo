@@ -478,8 +478,8 @@ function StatisticsAnalysis(props) {
                         padding={[30, 0, 50, 60]}
                         onGetVal={v => {
                           setPicVal({
-                            model: ' 问题分类',
-                            type: '问题分类',
+                            model: '问题分类',
+                            type: v.name,
                             begin: `${v.date} 00:00:00`,
                             end: `${v.date} 23:59:59`,
                           });
@@ -643,8 +643,8 @@ function StatisticsAnalysis(props) {
                       padding={[30, 0, 50, 60]}
                       onGetVal={v => {
                         setPicVal({
-                          model: ' 问题来源',
-                          type: '问题来源',
+                          model: '问题来源',
+                          type: v.name,
                           begin: `${v.date} 00:00:00`,
                           end: `${v.date} 23:59:59`,
                         });
