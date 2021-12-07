@@ -344,6 +344,8 @@ function Statistics(props) {
                 totaltitle='需求总数'
                 total={demandtomeoutArr[demandtomeoutArr.length - 1].quantity}
                 staticName='需求工单超时情况'
+                time1={moment(values.beginTime).format('YYYY-MM-DD 00:00:00')}
+                time2={moment(values.endTime).format('YYYY-MM-DD 23:59:59')}
                 padding={[10, 30, 30, 30]}
                 onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
               />

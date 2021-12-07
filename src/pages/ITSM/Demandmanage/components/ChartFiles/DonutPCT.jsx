@@ -66,6 +66,9 @@ function DonutPCT(props) {
             case '需求类型统计分析':
               handleGetDrawerVal({ staticName: 'typetotal', time1, time2 });
               break;
+            case '需求工单超时情况':
+              handleGetDrawerVal({ staticName: 'timeouttotal', time1, time2 });
+              break;
             default:
               break;
           }

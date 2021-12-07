@@ -155,6 +155,7 @@ function ChartDrawer(props) {
     drawerdata,
     dispatch,
     demandquerylists,
+    list, // 工单超时列表
     loading
   } = props;
 
@@ -281,16 +282,18 @@ function ChartDrawer(props) {
         })
         break;
       // 需求工单超时情况（饼）
-      // case '需求工单超时情况':
-      //   dispatch({
-      //     type: 'demandquery/getdemandstatidetailData',
-      //     payload: {
-      //       completeStatus: value.type,
-      //       limit: size,
-      //       page
-      //     }
-      //   })
-      //   break;
+      case '需求工单超时情况':
+        dispatch({
+          type: 'demandquery/querylist',
+          payload: {
+            completeStatus: value.type,
+            endTime: value.time2,
+            startTime: value.time1,
+            limit: size,
+            page
+          }
+        })
+        break;
       case '需求申请人':
         dispatch({
           type: 'demandquery/getdemandstatidetailData',
@@ -370,6 +373,18 @@ function ChartDrawer(props) {
           }
         })
         break;
+      case 'timeouttotal': // 工单超时总数
+        dispatch({
+          type: 'demandquery/querylist',
+          payload: {
+            completeStatus: '全部',
+            endTime: value.time2,
+            startTime: value.time1,
+            limit: size,
+            page
+          }
+        })
+        break;
       default:
         break;
     }
@@ -403,7 +418,7 @@ function ChartDrawer(props) {
     onShowSizeChange: (page, size) => onShowSizeChange(page, size),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    total: demandquerylists.total,
+    total: demandquerylists.total || list.total,
     showTotal: total => `总共  ${total}  条记录`,
     onChange: page => changePage(page),
   };
@@ -411,6 +426,11 @@ function ChartDrawer(props) {
   // 取消
   const hanldleCancel = () => {
     ChangeVisible(false);
+    setPageinations({
+      ...paginations,
+      current: 1,
+      pageSize: 15
+    });
   };
 
   //  下载 /导出功能
@@ -584,16 +604,25 @@ function ChartDrawer(props) {
         });
         break;
       // 需求工单超时情况（饼）
-      // case '需求工单超时情况':
-      //   dispatch({
-      //     type: 'demandquery/statidetailDownload',
-      //     payload: {
-      //       completeStatus: value.type,
-      //       limit: size,
-      //       page
-      //     }
-      //   })
-      //   break;
+      case '需求工单超时情况':
+        dispatch({
+          type: 'demandquery/download',
+          payload: {
+            completeStatus: value.type,
+            endTime: value.time2,
+            startTime: value.time1,
+          }
+        }).then(res => {
+          const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+        break;
       case '需求申请人':
         dispatch({
           type: 'demandquery/statidetailDownload',
@@ -715,6 +744,25 @@ function ChartDrawer(props) {
           window.URL.revokeObjectURL(url);
         });
         break;
+      case 'timeouttotal':
+        dispatch({
+          type: 'demandquery/download',
+          payload: {
+            completeStatus: '全部',
+            endTime: value.time2,
+            startTime: value.time1,
+          }
+        }).then(res => {
+          const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+        break;
       default:
         break;
     }
@@ -740,7 +788,7 @@ function ChartDrawer(props) {
         <Table
           columns={columns}
           loading={loading}
-          dataSource={demandquerylists.rows || []}
+          dataSource={demandquerylists.rows || list.rows || []}
           rowKey={record => record.id}
           pagination={pagination}
           // rowSelection={rowSelection}
@@ -753,5 +801,6 @@ function ChartDrawer(props) {
 
 export default connect(({ demandquery, loading }) => ({
   demandquerylists: demandquery.demandquerylists, // 工单数
+  list: demandquery.list, // 工单超时数据
   loading: loading.models.demandquery,
 }))(ChartDrawer);

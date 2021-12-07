@@ -12,6 +12,9 @@ export default {
   effects: {
     // 查询列表
     *querylist({ payload }, { call, put }) {
+      yield put({
+        type: 'clearcache'
+      })
       const response = yield call(DemandQuery, { ...payload });
       yield put({
         type: 'save',
@@ -57,7 +60,8 @@ export default {
       return {
         ...state,
         info: undefined,
-        demandquerylists: []
+        demandquerylists: [],
+        list: [],
       };
     },
     save(state, action) {
