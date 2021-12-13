@@ -8,7 +8,16 @@ import {
   timeOutTask,
   unitTimeOut,
   assigneeTimeOut,
-  abilityTimeOut
+  abilityTimeOut,
+  summaryDetail,
+  taskStatisticalDetail,
+  unitStatisticalDetail,
+  typeStatisticalDetail,
+  timeOutOrderDetail,
+  abilityTimeOutDetail,
+  timeOutTaskDetail,
+  unitTimeOutDetail,
+  assigneeTimeOutDetail
 } from '../services/api';
 
 export default {
@@ -19,6 +28,7 @@ export default {
     unitdata: {},
     timeoutdata: {},
     ability: {},
+    list: {}
   },
 
   effects: {
@@ -82,6 +92,53 @@ export default {
         },
       });
     },
+    *fetchlist({
+      payload: { val, type, taskName, item, unit, releaseType, timeout, ability, subAbility, userName }
+    }, { call, put }) {
+      yield put({
+        type: 'clearlist'
+      });
+      let response = {}
+      switch (type) {
+        case 'summary':
+          response = yield call(summaryDetail, { ...val });
+          break;
+        case 'taskStatistical':
+          response = yield call(taskStatisticalDetail, { ...val, taskName, item });
+          break;
+        case 'unitStatistical':
+          response = yield call(unitStatisticalDetail, { ...val, unit });
+          break;
+        case 'typeStatistical':
+          response = yield call(typeStatisticalDetail, { ...val, releaseType });
+          break;
+        case 'timeOutOrder':
+          response = yield call(timeOutOrderDetail, { ...val, timeout });
+          break;
+        case 'abilityTimeOut':
+          response = yield call(abilityTimeOutDetail, { ...val, ability, subAbility });
+          break;
+        case 'timeOutTask':
+          response = yield call(timeOutTaskDetail, { ...val, ability, taskName });
+          break;
+        case 'unitTimeOut':
+          response = yield call(unitTimeOutDetail, { ...val, unit });
+          break;
+        case 'assigneeTimeOut':
+          response = yield call(assigneeTimeOutDetail, { ...val, userName });
+          break;
+        default:
+          break;
+      };
+      if (response.code === 200) {
+        yield put({
+          type: 'savelist',
+          payload: {
+            list: response.data,
+          },
+        });
+      }
+    },
   },
 
   reducers: {
@@ -113,6 +170,18 @@ export default {
       return {
         ...state,
         ability: action.payload,
+      };
+    },
+    clearlist(state) {
+      return {
+        ...state,
+        list: {},
+      };
+    },
+    savelist(state, action) {
+      return {
+        ...state,
+        list: action.payload.list,
       };
     },
   },

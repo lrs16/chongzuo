@@ -115,3 +115,175 @@ export async function abilityTimeOut(params) {
     requestType: 'form',
   });
 }
+
+// 发布总情况详细数据
+export async function summaryDetail(params) {
+  return request(`/release/analysis/summary/detail`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 发布总情况下载 /release/analysis/summary/detail/export
+export async function summaryDetailExport(params) {
+  return request(`/release/analysis/summary/detail/export`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+    responseType: 'blob',
+  });
+}
+
+// 发布总情况详细数据
+export async function taskStatisticalDetail(params) {
+  return request(`/release/analysis/taskStatistical/detail`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 发布总情况下载 /release/analysis/summary/detail/export
+export async function taskStatisticalExport(params) {
+  return request(`/release/analysis/taskStatistical/detail/export`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+    responseType: 'blob',
+  });
+}
+
+// 责任单位
+export async function unitStatisticalDetail(params) {
+  return request(`/release/analysis/unitStatistical/detail`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 责任单位下载 /release/analysis/summary/detail/export
+export async function unitStatisticalExport(params) {
+  return request(`/release/analysis/unitStatistical/detail/export`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+    responseType: 'blob',
+  });
+}
+
+// 发布类型
+export async function typeStatisticalDetail(params) {
+  return request(`/release/analysis/typeStatistical/detail`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 发布类型下载 /release/analysis/summary/detail/export
+export async function typeStatisticalExport(params) {
+  return request(`/release/analysis/typeStatistical/detail/export`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+    responseType: 'blob',
+  });
+}
+
+// 超时总情况
+export async function timeOutOrderDetail(params) {
+  return request(`/release/analysis/timeOutOrder/detail`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 发布类型下载 /release/analysis/summary/detail/export
+export async function timeOutOrderExport(params) {
+  return request(`/release/analysis/timeOutOrder/detail/export`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+    responseType: 'blob',
+  });
+}
+
+// 功能类型统计
+export async function abilityTimeOutDetail(params) {
+  return request(`/release/analysis/abilityTimeOut/detail`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 功能类型统计下载 /release/analysis/summary/detail/export
+export async function abilityTimeOutExport(params) {
+  return request(`/release/analysis/abilityTimeOut/detail/export`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+    responseType: 'blob',
+  });
+}
+
+// 环节超时
+export async function timeOutTaskDetail(params) {
+  return request(`/release/analysis/timeOutTask/detail`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 环节超时 下载
+export async function timeOutTaskExport(params) {
+  return request(`/release/analysis/timeOutTask/detail/export`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+    responseType: 'blob',
+  });
+}
+
+// 责任单位超时 下载
+export async function unitTimeOutDetail(params) {
+  return request(`/release/analysis/unitTimeOut/detail`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 责任单位超时 下载
+export async function unitTimeOutExport(params) {
+  return request(`/release/analysis/unitTimeOut/detail/export`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+    responseType: 'blob',
+  });
+}
+
+
+// 责任人超时 下载
+export async function assigneeTimeOutDetail(params) {
+  return request(`/release/analysis/assigneeTimeOut/detail`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 责任人超时 下载
+export async function assigneeTimeOutExport(params) {
+  return request(`/release/analysis/assigneeTimeOut/detail/export`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+    responseType: 'blob',
+  });
+}

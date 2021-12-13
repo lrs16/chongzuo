@@ -44,7 +44,7 @@ function SmoothLine(props) {
   return (
     <Chart padding={padding} scale={cols} autoFit height={height} data={dv.rows} onClick={ev => {
       const linkdata = ev.data;
-      if (linkdata && linkdata.data && !Array.isArray(linkdata.data)) {
+      if (linkdata && linkdata.data && !Array.isArray(linkdata.data) && onGetVal) {
         onGetVal(linkdata.data)
       }
     }}>

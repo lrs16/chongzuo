@@ -35,7 +35,7 @@ registerShape("interval", "sliceShape", {
 
 class DonutPCT extends Component {
   render() {
-    const { data, total, totaltitle, height, padding, onGetVal } = this.props;
+    const { data, total, totaltitle, height, padding, onGetVal, onGetTotal, totalType } = this.props;
     const { DataView } = DataSet;
     const dv = new DataView();
     dv.source(data).transform({
@@ -47,13 +47,15 @@ class DonutPCT extends Component {
     });
     return (
       <div>
-        <div style={{ position: 'absolute', left: '50%', top: '42%', width: 100, textAlign: 'center', marginLeft: '-50px' }} >
-          <span style={{ fontSize: 24, fontWeight: 700 }}>{total}</span><br />
+        <div style={{ position: 'absolute', left: '50%', top: '40%', width: 100, textAlign: 'center', marginLeft: '-50px', zIndex: 999 }} >
+          <span style={{ fontSize: 24, fontWeight: 700 }}>
+            {onGetTotal && totalType ? (<a onClick={() => onGetTotal(totalType)}>{total}</a>) : (<>{total}</>)}
+          </span><br />
           <span>{totaltitle}</span>
         </div>
         <Chart height={height} data={dv.rows} padding={padding} autoFit onClick={ev => {
           const linkdata = ev.data;
-          if (linkdata && linkdata.data) {
+          if (linkdata && linkdata.data && onGetVal) {
             onGetVal(linkdata.data)
           }
         }}>
@@ -78,7 +80,7 @@ class DonutPCT extends Component {
           />
           <Interaction type="element-single-selected" />
         </Chart>
-      </div>
+      </div >
     );
   }
 }

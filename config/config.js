@@ -2146,7 +2146,7 @@ export default {
       changeOrigin: true
     },
     '/release/': {
-      target: 'http://172.16.10.33:9901/',        // 发布管理
+      target: 'http://172.16.10.132:9901/',        // 发布管理
       changeOrigin: true
     },
     '/lasting/': {
