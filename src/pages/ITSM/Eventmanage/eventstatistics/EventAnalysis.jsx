@@ -502,16 +502,12 @@ function EventAnalysis(props) {
                         const obj = {
                           time1: values.beginTime,
                           time2: values.endTime,
+                          tabType:v === 'center'?'all':result
                         };
-                        if (v === 'center') {
-                          obj.type = 'all'
-                        } else {
-                          obj.tabType = result;
-                        }
                         setPicVal({
                           ...obj
                         });
-                        setTypename(v === 'center' ? '' : '超时情况');
+                        setTypename('超时情况');
                         setVisible(true)
                       }}
                     />
@@ -604,6 +600,7 @@ function EventAnalysis(props) {
                               registerUnit: v.type,
                               time1: values.beginTime,
                               time2: values.endTime,
+                              type:'analysis'
                             });
                             setVisible(true)
                           }}
@@ -637,6 +634,7 @@ function EventAnalysis(props) {
                               handleUnit: v.type,
                               time1: values.beginTime,
                               time2: values.endTime,
+                              type:'analysis'
                             });
                             setVisible(true)
                           }}

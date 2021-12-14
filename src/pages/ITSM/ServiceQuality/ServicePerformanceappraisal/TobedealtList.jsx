@@ -312,44 +312,6 @@ function TobedealtList(props) {
       width: 200,
     },
     {
-      title: '自动化科专责审核结果',
-      dataIndex: 'expertVerifyValue',
-      key: 'expertVerifyValue',
-      width: 180,
-    },
-    {
-      title: '自动化科专责审核说明',
-      dataIndex: 'expertVerifyContent',
-      key: 'expertVerifyContent',
-      width: 180,
-      ellipsis: true,
-      render: text => {
-        return (
-          <Tooltip placement="topLeft" title={text}>
-            <span>{text}</span>
-          </Tooltip>
-        );
-      },
-    },
-    {
-      title: '自动化科专责审核状态',
-      dataIndex: 'expertVerifyStatus',
-      key: 'expertVerifyStatus',
-      width: 180,
-    },
-    {
-      title: '自动化科专责审核人',
-      dataIndex: 'expertVerifierName',
-      key: 'expertVerifierName',
-      width: 180,
-    },
-    {
-      title: '自动化科专责审核时间',
-      dataIndex: 'expertVerifyTime',
-      key: 'expertVerifyTime',
-      width: 200,
-    },
-    {
       title: '是否申诉',
       dataIndex: 'isAppeal',
       key: 'isAppeal',
@@ -382,7 +344,7 @@ function TobedealtList(props) {
       width: 200,
     },
     {
-      title: '业务负责人复核结果',
+      title: '自动化科复核结果',
       dataIndex: 'directorReviewValue',
       key: 'directorReviewValue',
       width: 180,
@@ -391,7 +353,7 @@ function TobedealtList(props) {
       // }
     },
     {
-      title: '业务负责人复核说明',
+      title: '自动化科复核说明',
       dataIndex: 'directorReviewContent',
       key: 'directorReviewContent',
       width: 180,
@@ -405,13 +367,13 @@ function TobedealtList(props) {
       },
     },
     {
-      title: '业务负责人复核人',
+      title: '自动化科复核人',
       dataIndex: 'directorReviewerName',
       key: 'directorReviewerName',
       width: 180,
     },
     {
-      title: '业务负责人复核时间',
+      title: '自动化科复核时间',
       dataIndex: 'directorReviewTime',
       key: 'directorReviewTime',
       width: 200,
@@ -457,7 +419,7 @@ function TobedealtList(props) {
     width: 150,
   }
 
-  if(pagetitle === '服务绩效考核查询') {
+  if (pagetitle === '服务绩效考核查询') {
     initialColumns.splice(13, 0, obj)
   }
 
@@ -1158,7 +1120,7 @@ function TobedealtList(props) {
       if (
         val.title === '考核内容说明' ||
         val.title === '申诉内容' ||
-        val.title === '业务负责人复核说明' ||
+        val.title === '自动化科复核说明' ||
         val.title === '服务绩效考核确认说明' ||
         val.title === '业务负责人审核说明' ||
         val.title === '关联合同名称'
@@ -1453,6 +1415,23 @@ function TobedealtList(props) {
                 </Form.Item>
               </Col>
 
+              <Col span={8}>
+                <Form.Item label="是否申诉">
+                  {getFieldDecorator('isAppeal', {
+                    initialValue: cacheinfo.isAppeal,
+                  })(
+                    <Select getPopupContainer={e => e.parentNode}>
+                      <Option key="1" value="1">
+                        是
+                      </Option>
+                      <Option key="0" value="0">
+                        否
+                      </Option>
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+
               <Col span={16}>
                 <Form.Item label="详细条款" {...forminladeLayout}>
                   {getFieldDecorator('clauseId', {
@@ -1629,99 +1608,7 @@ function TobedealtList(props) {
                 </Form.Item>
               </Col>
 
-              <Col span={8}>
-                <Form.Item label="自动化科专责审核结果">
-                  {getFieldDecorator('expertVerifyValue', {
-                    initialValue: cacheinfo.expertVerifyValue,
-                  })(
-                    <Select getPopupContainer={e => e.parentNode}>
-                      <Option key="待审核" value="待审核">
-                        待审核
-                      </Option>
-                      <Option key="已审核" value="已审核">
-                        已审核
-                      </Option>
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
 
-              <Col span={8}>
-                <Form.Item label="自动化科专责审核说明">
-                  {getFieldDecorator('expertVerifyContent', {
-                    initialValue: cacheinfo.expertVerifyContent,
-                  })(<Input />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="自动化科专责审核状态">
-                  {getFieldDecorator('expertVerifyStatus', {
-                    initialValue: cacheinfo.expertVerifyStatus,
-                  })(
-                    <Select getPopupContainer={e => e.parentNode}>
-                      <Option key="待审核" value="待审核">
-                        待审核
-                      </Option>
-                      <Option key="已审核" value="已审核">
-                        已审核
-                      </Option>
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="自动化科专责审核人">
-                  {getFieldDecorator('expertVerifierName', {
-                    initialValue: cacheinfo.expertVerifierName,
-                  })(<Input />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="自动化科专责审核时间">
-                  {getFieldDecorator('expertVerifyTime', {
-                    initialValue: cacheinfo.expertVerifyBeginTime
-                      ? [
-                        moment(cacheinfo.expertVerifyBeginTime),
-                        moment(cacheinfo.expertVerifyEndTime),
-                      ]
-                      : '',
-                  })(
-                    <RangePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: [
-                          moment('00:00:00', 'HH:mm:ss'),
-                          moment('23:59:59', 'HH:mm:ss'),
-                        ],
-                      }}
-                      format="YYYY-MM-DD HH:mm:ss"
-                      style={{ width: '100%' }}
-                      placeholder="请选择"
-                      allowClear
-                    />,
-                  )}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="是否申诉">
-                  {getFieldDecorator('isAppeal', {
-                    initialValue: cacheinfo.isAppeal,
-                  })(
-                    <Select getPopupContainer={e => e.parentNode}>
-                      <Option key="1" value="1">
-                        是
-                      </Option>
-                      <Option key="0" value="0">
-                        否
-                      </Option>
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
 
               <Col span={8}>
                 <Form.Item label="申诉内容">
@@ -1790,7 +1677,7 @@ function TobedealtList(props) {
               </Col>
 
               <Col span={8}>
-                <Form.Item label="业务负责人复核结果">
+                <Form.Item label="自动化科复核结果">
                   {getFieldDecorator('directorReviewValue', {
                     initialValue: cacheinfo.directorReviewValue,
                   })(
@@ -1807,7 +1694,7 @@ function TobedealtList(props) {
               </Col>
 
               <Col span={8}>
-                <Form.Item label="业务负责人复核说明">
+                <Form.Item label="自动化科复核说明">
                   {getFieldDecorator('directorReviewContent', {
                     initialValue: cacheinfo.directorReviewContent,
                   })(<Input />)}
@@ -1831,7 +1718,7 @@ function TobedealtList(props) {
               </Col>
 
               <Col span={8}>
-                <Form.Item label="业务负责人复核人">
+                <Form.Item label="自动化科复核人">
                   {getFieldDecorator('directorReviewerName', {
                     initialValue: cacheinfo.directorReviewerName,
                   })(<Input />)}
@@ -1839,7 +1726,7 @@ function TobedealtList(props) {
               </Col>
 
               <Col span={8}>
-                <Form.Item label="业务负责人复核时间">
+                <Form.Item label="自动化科复核时间">
                   {getFieldDecorator('directorReviewTime', {
                     initialValue: cacheinfo.directorReviewBeginTime
                       ? [

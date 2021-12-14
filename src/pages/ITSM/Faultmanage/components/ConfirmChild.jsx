@@ -26,7 +26,6 @@ const ConfirmChild = React.forwardRef((props, ref) => {
     ChangeFiles,
     ChangeResult,
     location,
-    createQualityByMainId
   } = props;
   const { getFieldDecorator, setFieldsValue } = props.form;
   const attRef = useRef();
@@ -172,16 +171,6 @@ const ConfirmChild = React.forwardRef((props, ref) => {
               )
             }
           </Form.Item>
-        </Col>
-
-        <Col span={24} style={{ paddingLeft: '8.33333333% ' }} >
-          <Button
-            onClick={createQualityByMainId}
-            type='primary'
-
-          >
-            发起绩效考核
-          </Button>
         </Col>
 
         <Col span={8}>
