@@ -516,6 +516,9 @@ function EventAnalysis(props) {
                           case '超时已处理':
                             result = 'timeout'
                             break;
+                          case '按时处理':
+                            result = 'close'
+                            break;
                           default:
                             break;
                         }
