@@ -184,9 +184,8 @@ function Todolistdetails(props) {
   const handleClose = () => {
     // 返回上一页
     router.push({
-      pathname: `/ITSM/faultmanage/todolist`,
-      query: { pathpush: true },
-      state: { cacheinfo: { ...location.state.cacheinfo }, cache: false }
+      pathname: '/ITSM/faultmanage/todolist/record',
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
     });
   };
 
@@ -1014,7 +1013,7 @@ function Todolistdetails(props) {
                 )}
             </>
           )}
-          <Button type="default" onClick={handleClose} disabled={faultUploadStatus}>返回</Button>
+          <Button type="default" onClick={handleClose} disabled={faultUploadStatus}>关闭</Button>
         </>
       }
       title={flowNodeName}

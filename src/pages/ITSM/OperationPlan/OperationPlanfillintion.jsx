@@ -119,9 +119,8 @@ function OperationPlanfillintion(props) {
 
   const handleClose = () => {
     router.push({
-      pathname: `/ITSM/operationplan/myoperationplan`,
-      query: { pathpush: true },
-      state: { cach: false },
+      pathname: `/ITSM/operationplan/operationplanfillin`,
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
     });
   };
 
@@ -211,7 +210,7 @@ function OperationPlanfillintion(props) {
             保存
           </Button>
 
-          <Button onClick={() => handleClose()}>返回</Button>
+          <Button onClick={() => handleClose()}>关闭</Button>
         </>
       }
     >

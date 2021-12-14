@@ -101,21 +101,20 @@ function Queryworkdetail(props) {
     setTabActiveKey(key);
   };
 
-  const handleClose = () => { // 返回上一页
+  const handClose = () => {
     router.push({
-      pathname: `/ITSM/problemmanage/problemquery`,
-      query: { pathpush: true },
-      state: { cache: false }
+      pathname: `/ITSM/problemmanage/problemquery/detail`,
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
     });
-  }
+  };
 
   return (
     <PageHeaderWrapper
       title={taskName}
       extra={
         <>
-          <Button style={{ marginRight: 8 }} onClick={() => handleClose()}>
-            返回
+          <Button style={{ marginRight: 8 }} onClick={() => handClose()}>
+            关 闭
           </Button>
         </>
       }

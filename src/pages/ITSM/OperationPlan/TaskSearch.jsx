@@ -577,7 +577,7 @@ function TaskSearch(props) {
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
 
   useEffect(() => {
-    if (location.state) {
+    if (location && location.state) {
       if (location.state.cache) {
         // 传表单数据到页签
         dispatch({

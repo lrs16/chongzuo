@@ -741,6 +741,13 @@ function Workorder(props) {
     });
   };
 
+  const handClose = () => {
+    router.push({
+      pathname: `/ITSM/problemmanage/besolveddetail/workorder`,
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
+    });
+  };
+
   return (
     <PageHeaderWrapper
       title={taskName}
@@ -797,7 +804,7 @@ function Workorder(props) {
                     保存
                   </Button>
                 )}
-                
+
               {loading === false &&
                 flowNodeName === '系统开发商处理' &&
                 currntStatus !== 29 &&
@@ -867,7 +874,7 @@ function Workorder(props) {
                 flowNodeName === '问题登记' &&
                 problemFlowLogs &&
                 problemFlowLogs.length > 2 && (
-                  <Button type="primary" onClick={closeOrder}  disabled={olduploadstatus}>
+                  <Button type="primary" onClick={closeOrder} disabled={olduploadstatus}>
                     关闭工单
                   </Button>
                 )}
@@ -933,16 +940,12 @@ function Workorder(props) {
             </>
           )}
 
-          <Button type="default">
-            <Link
-              to={{
-                pathname: '/ITSM/problemmanage/besolved',
-                query: { pathpush: true },
-                state: { cache: false },
-              }}
-            >
-              返回
-            </Link>
+          <Button
+            type="default"
+            onClick={handClose}
+            disabled={olduploadstatus}
+          >
+            关闭
           </Button>
         </>
       }

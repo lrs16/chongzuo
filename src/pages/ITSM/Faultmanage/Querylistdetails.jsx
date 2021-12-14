@@ -116,9 +116,8 @@ function Querylistdetails(props) {
 
   const handleClose = () => { // 返回上一页
     router.push({
-      pathname: `/ITSM/faultmanage/querylist`,
-      query: { pathpush: true },
-      state: { cache: false }
+      pathname: '/ITSM/faultmanage/querylist/record',
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
     });
   }
 
@@ -139,7 +138,7 @@ function Querylistdetails(props) {
 
   return (
     <PageHeaderWrapper
-      extra={<Button type="default" onClick={handleClose}>返 回</Button>}
+      extra={<Button type="default" onClick={handleClose}>关 闭</Button>}
       title={main && main.statuscn}
       tabList={tabList}
       onTabChange={handleTabChange}

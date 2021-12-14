@@ -704,7 +704,7 @@ function Work(props) {
             </Button>
           )}
 
-          <Button onClick={handleClose}>返回</Button>
+          <Button onClick={handleClose}>关闭</Button>
         </>
       )
       }

@@ -571,29 +571,10 @@ function TobedealtForm(props) {
   };
 
   const handleBack = () => {
-    if (search) {
-      router.push({
-        pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/search',
-        query: { pathpush: true },
-        state: { cache: false },
-      });
-    }
-
-    if (myOrder) {
-      router.push({
-        pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/assessment',
-        query: { pathpush: true },
-        state: { cache: false },
-      });
-    }
-
-    if (tobelist) {
-      router.push({
-        pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtlist',
-        query: { pathpush: true },
-        state: { cache: false },
-      });
-    }
+    router.push({
+      pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
+    });
   };
 
   // 初始化历史附件
@@ -721,7 +702,7 @@ function TobedealtForm(props) {
           {
             loading === false && (
               <Button type="default" onClick={handleBack}>
-                返回
+                关闭
               </Button>
             )
           }

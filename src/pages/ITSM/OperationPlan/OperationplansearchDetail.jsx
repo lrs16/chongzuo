@@ -62,9 +62,8 @@ function Work(props) {
 
   const handleClose = () => {
     router.push({
-      pathname: `/ITSM/operationplan/operationplansearch`,
-      query: { pathpush: true },
-      state: { cache: false },
+      pathname: `/ITSM/operationplan/operationplansearchdetail`,
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
     });
   }
 
@@ -89,7 +88,7 @@ function Work(props) {
       title={headTitle}
       extra={
         <>
-          <Button onClick={handleClose}>返回</Button>
+          <Button onClick={handleClose}>关闭</Button>
         </>
       }
       tabList={tabList}

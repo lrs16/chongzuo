@@ -225,19 +225,10 @@ function CreditCardRegister(props) {
   };
 
   const handleback = () => {
-    if (search) {
-      router.push({
-        pathname: `/ITSM/servicequalityassessment/creditcard/creditcardsearch`,
-        query: { pathpush: true },
-        state: { cach: false }
-      });
-    } else {
-      router.push({
-        pathname: `/ITSM/servicequalityassessment/creditcard/creditcardtobe`,
-        query: { pathpush: true },
-        state: { cach: false }
-      });
-    }
+    router.push({
+      pathname: '/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail',
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
+    });
   };
 
   // useEffect(() => {
@@ -307,7 +298,7 @@ function CreditCardRegister(props) {
 
           {
             paramId && (
-              <Button onClick={handleback}>返回</Button>
+              <Button onClick={handleback}>关闭</Button>
             )
           }
 

@@ -194,19 +194,10 @@ function AddProviderMaintenance(props) {
   }, [id]);
 
   const handleBack = () => {
-    if (providerSearch) {
-      router.push({
-        pathname: `/ITSM/servicequalityassessment/serviceprovidersearch`,
-        query: { pathpush: true },
-        state: { cache: false },
-      });
-    } else {
-      router.push({
-        pathname: `/ITSM/servicequalityassessment/serviceprovidermaintenance`,
-        query: { pathpush: true },
-        state: { cache: false },
-      });
-    }
+    router.push({
+      pathname: '/ITSM/servicequalityassessment/detailserviceprovidermaintenance',
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
+    });
   };
 
   const handleSaveForm = () => {
@@ -250,7 +241,7 @@ function AddProviderMaintenance(props) {
             </Button>
           )}
 
-          <Button onClick={handleBack}>返回</Button>
+          <Button onClick={handleBack}>关闭</Button>
         </>
       }
     >

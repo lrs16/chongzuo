@@ -196,25 +196,10 @@ function NewHandover(props) {
   }, [files])
 
   const handleclose = () => { // 返回
-    switch (pagetitle) {
-      case '新增值班交接':
-      case '编辑值班交接':
-        router.push({
-          pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover`,
-          query: { pathpush: true },
-          state: { cach: false }
-        });
-        break;
-      case '值班交接详情':
-        router.push({
-          pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandoversearch`,
-          query: { pathpush: true },
-          state: { cach: false }
-        });
-        break;
-      default:
-        break;
-    }
+    router.push({
+      pathname: '/ITSM/dutymanage/dutyhandovermanage/edithandoverdetail',
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
+    });
   };
 
   useEffect(() => {
@@ -484,7 +469,7 @@ function NewHandover(props) {
           </Popconfirm>
         )
       }
-      <Button onClick={handleclose}>返回</Button>
+      <Button onClick={handleclose}>关闭</Button>
     </>
   )
 

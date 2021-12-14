@@ -367,19 +367,10 @@ function AddScoringRulesmaintenance(props) {
   };
 
   const handleBack = () => {
-    if (scoreSearch) {
-      router.push({
-        pathname: `/ITSM/servicequalityassessment/scoringrulessearch`,
-        query: { pathpush: true },
-        state: { cache: false },
-      });
-    } else {
-      router.push({
-        pathname: `/ITSM/servicequalityassessment/scoringrulesmaintenance`,
-        query: { pathpush: true },
-        state: { cache: false },
-      });
-    }
+    router.push({
+      pathname: '/ITSM/servicequalityassessment/detailscoringrulesmaintenance',
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
+    });
   };
 
   const assessmentType = getTypebyTitle('考核类型');
@@ -395,7 +386,7 @@ function AddScoringRulesmaintenance(props) {
             </Button>
           )}
 
-          <Button onClick={handleBack}>返回</Button>
+          <Button onClick={handleBack}>关闭</Button>
         </>
       }
     >
