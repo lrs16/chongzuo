@@ -54,34 +54,35 @@ function DonutPCT(props) {
   return (
     <div>
       <div
-        style={{ position: 'absolute', left: '50%', top: '42%', width: 100, textAlign: 'center', marginLeft: '-50px', cursor: 'pointer', zIndex: 9999 }}
-        onClick={() => {
-          switch (staticName) {
-            case '需求工单总情况':
-              handleGetDrawerVal({ staticName: 'sumtotal', time1, time2 });
-              break;
-            case '功能模块情况':
-              handleGetDrawerVal({ staticName: 'moduletotal', time1, time2 });
-              break;
-            case '需求类型统计分析':
-              handleGetDrawerVal({ staticName: 'typetotal', time1, time2 });
-              break;
-            case '需求工单超时情况':
-              handleGetDrawerVal({ staticName: 'timeouttotal', time1, time2 });
-              break;
-            default:
-              break;
-          }
-        }}
+        style={{ position: 'absolute', left: '50%', top: '40%', width: 100, textAlign: 'center', marginLeft: '-50px', zIndex: 9999 }}
       >
-        <span style={{ fontSize: 24, fontWeight: 700 }}>{total}</span><br />
+        <span style={{ fontSize: 24, fontWeight: 700 }}>
+          {totaltitle ? (<a onClick={() => {
+            switch (staticName) {
+              case '需求工单总情况':
+                handleGetDrawerVal({ staticName: 'sumtotal', time1, time2, drawtitle: '需求总数' });
+                break;
+              case '功能模块情况':
+                handleGetDrawerVal({ staticName: 'moduletotal', time1, time2, drawtitle: '需求总数' });
+                break;
+              case '需求类型统计分析':
+                handleGetDrawerVal({ staticName: 'typetotal', time1, time2, drawtitle: '需求总数' });
+                break;
+              case '需求工单超时情况':
+                handleGetDrawerVal({ staticName: 'timeouttotal', time1, time2, drawtitle: '需求总数' });
+                break;
+              default:
+                break;
+            }
+          }}>{total}</a>) : (<>{total}</>)}
+        </span><br />
         <span>{totaltitle}</span>
       </div>
       <Chart height={height} data={dv.rows} padding={padding} autoFit onClick={ev => {
         const linkdata = ev.data;
-        if (linkdata && linkdata.data) {
+        if (linkdata && linkdata.data && onGetVal) {
           onGetVal(linkdata.data);
-          handleGetDrawerVal({ ...linkdata.data, staticName, time1, time2 });
+          handleGetDrawerVal({ ...linkdata.data, staticName, time1, time2, drawtitle: linkdata.data.type });
         }
       }}>
         <Coordinate type="theta" radius={0.8} innerRadius={0.7} />

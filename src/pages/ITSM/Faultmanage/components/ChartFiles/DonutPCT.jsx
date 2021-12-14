@@ -54,43 +54,44 @@ function DonutPCT(props) {
   return (
     <div>
       <div
-        style={{ position: 'absolute', left: '50%', top: '42%', width: 100, textAlign: 'center', marginLeft: '-50px', cursor: 'pointer', zIndex: 9999 }}
-        onClick={() => {
-          switch (staticName) {
-            case '故障责任单位情况':
-              handleGetDrawerVal({ staticName: 'blametotal', time1, time2 });
-              break;
-            case '故障类型总情况':
-              handleGetDrawerVal({ staticName: 'typetotal', time1, time2 });
-              break;
-            case '硬件故障情况':
-              handleGetDrawerVal({ staticName: 'hardwaretotal', time1, time2 });
-              break;
-            case '软件故障情况':
-              handleGetDrawerVal({ staticName: 'softwaretotal', time1, time2 });
-              break;
-            case '故障系统模块情况':
-              handleGetDrawerVal({ staticName: 'worksystemtotal', time1, time2 });
-              break;
-            case '故障工单超时情况':
-              handleGetDrawerVal({ staticName: 'timeouttotal', time1, time2 });
-              break;
-            default:
-              break;
-          }
-          // if (onGettotalVal) {
-          //   onGettotalVal(staticName)
-          // }
-        }}
+        style={{ position: 'absolute', left: '50%', top: '40%', width: 100, textAlign: 'center', marginLeft: '-50px', zIndex: 9999 }}
       >
-        <span style={{ fontSize: 24, fontWeight: 700 }}>{total}</span><br />
+        <span style={{ fontSize: 24, fontWeight: 700 }}>
+          {totaltitle ? (<a onClick={() => {
+            switch (staticName) {
+              case '故障责任单位情况':
+                handleGetDrawerVal({ staticName: 'blametotal', time1, time2, drawtitle: '故障总数' });
+                break;
+              case '故障类型总情况':
+                handleGetDrawerVal({ staticName: 'typetotal', time1, time2, drawtitle: '故障总数' });
+                break;
+              case '硬件故障情况':
+                handleGetDrawerVal({ staticName: 'hardwaretotal', time1, time2, drawtitle: '硬件故障总数' });
+                break;
+              case '软件故障情况':
+                handleGetDrawerVal({ staticName: 'softwaretotal', time1, time2, drawtitle: '软件故障总数' });
+                break;
+              case '故障系统模块情况':
+                handleGetDrawerVal({ staticName: 'worksystemtotal', time1, time2, drawtitle: '总工单数' });
+                break;
+              case '故障工单超时情况':
+                handleGetDrawerVal({ staticName: 'timeouttotal', time1, time2, drawtitle: '总工单数' });
+                break;
+              default:
+                break;
+            }
+            // if (onGettotalVal) {
+            //   onGettotalVal(staticName)
+            // }
+          }}>{total}</a>) : (<>{total}</>)}
+        </span><br />
         <span>{totaltitle}</span>
       </div>
       <Chart height={height} data={dv.rows} padding={padding} autoFit onClick={ev => {
         const linkdata = ev.data;
-        if (linkdata && linkdata.data) {
+        if (linkdata && linkdata.data && onGetVal) {
           onGetVal(linkdata.data);
-          handleGetDrawerVal({ ...linkdata.data, staticName });
+          handleGetDrawerVal({ ...linkdata.data, staticName, drawtitle: linkdata.data.type });
         }
       }}>
         <Coordinate type="theta" radius={0.8} innerRadius={0.7} />

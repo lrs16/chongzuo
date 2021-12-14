@@ -22,7 +22,7 @@ function StatisticsCard(props) {
           <Col span={24}
             style={{ cursor: 'pointer' }}
             onClick={() =>
-              hanlestaticard({ value, staticName, time1, time2 })
+              hanlestaticard({ value, staticName, time1, time2, drawtitle: staticName })
             }>
             <Statistic
               value={value}

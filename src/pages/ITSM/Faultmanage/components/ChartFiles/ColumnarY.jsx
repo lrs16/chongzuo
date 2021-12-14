@@ -25,7 +25,7 @@ function ColumnarY(props) {
           const clickdata = ev.data;
           if (clickdata && clickdata.data) {
             onGetVal(clickdata.data);
-            handleGetDrawerVal({ ...clickdata.data, staticName });
+            handleGetDrawerVal({ ...clickdata.data, staticName, drawtitle: `${staticName}：${clickdata.data.type}` });
           }
         }}
       >

@@ -773,6 +773,7 @@ function ChartDrawer(props) {
       <Drawer
         visible={visible}
         width={1500}
+        title={drawerdata.drawtitle}
         onClose={hanldleCancel}
         bodyStyle={{ paddingBottom: 60 }}
         destroyOnClose
