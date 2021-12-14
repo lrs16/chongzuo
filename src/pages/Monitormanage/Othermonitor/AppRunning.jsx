@@ -5,6 +5,7 @@ import { Card, Tabs, Row, Col, Tag, Badge, Spin, Empty } from 'antd';
 import { querkeyVal } from '@/services/api';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
+import timerule from '@/pages/SysManage/models/timerule';
 import TotalInfo from '../../Alarmmanage/components/TotalInfo';
 
 const { TabPane } = Tabs;
@@ -85,7 +86,8 @@ function AppRunning(props) {
         setTabkeyDist(newData);
       }
     });
-    setInterval(() => {
+    let timer = setInterval(() => {
+      handleTabChange('安全接入区');
       dispatch({
         type: 'measuralarm/fetchtotalinfo',
         payload: {
@@ -94,8 +96,11 @@ function AppRunning(props) {
           warnModule: 'app',
         },
       });
-      handleTabChange('安全接入区');
-    }, 600000)
+    }, 600000);
+    return () => {
+      clearInterval(timer);
+      timer = null
+    }
   }, []);
 
   useEffect(() => {
@@ -107,7 +112,7 @@ function AppRunning(props) {
         payload: {
           beginDate: moment().format('YYYY-MM-DD 00:00:00'),
           endDate: moment().format('YYYY-MM-DD HH:mm:ss'),
-          warnModule: 'configFile',
+          warnModule: 'app',
         },
       });
     }

@@ -32,6 +32,7 @@ export default {
       });
     },
     *fetchtotalinfo({ payload }, { call, put }) {
+      yield put({ type: 'cleartotal' });
       const response = yield call(statisticsItems, payload);
       yield put({
         type: 'savetotal',
@@ -130,6 +131,12 @@ export default {
       return {
         ...state,
         list: action.payload || {},
+      };
+    },
+    cleartotal(state) {
+      return {
+        ...state,
+        totalinfo: undefined,
       };
     },
     savetotal(state, action) {

@@ -8,7 +8,7 @@ import { querkeyVal } from '@/services/api';
 const { Option } = Select;
 
 function MessagesPage(props) {
-  const { dispatch, messagechart } = props;
+  const { dispatch, messagechart, location } = props;
   const pagetitle = props.route.name;
   const [gddwbh, setGddwbh] = useState({});
   const [selectdata, setSelectdata] = useState([]);
@@ -67,10 +67,21 @@ function MessagesPage(props) {
       }
     })
     onChange({ key: '0401', label: '南宁供电局' });
-    setInterval(() => {
+    let timer = setInterval(() => {
       onChange({ key: '0401', label: '南宁供电局' });
     }, 600000)
+    return () => {
+      clearInterval(timer);
+      timer = null
+    }
   }, []);
+
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      // 点击菜单刷新
+      onChange({ key: '0401', label: '南宁供电局' });
+    }
+  }, [location.state]);
 
   useEffect(() => {
     if (messagechart && messagechart.packets && messagechart.packets.length > 0) {

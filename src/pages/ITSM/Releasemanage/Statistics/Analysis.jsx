@@ -265,7 +265,7 @@ function Statistics(props) {
             return (
               <Col span={6}>
                 {item.name === '发布成功率' ? (card(item, suffixmap)) : (
-                  <a onMouseDown={() => setFetchType({})} onClick={() => getList(val)}>
+                  <a onMouseDown={() => setFetchType({})} onClick={() => { getList(val); setPageinations({ current: 1, pageSize: 12 }) }}>
                     {card(item, suffixmap)}
                   </a>
                 )}
@@ -300,7 +300,10 @@ function Statistics(props) {
                       (
                         <a
                           onMouseDown={() => setFetchType({})}
-                          onClick={() => getList({ ...val, item: item.name === '平台验证通过项' ? '通过' : '不通过' })}>
+                          onClick={() => {
+                            getList({ ...val, item: item.name === '平台验证通过项' ? '通过' : '不通过' });
+                            setPageinations({ current: 1, pageSize: 12 });
+                          }}>
                           {card(item, suffixmap)}
                         </a>
                       )
@@ -336,7 +339,10 @@ function Statistics(props) {
                       (
                         <a
                           onMouseDown={() => setFetchType({})}
-                          onClick={() => getList({ ...val, item: item.name === '业务验证通过项' ? '通过' : '不通过' })}>
+                          onClick={() => {
+                            getList({ ...val, item: item.name === '业务验证通过项' ? '通过' : '不通过' });
+                            setPageinations({ current: 1, pageSize: 12 })
+                          }}>
                           {card(item, suffixmap)}
                         </a>
                       )
@@ -374,7 +380,10 @@ function Statistics(props) {
                       (
                         <a
                           onMouseDown={() => setFetchType({})}
-                          onClick={() => getList({ ...val, item: item.name === '发布验证通过项' ? '通过' : '不通过' })}>
+                          onClick={() => {
+                            getList({ ...val, item: item.name === '发布验证通过项' ? '通过' : '不通过' });
+                            setPageinations({ current: 1, pageSize: 12 })
+                          }}>
                           {card(item, suffixmap)}
                         </a>
                       )
@@ -411,7 +420,10 @@ function Statistics(props) {
                       (
                         <a
                           onMouseDown={() => setFetchType({})}
-                          onClick={() => getList({ ...val, item: item.name === '业务复核通过项' ? '通过' : '不通过' })}>
+                          onClick={() => {
+                            getList({ ...val, item: item.name === '业务复核通过项' ? '通过' : '不通过' });
+                            setPageinations({ current: 1, pageSize: 12 })
+                          }}>
                           {card(item, suffixmap)}
                         </a>
                       )
@@ -440,10 +452,12 @@ function Statistics(props) {
                   total={piesum(unitanalysis.pieChart)}
                   padding={[10, 30, 30, 30]}
                   onGetVal={(v) => {
-                    getList({ type: 'unitStatistical', name: v.type, unit: v.type, pageIndex: 1, pageSize: 12 })
+                    getList({ type: 'unitStatistical', name: v.type, unit: v.type, pageIndex: 1, pageSize: 12 });
+                    setPageinations({ current: 1, pageSize: 12 })
                   }}
                   onGetTotal={(v) => {
-                    getList({ type: 'unitStatistical', name: '发布总次数', unit: v, pageIndex: 1, pageSize: 12 })
+                    getList({ type: 'unitStatistical', name: '发布总次数', unit: v, pageIndex: 1, pageSize: 12 });
+                    setPageinations({ current: 1, pageSize: 12 })
                   }}
                   totalType='all'
                 />
@@ -467,7 +481,8 @@ function Statistics(props) {
                       date: v.date,
                       pageIndex: 1,
                       pageSize: 12
-                    })
+                    });
+                    setPageinations({ current: 1, pageSize: 12 })
                   }}
                 />
               )}
@@ -492,10 +507,12 @@ function Statistics(props) {
                   total={piesum(typeanalysis.pieChart)}
                   padding={[10, 30, 30, 30]}
                   onGetVal={(v) => {
-                    getList({ type: 'typeStatistical', name: v.type, releaseType: v.type, pageIndex: 1, pageSize: 12 })
+                    getList({ type: 'typeStatistical', name: v.type, releaseType: v.type, pageIndex: 1, pageSize: 12 });
+                    setPageinations({ current: 1, pageSize: 12 })
                   }}
                   onGetTotal={(v) => {
-                    getList({ type: 'typeStatistical', name: '发布总次数', releaseType: v, pageIndex: 1, pageSize: 12 })
+                    getList({ type: 'typeStatistical', name: '发布总次数', releaseType: v, pageIndex: 1, pageSize: 12 });
+                    setPageinations({ current: 1, pageSize: 12 })
                   }}
                   totalType='all'
                 />)}
@@ -518,7 +535,8 @@ function Statistics(props) {
                       date: v.date,
                       pageIndex: 1,
                       pageSize: 12
-                    })
+                    });
+                    setPageinations({ current: 1, pageSize: 12 });
                   }}
                 />
               )}
@@ -543,10 +561,12 @@ function Statistics(props) {
                 total={piesum(orederanalysis)}
                 padding={[10, 30, 30, 30]}
                 onGetVal={(v) => {
-                  getList({ type: 'timeOutOrder', name: v.type, timeout: v.type === '按时处理' ? 'N' : 'Y', pageIndex: 1, pageSize: 12 })
+                  getList({ type: 'timeOutOrder', name: v.type, timeout: v.type === '按时处理' ? 'N' : 'Y', pageIndex: 1, pageSize: 12 });
+                  setPageinations({ current: 1, pageSize: 12 })
                 }}
                 onGetTotal={(v) => {
-                  getList({ type: 'timeOutOrder', name: '发布总次数', timeout: v, pageIndex: 1, pageSize: 12 })
+                  getList({ type: 'timeOutOrder', name: '发布总次数', timeout: v, pageIndex: 1, pageSize: 12 });
+                  setPageinations({ current: 1, pageSize: 12 })
                 }}
                 totalType='all'
               />}
@@ -575,7 +595,8 @@ function Statistics(props) {
                     taskName: v.name,
                     pageIndex: 1,
                     pageSize: 12
-                  })
+                  });
+                  setPageinations({ current: 1, pageSize: 12 })
                 }}
               />
             )}
@@ -606,7 +627,8 @@ function Statistics(props) {
                     unit: v.name,
                     pageIndex: 1,
                     pageSize: 12
-                  })
+                  });
+                  setPageinations({ current: 1, pageSize: 12 })
                 }}
               />
             )}
@@ -636,7 +658,8 @@ function Statistics(props) {
                     userName: v.name,
                     pageIndex: 1,
                     pageSize: 12
-                  })
+                  });
+                  setPageinations({ current: 1, pageSize: 12 })
                 }}
               />
             )}
@@ -659,10 +682,12 @@ function Statistics(props) {
                 total={piesum(allability)}
                 padding={[10, 30, 30, 30]}
                 onGetVal={(v) => {
-                  getList({ type: 'abilityTimeOut', name: v.type, ability: v.type === '前台功能' ? 'front' : 'back', pageIndex: 1, pageSize: 12 })
+                  getList({ type: 'abilityTimeOut', name: v.type, ability: v.type === '前台功能' ? 'front' : 'back', pageIndex: 1, pageSize: 12 });
+                  setPageinations({ current: 1, pageSize: 12 })
                 }}
                 onGetTotal={(v) => {
-                  getList({ type: 'abilityTimeOut', name: '功能类型统计', ability: v, pageIndex: 1, pageSize: 12 })
+                  getList({ type: 'abilityTimeOut', name: '功能类型统计', ability: v, pageIndex: 1, pageSize: 12 });
+                  setPageinations({ current: 1, pageSize: 12 })
                 }}
                 totalType='all'
               />
@@ -684,10 +709,12 @@ function Statistics(props) {
                 total={piesum(frontability)}
                 padding={[10, 30, 30, 30]}
                 onGetVal={(v) => {
-                  getList({ type: 'abilityTimeOut', name: `前台功能${v.type}`, ability: 'front', subAbility: v.type, pageIndex: 1, pageSize: 12 })
+                  getList({ type: 'abilityTimeOut', name: `前台功能${v.type}`, ability: 'front', subAbility: v.type, pageIndex: 1, pageSize: 12 });
+                  setPageinations({ current: 1, pageSize: 12 })
                 }}
                 onGetTotal={() => {
-                  getList({ type: 'abilityTimeOut', name: '前台功能统计', ability: 'front', subAbility: '', pageIndex: 1, pageSize: 12 })
+                  getList({ type: 'abilityTimeOut', name: '前台功能统计', ability: 'front', subAbility: '', pageIndex: 1, pageSize: 12 });
+                  setPageinations({ current: 1, pageSize: 12 })
                 }}
                 totalType='all'
               />
@@ -709,10 +736,12 @@ function Statistics(props) {
                 total={piesum(backability)}
                 padding={[10, 30, 30, 30]}
                 onGetVal={(v) => {
-                  getList({ type: 'abilityTimeOut', name: `后台功能${v.type}`, ability: 'back', subAbility: v.type, pageIndex: 1, pageSize: 12 })
+                  getList({ type: 'abilityTimeOut', name: `后台功能${v.type}`, ability: 'back', subAbility: v.type, pageIndex: 1, pageSize: 12 });
+                  setPageinations({ current: 1, pageSize: 12 })
                 }}
                 onGetTotal={() => {
-                  getList({ type: 'abilityTimeOut', name: '后台功能统计', ability: 'back', subAbility: '', pageIndex: 1, pageSize: 12 })
+                  getList({ type: 'abilityTimeOut', name: '后台功能统计', ability: 'back', subAbility: '', pageIndex: 1, pageSize: 12 });
+                  setPageinations({ current: 1, pageSize: 12 })
                 }}
                 totalType='all'
               />
