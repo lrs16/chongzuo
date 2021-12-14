@@ -37,13 +37,13 @@ function Details(props) {
   ];
 
   const handleClose = () => {
+    const tabid = sessionStorage.getItem('tabid');
     router.push({
-      pathname: `/ITSM/releasemanage/query`,
-      query: { pathpush: true },
-      state: { cach: false }
+      pathname: location.pathname,
+      query: { tabid, closecurrent: true }
     });
   }
-  const operations = (<Button onClick={() => handleClose()}>返回</Button>)
+  const operations = (<Button onClick={() => handleClose()}>关闭</Button>)
 
   useEffect(() => {
     if (location.state) {

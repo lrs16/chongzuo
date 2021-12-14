@@ -24,10 +24,10 @@ function Operation(props) {
   };
 
   const handleclose = () => {
+    const tabid = sessionStorage.getItem('tabid');
     router.push({
-      pathname: '/ITSM/knowledgemanage/query',
-      query: { pathpush: true },
-      state: { cache: false }
+      pathname: location.pathname,
+      query: { tabid, closecurrent: true }
     });
   };
 
@@ -82,7 +82,7 @@ function Operation(props) {
     },
   ];
 
-  const operations = (<Button onClick={handleclose}>返回</Button>)
+  const operations = (<Button onClick={handleclose}>关闭</Button>)
 
   return (
     <div style={{ marginTop: '-24px' }}>

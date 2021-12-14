@@ -88,13 +88,11 @@ function Operation(props) {
   };
 
   const handleclose = () => {
-    if (runpath) {
-      router.push({
-        pathname: runpath,
-        query: { pathpush: true },
-        state: { cache: false }
-      });
-    }
+    const tabid = sessionStorage.getItem('tabid');
+    router.push({
+      pathname: location.pathname,
+      query: { tabid, closecurrent: true }
+    });
   };
 
   const handleSubmit = () => {
@@ -254,10 +252,10 @@ function Operation(props) {
             审核
           </Button>
           )}
-          <Button onClick={handleclose} disabled={uploadStatus}>返回</Button>
+          <Button onClick={handleclose} disabled={uploadStatus}>关闭</Button>
         </>
       )}
-      {tabActivekey === 'List' && (<Button onClick={handleclose} disabled={uploadStatus}>返回</Button>)}
+      {tabActivekey === 'List' && (<Button onClick={handleclose} disabled={uploadStatus}>关闭</Button>)}
     </>
   )
   return (

@@ -52,10 +52,10 @@ function New(props) {
   };
 
   const handleclose = () => {
+    const tabid = sessionStorage.getItem('tabid');
     router.push({
-      pathname: `/ITSM/knowledgemanage/myknowledge`,
-      query: { pathpush: true },
-      state: { cache: false }
+      pathname: location.pathname,
+      query: { tabid, closecurrent: true }
     });
   };
 
@@ -137,7 +137,7 @@ function New(props) {
         发布
       </Button>
       )}
-      <Button onClick={handleclose} disabled={uploadStatus}>返回</Button>
+      <Button onClick={handleclose} disabled={uploadStatus}>关闭</Button>
     </>
   )
 

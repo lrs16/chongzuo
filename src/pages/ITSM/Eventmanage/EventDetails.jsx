@@ -61,10 +61,10 @@ function EventDetails(props) {
   const [activeKey, setActiveKey] = useState([]);
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const handleclose = () => {
+    const tabid = sessionStorage.getItem('tabid');
     router.push({
-      pathname: `/ITSM/eventmanage/query`,
-      query: { pathpush: true },
-      state: { cache: false }
+      pathname: location.pathname,
+      query: { tabid, closecurrent: true }
     });
   };
   const handleTabChange = key => {
@@ -134,7 +134,7 @@ function EventDetails(props) {
       title={pagetitlemaps.get(pangekey)}
       tabList={tabList}
       tabActiveKey={tabActivekey}
-      extra={<Button onClick={() => handleclose()}>返回</Button>}
+      extra={<Button onClick={() => handleclose()}>关闭</Button>}
       onTabChange={handleTabChange}
     >
       {tabActivekey === 'workorder' && (

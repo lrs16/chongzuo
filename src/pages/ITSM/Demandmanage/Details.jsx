@@ -42,10 +42,10 @@ function Details(props) {
   const [activeKey, setActiveKey] = useState(['registdes']);
 
   const handleclose = () => {
+    const tabid = sessionStorage.getItem('tabid');
     router.push({
-      pathname: `/ITSM/demandmanage/query`,
-      query: { pathpush: true },
-      state: { ...location.state, cache: false, }
+      pathname: location.pathname,
+      query: { tabid, closecurrent: true }
     });
   };
   const handleTabChange = key => {
@@ -115,7 +115,7 @@ function Details(props) {
       tabList={tabList}
       tabActiveKey={tabActivekey}
       onTabChange={handleTabChange}
-      extra={<Button onClick={handleclose}>返回</Button>}
+      extra={<Button onClick={handleclose}>关闭</Button>}
     >
       {tabActivekey === 'workorder' && (
         <div className={styles.collapse}>

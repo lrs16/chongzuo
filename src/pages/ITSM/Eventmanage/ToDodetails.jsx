@@ -44,11 +44,11 @@ function ToDodetails(props) {
   const handleclose = () => {
     if (olduploadstatus || registUploadStatus) {
       message.info('页签切换，中止文件上传...')
-    }
+    };
+    const tabid = sessionStorage.getItem('tabid');
     router.push({
-      pathname: location && location.state && location.state.runpath ? location.state.runpath : `/ITSM/eventmanage/to-do`,
-      query: { pathpush: true },
-      state: { ...location.state, cache: false, }
+      pathname: location.pathname,
+      query: { tabid, closecurrent: true }
     });
   };
 
@@ -284,7 +284,7 @@ function ToDodetails(props) {
             </Button>
           )}
         </>)}
-      <Button onClick={handleclose} disabled={allloading}>返回</Button>
+      <Button onClick={handleclose} disabled={allloading}>关闭</Button>
     </>
   );
   const handleTabChange = key => {

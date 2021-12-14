@@ -58,10 +58,10 @@ function ToDodetails(props) {
     })
   }
   const handleClose = () => {
+    const tabid = sessionStorage.getItem('tabid');
     router.push({
-      pathname: `/ITSM/releasemanage/to-do`,
-      query: { pathpush: true },
-      state: { cach: false }
+      pathname: location.pathname,
+      query: { tabid, closecurrent: true }
     });
   }
 
@@ -280,7 +280,7 @@ function ToDodetails(props) {
             </Button>
           )}
         </>)}
-      <Button onClick={() => handleClose()} disabled={uploadstatus || allloading}>返回</Button>
+      <Button onClick={() => handleClose()} disabled={uploadstatus || allloading}>关闭</Button>
     </>
   )
 

@@ -37,10 +37,10 @@ function ToDoregist(props) {
     setButtonType(type);
   };
   const handleclose = () => {
+    const tabid = sessionStorage.getItem('tabid');
     router.push({
-      pathname: location && location.state && location.state.runpath ? location.state.runpath : `/ITSM/demandmanage/to-do`,
-      query: { pathpush: true },
-      state: { ...location.state, cache: false, }
+      pathname: location.pathname,
+      query: { tabid, closecurrent: true }
     });
   };
 
@@ -246,7 +246,7 @@ function ToDoregist(props) {
             )}
         </>
       )}
-      <Button onClick={handleclose} disabled={loading}>返回</Button>
+      <Button onClick={handleclose} disabled={loading}>关闭</Button>
     </>
   );
   const handleTabChange = key => {
