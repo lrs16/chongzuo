@@ -393,12 +393,21 @@ function EventAnalysis(props) {
                       height={300}
                       padding={[30, 0, 50, 60]}
                       onGetVal={v => {
-                        setPicVal({
-                          eventType: v.name,
-                          time1: `${v.date} 00:00:00`,
-                          time2: `${v.date} 23:59:59`,
-                        });
-                        setVisible(true)
+                        if(moment(values.beginTime).format('YYYY-MM-DD') === moment(values.endTime).format('YYYY-MM-DD')) {
+                          setPicVal({
+                            eventType: v.name,
+                            time1: `${moment(values.beginTime).format('YYYY-MM-DD')} ${v.date}:00:00`,
+                            time2: `${moment(values.endTime).format('YYYY-MM-DD')} ${v.date}:59:59`,
+                          });
+                          setVisible(true)
+                        } else {
+                          setPicVal({
+                            eventType: v.name,
+                            time1: `${v.date} 00:00:00`,
+                            time2: `${v.date} 23:59:59`,
+                          });
+                          setVisible(true)
+                        }
                       }}
                     />
                   )}
@@ -454,13 +463,24 @@ function EventAnalysis(props) {
                       height={300}
                       padding={[30, 0, 50, 60]}
                       onGetVal={v => {
-                        setPicVal({
-                          object: v.name,
-                          time1: `${v.date} 00:00:00`,
-                          time2: `${v.date} 23:59:59`,
-                        });
-                        setTypename('事件总数');
-                        setVisible(true)
+                        if(moment(values.beginTime).format('YYYY-MM-DD') === moment(values.endTime).format('YYYY-MM-DD')) {
+                          setPicVal({
+                            object: v.name,
+                            time1: `${moment(values.beginTime).format('YYYY-MM-DD')} ${v.date}:00:00`,
+                            time2: `${moment(values.endTime).format('YYYY-MM-DD')} ${v.date}:59:59`,
+                          });
+                          setTypename('事件总数');
+                          setVisible(true)
+                        } else {
+                          setPicVal({
+                            object: v.name,
+                            time1: `${v.date} 00:00:00`,
+                            time2: `${v.date} 23:59:59`,
+                          });
+                          setTypename('事件总数');
+                          setVisible(true)
+                        }
+                        
                       }}
                     />
                   )}

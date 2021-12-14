@@ -289,7 +289,7 @@ function StatisticsAnalysis(props) {
                           }}
                         />
                       </Col>
-                      
+
                       <Col span={8}>
                         <StatisticsCard
                           title='已解决'
@@ -318,7 +318,7 @@ function StatisticsAnalysis(props) {
                           suffix='%'
                           des='环比'
                           type={Number(obj.totalScore) > Number(obj.prevTotalScore) ? 'up' : 'down'}
-                          onGetVal={() => {}}
+                          onGetVal={() => { }}
                         />
                       </Col>
                     </Row>
@@ -418,13 +418,24 @@ function StatisticsAnalysis(props) {
                       height={300}
                       padding={[30, 0, 50, 60]}
                       onGetVal={v => {
-                        setPicVal({
-                          model: '工单情况',
-                          type: '问题工单',
-                          begin: `${v.date} 00:00:00`,
-                          end: `${v.date} 23:59:59`,
-                        });
-                        setVisible(true)
+                        if (moment(values.beginTime).format('YYYY-MM-DD') === moment(values.endTime).format('YYYY-MM-DD')) {
+                          setPicVal({
+                            model: '工单情况',
+                            type: '问题工单',
+                            begin: `${moment(values.beginTime).format('YYYY-MM-DD')} ${v.date}:00:00`,
+                            end: `${moment(values.endTime).format('YYYY-MM-DD')} ${v.date}:59:59`,
+                          });
+                          setVisible(true)
+                        } else {
+                          setPicVal({
+                            model: '工单情况',
+                            type: '问题工单',
+                            begin: `${v.date} 00:00:00`,
+                            end: `${v.date} 23:59:59`,
+                          });
+                          setVisible(true)
+                        }
+
                       }}
                     />
                   )}
@@ -477,13 +488,24 @@ function StatisticsAnalysis(props) {
                         height={300}
                         padding={[30, 0, 50, 60]}
                         onGetVal={v => {
-                          setPicVal({
-                            model: '问题分类',
-                            type: v.name,
-                            begin: `${v.date} 00:00:00`,
-                            end: `${v.date} 23:59:59`,
-                          });
-                          setVisible(true)
+                          if (moment(values.beginTime).format('YYYY-MM-DD') === moment(values.endTime).format('YYYY-MM-DD')) {
+                            setPicVal({
+                              model: '问题分类',
+                              type: v.name,
+                              begin: `${moment(values.beginTime).format('YYYY-MM-DD')} ${v.date}:00:00`,
+                              end: `${moment(values.endTime).format('YYYY-MM-DD')} ${v.date}:59:59`,
+                            });
+                            setVisible(true)
+                          } else {
+                            setPicVal({
+                              model: '问题分类',
+                              type: v.name,
+                              begin: `${v.date} 00:00:00`,
+                              end: `${v.date} 23:59:59`,
+                            });
+                            setVisible(true)
+                          }
+
                         }}
                       />
                     </>
@@ -533,13 +555,24 @@ function StatisticsAnalysis(props) {
                           height={300}
                           padding={[30, 0, 50, 60]}
                           onGetVal={v => {
-                            setPicVal({
-                              model: '程序问题',
-                              type: v.name,
-                              begin: `${v.date} 00:00:00`,
-                              end: `${v.date} 23:59:59`,
-                            });
-                            setVisible(true)
+                            if (moment(values.beginTime).format('YYYY-MM-DD') === moment(values.endTime).format('YYYY-MM-DD')) {
+                              setPicVal({
+                                model: '程序问题',
+                                type: v.name,
+                                begin: `${moment(values.beginTime).format('YYYY-MM-DD')} ${v.date}:00:00`,
+                                end: `${moment(values.endTime).format('YYYY-MM-DD')} ${v.date}:59:59`,
+                              });
+                              setVisible(true)
+                            } else {
+                              setPicVal({
+                                model: '程序问题',
+                                type: v.name,
+                                begin: `${v.date} 00:00:00`,
+                                end: `${v.date} 23:59:59`,
+                              });
+                              setVisible(true)
+                            }
+
                           }}
                         />
                       )}
@@ -589,13 +622,24 @@ function StatisticsAnalysis(props) {
                         height={300}
                         padding={[30, 0, 50, 60]}
                         onGetVal={v => {
-                          setPicVal({
-                            model: '功能问题',
-                            type: v.name,
-                            begin: `${v.date} 00:00:00`,
-                            end: `${v.date} 23:59:59`,
-                          });
-                          setVisible(true)
+                          if (moment(values.beginTime).format('YYYY-MM-DD') === moment(values.endTime).format('YYYY-MM-DD')) {
+                            setPicVal({
+                              model: '功能问题',
+                              type: v.name,
+                              begin: `${moment(values.beginTime).format('YYYY-MM-DD')} ${v.date}:00:00`,
+                              end: `${moment(values.endTime).format('YYYY-MM-DD')} ${v.date}:59:59`,
+                            });
+                            setVisible(true)
+                          } else {
+                            setPicVal({
+                              model: '功能问题',
+                              type: v.name,
+                              begin: `${v.date} 00:00:00`,
+                              end: `${v.date} 23:59:59`,
+                            });
+                            setVisible(true)
+                          }
+
                         }}
                       />
                     </>
@@ -642,13 +686,23 @@ function StatisticsAnalysis(props) {
                       height={300}
                       padding={[30, 0, 50, 60]}
                       onGetVal={v => {
-                        setPicVal({
-                          model: '问题来源',
-                          type: v.name,
-                          begin: `${v.date} 00:00:00`,
-                          end: `${v.date} 23:59:59`,
-                        });
-                        setVisible(true)
+                        if (moment(values.beginTime).format('YYYY-MM-DD') === moment(values.endTime).format('YYYY-MM-DD')) {
+                          setPicVal({
+                            model: '问题来源',
+                            type: v.name,
+                            begin: `${moment(values.beginTime).format('YYYY-MM-DD')} ${v.date}:00:00`,
+                            end: `${moment(values.endTime).format('YYYY-MM-DD')} ${v.date}:59:59`,
+                          });
+                          setVisible(true)
+                        } else {
+                          setPicVal({
+                            model: '问题来源',
+                            type: v.name,
+                            begin: `${v.date} 00:00:00`,
+                            end: `${v.date} 23:59:59`,
+                          });
+                          setVisible(true)
+                        }
                       }}
                     />
                   )}
