@@ -165,6 +165,7 @@ function NewDocAtt(props) {
               defaultValue={text || Unit.dutyUnit}
               key={text || Unit.dutyUnit}
               onChange={e => { handleFieldChange(e, 'dutyUnit', record.sn) }}
+              allowClear
             >
               {unitmap.map(obj => [
                 <Option key={obj.key} value={obj.title}>
@@ -236,7 +237,7 @@ function NewDocAtt(props) {
         }
         return (
           <>
-            {record.docName === '出厂测试' && record.taskStatus && (<Button type='link' onClick={() => dowload({ name: '出厂测试报告' })}><Icon type='download' />出厂测试报告</Button>)}
+            {record.docName === '出厂测试' && record.taskStatus && record.docTaskId && (<Button type='link' onClick={() => dowload({ name: '出厂测试报告' })}><Icon type='download' />出厂测试报告</Button>)}
             {record.docName === '平台验证' && record.taskStatus && (<Button type='link' onClick={() => dowload({ name: '平台验证测试报告' })}><Icon type='download' />平台验证测试报告</Button>)}
             {record.docName === '业务验证' && record.taskStatus && (
               <>
