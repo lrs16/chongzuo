@@ -131,12 +131,16 @@ function Statistics(props) {
   const getList = (obj) => {
     const { type, name, taskName, item, unit, releaseType, timeout, ability, subAbility, datetype, date, userName, pageIndex, pageSize } = obj;
     setFetchType(obj);
+    const beginTime = moment(values.beginTime).format('YYYY-MM-DD');
+    const endTime = moment(values.endTime).format('YYYY-MM-DD');
+    const beginformat = date && beginTime === endTime ? `YYYY-MM-DD ${date}:00:00` : 'YYYY-MM-DD 00:00:00';
+    const endformat = date && beginTime === endTime ? `YYYY-MM-DD ${date}:59:59` : 'YYYY-MM-DD 23:59:59';
     const val = {
       type: datetype || values.type,
       pageIndex,
       pageSize,
-      begin: moment(date || values.beginTime).format('YYYY-MM-DD 00:00:00'),
-      end: moment(date || values.endTime).format('YYYY-MM-DD 23:59:59'),
+      begin: moment(date && beginTime !== endTime ? date : values.beginTime).format(beginformat),
+      end: moment(date && beginTime !== endTime ? date : values.endTime).format(endformat),
       item: name,
     };
     dispatch({
