@@ -5,7 +5,7 @@ import SysUpload from '@/components/SysUpload/Upload';
 import { PaperClipOutlined } from '@ant-design/icons';
 import FilesContext from '@/layouts/MenuContext';              // 引用上下文管理组件
 import styles from '../index.less';
-import { downloadAttachTemplate } from '../services/api';
+import { downloadAttachTemplate, exportTaskToDocx } from '../services/api';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -205,6 +205,49 @@ function NewDocAtt(props) {
           return null;
         }
         return <><Button type='link' onClick={() => dowload()}><Icon type='download' />下载</Button></>;
+      },
+    },
+    {
+      title: '文档导出',
+      dataIndex: 'doc',
+      key: 'doc',
+      with: 80,
+      align: 'center',
+      render: (text, record) => {
+        const dowload = ({ name, reportName }) => {
+          exportTaskToDocx({ docTaskId: record.docTaskId, reportName }).then(res => {
+            if (res) {
+              const filename = `${name || reportName}.docx`;
+              const blob = new Blob([res], { type: 'application/octet-stream' });
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = filename;
+              a.click();
+              window.URL.revokeObjectURL(url);
+            } else {
+              message.error(res.msg)
+            }
+
+          })
+        };
+        if (record.key === '9') {
+          return null;
+        }
+        return (
+          <>
+            {record.docName === '出厂测试' && record.taskStatus && (<Button type='link' onClick={() => dowload({ name: '出厂测试报告' })}><Icon type='download' />出厂测试报告</Button>)}
+            {record.docName === '平台验证' && record.taskStatus && (<Button type='link' onClick={() => dowload({ name: '平台验证测试报告' })}><Icon type='download' />平台验证测试报告</Button>)}
+            {record.docName === '业务验证' && record.taskStatus && (
+              <>
+                <Button type='link' onClick={() => dowload({ name: '功能验证测试报告' })}><Icon type='download' />功能验证测试报告</Button>
+                <Button type='link' onClick={() => dowload({ reportName: '功能清单终稿' })}><Icon type='download' />功能清单终稿</Button>
+              </>
+            )}
+            {record.docName === '发布实施准备' && record.taskStatus && (<Button type='link' onClick={() => dowload({ name: '实施方案' })}><Icon type='download' />实施方案</Button>)}
+            {record.docName === '发布验证' && record.taskStatus && (<Button type='link' onClick={() => dowload({ name: '功能发布报告' })}><Icon type='download' />功能发布报告</Button>)}
+          </>
+        );
       },
     },
     {

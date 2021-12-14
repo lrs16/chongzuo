@@ -397,3 +397,13 @@ export async function getBlankAttachList() {
     method: 'GET',
   });
 }
+
+// 附件列表环节导出/release/fileProc/exportTaskToDocx
+export async function exportTaskToDocx(params) {
+  return request(`/release/fileProc/exportTaskToDocx`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+    responseType: 'blob',
+  });
+}
