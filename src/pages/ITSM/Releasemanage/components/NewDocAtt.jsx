@@ -162,8 +162,8 @@ function NewDocAtt(props) {
           return (
             <Select
               placeholder="请选择"
-              defaultValue={text || Unit.dutyUnit}
-              key={text || Unit.dutyUnit}
+              defaultValue={text}
+              key={text}
               onChange={e => { handleFieldChange(e, 'dutyUnit', record.sn) }}
               allowClear
             >
@@ -331,11 +331,11 @@ function NewDocAtt(props) {
   // }, [tasklinks, dataSource]);
 
   // 出厂测试出具文档责任单位为空，表单有选择责任单位时修改列表值
-  useEffect(() => {
-    if (Unit && Unit.dutyUnit && (taskName === '新建' || taskName === '出厂测试') && dataSource && dataSource.length > 0 && !dataSource[0].dutyUnit) {
-      handleFieldChange(Unit.dutyUnit, 'dutyUnit', '1')
-    };
-  }, [Unit.dutyUnit]);
+  // useEffect(() => {
+  //   if (Unit && Unit.dutyUnit && (taskName === '新建' || taskName === '出厂测试') && dataSource && dataSource.length > 0 && !dataSource[0].dutyUnit) {
+  //     handleFieldChange(Unit.dutyUnit, 'dutyUnit', '1')
+  //   };
+  // }, [Unit.dutyUnit]);
 
   return (
     <Table
