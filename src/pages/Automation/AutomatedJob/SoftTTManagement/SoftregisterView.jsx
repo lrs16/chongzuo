@@ -41,13 +41,13 @@ function SoftregisterView(props) {
 
   const handleclose = () => {
     router.push({
-      pathname: '/automation/automatedjob/softstartandstop/softregister',
-      query: { pathpush: true },
-      state: { cache: false, closetabid: Id }
+      // pathname: '/automation/automatedjob/softstartandstop/softregister',
+      pathname: location.pathname,
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true, },
     });
   };
 
-  const operations = (<Button onClick={handleclose}>返回</Button>)
+  const operations = (<Button onClick={handleclose}>关闭</Button>)
 
   return (
     <div style={{ marginTop: '-24px' }}>

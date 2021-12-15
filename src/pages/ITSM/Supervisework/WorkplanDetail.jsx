@@ -301,23 +301,23 @@ function WorkplanDetail(props) {
   const handleclose = () => {
     if (flowNodeName === '工作登记') {
       router.push({
-        pathname: `/ITSM/supervisework/mycreatework`,
-        query: { pathpush: true },
-        state: { ...location.state.cacheinfo, cache: false, closetabid: mainId }
+        // pathname: `/ITSM/supervisework/mycreatework`,
+        pathname: location.pathname,
+        query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true, },
       })
     }
     if (flowNodeName === '工作执行') {
       router.push({
-        pathname: `/ITSM/supervisework/myresponwork`,
-        query: { pathpush: true },
-        state: { ...location.state.cacheinfo, cache: false, closetabid: mainId }
+        // pathname: `/ITSM/supervisework/myresponwork`,
+        pathname: location.pathname,
+        query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true, },
       })
     }
     if (flowNodeName === '工作审核') {
       router.push({
-        pathname: `/ITSM/supervisework/todelayexamine`,
-        query: { pathpush: true },
-        state: { ...location.state.cacheinfo, cache: false, closetabid: mainId }
+        // pathname: `/ITSM/supervisework/todelayexamine`,
+        pathname: location.pathname,
+        query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true, },
       })
     }
   };
@@ -686,7 +686,7 @@ function WorkplanDetail(props) {
           >
             审核
           </Button>)}
-          <Button onClick={() => handleclose()} disabled={taskworkUploadStatus}>返回</Button>
+          <Button onClick={() => handleclose()} disabled={taskworkUploadStatus}>关闭</Button>
         </>
       }
     >

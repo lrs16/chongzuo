@@ -310,7 +310,7 @@ function JobConfig(props) {
       dataIndex: 'action',
       key: 'action',
       fixed: 'right',
-      width: 200,
+      width: 150,
       render: (text, record) => {
         return (
           <div>

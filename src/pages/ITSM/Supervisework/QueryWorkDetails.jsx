@@ -60,9 +60,9 @@ function Work(props) {
 
   const handleClose = () => {
     router.push({
-      pathname: `/ITSM/supervisework/querywork`,
-      query: { pathpush: true },
-      state: { cacheinfo: { ...location.state.cacheinfo }, cache: false }
+      // pathname: `/ITSM/supervisework/querywork`,
+      pathname: location.pathname,
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true },
     });
   }
 
@@ -99,7 +99,7 @@ function Work(props) {
       onTabChange={handleTabChange}
       extra={
         <>
-          <Button onClick={handleClose}>返回</Button>
+          <Button onClick={handleClose}>关闭</Button>
         </>
       }
     >

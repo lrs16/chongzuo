@@ -42,7 +42,7 @@ function Contentdes(props) {
         settaskobjectData(res.data);
       }
     });
-  }, [contentInfo[0].id]);
+  }, [contentInfo && contentInfo[0].id]);
 
   const handleShowscriptModel = (modeltitle, itemdata) => {
     setVisible(!visible);

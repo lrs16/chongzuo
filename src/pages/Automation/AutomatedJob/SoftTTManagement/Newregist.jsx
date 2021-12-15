@@ -155,9 +155,9 @@ function Newregist(props) {
   // 返回按钮
   const handleclose = () => {
     router.push({
-      pathname: `/automation/automatedjob/softstartandstop/softregister`,
-      query: { pathpush: true },
-      state: { cache: false }
+      // pathname: `/automation/automatedjob/softstartandstop/softregister`,
+      pathname: location.pathname,
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true, },
     });
   };
 
@@ -357,7 +357,7 @@ function Newregist(props) {
       >
         提交
       </Button>
-      <Button onClick={handleclose} disabled={uploadstatus}>返回</Button>
+      <Button onClick={handleclose} disabled={uploadstatus}>关闭</Button>
     </>
   );
 

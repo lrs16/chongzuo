@@ -131,9 +131,9 @@ function New(props) {
   // 返回
   const handleclose = () => {
     router.push({
-      pathname: `/automation/automatedjob/jobmanagement/jobconfig`,
-      query: { pathpush: true },
-      state: { cache: false }
+      // pathname: `/automation/automatedjob/jobmanagement/jobconfig`,
+      pathname: location.pathname,
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true },
     });
   };
 
@@ -204,7 +204,7 @@ function New(props) {
       >
         提交
       </Button>
-      <Button onClick={handleclose}>返回</Button>
+      <Button onClick={handleclose}>关闭</Button>
     </>
   );
 

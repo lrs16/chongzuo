@@ -111,8 +111,7 @@ function ToCheck(props) {
   const handleclose = () => {
     router.push({
       pathname: `/automation/automatedjob/jobmanagement/jobcheck`,
-      query: { pathpush: true },
-      state: { cache: false }
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true },
     });
   };
 
@@ -188,7 +187,7 @@ function ToCheck(props) {
       >
         提交
       </Button>
-      <Button onClick={handleclose}>返回</Button>
+      <Button onClick={handleclose}>关闭</Button>
     </>
   );
 
