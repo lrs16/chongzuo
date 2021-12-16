@@ -62,6 +62,7 @@ function TaskSearch(props) {
   const [selectdata, setSelectData] = useState('');
   const [columns, setColumns] = useState([]);
   const [selectedKeys, setSelectedKeys] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
 
   let formThead;
 
@@ -701,8 +702,9 @@ function TaskSearch(props) {
   };
 
   const rowSelection = {
-    onChange: index => {
+    onChange: (index, handleSelect) => {
       setSelectedKeys([...index]);
+      setSelectedRows([...handleSelect]);
     },
   };
 
@@ -719,20 +721,10 @@ function TaskSearch(props) {
 
     if (selectedKeys.length === 1) {
       message.success('复制成功，可往填报中粘贴');
-      // sessionStorage.setItem('copyrecord', selectedKeys[0]);
-      localStorage.setItem('searchCopy', selectedKeys);
+      localStorage.setItem('copy', JSON.stringify(selectedRows[0]));
     }
 
     return null;
-  };
-
-  const handleFillin = () => {
-    router.push({
-      pathname: '/ITSM/operationplan/operationplanfillin',
-      query: {
-        addtab: true,
-      },
-    });
   };
 
   //  自定义列表

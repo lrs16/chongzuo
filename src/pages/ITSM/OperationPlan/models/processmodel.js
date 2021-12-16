@@ -46,7 +46,6 @@ export default {
       const response = yield call(startFlow);
       const tabid = sessionStorage.getItem('tabid');
       if (response.code === 200) {
-        localStorage.removeItem("searchCopy")
         const saveFormdata = payload;
         saveFormdata.main_id = response.mainId;
         saveFormdata.mainId = response.mainId;

@@ -125,25 +125,13 @@ function OperationPlanfillintion(props) {
   };
 
   const handlePaste = () => {
-    const mainId = sessionStorage.getItem('copyrecord') || localStorage.getItem('searchCopy');
-    if (!mainId) {
+    const copyobj = JSON.parse(localStorage.getItem('copy'));
+    if (!copyobj) {
       message.info('请在列表页复制一条数据进行粘贴哦');
       return false;
     }
+    setCopyData(copyobj)
 
-    return dispatch({
-      type: 'processmodel/pasteFlow',
-      payload: mainId,
-    }).then(res => {
-      if (res.code === 200) {
-        const resData = res.main;
-        delete resData.operationNo;
-        message.success('粘贴成功')
-        setCopyData(resData);
-      } else {
-        message.info(`${res.msg},请返回列表页重新选择`);
-      }
-    });
   };
 
   // 获取页签信息

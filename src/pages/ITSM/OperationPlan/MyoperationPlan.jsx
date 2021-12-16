@@ -615,7 +615,7 @@ function MyoperationPlan(props) {
 
     if (selectedRows.length === 1) {
       message.success('复制成功，可往填报中粘贴');
-      sessionStorage.setItem('copyrecord', selectedRows[0].mainId);
+      localStorage.setItem('copy', JSON.stringify(selectedRows[0]));
     }
 
     return null;
