@@ -150,9 +150,9 @@ function TaskworkFillin(props) {
 
   const handleclose = () => {
     router.push({
-      pathname: `/ITSM/supervisework/mycreatework`,
-      query: { pathpush: true },
-      state: { cach: false }
+      // pathname: `/ITSM/supervisework/mycreatework`,
+      pathname: location.pathname,
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true, },
     });
   }
 

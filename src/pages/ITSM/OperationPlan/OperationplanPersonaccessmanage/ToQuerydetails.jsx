@@ -12,6 +12,7 @@ const { Panel } = Collapse;
 function Newcheck(props) {
   const pagetitle = props.route.name;
   const {
+    location,
     location: { query },
   } = props;
 
@@ -21,9 +22,9 @@ function Newcheck(props) {
 
   const handleclose = () => { // 关闭返回
     router.push({
-      pathname: `/ITSM/operationplan/personaccessmanage/toquery`,
-      query: { pathpush: true },
-      state: { cache: false }
+      // pathname: `/ITSM/operationplan/personaccessmanage/toquery`,
+      pathname: location.pathname,
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true, },
     });
   }
 
@@ -33,7 +34,7 @@ function Newcheck(props) {
   };
 
   return (
-    <PageHeaderWrapper title={pagetitle} extra={<Button onClick={handleclose}>返回</Button>}>
+    <PageHeaderWrapper title={pagetitle} extra={<Button onClick={handleclose}>关闭</Button>}>
       <div className={styles.collapse}>
         <Collapse
           expandIconPosition="right"

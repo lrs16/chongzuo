@@ -28,9 +28,9 @@ const Examine = forwardRef((props, ref) => {
     userinfo, check, Noediting,
     form: { getFieldDecorator, getFieldsValue, resetFields, setFieldsValue },
   } = props;
-  const [uploadStatus, setUploadStatus] = useState(false);
-  const { location } = useContext(FilesContext);
 
+  const { location } = useContext(FilesContext);
+  const [uploadStatus, setUploadStatus] = useState(false);
   const [adopt, setAdopt] = useState('0');
 
   useImperativeHandle(ref, () => ({
@@ -111,13 +111,13 @@ const Examine = forwardRef((props, ref) => {
               rules: [{ required: true, message: '请上传附件' }, {
                 validator: handleAttValidator
               }],
-              initialValue: check && check.examineFiles && check.examineFiles !== '[]' ? check.examineFiles : '',
+              initialValue: check && check.examineFiles && check.examineFiles !== '[]' && Array.isArray(check.examineFiles) ? check.examineFiles : '',
             })(
               <div style={{ width: 400 }}>
                 {
                   location && (!location.state || (location.state && !location.state.cache)) && (
                     <FilesContext.Provider value={{
-                      files: check && check.examineFiles ? JSON.parse(check.examineFiles) : [],
+                      files: check && check.examineFiles && Array.isArray(check.examineFiles) ? JSON.parse(check.examineFiles) : [],
                       ChangeFiles: (v => { setFieldsValue({ examineFiles: JSON.stringify(v) }) }),
                       getUploadStatus: (v) => { setUploadStatus(v) },
                     }}>
