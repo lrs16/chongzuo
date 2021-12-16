@@ -322,6 +322,13 @@ function Querylist(props) {
             {(expand || cacheinfo.expand) && (
               <>
                 <Col span={8}>
+                  <Form.Item label="当前处理人">
+                    {getFieldDecorator('assignee', {
+                      initialValue: cacheinfo.assignee,
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
                   <Form.Item label="责任单位">
                     {getFieldDecorator('dutyUnit', {
                       initialValue: cacheinfo.dutyUnit,

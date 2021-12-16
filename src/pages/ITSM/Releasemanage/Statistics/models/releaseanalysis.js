@@ -93,7 +93,7 @@ export default {
       });
     },
     *fetchlist({
-      payload: { val, type, taskName, item, unit, releaseType, timeout, ability, subAbility, userName }
+      payload: { val, name, type, taskName, item, unit, releaseType, timeout, ability, subAbility, userName }
     }, { call, put }) {
       yield put({
         type: 'clearlist'
@@ -101,7 +101,7 @@ export default {
       let response = {}
       switch (type) {
         case 'summary':
-          response = yield call(summaryDetail, { ...val });
+          response = yield call(summaryDetail, { ...val, item: name });
           break;
         case 'taskStatistical':
           response = yield call(taskStatisticalDetail, { ...val, taskName, item });

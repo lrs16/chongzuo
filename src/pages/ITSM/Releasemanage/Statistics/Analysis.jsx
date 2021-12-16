@@ -141,11 +141,10 @@ function Statistics(props) {
       pageSize,
       begin: moment(date && beginTime !== endTime ? date : values.beginTime).format(beginformat),
       end: moment(date && beginTime !== endTime ? date : values.endTime).format(endformat),
-      item: name,
     };
     dispatch({
       type: 'releaseanalysis/fetchlist',
-      payload: { val, type, taskName, item, unit, releaseType, timeout, ability, subAbility, userName },
+      payload: { val, name, type, taskName, item, unit, releaseType, timeout, ability, subAbility, userName },
     });
     setVisible(true);
   };
