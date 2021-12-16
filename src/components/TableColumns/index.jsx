@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Checkbox, Row, Col, Input, Button } from 'antd';
+import { Checkbox, Row, Col, Input, Button, Alert } from 'antd';
 
 const InputGroup = Input.Group;
 
@@ -9,6 +9,7 @@ function TableColumns(props) {
   const [searchrow, setSearchRow] = useState(undefined);
   const [inputVal, setInputVal] = useState('');
   const [indexColumn, setIndexColumn] = useState([]);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const newArr = defaultVal.map((item) => {
@@ -24,8 +25,13 @@ function TableColumns(props) {
   const onChange = (val) => {
     // const newDefVal = val.concat(defaultValue);
     // const arr = Array.from(new Set(newDefVal))
-    const newArr = records.filter((x) => val.some((item) => x.key === item));
-    ChangeSelectVal(newArr)
+    if (val && val.length && val.length > 0) {
+      const newArr = records.filter((x) => val.some((item) => x.key === item));
+      ChangeSelectVal(newArr);
+      setVisible(false);
+    } else {
+      setVisible(true);
+    }
   }
 
   const handleSearch = () => {
@@ -53,6 +59,7 @@ function TableColumns(props) {
         <Button onClick={() => { setInputVal(''); setSearchRow(undefined); onChange(defaultValue) }} >重置</Button>
         <Button onClick={() => { setInputVal(''); setSearchRow(undefined); onChange(indexColumn) }} >默认表头</Button>
       </InputGroup>
+      {visible && (<Alert message="最少勾选一个选项" type="warning" showIcon />)}
       <Checkbox.Group onChange={onChange} value={defaultValue}>
         {searchrow ? (<Row style={{ marginTop: 24 }}>
           {searchrow && searchrow.length > 0 && searchrow.map((obj) => (

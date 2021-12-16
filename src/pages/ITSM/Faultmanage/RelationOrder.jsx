@@ -118,7 +118,7 @@ function RelevancyOrder(props) {
               pathname: `/ITSM/eventmanage/query/details`,
               query: {
                 pangekey: record.eventStatus,
-                mainId: record.id,
+                mainId: record.mainId,
                 No: text,
               },
             });
