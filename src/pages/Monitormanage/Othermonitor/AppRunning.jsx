@@ -175,7 +175,7 @@ function AppRunning(props) {
                               <Card style={{ height: 130 }}>
                                 <h3>运行时长</h3>
                                 <div>
-                                  <span style={{ color: '#1890ff', fontWeight: 700, fontSize: ' 2.0em' }}>{item.softRunDay}</span>day
+                                  <span style={{ color: '#1890ff', fontWeight: 700, fontSize: ' 2.0em' }}>{item.softRunDay}</span>
                                 </div>
                               </Card>
                             </Col>
