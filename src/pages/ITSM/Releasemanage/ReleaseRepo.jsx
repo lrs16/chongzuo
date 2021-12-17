@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
+import router from 'umi/router';
 import { Form, Card, Row, Col, Input, Select, DatePicker, Button, Table, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import AdminAuth from '@/components/AdminAuth';
@@ -118,8 +119,7 @@ function ReleaseRepo(props) {
   const [username, setUserName] = useState('');
 
   const searchrecord = { releaseNo: '', releaseStatus: '' };
-  let cacheinfo = {};
-  cacheinfo = location.state && location.state.cacheinfo ? location.state.cacheinfo : searchrecord;
+  const cacheinfo = location.state && location.state.cacheinfo ? location.state.cacheinfo : searchrecord;
 
 
   // 查询
@@ -153,8 +153,13 @@ function ReleaseRepo(props) {
 
   // 重置
   const handleReset = () => {
+    router.push({
+      pathname: `/ITSM/releasemanage/releaselibrary`,
+      query: { pathpush: true },
+      state: { cach: false, }
+    });
     resetFields();
-    searchdata(searchrecord, 1, 15);
+    searchdata({}, 1, 15);
   };
 
   // 删除

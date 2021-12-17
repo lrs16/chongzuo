@@ -43,36 +43,18 @@ function VerificationTodo(props) {
 
   // 缓存页签查询条件
   const [tabrecord, setTabRecord] = useState({});
-  const searchrecord = { releaseNo: '', releaseStatus: '' };
+  const searchrecord = { releaseNo: '', releaseStatus: '待验证' };
   const cacheinfo = location.state && location.state.cacheinfo ? location.state.cacheinfo : searchrecord;
-
-  useEffect(() => {
-    if (cacheinfo) {
-      const current = location.state?.cacheinfo?.paginations?.current || paginations.current;
-      const pageSize = location.state?.cacheinfo?.paginations?.pageSize || paginations.pageSize;
-      const values = getFieldsValue();
-      dispatch({
-        type: 'releaseverificat/fetchlist',
-        payload: {
-          ...values,
-          pageIndex: current,
-          pageSize,
-        },
-      });
-    };
-    return () => {
-      setSelectData([]);
-      setExpand(false);
-    };
-  }, []);
 
   // 查询
   const searchdata = (values, page, size) => {
+    setExpandedRowKeys([]);
     dispatch({
       type: 'releaseverificat/fetchlist',
       payload: {
         ...values,
         abilityType: values.abilityType?.slice(-1)[0],
+        verifyStatus: values.verifyStatus || '待验证',
         pageSize: size,
         pageIndex: page,
       },
@@ -80,12 +62,18 @@ function VerificationTodo(props) {
     setTabRecord({
       ...values,
       abilityType: values.abilityType?.slice(-1)[0],
+      verifyStatus: values.verifyStatus || '待验证',
     });
   };
 
   const handleReset = () => {
+    router.push({
+      pathname: `/ITSM/releasemanage/verificationtodo`,
+      query: { pathpush: true },
+      state: { cach: false, }
+    });
     resetFields();
-    searchdata({}, 1, 15);
+    searchdata(searchrecord, 1, 15);
   };
 
   useEffect(() => {
@@ -116,6 +104,20 @@ function VerificationTodo(props) {
       };
     }
   }, [location.state]);
+
+  useEffect(() => {
+    if (cacheinfo) {
+      setExpandedRowKeys([]);
+      const current = location.state?.cacheinfo?.paginations?.current || paginations.current;
+      const pageSize = location.state?.cacheinfo?.paginations?.pageSize || paginations.pageSize;
+      const values = getFieldsValue();
+      searchdata(values, current, pageSize);
+    };
+    return () => {
+      setSelectData([]);
+      setExpand(false);
+    };
+  }, []);
 
   //  下载
   const download = () => {
@@ -242,6 +244,17 @@ function VerificationTodo(props) {
       key: 'todoCode',
       render: (text, record) => {
         const handleClick = () => {
+          dispatch({
+            type: 'viewcache/gettabstate',
+            payload: {
+              cacheinfo: {
+                ...tabrecord,
+                paginations,
+                expand,
+              },
+              tabid: sessionStorage.getItem('tabid')
+            },
+          });
           router.push({
             pathname: `/ITSM/releasemanage/verificationtodo/record`,
             query: {
@@ -420,14 +433,14 @@ function VerificationTodo(props) {
             <Col span={8}>
               <Form.Item label="发布编号">
                 {getFieldDecorator('releaseNo', {
-                  initialValue: '',
+                  initialValue: cacheinfo.releaseNo,
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
             <Col span={8}>
               <Form.Item label="状态">
                 {getFieldDecorator('verifyStatus', {
-                  initialValue: '待验证',
+                  initialValue: cacheinfo.verifyStatus || '待验证',
                 })(
                   <Select placeholder="请选择" allowClear>
                     {checkstatusmap.map(obj => (
@@ -445,7 +458,7 @@ function VerificationTodo(props) {
                 <Col span={8}>
                   <Form.Item label="功能类型">
                     {getFieldDecorator('abilityType', {
-                      initialValue: '',
+                      initialValue: cacheinfo.abilityType,
                     })(
                       <Cascader
                         fieldNames={{ label: 'title', value: 'title', children: 'children' }}
@@ -458,7 +471,7 @@ function VerificationTodo(props) {
                 <Col span={8}>
                   <Form.Item label="功能名称">
                     {getFieldDecorator('appName', {
-                      initialValue: '',
+                      initialValue: cacheinfo.appName,
                     })(
                       <Input placeholder="请输入" allowClear />
                     )}
@@ -467,7 +480,7 @@ function VerificationTodo(props) {
                 <Col span={8}>
                   <Form.Item label="问题类型">
                     {getFieldDecorator('problemType', {
-                      initialValue: '',
+                      initialValue: cacheinfo.problemType,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
@@ -478,7 +491,7 @@ function VerificationTodo(props) {
                 <Button type="primary" onClick={handleSearch}>
                   查 询
                 </Button>
-                <Button style={{ marginLeft: 8 }} onClick={handleReset}>重 置</Button>
+                <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
                 <Button
                   style={{ marginLeft: 8 }}
                   type="link"

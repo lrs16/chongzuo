@@ -18,6 +18,9 @@ export default {
   effects: {
     // 业务验证列表
     *fetchlist({ payload }, { call, put }) {
+      yield put({
+        type: 'clearcache',
+      });
       const response = yield call(bizTodoList, payload);
       yield put({
         type: 'save',
@@ -27,6 +30,9 @@ export default {
 
     // 业务复核列表
     *fetchchecklist({ payload }, { call, put }) {
+      yield put({
+        type: 'clearcache',
+      });
       const response = yield call(bizCheckTodo, payload);
       yield put({
         type: 'savecheck',
@@ -75,6 +81,18 @@ export default {
         info: [],
         viewlist: {},
         viewmsg: ''
+      };
+    },
+    clearchecklist(state) {
+      return {
+        ...state,
+        checklist: [],
+      };
+    },
+    clearlist(state) {
+      return {
+        ...state,
+        list: [],
       };
     },
     save(state, action) {

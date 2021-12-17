@@ -44,39 +44,18 @@ function Checktodo(props) {
 
   // 缓存页签查询条件
   const [tabrecord, setTabRecord] = useState({});
-  const searchrecord = { releaseNo: '', releaseStatus: '' };
+  const searchrecord = { releaseNo: '', releaseStatus: '待验证' };
   const cacheinfo = location.state && location.state.cacheinfo ? location.state.cacheinfo : searchrecord;
-
-  useEffect(() => {
-    if (cacheinfo) {
-      const current = location.state?.cacheinfo?.paginations?.current || paginations.current;
-      const pageSize = location.state?.cacheinfo?.paginations?.pageSize || paginations.pageSize;
-      validateFields((err, values) => {
-        if (!err) {
-          dispatch({
-            type: 'releaseverificat/fetchchecklist',
-            payload: {
-              ...values,
-              pageIndex: current,
-              pageSize,
-            },
-          });
-        }
-      });
-    }
-    return () => {
-      setSelectData([]);
-      setExpand(false);
-    };
-  }, []);
 
   // 查询
   const searchdata = (values, page, size) => {
+    setExpandedRowKeys([]);
     dispatch({
       type: 'releaseverificat/fetchchecklist',
       payload: {
         ...values,
         abilityType: values.abilityType?.slice(-1)[0],
+        verifyStatus: values.verifyStatus || '待验证',
         pageSize: size,
         pageIndex: page,
       },
@@ -84,12 +63,18 @@ function Checktodo(props) {
     setTabRecord({
       ...values,
       abilityType: values.abilityType?.slice(-1)[0],
+      verifyStatus: values.verifyStatus || '待验证',
     });
   };
 
   const handleReset = () => {
+    router.push({
+      pathname: `/ITSM/releasemanage/checktodo`,
+      query: { pathpush: true },
+      state: { cach: false, }
+    });
     resetFields();
-    searchdata({}, 1, 15);
+    searchdata(searchrecord, 1, 15);
   };
 
   useEffect(() => {
@@ -120,6 +105,23 @@ function Checktodo(props) {
       };
     }
   }, [location.state]);
+
+  useEffect(() => {
+    if (cacheinfo) {
+      setExpandedRowKeys([]);
+      const current = location.state?.cacheinfo?.paginations?.current || paginations.current;
+      const pageSize = location.state?.cacheinfo?.paginations?.pageSize || paginations.pageSize;
+      validateFields((err, values) => {
+        if (!err) {
+          searchdata(values, current, pageSize)
+        }
+      });
+    }
+    return () => {
+      setSelectData([]);
+      setExpand(false);
+    };
+  }, []);
 
   //  下载
   const download = () => {
@@ -252,7 +254,7 @@ function Checktodo(props) {
 
   const columns = [
     {
-      title: '验证工单',
+      title: '验证工单00',
       dataIndex: 'todoCode',
       key: 'todoCode',
       render: (text, record) => {

@@ -72,8 +72,13 @@ function ToDolist(props) {
   };
 
   const handleReset = () => {
+    router.push({
+      pathname: `/ITSM/releasemanage/to-do`,
+      query: { pathpush: true },
+      state: { cach: false, }
+    });
     resetFields();
-    handleSearch();
+    searchdata(searchrecord, 1, 15);
   };
 
   useEffect(() => {
