@@ -285,7 +285,7 @@ function RelevancyOrder(props) {
           <Col span={8}>
             <Input
               onChange={e => setSearchKey(e.target.value)}
-              placeholder="请输入故障单号"
+              placeholder="请输入问题单号"
               allowClear
             />
           </Col>

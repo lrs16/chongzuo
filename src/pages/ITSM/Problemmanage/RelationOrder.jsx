@@ -219,7 +219,7 @@ function RelevancyOrder(props) {
       {activeKey === 'trouble' && (
         <Row>
           <Col span={8}>
-            <Input onChange={e => setSearchKey(e.target.value)} placeholder="请输入问题单号" allowClear />
+            <Input onChange={e => setSearchKey(e.target.value)} placeholder="请输入故障单号" allowClear />
           </Col>
           <Col span={8}>
             <Button type="primary" style={{ marginLeft: 16 }} onClick={() => handleSearch()} >本页查询</Button>
@@ -239,7 +239,7 @@ function RelevancyOrder(props) {
       {activeKey === 'release' && (
         <Row>
           <Col span={8}>
-            <Input onChange={e => setSearchKey(e.target.value)} placeholder="请输入问题单号" allowClear />
+            <Input onChange={e => setSearchKey(e.target.value)} placeholder="请输入发布单号" allowClear />
           </Col>
           <Col span={8}>
             <Button type="primary" style={{ marginLeft: 16 }} onClick={() => handleSearch()} >本页查询</Button>
@@ -259,7 +259,7 @@ function RelevancyOrder(props) {
       {activeKey === 'quality' && (
         <Row>
           <Col span={8}>
-            <Input onChange={e => setSearchKey(e.target.value)} placeholder="请输入问题单号" allowClear />
+            <Input onChange={e => setSearchKey(e.target.value)} placeholder="请输入绩效单号" allowClear />
           </Col>
           <Col span={8}>
             <Button type="primary" style={{ marginLeft: 16 }} onClick={() => handleSearch()} >本页查询</Button>

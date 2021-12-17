@@ -260,7 +260,7 @@ function RelevancyOrder(props) {
       {activeKey === 'quality' && (
         <Row>
           <Col span={8}>
-            <Input onChange={e => setSearchKey(e.target.value)} placeholder="请输入事件单号" allowClear />
+            <Input onChange={e => setSearchKey(e.target.value)} placeholder="请输入绩效单号" allowClear />
           </Col>
           <Col span={8}>
             <Button type="primary" style={{ marginLeft: 16 }} onClick={() => handleSearch()} >本页查询</Button>
