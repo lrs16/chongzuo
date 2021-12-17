@@ -872,7 +872,6 @@ function TobedealtForm(props) {
                       search={search}
                       clauseList={clauseList}
                       editSign={currentTask.isEdit === '0' ? 'true' : ''}
-                      search={search}
                     />
                   </Panel>
                 )}
@@ -902,7 +901,7 @@ function TobedealtForm(props) {
                     register={Object.values(obj)[0]}
                     contractArr={contractArr}
                     getContrractname={getContrractname}
-                    files={Object.values(obj)[0].attachment ? JSON.parse(Object.values(obj)[0].attachment) : []}
+                    files={Object.values(obj)[0] && Object.values(obj)[0].attachment ? JSON.parse(Object.values(obj)[0].attachment) : []}
                     ChangeFiles={newvalue => {
                       setFiles(newvalue);
                     }}
@@ -960,8 +959,7 @@ function TobedealtForm(props) {
                     forminladeLayout={forminladeLayout}
                     userinfo={userinfo}
                     selectPersonstate={newvalue => setNoselect(newvalue)}
-                    files={Object.values(obj)[0].attachment ? JSON.parse(Object.values(obj)[0].attachment) : []}
-                    // files={[]}
+                    files={Object.values(obj)[0] && Object.values(obj)[0].attachment ? JSON.parse(Object.values(obj)[0].attachment) : []}
                     ChangeFiles={newvalue => {
                       setFiles(newvalue);
                     }}

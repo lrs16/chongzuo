@@ -202,7 +202,7 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
                     showTime
                     // defaultValue={moment(providerConfirmation.confirmTime || new Date())}
                     format='YYYY-MM-DD HH:mm'
-                    disabled='true'
+                    disabled
                     onChange={onChange}
                   />
                 )
