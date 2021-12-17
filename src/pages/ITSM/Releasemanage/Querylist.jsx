@@ -115,7 +115,9 @@ function Querylist(props) {
   useEffect(() => {
     if (cacheinfo) {
       const values = getFieldsValue();
-      searchdata(values, paginations.current, paginations.pageSize);
+      const current = location.state?.cacheinfo?.paginations?.current || paginations.current;
+      const pageSize = location.state?.cacheinfo?.paginations?.pageSize || paginations.pageSize;
+      searchdata(values, current, pageSize);
     }
     return () => {
       setSelectData([]);
@@ -209,6 +211,17 @@ function Querylist(props) {
       fixed: 'left',
       render: (text, record) => {
         const handleClick = () => {
+          dispatch({
+            type: 'viewcache/gettabstate',
+            payload: {
+              cacheinfo: {
+                ...tabrecord,
+                paginations,
+                expand,
+              },
+              tabid: sessionStorage.getItem('tabid')
+            },
+          });
           router.push({
             pathname: `/ITSM/releasemanage/query/details`,
             query: {

@@ -41,16 +41,25 @@ function VerificationTodo(props) {
   const [selectedRecords, setSelectedRecords] = useState([]);
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
 
+  // 缓存页签查询条件
+  const [tabrecord, setTabRecord] = useState({});
+  const searchrecord = { releaseNo: '', releaseStatus: '' };
+  const cacheinfo = location.state && location.state.cacheinfo ? location.state.cacheinfo : searchrecord;
+
   useEffect(() => {
-    const values = getFieldsValue();
-    dispatch({
-      type: 'releaseverificat/fetchlist',
-      payload: {
-        ...values,
-        pageIndex: paginations.current,
-        pageSize: paginations.pageSize,
-      },
-    });
+    if (cacheinfo) {
+      const current = location.state?.cacheinfo?.paginations?.current || paginations.current;
+      const pageSize = location.state?.cacheinfo?.paginations?.pageSize || paginations.pageSize;
+      const values = getFieldsValue();
+      dispatch({
+        type: 'releaseverificat/fetchlist',
+        payload: {
+          ...values,
+          pageIndex: current,
+          pageSize,
+        },
+      });
+    };
     return () => {
       setSelectData([]);
       setExpand(false);
@@ -68,7 +77,45 @@ function VerificationTodo(props) {
         pageIndex: page,
       },
     });
+    setTabRecord({
+      ...values,
+      abilityType: values.abilityType?.slice(-1)[0],
+    });
   };
+
+  const handleReset = () => {
+    resetFields();
+    searchdata({}, 1, 15);
+  };
+
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+              expand,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新
+      if (location.state.reset) {
+        handleReset()
+      };
+      // 标签切回设置初始值
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        setExpand(location.state.cacheinfo.expand);
+        setPageinations({ ...paginations, current, pageSize })
+      };
+    }
+  }, [location.state]);
 
   //  下载
   const download = () => {
@@ -160,10 +207,6 @@ function VerificationTodo(props) {
       }
       searchdata(values, paginations.current, paginations.pageSize);
     });
-  };
-
-  const handleReset = () => {
-    resetFields();
   };
 
   const getTypebyId = key => {

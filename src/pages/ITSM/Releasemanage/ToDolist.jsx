@@ -108,7 +108,9 @@ function ToDolist(props) {
   useEffect(() => {
     if (cacheinfo) {
       const values = getFieldsValue();
-      searchdata(values, paginations.current, paginations.pageSize);
+      const current = location.state?.cacheinfo?.paginations?.current || paginations.current;
+      const pageSize = location.state?.cacheinfo?.paginations?.pageSize || paginations.pageSize;
+      searchdata(values, current, pageSize);
     };
     return () => {
       setSelectData([]);
@@ -244,6 +246,17 @@ function ToDolist(props) {
       fixed: 'left',
       render: (text, record) => {
         const handleClick = () => {
+          dispatch({
+            type: 'viewcache/gettabstate',
+            payload: {
+              cacheinfo: {
+                ...tabrecord,
+                paginations,
+                expand,
+              },
+              tabid: sessionStorage.getItem('tabid')
+            },
+          });
           router.push({
             pathname: `/ITSM/releasemanage/to-do/record`,
             query: {
@@ -336,14 +349,14 @@ function ToDolist(props) {
             <Col span={8}>
               <Form.Item label="发布编号">
                 {getFieldDecorator('releaseNo', {
-                  initialValue: '',
+                  initialValue: cacheinfo.releaseNo,
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
             <Col span={8}>
               <Form.Item label="当前处理环节">
                 {getFieldDecorator('releaseStatus', {
-                  initialValue: '',
+                  initialValue: cacheinfo.releaseStatus,
                 })(
                   <Select placeholder="请选择" allowClear>
                     {statumap.map(obj => (
@@ -355,12 +368,12 @@ function ToDolist(props) {
                 )}
               </Form.Item>
             </Col>
-            {expand && (
+            {(expand || cacheinfo.expand) && (
               <>
                 <Col span={8}>
                   <Form.Item label="责任单位">
                     {getFieldDecorator('dutyUnit', {
-                      initialValue: '',
+                      initialValue: cacheinfo.dutyUnit,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {unitmap.map(obj => (
@@ -375,7 +388,7 @@ function ToDolist(props) {
                 <Col span={8}>
                   <Form.Item label="发布类型">
                     {getFieldDecorator('releaseType', {
-                      initialValue: '',
+                      initialValue: cacheinfo.releaseType,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {typemap.map(obj => (
@@ -390,14 +403,14 @@ function ToDolist(props) {
                 <Col span={8}>
                   <Form.Item label="出厂测试登记人">
                     {getFieldDecorator('register', {
-                      initialValue: '',
+                      initialValue: cacheinfo.register,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="发送人">
                     {getFieldDecorator('sender', {
-                      initialValue: '',
+                      initialValue: cacheinfo.sender,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
@@ -405,7 +418,7 @@ function ToDolist(props) {
                   <Form.Item label="发送时间">
                     <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                       {getFieldDecorator('beginTime', {
-                        initialValue: '',
+                        initialValue: cacheinfo.beginTime,
                       })(
                         <DatePicker
                           showTime={{
@@ -421,7 +434,7 @@ function ToDolist(props) {
                     <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
                     <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                       {getFieldDecorator('endTime', {
-                        initialValue: '',
+                        initialValue: cacheinfo.endTime,
                       })(
                         <DatePicker
                           showTime={{

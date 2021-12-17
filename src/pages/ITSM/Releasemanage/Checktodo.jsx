@@ -42,19 +42,28 @@ function Checktodo(props) {
   const [selectedRecords, setSelectedRecords] = useState([]);
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
 
+  // 缓存页签查询条件
+  const [tabrecord, setTabRecord] = useState({});
+  const searchrecord = { releaseNo: '', releaseStatus: '' };
+  const cacheinfo = location.state && location.state.cacheinfo ? location.state.cacheinfo : searchrecord;
+
   useEffect(() => {
-    validateFields((err, values) => {
-      if (!err) {
-        dispatch({
-          type: 'releaseverificat/fetchchecklist',
-          payload: {
-            ...values,
-            pageIndex: paginations.current,
-            pageSize: paginations.pageSize,
-          },
-        });
-      }
-    });
+    if (cacheinfo) {
+      const current = location.state?.cacheinfo?.paginations?.current || paginations.current;
+      const pageSize = location.state?.cacheinfo?.paginations?.pageSize || paginations.pageSize;
+      validateFields((err, values) => {
+        if (!err) {
+          dispatch({
+            type: 'releaseverificat/fetchchecklist',
+            payload: {
+              ...values,
+              pageIndex: current,
+              pageSize,
+            },
+          });
+        }
+      });
+    }
     return () => {
       setSelectData([]);
       setExpand(false);
@@ -72,7 +81,45 @@ function Checktodo(props) {
         pageIndex: page,
       },
     });
+    setTabRecord({
+      ...values,
+      abilityType: values.abilityType?.slice(-1)[0],
+    });
   };
+
+  const handleReset = () => {
+    resetFields();
+    searchdata({}, 1, 15);
+  };
+
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+              expand,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新
+      if (location.state.reset) {
+        handleReset()
+      };
+      // 标签切回设置初始值
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        setExpand(location.state.cacheinfo.expand);
+        setPageinations({ ...paginations, current, pageSize })
+      };
+    }
+  }, [location.state]);
 
   //  下载
   const download = () => {
@@ -166,9 +213,6 @@ function Checktodo(props) {
     });
   };
 
-  const handleReset = () => {
-    resetFields();
-  };
 
   const changeRowsKey = (expanded, record) => {
     if (expanded) {
@@ -213,6 +257,17 @@ function Checktodo(props) {
       key: 'todoCode',
       render: (text, record) => {
         const handleClick = () => {
+          dispatch({
+            type: 'viewcache/gettabstate',
+            payload: {
+              cacheinfo: {
+                ...tabrecord,
+                paginations,
+                expand,
+              },
+              tabid: sessionStorage.getItem('tabid')
+            },
+          });
           router.push({
             pathname: `/ITSM/releasemanage/checktodo/record`,
             query: {
@@ -371,14 +426,14 @@ function Checktodo(props) {
             <Col span={8}>
               <Form.Item label="发布编号">
                 {getFieldDecorator('releaseNo', {
-                  initialValue: '',
+                  initialValue: cacheinfo.releaseNo,
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
             <Col span={8}>
               <Form.Item label="状态">
                 {getFieldDecorator('verifyStatus', {
-                  initialValue: '待验证',
+                  initialValue: cacheinfo.verifyStatus || '待验证',
                 })(
                   <Select placeholder="请选择" allowClear>
                     {checkstatusmap.map(obj => (
@@ -391,12 +446,12 @@ function Checktodo(props) {
               </Form.Item>
             </Col>
 
-            {expand && (
+            {(expand || cacheinfo.expand) && (
               <>
                 <Col span={8}>
                   <Form.Item label="功能类型">
                     {getFieldDecorator('abilityType', {
-                      initialValue: '',
+                      initialValue: cacheinfo.abilityType,
                     })(
                       <Cascader
                         fieldNames={{ label: 'title', value: 'title', children: 'children' }}
@@ -409,7 +464,7 @@ function Checktodo(props) {
                 <Col span={8}>
                   <Form.Item label="功能名称">
                     {getFieldDecorator('appName', {
-                      initialValue: '',
+                      initialValue: cacheinfo.appName,
                     })(
                       <Input placeholder="请输入" allowClear />
                     )}
@@ -418,7 +473,7 @@ function Checktodo(props) {
                 <Col span={8}>
                   <Form.Item label="问题类型">
                     {getFieldDecorator('problemType', {
-                      initialValue: '',
+                      initialValue: cacheinfo.problemType,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>

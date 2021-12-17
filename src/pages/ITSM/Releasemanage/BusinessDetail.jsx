@@ -26,10 +26,10 @@ function BusinessDetail(props) {
   }, [currenttab])
 
   const handleclose = () => {
+    const tabid = sessionStorage.getItem('tabid');
     router.push({
-      pathname: runpath,
-      query: { pathpush: true },
-      state: { cache: false }
+      pathname: location.pathname,
+      query: { tabid, closecurrent: true }
     });
   };
 
@@ -158,7 +158,7 @@ function BusinessDetail(props) {
           <Button type='primary' onClick={() => openToQuality()} disabled={selectedRecords.length !== 1}>发起服务绩效</Button>
         </Popconfirm>
       )}
-      <Button onClick={handleclose} >返回</Button>
+      <Button onClick={handleclose} >关闭</Button>
 
     </>
   )
