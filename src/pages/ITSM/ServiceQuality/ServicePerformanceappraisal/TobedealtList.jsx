@@ -1211,6 +1211,9 @@ function TobedealtList(props) {
                     <Option key="自动化科复核" value="自动化科复核">
                       自动化科复核
                     </Option>
+                    <Option key="服务绩效考核确认" value="服务绩效考核确认">
+                      服务绩效考核确认
+                    </Option>
                     <Option key="结束" value="结束">
                       结束
                     </Option>
