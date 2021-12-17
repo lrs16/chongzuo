@@ -26,7 +26,8 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
     type,
     status,
     superviseworkPersonSelect,
-    location
+    location,
+    timeVisivle
   } = props;
 
   const statusContent = ['计划中', '延期中', '已超时', '已完成']
@@ -205,7 +206,7 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
                 initialValue: main.plannedStartTime ? moment(main.plannedStartTime) : startdates
               })
                 (<>
-                  <DatePicker
+                  {timeVisivle && (<DatePicker
                     disabled={type}
                     allowClear={false}
                     onChange={onStartChange}
@@ -213,7 +214,7 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
                     defaultValue={main.plannedStartTime ? moment(main.plannedStartTime) : startdates}
                     showTime
                     format="YYYY-MM-DD HH:mm:ss"
-                  /></>
+                  />)}</>
                 )}
             </Form.Item>
           </Col>

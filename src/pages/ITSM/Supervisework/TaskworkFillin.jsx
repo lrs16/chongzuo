@@ -31,6 +31,7 @@ function TaskworkFillin(props) {
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [copyData, setCopyData] = useState(''); // 复制的数据
   const [taskworkUploadStatus, setTaskworkUploadStatus] = useState(false);
+  const [timeVisivle, setTimeVisible] = useState(true);
 
   const formItemLayout = {
     labelCol: {
@@ -178,6 +179,7 @@ function TaskworkFillin(props) {
   // }
 
   const handlePaste = () => { // 粘贴
+    setTimeVisible(true);
     const strObj = sessionStorage.getItem('copyrecord');
     const result = JSON.parse(strObj);
     const mainId = sessionStorage.getItem('nocopyrecord');
@@ -252,6 +254,7 @@ function TaskworkFillin(props) {
         type="primary"
         ghost
         style={{ marginRight: 8 }}
+        onMouseDown={() => setTimeVisible(false)}
         onClick={() => handlePaste()}
         disabled={taskworkUploadStatus}
       >
@@ -299,6 +302,7 @@ function TaskworkFillin(props) {
             superviseworkPersonSelect={superviseworkPersonSelect}
             main={copyData}
             location={location}
+            timeVisivle={timeVisivle}
           /></TaskworkContext.Provider>
       </Card>
     </PageHeaderWrapper>
