@@ -20,7 +20,7 @@ function StatisticsCard(props) {
         <Row type="flex" justify="space-between" align="bottom">
           <Col span={24}>{title}</Col>
           <Col span={24}
-            style={{ cursor: 'pointer' }}
+            style={{ cursor: (staticName === undefined || staticName === '') ? '' : 'pointer' }}
             onClick={() =>
               hanlestaticard({ value, staticName, time1, time2, drawtitle: staticName })
             }>

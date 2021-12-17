@@ -230,15 +230,18 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
                 initialValue: main.plannedEndTime ? moment(main.plannedEndTime) : enddates
               })
                 (<>
-                  <DatePicker
-                    disabled={type}
-                    onChange={onEndChange}
-                    showTime
-                    allowClear={false}
-                    format="YYYY-MM-DD HH:mm:ss"
-                    defaultValue={main.plannedEndTime ? moment(main.plannedEndTime) : enddates}
-                  // disabledDate={disaendbledDate}
-                  /></>
+                  {
+                    timeVisivle && (<DatePicker
+                      disabled={type}
+                      onChange={onEndChange}
+                      showTime
+                      allowClear={false}
+                      format="YYYY-MM-DD HH:mm:ss"
+                      defaultValue={main.plannedEndTime ? moment(main.plannedEndTime) : enddates}
+                    // disabledDate={disaendbledDate}
+                    />)
+                  }
+                </>
                 )}
             </Form.Item>
           </Col>

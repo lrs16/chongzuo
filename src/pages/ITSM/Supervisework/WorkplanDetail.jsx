@@ -734,6 +734,7 @@ function WorkplanDetail(props) {
                                 ChangeFiles={newvalue => {
                                   setFiles(newvalue);
                                 }}
+                                timeVisivle='true'
                                 location={location}
                               />
                             </Panel>
