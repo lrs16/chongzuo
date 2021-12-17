@@ -11,6 +11,7 @@ import {
   getDemandList,
   getOperationList,
   assessSearch,
+  qualitySearch
 } from '@/services/common';
 import { message } from 'antd';
 
@@ -133,6 +134,15 @@ export default {
         payload: response.data
       })
     },
+
+     // 问题弹窗获取服务绩效
+     * fetchqualitySearch({ payload }, { put, call }) {
+     const response = yield call(qualitySearch, payload);
+     yield put({
+       type: "saveorder",
+       payload: { total: response.data.total, rows: response.data.records }
+     })
+   },
   },
 
   reducers: {

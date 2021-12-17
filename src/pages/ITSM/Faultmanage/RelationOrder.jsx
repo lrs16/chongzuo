@@ -102,6 +102,9 @@ function RelevancyOrder(props) {
     case 'release':
       orderNotype = '发布单编号';
       break;
+    case 'quality':
+      orderNotype = '绩效单编号';
+      break;
     default:
       break
   }
@@ -113,41 +116,58 @@ function RelevancyOrder(props) {
       key: 'orderNo',
       render: (text, record) => {
         const handleClick = () => {
-          if (activeKey === 'event') {
-            router.push({
-              pathname: `/ITSM/eventmanage/query/details`,
-              query: {
-                pangekey: record.eventStatus,
-                mainId: record.mainId,
-                No: text,
-              },
-            });
-          };
-          if (activeKey === 'problem') {
-            router.push({
-              pathname: `/ITSM/problemmanage/problemquery/detail`,
-              query: {
-                id: record.mainId,
-                taskName: record.status,
-                No: text,
-              },
-            });
-          };
-
-          if (activeKey === 'release') {
-            router.push({
-              pathname: `/ITSM/releasemanage/query/details`,
-              query: {
-                Id: record.orderNo,
-                taskName: record.status,
-              },
-              state: {
-                dynamicpath: true,
-                menuDesc: '发布工单详情',
-              }
-            });
-          };
-
+          switch (activeKey) {
+            case 'event':
+              router.push({
+                pathname: `/ITSM/eventmanage/query/details`,
+                query: {
+                  pangekey: record.eventStatus,
+                  mainId: record.id,
+                  No: text,
+                },
+              });
+              break;
+            case 'problem':
+              router.push({
+                pathname: `/ITSM/problemmanage/problemquery/detail`,
+                query: {
+                  id: record.mainId,
+                  taskName: record.status,
+                  No: text,
+                },
+              });
+              break;
+            case 'release':
+              router.push({
+                pathname: `/ITSM/releasemanage/query/details`,
+                query: {
+                  Id: record.orderNo,
+                  taskName: record.status,
+                },
+                state: {
+                  dynamicpath: true,
+                  menuDesc: '发布工单详情',
+                }
+              });
+              break;
+            case 'quality':
+              router.push({
+                pathname:
+                  '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
+                query: {
+                  assessNo: text,
+                  mainId: record.mainId,
+                  taskId: '',
+                  instanceId: record.mainId,
+                  taskName: record.status,
+                  orderNo: text,
+                  search: true,
+                },
+              });
+              break;
+            default:
+              break;
+          }
         };
         return <a onClick={handleClick}>{text}</a>;
       },
@@ -174,6 +194,7 @@ function RelevancyOrder(props) {
         <TabPane tab="事件单" key="event" />
         <TabPane tab="问题单" key="problem" />
         <TabPane tab="发布单" key="release" />
+        <TabPane tab="绩效单" key="quality" />
       </Tabs>
       {activeKey === 'event' && (
         <Row>
@@ -228,6 +249,27 @@ function RelevancyOrder(props) {
                 type="primary"
                 style={{ marginLeft: 8 }}
                 onClick={() => { setVisible(true); setTitle('发布'); }}
+              >
+                关联工单
+              </Button>
+            )}
+          </Col>
+        </Row>
+      )}
+
+      {activeKey === 'quality' && (
+        <Row>
+          <Col span={8}>
+            <Input onChange={e => setSearchKey(e.target.value)} placeholder="请输入事件单号" allowClear />
+          </Col>
+          <Col span={8}>
+            <Button type="primary" style={{ marginLeft: 16 }} onClick={() => handleSearch()} >本页查询</Button>
+            <Button style={{ marginLeft: 16 }} onClick={() => setSearchRow(undefined)} >重 置</Button>
+            {relation && (
+              <Button
+                type="primary"
+                style={{ marginLeft: 8 }}
+                onClick={() => { setVisible(true); setTitle('绩效'); }}
               >
                 关联工单
               </Button>

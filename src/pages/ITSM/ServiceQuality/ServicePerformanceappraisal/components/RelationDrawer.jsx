@@ -375,11 +375,6 @@ function RelationDrawer(props) {
               loading={loading}
               columns={columns}
               dataSource={orderlist.rows || orderlist.records}
-              // rowKey={r => {if(orderTypeSuf === 'demand') {
-              //   return r.processId
-              // } else {
-              //   return r.id
-              // }}}
               rowKey={r => {
                 if (orderTypeSuf === 'demand') {
                   return r.processId

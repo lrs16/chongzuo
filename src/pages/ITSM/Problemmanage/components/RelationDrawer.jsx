@@ -90,6 +90,13 @@ function RelationDrawer(props) {
         payload: { no, status: status === undefined ? '' : status, pageIndex, pageSize },
       })
     }
+
+    if (orderTypeSuf === 'quality') {
+      dispatch({
+        type: 'relationorder/fetchqualitySearch',
+        payload: { assessNo: no || '', currentTaskName: status || '', pageIndex, pageSize },
+      })
+    }
   }
 
   const handleSumit = () => {
@@ -150,23 +157,37 @@ function RelationDrawer(props) {
   let notype = '';
   let indexType;
   let currentStatus;
+  let culumnsIndex;
+  let culumnsTitle;
 
   switch (orderTypeSuf) {
     case 'event':
       notype = '事件单';
       indexType = 'eventNo';
-      currentStatus = 'flowNodeName'
+      currentStatus = 'flowNodeName';
+      culumnsIndex = 'title';
+      culumnsTitle = '标题';
       break;
     case 'trouble':
       notype = '故障单';
       indexType = 'no';
-      currentStatus = 'flowNodeName'
+      currentStatus = 'flowNodeName';
+      culumnsIndex = 'title';
+      culumnsTitle = '标题';
       break;
     case 'release':
       notype = '发布单';
       indexType = 'releaseNo';
-      // titleType = '发布类型';
       currentStatus = 'releaseStatus';
+      culumnsIndex = 'releaseType';
+      culumnsTitle = '发布类型';
+      break;
+    case 'quality':
+      notype = '绩效单';
+      indexType = 'assessNo';
+      currentStatus = 'currentTaskName';
+      culumnsIndex = 'assessContent';
+      culumnsTitle = '描述';
       break;
     default:
       break;
@@ -179,9 +200,9 @@ function RelationDrawer(props) {
       key: indexType,
     },
     {
-      title: `${orderTypeSuf === 'release' ? '发布类型' : '标题'}`,
-      dataIndex: `${orderTypeSuf === 'release' ? 'releaseType' : 'title'}`,
-      key: `${orderTypeSuf === 'release' ? 'releaseType' : 'title'}`,
+      title: `${culumnsTitle}`,
+      dataIndex: `${culumnsIndex}`,
+      key: `${culumnsIndex}`,
     },
     {
       title: '状态',
@@ -212,7 +233,7 @@ function RelationDrawer(props) {
                     )}
                   </Form.Item>
                 </Col>
-                
+
                 <Col span={8}>
                   {orderTypeSuf === 'event' && (
                     <Form.Item label='状态' >
@@ -246,6 +267,7 @@ function RelationDrawer(props) {
                     </Form.Item>
                   )}
 
+
                   {orderTypeSuf === 'release' && (
                     <Form.Item label='状态' >
                       {getFieldDecorator('status', {
@@ -257,6 +279,32 @@ function RelationDrawer(props) {
                               {obj.val}
                             </Option>
                           ))}
+                        </Select>,
+                      )}
+                    </Form.Item>
+                  )}
+
+                  {orderTypeSuf === 'quality' && (
+                    <Form.Item label='状态' >
+                      {getFieldDecorator('status', {
+                        initialValue: '',
+                      })(
+                        <Select getPopupContainer={e => e.parentNode}>
+                          <Option key="服务绩效考核登记" value="服务绩效考核登记">
+                            服务绩效考核登记
+                          </Option>
+                          <Option key="业务负责人审核" value="业务负责人审核">
+                            业务负责人审核
+                          </Option>
+                          <Option key="自动化科专责审核" value="自动化科专责审核">
+                            自动化科专责审核
+                          </Option>
+                          <Option key="服务商确认" value="服务商确认">
+                            服务商确认
+                          </Option>
+                          <Option key="服务绩效考核确认" value="服务绩效考核确认">
+                            服务绩效考核确认
+                          </Option>
                         </Select>,
                       )}
                     </Form.Item>
@@ -274,7 +322,15 @@ function RelationDrawer(props) {
               loading={loading}
               columns={columns}
               dataSource={orderlist.rows}
-              rowKey={r => r.id}
+              rowKey={r => {
+                if (orderTypeSuf === 'quality') {
+                  return r.instanceId
+                }
+                if (orderTypeSuf !== 'quality') {
+                  return r.id
+                }
+                // return []
+              }}
               rowSelection={rowSelection}
               pagination={pagination}
               onRow={record => {
@@ -294,18 +350,18 @@ function RelationDrawer(props) {
             <h3 style={{ background: '#f8f8f8', padding: 20, border: '1px solid #e8e8e8', borderLeft: 0 }}>工单详情</h3>
             <div style={{ padding: '8px 0 0 24px' }}>
               <h4 style={{ padding: '8px 0' }}>{title}编号</h4>
-              <Input value={rowrecord.no || rowrecord.releaseNo || rowrecord.eventNo} />
+              <Input value={rowrecord.no || rowrecord.releaseNo || rowrecord.eventNo || rowrecord.assessNo} />
               <h4 style={{ padding: '8px 0' }}>{title}来源</h4>
               <Input value={rowrecord.source || rowrecord.eventSource || rowrecord.dataSource || rowrecord.releaseType} />
               <h4 style={{ padding: '8px 0' }}>{title}{orderTypeSuf === 'release' ? '状态' : '类型'}</h4>
               <Input value={rowrecord.type || rowrecord.eventType || rowrecord.releaseStatus} />
               <h4 style={{ padding: '8px 0' }}>建单时间</h4>
-              <Input value={rowrecord.addTime || rowrecord.sendTime || rowrecord.creationTime || rowrecord.ctime} />
+              <Input value={rowrecord.addTime || rowrecord.sendTime || rowrecord.creationTime || rowrecord.ctime || rowrecord.applyTime} />
               <h4 style={{ padding: '8px 0' }}>{title}标题</h4>
               <Input value={rowrecord.title} />
               <h4 style={{ padding: '8px 0' }}>{title}描述</h4>
               <TextArea
-                value={rowrecord.content || rowrecord.detail}
+                value={rowrecord.content || rowrecord.detail || rowrecord.assessContent}
                 autoSize={{ minRows: 5, maxRows: 10 }}
               />
             </div>

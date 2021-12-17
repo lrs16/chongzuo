@@ -157,3 +157,12 @@ export async function relationReleaseLists(params) {
   });
 }
 
+// 问题关联工单 服务绩效（用的查询接口）
+export async function qualitySearch(params) {
+  const val = { assessNo: params.assessNo, currentTaskName: params.currentTaskName }
+  return request(`/quality/assess/search/${params.pageIndex + 1}/${params.pageSize}`, {
+    method: 'POST',
+    body: JSON.stringify(val)
+  })
+}
+
