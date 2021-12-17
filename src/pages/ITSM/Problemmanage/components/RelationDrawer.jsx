@@ -296,14 +296,17 @@ function RelationDrawer(props) {
                           <Option key="业务负责人审核" value="业务负责人审核">
                             业务负责人审核
                           </Option>
-                          <Option key="自动化科专责审核" value="自动化科专责审核">
-                            自动化科专责审核
-                          </Option>
                           <Option key="服务商确认" value="服务商确认">
                             服务商确认
                           </Option>
+                          <Option key="自动化科复核" value="自动化科复核">
+                            自动化科复核
+                          </Option>
                           <Option key="服务绩效考核确认" value="服务绩效考核确认">
                             服务绩效考核确认
+                          </Option>
+                          <Option key="结束" value="结束">
+                            结束
                           </Option>
                         </Select>,
                       )}
