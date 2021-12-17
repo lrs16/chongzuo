@@ -272,6 +272,12 @@ function Querylist(props) {
       sorter: (a, b) => a.registerUser.localeCompare(b.registerUser),
     },
     {
+      title: '当前处理人',
+      dataIndex: 'assignee',
+      key: 'assignee',
+      sorter: (a, b) => a.assignee.localeCompare(b.assignee),
+    },
+    {
       title: '发送人',
       dataIndex: 'sender',
       key: 'sender',
