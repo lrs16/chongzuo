@@ -442,7 +442,7 @@ function VerificationTodo(props) {
                 {getFieldDecorator('verifyStatus', {
                   initialValue: cacheinfo.verifyStatus || '待验证',
                 })(
-                  <Select placeholder="请选择" allowClear>
+                  <Select placeholder="请选择">
                     {checkstatusmap.map(obj => (
                       <Option key={obj.key} value={obj.title}>
                         {obj.title}
