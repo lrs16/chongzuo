@@ -254,7 +254,7 @@ function Checktodo(props) {
 
   const columns = [
     {
-      title: '验证工单00',
+      title: '验证工单',
       dataIndex: 'todoCode',
       key: 'todoCode',
       render: (text, record) => {
@@ -483,10 +483,10 @@ function Checktodo(props) {
             )}
             <Col span={8}>
               <Form.Item style={{ textAlign: 'right' }}>
-                <Button type="primary" onClick={handleSearch}>
+                <Button type="primary" onClick={() => handleSearch()}>
                   查 询
                 </Button>
-                <Button style={{ marginLeft: 8 }} onClick={handleReset}>重 置</Button>
+                <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
                 <Button
                   style={{ marginLeft: 8 }}
                   type="link"
