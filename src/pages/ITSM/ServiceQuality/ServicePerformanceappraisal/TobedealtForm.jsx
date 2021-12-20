@@ -959,7 +959,7 @@ function TobedealtForm(props) {
                     forminladeLayout={forminladeLayout}
                     userinfo={userinfo}
                     selectPersonstate={newvalue => setNoselect(newvalue)}
-                    files={Object.values(obj)[0] && Object.values(obj)[0].attachment ? JSON.parse(Object.values(obj)[0].attachment) : []}
+                    files={Object.values(obj)[0] && Object.values(obj)[0].annex ? JSON.parse(Object.values(obj)[0].annex) : []}
                     ChangeFiles={newvalue => {
                       setFiles(newvalue);
                     }}

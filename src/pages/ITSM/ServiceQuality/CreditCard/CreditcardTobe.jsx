@@ -125,6 +125,16 @@ function CreditcardTobe(props) {
       width: 200,
       render: (text, record) => {
         const gotoDetail = () => {
+          dispatch({
+            type: 'viewcache/gettabstate',
+            payload: {
+              cacheinfo: {
+                ...tabrecord,
+                paginations,
+              },
+              tabid: sessionStorage.getItem('tabid')
+            },
+          });
           router.push({
             pathname: '/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail',
             query: {

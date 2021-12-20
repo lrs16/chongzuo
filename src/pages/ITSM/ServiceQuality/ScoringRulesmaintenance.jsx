@@ -92,6 +92,31 @@ function ScoringRulesmaintenance(props) {
     });
   };
 
+  const gotoDetail = (text, record,params) => {
+    dispatch({
+      type: 'viewcache/gettabstate',
+      payload: {
+        cacheinfo: {
+          ...tabrecord,
+          paginations,
+        },
+        tabid: sessionStorage.getItem('tabid')
+      },
+    });
+    router.push({
+      pathname: '/ITSM/servicequalityassessment/detailscoringrulesmaintenance',
+      query: {
+        Id: record.scoreNo,
+        id: record.id,
+        scoreSearch: params,
+      },
+      state: {
+        dynamicpath: true,
+        menuDesc: '评分细则详情',
+      },
+    });
+  };
+
   const columns = [
     {
       title: '序号',
@@ -107,22 +132,8 @@ function ScoringRulesmaintenance(props) {
       key: 'scoreNo',
       width: 200,
       render: (text, record) => {
-        const gotoDetail = () => {
-          router.push({
-            pathname: '/ITSM/servicequalityassessment/detailscoringrulesmaintenance',
-            query: {
-              Id: record.scoreNo,
-              id: record.id,
-              scoreSearch: true,
-            },
-            state: {
-              dynamicpath: true,
-              menuDesc: '评分细则详情',
-            },
-          });
-        };
         if (pagetitle === '评分细则查询') {
-          return <a onClick={() => gotoDetail()}>{text}</a>;
+          return <a onClick={() => gotoDetail(text, record,'scoreSearch')}>{text}</a>;
         }
 
         return <span>{text}</span>;
@@ -146,23 +157,10 @@ function ScoringRulesmaintenance(props) {
       fixed: 'right',
       width: 150,
       render: (text, record) => {
-        const gotoDetail = () => {
-          router.push({
-            pathname: '/ITSM/servicequalityassessment/detailscoringrulesmaintenance',
-            query: {
-              Id: record.scoreNo,
-              id: record.id,
-            },
-            state: {
-              dynamicpath: true,
-              menuDesc: '评分细则详情',
-            },
-          });
-        };
         if (pagetitle === '评分细则维护') {
           return (
             <span>
-              <a onClick={() => gotoDetail()}>编辑</a>
+              <a onClick={() => gotoDetail(text, record)}>编辑</a>
               <>
                 <Divider type="vertical" />
                 <Popconfirm title="是否要删除此行？" onConfirm={() => handleDelete(record.id)}>
@@ -173,7 +171,6 @@ function ScoringRulesmaintenance(props) {
             </span>
           );
         }
-
         return null;
       },
     },

@@ -71,6 +71,17 @@ function Besolved(props) {
   let formThead;
 
   const gotoDetail = (text, record) => {
+    dispatch({
+      type: 'viewcache/gettabstate',
+      payload: {
+        cacheinfo: {
+          ...tabrecord,
+          paginations,
+          expand,
+        },
+        tabid: sessionStorage.getItem('tabid')
+      },
+    });
     router.push({
       pathname: `/ITSM/problemmanage/problemquery/detail`,
       query: {
@@ -1011,148 +1022,138 @@ function Besolved(props) {
     }
   }, [location.state]);
 
+  const controlTable = [
+    {
+      title: '问题编号',
+      dataIndex: 'no',
+      key: 'no',
+      width: 150,
+      align: 'center',
+      render: (text, record) => {
+        return <a onClick={() => gotoDetail(text, record)}>{text}</a>;
+      },
+    },
+    {
+      title: '问题分类',
+      dataIndex: 'type',
+      key: 'type',
+      width: 150,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '问题描述',
+      dataIndex: 'content',
+      key: 'content',
+      width: 150,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '问题申报人',
+      dataIndex: 'complainUser',
+      key: 'complainUser',
+      width: 200,
+      align: 'center',
+    },
+    {
+      title: '开发负责人',
+      dataIndex: 'developmentLead',
+      key: 'developmentLead',
+      align: 'center',
+      width: 120,
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '建单时间',
+      dataIndex: 'addTime',
+      key: 'addTime',
+      align: 'center',
+      width: 200,
+    },
+    {
+      title: '系统运维商确认结果',
+      dataIndex: 'confirmOneResult',
+      key: 'confirmOneResult',
+      width: 200,
+      align: 'center',
+    },
+    {
+      title: '处理完成时间',
+      dataIndex: 'handleTime',
+      key: 'handleTime',
+      width: 200,
+      align: 'center',
+    },
+    {
+      title: '系统开发商处理人',
+      dataIndex: 'handler',
+      key: 'handler',
+      width: 150,
+      align: 'center',
+    },
+    {
+      title: '计划完成时间',
+      dataIndex: 'planEndTime',
+      key: 'planEndTime',
+      width: 200,
+      align: 'center',
+    },
+    {
+      title: '处理解决方案',
+      dataIndex: 'handleContent',
+      key: 'handleContent',
+      width: 150,
+      align: 'center',
+    },
+    {
+      title: '系统开发商处理结果',
+      dataIndex: 'handleResult',
+      key: 'handleResult',
+      width: 250,
+      align: 'center',
+    },
+    {
+      title: '问题登记人员确认结果',
+      dataIndex: 'confirmThreeResult',
+      key: 'confirmThreeResult',
+      width: 250,
+      align: 'center',
+    },
+    {
+      title: '问题登记人员确认人',
+      dataIndex: 'confirmThreeUser',
+      key: 'confirmThreeUser',
+      width: 200,
+      align: 'center',
+    },
+  ];
+
   // 获取数据
   useEffect(() => {
     const values = getFieldsValue();
     searchdata(values, paginations.current, paginations.pageSize);
-    const controlTable = [
-      {
-        title: '问题编号',
-        dataIndex: 'no',
-        key: 'no',
-        width: 150,
-        align: 'center',
-        render: (text, records) => {
-          const handleClick = () => {
-            router.push({
-              pathname: `/ITSM/problemmanage/problemquery/detail`,
-              query: {
-                id: records.id,
-                taskName: records.statuscn,
-                No: text,
-              },
-            });
-          };
-          return <a onClick={handleClick}>{text}</a>;
-        },
-      },
-      {
-        title: '问题分类',
-        dataIndex: 'type',
-        key: 'type',
-        width: 150,
-        align: 'center',
-        ellipsis: true,
-        render: text => {
-          return (
-            <Tooltip placement="topLeft" title={text}>
-              <span>{text}</span>
-            </Tooltip>
-          );
-        },
-      },
-      {
-        title: '问题描述',
-        dataIndex: 'content',
-        key: 'content',
-        width: 150,
-        align: 'center',
-        ellipsis: true,
-        render: text => {
-          return (
-            <Tooltip placement="topLeft" title={text}>
-              <span>{text}</span>
-            </Tooltip>
-          );
-        },
-      },
-      {
-        title: '问题申报人',
-        dataIndex: 'complainUser',
-        key: 'complainUser',
-        width: 200,
-        align: 'center',
-      },
-      {
-        title: '开发负责人',
-        dataIndex: 'developmentLead',
-        key: 'developmentLead',
-        align: 'center',
-        width: 120,
-        ellipsis: true,
-        render: text => {
-          return (
-            <Tooltip placement="topLeft" title={text}>
-              <span>{text}</span>
-            </Tooltip>
-          );
-        },
-      },
-      {
-        title: '建单时间',
-        dataIndex: 'addTime',
-        key: 'addTime',
-        align: 'center',
-        width: 200,
-      },
-      {
-        title: '系统运维商确认结果',
-        dataIndex: 'confirmOneResult',
-        key: 'confirmOneResult',
-        width: 200,
-        align: 'center',
-      },
-      {
-        title: '处理完成时间',
-        dataIndex: 'handleTime',
-        key: 'handleTime',
-        width: 200,
-        align: 'center',
-      },
-      {
-        title: '系统开发商处理人',
-        dataIndex: 'handler',
-        key: 'handler',
-        width: 150,
-        align: 'center',
-      },
-      {
-        title: '计划完成时间',
-        dataIndex: 'planEndTime',
-        key: 'planEndTime',
-        width: 200,
-        align: 'center',
-      },
-      {
-        title: '处理解决方案',
-        dataIndex: 'handleContent',
-        key: 'handleContent',
-        width: 150,
-        align: 'center',
-      },
-      {
-        title: '系统开发商处理结果',
-        dataIndex: 'handleResult',
-        key: 'handleResult',
-        width: 250,
-        align: 'center',
-      },
-      {
-        title: '问题登记人员确认结果',
-        dataIndex: 'confirmThreeResult',
-        key: 'confirmThreeResult',
-        width: 250,
-        align: 'center',
-      },
-      {
-        title: '问题登记人员确认人',
-        dataIndex: 'confirmThreeUser',
-        key: 'confirmThreeUser',
-        width: 200,
-        align: 'center',
-      },
-    ];
-    setColumns(controlTable);
   }, []);
 
   const creataColumns = () => {
@@ -1211,7 +1212,7 @@ function Besolved(props) {
     creataColumns();
   };
 
-  const defaultAllkey = columns.map(item => {
+  const defaultAllkey =(columns && columns.length > 0 ? columns: controlTable).map(item => {
     return item.title;
   });
 
@@ -1459,24 +1460,6 @@ function Besolved(props) {
                 </Form.Item>
               </Col>
 
-              {/* <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
-                <Form.Item label="超时处理">
-                  {getFieldDecorator('timeStatus',
-                    {
-                      initialValue: cacheinfo.timeStatus,
-                    }
-                  )(
-                    <Select placeholder="请选择" allowClear>
-                      {timeoutList.map(obj => [
-                        <Option key={obj.key} value={obj.dict_code}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col> */}
-
               <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
                 <Form.Item label="处理人">
                   {getFieldDecorator('handler', {
@@ -1590,7 +1573,6 @@ function Besolved(props) {
               <>
                 <div style={{ borderBottom: '1px solid #E9E9E9' }}>
                   <Checkbox
-                    // indeterminate={this.state.indeterminate}
                     onChange={onCheckAllChange}
                     checked={(columns.length === initialColumns.length) === true}
                   >
@@ -1611,8 +1593,6 @@ function Besolved(props) {
                         value={item.title}
                         key={item.key}
                         checked={columns}
-                        // disabled={item.disabled}
-                        // className={styles.checkboxStyle}
                       >
                         {item.title}
                       </Checkbox>
@@ -1630,7 +1610,7 @@ function Besolved(props) {
 
         <Table
           loading={loading}
-          columns={columns}
+          columns={columns.length > 0 ? columns: controlTable}
           dataSource={queryArr.rows}
           rowKey={records => records.id}
           pagination={pagination}

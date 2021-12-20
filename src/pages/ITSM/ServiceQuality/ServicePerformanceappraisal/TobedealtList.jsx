@@ -84,6 +84,17 @@ function TobedealtList(props) {
   const [columns, setColumns] = useState([]);
 
   const todetail = record => {
+    dispatch({
+      type: 'viewcache/gettabstate',
+      payload: {
+        cacheinfo: {
+          ...tabrecord,
+          paginations,
+          expand,
+        },
+        tabid: sessionStorage.getItem('tabid')
+      },
+    });
     switch (pagetitle) {
       case '服务绩效考核待办':
         router.push({
@@ -943,7 +954,51 @@ function TobedealtList(props) {
           } = option;
           setFieldsValue({
             clauseId: value,
+            clauseName: children[1].props.children,
             assessValue: children[3].props.children,
+          });
+          break;
+        }
+        default:
+          break;
+      }
+    } else {
+      switch (params) {
+        // case 'assessType':
+        //   setFieldsValue({
+        //     target1Name: '',
+        //     target1Id: '',
+        //     target2Name: '',
+        //     target2Id: '',
+        //   });
+        //   break;
+        case 'contract':
+          setFieldsValue({
+            contractName: '',
+            contractId: '',
+          });
+          break;
+        case 'target1Name':
+          setFieldsValue({
+            target1Name: '',
+            target1Id: '',
+            target2Name: '',
+            target2Id: '',
+            clauseName: '',
+          });
+          break;
+        case 'target2Name':
+          setFieldsValue({
+            target2Name: '',
+            target2Id: '',
+            clauseId: '',
+            clauseName: '',
+          });
+          break;
+        case 'clause': {
+          setFieldsValue({
+            clauseId: '',
+            clauseName: ''
           });
           break;
         }
@@ -1173,6 +1228,7 @@ function TobedealtList(props) {
   };
 
   const assessmentObject = getTypebyTitle('考核对象');
+  const currentProssing = getTypebyTitle('当前处理环节');
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -1198,25 +1254,12 @@ function TobedealtList(props) {
                 {getFieldDecorator('currentTaskName', {
                   initialValue: cacheinfo.currentTaskName,
                 })(
-                  <Select getPopupContainer={e => e.parentNode}>
-                    <Option key="服务绩效考核登记" value="服务绩效考核登记">
-                      服务绩效考核登记
-                    </Option>
-                    <Option key="业务负责人审核" value="业务负责人审核">
-                      业务负责人审核
-                    </Option>
-                    <Option key="服务商确认" value="服务商确认">
-                      服务商确认
-                    </Option>
-                    <Option key="自动化科复核" value="自动化科复核">
-                      自动化科复核
-                    </Option>
-                    <Option key="服务绩效考核确认" value="服务绩效考核确认">
-                      服务绩效考核确认
-                    </Option>
-                    <Option key="结束" value="结束">
-                      结束
-                    </Option>
+                  <Select getPopupContainer={e => e.parentNode} allowClear>
+                    {currentProssing.map(obj => [
+                      <Option key={obj.dict_code} value={obj.title}>
+                      {obj.title}
+                    </Option>,
+                    ])}
                   </Select>,
                 )}
               </Form.Item>
@@ -1302,6 +1345,7 @@ function TobedealtList(props) {
                       placeholder="请选择"
                       onChange={(value, option) => handleChange(value, option, 'contractId')}
                       onFocus={() => handleFocus('contract')}
+                      allowClear
                     >
                       {contractArr.map(obj => [
                         <Option key={obj.contractName} value={obj.id}>
@@ -1340,6 +1384,7 @@ function TobedealtList(props) {
                     <Select
                       getPopupContainer={e => e.parentNode}
                       onChange={(value, option) => handleChange(value, option, 'assessType')}
+                      allowClear
                     >
                       <Option key="1" value="1">
                         功能开发
@@ -1370,6 +1415,7 @@ function TobedealtList(props) {
                       onChange={(value, option) => handleChange(value, option, 'target1Name')}
                       onFocus={() => handleFocus('one')}
                       placeholder="请选择"
+                      allowClear
                     >
                       {target1.map(obj => [
                         <Option key={obj.id} value={obj.title}>
@@ -1399,6 +1445,7 @@ function TobedealtList(props) {
                       onChange={(value, option) => handleChange(value, option, 'target2Name')}
                       onFocus={() => handleFocus('two')}
                       placeholder="请选择"
+                      allowClear
                     >
                       {target2.map(obj => [
                         <Option key={obj.id} value={obj.title}>
@@ -1423,13 +1470,29 @@ function TobedealtList(props) {
                   {getFieldDecorator('isAppeal', {
                     initialValue: cacheinfo.isAppeal,
                   })(
-                    <Select getPopupContainer={e => e.parentNode}>
+                    <Select getPopupContainer={e => e.parentNode} allowClear>
                       <Option key="1" value="1">
                         是
                       </Option>
                       <Option key="0" value="0">
                         否
                       </Option>
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+
+              <Col span={8}>
+                <Form.Item label="考核对象">
+                  {getFieldDecorator('assessObject', {
+                    initialValue: cacheinfo.assessObject,
+                  })(
+                    <Select getPopupContainer={e => e.parentNode} allowClear>
+                      {(assessmentObject || []).map(obj => [
+                        <Option key={obj.dict_code} value={obj.dict_code}>
+                          {obj.title}
+                        </Option>,
+                      ])}
                     </Select>,
                   )}
                 </Form.Item>
@@ -1444,9 +1507,10 @@ function TobedealtList(props) {
                       getPopupContainer={e => e.parentNode}
                       onChange={(value, option) => handleChange(value, option, 'clause')}
                       onFocus={() => handleFocus('clause')}
+                      allowClear
                     >
                       {((clauseList && clauseList.records) || []).map(obj => [
-                        <Option key={obj.id} value={obj.detailed}>
+                        <Option key={obj.detailed} value={obj.id}>
                           <div className={styles.disableuser}>
                             <span>{obj.orderNo}</span>
                             <span>{obj.detailed}</span>
@@ -1476,25 +1540,6 @@ function TobedealtList(props) {
                   })(<Input />)}
                 </Form.Item>
               </Col>
-
-              {/* <Col span={8}>
-                <Form.Item label='登记人'>
-                  {
-                    getFieldDecorator('register', {
-                    })
-                      (
-                        <Select onSelect={selectOnchange}>
-                          {(performanceLeader || []).map(obj => [
-                            <Option key={obj.key} value={obj.key}>
-                              {obj.value}
-                            </Option>
-                          ])}
-
-                        </Select>
-                      )
-                  }
-                </Form.Item>
-              </Col> */}
 
               <Col span={8} style={{ display: 'none' }}>
                 <Form.Item label="登记人id">
@@ -1539,7 +1584,7 @@ function TobedealtList(props) {
                   {getFieldDecorator('directorVerifyValue', {
                     initialValue: cacheinfo.directorVerifyValue,
                   })(
-                    <Select getPopupContainer={e => e.parentNode}>
+                    <Select getPopupContainer={e => e.parentNode} allowClear>
                       <Option key="1" value="1">
                         通过
                       </Option>
@@ -1564,7 +1609,7 @@ function TobedealtList(props) {
                   {getFieldDecorator('directorVerifyStatus', {
                     initialValue: cacheinfo.directorVerifyStatus,
                   })(
-                    <Select getPopupContainer={e => e.parentNode}>
+                    <Select getPopupContainer={e => e.parentNode} allowClear>
                       <Option key="待审核" value="待审核">
                         待审核
                       </Option>
@@ -1627,17 +1672,6 @@ function TobedealtList(props) {
                     {getFieldDecorator('providerConfirmerName', {
                       initialValue: cacheinfo.providerConfirmerName,
                     })(
-                      // <Select
-                      //   onSelect={(value, option) =>
-                      //     selectOnchange(value, option, 'providerConfirmer')
-                      //   }
-                      // >
-                      //   {performanceLeader.map(obj => [
-                      //     <Option key={obj.key} value={obj.key}>
-                      //       {obj.value}
-                      //     </Option>,
-                      //   ])}
-                      // </Select>,
                       <Input />,
                     )}
                   </Form.Item>
@@ -1684,7 +1718,7 @@ function TobedealtList(props) {
                   {getFieldDecorator('directorReviewValue', {
                     initialValue: cacheinfo.directorReviewValue,
                   })(
-                    <Select getPopupContainer={e => e.parentNode}>
+                    <Select getPopupContainer={e => e.parentNode} allowClear>
                       <Option key="1" value="1">
                         同意
                       </Option>
@@ -1701,22 +1735,6 @@ function TobedealtList(props) {
                   {getFieldDecorator('directorReviewContent', {
                     initialValue: cacheinfo.directorReviewContent,
                   })(<Input />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="考核对象">
-                  {getFieldDecorator('assessObject', {
-                    initialValue: cacheinfo.assessObject,
-                  })(
-                    <Select placeholder="请选择" getPopupContainer={e => e.parentNode}>
-                      {(assessmentObject || []).map(obj => [
-                        <Option key={obj.dict_code} value={obj.dict_code}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
                 </Form.Item>
               </Col>
 
@@ -1760,7 +1778,7 @@ function TobedealtList(props) {
                   {getFieldDecorator('finallyConfirmValue', {
                     initialValue: cacheinfo.finallyConfirmValue,
                   })(
-                    <Select getPopupContainer={e => e.parentNode}>
+                    <Select getPopupContainer={e => e.parentNode} allowClear>
                       <Option key="完成" value="完成">
                         完成
                       </Option>
@@ -1786,17 +1804,6 @@ function TobedealtList(props) {
                     {getFieldDecorator('finallyConfirmerName', {
                       initialValue: cacheinfo.finallyConfirmerName,
                     })(
-                      // <Select
-                      //   onSelect={(value, option) =>
-                      //     selectOnchange(value, option, 'finallyConfirmerName')
-                      //   }
-                      // >
-                      //   {performanceLeader.map(obj => [
-                      //     <Option key={obj.key} value={obj.key}>
-                      //       {obj.value}
-                      //     </Option>,
-                      //   ])}
-                      // </Select>,
                       <Input />,
                     )}
                   </Form.Item>

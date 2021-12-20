@@ -79,6 +79,33 @@ function ProviderMaintenance(props) {
     });
   };
 
+     
+  const gotoDetail = (text, record,params) => {
+    dispatch({
+      type: 'viewcache/gettabstate',
+      payload: {
+        cacheinfo: {
+          ...tabrecord,
+          paginations,
+        },
+        tabid: sessionStorage.getItem('tabid')
+      },
+    });
+    router.push({
+      pathname: '/ITSM/servicequalityassessment/detailserviceprovidermaintenance',
+      query: {
+        id: record.id,
+        Id: record.providerNo,
+        providerStatus: record.isEdit,
+        providerSearch: params,
+      },
+      state: {
+        dynamicpath: true,
+        menuDesc: '服务运维商详情',
+      },
+    });
+  };
+
   const columns = [
     {
       title: '序号',
@@ -94,25 +121,10 @@ function ProviderMaintenance(props) {
       key: 'providerNo',
       width: 200,
       render: (text, record) => {
-        const gotoDetail = () => {
-          router.push({
-            pathname: '/ITSM/servicequalityassessment/detailserviceprovidermaintenance',
-            query: {
-              id: record.id,
-              Id: record.providerNo,
-              providerStatus: record.isEdit,
-              providerSearch: true,
-            },
-            state: {
-              dynamicpath: true,
-              menuDesc: '服务运维商详情',
-            },
-          });
-        };
 
         if (pagetitle === '服务商查询') {
           return (
-            <a type="link" onClick={gotoDetail}>
+            <a type="link" onClick={()=>gotoDetail(text, record,'providerSearch')}>
               {text}
             </a>
           );
@@ -172,24 +184,10 @@ function ProviderMaintenance(props) {
       fixed: 'right',
       width: 150,
       render: (text, record) => {
-        const gotoDetail = () => {
-          router.push({
-            pathname: '/ITSM/servicequalityassessment/detailserviceprovidermaintenance',
-            query: {
-              id: record.id,
-              Id: record.providerNo,
-              providerStatus: record.isEdit,
-            },
-            state: {
-              dynamicpath: true,
-              menuDesc: '服务运维商详情',
-            },
-          });
-        };
         if (pagetitle === '服务商维护') {
           return (
             <span>
-              <a onClick={() => gotoDetail()}>编辑</a>
+              <a onClick={()=>gotoDetail(text, record)}>编辑</a>
 
               {record.isEdit === '1' && (
                 <>

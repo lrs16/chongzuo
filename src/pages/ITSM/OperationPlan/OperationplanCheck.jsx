@@ -65,6 +65,17 @@ function OperationplanCheck(props) {
   let formThead;
 
   const gotoDetail = record => {
+    dispatch({
+      type: 'viewcache/gettabstate',
+      payload: {
+        cacheinfo: {
+          ...tabrecord,
+          paginations,
+          expand,
+        },
+        tabid: sessionStorage.getItem('tabid')
+      },
+    });
     router.push({
       pathname: `/ITSM/operationplan/operationplanform`,
       query: {
@@ -1329,7 +1340,7 @@ function OperationplanCheck(props) {
         <div />
         <Table
           loading={loading}
-          columns={columns}
+          columns={columns && columns.length === (initialColumns && initialColumns.length) ? initialColumns : columns}
           dataSource={myTaskplanlist.rows}
           scroll={{ x: 1500, y: 700 }}
           rowKey={records => records.id}

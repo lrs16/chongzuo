@@ -173,8 +173,19 @@ function MydutyHandover(props) {
   );
 
   const todetail = (record, type) => {
+    dispatch({
+      type: 'viewcache/gettabstate',
+      payload: {
+        cacheinfo: {
+          ...tabrecord,
+          paginations,
+          expand,
+        },
+        tabid: sessionStorage.getItem('tabid')
+      },
+    });
     router.push({
-      pathname: `${pagetitle === '我的值班交接' ? '/ITSM/dutymanage/dutyhandovermanage/edithandoverdetail' :'/ITSM/dutymanage/dutyhandovermanage/handoverdetail'}`,
+      pathname: `${pagetitle === '我的值班交接' ? '/ITSM/dutymanage/dutyhandovermanage/edithandoverdetail' : '/ITSM/dutymanage/dutyhandovermanage/handoverdetail'}`,
       query: {
         Id: record.id,
         id: record.id,
@@ -195,7 +206,7 @@ function MydutyHandover(props) {
       width: 250,
       render: (text, record) => {
         if (pagetitle === '我的值班交接') {
-          return <a onClick={() => todetail(record,record.handoverStatus === '待接班')}>{text}</a>
+          return <a onClick={() => todetail(record, record.handoverStatus === '待接班')}>{text}</a>
         }
 
         if (pagetitle === '值班交接查询') {
@@ -1153,7 +1164,7 @@ function MydutyHandover(props) {
 
         <Table
           loading={loading}
-          columns={columns}
+          columns={columns && columns.length === (initialColumns && initialColumns.length) ? initialColumns : columns}
           dataSource={logbookSearcharr.records}
           rowSelection={rowSelection}
           pagination={pagetitle === '我的值班交接' ? false : pagination}

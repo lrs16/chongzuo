@@ -89,6 +89,17 @@ function TaskSearch(props) {
   }
   //  打开查询详情页
   const gotoDetail = record => {
+    dispatch({
+      type: 'viewcache/gettabstate',
+      payload: {
+        cacheinfo: {
+          ...tabrecord,
+          paginations,
+          expand,
+        },
+        tabid: sessionStorage.getItem('tabid')
+      },
+    });
     router.push({
       pathname: `/ITSM/operationplan/operationplansearchdetail`,
       query: {
@@ -1395,7 +1406,7 @@ function TaskSearch(props) {
         <div />
         <Table
           loading={loading}
-          columns={columns}
+          columns={columns && columns.length === (initialColumns && initialColumns.length) ? initialColumns : columns}
           dataSource={queryList.rows}
           scroll={{ x: 1500, y: 700 }}
           rowKey={records => records.id}
