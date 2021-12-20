@@ -175,6 +175,28 @@ function ImplementationPre(props, ref) {
       <Row gutter={12}>
         <Form ref={formRef}>
           <Col span={24}>
+            <EditeTable
+              title='功能验证表'
+              functionmap={functionmap}
+              modulamap={modulamap}
+              isEdit={false}
+              taskName={taskName}
+              dataSource={info.releaseLists}
+              ChangeValue={v => { setFieldsValue({ releaseLists: v }); }}
+              listmsg={listmsg}
+            />
+            <Form.Item wrapperCol={{ span: 24 }} >
+              {getFieldDecorator('releaseLists', {
+                rules: [{ required, message: '请填写发布清单' }, {
+                  validator: handleListValidator
+                }],
+                initialValue: info.releaseLists,
+              })(
+                <></>
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={24}>
             <Form.Item label='实施准备结果' {...forminladeLayout} labelAlign='left'>
               {getFieldDecorator('preResult', {
                 rules: [{ required, message: '请选择验证结果' }],
@@ -448,28 +470,6 @@ function ImplementationPre(props, ref) {
                 rules: [{ required, message: `请填写回退方案` }],
                 initialValue: info.practicePre ? info.practicePre.rollbackPaln : '',
               })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <EditeTable
-              title='功能验证表'
-              functionmap={functionmap}
-              modulamap={modulamap}
-              isEdit={false}
-              taskName={taskName}
-              dataSource={info.releaseLists}
-              ChangeValue={v => { setFieldsValue({ releaseLists: v }); }}
-              listmsg={listmsg}
-            />
-            <Form.Item wrapperCol={{ span: 24 }} >
-              {getFieldDecorator('releaseLists', {
-                rules: [{ required, message: '请填写发布清单' }, {
-                  validator: handleListValidator
-                }],
-                initialValue: info.releaseLists,
-              })(
-                <></>
-              )}
             </Form.Item>
           </Col>
           <Col span={24}>
