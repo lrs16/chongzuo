@@ -613,24 +613,7 @@ function MyoperationPlan(props) {
     return null;
   };
 
-  const handleCopy = () => {
-    if (selectedRows.length !== 1) {
-      message.info('请选择一条数据');
-      return false;
-    }
 
-    if (selectedRows.length > 1) {
-      message.info('只能选择一条数据复制哦');
-      return false;
-    }
-
-    if (selectedRows.length === 1) {
-      message.success('复制成功，可往填报中粘贴');
-      localStorage.setItem('copy', JSON.stringify(selectedRows[0]));
-    }
-
-    return null;
-  };
 
   const handleDelete = () => {
     if (selectedRows.length === 0) {
@@ -714,8 +697,8 @@ function MyoperationPlan(props) {
         val.title === '回退信息' ||
         val.title === '审核说明' ||
         val.title === '作业执行情况说明' ||
-        val.title === '作业内容' || 
-        val.title === '风险分析' || 
+        val.title === '作业内容' ||
+        val.title === '风险分析' ||
         val.title === '风险应对措施'
       ) {
         obj.ellipsis = true;
@@ -817,6 +800,35 @@ function MyoperationPlan(props) {
   const taskResult = getTypebyTitle('作业结果');
   const checkResult = getTypebyTitle('审核结果');
   const taskCompany = getTypebyTitle('作业单位');
+
+  const handleCopy = () => {
+    if (selectedRows.length !== 1) {
+      message.info('请选择一条数据');
+      return false;
+    }
+
+    if (selectedRows.length > 1) {
+      message.info('只能选择一条数据复制哦');
+      return false;
+    }
+
+    if (selectedRows.length === 1) {
+      message.success('复制成功，可往填报中粘贴');
+      const type = taskType.filter(item => item.title === selectedRows[0].type)[0]?.dict_code  ||'';
+      const nature = taskNature.filter(item => item.title === selectedRows[0].nature)[0]?.dict_code  ||'';
+      const operationUnit = taskCompany.filter(item => item.title === selectedRows[0].operationUnit)[0]?.dict_code  ||'';
+      const billing = taskBilling.filter(item => item.title === selectedRows[0].billing)[0]?.dict_code  ||'';
+      localStorage.setItem('copy', JSON.stringify({
+        ...selectedRows[0],
+        type,
+        nature,
+        operationUnit,
+        billing,
+        operationNo: ''
+      }));
+    }
+    return null;
+  };
 
   useEffect(() => {
     sessionStorage.setItem('Processtype', 'task');

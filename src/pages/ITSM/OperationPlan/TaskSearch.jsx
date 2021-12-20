@@ -719,24 +719,7 @@ function TaskSearch(props) {
     },
   };
 
-  const handleCopy = () => {
-    if (selectedKeys.length !== 1) {
-      message.info('请选择一条数据');
-      return false;
-    }
 
-    if (selectedKeys.length > 1) {
-      message.info('只能选择一条数据复制哦');
-      return false;
-    }
-
-    if (selectedKeys.length === 1) {
-      message.success('复制成功，可往填报中粘贴');
-      localStorage.setItem('copy', JSON.stringify(selectedRows[0]));
-    }
-
-    return null;
-  };
 
   //  自定义列表
   const creataColumns = () => {
@@ -820,6 +803,36 @@ function TaskSearch(props) {
   const taskResult = getTypebyTitle('作业结果');
   const checkResult = getTypebyTitle('审核结果');
   const taskCompany = getTypebyTitle('作业单位');
+
+  const handleCopy = () => {
+    if (selectedKeys.length !== 1) {
+      message.info('请选择一条数据');
+      return false;
+    }
+
+    if (selectedKeys.length > 1) {
+      message.info('只能选择一条数据复制哦');
+      return false;
+    }
+
+    if (selectedKeys.length === 1) {
+      message.success('复制成功，可往填报中粘贴');
+      const type = taskType.filter(item => item.title === selectedRows[0].type)[0]?.dict_code ||'';
+      const nature = taskNature.filter(item => item.title === selectedRows[0].nature)[0]?.dict_code || '' ;
+      const operationUnit = taskCompany.filter(item => item.title === selectedRows[0].operationUnit)[0]?.dict_code || '';
+      const billing = taskBilling.filter(item => item.title === selectedRows[0].billing)[0]?.dict_code || '';
+      localStorage.setItem('copy', JSON.stringify({
+        ...selectedRows[0],
+        type,
+        nature,
+        operationUnit,
+        billing,
+        operationNo:''
+      }));
+    }
+
+    return null;
+  };
 
   useEffect(() => {
     getoperationPerson();
