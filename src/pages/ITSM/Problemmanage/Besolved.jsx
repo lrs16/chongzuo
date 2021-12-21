@@ -51,114 +51,6 @@ function Besolved(props) {
   const [tabrecord, setTabRecord] = useState({});
   const [selectedKeys, setSelectedKeys] = useState([]);
 
-  const columns = [
-    // {
-    //   title: '序号',
-    //   dataIndex: 'index',
-    //   key: 'index',
-    //   width: 100,
-    //   render: (text, record, index) =>
-    //     `${(paginations.current - 1) * paginations.pageSize + (index + 1)}`,
-    // },
-    {
-      title: '问题编号',
-      dataIndex: 'no',
-      key: 'no',
-      width: 150,
-      render: (text, record) => {
-        const handleClick = () => {
-          dispatch({
-            type: 'viewcache/gettabstate',
-            payload: {
-              cacheinfo: {
-                ...tabrecord,
-                paginations,
-                expand,
-              },
-              tabid: sessionStorage.getItem('tabid')
-            },
-          });
-          router.push({
-            pathname: `/ITSM/problemmanage/besolveddetail/workorder`,
-            query: {
-              id: record.id,
-              taskName: record.currentNode,
-              mainId: record.mainId,
-              orderNo: text,
-            },
-          });
-        };
-        return <a onClick={handleClick}>{text}</a>;
-      },
-    },
-    {
-      title: '问题标题',
-      dataIndex: 'title',
-      key: 'title',
-    },
-    {
-      title: '问题来源',
-      dataIndex: 'sourcecn',
-      key: 'sourcecn',
-    },
-    {
-      title: '问题分类',
-      dataIndex: 'typecn',
-      key: 'typecn',
-      align:'center',
-      ellipsis: true,
-      render: (text) => {
-        return (
-          <Tooltip placement="topLeft" title={text}>
-            <span>{text}</span>
-          </Tooltip>
-        );
-      },
-    },
-    {
-      title: '当前处理环节',
-      dataIndex: 'currentNode',
-      key: 'currentNode',
-    },
-    {
-      title: '发送人',
-      dataIndex: 'registerUser',
-      key: 'registerUser',
-    },
-    {
-      title: '发生时间',
-      dataIndex: 'registerOccurTime',
-      key: 'registerOccurTime',
-    },
-    {
-      title: '重要程度',
-      dataIndex: 'importancecn',
-      key: 'importancecn',
-    },
-
-  ];
-
-  const getTobolist = () => {
-    dispatch({
-      type: 'problemmanage/besolveList',
-      payload: {
-        pageNum: paginations.current,
-        pageSize: paginations.pageSize,
-      },
-    });
-  };
-
-  // 上传删除附件触发保存
-  useEffect(() => {
-    if (files.ischange) {
-      getTobolist();
-    }
-  }, [files]);
-
-  // useEffect(() => {
-  //   getTobolist();
-  // }, []);
-
   const searchdata = (values, page, pageSize) => {
     const newvalues = {
       ...values,
@@ -171,7 +63,7 @@ function Besolved(props) {
       payload: {
         ...newvalues,
         pageSize,
-        type:values && values.type && values.type.length > 0 ? (values.type).toString():'',
+        type: values && values.type && values.type.length > 0 ? (values.type).toString() : '',
         pageNum: page,
       },
     });
@@ -244,7 +136,7 @@ function Besolved(props) {
           payload: {
             ids: selectedKeys.toString(),
             ...values,
-            type:values && values.type && values.type.length > 0 ? (values.type).toString():'',
+            type: values && values.type && values.type.length > 0 ? (values.type).toString() : '',
             createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
             createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
             createTime: '',
@@ -288,7 +180,95 @@ function Besolved(props) {
     type: '',
     paginations,
   };
+
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+
+  const columns = [
+    {
+      title: '问题编号',
+      dataIndex: 'no',
+      key: 'no',
+      width: 150,
+      render: (text, record) => {
+        const handleClick = () => {
+          dispatch({
+            type: 'viewcache/gettabstate',
+            payload: {
+              cacheinfo: {
+                ...tabrecord,
+                paginations,
+                expand,
+              },
+              tabid: sessionStorage.getItem('tabid')
+            },
+          });
+          router.push({
+            pathname: `/ITSM/problemmanage/besolveddetail/workorder`,
+            query: {
+              id: record.id,
+              taskName: record.currentNode,
+              mainId: record.mainId,
+              orderNo: text,
+            },
+            state: {
+              runpath: '/ITSM/problemmanage/besolved',
+              cacheinfo: {
+                ...tabrecord,
+                paginations,
+                expand,
+              },
+            }
+          });
+        };
+        return <a onClick={handleClick}>{text}</a>;
+      },
+    },
+    {
+      title: '问题标题',
+      dataIndex: 'title',
+      key: 'title',
+    },
+    {
+      title: '问题来源',
+      dataIndex: 'sourcecn',
+      key: 'sourcecn',
+    },
+    {
+      title: '问题分类',
+      dataIndex: 'typecn',
+      key: 'typecn',
+      align: 'center',
+      ellipsis: true,
+      render: (text) => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '当前处理环节',
+      dataIndex: 'currentNode',
+      key: 'currentNode',
+    },
+    {
+      title: '发送人',
+      dataIndex: 'registerUser',
+      key: 'registerUser',
+    },
+    {
+      title: '发生时间',
+      dataIndex: 'registerOccurTime',
+      key: 'registerOccurTime',
+    },
+    {
+      title: '重要程度',
+      dataIndex: 'importancecn',
+      key: 'importancecn',
+    },
+
+  ];
 
   useEffect(() => {
     if (location.state) {
@@ -326,7 +306,7 @@ function Besolved(props) {
 
   // 获取数据
   useEffect(() => {
-    if (cacheinfo !== undefined) {
+    if(cacheinfo !== undefined) {
       validateFields((err, values) => {
         if (!err) {
           searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize)
@@ -334,13 +314,6 @@ function Besolved(props) {
       });
     }
   }, []);
-
-  // const rowSelection = {
-  //   onChange: (index, handleSelect) => {
-  //     setSelectedKeys([...index])
-  //     setSelectedRows([...handleSelect])
-  //   }
-  // }
 
   // 不要用查询标题的方式，人家改了名字就查不到了，用id
   const getTypebyTitle = title => {

@@ -42,8 +42,6 @@ function CreditCardRegister(props) {
     },
     scorecardetail,
     maintenanceArr,
-    tabnew,
-    tabdata,
   } = props;
 
   const RegistratRef = useRef(null);
@@ -151,17 +149,9 @@ function CreditCardRegister(props) {
       if (res.code === 200) {
         message.success(res.msg);
         router.push({
-          pathname: `/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail`,
-          query: {
-            mainId: paramId,
-            closetab: true,
-          },
-        });
-
-        router.push({
           pathname: `/ITSM/servicequalityassessment/creditcard/creditcardtobe`,
           query: { pathpush: true },
-          state: { cache: false },
+          state: { cache: false,closetabid: paramId },
         });
       }
     });

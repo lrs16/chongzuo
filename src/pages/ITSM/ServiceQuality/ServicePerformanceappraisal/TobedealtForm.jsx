@@ -197,15 +197,6 @@ function TobedealtForm(props) {
     let assessType;
 
     if (
-      // (taskName === '服务绩效考核确认' ||
-      //   taskName === '服务绩效考核登记' ||
-      //   (hisTasks && hisTasks.length)) &&
-      // loading === false &&
-      // taskData &&
-      // taskData.currentTask &&
-      // taskData.currentTask.id &&
-      // taskData.hisTasks &&
-      // uservisible === false
       loading === false && ((taskData && taskData.currentTask && taskData.currentTask.id) || (hisTasks && hisTasks.length))
     ) {
       if (taskData && taskData.currentTask && taskData.currentTask.id) {
@@ -277,17 +268,9 @@ function TobedealtForm(props) {
       if (res.code === 200) {
         message.success(res.msg);
         router.push({
-          pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform`,
-          query: {
-            mainId,
-            closetab: true,
-          },
-        });
-
-        router.push({
           pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtlist`,
           query: { pathpush: true },
-          state: { cache: false },
+          state: { cache: false,closetabid:mainId },
         });
       }
     });
@@ -458,13 +441,9 @@ function TobedealtForm(props) {
       if (res.code === 200) {
         message.success(res.msg);
         router.push({
-          pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform`,
-          query: { mainId, closetab: true },
-        });
-        router.push({
           pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtlist`,
           query: { pathpush: true },
-          state: { cache: false },
+          state: { cache: false,closetabid:mainId },
         });
       } else {
         message.error(res.msg);
@@ -528,17 +507,9 @@ function TobedealtForm(props) {
     }).then(res => {
       if (res.code === 200) {
         router.push({
-          pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform`,
-          query: {
-            mainId,
-            closetab: true,
-          },
-        });
-
-        router.push({
           pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtlist`,
           query: { pathpush: true },
-          state: { cache: false },
+          state: { cache: false,closetabid:mainId },
         });
       }
       message.success(res.msg);

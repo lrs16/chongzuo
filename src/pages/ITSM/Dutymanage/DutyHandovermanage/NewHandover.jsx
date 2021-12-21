@@ -74,17 +74,9 @@ function NewHandover(props) {
     }).then(res => {
       if (res.code === 200) {
         router.push({
-          pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/handoverdetail`,
-          query: {
-            mainId: id,
-            closetab: true,
-          },
-        });
-
-        router.push({
           pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover`,
           query: { pathpush: true },
-          state: { cache: false },
+          state: { cache: false,closetabid:id },
         });
         message.success(res.msg);
       } else {
@@ -103,17 +95,9 @@ function NewHandover(props) {
         }).then(res => {
           if (res.code === 200) {
             router.push({
-              pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/handoverdetail`,
-              query: {
-                mainId: id,
-                closetab: true,
-              },
-            });
-    
-            router.push({
               pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover`,
               query: { pathpush: true },
-              state: { cache: false },
+              state: { cache: false,closetabid:id },
             });
             message.success(res.msg);
           } else {
@@ -318,18 +302,11 @@ function NewHandover(props) {
     }).then(res => {
       if (res.code === 200) {
         message.success(res.msg);
-        router.push({
-          pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/handoverdetail`,
-          query: {
-            mainId: id,
-            closetab: true,
-          },
-        });
 
         router.push({
           pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover`,
           query: { pathpush: true },
-          state: { cache: false },
+          state: { cache: false,closetabid:id },
         });
       } else {
         message.error(res.msg);
@@ -368,17 +345,9 @@ function NewHandover(props) {
       if (res.code === 200) {
         message.success(res.msg);
         router.push({
-          pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/handoverdetail`,
-          query: {
-            mainId: id,
-            closetab: true,
-          },
-        });
-
-        router.push({
           pathname: `/ITSM/dutymanage/dutyhandovermanage/mydutyhandover`,
           query: { pathpush: true },
-          state: { cache: false },
+          state: { cache: false,closetabid:id },
         });
       }
     })

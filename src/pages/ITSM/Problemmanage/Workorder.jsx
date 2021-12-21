@@ -229,16 +229,9 @@ function Workorder(props) {
       if (res.code === 200) {
         message.success(res.msg);
         router.push({
-          pathname: `/ITSM/problemmanage/besolveddetail/workorder`,
-          query: {
-            mainId,
-            closetab: true,
-          },
-        });
-        router.push({
           pathname: `/ITSM/problemmanage/besolved`,
           query: { pathpush: true },
-          state: { cache: false },
+          state: { cach: false, closetabid: mainId },
         });
       } else {
         message.success(res.error);
@@ -442,13 +435,9 @@ function Workorder(props) {
       if (res.code === 200) {
         message.success(res.msg);
         router.push({
-          pathname: `/ITSM/problemmanage/besolveddetail/workorder`,
-          query: { mainId, closetab: true },
-        });
-        router.push({
           pathname: `/ITSM/problemmanage/besolved`,
           query: { pathpush: true },
-          state: { cach: false },
+          state: { cach: false, closetabid: mainId },
         });
       } else {
         message.error(res.msg);
@@ -465,16 +454,9 @@ function Workorder(props) {
       if (res.code === 200) {
         message.success(res.msg);
         router.push({
-          pathname: `/ITSM/problemmanage/besolveddetail/workorder`,
-          query: {
-            mainId,
-            closetab: true,
-          },
-        });
-        router.push({
           pathname: `/ITSM/problemmanage/besolved`,
           query: { pathpush: true },
-          state: { cache: false },
+          state: { cache: false, closetabid: mainId },
         });
       } else {
         message.error(res.msg);
@@ -781,8 +763,9 @@ function Workorder(props) {
                   flowNodeName === '问题登记人员确认') &&
                 showback === true && (
                   <Button
+                    type="danger"
+                    ghost
                     disabled={olduploadstatus}
-                    type="primary"
                     style={{ marginRight: 8 }}
                     onClick={() => onClickSubmit('goback')}
                   >
