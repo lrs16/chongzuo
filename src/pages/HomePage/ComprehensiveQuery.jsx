@@ -4,18 +4,19 @@ import { Menu } from 'antd';
 import styles from './index.less';
 
 function ComprehensiveQuery(props) {
-  const { children } = props;
+  const { children, location } = props;
   const [current, setCurrent] = useState([]);
   const handleClick = (e) => {
     setCurrent(e.key);
     router.push({
       pathname: `/ITSM/comprehensivequery/query/${e.key}`,
-      state: { cache: false }
+      state: location.state && location.state.cacheinfo ? { cacheinfo: location.state.cacheinfo } : { cache: false }
     })
   };
   useEffect(() => {
-    handleClick({ key: 'event' })
-  }, [])
+    handleClick({ key: location.state?.cacheinfo?.key || 'event' });
+  }, []);
+
   return (
     <>
       <div style={{ margin: '-48px -24px 24px -24px', padding: '24px 24px 0 24px', background: '#fff' }}>

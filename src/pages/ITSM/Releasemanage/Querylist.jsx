@@ -93,6 +93,7 @@ function Querylist(props) {
               ...tabrecord,
               paginations,
               expand,
+              key: 'release',
             },
             tabid: sessionStorage.getItem('tabid')
           },
@@ -218,6 +219,7 @@ function Querylist(props) {
                 ...tabrecord,
                 paginations,
                 expand,
+                key: 'release',
               },
               tabid: sessionStorage.getItem('tabid')
             },

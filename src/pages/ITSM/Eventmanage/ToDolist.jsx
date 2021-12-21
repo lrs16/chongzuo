@@ -252,6 +252,11 @@ function ToDolist(props) {
   ];
 
   const handleReset = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: { cach: false, }
+    });
     resetFields();
     searchdata(record, 1, 15);
     setPageinations({ current: 1, pageSize: 15 });

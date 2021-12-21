@@ -111,6 +111,7 @@ function QueryList(props) {
                 ...tabrecord,
                 paginations,
                 expand,
+                key: 'event',
               },
               tabid: sessionStorage.getItem('tabid')
             },
@@ -403,13 +404,13 @@ function QueryList(props) {
     time2: time2 ? moment(time2).format('YYYY-MM-DD 23:59:59') : '',
     paginations
   }
-  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+  const cacheinfo = location.state && location.state.cacheinfo ? location.state.cacheinfo : record;
 
   const handleReset = () => {
     router.push({
       pathname: location.pathname,
       query: {},
-      state: {}
+      state: { cach: false, }
     });
     resetFields();
     if (time1 || time2 || eventObject || selfhandle || registerUser || eventStatus || applicationUnit) {
@@ -438,6 +439,7 @@ function QueryList(props) {
               ...tabrecord,
               paginations,
               expand,
+              key: 'event',
             },
             tabid: sessionStorage.getItem('tabid')
           },

@@ -82,6 +82,7 @@ function QueryList(props) {
                 ...tabrecord,
                 paginations,
                 expand,
+                key: 'demand',
               },
               tabid: sessionStorage.getItem('tabid')
             },
@@ -180,6 +181,7 @@ function QueryList(props) {
                   ...tabrecord,
                   paginations,
                   expand,
+                  key: 'demand',
                 },
                 tabid: sessionStorage.getItem('tabid')
               },
@@ -385,6 +387,7 @@ function QueryList(props) {
               ...tabrecord,
               paginations,
               expand,
+              key: 'demand',
             },
             tabid: sessionStorage.getItem('tabid')
           },
