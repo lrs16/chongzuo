@@ -87,6 +87,7 @@ function CreditcardTobe(props) {
     validateFields((err, value) => {
       searchdata(value, 1, 15);
     });
+    setPaginations({ current: 1, pageSize: 15 });
   };
 
 

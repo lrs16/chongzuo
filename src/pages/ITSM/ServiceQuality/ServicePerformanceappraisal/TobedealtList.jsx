@@ -901,6 +901,7 @@ function TobedealtList(props) {
     validateFields((err, value) => {
       searchdata(value, 1, paginations.pageSize);
     });
+    setPageinations({ current: 1, pageSize: 15 });
   };
 
   const handleFocus = params => {

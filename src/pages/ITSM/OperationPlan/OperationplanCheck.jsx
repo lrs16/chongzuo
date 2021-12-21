@@ -499,8 +499,8 @@ function OperationplanCheck(props) {
         ...values,
         flowNodeName: '计划审核',
       };
-
-      searchdata(searchParams, 1, paginations.pageSize);
+      searchdata(searchParams, 1, 15);
+      setPaginations({ current: 1, pageSize: 15 });
     });
   };
 
