@@ -189,7 +189,7 @@ function MydutyHandover(props) {
       query: {
         Id: record.id,
         id: record.id,
-        type
+        type,
       },
       state: {
         dynamicpath: true,

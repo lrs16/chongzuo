@@ -169,10 +169,6 @@ function NewHandover(props) {
     handleSave('logbookTransfer');
   }
 
-  const logbookReceive = () => {
-    handleSave('logbookReceive');
-  }
-
   useEffect(() => {
     if (files.ischange) {
       handleSave()
@@ -356,7 +352,7 @@ function NewHandover(props) {
   const extrabutton = (
     <>
       {
-        id && (logbookIddetail.handoverStatus === '未交接') && (
+        id && (logbookIddetail.handoverStatus === '未交接') && type !== 'search' && (
           <Button
             type="danger"
             ghost
@@ -410,7 +406,7 @@ function NewHandover(props) {
       }
 
       {
-        id && (logbookIddetail && logbookIddetail.handoverStatus === '未交接' || logbookIddetail.handoverStatus === '已退回') && (
+        id && (logbookIddetail && logbookIddetail.handoverStatus === '未交接' || logbookIddetail.handoverStatus === '已退回') && type !== 'search'  && (
           <Button
             type="primary"
             style={{ marginRight: 8 }}
