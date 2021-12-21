@@ -69,7 +69,6 @@ function TobedealtList(props) {
   } = props;
   const [performanceLeader, setPerformanceLeader] = useState('');
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
-  console.log('paginations: ', paginations);
   const [contractArr, setContractArr] = useState([]);
   const [expand, setExpand] = useState(false);
   const [disablelist, setDisabledList] = useState([]); // 服务商

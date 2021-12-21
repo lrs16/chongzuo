@@ -153,6 +153,7 @@ function Besolved(props) {
     });
     resetFields();
     searchdata({}, 1, 15);
+    setPageinations({ current: 1, pageSize: 15 });
   };
 
   const onShowSizeChange = (page, pageSize) => {

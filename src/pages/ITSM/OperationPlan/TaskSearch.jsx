@@ -124,6 +124,7 @@ function TaskSearch(props) {
       state: {},
     });
     resetFields();
+    searchdata({}, 1, 15);
     setPaginations({ current: 1, pageSize: 15 });
   };
 
