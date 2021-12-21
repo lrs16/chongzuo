@@ -59,11 +59,7 @@ function ProviderMaintenance(props) {
     });
   };
 
-  useEffect(() => {
-    validateFields((err, value) => {
-      searchdata(value, paginations.current, paginations.pageSize);
-    });
-  }, []);
+
 
   const handleDelete = id => {
     return dispatch({
@@ -79,8 +75,8 @@ function ProviderMaintenance(props) {
     });
   };
 
-     
-  const gotoDetail = (text, record,params) => {
+
+  const gotoDetail = (text, record, params) => {
     dispatch({
       type: 'viewcache/gettabstate',
       payload: {
@@ -113,7 +109,7 @@ function ProviderMaintenance(props) {
       key: 'index',
       width: 100,
       render: (text, record, index) =>
-        `${(paginations.current-1) * paginations.pageSize + (index + 1)}`,
+        `${(paginations.current - 1) * paginations.pageSize + (index + 1)}`,
     },
     {
       title: '服务商编号',
@@ -124,7 +120,7 @@ function ProviderMaintenance(props) {
 
         if (pagetitle === '服务商查询') {
           return (
-            <a type="link" onClick={()=>gotoDetail(text, record,'providerSearch')}>
+            <a type="link" onClick={() => gotoDetail(text, record, 'providerSearch')}>
               {text}
             </a>
           );
@@ -187,7 +183,7 @@ function ProviderMaintenance(props) {
         if (pagetitle === '服务商维护') {
           return (
             <span>
-              <a onClick={()=>gotoDetail(text, record)}>编辑</a>
+              <a onClick={() => gotoDetail(text, record)}>编辑</a>
 
               {record.isEdit === '1' && (
                 <>
@@ -245,6 +241,7 @@ function ProviderMaintenance(props) {
     });
     resetFields();
     searchdata({}, 1, 15);
+    setPaginations({ current: 1, pageSize: 15 });
   };
 
   useEffect(() => {
@@ -325,8 +322,19 @@ function ProviderMaintenance(props) {
       if (location.state.reset) {
         handleReset();
       }
+      // 标签切回设置初始值
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        setPaginations({ ...paginations, current, pageSize });
+      }
     }
   }, [location.state]);
+
+  useEffect(() => {
+    validateFields((err, value) => {
+      searchdata(value, cacheinfo.paginations.current, cacheinfo.paginations.pageSize);
+    });
+  }, []);
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -388,16 +396,16 @@ function ProviderMaintenance(props) {
             新增服务商
           </Button>
         )}
-     
-            <Table
-            loading={loading}
-            columns={columns}
-            dataSource={providerArr && providerArr.records}
-            rowKey={records => records.id}
-            pagination={pagination}
-            rowSelection={rowSelection}
-            scroll={{ x: 800, y: 700 }}
-          />
+
+        <Table
+          loading={loading}
+          columns={columns}
+          dataSource={providerArr && providerArr.records}
+          rowKey={records => records.id}
+          pagination={pagination}
+          rowSelection={rowSelection}
+          scroll={{ x: 800, y: 700 }}
+        />
       </Card>
     </PageHeaderWrapper>
   );

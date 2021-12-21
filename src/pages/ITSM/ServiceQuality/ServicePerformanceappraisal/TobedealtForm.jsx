@@ -544,7 +544,7 @@ function TobedealtForm(props) {
   const handleBack = () => {
     router.push({
       pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
-      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true },
     });
   };
 

@@ -89,11 +89,7 @@ function CreditcardTobe(props) {
     });
   };
 
-  useEffect(() => {
-    validateFields((err, value) => {
-      searchdata(value, paginations.current, paginations.pageSize);
-    });
-  }, []);
+
 
   const handleDelete = id => {
     return dispatch({
@@ -239,6 +235,7 @@ function CreditcardTobe(props) {
     });
     resetFields();
     searchdata({}, 1, 15);
+    setPaginations({ current: 1, pageSize: 15 });
   };
 
   useEffect(() => {
@@ -351,6 +348,14 @@ function CreditcardTobe(props) {
       }
     }
   }, [location.state]);
+
+  useEffect(() => {
+    if (cacheinfo !== undefined) {
+      validateFields((err, value) => {
+        searchdata(value, cacheinfo.paginations.current, cacheinfo.paginations.pageSize);
+      });
+    }
+  }, []);
 
   const rowSelection = {
     onChange: index => {

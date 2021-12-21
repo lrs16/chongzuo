@@ -92,7 +92,7 @@ function ScoringRulesmaintenance(props) {
     });
   };
 
-  const gotoDetail = (text, record,params) => {
+  const gotoDetail = (text, record, params) => {
     dispatch({
       type: 'viewcache/gettabstate',
       payload: {
@@ -133,7 +133,7 @@ function ScoringRulesmaintenance(props) {
       width: 200,
       render: (text, record) => {
         if (pagetitle === '评分细则查询') {
-          return <a onClick={() => gotoDetail(text, record,'scoreSearch')}>{text}</a>;
+          return <a onClick={() => gotoDetail(text, record, 'scoreSearch')}>{text}</a>;
         }
 
         return <span>{text}</span>;
@@ -182,11 +182,9 @@ function ScoringRulesmaintenance(props) {
     return [];
   };
 
-  useEffect(() => {
-    validateFields((err, value) => {
-      searchdata(value, paginations.current, paginations.pageSize);
-    });
-  }, []);
+
+
+  
 
   const handleReset = () => {
     router.push({
@@ -196,14 +194,15 @@ function ScoringRulesmaintenance(props) {
     });
     resetFields();
     searchdata({}, 1, 15);
+    setPaginations({ current: 1, pageSize: 15 });
   };
 
-  useEffect(() => {
-    if (location.state && location.state.reset) {
-      handleReset();
-      searchdata({}, 1, 15);
-    }
-  }, [location.state]);
+  // useEffect(() => {
+  //   if (location.state && location.state.reset) {
+  //     handleReset();
+  //     searchdata({}, 1, 15);
+  //   }
+  // }, [location.state]);
 
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
@@ -287,10 +286,21 @@ function ScoringRulesmaintenance(props) {
       // 点击菜单刷新,并获取数据
       if (location.state.reset) {
         handleReset();
-        // setExpand(false);
+      }
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        setPaginations({ ...paginations, current, pageSize });
       }
     }
   }, [location.state]);
+
+  useEffect(() => {
+    if (cacheinfo !== undefined) {
+      validateFields((err, value) => {
+        searchdata(value, paginations.current, paginations.pageSize);
+      });
+    }
+  }, []);
 
   const assessmentType = getTypebyTitle('考核类型');
 

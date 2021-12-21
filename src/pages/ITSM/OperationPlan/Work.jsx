@@ -383,19 +383,10 @@ function Work(props) {
   }, [userchoice]);
 
   const handleClose = () => {
-    if (auditLink) {
-      router.push({
-        pathname: `/ITSM/operationplan/operationplancheck`,
-        query: { pathpush: true },
-        state: { cache: false, closetabid: mainId },
-      });
-    } else {
-      router.push({
-        pathname: `/ITSM/operationplan/myoperationplan`,
-        query: { pathpush: true },
-        state: { cache: false, closetabid: mainId },
-      });
-    }
+    router.push({
+      pathname: `/ITSM/operationplan/operationplanform`,
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
+    });
   };
 
   //  回退

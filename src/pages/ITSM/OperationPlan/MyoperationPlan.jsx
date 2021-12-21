@@ -67,6 +67,479 @@ function MyoperationPlan(props) {
 
   let formThead;
 
+ 
+
+  const defaultAllkey = columns.map(item => {
+    return item.title;
+  });
+
+  const getTobolist = () => {
+    dispatch({
+      type: 'processmodel/myTasklist',
+      payload: {
+        pageIndex: paginations.current - 1,
+        pageSize: paginations.pageSize,
+      },
+    });
+  };
+
+  const handleReset = () => {
+    resetFields();
+    dispatch({
+      type: 'processmodel/myTasklist',
+      payload: {
+        pageIndex: 0,
+        pageSize: paginations.pageSize,
+      },
+    });
+    setPaginations({ current: 1, pageSize: 15 });
+  };
+
+  // useEffect(() => {
+  //   if (location.state && location.state.reset) {
+  //     handleReset();
+  //     getTobolist({}, 1, 15);
+  //   }
+  // }, [location.state]);
+
+  const searchdata = (values, page, pageSize) => {
+    const newvalues = {
+      ...values,
+      time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      checkTime1: values.checkTime?.length
+        ? moment(values.checkTime[0]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      checkTime2: values.checkTime?.length
+        ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      checkTime: '',
+      executeOperationTime1: values.executeOperationTime?.length
+        ? moment(values.executeOperationTime[0]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      executeOperationTime2: values.executeOperationTime?.length
+        ? moment(values.executeOperationTime[1]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      executeOperationTime: '',
+      plannedStartTime1: values.plannedStartTime?.length
+        ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      plannedStartTime2: values.plannedStartTime?.length
+        ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      plannedStartTime: '',
+      startTime1: values.startTime?.length
+        ? moment(values.startTime[0]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      startTime2: values.startTime?.length
+        ? moment(values.startTime[1]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      startTime: '',
+      plannedEndTime1: values.plannedendTime?.length
+        ? moment(values.plannedendTime[0]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      plannedEndTime2: values.plannedendTime?.length
+        ? moment(values.plannedendTime[1]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      plannedendTime: '',
+      endTime1: values.endTime?.length
+        ? moment(values.endTime[0]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      endTime2: values.endTime?.length
+        ? moment(values.endTime[1]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      endTime: '',
+      addTime: '',
+    };
+    setTabRecord({ ...newvalues });
+    dispatch({
+      type: 'processmodel/myTasklist',
+      payload: {
+        ...newvalues,
+        pageIndex: page - 1,
+        pageSize,
+      },
+    });
+  };
+
+  const onShowSizeChange = (page, pageSize) => {
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, page, pageSize);
+      }
+    });
+    setPaginations({
+      ...paginations,
+      pageSize,
+    });
+  };
+
+  //  获取作业负责人
+  const getoperationPerson = () => {
+    dispatch({
+      type: 'processmodel/operationPerson',
+    });
+  };
+
+  // 处理作业负责人数据
+  if (operationPersonArr.length) {
+    operationPersonSelect = operationPersonArr.map(item => {
+      return {
+        key: item.id,
+        value: item.userName,
+      };
+    });
+  }
+
+  const changePage = page => {
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, page, paginations.pageSize);
+      }
+    });
+    setPaginations({
+      ...paginations,
+      current: page,
+    });
+  };
+
+  const pagination = {
+    showSizeChanger: true,
+    onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
+    current: paginations.current,
+    pageSize: paginations.pageSize,
+    total: myTaskplanlist.total,
+    showTotal: total => `总共  ${total}  条记录`,
+    onChange: page => changePage(page),
+  };
+
+  const handleSearch = () => {
+    setPaginations({
+      ...paginations,
+      current: 1,
+    });
+    validateFields((err, values) => {
+      if (err) {
+        return;
+      }
+      searchdata(values, 1, paginations.pageSize);
+    });
+  };
+
+  const exportDownload = () => {
+    const exportColumns = columns.map(item => {
+      return {
+        column: item.dataIndex,
+        field: item.title,
+      };
+    });
+    validateFields((err, values) => {
+      dispatch({
+        type: 'processmodel/downloadMyOperationExcel',
+        payload: {
+          columns: JSON.stringify(exportColumns),
+          ids: selectedKeys.toString(),
+          ...values,
+          time1: values.addTime ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          time2: values.addTime ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          checkTime1: values.checkTime
+            ? moment(values.checkTime[0]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          checkTime2: values.checkTime
+            ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          checkTime: '',
+          executeOperationTime1: values.executeOperationTime
+            ? moment(values.executeOperationTime[0]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          executeOperationTime2: values.executeOperationTime
+            ? moment(values.executeOperationTime[1]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          executeOperationTime: '',
+          plannedStartTime1: values.plannedStartTime
+            ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          plannedStartTime2: values.plannedStartTime
+            ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          plannedStartTime: '',
+          startTime1: values.startTime
+            ? moment(values.startTime[0]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          startTime2: values.startTime
+            ? moment(values.startTime[1]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          startTime: '',
+          plannedEndTime1: values.plannedendTime
+            ? moment(values.plannedendTime[0]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          plannedEndTime2: values.plannedendTime
+            ? moment(values.plannedendTime[1]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          plannedendTime: '',
+          endTime1: values.endTime ? moment(values.endTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          endTime2: values.endTime ? moment(values.endTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          endTime: '',
+          addTime: '',
+        },
+      }).then(res => {
+        const filename = '下载我的作业计划.xls';
+        const blob = new Blob([res]);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      });
+    });
+  };
+
+  const rowSelection = {
+    onChange: (index, handleSelect) => {
+      setSelectedKeys([...index]);
+      setSelectedRows([...handleSelect]);
+    },
+  };
+
+  const handleDelay = () => {
+    if (selectedRows.length !== 1) {
+      message.info('请选择一条数据');
+      return false;
+    }
+
+    const res = selectedRows.every(item => {
+      if (item.status !== '延期中' && item.checkStatus === '已审核') {
+        return true;
+      }
+
+      if (item.status === '延期中' || item.checkStatus !== '已审核') {
+        message.info('延期的条件为:作业状态计划中或者已超时,且审核状态为:已审核');
+        return false;
+      }
+      return null;
+    });
+
+    if (res === false) {
+      return false;
+    }
+
+    if (res === true) {
+      gotoDetail(selectedRows[0], 'delay');
+    }
+
+    return null;
+  };
+
+  const handleDelete = () => {
+    if (selectedRows.length === 0) {
+      message.info('至少选择一条数据');
+      return false;
+    }
+
+    const deleteJudge = selectedRows.every(item => {
+      if (item.flowNodeName !== '计划登记') {
+        message.info('请选择当前处理环节为:计划登记');
+        return false;
+      }
+
+      if (item.flowNodeName === '计划登记') {
+        return true;
+      }
+
+      return null;
+    });
+
+    if (deleteJudge === false) {
+      return false;
+    }
+
+    if (deleteJudge === true) {
+      const deleteIds = selectedRows.map(res => {
+        return res.mainId;
+      });
+
+      return dispatch({
+        type: 'processmodel/taskDelete',
+        payload: {
+          mainIds: deleteIds.toString(),
+        },
+      }).then(res => {
+        if (res.code === 200) {
+          message.success(res.msg);
+          getTobolist();
+          setSelectedRows([])
+        } else {
+          message.info(res.msg);
+          getTobolist();
+        }
+      });
+    }
+
+    return null;
+  };
+
+  const getTypebyTitle = title => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.title === title)[0].children;
+    }
+    return [];
+  };
+
+  const gotoCensorship = () => {
+    const allmainId = selectedRows.map(obj => {
+      return obj.mainId;
+    });
+    return dispatch({
+      type: 'processmodel/censorshipSubmit',
+      payload: {
+        mainIds: allmainId.toString(),
+        userId: sessionStorage.getItem('NextflowUserId'),
+      },
+    }).then(res => {
+      if (res.code === 200) {
+        message.success('送审成功');
+        getTobolist();
+      } else {
+        message.error('送审失败');
+        getTobolist();
+      }
+    });
+  };
+
+  //  送审选人
+  useEffect(() => {
+    if (userchoice) {
+      gotoCensorship();
+      setSelectedRows([])
+    }
+  }, [userchoice]);
+
+  const handleCheck = () => {
+    if (selectedRows.length === 0) {
+      message.info('请选择要处理的数据');
+      return false;
+    }
+
+    const checkJudge = selectedRows.every(item => {
+      if (item.checkStatus !== '待送审') {
+        message.info('请选择审核状态:待送审');
+        return false;
+      }
+
+      if (item.checkStatus === '待送审') {
+        return true;
+      }
+      return null;
+    });
+
+    if (checkJudge) {
+      setUserVisible(true);
+    }
+
+    return null;
+  };
+
+  const executeStatus = getTypebyTitle('作业状态');
+  const taskType = getTypebyTitle('作业类型');
+  const taskNature = getTypebyTitle('作业性质');
+  const taskBilling = getTypebyTitle('是否开票');
+  const checkStatus = getTypebyTitle('审核状态');
+  const timeoutStatus = getTypebyTitle('超时状态');
+  const taskResult = getTypebyTitle('作业结果');
+  const checkResult = getTypebyTitle('审核结果');
+  const taskCompany = getTypebyTitle('作业单位');
+
+  // 设置时间
+  useEffect(() => {
+    if (location.state.cacheinfo) {
+      const {
+        checkTime1,
+        checkTime2,
+        endTime1,
+        endTime2,
+        executeOperationTime1,
+        executeOperationTime2,
+        plannedEndTime1,
+        plannedEndTime2,
+        plannedStartTime1,
+        plannedStartTime2,
+        startTime1,
+        startTime2,
+        time1,
+        time2,
+      } = location.state.cacheinfo;
+      setFieldsValue({
+        addTime: time1 ? [moment(time1), moment(time2)] : '',
+        checkTime: checkTime1 ? [moment(checkTime1), moment(checkTime2)] : '',
+        endTime: endTime1 ? [moment(endTime1), moment(endTime2)] : '',
+        executeOperationTime: executeOperationTime1
+          ? [moment(executeOperationTime1), moment(executeOperationTime2)]
+          : '',
+        plannedendTime: plannedEndTime1 ? [moment(plannedEndTime1), moment(plannedEndTime2)] : '',
+        startTime: startTime1 ? [moment(startTime1), moment(startTime2)] : '',
+        plannedStartTime: plannedStartTime1
+          ? [moment(plannedStartTime1), moment(plannedStartTime2)]
+          : '',
+      });
+    }
+  }, [location.state]);
+
+  const handleCopy = () => {
+    if (selectedRows.length !== 1) {
+      message.info('请选择一条数据');
+      return false;
+    }
+
+    if (selectedRows.length > 1) {
+      message.info('只能选择一条数据复制哦');
+      return false;
+    }
+
+    if (selectedRows.length === 1) {
+      message.success('复制成功，可往填报中粘贴');
+      const type = taskType.filter(item => item.title === selectedRows[0].type)[0]?.dict_code || '';
+      const nature = taskNature.filter(item => item.title === selectedRows[0].nature)[0]?.dict_code || '';
+      const operationUnit = taskCompany.filter(item => item.title === selectedRows[0].operationUnit)[0]?.dict_code || '';
+      const billing = taskBilling.filter(item => item.title === selectedRows[0].billing)[0]?.dict_code || '';
+      localStorage.setItem('copy', JSON.stringify({
+        ...selectedRows[0],
+        type,
+        nature,
+        operationUnit,
+        billing,
+        operationNo: ''
+      }));
+    }
+    return null;
+  };
+
+  useEffect(() => {
+    sessionStorage.setItem('Processtype', 'task');
+    sessionStorage.setItem('Nextflowmane', '送审');
+    getoperationPerson();
+    setColumns(initialColumns);
+    sessionStorage.removeItem('copyrecord');
+  }, []);
+
+  const handleFillin = () => {
+    router.push({
+      pathname: '/ITSM/operationplan/operationplanfillin',
+      query: {
+        addtab: true,
+      },
+    });
+  };
+
+  // 设置初始值
+  const record = {
+    operationNo: '',
+    systemName: '',
+    paginations,
+    expand,
+  };
+  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+
   const gotoDetail = (record, delay) => {
     dispatch({
       type: 'viewcache/gettabstate',
@@ -89,6 +562,14 @@ function MyoperationPlan(props) {
         checkStatus: record.checkStatus,
         orderNo: record.operationNo,
       },
+      state: {
+        runpath: '/ITSM/operationplan/myoperationplan',
+        cacheinfo: {
+          ...tabrecord,
+          paginations,
+          expand,
+        },
+      }
     });
   };
 
@@ -354,315 +835,6 @@ function MyoperationPlan(props) {
     },
   ];
 
-  const defaultAllkey = columns.map(item => {
-    return item.title;
-  });
-
-  const getTobolist = () => {
-    dispatch({
-      type: 'processmodel/myTasklist',
-      payload: {
-        pageIndex: paginations.current - 1,
-        pageSize: paginations.pageSize,
-      },
-    });
-  };
-
-  const handleReset = () => {
-    resetFields();
-    dispatch({
-      type: 'processmodel/myTasklist',
-      payload: {
-        pageIndex: 0,
-        pageSize: paginations.pageSize,
-      },
-    });
-  };
-
-  useEffect(() => {
-    if (location.state && location.state.reset) {
-      handleReset();
-      getTobolist({}, 1, 15);
-    }
-  }, [location.state]);
-
-  const searchdata = (values, page, pageSize) => {
-    const newvalues = {
-      ...values,
-      time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-      checkTime1: values.checkTime?.length
-        ? moment(values.checkTime[0]).format('YYYY-MM-DD HH:mm:ss')
-        : '',
-      checkTime2: values.checkTime?.length
-        ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss')
-        : '',
-      checkTime: '',
-      executeOperationTime1: values.executeOperationTime?.length
-        ? moment(values.executeOperationTime[0]).format('YYYY-MM-DD HH:mm:ss')
-        : '',
-      executeOperationTime2: values.executeOperationTime?.length
-        ? moment(values.executeOperationTime[1]).format('YYYY-MM-DD HH:mm:ss')
-        : '',
-      executeOperationTime: '',
-      plannedStartTime1: values.plannedStartTime?.length
-        ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss')
-        : '',
-      plannedStartTime2: values.plannedStartTime?.length
-        ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss')
-        : '',
-      plannedStartTime: '',
-      startTime1: values.startTime?.length
-        ? moment(values.startTime[0]).format('YYYY-MM-DD HH:mm:ss')
-        : '',
-      startTime2: values.startTime?.length
-        ? moment(values.startTime[1]).format('YYYY-MM-DD HH:mm:ss')
-        : '',
-      startTime: '',
-      plannedEndTime1: values.plannedendTime?.length
-        ? moment(values.plannedendTime[0]).format('YYYY-MM-DD HH:mm:ss')
-        : '',
-      plannedEndTime2: values.plannedendTime?.length
-        ? moment(values.plannedendTime[1]).format('YYYY-MM-DD HH:mm:ss')
-        : '',
-      plannedendTime: '',
-      endTime1: values.endTime?.length
-        ? moment(values.endTime[0]).format('YYYY-MM-DD HH:mm:ss')
-        : '',
-      endTime2: values.endTime?.length
-        ? moment(values.endTime[1]).format('YYYY-MM-DD HH:mm:ss')
-        : '',
-      endTime: '',
-      addTime: '',
-    };
-    setTabRecord({ ...newvalues });
-    dispatch({
-      type: 'processmodel/myTasklist',
-      payload: {
-        ...newvalues,
-        pageIndex: page - 1,
-        pageSize,
-      },
-    });
-  };
-
-  const onShowSizeChange = (page, pageSize) => {
-    validateFields((err, values) => {
-      if (!err) {
-        searchdata(values, page, pageSize);
-      }
-    });
-    setPaginations({
-      ...paginations,
-      pageSize,
-    });
-  };
-
-  //  获取作业负责人
-  const getoperationPerson = () => {
-    dispatch({
-      type: 'processmodel/operationPerson',
-    });
-  };
-
-  // 处理作业负责人数据
-  if (operationPersonArr.length) {
-    operationPersonSelect = operationPersonArr.map(item => {
-      return {
-        key: item.id,
-        value: item.userName,
-      };
-    });
-  }
-  const changePage = page => {
-    validateFields((err, values) => {
-      if (!err) {
-        searchdata(values, page, paginations.pageSize);
-      }
-    });
-    setPaginations({
-      ...paginations,
-      current: page,
-    });
-  };
-
-  const pagination = {
-    showSizeChanger: true,
-    onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
-    current: paginations.current,
-    pageSize: paginations.pageSize,
-    total: myTaskplanlist.total,
-    showTotal: total => `总共  ${total}  条记录`,
-    onChange: page => changePage(page),
-  };
-  const handleSearch = () => {
-    setPaginations({
-      ...paginations,
-      current: 1,
-    });
-    validateFields((err, values) => {
-      if (err) {
-        return;
-      }
-      searchdata(values, 1, paginations.pageSize);
-    });
-  };
-
-  const exportDownload = () => {
-    const exportColumns = columns.map(item => {
-      return {
-        column: item.dataIndex,
-        field: item.title,
-      };
-    });
-    validateFields((err, values) => {
-      dispatch({
-        type: 'processmodel/downloadMyOperationExcel',
-        payload: {
-          columns: JSON.stringify(exportColumns),
-          ids: selectedKeys.toString(),
-          ...values,
-          time1: values.addTime ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-          time2: values.addTime ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-          checkTime1: values.checkTime
-            ? moment(values.checkTime[0]).format('YYYY-MM-DD HH:mm:ss')
-            : '',
-          checkTime2: values.checkTime
-            ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss')
-            : '',
-          checkTime: '',
-          executeOperationTime1: values.executeOperationTime
-            ? moment(values.executeOperationTime[0]).format('YYYY-MM-DD HH:mm:ss')
-            : '',
-          executeOperationTime2: values.executeOperationTime
-            ? moment(values.executeOperationTime[1]).format('YYYY-MM-DD HH:mm:ss')
-            : '',
-          executeOperationTime: '',
-          plannedStartTime1: values.plannedStartTime
-            ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss')
-            : '',
-          plannedStartTime2: values.plannedStartTime
-            ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss')
-            : '',
-          plannedStartTime: '',
-          startTime1: values.startTime
-            ? moment(values.startTime[0]).format('YYYY-MM-DD HH:mm:ss')
-            : '',
-          startTime2: values.startTime
-            ? moment(values.startTime[1]).format('YYYY-MM-DD HH:mm:ss')
-            : '',
-          startTime: '',
-          plannedEndTime1: values.plannedendTime
-            ? moment(values.plannedendTime[0]).format('YYYY-MM-DD HH:mm:ss')
-            : '',
-          plannedEndTime2: values.plannedendTime
-            ? moment(values.plannedendTime[1]).format('YYYY-MM-DD HH:mm:ss')
-            : '',
-          plannedendTime: '',
-          endTime1: values.endTime ? moment(values.endTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-          endTime2: values.endTime ? moment(values.endTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-          endTime: '',
-          addTime: '',
-        },
-      }).then(res => {
-        const filename = '下载我的作业计划.xls';
-        const blob = new Blob([res]);
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        a.click();
-        window.URL.revokeObjectURL(url);
-      });
-    });
-  };
-
-  const rowSelection = {
-    onChange: (index, handleSelect) => {
-      setSelectedKeys([...index]);
-      setSelectedRows([...handleSelect]);
-    },
-  };
-
-  const handleDelay = () => {
-    if (selectedRows.length !== 1) {
-      message.info('请选择一条数据');
-      return false;
-    }
-
-    const res = selectedRows.every(item => {
-      if (item.status !== '延期中' && item.checkStatus === '已审核') {
-        return true;
-      }
-
-      if (item.status === '延期中' || item.checkStatus !== '已审核') {
-        message.info('延期的条件为:作业状态计划中或者已超时,且审核状态为:已审核');
-        return false;
-      }
-      return null;
-    });
-
-    if (res === false) {
-      return false;
-    }
-
-    if (res === true) {
-      gotoDetail(selectedRows[0], 'delay');
-    }
-
-    return null;
-  };
-
-
-
-  const handleDelete = () => {
-    if (selectedRows.length === 0) {
-      message.info('至少选择一条数据');
-      return false;
-    }
-
-    const deleteJudge = selectedRows.every(item => {
-      if (item.flowNodeName !== '计划登记') {
-        message.info('请选择当前处理环节为:计划登记');
-        return false;
-      }
-
-      if (item.flowNodeName === '计划登记') {
-        return true;
-      }
-
-      return null;
-    });
-
-    if (deleteJudge === false) {
-      return false;
-    }
-
-    if (deleteJudge === true) {
-      const deleteIds = selectedRows.map(res => {
-        return res.mainId;
-      });
-
-      return dispatch({
-        type: 'processmodel/taskDelete',
-        payload: {
-          mainIds: deleteIds.toString(),
-        },
-      }).then(res => {
-        if (res.code === 200) {
-          message.success(res.msg);
-          getTobolist();
-          setSelectedRows([])
-        } else {
-          message.info(res.msg);
-          getTobolist();
-        }
-      });
-    }
-
-    return null;
-  };
-
   const creataColumns = () => {
     // columns
     initialColumns.length = 0;
@@ -723,138 +895,11 @@ function MyoperationPlan(props) {
 
   const onCheck = checkedValues => {
     formThead = initialColumns.filter(i => checkedValues.indexOf(i.title) >= 0);
-
     if (formThead.length === 0) {
       setColumns([]);
     }
     creataColumns();
   };
-
-  const getTypebyTitle = title => {
-    if (selectdata.ischange) {
-      return selectdata.arr.filter(item => item.title === title)[0].children;
-    }
-    return [];
-  };
-
-  const gotoCensorship = () => {
-    const allmainId = selectedRows.map(obj => {
-      return obj.mainId;
-    });
-    return dispatch({
-      type: 'processmodel/censorshipSubmit',
-      payload: {
-        mainIds: allmainId.toString(),
-        userId: sessionStorage.getItem('NextflowUserId'),
-      },
-    }).then(res => {
-      if (res.code === 200) {
-        message.success('送审成功');
-        getTobolist();
-      } else {
-        message.error('送审失败');
-        getTobolist();
-      }
-    });
-  };
-
-  //  送审选人
-  useEffect(() => {
-    if (userchoice) {
-      gotoCensorship();
-      setSelectedRows([])
-    }
-  }, [userchoice]);
-
-  const handleCheck = () => {
-    if (selectedRows.length === 0) {
-      message.info('请选择要处理的数据');
-      return false;
-    }
-
-    const checkJudge = selectedRows.every(item => {
-      if (item.checkStatus !== '待送审') {
-        message.info('请选择审核状态:待送审');
-        return false;
-      }
-
-      if (item.checkStatus === '待送审') {
-        return true;
-      }
-      return null;
-    });
-
-    if (checkJudge) {
-      setUserVisible(true);
-    }
-
-    return null;
-  };
-
-  const executeStatus = getTypebyTitle('作业状态');
-  const taskType = getTypebyTitle('作业类型');
-  const taskNature = getTypebyTitle('作业性质');
-  const taskBilling = getTypebyTitle('是否开票');
-  const checkStatus = getTypebyTitle('审核状态');
-  const timeoutStatus = getTypebyTitle('超时状态');
-  const taskResult = getTypebyTitle('作业结果');
-  const checkResult = getTypebyTitle('审核结果');
-  const taskCompany = getTypebyTitle('作业单位');
-
-  const handleCopy = () => {
-    if (selectedRows.length !== 1) {
-      message.info('请选择一条数据');
-      return false;
-    }
-
-    if (selectedRows.length > 1) {
-      message.info('只能选择一条数据复制哦');
-      return false;
-    }
-
-    if (selectedRows.length === 1) {
-      message.success('复制成功，可往填报中粘贴');
-      const type = taskType.filter(item => item.title === selectedRows[0].type)[0]?.dict_code  ||'';
-      const nature = taskNature.filter(item => item.title === selectedRows[0].nature)[0]?.dict_code  ||'';
-      const operationUnit = taskCompany.filter(item => item.title === selectedRows[0].operationUnit)[0]?.dict_code  ||'';
-      const billing = taskBilling.filter(item => item.title === selectedRows[0].billing)[0]?.dict_code  ||'';
-      localStorage.setItem('copy', JSON.stringify({
-        ...selectedRows[0],
-        type,
-        nature,
-        operationUnit,
-        billing,
-        operationNo: ''
-      }));
-    }
-    return null;
-  };
-
-  useEffect(() => {
-    sessionStorage.setItem('Processtype', 'task');
-    sessionStorage.setItem('Nextflowmane', '送审');
-    getoperationPerson();
-    setColumns(initialColumns);
-    sessionStorage.removeItem('copyrecord');
-  }, []);
-
-  const handleFillin = () => {
-    router.push({
-      pathname: '/ITSM/operationplan/operationplanfillin',
-      query: {
-        addtab: true,
-      },
-    });
-  };
-
-  // 设置初始值
-  const record = {
-    operationNo: '',
-    systemName: '',
-    paginations,
-    expand,
-  };
-  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
 
   useEffect(() => {
     if (location.state) {
@@ -875,50 +920,13 @@ function MyoperationPlan(props) {
       // 点击菜单刷新
       if (location.state.reset) {
         handleReset();
-        setExpand(false);
       }
+      // 标签切回设置初始值
       if (location.state.cacheinfo) {
-        if (location.state.cacheinfo.paginations) {
-          const { current, pageSize } = location.state.cacheinfo.paginations;
-          setPaginations({ ...paginations, current, pageSize });
-        }
+        const { current, pageSize } = location.state.cacheinfo.paginations;
         setExpand(location.state.cacheinfo.expand);
+        setPaginations({ ...paginations, current, pageSize });
       }
-    }
-  }, [location.state]);
-
-  // 设置时间
-  useEffect(() => {
-    if (location.state.cacheinfo) {
-      const {
-        checkTime1,
-        checkTime2,
-        endTime1,
-        endTime2,
-        executeOperationTime1,
-        executeOperationTime2,
-        plannedEndTime1,
-        plannedEndTime2,
-        plannedStartTime1,
-        plannedStartTime2,
-        startTime1,
-        startTime2,
-        time1,
-        time2,
-      } = location.state.cacheinfo;
-      setFieldsValue({
-        addTime: time1 ? [moment(time1), moment(time2)] : '',
-        checkTime: checkTime1 ? [moment(checkTime1), moment(checkTime2)] : '',
-        endTime: endTime1 ? [moment(endTime1), moment(endTime2)] : '',
-        executeOperationTime: executeOperationTime1
-          ? [moment(executeOperationTime1), moment(executeOperationTime2)]
-          : '',
-        plannedendTime: plannedEndTime1 ? [moment(plannedEndTime1), moment(plannedEndTime2)] : '',
-        startTime: startTime1 ? [moment(startTime1), moment(startTime2)] : '',
-        plannedStartTime: plannedStartTime1
-          ? [moment(plannedStartTime1), moment(plannedStartTime2)]
-          : '',
-      });
     }
   }, [location.state]);
 

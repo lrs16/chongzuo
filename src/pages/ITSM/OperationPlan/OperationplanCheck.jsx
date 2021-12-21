@@ -85,6 +85,14 @@ function OperationplanCheck(props) {
         mainId: record.mainId,
         orderNo: record.operationNo,
       },
+      state: {
+        runpath: '/ITSM/operationplan/operationplancheck',
+        cacheinfo: {
+          ...tabrecord,
+          paginations,
+          expand,
+        },
+      }
     });
   };
 
@@ -381,6 +389,7 @@ function OperationplanCheck(props) {
         pageSize: paginations.pageSize,
       },
     });
+    setPaginations({ current: 1, pageSize: 15 });
   };
 
   const searchdata = (values, page, pageSize) => {

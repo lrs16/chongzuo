@@ -106,6 +106,14 @@ function TaskSearch(props) {
         mainId: record.mainId,
         No: record.operationNo,
       },
+      state: {
+        runpath: '/ITSM/operationplan/operationplansearch',
+        cacheinfo: {
+          ...tabrecord,
+          paginations,
+          expand,
+        },
+      }
     });
   };
 
@@ -116,6 +124,7 @@ function TaskSearch(props) {
       state: {},
     });
     resetFields();
+    setPaginations({ current: 1, pageSize: 15 });
   };
 
   const initialColumns = [
@@ -817,8 +826,8 @@ function TaskSearch(props) {
 
     if (selectedKeys.length === 1) {
       message.success('复制成功，可往填报中粘贴');
-      const type = taskType.filter(item => item.title === selectedRows[0].type)[0]?.dict_code ||'';
-      const nature = taskNature.filter(item => item.title === selectedRows[0].nature)[0]?.dict_code || '' ;
+      const type = taskType.filter(item => item.title === selectedRows[0].type)[0]?.dict_code || '';
+      const nature = taskNature.filter(item => item.title === selectedRows[0].nature)[0]?.dict_code || '';
       const operationUnit = taskCompany.filter(item => item.title === selectedRows[0].operationUnit)[0]?.dict_code || '';
       const billing = taskBilling.filter(item => item.title === selectedRows[0].billing)[0]?.dict_code || '';
       localStorage.setItem('copy', JSON.stringify({
@@ -827,7 +836,7 @@ function TaskSearch(props) {
         nature,
         operationUnit,
         billing,
-        operationNo:''
+        operationNo: ''
       }));
     }
 
@@ -840,10 +849,13 @@ function TaskSearch(props) {
   }, []);
 
   useEffect(() => {
-    validateFields((err, values) => {
-      searchdata(values, 1, paginations.pageSize);
-    });
-  }, [location.state]);
+    if(cacheinfo !== undefined) {
+      validateFields((err, values) => {
+        searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize);
+      });
+    }
+  
+  }, []);
 
   const pagination = {
     showSizeChanger: true,

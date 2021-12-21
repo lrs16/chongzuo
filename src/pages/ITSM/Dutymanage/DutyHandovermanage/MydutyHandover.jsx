@@ -154,7 +154,8 @@ function MydutyHandover(props) {
     shift = [];
     acceptshift = [];
     setNewtitle('')
-    getclassSettinglist()
+    getclassSettinglist();
+    setPaginations({ current: 1, pageSize: 15 });
   };
 
   // 查询

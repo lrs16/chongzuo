@@ -70,6 +70,241 @@ function Besolved(props) {
 
   let formThead;
 
+  if (problem) {
+    differentTitle = '问题统计查询';
+  } else {
+    differentTitle = '问题查询';
+  }
+
+  const searchdata = (values, page) => {
+    dispatch({
+      type: 'problemmanage/queryList',
+      payload: {
+        ...values,
+        registerOccurTimeBegin: values.registerOccurTime?.length
+          ? moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss')
+          : '',
+        registerOccurTimeEnd: values.registerOccurTime?.length
+          ? moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss')
+          : '',
+        registerOccurTime: values.registerOccurTime?.length
+          ? [
+            moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+            moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+          ]
+          : '',
+        addTimeBegin: values.addTime?.length
+          ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss')
+          : '',
+        addTimeEnd: values.addTime?.length
+          ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss')
+          : '',
+        addTime: values.addTime?.length
+          ? [
+            moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+            moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+          ]
+          : '',
+        pageNum: page,
+        type:
+          values && values.type && values.type.length > 0
+            ? values.type[values.type.length - 1].toString()
+            : '',
+        pageSize: paginations.pageSize,
+      },
+    });
+    const newvalues = {
+      ...values,
+      registerOccurTimeBegin: values.registerOccurTime?.length
+        ? moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      registerOccurTimeEnd: values.registerOccurTime?.length
+        ? moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      registerOccurTime: values.registerOccurTime?.length
+        ? [
+          moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+          moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+        ]
+        : '',
+      addTimeBegin: values.addTime?.length
+        ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      addTimeEnd: values.addTime?.length
+        ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      addTime: values.addTime?.length
+        ? [
+          moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+          moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+        ]
+        : '',
+      pageNum: paginations.current,
+      pageSize: paginations.pageSize,
+    };
+    setTabRecord({ ...newvalues });
+  };
+
+  const handleReset = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: {},
+    });
+    resetFields();
+    searchdata({}, 1, 15);
+  };
+
+  const onShowSizeChange = (page, pageSize) => {
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, page, pageSize);
+      }
+    });
+    setPageinations({
+      ...paginations,
+      pageSize,
+    });
+  };
+
+  const changePage = page => {
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, page, paginations.pageSize);
+      }
+    });
+    setPageinations({
+      ...paginations,
+      current: page,
+    });
+  };
+
+  const pagination = {
+    showSizeChanger: true,
+    onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
+    current: paginations.current,
+    pageSize: paginations.pageSize,
+    total: queryArr.total,
+    showTotal: total => `总共  ${total}  条记录`,
+    onChange: page => changePage(page),
+  };
+
+  const handleSearch = search => {
+    setPageinations({
+      ...paginations,
+      current: 1,
+    });
+    validateFields((err, values) => {
+      if (err) {
+        return;
+      }
+      const obj = values;
+      if (values.createTimeBegin) {
+        obj.createTimeBegin = values.createTimeBegin.format('YYYY-MM-DD HH:mm:ss');
+      }
+      searchdata(obj, 1, paginations.pageSize, search);
+    });
+  };
+
+  const download = () => {
+    const exportColumns = columns.map(item => {
+      return {
+        column: item.dataIndex,
+        field: item.title,
+      };
+    });
+    validateFields((err, values) => {
+      if (!err) {
+        dispatch({
+          type: 'problemmanage/eventdownload',
+          payload: {
+            columns: JSON.stringify(exportColumns),
+            ids: selectedKeys.toString(),
+            ...values,
+            type: values.type && values.type.length ? values.type[1] : '',
+            createTimeBegin: values.createTime?.length
+              ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss')
+              : addTimeBegin,
+            createTimeEnd: values.createTime?.length
+              ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss')
+              : addTimeEnd,
+            createTime: '',
+          },
+        }).then(res => {
+          const filename = `问题查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+      }
+    });
+  };
+
+  const getTypebyTitle = titles => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.title === titles)[0].children;
+    }
+    return [];
+  };
+  const problemSource = getTypebyTitle('问题来源');
+  const priority = getTypebyTitle('严重程度');
+  const currentNodeselect = getTypebyTitle('当前处理环节');
+  const problemType = getTypebyTitle('问题分类');
+  const scopeList = getTypebyTitle('影响范围');
+  const timeoutList = getTypebyTitle('超时状态');
+
+  // 设置时间
+  useEffect(() => {
+    if (location && location.state && location.state.cacheinfo) {
+      const { registerOccurTime, addTime } = location.state.cacheinfo;
+      setFieldsValue({
+        registerOccurTime: registerOccurTime?.length
+          ? [moment(registerOccurTime[0]), moment(registerOccurTime[1])]
+          : '',
+        addTime: addTime?.length ? [moment(addTime[0]), moment(addTime[1])] : '',
+      });
+    } else {
+      setFieldsValue({
+        addTime: addTimeBegin ? [moment(addTimeBegin), moment(addTimeEnd)] : '',
+      });
+    }
+  }, [location.state]);
+
+  const problemTypes = type === undefined ? [] : [type.substr(0, 3), type];
+
+  // 设置初始值
+  const record = {
+    no: '',
+    currentNode,
+    taskUser: '',
+    title: '',
+    confirmUser: '',
+    source: '',
+    type: problemTypes,
+    registerScope: '',
+    handler: '',
+    handleUnit: '',
+    registerUser: '',
+    importance: '',
+    handlerId,
+    handleDeptId,
+    progressStatus,
+    timeStatus,
+    handleProcessGroupType,
+    checkUserId,
+    checkDeptId,
+    status,
+    createTime: '',
+    addTime: addTimeBegin ? [moment(addTimeBegin), moment(addTimeEnd)] : '',
+    paginations,
+  };
+
+  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+
   const gotoDetail = (text, record) => {
     dispatch({
       type: 'viewcache/gettabstate',
@@ -89,8 +324,145 @@ function Besolved(props) {
         taskName: record.statuscn,
         No: record.no,
       },
+      state: {
+        runpath: '/ITSM/problemmanage/problemquery',
+        cacheinfo: {
+          ...tabrecord,
+          paginations,
+          expand,
+        },
+      }
     });
+
   };
+
+  const controlTable = [
+    {
+      title: '问题编号',
+      dataIndex: 'no',
+      key: 'no',
+      width: 150,
+      align: 'center',
+      render: (text, record) => {
+        return <a onClick={() => gotoDetail(text, record)}>{text}</a>;
+      },
+    },
+    {
+      title: '问题分类',
+      dataIndex: 'type',
+      key: 'type',
+      width: 150,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '问题描述',
+      dataIndex: 'content',
+      key: 'content',
+      width: 150,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '问题申报人',
+      dataIndex: 'complainUser',
+      key: 'complainUser',
+      width: 200,
+      align: 'center',
+    },
+    {
+      title: '开发负责人',
+      dataIndex: 'developmentLead',
+      key: 'developmentLead',
+      align: 'center',
+      width: 120,
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '建单时间',
+      dataIndex: 'addTime',
+      key: 'addTime',
+      align: 'center',
+      width: 200,
+    },
+    {
+      title: '系统运维商确认结果',
+      dataIndex: 'confirmOneResult',
+      key: 'confirmOneResult',
+      width: 200,
+      align: 'center',
+    },
+    {
+      title: '处理完成时间',
+      dataIndex: 'handleTime',
+      key: 'handleTime',
+      width: 200,
+      align: 'center',
+    },
+    {
+      title: '系统开发商处理人',
+      dataIndex: 'handler',
+      key: 'handler',
+      width: 150,
+      align: 'center',
+    },
+    {
+      title: '计划完成时间',
+      dataIndex: 'planEndTime',
+      key: 'planEndTime',
+      width: 200,
+      align: 'center',
+    },
+    {
+      title: '处理解决方案',
+      dataIndex: 'handleContent',
+      key: 'handleContent',
+      width: 150,
+      align: 'center',
+    },
+    {
+      title: '系统开发商处理结果',
+      dataIndex: 'handleResult',
+      key: 'handleResult',
+      width: 250,
+      align: 'center',
+    },
+    {
+      title: '问题登记人员确认结果',
+      dataIndex: 'confirmThreeResult',
+      key: 'confirmThreeResult',
+      width: 250,
+      align: 'center',
+    },
+    {
+      title: '问题登记人员确认人',
+      dataIndex: 'confirmThreeUser',
+      key: 'confirmThreeUser',
+      width: 200,
+      align: 'center',
+    },
+  ];
 
   const initialColumns = [
     {
@@ -751,241 +1123,6 @@ function Besolved(props) {
     },
   ];
 
-  if (problem) {
-    differentTitle = '问题统计查询';
-  } else {
-    differentTitle = '问题查询';
-  }
-
-  const searchdata = (values, page) => {
-    dispatch({
-      type: 'problemmanage/queryList',
-      payload: {
-        ...values,
-        registerOccurTimeBegin: values.registerOccurTime?.length
-          ? moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss')
-          : '',
-        registerOccurTimeEnd: values.registerOccurTime?.length
-          ? moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss')
-          : '',
-        registerOccurTime: values.registerOccurTime?.length
-          ? [
-              moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss'),
-              moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss'),
-            ]
-          : '',
-        addTimeBegin: values.addTime?.length
-          ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss')
-          : '',
-        addTimeEnd: values.addTime?.length
-          ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss')
-          : '',
-        addTime: values.addTime?.length
-          ? [
-              moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss'),
-              moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss'),
-            ]
-          : '',
-        pageNum: page,
-        type:
-          values && values.type && values.type.length > 0
-            ? values.type[values.type.length - 1].toString()
-            : '',
-        pageSize: paginations.pageSize,
-      },
-    });
-    const newvalues = {
-      ...values,
-      registerOccurTimeBegin: values.registerOccurTime?.length
-        ? moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss')
-        : '',
-      registerOccurTimeEnd: values.registerOccurTime?.length
-        ? moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss')
-        : '',
-      registerOccurTime: values.registerOccurTime?.length
-        ? [
-            moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss'),
-            moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss'),
-          ]
-        : '',
-      addTimeBegin: values.addTime?.length
-        ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss')
-        : '',
-      addTimeEnd: values.addTime?.length
-        ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss')
-        : '',
-      addTime: values.addTime?.length
-        ? [
-            moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss'),
-            moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss'),
-          ]
-        : '',
-      pageNum: paginations.current,
-      pageSize: paginations.pageSize,
-    };
-    setTabRecord({ ...newvalues });
-  };
-
-  const handleReset = () => {
-    router.push({
-      pathname: location.pathname,
-      query: {},
-      state: {},
-    });
-    resetFields();
-    searchdata({}, 1, 15);
-  };
-
-  const onShowSizeChange = (page, pageSize) => {
-    validateFields((err, values) => {
-      if (!err) {
-        searchdata(values, page, pageSize);
-      }
-    });
-    setPageinations({
-      ...paginations,
-      pageSize,
-    });
-  };
-
-  const changePage = page => {
-    validateFields((err, values) => {
-      if (!err) {
-        searchdata(values, page, paginations.pageSize);
-      }
-    });
-    setPageinations({
-      ...paginations,
-      current: page,
-    });
-  };
-
-  const pagination = {
-    showSizeChanger: true,
-    onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
-    current: paginations.current,
-    pageSize: paginations.pageSize,
-    total: queryArr.total,
-    showTotal: total => `总共  ${total}  条记录`,
-    onChange: page => changePage(page),
-  };
-
-  const handleSearch = search => {
-    setPageinations({
-      ...paginations,
-      current: 1,
-    });
-    validateFields((err, values) => {
-      if (err) {
-        return;
-      }
-      const obj = values;
-      if (values.createTimeBegin) {
-        obj.createTimeBegin = values.createTimeBegin.format('YYYY-MM-DD HH:mm:ss');
-      }
-      searchdata(obj, 1, paginations.pageSize, search);
-    });
-  };
-
-  const download = () => {
-    const exportColumns = columns.map(item => {
-      return {
-        column: item.dataIndex,
-        field: item.title,
-      };
-    });
-    validateFields((err, values) => {
-      if (!err) {
-        dispatch({
-          type: 'problemmanage/eventdownload',
-          payload: {
-            columns: JSON.stringify(exportColumns),
-            ids: selectedKeys.toString(),
-            ...values,
-            type: values.type && values.type.length ? values.type[1] : '',
-            createTimeBegin: values.createTime?.length
-              ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss')
-              : addTimeBegin,
-            createTimeEnd: values.createTime?.length
-              ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss')
-              : addTimeEnd,
-            createTime: '',
-          },
-        }).then(res => {
-          const filename = `问题查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
-          const blob = new Blob([res]);
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          a.click();
-          window.URL.revokeObjectURL(url);
-        });
-      }
-    });
-  };
-
-  const getTypebyTitle = titles => {
-    if (selectdata.ischange) {
-      return selectdata.arr.filter(item => item.title === titles)[0].children;
-    }
-    return [];
-  };
-  const problemSource = getTypebyTitle('问题来源');
-  const priority = getTypebyTitle('严重程度');
-  const currentNodeselect = getTypebyTitle('当前处理环节');
-  const problemType = getTypebyTitle('问题分类');
-  const scopeList = getTypebyTitle('影响范围');
-  const timeoutList = getTypebyTitle('超时状态');
-
-  // 设置时间
-  useEffect(() => {
-    if (location && location.state && location.state.cacheinfo) {
-      const { registerOccurTime, addTime } = location.state.cacheinfo;
-      setFieldsValue({
-        registerOccurTime: registerOccurTime?.length
-          ? [moment(registerOccurTime[0]), moment(registerOccurTime[1])]
-          : '',
-        addTime: addTime?.length ? [moment(addTime[0]), moment(addTime[1])] : '',
-      });
-    } else {
-      setFieldsValue({
-        addTime: addTimeBegin ? [moment(addTimeBegin), moment(addTimeEnd)] : '',
-      });
-    }
-  }, [location.state]);
-
-  const problemTypes = type === undefined ? [] : [type.substr(0, 3), type];
-
-  // 设置初始值
-  const record = {
-    no: '',
-    currentNode,
-    taskUser:'',
-    title: '',
-    confirmUser: '',
-    source: '',
-    type: problemTypes,
-    registerScope: '',
-    handler: '',
-    handleUnit: '',
-    registerUser: '',
-    importance: '',
-    handlerId,
-    handleDeptId,
-    progressStatus,
-    timeStatus,
-    handleProcessGroupType,
-    checkUserId,
-    checkDeptId,
-    status,
-    createTime: '',
-    addTime: addTimeBegin ? [moment(addTimeBegin), moment(addTimeEnd)] : '',
-    paginations,
-  };
-
-  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
-
   useEffect(() => {
     if (location.state) {
       if (location.state.cache) {
@@ -1015,145 +1152,12 @@ function Besolved(props) {
     }
   }, [location.state]);
 
-  useEffect(() => {
-    if (location.state && location.state.reset) {
-      handleReset();
-      searchdata({}, 1);
-    }
-  }, [location.state]);
-
-  const controlTable = [
-    {
-      title: '问题编号',
-      dataIndex: 'no',
-      key: 'no',
-      width: 150,
-      align: 'center',
-      render: (text, record) => {
-        return <a onClick={() => gotoDetail(text, record)}>{text}</a>;
-      },
-    },
-    {
-      title: '问题分类',
-      dataIndex: 'type',
-      key: 'type',
-      width: 150,
-      align: 'center',
-      ellipsis: true,
-      render: text => {
-        return (
-          <Tooltip placement="topLeft" title={text}>
-            <span>{text}</span>
-          </Tooltip>
-        );
-      },
-    },
-    {
-      title: '问题描述',
-      dataIndex: 'content',
-      key: 'content',
-      width: 150,
-      align: 'center',
-      ellipsis: true,
-      render: text => {
-        return (
-          <Tooltip placement="topLeft" title={text}>
-            <span>{text}</span>
-          </Tooltip>
-        );
-      },
-    },
-    {
-      title: '问题申报人',
-      dataIndex: 'complainUser',
-      key: 'complainUser',
-      width: 200,
-      align: 'center',
-    },
-    {
-      title: '开发负责人',
-      dataIndex: 'developmentLead',
-      key: 'developmentLead',
-      align: 'center',
-      width: 120,
-      ellipsis: true,
-      render: text => {
-        return (
-          <Tooltip placement="topLeft" title={text}>
-            <span>{text}</span>
-          </Tooltip>
-        );
-      },
-    },
-    {
-      title: '建单时间',
-      dataIndex: 'addTime',
-      key: 'addTime',
-      align: 'center',
-      width: 200,
-    },
-    {
-      title: '系统运维商确认结果',
-      dataIndex: 'confirmOneResult',
-      key: 'confirmOneResult',
-      width: 200,
-      align: 'center',
-    },
-    {
-      title: '处理完成时间',
-      dataIndex: 'handleTime',
-      key: 'handleTime',
-      width: 200,
-      align: 'center',
-    },
-    {
-      title: '系统开发商处理人',
-      dataIndex: 'handler',
-      key: 'handler',
-      width: 150,
-      align: 'center',
-    },
-    {
-      title: '计划完成时间',
-      dataIndex: 'planEndTime',
-      key: 'planEndTime',
-      width: 200,
-      align: 'center',
-    },
-    {
-      title: '处理解决方案',
-      dataIndex: 'handleContent',
-      key: 'handleContent',
-      width: 150,
-      align: 'center',
-    },
-    {
-      title: '系统开发商处理结果',
-      dataIndex: 'handleResult',
-      key: 'handleResult',
-      width: 250,
-      align: 'center',
-    },
-    {
-      title: '问题登记人员确认结果',
-      dataIndex: 'confirmThreeResult',
-      key: 'confirmThreeResult',
-      width: 250,
-      align: 'center',
-    },
-    {
-      title: '问题登记人员确认人',
-      dataIndex: 'confirmThreeUser',
-      key: 'confirmThreeUser',
-      width: 200,
-      align: 'center',
-    },
-  ];
-
   // 获取数据
   useEffect(() => {
-    const values = getFieldsValue();
-    searchdata(values, paginations.current, paginations.pageSize);
+    if (cacheinfo !== undefined) {
+      const values = getFieldsValue();
+      searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize);
+    }
   }, []);
 
   const creataColumns = () => {
@@ -1212,7 +1216,7 @@ function Besolved(props) {
     creataColumns();
   };
 
-  const defaultAllkey =(columns && columns.length > 0 ? columns: controlTable).map(item => {
+  const defaultAllkey = (columns && columns.length > 0 ? columns : controlTable).map(item => {
     return item.title;
   });
 
@@ -1370,8 +1374,8 @@ function Besolved(props) {
               <Col span={8}>
                 <Form.Item label='当前环节处理人'>
                   {
-                    getFieldDecorator('taskUser',{
-                      initialValue:cacheinfo.taskUser
+                    getFieldDecorator('taskUser', {
+                      initialValue: cacheinfo.taskUser
                     })(<Input />)
                   }
 
@@ -1610,7 +1614,7 @@ function Besolved(props) {
 
         <Table
           loading={loading}
-          columns={columns.length > 0 ? columns: controlTable}
+          columns={columns.length > 0 ? columns : controlTable}
           dataSource={queryArr.rows}
           rowKey={records => records.id}
           pagination={pagination}

@@ -69,6 +69,7 @@ function TobedealtList(props) {
   } = props;
   const [performanceLeader, setPerformanceLeader] = useState('');
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+  console.log('paginations: ', paginations);
   const [contractArr, setContractArr] = useState([]);
   const [expand, setExpand] = useState(false);
   const [disablelist, setDisabledList] = useState([]); // 服务商
@@ -108,6 +109,14 @@ function TobedealtList(props) {
             orderNo: record.assessNo,
             tobelist: true,
           },
+          state: {
+            runpath: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtlist',
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+              expand,
+            },
+          }
         });
         break;
       case '服务绩效考核查询':
@@ -123,6 +132,14 @@ function TobedealtList(props) {
             orderNo: record.assessNo,
             search: true,
           },
+          state: {
+            runpath: '/ITSM/servicequalityassessment/serviceperformanceappraisal/search',
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+              expand,
+            },
+          }
         });
         break;
       case '我的服务绩效考核':
@@ -139,6 +156,14 @@ function TobedealtList(props) {
             myOrder: true,
             search: true,
           },
+          state: {
+            runpath: '/ITSM/servicequalityassessment/serviceperformanceappraisal/assessment',
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+              expand,
+            },
+          }
         });
         break;
       default:
@@ -735,6 +760,7 @@ function TobedealtList(props) {
     });
     resetFields();
     searchdata({}, 1, 15);
+    setPageinations({ current: 1, pageSize: 15 });
   };
 
   useEffect(() => {
@@ -830,10 +856,13 @@ function TobedealtList(props) {
   useEffect(() => {
     setColumns(initialColumns);
     getPerformanceleader();
-    validateFields((err, value) => {
-      searchdata(value, 1, 15);
-    });
+    if (cacheinfo !== undefined) {
+      validateFields((err, value) => {
+        searchdata(value, cacheinfo.paginations.current, cacheinfo.paginations.pageSize);
+      });
+    }
   }, []);
+
 
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
@@ -1257,8 +1286,8 @@ function TobedealtList(props) {
                   <Select getPopupContainer={e => e.parentNode} allowClear>
                     {currentProssing.map(obj => [
                       <Option key={obj.dict_code} value={obj.title}>
-                      {obj.title}
-                    </Option>,
+                        {obj.title}
+                      </Option>,
                     ])}
                   </Select>,
                 )}
