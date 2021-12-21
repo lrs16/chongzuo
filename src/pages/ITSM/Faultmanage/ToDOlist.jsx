@@ -72,6 +72,17 @@ function ToDOlist(props) {
       width: 140,
       render: (text, record) => {
         const handleClick = () => {
+          dispatch({
+            type: 'viewcache/gettabstate',
+            payload: {
+              cacheinfo: {
+                ...tabrecord,
+                paginations,
+                expand,
+              },
+              tabid: sessionStorage.getItem('tabid')
+            },
+          });
           router.push({
             pathname: `/ITSM/faultmanage/todolist/record`,
             query: {
@@ -274,13 +285,12 @@ function ToDOlist(props) {
           const { current, pageSize } = location.state.cacheinfo.paginations;
           setPageinations({ ...paginations, current, pageSize });
         }
-        const { createTime } = location.state.cacheinfo;
-        if (createTime) {
-          setFieldsValue({
-            createTime: createTime ? moment(createTime).format('YYYY-MM-DD HH:mm:ss') : '',
-          })
-        };
+        const { createTimeBegin, createTimeEnd } = location.state.cacheinfo;
+
         setExpand(location.state.cacheinfo.expand);
+        setFieldsValue({
+          createTime: createTimeBegin ? [moment(createTimeBegin), moment(createTimeEnd)] : '',
+        });
       };
     }
   }, [location.state]);
@@ -441,7 +451,7 @@ function ToDOlist(props) {
           rowKey={r => r.id}
           pagination={pagination}
           scroll={{ x: 800 }}
-          // rowSelection={rowSelection}
+        // rowSelection={rowSelection}
         />
       </Card>
     </PageHeaderWrapper>

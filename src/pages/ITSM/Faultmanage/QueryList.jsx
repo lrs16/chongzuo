@@ -42,7 +42,7 @@ const { RangePicker } = DatePicker;
 function QueryList(props) {
   // const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
+    form: { getFieldDecorator, resetFields, validateFields, setFieldsValue, getFieldsValue },
     location: { query:
       {
         // dictCode,
@@ -1312,7 +1312,7 @@ function QueryList(props) {
   // 设置初始值
   const record = {
     checkUnit: '',
-    taskUser:'',
+    taskUser: '',
     checkUser: '',
     confirmUnit: '',
     createTime: '',
@@ -1335,7 +1335,7 @@ function QueryList(props) {
     addTime: addTimeBegin ? [moment(addTimeBegin), moment(addTimeEnd)] : '',
     registerUnit: '',
     registerUser: '',
-    registerOccurTime:'',
+    registerOccurTime: '',
     source: '',
     status,
     title: '',
@@ -1360,7 +1360,7 @@ function QueryList(props) {
   // 设置时间
   useEffect(() => {
     if (location && location.state && location.state.cacheinfo) {
-      const { addTime, handleTime,registerOccurTime } = location.state.cacheinfo;
+      const { addTime, handleTime, registerOccurTime } = location.state.cacheinfo;
       // const { checkTime } = location.state.cacheinfo;
       setFieldsValue({
         addTime: addTime?.length ? [moment(addTime[0]), moment(addTime[1])] : '',
@@ -1413,211 +1413,212 @@ function QueryList(props) {
     }
   }, [location.state]);
 
+  const controlTable = [
+    {
+      title: '故障编号',
+      dataIndex: 'no',
+      key: 'no',
+      width: 150,
+      render: (text, record) => {
+        const handleClick = () => {
+          dispatch({
+            type: 'viewcache/gettabstate',
+            payload: {
+              cacheinfo: {
+                ...tabrecord,
+                paginations,
+                expand,
+              },
+              tabid: sessionStorage.getItem('tabid')
+            },
+          });
+          router.push({
+            pathname: `/ITSM/faultmanage/querylist/record`,
+            query: {
+              id: record.id,
+              No: text,
+            },
+          });
+        };
+        return <a onClick={handleClick}>{text}</a>;
+      },
+    },
+    {
+      title: '故障发生时间',
+      dataIndex: 'registerOccurTime',
+      key: 'registerOccurTime',
+      width: 200,
+    },
+    {
+      title: '故障概要',
+      dataIndex: 'content',
+      key: 'content',
+      width: 150,
+      onCell: () => {
+        return {
+          style: {
+            maxWidth: 150,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            cursor: 'pointer'
+          }
+        }
+      },
+      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+    },
+    {
+      title: '故障详细描述',
+      dataIndex: 'handleContent',
+      key: 'handleContent',
+      width: 150,
+      onCell: () => {
+        return {
+          style: {
+            maxWidth: 150,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            cursor: 'pointer'
+          }
+        }
+      },
+      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+    },
+    {
+      title: '影响范围',
+      dataIndex: 'registerScope',
+      key: 'registerScope',
+      width: 150,
+    },
+    {
+      title: '处理过程',
+      dataIndex: 'handleProcess',
+      key: 'handleProcess',
+      width: 150,
+      onCell: () => {
+        return {
+          style: {
+            maxWidth: 150,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            cursor: 'pointer'
+          }
+        }
+      },
+      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+    },
+    {
+      title: '故障类型',
+      dataIndex: 'type',
+      key: 'type',
+      width: 150,
+      onCell: () => {
+        return {
+          style: {
+            maxWidth: 150,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            cursor: 'pointer'
+          }
+        }
+      },
+      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+    },
+    {
+      title: '故障措施或建议',
+      dataIndex: 'handleAdvise',
+      key: 'handleAdvise',
+      width: 150,
+      onCell: () => {
+        return {
+          style: {
+            maxWidth: 150,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            cursor: 'pointer'
+          }
+        }
+      },
+      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+    },
+    {
+      title: '是否需要提供故障报告',
+      dataIndex: 'checkOneReportSign',
+      key: 'checkOneReportSign',
+      width: 200,
+    },
+    {
+      title: '系统运维商确认总结人',
+      dataIndex: 'finishUser',
+      key: 'finishUser',
+      width: 200,
+    },
+    {
+      title: '是否已提交故障处理记录表',
+      dataIndex: 'handleReport',
+      key: 'handleReport',
+      width: 250,
+    },
+    {
+      title: '系统运维商处理人',
+      dataIndex: 'handler',
+      key: 'handler',
+      width: 150,
+    },
+    {
+      title: '责任单位',
+      dataIndex: 'confirmBlame',
+      key: 'confirmBlame',
+      width: 150,
+      onCell: () => {
+        return {
+          style: {
+            maxWidth: 150,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            cursor: 'pointer'
+          }
+        }
+      },
+      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+    },
+    {
+      title: '系统运维商处理结果',
+      dataIndex: 'handleResult',
+      key: 'handleResult',
+      width: 200,
+    },
+    {
+      title: '故障报告要求上传时间',
+      dataIndex: 'finishRequiredTime',
+      key: 'finishRequiredTime',
+      width: 250,
+    },
+    {
+      title: '操作',
+      dataIndex: 'action',
+      key: 'action',
+      fixed: 'right',
+      width: 100,
+      render: (text, record) => {
+        return (
+          <a type="link" onClick={() => handledownFileToZip(record.id, record.no)}>
+            附件下载
+          </a>)
+      },
+    },
+  ];
+
   // 获取数据
   useEffect(() => {
-    validateFields((err, values) => searchdata(values, paginations.current, paginations.pageSize),)
-    const controlTable = [
-      {
-        title: '故障编号',
-        dataIndex: 'no',
-        key: 'no',
-        width: 150,
-        render: (text, record) => {
-          const handleClick = () => {
-            dispatch({
-              type: 'viewcache/gettabstate',
-              payload: {
-                cacheinfo: {
-                  ...tabrecord,
-                  paginations,
-                  expand,
-                },
-                tabid: sessionStorage.getItem('tabid')
-              },
-            });
-            router.push({
-              pathname: `/ITSM/faultmanage/querylist/record`,
-              query: {
-                id: record.id,
-                No: text,
-              },
-            });
-          };
-          return <a onClick={handleClick}>{text}</a>;
-        },
-      },
-      {
-        title: '故障发生时间',
-        dataIndex: 'registerOccurTime',
-        key: 'registerOccurTime',
-        width: 200,
-      },
-      {
-        title: '故障概要',
-        dataIndex: 'content',
-        key: 'content',
-        width: 150,
-        onCell: () => {
-          return {
-            style: {
-              maxWidth: 150,
-              overflow: 'hidden',
-              whiteSpace: 'nowrap',
-              textOverflow: 'ellipsis',
-              cursor: 'pointer'
-            }
-          }
-        },
-        render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
-      },
-      {
-        title: '故障详细描述',
-        dataIndex: 'handleContent',
-        key: 'handleContent',
-        width: 150,
-        onCell: () => {
-          return {
-            style: {
-              maxWidth: 150,
-              overflow: 'hidden',
-              whiteSpace: 'nowrap',
-              textOverflow: 'ellipsis',
-              cursor: 'pointer'
-            }
-          }
-        },
-        render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
-      },
-      {
-        title: '影响范围',
-        dataIndex: 'registerScope',
-        key: 'registerScope',
-        width: 150,
-      },
-      {
-        title: '处理过程',
-        dataIndex: 'handleProcess',
-        key: 'handleProcess',
-        width: 150,
-        onCell: () => {
-          return {
-            style: {
-              maxWidth: 150,
-              overflow: 'hidden',
-              whiteSpace: 'nowrap',
-              textOverflow: 'ellipsis',
-              cursor: 'pointer'
-            }
-          }
-        },
-        render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
-      },
-      {
-        title: '故障类型',
-        dataIndex: 'type',
-        key: 'type',
-        width: 150,
-        onCell: () => {
-          return {
-            style: {
-              maxWidth: 150,
-              overflow: 'hidden',
-              whiteSpace: 'nowrap',
-              textOverflow: 'ellipsis',
-              cursor: 'pointer'
-            }
-          }
-        },
-        render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
-      },
-      {
-        title: '故障措施或建议',
-        dataIndex: 'handleAdvise',
-        key: 'handleAdvise',
-        width: 150,
-        onCell: () => {
-          return {
-            style: {
-              maxWidth: 150,
-              overflow: 'hidden',
-              whiteSpace: 'nowrap',
-              textOverflow: 'ellipsis',
-              cursor: 'pointer'
-            }
-          }
-        },
-        render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
-      },
-      {
-        title: '是否需要提供故障报告',
-        dataIndex: 'checkOneReportSign',
-        key: 'checkOneReportSign',
-        width: 200,
-      },
-      {
-        title: '系统运维商确认总结人',
-        dataIndex: 'finishUser',
-        key: 'finishUser',
-        width: 200,
-      },
-      {
-        title: '是否已提交故障处理记录表',
-        dataIndex: 'handleReport',
-        key: 'handleReport',
-        width: 250,
-      },
-      {
-        title: '系统运维商处理人',
-        dataIndex: 'handler',
-        key: 'handler',
-        width: 150,
-      },
-      {
-        title: '责任单位',
-        dataIndex: 'confirmBlame',
-        key: 'confirmBlame',
-        width: 150,
-        onCell: () => {
-          return {
-            style: {
-              maxWidth: 150,
-              overflow: 'hidden',
-              whiteSpace: 'nowrap',
-              textOverflow: 'ellipsis',
-              cursor: 'pointer'
-            }
-          }
-        },
-        render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
-      },
-      {
-        title: '系统运维商处理结果',
-        dataIndex: 'handleResult',
-        key: 'handleResult',
-        width: 200,
-      },
-      {
-        title: '故障报告要求上传时间',
-        dataIndex: 'finishRequiredTime',
-        key: 'finishRequiredTime',
-        width: 250,
-      },
-      {
-        title: '操作',
-        dataIndex: 'action',
-        key: 'action',
-        fixed: 'right',
-        width: 100,
-        render: (text, record) => {
-          return (
-            <a type="link" onClick={() => handledownFileToZip(record.id, record.no)}>
-              附件下载
-            </a>)
-        },
-      },
-    ]
-    setColumns(controlTable)
-  }, [])
+    const values = getFieldsValue();
+    searchdata(values, paginations.current, paginations.pageSize);
+  }, []);
 
   const creataColumns = () => {
     // columns
@@ -1667,7 +1668,7 @@ function QueryList(props) {
     creataColumns();
   };
 
-  const defaultAllkey = columns.map(item => {
+  const defaultAllkey = (columns && columns.length > 0 ? columns : controlTable).map(item => {
     return item.title
   });
 
@@ -1715,15 +1716,15 @@ function QueryList(props) {
             </Col>
 
             <Col span={8}>
-                <Form.Item label='当前环节处理人'>
-                  {
-                    getFieldDecorator('taskUser',{
-                      initialValue:cacheinfo.taskUser
-                    })(<Input />)
-                  }
+              <Form.Item label='当前环节处理人'>
+                {
+                  getFieldDecorator('taskUser', {
+                    initialValue: cacheinfo.taskUser
+                  })(<Input />)
+                }
 
-                </Form.Item>
-              </Col>
+              </Form.Item>
+            </Col>
 
             <Col span={8}>
               <Form.Item label="工单状态">
@@ -2105,7 +2106,7 @@ function QueryList(props) {
 
         <Table
           loading={loading}
-          columns={columns}
+          columns={columns.length > 0 ? columns : controlTable}
           dataSource={faultQueryList.rows}
           rowKey={r => r.id}
           pagination={pagination}

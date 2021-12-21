@@ -578,7 +578,7 @@ function JobCheck(props) {
           </Popover>
         </div>
         <Table
-          columns={columns}
+          columns={initialColumns && initialColumns.length > 0 ? initialColumns : columns}
           loading={loading}
           dataSource={autotasklist.rows}
           rowKey={record => record.id}

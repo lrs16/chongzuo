@@ -47,7 +47,7 @@ function MycreateWork(props) {
       resetFields,
       validateFields,
       getFieldsValue,
-      // setFieldsValue
+      setFieldsValue
     },
   } = props;
 
@@ -184,41 +184,43 @@ function MycreateWork(props) {
       // 点击菜单刷新
       if (location.state.reset) {
         handleReset();
+        setExpand(false);
       };
       // 标签切回设置初始值
       if (location.state.cacheinfo) {
         const { current, pageSize } = location.state.cacheinfo.paginations;
-        // const {
-        //   checkTime1,
-        //   checkTime2,
-        //   endTime1,
-        //   endTime2,
-        //   executeTime1,
-        //   executeTime2,
-        //   plannedEndTime1,
-        //   plannedEndTime2,
-        //   plannedStartTime1,
-        //   plannedStartTime2,
-        //   startTime1,
-        //   startTime2,
-        //   time1,
-        //   time2,
-        // } = location.state.cacheinfo;
-        // setFieldsValue({
-        //   addTime: time1 ? [moment(time1), moment(time2)] : '',
-        //   checkTime: checkTime1 ? [moment(checkTime1), moment(checkTime2)] : '',
-        //   endTime: endTime1 ? [moment(endTime1), moment(endTime2)] : '',
-        //   executeTime: executeTime1
-        //     ? [moment(executeTime1), moment(executeTime2)]
-        //     : '',
-        //   plannedendTime: plannedEndTime1 ? [moment(plannedEndTime1), moment(plannedEndTime2)] : '',
-        //   startTime: startTime1 ? [moment(startTime1), moment(startTime2)] : '',
-        //   plannedStartTime: plannedStartTime1
-        //     ? [moment(plannedStartTime1), moment(plannedStartTime2)]
-        //     : '',
-        // });
+        const {
+          checkTime1,
+          checkTime2,
+          endTime1,
+          endTime2,
+          executeTime1,
+          executeTime2,
+          plannedEndTime1,
+          plannedEndTime2,
+          plannedStartTime1,
+          plannedStartTime2,
+          startTime1,
+          startTime2,
+          time1,
+          time2,
+        } = location.state.cacheinfo;
+
         setExpand(location.state.cacheinfo.expand);
         setPaginations({ ...paginations, current, pageSize });
+        setFieldsValue({
+          addTime: time1 ? [moment(time1), moment(time2)] : '',
+          checkTime: checkTime1 ? [moment(checkTime1), moment(checkTime2)] : '',
+          endTime: endTime1 ? [moment(endTime1), moment(endTime2)] : '',
+          executeTime: executeTime1
+            ? [moment(executeTime1), moment(executeTime2)]
+            : '',
+          plannedEndTime: plannedEndTime1 ? [moment(plannedEndTime1), moment(plannedEndTime2)] : '',
+          startTime: startTime1 ? [moment(startTime1), moment(startTime2)] : '',
+          plannedStartTime: plannedStartTime1
+            ? [moment(plannedStartTime1), moment(plannedStartTime2)]
+            : '',
+        });
       };
     }
   }, [location.state]);
@@ -300,6 +302,17 @@ function MycreateWork(props) {
 
   // 跳转详情页
   const gotoDetail = (record) => {
+    dispatch({
+      type: 'viewcache/gettabstate',
+      payload: {
+        cacheinfo: {
+          ...tabrecord,
+          paginations,
+          expand,
+        },
+        tabid: sessionStorage.getItem('tabid')
+      },
+    });
     router.push({
       pathname: `/ITSM/supervisework/workplandetail`,
       query: {
@@ -312,17 +325,23 @@ function MycreateWork(props) {
       state: {
         dynamicpath: true,
         menuDesc: '工作任务',
-        cacheinfo: {
-          ...tabrecord,
-          paginations,
-          expand,
-        },
       }
     })
   };
 
   // openViews查询详情
   const gotoView = (record) => {
+    dispatch({
+      type: 'viewcache/gettabstate',
+      payload: {
+        cacheinfo: {
+          ...tabrecord,
+          paginations,
+          expand,
+        },
+        tabid: sessionStorage.getItem('tabid')
+      },
+    });
     router.push({
       pathname: `/ITSM/supervisework/queryworkdetails`,
       query: {
@@ -1134,7 +1153,7 @@ function MycreateWork(props) {
         </div>
         < Table
           loading={loading}
-          columns={columns}
+          columns={initialColumns && initialColumns.length > 0 ? initialColumns : columns}
           scroll={{ x: 1600 }}
           dataSource={getWorkQueryLists.rows}
           pagination={pagination}

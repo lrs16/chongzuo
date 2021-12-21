@@ -40,7 +40,7 @@ function TodelayExamine(props) {
   const {
     location,
     loading,
-    form: { getFieldDecorator, resetFields, validateFields, getFieldsValue, },
+    form: { getFieldDecorator, resetFields, validateFields, getFieldsValue, setFieldsValue },
     getWorkQueryLists,
     userinfo,
     dispatch,
@@ -91,6 +91,17 @@ function TodelayExamine(props) {
 
   // 跳转详情页
   const gotoDetail = (record, type) => {
+    dispatch({
+      type: 'viewcache/gettabstate',
+      payload: {
+        cacheinfo: {
+          ...tabrecord,
+          paginations,
+          expand,
+        },
+        tabid: sessionStorage.getItem('tabid')
+      },
+    });
     router.push({
       pathname: `/ITSM/supervisework/workplandetail`,
       query: {
@@ -625,12 +636,42 @@ function TodelayExamine(props) {
       // 点击菜单刷新
       if (location.state.reset) {
         handleReset();
+        setExpand(false);
       };
       // 标签切回设置初始值
       if (location.state.cacheinfo) {
         const { current, pageSize } = location.state.cacheinfo.paginations;
+        const {
+          checkTime1,
+          checkTime2,
+          endTime1,
+          endTime2,
+          executeTime1,
+          executeTime2,
+          plannedEndTime1,
+          plannedEndTime2,
+          plannedStartTime1,
+          plannedStartTime2,
+          startTime1,
+          startTime2,
+          time1,
+          time2,
+        } = location.state.cacheinfo;
         setExpand(location.state.cacheinfo.expand);
-        setPaginations({ ...paginations, current, pageSize })
+        setPaginations({ ...paginations, current, pageSize });
+        setFieldsValue({
+          addTime: time1 ? [moment(time1), moment(time2)] : '',
+          checkTime: checkTime1 ? [moment(checkTime1), moment(checkTime2)] : '',
+          endTime: endTime1 ? [moment(endTime1), moment(endTime2)] : '',
+          executeTime: executeTime1
+            ? [moment(executeTime1), moment(executeTime2)]
+            : '',
+          plannedEndTime: plannedEndTime1 ? [moment(plannedEndTime1), moment(plannedEndTime2)] : '',
+          startTime: startTime1 ? [moment(startTime1), moment(startTime2)] : '',
+          plannedStartTime: plannedStartTime1
+            ? [moment(plannedStartTime1), moment(plannedStartTime2)]
+            : '',
+        });
       };
     }
   }, [location.state]);
@@ -1033,7 +1074,7 @@ function TodelayExamine(props) {
         </div>
         < Table
           loading={loading}
-          columns={columns}
+          columns={initialColumns && initialColumns.length > 0 ? initialColumns : columns}
           scroll={{ x: 1600 }}
           dataSource={getWorkQueryLists.rows}
           pagination={pagination}
