@@ -17,6 +17,9 @@ const tabList = [
 
 function JobExecute(props) {
   const pagetitle = props.route.name;
+  const {
+    location,
+  } = props;
 
   const [tabActivekey, settabActivekey] = useState('manualexecute'); // 打开标签
 
@@ -32,10 +35,10 @@ function JobExecute(props) {
       onTabChange={handleTabChange}
     >
       {/* 手动执行 */}
-      {tabActivekey === 'manualexecute' && (<ManualExecuteList />
+      {tabActivekey === 'manualexecute' && (<ManualExecuteList location={location} />
       )}
       {/* 定时执行 */}
-      {tabActivekey === 'timedexecute' && (<TimedExecuteList />)}
+      {tabActivekey === 'timedexecute' && (<TimedExecuteList location={location} />)}
     </PageHeaderWrapper>
   );
 }

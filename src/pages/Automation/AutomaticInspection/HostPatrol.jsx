@@ -48,6 +48,7 @@ function HostPatrol(props) {
       getFieldDecorator,
       getFieldsValue,
       resetFields,
+      setFieldsValue
     },
   } = props;
 
@@ -58,11 +59,21 @@ function HostPatrol(props) {
   const [filelist, setFilelist] = useState([]);
   const [filelistid, setFilelistId] = useState('');
 
+  // 缓存页签查询条件
+  const [tabrecord, setTabRecord] = useState({});
+  const searchrecord = {
+    user: '',
+    type: '',
+  };
+  let cacheinfo = {};
+  cacheinfo = location.state && location.state.cacheinfo ? location.state.cacheinfo : searchrecord;
+
   // 列表请求
   const searchdata = (page, size) => {
     const values = getFieldsValue();
     values.time1 = values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '';
     values.time2 = values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '';
+    setTabRecord({ ...values });
     dispatch({
       type: 'automation/fetchhostList',
       payload: {
@@ -121,6 +132,11 @@ function HostPatrol(props) {
 
   // 重置
   const handleReset = () => {
+    router.push({
+      pathname: `/automation/automaticinspection/hostpatrol`,
+      query: { pathpush: true },
+      state: { cach: false, }
+    });
     resetFields();
     searchdata(1, 15)
     setPageinations({ current: 1, pageSize: 15 });
@@ -137,6 +153,16 @@ function HostPatrol(props) {
 
   // 跳转巡检明细详情
   const newDetailView = (Id) => {
+    dispatch({
+      type: 'viewcache/gettabstate',
+      payload: {
+        cacheinfo: {
+          ...tabrecord,
+          paginations,
+        },
+        tabid: sessionStorage.getItem('tabid')
+      },
+    });
     router.push({
       pathname: '/automation/automaticinspection/hostpatrol/hostview',
       query: {
@@ -146,6 +172,38 @@ function HostPatrol(props) {
       },
     })
   };
+
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新
+      if (location.state.reset) {
+        handleReset();
+      };
+      // 标签切回设置初始值
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        const { time1, time2 } = location.state.cacheinfo;
+        setFieldsValue({
+          time1: time1 ? moment(time1) : '',
+          time2: time2 ? moment(time2) : '',
+        });
+        setPageinations({ ...paginations, current, pageSize });
+      };
+    }
+  }, [location.state]);
 
   // 下载报告
   const handledownFileToZip = (id, no) => {
@@ -272,14 +330,14 @@ function HostPatrol(props) {
             <Col span={6}>
               <Form.Item label="巡检人">
                 {getFieldDecorator('user', {
-                  initialValue: '',
+                  initialValue: cacheinfo.user,
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
             <Col span={6}>
               <Form.Item label="巡检类型">
                 {getFieldDecorator('type', {
-                  initialValue: '',
+                  initialValue: cacheinfo.type,
                 })(<Select placeholder="请选择" allowClear>
                   {typemap.map(obj => (
                     <Option key={obj.key} value={obj.title}>

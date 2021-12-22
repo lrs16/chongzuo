@@ -48,6 +48,7 @@ function SoftTTRegister(props) {
       getFieldDecorator,
       getFieldsValue,
       resetFields,
+      setFieldsValue
     },
   } = props;
 
@@ -58,6 +59,19 @@ function SoftTTRegister(props) {
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [columns, setColumns] = useState([]); // 动态表格
 
+  // 缓存页签查询条件
+  const [tabrecord, setTabRecord] = useState({});
+  const searchrecord = {
+    createBy: '',
+    workStatus: '',
+    examineStatus: '',
+    examineBy: '',
+    paginations,
+    expand,
+  };
+  let cacheinfo = {};
+  cacheinfo = location.state && location.state.cacheinfo ? location.state.cacheinfo : searchrecord;
+
   // 列表请求
   const searchdata = (page, size) => {
     const values = getFieldsValue();
@@ -65,6 +79,7 @@ function SoftTTRegister(props) {
     values.createEndTime = values.createEndTime ? moment(values.createEndTime).format('YYYY-MM-DD HH:mm:ss') : '';
     values.examineStartTime = values.examineStartTime ? moment(values.examineStartTime).format('YYYY-MM-DD HH:mm:ss') : '';
     values.examineEndTime = values.examineEndTime ? moment(values.examineEndTime).format('YYYY-MM-DD HH:mm:ss') : '';
+    setTabRecord({ ...values });
     dispatch({
       type: 'autosoftwork/findautosoftworkList',
       payload: {
@@ -76,6 +91,11 @@ function SoftTTRegister(props) {
   };
 
   const handleReset = () => {
+    router.push({
+      pathname: `/automation/automatedjob/softstartandstop/softregister`,
+      query: { pathpush: true },
+      state: { cach: false, }
+    });
     resetFields();
     searchdata(1, 15)
     setPageinations({ current: 1, pageSize: 15 });
@@ -179,6 +199,17 @@ function SoftTTRegister(props) {
       width: 250,
       render: (text, record) => {
         const handledetailClick = () => {
+          dispatch({
+            type: 'viewcache/gettabstate',
+            payload: {
+              cacheinfo: {
+                ...tabrecord,
+                paginations,
+                expand,
+              },
+              tabid: sessionStorage.getItem('tabid')
+            },
+          });
           router.push({
             pathname: '/automation/automatedjob/softstartandstop/softregister/details',
             query: {
@@ -372,6 +403,43 @@ function SoftTTRegister(props) {
   };
 
   useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+              expand,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新
+      if (location.state.reset) {
+        handleReset();
+        setExpand(false);
+      };
+      // 标签切回设置初始值
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        const { createStartTime, createEndTime, examineStartTime, examineEndTime } = location.state.cacheinfo;
+        setFieldsValue({
+          createStartTime: createStartTime ? moment(createStartTime) : '',
+          createEndTime: createEndTime ? moment(createEndTime) : '',
+          examineStartTime: examineStartTime ? moment(examineStartTime) : '',
+          examineEndTime: examineEndTime ? moment(examineEndTime) : '',
+        });
+        setExpand(location.state.cacheinfo.expand);
+        setPageinations({ ...paginations, current, pageSize });
+      };
+    }
+  }, [location.state]);
+
+  useEffect(() => {
     searchdata(1, 15);
     setColumns(initialColumns);
   }, [location]);
@@ -400,7 +468,7 @@ function SoftTTRegister(props) {
             <Col span={8}>
               <Form.Item label="启停申请人">
                 {getFieldDecorator('createBy', {
-                  initialValue: '',
+                  initialValue: cacheinfo.createBy,
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
@@ -437,10 +505,10 @@ function SoftTTRegister(props) {
                 </Row>
               </Form.Item>
             </Col>
-            <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+            <Col span={8} style={{ display: (expand || (location && location.state && location.state.expand)) ? 'block' : 'none' }}>
               <Form.Item label="状态">
                 {getFieldDecorator('workStatus', {
-                  initialValue: '1',
+                  initialValue: cacheinfo.workStatus || '1',
                 })(<Select placeholder="请选择" allowClear>
                   {statusmap.map(obj => (
                     <Option key={obj.key} value={obj.dict_code}>
@@ -450,10 +518,10 @@ function SoftTTRegister(props) {
                 </Select>)}
               </Form.Item>
             </Col>
-            <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+            <Col span={8} style={{ display: (expand || (location && location.state && location.state.expand)) ? 'block' : 'none' }}>
               <Form.Item label="审核结果">
                 {getFieldDecorator('examineStatus', {
-                  initialValue: '',
+                  initialValue: cacheinfo.examineStatus,
                 })(<Select placeholder="请选择" allowClear>
                   {checkresultsmap.map(obj => (
                     <Option key={obj.key} value={obj.dict_code}>
@@ -463,14 +531,14 @@ function SoftTTRegister(props) {
                 </Select>)}
               </Form.Item>
             </Col>
-            <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+            <Col span={8} style={{ display: (expand || (location && location.state && location.state.expand)) ? 'block' : 'none' }}>
               <Form.Item label="审核人">
                 {getFieldDecorator('examineBy', {
-                  initialValue: '',
+                  initialValue: cacheinfo.examineBy,
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
-            <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+            <Col span={8} style={{ display: (expand || (location && location.state && location.state.expand)) ? 'block' : 'none' }}>
               <Form.Item label="审核时间">
                 <Row>
                   <Col span={11}>
@@ -503,7 +571,7 @@ function SoftTTRegister(props) {
                 </Row>
               </Form.Item>
             </Col>
-            {expand ? (<Col span={24} style={{ marginTop: 4, textAlign: 'right' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
+            {(expand || (location && location.state && location.state.expand)) ? (<Col span={24} style={{ marginTop: 4, textAlign: 'right' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
           </Form>
         </Row>
         <div style={{ marginBottom: 8 }}>

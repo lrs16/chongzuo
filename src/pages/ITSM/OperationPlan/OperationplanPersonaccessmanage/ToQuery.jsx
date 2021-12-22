@@ -97,6 +97,17 @@ function Toregister(props) {
       fixed: 'left',
       render: (text, record) => {
         const handleClick = () => {
+          dispatch({
+            type: 'viewcache/gettabstate',
+            payload: {
+              cacheinfo: {
+                ...tabrecord,
+                paginations,
+                expand,
+              },
+              tabid: sessionStorage.getItem('tabid')
+            },
+          });
           router.push({
             pathname: `/ITSM/operationplan/personaccessmanage/record`,
             query: {
@@ -327,6 +338,7 @@ function Toregister(props) {
       // 点击菜单刷新
       if (location.state.reset) {
         handleReset();
+        setExpand(false);
       };
       // 标签切回设置初始值
       if (location.state.cacheinfo) {
@@ -434,7 +446,7 @@ function Toregister(props) {
                 </Form.Item>
               </Col>
             </>
-            <span style={{ display: (expand || cacheinfo.expand) ? 'block' : 'none' }}>
+            <span style={{ display: (expand || (location && location.state && location.state.expand)) ? 'block' : 'none' }}>
               <Col span={8}>
                 <Form.Item label="姓名">
                   {getFieldDecorator('name', {
@@ -578,7 +590,7 @@ function Toregister(props) {
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
-              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+              <Col span={8} style={{ display: (expand || (location && location.state && location.state.expand)) ? 'block' : 'none' }}>
                 <Form.Item label="审核单位">
                   {getFieldDecorator('checkUnit', {
                     initialValue: cacheinfo.checkUnit,
@@ -586,7 +598,7 @@ function Toregister(props) {
                 </Form.Item>
               </Col>
             </span>
-            {(expand || cacheinfo.expand) ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
+            {(expand || (location && location.state && location.state.expand)) ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
+import router from 'umi/router';
 import moment from 'moment';
 import {
   Table,
@@ -49,6 +50,7 @@ function SoftTTExecute(props) {
       getFieldDecorator,
       getFieldsValue,
       resetFields,
+      setFieldsValue
     },
   } = props;
 
@@ -64,12 +66,26 @@ function SoftTTExecute(props) {
   // const [butdisable, setButDisable] = useState(false);
   // const [sameId, setsameId] = useState('');
 
+  // 缓存页签查询条件
+  const [tabrecord, setTabRecord] = useState({});
+  const searchrecord = {
+    createBy: '',
+    workStatus: '',
+    examineStatus: '',
+    examineBy: '',
+    paginations,
+    expand,
+  };
+  let cacheinfo = {};
+  cacheinfo = location.state && location.state.cacheinfo ? location.state.cacheinfo : searchrecord;
+
   const searchdata = (page, size) => {
     const values = getFieldsValue();
     values.createStartTime = values.createStartTime ? moment(values.createStartTime).format('YYYY-MM-DD HH:mm:ss') : '';
     values.createEndTime = values.createEndTime ? moment(values.createEndTime).format('YYYY-MM-DD HH:mm:ss') : '';
     values.examineStartTime = values.examineStartTime ? moment(values.examineStartTime).format('YYYY-MM-DD HH:mm:ss') : '';
     values.examineEndTime = values.examineEndTime ? moment(values.examineEndTime).format('YYYY-MM-DD HH:mm:ss') : '';
+    setTabRecord({ ...values });
     dispatch({
       type: 'autosoftwork/findautosoftworkList',
       payload: {
@@ -81,6 +97,11 @@ function SoftTTExecute(props) {
   };
 
   const handleReset = () => {
+    router.push({
+      pathname: `/automation/automatedjob/softstartandstop/softexecute`,
+      query: { pathpush: true },
+      state: { cach: false, }
+    });
     resetFields();
     searchdata(1, 15)
     setPageinations({ current: 1, pageSize: 15 });
@@ -383,6 +404,43 @@ function SoftTTExecute(props) {
   };
 
   useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+              expand,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新
+      if (location.state.reset) {
+        handleReset();
+        setExpand(false);
+      };
+      // 标签切回设置初始值
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        const { createStartTime, createEndTime, examineStartTime, examineEndTime } = location.state.cacheinfo;
+        setFieldsValue({
+          createStartTime: createStartTime ? moment(createStartTime) : '',
+          createEndTime: createEndTime ? moment(createEndTime) : '',
+          examineStartTime: examineStartTime ? moment(examineStartTime) : '',
+          examineEndTime: examineEndTime ? moment(examineEndTime) : '',
+        });
+        setExpand(location.state.cacheinfo.expand);
+        setPageinations({ ...paginations, current, pageSize });
+      };
+    }
+  }, [location.state]);
+
+  useEffect(() => {
     searchdata(1, 15);
     setColumns(initialColumns);
   }, [location]);
@@ -411,7 +469,7 @@ function SoftTTExecute(props) {
             <Col span={8}>
               <Form.Item label="启停申请人">
                 {getFieldDecorator('createBy', {
-                  initialValue: '',
+                  initialValue: cacheinfo.createBy,
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
@@ -448,10 +506,10 @@ function SoftTTExecute(props) {
                 </Row>
               </Form.Item>
             </Col>
-            <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+            <Col span={8} style={{ display: (expand || (location && location.state && location.state.expand)) ? 'block' : 'none' }}>
               <Form.Item label="状态">
                 {getFieldDecorator('workStatus', {
-                  initialValue: '',
+                  initialValue: cacheinfo.workStatus,
                 })(<Select placeholder="请选择" allowClear>
                   {statusmap.map(obj => (
                     <Option key={obj.key} value={obj.dict_code}>
@@ -461,10 +519,10 @@ function SoftTTExecute(props) {
                 </Select>)}
               </Form.Item>
             </Col>
-            <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+            <Col span={8} style={{ display: (expand || (location && location.state && location.state.expand)) ? 'block' : 'none' }}>
               <Form.Item label="审核结果">
                 {getFieldDecorator('examineStatus', {
-                  initialValue: '',
+                  initialValue: cacheinfo.examineStatus,
                 })(<Select placeholder="请选择" allowClear>
                   {checkresultsmap.map(obj => (
                     <Option key={obj.key} value={obj.dict_code}>
@@ -474,14 +532,14 @@ function SoftTTExecute(props) {
                 </Select>)}
               </Form.Item>
             </Col>
-            <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+            <Col span={8} style={{ display: (expand || (location && location.state && location.state.expand)) ? 'block' : 'none' }}>
               <Form.Item label="审核人">
                 {getFieldDecorator('examineBy', {
-                  initialValue: '',
+                  initialValue: cacheinfo.examineBy,
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
-            <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+            <Col span={8} style={{ display: (expand || (location && location.state && location.state.expand)) ? 'block' : 'none' }}>
               <Form.Item label="审核时间">
                 <Row>
                   <Col span={11}>
@@ -514,7 +572,7 @@ function SoftTTExecute(props) {
                 </Row>
               </Form.Item>
             </Col>
-            {expand ? (<Col span={24} style={{ marginTop: 4, textAlign: 'right' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
+            {(expand || (location && location.state && location.state.expand)) ? (<Col span={24} style={{ marginTop: 4, textAlign: 'right' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
           </Form>
         </Row>
         {/* 列表设置 */}

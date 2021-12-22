@@ -42,6 +42,7 @@ function TimedExecuteList(props) {
       getFieldDecorator,
       getFieldsValue,
       resetFields,
+      setFieldsValue
     },
   } = props;
 
@@ -51,6 +52,15 @@ function TimedExecuteList(props) {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [columns, setColumns] = useState([]); // 动态表格
+  // 缓存页签查询条件
+  const [tabrecord, setTabRecord] = useState({});
+  const searchrecord = {
+    taskName: '',
+    createByNameExt: '',
+    paginations,
+  };
+  let cacheinfo = {};
+  cacheinfo = location.state && location.state.cacheinfo ? location.state.cacheinfo : searchrecord;
 
   const onSelectChange = (RowKeys, Rows) => {
     setSelectedRowKeys(RowKeys);
@@ -68,6 +78,7 @@ function TimedExecuteList(props) {
     values.taskModes = '0';
     values.startTime = values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '';
     values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
+    setTabRecord({ ...values });
     dispatch({
       type: 'autotask/findautotaskList',
       payload: {
@@ -79,6 +90,11 @@ function TimedExecuteList(props) {
   };
 
   const handleReset = () => {
+    router.push({
+      pathname: `/automation/automatedjob/jobmanagement/jobexecute`,
+      query: { pathpush: true },
+      state: { cach: false, }
+    });
     resetFields();
     searchdata(1, 15)
     setPageinations({ current: 1, pageSize: 15 });
@@ -251,6 +267,16 @@ function TimedExecuteList(props) {
 
   // 执行日志
   const newpagetolog = id => {
+    dispatch({
+      type: 'viewcache/gettabstate',
+      payload: {
+        cacheinfo: {
+          ...tabrecord,
+          paginations,
+        },
+        tabid: sessionStorage.getItem('tabid')
+      },
+    });
     router.push({
       pathname: '/automation/automatedjob/jobmanagement/jobexecute/scheduledexecutionlog',
       query: {
@@ -468,6 +494,38 @@ function TimedExecuteList(props) {
   };
 
   useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新
+      if (location.state.reset) {
+        handleReset();
+      };
+      // 标签切回设置初始值
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        const { startTime, endTime } = location.state.cacheinfo;
+        setPageinations({ ...paginations, current, pageSize });
+        setFieldsValue({
+          startTime: startTime ? moment(startTime) : '',
+          endTime: endTime ? moment(endTime) : '',
+        });
+      };
+    }
+  }, [location.state]);
+
+  useEffect(() => {
     searchdata(1, 15);
     setColumns(initialColumns);
   }, [location]);
@@ -480,14 +538,14 @@ function TimedExecuteList(props) {
             <Col span={5}>
               <Form.Item label="作业名称">
                 {getFieldDecorator('taskName', {
-                  initialValue: '',
+                  initialValue: cacheinfo.taskName,
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
             <Col span={5}>
               <Form.Item label="创建人">
                 {getFieldDecorator('createByNameExt', {
-                  initialValue: '',
+                  initialValue: cacheinfo.createByNameExt,
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>

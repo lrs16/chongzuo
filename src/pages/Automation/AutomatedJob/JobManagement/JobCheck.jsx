@@ -47,6 +47,7 @@ function JobCheck(props) {
       getFieldDecorator,
       getFieldsValue,
       resetFields,
+      setFieldsValue
     },
   } = props;
 
@@ -58,6 +59,22 @@ function JobCheck(props) {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [columns, setColumns] = useState([]); // 动态表格
+
+  // 缓存页签查询条件
+  const [tabrecord, setTabRecord] = useState({});
+  const searchrecord = {
+    taskName: '',
+    taskStatus: '',
+    examineResults: '',
+    createBy: '',
+    updateBy: '',
+    examineBy: '',
+    taskModes: '',
+    paginations,
+    expand,
+  };
+  let cacheinfo = {};
+  cacheinfo = location.state && location.state.cacheinfo ? location.state.cacheinfo : searchrecord;
 
   const onSelectChange = (RowKeys, Rows) => {
     setSelectedRowKeys(RowKeys);
@@ -77,6 +94,9 @@ function JobCheck(props) {
     values.endTime = values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '';
     values.startUpdateTime = values.startUpdateTime ? moment(values.startUpdateTime).format('YYYY-MM-DD HH:mm:ss') : '';
     values.endUpdateTime = values.endUpdateTime ? moment(values.endUpdateTime).format('YYYY-MM-DD HH:mm:ss') : '';
+    values.startexamineTime = values.startexamineTime ? moment(values.startexamineTime).format('YYYY-MM-DD HH:mm:ss') : '';
+    values.endexamineTime = values.endexamineTime ? moment(values.endexamineTime).format('YYYY-MM-DD HH:mm:ss') : '';
+    setTabRecord({ ...values });
     dispatch({
       type: 'autotask/findautotaskList',
       payload: {
@@ -88,6 +108,11 @@ function JobCheck(props) {
   };
 
   const handleReset = () => {
+    router.push({
+      pathname: `/automation/automatedjob/jobmanagement/jobcheck`,
+      query: { pathpush: true },
+      state: { cach: false, }
+    });
     resetFields();
     searchdata(1, 15)
     setPageinations({ current: 1, pageSize: 15 });
@@ -97,6 +122,17 @@ function JobCheck(props) {
   const tonewcheck = () => {
     const len = selectedRowKeys.length;
     if (len === 1) { // 单条数据
+      dispatch({
+        type: 'viewcache/gettabstate',
+        payload: {
+          cacheinfo: {
+            ...tabrecord,
+            paginations,
+            expand,
+          },
+          tabid: sessionStorage.getItem('tabid')
+        },
+      });
       router.push({
         pathname: '/automation/automatedjob/jobmanagement/jobcheck/tocheck',
         query: {
@@ -342,6 +378,45 @@ function JobCheck(props) {
   };
 
   useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+              expand,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新
+      if (location.state.reset) {
+        handleReset();
+        setExpand(false);
+      };
+      // 标签切回设置初始值
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        const { startTime, endTime, startUpdateTime, endUpdateTime, startexamineTime, endexamineTime } = location.state.cacheinfo;
+        setExpand(location.state.cacheinfo.expand);
+        setPageinations({ ...paginations, current, pageSize });
+        setFieldsValue({
+          startTime: startTime ? moment(startTime) : '',
+          endTime: endTime ? moment(endTime) : '',
+          startUpdateTime: startUpdateTime ? moment(startUpdateTime) : '',
+          endUpdateTime: endUpdateTime ? moment(endUpdateTime) : '',
+          startexamineTime: startexamineTime ? moment(startexamineTime) : '',
+          endexamineTime: endexamineTime ? moment(endexamineTime) : '',
+        });
+      };
+    }
+  }, [location.state]);
+
+  useEffect(() => {
     searchdata(1, 15);
     setColumns(initialColumns);
   }, [location]);
@@ -359,30 +434,30 @@ function JobCheck(props) {
             <Col span={8}>
               <Form.Item label="作业名称">
                 {getFieldDecorator('taskName', {
-                  initialValue: '',
+                  initialValue: cacheinfo.taskName,
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
             <Col span={8}>
               <Form.Item label="状态">
                 {getFieldDecorator('taskStatus', {
-                  initialValue: '',
+                  initialValue: cacheinfo.taskStatus,
                 })(
                   <Select placeholder="请选择" allowClear>
                     {tsskstatusmap.map(obj => (
-                      <Option key={obj.key} value={obj.title}>
+                      <Option key={obj.key} value={obj.dict_code}>
                         {obj.title}
                       </Option>
                     ))}
                   </Select>)}
               </Form.Item>
             </Col>
-            {expand && (
+            {(expand || (location && location.state && location.state.expand)) && (
               <>
                 <Col span={8}>
                   <Form.Item label="审核结果">
                     {getFieldDecorator('examineResults', {
-                      initialValue: '',
+                      initialValue: cacheinfo.examineResults,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {examinestatusmap.map(obj => (
@@ -396,7 +471,7 @@ function JobCheck(props) {
                 <Col span={8}>
                   <Form.Item label="创建人">
                     {getFieldDecorator('createByNameExt', {
-                      initialValue: '',
+                      initialValue: cacheinfo.createBy,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
@@ -436,7 +511,7 @@ function JobCheck(props) {
                 <Col span={8}>
                   <Form.Item label="更新人">
                     {getFieldDecorator('updateBy', {
-                      initialValue: '',
+                      initialValue: cacheinfo.updateBy,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
@@ -476,7 +551,7 @@ function JobCheck(props) {
                 <Col span={8}>
                   <Form.Item label="审核人">
                     {getFieldDecorator('examineBy', {
-                      initialValue: '',
+                      initialValue: cacheinfo.examineBy,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
@@ -516,7 +591,7 @@ function JobCheck(props) {
                 <Col span={8}>
                   <Form.Item label="作业方式">
                     {getFieldDecorator('taskModes', {
-                      initialValue: '',
+                      initialValue: cacheinfo.taskModes,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {taskmodesmap.map(obj => (
@@ -529,7 +604,7 @@ function JobCheck(props) {
                 </Col>
               </>
             )}
-            {expand ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
+            {(expand || (location && location.state && location.state.expand)) ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
           </Form>
         </Row>
         <div style={{ marginBottom: 8 }}>

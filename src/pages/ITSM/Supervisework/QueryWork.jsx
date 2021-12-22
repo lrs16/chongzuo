@@ -676,7 +676,7 @@ function QueryWork(props) {
                 )}
               </Form.Item>
             </Col>
-            {(expand || cacheinfo.expand) && (
+            {(expand || (location && location.state && location.state.expand)) && (
               <>
                 <Col span={8}>
                   <Form.Item label="执行状态">
@@ -920,7 +920,7 @@ function QueryWork(props) {
                 </Col>
               </>
             )}
-            {(expand || cacheinfo.expand) ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
+            {(expand || (location && location.state && location.state.expand)) ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
           </Form>
         </Row>
         <div>
