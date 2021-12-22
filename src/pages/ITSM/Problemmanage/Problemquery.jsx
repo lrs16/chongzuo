@@ -62,6 +62,7 @@ function Besolved(props) {
   } = props;
   let differentTitle;
   const [expand, setExpand] = useState(false);
+  const [initial,setInitial] = useState(false);
   const [tabrecord, setTabRecord] = useState({});
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [selectdata, setSelectData] = useState('');
@@ -1088,13 +1089,6 @@ function Besolved(props) {
       align: 'center',
     },
     {
-      title: '待办用户',
-      dataIndex: 'taskUser',
-      key: 'taskUser',
-      width: 150,
-      align: 'center',
-    },
-    {
       title: '待办用户ID',
       dataIndex: 'taskUserId',
       key: 'taskUserId',
@@ -1206,6 +1200,7 @@ function Besolved(props) {
 
   const onCheckAllChange = e => {
     setColumns(e.target.checked ? initialColumns : []);
+    setInitial(true)
   };
 
   const onCheck = checkedValues => {
@@ -1217,7 +1212,7 @@ function Besolved(props) {
     creataColumns();
   };
 
-  const defaultAllkey = (columns && columns.length > 0 ? columns : controlTable).map(item => {
+  const defaultAllkey = (columns.length > 0 ? columns : controlTable).map(item => {
     return item.title;
   });
 

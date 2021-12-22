@@ -117,16 +117,7 @@ function TaskSearch(props) {
     });
   };
 
-  const handleReset = () => {
-    router.push({
-      pathname: location.pathname,
-      query: {},
-      state: {},
-    });
-    resetFields();
-    searchdata({}, 1, 15);
-    setPaginations({ current: 1, pageSize: 15 });
-  };
+ 
 
   const initialColumns = [
     {
@@ -499,6 +490,17 @@ function TaskSearch(props) {
       pageIndex: page - 1,
       pageSize,
     });
+  };
+
+  const handleReset = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: {},
+    });
+    resetFields();
+    searchdata({}, 1, 15);
+    setPaginations({ current: 1, pageSize: 15 });
   };
 
   useEffect(() => {

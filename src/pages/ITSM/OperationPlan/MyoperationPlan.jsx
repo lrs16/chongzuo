@@ -84,6 +84,11 @@ function MyoperationPlan(props) {
   };
 
   const handleReset = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: {},
+    });
     resetFields();
     dispatch({
       type: 'processmodel/myTasklist',

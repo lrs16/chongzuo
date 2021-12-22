@@ -380,6 +380,11 @@ function OperationplanCheck(props) {
   });
 
   const handleReset = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: {},
+    });
     resetFields();
     dispatch({
       type: 'processmodel/myTasklist',
@@ -453,12 +458,6 @@ function OperationplanCheck(props) {
     });
   };
 
-  useEffect(() => {
-    if (location.state && location.state.reset) {
-      handleReset();
-      searchdata({}, 1, 15);
-    }
-  }, [location.state]);
   //  每页显示多少条
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
@@ -692,12 +691,7 @@ function OperationplanCheck(props) {
     });
   }
 
-  useEffect(() => {
-    queryDept();
-    getoperationPerson();
-    searchdata({}, 1, paginations.pageSize);
-    setColumns(initialColumns);
-  }, []);
+ 
 
   //  审核提交
   const checkSubmit = value => {
@@ -840,6 +834,9 @@ function OperationplanCheck(props) {
 
   // 获取数据
   useEffect(() => {
+    queryDept();
+    getoperationPerson();
+    setColumns(initialColumns);
     if (cacheinfo !== undefined) {
       validateFields((err, values) => {
         searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize);
