@@ -34,7 +34,6 @@ const formItemLayout = {
 };
 const { Option } = Select;
 const { RangePicker } = DatePicker;
-let params;
 let expand = false;
 
 function Besolved(props) {
@@ -63,7 +62,8 @@ function Besolved(props) {
     loading,
   } = props;
   let differentTitle;
-  const [initial,setInitial] = useState(false)
+  // const [expand, setExpand] = useState(false);
+  const [tabrecord, setTabRecord] = useState({});
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [selectdata, setSelectData] = useState('');
   const [columns, setColumns] = useState([]);
@@ -143,8 +143,7 @@ function Besolved(props) {
       pageNum: paginations.current,
       pageSize: paginations.pageSize,
     };
-    // setTabRecord({ ...newvalues });
-    params = newvalues
+    setTabRecord({ ...newvalues });
   };
 
   const handleReset = () => {
@@ -206,44 +205,6 @@ function Besolved(props) {
         obj.createTimeBegin = values.createTimeBegin.format('YYYY-MM-DD HH:mm:ss');
       }
       searchdata(obj, 1, paginations.pageSize, search);
-    });
-  };
-
-  const download = () => {
-    const exportColumns = (initial ? controlTable: columns).map(item => {
-      return {
-        column: item.dataIndex,
-        field: item.title,
-      };
-    });
-    validateFields((err, values) => {
-      if (!err) {
-        dispatch({
-          type: 'problemmanage/eventdownload',
-          payload: {
-            columns: JSON.stringify(exportColumns),
-            ids: selectedKeys.toString(),
-            ...values,
-            type: values.type && values.type.length ? values.type[1] : '',
-            createTimeBegin: values.createTime?.length
-              ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss')
-              : addTimeBegin,
-            createTimeEnd: values.createTime?.length
-              ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss')
-              : addTimeEnd,
-            createTime: '',
-          },
-        }).then(res => {
-          const filename = `问题查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
-          const blob = new Blob([res]);
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          a.click();
-          window.URL.revokeObjectURL(url);
-        });
-      }
     });
   };
 
@@ -313,7 +274,7 @@ function Besolved(props) {
       type: 'viewcache/gettabstate',
       payload: {
         cacheinfo: {
-          ...params,
+          ...tabrecord,
           paginations,
           expand,
         },
@@ -330,7 +291,7 @@ function Besolved(props) {
       state: {
         runpath: '/ITSM/problemmanage/problemquery',
         cacheinfo: {
-          ...params,
+          ...tabrecord,
           paginations,
           expand,
         },
@@ -1119,6 +1080,44 @@ function Besolved(props) {
     },
   ];
 
+  const download = () => {
+    const exportColumns = (columns.length > 0 ? columns : controlTable).map(item => {
+      return {
+        column: item.dataIndex,
+        field: item.title,
+      };
+    });
+    validateFields((err, values) => {
+      if (!err) {
+        dispatch({
+          type: 'problemmanage/eventdownload',
+          payload: {
+            columns: JSON.stringify(exportColumns),
+            ids: selectedKeys.toString(),
+            ...values,
+            type: values.type && values.type.length ? values.type[1] : '',
+            createTimeBegin: values.createTime?.length
+              ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss')
+              : addTimeBegin,
+            createTimeEnd: values.createTime?.length
+              ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss')
+              : addTimeEnd,
+            createTime: '',
+          },
+        }).then(res => {
+          const filename = `问题查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+      }
+    });
+  };
+
   useEffect(() => {
     if (location.state) {
       if (location.state.cache) {
@@ -1127,7 +1126,7 @@ function Besolved(props) {
           type: 'viewcache/gettabstate',
           payload: {
             cacheinfo: {
-              ...params,
+              ...tabrecord,
               paginations,
               expand,
             },
@@ -1138,7 +1137,6 @@ function Besolved(props) {
       // 点击菜单刷新
       if (location.state.reset) {
         handleReset();
-        expand = false;
       }
       // 标签切回设置初始值
       if (location.state.cacheinfo) {
@@ -1155,7 +1153,6 @@ function Besolved(props) {
       const values = getFieldsValue();
       searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize);
     }
-    setInitial(true)
   }, []);
 
   const creataColumns = () => {
@@ -1197,13 +1194,12 @@ function Besolved(props) {
       }
       initialColumns.push(obj);
       setColumns(initialColumns);
-      setInitial(false)
       return null;
     });
   };
 
   const onCheckAllChange = e => {
-    setColumns(e.target.checked ? initialColumns : []);  setInitial(false)
+    setColumns(e.target.checked ? initialColumns : []);
   };
 
   const onCheck = checkedValues => {
@@ -1215,7 +1211,7 @@ function Besolved(props) {
     creataColumns();
   };
 
-  const defaultAllkey = (initial ? controlTable: columns).map(item => {
+  const defaultAllkey = (columns.length > 0 ? columns : controlTable).map(item => {
     return item.title;
   });
 
@@ -1613,7 +1609,7 @@ function Besolved(props) {
 
         <Table
           loading={loading}
-          columns={initial ? controlTable : columns}
+          columns={columns.length > 0 ? columns : controlTable}
           dataSource={queryArr.rows}
           rowKey={records => records.id}
           pagination={pagination}
