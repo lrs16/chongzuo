@@ -82,14 +82,14 @@ function SysUpload(props) {
         const type = file.name.lastIndexOf('.');
         const filesuffix = file.name.substring(type + 1, file.name.length);
         const correctfiletype = filetype.indexOf(filesuffix);
-        if ((!filelist && !files && fileList.length > 10) || (!files && filelist && (filelist.length + fileList.length) > 10) || (!filelist && files && (files.length + fileList.length) > 10)) {
+        if ((!filelist && !files && fileList.length > 20) || (!files && filelist && (filelist.length + fileList.length) > 20) || (!filelist && files && (files.length + fileList.length) > 20)) {
           if (getUploadStatus) { getUploadStatus(false) };
           sendUploadStatus(false);
-          message.error(`最多可上传10个文件`);
+          message.error(`最多可上传20个文件`);
           setShowIcon(true);
           return reject();
-        } if (type > 30) {
-          message.error('附件名过长，附件名称最长30个字符');
+        } if (type > 100) {
+          message.error('附件名过长，附件名称最长100个字符');
           if (getUploadStatus) { getUploadStatus(false) };
           sendUploadStatus(false);
           return reject();
@@ -164,8 +164,8 @@ function SysUpload(props) {
       {filetype && filetype.length > 0 && (
         <div style={{ color: '#ccc', lineHeight: '20px' }}>
           <p style={{ marginBottom: '6px', }}>1、仅能上传{filetype.join('，')}类型文件;</p>
-          <p style={{ marginBottom: '6px', }}>2、最多可上传10个文件;</p>
-          <p style={{ marginBottom: '6px', }}>3、附件名称最长30个字符;</p>
+          <p style={{ marginBottom: '6px', }}>2、最多可上传20个文件;</p>
+          <p style={{ marginBottom: '6px', }}>3、附件名称最长100个字符;</p>
         </div>
       )}
     </>

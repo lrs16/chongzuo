@@ -133,7 +133,7 @@ function RelevancyOrder(props) {
             router.push({
               pathname: `/ITSM/demandmanage/query/details`,
               query: {
-                id: record.mainId,
+                mainId: record.mainId,
                 taskName: record.status,
                 No: text,
               },

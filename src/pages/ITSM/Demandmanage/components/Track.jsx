@@ -266,12 +266,12 @@ function Track(props) {
         if (!target.developSchedule || !target.trackDirections) {
           message.error('请填写完整信息。');
           return reject();
-        } if ((!fileslist && fileList.length > 10) || (fileslist && (fileslist.length + fileList.length) > 10)) {
-          message.error(`最多可上传10个文件`);
+        } if ((!fileslist && fileList.length > 20) || (fileslist && (fileslist.length + fileList.length) > 20)) {
+          message.error(`最多可上传20个文件`);
           setShowIcon(true);
           return reject();
-        } if (type > 30) {
-          message.error('附件名过长，附件名称最长30个字符');
+        } if (type > 100) {
+          message.error('附件名过长，附件名称最长100个字符');
           return reject();
         } if (correctfiletype === -1) {
           message.error(`${file.name}文件不符合上传规则,禁止上传...`);
@@ -439,8 +439,8 @@ function Track(props) {
               {filetype && filetype.length > 0 && (
                 <div style={{ color: '#ccc', lineHeight: '20px' }}>
                   <p style={{ marginBottom: '6px', }}>1、仅能上传{filetype.join('，')}类型文件;</p>
-                  <p style={{ marginBottom: '6px', }}>2、最多可上传10个文件;</p>
-                  <p style={{ marginBottom: '6px', }}>3、附件名称最长30个字符;</p>
+                  <p style={{ marginBottom: '6px', }}>2、最多可上传20个文件;</p>
+                  <p style={{ marginBottom: '6px', }}>3、附件名称最长100个字符;</p>
                 </div>
               )}
             </div>
