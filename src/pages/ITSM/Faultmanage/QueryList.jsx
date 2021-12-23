@@ -1245,54 +1245,6 @@ function QueryList(props) {
     onChange: page => changePage(page),
   };
 
-
-  //  下载 /导出功能
-  const download = (page, pageSize) => {
-    const filterColumns = columns.filter((currentValue) => {
-      return currentValue.title !== '操作'
-    })
-
-    const exportColumns = filterColumns.map(item => {
-      return {
-        column: item.dataIndex,
-        field: item.title
-      }
-    })
-    validateFields((err, values) => {
-      if (!err) {
-        dispatch({
-          type: 'fault/faultQuerydownload',
-          payload: {
-            columns: JSON.stringify(exportColumns),
-            ids: selectedKeys.toString(),
-            ...values,
-            sendTime: '',
-            registerOccurTimeBegin: values.registerOccurTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
-            addTimeBegin: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-            addTimeEnd: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-            handleStartTimeBegin: values.handleStartTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
-            handleStartTimeEnd: values.handleStartTimeEnd ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
-            type: values.type ? (values.type).slice(-1)[0] : '',
-            createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-            createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-            createTime: '',
-            pageSize,
-            current: page,
-          },
-        }).then(res => {
-          const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
-          const blob = new Blob([res]);
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          a.click();
-          window.URL.revokeObjectURL(url);
-        });
-      }
-    });
-  };
-
   const getTypebyTitle = title => {
     if (selectdata.ischange) {
       return selectdata.arr.filter(item => item.title === title)[0].children;
@@ -1616,6 +1568,53 @@ function QueryList(props) {
       },
     },
   ];
+
+   //  下载 /导出功能
+   const download = (page, pageSize) => {
+    const filterColumns = (columns.length > 0 ? columns : controlTable).filter((currentValue) => {
+      return currentValue.title !== '操作'
+    })
+
+    const exportColumns = filterColumns.map(item => {
+      return {
+        column: item.dataIndex,
+        field: item.title
+      }
+    })
+    validateFields((err, values) => {
+      if (!err) {
+        dispatch({
+          type: 'fault/faultQuerydownload',
+          payload: {
+            columns: JSON.stringify(exportColumns),
+            ids: selectedKeys.toString(),
+            ...values,
+            sendTime: '',
+            registerOccurTimeBegin: values.registerOccurTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
+            addTimeBegin: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+            addTimeEnd: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+            handleStartTimeBegin: values.handleStartTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
+            handleStartTimeEnd: values.handleStartTimeEnd ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
+            type: values.type ? (values.type).slice(-1)[0] : '',
+            createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+            createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+            createTime: '',
+            pageSize,
+            current: page,
+          },
+        }).then(res => {
+          const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+      }
+    });
+  };
 
   // 获取数据
   useEffect(() => {
