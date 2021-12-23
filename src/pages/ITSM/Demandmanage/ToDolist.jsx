@@ -40,6 +40,7 @@ function ToDolist(props) {
     const newvalue = {
       creationStartTime: '',
       creationEndTime: '',
+      taskName: values.taskName || '',
       creationTime: values.creationTime ? moment(values.creationTime).format('YYYY-MM-DD') : '',
       userId: sessionStorage.getItem('userauthorityid'),
     }
@@ -115,7 +116,7 @@ function ToDolist(props) {
     expand,
   };
 
-  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+  const cacheinfo = location.state && location.state.cacheinfo ? location.state.cacheinfo : record;
 
   const columns = [
     {
