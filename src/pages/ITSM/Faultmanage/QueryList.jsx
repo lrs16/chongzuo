@@ -102,6 +102,7 @@ function QueryList(props) {
           ...tabrecord,
           paginations,
           expand,
+          key: 'fault',     // 综合查询用到
         },
         tabid: sessionStorage.getItem('tabid')
       },
@@ -1385,6 +1386,7 @@ function QueryList(props) {
               ...tabrecord,
               paginations,
               expand,
+              key: 'fault',     // 综合查询用到
             },
             tabid: sessionStorage.getItem('tabid')
           },
@@ -1428,6 +1430,7 @@ function QueryList(props) {
                 ...tabrecord,
                 paginations,
                 expand,
+                key: 'fault',     // 综合查询用到
               },
               tabid: sessionStorage.getItem('tabid')
             },

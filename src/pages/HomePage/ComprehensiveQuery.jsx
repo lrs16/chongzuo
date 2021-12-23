@@ -10,11 +10,16 @@ function ComprehensiveQuery(props) {
     setCurrent(e.key);
     router.push({
       pathname: `/ITSM/comprehensivequery/query/${e.key}`,
-      state: location.state && location.state.cacheinfo ? { cacheinfo: location.state.cacheinfo } : { cache: false }
+      state: { cache: false }
     })
   };
   useEffect(() => {
-    handleClick({ key: location.state?.cacheinfo?.key || 'event' });
+    //  handleClick({ key: location.state?.cacheinfo?.key || 'event' });
+    setCurrent(location.state?.cacheinfo?.key || 'event');
+    router.push({
+      pathname: `/ITSM/comprehensivequery/query/${location.state?.cacheinfo?.key || 'event'}`,
+      state: location.state && location.state.cacheinfo ? { cacheinfo: location.state.cacheinfo } : { cache: false }
+    })
   }, []);
 
   return (
