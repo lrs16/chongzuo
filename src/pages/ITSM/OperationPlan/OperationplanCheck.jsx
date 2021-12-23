@@ -41,6 +41,8 @@ const { RangePicker } = DatePicker;
 
 const statusMap = ['green', 'gold', 'red'];
 const statusContent = ['未超时', '即将超时', '已超时'];
+let params;
+let expand = false;
 
 function OperationplanCheck(props) {
   const pagetitle = props.route.name;
@@ -55,13 +57,11 @@ function OperationplanCheck(props) {
   } = props;
   let operationPersonSelect = [];
 
-  const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
   const [selectdata, setSelectData] = useState('');
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [columns, setColumns] = useState([]);
-  const [tabrecord, setTabRecord] = useState({});
   let formThead;
 
   const gotoDetail = record => {
@@ -69,7 +69,7 @@ function OperationplanCheck(props) {
       type: 'viewcache/gettabstate',
       payload: {
         cacheinfo: {
-          ...tabrecord,
+          ...params,
           paginations,
           expand,
         },
@@ -88,7 +88,7 @@ function OperationplanCheck(props) {
       state: {
         runpath: '/ITSM/operationplan/operationplancheck',
         cacheinfo: {
-          ...tabrecord,
+          ...params,
           paginations,
           expand,
         },
@@ -446,7 +446,6 @@ function OperationplanCheck(props) {
       endTime: '',
       addTime: '',
     };
-    setTabRecord({ ...newvalues });
     dispatch({
       type: 'processmodel/myTasklist',
       payload: {
@@ -456,6 +455,7 @@ function OperationplanCheck(props) {
         pageSize,
       },
     });
+    params = newvalues;
   };
 
   //  每页显示多少条
@@ -625,7 +625,7 @@ function OperationplanCheck(props) {
         val.title === '审核说明' ||
         val.title === '作业执行情况说明' ||
         val.title === '作业内容' ||
-        val.title === '风险分析' || 
+        val.title === '风险分析' ||
         val.title === '风险应对措施'
       ) {
         obj.ellipsis = true;
@@ -690,8 +690,6 @@ function OperationplanCheck(props) {
       };
     });
   }
-
- 
 
   //  审核提交
   const checkSubmit = value => {
@@ -774,7 +772,7 @@ function OperationplanCheck(props) {
           type: 'viewcache/gettabstate',
           payload: {
             cacheinfo: {
-              ...tabrecord,
+              ...params,
               paginations,
               expand,
             },
@@ -785,14 +783,14 @@ function OperationplanCheck(props) {
       // 点击菜单刷新
       if (location.state.reset) {
         handleReset();
-        setExpand(false);
+        expand = false;
       }
       if (location.state.cacheinfo) {
-        if (location.state.cacheinfo.paginations) {
+        if (location.state.cacheinfo) {
           const { current, pageSize } = location.state.cacheinfo.paginations;
+          expand = location.state.cacheinfo.expand;
           setPaginations({ ...paginations, current, pageSize });
         }
-        setExpand(location.state.cacheinfo.expand);
       }
     }
   }, [location.state]);
@@ -1236,7 +1234,7 @@ function OperationplanCheck(props) {
                   style={{ marginLeft: 8 }}
                   type="link"
                   onClick={() => {
-                    setExpand(!expand);
+                    expand = !expand
                   }}
                 >
                   {expand ? (
@@ -1264,7 +1262,7 @@ function OperationplanCheck(props) {
                   style={{ marginLeft: 8 }}
                   type="link"
                   onClick={() => {
-                    setExpand(!expand);
+                    expand = !expand
                   }}
                 >
                   {expand ? (
@@ -1291,7 +1289,7 @@ function OperationplanCheck(props) {
             <Button
               type="primary"
               style={{ marginRight: 8 }}
-              //  onClick={handleClick}
+            //  onClick={handleClick}
             >
               审核
             </Button>

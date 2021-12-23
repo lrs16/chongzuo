@@ -40,6 +40,8 @@ const { RangePicker } = DatePicker;
 
 const statusMap = ['green', 'gold', 'red'];
 const statusContent = ['未超时', '即将超时', '已超时'];
+let params;
+let expand = false;
 
 function MyoperationPlan(props) {
   const pagetitle = props.route.name;
@@ -58,16 +60,46 @@ function MyoperationPlan(props) {
   const [userchoice, setUserChoice] = useState(false); // 已经选择人员
   const [changorder, setChangeOrder] = useState(undefined);
   const [selectedKeys, setSelectedKeys] = useState([]);
-  const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
   const [selectdata, setSelectData] = useState('');
   const [selectedRows, setSelectedRows] = useState([]);
   const [columns, setColumns] = useState([]);
-  const [tabrecord, setTabRecord] = useState({});
+
 
   let formThead;
 
- 
+  const gotoDetail = (record, delay) => {
+    dispatch({
+      type: 'viewcache/gettabstate',
+      payload: {
+        cacheinfo: {
+          ...params,
+          paginations,
+          expand,
+        },
+        tabid: sessionStorage.getItem('tabid')
+      },
+    });
+    router.push({
+      pathname: `/ITSM/operationplan/operationplanform`,
+      query: {
+        delay,
+        mainId: record.mainId,
+        flowNodeName: record.flowNodeName,
+        status: record.status,
+        checkStatus: record.checkStatus,
+        orderNo: record.operationNo,
+      },
+      state: {
+        runpath: '/ITSM/operationplan/myoperationplan',
+        cacheinfo: {
+          ...params,
+          paginations,
+          expand,
+        },
+      }
+    });
+  };
 
   const defaultAllkey = columns.map(item => {
     return item.title;
@@ -99,13 +131,6 @@ function MyoperationPlan(props) {
     });
     setPaginations({ current: 1, pageSize: 15 });
   };
-
-  // useEffect(() => {
-  //   if (location.state && location.state.reset) {
-  //     handleReset();
-  //     getTobolist({}, 1, 15);
-  //   }
-  // }, [location.state]);
 
   const searchdata = (values, page, pageSize) => {
     const newvalues = {
@@ -156,7 +181,7 @@ function MyoperationPlan(props) {
       endTime: '',
       addTime: '',
     };
-    setTabRecord({ ...newvalues });
+
     dispatch({
       type: 'processmodel/myTasklist',
       payload: {
@@ -165,6 +190,7 @@ function MyoperationPlan(props) {
         pageSize,
       },
     });
+    params = newvalues;
   };
 
   const onShowSizeChange = (page, pageSize) => {
@@ -519,14 +545,6 @@ function MyoperationPlan(props) {
     return null;
   };
 
-  useEffect(() => {
-    sessionStorage.setItem('Processtype', 'task');
-    sessionStorage.setItem('Nextflowmane', '送审');
-    getoperationPerson();
-    setColumns(initialColumns);
-    sessionStorage.removeItem('copyrecord');
-  }, []);
-
   const handleFillin = () => {
     router.push({
       pathname: '/ITSM/operationplan/operationplanfillin',
@@ -540,43 +558,12 @@ function MyoperationPlan(props) {
   const record = {
     operationNo: '',
     systemName: '',
+    checkUser: '',
     paginations,
     expand,
   };
-  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
 
-  const gotoDetail = (record, delay) => {
-    dispatch({
-      type: 'viewcache/gettabstate',
-      payload: {
-        cacheinfo: {
-          ...tabrecord,
-          paginations,
-          expand,
-        },
-        tabid: sessionStorage.getItem('tabid')
-      },
-    });
-    router.push({
-      pathname: `/ITSM/operationplan/operationplanform`,
-      query: {
-        delay,
-        mainId: record.mainId,
-        flowNodeName: record.flowNodeName,
-        status: record.status,
-        checkStatus: record.checkStatus,
-        orderNo: record.operationNo,
-      },
-      state: {
-        runpath: '/ITSM/operationplan/myoperationplan',
-        cacheinfo: {
-          ...tabrecord,
-          paginations,
-          expand,
-        },
-      }
-    });
-  };
+  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
 
   const initialColumns = [
     {
@@ -914,7 +901,7 @@ function MyoperationPlan(props) {
           type: 'viewcache/gettabstate',
           payload: {
             cacheinfo: {
-              ...tabrecord,
+              ...params,
               paginations,
               expand,
             },
@@ -925,11 +912,12 @@ function MyoperationPlan(props) {
       // 点击菜单刷新
       if (location.state.reset) {
         handleReset();
+        expand = false;
       }
       // 标签切回设置初始值
       if (location.state.cacheinfo) {
         const { current, pageSize } = location.state.cacheinfo.paginations;
-        setExpand(location.state.cacheinfo.expand);
+        expand = location.state.cacheinfo.expand;
         setPaginations({ ...paginations, current, pageSize });
       }
     }
@@ -942,6 +930,10 @@ function MyoperationPlan(props) {
         searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize);
       });
     }
+    sessionStorage.setItem('Processtype', 'task');
+    sessionStorage.setItem('Nextflowmane', '送审');
+    getoperationPerson();
+    setColumns(initialColumns);
   }, []);
 
   return (
@@ -1336,7 +1328,7 @@ function MyoperationPlan(props) {
                   style={{ marginLeft: 8 }}
                   type="link"
                   onClick={() => {
-                    setExpand(!expand);
+                    expand = !expand
                   }}
                 >
                   {expand ? (
@@ -1364,7 +1356,7 @@ function MyoperationPlan(props) {
                   style={{ marginLeft: 8 }}
                   type="link"
                   onClick={() => {
-                    setExpand(!expand);
+                    expand = !expand
                   }}
                 >
                   {expand ? (

@@ -34,6 +34,7 @@ const formItemLayout = {
 };
 const { Option } = Select;
 const { RangePicker } = DatePicker;
+let expand = false;
 
 function Besolved(props) {
   const {
@@ -61,8 +62,7 @@ function Besolved(props) {
     loading,
   } = props;
   let differentTitle;
-  const [expand, setExpand] = useState(false);
-  const [initial,setInitial] = useState(false);
+  // const [expand, setExpand] = useState(false);
   const [tabrecord, setTabRecord] = useState({});
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [selectdata, setSelectData] = useState('');
@@ -1141,7 +1141,7 @@ function Besolved(props) {
       // 标签切回设置初始值
       if (location.state.cacheinfo) {
         const { current, pageSize } = location.state.cacheinfo.paginations;
-        setExpand(location.state.cacheinfo.expand);
+        expand = location.state.cacheinfo.expand;
         setPageinations({ ...paginations, current, pageSize });
       }
     }
@@ -1200,7 +1200,6 @@ function Besolved(props) {
 
   const onCheckAllChange = e => {
     setColumns(e.target.checked ? initialColumns : []);
-    setInitial(true)
   };
 
   const onCheck = checkedValues => {
@@ -1514,7 +1513,7 @@ function Besolved(props) {
                   style={{ marginLeft: 8 }}
                   type="link"
                   onClick={() => {
-                    setExpand(!expand);
+                    expand = !expand
                   }}
                 >
                   {expand ? (
@@ -1542,7 +1541,7 @@ function Besolved(props) {
                   style={{ marginLeft: 8 }}
                   type="link"
                   onClick={() => {
-                    setExpand(!expand);
+                    expand = !expand
                   }}
                 >
                   {expand ? (

@@ -39,6 +39,8 @@ const { RangePicker } = DatePicker;
 
 const statusMap = ['green', 'gold', 'red'];
 const statusContent = ['未超时', '即将超时', '已超时'];
+let params;
+let expand = false;
 
 function TaskSearch(props) {
   // const pagetitle = props.route.name;
@@ -56,8 +58,7 @@ function TaskSearch(props) {
   let operationPersonSelect;
   let titleParams;
 
-  const [expand, setExpand] = useState(false);
-  const [tabrecord, setTabRecord] = useState({});
+  // const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
   const [selectdata, setSelectData] = useState('');
   const [columns, setColumns] = useState([]);
@@ -93,7 +94,7 @@ function TaskSearch(props) {
       type: 'viewcache/gettabstate',
       payload: {
         cacheinfo: {
-          ...tabrecord,
+          ...params,
           paginations,
           expand,
         },
@@ -109,7 +110,7 @@ function TaskSearch(props) {
       state: {
         runpath: '/ITSM/operationplan/operationplansearch',
         cacheinfo: {
-          ...tabrecord,
+          ...params,
           paginations,
           expand,
         },
@@ -117,7 +118,6 @@ function TaskSearch(props) {
     });
   };
 
- 
 
   const initialColumns = [
     {
@@ -386,64 +386,7 @@ function TaskSearch(props) {
   });
 
   const searchdata = (values, page, pageSize) => {
-    dispatch({
-      type: 'processmodel/getOperationQueryList',
-      payload: {
-        ...values,
-        time1: values.addTime?.length
-          ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss')
-          : '',
-        time2: values.addTime?.length
-          ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss')
-          : '',
-        addTime: '',
-        checkTime1: values.checkTime?.length
-          ? moment(values.checkTime[0]).format('YYYY-MM-DD HH:mm:ss')
-          : '',
-        checkTime2: values.checkTime?.length
-          ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss')
-          : '',
-        checkTime: '',
-        executeOperationTime1: values.executeOperationTime?.length
-          ? moment(values.executeOperationTime[0]).format('YYYY-MM-DD HH:mm:ss')
-          : '',
-        executeOperationTime2: values.executeOperationTime?.length
-          ? moment(values.executeOperationTime[1]).format('YYYY-MM-DD HH:mm:ss')
-          : '',
-        executeOperationTime: '',
-        plannedStartTime1: values.plannedStartTime?.length
-          ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss')
-          : '',
-        plannedStartTime2: values.plannedStartTime?.length
-          ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss')
-          : '',
-        plannedStartTime: '',
-        startTime1: values.startTime?.length
-          ? moment(values.startTime[0]).format('YYYY-MM-DD HH:mm:ss')
-          : '',
-        startTime2: values.startTime?.length
-          ? moment(values.startTime[1]).format('YYYY-MM-DD HH:mm:ss')
-          : '',
-        startTime: '',
-        plannedEndTime1: values.plannedendTime?.length
-          ? moment(values.plannedendTime[0]).format('YYYY-MM-DD HH:mm:ss')
-          : '',
-        plannedEndTime2: values.plannedendTime?.length
-          ? moment(values.plannedendTime[1]).format('YYYY-MM-DD HH:mm:ss')
-          : '',
-        plannedendTime: '',
-        endTime1: values.endTime?.length
-          ? moment(values.endTime[0]).format('YYYY-MM-DD HH:mm:ss')
-          : '',
-        endTime2: values.endTime?.length
-          ? moment(values.endTime[1]).format('YYYY-MM-DD HH:mm:ss')
-          : '',
-        endTime: '',
-        pageIndex: page - 1,
-        pageSize,
-      },
-    });
-    setTabRecord({
+    const newvalues = {
       ...values,
       addTime: values.addTime?.length
         ? [
@@ -487,9 +430,17 @@ function TaskSearch(props) {
           moment(values.endTime[1]).format('YYYY-MM-DD HH:mm:ss'),
         ]
         : '',
-      pageIndex: page - 1,
-      pageSize,
+    }
+    dispatch({
+      type: 'processmodel/getOperationQueryList',
+      payload: {
+        ...values,
+        ...newvalues,
+        pageIndex: page - 1,
+        pageSize,
+      },
     });
+    params = newvalues;
   };
 
   const handleReset = () => {
@@ -502,13 +453,6 @@ function TaskSearch(props) {
     searchdata({}, 1, 15);
     setPaginations({ current: 1, pageSize: 15 });
   };
-
-  useEffect(() => {
-    if (location.state && location.state.reset) {
-      handleReset();
-      searchdata({}, 1, 15);
-    }
-  }, [location.state]);
 
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
@@ -608,7 +552,7 @@ function TaskSearch(props) {
           type: 'viewcache/gettabstate',
           payload: {
             cacheinfo: {
-              ...tabrecord,
+              ...params,
               paginations,
               expand,
             },
@@ -623,7 +567,7 @@ function TaskSearch(props) {
       // 标签切回设置初始值
       if (location.state.cacheinfo) {
         const { current, pageSize } = location.state.cacheinfo.paginations;
-        setExpand(location.state.cacheinfo.expand);
+        expand = location.state.cacheinfo.expand;
         setPaginations({ ...paginations, current, pageSize });
       }
     }
@@ -730,8 +674,6 @@ function TaskSearch(props) {
       setSelectedRows([...handleSelect]);
     },
   };
-
-
 
   //  自定义列表
   const creataColumns = () => {
@@ -847,17 +789,13 @@ function TaskSearch(props) {
   };
 
   useEffect(() => {
-    getoperationPerson();
-    setColumns(initialColumns);
-  }, []);
-
-  useEffect(() => {
     if(cacheinfo !== undefined) {
       validateFields((err, values) => {
         searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize);
       });
     }
-  
+    getoperationPerson();
+    setColumns(initialColumns);
   }, []);
 
   const pagination = {
@@ -1336,7 +1274,7 @@ function TaskSearch(props) {
                   style={{ marginLeft: 8 }}
                   type="link"
                   onClick={() => {
-                    setExpand(!expand);
+                    expand = !expand
                   }}
                 >
                   {expand ? (
@@ -1364,7 +1302,7 @@ function TaskSearch(props) {
                   style={{ marginLeft: 8 }}
                   type="link"
                   onClick={() => {
-                    setExpand(!expand);
+                    expand = !expand
                   }}
                 >
                   {expand ? (

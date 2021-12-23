@@ -53,7 +53,9 @@ const forminladeLayout = {
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 const { Search } = Input;
-let formThead;
+
+let fromparams;
+let expand = false;
 
 function TobedealtList(props) {
   const pagetitle = props.route.name;
@@ -67,10 +69,10 @@ function TobedealtList(props) {
     location,
     loading,
   } = props;
+  let formThead;
   const [performanceLeader, setPerformanceLeader] = useState('');
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [contractArr, setContractArr] = useState([]);
-  const [expand, setExpand] = useState(false);
   const [disablelist, setDisabledList] = useState([]); // 服务商
   const [contractlist, setContractlist] = useState([]); // 合同
   const [scorelist, setScorelist] = useState([]); // 评分细则
@@ -78,7 +80,6 @@ function TobedealtList(props) {
   const [scoreId, setScoreId] = useState(''); //  设置服务商的id
   const [target2Type, setTarget2Type] = useState('');
   const [spinloading, setSpinLoading] = useState(true);
-  const [tabrecord, setTabRecord] = useState({});
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [selectdata, setSelectData] = useState('');
   const [columns, setColumns] = useState([]);
@@ -88,7 +89,7 @@ function TobedealtList(props) {
       type: 'viewcache/gettabstate',
       payload: {
         cacheinfo: {
-          ...tabrecord,
+          ...fromparams,
           paginations,
           expand,
         },
@@ -111,7 +112,7 @@ function TobedealtList(props) {
           state: {
             runpath: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtlist',
             cacheinfo: {
-              ...tabrecord,
+              ...fromparams,
               paginations,
               expand,
             },
@@ -134,7 +135,7 @@ function TobedealtList(props) {
           state: {
             runpath: '/ITSM/servicequalityassessment/serviceperformanceappraisal/search',
             cacheinfo: {
-              ...tabrecord,
+              ...fromparams,
               paginations,
               expand,
             },
@@ -158,7 +159,7 @@ function TobedealtList(props) {
           state: {
             runpath: '/ITSM/servicequalityassessment/serviceperformanceappraisal/assessment',
             cacheinfo: {
-              ...tabrecord,
+              ...fromparams,
               paginations,
               expand,
             },
@@ -383,9 +384,6 @@ function TobedealtList(props) {
       dataIndex: 'directorReviewValue',
       key: 'directorReviewValue',
       width: 180,
-      // render: (text, record) => {
-      //   return <span>{text === '1' ? '通过' : text === '0' ? '不通过' : ''}</span>
-      // }
     },
     {
       title: '自动化科复核说明',
@@ -477,6 +475,7 @@ function TobedealtList(props) {
       payload: type || '',
     });
   };
+
   //  根据考核类型查询二级指标
   const getTarget2 = id => {
     dispatch({
@@ -699,7 +698,7 @@ function TobedealtList(props) {
         break;
     }
 
-    setTabRecord({ ...newvalues });
+    fromparams = newvalues;
   };
 
   const record = {
@@ -770,7 +769,7 @@ function TobedealtList(props) {
           type: 'viewcache/gettabstate',
           payload: {
             cacheinfo: {
-              ...tabrecord,
+              ...fromparams,
               paginations,
               expand,
             },
@@ -781,57 +780,20 @@ function TobedealtList(props) {
       // 点击菜单刷新,并获取数据
       if (location.state.reset) {
         handleReset();
-        setExpand(false);
+        expand = false;
       }
+
+      // 标签切回设置初始值
       if (location.state.cacheinfo) {
         const { current, pageSize } = location.state.cacheinfo.paginations;
-        const {
-          applyBeginTime,
-          applyEndTime,
-          directorVerifyBeginTime,
-          directorVerifyEndTime,
-          assessBeginTime,
-          assessEndTime,
-          expertVerifyBeginTime,
-          expertVerifyEndTime,
-          providerConfirmBeginTime,
-          providerConfirmEndTime,
-          directorReviewBeginTime,
-          directorReviewEndTime,
-          finallyConfirmBeginTime,
-          finallyConfirmEndTime,
-        } = location.state.cacheinfo;
-        setExpand(location.state.cacheinfo.expand);
+        expand = location.state.cacheinfo.expand;
         setPageinations({ ...paginations, current, pageSize });
-        setFieldsValue({
-          applyTime: applyBeginTime ? [moment(applyBeginTime), moment(applyEndTime)] : '',
-          directorVerifyTime: applyBeginTime
-            ? [moment(directorVerifyBeginTime), moment(directorVerifyEndTime)]
-            : '',
-          timeoccurrence: applyBeginTime ? [moment(assessBeginTime), moment(assessEndTime)] : '',
-          expertVerifyTime: applyBeginTime
-            ? [moment(expertVerifyBeginTime), moment(expertVerifyEndTime)]
-            : '',
-          providerConfirmTime: applyBeginTime
-            ? [moment(providerConfirmBeginTime), moment(providerConfirmEndTime)]
-            : '',
-          directorReviewTime: applyBeginTime
-            ? [moment(directorReviewBeginTime), moment(directorReviewEndTime)]
-            : '',
-          finallyConfirmTime: applyBeginTime
-            ? [moment(finallyConfirmBeginTime), moment(finallyConfirmEndTime)]
-            : '',
-        });
       }
     }
   }, [location.state]);
 
   // 获取数据
   useEffect(() => {
-    //  清除数据
-    dispatch({
-      type: 'qualityassessment/clearDrop',
-    });
     if (cacheinfo !== undefined) {
       validateFields((err, values) => {
         if (!err) {
@@ -850,18 +812,15 @@ function TobedealtList(props) {
         }
       });
     }
-  }, []);
-
-  useEffect(() => {
     setColumns(initialColumns);
     getPerformanceleader();
-    if (cacheinfo !== undefined) {
-      validateFields((err, value) => {
-        searchdata(value, cacheinfo.paginations.current, cacheinfo.paginations.pageSize);
+    return () => {
+      //  清除数据
+      dispatch({
+        type: 'qualityassessment/clearDrop',
       });
     }
   }, []);
-
 
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
@@ -899,7 +858,7 @@ function TobedealtList(props) {
 
   const handleSearch = () => {
     validateFields((err, value) => {
-      searchdata(value, 1, paginations.pageSize);
+      searchdata(value, 1, 15);
     });
     setPageinations({ current: 1, pageSize: 15 });
   };
@@ -993,14 +952,6 @@ function TobedealtList(props) {
       }
     } else {
       switch (params) {
-        // case 'assessType':
-        //   setFieldsValue({
-        //     target1Name: '',
-        //     target1Id: '',
-        //     target2Name: '',
-        //     target2Id: '',
-        //   });
-        //   break;
         case 'contract':
           setFieldsValue({
             contractName: '',
@@ -1168,7 +1119,7 @@ function TobedealtList(props) {
         type="link"
         style={{ marginLeft: 8 }}
         onClick={() => {
-          setExpand(!expand);
+          expand = !expand
         }}
       >
         {expand ? (
@@ -1224,7 +1175,6 @@ function TobedealtList(props) {
         obj.render = (text, records, index) => {
           return <a onClick={() => todetail(records)}>{(paginations.current - 1) * paginations.pageSize + (index + 1)}</a>;
         }
-        // `${(paginations.current - 1) * paginations.pageSize + (index + 1)}`
       }
       initialColumns.push(obj);
       setColumns(initialColumns);
@@ -1315,7 +1265,7 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label="发生时间">
                   {getFieldDecorator('timeoccurrence', {
-                    initialValue: cacheinfo.beginTime
+                    initialValue: cacheinfo.assessBeginTime
                       ? [moment(cacheinfo.assessBeginTime), moment(cacheinfo.assessEndTime)]
                       : '',
                   })(
@@ -1901,7 +1851,6 @@ function TobedealtList(props) {
               <>
                 <div style={{ borderBottom: '1px solid #E9E9E9' }}>
                   <Checkbox
-                    // indeterminate={this.state.indeterminate}
                     onChange={onCheckAllChange}
                     checked={(columns.length === initialColumns.length) === true}
                   >
@@ -1936,6 +1885,7 @@ function TobedealtList(props) {
             </Button>
           </Popover>
         </div>
+
         <Table
           loading={loading}
           columns={columns && columns.length === (initialColumns && initialColumns.length) ? initialColumns : columns}
@@ -1945,6 +1895,7 @@ function TobedealtList(props) {
           rowSelection={rowSelection}
           pagination={pagination}
         />
+
       </Card>
     </PageHeaderWrapper>
   );

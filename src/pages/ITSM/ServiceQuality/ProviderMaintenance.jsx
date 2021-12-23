@@ -299,6 +299,10 @@ function ProviderMaintenance(props) {
     providerName: '',
     director: '',
     directorPhone: '',
+    paginations: {
+      current:1,
+      pageSize:15
+    }
   };
 
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
