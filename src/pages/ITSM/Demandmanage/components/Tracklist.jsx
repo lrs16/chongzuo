@@ -74,7 +74,7 @@ function Tracklist(props) {
           dispatch({
             type: 'sysfile/downloadfile',
             payload: {
-              id: info.id,
+              id: info.uid,
             },
           }).then(res => {
             // console.log(res);
