@@ -563,6 +563,7 @@ function TaskSearch(props) {
       // 点击菜单刷新
       if (location.state.reset) {
         handleReset();
+        expand = false;
       }
       // 标签切回设置初始值
       if (location.state.cacheinfo) {
