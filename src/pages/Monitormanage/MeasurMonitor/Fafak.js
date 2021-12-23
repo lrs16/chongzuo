@@ -114,11 +114,11 @@ class Fafak extends Component {
 
     } = this.props;
 
-    const addcolumns = (title) => {
+    const addcolumns = ({ dataIndex, title }) => {
       return ({
         title,
-        dataIndex: title,
-        key: title,
+        dataIndex,
+        key: dataIndex,
         render: (text) => {
           let newtext = '';
           let batchNo = '';
@@ -131,7 +131,7 @@ class Fafak extends Component {
             <Table
               dataSource={zone2data}
               columns={soncolumns}
-              pagination={false}
+              pagination={{ defaultPageSize: 5 }}
               style={{ background: '#fff' }}
             />)
           const fetchlist = () => {
@@ -146,7 +146,7 @@ class Fafak extends Component {
               style={{ color: newtext === '正常' ? '' : '#f00' }}
               onClick={() => fetchlist()}
             >
-              <Popover content={extatable} trigger='click' placement="bottom" >
+              <Popover content={extatable} trigger='click' placement="bottom" arrowPointAtCenter>
                 {newtext}
               </Popover>
             </a>
@@ -163,7 +163,10 @@ class Fafak extends Component {
         return newArr;
       }
       for (let i = 0; i < data.length; i += 1) {
-        newArr.push(addcolumns(data[i].title))
+        const key = data[i].title.lastIndexOf("(");
+        const dataIndex = data[i].title.substring(key + 1, data[i].title.length - 1);
+        // const title = key !== -1 ? { dataIndex, title: data[i].title } : { dataIndex: data[i].title, title: data[i].title };
+        newArr.push(addcolumns({ dataIndex, title: data[i].title }))
       }
       return newArr
     }
