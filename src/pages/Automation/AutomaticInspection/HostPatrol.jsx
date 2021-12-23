@@ -84,10 +84,6 @@ function HostPatrol(props) {
     });
   };
 
-  useEffect(() => {
-    searchdata(1, 15);
-  }, [location]);
-
   // 附件上传
   useEffect(() => {
     if (filelist !== [] && filelistid !== '') {
@@ -204,6 +200,15 @@ function HostPatrol(props) {
       };
     }
   }, [location.state]);
+
+  // 获取数据
+  useEffect(() => {
+    if (cacheinfo !== undefined) {
+      const current = location.state?.cacheinfo?.paginations?.current || paginations.current;
+      const pageSize = location.state?.cacheinfo?.paginations?.pageSize || paginations.pageSize;
+      searchdata(current, pageSize);
+    }
+  }, []);
 
   // 下载报告
   const handledownFileToZip = (id, no) => {

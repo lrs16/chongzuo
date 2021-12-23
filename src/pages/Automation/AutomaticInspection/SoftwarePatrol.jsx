@@ -74,10 +74,6 @@ function SoftwarePatrol(props) {
     });
   };
 
-  useEffect(() => {
-    searchdata(1, 15);
-  }, [location]);
-
   const onShowSizeChange = (page, size) => {
     searchdata(1, size);
     setPageinations({
@@ -177,6 +173,15 @@ function SoftwarePatrol(props) {
       };
     }
   }, [location.state]);
+
+  // 获取数据
+  useEffect(() => {
+    if (cacheinfo !== undefined) {
+      const current = location.state?.cacheinfo?.paginations?.current || paginations.current;
+      const pageSize = location.state?.cacheinfo?.paginations?.pageSize || paginations.pageSize;
+      searchdata(current, pageSize);
+    }
+  }, []);
 
   // 报告下载
   const handledownFileToZip = (id, no) => {

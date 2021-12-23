@@ -586,6 +586,7 @@ function MyresponWork(props) {
     });
     resetFields();
     searchdata(searchrecord, 1, 15);
+    setPaginations({ current: 1, pageSize: 15 });
   };
 
   useEffect(() => {
@@ -651,9 +652,11 @@ function MyresponWork(props) {
   useEffect(() => {
     queryDept();
     setColumns(initialColumns);
-    if (cacheinfo) {
+    if (cacheinfo !== undefined) {
       const values = getFieldsValue();
-      searchdata(values, paginations.current, paginations.pageSize);
+      const current = location.state?.cacheinfo?.paginations?.current || paginations.current;
+      const pageSize = location.state?.cacheinfo?.paginations?.pageSize || paginations.pageSize;
+      searchdata(values, current, pageSize);
     }
     return () => {
       setSelectData([]);
@@ -732,8 +735,8 @@ function MyresponWork(props) {
                 )}
               </Form.Item>
             </Col>
-            {(expand || (location && location.state && location.state.expand)) && (
-              <>
+            {/* {(expand || (location && location.state && location.state.expand)) && ( */}
+            <span style={{ display: expand ? 'block' : 'none' }}>
                 <Col span={8}>
                   <Form.Item label="执行状态">
                     {getFieldDecorator('executeStatus', {
@@ -974,8 +977,8 @@ function MyresponWork(props) {
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
-              </>
-            )}
+            </span>
+            {/* )} */}
             {(expand || (location && location.state && location.state.expand)) ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
           </Form>
         </Row>
@@ -1027,7 +1030,7 @@ function MyresponWork(props) {
         </div>
         < Table
           loading={loading}
-          columns={initialColumns && initialColumns.length > 0 ? initialColumns : columns}
+          columns={columns.length > 0 ? columns : initialColumns}
           scroll={{ x: 1600 }}
           dataSource={getWorkQueryLists.rows}
           pagination={pagination}

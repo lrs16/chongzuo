@@ -184,8 +184,8 @@ function Statistics(props) {
                   time2={moment(values.endTime).format('YYYY-MM-DD')} value={ratiodatalist.dev} suffix='单' des='环比' desval={`${ratiodatalist.devMom}%`} type={Number(ratiodatalist.devMom) > 0 ? 'up' : 'down'} /></Col>
                 <Col span={5}><StatisticsCard title='已发布：' staticName="已发布" time1={moment(values.beginTime).format('YYYY-MM-DD 00:00:00')}
                   time2={moment(values.endTime).format('YYYY-MM-DD 23:59:59')} value={ratiodatalist.release} suffix='单' des='环比' desval={`${ratiodatalist.releaseMom}%`} type={Number(ratiodatalist.releaseMom) > 0 ? 'up' : 'down'} /></Col>
-                <Col span={5}><StatisticsCard title='开发率：' value={ratiodatalist.devRate} suffix='' des='环比' desval={`${ratiodatalist.devRateMom}%`} type={Number(ratiodatalist.devRateMom) > 0 ? 'up' : 'down'} /></Col>
-                <Col span={5}><StatisticsCard title='发布率：' value={ratiodatalist.releaseRate} suffix='' des='环比' desval={`${ratiodatalist.releaseRateMom}%`} type={Number(ratiodatalist.releaseRateMom) > 0 ? 'up' : 'down'} /></Col>
+                <Col span={5}><StatisticsCard title='开发率：' value={ratiodatalist.devRate} suffix='%' des='环比' desval={`${ratiodatalist.devRateMom}%`} type={Number(ratiodatalist.devRateMom) > 0 ? 'up' : 'down'} /></Col>
+                <Col span={5}><StatisticsCard title='发布率：' value={ratiodatalist.releaseRate} suffix='%' des='环比' desval={`${ratiodatalist.releaseRateMom}%`} type={Number(ratiodatalist.releaseRateMom) > 0 ? 'up' : 'down'} /></Col>
               </Row>
             )
           }

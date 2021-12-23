@@ -46,7 +46,7 @@ function MycreateWork(props) {
       getFieldDecorator,
       resetFields,
       validateFields,
-      getFieldsValue,
+      // getFieldsValue,
       setFieldsValue
     },
   } = props;
@@ -163,7 +163,43 @@ function MycreateWork(props) {
     });
     resetFields();
     searchdata(searchrecord, 1, 15);
+    setPaginations({ current: 1, pageSize: 15 });
   };
+
+  // 设置时间
+  useEffect(() => {
+    if (location.state.cacheinfo && loading) {
+      const {
+        checkTime1,
+        checkTime2,
+        endTime1,
+        endTime2,
+        executeTime1,
+        executeTime2,
+        plannedEndTime1,
+        plannedEndTime2,
+        plannedStartTime1,
+        plannedStartTime2,
+        startTime1,
+        startTime2,
+        time1,
+        time2,
+      } = location.state.cacheinfo;
+      setFieldsValue({
+        addTime: time1 ? [moment(time1), moment(time2)] : '',
+        checkTime: checkTime1 ? [moment(checkTime1), moment(checkTime2)] : '',
+        endTime: endTime1 ? [moment(endTime1), moment(endTime2)] : '',
+        executeTime: executeTime1
+          ? [moment(executeTime1), moment(executeTime2)]
+          : '',
+        plannedEndTime: plannedEndTime1 ? [moment(plannedEndTime1), moment(plannedEndTime2)] : '',
+        startTime: startTime1 ? [moment(startTime1), moment(startTime2)] : '',
+        plannedStartTime: plannedStartTime1
+          ? [moment(plannedStartTime1), moment(plannedStartTime2)]
+          : '',
+      });
+    }
+  }, [location.state]);
 
   useEffect(() => {
     if (location.state) {
@@ -224,18 +260,6 @@ function MycreateWork(props) {
       };
     }
   }, [location.state]);
-
-  // 获取数据
-  useEffect(() => {
-    if (cacheinfo) {
-      const values = getFieldsValue();
-      searchdata(values, paginations.current, paginations.pageSize);
-    }
-    return () => {
-      setSelectData([]);
-      setExpand(false);
-    };
-  }, []);
 
   // 复制
   const handleCopy = () => {
@@ -776,6 +800,17 @@ function MycreateWork(props) {
     setColumns(initialColumns);
     sessionStorage.removeItem('copyrecord');
     sessionStorage.removeItem('nocopyrecord');
+    if (cacheinfo !== undefined) {
+      validateFields((err, values) => {
+        const current = location.state?.cacheinfo?.paginations?.current || paginations.current;
+        const pageSize = location.state?.cacheinfo?.paginations?.pageSize || paginations.pageSize;
+        searchdata(values, current, pageSize);
+      });
+    }
+    return () => {
+      setSelectData([]);
+      setExpand(false);
+    };
   }, []);
 
   // 数据字典匹配
@@ -850,8 +885,8 @@ function MycreateWork(props) {
                 )}
               </Form.Item>
             </Col>
-            {(expand || (location && location.state && location.state.expand)) && (
-              <>
+            {/* {(expand || (location && location.state && location.state.expand)) && ( */}
+            <span style={{ display: expand ? 'block' : 'none' }}>
                 <Col span={8}>
                   <Form.Item label="执行状态">
                     {getFieldDecorator('executeStatus', {
@@ -1092,8 +1127,8 @@ function MycreateWork(props) {
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
-              </>
-            )}
+            </span>
+            {/* )} */}
             {(expand || (location && location.state && location.state.expand)) ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
           </Form>
         </Row>
@@ -1153,7 +1188,7 @@ function MycreateWork(props) {
         </div>
         < Table
           loading={loading}
-          columns={initialColumns && initialColumns.length > 0 ? initialColumns : columns}
+          columns={columns.length > 0 ? columns : initialColumns}
           scroll={{ x: 1600 }}
           dataSource={getWorkQueryLists.rows}
           pagination={pagination}

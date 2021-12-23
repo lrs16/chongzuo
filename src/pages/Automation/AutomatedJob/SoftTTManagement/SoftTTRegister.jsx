@@ -440,9 +440,13 @@ function SoftTTRegister(props) {
   }, [location.state]);
 
   useEffect(() => {
-    searchdata(1, 15);
+    if (cacheinfo !== undefined) {
+      const current = location.state?.cacheinfo?.paginations?.current || paginations.current;
+      const pageSize = location.state?.cacheinfo?.paginations?.pageSize || paginations.pageSize;
+      searchdata(current, pageSize);
+    }
     setColumns(initialColumns);
-  }, [location]);
+  }, []);
 
   // 数据字典取下拉值
   const getTypebyId = key => {
@@ -620,7 +624,7 @@ function SoftTTRegister(props) {
           </Popover>
         </div>
         <Table
-          columns={initialColumns && initialColumns.length > 0 ? initialColumns : columns}
+          columns={columns.length > 0 ? columns : initialColumns}
           dataSource={autosoftworklist.rows}
           loading={loading}
           rowKey={r => r.id}

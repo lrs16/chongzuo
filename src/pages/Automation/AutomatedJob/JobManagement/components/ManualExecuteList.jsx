@@ -464,7 +464,11 @@ function ManualExecuteList(props) {
   }, [location.state]);
 
   useEffect(() => {
-    searchdata(1, 15);
+    if (cacheinfo !== undefined) {
+      const current = location.state?.cacheinfo?.paginations?.current || paginations.current;
+      const pageSize = location.state?.cacheinfo?.paginations?.pageSize || paginations.pageSize;
+      searchdata(current, pageSize);
+    }
     setColumns(initialColumns);
   }, [location]);
 

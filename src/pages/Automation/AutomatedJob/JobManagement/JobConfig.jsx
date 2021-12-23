@@ -114,15 +114,6 @@ function JobConfig(props) {
     setPageinations({ current: 1, pageSize: 15 });
   };
 
-  useEffect(() => {
-    if (location.state) {
-      // 点击菜单刷新,并获取数据
-      if (location.state.reset) {
-        handleReset();
-      };
-    }
-  }, [location.state]);
-
   const newjobconfig = (buttype, record) => {
     if (buttype === 'edit') {
       router.push({
@@ -468,8 +459,6 @@ function JobConfig(props) {
       if (location.state.cacheinfo) {
         const { current, pageSize } = location.state.cacheinfo.paginations;
         const { startTime, endTime, startUpdateTime, endUpdateTime, startexamineTime, endexamineTime } = location.state.cacheinfo;
-        setExpand(location.state.cacheinfo.expand);
-        setPageinations({ ...paginations, current, pageSize });
         setFieldsValue({
           startTime: startTime ? moment(startTime) : '',
           endTime: endTime ? moment(endTime) : '',
@@ -478,12 +467,18 @@ function JobConfig(props) {
           startexamineTime: startexamineTime ? moment(startexamineTime) : '',
           endexamineTime: endexamineTime ? moment(endexamineTime) : '',
         });
+        setExpand(location.state.cacheinfo.expand);
+        setPageinations({ ...paginations, current, pageSize });
       };
     }
   }, [location.state]);
 
   useEffect(() => {
-    searchdata(1, 15);
+    if (cacheinfo !== undefined) {
+      const current = location.state?.cacheinfo?.paginations?.current || paginations.current;
+      const pageSize = location.state?.cacheinfo?.paginations?.pageSize || paginations.pageSize;
+      searchdata(current, pageSize);
+    }
     queryDept();
     setColumns(initialColumns);
   }, [location]);
@@ -519,8 +514,8 @@ function JobConfig(props) {
                   </Select>)}
               </Form.Item>
             </Col>
-            {(expand || (location && location.state && location.state.expand)) && (
-              <>
+            {/* {(expand || (location && location.state && location.state.expand)) && ( */}
+            <span style={{ display: expand ? 'block' : 'none' }}>
                 <Col span={8}>
                   <Form.Item label="审核结果">
                     {getFieldDecorator('examineResults', {
@@ -546,7 +541,9 @@ function JobConfig(props) {
                   <Form.Item label="创建时间">
                     <Row>
                       <Col span={11}>
-                        {getFieldDecorator('startTime', {})(
+                      {getFieldDecorator('startTime', {
+                        // initialValue: cacheinfo.startTime ? moment(cacheinfo.startTime) : ''
+                      })(
                           <DatePicker
                             showTime={{
                               hideDisabledOptions: true,
@@ -560,7 +557,9 @@ function JobConfig(props) {
                       </Col>
                       <Col span={2} style={{ textAlign: 'center' }}>-</Col>
                       <Col span={11}>
-                        {getFieldDecorator('endTime', {})(
+                      {getFieldDecorator('endTime', {
+                        // initialValue: cacheinfo.endTime ? moment(cacheinfo.endTime) : ''
+                      })(
                           <DatePicker
                             showTime={{
                               hideDisabledOptions: true,
@@ -669,8 +668,8 @@ function JobConfig(props) {
                       </Select>)}
                   </Form.Item>
                 </Col>
-              </>
-            )}
+            </span>
+            {/* )} */}
             {(expand || (location && location.state && location.state.expand)) ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }} >{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
           </Form>
         </Row>
@@ -721,7 +720,7 @@ function JobConfig(props) {
         </div>
         {
           autotasklist.rows && (<Table
-            columns={initialColumns && initialColumns.length > 0 ? initialColumns : columns}
+            columns={columns.length > 0 ? columns : initialColumns}
             loading={loading}
             dataSource={autotasklist.rows.filter(item => item.createBy === userinfo.userName)}
             rowKey={record => record.id}
