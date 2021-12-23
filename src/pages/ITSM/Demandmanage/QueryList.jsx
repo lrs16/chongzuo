@@ -52,12 +52,12 @@ function QueryList(props) {
       startTime: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD 00:00:00') : '',
       endTime: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD 23:59:59') : '',
       completeStatus: values.completeStatus === undefined ? '' : values.completeStatus,
+      module: (values.module === [] || !values.module) ? '' : values.module.join('/'),
     }
     dispatch({
       type: 'demandquery/querylist',
       payload: {
         ...values,
-        module: values.module === [] ? '' : values.module.join('/'),
         ...newvalues,
         limit: size,
         page,
