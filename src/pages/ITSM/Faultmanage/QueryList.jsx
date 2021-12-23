@@ -1619,8 +1619,12 @@ function QueryList(props) {
 
   // 获取数据
   useEffect(() => {
-    const values = getFieldsValue();
-    searchdata(values, paginations.current, paginations.pageSize);
+    if (cacheinfo !== undefined) {
+      const values = getFieldsValue();
+      const current = location.state?.cacheinfo?.paginations?.current || paginations.current;
+      const pageSize = location.state?.cacheinfo?.paginations?.pageSize || paginations.pageSize;
+      searchdata(values, current, pageSize);
+    }
   }, []);
 
   const creataColumns = () => {
