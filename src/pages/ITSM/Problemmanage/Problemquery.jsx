@@ -1115,7 +1115,7 @@ function Besolved(props) {
         dispatch({
           type: 'problemmanage/eventdownload',
           payload: {
-            columns: JSON.stringify(exportColumns),
+            columns: exportColumns && exportColumns.length > 0 ? JSON.stringify(exportColumns):'',
             ids: selectedKeys.toString(),
             ...values,
             type: values.type && values.type.length ? values.type[1] : '',
