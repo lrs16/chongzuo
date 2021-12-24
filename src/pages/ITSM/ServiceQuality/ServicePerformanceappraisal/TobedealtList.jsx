@@ -746,6 +746,7 @@ function TobedealtList(props) {
     finallyConfirmTime: '',
     paginations,
     directorReviewerName: '',
+    source: ''
   };
 
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
@@ -1208,6 +1209,7 @@ function TobedealtList(props) {
 
   const assessmentObject = getTypebyTitle('考核对象');
   const currentProssing = getTypebyTitle('当前处理环节');
+  const assessmentSource = getTypebyTitle('考核来源');
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -1635,7 +1637,13 @@ function TobedealtList(props) {
                 </Form.Item>
               </Col>
 
-
+              <Col span={8}>
+                <Form.Item label="申诉内容">
+                  {getFieldDecorator('appealContent', {
+                    initialValue: cacheinfo.appealContent,
+                  })(<Input />)}
+                </Form.Item>
+              </Col>
 
               <Col span={8}>
                 <Form.Item label="申诉内容">
@@ -1823,6 +1831,26 @@ function TobedealtList(props) {
                   )}
                 </Form.Item>
               </Col>
+
+              {
+                pagetitle === '服务绩效考核查询' && (
+                  <Col span={8}>
+                    <Form.Item label="考核来源">
+                      {getFieldDecorator('source', {
+                        initialValue: cacheinfo.source,
+                      })(
+                        <Select getPopupContainer={e => e.parentNode} allowClear>
+                          {(assessmentSource || []).map(obj => [
+                            <Option key={obj.dict_code} value={obj.title}>
+                              {obj.title}
+                            </Option>,
+                          ])}
+                        </Select>,
+                      )}
+                    </Form.Item>
+                  </Col>
+                )
+              }
             </div>
 
             {expand ? (

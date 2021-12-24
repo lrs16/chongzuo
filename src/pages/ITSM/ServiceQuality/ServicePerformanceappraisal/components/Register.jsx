@@ -730,7 +730,7 @@ const Register = forwardRef((props, ref) => {
                 getPopupContainer={e => e.parentNode}
               >
                 {(assessmentSource || []).map(obj => [
-                  <Option key={obj.dict_code} value={obj.dict_code}>
+                  <Option key={obj.dict_code} value={obj.title}>
                     {obj.title}
                   </Option>,
                 ])}
