@@ -624,7 +624,7 @@ function SoftTTRegister(props) {
           </Popover>
         </div>
         <Table
-          columns={columns.length > 0 ? columns : initialColumns}
+          columns={initialColumns && initialColumns.length > 0 ? initialColumns : columns}
           dataSource={autosoftworklist.rows}
           loading={loading}
           rowKey={r => r.id}

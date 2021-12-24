@@ -620,7 +620,7 @@ function SoftTTExecute(props) {
           </Popover>
         </div>
         {autosoftworklist.rows && (<Table
-          columns={columns.length > 0 ? columns : initialColumns}
+          columns={initialColumns && initialColumns.length > 0 ? initialColumns : columns}
           dataSource={autosoftworklist.rows.filter(item => item.workStatus !== '已登记')}
           loading={loading}
           rowKey={r => r.id}

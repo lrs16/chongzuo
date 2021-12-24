@@ -56,7 +56,7 @@ const checkResult1 = [
 function Toregister(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, resetFields, validateFields, getFieldsValue },
+    form: { getFieldDecorator, resetFields, validateFields, getFieldsValue, setFieldsValue },
     dispatch,
     location,
     findRegistlist,
@@ -317,6 +317,7 @@ function Toregister(props) {
     });
     resetFields();
     searchdata(searchrecord, 1, 15);
+    setPaginations({ current: 1, pageSize: 15 });
   };
 
   useEffect(() => {
@@ -343,6 +344,24 @@ function Toregister(props) {
       // 标签切回设置初始值
       if (location.state.cacheinfo) {
         const { current, pageSize } = location.state.cacheinfo.paginations;
+        const {
+          planInTime1,
+          planInTime2,
+          planOutTime1,
+          planOutTime2,
+          applyTime1,
+          applyTime2,
+          checkTime1,
+          checkTime2,
+        } = location.state.cacheinfo;
+        setFieldsValue({
+          planInTime: planInTime1 ? [moment(planInTime1), moment(planInTime2)] : '',
+          checkTime: checkTime1 ? [moment(checkTime1), moment(checkTime2)] : '',
+          planOutTime: planOutTime1 ? [moment(planOutTime1), moment(planOutTime2)] : '',
+          applyTime: applyTime1
+            ? [moment(applyTime1), moment(applyTime2)]
+            : '',
+        });
         setExpand(location.state.cacheinfo.expand);
         setPaginations({ ...paginations, current, pageSize })
       };
@@ -352,9 +371,11 @@ function Toregister(props) {
   // 获取数据
   useEffect(() => {
     queryItsmuser();
-    if (cacheinfo) {
+    if (cacheinfo !== undefined) {
       const values = getFieldsValue();
-      searchdata(values, paginations.current, paginations.pageSize);
+      const current = location.state?.cacheinfo?.paginations?.current || paginations.current;
+      const pageSize = location.state?.cacheinfo?.paginations?.pageSize || paginations.pageSize;
+      searchdata(values, current, pageSize);
     }
     return () => {
       setExpand(false);

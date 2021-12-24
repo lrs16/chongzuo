@@ -1077,7 +1077,7 @@ function TodelayExamine(props) {
         </div>
         < Table
           loading={loading}
-          columns={columns.length > 0 ? columns : initialColumns}
+          columns={initialColumns && initialColumns.length > 0 ? initialColumns : columns}
           scroll={{ x: 1600 }}
           dataSource={getWorkQueryLists.rows}
           pagination={pagination}

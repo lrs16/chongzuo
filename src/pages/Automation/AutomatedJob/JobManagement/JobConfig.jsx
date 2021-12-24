@@ -720,7 +720,7 @@ function JobConfig(props) {
         </div>
         {
           autotasklist.rows && (<Table
-            columns={columns.length > 0 ? columns : initialColumns}
+            columns={initialColumns && initialColumns.length > 0 ? initialColumns : columns}
             loading={loading}
             dataSource={autotasklist.rows.filter(item => item.createBy === userinfo.userName)}
             rowKey={record => record.id}
