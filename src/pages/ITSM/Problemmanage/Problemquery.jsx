@@ -34,7 +34,12 @@ const formItemLayout = {
 };
 const { Option } = Select;
 const { RangePicker } = DatePicker;
+let params;
 let expand = false;
+let pageParams = {
+  current: 1,
+  pageSize: 15
+}
 
 function Besolved(props) {
   const {
@@ -62,8 +67,7 @@ function Besolved(props) {
     loading,
   } = props;
   let differentTitle;
-  // const [expand, setExpand] = useState(false);
-  const [tabrecord, setTabRecord] = useState({});
+  const [initial, setInitial] = useState(false)
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [selectdata, setSelectData] = useState('');
   const [columns, setColumns] = useState([]);
@@ -143,7 +147,7 @@ function Besolved(props) {
       pageNum: paginations.current,
       pageSize: paginations.pageSize,
     };
-    setTabRecord({ ...newvalues });
+    params = newvalues
   };
 
   const handleReset = () => {
@@ -167,6 +171,11 @@ function Besolved(props) {
       ...paginations,
       pageSize,
     });
+
+    pageParams = {
+      ...paginations,
+      pageSize,
+    }
   };
 
   const changePage = page => {
@@ -179,6 +188,11 @@ function Besolved(props) {
       ...paginations,
       current: page,
     });
+
+    pageParams = {
+      ...paginations,
+      current: page,
+    }
   };
 
   const pagination = {
@@ -206,6 +220,11 @@ function Besolved(props) {
       }
       searchdata(obj, 1, paginations.pageSize, search);
     });
+
+    pageParams = {
+      ...paginations,
+      current: 1,
+    }
   };
 
   const getTypebyTitle = titles => {
@@ -214,6 +233,7 @@ function Besolved(props) {
     }
     return [];
   };
+
   const problemSource = getTypebyTitle('问题来源');
   const priority = getTypebyTitle('严重程度');
   const currentNodeselect = getTypebyTitle('当前处理环节');
@@ -264,7 +284,10 @@ function Besolved(props) {
     status,
     createTime: '',
     addTime: addTimeBegin ? [moment(addTimeBegin), moment(addTimeEnd)] : '',
-    paginations,
+    paginations:{
+      current:1,
+      pageSize:15
+    }
   };
 
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
@@ -274,8 +297,8 @@ function Besolved(props) {
       type: 'viewcache/gettabstate',
       payload: {
         cacheinfo: {
-          ...tabrecord,
-          paginations,
+          ...params,
+          paginations: pageParams,
           expand,
         },
         tabid: sessionStorage.getItem('tabid')
@@ -291,8 +314,8 @@ function Besolved(props) {
       state: {
         runpath: '/ITSM/problemmanage/problemquery',
         cacheinfo: {
-          ...tabrecord,
-          paginations,
+          ...params,
+          paginations: pageParams,
           expand,
         },
       }
@@ -1081,7 +1104,7 @@ function Besolved(props) {
   ];
 
   const download = () => {
-    const exportColumns = (columns.length > 0 ? columns : controlTable).map(item => {
+    const exportColumns = (initial ? controlTable : columns).map(item => {
       return {
         column: item.dataIndex,
         field: item.title,
@@ -1126,7 +1149,7 @@ function Besolved(props) {
           type: 'viewcache/gettabstate',
           payload: {
             cacheinfo: {
-              ...tabrecord,
+              ...params,
               paginations,
               expand,
             },
@@ -1137,12 +1160,17 @@ function Besolved(props) {
       // 点击菜单刷新
       if (location.state.reset) {
         handleReset();
+        expand = false;
       }
       // 标签切回设置初始值
       if (location.state.cacheinfo) {
         const { current, pageSize } = location.state.cacheinfo.paginations;
         expand = location.state.cacheinfo.expand;
         setPageinations({ ...paginations, current, pageSize });
+        pageParams = {
+          current,
+          pageSize
+        }
       }
     }
   }, [location.state]);
@@ -1153,6 +1181,7 @@ function Besolved(props) {
       const values = getFieldsValue();
       searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize);
     }
+    setInitial(true)
   }, []);
 
   const creataColumns = () => {
@@ -1194,12 +1223,13 @@ function Besolved(props) {
       }
       initialColumns.push(obj);
       setColumns(initialColumns);
+      setInitial(false)
       return null;
     });
   };
 
   const onCheckAllChange = e => {
-    setColumns(e.target.checked ? initialColumns : []);
+    setColumns(e.target.checked ? initialColumns : []); setInitial(false)
   };
 
   const onCheck = checkedValues => {
@@ -1211,7 +1241,7 @@ function Besolved(props) {
     creataColumns();
   };
 
-  const defaultAllkey = (columns.length > 0 ? columns : controlTable).map(item => {
+  const defaultAllkey = (initial ? controlTable : columns).map(item => {
     return item.title;
   });
 
@@ -1609,7 +1639,7 @@ function Besolved(props) {
 
         <Table
           loading={loading}
-          columns={columns.length > 0 ? columns : controlTable}
+          columns={initial ? controlTable : columns}
           dataSource={queryArr.rows}
           rowKey={records => records.id}
           pagination={pagination}
