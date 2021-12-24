@@ -100,8 +100,8 @@ class SysuserMangage extends Component {
       type: 'usermanage/search',
       payload: {
         queKey: values,
-        page,
-        limit,
+        page: 1,
+        limit: 15,
       },
     });
   };

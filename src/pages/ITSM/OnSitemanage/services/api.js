@@ -27,3 +27,11 @@ export async function goonwholeNet(checkNo) {
     method: 'GET',
   });
 }
+
+// 下载文件
+export async function downloadreport(checkNo) {
+  return request(`/inspection/report/download?checkNo=${checkNo}`, {
+    method: 'GET',
+    responseType: 'blob',
+  });
+}

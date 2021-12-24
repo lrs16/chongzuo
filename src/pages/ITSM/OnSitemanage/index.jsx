@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import { Card, Badge, Button, Table, Message, Row, Col } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import axios from 'axios';
+import { downloadreport } from './services/api';
 
 function OnSitemanage(props) {
   const { dispatch, list, loading } = props;
@@ -179,9 +180,22 @@ function OnSitemanage(props) {
       dataIndex: 'action',
       key: 'action',
       render: (text, record) => {
-        const url = `/inspection/report/download?checkNo=${record.checkNo}`;
+
+        //  const url = `/inspection/report/download?checkNo=${record.checkNo}`;
         const download = () => {
-          window.location.href = url;
+          // window.location.href = url;
+          downloadreport(record.checkNo).then(res => {
+            if (res) {
+              const filename = `广西系统巡检报告_${record.checkNo}.xls`;
+              const blob = new Blob([res]);
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = filename;
+              a.click();
+              window.URL.revokeObjectURL(url);
+            }
+          })
         };
         const status = record.checkStatus;
         // const statustext = status.length === 4 ? '下载报告' : '';
