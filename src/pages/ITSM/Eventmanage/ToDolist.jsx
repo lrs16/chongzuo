@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
-import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table } from 'antd';
+import { Card, Row, Col, Form, Input, Select, Button, Table } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import SysDict from '@/components/SysDict';
+import RangeTime from '@/components/SelectTime/RangeTime';
 
 const { Option } = Select;
-const { RangePicker } = DatePicker;
 
 const formItemLayout = {
   labelCol: {
@@ -18,16 +18,6 @@ const formItemLayout = {
   wrapperCol: {
     xs: { span: 24 },
     sm: { span: 18 },
-  },
-};
-const forminladeLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 3 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 21 },
   },
 };
 
@@ -50,8 +40,8 @@ function ToDolist(props) {
   const searchdata = (values, page, size) => {
     const newvalue = {
       ...values,
-      time3: values.time3 ? moment(values.time3).format('YYYY-MM-DD HH:mm:ss') : '',
-      time4: values.time4 ? moment(values.time4).format('YYYY-MM-DD HH:mm:ss') : '',
+      time3: values.time?.startTime || '',
+      time4: values.time?.endtime || '',
     }
     dispatch({
       type: 'eventtodo/fetchlist',
@@ -141,8 +131,6 @@ function ToDolist(props) {
     });
   };
 
-
-
   // 设置表单初始值
   const record = {
     eventNo: '',
@@ -157,7 +145,7 @@ function ToDolist(props) {
     paginations,
     expand,
   };
-  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+  const cacheinfo = location.state?.cacheinfo ? location.state.cacheinfo : record;
 
   const columns = [
     {
@@ -417,37 +405,14 @@ function ToDolist(props) {
               </Col>
               <Col span={8}>
                 <Form.Item label="发送时间">
-                  <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                    {getFieldDecorator('time3', {
-                      initialValue: cacheinfo.time3 ? moment(cacheinfo.time3) : undefined,
-                    })(
-                      <DatePicker
-                        showTime={{
-                          hideDisabledOptions: true,
-                          defaultValue: moment('00:00:00', 'HH:mm:ss'),
-                        }}
-                        placeholder="开始时间"
-                        format='YYYY-MM-DD HH:mm:ss'
-                        style={{ minWidth: 120, width: '100%' }}
-                      />
-                    )}
-                  </div>
-                  <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
-                  <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                    {getFieldDecorator('time4', {
-                      initialValue: cacheinfo.time4 ? moment(cacheinfo.time4) : undefined,
-                    })(
-                      <DatePicker
-                        showTime={{
-                          hideDisabledOptions: true,
-                          defaultValue: moment('23:59:59', 'HH:mm:ss'),
-                        }}
-                        placeholder="结束时间"
-                        format='YYYY-MM-DD HH:mm:ss'
-                        style={{ minWidth: 120, width: '100%' }}
-                      />
-                    )}
-                  </div>
+                  {getFieldDecorator('time', {
+                    initialValue: { startTime: cacheinfo.time3, endtime: cacheinfo.time4 },
+                  })(<></>)}
+                  <RangeTime
+                    startVal={cacheinfo.time3}
+                    endVal={cacheinfo.time4}
+                    getTimes={(v) => { setFieldsValue({ time: v }) }}
+                  />
                 </Form.Item>
               </Col>
             </span>

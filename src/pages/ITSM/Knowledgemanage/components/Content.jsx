@@ -33,6 +33,8 @@ const Content = forwardRef((props, ref) => {
     form: { getFieldDecorator, getFieldsValue, resetFields, setFieldsValue, validateFields }
   } = props;
   const [selectdata, setSelectData] = useState('');
+  const [banOpenFileDialog, setBanOpenFileDialog] = useState(false);
+  const [openFileMsg, setOpenFileMsg] = useState(undefined);
 
   const required = true;
 
@@ -129,18 +131,18 @@ const Content = forwardRef((props, ref) => {
                 {!Noediting && location && (!location.state || (location.state && !location.state.cache)) && (
                   <div
                     style={{ width: '50%', paddingLeft: 12, float: 'left' }}
-                  // onMouseDown={() => {
-                  //   validateFields((err) => {
-                  //     if (err) {
-                  //       message.error('请将信息填写完整');
-                  //       setBanOpenFileDialog(true);
-                  //     } else {
-                  //       setBanOpenFileDialog(false)
-                  //     }
-                  //   })
-                  // }}
+                    onMouseDown={() => {
+                      validateFields((err) => {
+                        if (err) {
+                          setOpenFileMsg('请将信息填写完整');
+                          setBanOpenFileDialog(true);
+                        } else {
+                          setBanOpenFileDialog(false)
+                        }
+                      })
+                    }}
                   >
-                    <SysUpload />
+                    <SysUpload banOpenFileDialog={banOpenFileDialog} openFileMsg={openFileMsg} msgType='error' />
                   </div>
                 )}
                 {formrecord.fileIds !== '' && Noediting && <Downloadfile files={formrecord.fileIds} />}

@@ -373,89 +373,87 @@ function ToDolist(props) {
                 )}
               </Form.Item>
             </Col>
-            {(expand || cacheinfo.expand) && (
-              <>
-                <Col span={8}>
-                  <Form.Item label="责任单位">
-                    {getFieldDecorator('dutyUnit', {
-                      initialValue: cacheinfo.dutyUnit,
+            <span style={{ display: expand ? 'block' : 'none' }}>
+              <Col span={8}>
+                <Form.Item label="责任单位">
+                  {getFieldDecorator('dutyUnit', {
+                    initialValue: cacheinfo.dutyUnit,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {unitmap.map(obj => (
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>
+                      ))}
+                    </Select>
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="发布类型">
+                  {getFieldDecorator('releaseType', {
+                    initialValue: cacheinfo.releaseType,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {typemap.map(obj => (
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>
+                      ))}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="出厂测试登记人">
+                  {getFieldDecorator('register', {
+                    initialValue: cacheinfo.register,
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="发送人">
+                  {getFieldDecorator('sender', {
+                    initialValue: cacheinfo.sender,
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="发送时间">
+                  <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                    {getFieldDecorator('beginTime', {
+                      initialValue: cacheinfo.beginTime,
                     })(
-                      <Select placeholder="请选择" allowClear>
-                        {unitmap.map(obj => (
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>
-                        ))}
-                      </Select>
+                      <DatePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                        }}
+                        placeholder="开始时间"
+                        format='YYYY-MM-DD HH:mm:ss'
+                        style={{ minWidth: 120, width: '100%' }}
+                      />
                     )}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="发布类型">
-                    {getFieldDecorator('releaseType', {
-                      initialValue: cacheinfo.releaseType,
+                  </div>
+                  <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
+                  <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                    {getFieldDecorator('endTime', {
+                      initialValue: cacheinfo.endTime,
                     })(
-                      <Select placeholder="请选择" allowClear>
-                        {typemap.map(obj => (
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>
-                        ))}
-                      </Select>,
+                      <DatePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                        }}
+                        placeholder="结束时间"
+                        format='YYYY-MM-DD HH:mm:ss'
+                        style={{ minWidth: 120, width: '100%' }}
+                      />
                     )}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="出厂测试登记人">
-                    {getFieldDecorator('register', {
-                      initialValue: cacheinfo.register,
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="发送人">
-                    {getFieldDecorator('sender', {
-                      initialValue: cacheinfo.sender,
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="发送时间">
-                    <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                      {getFieldDecorator('beginTime', {
-                        initialValue: cacheinfo.beginTime,
-                      })(
-                        <DatePicker
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: moment('00:00:00', 'HH:mm:ss'),
-                          }}
-                          placeholder="开始时间"
-                          format='YYYY-MM-DD HH:mm:ss'
-                          style={{ minWidth: 120, width: '100%' }}
-                        />
-                      )}
-                    </div>
-                    <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
-                    <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                      {getFieldDecorator('endTime', {
-                        initialValue: cacheinfo.endTime,
-                      })(
-                        <DatePicker
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: moment('23:59:59', 'HH:mm:ss'),
-                          }}
-                          placeholder="结束时间"
-                          format='YYYY-MM-DD HH:mm:ss'
-                          style={{ minWidth: 120, width: '100%' }}
-                        />
-                      )}
-                    </div>
-                  </Form.Item>
-                </Col>
-              </>
-            )}
+                  </div>
+                </Form.Item>
+              </Col>
+            </span>
             <Col span={8} style={{ marginTop: 4, paddingLeft: 48 }}>{extra}</Col>
           </Form>
         </Row>

@@ -47,258 +47,278 @@ const tabList = [
   },
 ];
 
-const columns = [
-  {
-    title: '事件编号',
-    dataIndex: 'eventNo',
-    key: 'eventNo',
-    width: 150,
-    fixed: 'left',
-    render: (text, record) => {
-      const handleClick = () => {
-        router.push({
-          pathname: `/ITSM/eventmanage/query/details`,
-          query: {
-            pangekey: record.eventStatus,
-            id: record.taskId,
-            mainId: record.id,
-            orderNo: text,
-            No: text,
-          },
-        });
-      };
-      return <a onClick={handleClick}>{text}</a>;
-    },
-  },
-  {
-    title: '申报人',
-    dataIndex: 'applicationUser',
-    key: 'applicationUser',
-    width: 100,
-  },
-  {
-    title: '事件标题',
-    dataIndex: 'title',
-    key: 'title',
-    width: 250,
-    onCell: () => {
-      return {
-        style: {
-          maxWidth: 250,
-          overflow: 'hidden',
-          whiteSpace: 'nowrap',
-          textOverflow: 'ellipsis',
-          cursor: 'pointer'
-        }
-      }
-    },
-    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
-  },
-  {
-    title: '当前环节',
-    dataIndex: 'flowNodeName',
-    key: 'flowNodeName',
-    width: 150,
-  },
-  {
-    title: '当前处理人',
-    dataIndex: 'userName',
-    key: 'userName',
-    width: 100,
-  },
-  {
-    title: '超时时间',
-    dataIndex: 'timeoutTime',
-    key: 'timeoutTime',
-    width: 180,
-  },
-];
-
-const timeoutcolumns = [
-  {
-    title: '事件编号',
-    dataIndex: 'eventNo',
-    key: 'eventNo',
-    width: 150,
-    fixed: 'left',
-    render: (text, record) => {
-      const handleClick = () => {
-        router.push({
-          pathname: `/ITSM/eventmanage/query/details`,
-          query: {
-            pangekey: record.eventStatus,
-            id: record.taskId,
-            mainId: record.id,
-            No: text,
-          },
-        });
-      };
-      return <a onClick={handleClick}>{text}</a>;
-    },
-  },
-  {
-    title: '事件标题',
-    dataIndex: 'title',
-    key: 'title',
-    width: 250,
-    onCell: () => {
-      return {
-        style: {
-          maxWidth: 250,
-          overflow: 'hidden',
-          whiteSpace: 'nowrap',
-          textOverflow: 'ellipsis',
-          cursor: 'pointer'
-        }
-      }
-    },
-    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
-  },
-  {
-    title: '处理人',
-    dataIndex: 'handler',
-    key: 'handler',
-    ellipsis: true,
-    width: 120,
-    render: (text) => {
-      if (text !== null && text.indexOf(';') !== -1) {
-        const arr = text.substr(0, text.length - 1).split(';');
-        return (
-          <List
-            size="small"
-            style={{ margin: '-16px', }}
-            dataSource={arr}
-            renderItem={item => <List.Item style={{ padding: '16px' }}>{item}</List.Item>}
-          />
-        );
-      }
-      return text
-    },
-  },
-  {
-    title: '处理人单位',
-    dataIndex: 'handleUnit',
-    key: 'handleUnit',
-    ellipsis: true,
-    width: 350,
-    render: (text) => {
-      if (text !== null && text.indexOf(';') !== -1) {
-        const arr = text.substr(0, text.length - 1).split(';');
-        return (
-          <List
-            size="small"
-            style={{ margin: '-16px', }}
-            dataSource={arr}
-            renderItem={item => <List.Item style={{ padding: '16px' }}>{item}</List.Item>}
-          />
-        );
-      }
-      return text
-    },
-  },
-  {
-    title: '处理人部门',
-    dataIndex: 'handleDept',
-    key: 'handleDept',
-    ellipsis: true,
-    width: 350,
-    render: (text) => {
-      if (text !== null && text.indexOf(';') !== -1) {
-        const arr = text.substr(0, text.length - 1).split(';');
-        return (
-          <List
-            size="small"
-            style={{ margin: '-16px', }}
-            dataSource={arr}
-            renderItem={item => <List.Item style={{ padding: '16px' }}>{item}</List.Item>}
-          />
-        );
-      }
-      return text
-    },
-  },
-  {
-    title: '事件对象',
-    dataIndex: 'eventObject',
-    key: 'eventObject',
-    with: 150,
-  },
-  {
-    title: '超时原因',
-    dataIndex: 'timeoutMsg',
-    key: 'timeoutMsg',
-    width: 250,
-    onCell: () => {
-      return {
-        style: {
-          maxWidth: 250,
-          overflow: 'hidden',
-          whiteSpace: 'nowrap',
-          textOverflow: 'ellipsis',
-          cursor: 'pointer'
-        }
-      }
-    },
-    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
-  },
-
-];
-
 function Overtime(props) {
   const pagetitle = props.route.name;
   const { dispatch, list, loading, location } = props;
   const { getFieldDecorator, resetFields, validateFields } = props.form;
+
   const [tabActivekey, settabActivekey] = useState('notHandle'); // 打开标签
-  const [tablecolumn, setTableColumn] = useState(columns); // 打开标签
   const [expand, setExpand] = useState(false);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [selectdata, setSelectData] = useState({ status: [] });
+  const [tabrecord, setTabRecord] = useState({});
 
-  const getdatas = tabkey => {
-    validateFields((err, values) => {
-      if (!err) {
-        dispatch({
-          type: 'eventtimeout/query',
-          payload: {
-            ...values,
-            tabType: tabkey,
-            time1: values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '',
-            time2: values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '',
-            pageIndex: paginations.current - 1,
-            pageSize: paginations.pageSize,
-          },
-        });
-      }
-    })
+  // 设置表单初始值
+  const record = {
+    eventNo: '',
+    flowNodeName: '',
+    time1: '',
+    time2: '',
+    paginations,
+    expand,
   };
+  const cacheinfo = location.state?.cacheinfo ? location.state.cacheinfo : record;
 
-  useEffect(() => {
-    getdatas('notHandle');
-  }, []);
+  const columns = [
+    {
+      title: '事件编号',
+      dataIndex: 'eventNo',
+      key: 'eventNo',
+      width: 150,
+      fixed: 'left',
+      render: (text, record) => {
+        const handleClick = () => {
+          console.log(tabrecord);
+          dispatch({
+            type: 'viewcache/gettabstate',
+            payload: {
+              cacheinfo: {
+                ...tabrecord,
+                paginations,
+                expand,
+              },
+              tabid: sessionStorage.getItem('tabid')
+            },
+          });
+          router.push({
+            pathname: `/ITSM/eventmanage/query/details`,
+            query: {
+              pangekey: record.eventStatus,
+              id: record.taskId,
+              mainId: record.id,
+              orderNo: text,
+              No: text,
+            },
+          });
+        };
+        return <a onClick={handleClick}>{text}</a>;
+      },
+    },
+    {
+      title: '申报人',
+      dataIndex: 'applicationUser',
+      key: 'applicationUser',
+      width: 100,
+    },
+    {
+      title: '事件标题',
+      dataIndex: 'title',
+      key: 'title',
+      width: 250,
+      onCell: () => {
+        return {
+          style: {
+            maxWidth: 250,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            cursor: 'pointer'
+          }
+        }
+      },
+      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+    },
+    {
+      title: '当前环节',
+      dataIndex: 'flowNodeName',
+      key: 'flowNodeName',
+      width: 150,
+    },
+    {
+      title: '当前处理人',
+      dataIndex: 'userName',
+      key: 'userName',
+      width: 100,
+    },
+    {
+      title: '超时时间',
+      dataIndex: 'timeoutTime',
+      key: 'timeoutTime',
+      width: 180,
+    },
+  ];
+
+  const timeoutcolumns = [
+    {
+      title: '事件编号',
+      dataIndex: 'eventNo',
+      key: 'eventNo',
+      width: 150,
+      fixed: 'left',
+      render: (text, record) => {
+        const handleClick = () => {
+          dispatch({
+            type: 'viewcache/gettabstate',
+            payload: {
+              cacheinfo: {
+                ...tabrecord,
+                paginations,
+                expand,
+              },
+              tabid: sessionStorage.getItem('tabid')
+            },
+          });
+          router.push({
+            pathname: `/ITSM/eventmanage/query/details`,
+            query: {
+              pangekey: record.eventStatus,
+              id: record.taskId,
+              mainId: record.id,
+              No: text,
+            },
+          });
+        };
+        return <a onClick={handleClick}>{text}</a>;
+      },
+    },
+    {
+      title: '事件标题',
+      dataIndex: 'title',
+      key: 'title',
+      width: 250,
+      onCell: () => {
+        return {
+          style: {
+            maxWidth: 250,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            cursor: 'pointer'
+          }
+        }
+      },
+      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+    },
+    {
+      title: '处理人',
+      dataIndex: 'handler',
+      key: 'handler',
+      ellipsis: true,
+      width: 120,
+      render: (text) => {
+        if (text !== null && text.indexOf(';') !== -1) {
+          const arr = text.substr(0, text.length - 1).split(';');
+          return (
+            <List
+              size="small"
+              style={{ margin: '-16px', }}
+              dataSource={arr}
+              renderItem={item => <List.Item style={{ padding: '16px' }}>{item}</List.Item>}
+            />
+          );
+        }
+        return text
+      },
+    },
+    {
+      title: '处理人单位',
+      dataIndex: 'handleUnit',
+      key: 'handleUnit',
+      ellipsis: true,
+      width: 350,
+      render: (text) => {
+        if (text !== null && text.indexOf(';') !== -1) {
+          const arr = text.substr(0, text.length - 1).split(';');
+          return (
+            <List
+              size="small"
+              style={{ margin: '-16px', }}
+              dataSource={arr}
+              renderItem={item => <List.Item style={{ padding: '16px' }}>{item}</List.Item>}
+            />
+          );
+        }
+        return text
+      },
+    },
+    {
+      title: '处理人部门',
+      dataIndex: 'handleDept',
+      key: 'handleDept',
+      ellipsis: true,
+      width: 350,
+      render: (text) => {
+        if (text !== null && text.indexOf(';') !== -1) {
+          const arr = text.substr(0, text.length - 1).split(';');
+          return (
+            <List
+              size="small"
+              style={{ margin: '-16px', }}
+              dataSource={arr}
+              renderItem={item => <List.Item style={{ padding: '16px' }}>{item}</List.Item>}
+            />
+          );
+        }
+        return text
+      },
+    },
+    {
+      title: '事件对象',
+      dataIndex: 'eventObject',
+      key: 'eventObject',
+      with: 150,
+    },
+    {
+      title: '超时原因',
+      dataIndex: 'timeoutMsg',
+      key: 'timeoutMsg',
+      width: 250,
+      onCell: () => {
+        return {
+          style: {
+            maxWidth: 250,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            cursor: 'pointer'
+          }
+        }
+      },
+      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+    },
+
+  ];
+
+
+  // 点击页签
+  const getdatas = tabkey => {
+    setTabRecord({})
+    dispatch({
+      type: 'eventtimeout/query',
+      payload: {
+        tabType: tabkey,
+        pageIndex: 1,
+        pageSize: 15,
+      },
+    });
+  };
 
   const handleTabChange = key => {
-    switch (key) {
-      case 'remind':
-        settabActivekey('remind');
-        setTableColumn(columns);
-        break;
-      case 'notHandle':
-        settabActivekey('notHandle');
-        setTableColumn(columns);
-        break;
-      case 'timeout':
-        settabActivekey('timeout');
-        setTableColumn(timeoutcolumns);
-        break;
-      default:
-        break;
-    };
+    settabActivekey(key)
+    resetFields();
     setPageinations({ ...paginations, current: 1, pageSize: 15 });
     getdatas(key);
-    resetFields();
   };
 
+  // 查询按钮和翻页
   const searchdata = (values, page, size) => {
+    console.log('searchdata', values);
+    setTabRecord({
+      ...values,
+      tabType: tabActivekey,
+      time1: values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '',
+      time2: values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '',
+    })
     dispatch({
       type: 'eventtimeout/query',
       payload: {
@@ -311,6 +331,14 @@ function Overtime(props) {
       },
     });
   };
+
+  useEffect(() => {
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, location.state?.paginations?.current || 1, location.state?.paginations?.pageSize || 15);
+      }
+    });
+  }, []);
 
   const onShowSizeChange = (page, size) => {
     validateFields((err, values) => {
@@ -327,9 +355,7 @@ function Overtime(props) {
 
   const changePage = page => {
     validateFields((err, values) => {
-      if (!err) {
-        searchdata(values, page, paginations.pageSize);
-      }
+      searchdata(values, page, paginations.pageSize);
     });
     setPageinations({
       ...paginations,
@@ -353,23 +379,44 @@ function Overtime(props) {
       current: 1,
     });
     validateFields((err, values) => {
-      if (err) {
-        return;
-      }
       searchdata(values, paginations.current, paginations.pageSize);
     });
   };
 
   const handleReset = () => {
     settabActivekey('notHandle');
-    setTableColumn(columns);
     resetFields();
     getdatas('notHandle');
   }
 
   useEffect(() => {
-    if (location.state && location.state.reset) {
-      handleReset()
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+              expand,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新
+      if (location.state.reset) {
+        handleReset();
+        setExpand(false);
+      };
+      if (location.state.cacheinfo) {
+        if (location.state.cacheinfo.paginations) {
+          const { current, pageSize } = location.state.cacheinfo.paginations;
+          setPageinations({ ...paginations, current, pageSize });
+        }
+        setExpand(location.state.cacheinfo.expand);
+      };
     }
   }, [location.state]);
 
@@ -414,14 +461,14 @@ function Overtime(props) {
             <Col span={6}>
               <Form.Item label="事件编号">
                 {getFieldDecorator('eventNo', {
-                  initialValue: '',
+                  initialValue: cacheinfo.eventNo,
                 })(<Input placeholder="请输入" />)}
               </Form.Item>
             </Col>
             <Col span={6}>
               <Form.Item label="当前环节">
                 {getFieldDecorator('flowNodeName', {
-                  initialValue: '',
+                  initialValue: cacheinfo.flowNodeName,
                 })(
                   <Select
                     style={{ width: '100%' }}
@@ -451,6 +498,7 @@ function Overtime(props) {
             <Col span={12}>
               <Form.Item label="建单时间" {...forminladeLayout}>
                 {getFieldDecorator('time1', {
+                  initialValue: cacheinfo.time1 ? moment(cacheinfo.time1) : undefined,
                 })(
                   <DatePicker
                     showTime={{
@@ -462,6 +510,7 @@ function Overtime(props) {
                 )}
                 <span style={{ padding: '0 10px' }}>-</span>
                 {getFieldDecorator('time2', {
+                  initialValue: cacheinfo.time2 ? moment(cacheinfo.time2) : undefined,
                 })(
                   <DatePicker
                     showTime={{
@@ -473,19 +522,19 @@ function Overtime(props) {
                 )}
               </Form.Item>
             </Col>
-            {expand === true && (
+            {(expand || cacheinfo.expand) && (
               <>
                 <Col span={6}>
                   <Form.Item label="事件标题">
                     {getFieldDecorator('eventTitle', {
-                      initialValue: '',
+                      initialValue: cacheinfo.eventTitle,
                     })(<Input placeholder="请输入" />)}
                   </Form.Item>
                 </Col>
                 <Col span={6}>
                   <Form.Item label="当前处理人">
                     {getFieldDecorator('userName', {
-                      initialValue: '',
+                      initialValue: cacheinfo.userName,
                     })(<Input placeholder="请输入" />)}
                   </Form.Item>
                 </Col>
@@ -528,7 +577,7 @@ function Overtime(props) {
           </Button>
         </div>
         <Table
-          columns={tablecolumn}
+          columns={tabActivekey === 'timeout' ? timeoutcolumns : columns}
           dataSource={list.rows}
           loading={loading}
           rowKey={(_, index) => index.toString()}

@@ -447,40 +447,37 @@ function Checktodo(props) {
                 )}
               </Form.Item>
             </Col>
-
-            {(expand || cacheinfo.expand) && (
-              <>
-                <Col span={8}>
-                  <Form.Item label="功能类型">
-                    {getFieldDecorator('abilityType', {
-                      initialValue: cacheinfo.abilityType,
-                    })(
-                      <Cascader
-                        fieldNames={{ label: 'title', value: 'title', children: 'children' }}
-                        options={functionmap}
-                        changeOnSelect
-                      />,
-                    )}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="功能名称">
-                    {getFieldDecorator('appName', {
-                      initialValue: cacheinfo.appName,
-                    })(
-                      <Input placeholder="请输入" allowClear />
-                    )}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="问题类型">
-                    {getFieldDecorator('problemType', {
-                      initialValue: cacheinfo.problemType,
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-              </>
-            )}
+            <span style={{ display: expand ? 'block' : 'none' }}>
+              <Col span={8}>
+                <Form.Item label="功能类型">
+                  {getFieldDecorator('abilityType', {
+                    initialValue: cacheinfo.abilityType,
+                  })(
+                    <Cascader
+                      fieldNames={{ label: 'title', value: 'title', children: 'children' }}
+                      options={functionmap}
+                      changeOnSelect
+                    />,
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="功能名称">
+                  {getFieldDecorator('appName', {
+                    initialValue: cacheinfo.appName,
+                  })(
+                    <Input placeholder="请输入" allowClear />
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="问题类型">
+                  {getFieldDecorator('problemType', {
+                    initialValue: cacheinfo.problemType,
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
+              </Col>
+            </span>
             <Col span={8}>
               <Form.Item style={{ textAlign: 'right' }}>
                 <Button type="primary" onClick={() => handleSearch()}>

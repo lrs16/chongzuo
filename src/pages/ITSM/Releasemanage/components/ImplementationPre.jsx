@@ -289,7 +289,7 @@ function ImplementationPre(props, ref) {
             <Form.Item label="实施计划开始时间">
               {getFieldDecorator('beginPlanTime', {
                 rules: [{ required, message: `请选择实施计划开始时间` }],
-                initialValue: moment(info.practicePre && info.practicePre.beginPlanTime ? info.practicePre.beginPlanTime : undefined),
+                initialValue: moment(info.practicePre?.beginPlanTime || undefined),
               })(<div>
                 {info.practicePre && (<DatePicker
                   showTime
@@ -297,7 +297,7 @@ function ImplementationPre(props, ref) {
                   format="YYYY-MM-DD HH:mm:ss"
                   disabled={!isEdit}
                   style={{ width: '100%' }}
-                  defaultValue={moment(info.practicePre && info.practicePre.beginPlanTime ? info.practicePre.beginPlanTime : undefined)}
+                  defaultValue={moment(info.practicePre?.beginPlanTime || undefined)}
                   onChange={(v) => { setFieldsValue({ beginPlanTime: moment(v).format('YYYY-MM-DD HH:mm:ss') }) }}
                   disabledDate={(v) => {
                     const dates = getFieldsValue(['endPlanTime']);
@@ -313,7 +313,7 @@ function ImplementationPre(props, ref) {
             <Form.Item label="实施计划结束时间" >
               {getFieldDecorator('endPlanTime', {
                 rules: [{ required, message: `请选择实施计划结束时间` }],
-                initialValue: moment(info.practicePre && info.practicePre.endPlanTime ? info.practicePre.endPlanTime : undefined),
+                initialValue: moment(info.practicePre?.endPlanTime || undefined),
               })(
                 <>
                   {info.practicePre && (<DatePicker
@@ -322,7 +322,7 @@ function ImplementationPre(props, ref) {
                     format="YYYY-MM-DD HH:mm:ss"
                     disabled={!isEdit}
                     style={{ width: '100%' }}
-                    defaultValue={moment(info.practicePre && info.practicePre.endPlanTime ? info.practicePre.endPlanTime : undefined)}
+                    defaultValue={moment(info.practicePre?.endPlanTime || undefined)}
                     onChange={(v) => { setFieldsValue({ endPlanTime: moment(v).format('YYYY-MM-DD HH:mm:ss') }) }}
                     disabledDate={(v) => {
                       const dates = getFieldsValue(['beginPlanTime']);

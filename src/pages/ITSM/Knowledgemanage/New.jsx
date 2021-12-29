@@ -146,7 +146,7 @@ function New(props) {
       <Card>
         <EditContext.Provider value={{
           editable: true,
-          files: [],
+          files: null,
           ChangeFiles,
           getUploadStatus: (v) => { setUploadStatus(v) },
         }}>

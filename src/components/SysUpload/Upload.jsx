@@ -12,7 +12,7 @@ message.config({
 });
 
 function SysUpload(props) {
-  const { dispatch, filelist, banOpenFileDialog } = props;
+  const { dispatch, filelist, banOpenFileDialog, openFileMsg, msgType } = props;
   const [filetype, setFileType] = useState('');
   const [showIcon, setShowIcon] = useState(true);
   const [nowFiles, setNowFiles] = useState([]);
@@ -82,7 +82,9 @@ function SysUpload(props) {
         const type = file.name.lastIndexOf('.');
         const filesuffix = file.name.substring(type + 1, file.name.length);
         const correctfiletype = filetype.indexOf(filesuffix);
-        if ((!filelist && !files && fileList.length > 20) || (!files && filelist && (filelist.length + fileList.length) > 20) || (!filelist && files && (files.length + fileList.length) > 20)) {
+        if ((!filelist && !files && (fileList.length > 20 || (nowFiles.length + fileList.length) > 20)) ||
+          (!files && filelist && (filelist.length + fileList.length) > 20) ||
+          (!filelist && files && (files.length + fileList.length) > 20)) {
           if (getUploadStatus) { getUploadStatus(false) };
           sendUploadStatus(false);
           message.error(`最多可上传20个文件`);
@@ -157,7 +159,17 @@ function SysUpload(props) {
   return (
     <>
       <Upload {...uploadprops}>
-        <Button type="primary" onClick={() => { if (banOpenFileDialog) { message.info('文件正在上传中，请稍后再上传') } }}>
+        <Button
+          type="primary"
+          onClick={() => {
+            if (banOpenFileDialog) {
+              if (openFileMsg) {
+                message[msgType](openFileMsg);
+              } else {
+                message.info('文件正在上传中，请稍后再上传');
+              }
+            }
+          }}>
           <DownloadOutlined /> 上传附件
         </Button>
       </Upload>

@@ -9,23 +9,20 @@ import {
   Form,
   Input,
   Select,
-  Button,
-  DatePicker,
   Table,
-  // Badge,
-  // Tag,
   Cascader,
   message,
   Tooltip,
+  Button,
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import SysDict from '@/components/SysDict';
 import AdminAuth from '@/components/AdminAuth';
+import RangeTime from '@/components/SelectTime/RangeTime';
 import { EventDelete } from './services/api';    // 删除工单
 
 const { Option } = Select;
-const { RangePicker } = DatePicker;
 
 const formItemLayout = {
   labelCol: {
@@ -84,14 +81,14 @@ function QueryList(props) {
         eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : '',
         pageSize: size,
         pageIndex: page,
-        time1: values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '',
-        time2: values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '',
+        time1: values.time?.startTime || '',
+        time2: values.time?.endtime || '',
       },
     });
     setTabRecord({
       ...values,
-      time1: values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '',
-      time2: values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '',
+      time1: values.time?.startTime || '',
+      time2: values.time?.endtime || '',
     });
   };
 
@@ -404,7 +401,7 @@ function QueryList(props) {
     time2: time2 ? moment(time2).format('YYYY-MM-DD 23:59:59') : '',
     paginations
   }
-  const cacheinfo = location.state && location.state.cacheinfo ? location.state.cacheinfo : record;
+  const cacheinfo = location.state?.cacheinfo ? location.state.cacheinfo : record;
 
   const handleReset = () => {
     router.push({
@@ -829,37 +826,14 @@ function QueryList(props) {
             </span>
             <Col span={8}>
               <Form.Item label="建单时间">
-                <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                  {getFieldDecorator('time1', {
-                    initialValue: cacheinfo.time1 ? moment(cacheinfo.time1) : undefined,
-                  })(
-                    <DatePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: moment('00:00:00', 'HH:mm:ss'),
-                      }}
-                      placeholder="开始时间"
-                      format='YYYY-MM-DD HH:mm:ss'
-                      style={{ minWidth: 120, width: '100%' }}
-                    />
-                  )}
-                </div>
-                <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
-                <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                  {getFieldDecorator('time2', {
-                    initialValue: cacheinfo.time2 ? moment(cacheinfo.time2) : undefined,
-                  })(
-                    <DatePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: moment('23:59:59', 'HH:mm:ss'),
-                      }}
-                      placeholder="结束时间"
-                      format='YYYY-MM-DD HH:mm:ss'
-                      style={{ minWidth: 120, width: '100%' }}
-                    />
-                  )}
-                </div>
+                {getFieldDecorator('time', {
+                  initialValue: { startTime: cacheinfo.time1, endtime: cacheinfo.time2 },
+                })(<></>)}
+                <RangeTime
+                  startVal={cacheinfo.time1}
+                  endVal={cacheinfo.time2}
+                  getTimes={(v) => { setFieldsValue({ time: v }) }}
+                />
               </Form.Item>
             </Col>
             <Col span={24} style={{ textAlign: 'right' }}>
