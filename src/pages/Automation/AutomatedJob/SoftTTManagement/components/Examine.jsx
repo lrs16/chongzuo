@@ -32,6 +32,7 @@ const Examine = forwardRef((props, ref) => {
   const { location } = useContext(FilesContext);
   const [uploadStatus, setUploadStatus] = useState(false);
   const [adopt, setAdopt] = useState('0');
+  const [files, setFiles] = useState([]);
 
   useImperativeHandle(ref, () => ({
     getVal: () => getFieldsValue(),
@@ -117,8 +118,8 @@ const Examine = forwardRef((props, ref) => {
                 {
                   location && (!location.state || (location.state && !location.state.cache)) && (
                     <FilesContext.Provider value={{
-                      files: check && check.examineFiles && Array.isArray(check.examineFiles) ? JSON.parse(check.examineFiles) : [],
-                      ChangeFiles: (v => { setFieldsValue({ examineFiles: JSON.stringify(v) }) }),
+                      files: check && check.examineFiles && Array.isArray(check.examineFiles) ? JSON.parse(check.examineFiles) : files,
+                      ChangeFiles: (v => { setFieldsValue({ examineFiles: JSON.stringify(v) }); setFiles(v); }),
                       getUploadStatus: (v) => { setUploadStatus(v) },
                     }}>
                       <SysUpload banOpenFileDialog={uploadStatus} />
