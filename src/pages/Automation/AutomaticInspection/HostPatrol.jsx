@@ -4,11 +4,11 @@ import moment from 'moment';
 import router from 'umi/router';
 import { Card, Select, Badge, Button, Table, Form, Input, Row, Col, DatePicker, Divider, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import SysUpload from '@/components/SysUpload/Upload';
 import FilesContext from '@/layouts/MenuContext';
 import PatrolconfigModal from './components/PatrolconfigModal';
 import PatrolBriefDrawer from './components/PatrolBriefDrawer';
 import { saveFileIds, createReport, createInspectionall } from './services/api';
+import SysUpload from './components/SysUpload/Upload';
 
 const { Option } = Select;
 
@@ -96,7 +96,7 @@ function HostPatrol(props) {
         }
       });
     }
-  }, [filelist && filelistid]);
+  }, [filelist, filelistid]);
 
   const onShowSizeChange = (page, size) => {
     searchdata(1, size);
@@ -316,12 +316,17 @@ function HostPatrol(props) {
       width: 500,
       render: (_, record) => {
         return (
-          <FilesContext.Provider value={{
-            files: record.fileIds && record.fileIds !== '[]' && record.fileIds !== null ? JSON.parse(record.fileIds) : [],
-            ChangeFiles: (v => { setFilelist(v); setFilelistId(record.id); }),
-          }}>
-            <SysUpload key={record.id} />
-          </FilesContext.Provider>
+          <div>
+            <FilesContext.Provider value={{
+              files: record.fileIds && record.fileIds !== '[]' && record.fileIds !== null ? JSON.parse(record.fileIds) : [],
+              ChangeFiles: (v => {
+                setFilelist(v);
+                setFilelistId(record.id);
+              }),
+            }}>
+              <SysUpload key={record.id} />
+            </FilesContext.Provider>
+          </div>
         );
       },
     },
