@@ -1,9 +1,10 @@
 import React, { useRef, useImperativeHandle, useEffect, useState } from 'react';
 import moment from 'moment';
 import SysUpload from '@/components/SysUpload'; // 附件下载组件
-import { Form, Row, Col, Input, DatePicker, Select } from 'antd';
+import { Form, Row, Col, Input, DatePicker, Select,AutoComplete } from 'antd';
 import KeyVal from '@/components/SysDict/KeyVal';
 import KnowledgCollect from '@/components/KnowledgeCollect';
+import { getAndField } from '@/pages/SysManage/services/api';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -38,6 +39,8 @@ const HandleChild = React.forwardRef((props, ref) => {
   const [selectdata, setSelectData] = useState([]);
   const [knowledgecontent, setKonwledgeContent] = useState('');    // 知识内容
   const [valuealready, setValuealready] = useState(false)          // 告知知识子组件可以走接口了
+  const [desautodata, setDestoData] = useState([]);
+
   // 获取知识数据
   const getContent = () => {
     const values = getFieldsValue(['handleAdvise'])
@@ -104,6 +107,22 @@ const HandleChild = React.forwardRef((props, ref) => {
   // const handleResult = getTypebyTitle('故障处理结果');
   // console.log('handleResult: ', handleResult);
 
+  const handledesSearch = values => {
+    getAndField(values).then(res => {
+      if (res.code === 200) {
+        const newdata = res.data.map(item => {
+          return item.content;
+        });
+        setDestoData(newdata);
+      }
+    });
+  };
+
+  // 常用语调用
+  useEffect(() => {
+    handledesSearch({ module: '故障单', field: '处理过程', key: '' });
+  }, []);
+
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>
       <Form {...formItemLayout}>
@@ -165,7 +184,18 @@ const HandleChild = React.forwardRef((props, ref) => {
                 },
               ],
               initialValue: handle ? handle.handleProcess : '',
-            })(<TextArea autoSize={{ minRows: 3 }} allowClear />)}
+            })(
+              <AutoComplete
+              getPopupContainer={e => e.parentNode}
+              dataSource={desautodata}
+              filterOption={(inputValue, option) =>
+                option.props.children.includes(inputValue)
+              }
+            //  onSelect={value => handleSearch(value, 'des')}
+            >
+              <TextArea autoSize={{ minRows: 5 }} placeholder="请输入" />
+            </AutoComplete>,
+            )}
           </Form.Item>
         </Col>
 
