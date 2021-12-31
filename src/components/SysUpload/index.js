@@ -6,7 +6,7 @@ import { getFileSecuritySuffix } from '@/services/upload';
 import UploadContext from '@/layouts/MenuContext';
 
 function SysUpload(props) {
-  const { dispatch, fileslist, ChangeFileslist, banOpenFileDialog } = props;
+  const { dispatch, fileslist, ChangeFileslist, banOpenFileDialog, remark } = props;
   // const [uploadfiles, setUploadFiles] = useState([]);
   const [filetype, setFileType] = useState('');
   const [showIcon, setShowIcon] = useState(true);
@@ -164,7 +164,7 @@ function SysUpload(props) {
           <DownloadOutlined /> 上传附件
         </Button>
       </Upload>
-      {filetype && filetype.length > 0 && (
+      {!remark && filetype && filetype.length > 0 && (
         <div style={{ color: '#ccc', lineHeight: '20px' }}>
           <p style={{ marginBottom: '6px', }}>1、仅能上传{filetype.join('，')}类型文件;</p>
           <p style={{ marginBottom: '6px', }}>2、最多可上传20个文件;</p>
