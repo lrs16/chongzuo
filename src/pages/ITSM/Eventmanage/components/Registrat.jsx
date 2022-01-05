@@ -955,7 +955,7 @@ const Registrat = forwardRef((props, ref) => {
         <Row gutter={24}>
           <Col span={24}>
             <Form.Item label="上传附件"  {...forminladeLayout}>
-              <div style={{ width: '50%' }}>
+              <div>
                 {((location && location.state && !location.state.cache) || orderNo) && !loading && (
                   <Upload {...uploadprops} key={localStorage.getItem('tabid')}>
                     <Button
@@ -974,14 +974,12 @@ const Registrat = forwardRef((props, ref) => {
                       }}>
                       <DownloadOutlined /> 上传附件
                     </Button>
+                    {filetype && filetype.length > 0 && (
+                      <span style={{ color: '#ccc', lineHeight: '20px', paddingLeft: 16 }}>
+                        1、仅能上传{filetype.join('，')}类型文件；2、最多可上传20个文件；3、附件名称最长100个字符；
+                      </span>
+                    )}
                   </Upload>
-                )}
-                {filetype && filetype.length > 0 && (
-                  <div style={{ color: '#ccc', lineHeight: '20px' }}>
-                    <p style={{ marginBottom: '6px', }}>1、仅能上传{filetype.join('，')}类型文件;</p>
-                    <p style={{ marginBottom: '6px', }}>2、最多可上传20个文件;</p>
-                    <p style={{ marginBottom: '6px', }}>3、附件名称最长100个字符;</p>
-                  </div>
                 )}
               </div>
             </Form.Item>

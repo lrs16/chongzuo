@@ -172,14 +172,12 @@ function SysUpload(props) {
           }}>
           <DownloadOutlined /> 上传附件
         </Button>
+        {!remark && filetype && filetype.length > 0 && (
+          <span style={{ color: '#ccc', lineHeight: '20px', paddingLeft: 16 }}>
+            1、仅能上传{filetype.join('，')}类型文件；2、最多可上传20个文件；3、附件名称最长100个字符；
+          </span>
+        )}
       </Upload>
-      {!remark && filetype && filetype.length > 0 && (
-        <div style={{ color: '#ccc', lineHeight: '20px' }}>
-          <p style={{ marginBottom: '6px', }}>1、仅能上传{filetype.join('，')}类型文件;</p>
-          <p style={{ marginBottom: '6px', }}>2、最多可上传20个文件;</p>
-          <p style={{ marginBottom: '6px', }}>3、附件名称最长100个字符;</p>
-        </div>
-      )}
     </>
   );
 }
