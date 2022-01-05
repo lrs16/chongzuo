@@ -113,8 +113,8 @@ const Examine = forwardRef((props, ref) => {
                 validator: handleAttValidator
               }],
               initialValue: check && check.examineFiles && check.examineFiles !== '[]' && Array.isArray(check.examineFiles) ? check.examineFiles : '',
-            })(
-              <div style={{ width: 400 }}>
+            })( // 位置已调
+              <div>
                 {
                   location && (!location.state || (location.state && !location.state.cache)) && (
                     <FilesContext.Provider value={{

@@ -274,8 +274,8 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
               {getFieldDecorator('main_fileIds', {
                 initialValue: main && main.fileIds ? main.fileIds : '',
               })
-                (
-                  <div style={{ width: 400 }}>
+                ( // 位置已调
+                  <div>
                     {
                       location && (!location.state || (location.state && !location.state.cache)) && (
                         <SysUpload

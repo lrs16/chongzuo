@@ -139,8 +139,8 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
               {getFieldDecorator('execute_fileIds', {
                 initialValue: execute && execute.fileIds ? execute.fileIds : '',
               })
-                (
-                  <div style={{ width: 400 }}>
+                ( // 位置已调
+                  <div>
                     {
                       location && (!location.state || (location.state && !location.state.cache)) && (
                         <SysUpload
