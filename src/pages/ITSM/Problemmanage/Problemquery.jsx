@@ -300,6 +300,7 @@ function Besolved(props) {
           ...params,
           paginations: pageParams,
           expand,
+          key:'problem'
         },
         tabid: sessionStorage.getItem('tabid')
       },
@@ -316,6 +317,7 @@ function Besolved(props) {
         cacheinfo: {
           ...params,
           paginations: pageParams,
+          key:'problem',
           expand,
         },
       }
