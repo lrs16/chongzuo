@@ -130,7 +130,7 @@ const Content = forwardRef((props, ref) => {
               <Col span={22} >
                 {!Noediting && location && (!location.state || (location.state && !location.state.cache)) && (
                   <div
-                    style={{ width: '50%', paddingLeft: 12, float: 'left' }}
+                    style={{ paddingLeft: 12, float: 'left' }}
                     onMouseDown={() => {
                       validateFields((err) => {
                         if (err) {

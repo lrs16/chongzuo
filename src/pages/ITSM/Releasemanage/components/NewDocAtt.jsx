@@ -4,6 +4,7 @@ import { Table, Button, Icon, Input, Select, message } from 'antd';
 import SysUpload from '@/components/SysUpload/Upload';
 import { PaperClipOutlined } from '@ant-design/icons';
 import FilesContext from '@/layouts/MenuContext';              // 引用上下文管理组件
+import { getFileSecuritySuffix } from '@/services/upload';
 import styles from '../index.less';
 import { downloadAttachTemplate, exportTaskToDocx } from '../services/api';
 
@@ -27,9 +28,20 @@ function NewDocAtt(props) {
   const [data, setData] = useState([]);
   const [uploadStatus, setUploadStatus] = useState(false);
   const { ChangeButtype, addAttaches, ChangeaddAttaches, } = useContext(FilesContext);                     // 是否要添加行
+  const [filetype, setFileType] = useState('');
   // const dutyUnit = dataSource && dataSource.length > 0 ? dataSource[0].dutyUnit : '';
   // console.log('dataSource:', dataSource);
   // console.log('data:', data);
+
+  // 允许上传类型
+  useEffect(() => {
+    getFileSecuritySuffix().then(res => {
+      if (res.code === 200) {
+        const arr = [...res.data];
+        setFileType(arr);
+      }
+    });
+  }, []);
 
   // 获取行
   const getRowByKey = (key, newData) => {
@@ -111,8 +123,15 @@ function NewDocAtt(props) {
                 ChangeFiles: (v => handleFieldChange(JSON.stringify(v), 'attachFile', record.sn)),
                 getUploadStatus: (v) => { setUploadStatus(v) },
               }}>
-                <SysUpload key={record.sn} banOpenFileDialog={uploadStatus} />
+                <SysUpload key={record.sn} banOpenFileDialog={uploadStatus} remark />
               </FilesContext.Provider>
+              {filetype && filetype.length > 0 && (
+                <div style={{ color: '#ccc', lineHeight: '20px' }}>
+                  <p style={{ marginBottom: '6px', }}>1、仅能上传{filetype.join('，')}类型文件;</p>
+                  <p style={{ marginBottom: '6px', }}>2、最多可上传20个文件;</p>
+                  <p style={{ marginBottom: '6px', }}>3、附件名称最长100个字符;</p>
+                </div>
+              )}
             </div>
           )
         } if (isEdit && taskName === record.docName) {
@@ -124,8 +143,15 @@ function NewDocAtt(props) {
                   ChangeFiles: (v => handleFieldChange(JSON.stringify(v), 'attachFile', record.sn)),
                   getUploadStatus: (v) => { setUploadStatus(v) },
                 }}>
-                  <SysUpload key={record.id || record.key} banOpenFileDialog={uploadStatus} />
+                  <SysUpload key={record.id || record.key} banOpenFileDialog={uploadStatus} remark />
                 </FilesContext.Provider>
+                {filetype && filetype.length > 0 && (
+                  <div style={{ color: '#ccc', lineHeight: '20px' }}>
+                    <p style={{ marginBottom: '6px', }}>1、仅能上传{filetype.join('，')}类型文件;</p>
+                    <p style={{ marginBottom: '6px', }}>2、最多可上传20个文件;</p>
+                    <p style={{ marginBottom: '6px', }}>3、附件名称最长100个字符;</p>
+                  </div>
+                )}
               </div>
               {check && text === '[]' && (<div style={{ color: '#f5222d' }}>请上传{record.docName}</div>)}
             </>
