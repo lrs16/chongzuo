@@ -163,8 +163,8 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
           // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
           >
             {
-              location && (!location.state || (location.state && !location.state.cache)) && (
-                <div style={{ width: 400 }}>
+              location && (!location.state || (location.state && !location.state.cache)) && ( // 位置已调
+                <div>
                   <SysUpload fileslist={(check && check.checkAttachments) ? JSON.parse(check.checkAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
                 </div>
               )

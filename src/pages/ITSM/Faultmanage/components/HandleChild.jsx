@@ -275,7 +275,7 @@ const HandleChild = React.forwardRef((props, ref) => {
           <Form.Item
             label="上传故障处理记录表"
             {...forminladeLayout}
-          // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+          // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb" // 位置已调
           >
             {getFieldDecorator('handleRecordAttachments', {
               rules: [
@@ -315,7 +315,7 @@ const HandleChild = React.forwardRef((props, ref) => {
           <Form.Item
             label="故障系统截图"
             {...forminladeLayout}
-          // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+          // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb" // 位置已调
           >
             {getFieldDecorator('handlePictureAttachments', {
               rules: [
@@ -326,7 +326,6 @@ const HandleChild = React.forwardRef((props, ref) => {
               ],
             })(
               <div
-                style={{ width: 400 }}
                 onMouseOver={() => {
                   ChangeFileskey('2');
                 }}
@@ -354,14 +353,13 @@ const HandleChild = React.forwardRef((props, ref) => {
           <Form.Item
             label="上传附件"
             {...forminladeLayout}
-          // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+          // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb" // 位置已调
           >
             {getFieldDecorator(
               'handleAttachments',
               {},
             )(
               <div
-                style={{ width: 400 }}
                 onMouseOver={() => {
                   ChangeFileskey('3');
                 }}

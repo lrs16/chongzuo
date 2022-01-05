@@ -510,8 +510,8 @@ function Registration(props) {
                   {...forminladeLayout}
                 // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
                 >
-                  {(location && location.state && !location.state.cache) && !loading && (
-                    <div style={{ width: 400 }}>
+                  {(location && location.state && !location.state.cache) && !loading && ( // 位置已调
+                    <div> 
                       <SysUpload
                         fileslist={files.arr}
                         ChangeFileslist={newvalue => setFiles(newvalue)}

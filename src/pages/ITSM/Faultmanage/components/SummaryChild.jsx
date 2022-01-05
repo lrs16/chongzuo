@@ -244,12 +244,11 @@ const SummaryChild = React.forwardRef((props, ref) => {
           <Form.Item
             label="上传附件"
             {...forminladeLayout}
-          // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+          // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb" // 位置已调
           >
             {
               getFieldDecorator('finishAttachments', {})(
                 <div
-                  style={{ width: 400 }}
                   onMouseOver={() => {
                     ChangeFileskey('2');
                   }}
