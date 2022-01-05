@@ -1,13 +1,11 @@
 import React, { useState, useRef, useImperativeHandle, useEffect, useContext } from 'react';
 import { message, Button, Upload, Row, Col, Form, Input, Select, DatePicker, AutoComplete, Radio, Tag } from 'antd';
 import moment from 'moment';
-import SysUpload from '@/components/SysUpload';
 import UploadContext from '@/layouts/MenuContext';
 import { getAndField } from '@/pages/SysManage/services/api';
 import SysDict from '@/components/SysDict';
-import { DownloadOutlined, CaretRightOutlined } from '@ant-design/icons';
+import { DownloadOutlined } from '@ant-design/icons';
 import { FileDownload, FileDelete, getFileSecuritySuffix } from '@/services/upload';
-import Downloadfile from '@/components/SysUpload/Downloadfile';
 // import BraftEditor from 'braft-editor'
 // import 'braft-editor/dist/index.css';
 
@@ -662,7 +660,6 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                 initialValue: main && main.fileIds ? main.fileIds : '',
               })(
                 <div
-                  style={{ width: 400 }}
                   onMouseDown={() => {
                     setBanOpenFileDialog(true);
                     const values = getFieldsValue()
@@ -689,8 +686,12 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                     <Button type="primary">
                       <DownloadOutlined /> 上传附件
                     </Button>
+                    {filetype && filetype.length > 0 && (
+                      <span style={{ color: '#ccc', lineHeight: '20px', paddingLeft: 16 }}>
+                        1、仅能上传{filetype.join('，')}类型文件；2、最多可上传20个文件；3、附件名称最长100个字符；
+                      </span>
+                    )}
                   </Upload>
-                  {filetype && filetype.length > 0 && (<div style={{ color: '#ccc' }}>仅能上传{filetype.join('，')}格式文件</div>)}
                 </div>,
               )}
             </Form.Item>

@@ -8,8 +8,6 @@ import {
   Radio,
 } from 'antd';
 import moment from 'moment';
-import router from 'umi/router';
-import { connect } from 'dva';
 import { FatherContext } from '../Workorder';
 import SysUpload from '@/components/SysUpload';
 
@@ -22,7 +20,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
     files, ChangeFiles,
     flowNodeName,
     allInfo,
-    location } = props;
+     } = props;
   let secondFiles = [];
   if (flowNodeName === '自动化科审核') {
     if (allInfo.editState !== undefined && (allInfo.editState === 'add')) {
@@ -163,7 +161,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
                       }
                     ],
                     initialValue: (check && check.checkAttachments !== '[]') ? check.checkAttachments : ''
-                  })(<div style={{ width: 400 }}>
+                  })(<div>
                     <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
                   </div>)
                 }
@@ -180,7 +178,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
                 label="上传附件"
                 {...forminladeLayout}
               >
-                <div style={{ width: 400 }}>
+                <div>
                   <SysUpload fileslist={secondFiles} ChangeFileslist={newvalue => setFilesList(newvalue)} />
                 </div>
               </Form.Item>
@@ -195,7 +193,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
                 label="上传附件"
                 {...forminladeLayout}
               >
-                <div style={{ width: 400 }}>
+                <div>
                   <SysUpload fileslist={[]} ChangeFileslist={newvalue => setFilesList(newvalue)} />
                 </div>
               </Form.Item>

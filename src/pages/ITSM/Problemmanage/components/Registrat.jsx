@@ -463,7 +463,7 @@ const Registrat = React.forwardRef((props, ref) => {
                     ? register.registerAttachments
                     : '',
               })(
-                <div style={{ width: 400 }}>
+                <div>
                   <SysUpload
                     fileslist={files}
                     ChangeFileslist={newvalue => setFilesList(newvalue)}

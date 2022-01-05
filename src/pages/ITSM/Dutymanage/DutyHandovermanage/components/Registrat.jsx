@@ -410,7 +410,7 @@ const Registrat = forwardRef((props, ref) => {
                 {getFieldDecorator('attachment', {
                   initialValue: formrecord.attachment || [],
                 })(
-                  <div style={{ width: 400 }}>
+                  <div>
                     <SysUpload
                       fileslist={files}
                       ChangeFileslist={newvalue => setFilesList(newvalue)}

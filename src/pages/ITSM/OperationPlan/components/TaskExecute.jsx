@@ -156,7 +156,7 @@ const TaskExecute = React.forwardRef((props, ref) => {
             {getFieldDecorator('execute_fileIds', {
               initialValue: execute && execute.fileIds ? execute.fileIds : '',
             })(
-              <div style={{ width: 400 }}>
+              <div>
                 <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
               </div>,
             )}

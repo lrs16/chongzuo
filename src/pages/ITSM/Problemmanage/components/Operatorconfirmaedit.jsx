@@ -203,7 +203,7 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
                 label="上传附件"
                 {...forminladeLayout}
               >
-                <div style={{ width: 400 }}>
+                <div>
                   <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
                 </div>
               </Form.Item>

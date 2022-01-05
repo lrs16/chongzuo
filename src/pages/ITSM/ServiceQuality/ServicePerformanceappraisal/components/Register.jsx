@@ -12,7 +12,7 @@ import {
   Spin,
   Button
 } from 'antd';
-import { DownloadOutlined, CaretRightOutlined } from '@ant-design/icons';
+import { DownloadOutlined } from '@ant-design/icons';
 import { FileDownload, FileDelete, getFileSecuritySuffix } from '@/services/upload';
 import moment from 'moment';
 import UploadContext from '@/layouts/MenuContext';
@@ -86,7 +86,7 @@ const Register = forwardRef((props, ref) => {
   useEffect(() => {
     setProviderId(register.providerId);
     setScoreId(register.scoreId);
-  },[register])
+  }, [register])
 
   const handleChange = (values, option, params) => {
     const {
@@ -921,7 +921,6 @@ const Register = forwardRef((props, ref) => {
                 {...forminladeLayout}
               >
                 <div
-                  style={{ width: '50%' }}
                   onMouseDown={() => {
                     setBanOpenFileDialog(true);
                     validateFields((err) => {
@@ -937,8 +936,12 @@ const Register = forwardRef((props, ref) => {
                     <Button type="primary">
                       <DownloadOutlined /> 上传附件
                     </Button>
+                    {filetype && filetype.length > 0 && (
+                      <span style={{ color: '#ccc', lineHeight: '20px', paddingLeft: 16 }}>
+                        1、仅能上传{filetype.join('，')}类型文件；2、最多可上传20个文件；3、附件名称最长100个字符；
+                      </span>
+                    )}
                   </Upload>
-                  {filetype && filetype.length > 0 && (<div style={{ color: '#ccc' }}>仅能上传{filetype.join('，')}格式文件</div>)}
                 </div>
               </Form.Item>
             </Col>
