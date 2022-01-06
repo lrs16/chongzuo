@@ -324,13 +324,14 @@ function ComputerroomReport(props) {
     lastweekHomework();
     nextweekHomework();
     getQuerylist();
+    initial = true;
     // getInfoparams = true;
-    const result = copyData || {};
-    result.operationList = '';
-    result.nextOperationList = '';
-    result.newTroubleList = '';
-    result.unCloseTroubleList = '';
-    setCopyData(result)
+    // const result = copyData || {};
+    // result.operationList = '';
+    // result.nextOperationList = '';
+    // result.newTroubleList = '';
+    // result.unCloseTroubleList = '';
+    // setCopyData(result)
   }
 
   //  暂时保留
