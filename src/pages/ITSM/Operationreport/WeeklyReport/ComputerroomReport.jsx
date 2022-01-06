@@ -59,6 +59,7 @@ const formincontentLayout = {
 const { MonthPicker } = DatePicker;
 const { TextArea } = Input;
 let initial = false;
+// let getInfoparams = false;
 
 function ComputerroomReport(props) {
   const {
@@ -258,11 +259,6 @@ function ComputerroomReport(props) {
     setOperationList(copyData.operationList);
     setNextOperationList(copyData.nextOperationList);
   }, [loading])
-  // console.log(materialsList,'materialsList');
-  // console.log(newTroubleList,'newTroubleList');
-  // console.log(unCloseTroubleList,'unCloseTroubleList');
-  // console.log(operationList,'operationList');
-  // console.log(nextOperationList,'nextOperationList');
 
   const getQuerylist = () => {
     dispatch({
@@ -321,20 +317,33 @@ function ComputerroomReport(props) {
   useEffect(() => {
     defaultTime();
     initial = false;
+    // getInfoparams = false;
   }, []);
 
   const getReportdata = () => {
     lastweekHomework();
     nextweekHomework();
     getQuerylist();
-    initial = true;
-    // const result = copyData;
-    // result.operationList = '';
-    // result.nextOperationList = '';
-    // result.newTroubleList = '';
-    // result.unCloseTroubleList = '';
-    // setCopyData(result)
+    // getInfoparams = true;
+    const result = copyData || {};
+    result.operationList = '';
+    result.nextOperationList = '';
+    result.newTroubleList = '';
+    result.unCloseTroubleList = '';
+    setCopyData(result)
   }
+
+  //  暂时保留
+  // useEffect(() => {
+  //   if (getInfoparams) {
+  //     const obj = copyData || {};
+  //     obj.operationList = lastweekHomeworklist;
+  //     obj.nextOperationList = nextweekHomeworklist;
+  //     obj.newTroubleList = faultQueryList;
+  //     obj.unCloseTroubleList = nofaultQueryList;
+  //     setCopyData(obj)
+  //   }
+  // }, [loading])
 
   const handleBack = () => {
     router.push({
@@ -475,7 +484,7 @@ function ComputerroomReport(props) {
                   initialValue: copyData.main ? copyData.main.name : ''
                 })
                   (
-                    <Input style={{ width: 700 }} placeholder={`省级集中计量自动化系统机房运维${reporttype === 'week'? '周':'月'}报`} />
+                    <Input style={{ width: 700 }} placeholder={`省级集中计量自动化系统机房运维${reporttype === 'week' ? '周' : '月'}报`} />
                   )}
               </Form.Item>
             </Col>
@@ -589,7 +598,7 @@ function ComputerroomReport(props) {
                         initialValue: copyData && copyData.contentFiles
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={copyData.contentFiles ? JSON.parse(copyData.contentFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -641,7 +650,7 @@ function ComputerroomReport(props) {
                         initialValue: copyData && copyData.materialsFiles
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={copyData && copyData.materialsFiles ? JSON.parse(copyData.materialsFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -693,7 +702,7 @@ function ComputerroomReport(props) {
                         initialValue: copyData && copyData.troubleFiles
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={copyData && copyData.troubleFiles ? JSON.parse(copyData.troubleFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -778,7 +787,7 @@ function ComputerroomReport(props) {
                         initialValue: copyData && copyData.nextOperationFiles
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={copyData && copyData.nextOperationFiles ? JSON.parse(copyData.nextOperationFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -817,7 +826,7 @@ function ComputerroomReport(props) {
                         initialValue: copyData && copyData.meetingSummaryFiles
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={copyData && copyData.meetingSummaryFiles ? JSON.parse(copyData.meetingSummaryFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -892,7 +901,7 @@ function ComputerroomReport(props) {
 }
 
 export default Form.create({})(
-  connect(({ softreport, viewcache,loading }) => ({
+  connect(({ softreport, viewcache, loading }) => ({
     lastweekHomeworklist: softreport.lastweekHomeworklist,
     nextweekHomeworklist: softreport.nextweekHomeworklist,
     faultQueryList: softreport.faultQueryList,

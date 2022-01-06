@@ -358,7 +358,6 @@ const AddForm = React.forwardRef((props, ref) => {
                 })(
                   <SysUpload
                     fileslist={dynamicData.files ? JSON.parse(dynamicData.files) : []}
-                    // fileslist={[]}
                     ChangeFileslist={newvalue => {
                       setFieldsValue({
                         files: JSON.stringify(newvalue.arr),

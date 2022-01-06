@@ -495,7 +495,7 @@ function ComputerroomReportdetail(props) {
                         initialValue: openReportlist.contentFiles ? openReportlist.contentFiles : ''
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={openReportlist.contentFiles ? JSON.parse(openReportlist.contentFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -574,7 +574,7 @@ function ComputerroomReportdetail(props) {
                         initialValue: openReportlist.materialsFiles ? openReportlist.materialsFiles : '[]'
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={openReportlist.materialsFiles ? JSON.parse(openReportlist.materialsFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -647,7 +647,7 @@ function ComputerroomReportdetail(props) {
                         initialValue: openReportlist.troubleFiles ? openReportlist.troubleFiles : '[]'
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={openReportlist.troubleFiles ? JSON.parse(openReportlist.troubleFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -764,7 +764,7 @@ function ComputerroomReportdetail(props) {
                         initialValue: openReportlist.nextOperationFiles ? openReportlist.nextOperationFiles : '[]'
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={openReportlist.nextOperationFiles ? JSON.parse(openReportlist.nextOperationFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -823,7 +823,7 @@ function ComputerroomReportdetail(props) {
                         initialValue: openReportlist.meetingSummaryFiles ? openReportlist.meetingSummaryFiles : '[]'
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={openReportlist.meetingSummaryFiles ? JSON.parse(openReportlist.meetingSummaryFiles) : []}
                               ChangeFileslist={newvalue => {

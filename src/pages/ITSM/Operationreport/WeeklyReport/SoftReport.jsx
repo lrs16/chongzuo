@@ -65,6 +65,7 @@ const formincontentLayout = {
 const { MonthPicker } = DatePicker;
 const { TextArea } = Input;
 let initial = false;
+let getInfoparams = false;
 
 const TopnAnalysis = [
   {
@@ -824,7 +825,7 @@ function SoftReport(props) {
                         initialValue: copyData && copyData.contentFiles
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={copyData && copyData.contentFiles ? JSON.parse(copyData.contentFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -884,7 +885,7 @@ function SoftReport(props) {
                         initialValue: copyData && copyData.materialsFiles
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={copyData && copyData.materialsFiles ? JSON.parse(copyData.materialsFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -979,7 +980,7 @@ function SoftReport(props) {
                         initialValue: copyData && copyData.topNFiles
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={copyData && copyData.topNFiles ? JSON.parse(copyData.topNFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -1018,7 +1019,7 @@ function SoftReport(props) {
                         initialValue: copyData && copyData.eventFiles
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={copyData && copyData.eventFiles ? JSON.parse(copyData.eventFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -1105,7 +1106,7 @@ function SoftReport(props) {
                         initialValue: copyData && copyData.updateFiles
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={copyData && copyData.updateFiles ? JSON.parse(copyData.updateFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -1143,7 +1144,7 @@ function SoftReport(props) {
                         initialValue: copyData && copyData.legacyFiles
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={copyData && copyData.legacyFiles ? JSON.parse(copyData.legacyFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -1186,7 +1187,7 @@ function SoftReport(props) {
                         initialValue: copyData && copyData.operationFiles
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={copyData && copyData.operationFiles ? JSON.parse(copyData.operationFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -1228,7 +1229,7 @@ function SoftReport(props) {
                         initialValue: copyData && copyData.nextOperationFiles
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={copyData && copyData.nextOperationFiles ? JSON.parse(copyData.nextOperationFiles) : []}
                               ChangeFileslist={newvalue => {

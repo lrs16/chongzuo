@@ -498,7 +498,7 @@ function DatabaseReportdetail(props) {
                         initialValue: openReportlist.contentFiles ? openReportlist.contentFiles : '[]'
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={openReportlist.contentFiles ? JSON.parse(openReportlist.contentFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -610,7 +610,7 @@ function DatabaseReportdetail(props) {
                         initialValue: openReportlist.tableUpFiles ? openReportlist.tableUpFiles : '[]'
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={openReportlist.tableUpFiles ? JSON.parse(openReportlist.tableUpFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -668,7 +668,7 @@ function DatabaseReportdetail(props) {
                         initialValue: openReportlist.defectFiles ? openReportlist.defectFiles : '[]'
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={openReportlist.defectFiles ? JSON.parse(openReportlist.defectFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -731,7 +731,7 @@ function DatabaseReportdetail(props) {
                         initialValue: openReportlist.operationFiles ? openReportlist.operationFiles : '[]'
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={openReportlist.operationFiles ? JSON.parse(openReportlist.operationFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -795,7 +795,7 @@ function DatabaseReportdetail(props) {
                         initialValue: openReportlist.nextOperationFiles ? openReportlist.nextOperationFiles : '[]'
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={openReportlist.nextOperationFiles ? JSON.parse(openReportlist.nextOperationFiles) : []}
                               ChangeFileslist={newvalue => {

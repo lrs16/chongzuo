@@ -392,7 +392,7 @@ function SoftReportdetail(props) {
   }, [timeshow])
 
   const dateFormat = 'YYYY-MM-DD';
-
+  
   return (
     <PageHeaderWrapper
       title={reporttype === 'week' ? '软件运维周报详情页' : '软件运维月报详情页'}
@@ -565,7 +565,7 @@ function SoftReportdetail(props) {
                         initialValue: openReportlist.contentFiles ? openReportlist.contentFiles : '[]'
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={openReportlist.contentFiles ? JSON.parse(openReportlist.contentFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -651,7 +651,7 @@ function SoftReportdetail(props) {
                         initialValue: openReportlist.materialsFiles ? openReportlist.materialsFiles : '[]'
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={openReportlist.materialsFiles ? JSON.parse(openReportlist.materialsFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -787,7 +787,7 @@ function SoftReportdetail(props) {
                         initialValue: openReportlist.topNFiles ? openReportlist.topNFiles : '[]'
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={openReportlist.topNFiles ? JSON.parse(openReportlist.topNFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -845,7 +845,7 @@ function SoftReportdetail(props) {
                         initialValue: openReportlist.eventFiles ? openReportlist.eventFiles : '[]'
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={openReportlist.eventFiles ? JSON.parse(openReportlist.eventFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -956,7 +956,7 @@ function SoftReportdetail(props) {
                         initialValue: openReportlist.updateFiles ? openReportlist.updateFiles : ''
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={openReportlist.updateFiles ? JSON.parse(openReportlist.updateFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -1014,7 +1014,7 @@ function SoftReportdetail(props) {
                         initialValue: openReportlist.legacyFiles ? openReportlist.legacyFiles : '[]'
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={openReportlist.legacyFiles ? JSON.parse(openReportlist.legacyFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -1079,7 +1079,7 @@ function SoftReportdetail(props) {
                         initialValue: openReportlist.operationFiles ? openReportlist.operationFiles : '[]'
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={openReportlist.operationFiles ? JSON.parse(openReportlist.operationFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -1141,7 +1141,7 @@ function SoftReportdetail(props) {
                         initialValue: openReportlist.nextOperationFiles ? openReportlist.nextOperationFiles : '[]'
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={openReportlist.nextOperationFiles ? JSON.parse(openReportlist.nextOperationFiles) : []}
                               ChangeFileslist={newvalue => {

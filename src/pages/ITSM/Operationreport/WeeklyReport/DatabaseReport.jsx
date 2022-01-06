@@ -543,7 +543,7 @@ function DatabaseReport(props) {
                         initialValue: copyData && copyData.contentFiles
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={copyData && copyData.contentFiles ? JSON.parse(copyData.contentFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -630,7 +630,7 @@ function DatabaseReport(props) {
                         initialValue: copyData && copyData.tableUpFiles
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={copyData && copyData.tableUpFiles ? JSON.parse(copyData.tableUpFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -668,7 +668,7 @@ function DatabaseReport(props) {
                         initialValue: copyData && copyData.defectFiles
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={copyData && copyData.defectFiles ? JSON.parse(copyData.defectFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -710,7 +710,7 @@ function DatabaseReport(props) {
                         initialValue: copyData && copyData.operationFiles
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={copyData && copyData.operationFiles ? JSON.parse(copyData.operationFiles) : []}
                               ChangeFileslist={newvalue => {
@@ -753,7 +753,7 @@ function DatabaseReport(props) {
                         initialValue: copyData && copyData.operationFiles
                       })
                         (
-                          <div style={{ width: 400 }}>
+                          <div>
                             <SysUpload
                               fileslist={copyData && copyData.operationFiles ? JSON.parse(copyData.operationFiles) : []}
                               ChangeFileslist={newvalue => {
