@@ -1083,7 +1083,7 @@ function Besolved(props) {
       align: 'center',
     },
     {
-      title: '当前流程环境',
+      title: '当前流程环节',
       dataIndex: 'flowNodeName',
       key: 'flowNodeName',
       width: 150,
@@ -1194,7 +1194,7 @@ function Besolved(props) {
         key: val.key,
         title: val.title,
         dataIndex: val.key,
-        width: 150,
+        width: val.width,
       };
       if (key === 0) {
         obj.render = (text, records) => {

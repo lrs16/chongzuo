@@ -62,6 +62,7 @@ function QueryList(props) {
   let titleParams;
 
   const [expand, setExpand] = useState(false);
+  const [initial, setInitial] = useState(false)
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 }); // 分页state
   // const [selectedRow, setSelectedRow] = useState([]);
   const [selectdata, setSelectData] = useState([]);
@@ -131,18 +132,6 @@ function QueryList(props) {
       dataIndex: 'registerOccurTime',
       key: 'registerOccurTime',
       width: 200,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 200,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
     {
       title: '故障概要',
@@ -184,19 +173,7 @@ function QueryList(props) {
       title: '影响范围',
       dataIndex: 'registerScope',
       key: 'registerScope',
-      width: 150,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 150,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      width: 200,
     },
     {
       title: '处理过程',
@@ -280,19 +257,7 @@ function QueryList(props) {
       title: '责任单位',
       dataIndex: 'confirmBlame',
       key: 'confirmBlame',
-      width: 150,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 150,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      width: 200,
     },
     {
       title: '系统运维商处理结果',
@@ -334,19 +299,7 @@ function QueryList(props) {
       title: '故障来源',
       dataIndex: 'source',
       key: 'source',
-      width: 120,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 120,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      width: 200,
     },
     {
       title: '结果',
@@ -400,19 +353,7 @@ function QueryList(props) {
       title: '系统模块',
       dataIndex: 'registerModel',
       key: 'registerModel',
-      width: 120,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 120,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      width: 200,
     },
     {
       title: '是否影响业务',
@@ -424,37 +365,13 @@ function QueryList(props) {
       title: '登记人单位名称',
       dataIndex: 'registerUnit',
       key: 'registerUnit',
-      width: 150,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 150,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      width: 200,
     },
     {
       title: '登记人部门名称',
       dataIndex: 'registerDept',
       key: 'registerDept',
-      width: 150,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 150,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      width: 200,
     },
     {
       title: '登记人名称',
@@ -514,37 +431,13 @@ function QueryList(props) {
       title: '系统运维商审核人单位',
       dataIndex: 'checkOneUnit',
       key: 'checkOneUnit',
-      width: 190,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 190,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      width: 200,
     },
     {
       title: '系统运维商审核人部门',
       dataIndex: 'checkOneDept',
       key: 'checkOneDept',
-      width: 190,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 190,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      width: 200,
     },
     {
       title: '系统运维商审核人',
@@ -575,18 +468,6 @@ function QueryList(props) {
       dataIndex: 'checkOneBlame',
       key: 'checkOneBlame',
       width: 200,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 200,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
     {
       title: '处理ID',
@@ -594,24 +475,6 @@ function QueryList(props) {
       key: 'handleId',
       width: 150,
     },
-    // {
-    //   title: '处理结果',
-    //   dataIndex: 'handleResult',
-    //   key: 'handleResult',
-    //   width: 150,
-    //   onCell: () => {
-    //     return {
-    //       style: {
-    //         maxWidth: 150,
-    //         overflow: 'hidden',
-    //         whiteSpace: 'nowrap',
-    //         textOverflow: 'ellipsis',
-    //         cursor: 'pointer'
-    //       }
-    //     }
-    //   },
-    //   render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
-    // },
     {
       title: '故障分析及原因',
       dataIndex: 'handleReason',
@@ -640,55 +503,19 @@ function QueryList(props) {
       title: '处理完成时间',
       dataIndex: 'handleEndTime',
       key: 'handleEndTime',
-      width: 150,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 150,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      width: 200,
     },
     {
       title: '处理人单位',
       dataIndex: 'handleUnit',
       key: 'handleUnit',
-      width: 150,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 150,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      width: 200,
     },
     {
       title: '处理人部门',
       dataIndex: 'handleDept',
       key: 'handleDept',
-      width: 150,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 150,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      width: 200,
     },
     {
       title: '处理时间',
@@ -744,47 +571,17 @@ function QueryList(props) {
       },
       render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
-    // {
-    //   title: '确认结果',
-    //   dataIndex: 'confirmResult',
-    //   key: 'confirmResult',
-    //   width: 150,
-    // },
     {
       title: '确认人单位',
       dataIndex: 'confirmUnit',
       key: 'confirmUnit',
-      width: 150,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 150,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      width: 200,
     },
     {
       title: '确认人部门',
       dataIndex: 'confirmDept',
       key: 'confirmDept',
-      width: 150,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 150,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      width: 200,
     },
     {
       title: '确认人',
@@ -810,24 +607,6 @@ function QueryList(props) {
       key: 'confirmFlowNodeInstanceIds',
       width: 200,
     },
-    // {
-    //   title: '故障责任方',
-    //   dataIndex: 'confirmBlame',
-    //   key: 'confirmBlame',
-    //   width: 120,
-    //   onCell: () => {
-    //     return {
-    //       style: {
-    //         maxWidth: 120,
-    //         overflow: 'hidden',
-    //         whiteSpace: 'nowrap',
-    //         textOverflow: 'ellipsis',
-    //         cursor: 'pointer'
-    //       }
-    //     }
-    //   },
-    //   render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
-    // },
     {
       title: '自动化科业务负责人审核ID',
       dataIndex: 'checkTwoId',
@@ -869,54 +648,18 @@ function QueryList(props) {
       dataIndex: 'checkTwoUnit',
       key: 'checkTwoUnit',
       width: 250,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 250,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
     {
       title: '自动化科业务负责人审核人部门',
       dataIndex: 'checkTwoDept',
       key: 'checkTwoDept',
       width: 250,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 250,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
     {
       title: '自动化科业务负责人审核人',
       dataIndex: 'checkTwoUser',
       key: 'checkTwoUser',
       width: 200,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 200,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
     {
       title: '自动化科业务负责人审核时间',
@@ -941,18 +684,6 @@ function QueryList(props) {
       dataIndex: 'checkTwoBlame',
       key: 'checkTwoBlame',
       width: 270,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 270,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
     {
       title: '总结ID',
@@ -978,95 +709,29 @@ function QueryList(props) {
       },
       render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
-    // {
-    //   title: '要求上传时间',
-    //   dataIndex: 'finishRequiredTime',
-    //   key: 'finishRequiredTime',
-    //   width: 150,
-    //   onCell: () => {
-    //     return {
-    //       style: {
-    //         maxWidth: 150,
-    //         overflow: 'hidden',
-    //         whiteSpace: 'nowrap',
-    //         textOverflow: 'ellipsis',
-    //         cursor: 'pointer'
-    //       }
-    //     }
-    //   },
-    //   render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
-    // },
     {
       title: '实际上传时间',
       dataIndex: 'finishPracticeTime',
       key: 'finishPracticeTime',
-      width: 150,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 150,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      width: 200,
     },
     {
       title: '总结人单位',
       dataIndex: 'finishUnit',
       key: 'finishUnit',
-      width: 150,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 150,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      width: 200,
     },
     {
       title: '总结人部门',
       dataIndex: 'finishDept',
       key: 'finishDept',
-      width: 150,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 150,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      width: 200,
     },
     {
       title: '总结时间',
       dataIndex: 'finishTime',
       key: 'finishTime',
-      width: 150,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 150,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      width: 200,
     },
     {
       title: '总结状态',
@@ -1099,22 +764,10 @@ function QueryList(props) {
       width: 150,
     },
     {
-      title: '当前流程环境',
+      title: '当前流程环节',
       dataIndex: 'flowNodeName',
       key: 'flowNodeName',
-      width: 150,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 150,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      width: 200,
     },
     {
       title: '操作',
@@ -1156,7 +809,7 @@ function QueryList(props) {
         addTime: [moment(addTimeBegin), moment(addTimeEnd)] || '',
       })
     }
-    //  getFaultlist();
+    setInitial(true)
   }, []);
 
   const searchdata = (values, page, pageSize) => {
@@ -1575,7 +1228,7 @@ function QueryList(props) {
       return currentValue.title !== '操作'
     })
 
-    const exportColumns = filterColumns.map(item => {
+    const exportColumns = (initial ? controlTable : columns).map(item => {
       return {
         column: item.dataIndex,
         field: item.title
@@ -1634,7 +1287,7 @@ function QueryList(props) {
         key: val.key,
         title: val.title,
         dataIndex: val.key,
-        width: 150
+        width: val.width
       };
       if (key === 0 && val.title !== '操作') {
         obj.render = (text, records) => {
@@ -1653,14 +1306,44 @@ function QueryList(props) {
             </a>)
         }
       }
+
+      if (
+        val.title === '故障概要' ||
+        val.title === '故障详细描述' ||
+        val.title === '处理过程' ||
+        val.title === '故障类型' ||
+        val.title === '故障措施或建议' || 
+        val.title === '故障名称' || 
+        val.title === '故障地点' || 
+        val.title === '系统运维商审核意见' || 
+        val.title === '故障分析及原因' || 
+        val.title === '确认说明' || 
+        val.title === '自动化科业务负责人审核意见' || 
+        val.title === '总结说明'
+      ) {
+        obj.ellipsis = true;
+        obj.render = (text, records) => {
+          return (
+            <Tooltip placement="topLeft" title={text}>
+              {key === 0 ? (
+                <a onClick={() => gotoDetail(text, records)}>{text}</a>
+              ) : (
+                <span>{text}</span>
+              )}
+            </Tooltip>
+          );
+        };
+      }
+
       initialColumns.push(obj);
       setColumns(initialColumns);
+      setInitial(false)
       return null;
     })
   }
 
   const onCheckAllChange = e => {
-    setColumns(e.target.checked ? initialColumns : [])
+    setColumns(e.target.checked ? initialColumns : []); setInitial(false)
   };
 
   const onCheck = (checkedValues) => {
@@ -1674,7 +1357,7 @@ function QueryList(props) {
     creataColumns();
   };
 
-  const defaultAllkey = (columns && columns.length > 0 ? columns : controlTable).map(item => {
+  const defaultAllkey = (initial ? controlTable : columns).map(item => {
     return item.title
   });
 
@@ -2090,8 +1773,6 @@ function QueryList(props) {
                         value={item.title}
                         key={item.key}
                         checked={columns}
-                      // disabled={item.disabled}
-                      // className={styles.checkboxStyle}
                       >
                         {item.title}
                       </Checkbox>
@@ -2112,7 +1793,7 @@ function QueryList(props) {
 
         <Table
           loading={loading}
-          columns={columns.length > 0 ? columns : controlTable}
+          columns={initial ? controlTable : columns}
           dataSource={faultQueryList.rows}
           rowKey={r => r.id}
           pagination={pagination}
