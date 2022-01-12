@@ -22,7 +22,7 @@ const UserLayout = props => {
         <title>{title}</title>
         <meta name="description" content={title} />
       </Helmet>
-      <div style={{ paddingTop: 56 }}>
+      <div style={{ paddingTop: 48 }}>
         {children}
       </div>
     </>

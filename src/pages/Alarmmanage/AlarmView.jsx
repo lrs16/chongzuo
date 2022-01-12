@@ -130,6 +130,7 @@ function MeasurAlarm(props) {
         tabdate,
         warnModule: warnModulemap.get(pagetitle),
         reset: location.state && location.state.reset,
+        locationState: location.state || {}
       }}>
         {pagetitle === '上下行报文页面告警' ? (
           <MessageContent tabActivekey={tabActivekey} />

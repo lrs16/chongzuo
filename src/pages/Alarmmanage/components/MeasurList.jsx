@@ -174,7 +174,7 @@ function MeasurList(props) {
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
   const [searchdata, setSearchData] = useState({});
   const [activeKey, setActiveKey] = useState('');
-  const { selectdata, tabdate, warnModule } = useContext(TypeContext);
+  const { selectdata, tabdate, warnModule, locationState } = useContext(TypeContext);
 
   const getvalues = () => {
     const val = getFieldsValue();
@@ -213,6 +213,13 @@ function MeasurList(props) {
         firstClassify: key,
         pageSize: size,
         pageIndex: page,
+      },
+    });
+    dispatch({
+      type: 'viewcache/gettabstate',
+      payload: {
+        cacheinfo: { ...values, firstClassify: key, pageIndex: page, pageSize: size },
+        tabid: sessionStorage.getItem('tabid'),
       },
     });
   };
@@ -290,6 +297,26 @@ function MeasurList(props) {
   //     handleSearch(1, 10);
   //   };
   // }, [reset]);
+
+  useEffect(() => {
+    if (locationState) {
+      if (locationState.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: { ...searchdata },
+            tabid: sessionStorage.getItem('tabid'),
+          },
+        });
+      };
+      if (locationState.cacheinfo) {
+        // 传表单数据到页签
+        handlePage(locationState.cacheinfo.pageIndex || 1, locationState.cacheinfo.pageSize || 15)
+      };
+    }
+  }, [locationState])
+  console.log(locationState);
 
   const rowSelection = {
     selectedRowKeys,
@@ -376,7 +403,7 @@ function MeasurList(props) {
             <Col span={8}>
               <Form.Item label="监控项/内容/子类" >
                 {getFieldDecorator('Classify', {
-                  initialValue: '',
+                  initialValue: locationState?.cacheinfo?.Classify || '',
                 })(
                   <Cascader
                     fieldNames={{ label: 'title', value: 'title', children: 'children' }}
@@ -389,7 +416,9 @@ function MeasurList(props) {
             </Col>
             <Col span={8}>
               <Form.Item label="告警内容">{
-                getFieldDecorator('warnContent')(
+                getFieldDecorator('warnContent', {
+                  initialValue: locationState?.cacheinfo?.warnContent || '',
+                })(
                   <Input allowClear />
                 )}</Form.Item>
             </Col>
@@ -434,7 +463,7 @@ function MeasurList(props) {
               <Form.Item label="告警确认时间">
                 <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                   {getFieldDecorator('beginConfirmTime', {
-                    initialValue: '',
+                    initialValue: locationState?.cacheinfo?.beginConfirmTime || '',
                   })(
                     <DatePicker
                       showTime={{
@@ -450,7 +479,7 @@ function MeasurList(props) {
                 <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
                 <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                   {getFieldDecorator('endConfirmTime', {
-                    initialValue: '',
+                    initialValue: locationState?.cacheinfo?.endConfirmTime || '',
                   })(
                     <DatePicker
                       showTime={{
@@ -469,7 +498,7 @@ function MeasurList(props) {
               <Form.Item label="告警消除时间">
                 <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                   {getFieldDecorator('beginClearTime', {
-                    initialValue: '',
+                    initialValue: locationState?.cacheinfo?.beginClearTime || '',
                   })(
                     <DatePicker
                       showTime={{
@@ -485,7 +514,7 @@ function MeasurList(props) {
                 <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
                 <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                   {getFieldDecorator('endClearTime', {
-                    initialValue: '',
+                    initialValue: locationState?.cacheinfo?.endClearTime || '',
                   })(
                     <DatePicker
                       showTime={{

@@ -154,7 +154,15 @@ function ByObject(props) {
     },
   ]
 
-  //
+  const setTableHeight = () => {
+    let height = 500;
+    // 最小兼容1600的全屏显示器，顶部高度64，页签：40，面头：92，间隔：16，card:24,导出按钮：32，分页：64
+    const clientHeight = window.document?.body?.clientHeight;
+    if (clientHeight > 750) {
+      height = clientHeight - 356
+    }
+    return height
+  };
 
   return (
     <PageHeaderWrapper
@@ -243,6 +251,7 @@ function ByObject(props) {
           rowKey={(_, index) => index.toString()}
           pagination={false}
           bordered
+          scroll={{ y: setTableHeight() }}
         />
       </Card>
     </PageHeaderWrapper>

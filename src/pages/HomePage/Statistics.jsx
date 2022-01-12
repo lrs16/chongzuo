@@ -14,7 +14,7 @@ function Statistics(props) {
   }, [])
   return (
     <>
-      <div style={{ margin: '-48px -24px 24px -24px', padding: '24px 24px 0 24px', background: '#fff' }}>
+      <div style={{ margin: '-48px -24px 16px -24px', padding: '16px 16px 0 16px', background: '#fff' }}>
         <Menu onClick={handleClick} selectedKeys={current} mode="horizontal">
           <Menu.Item key="event">事件统计分析</Menu.Item>
           <Menu.Item key="fault">故障统计分析</Menu.Item>
@@ -24,7 +24,7 @@ function Statistics(props) {
           <Menu.Item key="achievements">服务绩效统计分析</Menu.Item>
         </Menu>
       </div>
-      <div style={{ marginTop: 24 }}>
+      <div style={{ margin: '16px -8px 0 -8px' }}>
         {children}
       </div>
     </>

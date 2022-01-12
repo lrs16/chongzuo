@@ -312,7 +312,6 @@ function Overtime(props) {
 
   // 查询按钮和翻页
   const searchdata = (values, page, size) => {
-    console.log('searchdata', values);
     setTabRecord({
       ...values,
       tabType: tabActivekey,
@@ -442,6 +441,20 @@ function Overtime(props) {
     })
   };
 
+  const setTableHeight = () => {
+    let height = 500;
+    // 最小兼容1600的全屏显示器，顶部高度64，页签：40，面头：92，间隔：16，card:24,查询：98,查询按钮40，导出按钮：32，分页：64
+    const clientHeight = window.document?.body?.clientHeight;
+    if (clientHeight > 750) {
+      if (expand) {
+        height = clientHeight - 544
+      } else {
+        height = clientHeight - 486
+      }
+    }
+    return height
+  };
+
   return (
     <PageHeaderWrapper
       title={pagetitle}
@@ -455,7 +468,7 @@ function Overtime(props) {
         dictType="status"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
       />
-      <Card>
+      <Card bodyStyle={{ paddingBottom: 0 }}>
         <Row gutter={24}>
           <Form {...formItemLayout}>
             <Col span={6}>
@@ -568,7 +581,7 @@ function Overtime(props) {
             </Col>
           </Form>
         </Row>
-        <div style={{ marginBottom: 24 }}>
+        <div>
           <Button
             type="primary"
             onClick={() => download()}
@@ -582,7 +595,7 @@ function Overtime(props) {
           loading={loading}
           rowKey={(_, index) => index.toString()}
           pagination={pagination}
-          scroll={{ x: 1400 }}
+          scroll={{ x: 1400, y: setTableHeight() }}
           bordered={tabActivekey === 'timeout'}
           size={tabActivekey === 'timeout' ? 'middle' : 'default'}
         />

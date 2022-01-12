@@ -251,7 +251,7 @@ function Statistics(props) {
     <div>
       <SelectTime ChangeDate={(v) => setValues(v)} />
       <Spin spinning={loadingsum}>
-        <Row style={{ marginTop: 24 }}>
+        <Row style={{ marginTop: 16 }}>
           <div className={styles.statisticscard}>
             <Avatar icon="desktop" />
             <b>发布总情况</b>
@@ -276,7 +276,7 @@ function Statistics(props) {
           })}
         </Row>
         <Row gutter={16}>
-          {platsum && (<Col span={12} style={{ marginTop: 24 }}>
+          {platsum && (<Col span={12} style={{ marginTop: 16 }}>
             <div className={styles.statisticscard}>
               <Avatar icon="desktop" />
               <b>平台验证情况</b>
@@ -315,7 +315,7 @@ function Statistics(props) {
               })}
             </Row>
           </Col>)}
-          {bizsum && (<Col span={12} style={{ marginTop: 24 }}>
+          {bizsum && (<Col span={12} style={{ marginTop: 16 }}>
             <div className={styles.statisticscard}>
               <Avatar icon="file-protect" />
               <b>业务验证情况</b>
@@ -356,7 +356,7 @@ function Statistics(props) {
           </Col>)}
         </Row>
         <Row gutter={16}>
-          <Col span={12} style={{ marginTop: 24 }}>
+          <Col span={12} style={{ marginTop: 16 }}>
             <div className={styles.statisticscard}>
               <Avatar icon="control" />
               <b>发布验证情况</b>
@@ -396,7 +396,7 @@ function Statistics(props) {
             </Row>
           </Col>
 
-          {bizchecksum && bizchecksum.length > 0 && bizchecksum && (<Col span={12} style={{ marginTop: 24 }}>
+          {bizchecksum && bizchecksum.length > 0 && bizchecksum && (<Col span={12} style={{ marginTop: 16 }}>
             <div className={styles.statisticscard}>
               <Avatar icon="security-scan" />
               <b>业务复核情况</b>
@@ -439,7 +439,7 @@ function Statistics(props) {
         </Row>
       </Spin>
       {unitanalysis && (
-        <Row style={{ marginTop: 24 }} onMouseDown={() => setFetchType({})}>
+        <Row style={{ marginTop: 16 }} onMouseDown={() => setFetchType({})}>
           <div className={styles.statisticscard}>
             <Avatar icon="cluster" />
             <b>发布工单责任单位情况</b>
@@ -463,6 +463,7 @@ function Statistics(props) {
                     setPageinations({ current: 1, pageSize: 12 })
                   }}
                   totalType='all'
+                  TooltipHide
                 />
               )}
             </Card>
@@ -494,7 +495,7 @@ function Statistics(props) {
         </Row>
       )}
       {typeanalysis && (
-        <Row style={{ marginTop: 24 }} onMouseDown={() => setFetchType({})}>
+        <Row style={{ marginTop: 16 }} onMouseDown={() => setFetchType({})}>
           <div className={styles.statisticscard}>
             <Avatar icon="cluster" />
             <b>发布类型统计分析</b>
@@ -547,7 +548,7 @@ function Statistics(props) {
           </Col>
         </Row>
       )}
-      <Row style={{ marginTop: 24 }} gutter={16} onMouseDown={() => setFetchType({})}>
+      <Row style={{ marginTop: 16 }} gutter={16} onMouseDown={() => setFetchType({})}>
         <Col span={12}>
           <div className={styles.statisticscard}>
             <Avatar icon="share-alt" />
@@ -606,7 +607,7 @@ function Statistics(props) {
           </Card>
         </Col>
       </Row>
-      <Row style={{ marginTop: 24 }} gutter={16} onMouseDown={() => setFetchType({})}>
+      <Row style={{ marginTop: 16 }} gutter={16} onMouseDown={() => setFetchType({})}>
         <Col span={12}>
           <div className={styles.statisticscard}>
             <Avatar icon="share-alt" />
@@ -669,7 +670,7 @@ function Statistics(props) {
           </Card>
         </Col>
       </Row>
-      <Row style={{ marginTop: 24 }} gutter={16} onMouseDown={() => setFetchType({})}>
+      <Row style={{ marginTop: 16 }} gutter={16} onMouseDown={() => setFetchType({})}>
         <Col span={8}>
           <div className={styles.statisticscard}>
             <Avatar icon="share-alt" />

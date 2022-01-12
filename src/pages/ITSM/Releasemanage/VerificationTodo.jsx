@@ -405,7 +405,9 @@ function VerificationTodo(props) {
           pagination={false}
           loading={viewloading}
           rowKey={r => r.id}
-          bordered />
+          bordered
+          scroll={{ y: 350 }}
+        />
       </div>
     );
   };
@@ -420,6 +422,20 @@ function VerificationTodo(props) {
     }
   }
 
+  const setTableHeight = () => {
+    let height = 500;
+    // 最小兼容1600的全屏显示器
+    const clientHeight = window.document?.body?.clientHeight;
+    if (clientHeight > 750) {
+      if (expand) {
+        height = clientHeight - 446
+      } else {
+        height = clientHeight - 388
+      }
+    }
+    return height
+  };
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       <DictLower
@@ -427,7 +443,7 @@ function VerificationTodo(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      <Card>
+      <Card bodyStyle={{ paddingBottom: 0 }}>
         <Row gutter={24}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>
@@ -523,6 +539,7 @@ function VerificationTodo(props) {
           pagination={pagination}
           rowSelection={rowSelection}
           rowKey={(record) => record.todoCode}
+          scroll={{ y: setTableHeight() }}
         />
       </Card>
     </PageHeaderWrapper>

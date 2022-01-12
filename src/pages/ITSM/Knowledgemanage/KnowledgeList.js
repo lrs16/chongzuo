@@ -560,7 +560,21 @@ function KnowledgeList(props) {
       };
       handleSearch(1, 15)
     }
-  }, [statist])
+  }, [statist]);
+
+  const setTableHeight = () => {
+    let height = 500;
+    // 最小兼容1600的全屏显示器
+    const clientHeight = window.document?.body?.clientHeight;
+    if (clientHeight > 750) {
+      if (expand) {
+        height = clientHeight - 572
+      } else {
+        height = clientHeight - 456
+      }
+    }
+    return height
+  };
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -569,7 +583,7 @@ function KnowledgeList(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      <Card>
+      <Card bodyStyle={{ paddingBottom: 0 }}>
         <Row gutter={8}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>
@@ -749,7 +763,7 @@ function KnowledgeList(props) {
           </Form>
         </Row>
 
-        <div style={{ marginBottom: 24 }}>
+        <div>
           {pagetitle === '我的知识' && (
             <>
               <Button type="primary" style={{ marginRight: 8 }} onClick={() => newknowledge()}>新增</Button >
@@ -789,7 +803,7 @@ function KnowledgeList(props) {
           pagination={pagination}
           rowSelection={rowSelection}
           rowKey={r => r.id}
-          scroll={{ x: 1300 }}
+          scroll={{ x: 1300, y: setTableHeight() }}
         />
       </Card>
       <UserContext.Provider value={{ setChoiceUser, uservisible, setUserVisible, title: '审核' }}>

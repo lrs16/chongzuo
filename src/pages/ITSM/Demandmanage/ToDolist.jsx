@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
-import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table } from 'antd';
+import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Tooltip } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
@@ -165,6 +165,18 @@ function ToDolist(props) {
       dataIndex: 'demandTitle',
       key: 'demandTitle',
       with: 250,
+      onCell: () => {
+        return {
+          style: {
+            maxWidth: 250,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            cursor: 'pointer'
+          }
+        }
+      },
+      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
     {
       title: '需求类型',
@@ -177,6 +189,18 @@ function ToDolist(props) {
       dataIndex: 'module',
       key: 'module',
       with: 150,
+      onCell: () => {
+        return {
+          style: {
+            maxWidth: 250,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            cursor: 'pointer'
+          }
+        }
+      },
+      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
 
     {
@@ -293,14 +317,29 @@ function ToDolist(props) {
   const statemap = getTypebyId(546);   // 当前处理环节
   const souremap = getTypebyId(195);   // 需求类型
 
+  const setTableHeight = () => {
+    let height = 500;
+    // 最小兼容1600的全屏显示器
+    const clientHeight = window.document?.body?.clientHeight;
+    if (clientHeight > 750) {
+      if (expand) {
+        height = clientHeight - 478
+      } else {
+        height = clientHeight - 420
+      }
+    }
+    return height
+  };
+
   return (
+
     <PageHeaderWrapper title={pagetitle}>
       <DictLower
         typeid="332"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      <Card>
+      <Card bodyStyle={{ paddingBottom: 0 }}>
         <Row gutter={24}>
           <Form {...formItemLayout} onSubmit={() => handleSearch()}>
             <Col span={8}>
@@ -375,10 +414,11 @@ function ToDolist(props) {
           dataSource={list.rows}
           rowKey={(_, index) => index.toString()}
           pagination={pagination}
-          scroll={{ x: 1500 }}
+          scroll={{ x: 1500, y: setTableHeight() }}
         />
       </Card>
-    </PageHeaderWrapper>
+    </PageHeaderWrapper >
+
   );
 }
 

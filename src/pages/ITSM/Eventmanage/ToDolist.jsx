@@ -316,6 +316,20 @@ function ToDolist(props) {
       {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
     </Button></>)
 
+  const setTableHeight = () => {
+    let height = 500;
+    // 最小兼容1600的全屏显示器
+    const clientHeight = window.document?.body?.clientHeight;
+    if (clientHeight > 750) {
+      if (expand) {
+        height = clientHeight - 568
+      } else {
+        height = clientHeight - 420
+      }
+    }
+    return height
+  };
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       <SysDict
@@ -324,7 +338,7 @@ function ToDolist(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      <Card>
+      <Card bodyStyle={{ paddingBottom: 0 }}>
         <Row gutter={24}>
           <Form {...formItemLayout} onSubmit={() => handleSearch()}>
             <Col span={8}>
@@ -419,11 +433,9 @@ function ToDolist(props) {
             {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
           </Form>
         </Row>
-        <div style={{ marginBottom: 24 }}>
-          <Button type="primary" onClick={() => download()}>
-            导出数据
-          </Button>
-        </div>
+        <Button type="primary" onClick={() => download()}>
+          导出数据
+        </Button>
         <Table
           loading={loading}
           columns={columns}
@@ -431,7 +443,7 @@ function ToDolist(props) {
           rowKey={r => r.id}
           pagination={pagination}
           rowSelection={rowSelection}
-          scroll={{ x: 1400 }}
+          scroll={{ x: 1400, y: setTableHeight() }}
         />
       </Card>
     </PageHeaderWrapper >

@@ -34,22 +34,22 @@ const tickLine = {
 
 function SmoothLine(props) {
   const { data, cols, height, padding, onGetVal } = props;
-  const dv = new DataSet.View().source(data);
-  dv.transform({
-    type: 'sort-by',
-    fields: ['name'], // 根据指定的字段集进行排序，与lodash的sortBy行为一致
-    order: 'ASC', // 默认为 ASC，DESC 则为逆序
-  });
+  // const dv = new DataSet.View().source(data);
+  // dv.transform({
+  //   type: 'sort-by',
+  //   // fields: ['name'], // 根据指定的字段集进行排序，与lodash的sortBy行为一致
+  //   //  order: 'ASC', // 默认为 ASC，DESC 则为逆序
+  // });
 
   return (
-    <Chart padding={padding} scale={cols} autoFit height={height} data={dv.rows} onClick={ev => {
+    <Chart padding={padding} scale={cols} autoFit height={height} data={data} onClick={ev => {
       const linkdata = ev.data;
       if (linkdata && linkdata.data && !Array.isArray(linkdata.data) && onGetVal) {
         onGetVal(linkdata.data)
       }
     }}>
       <Line shape="smooth" position="date*value" color="name" />
-      <Point position="date*value" color="name" shape="circle" size={dv.rows && dv.rows.length > 120 ? 3 : 4} />
+      <Point position="date*value" color="name" shape="circle" size={data && data.length > 120 ? 3 : 4} />
       <Tooltip shared showCrosshairs />
       <Axis name="date"  {...axisConfig} tickLine={tickLine} label={{ offset: 25 }} />
       <Axis name="value"   {...axisConfig} label={{ offset: 10 }} />

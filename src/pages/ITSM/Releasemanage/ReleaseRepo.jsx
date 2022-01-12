@@ -278,9 +278,19 @@ function ReleaseRepo(props) {
     onChange: (key, record) => onSelectChange(key, record),
   };
 
+  const setTableHeight = () => {
+    let height = 500;
+    // 最小兼容1600的全屏显示器，顶部高度64，页签：40，面头：92，间隔：16，card:24,导出按钮：32，分页：64
+    const clientHeight = window.document?.body?.clientHeight;
+    if (clientHeight > 750) {
+      height = clientHeight - 478
+    }
+    return height
+  };
+
   return (
     <PageHeaderWrapper title={pagetitle}>
-      <Card>
+      <Card bodyStyle={{ paddingBottom: 0 }}>
         <Row gutter={24}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>
@@ -384,7 +394,7 @@ function ReleaseRepo(props) {
             </Col>
           </Form>
         </Row>
-        <div style={{ marginBottom: 24 }}>
+        <div>
           <Button type="primary" style={{ marginRight: 8 }} onClick={() => handlerepoRegister()} disabled={selectedRowKeys.length === 0}>出厂测试</Button >
           <AdminAuth getAuth={v => setUserName(v)} code='admin' />
           {username === 'admin' && (
@@ -405,7 +415,7 @@ function ReleaseRepo(props) {
           pagination={pagination}
           rowSelection={rowSelection}
           rowKey={r => r.id}
-          scroll={{ x: 1500 }}
+          scroll={{ x: 1500, y: setTableHeight() }}
         />
       </Card>
     </PageHeaderWrapper>
