@@ -1150,7 +1150,7 @@ function TobedealtList(props) {
         key: val.key,
         title: val.title,
         dataIndex: val.key,
-        width: 150,
+        width: val.width,
       };
       if (key === 0) {
         obj.render = (text, records) => {

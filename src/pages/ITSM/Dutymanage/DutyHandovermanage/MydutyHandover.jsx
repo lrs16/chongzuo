@@ -562,7 +562,7 @@ function MydutyHandover(props) {
         key: val.key,
         title: val.title,
         dataIndex: val.key,
-        width: 150
+        width: val.width
       };
       if (key === 0 || val.title === '值班交接编号') {
         obj.render = (text, record) => {

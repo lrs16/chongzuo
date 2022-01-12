@@ -8,7 +8,8 @@ import {
   Form,
   DatePicker,
   Button,
-  Select
+  Select,
+  message
 } from 'antd';
 import Link from 'umi/link';
 
@@ -72,7 +73,7 @@ const columns = [
 function Workordertopn(props) {
   const { pagetitle } = props.route.name;
   const {
-    form: { getFieldDecorator, validateFields },
+    form: { getFieldDecorator, validateFields, setFieldsValue },
     ordertopnArr,
     dispatch,
     loading
@@ -80,36 +81,45 @@ function Workordertopn(props) {
 
   const handleListdata = () => {
     validateFields((err, values) => {
-      startTime = moment(values.time1[0]).format('YYYY-MM-DD');
-      endTime = moment(values.time1[1]).format('YYYY-MM-DD');
-      dispatch({
-        type: 'eventstatistics/fetchordertopnList',
-        payload: { value, startTime, endTime }
-      })
+      startTime = moment(values.time1).format('YYYY-MM-DD');
+      endTime = moment(values.time2).format('YYYY-MM-DD');
+      if (moment(startTime).valueOf() > moment(endTime).valueOf()) {
+        message.error('开始时间必须小于结束时间')
+      } else {
+        dispatch({
+          type: 'eventstatistics/fetchordertopnList',
+          payload: { value, startTime, endTime }
+        })
+      }
     })
   }
 
   const download = () => {
     validateFields((err, values) => {
-      startTime = moment(values.time1[0]).format('YYYY-MM-DD');
-      endTime = moment(values.time1[1]).format('YYYY-MM-DD');
-      dispatch({
-        type: 'eventstatistics/downloadEventtopn',
-        payload: {
-          time1: startTime,
-          time2: endTime,
-          num: value,
-        }
-      }).then(res => {
-        const filename = `工单TOPN${moment().format('MM-DD')}.xls`;
-        const blob = new Blob([res]);
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        a.click();
-        window.URL.revokeObjectURL(url);
-      })
+      startTime = moment(values.time1).format('YYYY-MM-DD');
+      endTime = moment(values.time2).format('YYYY-MM-DD');
+      if (moment(startTime).valueOf() > moment(endTime).valueOf()) {
+        message.error('开始时间必须小于结束时间')
+      } else {
+        dispatch({
+          type: 'eventstatistics/downloadEventtopn',
+          payload: {
+            time1: startTime,
+            time2: endTime,
+            num: value,
+          }
+        }).then(res => {
+          const filename = `工单TOPN${moment().format('MM-DD')}.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        })
+      }
+
     })
 
   }
@@ -118,14 +128,18 @@ function Workordertopn(props) {
   const defaultTime = () => {
     startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
     endTime = moment().format('YYYY-MM-DD');
-    // startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD');
-    // endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
+    setFieldsValue({
+      time1: moment(startTime),
+      time2: moment(endTime)
+    });
   }
 
   const selectOnchange = (selectvalue) => {
     value = selectvalue;
     handleListdata(value);
   }
+
+
   useEffect(() => {
     defaultTime();
     dispatch({
@@ -145,11 +159,24 @@ function Workordertopn(props) {
               <Col span={24}>
                 <Form.Item label='起始时间'>
                   {getFieldDecorator('time1', {
-                    initialValue: [moment(startTime), moment(endTime)]
-                  })(
-                    <RangePicker
-                    />
-                  )}
+                    initialValue: moment(startTime)
+                  })(<DatePicker
+                    allowClear={false}
+                  />)}
+                </Form.Item>
+
+
+                <p style={{ display: 'inline', marginRight: 8 }}>-</p>
+
+                <Form.Item label=''>
+                  {
+                    getFieldDecorator('time2', {
+                      initialValue: moment(endTime)
+                    })
+                      (<DatePicker
+                        allowClear={false}
+                      />)
+                  }
                 </Form.Item>
 
                 <Form.Item label='N'>
@@ -166,15 +193,15 @@ function Workordertopn(props) {
                   </Select>
                 </Form.Item>
 
+
                 <Button
                   type='primary'
                   style={{ marginTop: 6 }}
-                  onClick={() => handleListdata()}
+                  onClick={() => handleListdata('search')}
                 >
                   查询
                 </Button>
               </Col>
-
             </>
           </Form>
         </Row>
@@ -189,14 +216,12 @@ function Workordertopn(props) {
           </Button>
         </div>
 
-
-        {loading === false && (
-          <MergeTable
-            column={columns}
-            tableSource={ordertopnArr}
-            mergecell={mergeCell}
-          />
-        )}
+        <MergeTable
+          loading={loading}
+          column={columns}
+          tableSource={ordertopnArr}
+          mergecell={mergeCell}
+        />
       </Card>
     </PageHeaderWrapper>
   )

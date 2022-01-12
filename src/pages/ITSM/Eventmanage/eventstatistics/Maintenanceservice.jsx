@@ -25,6 +25,7 @@ function Maintenanceservice(props) {
     form: { getFieldDecorator, setFieldsValue },
     maintenanceService,
     dispatch,
+    loading
   } = props;
   const tableHeadweek = tabActiveKey === 'week' ? '上周' : '上月';
   const tableHeadmonth = tabActiveKey === 'week' ? '本周' : '本月';
@@ -64,9 +65,7 @@ function Maintenanceservice(props) {
       setFieldsValue({ time2: moment(endTime) });
     } else {
       startTime = date.startOf('month').format('YYYY-MM-DD');
-      console.log('startTime: ', startTime);
       endTime = date.endOf('month').format('YYYY-MM-DD');
-      console.log('endTime: ', endTime);
     }
   }
 
@@ -97,7 +96,6 @@ function Maintenanceservice(props) {
     })
   }
 
-
   const defaultTime = () => {
     //  周统计
     if (tabActiveKey === 'week') {
@@ -108,6 +106,11 @@ function Maintenanceservice(props) {
       startTime = moment().startOf('month').format('YYYY-MM-DD');
       endTime = moment().endOf('month').format('YYYY-MM-DD');
     }
+    setFieldsValue({
+      time1: moment(startTime),
+      time2: moment(endTime),
+      startTime:moment(startTime)
+    });
   }
 
   useEffect(() => {
@@ -205,16 +208,10 @@ function Maintenanceservice(props) {
                       {getFieldDecorator('startTime', {
                         initialValue: moment(startTime)
                       })(<MonthPicker
-                        // format="YYYY-MM-DD"
                         allowClear='false'
                         onChange={onChange}
                       />)}
                     </Form.Item>
-
-                    {/* <p>{startTime}</p> */}
-
-
-
 
                     <Button
                       type='primary'
@@ -241,6 +238,7 @@ function Maintenanceservice(props) {
         </div>
 
         <Table
+          loading={loading}
           columns={columns}
           dataSource={maintenanceService}
           rowKey={record => record.remark}

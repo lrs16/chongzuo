@@ -276,7 +276,8 @@ function Maintenance(props) {
     }
     setFieldsValue({
       time1: moment(startTime),
-      time2: moment(endTime)
+      time2: moment(endTime),
+      monthStarttime: moment(startTime)
     });
   }
 

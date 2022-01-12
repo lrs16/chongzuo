@@ -25,9 +25,10 @@ const formItemLayout = {
   },
 };
 
-const { RangePicker } = DatePicker;
 const { Option } = Select;
 let selectDate;
+let startTime;
+let endTime;
 
 function Statistic(props) {
   const pagetitle = props.route.name;
@@ -157,7 +158,6 @@ function Statistic(props) {
     }
   }
 
-
   const handlesearch = () => {
     const value = getFieldsValue();
     searchdata(value)
@@ -195,7 +195,6 @@ function Statistic(props) {
           payload: {
             cacheinfo: {
               ...tabrecord,
-              // paginations
             },
             tabid: sessionStorage.getItem('tabid')
           }
@@ -208,7 +207,12 @@ function Statistic(props) {
     }
   }, [location.state])
 
+
   useEffect(() => {
+    setFieldsValue({
+      beginTime:cacheinfo && cacheinfo.beginTime ? moment(cacheinfo.beginTime):moment().startOf('month'),
+      endTime:cacheinfo && cacheinfo.endTime ? moment(cacheinfo.endTime):moment().endOf('month'),
+    })
     const value = getFieldsValue();
     if (cacheinfo && cacheinfo.type) {
       setType(cacheinfo.type)
@@ -323,7 +327,7 @@ function Statistic(props) {
                 <Row>
                   <Col span={11}>
                     {getFieldDecorator('beginTime', {
-                      initialValue: (cacheinfo && cacheinfo.beginTime) ? moment(cacheinfo.beginTime) : moment().startOf('month'),
+                      initialValue: (cacheinfo && cacheinfo.beginTime) ? moment(cacheinfo.beginTime) : startTime,
                     })(
                       <DatePicker
                         disabledDate={(value) => disabledStartDate(value, 'create')}
@@ -342,7 +346,7 @@ function Statistic(props) {
                   <Col span={2} style={{ textAlign: 'center' }}>-</Col>
                   <Col span={11}>
                     {getFieldDecorator('endTime', {
-                      initialValue: (cacheinfo && cacheinfo.endTime) ? moment(cacheinfo.endTime) : moment().endOf('month'),
+                      initialValue: (cacheinfo && cacheinfo.endTime) ? moment(cacheinfo.endTime) : endTime,
                     })(
                       <DatePicker
                         disabledDate={(value) => disabledEndDate(value, 'create')}

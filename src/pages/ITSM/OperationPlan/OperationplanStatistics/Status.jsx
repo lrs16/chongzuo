@@ -1,13 +1,21 @@
 import React, { useEffect } from 'react';
 import router from 'umi/router';
 import { connect } from 'dva';
-import { Card, Row, Col, Form, DatePicker, Button, Table } from 'antd';
+import {
+  Card,
+  Row,
+  Col,
+  Form,
+  DatePicker,
+  Button,
+  Table,
+  message
+} from 'antd';
 import moment from 'moment';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 let startTime;
 let endTime;
-const { RangePicker } = DatePicker;
 const columns = [
   {
     title: '作业状态',
@@ -39,7 +47,7 @@ const columns = [
 function Status(props) {
   const { pagetitle } = props.route.name;
   const {
-    form: { getFieldDecorator, validateFields },
+    form: { getFieldDecorator, validateFields, setFieldsValue },
     operationStatusArr,
     dispatch,
     location,
@@ -47,35 +55,43 @@ function Status(props) {
 
   const handleListdata = () => {
     validateFields((err, value) => {
-      startTime = moment(value.time1[0]).format('YYYY-MM-DD');
-      endTime = moment(value.time1[1]).format('YYYY-MM-DD');
-      dispatch({
-        type: 'taskstatistics/operationStatus',
-        payload: { startTime, endTime },
-      });
+      startTime = moment(value.time1).format('YYYY-MM-DD');
+      endTime = moment(value.time2).format('YYYY-MM-DD');
+      if (moment(startTime).valueOf() > moment(endTime).valueOf()) {
+        message.error('开始时间必须小于结束时间')
+      } else {
+        dispatch({
+          type: 'taskstatistics/operationStatus',
+          payload: { startTime, endTime },
+        });
+      }
     });
   };
 
   const download = () => {
     validateFields((err, value) => {
-      startTime = moment(value.time1[0]).format('YYYY-MM-DD');
-      endTime = moment(value.time1[1]).format('YYYY-MM-DD');
-      dispatch({
-        type: 'taskstatistics/downloadOperationStatus',
-        payload: {
-          time1: startTime,
-          time2: endTime,
-        },
-      }).then(res => {
-        const filename = '下载.xls';
-        const blob = new Blob([res]);
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        a.click();
-        window.URL.revokeObjectURL(url);
-      });
+      startTime = moment(value.time1).format('YYYY-MM-DD');
+      endTime = moment(value.time2).format('YYYY-MM-DD');
+      if (moment(startTime).valueOf() > moment(endTime).valueOf()) {
+        message.error('开始时间必须小于结束时间')
+      } else {
+        dispatch({
+          type: 'taskstatistics/downloadOperationStatus',
+          payload: {
+            time1: startTime,
+            time2: endTime,
+          },
+        }).then(res => {
+          const filename = '下载.xls';
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+      }
     });
   };
 
@@ -84,8 +100,10 @@ function Status(props) {
       .subtract('days', 6)
       .format('YYYY-MM-DD');
     endTime = moment().format('YYYY-MM-DD');
-    // startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD');
-    // endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
+    setFieldsValue({
+      time1: moment(startTime),
+      time2: moment(endTime)
+    });
   };
 
   useEffect(() => {
@@ -112,14 +130,30 @@ function Status(props) {
           <Form layout="inline">
             <>
               <Col span={24}>
-                <Form.Item label="起始时间">
+                <Form.Item label='起始时间'>
                   {getFieldDecorator('time1', {
-                    initialValue: [moment(startTime), moment(endTime)],
-                  })(<RangePicker />)}
+                    initialValue: moment(startTime)
+                  })(<DatePicker
+                    allowClear={false}
+                  />)}
+                </Form.Item>
+
+
+                <p style={{ display: 'inline', marginRight: 8 }}>-</p>
+
+                <Form.Item label=''>
+                  {
+                    getFieldDecorator('time2', {
+                      initialValue: moment(endTime)
+                    })
+                      (<DatePicker
+                        allowClear={false}
+                      />)
+                  }
                 </Form.Item>
 
                 <Button
-                  type="primary"
+                  type='primary'
                   style={{ marginTop: 6 }}
                   onClick={() => handleListdata('search')}
                 >

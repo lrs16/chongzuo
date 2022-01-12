@@ -7,7 +7,8 @@ import {
   Form,
   DatePicker,
   Button,
-  Table
+  Table,
+  message
 } from 'antd';
 import Link from 'umi/link';
 import moment from 'moment';
@@ -16,7 +17,6 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 let startTime;
 let endTime;
 const sign = 'solution';
-const { RangePicker } = DatePicker;
 const columns = [
   {
     title: '受理人/处理人',
@@ -98,51 +98,65 @@ const columns = [
 function Solution(props) {
   const { pagetitle } = props.route.name;
   const {
-    form: { getFieldDecorator, validateFields },
+    form: { getFieldDecorator, validateFields, setFieldsValue },
     soluteArr,
-    dispatch
+    dispatch,
+    loading
   } = props;
 
   const handleListdata = () => {
     validateFields((err, value) => {
-      startTime = moment(value.time1[0]).format('YYYY-MM-DD');
-      endTime = moment(value.time1[1]).format('YYYY-MM-DD');
-      dispatch({
-        type: 'eventstatistics/fetchSelfHandleList',
-        payload: { sign, startTime, endTime }
-      })
+      startTime = moment(value.time1).format('YYYY-MM-DD');
+      endTime = moment(value.time2).format('YYYY-MM-DD');
+      if (moment(startTime).valueOf() > moment(endTime).valueOf()) {
+        message.error('开始时间必须小于结束时间')
+      } else {
+        dispatch({
+          type: 'eventstatistics/fetchSelfHandleList',
+          payload: { sign, startTime, endTime }
+        })
+      }
+
     })
 
   }
 
   const download = () => {
     validateFields((err, value) => {
-      startTime = moment(value.time1[0]).format('YYYY-MM-DD');
-      endTime = moment(value.time1[1]).format('YYYY-MM-DD');
-      dispatch({
-        type: 'eventstatistics/downloadEventselfhandle',
-        payload: {
-          time1: startTime,
-          time2: endTime,
-        }
-      }).then(res => {
-        const filename = `一线解决率${moment().format('MM-DD')}.xls`;
-        const blob = new Blob([res]);
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        a.click();
-        window.URL.revokeObjectURL(url);
-      })
+      startTime = moment(value.time1).format('YYYY-MM-DD');
+      endTime = moment(value.time2).format('YYYY-MM-DD');
+      if (moment(startTime).valueOf() > moment(endTime).valueOf()) {
+        message.error('开始时间必须小于结束时间')
+      } else {
+        dispatch({
+          type: 'eventstatistics/downloadEventselfhandle',
+          payload: {
+            time1: startTime,
+            time2: endTime,
+          }
+        }).then(res => {
+          const filename = `一线解决率${moment().format('MM-DD')}.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        })
+      }
+
     })
 
   }
 
-
   const defaultTime = () => {
     startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
     endTime = moment().format('YYYY-MM-DD');
+    setFieldsValue({
+      time1: moment(startTime),
+      time2: moment(endTime)
+    });
   }
 
   useEffect(() => {
@@ -164,10 +178,23 @@ function Solution(props) {
               <Col span={24}>
                 <Form.Item label='起始时间'>
                   {getFieldDecorator('time1', {
-                    initialValue: [moment(startTime), moment(endTime)]
-                  })(
-                    <RangePicker
-                    />)
+                    initialValue: moment(startTime)
+                  })(<DatePicker
+                    allowClear={false}
+                  />)}
+                </Form.Item>
+
+
+                <p style={{ display: 'inline', marginRight: 8 }}>-</p>
+
+                <Form.Item label=''>
+                  {
+                    getFieldDecorator('time2', {
+                      initialValue: moment(endTime)
+                    })
+                      (<DatePicker
+                        allowClear={false}
+                      />)
                   }
                 </Form.Item>
 
@@ -196,9 +223,10 @@ function Solution(props) {
         </div>
 
         <Table
+          loading={loading}
           columns={columns}
           dataSource={soluteArr}
-          rowKey={(record,index) => {return index }}
+          rowKey={(record, index) => { return index }}
         />
       </Card>
     </PageHeaderWrapper>
@@ -206,7 +234,8 @@ function Solution(props) {
 }
 
 export default Form.create({})(
-  connect(({ eventstatistics }) => ({
-    soluteArr: eventstatistics.soluteArr
+  connect(({ eventstatistics, loading }) => ({
+    soluteArr: eventstatistics.soluteArr,
+    loading: loading.models.eventstatistics
   }))(Solution),
 );
