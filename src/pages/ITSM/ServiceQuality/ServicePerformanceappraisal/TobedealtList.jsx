@@ -768,6 +768,44 @@ function TobedealtList(props) {
     setPageinations({ current: 1, pageSize: 15 });
   };
 
+  //  设置时间
+  useEffect(() => {
+  if(location && location.state && location.state.cacheinfo) {
+      const {
+        applyBeginTime,
+        applyEndTime,
+        directorVerifyBeginTime,
+        directorVerifyEndTime,
+        assessBeginTime,
+        assessEndTime,
+        expertVerifyBeginTime,
+        expertVerifyEndTime,
+        providerConfirmBeginTime,
+        providerConfirmEndTime,
+        directorReviewBeginTime,
+        directorReviewEndTime,
+        finallyConfirmBeginTime,
+        finallyConfirmEndTime,
+      } = location.state.cacheinfo;
+      setFieldsValue({
+        applyTime: applyBeginTime ? [moment(applyBeginTime), moment(applyEndTime)] : '',
+        directorVerifyTime: directorVerifyBeginTime
+          ? [moment(directorVerifyBeginTime), moment(directorVerifyEndTime)]
+          : '',
+        timeoccurrence: assessBeginTime ? [moment(assessBeginTime), moment(assessEndTime)] : '',
+        providerConfirmTime: providerConfirmBeginTime
+          ? [moment(providerConfirmBeginTime), moment(providerConfirmEndTime)]
+          : '',
+        directorReviewTime: directorReviewBeginTime
+          ? [moment(directorReviewBeginTime), moment(directorReviewEndTime)]
+          : '',
+        finallyConfirmTime: finallyConfirmBeginTime
+          ? [moment(finallyConfirmBeginTime), moment(finallyConfirmEndTime)]
+          : '',
+      });
+    }
+  },[location.state])
+
   useEffect(() => {
     if (location.state) {
       if (location.state.cache) {
@@ -1273,9 +1311,7 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label="发生时间">
                   {getFieldDecorator('timeoccurrence', {
-                    initialValue: cacheinfo.assessBeginTime
-                      ? [moment(cacheinfo.assessBeginTime), moment(cacheinfo.assessEndTime)]
-                      : '',
+                    initialValue:'',
                   })(
                     <RangePicker
                       showTime={{
@@ -1545,9 +1581,7 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label="登记时间">
                   {getFieldDecorator('applyTime', {
-                    initialValue: cacheinfo.applyBeginTime
-                      ? [moment(cacheinfo.applyBeginTime), moment(cacheinfo.applyEndTime)]
-                      : '',
+                    initialValue: '',
                   })(
                     <RangePicker
                       showTime={{
@@ -1619,12 +1653,7 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label="业务负责人审核时间">
                   {getFieldDecorator('directorVerifyTime', {
-                    initialValue: cacheinfo.directorVerifyBeginTime
-                      ? [
-                        moment(cacheinfo.directorVerifyBeginTime),
-                        moment(cacheinfo.directorVerifyEndTime),
-                      ]
-                      : '',
+                    initialValue: '',
                   })(
                     <RangePicker
                       showTime={{
@@ -1682,12 +1711,7 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label="服务商确认时间">
                   {getFieldDecorator('providerConfirmTime', {
-                    initialValue: cacheinfo.providerConfirmBeginTime
-                      ? [
-                        moment(cacheinfo.providerConfirmBeginTime),
-                        moment(cacheinfo.providerConfirmEndTime),
-                      ]
-                      : '',
+                    initialValue:'',
                   })(
                     <RangePicker
                       showTime={{
@@ -1742,12 +1766,7 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label="自动化科复核时间">
                   {getFieldDecorator('directorReviewTime', {
-                    initialValue: cacheinfo.directorReviewBeginTime
-                      ? [
-                        moment(cacheinfo.directorReviewBeginTime),
-                        moment(cacheinfo.directorReviewEndTime),
-                      ]
-                      : '',
+                    initialValue:'',
                   })(
                     <RangePicker
                       showTime={{
@@ -1814,12 +1833,7 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label="服务绩效考核确认时间">
                   {getFieldDecorator('finallyConfirmTime', {
-                    initialValue: cacheinfo.finallyConfirmBeginTime
-                      ? [
-                        moment(cacheinfo.finallyConfirmBeginTime),
-                        moment(cacheinfo.finallyConfirmEndTime),
-                      ]
-                      : '',
+                    initialValue: '',
                   })(
                     <RangePicker
                       showTime={{

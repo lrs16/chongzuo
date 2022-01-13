@@ -546,7 +546,7 @@ function TaskSearch(props) {
       });
     } else {
       setFieldsValue({
-        addTime: time1 ? [moment(time1), moment(time2)]:'',
+        addTime: time1 ? [moment(time1), moment(time2)] : '',
       });
     }
   }, [location.state]);
@@ -557,7 +557,7 @@ function TaskSearch(props) {
     executeResult,
     operationUser,
     timeoutStatus,
-    addTime: time1 ? [moment(time1), moment(time2)] :'',
+    addTime: time1 ? [moment(time1), moment(time2)] : '',
     operationNo: '',
     systemName: '',
     type: '',
@@ -843,108 +843,98 @@ function TaskSearch(props) {
         <Row gutter={24}>
           <Form {...formItemLayout}>
             <>
-              {operationPersonSelect && operationPersonSelect.length > 0 && (
-                <>
-                  <Col span={8}>
-                    <Form.Item label="作业计划编号">
-                      {getFieldDecorator('operationNo', {
-                        initialValue: cacheinfo.operationNo,
-                      })(<Input allowClear />)}
-                    </Form.Item>
-                  </Col>
+              <Col span={8}>
+                <Form.Item label="作业计划编号">
+                  {getFieldDecorator('operationNo', {
+                    initialValue: cacheinfo.operationNo,
+                  })(<Input allowClear />)}
+                </Form.Item>
+              </Col>
 
-                  <Col span={8}>
-                    <Form.Item label="作业状态">
-                      {getFieldDecorator('status', {
-                        initialValue: cacheinfo.status,
-                      })(
-                        <Select placeholder="请选择" allowClear>
-                          {executeStatusselect.map(obj => [
-                            <Option key={obj.key} value={obj.title}>
-                              {obj.title}
-                            </Option>,
-                          ])}
-                        </Select>,
-                      )}
-                    </Form.Item>
-                  </Col>
+              <Col span={8}>
+                <Form.Item label="作业状态">
+                  {getFieldDecorator('status', {
+                    initialValue: cacheinfo.status,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {executeStatusselect.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
 
-                  <Col span={8}>
-                    <Form.Item label="作业结果">
-                      {getFieldDecorator('executeResult', {
-                        initialValue: cacheinfo.executeResult,
-                      })(
-                        <Select placeholder="请选择" allowClear>
-                          {taskResult.map(obj => [
-                            <Option key={obj.key} value={obj.title}>
-                              {obj.title}
-                            </Option>,
-                          ])}
-                        </Select>,
-                      )}
-                    </Form.Item>
-                  </Col>
+              <Col span={8}>
+                <Form.Item label="作业结果">
+                  {getFieldDecorator('executeResult', {
+                    initialValue: cacheinfo.executeResult,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {taskResult.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
 
-                  <Col span={8}>
-                    <Form.Item label="作业负责人">
-                      {getFieldDecorator('operationUser', {
-                        initialValue: cacheinfo.operationUser,
-                      })(
-                        <Select allowClear>
-                          {operationPersonSelect.map(obj => [
-                            <Option key={obj.key} value={obj.value}>
-                              {obj.value}
-                            </Option>,
-                          ])}
-                        </Select>,
-                      )}
-                    </Form.Item>
-                  </Col>
+              <Col span={8}>
+                <Form.Item label="作业负责人">
+                  {getFieldDecorator('operationUser', {
+                    initialValue: cacheinfo.operationUser,
+                  })(
+                    <Select allowClear>
+                      {(operationPersonSelect || []).map(obj => [
+                        <Option key={obj.key} value={obj.value}>
+                          {obj.value}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
 
-                  <Col span={8}>
-                    <Form.Item label="超时状态">
-                      {getFieldDecorator('timeoutStatus', {
-                        initialValue: cacheinfo.timeoutStatus,
-                      })(
-                        <Select placeholder="请选择" allowClear>
-                          {timeoutStatusselect.map(obj => [
-                            <Option key={obj.key} value={obj.title}>
-                              {obj.title}
-                            </Option>,
-                          ])}
-                        </Select>,
-                      )}
-                    </Form.Item>
-                  </Col>
+              <Col span={8}>
+                <Form.Item label="超时状态">
+                  {getFieldDecorator('timeoutStatus', {
+                    initialValue: cacheinfo.timeoutStatus,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {timeoutStatusselect.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
 
-                  <Col span={8}>
-                    <Form.Item label="填报时间">
-                      {getFieldDecorator('addTime', {
-                         initialValue: cacheinfo.time1
-                         ? [
-                           moment(cacheinfo.time1),
-                           moment(cacheinfo.time2),
-                         ]
-                         : '',
-                      })(
-                        <RangePicker
-                        showTime={{
-                          hideDisabledOptions: true,
-                          defaultValue: [
-                            moment('00:00:00', 'HH:mm:ss'),
-                            moment('23:59:59', 'HH:mm:ss'),
-                          ],
-                        }}
-                        format="YYYY-MM-DD HH:mm:ss"
-                        style={{ width: '100%' }}
-                        allowClear
-                      />,
-                      )}
-                    </Form.Item>
-                  </Col>
-
-                </>
-              )}
+              <Col span={8}>
+                <Form.Item label="填报时间">
+                  {getFieldDecorator('addTime', {
+                    initialValue: '',
+                  })(
+                    <RangePicker
+                      showTime={{
+                        hideDisabledOptions: true,
+                        defaultValue: [
+                          moment('00:00:00', 'HH:mm:ss'),
+                          moment('23:59:59', 'HH:mm:ss'),
+                        ],
+                      }}
+                      format="YYYY-MM-DD HH:mm:ss"
+                      style={{ width: '100%' }}
+                      allowClear
+                    />,
+                  )}
+                </Form.Item>
+              </Col>
             </>
             <div style={{ display: expand ? 'block' : 'none' }}>
               <>
@@ -1035,12 +1025,7 @@ function TaskSearch(props) {
                 <Col span={8}>
                   <Form.Item label="计划开始时间">
                     {getFieldDecorator('plannedStartTime', {
-                      initialValue: cacheinfo.plannedStartTime1
-                        ? [
-                          moment(cacheinfo.plannedStartTime1),
-                          moment(cacheinfo.plannedStartTime2),
-                        ]
-                        : '',
+                      initialValue:'',
                     })(
                       <RangePicker
                         showTime={{
@@ -1060,12 +1045,7 @@ function TaskSearch(props) {
                 <Col span={8}>
                   <Form.Item label="计划结束时间">
                     {getFieldDecorator('plannedendTime', {
-                      initialValue: cacheinfo.plannedEndTime1
-                        ? [
-                          moment(cacheinfo.plannedEndTime1),
-                          moment(cacheinfo.plannedEndTime2),
-                        ]
-                        : '',
+                      initialValue: '',
                     })(
                       <RangePicker
                         showTime={{
@@ -1145,12 +1125,7 @@ function TaskSearch(props) {
                 <Col span={8}>
                   <Form.Item label="实际开始时间">
                     {getFieldDecorator('startTime', {
-                      initialValue: cacheinfo.startTime1
-                        ? [
-                          moment(cacheinfo.startTime1),
-                          moment(cacheinfo.startTime2),
-                        ]
-                        : '',
+                      initialValue: '',
                     })(
                       <RangePicker
                         showTime={{
@@ -1171,12 +1146,7 @@ function TaskSearch(props) {
                 <Col span={8}>
                   <Form.Item label="实际结束时间">
                     {getFieldDecorator('endTime', {
-                      initialValue: cacheinfo.endTime1
-                        ? [
-                          moment(cacheinfo.endTime1),
-                          moment(cacheinfo.endTime2),
-                        ]
-                        : '',
+                      initialValue:'',
                     })(
                       <RangePicker
                         showTime={{
@@ -1199,12 +1169,7 @@ function TaskSearch(props) {
                 <Col span={8}>
                   <Form.Item label="执行操作时间">
                     {getFieldDecorator('executeOperationTime', {
-                      initialValue: cacheinfo.executeOperationTime1
-                        ? [
-                          moment(cacheinfo.executeOperationTime1),
-                          moment(cacheinfo.executeOperationTime2),
-                        ]
-                        : '',
+                      initialValue: '',
                     })(
                       <RangePicker
                         showTime={{
@@ -1251,12 +1216,7 @@ function TaskSearch(props) {
                 <Col span={8}>
                   <Form.Item label="审核时间">
                     {getFieldDecorator('checkTime', {
-                      initialValue: cacheinfo.checkTime1
-                        ? [
-                          moment(cacheinfo.checkTime1),
-                          moment(cacheinfo.checkTime2),
-                        ]
-                        : '',
+                      initialValue: '',
                     })(
                       <RangePicker
                         showTime={{

@@ -574,7 +574,7 @@ function EventAnalysis(props) {
               <Col span={12}>
                 <div className={styles.statisticscard}>
                   <Avatar icon="flag" />
-                  <b>事件处理人Top{topN1}</b>
+                  <b>按时处理人Top{topN1}</b>
                   <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN1(v)} /></div>
                 </div>
                 <Card onMouseDown={() => setPicVal({})}>

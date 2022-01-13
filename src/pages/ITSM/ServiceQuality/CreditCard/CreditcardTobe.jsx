@@ -89,9 +89,7 @@ function CreditcardTobe(props) {
     });
     setPaginations({ current: 1, pageSize: 15 });
   };
-
-
-
+  
   const handleDelete = id => {
     return dispatch({
       type: 'performanceappraisal/scorecardDel',

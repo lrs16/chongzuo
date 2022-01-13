@@ -714,7 +714,7 @@ function StatisticsAnalysis(props) {
               <Col span={12}>
                 <div className={styles.statisticscard}>
                   <Avatar icon="appstore" />
-                  <b>问题工单超时情况</b>
+                  <b>问题处理及时率</b>
                 </div>
                 <Card onMouseDown={() => setPicVal({})}>
                   {timeoutdata && timeoutdata.length === 0 && <Empty style={{ height: '300px' }} />}
@@ -852,7 +852,7 @@ function StatisticsAnalysis(props) {
               </Col>
             </Row>
 
-            <Row style={{ marginTop: 24 }} gutter={24}>
+            {/* <Row style={{ marginTop: 24 }} gutter={24}>
               <Col span={12} style={{ zIndex: 1000 }}>
                 <div className={styles.statisticscard}>
                   <Avatar icon="pushpin" />
@@ -884,7 +884,7 @@ function StatisticsAnalysis(props) {
                   )}
                 </Card>
               </Col>
-            </Row>
+            </Row> */}
 
             <AnalysisPopup
               visible={visible}

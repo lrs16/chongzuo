@@ -270,15 +270,18 @@ function Maintenance(props) {
     if (tabActiveKey === 'week') {
       startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD');
       endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
+      setFieldsValue({
+        time1: moment(startTime),
+        time2: moment(endTime),
+      });
     } else { // 月统计
       startTime = moment().startOf('month').format('YYYY-MM-DD');
       endTime = moment().endOf('month').format('YYYY-MM-DD');
+      setFieldsValue({
+        monthStarttime: moment(startTime)
+      });
     }
-    setFieldsValue({
-      time1: moment(startTime),
-      time2: moment(endTime),
-      monthStarttime: moment(startTime)
-    });
+   
   }
 
   useEffect(() => {

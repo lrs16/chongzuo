@@ -116,9 +116,7 @@ function Solution(props) {
           payload: { sign, startTime, endTime }
         })
       }
-
     })
-
   }
 
   const download = () => {
@@ -145,9 +143,7 @@ function Solution(props) {
           window.URL.revokeObjectURL(url);
         })
       }
-
     })
-
   }
 
   const defaultTime = () => {

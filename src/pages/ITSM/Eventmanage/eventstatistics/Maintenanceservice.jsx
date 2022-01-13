@@ -101,16 +101,17 @@ function Maintenanceservice(props) {
     if (tabActiveKey === 'week') {
       startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD');
       endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
-      // endTime = `${endTime} 00:00:00`;
+      setFieldsValue({
+        time1: moment(startTime),
+        time2: moment(endTime),
+      });
     } else { // 月统计
       startTime = moment().startOf('month').format('YYYY-MM-DD');
       endTime = moment().endOf('month').format('YYYY-MM-DD');
+      setFieldsValue({
+        startTime:moment(startTime)
+      });
     }
-    setFieldsValue({
-      time1: moment(startTime),
-      time2: moment(endTime),
-      startTime:moment(startTime)
-    });
   }
 
   useEffect(() => {
