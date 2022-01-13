@@ -3,7 +3,8 @@ import {
   Drawer,
   Form,
   Button,
-  Table
+  Table,
+  Tooltip
 } from 'antd';
 import moment from 'moment';
 import { connect } from 'dva';
@@ -14,77 +15,215 @@ const columns = [
     dataIndex: 'eventNo',
     key: 'eventNo',
     width: 140,
-    fixed:'left'
   },
   {
     title: '事件标题',
     dataIndex: 'title',
     key: 'title',
     width: 250,
-    fixed:'left'
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
   {
     title: '事件来源',
     dataIndex: 'eventSource',
     key: 'eventSource',
     width: 160,
-    fixed:'left'
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
   {
     title: '事件分类',
     dataIndex: 'eventType',
     key: 'eventType',
     width: 100,
-    fixed:'left'
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
   {
     title: '申报人单位',
     dataIndex: 'applicationUnit',
     key: 'applicationUnit',
     width: 180,
-    fixed:'left'
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
   {
     title: '申报人',
     dataIndex: 'applicationUser',
     key: 'applicationUser',
     width: 80,
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
   {
     title: '工单状态',
     dataIndex: 'eventStatus',
     key: 'eventStatus',
     width: 90,
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
   {
     title: '登记人',
     dataIndex: 'registerUser',
     key: 'register_user',
     width: 80,
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
   {
     title: '建单时间',
     dataIndex: 'addTime',
     key: 'addTime',
     width: 120,
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
   {
     title: '处理人',
     dataIndex: 'handler',
     key: 'handler',
     width: 120,
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
   {
     title: '优先级',
     dataIndex: 'eventPrior',
     key: 'eventPrior',
     width: 80,
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
   {
     title: '申报人部门',
     dataIndex: 'applicationDept',
     key: 'applicationDept',
     width: 120,
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
 
   {
@@ -92,12 +231,38 @@ const columns = [
     dataIndex: 'eventObject',
     key: 'eventObject',
     width: 120,
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
   {
     title: '回访方式',
     dataIndex: 'revisitWay',
     key: 'revisitWay',
     width: 120,
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
 
   {
@@ -105,12 +270,38 @@ const columns = [
     dataIndex: 'eventEffect',
     key: 'eventEffect',
     width: 80,
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
   {
     title: '紧急度',
     dataIndex: 'eventEmergent',
     key: 'eventEmergent',
     width: 80,
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
 ];
 
@@ -304,6 +495,7 @@ function AnalysisPopup(props) {
         centered
         maskClosable
         onClose={handleCancel}
+        destroyOnClose='true'
       >
         <Button
           type="primary"

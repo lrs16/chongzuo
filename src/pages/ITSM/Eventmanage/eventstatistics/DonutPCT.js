@@ -8,6 +8,7 @@ import {
   Interval,
   Interaction,
   Coordinate,
+  Legend,
 } from "bizcharts";
 import DataSet from '@antv/data-set';
 
@@ -34,7 +35,7 @@ registerShape("interval", "sliceShape", {
 
 class DonutPCT extends Component {
   render() {
-    const { data, total, totaltitle, height, padding, onGetVal,centerDrilling } = this.props;
+    const { data, total, totaltitle, height, padding, onGetVal, onGetTotal, totalType, TooltipHide } = this.props;
     const { DataView } = DataSet;
     const dv = new DataView();
     dv.source(data).transform({
@@ -50,15 +51,16 @@ class DonutPCT extends Component {
           <span style={{ fontSize: 24, fontWeight: 700 }} onClick={()=>onGetVal('center')}>{total}</span><br />
           <span>{totaltitle}</span>
         </div>
-        <Chart height={height} data={dv.rows} padding={padding} autoFit onClick={ev => {
+        <Chart pure height={height} data={dv.rows} padding={padding} autoFit onClick={ev => {
           const linkdata = ev.data;
-          if (linkdata && linkdata.data) {
-            onGetVal(linkdata.data)
+          if (linkdata && (linkdata.data || linkdata._origin) && onGetVal) {
+            onGetVal(linkdata.data || linkdata._origin)
           }
         }}>
+          {/* <Legend visible={false} /> */}
           <Coordinate type="theta" radius={0.8} innerRadius={0.7} />
           <Axis visible={false} />
-          <Tooltip showTitle={false} />
+          <Tooltip showTitle={false} visible={!TooltipHide} />
           <Interval
             position="value"
             adjust="stack"
@@ -67,16 +69,20 @@ class DonutPCT extends Component {
             label={[
               'value',
               {
-                content: picdata => {
-                  return `${picdata.type}: ${(picdata.percent * 100).toFixed(2)}%`;
+                layout: {
+                  type: 'pie-spider',
                 },
-                offset: '25',
+                type: 'pie',
+                content: picdata => {
+                  return `${picdata.type}：${picdata.value}（ ${(picdata.percent * 100).toFixed(2)}% ）`;
+                },
+                offset: '15',
               },
             ]}
           />
           <Interaction type="element-single-selected" />
         </Chart>
-      </div>
+      </div >
     );
   }
 }

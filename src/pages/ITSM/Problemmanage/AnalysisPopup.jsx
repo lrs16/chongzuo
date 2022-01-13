@@ -3,7 +3,8 @@ import {
   Drawer,
   Form,
   Button,
-  Table
+  Table,
+  Tooltip
 } from 'antd';
 import moment from 'moment';
 import { connect } from 'dva';
@@ -21,79 +22,248 @@ const columns = [
     dataIndex: 'type',
     key: 'type',
     width: 150,
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
   {
     title: '问题描述',
     dataIndex: 'content',
     key: 'content',
     width: 150,
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
   {
     title: '问题申报人',
     dataIndex: 'complainUser',
     key: 'complainUser',
     width: 150,
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
   {
     title: '开发负责人',
     dataIndex: 'developmentLead',
     key: 'developmentLead',
     width: 150,
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
   {
     title: '建单时间',
     dataIndex: 'addTime',
     key: 'addTime',
     width: 150,
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
   {
     title: '系统运维商确认结果',
     dataIndex: 'confirmOneResult',
     key: 'confirmOneResult',
     width: 150,
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
   {
     title: '处理完成时间',
     dataIndex: 'handleTime',
     key: 'handleTime',
     width: 150,
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
   {
     title: '系统开发商处理人',
     dataIndex: 'handler',
     key: 'handler',
     width: 150,
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
   {
     title: '计划完成时间',
     dataIndex: 'planEndTime',
     key: 'planEndTime',
     width: 150,
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
   {
     title: '处理解决方案',
     dataIndex: 'handleContent',
     key: 'handleContent',
     width: 150,
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
   {
     title: '系统开发商处理结果',
     dataIndex: 'handleResult',
     key: 'handleResult',
     width: 150,
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
 
   {
     title: '问题登记人员确认结果',
     dataIndex: 'confirmThreeResult',
     key: 'confirmThreeResult',
-    width: 150,
+    width: 180,
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
   {
     title: '问题登记人员确认人',
     dataIndex: 'confirmThreeUser',
     key: 'confirmThreeUser',
     width: 150,
+    align: 'center',
+    ellipsis: true,
+    render: text => {
+      return (
+        <Tooltip
+          placement="topLeft"
+          title={text}
+          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+        >
+          <span>{text}</span>
+        </Tooltip>
+      );
+    },
   },
 ];
 
@@ -173,7 +343,7 @@ function AnalysisPopup(props) {
     timeoutList(popupParameters, page, paginations.pageSize);
     setPageinations({
       ...paginations,
-      current:page,
+      current: page,
     });
   }
 
@@ -188,7 +358,7 @@ function AnalysisPopup(props) {
   };
 
   const pagination2 = {
-     showTotal: () => `总共  ${statDetailarr && statDetailarr.length}  条记录`,
+    showTotal: () => `总共  ${statDetailarr && statDetailarr.length}  条记录`,
   }
 
   return (
