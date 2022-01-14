@@ -51,7 +51,7 @@ class DonutPCT extends Component {
           <span style={{ fontSize: 24, fontWeight: 700 }} onClick={()=>onGetVal('center')}>{total}</span><br />
           <span>{totaltitle}</span>
         </div>
-        <Chart pure height={height} data={dv.rows} padding={padding} autoFit onClick={ev => {
+        <Chart  height={height} data={dv.rows} padding={padding} autoFit onClick={ev => {
           const linkdata = ev.data;
           if (linkdata && (linkdata.data || linkdata._origin) && onGetVal) {
             onGetVal(linkdata.data || linkdata._origin)
@@ -60,7 +60,7 @@ class DonutPCT extends Component {
           {/* <Legend visible={false} /> */}
           <Coordinate type="theta" radius={0.8} innerRadius={0.7} />
           <Axis visible={false} />
-          <Tooltip showTitle={false} visible={!TooltipHide} />
+          <Tooltip showTitle={false} />
           <Interval
             position="value"
             adjust="stack"
