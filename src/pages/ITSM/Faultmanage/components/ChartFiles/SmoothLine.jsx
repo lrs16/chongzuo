@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Chart, Line, Point, Tooltip, Axis } from 'bizcharts';
-import DataSet from '@antv/data-set';
+// import DataSet from '@antv/data-set';
 import ChartDrawer from '../ChartDrawer';
 
 const axisConfig = {
@@ -37,12 +37,12 @@ function SmoothLine(props) {
   const { data, cols, height, padding, onGetVal, staticName, beginTime, endTime } = props;
   const [visible, setVisible] = useState(false); // 抽屉是否显示
   const [drawerval, onGetDrawerVal] = useState('');
-  const dv = new DataSet.View().source(data);
-  dv.transform({
-    type: 'sort-by',
-    fields: ['name'], // 根据指定的字段集进行排序，与lodash的sortBy行为一致
-    order: 'ASC', // 默认为 ASC，DESC 则为逆序
-  });
+  // const dv = new DataSet.View().source(data);
+  // dv.transform({
+  //   type: 'sort-by',
+  //   fields: ['name'], // 根据指定的字段集进行排序，与lodash的sortBy行为一致
+  //   order: 'ASC', // 默认为 ASC，DESC 则为逆序
+  // });
 
   const handleGetDrawerVal = val => {
     setVisible(!visible);
@@ -50,7 +50,7 @@ function SmoothLine(props) {
   };
 
   return (<>
-    <Chart padding={padding} scale={cols} autoFit height={height} data={dv.rows} onClick={ev => {
+    <Chart padding={padding} scale={cols} autoFit height={height} data={data} onClick={ev => {
       const linkdata = ev.data;
       if (linkdata && linkdata.data && !Array.isArray(linkdata.data) && onGetVal) {
         onGetVal(linkdata.data);
@@ -58,8 +58,9 @@ function SmoothLine(props) {
       }
     }}>
       <Line shape="smooth" position="date*value" color="name" />
-      <Point position="date*value" color="name" shape="circle" size={dv.rows && dv.rows.length > 120 ? 3 : 4} />
+      <Point position="date*value" color="name" shape="circle" size={data && data.length > 120 ? 3 : 4} />
       <Tooltip shared showCrosshairs />
+      {/* <Slider end={0.8} /> */}
       <Axis name="date"  {...axisConfig} tickLine={tickLine} label={{ offset: 25 }} />
       <Axis name="value"   {...axisConfig} label={{ offset: 10 }} />
     </Chart>

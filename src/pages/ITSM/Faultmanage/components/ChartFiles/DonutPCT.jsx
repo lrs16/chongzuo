@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import React, { useState } from 'react';
 import {
   Chart,
@@ -7,6 +8,7 @@ import {
   Interval,
   Interaction,
   Coordinate,
+  Legend
 } from "bizcharts";
 import DataSet from '@antv/data-set';
 import ChartDrawer from '../ChartDrawer';
@@ -36,6 +38,7 @@ function DonutPCT(props) {
   const { data, total, totaltitle, height, padding, onGetVal, staticName, time1, time2 } = props;
   const [visible, setVisible] = useState(false); // 抽屉是否显示
   const [drawerval, onGetDrawerVal] = useState('');
+  // const [pieColor, setPieColor] = useState('');
   const { DataView } = DataSet;
   const dv = new DataView();
   dv.source(data).transform({
@@ -50,6 +53,25 @@ function DonutPCT(props) {
     setVisible(!visible);
     onGetDrawerVal(val);
   };
+
+  // useEffect(() => {
+  //   if (staticName === '故障工单超时情况') {
+  //     const value = Object.values(dv.rows)[0];
+  //     switch (value.type) {
+  //       case '已超时':
+  //         setPieColor('#FF0000');
+  //         break;
+  //       case '未超时':
+  //         setPieColor('#008000');
+  //         break;
+  //       case '即将超时':
+  //         setPieColor('#FFFF00');
+  //         break;
+  //       default:
+  //         break;
+  //     }
+  //   }
+  // }, [staticName]);
 
   return (
     <div>
@@ -87,28 +109,39 @@ function DonutPCT(props) {
         </span><br />
         <span>{totaltitle}</span>
       </div>
-      <Chart height={height} data={dv.rows} padding={padding} autoFit onClick={ev => {
+      <Chart pure height={height} data={dv.rows} padding={padding} autoFit onClick={ev => {
         const linkdata = ev.data;
         if (linkdata && linkdata.data && onGetVal) {
           onGetVal(linkdata.data);
           handleGetDrawerVal({ ...linkdata.data, staticName, drawtitle: linkdata.data.type });
         }
+        if (linkdata && linkdata._origin && onGetVal) {
+          onGetVal(linkdata._origin);
+          handleGetDrawerVal({ ...linkdata._origin, staticName, drawtitle: linkdata._origin.type });
+        }
       }}>
         <Coordinate type="theta" radius={0.8} innerRadius={0.7} />
         <Axis visible={false} />
         <Tooltip showTitle={false} />
+        <Legend />
         <Interval
           position="value"
           adjust="stack"
-          color="type"
+          avoidLabelOverlap
+          // color={staticName === '故障工单超时情况' ? pieColor : 'type'}
+          color={staticName === '故障工单超时情况' ? ['type', ['#FF0000', '#008000', '#FFFF00']] : 'type'}
           shape="sliceShape"
           label={[
             'value',
             {
-              content: picdata => {
-                return `${picdata.type}: ${(picdata.percent * 100).toFixed(0)}%`;
+              layout: {
+                type: 'pie-spider',
               },
-              offset: '25',
+              type: 'pie',
+              content: picdata => {
+                return `${picdata.type}：${picdata.value}（ ${(picdata.percent * 100).toFixed(2)}% ）`;
+              },
+              offset: '20',
             },
           ]}
         />

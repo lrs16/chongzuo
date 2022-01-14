@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
+import router from 'umi/router';
 import moment from 'moment';
 import {
   Drawer,
@@ -16,13 +17,38 @@ const columns = [
     key: 'demandId',
     with: 180,
     fixed: 'left',
+    render: (text, record) => {
+      const handleClick = () => {
+        router.push({
+          pathname: `/ITSM/demandmanage/query/details`,
+          query: {
+            taskId: record.taskId,
+            mainId: record.processId,
+            taskName: record.taskName,
+            No: text,
+          },
+        });
+      };
+      return (<a onClick={() => handleClick(text, record)}>{text}</a>);
+    },
   },
   {
     title: '功能模块',
     dataIndex: 'functionalModule',
     key: 'functionalModule',
     with: 180,
-    ellipsis: true,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 180,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
   },
   {
     title: '需求标题',
@@ -40,42 +66,97 @@ const columns = [
         }
       }
     },
-    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
   },
   {
     title: '需求原因',
     dataIndex: 'reason',
     key: 'reason',
     with: 180,
-    ellipsis: true,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 180,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
   },
   {
     title: '需求描述',
     dataIndex: 'detail',
     key: 'detail',
     with: 180,
-    ellipsis: true,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 180,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
   },
   {
     title: '申请人单位',
     dataIndex: 'proposingUnit',
     key: 'proposingUnit',
     with: 180,
-    ellipsis: true,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 180,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
   },
   {
     title: '申请人',
     dataIndex: 'proposer',
     key: 'proposer',
     with: 180,
-    ellipsis: true,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 180,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
   },
   {
     title: '联系电话',
     dataIndex: 'proposerPhone',
     key: 'proposerPhone',
     with: 180,
-    ellipsis: true,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 180,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
   },
   {
     title: '申请时间',
@@ -88,63 +169,162 @@ const columns = [
     dataIndex: 'checkOneResult',
     key: 'checkOneResult',
     with: 400,
-    ellipsis: true,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 400,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
   },
   {
     title: '业务科室领导审核人',
     dataIndex: 'checkOneUserName',
     key: 'checkOneUserName',
     with: 350,
-    ellipsis: true,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 350,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
   },
   {
     title: '业务科室领导审核时间',
     dataIndex: 'checkThreeReviewTime',
     key: 'checkThreeReviewTime',
     with: 430,
-    ellipsis: true,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 430,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
   },
   {
     title: '期望完成时间',
     dataIndex: 'completeTime',
     key: 'completeTime',
     with: 250,
-    ellipsis: true,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 250,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
   },
   {
     title: '开发负责人',
     dataIndex: 'checkTwoDevelopmentLead',
     key: 'checkTwoDevelopmentLead',
     with: 180,
-    ellipsis: true,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 180,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
   },
   {
     title: '开发进度',
     dataIndex: 'developSchedule',
     key: 'developSchedule',
     with: 180,
-    ellipsis: true,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 180,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
   },
   {
     title: '预计开发完成时间',
     dataIndex: 'devFinishTime',
     key: 'devFinishTime',
     with: 350,
-    ellipsis: true,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 350,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
   },
   {
     title: '预计发布时间',
     dataIndex: 'releaseTime',
     key: 'releaseTime',
     with: 250,
-    ellipsis: true,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 250,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
   },
   {
     title: '需求登记人员确认结果',
     dataIndex: 'confirmTwoResult',
     key: 'confirmTwoResult',
     with: 430,
-    ellipsis: true,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 430,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
   },
 ];
 

@@ -169,7 +169,7 @@ function Statistics(props) {
       {/* 统计周期 */}
       <SelectTime ChangeDate={(v) => setValues(v)} />
       <Spin spinning={loadingratio}>
-        <Row style={{ marginTop: 24 }}>
+        <Row style={{ marginTop: 16 }}>
           <div className={styles.statisticscard}>
             <Avatar icon="file-protect" />
             <b>需求工单情况</b>
@@ -192,7 +192,7 @@ function Statistics(props) {
         </Row>
       </Spin>
       {/* // 需求工单总情况 （饼图+折线图） */}
-      <Row style={{ marginTop: 24 }}>
+      <Row style={{ marginTop: 16 }}>
         <div className={styles.statisticscard}>
           <Avatar icon="pie-chart" />
           <b>需求工单总情况</b>
@@ -239,7 +239,7 @@ function Statistics(props) {
         </Col>
       </Row>
       {/* // 功能模块情况 （饼图+折线图） */}
-      <Row style={{ marginTop: 24 }}>
+      <Row style={{ marginTop: 16 }}>
         <div className={styles.statisticscard}>
           <Avatar icon="gold" />
           <b>功能模块情况</b>
@@ -284,7 +284,7 @@ function Statistics(props) {
         </Col>
       </Row>
       {/* // 需求类型统计分析 （饼图+折线图） */}
-      <Row style={{ marginTop: 24 }}>
+      <Row style={{ marginTop: 16 }}>
         <div className={styles.statisticscard}>
           <Avatar icon="share-alt" />
           <b>需求类型统计分析</b>
@@ -329,11 +329,11 @@ function Statistics(props) {
         </Col>
       </Row>
       {/* 需求工单超时情况 */}
-      <Row style={{ marginTop: 24 }} gutter={16}>
+      <Row style={{ marginTop: 16 }} gutter={16}>
         <Col span={12}>
           <div className={styles.statisticscard}>
             <Avatar icon="clock-circle" />
-            <b>需求工单超时情况</b>
+            <b>需求处理及时率</b>
           </div>
           <Card onMouseDown={() => setPicVal({})}>
             {(demandtomeoutArr && piedataArr(demandtomeoutArr).length === 0) && <Empty style={{ height: '300px' }} />}
@@ -376,7 +376,7 @@ function Statistics(props) {
         </Col>
       </Row>
       {/* 需求处理人Top + 需求申请单位Top */}
-      <Row style={{ marginTop: 24 }} gutter={16}>
+      <Row style={{ marginTop: 16 }} gutter={16}>
         <Col span={12}>
           <div className={styles.statisticscard}>
             <Avatar icon="tool" />
@@ -423,7 +423,7 @@ function Statistics(props) {
         </Col>
       </Row>
       {/* 需求处理单位Top */}
-      <Row style={{ marginTop: 24 }} gutter={16}>
+      {/* <Row style={{ marginTop: 16 }} gutter={16}>
         <Col span={12}>
           <div className={styles.statisticscard}>
             <Avatar icon="tool" />
@@ -446,7 +446,7 @@ function Statistics(props) {
             )}
           </Card>
         </Col>
-      </Row>
+      </Row> */}
     </div>
   );
 }

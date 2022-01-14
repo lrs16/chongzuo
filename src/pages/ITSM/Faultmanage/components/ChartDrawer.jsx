@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
+import router from 'umi/router';
 import {
   Drawer,
   Button,
@@ -15,6 +16,18 @@ const columns = [
     dataIndex: 'no',
     key: 'no',
     width: 150,
+    render: (text, record) => {
+      const handleClick = () => {
+        router.push({
+          pathname: `/ITSM/faultmanage/querylist/record`,
+          query: {
+            id: record.id,
+            No: text,
+          },
+        });
+      };
+      return (<a onClick={() => handleClick(text, record)}>{text}</a>);
+    },
   },
   {
     title: '故障发生时间',
@@ -38,7 +51,7 @@ const columns = [
         }
       }
     },
-    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
   },
   {
     title: '故障详细描述',
@@ -56,7 +69,7 @@ const columns = [
         }
       }
     },
-    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
   },
   {
     title: '影响范围',
@@ -74,7 +87,7 @@ const columns = [
         }
       }
     },
-    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
   },
   {
     title: '处理过程',
@@ -92,7 +105,7 @@ const columns = [
         }
       }
     },
-    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
   },
   {
     title: '故障类型',
@@ -110,7 +123,7 @@ const columns = [
         }
       }
     },
-    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
   },
   {
     title: '故障措施或建议',
@@ -128,7 +141,7 @@ const columns = [
         }
       }
     },
-    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
   },
   {
     title: '是否需要提供故障报告',
@@ -170,7 +183,7 @@ const columns = [
         }
       }
     },
-    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
   },
   {
     title: '系统运维商处理结果',

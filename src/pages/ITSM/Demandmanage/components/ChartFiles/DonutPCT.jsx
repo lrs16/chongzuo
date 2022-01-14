@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import React, { useState } from 'react';
 import {
   Chart,
@@ -7,6 +8,7 @@ import {
   Interval,
   Interaction,
   Coordinate,
+  Legend
 } from "bizcharts";
 import DataSet from '@antv/data-set';
 import ChartDrawer from '../ChartDrawer';
@@ -49,7 +51,7 @@ function DonutPCT(props) {
   const handleGetDrawerVal = val => {
     setVisible(!visible);
     onGetDrawerVal(val);
-  }
+  };
 
   return (
     <div>
@@ -78,26 +80,35 @@ function DonutPCT(props) {
         </span><br />
         <span>{totaltitle}</span>
       </div>
-      <Chart height={height} data={dv.rows} padding={padding} autoFit onClick={ev => {
+      <Chart pure height={height} data={dv.rows} padding={padding} autoFit onClick={ev => {
         const linkdata = ev.data;
         if (linkdata && linkdata.data && onGetVal) {
           onGetVal(linkdata.data);
           handleGetDrawerVal({ ...linkdata.data, staticName, time1, time2, drawtitle: linkdata.data.type });
         }
+        if (linkdata && linkdata._origin && onGetVal) {
+          onGetVal(linkdata._origin);
+          handleGetDrawerVal({ ...linkdata._origin, staticName, time1, time2, drawtitle: linkdata._origin.type });
+        }
       }}>
         <Coordinate type="theta" radius={0.8} innerRadius={0.7} />
         <Axis visible={false} />
         <Tooltip showTitle={false} />
+        <Legend />
         <Interval
           position="value"
           adjust="stack"
-          color="type"
+          color={staticName === '需求工单超时情况' ? ['type', ['#008000', '#FFFF00', '#FF0000']] : 'type'}
           shape="sliceShape"
           label={[
             'value',
             {
+              layout: {
+                type: 'pie-spider',
+              },
+              type: 'pie',
               content: picdata => {
-                return `${picdata.type}: ${(picdata.percent * 100).toFixed(0)}%`;
+                return `${picdata.type}：${picdata.value}（ ${(picdata.percent * 100).toFixed(2)}% ）`;
               },
               offset: '25',
             },
