@@ -129,9 +129,22 @@ function Maintenance(props) {
       align: 'center',
       render: (text, record) => {
         if (record.second_object === '合计') {
-          return <span style={{ fontWeight: 700 }}>{text}</span>
+          return (
+            <>
+            <span style={{ fontWeight: 700 }}>{text}</span>
+            { text.substring(0,1) === '-' ? <Icon type="caret-down" style={{ color: '#f5222d' }}/> : <Icon type="caret-up" style={{ color: '#52c41a' }}/>}
+          </>
+          )
+ 
         }
-        return <span>{text}</span>
+        return (
+          <>
+           <span>{text}</span>
+           { text.substring(0,1) === '-' ? <Icon type="caret-down" style={{ color: '#f5222d' }}/> : <Icon type="caret-up" style={{ color: '#52c41a' }}/>}
+          </>
+
+        )
+       
       }
     },
   ];
