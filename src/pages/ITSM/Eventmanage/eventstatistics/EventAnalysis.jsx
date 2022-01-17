@@ -29,7 +29,8 @@ function EventAnalysis(props) {
     getHandlerTopdata,
     getRegisterUnitTopdata,
     getHandleUnitTopdata,
-    getOrderConditionsobj
+    getOrderConditionsobj,
+    getTimeoutHandlerToparr
   } = props;
   const [picval, setPicVal] = useState({});
   const [values, setValues] = useState({});
@@ -37,8 +38,10 @@ function EventAnalysis(props) {
   const [topN1, setTopN1] = useState(5) // 排序
   const [topN2, setTopN2] = useState(5) // 排序
   const [topN3, setTopN3] = useState(5) // 排序
+  const [topN4, setTopN4] = useState(5) // 排序
   const [visible, setVisible] = useState(false);
   const [typeName, setTypename] = useState('');
+  const [title,setTitle] = useState('');
 
   const piesum = (arr) => {
     let sum = 0;
@@ -107,21 +110,20 @@ function EventAnalysis(props) {
     }
     return newArr.reverse();
   };
-
-  // const dataCylinder = datas => {
-  //   const newArr = [];
-  //   if (!Array.isArray(datas)) {
-  //     return newArr;
-  //   }
-  //   for (let i = 0; i < datas.length; i += 1) {
-  //     const vote = {};
-  //     vote.name = datas[i].type;
-  //     vote.rate = datas[i].total;
-  //     vote.type = '环节';
-  //     newArr.push(vote);
-  //   }
-  //   return newArr;
-  // };
+  const dataCylinder4 = (datas) => { // 柱状图集成数组
+    const newArr = [];
+    if (!Array.isArray(datas) || datas.length === 0) {
+      return newArr;
+    }
+    for (let i = 0; datas.length < topN4 ? i < datas.length : i < topN4; i += 1) {
+      const vote = {};
+      vote.type = datas[i].type;
+      vote.total = datas[i].total;
+      vote.expected = datas[0].total;
+      newArr.push(vote);
+    }
+    return newArr.reverse();
+  };
 
   const getTypeConditions = (value) => {
     dispatch({
@@ -179,6 +181,12 @@ function EventAnalysis(props) {
     })
   }
 
+  const getTimeoutHandlerTop = (value) => {
+    dispatch({
+      type:'eventstatistics/fetchgetTimeoutHandlerTop',
+      payload:{...value}
+    })
+  }
 
   const Issuedscale = {
     total: {
@@ -195,7 +203,7 @@ function EventAnalysis(props) {
         time1: moment(values.beginTime).format('YYYY-MM-DD 00:00:00'),
         time2: moment(values.endTime).format('YYYY-MM-DD 23:59:59'),
         type: values.type === 'M' ? 'MONTH' : 'DAY',
-        num: values.num || 5
+        num: values.num || 1000
       }
       getTypeConditions(val);
       getObjectConditions(val);
@@ -205,6 +213,7 @@ function EventAnalysis(props) {
       getRegisterUnitTop(val);
       getHandleUnitTop(val);
       getOrderConditions(val)
+      getTimeoutHandlerTop(val)
     }
   }, [values])
 
@@ -247,12 +256,13 @@ function EventAnalysis(props) {
                             time2: values.endTime,
                           });
                           setVisible(true)
+                          setTitle('事件总数')
                         }}
                       />
                     </Col>
 
                     <Col
-                       span={4}
+                      span={4}
                       style={{ width: '20%' }}
                     >
                       <StatisticsCard
@@ -269,12 +279,13 @@ function EventAnalysis(props) {
                             eventStatus: '已关闭'
                           });
                           setVisible(true)
+                          setTitle('已完成')
                         }}
                       />
                     </Col>
 
                     <Col
-                       span={4}
+                      span={4}
                       style={{ width: '20%' }}
                     >
                       <StatisticsCard
@@ -290,13 +301,14 @@ function EventAnalysis(props) {
                             time2: values.endTime,
                             eventStatus: '未完成'
                           });
-                          setVisible(true)
+                          setVisible(true);
+                          setTitle('未完成')
                         }}
                       />
                     </Col>
 
                     <Col
-                       span={4}
+                      span={4}
                       style={{ width: '20%' }}
                     >
                       <StatisticsCard
@@ -311,7 +323,7 @@ function EventAnalysis(props) {
                     </Col>
 
                     <Col
-                       span={4}
+                      span={4}
                       style={{ width: '20%' }}
                     >
                       <StatisticsCard
@@ -349,6 +361,7 @@ function EventAnalysis(props) {
                             time2: values.endTime,
                           });
                           setVisible(true)
+                          setTitle('受理总数')
                         }}
                       />
                     </Col>
@@ -366,7 +379,8 @@ function EventAnalysis(props) {
                             time1: values.beginTime,
                             time2: values.endTime,
                           });
-                          setVisible(true)
+                          setVisible(true);
+                          setTitle('一线处理量')
                         }}
                       />
                     </Col>
@@ -400,7 +414,7 @@ function EventAnalysis(props) {
                       data={getTypeConditionsdata && getTypeConditionsdata.pieChart}
                       height={300}
                       total={piesum(getTypeConditionsdata && getTypeConditionsdata.pieChart)}
-                      totaltitle="事件总数"
+                      totaltitle="事件分类总数"
                       padding={[10, 30, 10, 30]}
                       onGetVal={v => {
                         setPicVal({
@@ -408,6 +422,7 @@ function EventAnalysis(props) {
                           time1: values.beginTime,
                           time2: values.endTime,
                         });
+                        setTitle(v === 'center' ? '事件分类总数' : v.type);
                         setVisible(true)
                       }}
                     />
@@ -429,14 +444,16 @@ function EventAnalysis(props) {
                             time1: `${moment(values.beginTime).format('YYYY-MM-DD')} ${v.date}:00:00`,
                             time2: `${moment(values.endTime).format('YYYY-MM-DD')} ${v.date}:59:59`,
                           });
-                          setVisible(true)
+                          setVisible(true);
+                          setTitle(v.name);
                         } else {
                           setPicVal({
                             eventType: v.name,
                             time1: `${v.date} 00:00:00`,
                             time2: `${v.date} 23:59:59`,
                           });
-                          setVisible(true)
+                          setVisible(true);
+                          setTitle(v.name);
                         }
                       }}
                     />
@@ -461,7 +478,7 @@ function EventAnalysis(props) {
                       data={getObjectConditionsdata && getObjectConditionsdata.pieChart}
                       height={300}
                       total={piesum(getObjectConditionsdata && getObjectConditionsdata.pieChart)}
-                      totaltitle="事件总数"
+                      totaltitle="事件对象总数"
                       padding={[10, 30, 10, 30]}
                       onGetVal={v => {
                         const obj = {
@@ -478,6 +495,7 @@ function EventAnalysis(props) {
                         });
                         setTypename(v === 'center' ? '' : '事件总数');
                         setVisible(true)
+                        setTitle(v === 'center' ? '事件对象总数' : v.type)
                       }}
                     />
                   )}
@@ -500,7 +518,7 @@ function EventAnalysis(props) {
                             time2: `${moment(values.endTime).format('YYYY-MM-DD')} ${v.date}:59:59`,
                           });
                           setTypename('事件总数');
-                          setVisible(true)
+                          setVisible(true);
                         } else {
                           setPicVal({
                             object: v.name,
@@ -508,8 +526,10 @@ function EventAnalysis(props) {
                             time2: `${v.date} 23:59:59`,
                           });
                           setTypename('事件总数');
-                          setVisible(true)
+                          setVisible(true);
+                
                         }
+                        setTitle(v.name)
 
                       }}
                     />
@@ -523,7 +543,7 @@ function EventAnalysis(props) {
               <Col span={12}>
                 <div className={styles.statisticscard}>
                   <Avatar icon="reconciliation" />
-                  <b>事件工单超时情况</b>
+                  <b>事件工单处理及时率</b>
                 </div>
                 <Card onMouseDown={() => setPicVal({})}>
                   {getTimeOutConditionsdata && getTimeOutConditionsdata.length === 0 && <Empty style={{ height: '300px' }} />}
@@ -532,22 +552,16 @@ function EventAnalysis(props) {
                       data={getTimeOutConditionsdata}
                       height={300}
                       total={piesum(getTimeOutConditionsdata)}
-                      totaltitle="总工单数"
+                      totaltitle="工单处理总数"
                       padding={[10, 30, 10, 30]}
                       onGetVal={v => {
                         let result;
                         switch (v.type) {
-                          case '超时未处理':
-                            result = 'notHandle'
+                          case '未超时':
+                            result = 'noTimeout'
                             break;
-                          case '即将超时':
-                            result = 'remind'
-                            break;
-                          case '超时已处理':
-                            result = 'timeout'
-                            break;
-                          case '按时处理':
-                            result = 'close'
+                          case '已超时':
+                            result = 'isTimeout'
                             break;
                           default:
                             break;
@@ -555,13 +569,14 @@ function EventAnalysis(props) {
                         const obj = {
                           time1: values.beginTime,
                           time2: values.endTime,
-                          tabType: v === 'center' ? 'all' : result
+                          tabType: v === 'center' ? 'unClose' : result
                         };
                         setPicVal({
                           ...obj
                         });
                         setTypename('超时情况');
-                        setVisible(true)
+                        setVisible(true);
+                        setTitle(v === 'center' ? '工单处理总数' : v.type)
                       }}
                     />
                   )}
@@ -590,7 +605,8 @@ function EventAnalysis(props) {
                               time1: values.beginTime,
                               time2: values.endTime,
                             });
-                            setVisible(true)
+                            setVisible(true);
+                            setTitle(v.type)
                           }}
                         />
                       </Col>
@@ -622,9 +638,10 @@ function EventAnalysis(props) {
                               handler: v.type,
                               time1: values.beginTime,
                               time2: values.endTime,
-                              type:'noTimeout',
+                              type: 'noTimeout',
                             });
                             setVisible(true)
+                            setTitle(v.type)
                           }}
                         />
                       </Col>
@@ -635,28 +652,28 @@ function EventAnalysis(props) {
 
               <Col span={12}>
                 <div className={styles.statisticscard}>
-                  <Avatar icon="container" />
-                  <b>事件登记单位Top{topN2}</b>
-                  <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN2(v)} /></div>
+                  <Avatar icon="flag" />
+                  <b>超时处理人Top{topN4}</b>
+                  <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN4(v)} /></div>
                 </div>
-                <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-                  {getRegisterUnitTopdata && getRegisterUnitTopdata.length === 0 && <Empty style={{ height: '300px' }} />}
-                  {getRegisterUnitTopdata && getRegisterUnitTopdata.length > 0 && (
+                <Card onMouseDown={() => setPicVal({})}>
+                  {getTimeoutHandlerToparr && getTimeoutHandlerToparr.length === 0 && <Empty style={{ height: '300px' }} />}
+                  {getTimeoutHandlerToparr && getTimeoutHandlerToparr.length > 0 && (
                     <>
                       <Col span={24}>
                         <ColumnarY
                           cols={Issuedscale}
-                          data={dataCylinder2(getRegisterUnitTopdata)}
+                          data={dataCylinder4(getTimeoutHandlerToparr)}
                           height={300}
-                          padding={[30, 60, 50, 200]}
+                          padding={[30, 60, 50, 100]}
                           onGetVal={v => {
                             setPicVal({
-                              registerUnit: v.type,
                               time1: values.beginTime,
                               time2: values.endTime,
-                              type: 'analysis'
+                              type: 'isTimeout',
                             });
-                            setVisible(true)
+                            setVisible(true);
+                            setTitle(v.type)
                           }}
                         />
                       </Col>
@@ -691,6 +708,40 @@ function EventAnalysis(props) {
                               type: 'analysis'
                             });
                             setVisible(true)
+                            setTitle(v.type)
+                          }}
+                        />
+                      </Col>
+                    </>
+                  )}
+                </Card>
+              </Col>
+
+              <Col span={12}>
+                <div className={styles.statisticscard}>
+                  <Avatar icon="container" />
+                  <b>事件登记单位Top{topN2}</b>
+                  <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN2(v)} /></div>
+                </div>
+                <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
+                  {getRegisterUnitTopdata && getRegisterUnitTopdata.length === 0 && <Empty style={{ height: '300px' }} />}
+                  {getRegisterUnitTopdata && getRegisterUnitTopdata.length > 0 && (
+                    <>
+                      <Col span={24}>
+                        <ColumnarY
+                          cols={Issuedscale}
+                          data={dataCylinder2(getRegisterUnitTopdata)}
+                          height={300}
+                          padding={[30, 60, 50, 200]}
+                          onGetVal={v => {
+                            setPicVal({
+                              registerUnit: v.type,
+                              time1: values.beginTime,
+                              time2: values.endTime,
+                              type: 'analysis'
+                            });
+                            setVisible(true)
+                            setTitle(v.type)
                           }}
                         />
                       </Col>
@@ -703,6 +754,7 @@ function EventAnalysis(props) {
             <AnalysisPopup
               visible={visible}
               typeName={typeName}
+              title={title}
               popupParameters={picval}
               closePop={() => { setVisible(false); setTypename('') }}
             />
@@ -722,5 +774,6 @@ export default connect(({ eventstatistics, loading }) => ({
   getRegisterUnitTopdata: eventstatistics.getRegisterUnitTopdata, //   
   getHandleUnitTopdata: eventstatistics.getHandleUnitTopdata, //   
   getOrderConditionsobj: eventstatistics.getOrderConditionsobj, //   
+  getTimeoutHandlerToparr: eventstatistics.getTimeoutHandlerToparr, //   
   loading: loading.models.eventstatistics,
 }))(EventAnalysis);

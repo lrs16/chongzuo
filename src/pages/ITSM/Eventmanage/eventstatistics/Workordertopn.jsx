@@ -44,6 +44,18 @@ const columns = [
     align: 'center',
   },
   {
+    title: '同比',
+    dataIndex: 'yearPoints',
+    key: 'yearPoints',
+    align: 'center',
+  },
+  {
+    title: '环比',
+    dataIndex: 'ringPoints',
+    key: 'ringPoints',
+    align: 'center',
+  },
+  {
     title: '工单数',
     dataIndex: 'num',
     key: 'num',

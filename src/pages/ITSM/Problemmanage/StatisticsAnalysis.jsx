@@ -42,6 +42,7 @@ function StatisticsAnalysis(props) {
   const [topN3, setTopN3] = useState(5) // 排序
   const [visible, setVisible] = useState(false);
   const [typeName, setTypename] = useState('');
+  const [title, setTitle] = useState('');
 
   const Issuedscale = {
     total: {
@@ -286,6 +287,7 @@ function StatisticsAnalysis(props) {
                               type: 'all'
                             });
                             setVisible(true)
+                            setTitle('问题总数')
                           }}
                         />
                       </Col>
@@ -305,7 +307,8 @@ function StatisticsAnalysis(props) {
                               end: values.endTime,
                               type: '已解决'
                             });
-                            setVisible(true)
+                            setVisible(true);
+                            setTitle('已解决')
                           }}
                         />
                       </Col>
@@ -339,14 +342,15 @@ function StatisticsAnalysis(props) {
                           suffix='单'
                           des='环比'
                           type={Number(obj.program) > Number(obj.prevProgram) ? 'up' : 'down'}
-                          onGetVal={() => {
+                          onGetVal={(v) => {
                             setPicVal({
                               model: '问题分类',
                               begin: values.beginTime,
                               end: values.endTime,
                               type: '程序问题'
                             });
-                            setVisible(true)
+                            setVisible(true);
+                            setTitle('程序问题')
                           }}
                         />
                       </Col>
@@ -366,6 +370,7 @@ function StatisticsAnalysis(props) {
                               type: '功能问题'
                             });
                             setVisible(true)
+                            setTitle('功能问题')
                           }}
                         />
                       </Col>
@@ -391,7 +396,7 @@ function StatisticsAnalysis(props) {
                         data={toplist}
                         height={300}
                         total={statratioArr && statratioArr.total}
-                        totaltitle="问题总数"
+                        totaltitle="问题处理总数"
                         padding={[10, 30, 10, 30]}
                         onGetVal={v => {
                           setPicVal({
@@ -400,7 +405,8 @@ function StatisticsAnalysis(props) {
                             end: values.endTime,
                             type: v === 'center' ? 'all' : v.type
                           });
-                          setVisible(true)
+                          setVisible(true);
+                          setTitle(v === 'center' ? '问题处理总数' : v.type)
                         }}
                       />
                     </>
@@ -435,7 +441,7 @@ function StatisticsAnalysis(props) {
                           });
                           setVisible(true)
                         }
-
+                        setTitle(v.name)
                       }}
                     />
                   )}
@@ -460,7 +466,7 @@ function StatisticsAnalysis(props) {
                         data={type}
                         height={300}
                         total={statratioArr && (statratioArr.function + statratioArr.program)}
-                        totaltitle="问题总数"
+                        totaltitle="问题分类总数"
                         padding={[10, 30, 10, 30]}
                         onGetVal={v => {
                           setPicVal({
@@ -469,7 +475,8 @@ function StatisticsAnalysis(props) {
                             end: values.endTime,
                             type: v === 'center' ? 'all' : v.type
                           });
-                          setVisible(true)
+                          setVisible(true);
+                          setTitle(v === 'center' ? '问题分类总数' : v.type)
                         }}
                       />
                     </>
@@ -495,7 +502,7 @@ function StatisticsAnalysis(props) {
                               begin: `${moment(values.beginTime).format('YYYY-MM-DD')} ${v.date}:00:00`,
                               end: `${moment(values.endTime).format('YYYY-MM-DD')} ${v.date}:59:59`,
                             });
-                            setVisible(true)
+                            setVisible(true);
                           } else {
                             setPicVal({
                               model: '问题分类',
@@ -505,7 +512,7 @@ function StatisticsAnalysis(props) {
                             });
                             setVisible(true)
                           }
-
+                          setTitle(v.name)
                         }}
                       />
                     </>
@@ -536,13 +543,14 @@ function StatisticsAnalysis(props) {
                             type: v === 'center' ? 'all' : v.type
                           });
                           setVisible(true)
+                          setTitle(v === 'center' ? '程序问题总数' : v.type)
                         }}
                       />
                     </>
                   )}
-
                 </Card>
               </Col>
+
               <Col span={16}>
                 <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
                   <h4 style={{ fontWeight: 'bold' }}>程序问题趋势</h4>
@@ -562,7 +570,7 @@ function StatisticsAnalysis(props) {
                                 begin: `${moment(values.beginTime).format('YYYY-MM-DD')} ${v.date}:00:00`,
                                 end: `${moment(values.endTime).format('YYYY-MM-DD')} ${v.date}:59:59`,
                               });
-                              setVisible(true)
+                              setVisible(true);
                             } else {
                               setPicVal({
                                 model: '程序问题',
@@ -570,9 +578,9 @@ function StatisticsAnalysis(props) {
                                 begin: `${v.date} 00:00:00`,
                                 end: `${v.date} 23:59:59`,
                               });
-                              setVisible(true)
+                              setVisible(true);
                             }
-
+                            setTitle(v.name)
                           }}
                         />
                       )}
@@ -603,14 +611,15 @@ function StatisticsAnalysis(props) {
                             end: values.endTime,
                             type: v === 'center' ? 'all' : v.type
                           });
-                          setVisible(true)
+                          setVisible(true);
+                          setTitle(v === 'center' ? '功能问题总数' : v.type)
                         }}
                       />
                     </>
                   )}
-
                 </Card>
               </Col>
+
               <Col span={16}>
                 <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
                   <h4 style={{ fontWeight: 'bold' }}>功能问题趋势</h4>
@@ -637,9 +646,9 @@ function StatisticsAnalysis(props) {
                               begin: `${v.date} 00:00:00`,
                               end: `${v.date} 23:59:59`,
                             });
-                            setVisible(true)
+                            setVisible(true);
                           }
-
+                          setTitle(v.name)
                         }}
                       />
                     </>
@@ -661,7 +670,7 @@ function StatisticsAnalysis(props) {
                       data={statpieArr && statpieArr['问题来源统计分析']}
                       height={300}
                       total={piesum(statpieArr && statpieArr['问题来源统计分析'])}
-                      totaltitle="问题总数"
+                      totaltitle="问题来源总数"
                       padding={[10, 30, 10, 30]}
                       onGetVal={v => {
                         setPicVal({
@@ -670,7 +679,8 @@ function StatisticsAnalysis(props) {
                           end: values.endTime,
                           type: v === 'center' ? 'all' : v.type
                         });
-                        setVisible(true)
+                        setVisible(true);
+                        setTitle(v === 'center' ? '问题来源总数' : v.type)
                       }}
                     />
                   )}
@@ -693,7 +703,7 @@ function StatisticsAnalysis(props) {
                             begin: `${moment(values.beginTime).format('YYYY-MM-DD')} ${v.date}:00:00`,
                             end: `${moment(values.endTime).format('YYYY-MM-DD')} ${v.date}:59:59`,
                           });
-                          setVisible(true)
+                          setVisible(true);
                         } else {
                           setPicVal({
                             model: '问题来源',
@@ -701,8 +711,9 @@ function StatisticsAnalysis(props) {
                             begin: `${v.date} 00:00:00`,
                             end: `${v.date} 23:59:59`,
                           });
-                          setVisible(true)
+                          setVisible(true);
                         }
+                        setTitle(v.name)
                       }}
                     />
                   )}
@@ -723,7 +734,7 @@ function StatisticsAnalysis(props) {
                       data={timeoutdata}
                       height={300}
                       total={piesum(timeoutdata)}
-                      totaltitle="问题总数"
+                      totaltitle="问题处理总数"
                       padding={[10, 30, 10, 30]}
                       onGetVal={v => {
                         let timeStatus;
@@ -746,7 +757,8 @@ function StatisticsAnalysis(props) {
                           timeStatus: v === 'center' ? '3' : timeStatus
                         });
                         setTypename('问题工单超时情况')
-                        setVisible(true)
+                        setVisible(true);
+                        setTitle(v === 'center' ?'问题处理总数':v.type)
                       }}
                     />
                   )}
@@ -777,6 +789,7 @@ function StatisticsAnalysis(props) {
                               type: v.type
                             });
                             setVisible(true)
+                            setTitle(v.type)
                           }}
                         />
                       </Col>
@@ -811,6 +824,7 @@ function StatisticsAnalysis(props) {
                               type: v.type
                             });
                             setVisible(true)
+                            setTitle(v.type)
                           }}
                         />
                       </Col>
@@ -842,7 +856,8 @@ function StatisticsAnalysis(props) {
                               end: values.endTime,
                               type: v.type
                             });
-                            setVisible(true)
+                            setVisible(true);
+                            setTitle(v.type)
                           }}
                         />
                       </Col>
@@ -852,43 +867,10 @@ function StatisticsAnalysis(props) {
               </Col>
             </Row>
 
-            {/* <Row style={{ marginTop: 24 }} gutter={24}>
-              <Col span={12} style={{ zIndex: 1000 }}>
-                <div className={styles.statisticscard}>
-                  <Avatar icon="pushpin" />
-                  <b>问题处理单位Top{topN3}</b>
-                  <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN3(v)} /></div>
-                </div>
-                <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-                  {handlerunitarr && handlerunitarr.length === 0 && <Empty style={{ height: '300px' }} />}
-                  {handlerunitarr && handlerunitarr.length > 0 && (
-                    <>
-                      <Col span={24}>
-                        <ColumnarY
-                          height={300}
-                          data={dataCylinder3(handlerunitarr)}
-                          padding={[30, 60, 50, 250]}
-                          cols={Issuedscale}
-                          onGetVal={v => {
-                            setPicVal({
-                              model: '处理单位',
-                              begin: values.beginTime,
-                              end: values.endTime,
-                              type: v.type
-                            });
-                            setVisible(true)
-                          }}
-                        />
-                      </Col>
-                    </>
-                  )}
-                </Card>
-              </Col>
-            </Row> */}
-
             <AnalysisPopup
               visible={visible}
               typeName={typeName}
+              title={title}
               popupParameters={picval}
               closePop={() => { setVisible(false); setTypename('') }}
             />

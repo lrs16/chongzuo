@@ -19,6 +19,7 @@ import {
   getRegisterUserTop,
   getTimeOutConditions,
   getTypeConditions,
+  getTimeoutHandlerTop
 } from '../services/statistics';
 
 export default {
@@ -44,6 +45,7 @@ export default {
     getTypeConditionsdata:[],
     getTypeConditionsdatalineChart:[],
     getOrderConditionsobj:[],
+    getTimeoutHandlerToparr:[]
   },
 
   effects: {
@@ -198,6 +200,14 @@ export default {
         payload: response
       })
     },
+
+    *fetchgetTimeoutHandlerTop({ payload }, { call, put }) {
+      const response = yield call(getTimeoutHandlerTop,payload);
+      yield put({
+        type:'getTimeoutHandlerToparr',
+        payload:response
+      })
+    }
     
   },
 
@@ -279,12 +289,6 @@ export default {
       getRegisterUserTopdata: action.payload.data
     }
   },
-  getHandlerTopdata(state, action) {
-    return {
-      ...state,
-      getHandlerTopdata: action.payload.data
-    }
-  },
   getRegisterUnitTopdata(state, action) {
     return {
       ...state,
@@ -303,6 +307,11 @@ export default {
       getOrderConditionsobj: action.payload.data
     }
   },
-
+  getTimeoutHandlerToparr(state,action) {
+    return {
+      ...state,
+      getTimeoutHandlerToparr:action.payload.data
+    }
+  }
   },
 };

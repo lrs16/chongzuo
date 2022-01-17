@@ -7,303 +7,8 @@ import {
   Tooltip
 } from 'antd';
 import moment from 'moment';
+import router from 'umi/router';
 import { connect } from 'dva';
-
-const columns = [
-  {
-    title: '事件编号',
-    dataIndex: 'eventNo',
-    key: 'eventNo',
-    width: 140,
-  },
-  {
-    title: '事件标题',
-    dataIndex: 'title',
-    key: 'title',
-    width: 250,
-    align: 'center',
-    ellipsis: true,
-    render: text => {
-      return (
-        <Tooltip
-          placement="topLeft"
-          title={text}
-          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
-        >
-          <span>{text}</span>
-        </Tooltip>
-      );
-    },
-  },
-  {
-    title: '事件来源',
-    dataIndex: 'eventSource',
-    key: 'eventSource',
-    width: 160,
-    align: 'center',
-    ellipsis: true,
-    render: text => {
-      return (
-        <Tooltip
-          placement="topLeft"
-          title={text}
-          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
-        >
-          <span>{text}</span>
-        </Tooltip>
-      );
-    },
-  },
-  {
-    title: '事件分类',
-    dataIndex: 'eventType',
-    key: 'eventType',
-    width: 100,
-    align: 'center',
-    ellipsis: true,
-    render: text => {
-      return (
-        <Tooltip
-          placement="topLeft"
-          title={text}
-          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
-        >
-          <span>{text}</span>
-        </Tooltip>
-      );
-    },
-  },
-  {
-    title: '申报人单位',
-    dataIndex: 'applicationUnit',
-    key: 'applicationUnit',
-    width: 180,
-    align: 'center',
-    ellipsis: true,
-    render: text => {
-      return (
-        <Tooltip
-          placement="topLeft"
-          title={text}
-          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
-        >
-          <span>{text}</span>
-        </Tooltip>
-      );
-    },
-  },
-  {
-    title: '申报人',
-    dataIndex: 'applicationUser',
-    key: 'applicationUser',
-    width: 80,
-    align: 'center',
-    ellipsis: true,
-    render: text => {
-      return (
-        <Tooltip
-          placement="topLeft"
-          title={text}
-          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
-        >
-          <span>{text}</span>
-        </Tooltip>
-      );
-    },
-  },
-  {
-    title: '工单状态',
-    dataIndex: 'eventStatus',
-    key: 'eventStatus',
-    width: 90,
-    align: 'center',
-    ellipsis: true,
-    render: text => {
-      return (
-        <Tooltip
-          placement="topLeft"
-          title={text}
-          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
-        >
-          <span>{text}</span>
-        </Tooltip>
-      );
-    },
-  },
-  {
-    title: '登记人',
-    dataIndex: 'registerUser',
-    key: 'register_user',
-    width: 80,
-    align: 'center',
-    ellipsis: true,
-    render: text => {
-      return (
-        <Tooltip
-          placement="topLeft"
-          title={text}
-          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
-        >
-          <span>{text}</span>
-        </Tooltip>
-      );
-    },
-  },
-  {
-    title: '建单时间',
-    dataIndex: 'addTime',
-    key: 'addTime',
-    width: 120,
-    align: 'center',
-    ellipsis: true,
-    render: text => {
-      return (
-        <Tooltip
-          placement="topLeft"
-          title={text}
-          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
-        >
-          <span>{text}</span>
-        </Tooltip>
-      );
-    },
-  },
-  {
-    title: '处理人',
-    dataIndex: 'handler',
-    key: 'handler',
-    width: 120,
-    align: 'center',
-    ellipsis: true,
-    render: text => {
-      return (
-        <Tooltip
-          placement="topLeft"
-          title={text}
-          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
-        >
-          <span>{text}</span>
-        </Tooltip>
-      );
-    },
-  },
-  {
-    title: '优先级',
-    dataIndex: 'eventPrior',
-    key: 'eventPrior',
-    width: 80,
-    align: 'center',
-    ellipsis: true,
-    render: text => {
-      return (
-        <Tooltip
-          placement="topLeft"
-          title={text}
-          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
-        >
-          <span>{text}</span>
-        </Tooltip>
-      );
-    },
-  },
-  {
-    title: '申报人部门',
-    dataIndex: 'applicationDept',
-    key: 'applicationDept',
-    width: 120,
-    align: 'center',
-    ellipsis: true,
-    render: text => {
-      return (
-        <Tooltip
-          placement="topLeft"
-          title={text}
-          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
-        >
-          <span>{text}</span>
-        </Tooltip>
-      );
-    },
-  },
-
-  {
-    title: '事件对象',
-    dataIndex: 'eventObject',
-    key: 'eventObject',
-    width: 120,
-    align: 'center',
-    ellipsis: true,
-    render: text => {
-      return (
-        <Tooltip
-          placement="topLeft"
-          title={text}
-          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
-        >
-          <span>{text}</span>
-        </Tooltip>
-      );
-    },
-  },
-  {
-    title: '回访方式',
-    dataIndex: 'revisitWay',
-    key: 'revisitWay',
-    width: 120,
-    align: 'center',
-    ellipsis: true,
-    render: text => {
-      return (
-        <Tooltip
-          placement="topLeft"
-          title={text}
-          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
-        >
-          <span>{text}</span>
-        </Tooltip>
-      );
-    },
-  },
-
-  {
-    title: '影响度',
-    dataIndex: 'eventEffect',
-    key: 'eventEffect',
-    width: 80,
-    align: 'center',
-    ellipsis: true,
-    render: text => {
-      return (
-        <Tooltip
-          placement="topLeft"
-          title={text}
-          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
-        >
-          <span>{text}</span>
-        </Tooltip>
-      );
-    },
-  },
-  {
-    title: '紧急度',
-    dataIndex: 'eventEmergent',
-    key: 'eventEmergent',
-    width: 80,
-    align: 'center',
-    ellipsis: true,
-    render: text => {
-      return (
-        <Tooltip
-          placement="topLeft"
-          title={text}
-          getPopupContainer={() => document.querySelector('.ant-drawer-body')}
-        >
-          <span>{text}</span>
-        </Tooltip>
-      );
-    },
-  },
-];
 
 function AnalysisPopup(props) {
   const {
@@ -319,9 +24,9 @@ function AnalysisPopup(props) {
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
 
   const searchdata = (values, pageIndex, pageSize) => {
-    dispatch ({
+    dispatch({
       type: 'eventquery/fetchlist',
-      payload:{
+      payload: {
         ...values,
         pageIndex,
         pageSize,
@@ -330,9 +35,9 @@ function AnalysisPopup(props) {
   }
 
   const getOrderObjectByRoot = (values, pageIndex, pageSize) => {
-    dispatch ({
+    dispatch({
       type: 'eventquery/fetchgetOrderObjectByRoot',
-      payload:{
+      payload: {
         ...values,
         pageIndex,
         pageSize,
@@ -341,9 +46,9 @@ function AnalysisPopup(props) {
   }
 
   const querytimeout = (values, pageIndex, pageSize) => {
-    dispatch ({
+    dispatch({
       type: 'eventquery/fetchquerytimeout',
-      payload:{
+      payload: {
         ...values,
         pageIndex,
         pageSize,
@@ -351,36 +56,372 @@ function AnalysisPopup(props) {
     })
   }
 
-  
+  const columns = [
+    {
+      title: '事件编号',
+      dataIndex: 'eventNo',
+      key: 'eventNo',
+      width: 140,
+      render: (text, record) => {
+        const gotoDetail = (text, records) => {
+          dispatch({
+            type: 'viewcache/gettabstate',
+            payload: {
+              cacheinfo: {
+                key: 'event'
+              },
+              tabid: sessionStorage.getItem('tabid')
+            },
+          });
+          router.push({
+            pathname: `/ITSM/eventmanage/query/details`,
+            query: {
+              pangekey: records.eventStatus,
+              id: records.taskId,
+              mainId: records.id,
+              No: text,
+            },
+          });
+        };
+        return <a onClick={() => gotoDetail(text, record)} type='link'>{text}</a>
+      }
+    },
+    {
+      title: '当前处理环节',
+      dataIndex: 'flowNodeName',
+      key: 'flowNodeName',
+      width: 150,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+            getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '事件标题',
+      dataIndex: 'title',
+      key: 'title',
+      width: 250,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+            getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '事件来源',
+      dataIndex: 'eventSource',
+      key: 'eventSource',
+      width: 160,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+            getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '事件分类',
+      dataIndex: 'eventType',
+      key: 'eventType',
+      width: 100,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+            getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '申报人单位',
+      dataIndex: 'applicationUnit',
+      key: 'applicationUnit',
+      width: 180,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+            getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '申报人',
+      dataIndex: 'applicationUser',
+      key: 'applicationUser',
+      width: 80,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+            getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '工单状态',
+      dataIndex: 'eventStatus',
+      key: 'eventStatus',
+      width: 90,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+            getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '登记人',
+      dataIndex: 'registerUser',
+      key: 'register_user',
+      width: 80,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+            getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '建单时间',
+      dataIndex: 'addTime',
+      key: 'addTime',
+      width: 120,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+            getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '处理人',
+      dataIndex: 'handler',
+      key: 'handler',
+      width: 120,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+            getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '优先级',
+      dataIndex: 'eventPrior',
+      key: 'eventPrior',
+      width: 80,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+            getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '申报人部门',
+      dataIndex: 'applicationDept',
+      key: 'applicationDept',
+      width: 120,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+            getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+
+    {
+      title: '事件对象',
+      dataIndex: 'eventObject',
+      key: 'eventObject',
+      width: 120,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+            getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '回访方式',
+      dataIndex: 'revisitWay',
+      key: 'revisitWay',
+      width: 120,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+            getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+
+    {
+      title: '影响度',
+      dataIndex: 'eventEffect',
+      key: 'eventEffect',
+      width: 80,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+            getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '紧急度',
+      dataIndex: 'eventEmergent',
+      key: 'eventEmergent',
+      width: 80,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+            getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+  ];
 
   useEffect(() => {
-    if(visible && popupParameters) {
+    if (visible && popupParameters) {
       switch (typeName) {
         case '事件总数':
-          getOrderObjectByRoot(popupParameters,1,10)
+          getOrderObjectByRoot(popupParameters, 1, 10)
           break;
         case '超时情况':
-          querytimeout(popupParameters,0,10)
+          querytimeout(popupParameters, 0, 10)
           break;
         case '':
-          searchdata(popupParameters,0,10)
+          searchdata(popupParameters, 0, 10)
           break;
         default:
           break;
       }
     }
-  },[visible,popupParameters])
+  }, [visible, popupParameters])
 
   const onShowSizeChange = (page, size) => {
     switch (typeName) {
       case '事件总数':
-        getOrderObjectByRoot(popupParameters,page, size)
+        getOrderObjectByRoot(popupParameters, page, size)
         break;
       case '超时情况':
-        querytimeout(popupParameters,page-1, size)
+        querytimeout(popupParameters, page - 1, size)
         break;
       case '':
-        searchdata(popupParameters,page-1, size)
+        searchdata(popupParameters, page - 1, size)
         break;
       default:
         break;
@@ -391,17 +432,17 @@ function AnalysisPopup(props) {
       pageSize: size,
     });
   };
-  
+
   const changePage = page => {
     switch (typeName) {
       case '事件总数':
-        getOrderObjectByRoot(popupParameters,page,  paginations.pageSize)
+        getOrderObjectByRoot(popupParameters, page, paginations.pageSize)
         break;
       case '超时情况':
-        querytimeout(popupParameters,page-1,paginations.pageSize)
+        querytimeout(popupParameters, page - 1, paginations.pageSize)
         break;
       case '':
-        searchdata(popupParameters,page-1,paginations.pageSize)
+        searchdata(popupParameters, page - 1, paginations.pageSize)
         break;
       default:
         break;
@@ -425,8 +466,8 @@ function AnalysisPopup(props) {
   const handleCancel = () => {
     closePop();
     setPageinations({
-      current:1,
-      pageSize:10
+      current: 1,
+      pageSize: 10
     })
   }
 
@@ -435,8 +476,8 @@ function AnalysisPopup(props) {
     switch (typeName) {
       case '事件总数':
         dispatch({
-          type:'eventquery/fetchdownloadOrderObjectByRoot',
-          payload:popupParameters,
+          type: 'eventquery/fetchdownloadOrderObjectByRoot',
+          payload: popupParameters,
         }).then(res => {
           const filename = `事件查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
           const blob = new Blob([res]);
@@ -450,8 +491,8 @@ function AnalysisPopup(props) {
         break;
       case '超时情况':
         dispatch({
-          type:'eventtimeout/download',
-          payload:popupParameters,
+          type: 'eventtimeout/download',
+          payload: popupParameters,
         }).then(res => {
           const filename = `事件查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
           const blob = new Blob([res]);
@@ -465,10 +506,10 @@ function AnalysisPopup(props) {
         break;
       case '':
         dispatch({
-          type:'eventquery/eventdownload',
-          payload:{
-            values:popupParameters,
-            ids:[]
+          type: 'eventquery/eventdownload',
+          payload: {
+            values: popupParameters,
+            ids: []
           }
         }).then(res => {
           const filename = `事件查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
@@ -509,7 +550,7 @@ function AnalysisPopup(props) {
           dataSource={list.rows}
           rowKey={record => record.id}
           pagination={pagination}
-          scroll={{ x: 700,y:800 }}
+          scroll={{ x: 700, y: 800 }}
         />
       </Drawer>
     </>

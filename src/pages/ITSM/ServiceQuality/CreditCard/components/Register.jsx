@@ -117,12 +117,12 @@ const Register = forwardRef((props, ref) => {
       key: 'score',
       align: 'center',
     },
-    // {
-    //   title: '扣分',
-    //   dataIndex: 'score',
-    //   key: 'score',
-    //   align: 'center',
-    // },
+    {
+      title: '扣分',
+      dataIndex: 'minusScore',
+      key: 'minusScore',
+      align: 'center',
+    },
     {
       title: '扣分说明',
       dataIndex: 'remark',

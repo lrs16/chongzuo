@@ -171,5 +171,14 @@ export async function getTypeConditions(params) {
   }); 
 }
 
+// 事件超时处理人
+export async function getTimeoutHandlerTop(params) {
+  return request(`/event/analysis/getTimeoutHandlerTop`,{
+    method:'POST',
+    data:params,
+    requestType:'form'
+  })
+}
+
 
 
