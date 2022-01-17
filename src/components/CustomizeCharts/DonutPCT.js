@@ -47,7 +47,7 @@ class DonutPCT extends Component {
     });
     return (
       <div>
-        <div style={{ position: 'absolute', left: '50%', top: '40%', width: 100, textAlign: 'center', marginLeft: '-50px', zIndex: 999 }} >
+        <div style={{ position: 'absolute', left: '50%', top: '40%', width: 100, textAlign: 'center', marginLeft: '-50px', zIndex: 98 }} >
           <span style={{ fontSize: 24, fontWeight: 700 }}>
             {onGetTotal && totalType ? (<a onClick={() => onGetTotal(totalType)}>{total}</a>) : (<>{total}</>)}
           </span><br />
@@ -58,8 +58,9 @@ class DonutPCT extends Component {
           if (linkdata && (linkdata.data || linkdata._origin) && onGetVal) {
             onGetVal(linkdata.data || linkdata._origin)
           }
-        }}>
-          {/* <Legend visible={false} /> */}
+        }}
+        >
+          <Legend visible />
           <Coordinate type="theta" radius={0.8} innerRadius={0.7} />
           <Axis visible={false} />
           <Tooltip showTitle={false} visible={!TooltipHide} />
@@ -82,7 +83,8 @@ class DonutPCT extends Component {
               },
             ]}
           />
-          <Interaction type="element-single-selected" />
+          <Interaction type="element-highlight" />
+          {/* <Interaction type="active-region" /> */}
         </Chart>
       </div >
     );

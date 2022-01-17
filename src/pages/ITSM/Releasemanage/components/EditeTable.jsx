@@ -41,7 +41,7 @@ function EditeTable(props) {
   const [deletebut, setDeletBut] = useState(false);
   const [orderFilters, setOrderFilters] = useState([]);    // 所属工单筛选项
   const [filteredInfo, setFilteredInfo] = useState({})     // 已选择的筛选项
-  const [paginations, setPageinations] = useState({ current: 1, pageSize: 2 });
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 5 });
   const [releaseNoandId, setReleaseNo] = useState({ releaseNo: '', processInstanceId: '' });
   const [classify, setClassify] = useState('');
   const { ChangeButtype, taskId, ChangeaddAttaches, location } = useContext(UserContext);
@@ -67,7 +67,7 @@ function EditeTable(props) {
 
   // 新增一条记录
   const newMember = () => {
-    setPageinations({ current: 1, pageSize: 1 });
+    setPageinations({ ...paginations, pageSize: 5 });
     const newData = data.map(item => ({ ...item }));
     if (taskName === '版本管理员审核') {
       checknewpre(newData);
@@ -626,16 +626,18 @@ function EditeTable(props) {
       key: 't5',
       width: 400,
       render: (text, record) => {
+        // const w = width - 80;
         if (record.isNew || record.editable) {
+          const w = (window.document?.getElementById('textbox')?.offsetWidth || 380) - 80
           return (
-            <>
+            <div id='textbox'>
               <div className={!record.testMenu ? styles.requiredform : ''}>
                 <InputGroup compact style={{ marginBottom: 12 }}>
                   <span style={{ width: 70, textAlign: 'right', paddingTop: 4 }}>功能菜单：</span>
                   <TextArea
                     defaultValue={record.testMenu}
                     autoSize
-                    style={{ width: 310 }}
+                    style={{ width: w }}
                     onChange={e => handleFieldChange(e.target.value, 'testMenu', record.key)}
                   />
                 </InputGroup>
@@ -646,42 +648,48 @@ function EditeTable(props) {
                   <TextArea
                     defaultValue={record.testResult}
                     autoSize
-                    style={{ width: 310 }}
+                    style={{ width: w }}
                     onChange={e => handleFieldChange(e.target.value, 'testResult', record.key)}
                   />
                 </InputGroup>
               </div>
-              <div className={!record.testStep ? styles.requiredform : ''}>
+              <div className={!record.testStep ? styles.requiredform : ''} >
                 <InputGroup compact>
                   <span style={{ width: 70, textAlign: 'right', paddingTop: 4 }}>验证步骤：</span>
                   <TextArea
                     defaultValue={record.testStep}
                     autoSize
-                    style={{ width: 310 }}
+                    style={{ width: w }}
                     onChange={e => handleFieldChange(e.target.value, 'testStep', record.key)}
                   />
                 </InputGroup>
               </div>
-            </>
+            </div>
           )
         }
         return (
-          <>
+          <div >
             <InputGroup compact>
-              <span style={{ width: 70, textAlign: 'right' }}>功能菜单：</span>
-              <span style={{ width: 310 }} dangerouslySetInnerHTML={{ __html: record.testMenu?.replace(/[\n]/g, '<br/>') }} />
+              <div style={{ position: 'relative' }}>
+                <div style={{ width: 70, textAlign: 'right', position: 'absolute', left: 0, top: 0 }}>功能菜单：</div>
+                <div style={{ marginLeft: 70 }} dangerouslySetInnerHTML={{ __html: record.testMenu?.replace(/[\n]/g, '<br/>') }} />
+              </div>
             </InputGroup>
             <Divider type='horizontal' style={{ margin: '6px 0' }} />
             <InputGroup compact>
-              <span style={{ width: 70, textAlign: 'right' }}>预期效果：</span>
-              <span style={{ width: 310 }} dangerouslySetInnerHTML={{ __html: record.testResult?.replace(/[\n]/g, '<br/>') }} />
+              <div style={{ position: 'relative' }}>
+                <div style={{ width: 70, textAlign: 'right', position: 'absolute', left: 0, top: 0 }}>预期效果：</div>
+                <div style={{ marginLeft: 70 }} dangerouslySetInnerHTML={{ __html: record.testResult?.replace(/[\n]/g, '<br/>') }} />
+              </div>
             </InputGroup>
             <Divider type='horizontal' style={{ margin: '6px 0' }} />
             <InputGroup compact>
-              <span style={{ width: 70, textAlign: 'right' }}>验证步骤：</span>
-              <span style={{ width: 310 }} dangerouslySetInnerHTML={{ __html: record.testStep?.replace(/[\n]/g, '<br/>') }} />
+              <div style={{ position: 'relative' }}>
+                <div style={{ width: 70, textAlign: 'right', position: 'absolute', left: 0, top: 0 }}>验证步骤：</div>
+                <div style={{ marginLeft: 70 }} dangerouslySetInnerHTML={{ __html: record.testStep?.replace(/[\n]/g, '<br/>') }} />
+              </div>
             </InputGroup>
-          </>
+          </div>
         );
       }
     },
@@ -959,6 +967,18 @@ function EditeTable(props) {
         window.URL.revokeObjectURL(url);
       }
     })
+  };
+
+  const setTableHeight = () => {
+    let height = 500;
+    const clientHeight = window.document?.body?.clientHeight || 500;
+    const tableHeight = window.document.getElementById('list')?.offsetHeight || 0;
+    if (clientHeight - 320 < tableHeight) {
+      height = clientHeight - 320
+    } else {
+      height = null
+    };
+    return height
   }
   return (
     <>
@@ -1029,6 +1049,7 @@ function EditeTable(props) {
               {taskName === '出厂测试' && (
                 <Button
                   type='danger'
+                  disabled={newbutton}
                   style={{ marginRight: 8 }}
                   ghost
                   onMouseDown={() => { ChangeButtype(''); ChangeaddAttaches(''); }}
@@ -1065,7 +1086,7 @@ function EditeTable(props) {
           rowKey={(record) => record.key}
           pagination={pagination}
           rowSelection={rowSelection}
-          scroll={{ x: 1500, }}
+          scroll={{ x: 1500, y: setTableHeight() }}
           rowClassName={(record, index) => {
             let className = 'light-row';
             if (index % 2 === 1) className = styles.darkRow;

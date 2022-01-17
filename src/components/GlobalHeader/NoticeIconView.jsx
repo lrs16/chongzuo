@@ -94,22 +94,55 @@ class GlobalHeaderRight extends Component {
         title: `IT服务管理`,
         type: 'event',
       },
-      // {
-      //   description: `总共有（${this.state.timeoutnum.remindTimeNum}）个工单即将超时`,
-      //   extra: '即将超时',
-      //   id: '002',
-      //   status: 'doing',
-      //   title: `IT服务管理`,
-      //   type: 'event',
-      // },
-      // {
-      //   description: `总共有（${this.state.timeoutnum.normalTimeNum}）个工单正常`,
-      //   extra: '正常',
-      //   id: '003',
-      //   // status: 'doing',
-      //   title: `IT服务管理`,
-      //   type: 'event',
-      // },
+      {
+        description: `（${this.state.timeoutnum.remindTimeNum}）个`,
+        id: '002',
+        status: 'doing',
+        title: `事件单`,
+        type: 'event',
+      },
+      {
+        description: `（${this.state.timeoutnum.normalTimeNum}）个`,
+        id: '003',
+        title: `故障单`,
+        type: 'event',
+      },
+      {
+        description: `（${this.state.timeoutnum.normalTimeNum}）个`,
+        id: '004',
+        title: `问题单`,
+        type: 'event',
+      },
+      {
+        description: `（${this.state.timeoutnum.normalTimeNum}）个`,
+        id: '005',
+        title: `需求单`,
+        type: 'event',
+      },
+      {
+        description: `（${this.state.timeoutnum.normalTimeNum}）个`,
+        id: '006',
+        title: `发布单`,
+        type: 'event',
+      },
+      {
+        description: `（${this.state.timeoutnum.normalTimeNum}）个`,
+        id: '007',
+        title: `服务绩效单`,
+        type: 'event',
+      },
+      {
+        description: `（${this.state.timeoutnum.normalTimeNum}）个`,
+        id: '008',
+        title: `工作计划单`,
+        type: 'event',
+      },
+      {
+        description: `（${this.state.timeoutnum.normalTimeNum}）个`,
+        id: '009',
+        title: `工作督办单`,
+        type: 'event',
+      },
     ];
 
     if (notices.length === 0) {

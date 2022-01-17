@@ -20,6 +20,21 @@ import {
   assigneeTimeOutDetail
 } from '../services/api';
 
+const dataArr = datas => {
+  const newArr = [];
+  if (!Array.isArray(datas)) {
+    return newArr;
+  }
+  for (let i = 0; i < datas.length; i += 1) {
+    const vote = {};
+    vote.value = datas[i].value;
+    vote.name = datas[i].type;
+    vote.date = datas[i].date;
+    newArr.push(vote);
+  }
+  return newArr;
+};
+
 export default {
   namespace: 'releaseanalysis',
 
@@ -155,9 +170,13 @@ export default {
       };
     },
     saveunit(state, action) {
+      const { unitanalysis, typeanalysis } = action.payload;
       return {
         ...state,
-        unitdata: action.payload,
+        unitdata: {
+          unitanalysis: { ...unitanalysis, lineChart: dataArr(unitanalysis.lineChart) },
+          typeanalysis: { ...typeanalysis, lineChart: dataArr(typeanalysis.lineChart) }
+        },
       };
     },
     savetimeout(state, action) {

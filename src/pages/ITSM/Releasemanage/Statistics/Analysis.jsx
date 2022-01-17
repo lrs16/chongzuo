@@ -54,21 +54,6 @@ function Statistics(props) {
     return sum
   };
 
-  const dataArr = datas => {
-    const newArr = [];
-    if (!Array.isArray(datas)) {
-      return newArr;
-    }
-    for (let i = 0; i < datas.length; i += 1) {
-      const vote = {};
-      vote.value = datas[i].value;
-      vote.name = datas[i].type;
-      vote.date = datas[i].date;
-      newArr.push(vote);
-    }
-    return newArr;
-  };
-
   const dataCylinder = datas => {
     const newArr = [];
     if (!Array.isArray(datas) || datas.length === 0) {
@@ -234,7 +219,7 @@ function Statistics(props) {
     onChange: page => changePage(page),
   };
 
-
+  console.log(fetchType.name);
 
   const card = (val, suffixmap) => {
     const { name, total, ringRatio, prevTotal } = val;
@@ -473,7 +458,7 @@ function Statistics(props) {
               {(!unitanalysis.lineChart || (unitanalysis.lineChart && unitanalysis.lineChart.length === 0)) && <Empty style={{ height: '300px' }} />}
               {unitanalysis.lineChart && unitanalysis.lineChart.length > 0 && (
                 <SmoothLine
-                  data={dataArr(unitanalysis.lineChart)}
+                  data={unitanalysis.lineChart}
                   height={300}
                   padding={[30, 0, 60, 60]}
                   onGetVal={(v) => {
@@ -488,6 +473,8 @@ function Statistics(props) {
                     });
                     setPageinations({ current: 1, pageSize: 12 })
                   }}
+                  uncheckedname={['全部']}
+                  lock
                 />
               )}
             </Card>
@@ -527,7 +514,7 @@ function Statistics(props) {
               {(!typeanalysis.lineChart || (typeanalysis.lineChart && typeanalysis.lineChart.length === 0)) && <Empty style={{ height: '300px' }} />}
               {typeanalysis.lineChart && typeanalysis.lineChart.length > 0 && (
                 <SmoothLine
-                  data={dataArr(typeanalysis.lineChart || [])}
+                  data={typeanalysis.lineChart}
                   height={300}
                   padding={[30, 0, 60, 60]}
                   onGetVal={(v) => {
@@ -542,6 +529,7 @@ function Statistics(props) {
                     });
                     setPageinations({ current: 1, pageSize: 12 });
                   }}
+                  uncheckedname={['全部']}
                 />
               )}
             </Card>
@@ -753,39 +741,42 @@ function Statistics(props) {
           </Card>
         </Col>
       </Row>
-      <Drawer
-        width={1550}
-        title={fetchType.name}
-        onClose={onClose}
-        visible={visible}
-      >
-        <Button onClick={() => download()} type='primary' style={{ marginBottom: 12 }}>导出数据</Button>
-        {fetchType.columnstask ? (
-          <Table
-            columns={columnstask}
-            loading={loadinglist}
-            dataSource={list.records || []}
-            pagination={pagination}
-          />
-        ) : (
-          <Table
-            columns={
-              (fetchType.name === '发布总次数' ||
-                fetchType.name === '软件运维' ||
-                fetchType.name === '功能开发' ||
-                fetchType.name === '计划发布' ||
-                fetchType.name === '临时发布' ||
-                fetchType.name === '按时处理' ||
-                fetchType.name === '已超时' ||
-                fetchType.listcolumns
-              )
-                ? columns : columnrelease}
-            loading={loadinglist}
-            dataSource={list.records || []}
-            pagination={pagination}
-          />
-        )}
-      </Drawer>
+      {(fetchType.columnstask || fetchType.name) && (
+        <Drawer
+          width={1550}
+          title={fetchType.name}
+          onClose={onClose}
+          visible={visible}
+          mask={false}
+        >
+          <Button onClick={() => download()} type='primary' style={{ marginBottom: 12 }}>导出数据</Button>
+          {fetchType.columnstask ? (
+            <Table
+              columns={columnstask}
+              loading={loadinglist}
+              dataSource={list.records || []}
+              pagination={pagination}
+            />
+          ) : (
+            <Table
+              columns={
+                (fetchType.name === '发布总次数' ||
+                  fetchType.name === '软件运维' ||
+                  fetchType.name === '功能开发' ||
+                  fetchType.name === '计划发布' ||
+                  fetchType.name === '临时发布' ||
+                  fetchType.name === '按时处理' ||
+                  fetchType.name === '已超时' ||
+                  fetchType.listcolumns
+                )
+                  ? columns : columnrelease}
+              loading={loadinglist}
+              dataSource={list.records || []}
+              pagination={pagination}
+            />
+          )}
+        </Drawer>
+      )}
     </div>
   );
 }

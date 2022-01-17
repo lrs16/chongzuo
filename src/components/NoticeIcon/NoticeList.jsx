@@ -55,16 +55,17 @@ const NoticeList = ({
                 avatar={leftIcon}
                 title={
                   <div className={styles.title}>
-                    {item.title}
+                    <span style={{ float: 'left' }}>{item.title}</span>
+                    <span style={{ float: 'right' }} className={styles.description}>{item.description}</span>
                     <div className={styles.extra}>{item.extra}</div>
                   </div>
                 }
-                description={
-                  <div>
-                    <div className={styles.description}>{item.description}</div>
-                    <div className={styles.datetime}>{item.datetime}</div>
-                  </div>
-                }
+              // description={
+              //   <div>
+              //     <div className={styles.description}>{item.description}</div>
+              //     <div className={styles.datetime}>{item.datetime}</div>
+              //   </div>
+              // }
               />
             </List.Item>
           );
