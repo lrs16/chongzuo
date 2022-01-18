@@ -33,6 +33,12 @@ const columns = [
     },
   },
   {
+    title: '当前处理环节',
+    dataIndex: 'flowNodeName',
+    key: 'flowNodeName',
+    width: 200,
+  },
+  {
     title: '功能模块',
     dataIndex: 'functionalModule',
     key: 'functionalModule',
@@ -255,24 +261,6 @@ const columns = [
     render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
   },
   {
-    title: '开发进度',
-    dataIndex: 'developSchedule',
-    key: 'developSchedule',
-    with: 180,
-    onCell: () => {
-      return {
-        style: {
-          maxWidth: 180,
-          overflow: 'hidden',
-          whiteSpace: 'nowrap',
-          textOverflow: 'ellipsis',
-          cursor: 'pointer'
-        }
-      }
-    },
-    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
-  },
-  {
     title: '预计开发完成时间',
     dataIndex: 'devFinishTime',
     key: 'devFinishTime',
@@ -299,6 +287,24 @@ const columns = [
       return {
         style: {
           maxWidth: 250,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
+  },
+  {
+    title: '需求完成进度',
+    dataIndex: 'developSchedule',
+    key: 'developSchedule',
+    with: 180,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 180,
           overflow: 'hidden',
           whiteSpace: 'nowrap',
           textOverflow: 'ellipsis',
@@ -956,6 +962,7 @@ function ChartDrawer(props) {
         title={drawerdata.drawtitle}
         onClose={hanldleCancel}
         bodyStyle={{ paddingBottom: 60 }}
+        maskClosable={false}
         destroyOnClose
       >
         <div style={{ marginBottom: 24 }}>

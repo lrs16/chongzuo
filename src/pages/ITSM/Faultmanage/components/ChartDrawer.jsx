@@ -30,6 +30,12 @@ const columns = [
     },
   },
   {
+    title: '当前处理环节',
+    dataIndex: 'flowNodeName',
+    key: 'flowNodeName',
+    width: 200,
+  },
+  {
     title: '故障发生时间',
     dataIndex: 'registerOccurTime',
     key: 'registerOccurTime',
@@ -222,20 +228,8 @@ function ChartDrawer(props) {
   const searchdata = (value, page, size) => {
     const pointdate = value.date && Array.from(value.date).length === 2;
     switch (value.staticName) {
-      // 故障责任单位情况 饼+线
-      case '故障责任单位情况':
-        dispatch({
-          type: 'fault/getfaultQueryList',
-          payload: {
-            pageNum: page,
-            pageSize: size,
-            blame: value.type || value.name,
-            addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
-            addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
-          }
-        })
-        break;
-      // 故障责任单位情况（card）
+      // *******Card卡片(故障工单情况/系统故障率、可用率/故障数量统计情况)
+      // 1.故障工单情况（故障工单(故障总数)，已处理，未处理，完成率(不做攥取)）
       case '故障总数':
         dispatch({
           type: 'fault/getfaultQueryList',
@@ -247,22 +241,6 @@ function ChartDrawer(props) {
           }
         })
         break;
-      // 故障责任单位情况（card）
-      case '功能开发':
-      case '软件运维':
-      case '硬件运维':
-        dispatch({
-          type: 'fault/getfaultQueryList',
-          payload: {
-            pageNum: page,
-            pageSize: size,
-            blame: value.staticName,
-            addTimeBegin: value.time1,
-            addTimeEnd: value.time2,
-          }
-        })
-        break;
-      // 故障工单情况（card）
       case '已处理':
         dispatch({
           type: 'fault/getfaultQueryList',
@@ -275,22 +253,156 @@ function ChartDrawer(props) {
           }
         })
         break;
-      // 故障类型统计分析
-      case '故障类型总情况':
-      case '硬件故障情况':
-      case '软件故障情况':
+      case '未处理':
         dispatch({
           type: 'fault/getfaultQueryList',
           payload: {
             pageNum: page,
             pageSize: size,
-            type: value.type || value.name,
+            status: '未关闭',
+            addTimeBegin: value.time1,
+            addTimeEnd: value.time2,
+          }
+        })
+        break;
+      // 2.系统故障率、可用率(不做攥取)
+      // 3.故障数量统计情况(故障总数(同故障工单的总数)，主站故障，非主站故障)
+      case '主站故障':
+        dispatch({
+          type: 'fault/getfaultQueryList',
+          payload: {
+            pageNum: page,
+            pageSize: size,
+            master: '是',
+            addTimeBegin: value.time1,
+            addTimeEnd: value.time2,
+          }
+        })
+        break;
+      case '非主站故障':
+        dispatch({
+          type: 'fault/getfaultQueryList',
+          payload: {
+            pageNum: page,
+            pageSize: size,
+            master: '否',
+            addTimeBegin: value.time1,
+            addTimeEnd: value.time2,
+          }
+        })
+        break;
+      // *******饼+线(故障责任单位情况)
+      case '故障责任单位情况':
+        dispatch({
+          type: 'fault/getfaultQueryList',
+          payload: {
+            pageNum: page,
+            pageSize: size,
+            blame: value.type || value.name,
             addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
             addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
           }
         })
         break;
-      // 故障系统模块情况（饼+线）
+      // *******(饼+线)*3个(故障类型统计分析-[故障类型总情况+故障类型趋势分析]，[硬件故障情况+硬件故障趋势分析]，[软件故障情况+软件故障趋势分析])
+      case '故障类型总情况':
+        if (value.name === '总数') { // 线图
+          dispatch({
+            type: 'fault/getfaultQueryList',
+            payload: {
+              pageNum: page,
+              pageSize: size,
+              type: '件',
+              addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+            }
+          })
+        } else if (value.name === '非主站故障') { // 曲线
+          dispatch({
+            type: 'fault/getfaultQueryList',
+            payload: {
+              pageNum: page,
+              pageSize: size,
+              master: '否',
+              addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+            }
+          })
+        } else if (value.name === '计量主站故障') { // 曲线
+          dispatch({
+            type: 'fault/getfaultQueryList',
+            payload: {
+              pageNum: page,
+              pageSize: size,
+              master: '是',
+              addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+            }
+          })
+        } else {
+          dispatch({
+            type: 'fault/getfaultQueryList',
+            payload: {
+              pageNum: page,
+              pageSize: size,
+              type: value.type || value.name,
+              addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+            }
+          })
+        }
+        break;
+      case '硬件故障情况':
+        if (value.name === '总数') { // 曲线
+          dispatch({
+            type: 'fault/getfaultQueryList',
+            payload: {
+              pageNum: page,
+              pageSize: size,
+              type: '硬件',
+              addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+            }
+          })
+        } else {
+          dispatch({
+            type: 'fault/getfaultQueryList',
+            payload: {
+              pageNum: page,
+              pageSize: size,
+              type: value.type || value.name,
+              addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+            }
+          })
+        }
+        break;
+      case '软件故障情况':
+        if (value.name === '总数') { // 曲线
+          dispatch({
+            type: 'fault/getfaultQueryList',
+            payload: {
+              pageNum: page,
+              pageSize: size,
+              type: '软件',
+              addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+            }
+          })
+        } else {
+          dispatch({
+            type: 'fault/getfaultQueryList',
+            payload: {
+              pageNum: page,
+              pageSize: size,
+              type: value.type || value.name,
+              addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+            }
+          })
+        }
+        break;
+      // *******饼+线(故障系统模块情况)
       case '故障系统模块情况':
         dispatch({
           type: 'fault/getfaultQueryList',
@@ -303,6 +415,7 @@ function ChartDrawer(props) {
           }
         })
         break;
+      // *******饼(故障工单处理及时率)
       case '故障工单超时情况':
         dispatch({
           type: 'fault/getfaultQueryList',
@@ -315,6 +428,7 @@ function ChartDrawer(props) {
           }
         })
         break;
+      // *******柱(故障登记人Top5)
       case '故障登记人':
         dispatch({
           type: 'fault/getfaultQueryList',
@@ -327,6 +441,7 @@ function ChartDrawer(props) {
           }
         })
         break;
+      // *******柱(故障处理人Top5)
       case '故障处理人':
         dispatch({
           type: 'fault/getfaultQueryList',
@@ -339,31 +454,7 @@ function ChartDrawer(props) {
           }
         })
         break;
-      case '故障登记单位':
-        dispatch({
-          type: 'fault/getfaultQueryList',
-          payload: {
-            pageNum: page,
-            pageSize: size,
-            registerUnit: `${value.type}?`,
-            addTimeBegin: value.startdate,
-            addTimeEnd: value.enddate,
-          }
-        })
-        break;
-      case '故障处理单位':
-        dispatch({
-          type: 'fault/getfaultQueryList',
-          payload: {
-            pageNum: page,
-            pageSize: size,
-            handleUnit: `${value.type}?`,
-            addTimeBegin: value.startdate,
-            addTimeEnd: value.enddate,
-          }
-        })
-        break;
-      // 饼图总数
+      // 饼图中心点击总数(all)
       case 'blametotal':
         dispatch({
           type: 'fault/getfaultQueryList',
@@ -495,29 +586,8 @@ function ChartDrawer(props) {
     })
     const pointdate = value.date && Array.from(value.date).length === 2;
     switch (value.staticName) {
-      // 故障责任单位情况 饼+线
-      case '故障责任单位情况':
-        dispatch({
-          type: 'fault/faultQuerydownload',
-          payload: {
-            columns: JSON.stringify(exportColumns),
-            ids: selectedKeys.toString(),
-            blame: value.type || value.name,
-            addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
-            addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
-          },
-        }).then(res => {
-          const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
-          const blob = new Blob([res]);
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          a.click();
-          window.URL.revokeObjectURL(url);
-        });
-        break;
-      // 故障责任单位情况（card）
+      // *******Card卡片(故障工单情况/系统故障率、可用率/故障数量统计情况)
+      // 1.故障工单情况（故障工单(故障总数)，已处理，未处理，完成率(不做攥取)）
       case '故障总数':
         dispatch({
           type: 'fault/faultQuerydownload',
@@ -538,32 +608,6 @@ function ChartDrawer(props) {
           window.URL.revokeObjectURL(url);
         });
         break;
-      // 故障责任单位情况（card）
-      case '功能开发':
-      case '软件运维':
-      case '硬件运维':
-        dispatch({
-          type: 'fault/faultQuerydownload',
-          payload: {
-            columns: JSON.stringify(exportColumns),
-            ids: selectedKeys.toString(),
-            blame: value.staticName,
-            addTimeBegin: value.time1,
-            addTimeEnd: value.time2,
-          },
-        }).then(res => {
-          const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
-          const blob = new Blob([res]);
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          a.click();
-          window.URL.revokeObjectURL(url);
-        });
-        // setDownVal({ ...downVal, blame: value.staticName });
-        break;
-      // 故障工单情况（card）
       case '已处理':
         dispatch({
           type: 'fault/faultQuerydownload',
@@ -586,16 +630,79 @@ function ChartDrawer(props) {
         });
         // setDownVal({ ...downVal, status: '255' });
         break;
-      // 故障类型统计分析
-      case '故障类型总情况':
-      case '硬件故障情况':
-      case '软件故障情况':
+      case '未处理':
         dispatch({
           type: 'fault/faultQuerydownload',
           payload: {
             columns: JSON.stringify(exportColumns),
             ids: selectedKeys.toString(),
-            type: value.type || value.name,
+            status: '未关闭',
+            addTimeBegin: value.time1,
+            addTimeEnd: value.time2,
+          },
+        }).then(res => {
+          const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+        break;
+      // 2.系统故障率、可用率(不做攥取)
+      // 3.故障数量统计情况(故障总数(同故障工单的总数)，主站故障，非主站故障)
+      case '主站故障':
+        dispatch({
+          type: 'fault/faultQuerydownload',
+          payload: {
+            columns: JSON.stringify(exportColumns),
+            ids: selectedKeys.toString(),
+            master: '是',
+            addTimeBegin: value.time1,
+            addTimeEnd: value.time2,
+          },
+        }).then(res => {
+          const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+        break;
+      case '非主站故障':
+        dispatch({
+          type: 'fault/faultQuerydownload',
+          payload: {
+            columns: JSON.stringify(exportColumns),
+            ids: selectedKeys.toString(),
+            master: '否',
+            addTimeBegin: value.time1,
+            addTimeEnd: value.time2,
+          },
+        }).then(res => {
+          const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+        break;
+      // *******饼+线(故障责任单位情况)
+      case '故障责任单位情况':
+        dispatch({
+          type: 'fault/faultQuerydownload',
+          payload: {
+            columns: JSON.stringify(exportColumns),
+            ids: selectedKeys.toString(),
+            blame: value.type || value.name,
             addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
             addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
           },
@@ -609,9 +716,179 @@ function ChartDrawer(props) {
           a.click();
           window.URL.revokeObjectURL(url);
         });
-        // setDownVal({ ...downVal, type: value.type || value.name });
         break;
-      // 故障系统模块情况（饼+线）
+      // *******(饼+线)*3个(故障类型统计分析-[故障类型总情况+故障类型趋势分析]，[硬件故障情况+硬件故障趋势分析]，[软件故障情况+软件故障趋势分析])
+      case '故障类型总情况':
+        if (value.name === '总数') { // 线图
+          dispatch({
+            type: 'fault/faultQuerydownload',
+            payload: {
+              columns: JSON.stringify(exportColumns),
+              ids: selectedKeys.toString(),
+              type: '件',
+              addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+            },
+          }).then(res => {
+            const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+            const blob = new Blob([res]);
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+          });
+        } else if (value.name === '非主站故障') { // 曲线
+          dispatch({
+            type: 'fault/faultQuerydownload',
+            payload: {
+              columns: JSON.stringify(exportColumns),
+              ids: selectedKeys.toString(),
+              master: '否',
+              addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+            },
+          }).then(res => {
+            const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+            const blob = new Blob([res]);
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+          });
+        } else if (value.name === '计量主站故障') { // 曲线
+          dispatch({
+            type: 'fault/faultQuerydownload',
+            payload: {
+              columns: JSON.stringify(exportColumns),
+              ids: selectedKeys.toString(),
+              master: '是',
+              addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+            },
+          }).then(res => {
+            const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+            const blob = new Blob([res]);
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+          });
+        } else {
+          dispatch({
+            type: 'fault/faultQuerydownload',
+            payload: {
+              columns: JSON.stringify(exportColumns),
+              ids: selectedKeys.toString(),
+              type: value.type || value.name,
+              addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+            },
+          }).then(res => {
+            const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+            const blob = new Blob([res]);
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+          });
+        }
+        break;
+      case '硬件故障情况':
+        if (value.name === '总数') { // 曲线
+          dispatch({
+            type: 'fault/faultQuerydownload',
+            payload: {
+              columns: JSON.stringify(exportColumns),
+              ids: selectedKeys.toString(),
+              type: '硬件',
+              addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+            },
+          }).then(res => {
+            const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+            const blob = new Blob([res]);
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+          });
+        } else {
+          dispatch({
+            type: 'fault/faultQuerydownload',
+            payload: {
+              columns: JSON.stringify(exportColumns),
+              ids: selectedKeys.toString(),
+              type: value.type || value.name,
+              addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+            },
+          }).then(res => {
+            const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+            const blob = new Blob([res]);
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+          });
+        }
+        break;
+      case '软件故障情况':
+        if (value.name === '总数') { // 曲线
+          dispatch({
+            type: 'fault/faultQuerydownload',
+            payload: {
+              columns: JSON.stringify(exportColumns),
+              ids: selectedKeys.toString(),
+              type: '软件',
+              addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+            },
+          }).then(res => {
+            const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+            const blob = new Blob([res]);
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+          });
+        } else {
+          dispatch({
+            type: 'fault/faultQuerydownload',
+            payload: {
+              columns: JSON.stringify(exportColumns),
+              ids: selectedKeys.toString(),
+              type: value.type || value.name,
+              addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+            },
+          }).then(res => {
+            const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+            const blob = new Blob([res]);
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+          });
+          // setDownVal({ ...downVal, type: value.type || value.name });
+        }
+        break;
+      // *******饼+线(故障系统模块情况)
       case '故障系统模块情况':
         dispatch({
           type: 'fault/faultQuerydownload',
@@ -634,6 +911,7 @@ function ChartDrawer(props) {
         });
         // setDownVal({ ...downVal, registerModel: value.type || value.name });
         break;
+      // *******饼(故障工单处理及时率)
       case '故障工单超时情况':
         dispatch({
           type: 'fault/faultQuerydownload',
@@ -656,6 +934,7 @@ function ChartDrawer(props) {
         });
         // setDownVal({ ...downVal, timeoutStatus: value.type });
         break;
+      // *******柱(故障登记人Top5)
       case '故障登记人':
         dispatch({
           type: 'fault/faultQuerydownload',
@@ -678,6 +957,7 @@ function ChartDrawer(props) {
         });
         // setDownVal({ ...downVal, registerUser: value.type });
         break;
+      // *******柱(故障处理人Top5)
       case '故障处理人':
         dispatch({
           type: 'fault/faultQuerydownload',
@@ -700,51 +980,7 @@ function ChartDrawer(props) {
         });
         // setDownVal({ ...downVal, handler: value.type });
         break;
-      case '故障登记单位':
-        dispatch({
-          type: 'fault/faultQuerydownload',
-          payload: {
-            columns: JSON.stringify(exportColumns),
-            ids: selectedKeys.toString(),
-            registerUnit: value.type,
-            addTimeBegin: value.startdate,
-            addTimeEnd: value.enddate,
-          },
-        }).then(res => {
-          const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
-          const blob = new Blob([res]);
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          a.click();
-          window.URL.revokeObjectURL(url);
-        });
-        // setDownVal({ ...downVal, registerUnit: value.type });
-        break;
-      case '故障处理单位':
-        dispatch({
-          type: 'fault/faultQuerydownload',
-          payload: {
-            columns: JSON.stringify(exportColumns),
-            ids: selectedKeys.toString(),
-            handleUnit: value.type,
-            addTimeBegin: value.startdate,
-            addTimeEnd: value.enddate,
-          },
-        }).then(res => {
-          const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
-          const blob = new Blob([res]);
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          a.click();
-          window.URL.revokeObjectURL(url);
-        });
-        // setDownVal({ ...downVal, handleUnit: value.type });
-        break;
-      // 饼图总数（all）
+      // 饼图中心点击总数(all)
       case 'blametotal':
         dispatch({
           type: 'fault/faultQuerydownload',
@@ -885,6 +1121,7 @@ function ChartDrawer(props) {
         onClose={hanldleCancel}
         bodyStyle={{ paddingBottom: 60 }}
         destroyOnClose
+        maskClosable={false}
       >
         <div style={{ marginBottom: 24 }}>
           <Popconfirm title="确定导出数据？" onConfirm={() => download(drawerdata)}>

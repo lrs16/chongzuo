@@ -129,7 +129,7 @@ function DonutPCT(props) {
           adjust="stack"
           avoidLabelOverlap
           // color={staticName === '故障工单超时情况' ? pieColor : 'type'}
-          color={staticName === '故障工单超时情况' ? ['type', ['#FF0000', '#008000', '#FFFF00']] : 'type'}
+          color={staticName === '故障工单超时情况' ? ['type', ['#008000', '#FF0000']] : 'type'}
           shape="sliceShape"
           label={[
             'value',

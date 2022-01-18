@@ -138,31 +138,27 @@ function StatisticalAnalysis(props) {
       <SelectTime ChangeDate={(v) => setValues(v)} />
       {/* 工单 */}
       <Spin spinning={loadingorder}>
+        <Row style={{ marginTop: 16 }}>
+          <div className={styles.statisticscard}>
+            <Avatar icon="file-protect" />
+            <b>故障工单情况</b>
+          </div>
+          {(!analysislist || (analysislist && analysislist === undefined)) && <Empty style={{ height: '100px' }} />}
+          {
+            analysislist && analysislist !== undefined && (
+              <Row>
+                <Col span={6}><StatisticsCard title='故障工单：' staticName="故障总数" time1={analysislist.time1} time2={analysislist.time2} value={analysislist.allNum} suffix='单' des='环比' desval={`${analysislist.allRingPoints}%`} type={Number(analysislist.allRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                <Col span={6}><StatisticsCard staticName="已处理" title='已处理：' time1={analysislist.time1} time2={analysislist.time2} value={analysislist.closeNum} suffix='单' des='环比' desval={`${analysislist.closeRingPoints}%`} type={Number(analysislist.closeRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                <Col span={6}><StatisticsCard staticName="未处理" title='未处理：' time1={analysislist.time1} time2={analysislist.time2} value={analysislist.unCloseNum} suffix='单' des='环比' desval={`${analysislist.unCloseRingPoints}%`} type={Number(analysislist.unCloseRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                <Col span={6}><StatisticsCard title='完成率：' value={analysislist.point} suffix='%' des='环比' desval={`${analysislist.ringPoints}%`} type={Number(analysislist.ringPoints) > 0 ? 'up' : 'down'} /></Col>
+              </Row>
+            )
+          }
+        </Row>
         <Row gutter={16}>
-          <Col span={8} xs={12} style={{ marginTop: 16 }}>
+          {analysislist && (<Col span={12} xs={12} style={{ marginTop: 16 }}>
             <div className={styles.statisticscard}>
-              <Avatar icon="security-scan" />
-              <b>故障数量统计情况</b>
-            </div>
-            {(!analysislist || (analysislist && analysislist === undefined)) && <Empty style={{ height: '100px' }} />}
-            {
-              analysislist && analysislist !== undefined && (
-                // <Row>
-                //   <Col span={8}><StatisticsCard staticName="功能开发" title='功能开发：' time1={analysislist.time1} time2={analysislist.time2} value={analysislist.development} suffix='单' des='环比' desval={`${analysislist.developmentRingPoints}%`} type={Number(analysislist.developmentRingPoints) > 0 ? 'up' : 'down'} /></Col>
-                //   <Col span={8}><StatisticsCard staticName="软件运维" title='软件运维：' time1={analysislist.time1} time2={analysislist.time2} value={analysislist.soft} suffix='单' des='环比' desval={`${analysislist.softRingPoints}%`} type={Number(analysislist.softRingPoints) > 0 ? 'up' : 'down'} /></Col>
-                //   <Col span={8}><StatisticsCard staticName="硬件运维" title='硬件运维：' time1={analysislist.time1} time2={analysislist.time2} value={analysislist.hardware} suffix='单' des='环比' desval={`${analysislist.hardwareRingPoints}%`} type={Number(analysislist.hardwareRingPoints) > 0 ? 'up' : 'down'} /></Col>
-                // </Row>
-                <Row>
-                  <Col span={8}><StatisticsCard staticName="故障总数" title='故障总数：' time1={analysislist.time1} time2={analysislist.time2} value={analysislist.development} suffix='单' des='环比' desval={`${analysislist.developmentRingPoints}%`} type={Number(analysislist.developmentRingPoints) > 0 ? 'up' : 'down'} /></Col>
-                  <Col span={8}><StatisticsCard staticName="主站故障" title='主站故障：' time1={analysislist.time1} time2={analysislist.time2} value={analysislist.soft} suffix='单' des='环比' desval={`${analysislist.softRingPoints}%`} type={Number(analysislist.softRingPoints) > 0 ? 'up' : 'down'} /></Col>
-                  <Col span={8}><StatisticsCard staticName="非主站故障" title='非主站故障：' time1={analysislist.time1} time2={analysislist.time2} value={analysislist.hardware} suffix='单' des='环比' desval={`${analysislist.hardwareRingPoints}%`} type={Number(analysislist.hardwareRingPoints) > 0 ? 'up' : 'down'} /></Col>
-                </Row>
-              )
-            }
-          </Col>
-          <Col span={8} xs={12} style={{ marginTop: 16 }}>
-            <div className={styles.statisticscard}>
-              <Avatar icon="control" />
+              <Avatar icon="desktop" />
               <b>系统故障率、可用率</b>
             </div>
             {(!analysislist || (analysislist && analysislist === undefined)) && <Empty style={{ height: '100px' }} />}
@@ -175,24 +171,28 @@ function StatisticalAnalysis(props) {
                 </Row>
               )
             }
-          </Col>
-          <Col span={6} xs={24} style={{ marginTop: 16 }}>
+          </Col>)}
+          {analysislist && (<Col span={12} xs={12} style={{ marginTop: 16 }}>
             <div className={styles.statisticscard}>
               <Avatar icon="file-protect" />
-              <b>故障工单情况</b>
+              <b>故障数量统计情况</b>
             </div>
             {(!analysislist || (analysislist && analysislist === undefined)) && <Empty style={{ height: '100px' }} />}
             {
               analysislist && analysislist !== undefined && (
+                // <Row>
+                //   <Col span={8}><StatisticsCard staticName="功能开发" title='功能开发：' time1={analysislist.time1} time2={analysislist.time2} value={analysislist.development} suffix='单' des='环比' desval={`${analysislist.developmentRingPoints}%`} type={Number(analysislist.developmentRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                //   <Col span={8}><StatisticsCard staticName="软件运维" title='软件运维：' time1={analysislist.time1} time2={analysislist.time2} value={analysislist.soft} suffix='单' des='环比' desval={`${analysislist.softRingPoints}%`} type={Number(analysislist.softRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                //   <Col span={8}><StatisticsCard staticName="硬件运维" title='硬件运维：' time1={analysislist.time1} time2={analysislist.time2} value={analysislist.hardware} suffix='单' des='环比' desval={`${analysislist.hardwareRingPoints}%`} type={Number(analysislist.hardwareRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                // </Row>
                 <Row>
-                  <Col span={6}><StatisticsCard title='故障工单：' staticName="故障总数" time1={analysislist.time1} time2={analysislist.time2} value={analysislist.allNum} suffix='单' des='环比' desval={`${analysislist.allRingPoints}%`} type={Number(analysislist.allRingPoints) > 0 ? 'up' : 'down'} /></Col>
-                  <Col span={6}><StatisticsCard staticName="已处理" title='已处理：' time1={analysislist.time1} time2={analysislist.time2} value={analysislist.closeNum} suffix='单' des='环比' desval={`${analysislist.closeRingPoints}%`} type={Number(analysislist.closeRingPoints) > 0 ? 'up' : 'down'} /></Col>
-                  <Col span={6}><StatisticsCard staticName="已处理" title='未处理：' time1={analysislist.time1} time2={analysislist.time2} value={analysislist.closeNum} suffix='单' des='环比' desval={`${analysislist.closeRingPoints}%`} type={Number(analysislist.closeRingPoints) > 0 ? 'up' : 'down'} /></Col>
-                  <Col span={6}><StatisticsCard title='完成率：' value={analysislist.point} suffix='%' des='环比' desval={`${analysislist.ringPoints}%`} type={Number(analysislist.ringPoints) > 0 ? 'up' : 'down'} /></Col>
+                  <Col span={8}><StatisticsCard staticName="故障总数" title='故障总数：' time1={analysislist.time1} time2={analysislist.time2} value={analysislist.allNum} suffix='单' des='环比' desval={`${analysislist.allRingPoints}%`} type={Number(analysislist.allRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                  <Col span={8}><StatisticsCard staticName="主站故障" title='主站故障：' time1={analysislist.time1} time2={analysislist.time2} value={analysislist.isMaster} suffix='单' des='环比' desval={`${analysislist.isMasterRingPoints}%`} type={Number(analysislist.isMasterRingPoints) > 0 ? 'up' : 'down'} /></Col>
+                  <Col span={8}><StatisticsCard staticName="非主站故障" title='非主站故障：' time1={analysislist.time1} time2={analysislist.time2} value={analysislist.noMaster} suffix='单' des='环比' desval={`${analysislist.noMasterRingPoints}%`} type={Number(analysislist.noMasterRingPoints) > 0 ? 'up' : 'down'} /></Col>
                 </Row>
               )
             }
-          </Col>
+          </Col>)}
         </Row>
         {/* 责任单位 */}
         <Row style={{ marginTop: 16 }}>
