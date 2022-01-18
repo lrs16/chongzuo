@@ -253,12 +253,12 @@ function ComputerroomReport(props) {
   }, [timeshow])
 
   useEffect(() => {
-    setMaterialsList(copyData.materialsList);
-    setNewTroubleList(copyData.newTroubleList);
-    setUnCloseTroubleList(copyData.unCloseTroubleList);
-    setOperationList(copyData.operationList);
-    setNextOperationList(copyData.nextOperationList);
-  }, [loading])
+    setMaterialsList(copyData.materialsList  ||  materialsList );
+    setNewTroubleList(copyData.newTroubleList || faultQueryList);
+    setUnCloseTroubleList(copyData.unCloseTroubleList || nofaultQueryList);
+    setOperationList(copyData.operationList || lastweekHomeworklist);
+    setNextOperationList(copyData.nextOperationList || nextweekHomeworklist);
+  }, [loading]);
 
   const getQuerylist = () => {
     dispatch({
@@ -440,7 +440,10 @@ function ComputerroomReport(props) {
       title={reporttype === 'week' ? '新建机房运维周报' : '新建机房运维月报'}
       extra={
         <>
-          <Button
+        {
+          loading === false && (
+            <>
+            <Button
             type='primary'
             onClick={handlePaste}
             disabled={olduploadstatus}
@@ -455,6 +458,10 @@ function ComputerroomReport(props) {
           <Button onClick={handleBack}>
             返回
           </Button>
+            </>
+          )
+        }
+        
         </>
       }
     >
