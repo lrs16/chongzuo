@@ -14,7 +14,6 @@ import {
 } from 'antd';
 import Link from 'umi/link';
 
-import MergeTable from '@/components/MergeTable';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 let startTime;
@@ -22,7 +21,6 @@ let endTime;
 let value = 20;
 const mergeCell = 'first_object';
 const { Option } = Select;
-const { RangePicker } = DatePicker;
 const columns = [
   {
     title: '问题对象',

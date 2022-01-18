@@ -284,9 +284,9 @@ function Besolved(props) {
     status,
     createTime: '',
     addTime: addTimeBegin ? [moment(addTimeBegin), moment(addTimeEnd)] : '',
-    paginations:{
-      current:1,
-      pageSize:15
+    paginations: {
+      current: 1,
+      pageSize: 15
     }
   };
 
@@ -300,7 +300,7 @@ function Besolved(props) {
           ...params,
           paginations: pageParams,
           expand,
-          key:'problem'
+          key: 'problem'
         },
         tabid: sessionStorage.getItem('tabid')
       },
@@ -317,7 +317,7 @@ function Besolved(props) {
         cacheinfo: {
           ...params,
           paginations: pageParams,
-          key:'problem',
+          key: 'problem',
           expand,
         },
       }
@@ -1117,17 +1117,29 @@ function Besolved(props) {
         dispatch({
           type: 'problemmanage/eventdownload',
           payload: {
-            columns: exportColumns && exportColumns.length > 0 ? JSON.stringify(exportColumns):'',
+            columns: exportColumns && exportColumns.length > 0 ? JSON.stringify(exportColumns) : '',
             ids: selectedKeys.toString(),
             ...values,
             type: values.type && values.type.length ? values.type[1] : '',
-            createTimeBegin: values.createTime?.length
-              ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss')
+            addTimeBegin: values.addTime?.length
+              ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss')
               : addTimeBegin,
-            createTimeEnd: values.createTime?.length
-              ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss')
+            addTimeEnd: values.addTime?.length
+              ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss')
               : addTimeEnd,
             createTime: '',
+            registerOccurTimeBegin: values.registerOccurTime?.length
+            ? moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          registerOccurTimeEnd: values.registerOccurTime?.length
+            ? moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          registerOccurTime: values.registerOccurTime?.length
+            ? [
+              moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+              moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+            ]
+            : '',
           },
         }).then(res => {
           const filename = `问题查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
