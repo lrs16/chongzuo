@@ -668,6 +668,7 @@ function EventAnalysis(props) {
                           padding={[30, 60, 50, 100]}
                           onGetVal={v => {
                             setPicVal({
+                              handler: v.type,
                               time1: values.beginTime,
                               time2: values.endTime,
                               type: 'isTimeout',

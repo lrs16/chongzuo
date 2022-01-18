@@ -9,7 +9,8 @@ import {
   DatePicker,
   Button,
   Select,
-  message
+  message,
+  Table
 } from 'antd';
 import Link from 'umi/link';
 
@@ -60,6 +61,7 @@ const columns = [
     dataIndex: 'num',
     key: 'num',
     align: 'center',
+    sorter: true,
     render: (text, record) => {
       if (record.first_object !== '合计') {
         return <Link
@@ -228,11 +230,10 @@ function Workordertopn(props) {
           </Button>
         </div>
 
-        <MergeTable
+        <Table 
           loading={loading}
-          column={columns}
-          tableSource={ordertopnArr}
-          mergecell={mergeCell}
+          columns={columns}
+          dataSource={ordertopnArr}
         />
       </Card>
     </PageHeaderWrapper>

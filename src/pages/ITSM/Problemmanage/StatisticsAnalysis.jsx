@@ -734,7 +734,7 @@ function StatisticsAnalysis(props) {
                       data={timeoutdata}
                       height={300}
                       total={piesum(timeoutdata)}
-                      totaltitle="问题处理总数"
+                      totaltitle="处理及时率总数"
                       padding={[10, 30, 10, 30]}
                       onGetVal={v => {
                         let timeStatus;
