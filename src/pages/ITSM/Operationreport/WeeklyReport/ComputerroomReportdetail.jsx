@@ -9,7 +9,8 @@ import {
   DatePicker,
   Descriptions,
   Icon,
-  message
+  message,
+  Spin
 } from 'antd';
 import moment from 'moment';
 import router from 'umi/router';
@@ -75,7 +76,8 @@ function ComputerroomReportdetail(props) {
     dispatch,
     openReportlist,
     loading,
-    olduploadstatus
+    olduploadstatus,
+    location
   } = props;
   const tabActiveKey = 'week';
 
@@ -254,7 +256,6 @@ function ComputerroomReportdetail(props) {
     }
   }
 
-
   const endonChange = (date, dateString) => {
     const currendstartTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
     setTimeshow(false);
@@ -262,7 +263,6 @@ function ComputerroomReportdetail(props) {
     setEndTime(dateString);
     setFieldsValue({ time1: moment(startTime) })
   }
-
 
   const newMember = () => {
     const nowNumber = list.map(item => ({ ...item }));
@@ -288,6 +288,12 @@ function ComputerroomReportdetail(props) {
       setTimeshow(true);
     }
   }, [timeshow])
+
+  useEffect(() => {
+    if(location.state && location.state.reset && mainId) {
+      getopenFlow()
+    }
+  },[location.state])
 
   // 动态保存
   const handleaddTable = (params, px, rowdelete) => {
@@ -384,6 +390,14 @@ function ComputerroomReportdetail(props) {
         </>
       }
     >
+      {
+        loading && (
+          <div style={{ textAlign: 'center' }}>
+            <Spin spinning={loading} />
+          </div>
+        )
+      }
+
       <Card style={{ padding: 24 }}>
         {loading === false && main && main.time1 && unCloseTroubleList !== undefined && (
           <Row gutter={24}>
@@ -403,7 +417,7 @@ function ComputerroomReportdetail(props) {
                     initialValue: main ? main.name : ''
                   })
                     (
-                      <Input disabled={reportSearch} style={{ width: 700 }} placeholder={`省级集中计量自动化系统机房运维${reporttype === 'week'? '周':'月'}报`} />
+                      <Input disabled={reportSearch} style={{ width: 700 }} placeholder={`省级集中计量自动化系统机房运维${reporttype === 'week' ? '周' : '月'}报`} />
                     )}
                 </Form.Item>
               </Col>

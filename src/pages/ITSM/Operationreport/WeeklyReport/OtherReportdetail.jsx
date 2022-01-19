@@ -8,13 +8,14 @@ import {
   Input,
   Icon,
   message,
-  DatePicker
+  DatePicker,
+  Spin
 } from 'antd';
 import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
-import AddForm from './components/AddForm';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import AddForm from './components/AddForm';
 
 const formincontentLayout = {
   labelCol: {
@@ -35,7 +36,6 @@ function OtherReportdetail(props) {
   const {
     form: { getFieldDecorator, setFieldsValue },
     location: { query: {
-      type,
       reporttype,
       status,
       mainId,
@@ -43,6 +43,7 @@ function OtherReportdetail(props) {
     } },
     openReportlist,
     dispatch,
+    location,
     loading,
     olduploadstatus
   } = props;
@@ -138,7 +139,6 @@ function OtherReportdetail(props) {
     })
   }
 
-
   // 上传删除附件触发保存
   useEffect(() => {
     if (files.ischange) {
@@ -222,6 +222,11 @@ function OtherReportdetail(props) {
     }
   }, [timeshow])
 
+  useEffect(() => {
+    if (location.state && location.state.reset && mainId) {
+      getopenFlow()
+    }
+  }, [location.state])
 
   const onChange = (date, dateString) => {
     if (reporttype === 'week') {
@@ -324,6 +329,13 @@ function OtherReportdetail(props) {
         </>
       }
     >
+      {
+        loading && (
+          <div style={{ textAlign: 'center' }}>
+            <Spin spinning={loading} />
+          </div>
+        )
+      }
       <Card style={{ padding: 24 }}>
         {loading === false && main && main.time1 && (
           <Row gutter={24}>
@@ -343,7 +355,7 @@ function OtherReportdetail(props) {
                     initialValue: main ? main.name : ''
                   })
                     (
-                      <Input disabled={reportSearch} style={{ width: 700 }} placeholder={`省级集中计量自动化系统其他运维${reporttype === 'week'? '周':'月'}报`} />
+                      <Input disabled={reportSearch} style={{ width: 700 }} placeholder={`省级集中计量自动化系统其他运维${reporttype === 'week' ? '周' : '月'}报`} />
                     )}
                 </Form.Item>
               </Col>

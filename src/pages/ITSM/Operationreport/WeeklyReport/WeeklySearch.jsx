@@ -10,15 +10,11 @@ import {
   DatePicker,
   Select,
   message,
-  Dropdown,
-  Menu
 } from 'antd';
 import { connect } from 'dva';
-import Link from 'umi/link';
 import moment from 'moment';
 import router from 'umi/router';
 
-import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
 
@@ -35,19 +31,7 @@ const formItemLayout = {
   },
 };
 
-const form10ladeLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 4 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 20 },
-  },
-};
-
 let starttime;
-let monthStarttime;
 let endTime;
 
 function WeeklySearch(props) {
@@ -55,20 +39,18 @@ function WeeklySearch(props) {
   const {
     form: {
       getFieldDecorator,
-      resetFields,
       validateFields,
       setFieldsValue,
-      getFieldsValue
     },
     queryOrderlist,
     dispatch,
     location,
     loading
   } = props;
-  const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
   const [selectedrows, setSelectedrows] = useState('');
   const [selectdata, setSelectData] = useState('');
+  const [tabrecord, setTabRecord] = useState({});
 
   const columns = [
     {
@@ -148,15 +130,6 @@ function WeeklySearch(props) {
     },
   ];
 
-  const handleReset = () => {
-    resetFields();
-    starttime = '';
-    endTime = '';
-    validateFields((err, value) => {
-      searchdata(value, 1, paginations.pageSize);
-    })
-  };
-
   const searchdata = (values, page, pageSize) => {
     dispatch({
       type: 'softreport/queryList',
@@ -171,15 +144,33 @@ function WeeklySearch(props) {
         pageIndex: page - 1,
       },
     });
+    setTabRecord({
+      ...values,
+      timeType: '周报',
+      userId: sessionStorage.getItem('userauthorityid'),
+      plannedStartTime: '',
+      time1: values.plannedStartTime?.length ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      time2: values.plannedStartTime?.length ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      paginations: {
+        pageSize,
+        current: page + 1,
+      }
+    })
   };
 
-  useEffect(() => {
-    if (location.state && location.state.reset) {
-      handleReset();
-      const formdata = getFieldsValue()
-      searchdata(formdata, 1, 15)
-    }
-  }, [location.state]);
+  const handleReset = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: {}
+    });
+    searchdata({
+      name: '',
+      type: '',
+      plannedStartTime: '',
+      userName: ''
+    }, 1, paginations.pageSize);
+  };
 
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
@@ -256,11 +247,10 @@ function WeeklySearch(props) {
   }
 
   const rowSelection = {
-    onChange: (selected,selectedRows) => {
+    onChange: (selected, selectedRows) => {
       setSelectedrows([...selectedRows])
     }
   }
-
 
   const defaultTime = () => {
     //  周统计
@@ -268,6 +258,57 @@ function WeeklySearch(props) {
     endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
     endTime = `${endTime} 00:00:00`;
   }
+
+  //  传给多标签的数据
+  const record = {
+    name: '',
+    type: '',
+    plannedStartTime: '',
+    userName: '',
+    paginations: {
+      current: 1,
+      pageSize: 15
+    }
+  };
+
+  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+
+  useEffect(() => {
+    if (location && location.state && location.state.cacheinfo) {
+      const { time1, time2 } = location.state.cacheinfo;
+      setFieldsValue({
+        plannedStartTime: time1 ? [moment(time1), moment(time2)] : ''
+      })
+    }
+  }, [location.state])
+
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              registerTime: '',
+              paginations,
+            },
+            tabid: sessionStorage.getItem('tabid'),
+          },
+        });
+      }
+      // 点击菜单刷新,并获取数据
+      if (location.state.reset) {
+        handleReset();
+      }
+      // 标签切回设置初始值
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        setPaginations({ ...paginations, current, pageSize });
+      }
+    }
+  }, [location.state]);
 
   useEffect(() => {
     defaultTime();
@@ -284,9 +325,6 @@ function WeeklySearch(props) {
   }
 
   const classData = getTypebyTitle('周报分类')
-
-
-
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -310,7 +348,7 @@ function WeeklySearch(props) {
                           message: '请输入问题编号',
                         },
                       ],
-                      initialValue: ''
+                      initialValue: cacheinfo.name
                     })(<Input placeholder='请输入' allowClear />)}
                   </Form.Item>
                 </Col>
@@ -318,7 +356,7 @@ function WeeklySearch(props) {
                 <Col span={8}>
                   <Form.Item label="周报分类">
                     {getFieldDecorator('type', {
-                      initialValue: ''
+                      initialValue: cacheinfo.type
                     })
                       (
                         <Select placeholder="请选择" allowClear>
@@ -336,7 +374,7 @@ function WeeklySearch(props) {
                 <Col span={8}>
                   <Form.Item label="填报人" >
                     {getFieldDecorator('userName', {
-                      initialValue: ''
+                      initialValue: cacheinfo.userName
                     })(<Input placeholder='请输入' allowClear />)}
                   </Form.Item>
                 </Col>
@@ -376,7 +414,7 @@ function WeeklySearch(props) {
               loading={loading}
               columns={columns}
               dataSource={queryOrderlist.rows}
-              rowKey={record => record.id}
+              rowKey={records=> records.id}
               pagination={pagination}
               rowSelection={rowSelection}
             />
@@ -384,12 +422,9 @@ function WeeklySearch(props) {
 
         )
       }
-
     </PageHeaderWrapper>
   )
 }
-
-
 
 export default Form.create({})(
   connect(({ softreport, loading }) => ({

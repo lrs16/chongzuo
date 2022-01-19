@@ -40,20 +40,19 @@ function OperationmyweeklyReport(props) {
   const {
     form: {
       getFieldDecorator,
-      resetFields,
       validateFields,
+      resetFields,
       setFieldsValue,
-      getFieldsValue
     },
     queryOrderlist,
-    openReportlist,
     dispatch,
     loading,
     location
   } = props;
-  const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 });
+  const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
   const [selectdata, setSelectData] = useState('');
   const [selectedRows, setSelectedRows] = useState([]);
+  const [tabrecord, setTabRecord] = useState({});
 
   const columns = [
     {
@@ -220,24 +219,35 @@ function OperationmyweeklyReport(props) {
         pageIndex: page - 1,
       },
     });
-  };
-
-  const handleReset = () => {
-    starttime = '';
-    endTime = '';
-    resetFields();
-    validateFields((err, value) => {
-      searchdata(value, 1, paginations.pageSize);
+    setTabRecord({
+      ...values,
+      timeType: '周报',
+      userId: sessionStorage.getItem('userauthorityid'),
+      plannedStartTime: '',
+      time1: values.plannedStartTime?.length ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      time2: values.plannedStartTime?.length ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      paginations: {
+        pageSize,
+        current: page,
+      }
     })
   };
 
-  useEffect(() => {
-    if (location.state && location.state.reset) {
-      handleReset();
-      const formdata = getFieldsValue()
-      searchdata(formdata, 1, 15)
-    }
-  }, [location.state]);
+  const handleReset = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: {},
+    });
+    resetFields();
+    searchdata({
+      name: '',
+      type: '',
+      plannedStartTime: '',
+      userName: ''
+    }, 1, paginations.pageSize);
+    setPaginations({ current: 1, pageSize: 15 });
+  };
 
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
@@ -361,31 +371,6 @@ function OperationmyweeklyReport(props) {
     return null
   }
 
-  const handlePaste = () => {
-    if (selectedRows.length !== 1) {
-      message.info('只能选择一条数据粘贴')
-      return false;
-    }
-
-    dispatch({
-      type: 'softreport/handlecopypaste',
-      payload: {
-        editStatus: 'edit',
-        id: selectedRows[0].id
-      }
-    })
-
-
-
-  }
-
-  useEffect(() => {
-    defaultTime();
-    validateFields((err, value) => {
-      searchdata(value, 1, paginations.pageSize);
-    })
-  }, []);
-
   const getTypebyTitle = title => {
     if (selectdata.ischange) {
       return selectdata.arr.filter(item => item.title === title)[0].children;
@@ -393,6 +378,64 @@ function OperationmyweeklyReport(props) {
     return [];
   }
 
+  //  传给多标签的数据
+  const record = {
+    name: '',
+    type: '',
+    plannedStartTime: '',
+    userName: '',
+    paginations: {
+      current: 1,
+      pageSize: 15
+    }
+  };
+
+  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+
+
+  useEffect(() => {
+    if (location && location.state && location.state.cacheinfo) {
+      const { time1, time2 } = location.state.cacheinfo;
+      setFieldsValue({
+        plannedStartTime: time1 ? [moment(time1), moment(time2)] : ''
+      })
+    }
+  }, [location.state])
+
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              registerTime: '',
+              paginations,
+            },
+            tabid: sessionStorage.getItem('tabid'),
+          },
+        });
+      }
+      // 点击菜单刷新,并获取数据
+      if (location.state.reset) {
+        handleReset();
+      }
+      // 标签切回设置初始值
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        setPaginations({ ...paginations, current, pageSize });
+      }
+    }
+  }, [location.state]);
+
+  useEffect(() => {
+    defaultTime();
+    validateFields((err, value) => {
+      searchdata(value, cacheinfo.paginations.current, cacheinfo.paginations.pageSize);
+    })
+  }, []);
 
   const classData = getTypebyTitle('周报分类')
 
@@ -413,7 +456,7 @@ function OperationmyweeklyReport(props) {
                 <Col span={8}>
                   <Form.Item label="周报名称">
                     {getFieldDecorator('name', {
-                      initialValue: ''
+                      initialValue: cacheinfo.name
                     })(<Input placeholder='请输入' allowClear />)}
                   </Form.Item>
                 </Col>
@@ -421,7 +464,7 @@ function OperationmyweeklyReport(props) {
                 <Col span={8}>
                   <Form.Item label="周报分类">
                     {getFieldDecorator('type', {
-                      initialValue: ''
+                      initialValue: cacheinfo.type
                     })
                       (
                         <Select placeholder="请选择" allowClear>
@@ -453,7 +496,7 @@ function OperationmyweeklyReport(props) {
                 <Col span={8}>
                   <Form.Item label="填报人" >
                     {getFieldDecorator('userName', {
-                      initialValue: ''
+                      initialValue: cacheinfo.userName
                     })(<Input placeholder='请输入' allowClear />)}
                   </Form.Item>
                 </Col>
@@ -487,14 +530,6 @@ function OperationmyweeklyReport(props) {
                 复制
               </Button>
 
-              {/* <Button
-              style={{ marginLeft: 8 }}
-              type="primary"
-              onClick={handlePaste}
-            >
-              粘贴
-            </Button> */}
-
               <Button
                 style={{ marginLeft: 8 }}
                 type="danger"
@@ -520,7 +555,7 @@ function OperationmyweeklyReport(props) {
                 columns={columns}
                 dataSource={queryOrderlist.rows}
                 pagination={pagination}
-                rowKey={record => record.id}
+                rowKey={records => records.id}
                 rowSelection={rowSelection}
               />
             )}
@@ -536,7 +571,6 @@ function OperationmyweeklyReport(props) {
 export default Form.create({})(
   connect(({ softreport, loading }) => ({
     queryOrderlist: softreport.queryOrderlist,
-    openReportlist: softreport.openReportlist,
     loading: loading.models.softreport,
   }))(OperationmyweeklyReport),
 );

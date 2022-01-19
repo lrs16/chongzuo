@@ -9,7 +9,8 @@ import {
   DatePicker,
   Icon,
   message,
-  Descriptions
+  Descriptions,
+  Spin
 } from 'antd';
 import moment from 'moment';
 import router from 'umi/router';
@@ -78,6 +79,7 @@ function SoftReportdetail(props) {
       reportSearch,
     } },
     dispatch,
+    location,
     openReportlist,
     loading,
     olduploadstatus
@@ -169,7 +171,6 @@ function SoftReportdetail(props) {
     }
   }, [files]);
 
-
   useEffect(() => {
     if (mainId) {
       getopenFlow();
@@ -237,7 +238,6 @@ function SoftReportdetail(props) {
     }
   }
 
-
   const endonChange = (date, dateString) => {
     const currendstartTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
     setTimeshow(false);
@@ -245,7 +245,6 @@ function SoftReportdetail(props) {
     setEndTime(dateString);
     setFieldsValue({ time1: moment(startTime) })
   }
-
 
   const newMember = () => {
     const nowNumber = list.map(item => ({ ...item }));
@@ -286,8 +285,6 @@ function SoftReportdetail(props) {
           break;
         }
       }
-
-      console.log(filtIndex, 'filtIndex')
 
       if (newData && newData.length) {
         if (filtIndex !== undefined) {
@@ -332,7 +329,6 @@ function SoftReportdetail(props) {
       window.URL.revokeObjectURL(url);
     })
   }
-
 
   useEffect(() => {
     if (loading === false && saveSign) {
@@ -391,6 +387,12 @@ function SoftReportdetail(props) {
     }
   }, [timeshow])
 
+  useEffect(() => {
+    if (location.state && location.state.reset && mainId) {
+      getopenFlow()
+    }
+  }, [location.state])
+
   const dateFormat = 'YYYY-MM-DD';
   
   return (
@@ -428,6 +430,14 @@ function SoftReportdetail(props) {
         </>
       }
     >
+      {
+        loading && (
+          <div style={{ textAlign: 'center' }}>
+            <Spin spinning={loading} />
+          </div>
+        )
+      }
+      
       <Card style={{ padding: 24 }}>
         {loading === false && main && main.time1 && nextOperationList !== undefined && (
           <Row gutter={24}>

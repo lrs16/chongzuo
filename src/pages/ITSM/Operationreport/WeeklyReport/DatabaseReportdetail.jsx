@@ -9,7 +9,8 @@ import {
   DatePicker,
   Descriptions,
   Icon,
-  message
+  message,
+  Spin
 } from 'antd';
 import moment from 'moment';
 import router from 'umi/router';
@@ -62,6 +63,7 @@ function DatabaseReportdetail(props) {
       mainId,
       reportSearch
     } },
+    location,
     dispatch,
     openReportlist,
     developmentList,
@@ -260,7 +262,13 @@ function DatabaseReportdetail(props) {
       setEndTime(saveInitlatime2)
     }
 
-  }, [loading])
+  }, [loading]);
+
+  useEffect(() => {
+    if (location.state && location.state.reset && mainId) {
+      getopenFlow()
+    }
+  }, [location.state])
 
   const handleBack = () => {
     router.push({
@@ -383,6 +391,13 @@ function DatabaseReportdetail(props) {
         </>
       }
     >
+      {
+        loading && (
+          <div style={{ textAlign: 'center' }}>
+            <Spin spinning={loading} />
+          </div>
+        )
+      }
       <Card style={{ padding: 24 }}>
         {loading === false && main && main.time1 && nextOperationList !== undefined && (
           <Row gutter={24}>
@@ -402,7 +417,7 @@ function DatabaseReportdetail(props) {
                     initialValue: main?.name ? main.name : ''
                   })
                     (
-                      <Input disabled={reportSearch} style={{ width: 700 }} placeholder={`省级集中计量自动化系统数据库运维${reporttype === 'week'? '周':'月'}报`} />
+                      <Input disabled={reportSearch} style={{ width: 700 }} placeholder={`省级集中计量自动化系统数据库运维${reporttype === 'week' ? '周' : '月'}报`} />
                     )}
                 </Form.Item>
               </Col>
@@ -886,7 +901,7 @@ function DatabaseReportdetail(props) {
 }
 
 export default Form.create({})(
-  connect(({ softreport,viewcache, loading }) => ({
+  connect(({ softreport, viewcache, loading }) => ({
     openReportlist: softreport.openReportlist,
     loading: loading.models.softreport,
     olduploadstatus: viewcache.olduploadstatus,

@@ -778,8 +778,6 @@ function TobedealtList(props) {
         directorVerifyEndTime,
         assessBeginTime,
         assessEndTime,
-        expertVerifyBeginTime,
-        expertVerifyEndTime,
         providerConfirmBeginTime,
         providerConfirmEndTime,
         directorReviewBeginTime,

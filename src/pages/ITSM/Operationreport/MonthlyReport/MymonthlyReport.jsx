@@ -14,11 +14,9 @@ import {
   Menu
 } from 'antd';
 import { connect } from 'dva';
-import Link from 'umi/link';
 import moment from 'moment';
 import router from 'umi/router';
 
-import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
 
@@ -35,28 +33,24 @@ const formItemLayout = {
   },
 };
 
-let starttime = '';
-let endTime = '';
-
 function MymonthlyReport(props) {
   const pagetitle = props.route.name;
   const {
     form: {
       getFieldDecorator,
-      resetFields,
       validateFields,
       setFieldsValue,
-      getFieldsValue
+      resetFields
     },
     queryOrderlist,
     location,
     loading,
     dispatch,
   } = props;
-  const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
   const [selectdata, setSelectData] = useState('');
   const [selectedRows, setSelectedRows] = useState([]);
+  const [tabrecord, setTabRecord] = useState({});
 
   const columns = [
     {
@@ -216,21 +210,39 @@ function MymonthlyReport(props) {
         timeType: '月报',
         userId: sessionStorage.getItem('userauthorityid'),
         plannedStartTime: '',
-        time1: starttime,
-        time2: endTime,
+        time1: values.plannedStartTime ? (values.plannedStartTime).startOf('month').format('YYYY-MM-DD'):'',
+        time2: values.plannedStartTime ? (values.plannedStartTime).endOf('month').format('YYYY-MM-DD'):'',
         pageSize,
         pageIndex: page - 1,
       },
     });
+    setTabRecord({
+      ...values,
+      timeType: '月报',
+      userId: sessionStorage.getItem('userauthorityid'),
+      plannedStartTime: '',
+      time1: values.plannedStartTime ? (values.plannedStartTime).startOf('month').format('YYYY-MM-DD'):'',
+      time2: values.plannedStartTime ? (values.plannedStartTime).endOf('month').format('YYYY-MM-DD'):'',
+      paginations: {
+        pageSize,
+        current: page,
+      }
+    })
   };
 
   const handleReset = () => {
-    resetFields();
-    starttime = '';
-    endTime = '';
-    validateFields((err, value) => {
-      searchdata(value, 1, paginations.pageSize);
-    })
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: {}
+    });
+    resetFields()
+    searchdata({
+      name: '',
+      type: '',
+      plannedStartTime: '',
+      userName: ''
+    }, 1, paginations.pageSize);
   };
 
   const onShowSizeChange = (page, pageSize) => {
@@ -273,16 +285,7 @@ function MymonthlyReport(props) {
       current: 1,
     });
     validateFields((err, values) => {
-      if (err) {
-        return;
-      }
-      const obj = {
-        ...values,
-        time1: starttime,
-        time2: endTime
-      };
-
-      searchdata(obj, paginations.current, paginations.pageSize);
+      searchdata(values, paginations.current, paginations.pageSize);
     });
   };
 
@@ -332,11 +335,8 @@ function MymonthlyReport(props) {
     if (!selectedRows.length) {
       message.info('至少选择一条数据');
     }
-  }
 
-  const onChange = (date, dateString) => {
-    starttime = date.startOf('month').format('YYYY-MM-DD');
-    endTime = date.endOf('month').format('YYYY-MM-DD');
+    return []
   }
 
   const handleCopy = () => {
@@ -357,19 +357,62 @@ function MymonthlyReport(props) {
     return null
   }
 
-  useEffect(() => {
-    validateFields((err, value) => {
-      searchdata(value, 1, paginations.pageSize);
-    })
-  }, []);
+  //  传给多标签的数据
+  const record = {
+    name: '',
+    type: '',
+    plannedStartTime: '',
+    userName: '',
+    paginations: {
+      current: 1,
+      pageSize: 15
+    }
+  };
+
+  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
 
   useEffect(() => {
-    if (location.state && location.state.reset) {
-      handleReset();
-      const formdata = getFieldsValue()
-      searchdata(formdata, 1, 15)
+    if (location && location.state && location.state.cacheinfo) {
+      const { time1 } = location.state.cacheinfo;
+      setFieldsValue({
+        plannedStartTime: time1 ? moment(time1) :''
+      })
+    }
+  }, [location.state])
+
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              registerTime: '',
+              paginations,
+            },
+            tabid: sessionStorage.getItem('tabid'),
+          },
+        });
+      }
+      // 点击菜单刷新,并获取数据
+      if (location.state.reset) {
+        handleReset();
+      }
+      // 标签切回设置初始值
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        setPaginations({ ...paginations, current, pageSize });
+      }
     }
   }, [location.state]);
+
+  useEffect(() => {
+    validateFields((err, value) => {
+      searchdata(value, cacheinfo.paginations.current, cacheinfo.paginations.pageSize);
+    })
+  }, []);
 
   const getTypebyTitle = title => {
     if (selectdata.ischange) {
@@ -402,7 +445,7 @@ function MymonthlyReport(props) {
                           message: '请输入问题编号',
                         },
                       ],
-                      initialValue: ''
+                      initialValue: cacheinfo.name
                     })(<Input placeholder='请输入' allowClear />)}
                   </Form.Item>
                 </Col>
@@ -410,7 +453,7 @@ function MymonthlyReport(props) {
                 <Col span={8}>
                   <Form.Item label="月报分类">
                     {getFieldDecorator('type', {
-                      initialValue: ''
+                      initialValue: cacheinfo.type
                     })
                       (
                         <Select placeholder="请选择" allowClear>
@@ -432,7 +475,6 @@ function MymonthlyReport(props) {
                     })(
                       <MonthPicker
                         style={{ width: '100%' }}
-                        onChange={onChange}
                       />
                     )
                     }
@@ -442,7 +484,7 @@ function MymonthlyReport(props) {
                 <Col span={8}>
                   <Form.Item label="填报人" >
                     {getFieldDecorator('userName', {
-                      initialValue: ''
+                      initialValue: cacheinfo.userName
                     })(<Input placeholder='请输入' allowClear />)}
                   </Form.Item>
                 </Col>
@@ -499,18 +541,15 @@ function MymonthlyReport(props) {
                   loading={loading}
                   columns={columns}
                   dataSource={queryOrderlist.rows}
-                  rowKey={record => record.id}
+                  rowKey={records => records.id}
                   pagination={pagination}
                   rowSelection={rowSelection}
                 />
               )
             }
-
           </Card>
-
         )
       }
-
     </PageHeaderWrapper>
   )
 }

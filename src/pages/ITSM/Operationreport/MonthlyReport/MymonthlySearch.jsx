@@ -10,15 +10,11 @@ import {
   DatePicker,
   Select,
   message,
-  Dropdown,
-  Menu
 } from 'antd';
 import { connect } from 'dva';
-import Link from 'umi/link';
 import moment from 'moment';
 import router from 'umi/router';
 
-import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
 
@@ -35,41 +31,26 @@ const formItemLayout = {
   },
 };
 
-const form10ladeLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 4 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 20 },
-  },
-};
-
-
-let starttime = '';
-let endTime = '';
 
 function MymonthlySearch(props) {
   const pagetitle = props.route.name;
   const {
     form: {
       getFieldDecorator,
-      resetFields,
       validateFields,
       getFieldsValue,
+      setFieldsValue,
+      resetFields
     },
     location,
     queryOrderlist,
     loading,
     dispatch,
   } = props;
-  const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
-  const [selectedrows, setSelectedrows] = useState('');
   const [selectdata, setSelectData] = useState('');
   const [selectedRows, setSelectedRows] = useState([]);
-
+  const [tabrecord, setTabRecord] = useState({});
 
   const columns = [
     {
@@ -156,21 +137,39 @@ function MymonthlySearch(props) {
         timeType: '月报',
         userId: '',
         plannedStartTime: '',
-        time1: starttime,
-        time2: endTime,
+        time1: values.plannedStartTime ? (values.plannedStartTime).startOf('month').format('YYYY-MM-DD') : '',
+        time2: values.plannedStartTime ? (values.plannedStartTime).endOf('month').format('YYYY-MM-DD') : '',
         pageSize,
         pageIndex: page - 1,
       },
     });
+    setTabRecord({
+      ...values,
+      timeType: '月报',
+      userId: '',
+      plannedStartTime: '',
+      time1: values.plannedStartTime ? (values.plannedStartTime).startOf('month').format('YYYY-MM-DD') : '',
+      time2: values.plannedStartTime ? (values.plannedStartTime).endOf('month').format('YYYY-MM-DD') : '',
+      paginations: {
+        pageSize,
+        current: page,
+      }
+    })
   };
 
   const handleReset = () => {
-    starttime = '';
-    endTime = '';
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: {}
+    });
     resetFields();
-    validateFields((err, value) => {
-      searchdata(value, 1, paginations.pageSize);
-    })
+    searchdata({
+      name: '',
+      type: '',
+      plannedStartTime: '',
+      userName: ''
+    }, 1, paginations.pageSize);
   };
 
   useEffect(() => {
@@ -221,16 +220,7 @@ function MymonthlySearch(props) {
       current: 1,
     });
     validateFields((err, values) => {
-      if (err) {
-        return;
-      }
-      const obj = {
-        ...values,
-        time1: starttime,
-        time2: endTime
-      };
-
-      searchdata(obj, paginations.current, paginations.pageSize);
+      searchdata(values, paginations.current, paginations.pageSize);
     });
   };
 
@@ -261,14 +251,59 @@ function MymonthlySearch(props) {
     }
   }
 
-  const onChange = (date, dateString) => {
-    starttime = date.startOf('month').format('YYYY-MM-DD');
-    endTime = date.endOf('month').format('YYYY-MM-DD');
-  }
+  //  传给多标签的数据
+  const record = {
+    name: '',
+    type: '',
+    plannedStartTime: '',
+    userName: '',
+    paginations: {
+      current: 1,
+      pageSize: 15
+    }
+  };
+
+  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+
+  useEffect(() => {
+    if (location && location.state && location.state.cacheinfo) {
+      const { time1 } = location.state.cacheinfo;
+      setFieldsValue({
+        plannedStartTime: time1 ? moment(time1) : ''
+      })
+    }
+  }, [location.state])
+
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+            },
+            tabid: sessionStorage.getItem('tabid'),
+          },
+        });
+      }
+      // 点击菜单刷新,并获取数据
+      if (location.state.reset) {
+        handleReset();
+      }
+      // 标签切回设置初始值
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        setPaginations({ ...paginations, current, pageSize });
+      }
+    }
+  }, [location.state]);
 
   useEffect(() => {
     validateFields((err, value) => {
-      searchdata(value, 1, paginations.pageSize);
+      searchdata(value, cacheinfo.paginations.current, cacheinfo.paginations.pageSize);
     })
   }, []);
 
@@ -298,7 +333,7 @@ function MymonthlySearch(props) {
                 <Col span={8}>
                   <Form.Item label="月报名称">
                     {getFieldDecorator('name', {
-                      initialValue: ''
+                      initialValue: cacheinfo.name
                     })(<Input placeholder='请输入' allowClear />)}
                   </Form.Item>
                 </Col>
@@ -306,7 +341,7 @@ function MymonthlySearch(props) {
                 <Col span={8}>
                   <Form.Item label="月报分类">
                     {getFieldDecorator('type', {
-                      initialValue: ''
+                      initialValue: cacheinfo.type
                     })
                       (
                         <Select placeholder="请选择" allowClear>
@@ -324,7 +359,7 @@ function MymonthlySearch(props) {
                 <Col span={8}>
                   <Form.Item label="填报人" >
                     {getFieldDecorator('userName', {
-                      initialValue: ''
+                      initialValue: cacheinfo.userName
                     })(<Input placeholder='请输入' allowClear />)}
                   </Form.Item>
                 </Col>
@@ -332,11 +367,11 @@ function MymonthlySearch(props) {
                 <Col span={8}>
                   <Form.Item label="填报日期">
                     {getFieldDecorator('plannedStartTime', {
+                      initialValue:''
                     })
                       (
                         <MonthPicker
                           style={{ width: '100%' }}
-                          onChange={onChange}
                         />
                       )}
                   </Form.Item>
@@ -363,7 +398,7 @@ function MymonthlySearch(props) {
               loading={loading}
               columns={columns}
               dataSource={queryOrderlist.rows}
-              rowKey={record => record.id}
+              rowKey={records => records.id}
               pagination={pagination}
               rowSelection={rowSelection}
             />
