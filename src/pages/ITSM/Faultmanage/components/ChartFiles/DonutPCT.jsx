@@ -76,7 +76,7 @@ function DonutPCT(props) {
   return (
     <div>
       <div
-        style={{ position: 'absolute', left: '50%', top: '40%', width: 100, textAlign: 'center', marginLeft: '-50px', zIndex: 9999 }}
+        style={{ position: 'absolute', left: '50%', top: '40%', width: 100, textAlign: 'center', marginLeft: '-50px', zIndex: 98 }}
       >
         <span style={{ fontSize: 24, fontWeight: 700 }}>
           {totaltitle ? (<a onClick={() => {
@@ -107,7 +107,35 @@ function DonutPCT(props) {
               //   onGettotalVal(staticName)
               // }
             }, 200);
-          }}>{total}</a>) : (<>{total}</>)}
+          }}
+            onDoubleClick={() => {
+              switch (staticName) {
+                case '故障责任单位情况':
+                  handleGetDrawerVal({ staticName: 'blametotal', time1, time2, drawtitle: '故障总数' });
+                  break;
+                case '故障类型总情况':
+                  handleGetDrawerVal({ staticName: 'typetotal', time1, time2, drawtitle: '故障总数' });
+                  break;
+                case '硬件故障情况':
+                  handleGetDrawerVal({ staticName: 'hardwaretotal', time1, time2, drawtitle: '硬件故障总数' });
+                  break;
+                case '软件故障情况':
+                  handleGetDrawerVal({ staticName: 'softwaretotal', time1, time2, drawtitle: '软件故障总数' });
+                  break;
+                case '故障系统模块情况':
+                  handleGetDrawerVal({ staticName: 'worksystemtotal', time1, time2, drawtitle: '总工单数' });
+                  break;
+                case '故障工单超时情况':
+                  handleGetDrawerVal({ staticName: 'timeouttotal', time1, time2, drawtitle: '总工单数' });
+                  break;
+                default:
+                  break;
+              }
+              // if (onGettotalVal) {
+              //   onGettotalVal(staticName)
+              // }
+            }}
+          >{total}</a>) : (<>{total}</>)}
         </span><br />
         <span>{totaltitle}</span>
       </div>
@@ -129,7 +157,19 @@ function DonutPCT(props) {
               handleGetDrawerVal({ ...linkdata._origin, staticName, drawtitle: linkdata._origin.type });
             }
           }, 200);
-        }}>
+        }}
+        onDoubleClick={ev => {
+          const linkdata = ev.data;
+          if (linkdata && linkdata.data && onGetVal) {
+            onGetVal(linkdata.data);
+            handleGetDrawerVal({ ...linkdata.data, staticName, drawtitle: linkdata.data.type });
+          }
+          if (linkdata && linkdata._origin && onGetVal) {
+            onGetVal(linkdata._origin);
+            handleGetDrawerVal({ ...linkdata._origin, staticName, drawtitle: linkdata._origin.type });
+          }
+        }}
+      >
         <Coordinate type="theta" radius={0.8} innerRadius={0.7} />
         <Axis visible={false} />
         <Tooltip showTitle={false} />
@@ -155,7 +195,7 @@ function DonutPCT(props) {
             },
           ]}
         />
-        <Interaction type="element-single-selected" />
+        <Interaction type="element-highlight" />
       </Chart>
       {/* 抽屉 */}
       <ChartDrawer

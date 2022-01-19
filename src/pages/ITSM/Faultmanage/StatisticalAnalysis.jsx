@@ -232,6 +232,7 @@ function StatisticalAnalysis(props) {
                     padding={[30, 0, 70, 60]}
                     staticName="故障责任单位情况"
                     onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
+                    uncheckedname={['全部']}
                   />
                 )
               }
@@ -280,6 +281,7 @@ function StatisticalAnalysis(props) {
                   endTime={moment(values.endTime).format('YYYY-MM-DD')}
                   staticName="故障类型总情况"
                   onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
+                  uncheckedname={['全部']}
                 />
               )
             }
@@ -320,6 +322,7 @@ function StatisticalAnalysis(props) {
                   endTime={moment(values.endTime).format('YYYY-MM-DD')}
                   staticName="硬件故障情况"
                   onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
+                  uncheckedname={['全部']}
                 />
               )
             }
@@ -360,6 +363,7 @@ function StatisticalAnalysis(props) {
                   endTime={moment(values.endTime).format('YYYY-MM-DD')}
                   staticName="软件故障情况"
                   onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
+                  uncheckedname={['全部']}
                 />
               )
             }
@@ -404,6 +408,7 @@ function StatisticalAnalysis(props) {
                 endTime={moment(values.endTime).format('YYYY-MM-DD')}
                 staticName="故障系统模块情况"
                 onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
+                uncheckedname={['全部']}
               />
             )}
           </Card>

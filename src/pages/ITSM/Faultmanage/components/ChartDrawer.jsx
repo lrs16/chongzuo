@@ -16,6 +16,7 @@ const columns = [
     dataIndex: 'no',
     key: 'no',
     width: 150,
+    fixed: 'left',
     render: (text, record) => {
       const handleClick = () => {
         router.push({
@@ -34,6 +35,7 @@ const columns = [
     dataIndex: 'flowNodeName',
     key: 'flowNodeName',
     width: 200,
+    fixed: 'left',
   },
   {
     title: '故障发生时间',

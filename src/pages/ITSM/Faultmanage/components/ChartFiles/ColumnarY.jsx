@@ -29,7 +29,15 @@ function ColumnarY(props) {
               handleGetDrawerVal({ ...clickdata.data, staticName, drawtitle: `${staticName}：${clickdata.data.type}` });
             }
           }, 200);
-        }}>
+        }}
+        onDoubleClick={ev => {
+          const clickdata = ev.data;
+          if (clickdata && clickdata.data) {
+            onGetVal(clickdata.data);
+            handleGetDrawerVal({ ...clickdata.data, staticName, drawtitle: `${staticName}：${clickdata.data.type}` });
+          }
+        }}
+      >
         <Coord transpose />
         <Axis
           name="total"

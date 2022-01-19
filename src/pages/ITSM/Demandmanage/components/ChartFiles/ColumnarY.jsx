@@ -30,6 +30,13 @@ function ColumnarY(props) {
             }
           }, 200);
         }}
+        onDoubleClick={ev => {
+          const clickdata = ev.data;
+          if (clickdata && clickdata.data) {
+            onGetVal(clickdata.data);
+            handleGetDrawerVal({ ...clickdata.data, staticName, time1, time2, drawtitle: `${staticName}：${clickdata.data.type}` });
+          }
+        }}
       >
         <Coord transpose />
         <Axis

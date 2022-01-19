@@ -25,7 +25,11 @@ function StatisticsCard(props) {
               setTimeout(() => {
                 hanlestaticard({ value, staticName, time1, time2, drawtitle: staticName });
               }, 200);
-            }}>
+            }}
+            onDoubleClick={() => {
+              hanlestaticard({ value, staticName, time1, time2, drawtitle: staticName });
+            }}
+          >
             <Statistic
               value={value}
               suffix={suffix}
