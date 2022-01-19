@@ -60,37 +60,47 @@ function DonutPCT(props) {
       >
         <span style={{ fontSize: 24, fontWeight: 700 }}>
           {totaltitle ? (<a onClick={() => {
-            switch (staticName) {
-              case '需求工单总情况':
-                handleGetDrawerVal({ staticName: 'sumtotal', time1, time2, drawtitle: '需求总数' });
-                break;
-              case '功能模块情况':
-                handleGetDrawerVal({ staticName: 'moduletotal', time1, time2, drawtitle: '需求总数' });
-                break;
-              case '需求类型统计分析':
-                handleGetDrawerVal({ staticName: 'typetotal', time1, time2, drawtitle: '需求总数' });
-                break;
-              case '需求工单超时情况':
-                handleGetDrawerVal({ staticName: 'timeouttotal', time1, time2, drawtitle: '需求总数' });
-                break;
-              default:
-                break;
-            }
+            setTimeout(() => {
+              switch (staticName) {
+                case '需求工单总情况':
+                  handleGetDrawerVal({ staticName: 'sumtotal', time1, time2, drawtitle: '需求总数' });
+                  break;
+                case '功能模块情况':
+                  handleGetDrawerVal({ staticName: 'moduletotal', time1, time2, drawtitle: '需求总数' });
+                  break;
+                case '需求类型统计分析':
+                  handleGetDrawerVal({ staticName: 'typetotal', time1, time2, drawtitle: '需求总数' });
+                  break;
+                case '需求工单超时情况':
+                  handleGetDrawerVal({ staticName: 'timeouttotal', time1, time2, drawtitle: '需求总数' });
+                  break;
+                default:
+                  break;
+              }
+            }, 200);
           }}>{total}</a>) : (<>{total}</>)}
         </span><br />
         <span>{totaltitle}</span>
       </div>
-      <Chart pure height={height} data={dv.rows} padding={padding} autoFit onClick={ev => {
-        const linkdata = ev.data;
-        if (linkdata && linkdata.data && onGetVal) {
-          onGetVal(linkdata.data);
-          handleGetDrawerVal({ ...linkdata.data, staticName, time1, time2, drawtitle: linkdata.data.type });
-        }
-        if (linkdata && linkdata._origin && onGetVal) {
-          onGetVal(linkdata._origin);
-          handleGetDrawerVal({ ...linkdata._origin, staticName, time1, time2, drawtitle: linkdata._origin.type });
-        }
-      }}>
+      <Chart
+        pure
+        height={height}
+        data={dv.rows}
+        padding={padding}
+        autoFit
+        onClick={ev => {
+          setTimeout(() => {
+            const linkdata = ev.data;
+            if (linkdata && linkdata.data && onGetVal) {
+              onGetVal(linkdata.data);
+              handleGetDrawerVal({ ...linkdata.data, staticName, time1, time2, drawtitle: linkdata.data.type });
+            }
+            if (linkdata && linkdata._origin && onGetVal) {
+              onGetVal(linkdata._origin);
+              handleGetDrawerVal({ ...linkdata._origin, staticName, time1, time2, drawtitle: linkdata._origin.type });
+            }
+          }, 200);
+        }}>
         <Coordinate type="theta" radius={0.8} innerRadius={0.7} />
         <Axis visible={false} />
         <Tooltip showTitle={false} />

@@ -22,13 +22,14 @@ function ColumnarY(props) {
         padding={padding}
         forceFit
         onClick={ev => {
-          const clickdata = ev.data;
-          if (clickdata && clickdata.data) {
-            onGetVal(clickdata.data);
-            handleGetDrawerVal({ ...clickdata.data, staticName, drawtitle: `${staticName}：${clickdata.data.type}` });
-          }
-        }}
-      >
+          setTimeout(() => {
+            const clickdata = ev.data;
+            if (clickdata && clickdata.data) {
+              onGetVal(clickdata.data);
+              handleGetDrawerVal({ ...clickdata.data, staticName, drawtitle: `${staticName}：${clickdata.data.type}` });
+            }
+          }, 200);
+        }}>
         <Coord transpose />
         <Axis
           name="total"

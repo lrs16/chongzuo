@@ -962,7 +962,6 @@ function ChartDrawer(props) {
         title={drawerdata.drawtitle}
         onClose={hanldleCancel}
         bodyStyle={{ paddingBottom: 60 }}
-        maskClosable={false}
         destroyOnClose
       >
         <div style={{ marginBottom: 24 }}>

@@ -21,9 +21,11 @@ function StatisticsCard(props) {
           <Col span={24}>{title}</Col>
           <Col span={24}
             style={{ cursor: (staticName === undefined || staticName === '') ? '' : 'pointer' }}
-            onClick={() =>
-              hanlestaticard({ value, staticName, time1, time2, drawtitle: staticName })
-            }>
+            onClick={() => {
+              setTimeout(() => {
+                hanlestaticard({ value, staticName, time1, time2, drawtitle: staticName });
+              }, 200);
+            }}>
             <Statistic
               value={value}
               suffix={suffix}

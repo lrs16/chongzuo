@@ -1121,7 +1121,6 @@ function ChartDrawer(props) {
         onClose={hanldleCancel}
         bodyStyle={{ paddingBottom: 60 }}
         destroyOnClose
-        maskClosable={false}
       >
         <div style={{ marginBottom: 24 }}>
           <Popconfirm title="确定导出数据？" onConfirm={() => download(drawerdata)}>

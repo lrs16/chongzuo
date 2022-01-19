@@ -50,13 +50,21 @@ function SmoothLine(props) {
   };
 
   return (<>
-    <Chart padding={padding} scale={cols} autoFit height={height} data={data} onClick={ev => {
-      const linkdata = ev.data;
-      if (linkdata && linkdata.data && !Array.isArray(linkdata.data) && onGetVal) {
-        onGetVal(linkdata.data);
-        handleGetDrawerVal({ ...linkdata.data, staticName, beginTime, endTime, drawtitle: linkdata.data.name });
-      }
-    }}>
+    <Chart
+      padding={padding}
+      scale={cols}
+      autoFit
+      height={height}
+      data={data}
+      onClick={ev => {
+        setTimeout(() => {
+          const linkdata = ev.data;
+          if (linkdata && linkdata.data && !Array.isArray(linkdata.data) && onGetVal) {
+            onGetVal(linkdata.data);
+            handleGetDrawerVal({ ...linkdata.data, staticName, beginTime, endTime, drawtitle: linkdata.data.name });
+          }
+        }, 200);
+      }}>
       <Line shape="smooth" position="date*value" color="name" />
       <Point position="date*value" color="name" shape="circle" size={data && data.length > 120 ? 3 : 4} />
       <Tooltip shared showCrosshairs />
