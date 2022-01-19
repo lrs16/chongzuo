@@ -35,9 +35,10 @@ registerShape("interval", "sliceShape", {
 });
 
 function DonutPCT(props) {
-  const { data, total, totaltitle, height, padding, onGetVal, staticName, time1, time2 } = props;
+  const { data, total, totaltitle, height, padding, onGetVal, staticName, time1, time2, colors } = props;
   const [visible, setVisible] = useState(false); // 抽屉是否显示
   const [drawerval, onGetDrawerVal] = useState('');
+  const indexcolors = ['#5B8FF9', '#5AD8A6', '#5D7092', '#F6BD16', '#E86452', '#6DC8EC', '#945FB9', '#FF9845', '#1E9493', '#FF99C3'];
   // const [pieColor, setPieColor] = useState('');
   const { DataView } = DataSet;
   const dv = new DataView();
@@ -179,19 +180,25 @@ function DonutPCT(props) {
           adjust="stack"
           avoidLabelOverlap
           // color={staticName === '故障工单超时情况' ? pieColor : 'type'}
-          color={staticName === '故障工单超时情况' ? ['type', ['#008000', '#FF0000']] : 'type'}
+          // color={staticName === '故障工单超时情况' ? ['type', ['#008000', '#FF0000']] : 'type'}
+          color={["type", (val) => {
+            const i = data.findIndex(obj => obj.type === val)
+            if (colors && colors.length && colors[i]) {
+              return colors[i]
+            }
+            return indexcolors[i]
+          }]}
           shape="sliceShape"
           label={[
             'value',
             {
-              layout: {
-                type: 'pie-spider',
-              },
               type: 'pie',
               content: picdata => {
                 return `${picdata.type}：${picdata.value}（ ${(picdata.percent * 100).toFixed(2)}% ）`;
               },
-              offset: '20',
+              offset: 20,
+              offsetY: 5,
+              labelLine: true,
             },
           ]}
         />

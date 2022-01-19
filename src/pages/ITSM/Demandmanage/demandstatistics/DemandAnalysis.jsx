@@ -358,6 +358,7 @@ function Statistics(props) {
                 time2={moment(values.endTime).format('YYYY-MM-DD 23:59:59')}
                 padding={[10, 30, 30, 30]}
                 onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
+                colors={['#5AD8A6', '#F6BD16', '#ee6666']}
               />
             )}
           </Card>
