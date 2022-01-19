@@ -49,16 +49,30 @@ class DonutPCT extends Component {
       <div>
         <div style={{ position: 'absolute', left: '50%', top: '40%', width: 100, textAlign: 'center', marginLeft: '-50px', zIndex: 98 }} >
           <span style={{ fontSize: 24, fontWeight: 700 }}>
-            {onGetTotal && totalType ? (<a onClick={() => onGetTotal(totalType)}>{total}</a>) : (<>{total}</>)}
+            {onGetTotal && totalType ? (
+              <a
+                onClick={() => { setTimeout(() => { onGetTotal(totalType) }, 200) }}
+                onDoubleClick={() => onGetTotal(totalType)}
+              >{total}</a>) : (<>{total}</>
+            )}
           </span><br />
           <span>{totaltitle}</span>
         </div>
-        <Chart pure height={height} data={dv.rows} padding={padding} autoFit onClick={ev => {
-          const linkdata = ev.data;
-          if (linkdata && (linkdata.data || linkdata._origin) && onGetVal) {
-            onGetVal(linkdata.data || linkdata._origin)
-          }
-        }}
+        <Chart pure height={height} data={dv.rows} padding={padding} autoFit
+          onClick={ev => {
+            const linkdata = ev.data;
+            if (linkdata && (linkdata.data || linkdata._origin) && onGetVal) {
+              setTimeout(() => {
+                onGetVal(linkdata.data || linkdata._origin)
+              }, 200)
+            }
+          }}
+          onDoubleClick={ev => {
+            const linkdata = ev.data;
+            if (linkdata && (linkdata.data || linkdata._origin) && onGetVal) {
+              onGetVal(linkdata.data || linkdata._origin)
+            }
+          }}
         >
           <Legend visible />
           <Coordinate type="theta" radius={0.8} innerRadius={0.7} />

@@ -219,8 +219,6 @@ function Statistics(props) {
     onChange: page => changePage(page),
   };
 
-  console.log(fetchType.name);
-
   const card = (val, suffixmap) => {
     const { name, total, ringRatio, prevTotal } = val;
     return (< StatisticsCard
@@ -253,7 +251,13 @@ function Statistics(props) {
             return (
               <Col span={6}>
                 {item.name === '发布成功率' ? (card(item, suffixmap)) : (
-                  <a onMouseDown={() => setFetchType({})} onClick={() => { getList(val); setPageinations({ current: 1, pageSize: 12 }) }}>
+                  <a
+                    onMouseDown={() => setFetchType({})}
+                    onClick={() => {
+                      setTimeout(() => { getList(val); setPageinations({ current: 1, pageSize: 12 }) }, 200)
+                    }}
+                    onDoubleClick={(e) => { getList(val, e); setPageinations({ current: 1, pageSize: 12 }) }}
+                  >
                     {card(item, suffixmap)}
                   </a>
                 )}
@@ -289,8 +293,10 @@ function Statistics(props) {
                         <a
                           onMouseDown={() => setFetchType({})}
                           onClick={() => {
-                            getList({ ...val, item: item.name === '平台验证通过项' ? '通过' : '不通过' });
-                            setPageinations({ current: 1, pageSize: 12 });
+                            setTimeout(() => {
+                              getList({ ...val, item: item.name === '平台验证通过项' ? '通过' : '不通过' });
+                              setPageinations({ current: 1, pageSize: 12 });
+                            }, 200)
                           }}>
                           {card(item, suffixmap)}
                         </a>
@@ -328,8 +334,10 @@ function Statistics(props) {
                         <a
                           onMouseDown={() => setFetchType({})}
                           onClick={() => {
-                            getList({ ...val, item: item.name === '业务验证通过项' ? '通过' : '不通过' });
-                            setPageinations({ current: 1, pageSize: 12 })
+                            setTimeout(() => {
+                              getList({ ...val, item: item.name === '业务验证通过项' ? '通过' : '不通过' });
+                              setPageinations({ current: 1, pageSize: 12 })
+                            }, 200)
                           }}>
                           {card(item, suffixmap)}
                         </a>
@@ -369,8 +377,10 @@ function Statistics(props) {
                         <a
                           onMouseDown={() => setFetchType({})}
                           onClick={() => {
-                            getList({ ...val, item: item.name === '发布验证通过项' ? '通过' : '不通过' });
-                            setPageinations({ current: 1, pageSize: 12 })
+                            setTimeout(() => {
+                              getList({ ...val, item: item.name === '发布验证通过项' ? '通过' : '不通过' });
+                              setPageinations({ current: 1, pageSize: 12 })
+                            }, 200)
                           }}>
                           {card(item, suffixmap)}
                         </a>
@@ -409,8 +419,10 @@ function Statistics(props) {
                         <a
                           onMouseDown={() => setFetchType({})}
                           onClick={() => {
-                            getList({ ...val, item: item.name === '业务复核通过项' ? '通过' : '不通过' });
-                            setPageinations({ current: 1, pageSize: 12 })
+                            setTimeout(() => {
+                              getList({ ...val, item: item.name === '业务复核通过项' ? '通过' : '不通过' });
+                              setPageinations({ current: 1, pageSize: 12 })
+                            }, 200)
                           }}>
                           {card(item, suffixmap)}
                         </a>
@@ -474,7 +486,7 @@ function Statistics(props) {
                     setPageinations({ current: 1, pageSize: 12 })
                   }}
                   uncheckedname={['全部']}
-                  lock
+                //  lock
                 />
               )}
             </Card>
@@ -741,42 +753,39 @@ function Statistics(props) {
           </Card>
         </Col>
       </Row>
-      {(fetchType.columnstask || fetchType.name) && (
-        <Drawer
-          width={1550}
-          title={fetchType.name}
-          onClose={onClose}
-          visible={visible}
-          mask={false}
-        >
-          <Button onClick={() => download()} type='primary' style={{ marginBottom: 12 }}>导出数据</Button>
-          {fetchType.columnstask ? (
-            <Table
-              columns={columnstask}
-              loading={loadinglist}
-              dataSource={list.records || []}
-              pagination={pagination}
-            />
-          ) : (
-            <Table
-              columns={
-                (fetchType.name === '发布总次数' ||
-                  fetchType.name === '软件运维' ||
-                  fetchType.name === '功能开发' ||
-                  fetchType.name === '计划发布' ||
-                  fetchType.name === '临时发布' ||
-                  fetchType.name === '按时处理' ||
-                  fetchType.name === '已超时' ||
-                  fetchType.listcolumns
-                )
-                  ? columns : columnrelease}
-              loading={loadinglist}
-              dataSource={list.records || []}
-              pagination={pagination}
-            />
-          )}
-        </Drawer>
-      )}
+      <Drawer
+        width={1550}
+        title={fetchType.name}
+        onClose={onClose}
+        visible={visible}
+      >
+        <Button onClick={() => download()} type='primary' style={{ marginBottom: 12 }}>导出数据</Button>
+        {fetchType.columnstask ? (
+          <Table
+            columns={columnstask}
+            loading={loadinglist}
+            dataSource={list.records || []}
+            pagination={pagination}
+          />
+        ) : (
+          <Table
+            columns={
+              (fetchType.name === '发布总次数' ||
+                fetchType.name === '软件运维' ||
+                fetchType.name === '功能开发' ||
+                fetchType.name === '计划发布' ||
+                fetchType.name === '临时发布' ||
+                fetchType.name === '按时处理' ||
+                fetchType.name === '已超时' ||
+                fetchType.listcolumns
+              )
+                ? columns : columnrelease}
+            loading={loadinglist}
+            dataSource={list.records || []}
+            pagination={pagination}
+          />
+        )}
+      </Drawer>
     </div>
   );
 }
