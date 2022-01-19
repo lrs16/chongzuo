@@ -485,7 +485,7 @@ function Statistics(props) {
                     });
                     setPageinations({ current: 1, pageSize: 12 })
                   }}
-                  uncheckedname={['全部']}
+                  uncheckedname={['总数']}
                 //  lock
                 />
               )}
@@ -541,7 +541,7 @@ function Statistics(props) {
                     });
                     setPageinations({ current: 1, pageSize: 12 });
                   }}
-                  uncheckedname={['全部']}
+                  uncheckedname={['总数']}
                 />
               )}
             </Card>

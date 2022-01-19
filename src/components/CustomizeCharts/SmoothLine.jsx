@@ -48,6 +48,7 @@ function SmoothLine(props) {
   // });
   const indexcolors = ['#5B8FF9', '#5AD8A6', '#5D7092', '#F6BD16', '#E86452', '#6DC8EC', '#945FB9', '#FF9845', '#1E9493', '#FF99C3']
   const ChangeItem = (item) => {
+    console.log(item, data);
     const newArr = [];
     if (data && item) {
       const keyItem = uniqueItem(data, 'name');
@@ -61,14 +62,12 @@ function SmoothLine(props) {
           style: { fill: colors?.[i] || indexcolors[i], r: 5 },
         };
         if (item && item.length > 0) {
-          for (let j = 0; j < item.length; j += 1) {
-            const fineName = item.indexOf(keyItem[i].name);
-            if (fineName > -1) {
-              vote.unchecked = true;
-            } else {
-              vote.unchecked = false;
-            }
-          };
+          const fineName = item.indexOf(keyItem[i].name);
+          if (fineName > -1) {
+            vote.unchecked = true;
+          } else {
+            vote.unchecked = false;
+          }
         } else {
           vote.unchecked = false;
         }
@@ -83,7 +82,7 @@ function SmoothLine(props) {
     if (data && data.length) {
       ChangeItem(uncheckedname || ['总数']);
     }
-  }, [data])
+  }, [data]);
 
   return (
     <Chart padding={padding} scale={cols} autoFit height={height} data={data}
@@ -131,7 +130,7 @@ function SmoothLine(props) {
         size={['name', (name) => {
           const arr = pointSize.filter(item => !item.unchecked);
           const newArr = ObjkeyToArr(arr, 'name')
-          if (newArr.indexOf(name) > -1) {
+          if (newArr && Array.isArray(newArr) && newArr.indexOf(name) > -1) {
             return 3;
           }
           return 0;
