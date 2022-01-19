@@ -86,12 +86,22 @@ function SmoothLine(props) {
   }, [data])
 
   return (
-    <Chart padding={padding} scale={cols} autoFit height={height} data={data} onClick={ev => {
-      const linkdata = ev.data;
-      if (linkdata && linkdata.data && !Array.isArray(linkdata.data) && onGetVal) {
-        onGetVal(linkdata.data)
-      }
-    }}>
+    <Chart padding={padding} scale={cols} autoFit height={height} data={data}
+      onClick={ev => {
+        const linkdata = ev.data;
+        if (linkdata && linkdata.data && !Array.isArray(linkdata.data) && onGetVal) {
+          setTimeout(() => {
+            onGetVal(linkdata.data)
+          }, 200)
+        }
+      }}
+      onDoubleClick={ev => {
+        const linkdata = ev.data;
+        if (linkdata && linkdata.data && !Array.isArray(linkdata.data) && onGetVal) {
+          onGetVal(linkdata.data)
+        }
+      }}
+    >
       <Legend
         name="name"
         position="bottom"

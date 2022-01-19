@@ -573,6 +573,7 @@ function Statistics(props) {
                   setPageinations({ current: 1, pageSize: 12 })
                 }}
                 totalType='all'
+                colors={['#ee6666', '#5AD8A6']}
               />}
           </Card>
         </Col>
@@ -671,7 +672,7 @@ function Statistics(props) {
         </Col>
       </Row>
       <Row style={{ marginTop: 16 }} gutter={16} onMouseDown={() => setFetchType({})}>
-        <Col span={8}>
+        <Col span={12}>
           <div className={styles.statisticscard}>
             <Avatar icon="share-alt" />
             <b>功能类型统计总情况</b>
@@ -698,7 +699,7 @@ function Statistics(props) {
             )}
           </Card>
         </Col>
-        <Col span={8}>
+        <Col span={12}>
           <div className={styles.statisticscard}>
             <Avatar icon="share-alt" />
             <b>功能类型-前台功能统计情况</b>
@@ -725,7 +726,7 @@ function Statistics(props) {
             )}
           </Card>
         </Col>
-        <Col span={8}>
+        <Col span={12}>
           <div className={styles.statisticscard}>
             <Avatar icon="share-alt" />
             <b>功能类型-后台功能统计情况</b>

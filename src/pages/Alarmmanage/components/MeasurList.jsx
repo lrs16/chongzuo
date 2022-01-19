@@ -316,7 +316,6 @@ function MeasurList(props) {
       };
     }
   }, [locationState])
-  console.log(locationState);
 
   const rowSelection = {
     selectedRowKeys,

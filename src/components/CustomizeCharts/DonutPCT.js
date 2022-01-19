@@ -33,9 +33,10 @@ registerShape("interval", "sliceShape", {
   }
 });
 
+const indexcolors = ['#5B8FF9', '#5AD8A6', '#5D7092', '#F6BD16', '#E86452', '#6DC8EC', '#945FB9', '#FF9845', '#1E9493', '#FF99C3'];
 class DonutPCT extends Component {
   render() {
-    const { data, total, totaltitle, height, padding, onGetVal, onGetTotal, totalType, TooltipHide } = this.props;
+    const { data, total, totaltitle, height, padding, onGetVal, onGetTotal, totalType, TooltipHide, colors } = this.props;
     const { DataView } = DataSet;
     const dv = new DataView();
     dv.source(data).transform({
@@ -81,19 +82,24 @@ class DonutPCT extends Component {
           <Interval
             position="value"
             adjust="stack"
-            color="type"
+            color={["type", (val) => {
+              const i = data.findIndex(obj => obj.type === val)
+              if (colors && colors.length && colors[i]) {
+                return colors[i]
+              }
+              return indexcolors[i]
+            }]}
             shape="sliceShape"
             label={[
               'value',
               {
-                layout: {
-                  type: 'pie-spider',
-                },
                 type: 'pie',
                 content: picdata => {
                   return `${picdata.type}：${picdata.value}（ ${(picdata.percent * 100).toFixed(2)}% ）`;
                 },
-                offset: '15',
+                offset: 20,
+                offsetY: 5,
+                labelLine: true,
               },
             ]}
           />
