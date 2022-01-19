@@ -48,7 +48,6 @@ function SmoothLine(props) {
   // });
   const indexcolors = ['#5B8FF9', '#5AD8A6', '#5D7092', '#F6BD16', '#E86452', '#6DC8EC', '#945FB9', '#FF9845', '#1E9493', '#FF99C3']
   const ChangeItem = (item) => {
-    console.log(item, data);
     const newArr = [];
     if (data && item) {
       const keyItem = uniqueItem(data, 'name');
@@ -151,6 +150,11 @@ function SmoothLine(props) {
                         <li
                           onClick={() => {
                             if (onGetVal && it?.data) {
+                              setTimeout(() => { onGetVal(it.data) }, 200)
+                            }
+                          }}
+                          onDoubleClick={() => {
+                            if (onGetVal && it?.data) {
                               onGetVal(it.data)
                             }
                           }}
@@ -167,12 +171,50 @@ function SmoothLine(props) {
           }
         </Tooltip>
       ) : (
-        <Tooltip shared showCrosshairs />
+        <Tooltip shared showCrosshairs >
+          {
+            (name, items) => {
+              const show = legendItem.findIndex(obj => obj.id === name && !obj.unchecked);
+              return (
+                <>
+                  {show && (<div>
+                    <div style={{ margin: '10px 0' }}>{name}</div>
+                    <ul className={styles.tooltipul}>
+                      {
+                        items.map(it => {
+                          return (
+                            <>
+                              <li
+                                onClick={() => {
+                                  if (onGetVal && it?.data) {
+                                    setTimeout(() => { onGetVal(it.data) }, 200)
+                                  }
+                                }}
+                                onDoubleClick={() => {
+                                  if (onGetVal && it?.data) {
+                                    onGetVal(it.data)
+                                  }
+                                }}
+                              >
+                                <span style={{ width: 8, height: 8, borderRadius: '50%', display: 'inline-block', marginRight: 8, background: it.mappingData.color }} />
+                                <span style={{ pointerEvents: 'none' }}>{it.data.name}</span>
+                                <span style={{ display: 'inline-block', float: 'right', marginLeft: 30 }}>{it.data.value}</span>
+                              </li>
+                            </>)
+                        })
+                      }
+                    </ul>
+                  </div>)}
+                </>
+              )
+            }
+          }
+        </Tooltip>
       )}
 
       <Axis name="date"  {...axisConfig} tickLine={tickLine} label={{ offset: 25 }} />
       <Axis name="value"   {...axisConfig} label={{ offset: 10 }} />
-      {lock && <span style={{ position: 'absolute', top: 0, right: 0 }}> <Icon type="info-circle" style={{ marginRight: 8 }} />单击标尺锁定/解锁提示信息</span>}
+      {lock && <span style={{ position: 'absolute', top: 0, right: 0 }}> <Icon type="info-circle" style={{ marginRight: 8 }} />单击标尺参考线锁定/解锁提示信息</span>}
     </Chart>
   );
 }

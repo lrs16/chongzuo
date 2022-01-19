@@ -476,8 +476,8 @@ function Statistics(props) {
                   onGetVal={(v) => {
                     getList({
                       type: 'unitStatistical',
-                      name: v.name,
-                      unit: v.name,
+                      name: v.name === '总数' ? '发布总次数' : v.name,
+                      unit: v.name === '总数' ? '发布总次数' : v.name,
                       datetype: 'D',
                       date: v.date,
                       pageIndex: 1,
@@ -486,7 +486,7 @@ function Statistics(props) {
                     setPageinations({ current: 1, pageSize: 12 })
                   }}
                   uncheckedname={['总数']}
-                //  lock
+                  lock
                 />
               )}
             </Card>
@@ -532,8 +532,8 @@ function Statistics(props) {
                   onGetVal={(v) => {
                     getList({
                       type: 'typeStatistical',
-                      name: v.name,
-                      releaseType: v.name,
+                      name: v.name === '总数' ? '发布总次数' : v.name,
+                      releaseType: v.name === '总数' ? '发布总次数' : v.name,
                       datetype: 'D',
                       date: v.date,
                       pageIndex: 1,
@@ -542,6 +542,7 @@ function Statistics(props) {
                     setPageinations({ current: 1, pageSize: 12 });
                   }}
                   uncheckedname={['总数']}
+                  lock
                 />
               )}
             </Card>
