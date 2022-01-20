@@ -100,6 +100,7 @@ class DonutPCT extends Component {
                 offset: 20,
                 offsetY: 5,
                 labelLine: true,
+                overlap: 'label'
               },
             ]}
           />

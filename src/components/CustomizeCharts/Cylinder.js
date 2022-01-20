@@ -47,12 +47,22 @@ class Cylinder extends Component {
 
     return (
       <div>
-        <Chart data={this.dv} padding={padding} scale={scal} height={height} forceFit animate onClick={ev => {
-          const linkdata = ev.data;
-          if (linkdata && linkdata.data) {
-            onGetVal(linkdata.data)
-          }
-        }}>
+        <Chart data={this.dv} padding={padding} scale={scal} height={height} forceFit animate
+          onClick={ev => {
+            const linkdata = ev.data;
+            if (linkdata && (linkdata.data || linkdata._origin) && onGetVal) {
+              setTimeout(() => {
+                onGetVal(linkdata.data || linkdata._origin)
+              }, 200)
+            }
+          }}
+          onDoubleClick={ev => {
+            const linkdata = ev.data;
+            if (linkdata && (linkdata.data || linkdata._origin) && onGetVal) {
+              onGetVal(linkdata.data || linkdata._origin)
+            }
+          }}
+        >
           <Axis
             name="rate"
             label={{
