@@ -10,6 +10,7 @@ import {
   demandstatipieData, // 统计分析 -饼图
   demandstatilineData, // 统计分析 -趋势折线图
   demandstatiratioData, // 统计分析-工单情况
+  demandTimeoutpieDate, // 需求超时(需求处理及时率)
   // demandstatidetailData, // 统计分析-工单明细-数据钻取
 } from '../services/statisticapi';
 
@@ -24,6 +25,7 @@ export default {
     piedatalist: [], // 统计分析 -饼图
     linedatalist: [], // 统计分析 -趋势折线图
     ratiodatalist: [], // 统计分析 -工单数
+    demandtimeoutpielist: [], // 需求超时(需求处理及时率)
     // demandquerylists: [], // 统计分析-工单明细-数据钻取
   },
 
@@ -113,6 +115,15 @@ export default {
       });
     },
 
+    // 需求超时(需求处理及时率)
+    *getdemandTimeoutpieDate({ payload }, { call, put }) {
+      const response = yield call(demandTimeoutpieDate, payload);
+      yield put({
+        type: 'demandtimeout',
+        payload: response
+      })
+    },
+
     // 需求统计分析-工单明细-数据钻取
     // *getdemandstatidetailData({ payload }, { call, put }) {
     //   yield put({
@@ -133,6 +144,7 @@ export default {
         ...state,
         piedatalist: [], // 统计分析 -饼图
         linedatalist: [], // 统计分析 -趋势折线图
+        demandtimeoutpielist: [] // 需求超时(需求处理及时率)
         // demandquerylists: [], // 统计分析-工单明细
       }
     },
@@ -186,6 +198,13 @@ export default {
         ...state,
         ratiodatalist: action.payload.data,
       };
+    },
+    // 需求超时(需求处理及时率)
+    demandtimeout(state, action) {
+      return {
+        ...state,
+        demandtimeoutpielist: action.payload.data
+      }
     },
 
     // 统计分析-工单明细

@@ -38,6 +38,18 @@ const columns = [
     dataIndex: 'flowNodeName',
     key: 'flowNodeName',
     width: 200,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 200,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
   },
   {
     title: '功能模块',
@@ -564,7 +576,7 @@ function ChartDrawer(props) {
         dispatch({
           type: 'demandquery/querylist',
           payload: {
-            completeStatus: '全部',
+            completeStatus: '未处理',
             endTime: value.time2,
             startTime: value.time1,
             limit: size,
@@ -935,7 +947,7 @@ function ChartDrawer(props) {
         dispatch({
           type: 'demandquery/download',
           payload: {
-            completeStatus: '全部',
+            completeStatus: '未处理',
             endTime: value.time2,
             startTime: value.time1,
           }

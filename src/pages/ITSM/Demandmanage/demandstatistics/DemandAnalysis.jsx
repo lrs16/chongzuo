@@ -25,7 +25,7 @@ function Statistics(props) {
     loadingratio,
     piedatalist, // 饼图
     linedatalist, // 趋势图
-    demandtomeoutArr, // 需求超时情况饼图
+    demandtimeoutlist, // 需求超时情况饼图
     ratiodatalist, // 工单数
   } = props;
 
@@ -150,7 +150,7 @@ function Statistics(props) {
       });
 
       dispatch({ // 需求超时情况饼图
-        type: 'demandstatistic/fetchdemandTimeoutlist',
+        type: 'demandstatistic/getdemandTimeoutpieDate',
         payload: {
           startTime: moment(values.beginTime).format('YYYY-MM-DD'),
           endTime: moment(values.endTime).format('YYYY-MM-DD')
@@ -346,19 +346,19 @@ function Statistics(props) {
             <b>需求处理及时率</b>
           </div>
           <Card onMouseDown={() => setPicVal({})}>
-            {(demandtomeoutArr && piedataArr(demandtomeoutArr).length === 0) && <Empty style={{ height: '300px' }} />}
-            {demandtomeoutArr && piedataArr(demandtomeoutArr).length > 0 && (
+            {(demandtimeoutlist && piedataArr(demandtimeoutlist).length === 0) && <Empty style={{ height: '300px' }} />}
+            {demandtimeoutlist && piedataArr(demandtimeoutlist).length > 0 && (
               <DonutPCT
-                data={piedataArr(demandtomeoutArr) || []}
+                data={piedataArr(demandtimeoutlist) || []}
                 height={300}
                 totaltitle='需求总数'
-                total={demandtomeoutArr[demandtomeoutArr.length - 1].quantity}
+                total={demandtimeoutlist[demandtimeoutlist.length - 1].quantity}
                 staticName='需求工单超时情况'
                 time1={moment(values.beginTime).format('YYYY-MM-DD 00:00:00')}
                 time2={moment(values.endTime).format('YYYY-MM-DD 23:59:59')}
                 padding={[10, 30, 30, 30]}
                 onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
-                colors={['#5AD8A6', '#F6BD16', '#ee6666']}
+                colors={['#ee6666', '#5AD8A6']}
               />
             )}
           </Card>
@@ -465,7 +465,7 @@ function Statistics(props) {
 export default connect(({ demandstatistic, loading }) => ({
   piedatalist: demandstatistic.piedatalist, // 饼图
   linedatalist: demandstatistic.linedatalist, // 趋势折线图
-  demandtomeoutArr: demandstatistic.demandtomeoutArr, // 工单超时情况饼图
+  demandtimeoutlist: demandstatistic.demandtimeoutpielist, // 工单超时情况饼图
   ratiodatalist: demandstatistic.ratiodatalist, // 工单数
   loadingratio: loading.effects['demandstatistic/getdemandstatiratioData'],
 }))(Statistics);

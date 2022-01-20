@@ -36,6 +36,18 @@ const columns = [
     key: 'flowNodeName',
     width: 200,
     fixed: 'left',
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 150,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
   },
   {
     title: '故障发生时间',

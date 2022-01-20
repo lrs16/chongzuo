@@ -151,22 +151,36 @@ function SmoothLine(props) {
           return 0;
         }]}
       />
-      {lock ? (
-        <Tooltip shared showCrosshairs lock >
-          {
-            (name, items) => {
-              return <div>
-                <div style={{ margin: '10px 0' }}>
-                  {name}
-                </div>
+      <Tooltip shared showCrosshairs lock={!!lock} >
+        {
+          (name, items) => {
+            return (
+              <div>
+                <div style={{ margin: '10px 0' }}>{name}</div>
                 <ul className={styles.tooltipul}>
                   {
                     items.map(it => {
+                      const newArr = legendItem;
+                      const uncheckedArr = newArr.filter(obj => !obj.unchecked);
+                      const uncheckedKey = ObjkeyToArr(uncheckedArr, 'id');
+                      const uncheckName = uncheckedKey && uncheckedKey.indexOf(it.data.name);
+                      if (uncheckName < 0) {
+                        return null
+                      }
                       return (
                         <li
                           onClick={() => {
                             if (onGetVal && it?.data) {
-                              onGetVal(it.data)
+                              setTimeout(() => {
+                                onGetVal(it.data);
+                                handleGetDrawerVal({ ...it.data, staticName, beginTime, endTime, drawtitle: it.data.name });
+                              }, 200)
+                            }
+                          }}
+                          onDoubleClick={() => {
+                            if (onGetVal && it?.data) {
+                              onGetVal(it.data);
+                              handleGetDrawerVal({ ...it.data, staticName, beginTime, endTime, drawtitle: it.data.name });
                             }
                           }}
                         >
@@ -178,15 +192,13 @@ function SmoothLine(props) {
                   }
                 </ul>
               </div>
-            }
+            )
           }
-        </Tooltip>
-      ) : (
-        <Tooltip shared showCrosshairs />
-      )}
+        }
+      </Tooltip>
       <Axis name="date"  {...axisConfig} tickLine={tickLine} label={{ offset: 25 }} />
       <Axis name="value"   {...axisConfig} label={{ offset: 10 }} />
-      {lock && <span style={{ position: 'absolute', top: 0, right: 0 }}> <Icon type="info-circle" style={{ marginRight: 8 }} />单击标尺锁定/解锁提示信息</span>}
+      {lock && <span style={{ position: 'absolute', top: 0, right: 0 }}> <Icon type="info-circle" style={{ marginRight: 8 }} />单击参考线锁定/解锁提示信息</span>}
     </Chart>
     {/* 抽屉 */}
     <ChartDrawer

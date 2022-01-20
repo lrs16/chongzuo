@@ -135,6 +135,10 @@ export async function demandstatiratioData(params) {
   });
 }
 
+//  需求超时(需求处理及时率)
+export async function demandTimeoutpieDate(params) {
+  return request(`/demand/statisstics/timeOut2?startTime=${params.startTime}&endTime=${params.endTime}`);
+}
 // // 需求统计分析数据攥取
 // // //demand/statisstics/detail 工单明细
 // export async function demandstatidetailData(params) {
