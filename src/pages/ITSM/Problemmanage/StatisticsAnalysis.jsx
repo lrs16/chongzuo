@@ -288,7 +288,7 @@ function StatisticsAnalysis(props) {
                             });
                             setTimeout(() => {
                               setVisible(true)
-                            },100)
+                            },200)
                             setTitle('问题总数')
                           }}
                         />
@@ -311,7 +311,7 @@ function StatisticsAnalysis(props) {
                             });
                             setTimeout(() => {
                               setVisible(true)
-                            },100)
+                            },200)
                             setTitle('已解决')
                           }}
                         />
@@ -355,7 +355,7 @@ function StatisticsAnalysis(props) {
                             });
                             setTimeout(() => {
                               setVisible(true)
-                            },100)
+                            },200)
                             setTitle('程序问题')
                           }}
                         />
@@ -377,7 +377,7 @@ function StatisticsAnalysis(props) {
                             });
                             setTimeout(() => {
                               setVisible(true)
-                            },100)
+                            },200)
                             setTitle('功能问题')
                           }}
                         />
@@ -405,7 +405,7 @@ function StatisticsAnalysis(props) {
                         height={300}
                         total={statratioArr && statratioArr.total}
                         totaltitle="问题处理总数"
-                        padding={[10, 30, 10, 30]}
+                        padding={[10, 30, 30, 30]}
                         onGetVal={v => {
                           setPicVal({
                             model: '工单情况',
@@ -479,7 +479,7 @@ function StatisticsAnalysis(props) {
                         height={300}
                         total={statratioArr && (statratioArr.function + statratioArr.program)}
                         totaltitle="问题分类总数"
-                        padding={[10, 30, 10, 30]}
+                        padding={[10, 30, 30, 30]}
                         onGetVal={v => {
                           setPicVal({
                             model: '问题分类',
@@ -550,7 +550,7 @@ function StatisticsAnalysis(props) {
                         height={300}
                         total={piesum(statpieArr && statpieArr['程序问题情况'])}
                         totaltitle="程序问题总数"
-                        padding={[10, 30, 10, 30]}
+                        padding={[10, 30, 30, 30]}
                         onGetVal={v => {
                           setPicVal({
                             model: '程序问题',
@@ -625,7 +625,7 @@ function StatisticsAnalysis(props) {
                         height={300}
                         total={piesum(statpieArr && statpieArr['功能问题情况'])}
                         totaltitle="功能问题总数"
-                        padding={[10, 30, 10, 30]}
+                        padding={[10, 30, 30, 30]}
                         onGetVal={v => {
                           setPicVal({
                             model: '功能问题',
@@ -699,7 +699,7 @@ function StatisticsAnalysis(props) {
                       height={300}
                       total={piesum(statpieArr && statpieArr['问题来源统计分析'])}
                       totaltitle="问题来源总数"
-                      padding={[10, 30, 10, 30]}
+                      padding={[10, 30, 30, 30]}
                       onGetVal={v => {
                         setPicVal({
                           model: '问题来源',
@@ -769,7 +769,7 @@ function StatisticsAnalysis(props) {
                       height={300}
                       total={piesum(timeoutdata)}
                       totaltitle="处理及时率总数"
-                      padding={[10, 30, 10, 30]}
+                      padding={[10, 30, 30, 30]}
                       onGetVal={v => {
                         let timeStatus;
                         switch (v.type) {

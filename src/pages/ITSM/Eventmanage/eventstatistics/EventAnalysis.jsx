@@ -257,7 +257,7 @@ function EventAnalysis(props) {
                           });
                           setTimeout(() => {
                             setVisible(true)
-                          },100)
+                          },200)
                           setTitle('事件总数')
                         }}
                       />
@@ -282,7 +282,7 @@ function EventAnalysis(props) {
                           });
                           setTimeout(() => {
                             setVisible(true)
-                          },100)
+                          },200)
                           setTitle('已完成')
                         }}
                       />
@@ -307,7 +307,7 @@ function EventAnalysis(props) {
                           });
                           setTimeout(() => {
                             setVisible(true)
-                          },100)
+                          },200)
                           setTitle('未完成')
                         }}
                       />
@@ -368,7 +368,7 @@ function EventAnalysis(props) {
                           });
                           setTimeout(() => {
                             setVisible(true)
-                          },100)
+                          },200)
                           setTitle('受理总数')
                         }}
                       />
@@ -389,7 +389,7 @@ function EventAnalysis(props) {
                           });
                           setTimeout(() => {
                             setVisible(true)
-                          },100)
+                          },200)
                           setTitle('一线处理量')
                         }}
                       />
@@ -425,7 +425,7 @@ function EventAnalysis(props) {
                       height={300}
                       total={piesum(getTypeConditionsdata && getTypeConditionsdata.pieChart)}
                       totaltitle="事件分类总数"
-                      padding={[10, 30, 10, 30]}
+                      padding={[10, 30, 30, 30]}
                       onGetVal={v => {
                         setPicVal({
                           eventType: v === 'center' ? '总数' : v.type,
@@ -468,7 +468,7 @@ function EventAnalysis(props) {
                           });
                           setTimeout(() => {
                             setVisible(true)
-                          },100)
+                          },200)
                           setTitle(v.name);
                         }
                       }}
@@ -495,7 +495,7 @@ function EventAnalysis(props) {
                       height={300}
                       total={piesum(getObjectConditionsdata && getObjectConditionsdata.pieChart)}
                       totaltitle="事件对象总数"
-                      padding={[10, 30, 10, 30]}
+                      padding={[10, 30, 30, 30]}
                       onGetVal={v => {
                         const obj = {
                           time1: values.beginTime,
@@ -574,7 +574,7 @@ function EventAnalysis(props) {
                       colors={['#5AD8A6','#ee6666']}
                       total={piesum(getTimeOutConditionsdata)}
                       totaltitle="工单处理总数"
-                      padding={[10, 30, 10, 30]}
+                      padding={[10, 30, 30, 30]}
                       onGetVal={v => {
                         let result;
                         switch (v.type) {
