@@ -22,7 +22,7 @@ export async function eventtopnList(params) {
 
 // //  工单处理率列表
 export async function eventhandlerateList(params) {
-  return request(`/event/statis/eventHandleRate?time1=${params.startTime}&time2=${params.endTime}`); 
+  return request(`/event/statis/eventHandleRate?time1=${params.startTime}&time2=${params.endTime}&type=${params.type}`); 
 }
 
 //  下载类

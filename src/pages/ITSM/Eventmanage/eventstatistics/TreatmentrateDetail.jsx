@@ -203,7 +203,7 @@ function TreatmentrateDetail(props) {
       <Drawer
         title={title}
         visible={visible}
-        width={720}
+        width={1000}
         centered='true'
         maskClosable='true'
         onClose={handleCancel}

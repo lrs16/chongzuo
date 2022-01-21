@@ -31,7 +31,7 @@ function Maintenance(props) {
   const { pagetitle } = props.route.name;
   const [tabActiveKey, setTabActiveKey] = useState('week');
   const {
-    form: { getFieldDecorator, setFieldsValue, validateFields },
+    form: { getFieldDecorator, setFieldsValue },
     maintenanceArr,
     dispatch,
     loading
@@ -235,10 +235,6 @@ function Maintenance(props) {
         startTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
         setFieldsValue({ time1: moment(startTime) })
         break;
-      case 'other':
-        endTime = dateString;
-        setFieldsValue({ time2: moment(endTime) })
-        break;
       default:
         break;
     }
@@ -277,24 +273,35 @@ function Maintenance(props) {
     })
   }
 
-
   const defaultTime = () => {
-    //  周统计
-    if (tabActiveKey === 'week') {
-      startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD');
-      endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
-      setFieldsValue({
-        time1: moment(startTime),
-        time2: moment(endTime),
-      });
-    } else { // 月统计
-      startTime = moment().startOf('month').format('YYYY-MM-DD');
-      endTime = moment().endOf('month').format('YYYY-MM-DD');
-      setFieldsValue({
-        monthStarttime: moment(startTime)
-      });
+    startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
+    endTime = moment().format('YYYY-MM-DD');
+    switch (tabActiveKey) {
+      case 'week':
+        setFieldsValue({
+          time1: moment(startTime),
+          time2: moment(endTime)
+        });
+        break;
+      case 'month':
+
+        startTime = moment().startOf('month').format('YYYY-MM-DD');
+        endTime = moment().endOf('month').format('YYYY-MM-DD');
+        setFieldsValue({
+          monthStarttime: moment(startTime)
+        });
+        break;
+      case 'other':
+        startTime = moment().startOf('month').format('YYYY-MM-DD');
+        endTime = moment().endOf('month').format('YYYY-MM-DD');
+        setFieldsValue({
+          time1: moment(startTime),
+          time2: moment(endTime)
+        });
+        break;
+      default:
+        break;
     }
-   
   }
 
   useEffect(() => {

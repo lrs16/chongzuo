@@ -33,9 +33,10 @@ registerShape("interval", "sliceShape", {
   }
 });
 
+const indexcolors = ['#5B8FF9', '#5AD8A6', '#5D7092', '#F6BD16', '#E86452', '#6DC8EC', '#945FB9', '#FF9845', '#1E9493', '#FF99C3'];
 class DonutPCT extends Component {
   render() {
-    const { data, total, totaltitle, height, padding, onGetVal, onGetTotal, totalType, TooltipHide } = this.props;
+    const { data, total, totaltitle, height, padding, onGetVal, TooltipHide, colors } = this.props;
     const { DataView } = DataSet;
     const dv = new DataView();
     dv.source(data).transform({
@@ -48,39 +49,55 @@ class DonutPCT extends Component {
     return (
       <div>
         <div style={{ position: 'absolute', left: '50%', top: '42%', width: 100, textAlign: 'center', marginLeft: '-50px',zIndex:999 }} >
-          <span style={{ fontSize: 24, fontWeight: 700 }} onClick={()=>onGetVal('center')}>{total}</span><br />
+          <a style={{ fontSize: 24, fontWeight: 700 }} onClick={()=>onGetVal('center')}>{total}</a><br />
           <span>{totaltitle}</span>
         </div>
-        <Chart  height={height} data={dv.rows} padding={padding} autoFit onClick={ev => {
-          const linkdata = ev.data;
-          if (linkdata && (linkdata.data || linkdata._origin) && onGetVal) {
-            onGetVal(linkdata.data || linkdata._origin)
-          }
-        }}>
-          {/* <Legend visible={false} /> */}
+        <Chart pure height={height} data={dv.rows} padding={padding} autoFit
+          onClick={ev => {
+            const linkdata = ev.data;
+            if (linkdata && (linkdata.data || linkdata._origin) && onGetVal) {
+              setTimeout(() => {
+                onGetVal(linkdata.data || linkdata._origin)
+              }, 200)
+            }
+          }}
+          onDoubleClick={ev => {
+            const linkdata = ev.data;
+            if (linkdata && (linkdata.data || linkdata._origin) && onGetVal) {
+              onGetVal(linkdata.data || linkdata._origin)
+            }
+          }}
+        >
+          <Legend visible />
           <Coordinate type="theta" radius={0.8} innerRadius={0.7} />
           <Axis visible={false} />
-          <Tooltip showTitle={false} />
+          <Tooltip showTitle={false} visible={!TooltipHide} />
           <Interval
             position="value"
             adjust="stack"
-            color="type"
+            color={["type", (val) => {
+              const i = data.findIndex(obj => obj.type === val)
+              if (colors && colors.length && colors[i]) {
+                return colors[i]
+              }
+              return indexcolors[i]
+            }]}
             shape="sliceShape"
             label={[
               'value',
               {
-                layout: {
-                  type: 'pie-spider',
-                },
                 type: 'pie',
                 content: picdata => {
                   return `${picdata.type}：${picdata.value}（ ${(picdata.percent * 100).toFixed(2)}% ）`;
                 },
-                offset: '15',
+                offset: 20,
+                offsetY: 5,
+                labelLine: true,
               },
             ]}
           />
-          <Interaction type="element-single-selected" />
+          <Interaction type="element-highlight" />
+          {/* <Interaction type="active-region" /> */}
         </Chart>
       </div >
     );
