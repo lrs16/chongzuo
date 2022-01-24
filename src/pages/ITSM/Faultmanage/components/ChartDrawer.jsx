@@ -226,7 +226,7 @@ function ChartDrawer(props) {
     drawerdata,
     dispatch,
     faultQueryList,
-    loading
+    loading,
   } = props;
 
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
@@ -307,16 +307,29 @@ function ChartDrawer(props) {
         break;
       // *******饼+线(故障责任单位情况)
       case '故障责任单位情况':
-        dispatch({
-          type: 'fault/getfaultQueryList',
-          payload: {
-            pageNum: page,
-            pageSize: size,
-            blame: value.type || value.name,
-            addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
-            addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
-          }
-        })
+        if (value.timeType === 'Y') {
+          dispatch({
+            type: 'fault/getfaultQueryList',
+            payload: {
+              pageNum: page,
+              pageSize: size,
+              blame: value.type || value.name,
+              addTimeBegin: moment(value.date).format('YYYY-MM-DD 00:00:00'),
+              addTimeEnd: moment(value.date).endOf('month').format('YYYY-MM-DD 23:59:59'),
+            }
+          })
+        } else {
+          dispatch({
+            type: 'fault/getfaultQueryList',
+            payload: {
+              pageNum: page,
+              pageSize: size,
+              blame: value.type || value.name,
+              addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+            }
+          })
+        }
         break;
       // *******(饼+线)*3个(故障类型统计分析-[故障类型总情况+故障类型趋势分析]，[硬件故障情况+硬件故障趋势分析]，[软件故障情况+软件故障趋势分析])
       case '故障类型总情况':
@@ -328,7 +341,7 @@ function ChartDrawer(props) {
               pageSize: size,
               type: '件',
               addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
-              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || (value.timeType === 'Y' ? moment(value.date).endOf('month').format('YYYY-MM-DD 23:59:59') : moment(value.date).format('YYYY-MM-DD 23:59:59')),
             }
           })
         } else if (value.name === '非主站故障') { // 曲线
@@ -339,7 +352,7 @@ function ChartDrawer(props) {
               pageSize: size,
               master: '否',
               addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
-              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || (value.timeType === 'Y' ? moment(value.date).endOf('month').format('YYYY-MM-DD 23:59:59') : moment(value.date).format('YYYY-MM-DD 23:59:59')),
             }
           })
         } else if (value.name === '计量主站故障') { // 曲线
@@ -350,7 +363,7 @@ function ChartDrawer(props) {
               pageSize: size,
               master: '是',
               addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
-              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || (value.timeType === 'Y' ? moment(value.date).endOf('month').format('YYYY-MM-DD 23:59:59') : moment(value.date).format('YYYY-MM-DD 23:59:59')),
             }
           })
         } else {
@@ -361,7 +374,7 @@ function ChartDrawer(props) {
               pageSize: size,
               type: value.type || value.name,
               addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
-              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || (value.timeType === 'Y' ? moment(value.date).endOf('month').format('YYYY-MM-DD 23:59:59') : moment(value.date).format('YYYY-MM-DD 23:59:59')),
             }
           })
         }
@@ -375,7 +388,7 @@ function ChartDrawer(props) {
               pageSize: size,
               type: '硬件',
               addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
-              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || (value.timeType === 'Y' ? moment(value.date).endOf('month').format('YYYY-MM-DD 23:59:59') : moment(value.date).format('YYYY-MM-DD 23:59:59')),
             }
           })
         } else {
@@ -386,7 +399,7 @@ function ChartDrawer(props) {
               pageSize: size,
               type: value.type || value.name,
               addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
-              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || (value.timeType === 'Y' ? moment(value.date).endOf('month').format('YYYY-MM-DD 23:59:59') : moment(value.date).format('YYYY-MM-DD 23:59:59')),
             }
           })
         }
@@ -400,7 +413,7 @@ function ChartDrawer(props) {
               pageSize: size,
               type: '软件',
               addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
-              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || (value.timeType === 'Y' ? moment(value.date).endOf('month').format('YYYY-MM-DD 23:59:59') : moment(value.date).format('YYYY-MM-DD 23:59:59')),
             }
           })
         } else {
@@ -411,7 +424,7 @@ function ChartDrawer(props) {
               pageSize: size,
               type: value.type || value.name,
               addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
-              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || (value.timeType === 'Y' ? moment(value.date).endOf('month').format('YYYY-MM-DD 23:59:59') : moment(value.date).format('YYYY-MM-DD 23:59:59')),
             }
           })
         }
@@ -425,7 +438,7 @@ function ChartDrawer(props) {
             pageSize: size,
             registerModel: value.type || value.name,
             addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
-            addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+            addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || (value.timeType === 'Y' ? moment(value.date).endOf('month').format('YYYY-MM-DD 23:59:59') : moment(value.date).format('YYYY-MM-DD 23:59:59')),
           }
         })
         break;
@@ -718,7 +731,7 @@ function ChartDrawer(props) {
             ids: selectedKeys.toString(),
             blame: value.type || value.name,
             addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
-            addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+            addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || (value.timeType === 'Y' ? moment(value.date).endOf('month').format('YYYY-MM-DD 23:59:59') : moment(value.date).format('YYYY-MM-DD 23:59:59')),
           },
         }).then(res => {
           const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
@@ -741,7 +754,7 @@ function ChartDrawer(props) {
               ids: selectedKeys.toString(),
               type: '件',
               addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
-              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || (value.timeType === 'Y' ? moment(value.date).endOf('month').format('YYYY-MM-DD 23:59:59') : moment(value.date).format('YYYY-MM-DD 23:59:59')),
             },
           }).then(res => {
             const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
@@ -761,7 +774,7 @@ function ChartDrawer(props) {
               ids: selectedKeys.toString(),
               master: '否',
               addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
-              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || (value.timeType === 'Y' ? moment(value.date).endOf('month').format('YYYY-MM-DD 23:59:59') : moment(value.date).format('YYYY-MM-DD 23:59:59')),
             },
           }).then(res => {
             const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
@@ -781,7 +794,7 @@ function ChartDrawer(props) {
               ids: selectedKeys.toString(),
               master: '是',
               addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
-              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || (value.timeType === 'Y' ? moment(value.date).endOf('month').format('YYYY-MM-DD 23:59:59') : moment(value.date).format('YYYY-MM-DD 23:59:59')),
             },
           }).then(res => {
             const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
@@ -801,7 +814,7 @@ function ChartDrawer(props) {
               ids: selectedKeys.toString(),
               type: value.type || value.name,
               addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
-              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || (value.timeType === 'Y' ? moment(value.date).endOf('month').format('YYYY-MM-DD 23:59:59') : moment(value.date).format('YYYY-MM-DD 23:59:59')),
             },
           }).then(res => {
             const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
@@ -824,7 +837,7 @@ function ChartDrawer(props) {
               ids: selectedKeys.toString(),
               type: '硬件',
               addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
-              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || (value.timeType === 'Y' ? moment(value.date).endOf('month').format('YYYY-MM-DD 23:59:59') : moment(value.date).format('YYYY-MM-DD 23:59:59')),
             },
           }).then(res => {
             const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
@@ -844,7 +857,7 @@ function ChartDrawer(props) {
               ids: selectedKeys.toString(),
               type: value.type || value.name,
               addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
-              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || (value.timeType === 'Y' ? moment(value.date).endOf('month').format('YYYY-MM-DD 23:59:59') : moment(value.date).format('YYYY-MM-DD 23:59:59')),
             },
           }).then(res => {
             const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
@@ -867,7 +880,7 @@ function ChartDrawer(props) {
               ids: selectedKeys.toString(),
               type: '软件',
               addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
-              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || (value.timeType === 'Y' ? moment(value.date).endOf('month').format('YYYY-MM-DD 23:59:59') : moment(value.date).format('YYYY-MM-DD 23:59:59')),
             },
           }).then(res => {
             const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
@@ -887,7 +900,7 @@ function ChartDrawer(props) {
               ids: selectedKeys.toString(),
               type: value.type || value.name,
               addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
-              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+              addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || (value.timeType === 'Y' ? moment(value.date).endOf('month').format('YYYY-MM-DD 23:59:59') : moment(value.date).format('YYYY-MM-DD 23:59:59')),
             },
           }).then(res => {
             const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
@@ -911,7 +924,7 @@ function ChartDrawer(props) {
             ids: selectedKeys.toString(),
             registerModel: value.type || value.name,
             addTimeBegin: pointdate === true ? moment(value.beginTime).format(`YYYY-MM-DD ${value.date}:00:00`) : value.startdate || moment(value.date).format('YYYY-MM-DD 00:00:00'),
-            addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || moment(value.date).format('YYYY-MM-DD 23:59:59'),
+            addTimeEnd: pointdate === true ? moment(value.endTime).format(`YYYY-MM-DD ${value.date}:59:59`) : value.enddate || (value.timeType === 'Y' ? moment(value.date).endOf('month').format('YYYY-MM-DD 23:59:59') : moment(value.date).format('YYYY-MM-DD 23:59:59')),
           },
         }).then(res => {
           const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;

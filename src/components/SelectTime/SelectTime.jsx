@@ -4,13 +4,17 @@ import { Card, Tag, DatePicker, Button } from 'antd';
 
 const { CheckableTag } = Tag;
 const { MonthPicker } = DatePicker;
-const tagsFromServer = ['按日', '按月'];
+const tagsFromServer = ['按日', '按月', '按年'];
 
 function SelectTime(props) {
   const { ChangeDate } = props;
   const [selectedTags, setSelectedTags] = useState('');
   const [startdates, setStartDates] = useState(undefined);
   const [enddates, setEndDates] = useState(undefined);
+  const [isopen, setIsOpen] = useState(false);
+  const [isEndOpen, setIsEndOpen] = useState(false);
+  const [yearstartdates, setYearStartDates] = useState(null);
+  const [yearenddates, setYearEndtDates] = useState(null);
 
   const disastartbledDate = (current) => {
     return current && current > moment();
@@ -42,15 +46,26 @@ function SelectTime(props) {
           type: 'M'
         })
       }
+      if (tag === '按年') {
+        setYearStartDates(beginTime);
+        setYearEndtDates(endTime);
+        ChangeDate({
+          beginTime: moment(beginTime).startOf('year').format('YYYY-MM-DD 00:00:00'),
+          endTime: moment(endTime).endOf('year').format('YYYY-MM-DD 23:59:59'),
+          type: 'Y'
+        })
+      }
     }
   };
 
   useEffect(() => {
-    handleChang('按月', true)
+    handleChang('按年', true)
     return () => {
       handleChang(undefined);
       setStartDates(undefined);
       setEndDates(undefined);
+      setYearStartDates(null);
+      setYearEndtDates(null);
     };
   }, [])
 
@@ -76,6 +91,15 @@ function SelectTime(props) {
           beginTime: moment(startdates || undefined).startOf('month').format('YYYY-MM-DD 00:00:00'),
           endTime: moment(enddates || undefined).endOf('month').format('YYYY-MM-DD 23:59:59'),
           type: 'M'
+        })
+      }
+    }
+    if (yearstartdates || yearenddates) {
+      if (selectedTags === '按年') {
+        ChangeDate({
+          beginTime: moment(yearstartdates || null).startOf('year').format('YYYY-MM-DD 00:00:00'),
+          endTime: moment(yearenddates || null).endOf('year').format('YYYY-MM-DD 23:59:59'),
+          type: 'Y'
         })
       }
     }
@@ -136,6 +160,56 @@ function SelectTime(props) {
             format='YYYY-MM'
             disabledDate={disaendbledDate}
             allowClear={false}
+          />
+        </>
+      )}
+      {selectedTags === '按年' && (
+        <>
+          <DatePicker
+            value={yearstartdates}
+            open={isopen}
+            mode="year"
+            placeholder="开始时间"
+            onPanelChange={(v) => {
+              setIsOpen(false);
+              setYearStartDates(v);
+            }}
+            onOpenChange={(status) => {
+              if (status) {
+                setIsOpen(true);
+              } else {
+                setIsOpen(false);
+              }
+            }}
+            onChange={() => {
+              setYearStartDates(null);
+            }}
+            style={{ marginLeft: 24 }}
+            format='YYYY'
+            disabledDate={disastartbledDate}
+          />
+          <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
+          <DatePicker
+            value={yearenddates}
+            open={isEndOpen}
+            mode="year"
+            placeholder="结束时间"
+            onPanelChange={(v) => {
+              setIsEndOpen(false);
+              setYearEndtDates(v);
+            }}
+            onOpenChange={(status) => {
+              if (status) {
+                setIsEndOpen(true);
+              } else {
+                setIsEndOpen(false);
+              }
+            }}
+            onChange={() => {
+              setYearEndtDates(null);
+            }}
+            format='YYYY'
+            disabledDate={disaendbledDate}
           />
         </>
       )}

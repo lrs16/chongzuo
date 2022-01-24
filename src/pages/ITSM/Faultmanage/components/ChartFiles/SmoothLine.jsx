@@ -37,7 +37,7 @@ const tickLine = {
 }
 
 function SmoothLine(props) {
-  const { data, cols, height, padding, onGetVal, staticName, beginTime, endTime, uncheckedname, colors, lock } = props;
+  const { data, cols, height, padding, onGetVal, staticName, beginTime, endTime, uncheckedname, colors, lock, timeType } = props;
   const [visible, setVisible] = useState(false); // 抽屉是否显示
   const [drawerval, onGetDrawerVal] = useState('');
   const [legendItem, setlegendItem] = useState(null);
@@ -104,7 +104,7 @@ function SmoothLine(props) {
           const linkdata = ev.data;
           if (linkdata && linkdata.data && !Array.isArray(linkdata.data) && onGetVal) {
             onGetVal(linkdata.data);
-            handleGetDrawerVal({ ...linkdata.data, staticName, beginTime, endTime, drawtitle: linkdata.data.name });
+            handleGetDrawerVal({ ...linkdata.data, staticName, beginTime, endTime, drawtitle: linkdata.data.name, timeType });
           }
         }, 200);
       }}
@@ -112,7 +112,7 @@ function SmoothLine(props) {
         const linkdata = ev.data;
         if (linkdata && linkdata.data && !Array.isArray(linkdata.data) && onGetVal) {
           onGetVal(linkdata.data);
-          handleGetDrawerVal({ ...linkdata.data, staticName, beginTime, endTime, drawtitle: linkdata.data.name });
+          handleGetDrawerVal({ ...linkdata.data, staticName, beginTime, endTime, drawtitle: linkdata.data.name, timeType });
         }
       }}
     >
@@ -173,14 +173,14 @@ function SmoothLine(props) {
                             if (onGetVal && it?.data) {
                               setTimeout(() => {
                                 onGetVal(it.data);
-                                handleGetDrawerVal({ ...it.data, staticName, beginTime, endTime, drawtitle: it.data.name });
+                                handleGetDrawerVal({ ...it.data, staticName, beginTime, endTime, drawtitle: it.data.name, timeType });
                               }, 200)
                             }
                           }}
                           onDoubleClick={() => {
                             if (onGetVal && it?.data) {
                               onGetVal(it.data);
-                              handleGetDrawerVal({ ...it.data, staticName, beginTime, endTime, drawtitle: it.data.name });
+                              handleGetDrawerVal({ ...it.data, staticName, beginTime, endTime, drawtitle: it.data.name, timeType });
                             }
                           }}
                         >
