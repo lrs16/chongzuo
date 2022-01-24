@@ -19,6 +19,7 @@ function AnalysisPopup(props) {
     closePop,
     list,
     typeName,
+    loading
   } = props;
 
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
@@ -546,6 +547,7 @@ function AnalysisPopup(props) {
         </Button>
 
         <Table
+          loading={loading}
           columns={columns}
           dataSource={list.rows}
           rowKey={record => record.id}

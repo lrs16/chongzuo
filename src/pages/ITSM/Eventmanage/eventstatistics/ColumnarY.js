@@ -15,19 +15,35 @@ class ColumnarY extends React.Component {
           padding={padding}
           forceFit
           onClick={ev => {
-            const clickdata = ev.data;
-            if (clickdata && clickdata.data) {
-              onGetVal(clickdata.data)
-            }
+            setTimeout(() => {
+              const linkdata = ev.data;
+              if (linkdata && (linkdata.data || linkdata._origin) && onGetVal) {
+                onGetVal(linkdata.data || linkdata._origin)
+              }
+            }, 200);
+          }}
+          
+          onDoubleClick={ev => {
+            setTimeout(() => {
+              const linkdata = ev.data;
+              if (linkdata && (linkdata.data || linkdata._origin) && onGetVal) {
+                onGetVal(linkdata.data || linkdata._origin)
+              }
+            }, 200);
           }}
         >
           <Coord transpose />
           <Axis
             name="total"
-            // label={{
-            //   formatter: val => `${(val / 10000).toFixed(1)}w`,
-            //   autoRotate: false,
-            // }}
+            label={{
+              formatter: val => {
+                if (val > 10000) {
+                  return `${(val / 10000).toFixed(1)}w`
+                }
+                return val
+              },
+              autoRotate: false,
+            }}
           />
           <Axis
             name="type"

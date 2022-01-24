@@ -233,6 +233,8 @@ function StatisticsAnalysis(props) {
     }
   }, [values]);
 
+  console.log('visible: ', visible);
+
   return (
     <div>
       <SelectTime ChangeDate={(v) => setValues(v)} />
@@ -270,9 +272,7 @@ function StatisticsAnalysis(props) {
                               end: values.endTime,
                               type: 'all'
                             });
-                            setTimeout(() => {
-                              setVisible(true)
-                            },200)
+                            setVisible(true);
                             setTitle('问题总数')
                           }}
                         />
@@ -293,9 +293,7 @@ function StatisticsAnalysis(props) {
                               end: values.endTime,
                               type: '已解决'
                             });
-                            setTimeout(() => {
-                              setVisible(true)
-                            },200)
+                            setVisible(true)
                             setTitle('已解决')
                           }}
                         />
@@ -337,9 +335,7 @@ function StatisticsAnalysis(props) {
                               end: values.endTime,
                               type: '程序问题'
                             });
-                            setTimeout(() => {
-                              setVisible(true)
-                            },200)
+                            setVisible(true)
                             setTitle('程序问题')
                           }}
                         />
@@ -359,9 +355,7 @@ function StatisticsAnalysis(props) {
                               end: values.endTime,
                               type: '功能问题'
                             });
-                            setTimeout(() => {
-                              setVisible(true)
-                            },200)
+                            setVisible(true)
                             setTitle('功能问题')
                           }}
                         />
@@ -397,9 +391,7 @@ function StatisticsAnalysis(props) {
                             end: values.endTime,
                             type: v === 'center' ? 'all' : v.type
                           });
-                          setTimeout(() => {
-                            setVisible(true)
-                          },200)
+                          setVisible(true)
                           setTitle(v === 'center' ? '问题处理总数' : v.type)
                         }}
                       />
@@ -425,9 +417,7 @@ function StatisticsAnalysis(props) {
                             begin: `${moment(values.beginTime).format('YYYY-MM-DD')} ${v.date}:00:00`,
                             end: `${moment(values.endTime).format('YYYY-MM-DD')} ${v.date}:59:59`,
                           });
-                          setTimeout(() => {
-                            setVisible(true)
-                          },200)
+                          setVisible(true)
                         } else {
                           setPicVal({
                             model: '工单情况',
@@ -471,9 +461,7 @@ function StatisticsAnalysis(props) {
                             end: values.endTime,
                             type: v === 'center' ? 'all' : v.type
                           });
-                          setTimeout(() => {
-                            setVisible(true)
-                          },200)
+                          setVisible(true)
                           setTitle(v === 'center' ? '问题分类总数' : v.type)
                         }}
                       />
@@ -500,9 +488,7 @@ function StatisticsAnalysis(props) {
                               begin: `${moment(values.beginTime).format('YYYY-MM-DD')} ${v.date}:00:00`,
                               end: `${moment(values.endTime).format('YYYY-MM-DD')} ${v.date}:59:59`,
                             });
-                            setTimeout(() => {
-                              setVisible(true)
-                            },200)
+                            setVisible(true)
                           } else {
                             setPicVal({
                               model: '问题分类',
@@ -542,9 +528,7 @@ function StatisticsAnalysis(props) {
                             end: values.endTime,
                             type: v === 'center' ? 'all' : v.type
                           });
-                          setTimeout(() => {
-                            setVisible(true)
-                          },200)
+                          setVisible(true)
                           setTitle(v === 'center' ? '程序问题总数' : v.type)
                         }}
                       />
@@ -572,9 +556,7 @@ function StatisticsAnalysis(props) {
                                 begin: `${moment(values.beginTime).format('YYYY-MM-DD')} ${v.date}:00:00`,
                                 end: `${moment(values.endTime).format('YYYY-MM-DD')} ${v.date}:59:59`,
                               });
-                              setTimeout(() => {
-                                setVisible(true)
-                              },200)
+                              setVisible(true)
                             } else {
                               setPicVal({
                                 model: '程序问题',
@@ -582,9 +564,7 @@ function StatisticsAnalysis(props) {
                                 begin: `${v.date} 00:00:00`,
                                 end: `${v.date} 23:59:59`,
                               });
-                              setTimeout(() => {
-                                setVisible(true)
-                              },200)
+                              setVisible(true)
                             }
                             setTitle(v.name)
                           }}
@@ -617,9 +597,7 @@ function StatisticsAnalysis(props) {
                             end: values.endTime,
                             type: v === 'center' ? 'all' : v.type
                           });
-                          setTimeout(() => {
-                            setVisible(true)
-                          },200)
+                          setVisible(true)
                           setTitle(v === 'center' ? '功能问题总数' : v.type)
                         }}
                       />
@@ -646,9 +624,7 @@ function StatisticsAnalysis(props) {
                               begin: `${moment(values.beginTime).format('YYYY-MM-DD')} ${v.date}:00:00`,
                               end: `${moment(values.endTime).format('YYYY-MM-DD')} ${v.date}:59:59`,
                             });
-                            setTimeout(() => {
-                              setVisible(true)
-                            },200)
+                            setVisible(true)
                           } else {
                             setPicVal({
                               model: '功能问题',
@@ -656,9 +632,7 @@ function StatisticsAnalysis(props) {
                               begin: `${v.date} 00:00:00`,
                               end: `${v.date} 23:59:59`,
                             });
-                            setTimeout(() => {
-                              setVisible(true)
-                            },200)
+                            setVisible(true)
                           }
                           setTitle(v.name)
                         }}
@@ -691,9 +665,7 @@ function StatisticsAnalysis(props) {
                           end: values.endTime,
                           type: v === 'center' ? 'all' : v.type
                         });
-                        setTimeout(() => {
-                          setVisible(true)
-                        },200)
+                        setVisible(true)
                         setTitle(v === 'center' ? '问题来源总数' : v.type)
                       }}
                     />
@@ -717,9 +689,7 @@ function StatisticsAnalysis(props) {
                             begin: `${moment(values.beginTime).format('YYYY-MM-DD')} ${v.date}:00:00`,
                             end: `${moment(values.endTime).format('YYYY-MM-DD')} ${v.date}:59:59`,
                           });
-                          setTimeout(() => {
-                            setVisible(true)
-                          },100)
+                          setVisible(true)
                         } else {
                           setPicVal({
                             model: '问题来源',
@@ -727,9 +697,7 @@ function StatisticsAnalysis(props) {
                             begin: `${v.date} 00:00:00`,
                             end: `${v.date} 23:59:59`,
                           });
-                          setTimeout(() => {
-                            setVisible(true)
-                          },200)
+                          setVisible(true)
                         }
                         setTitle(v.name)
                       }}
@@ -751,7 +719,7 @@ function StatisticsAnalysis(props) {
                     <DonutPCT
                       data={timeoutdata}
                       height={300}
-                      // colors={['#5AD8A6','#5AD8A6','#ee6666']}
+                      colors={['#ee6666','#5AD8A6']}
                       total={piesum(timeoutdata)}
                       totaltitle="处理及时率总数"
                       padding={[10, 30, 30, 30]}
@@ -782,13 +750,11 @@ function StatisticsAnalysis(props) {
                         setPicVal({
                           addTimeBegin: values.beginTime,
                           addTimeEnd: values.endTime,
-                          timeStatus: v === 'center' ? '3' : timeStatus
+                          timeStatus: v === 'center' ? '6' : timeStatus
                         });
                         setTypename('问题工单超时情况')
-                        setTimeout(() => {
-                          setVisible(true)
-                        },200)
-                        setTitle(v === 'center' ?'问题处理总数':v.type)
+                        setVisible(true)
+                        setTitle(v === 'center' ? '问题处理总数' : v.type)
                       }}
                     />
                   )}
@@ -818,9 +784,7 @@ function StatisticsAnalysis(props) {
                               end: values.endTime,
                               type: v.type
                             });
-                            setTimeout(() => {
-                              setVisible(true)
-                            },200)
+                            setVisible(true)
                             setTitle(v.type)
                           }}
                         />
@@ -855,9 +819,7 @@ function StatisticsAnalysis(props) {
                               end: values.endTime,
                               type: v.type
                             });
-                            setTimeout(() => {
-                              setVisible(true)
-                            },200)
+                            setVisible(true)
                             setTitle(v.type)
                           }}
                         />
@@ -890,9 +852,7 @@ function StatisticsAnalysis(props) {
                               end: values.endTime,
                               type: v.type
                             });
-                            setTimeout(() => {
-                              setVisible(true)
-                            },200)
+                            setVisible(true)
                             setTitle(v.type)
                           }}
                         />

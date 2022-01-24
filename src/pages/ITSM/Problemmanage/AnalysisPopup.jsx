@@ -21,9 +21,9 @@ function AnalysisPopup(props) {
     closePop,
     statDetailarr,
     typeName,
-    queryArr
+    queryArr,
+    loading
   } = props;
-
 
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
 
@@ -60,7 +60,7 @@ function AnalysisPopup(props) {
             }
           });
         };
-  
+
         return <a onClick={() => gotoDetail(text, record)} type='link'>{text}</a>
       }
     },
@@ -292,7 +292,7 @@ function AnalysisPopup(props) {
         );
       },
     },
-  
+
     {
       title: '问题登记人员确认结果',
       dataIndex: 'confirmThreeResult',
@@ -343,6 +343,7 @@ function AnalysisPopup(props) {
       }
     })
   }
+
   useEffect(() => {
     if (visible && popupParameters) {
       if (typeName) {
@@ -355,7 +356,6 @@ function AnalysisPopup(props) {
           }
         })
       }
-
     }
   }, [visible, popupParameters])
 
@@ -432,6 +432,7 @@ function AnalysisPopup(props) {
         {
           typeName && (
             <Table
+              loading={loading}
               columns={columns}
               dataSource={queryArr.rows}
               rowKey={records => records.id}
@@ -444,6 +445,7 @@ function AnalysisPopup(props) {
         {
           !typeName && (
             <Table
+              loading={loading}
               columns={columns}
               dataSource={statDetailarr}
               rowKey={record => record.id}

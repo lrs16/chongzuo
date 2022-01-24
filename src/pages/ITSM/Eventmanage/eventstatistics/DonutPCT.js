@@ -49,23 +49,37 @@ class DonutPCT extends Component {
     return (
       <div>
         <div style={{ position: 'absolute', left: '50%', top: '42%', width: 100, textAlign: 'center', marginLeft: '-50px',zIndex:999 }} >
-          <a style={{ fontSize: 24, fontWeight: 700 }} onClick={()=>onGetVal('center')}>{total}</a><br />
+          <a style={{ fontSize: 24, fontWeight: 700 }} 
+          onClick={()=> {
+            setTimeout(() => {
+              onGetVal('center')
+            },200)
+          }}
+          onDoubleClick={()=> {
+            setTimeout(() => {
+              onGetVal('center')
+            },200)
+          }}
+          >{total}</a><br />
           <span>{totaltitle}</span>
         </div>
         <Chart pure height={height} data={dv.rows} padding={padding} autoFit
           onClick={ev => {
-            const linkdata = ev.data;
-            if (linkdata && (linkdata.data || linkdata._origin) && onGetVal) {
-              setTimeout(() => {
-                onGetVal(linkdata.data || linkdata._origin)
-              }, 200)
-            }
+            setTimeout(() => {
+              const linkdata = ev.data;
+              if (linkdata && (linkdata.data || linkdata._origin) && onGetVal) {
+                  onGetVal(linkdata.data || linkdata._origin)
+              }
+            },200)
           }}
+
           onDoubleClick={ev => {
-            const linkdata = ev.data;
-            if (linkdata && (linkdata.data || linkdata._origin) && onGetVal) {
-              onGetVal(linkdata.data || linkdata._origin)
-            }
+            setTimeout(() => {
+              const linkdata = ev.data;
+              if (linkdata && (linkdata.data || linkdata._origin) && onGetVal) {
+                  onGetVal(linkdata.data || linkdata._origin)
+              }
+            },200)
           }}
         >
           <Legend visible />

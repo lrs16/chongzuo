@@ -41,7 +41,7 @@ function EventAnalysis(props) {
   const [topN4, setTopN4] = useState(5) // 排序
   const [visible, setVisible] = useState(false);
   const [typeName, setTypename] = useState('');
-  const [title,setTitle] = useState('');
+  const [title, setTitle] = useState('');
 
   const piesum = (arr) => {
     let sum = 0;
@@ -183,8 +183,8 @@ function EventAnalysis(props) {
 
   const getTimeoutHandlerTop = (value) => {
     dispatch({
-      type:'eventstatistics/fetchgetTimeoutHandlerTop',
-      payload:{...value}
+      type: 'eventstatistics/fetchgetTimeoutHandlerTop',
+      payload: { ...value }
     })
   }
 
@@ -199,10 +199,24 @@ function EventAnalysis(props) {
 
   useEffect(() => {
     if (values && values.type) {
+      let type;
+      switch (values.type) {
+        case 'M':
+          type = 'MONTH';
+          break;
+        case 'D':
+          type = 'DAY';
+          break;
+        case 'Y':
+          type = 'YEAR';
+          break;
+        default:
+          break;
+      }
       const val = {
         time1: moment(values.beginTime).format('YYYY-MM-DD 00:00:00'),
         time2: moment(values.endTime).format('YYYY-MM-DD 23:59:59'),
-        type: values.type === 'M' ? 'MONTH' : 'DAY',
+        type,
         num: values.num || 1000
       }
       getTypeConditions(val);
@@ -216,6 +230,7 @@ function EventAnalysis(props) {
       getTimeoutHandlerTop(val)
     }
   }, [values])
+  console.log('visible: ', visible);
 
   return (
     <div>
@@ -255,9 +270,7 @@ function EventAnalysis(props) {
                             time1: values.beginTime,
                             time2: values.endTime,
                           });
-                          setTimeout(() => {
-                            setVisible(true)
-                          },200)
+                          setVisible(true)
                           setTitle('事件总数')
                         }}
                       />
@@ -280,9 +293,7 @@ function EventAnalysis(props) {
                             time2: values.endTime,
                             eventStatus: '已关闭'
                           });
-                          setTimeout(() => {
-                            setVisible(true)
-                          },200)
+                          setVisible(true)
                           setTitle('已完成')
                         }}
                       />
@@ -305,9 +316,7 @@ function EventAnalysis(props) {
                             time2: values.endTime,
                             eventStatus: '未完成'
                           });
-                          setTimeout(() => {
-                            setVisible(true)
-                          },200)
+                          setVisible(true)
                           setTitle('未完成')
                         }}
                       />
@@ -366,9 +375,7 @@ function EventAnalysis(props) {
                             time1: values.beginTime,
                             time2: values.endTime,
                           });
-                          setTimeout(() => {
-                            setVisible(true)
-                          },200)
+                          setVisible(true)
                           setTitle('受理总数')
                         }}
                       />
@@ -387,9 +394,7 @@ function EventAnalysis(props) {
                             time1: values.beginTime,
                             time2: values.endTime,
                           });
-                          setTimeout(() => {
-                            setVisible(true)
-                          },200)
+                          setVisible(true)
                           setTitle('一线处理量')
                         }}
                       />
@@ -433,9 +438,7 @@ function EventAnalysis(props) {
                           time2: values.endTime,
                         });
                         setTitle(v === 'center' ? '事件分类总数' : v.type);
-                        setTimeout(() => {
-                          setVisible(true)
-                        },200)
+                        setVisible(true)
                       }}
                     />
                   )}
@@ -456,9 +459,7 @@ function EventAnalysis(props) {
                             time1: `${moment(values.beginTime).format('YYYY-MM-DD')} ${v.date}:00:00`,
                             time2: `${moment(values.endTime).format('YYYY-MM-DD')} ${v.date}:59:59`,
                           });
-                          setTimeout(() => {
-                            setVisible(true)
-                          },200)
+                          setVisible(true)
                           setTitle(v.name);
                         } else {
                           setPicVal({
@@ -466,9 +467,7 @@ function EventAnalysis(props) {
                             time1: `${v.date} 00:00:00`,
                             time2: `${v.date} 23:59:59`,
                           });
-                          setTimeout(() => {
-                            setVisible(true)
-                          },200)
+                          setVisible(true)
                           setTitle(v.name);
                         }
                       }}
@@ -510,9 +509,7 @@ function EventAnalysis(props) {
                           ...obj
                         });
                         setTypename(v === 'center' ? '' : '事件总数');
-                        setTimeout(() => {
-                          setVisible(true)
-                        },200)
+                        setVisible(true)
                         setTitle(v === 'center' ? '事件对象总数' : v.type)
                       }}
                     />
@@ -536,9 +533,7 @@ function EventAnalysis(props) {
                             time2: `${moment(values.endTime).format('YYYY-MM-DD')} ${v.date}:59:59`,
                           });
                           setTypename('事件总数');
-                          setTimeout(() => {
-                            setVisible(true)
-                          },200)
+                          setVisible(true)
                         } else {
                           setPicVal({
                             object: v.name,
@@ -547,7 +542,7 @@ function EventAnalysis(props) {
                           });
                           setTypename('事件总数');
                           setVisible(true);
-                
+
                         }
                         setTitle(v.name)
 
@@ -571,7 +566,7 @@ function EventAnalysis(props) {
                     <DonutPCT
                       data={getTimeOutConditionsdata}
                       height={300}
-                      colors={['#5AD8A6','#ee6666']}
+                      colors={['#5AD8A6', '#ee6666']}
                       total={piesum(getTimeOutConditionsdata)}
                       totaltitle="工单处理总数"
                       padding={[10, 30, 30, 30]}
@@ -596,9 +591,7 @@ function EventAnalysis(props) {
                           ...obj
                         });
                         setTypename('超时情况');
-                        setTimeout(() => {
-                          setVisible(true)
-                        },200)
+                        setVisible(true)
                         setTitle(v === 'center' ? '工单处理总数' : v.type)
                       }}
                     />
@@ -627,9 +620,7 @@ function EventAnalysis(props) {
                               time1: values.beginTime,
                               time2: values.endTime,
                             });
-                            setTimeout(() => {
-                              setVisible(true)
-                            },200)
+                            setVisible(true)
                             setTitle(v.type)
                           }}
                         />
@@ -664,9 +655,7 @@ function EventAnalysis(props) {
                               time2: values.endTime,
                               type: 'noTimeout',
                             });
-                            setTimeout(() => {
-                              setVisible(true)
-                            },200)
+                            setVisible(true)
                             setTitle(v.type)
                           }}
                         />
@@ -699,9 +688,7 @@ function EventAnalysis(props) {
                               time2: values.endTime,
                               type: 'isTimeout',
                             });
-                            setTimeout(() => {
-                              setVisible(true)
-                            },200)
+                            setVisible(true)
                             setTitle(v.type)
                           }}
                         />
@@ -736,9 +723,7 @@ function EventAnalysis(props) {
                               time2: values.endTime,
                               type: 'analysis'
                             });
-                            setTimeout(() => {
-                              setVisible(true)
-                            },200)
+                            setVisible(true)
                             setTitle(v.type)
                           }}
                         />
@@ -771,9 +756,7 @@ function EventAnalysis(props) {
                               time2: values.endTime,
                               type: 'analysis'
                             });
-                            setTimeout(() => {
-                              setVisible(true)
-                            },200)
+                            setVisible(true)
                             setTitle(v.type)
                           }}
                         />
