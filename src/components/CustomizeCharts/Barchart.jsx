@@ -1,15 +1,8 @@
 import React from 'react';
 import {
-  G2,
   Chart,
-  Geom,
-  Axis,
-  Tooltip,
   Coordinate,
-  Label,
-  Legend,
   Interval,
-  Util
 } from "bizcharts";
 
 function Barchart(props) {
@@ -18,7 +11,7 @@ function Barchart(props) {
     data,
     position
   } = props;
-
+  
   return (
     <>
       <Chart
@@ -34,9 +27,15 @@ function Barchart(props) {
         }
       >
         <Coordinate transpose />
-        <Interval 
+        <Interval
           position={position}
-         />
+          color={['contractName*分值', (date, val) => {
+            if (val < 80) {
+              return 'l(180) 0:#ffbb02 0.5:#fe7402 1:#fe7402'
+            }
+            return 'l(270) 0:#04e8ff 0.5:#05bdfe 1:#05bdfe';
+          }]}
+        />
       </Chart>
     </>
   )

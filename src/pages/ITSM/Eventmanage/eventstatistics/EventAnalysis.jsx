@@ -435,7 +435,7 @@ function EventAnalysis(props) {
                         setTitle(v === 'center' ? '事件分类总数' : v.type);
                         setTimeout(() => {
                           setVisible(true)
-                        },100)
+                        },200)
                       }}
                     />
                   )}
@@ -458,7 +458,7 @@ function EventAnalysis(props) {
                           });
                           setTimeout(() => {
                             setVisible(true)
-                          },100)
+                          },200)
                           setTitle(v.name);
                         } else {
                           setPicVal({
@@ -512,7 +512,7 @@ function EventAnalysis(props) {
                         setTypename(v === 'center' ? '' : '事件总数');
                         setTimeout(() => {
                           setVisible(true)
-                        },100)
+                        },200)
                         setTitle(v === 'center' ? '事件对象总数' : v.type)
                       }}
                     />
@@ -538,7 +538,7 @@ function EventAnalysis(props) {
                           setTypename('事件总数');
                           setTimeout(() => {
                             setVisible(true)
-                          },100)
+                          },200)
                         } else {
                           setPicVal({
                             object: v.name,
@@ -598,12 +598,11 @@ function EventAnalysis(props) {
                         setTypename('超时情况');
                         setTimeout(() => {
                           setVisible(true)
-                        },100)
+                        },200)
                         setTitle(v === 'center' ? '工单处理总数' : v.type)
                       }}
                     />
                   )}
-
                 </Card>
               </Col>
               <Col span={12}>
@@ -630,7 +629,7 @@ function EventAnalysis(props) {
                             });
                             setTimeout(() => {
                               setVisible(true)
-                            },100)
+                            },200)
                             setTitle(v.type)
                           }}
                         />
@@ -667,7 +666,7 @@ function EventAnalysis(props) {
                             });
                             setTimeout(() => {
                               setVisible(true)
-                            },100)
+                            },200)
                             setTitle(v.type)
                           }}
                         />
@@ -702,7 +701,7 @@ function EventAnalysis(props) {
                             });
                             setTimeout(() => {
                               setVisible(true)
-                            },100)
+                            },200)
                             setTitle(v.type)
                           }}
                         />
@@ -739,7 +738,7 @@ function EventAnalysis(props) {
                             });
                             setTimeout(() => {
                               setVisible(true)
-                            },100)
+                            },200)
                             setTitle(v.type)
                           }}
                         />
@@ -774,7 +773,7 @@ function EventAnalysis(props) {
                             });
                             setTimeout(() => {
                               setVisible(true)
-                            },100)
+                            },200)
                             setTitle(v.type)
                           }}
                         />
