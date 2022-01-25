@@ -10,7 +10,6 @@ import {
   Table,
   message,
   Select,
-  Input,
 } from 'antd';
 import moment from 'moment';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -48,12 +47,15 @@ function Workordertreatmentrate(props) {
         const detailParams = {
           time1: record.start_time,
           time2: record.end_time,
-          unitName: record.unit,
-          status: ''
+          unitName: record.unit || '',
+          handler: record.handler || '',
+          status: '',
+          eventStatus:''
         }
         return (
           <TreatmentrateDetail
             detailParams={detailParams}
+            type={selectvalue}
           >
             <a type="link">{text}</a>
           </TreatmentrateDetail>
@@ -68,12 +70,15 @@ function Workordertreatmentrate(props) {
         const detailParams = {
           time1: record.start_time,
           time2: record.end_time,
-          unitName: record.unit,
-          status: '已关闭'
+          unitName: record.unit || '',
+          handler: record.handler || '',
+          eventStatus: '已关闭',
+          status: ''
         }
         return (
           <TreatmentrateDetail
             detailParams={detailParams}
+            type={selectvalue}
           >
             <a type="link">{text}</a>
           </TreatmentrateDetail>
@@ -93,12 +98,15 @@ function Workordertreatmentrate(props) {
         const detailParams = {
           time1: record.start_time,
           time2: record.end_time,
-          unitName: record.unit,
+          unitName: record.unit || '',
+          handler: record.handler || '',
           status: '按时处理',
+          type:'noTimeout'
         }
         return (
           <TreatmentrateDetail
             detailParams={detailParams}
+            type={selectvalue}
           >
             <a type="link">{text}</a>
           </TreatmentrateDetail>
@@ -171,6 +179,7 @@ function Workordertreatmentrate(props) {
           payload: {
             time1: startTime,
             time2: endTime,
+            type:selectvalue
           }
         }).then(res => {
           const filename = `工单处理率${moment().format('MM-DD')}.xls`;

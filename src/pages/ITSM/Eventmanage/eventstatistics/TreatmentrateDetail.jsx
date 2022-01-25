@@ -116,28 +116,39 @@ const withClick = (element, handleClick = () => { }) => {
 }
 
 
-
 function TreatmentrateDetail(props) {
   const [visible, setVisible] = useState(false);
   const {
     children,
     title,
-    eventHandleRatearr,
+    list,
     detailParams,
     dispatch,
-    loading
+    type,
+    eventHandleRatearr
   } = props;
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
 
   const searchdata = (searchParams, pageIndex, pageSize) => {
-    dispatch({
-      type: 'eventstatistics/getEventHandleRateList',
-      payload: {
-        ...searchParams,
-        pageIndex,
-        pageSize
-      }
-    })
+    if(type === 'unit') {
+      dispatch({
+        type: 'eventstatistics/getEventHandleRateList',
+        payload: {
+          ...searchParams,
+          pageIndex,
+          pageSize
+        }
+      })
+    } else {
+      dispatch({
+        type: 'eventquery/fetchlist',
+        payload: {
+          ...searchParams,
+          pageIndex,
+          pageSize
+        }
+      })
+    }
   }
 
   const onShowSizeChange = (page, size) => {
@@ -161,7 +172,7 @@ function TreatmentrateDetail(props) {
     onShowSizeChange: (page, size) => onShowSizeChange(page, size),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    total: eventHandleRatearr.total,
+    total: type === 'unit' ? eventHandleRatearr.total :list.total,
     showTotal: total => `总共  ${total}  条记录`,
     onChange: page => changePage(page),
   };
@@ -178,23 +189,45 @@ function TreatmentrateDetail(props) {
 
   //  下载
   const download = () => {
-    dispatch({
-      type: 'eventstatistics/downloadEventHandleRateListExcel',
-      payload: {
-        ...detailParams,
-        pageIndex: paginations.current - 1,
-        pageSize: paginations.pageSize
-      },
-    }).then(res => {
-      const filename = `下载事件处理率_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
-      const blob = new Blob([res]);
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.click();
-      window.URL.revokeObjectURL(url);
-    });
+    if(type === 'unit') {
+      dispatch({
+        type: 'eventstatistics/downloadEventHandleRateListExcel',
+        payload: {
+          ...detailParams,
+          pageIndex: paginations.current - 1,
+          pageSize: paginations.pageSize
+        },
+      }).then(res => {
+        const filename = `下载事件处理率_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+        const blob = new Blob([res]);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      });
+    } else {
+      dispatch({
+        type: 'eventquery/eventdownload',
+        payload: {
+          values:{
+            ...detailParams,
+          },
+          ids:[],
+        },
+      }).then(res => {
+        const filename = `下载事件处理率_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+        const blob = new Blob([res]);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      });
+    }
+
   };
 
   return (
@@ -216,9 +249,8 @@ function TreatmentrateDetail(props) {
         </Button>
 
         <Table
-          loading={loading}
           columns={columns}
-          dataSource={eventHandleRatearr.rows}
+          dataSource={ type === 'unit' ? eventHandleRatearr.rows :list.rows}
           rowKey={record => record.id}
           pagination={pagination}
           scroll={{ x: 700 }}
@@ -252,8 +284,9 @@ function TreatmentrateDetail(props) {
 }
 
 export default Form.create({})(
-  connect(({ eventstatistics, loading }) => ({
+  connect(({ eventquery,eventstatistics,loading }) => ({
+    list: eventquery.list,
     eventHandleRatearr: eventstatistics.eventHandleRatearr,
-    loading: loading.models.eventstatistics,
+    loading: loading.models.eventquery,
   }))(TreatmentrateDetail)
 )
