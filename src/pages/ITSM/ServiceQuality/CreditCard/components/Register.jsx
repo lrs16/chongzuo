@@ -1,4 +1,11 @@
-import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import React, {
+  useState,
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  useCallback
+} from 'react';
 import { Form, Input, Row, Col, AutoComplete, Select, DatePicker, Spin, message } from 'antd';
 import MergeTable from '@/components/MergeTable';
 import moment from 'moment';
@@ -22,7 +29,6 @@ const Register = forwardRef((props, ref) => {
     changeTablesource,
     search,
     loading,
-    timeOK,
   } = props;
 
   const required = true;
@@ -69,6 +75,26 @@ const Register = forwardRef((props, ref) => {
   useEffect(() => {
     handleTabledata();
   }, [register]);
+
+  function useDebounce(fn, delay) {
+    const { current } = useRef({ fn, timer: null });
+    useEffect(function () {
+      current.fn = fn;
+    }, [fn]);
+
+    return useCallback(function f(...args) {
+      if (current.timer) {
+        clearTimeout(current.timer);
+      }
+      current.timer = setTimeout(() => {
+        current.fn.call(this, ...args);
+      }, delay);
+    })
+  }
+
+  const handleValue = useDebounce((e, fieldName, key, editid) => {
+    handleFieldChange(e, fieldName, key, editid)
+  }, 500);
 
   const columns = [
     {
@@ -133,7 +159,7 @@ const Register = forwardRef((props, ref) => {
           <Input
             defaultValue={text}
             disabled={search}
-            onChange={e => handleFieldChange(e.target.value, 'remark', record.key, record.id)}
+            onChange={e => handleValue(e.target.value, 'remark', record.key, record.id)}
           />
         );
       },
@@ -471,41 +497,13 @@ const Register = forwardRef((props, ref) => {
               })(
                 <RangePicker
                   allowClear={false}
-
                   disabled={search}
                   showTime
-                  // showTime={{
-                  //   hideDisabledOptions: true,
-                  //   defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                  // }}
                   format="YYYY-MM-DD HH:mm:ss"
                   style={{ width: '100%' }}
                   placeholder="请选择"
-                  // onOk={timeOK}
                 />
-                // <div>
-                //   <RangePicker
-                //     allowClear={false}
-                //     defaultValue={
-                //       register && register.beginTime
-                //         ? [
-                //             moment(register.beginTime, 'YYYY-MM-DD HH:mm:ss'),
-                //             moment(register.endTime, 'YYYY-MM-DD HH:mm:ss'),
-                //           ]
-                //         : []
-                //     }
-                //     disabled={search}
-                //     showTime
-                //     // showTime={{
-                //     //   hideDisabledOptions: true,
-                //     //   defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                //     // }}
-                //     format="YYYY-MM-DD HH:mm:ss"
-                //     style={{ width: '100%' }}
-                //     placeholder="请选择"
-                //     onOk={timeOK}
-                //   />
-                // </div>,
+
               )}
             </Form.Item>
           </Col>

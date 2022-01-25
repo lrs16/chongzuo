@@ -315,6 +315,10 @@ function CreditcardTobe(props) {
     contractName: '',
     beginTime: '',
     endTime: '',
+    paginations:{
+      current:1,
+      pageSize:10
+    }
   };
 
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;

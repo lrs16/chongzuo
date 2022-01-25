@@ -72,7 +72,7 @@ function Workordertreatmentrate(props) {
           time2: record.end_time,
           unitName: record.unit || '',
           handler: record.handler || '',
-          eventStatus: '已关闭',
+          eventStatus: '已完成',
           status: ''
         }
         return (
@@ -101,7 +101,8 @@ function Workordertreatmentrate(props) {
           unitName: record.unit || '',
           handler: record.handler || '',
           status: '按时处理',
-          type:'noTimeout'
+          type:'noTimeout',
+          eventStatus:''
         }
         return (
           <TreatmentrateDetail
@@ -168,9 +169,6 @@ function Workordertreatmentrate(props) {
   }
 
   const download = () => {
-    validateFields((err, value) => {
-      startTime = moment(value.time1).format('YYYY-MM-DD');
-      endTime = moment(value.time2).format('YYYY-MM-DD');
       if (moment(startTime).valueOf() > moment(endTime).valueOf()) {
         message.error('开始时间必须小于结束时间')
       } else {
@@ -192,7 +190,6 @@ function Workordertreatmentrate(props) {
           window.URL.revokeObjectURL(url);
         })
       }
-    })
   }
 
   const defaultTime = () => {

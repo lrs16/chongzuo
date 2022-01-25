@@ -20,7 +20,7 @@ function ColumnarY(props) {
     })
   }
 
-  const handleValue = useDebounce(v => { // 获取input的值
+  const handleValue = useDebounce(v => {
     onGetVal(v)
   }, 300);
   return (
