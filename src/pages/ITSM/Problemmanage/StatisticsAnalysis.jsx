@@ -11,7 +11,7 @@ import {
 } from 'antd';
 import moment from 'moment';
 import SelectTime from '@/components/SelectTime/SelectTime';
-import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
+import SmoothLine from '../Eventmanage/Eventstatistics/SmoothLine';
 import DonutPCT from '../Eventmanage/Eventstatistics/DonutPCT';
 import StatisticsCard from '../Eventmanage/Eventstatistics/StatisticsCard';
 import ColumnarY from '../Eventmanage/Eventstatistics/ColumnarY';
@@ -232,8 +232,6 @@ function StatisticsAnalysis(props) {
       handleunitstatTop(val);
     }
   }, [values]);
-
-  console.log('visible: ', visible);
 
   return (
     <div>

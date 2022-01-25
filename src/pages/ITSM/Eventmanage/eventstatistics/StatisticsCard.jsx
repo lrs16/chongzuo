@@ -1,29 +1,39 @@
-import React from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { Card, Statistic, Row, Col, Icon } from 'antd';
 
 function StatisticsCard(props) {
   const { title, value, suffix, des, desval, type, onGetVal } = props;
+
+  function useDebounce(fn, delay) {
+    const { current } = useRef({ fn, timer: null });
+    useEffect(function () {
+      current.fn = fn;
+    }, [fn]);
+  
+    return useCallback(function f(...args) {
+      if (current.timer) {
+        clearTimeout(current.timer);
+      }
+      current.timer = setTimeout(() => {
+        current.fn.call(this, ...args);
+      }, delay);
+    })
+  }
+  
+  const handleValue = useDebounce(v => { // 获取input的值
+    onGetVal(v)
+  }, 300);
+
   return (
     <Card style={{ marginLeft: '-1px' }}>
       <Row type="flex" justify="space-between" align="bottom">
         <Col span={24}>{title}</Col>
         <Col span={24}
           onClick={() => {
-            setTimeout(() => {
               if (onGetVal) {
-                onGetVal()
+                handleValue()
               }
-            }, 200)
           }
-          }
-
-          onDoubleClick={() => {
-              setTimeout(() => {
-                if (onGetVal) {
-                  onGetVal()
-                }
-              }, 200)
-            }
           }
         >
           <Statistic value={value} suffix={suffix} />

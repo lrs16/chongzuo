@@ -11,7 +11,7 @@ import {
   InputNumber,
 } from 'antd';
 import SelectTime from '@/components/SelectTime/SelectTime';
-import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
+import SmoothLine from './SmoothLine';
 import StatisticsCard from './StatisticsCard';
 import DonutPCT from './DonutPCT';
 import ColumnarY from './ColumnarY';
@@ -230,7 +230,6 @@ function EventAnalysis(props) {
       getTimeoutHandlerTop(val)
     }
   }, [values])
-  console.log('visible: ', visible);
 
   return (
     <div>
@@ -461,11 +460,21 @@ function EventAnalysis(props) {
                           });
                           setVisible(true)
                           setTitle(v.name);
-                        } else {
+                        }
+                        if (moment(values.beginTime).format('YYYY-MM-DD') !== moment(values.endTime).format('YYYY-MM-DD') && values.type !== 'Y') {
                           setPicVal({
                             eventType: v.name,
                             time1: `${v.date} 00:00:00`,
                             time2: `${v.date} 23:59:59`,
+                          });
+                          setVisible(true)
+                          setTitle(v.name);
+                        }
+                        if (values.type === 'Y') {
+                          setPicVal({
+                            eventType: v.name,
+                            time1: moment(v.date).startOf('month').format('YYYY-MM-DD 00:00:00'),
+                            time2: moment(v.date).endOf('month').format('YYYY-MM-DD 00:00:00'),
                           });
                           setVisible(true)
                           setTitle(v.name);
@@ -534,7 +543,9 @@ function EventAnalysis(props) {
                           });
                           setTypename('事件总数');
                           setVisible(true)
-                        } else {
+                        }
+                        
+                        if((moment(values.beginTime).format('YYYY-MM-DD') !== moment(values.endTime).format('YYYY-MM-DD') && values.type !== 'Y')) {
                           setPicVal({
                             object: v.name,
                             time1: `${v.date} 00:00:00`,
@@ -542,10 +553,19 @@ function EventAnalysis(props) {
                           });
                           setTypename('事件总数');
                           setVisible(true);
-
+                          setTitle(v.name)
                         }
-                        setTitle(v.name)
 
+                        if(values.type === 'Y') {
+                          setPicVal({
+                            object: v.name,
+                            time1: moment(v.date).startOf('month').format('YYYY-MM-DD 00:00:00'),
+                            time2: moment(v.date).endOf('month').format('YYYY-MM-DD 23:59:59'),
+                          });
+                          setTypename('事件总数');
+                          setVisible(true)
+                          setTitle(v.name);
+                        }
                       }}
                     />
                   )}
