@@ -386,7 +386,7 @@ function ChartDrawer(props) {
         })
         break;
       case '已开发':
-      case '已发布':
+      case '未开发':
         dispatch({
           type: 'demandquery/getdemandstatidetailData',
           payload: {
@@ -659,7 +659,7 @@ function ChartDrawer(props) {
         });
         break;
       case '已开发':
-      case '已发布':
+      case '未开发':
         dispatch({
           type: 'demandquery/statidetailDownload',
           payload: {

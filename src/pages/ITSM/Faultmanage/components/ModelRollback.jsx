@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Modal,
   Form,
@@ -6,6 +6,7 @@ import {
   Row,
   Col
 } from 'antd';
+import SysDict from '@/components/SysDict';
 
 const { TextArea } = Input;
 
@@ -13,8 +14,10 @@ function ModelRollback(props) {
   const required = true;
   const {
     form: { getFieldDecorator, validateFields, resetFields },
-    title, visible, ChangeVisible
+    title, visible, ChangeVisible, flowNodeName
   } = props;
+
+  const [selectdata, setSelectData] = useState([]);
 
   const handleCancel = () => {
     ChangeVisible(false);
@@ -30,6 +33,15 @@ function ModelRollback(props) {
     })
   }
 
+  const getTypebyTitle = nodetitle => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.title === nodetitle)[0].children;
+    }
+    return [];
+  };
+
+  const currentNodeselect = getTypebyTitle('当前处理环节');
+
   return (
     <>
       <Modal
@@ -41,8 +53,15 @@ function ModelRollback(props) {
         onOk={handleOk}
       >
         <Row gutter={16}>
+          <SysDict
+            typeid="333"
+            commonid="335"
+            ChangeSelectdata={newvalue => setSelectData(newvalue)}
+            style={{ display: 'none' }}
+          />
           <Form>
-            <Col span={24}>
+            <span style={{ color: 'red', marginLeft: 19 }}>回退至【{`${flowNodeName}`}】</span>
+            <Col span={22}>
               <Form.Item label='回退意见'>
                 {
                   getFieldDecorator('rollbackmsg', {
@@ -54,7 +73,6 @@ function ModelRollback(props) {
                     ]
                   })(<TextArea rows={5} />)
                 }
-
               </Form.Item>
             </Col>
           </Form>

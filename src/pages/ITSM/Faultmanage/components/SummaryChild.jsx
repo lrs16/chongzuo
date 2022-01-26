@@ -8,13 +8,18 @@ import {
   DatePicker,
   Alert,
   Button,
-  Icon
+  Icon,
+  Select,
+  Radio,
 } from 'antd';
 import router from 'umi/router';
 import SysUpload from '@/components/SysUpload'; // 附件下载组件
 import Downloadfile from '@/components/SysUpload/Downloadfile'; // 下载组件调用
+import SysDict from '@/components/SysDict';
 
 const { TextArea } = Input;
+const { Option } = Select;
+const RadioGroup = Radio.Group;
 
 const formItemLayout = {
   labelCol: {
@@ -64,12 +69,13 @@ const SummaryChild = React.forwardRef((props, ref) => {
     orderNo,
     editState,
     finishId,
-    uploadStatus 
+    uploadStatus
   } = props;
   const message = '上传故障分析报告已超时， 实际上传时间已超过要求上传时间。'
   const { getFieldDecorator, setFieldsValue } = props.form;
   const attRef = useRef();
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
+  const [selectdata, setSelectData] = useState([]);
 
   useEffect(() => {
     ChangeFiles(fileslist);
@@ -107,7 +113,16 @@ const SummaryChild = React.forwardRef((props, ref) => {
         sign
       }
     })
-  }
+  };
+
+  const getTypebyTitle = title => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.title === title)[0].children;
+    }
+    return [];
+  };
+
+  const responsible = getTypebyTitle('故障责任方');
 
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>
@@ -115,7 +130,50 @@ const SummaryChild = React.forwardRef((props, ref) => {
         (finish && finish.finishRequiredTime !== undefined && finish.finishPracticeTime !== undefined) && (new Date(Date.parse(finish.finishRequiredTime)) < new Date(Date.parse(finish.finishPracticeTime))) === true &&
         <Alert message={message} type="error" showIcon style={{ width: '94%', marginLeft: '3%', marginBottom: 15 }} />
       }
+      <SysDict
+        typeid="333"
+        commonid="335"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'none' }}
+      />
       <Form {...formItemLayout}>
+        <Col span={24}>
+          <Form.Item label="故障责任方" {...forminladeLayout}>
+            {getFieldDecorator('finishBlame', {
+              rules: [
+                {
+                  required,
+                  message: '请选择',
+                },
+              ],
+              initialValue: finish.finishBlame,
+            })(<Select placeholder="请选择" allowClear style={{ width: '25%' }}>
+              {responsible.map(obj => [
+                <Option key={obj.key} value={obj.title}>
+                  {obj.title}
+                </Option>,
+              ])}
+            </Select>)}
+          </Form.Item>
+        </Col>
+        <Col span={24}>
+          <Form.Item label="是否需要提供故障报告" {...forminladeLayout}>
+            {getFieldDecorator('finishReportSign', {
+              rules: [
+                {
+                  required,
+                  message: '请选择',
+                },
+              ],
+              initialValue: (finish && finish.finishReportSign) ? Number(finish.finishReportSign) : 0
+            })(
+              <RadioGroup>
+                <Radio value={0}>是</Radio>
+                <Radio value={1}>否</Radio>
+              </RadioGroup>,
+            )}
+          </Form.Item>
+        </Col>
         <Col span={24}>
           <Form.Item label="总结时间" {...forminladeLayout}>
             {getFieldDecorator('finishTime', {
@@ -145,78 +203,78 @@ const SummaryChild = React.forwardRef((props, ref) => {
         </Col>
 
         {
-        ((showFilelist2 && showFilelist2.checkReportSign) ? showFilelist2.checkReportSign === '0' : showFilelist.checkReportSign === '0') && (
-          <Col span={24}>
-          <Form.Item label="上传故障分析报告" {...ItemLayout}>
-            {getFieldDecorator('finishAnalysisAttachments', {
-                   rules: [
+          ((showFilelist2 && showFilelist2.checkReportSign) ? showFilelist2.checkReportSign === '0' : showFilelist.checkReportSign === '0') && (
+            <Col span={24}>
+              <Form.Item label="上传故障分析报告" {...ItemLayout}>
+                {getFieldDecorator('finishAnalysisAttachments', {
+                  rules: [
                     {
                       required,
                       message: '请生成故障分析报告',
                     },
                   ],
-            })(
-              <>
-                {finish.finishAnalysisAttachments && <Downloadfile files={finish.finishAnalysisAttachments} />}
-                {finish.finishAnalysisAttachments && (
-                  <Icon
-                    className="dynamic-delete-button"
-                    type="edit"
-                    onClick={() => handleAnalysisReport('noedit')}
-                  />
-                )}
+                })(
+                  <>
+                    {finish.finishAnalysisAttachments && <Downloadfile files={finish.finishAnalysisAttachments} />}
+                    {finish.finishAnalysisAttachments && (
+                      <Icon
+                        className="dynamic-delete-button"
+                        type="edit"
+                        onClick={() => handleAnalysisReport('noedit')}
+                      />
+                    )}
 
-                {
-                  finish && !finish.finishAnalysisAttachments && (
-                    <Button
-                      type='primary'
-                      onClick={() => handleAnalysisReport('')}
-                    >
-                      自动生成报告
-                    </Button>
-                  )
-                }
-              </>
-            )}
-          </Form.Item>
-        </Col>
-        )
+                    {
+                      finish && !finish.finishAnalysisAttachments && (
+                        <Button
+                          type='primary'
+                          onClick={() => handleAnalysisReport('')}
+                        >
+                          自动生成报告
+                        </Button>
+                      )
+                    }
+                  </>
+                )}
+              </Form.Item>
+            </Col>
+          )
         }
 
         {
-        ((showFilelist2 && showFilelist2.checkReportSign) ? showFilelist2.checkReportSign === '1' : showFilelist.checkReportSign === '1') && (
-          <Col span={24}>
-          <Form.Item label="故障分析报告" {...ItemLayout}>
-            {getFieldDecorator('finishAnalysisAttachments', {
-           
-            })(
-              <>
-                {finish.finishAnalysisAttachments && <Downloadfile files={finish.finishAnalysisAttachments} />}
-                {finish.finishAnalysisAttachments && (
-                  <Icon
-                    className="dynamic-delete-button"
-                    type="edit"
-                    onClick={() => handleAnalysisReport('noedit')}
-                  />
-                )}
+          ((showFilelist2 && showFilelist2.checkReportSign) ? showFilelist2.checkReportSign === '1' : showFilelist.checkReportSign === '1') && (
+            <Col span={24}>
+              <Form.Item label="故障分析报告" {...ItemLayout}>
+                {getFieldDecorator('finishAnalysisAttachments', {
 
-                {
-                  finish && !finish.finishAnalysisAttachments && (
-                    <Button
-                      type='primary'
-                      onClick={() => handleAnalysisReport('')}
-                    >
-                      自动生成报告
-                    </Button>
-                  )
-                }
-              </>
-            )}
-          </Form.Item>
-        </Col>
-        )
+                })(
+                  <>
+                    {finish.finishAnalysisAttachments && <Downloadfile files={finish.finishAnalysisAttachments} />}
+                    {finish.finishAnalysisAttachments && (
+                      <Icon
+                        className="dynamic-delete-button"
+                        type="edit"
+                        onClick={() => handleAnalysisReport('noedit')}
+                      />
+                    )}
+
+                    {
+                      finish && !finish.finishAnalysisAttachments && (
+                        <Button
+                          type='primary'
+                          onClick={() => handleAnalysisReport('')}
+                        >
+                          自动生成报告
+                        </Button>
+                      )
+                    }
+                  </>
+                )}
+              </Form.Item>
+            </Col>
+          )
         }
-       
+
         {
           ((showFilelist2 && showFilelist2.checkReportSign) ? showFilelist2.checkReportSign === '0' : showFilelist.checkReportSign === '0') && (
             <>
@@ -227,7 +285,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
                   })(<DatePicker showTime disabled format="YYYY-MM-DD HH:mm:ss" />)}
                 </Form.Item>
               </Col>
-              
+
               <Col span={8}>
                 <Form.Item label="实际上传时间" >
                   {getFieldDecorator('finishPracticeTime', {

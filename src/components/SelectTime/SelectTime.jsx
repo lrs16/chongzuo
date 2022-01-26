@@ -59,7 +59,7 @@ function SelectTime(props) {
   };
 
   useEffect(() => {
-    handleChang('按年', true)
+    handleChang('按月', true)
     return () => {
       handleChang(undefined);
       setStartDates(undefined);

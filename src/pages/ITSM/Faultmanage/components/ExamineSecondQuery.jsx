@@ -35,6 +35,11 @@ function ExamineSecondQuery(props) {
               <TextArea autoSize={{ minRows: 3 }} defaultValue={info.checkOpinion || ''} disabled />
             </Form.Item>
           </Col>
+          <Col span={8}>
+            <Form.Item label="严重程度">
+              <Input defaultValue={info.checkLevel || ''} disabled />
+            </Form.Item>
+          </Col>
           <Col span={24}>
             <Form.Item label="是否影响计量主站"  {...forminladeLayout}>
               <RadioGroup defaultValue={Number(info.checkMaster)} disabled>

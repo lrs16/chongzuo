@@ -26,7 +26,8 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
     ChangeFiles,
     ChangeResult,
     location,
-    createQualityByMainId
+    createQualityByMainId,
+    tododetailslist
   } = props;
   const { getFieldDecorator, setFieldsValue } = props.form;
   const attRef = useRef();
@@ -54,7 +55,8 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
   );
   const required = true;
   useEffect(() => {
-    sessionStorage.setItem('Nextflowmane', '自动化科专责确认');
+    // sessionStorage.setItem('Nextflowmane', '自动化科专责确认');
+    sessionStorage.setItem('Nextflowmane', '自动化科审核');
   });
 
   const onChange = (e) => {
@@ -70,6 +72,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
   };
 
   const responsible = getTypebyTitle('故障责任方');
+  const priority = getTypebyTitle('严重程度');
 
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>
@@ -103,7 +106,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
                   message: '请输入故障责任方',
                 },
               ],
-              initialValue: check.checkBlame
+              initialValue: (check && check.checkBlame) ? check.checkBlame : (tododetailslist && tododetailslist.troubleFlowNodeRows[2].finishBlame)
             })(
               <Select placeholder="请选择" allowClear>
                 {responsible.map(obj => [
@@ -172,14 +175,43 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-        <Col span={24} style={{ paddingLeft: '8.33333333% ' }} >
-          <Button
-           onClick={createQualityByMainId}
-            type='primary'
-           
+        <Col span={24} >
+          <Form.Item
+            label=""
+            {...forminladeLayout}
+            style={{ paddingLeft: '8%' }}
+          >
+            <Button
+              onClick={createQualityByMainId}
+              type='primary'
             >
               发起绩效考核
             </Button>
+          </Form.Item>
+        </Col>
+
+        <Col span={8}>
+          <Form.Item label="严重程度">
+            {getFieldDecorator('checkLevel', {
+              rules: [
+                {
+                  required,
+                  message: '请选择',
+                },
+              ],
+              initialValue: (check && check.checkLevel) ? check.checkLevel : (tododetailslist && tododetailslist.troubleFlowNodeRows[0].registerLevel)
+            })(
+              <Select
+                getPopupContainer={e => e.parentNode}
+                placeholder="请选择">
+                {priority.map(obj => [
+                  <Option key={obj.key} value={obj.title}>
+                    {obj.title}
+                  </Option>,
+                ])}
+              </Select>,
+            )}
+          </Form.Item>
         </Col>
 
         <Col span={24}>

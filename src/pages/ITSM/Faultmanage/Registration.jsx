@@ -111,7 +111,7 @@ function Registration(props) {
     //  getNewno(); // 新的故障编号
     getCurrUserInfo(); // 获取登录用户信息
     sessionStorage.setItem('Processtype', 'troub');
-    sessionStorage.setItem('Nextflowmane', '审核');
+    sessionStorage.setItem('Nextflowmane', '处理');
   }, []);
 
   const close = () => {
@@ -524,6 +524,12 @@ function Registration(props) {
               <Col span={24}>
                 <Form.Item label="是否影响计量主站" {...forminladeLayout}>
                   {getFieldDecorator('registerMaster', {
+                    rules: [
+                      {
+                        required,
+                        message: '请选择',
+                      },
+                    ],
                     initialValue: cacheinfo.registerMaster || '0',
                   })(
                     <RadioGroup>

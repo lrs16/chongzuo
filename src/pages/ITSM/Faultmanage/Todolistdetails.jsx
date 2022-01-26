@@ -22,7 +22,7 @@ import ModelRollback from './components/ModelRollback'; // 回退组件
 
 // 各个子组件
 import RegisterChild from './components/RegisterChild'; // 故障登记
-import ExamineChild from './components/ExamineChild'; // 系统运维商审核
+// import ExamineChild from './components/ExamineChild'; // 系统运维商审核
 import HandleChild from './components/HandleChild'; // 系统运维商处理
 import SummaryChild from './components/SummaryChild'; // 系统运维商总结
 import ExamineSecondChild from './components/ExamineSecondChild'; // 自动化科业务负责人审核
@@ -97,7 +97,9 @@ const Collapsekeymap = new Map([
   ['系统运维商处理', 'HandleChild'], // 系统运维商处理
   ['系统运维商确认总结', 'SummaryChild'], // 系统运维商确认总结
   ['自动化科业务负责人审核', 'ExamineSecondChild'], // 自动化科业务负责人审核
-  ['自动化科专责确认', 'ConfirmChild'], // 自动化科专责确认
+  // ['自动化科专责确认', 'ConfirmChild'], // 自动化科专责确认
+  // 1.25 自动化科专责确认改为自动化科审核
+  ['自动化科审核', 'ConfirmChild'], // 自动化科审核
 ]);
 
 function Todolistdetails(props) {
@@ -423,7 +425,7 @@ function Todolistdetails(props) {
         }).then(res => {
           if (res.code === 200) {
             getfaultTodoDetailData();
-            if (cirStatus) {
+            if (cirStatus) { // 流转状态
               setUserVisible(true)
             } else {
               message.success(res.msg);
@@ -529,9 +531,9 @@ function Todolistdetails(props) {
       case '故障登记':
         saveRegister(savestatus);
         break;
-      case '系统运维商审核':
-        saveExamine(savestatus);
-        break;
+      // case '系统运维商审核':
+      //   saveExamine(savestatus);
+      //   break;
       case '系统运维商处理':
         saveHandle(savestatus);
         break;
@@ -541,7 +543,10 @@ function Todolistdetails(props) {
       case '自动化科业务负责人审核':
         saveExamine(savestatus);
         break;
-      case '自动化科专责确认':
+      // case '自动化科专责确认':
+      //   saveConfirm(savestatus);
+      //   break;
+      case '自动化科审核':
         saveConfirm(savestatus);
         break;
       default:
@@ -886,7 +891,7 @@ function Todolistdetails(props) {
   //  发起服务绩效
   const createQualityByMainId = (status) => {
     let obj = {};
-    if(status) {
+    if (status) {
       obj = {
         mainId,
         status,
@@ -909,7 +914,8 @@ function Todolistdetails(props) {
         setcreateQualityvisible(true);
       }
     })
-  }
+  };
+
   return (
     <PageHeaderWrapper
       extra={
@@ -933,11 +939,13 @@ function Todolistdetails(props) {
                 main.status !== '40' &&
                 check === undefined &&
                 finish === undefined &&
-                confirm === undefined && (
+                confirm === undefined &&
+                (
                   <Button type="danger" style={{ marginRight: 8 }} ghost onClick={() => handleSubmit('goback')} disabled={faultUploadStatus}>
                     回退
                   </Button>
-                )}
+                )
+              }
               {// 接单只有系统运维商处理时有
                 main && (main.status === '40' || main.status === '45') && editState === 'add' && (
                   <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSubmit('accpt')}>
@@ -966,7 +974,7 @@ function Todolistdetails(props) {
                   </Button>
                 )}
               {/* 确认过程的时候不需要选人 1通过直接关闭 */}
-              {flowNodeName === '自动化科专责确认'
+              {flowNodeName === '自动化科审核'
                 ? resultconfirm === '1' && (
                   <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleSubmit('over'); }} disabled={faultUploadStatus}>
                     结束
@@ -1084,7 +1092,7 @@ function Todolistdetails(props) {
                         />
                       </Panel>
                     )}
-                  {// 系统运维商审核编辑页
+                  {/* {// 系统运维商审核编辑页
                     flowNodeName === '系统运维商审核' && ( // 展开系统运维商审核表单时，显示故障登记详情（1）
                       <Panel header="系统运维商审核" key="ExamineChild">
                         <ExamineChild
@@ -1102,7 +1110,7 @@ function Todolistdetails(props) {
                           location={location}
                         />
                       </Panel>
-                    )}
+                    )} */}
                   {// 系统运维商处理编辑页
                     flowNodeName === '系统运维商处理' &&
                     main &&
@@ -1157,6 +1165,7 @@ function Todolistdetails(props) {
                           formItemLayout={formItemLayout}
                           forminladeLayout={forminladeLayout}
                           check={check}
+                          tododetailslist={tododetailslist}
                           curruserinfo={curruserinfo}
                           ChangeFiles={newvalue => {
                             setFiles(newvalue);
@@ -1171,8 +1180,8 @@ function Todolistdetails(props) {
                       </Panel>
                     )}
                   {// 自动化科专责确认编辑页
-                    flowNodeName === '自动化科专责确认' && (
-                      <Panel header="自动化科专责确认" key="ConfirmChild">
+                    flowNodeName === '自动化科审核' && (
+                      <Panel header="自动化科审核" key="ConfirmChild">
                         <ConfirmChild
                           ref={ConfirmRef}
                           formItemLayout={formItemLayout}
@@ -1200,7 +1209,8 @@ function Todolistdetails(props) {
                         ['系统运维商处理', <HandleQuery key={3} info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
                         ['系统运维商确认总结', <SummaryQuery key={4} info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} showFilelist={troubleFlowNodeRows[1]} showFilelist2={troubleFlowNodeRows[2]} />],
                         ['自动化科业务负责人审核', <ExamineSecondQuery key={5} info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                        ['自动化科专责确认', <ConfirmQuery key={6} info={obj} maindata={main} />],
+                        // ['自动化科专责确认', <ConfirmQuery key={6} info={obj} maindata={main} />],
+                        ['自动化科审核', <ConfirmQuery key={6} info={obj} maindata={main} />],
                       ]);
                       return (
                         <Panel Panel header={obj.fnname} key={index.toString()}>
@@ -1281,6 +1291,7 @@ function Todolistdetails(props) {
       <ModelRollback
         title="填写回退意见"
         visible={modalrollback}
+        flowNodeName={flowNodeName}
         ChangeVisible={v => setModalRollBack(v)}
         rollbackSubmit={v => postRollBackmsg(v)}
       />

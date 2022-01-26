@@ -20,6 +20,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
     // saveType
     location,
   } = props;
+
   const { getFieldDecorator, setFieldsValue } = props.form;
   const attRef = useRef();
 
@@ -410,6 +411,12 @@ const RegisterChild = React.forwardRef((props, ref) => {
         <Col span={24}>
           <Form.Item label="是否影响计量主站" {...forminladeLayout}>
             {getFieldDecorator('registerMaster', {
+              rules: [
+                {
+                  required,
+                  message: '请选择',
+                },
+              ],
               initialValue: tododetailslist && tododetailslist.register && tododetailslist.register.registerMaster,
             })(
               <RadioGroup>

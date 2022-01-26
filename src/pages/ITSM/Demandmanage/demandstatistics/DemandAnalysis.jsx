@@ -189,13 +189,13 @@ function Statistics(props) {
               // </Row>
               <Row type="flex" justify="space-around">
                 <Col span={4}><StatisticsCard title='需求总数：' time1={moment(values.beginTime).format('YYYY-MM-DD 00:00:00')}
-                  time2={moment(values.endTime).format('YYYY-MM-DD 23:59:59')} staticName="需求总数" value={ratiodatalist.total} suffix='单' des='环比' desval={`${ratiodatalist.totalMom}%`} type={Number(ratiodatalist.totalMom) > 0 ? 'up' : 'down'} /></Col>
+                  time2={moment(values.endTime).format('YYYY-MM-DD 23:59:59')} staticName="需求总数" value={ratiodatalist.total} suffix='单' des='环比' desval={`${ratiodatalist.totalRingRatio}%`} type={Number(ratiodatalist.totalRingRatio) > 0 ? 'up' : 'down'} /></Col>
                 <Col span={5}><StatisticsCard title='已开发：' staticName="已开发" time1={moment(values.beginTime).format('YYYY-MM-DD')}
-                  time2={moment(values.endTime).format('YYYY-MM-DD')} value={ratiodatalist.dev} suffix='单' des='环比' desval={`${ratiodatalist.devMom}%`} type={Number(ratiodatalist.devMom) > 0 ? 'up' : 'down'} /></Col>
+                  time2={moment(values.endTime).format('YYYY-MM-DD')} value={ratiodatalist.dev} suffix='单' des='环比' desval={`${ratiodatalist.devRingRatio}%`} type={Number(ratiodatalist.devRingRatio) > 0 ? 'up' : 'down'} /></Col>
                 <Col span={5}><StatisticsCard title='未开发：' staticName="未开发" time1={moment(values.beginTime).format('YYYY-MM-DD 00:00:00')}
-                  time2={moment(values.endTime).format('YYYY-MM-DD 23:59:59')} value={ratiodatalist.release} suffix='单' des='环比' desval={`${ratiodatalist.releaseMom}%`} type={Number(ratiodatalist.releaseMom) > 0 ? 'up' : 'down'} /></Col>
-                <Col span={5}><StatisticsCard title='需求取消：' value={ratiodatalist.devRate} suffix='%' des='环比' desval={`${ratiodatalist.devRateMom}%`} type={Number(ratiodatalist.devRateMom) > 0 ? 'up' : 'down'} /></Col>
-                <Col span={5}><StatisticsCard title='需求进度：' value={ratiodatalist.releaseRate} suffix='%' des='环比' desval={`${ratiodatalist.releaseRateMom}%`} type={Number(ratiodatalist.releaseRateMom) > 0 ? 'up' : 'down'} /></Col>
+                  time2={moment(values.endTime).format('YYYY-MM-DD 23:59:59')} value={ratiodatalist.unDev} suffix='单' des='环比' desval={`${ratiodatalist.unDevRingRatio}%`} type={Number(ratiodatalist.unDevRingRatio) > 0 ? 'up' : 'down'} /></Col>
+                <Col span={5}><StatisticsCard title='需求取消：' value={ratiodatalist.cancelled} suffix='%' des='环比' desval={`${ratiodatalist.cancelledRingRatio}%`} type={Number(ratiodatalist.cancelledRingRatio) > 0 ? 'up' : 'down'} /></Col>
+                <Col span={5}><StatisticsCard title='需求进度：' value={ratiodatalist.speed} suffix='%' des='环比' desval={`${ratiodatalist.speedRingRatio}%`} type={Number(ratiodatalist.speedRingRatio) > 0 ? 'up' : 'down'} /></Col>
               </Row>
             )
           }
@@ -242,6 +242,7 @@ function Statistics(props) {
                   time2={moment(values.endTime).format('YYYY-MM-DD 23:59:59')}
                   staticName='需求工单总情况线'
                   onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
+                  // uncheckedname={['总数']}
                 />
               )
             }
@@ -287,6 +288,7 @@ function Statistics(props) {
                   time2={moment(values.endTime).format('YYYY-MM-DD 23:59:59')}
                   staticName="功能模块情况线"
                   onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
+                  // uncheckedname={['总数']}
                 />
               )
             }
@@ -332,6 +334,7 @@ function Statistics(props) {
                   time2={moment(values.endTime).format('YYYY-MM-DD 23:59:59')}
                   staticName='需求类型统计分析线'
                   onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
+                  // uncheckedname={['总数']}
                 />
               )
             }

@@ -1446,6 +1446,32 @@ function QueryList(props) {
               </Form.Item>
             </Col>
 
+            <Col xl={8} xs={12}>
+              <Form.Item label="是否需要提供故障报告">
+                {getFieldDecorator('finishReportSign', {
+                  initialValue: cacheinfo.finishReportSign
+                })(
+                  <Select>
+                    <Option value={0}>是</Option>
+                    <Option value={1}>否</Option>
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
+
+            <Col xl={8} xs={12}>
+              <Form.Item label="是否影响计量主站">
+                {getFieldDecorator('master', {
+                  initialValue: cacheinfo.master
+                })(
+                  <Select>
+                    <Option value='0'>是</Option>
+                    <Option value='1'>否</Option>
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
+
             <Col span={8} >
               <Form.Item label="建单时间">
                 {getFieldDecorator('addTime', {

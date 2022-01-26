@@ -1,8 +1,9 @@
 import React from 'react';
-import { Form, Input, Row, Col } from 'antd';
+import { Form, Input, Row, Col, Radio } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile'; // 下载组件调用
 
 const { TextArea } = Input;
+const RadioGroup = Radio.Group;
 
 function SummaryQuery(props) {
   const { info, formItemLayout, forminladeLayout, showFilelist, showFilelist2 } = props;
@@ -11,6 +12,19 @@ function SummaryQuery(props) {
     <>
       <Row gutter={24} style={{ marginTop: 24 }}>
         <Form {...formItemLayout}>
+          <Col span={8}>
+            <Form.Item label="故障责任方">
+              <Input defaultValue={info.finishBlame || ''} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="是否需要提供故障报告" {...formItemLayout}>
+              <RadioGroup defaultValue={Number(info.finishReportSign)} disabled>
+                <Radio value={0}>是</Radio>
+                <Radio value={1}>否</Radio>
+              </RadioGroup>
+            </Form.Item>
+          </Col>
           <Col span={8}>
             <Form.Item label="总结时间">
               <Input defaultValue={info.finishTime || ''} disabled />
