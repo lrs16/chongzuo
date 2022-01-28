@@ -474,7 +474,7 @@ function EventAnalysis(props) {
                           setPicVal({
                             eventType: v.name,
                             time1: moment(v.date).startOf('month').format('YYYY-MM-DD 00:00:00'),
-                            time2: moment(v.date).endOf('month').format('YYYY-MM-DD 00:00:00'),
+                            time2: moment(v.date).endOf('month').format('YYYY-MM-DD 23:59:59'),
                           });
                           setVisible(true)
                           setTitle(v.name);

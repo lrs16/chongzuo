@@ -411,18 +411,30 @@ function StatisticsAnalysis(props) {
                         if (moment(values.beginTime).format('YYYY-MM-DD') === moment(values.endTime).format('YYYY-MM-DD')) {
                           setPicVal({
                             model: '工单情况',
-                            type: '问题工单',
+                            type: v.name === '总数' ? 'all' : '问题工单',
                             begin: `${moment(values.beginTime).format('YYYY-MM-DD')} ${v.date}:00:00`,
                             end: `${moment(values.endTime).format('YYYY-MM-DD')} ${v.date}:59:59`,
                           });
                           setVisible(true)
-                        } else {
+                        }
+
+                        if (moment(values.beginTime).format('YYYY-MM-DD') !== moment(values.endTime).format('YYYY-MM-DD') && values.type !== 'Y') {
                           setPicVal({
                             model: '工单情况',
-                            type: '问题工单',
+                            type: v.name === '总数' ? 'all' : '问题工单',
                             begin: `${v.date} 00:00:00`,
                             end: `${v.date} 23:59:59`,
                           });
+                          setVisible(true)
+                        }
+
+                        if (values.type === 'Y') {
+                          setPicVal({
+                            model: '工单情况',
+                            type: v.name === '总数' ? 'all' : '问题工单',
+                            begin: moment(v.date).startOf('month').format('YYYY-MM-DD 00:00:00'),
+                            end: moment(v.date).endOf('month').format('YYYY-MM-DD 23:59:59'),
+                          })
                           setVisible(true)
                         }
                         setTitle(v.name)
@@ -482,18 +494,30 @@ function StatisticsAnalysis(props) {
                           if (moment(values.beginTime).format('YYYY-MM-DD') === moment(values.endTime).format('YYYY-MM-DD')) {
                             setPicVal({
                               model: '问题分类',
-                              type: v.name,
+                              type: v.name === '总数' ? 'all' : v.name,
                               begin: `${moment(values.beginTime).format('YYYY-MM-DD')} ${v.date}:00:00`,
                               end: `${moment(values.endTime).format('YYYY-MM-DD')} ${v.date}:59:59`,
                             });
                             setVisible(true)
-                          } else {
+                          }
+
+                          if (moment(values.beginTime).format('YYYY-MM-DD') !== moment(values.endTime).format('YYYY-MM-DD') && values.type !== 'Y') {
                             setPicVal({
                               model: '问题分类',
-                              type: v.name,
+                              type: v.name === '总数' ? 'all' : v.name,
                               begin: `${v.date} 00:00:00`,
                               end: `${v.date} 23:59:59`,
                             });
+                            setVisible(true)
+                          }
+
+                          if (values.type === 'Y') {
+                            setPicVal({
+                              model: '问题分类',
+                              type: v.name === '总数' ? 'all' : v.name,
+                              begin: moment(v.date).startOf('month').format('YYYY-MM-DD 00:00:00'),
+                              end: moment(v.date).endOf('month').format('YYYY-MM-DD 23:59:59'),
+                            })
                             setVisible(true)
                           }
                           setTitle(v.name)
@@ -550,18 +574,30 @@ function StatisticsAnalysis(props) {
                             if (moment(values.beginTime).format('YYYY-MM-DD') === moment(values.endTime).format('YYYY-MM-DD')) {
                               setPicVal({
                                 model: '程序问题',
-                                type: v.name,
+                                type: v.name === '总数' ? 'all' : v.name,
                                 begin: `${moment(values.beginTime).format('YYYY-MM-DD')} ${v.date}:00:00`,
                                 end: `${moment(values.endTime).format('YYYY-MM-DD')} ${v.date}:59:59`,
                               });
                               setVisible(true)
-                            } else {
+                            }
+
+                            if (moment(values.beginTime).format('YYYY-MM-DD') !== moment(values.endTime).format('YYYY-MM-DD') && values.type !== 'Y') {
                               setPicVal({
                                 model: '程序问题',
-                                type: v.name,
+                                type: v.name === '总数' ? 'all' : v.name,
                                 begin: `${v.date} 00:00:00`,
                                 end: `${v.date} 23:59:59`,
                               });
+                              setVisible(true)
+                            }
+
+                            if (values.type === 'Y') {
+                              setPicVal({
+                                model: '程序问题',
+                                type: v.name === '总数' ? 'all' : v.name,
+                                begin: moment(v.date).startOf('month').format('YYYY-MM-DD 00:00:00'),
+                                end: moment(v.date).endOf('month').format('YYYY-MM-DD 23:59:59'),
+                              })
                               setVisible(true)
                             }
                             setTitle(v.name)
@@ -618,18 +654,30 @@ function StatisticsAnalysis(props) {
                           if (moment(values.beginTime).format('YYYY-MM-DD') === moment(values.endTime).format('YYYY-MM-DD')) {
                             setPicVal({
                               model: '功能问题',
-                              type: v.name,
+                              type: v.name === '总数' ? 'all' : v.name,
                               begin: `${moment(values.beginTime).format('YYYY-MM-DD')} ${v.date}:00:00`,
                               end: `${moment(values.endTime).format('YYYY-MM-DD')} ${v.date}:59:59`,
                             });
                             setVisible(true)
-                          } else {
+                          }
+
+                          if (moment(values.beginTime).format('YYYY-MM-DD') !== moment(values.endTime).format('YYYY-MM-DD') && values.type !== 'Y') {
                             setPicVal({
                               model: '功能问题',
-                              type: v.name,
+                              type: v.name === '总数' ? 'all' : v.name,
                               begin: `${v.date} 00:00:00`,
                               end: `${v.date} 23:59:59`,
                             });
+                            setVisible(true)
+                          }
+
+                          if (values.type === 'Y') {
+                            setPicVal({
+                              model: '功能问题',
+                              type: v.name === '总数' ? 'all' : v.name,
+                              begin: moment(v.date).startOf('month').format('YYYY-MM-DD 00:00:00'),
+                              end: moment(v.date).endOf('month').format('YYYY-MM-DD 23:59:59'),
+                            })
                             setVisible(true)
                           }
                           setTitle(v.name)
@@ -683,18 +731,30 @@ function StatisticsAnalysis(props) {
                         if (moment(values.beginTime).format('YYYY-MM-DD') === moment(values.endTime).format('YYYY-MM-DD')) {
                           setPicVal({
                             model: '问题来源',
-                            type: v.name,
+                            type: v.name === '总数' ? 'all' : v.name,
                             begin: `${moment(values.beginTime).format('YYYY-MM-DD')} ${v.date}:00:00`,
                             end: `${moment(values.endTime).format('YYYY-MM-DD')} ${v.date}:59:59`,
                           });
                           setVisible(true)
-                        } else {
+                        }
+
+                        if (moment(values.beginTime).format('YYYY-MM-DD') !== moment(values.endTime).format('YYYY-MM-DD') && values.type !== 'Y') {
                           setPicVal({
                             model: '问题来源',
-                            type: v.name,
+                            type: v.name === '总数' ? 'all' : v.name,
                             begin: `${v.date} 00:00:00`,
                             end: `${v.date} 23:59:59`,
                           });
+                          setVisible(true)
+                        }
+
+                        if (values.type === 'Y') {
+                          setPicVal({
+                            model: '问题来源',
+                            type: v.name === '总数' ? 'all' : v.name,
+                            begin: moment(v.date).startOf('month').format('YYYY-MM-DD 00:00:00'),
+                            end: moment(v.date).endOf('month').format('YYYY-MM-DD 23:59:59'),
+                          })
                           setVisible(true)
                         }
                         setTitle(v.name)
@@ -717,7 +777,7 @@ function StatisticsAnalysis(props) {
                     <DonutPCT
                       data={timeoutdata}
                       height={300}
-                      colors={['#ee6666','#5AD8A6']}
+                      colors={['#ee6666', '#5AD8A6']}
                       total={piesum(timeoutdata)}
                       totaltitle="处理及时率总数"
                       padding={[10, 30, 30, 30]}
