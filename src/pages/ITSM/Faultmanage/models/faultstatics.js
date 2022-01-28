@@ -17,6 +17,7 @@ import {
   queryRegisterUnitTop, // 统计分析-故障登记人单位排名
   queryHandlerTop, // 统计分析-故障处理人排名
   queryHandleUnitTop, // 统计分析-故障处理人单位排名
+  queryToReport, // 统计分析-提交故障报告情况
 } from '../services/statistics'; 
 
 export default {
@@ -38,6 +39,7 @@ export default {
     registeruserunitlist: {}, // 统计分析-故障登记人单位排名
     handlerlist: {}, // 统计分析-故障处理人排名
     handleunitlist: {}, // 统计分析-故障处理人单位排名
+    analysisreportlist: {},  // 统计分析-提交故障报告情况
   },
 
   effects: {
@@ -108,6 +110,15 @@ export default {
       const response = yield call(queryOrderConditions, payload);
       yield put({
         type: 'saveanalysislist',
+        payload: response,
+      });
+    },
+
+    //  统计分析-工单总情况
+    *getToReport({ payload }, { call, put }) {
+      const response = yield call(queryToReport, payload);
+      yield put({
+        type: 'savetoreport',
         payload: response,
       });
     },
@@ -196,6 +207,7 @@ export default {
         typeconditlist: {}, // 统计分析-故障分类总情况
         modelconditlist: {}, // 统计分析-故障模块总情况
         timeoutconditlist: {}, // 统计分析-故障超时总情况
+        analysisreportlist: {},
       }
     },
     // 问题状态列表
@@ -218,6 +230,13 @@ export default {
         ...state,
         faultdetailArr: action.payload.data
       }
+    },
+
+    savetoreport(state, action) { // 故障统计分析 -提交故障报告情况
+      return {
+        ...state,
+        analysisreportlist: action.payload.data,
+      };
     },
 
     saveanalysislist(state, action) { // 故障统计分析 -工单总情况

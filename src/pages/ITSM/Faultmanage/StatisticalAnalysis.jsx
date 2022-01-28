@@ -24,6 +24,7 @@ function StatisticalAnalysis(props) {
   // const { pagetitle } = props.route.name;
   const {
     dispatch,
+    analysisreportlist, // 是否需要提交报告
     analysislist, // 工单总情况
     blameconditlist, // 故障责任单位总情况
     typeconditlist, // 故障分类总情况
@@ -81,6 +82,11 @@ function StatisticalAnalysis(props) {
         time2: moment(values.endTime).format('YYYY-MM-DD 23:59:59'),
         type: values.type
       };
+
+      dispatch({ // 提交故障报告情况
+        type: 'faultstatics/getToReport',
+        payload: { ...val },
+      });
 
       dispatch({ // 工单总情况
         type: 'faultstatics/getOrderConditions',
@@ -449,23 +455,27 @@ function StatisticalAnalysis(props) {
         </Col>
         <Col span={12}>
           <div className={styles.statisticscard}>
-            <Avatar icon="form" />
-            <b>故障登记人Top{topN.val1}</b>
-            <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN({ ...topN, val1: v })} /></div>
+            <Avatar icon="file-done" />
+            <b>提交故障报告情况</b>
           </div>
-          <ChartCard contentHeight={350} onMouseDown={() => setPicVal({})} >
-            {(!registeruserlist || (registeruserlist && registeruserlist.length === 0)) && <Empty style={{ height: '350px' }} />}
-            {registeruserlist && registeruserlist.length > 0 && (
-              <ColumnarY
-                height={350}
-                data={dataCylinder(registeruserlist, 'val1') || []}
-                padding={[30, 60, 50, 100]}
-                staticName="故障登记人"
-                cols={Issuedscale}
-                onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
-              />
-            )}
-          </ChartCard>
+          <Card onMouseDown={() => setPicVal({})}>
+            {(!analysisreportlist || (analysisreportlist && analysisreportlist.length === 0)) && <Empty style={{ height: '364.5px' }} />}
+            {
+              analysisreportlist && analysisreportlist.length > 0 && (
+                <DonutPCT
+                  data={analysisreportlist || []}
+                  height={364.5}
+                  total={piesum(analysisreportlist)}
+                  time1={moment(values.beginTime).format('YYYY-MM-DD 00:00:00')}
+                  time2={moment(values.endTime).format('YYYY-MM-DD 23:59:59')}
+                  totaltitle='总数'
+                  staticName="提交故障报告情况"
+                  padding={[10, 30, 30, 30]}
+                  onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
+                />
+              )
+            }
+          </Card>
         </Col>
       </Row>
       {/* 故障处理人Top5 + 故障登记单位Top5 */}
@@ -484,6 +494,26 @@ function StatisticalAnalysis(props) {
                 data={dataCylinder(handlerlist, 'val2') || []}
                 padding={[30, 60, 50, 100]}
                 staticName="故障处理人"
+                cols={Issuedscale}
+                onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
+              />
+            )}
+          </ChartCard>
+        </Col>
+        <Col span={12}>
+          <div className={styles.statisticscard}>
+            <Avatar icon="form" />
+            <b>故障登记人Top{topN.val1}</b>
+            <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN({ ...topN, val1: v })} /></div>
+          </div>
+          <ChartCard contentHeight={350} onMouseDown={() => setPicVal({})} >
+            {(!registeruserlist || (registeruserlist && registeruserlist.length === 0)) && <Empty style={{ height: '350px' }} />}
+            {registeruserlist && registeruserlist.length > 0 && (
+              <ColumnarY
+                height={350}
+                data={dataCylinder(registeruserlist, 'val1') || []}
+                padding={[30, 60, 50, 100]}
+                staticName="故障登记人"
                 cols={Issuedscale}
                 onGetVal={(v) => { setPicVal({ ...picval, type: v }); }}
               />
@@ -540,6 +570,7 @@ function StatisticalAnalysis(props) {
 }
 
 export default connect(({ faultstatics, loading }) => ({
+  analysisreportlist: faultstatics.analysisreportlist, // 提交故障报告情况
   analysislist: faultstatics.analysislist, // 工单总情况
   blameconditlist: faultstatics.blameconditlist, // 故障责任单位总情况
   typeconditlist: faultstatics.typeconditlist, // 故障分类总情况

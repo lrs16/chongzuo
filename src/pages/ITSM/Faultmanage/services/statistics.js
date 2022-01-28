@@ -78,6 +78,15 @@ export async function timeoutDownload(params) {
 }
 
 // 故障统计分析
+// 添加一个饼图--提交故障报告情况 trouble/analysis/getReport
+export async function queryToReport(params) {
+  return request(`/trouble/analysis/getReport`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form'
+  });
+}
+
 // 工单总情况 /trouble/analysis/getOrderConditions time1, time2, type
 export async function queryOrderConditions(params) {
   return request(`/trouble/analysis/getOrderConditions`, {

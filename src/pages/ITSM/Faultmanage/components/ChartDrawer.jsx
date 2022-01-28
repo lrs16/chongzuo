@@ -7,8 +7,15 @@ import {
   Button,
   Table,
   Tooltip,
-  Popconfirm
+  Popconfirm,
+  Badge
 } from 'antd';
+
+const colormap = new Map([
+  ['已超时', 'red'],
+  ['未超时', 'green'],
+  ['即将超时', 'orange'],
+]);
 
 const columns = [
   {
@@ -39,7 +46,7 @@ const columns = [
     onCell: () => {
       return {
         style: {
-          maxWidth: 150,
+          maxWidth: 200,
           overflow: 'hidden',
           whiteSpace: 'nowrap',
           textOverflow: 'ellipsis',
@@ -48,6 +55,28 @@ const columns = [
       }
     },
     render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
+  },
+  {
+    title: '超时状态',
+    dataIndex: 'timeoutStatus',
+    key: 'timeoutStatus',
+    width: 150,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 150,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text, record) => (
+      <>
+        <Badge text={text} status={colormap.get(record.timeoutStatus)} />
+      </>
+    ),
   },
   {
     title: '故障发生时间',
@@ -481,6 +510,19 @@ function ChartDrawer(props) {
           }
         })
         break;
+      // *******饼图(提交故障报告情况)
+      case '提交故障报告情况':
+        dispatch({
+          type: 'fault/getfaultQueryList',
+          payload: {
+            pageNum: page,
+            pageSize: size,
+            addTimeBegin: value.startdate,
+            addTimeEnd: value.enddate,
+            finishReportSign: value.type
+          }
+        })
+        break;
       // 饼图中心点击总数(all)
       case 'blametotal':
         dispatch({
@@ -551,6 +593,18 @@ function ChartDrawer(props) {
             addTimeBegin: value.time1,
             addTimeEnd: value.time2,
             timeoutStatus: '总数'
+          }
+        })
+        break;
+      case 'reporttotal':
+        dispatch({
+          type: 'fault/getfaultQueryList',
+          payload: {
+            pageNum: page,
+            pageSize: size,
+            addTimeBegin: value.time1,
+            addTimeEnd: value.time2,
+            finishReportSign: '总数'
           }
         })
         break;
@@ -1007,6 +1061,28 @@ function ChartDrawer(props) {
         });
         // setDownVal({ ...downVal, handler: value.type });
         break;
+      // *******饼图(提交故障报告情况)
+      case '提交故障报告情况':
+        dispatch({
+          type: 'fault/faultQuerydownload',
+          payload: {
+            columns: JSON.stringify(exportColumns),
+            ids: selectedKeys.toString(),
+            finishReportSign: value.type,
+            addTimeBegin: value.startdate,
+            addTimeEnd: value.enddate,
+          },
+        }).then(res => {
+          const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+        break;
       // 饼图中心点击总数(all)
       case 'blametotal':
         dispatch({
@@ -1120,6 +1196,27 @@ function ChartDrawer(props) {
             columns: JSON.stringify(exportColumns),
             ids: selectedKeys.toString(),
             timeoutStatus: '总数',
+            addTimeBegin: value.time1,
+            addTimeEnd: value.time2,
+          },
+        }).then(res => {
+          const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+        break;
+      case 'reporttotal':
+        dispatch({
+          type: 'fault/faultQuerydownload',
+          payload: {
+            columns: JSON.stringify(exportColumns),
+            ids: selectedKeys.toString(),
+            finishReportSign: '总数',
             addTimeBegin: value.time1,
             addTimeEnd: value.time2,
           },

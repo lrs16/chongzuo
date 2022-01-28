@@ -101,6 +101,9 @@ function DonutPCT(props) {
                 case '故障工单超时情况':
                   handleGetDrawerVal({ staticName: 'timeouttotal', time1, time2, drawtitle: '总工单数' });
                   break;
+                case '提交故障报告情况':
+                  handleGetDrawerVal({ staticName: 'reporttotal', time1, time2, drawtitle: '总数' });
+                  break;
                 default:
                   break;
               }

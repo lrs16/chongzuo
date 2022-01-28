@@ -231,8 +231,8 @@ function QueryList(props) {
     },
     {
       title: '是否需要提供故障报告',
-      dataIndex: 'checkOneReportSign',
-      key: 'checkOneReportSign',
+      dataIndex: 'finishReportSign',
+      key: 'finishReportSign',
       width: 200,
     },
     {

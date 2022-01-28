@@ -648,6 +648,9 @@ function Todolistdetails(props) {
     // eslint-disable-next-line consistent-return
     ExamineRef.current.validateFields((err, values) => {
       const formValues = values;
+      formValues.checkOpinion = values.checkOpinion1 || values.checkOpinion2;
+      formValues.checkOpinion1 = '';
+      formValues.checkOpinion2 = '';
       if (formValues.checkTime) {
         formValues.checkTime = values.checkTime.format('YYYY-MM-DD HH:mm:ss');
       } else {
@@ -859,7 +862,11 @@ function Todolistdetails(props) {
       };
       if (res.code === 200 && ((res.status === 'yes' && res.timeoutMsg !== '') || res.status === 'no')) {
         handleHold(buttype);
-      };
+      }
+      if (res.code === -1) {
+        message.error(res.msg);
+        router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true, }, });
+      } 
     })
   };
 
@@ -935,6 +942,7 @@ function Todolistdetails(props) {
                 flowNodeName !== '故障关闭' &&
                 main &&
                 main.status !== '45' &&
+                !(troubleFlowNodeRows.length > 1 && flowNodeName === '系统运维商处理') &&
                 // main &&
                 // main.status !== '40' &&
                 check === undefined &&
