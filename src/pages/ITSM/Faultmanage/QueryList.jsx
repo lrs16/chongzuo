@@ -1452,8 +1452,8 @@ function QueryList(props) {
                   initialValue: cacheinfo.finishReportSign
                 })(
                   <Select>
-                    <Option value={0}>是</Option>
-                    <Option value={1}>否</Option>
+                    <Option value='是'>是</Option>
+                    <Option value='否'>否</Option>
                   </Select>,
                 )}
               </Form.Item>
@@ -1465,8 +1465,8 @@ function QueryList(props) {
                   initialValue: cacheinfo.master
                 })(
                   <Select>
-                    <Option value='0'>是</Option>
-                    <Option value='1'>否</Option>
+                    <Option value='是'>是</Option>
+                    <Option value='否'>否</Option>
                   </Select>,
                 )}
               </Form.Item>

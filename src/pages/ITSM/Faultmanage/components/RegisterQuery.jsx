@@ -5,6 +5,17 @@ import Downloadfile from '@/components/SysUpload/Downloadfile'; // 下载组件�
 const RadioGroup = Radio.Group;
 const { TextArea } = Input;
 
+const forminladeLayout1 = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 4 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 20 },
+  },
+};
+
 function RegisterQuery(props) {
   const { info, maindata, formItemLayout, forminladeLayout } = props;
 
@@ -65,6 +76,14 @@ function RegisterQuery(props) {
               </RadioGroup>
             </Form.Item>
           </Col>
+          <Col span={16}>
+            <Form.Item label="是否影响计量主站"  {...forminladeLayout1}>
+              <RadioGroup defaultValue={Number(info.registerMaster)} disabled>
+                <Radio value={0}>是</Radio>
+                <Radio value={1}>否</Radio>
+              </RadioGroup>
+            </Form.Item>
+          </Col>
           <Col span={24}>
             <Form.Item label="故障名称" {...forminladeLayout}>
               <Input defaultValue={maindata.title || ''} disabled />
@@ -73,14 +92,6 @@ function RegisterQuery(props) {
           <Col span={24}>
             <Form.Item label="故障概要"  {...forminladeLayout}>
               <TextArea autoSize={{ minRows: 3 }} defaultValue={maindata.content || ''} disabled />
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Form.Item label="是否影响计量主站"  {...forminladeLayout}>
-              <RadioGroup defaultValue={Number(info.registerMaster)} disabled>
-                <Radio value={0}>是</Radio>
-                <Radio value={1}>否</Radio>
-              </RadioGroup>
             </Form.Item>
           </Col>
           <Col span={24}>

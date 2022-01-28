@@ -55,6 +55,17 @@ const forminladeLayout = {
   },
 };
 
+const forminladeLayout1 = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 4 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 20 },
+  },
+};
+
 function Registration(props) {
   const pagetitle = props.route.name;
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
@@ -491,10 +502,35 @@ function Registration(props) {
                 </Form.Item>
               </Col>
 
-              <Col span={24}>
-                <Form.Item label="是否影响业务" {...forminladeLayout}>
+              <Col span={8}>
+                <Form.Item label="是否影响业务">
                   {getFieldDecorator('registerEffect', {
-                    initialValue: cacheinfo.registerEffect || '',
+                    rules: [
+                      {
+                        required,
+                        message: '请选择',
+                      },
+                    ],
+                    initialValue: cacheinfo.registerEffect || '0',
+                  })(
+                    <RadioGroup>
+                      <Radio value='0'>是</Radio>
+                      <Radio value='1'>否</Radio>
+                    </RadioGroup>,
+                  )}
+                </Form.Item>
+              </Col>
+
+              <Col span={16}>
+                <Form.Item label="是否影响计量主站" {...forminladeLayout1}>
+                  {getFieldDecorator('registerMaster', {
+                    rules: [
+                      {
+                        required,
+                        message: '请选择',
+                      },
+                    ],
+                    initialValue: cacheinfo.registerMaster || '0',
                   })(
                     <RadioGroup>
                       <Radio value='0'>是</Radio>
@@ -511,31 +547,12 @@ function Registration(props) {
                 // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
                 >
                   {(location && location.state && !location.state.cache) && !loading && ( // 位置已调
-                    <div> 
+                    <div>
                       <SysUpload
                         fileslist={files.arr}
                         ChangeFileslist={newvalue => setFiles(newvalue)}
                       />
                     </div>
-                  )}
-                </Form.Item>
-              </Col>
-
-              <Col span={24}>
-                <Form.Item label="是否影响计量主站" {...forminladeLayout}>
-                  {getFieldDecorator('registerMaster', {
-                    rules: [
-                      {
-                        required,
-                        message: '请选择',
-                      },
-                    ],
-                    initialValue: cacheinfo.registerMaster || '0',
-                  })(
-                    <RadioGroup>
-                      <Radio value='0'>是</Radio>
-                      <Radio value='1'>否</Radio>
-                    </RadioGroup>,
                   )}
                 </Form.Item>
               </Col>

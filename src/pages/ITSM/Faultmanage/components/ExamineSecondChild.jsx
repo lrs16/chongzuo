@@ -17,6 +17,17 @@ const { TextArea } = Input;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
 
+const forminladeLayout1 = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 4 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 20 },
+  },
+};
+
 const ExamineSecondChild = React.forwardRef((props, ref) => {
   const {
     formItemLayout,
@@ -140,6 +151,49 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
+        <Col span={8}>
+          <Form.Item label="严重程度">
+            {getFieldDecorator('checkLevel', {
+              rules: [
+                {
+                  required,
+                  message: '请选择',
+                },
+              ],
+              initialValue: (check && check.checkLevel) ? check.checkLevel : (tododetailslist && tododetailslist.troubleFlowNodeRows[0].registerLevel)
+            })(
+              <Select
+                getPopupContainer={e => e.parentNode}
+                placeholder="请选择">
+                {priority.map(obj => [
+                  <Option key={obj.key} value={obj.title}>
+                    {obj.title}
+                  </Option>,
+                ])}
+              </Select>,
+            )}
+          </Form.Item>
+        </Col>
+
+        <Col span={16}>
+          <Form.Item label="是否影响计量主站" {...forminladeLayout1} >
+            {getFieldDecorator('checkMaster', {
+              rules: [
+                {
+                  required,
+                  message: '请选择',
+                },
+              ],
+              initialValue: (check && check.checkMaster) ? check.checkMaster : (tododetailslist && tododetailslist.troubleFlowNodeRows[0].registerMaster)
+            })(
+              <RadioGroup>
+                <Radio value='0'>是</Radio>
+                <Radio value='1'>否</Radio>
+              </RadioGroup>,
+            )}
+          </Form.Item>
+        </Col>
+
         <Col span={23}>
           {adopt === '1' && ( // 1 通过
             <Form.Item label="审核意见" {...forminladeLayout}>
@@ -187,43 +241,6 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
             >
               发起绩效考核
             </Button>
-          </Form.Item>
-        </Col>
-
-        <Col span={8}>
-          <Form.Item label="严重程度">
-            {getFieldDecorator('checkLevel', {
-              rules: [
-                {
-                  required,
-                  message: '请选择',
-                },
-              ],
-              initialValue: (check && check.checkLevel) ? check.checkLevel : (tododetailslist && tododetailslist.troubleFlowNodeRows[0].registerLevel)
-            })(
-              <Select
-                getPopupContainer={e => e.parentNode}
-                placeholder="请选择">
-                {priority.map(obj => [
-                  <Option key={obj.key} value={obj.title}>
-                    {obj.title}
-                  </Option>,
-                ])}
-              </Select>,
-            )}
-          </Form.Item>
-        </Col>
-
-        <Col span={24}>
-          <Form.Item label="是否影响计量主站" {...forminladeLayout}>
-            {getFieldDecorator('checkMaster', {
-              initialValue: check && check.checkMaster || '',
-            })(
-              <RadioGroup>
-                <Radio value='0'>是</Radio>
-                <Radio value='1'>否</Radio>
-              </RadioGroup>,
-            )}
           </Form.Item>
         </Col>
 

@@ -5,6 +5,17 @@ import Downloadfile from '@/components/SysUpload/Downloadfile'; // 下载组件�
 const { TextArea } = Input;
 const RadioGroup = Radio.Group;
 
+const forminladeLayout1 = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 14 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 10 },
+  },
+};
+
 function SummaryQuery(props) {
   const { info, formItemLayout, forminladeLayout, showFilelist, showFilelist2 } = props;
 
@@ -18,7 +29,7 @@ function SummaryQuery(props) {
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="是否需要提供故障报告" {...formItemLayout}>
+            <Form.Item label="是否需要提供故障报告" {...forminladeLayout1}>
               <RadioGroup defaultValue={Number(info.finishReportSign)} disabled>
                 <Radio value={0}>是</Radio>
                 <Radio value={1}>否</Radio>
@@ -37,7 +48,7 @@ function SummaryQuery(props) {
           </Col>
 
           {
-            ((showFilelist2 && showFilelist2.checkReportSign) ? showFilelist2.checkReportSign === '0': showFilelist.checkReportSign === '0') && (
+            ((showFilelist2 && showFilelist2.checkReportSign) ? showFilelist2.checkReportSign === '0' : showFilelist.checkReportSign === '0') && (
               <>
                 <Col span={24}>
                   <Form.Item label="故障分析报告" {...forminladeLayout}>

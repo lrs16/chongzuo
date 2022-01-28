@@ -18,6 +18,7 @@ function ModelRollback(props) {
   } = props;
 
   const [selectdata, setSelectData] = useState([]);
+  // const [prevNodeName, setPrevNodeName] = useState('');
 
   const handleCancel = () => {
     ChangeVisible(false);
@@ -41,6 +42,12 @@ function ModelRollback(props) {
   };
 
   const currentNodeselect = getTypebyTitle('当前处理环节');
+  const prevNodeName = currentNodeselect.map((item, i) => {
+    if (flowNodeName === currentNodeselect[i].title) {
+      return currentNodeselect[i - 1].title;
+    }
+    return null;
+  });
 
   return (
     <>
@@ -60,7 +67,7 @@ function ModelRollback(props) {
             style={{ display: 'none' }}
           />
           <Form>
-            <span style={{ color: 'red', marginLeft: 19 }}>回退至【{`${flowNodeName}`}】</span>
+            <span style={{ color: 'red', marginLeft: 19 }}>回退至【{prevNodeName}】</span>
             <Col span={22}>
               <Form.Item label='回退意见'>
                 {

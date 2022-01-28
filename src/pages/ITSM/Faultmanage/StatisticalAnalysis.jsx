@@ -234,6 +234,7 @@ function StatisticalAnalysis(props) {
                     onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
                     timeType={values.type}
                     uncheckedname={['总数']}
+                    lock
                   />
                 )
               }

@@ -923,7 +923,7 @@ function Todolistdetails(props) {
           {tabActiveKey === 'faultForm' && !loading && (
             <>
               {// 删除按钮只有故障登记有并且没有流转记录
-                flowNodeName === '故障登记' && troubleFlowLogs.length === 1 && (
+                flowNodeName === '故障登记' && troubleFlowNodeRows.length <= 1 && (
                   <Popconfirm title="确定删除吗？" onConfirm={() => handleDelete()}>
                     <Button type="danger" style={{ marginRight: 8 }} ghost>
                       删除
@@ -935,8 +935,8 @@ function Todolistdetails(props) {
                 flowNodeName !== '故障关闭' &&
                 main &&
                 main.status !== '45' &&
-                main &&
-                main.status !== '40' &&
+                // main &&
+                // main.status !== '40' &&
                 check === undefined &&
                 finish === undefined &&
                 confirm === undefined &&

@@ -5,6 +5,17 @@ import Downloadfile from '@/components/SysUpload/Downloadfile'; // 下载组件�
 const RadioGroup = Radio.Group;
 const { TextArea } = Input;
 
+const forminladeLayout1 = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 4 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 20 },
+  },
+};
+
 function ExamineSecondQuery(props) {
   const { info, formItemLayout, forminladeLayout } = props;
 
@@ -13,11 +24,16 @@ function ExamineSecondQuery(props) {
       <Row gutter={24} style={{ marginTop: 24 }}>
         <Form {...formItemLayout}>
           <Col span={8}>
-            <Form.Item label="确认结果">
+            <Form.Item label="审核结果">
               <RadioGroup defaultValue={info.checkResult} disabled>
                 <Radio value='1'>通过</Radio>
                 <Radio value='0'>不通过</Radio>
               </RadioGroup>
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="故障责任方">
+              <Input defaultValue={info.checkBlame || ''} disabled />
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -26,22 +42,12 @@ function ExamineSecondQuery(props) {
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="故障责任方">
-              <Input defaultValue={info.checkBlame || ''} disabled />
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Form.Item label="审核意见"  {...forminladeLayout}>
-              <TextArea autoSize={{ minRows: 3 }} defaultValue={info.checkOpinion || ''} disabled />
-            </Form.Item>
-          </Col>
-          <Col span={8}>
             <Form.Item label="严重程度">
               <Input defaultValue={info.checkLevel || ''} disabled />
             </Form.Item>
           </Col>
-          <Col span={24}>
-            <Form.Item label="是否影响计量主站"  {...forminladeLayout}>
+          <Col span={16}>
+            <Form.Item label="是否影响计量主站"  {...forminladeLayout1}>
               <RadioGroup defaultValue={Number(info.checkMaster)} disabled>
                 <Radio value={0}>是</Radio>
                 <Radio value={1}>否</Radio>
@@ -49,7 +55,12 @@ function ExamineSecondQuery(props) {
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item label="附件" {...forminladeLayout}>
+            <Form.Item label="审核意见"  {...forminladeLayout}>
+              <TextArea autoSize={{ minRows: 3 }} defaultValue={info.checkOpinion || ''} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item label="上传附件" {...forminladeLayout}>
               {info.checkAttachments && <Downloadfile files={info.checkAttachments} />}
             </Form.Item>
           </Col>

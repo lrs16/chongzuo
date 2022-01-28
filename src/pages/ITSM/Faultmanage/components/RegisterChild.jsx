@@ -9,6 +9,17 @@ const { TextArea } = Input;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
 
+const forminladeLayout1 = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 4 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 20 },
+  },
+};
+
 const RegisterChild = React.forwardRef((props, ref) => {
   const {
     formItemLayout,
@@ -374,10 +385,29 @@ const RegisterChild = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-        <Col span={24}>
-          <Form.Item label="是否影响业务" {...forminladeLayout}>
+        <Col span={8}>
+          <Form.Item label="是否影响业务">
             {getFieldDecorator('registerEffect', {
               initialValue: tododetailslist && tododetailslist.register && tododetailslist.register.registerEffect,
+            })(
+              <RadioGroup>
+                <Radio value='0'>是</Radio>
+                <Radio value='1'>否</Radio>
+              </RadioGroup>,
+            )}
+          </Form.Item>
+        </Col>
+
+        <Col span={16}>
+          <Form.Item label="是否影响计量主站" {...forminladeLayout1}>
+            {getFieldDecorator('registerMaster', {
+              rules: [
+                {
+                  required,
+                  message: '请选择',
+                },
+              ],
+              initialValue: tododetailslist && tododetailslist.register && tododetailslist.register.registerMaster,
             })(
               <RadioGroup>
                 <Radio value='0'>是</Radio>
@@ -405,25 +435,6 @@ const RegisterChild = React.forwardRef((props, ref) => {
                 </div>
               )
             }
-          </Form.Item>
-        </Col>
-
-        <Col span={24}>
-          <Form.Item label="是否影响计量主站" {...forminladeLayout}>
-            {getFieldDecorator('registerMaster', {
-              rules: [
-                {
-                  required,
-                  message: '请选择',
-                },
-              ],
-              initialValue: tododetailslist && tododetailslist.register && tododetailslist.register.registerMaster,
-            })(
-              <RadioGroup>
-                <Radio value='0'>是</Radio>
-                <Radio value='1'>否</Radio>
-              </RadioGroup>,
-            )}
           </Form.Item>
         </Col>
 
