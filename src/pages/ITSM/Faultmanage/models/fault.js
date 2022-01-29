@@ -192,15 +192,14 @@ export default {
     //  故障待办详情页--编辑
     *getfaultTodoDetailData({ payload: { id } }, { call, put }) {
       const response = yield call(queryfaultTodoDetailEdit, id);
-      if (response.code === 200) {
+      if (response.code === -1) {
+        message.error(response.msg)
+      } else {
         yield put({
           type: 'detailslist',
           payload: response,
         });
-      } else {
-        message.error(response.msg)
       }
-
     },
 
     // 删除操作

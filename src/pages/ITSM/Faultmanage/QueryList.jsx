@@ -20,7 +20,7 @@ import {
   Checkbox,
   Tooltip
 } from 'antd';
-import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import { DownOutlined, UpOutlined, AlertOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
 
@@ -34,6 +34,12 @@ const formItemLayout = {
     sm: { span: 16 },
   },
 };
+
+const colormap = new Map([
+  ['已超时', 'red'],
+  ['未超时', 'green'],
+  ['即将超时', 'orange'],
+]);
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -126,6 +132,35 @@ function QueryList(props) {
       render: (text, record) => {
         return <a onClick={() => gotoDetail(text, record)}>{text}</a>;
       },
+    },
+    {
+      title: '当前处理环节',
+      dataIndex: 'flowNodeName',
+      key: 'flowNodeName',
+      width: 200,
+    },
+    {
+      title: '超时状态',
+      dataIndex: 'timeoutStatus',
+      key: 'timeoutStatus',
+      width: 150,
+      onCell: () => {
+        return {
+          style: {
+            maxWidth: 150,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            cursor: 'pointer'
+          }
+        }
+      },
+      render: (text, record) => (
+        <>
+          <AlertOutlined style={{ fontSize: '1.4em', color: colormap.get(record.timeoutStatus), marginRight: '8px' }} />
+          <span>{text}</span>
+        </>
+      ),
     },
     {
       title: '故障发生时间',
@@ -763,12 +798,12 @@ function QueryList(props) {
       key: 'taskUserId',
       width: 150,
     },
-    {
-      title: '当前流程环节',
-      dataIndex: 'flowNodeName',
-      key: 'flowNodeName',
-      width: 200,
-    },
+    // { 1.29 按需求将当前环节及超时时间字段放在故障编号后面，这个字段重复
+    //   title: '当前流程环节',
+    //   dataIndex: 'flowNodeName',
+    //   key: 'flowNodeName',
+    //   width: 200,
+    // },
     {
       title: '操作',
       dataIndex: 'action',
@@ -1050,6 +1085,24 @@ function QueryList(props) {
         };
         return <a onClick={handleClick}>{text}</a>;
       },
+    },
+    {
+      title: '当前处理环节',
+      dataIndex: 'flowNodeName',
+      key: 'flowNodeName',
+      width: 200,
+    },
+    {
+      title: '超时状态',
+      dataIndex: 'timeoutStatus',
+      key: 'timeoutStatus',
+      width: 150,
+      render: (text, arecord) => (
+        <>
+          <AlertOutlined style={{ fontSize: '1.4em', color: colormap.get(arecord.timeoutStatus), marginRight: '8px' }} />
+          <span>{text}</span>
+        </>
+      ),
     },
     {
       title: '故障发生时间',

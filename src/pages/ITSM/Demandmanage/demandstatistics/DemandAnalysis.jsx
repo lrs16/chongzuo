@@ -48,21 +48,6 @@ function Statistics(props) {
     return newArr.reverse();
   };
 
-  const linedataArr = datas => { // 趋势折线
-    const newArr = [];
-    if (!Array.isArray(datas)) {
-      return newArr;
-    }
-    for (let i = 0; i < datas.length; i += 1) {
-      const vote = {};
-      vote.value = datas[i].value;
-      vote.name = datas[i].name;
-      vote.date = datas[i].date;
-      newArr.push(vote);
-    }
-    return newArr;
-  };
-
   const piedataArr = datas => { // 饼图
     const newArr = [];
     if (!Array.isArray(datas)) {
@@ -210,11 +195,11 @@ function Statistics(props) {
         <Col span={8}>
           <Card onMouseDown={() => setPicVal({})}>
             <h4 style={{ fontWeight: 'bold' }}>需求处理情况占比</h4>
-            {(!piedatalist || (piedatalist && piedatalist === undefined)) && <Empty style={{ height: '300px' }} />}
+            {piedatalist && piedatalist['需求处理情况占比'] && piedatalist['需求处理情况占比'].length === 0 && <Empty style={{ height: '300px' }} />}
             {
-              piedatalist && piedatalist !== undefined && (
+              piedatalist && piedatalist['需求处理情况占比'] && piedatalist['需求处理情况占比'].length > 0 && (
                 <DonutPCT
-                  data={piedataArrtwo(piedatalist['需求处理情况占比']) || []}
+                  data={piedataArrtwo(piedatalist['需求处理情况占比'])}
                   height={300}
                   totaltitle='需求总数'
                   staticName='需求工单总情况'
@@ -231,18 +216,19 @@ function Statistics(props) {
         <Col span={16}>
           <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
             <h4 style={{ fontWeight: 'bold' }}>需求工单量趋势</h4>
-            {(!linedatalist || (linedatalist && linedatalist === undefined)) && <Empty style={{ height: '300px' }} />}
+            {linedatalist && linedatalist['需求工单量趋势'] && linedatalist['需求工单量趋势'].length === 0 && <Empty style={{ height: '300px' }} />}
             {
-              linedatalist && linedatalist !== undefined && (
+              linedatalist && linedatalist['需求工单量趋势'] && linedatalist['需求工单量趋势'].length > 0 && (
                 <SmoothLine
-                  data={linedataArr(linedatalist['需求工单量趋势']) || []}
+                  data={linedatalist['需求工单量趋势']}
                   height={300}
                   padding={[30, 0, 60, 60]}
                   time1={moment(values.beginTime).format('YYYY-MM-DD 00:00:00')}
                   time2={moment(values.endTime).format('YYYY-MM-DD 23:59:59')}
+                  timeType={values.type}
                   staticName='需求工单总情况线'
                   onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
-                  // uncheckedname={['总数']}
+                  uncheckedname={['总数']}
                 />
               )
             }
@@ -257,11 +243,11 @@ function Statistics(props) {
         </div>
         <Col span={8}>
           <Card onMouseDown={() => setPicVal({})}>
-            {(!piedatalist || (piedatalist && piedatalist === undefined)) && <Empty style={{ height: '300px' }} />}
+            {piedatalist && piedatalist['功能模块情况'] && piedatalist['功能模块情况'].length === 0 && <Empty style={{ height: '300px' }} />}
             {
-              piedatalist && piedatalist !== undefined && (
+              piedatalist && piedatalist['功能模块情况'] && piedatalist['功能模块情况'].length > 0 && (
                 <DonutPCT
-                  data={piedatalist['功能模块情况'] || []}
+                  data={piedatalist['功能模块情况']}
                   height={300}
                   time1={moment(values.beginTime).format('YYYY-MM-DD 00:00:00')}
                   time2={moment(values.endTime).format('YYYY-MM-DD 23:59:59')}
@@ -277,18 +263,19 @@ function Statistics(props) {
         </Col>
         <Col span={16}>
           <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-            {(!linedatalist || (linedatalist && linedatalist === undefined && linedataArr(linedatalist['功能模块情况趋势']).length === 0)) && <Empty style={{ height: '300px' }} />}
+            {linedatalist && linedatalist['功能模块情况趋势'] && linedatalist['功能模块情况趋势'].length === 0 && <Empty style={{ height: '300px' }} />}
             {
-              linedatalist && linedatalist !== undefined && linedataArr(linedatalist['功能模块情况趋势']).length > 0 && (
+              linedatalist && linedatalist['功能模块情况趋势'] && linedatalist['功能模块情况趋势'].length > 0 && (
                 <SmoothLine
-                  data={linedataArr(linedatalist['功能模块情况趋势']) || []}
+                  data={linedatalist && linedatalist['功能模块情况趋势']}
                   height={300}
                   padding={[30, 0, 60, 60]}
                   time1={moment(values.beginTime).format('YYYY-MM-DD 00:00:00')}
                   time2={moment(values.endTime).format('YYYY-MM-DD 23:59:59')}
+                  timeType={values.type}
                   staticName="功能模块情况线"
                   onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
-                  // uncheckedname={['总数']}
+                  uncheckedname={['总数']}
                 />
               )
             }
@@ -303,11 +290,11 @@ function Statistics(props) {
         </div>
         <Col span={8}>
           <Card onMouseDown={() => setPicVal({})}>
-            {(piedatalist && piedatalist === undefined && linedataArr(piedatalist['需求类型统计分析']).length === 0) && <Empty style={{ height: '300px' }} />}
+            {piedatalist && piedatalist['需求类型统计分析'] && piedatalist['需求类型统计分析'].length === 0 && <Empty style={{ height: '300px' }} />}
             {
-              piedatalist && piedatalist !== undefined && linedataArr(piedatalist['需求类型统计分析']).length > 0 && (
+              piedatalist && piedatalist['需求类型统计分析'] && piedatalist['需求类型统计分析'].length > 0 && (
                 <DonutPCT
-                  data={piedatalist['需求类型统计分析'] || []}
+                  data={piedatalist && piedatalist['需求类型统计分析']}
                   height={300}
                   totaltitle='需求总数'
                   time1={moment(values.beginTime).format('YYYY-MM-DD 00:00:00')}
@@ -323,18 +310,19 @@ function Statistics(props) {
         </Col>
         <Col span={16}>
           <Card onMouseDown={() => setPicVal({})} style={{ marginLeft: '-1px' }}>
-            {(linedatalist && linedataArr(linedatalist['需求类型趋势']).length === 0) && <Empty style={{ height: '300px' }} />}
+            {linedatalist && linedatalist['需求类型趋势'] && linedatalist['需求类型趋势'].length === 0 && <Empty style={{ height: '300px' }} />}
             {
-              linedatalist && linedatalist !== undefined && linedataArr(linedatalist['需求类型趋势']).length > 0 && (
+              linedatalist && linedatalist['需求类型趋势'] && linedatalist['需求类型趋势'].length > 0 && (
                 <SmoothLine
-                  data={linedataArr(linedatalist['需求类型趋势']) || []}
+                  data={linedatalist && linedatalist['需求类型趋势']}
                   height={300}
                   padding={[30, 0, 60, 60]}
                   time1={moment(values.beginTime).format('YYYY-MM-DD 00:00:00')}
                   time2={moment(values.endTime).format('YYYY-MM-DD 23:59:59')}
+                  timeType={values.type}
                   staticName='需求类型统计分析线'
                   onGetVal={(v) => { setPicVal({ ...picval, type: v }) }}
-                  // uncheckedname={['总数']}
+                  uncheckedname={['总数']}
                 />
               )
             }
@@ -352,7 +340,7 @@ function Statistics(props) {
             {(demandtimeoutlist && piedataArr(demandtimeoutlist).length === 0) && <Empty style={{ height: '300px' }} />}
             {demandtimeoutlist && piedataArr(demandtimeoutlist).length > 0 && (
               <DonutPCT
-                data={piedataArr(demandtimeoutlist) || []}
+                data={piedataArr(demandtimeoutlist)}
                 height={300}
                 totaltitle='需求总数'
                 total={demandtimeoutlist[demandtimeoutlist.length - 1].quantity}
@@ -373,11 +361,11 @@ function Statistics(props) {
             <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN({ ...topN, val1: v })} /></div>
           </div>
           <Card onMouseDown={() => setPicVal({})}>
-            {(piedatalist && dataCylinder(piedatalist['需求申请人TOP']).length === 0) && <Empty style={{ height: '300px' }} />}
+            {piedatalist && dataCylinder(piedatalist['需求申请人TOP']).length === 0 && <Empty style={{ height: '300px' }} />}
             {piedatalist && dataCylinder(piedatalist['需求申请人TOP']).length > 0 && (
               <ColumnarY
                 height={300}
-                data={dataCylindertop(piedatalist['需求申请人TOP'], 'val1') || []}
+                data={dataCylindertop(piedatalist['需求申请人TOP'], 'val1')}
                 padding={[30, 60, 50, 100]}
                 staticName="需求申请人"
                 time1={moment(values.beginTime).format('YYYY-MM-DD 00:00:00')}
@@ -398,11 +386,11 @@ function Statistics(props) {
             <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN({ ...topN, val2: v })} /></div>
           </div>
           <Card onMouseDown={() => setPicVal({})}>
-            {(piedatalist && dataCylinder(piedatalist['需求处理人TOP']).length === 0) && <Empty style={{ height: '300px' }} />}
+            {piedatalist && dataCylinder(piedatalist['需求处理人TOP']).length === 0 && <Empty style={{ height: '300px' }} />}
             {piedatalist && dataCylinder(piedatalist['需求处理人TOP']).length > 0 && (
               <ColumnarY
                 height={300}
-                data={dataCylindertop(piedatalist['需求处理人TOP'], 'val2') || []}
+                data={dataCylindertop(piedatalist['需求处理人TOP'], 'val2')}
                 padding={[30, 60, 50, 100]}
                 time1={moment(values.beginTime).format('YYYY-MM-DD 00:00:00')}
                 time2={moment(values.endTime).format('YYYY-MM-DD 23:59:59')}
@@ -420,11 +408,11 @@ function Statistics(props) {
             <div style={{ float: 'right' }} >n：<InputNumber defaultValue={5} onChange={v => setTopN({ ...topN, val3: v })} /></div>
           </div>
           <Card onMouseDown={() => setPicVal({})}>
-            {(piedatalist && dataCylinder(piedatalist['需求申请单位TOP']).length === 0) && <Empty style={{ height: '300px' }} />}
+            {piedatalist && dataCylinder(piedatalist['需求申请单位TOP']).length === 0 && <Empty style={{ height: '300px' }} />}
             {piedatalist && dataCylinder(piedatalist['需求申请单位TOP']).length > 0 && (
               <ColumnarY
                 height={300}
-                data={dataCylindertop(piedatalist['需求申请单位TOP'], 'val3') || []}
+                data={dataCylindertop(piedatalist['需求申请单位TOP'], 'val3')}
                 padding={[30, 60, 50, 200]}
                 staticName="需求申请单位"
                 time1={moment(values.beginTime).format('YYYY-MM-DD 00:00:00')}

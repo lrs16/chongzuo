@@ -447,7 +447,7 @@ function StatisticalAnalysis(props) {
                   staticName="故障工单超时情况"
                   padding={[10, 30, 30, 30]}
                   onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
-                  colors={['#ee6666', '#5AD8A6']}
+                  colors={['#5AD8A6', '#ee6666']}
                 />
               )
             }

@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
+import { AlertOutlined } from '@ant-design/icons';
 import {
   Drawer,
   Button,
   Table,
   Tooltip,
   Popconfirm,
-  Badge
 } from 'antd';
 
 const colormap = new Map([
@@ -74,7 +74,8 @@ const columns = [
     },
     render: (text, record) => (
       <>
-        <Badge text={text} status={colormap.get(record.timeoutStatus)} />
+        <AlertOutlined style={{ fontSize: '1.4em', color: colormap.get(record.timeoutStatus), marginRight: '8px' }} />
+        <span>{text}</span>
       </>
     ),
   },
