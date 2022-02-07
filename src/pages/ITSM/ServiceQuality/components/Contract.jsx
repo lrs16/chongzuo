@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Drawer, Form, Input, Button, DatePicker, Select, message } from 'antd';
+import { Table,Drawer, Form, Input, Button, DatePicker, Select, message } from 'antd';
 import moment from 'moment';
 
 const formItemLayout = {
@@ -31,6 +31,29 @@ function Contract(props) {
     onSumit,
     isEdit,
   } = props;
+
+  const columns = [
+    {
+      title:'考核年份',
+      dataIndex:'',
+      key:''
+    },
+    {
+      title:'考核周期',
+      dataIndex:'',
+      key:''
+    },
+    {
+      title:'考核时段',
+      dataIndex:'',
+      key:''
+    },
+    {
+      title:'操作',
+      dataIndex:'',
+      key:''
+    },
+  ]
 
   const required = true;
 
@@ -194,6 +217,22 @@ function Contract(props) {
               </div>,
             )}
           </Form.Item>
+
+          {/* <Form.Item label="考核周期">
+            {getFieldDecorator('dueTime', {
+              rules: [
+                {
+                  required,
+                  message: '请输入到期日期',
+                },
+              ],
+              initialValue: '',
+            })(
+                <Table
+                  columns={columns}
+                />
+            )}
+          </Form.Item> */}
 
           <Form.Item label="状态">
             {getFieldDecorator('status', {

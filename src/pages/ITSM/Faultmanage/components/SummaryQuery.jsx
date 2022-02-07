@@ -48,7 +48,7 @@ function SummaryQuery(props) {
           </Col>
 
           {
-            ((showFilelist2 && showFilelist2.checkReportSign) ? showFilelist2.checkReportSign === '0' : showFilelist.checkReportSign === '0') && (
+            (info && info.finishAnalysisAttachments) && (
               <>
                 <Col span={24}>
                   <Form.Item label="故障分析报告" {...forminladeLayout}>

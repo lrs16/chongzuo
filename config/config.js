@@ -168,7 +168,7 @@ export default {
                           name: '服务绩效统计分析',
                           icon: 'control',
                           component: './ITSM/ServiceQuality/Statistics',
-                        }
+                        },
                       ]
                     },
                     {
@@ -1274,6 +1274,12 @@ export default {
                           name: '服务绩效统计分析',
                           icon: 'control',
                           component: '././ITSM/ServiceQuality/Statistics'
+                        },
+                        {
+                          path:'/ITSM/servicequalityassessment/statisticalquery',
+                          name:'服务绩效统计查询',
+                          icon:'caret-right',
+                          component:'././ITSM/ServiceQuality/Statisticalquery'
                         }
                       ]
                     },

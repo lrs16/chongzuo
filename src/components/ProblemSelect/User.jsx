@@ -142,7 +142,7 @@ const User = props => {
   }, [visible]);
 
   const handleOk = () => {
-    const params = value.length && specialvalue.length;
+    const params = value.length || specialvalue.length;
     if (currentPeocess !== '系统运维商审核') {
       if (value.length === 0) {
         message.error('最少选择一个处理人！');
@@ -153,8 +153,8 @@ const User = props => {
     }
 
     if (currentPeocess === '系统运维商审核') {
-      if (params < 1) {
-        message.info('每种角色必须选择一个人');
+      if (value.length === 0 && specialvalue.length === 0) {
+        message.error('最少选择一个处理人！');
       } else {
         ChangeChoice(true);
         ChangeUserVisible(false);

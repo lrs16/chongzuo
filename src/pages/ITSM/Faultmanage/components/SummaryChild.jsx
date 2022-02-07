@@ -88,6 +88,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
   const attRef = useRef();
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
   const [selectdata, setSelectData] = useState([]);
+  const [show, setShow] = useState(0);
 
   useEffect(() => {
     ChangeFiles(fileslist);
@@ -110,6 +111,10 @@ const SummaryChild = React.forwardRef((props, ref) => {
   useEffect(() => {
     sessionStorage.setItem('Nextflowmane', '自动化科业务负责人审核');
   });
+
+  const showReport = (e) => {
+    setShow(e.target.value)
+  }
 
   const handleAnalysisReport = (sign) => {
     const values = getFieldsValue();
@@ -180,7 +185,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
                 ],
                 initialValue: (finish && finish.finishReportSign) ? Number(finish.finishReportSign) : 0
               })(
-                <RadioGroup>
+                <RadioGroup onChange={showReport}>
                   <Radio value={0}>是</Radio>
                   <Radio value={1}>否</Radio>
                 </RadioGroup>,
@@ -217,7 +222,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
           </Col>
 
           {
-            ((showFilelist2 && showFilelist2.checkReportSign) ? showFilelist2.checkReportSign === '0' : showFilelist.checkReportSign === '0') && (
+            show === 0 && (finish && !finish.finishReportSign || finish.finishReportSign === '0') && (
               <Col span={24}>
                 <Form.Item label="上传故障分析报告" {...ItemLayout}>
                   {getFieldDecorator('finishAnalysisAttachments', {
@@ -256,7 +261,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
           }
 
           {
-            ((showFilelist2 && showFilelist2.checkReportSign) ? showFilelist2.checkReportSign === '1' : showFilelist.checkReportSign === '1') && (
+            ((show === 1 && finish && finish.finishAnalysisAttachments)) && (
               <Col span={24}>
                 <Form.Item label="故障分析报告" {...ItemLayout}>
                   {getFieldDecorator('finishAnalysisAttachments', {
@@ -271,17 +276,6 @@ const SummaryChild = React.forwardRef((props, ref) => {
                           onClick={() => handleAnalysisReport('noedit')}
                         />
                       )}
-
-                      {
-                        finish && !finish.finishAnalysisAttachments && (
-                          <Button
-                            type='primary'
-                            onClick={() => handleAnalysisReport('')}
-                          >
-                            自动生成报告
-                          </Button>
-                        )
-                      }
                     </>
                   )}
                 </Form.Item>
@@ -290,16 +284,20 @@ const SummaryChild = React.forwardRef((props, ref) => {
           }
 
           {
-            ((showFilelist2 && showFilelist2.checkReportSign) ? showFilelist2.checkReportSign === '0' : showFilelist.checkReportSign === '0') && (
-              <>
-                <Col span={8}>
-                  <Form.Item label="要求上传时间" >
-                    {getFieldDecorator('finishRequiredTime', {
-                      initialValue: (tododetailslist && tododetailslist.requiredUploadTime) ? moment(tododetailslist.requiredUploadTime) : (finish.finishRequiredTime ? moment(finish.finishRequiredTime) : '')
-                    })(<DatePicker showTime disabled format="YYYY-MM-DD HH:mm:ss" />)}
-                  </Form.Item>
-                </Col>
+           (show === 0 || finish.finishAnalysisAttachments)  && (
+              <Col span={8}>
+                <Form.Item label="要求上传时间" >
+                  {getFieldDecorator('finishRequiredTime', {
+                    initialValue: (finish && finish.finishRequiredTime) ? moment(finish.finishRequiredTime) : moment(new Date())
+                  })(<DatePicker showTime disabled format="YYYY-MM-DD HH:mm:ss" />)}
+                </Form.Item>
+              </Col>
+            )
+          }
 
+          {
+            (finish && finish.finishAnalysisAttachments) && (
+              <>
                 <Col span={8}>
                   <Form.Item label="实际上传时间" >
                     {getFieldDecorator('finishPracticeTime', {
