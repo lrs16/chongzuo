@@ -69,7 +69,7 @@ function Checktodo(props) {
 
   const handleReset = () => {
     router.push({
-      pathname: `/ITSM/releasemanage/checktodo`,
+      pathname: `/ITSM/releasemanage/plan/checktodo`,
       query: { pathpush: true },
       state: { cach: false, }
     });
@@ -271,7 +271,7 @@ function Checktodo(props) {
             },
           });
           router.push({
-            pathname: `/ITSM/releasemanage/checktodo/record`,
+            pathname: `/ITSM/releasemanage/plan/checktodo/record`,
             query: {
               Id: record.todoCode,
               releaseNo: record.releaseNo,

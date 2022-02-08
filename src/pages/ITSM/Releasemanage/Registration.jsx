@@ -2,16 +2,18 @@ import React, { useRef, useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
-import { Card, Button, Spin, message } from 'antd';
+import { Card, Button, Spin, message, Tooltip } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SubmitTypeContext from '@/layouts/MenuContext';              // 引用上下文管理组件
 import DictLower from '@/components/SysDict/DictLower';
 import User from '@/components/SelectUser/User';
 import { releaseUserList } from '@/services/user';
+import { querkeyVal } from '@/services/api';
 import TimeoutModal from '../components/TimeoutModal';
 import Registrat from './components/Registrat';
 import { saveRegister, getTimeoutInfo, getBlankAttachList } from './services/api';
 import { saveTimeoutMsg, } from '../services/api';
+import { releaseConfigList } from '../../SysManage/services/api';
 
 function Registration(props) {
   const { dispatch, userinfo, loading, tabnew, tabdata, location, uploadstatus } = props;
@@ -24,6 +26,7 @@ function Registration(props) {
   const [modalvisible, setModalVisible] = useState(false);
   const [saveloading, setSaveloading] = useState(false);
   const [userlist, setUserlist] = useState([]);
+  const [indexUser, setIndexUser] = useState([]);
   const [indexvalue, setIndexValue] = useState({ releaseMain: {}, releaseRegister: {}, releaseEnvs: [], releaseLists: [], releaseAttaches: [] });
   // 初始化用户信息，流程类型,附件列表
   useEffect(() => {
@@ -32,9 +35,19 @@ function Registration(props) {
     });
     getBlankAttachList().then(res => {
       if (res.code === 200) {
-        setIndexValue({ ...indexvalue, releaseAttaches: res.data })
+        releaseConfigList({
+          deployApp: '',
+          deviceConfig: '',
+          deviceName: '',
+          pageIndex: 1,
+          pageSize: 1000,
+        }).then(ress => {
+          if (ress.code === 200) {
+            setIndexValue({ ...indexvalue, releaseAttaches: res.data, releaseEnvs: ress.data.records })
+          }
+        })
       }
-    })
+    });
     sessionStorage.setItem('Processtype', 'release');
     return () => {
       sessionStorage.removeItem('Processtype');
@@ -83,19 +96,19 @@ function Registration(props) {
 
   const handleclose = () => {
     router.push({
-      pathname: `/ITSM/releasemanage/registration`,
+      pathname: `/ITSM/releasemanage/plan/registration`,
       query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true, }
     });
   };
 
   const tosubmit = (id, users) => {
-    const userIds = (users || userlist).map(obj => obj.userId);
+    // const userIds = (users || userlist).map(obj => obj.userId);
     dispatch({
       type: 'releaseregistra/fetchsubmit',
       payload: {
         taskId: id || taskId,
         type: 1,
-        userIds: userIds.join(','),
+        userIds: sessionStorage.getItem('NextflowUserId'),
       }
     });
   }
@@ -111,8 +124,8 @@ function Registration(props) {
         ...v
       }).then(res => {
         if (res.code === 200) {
-          // setUserVisible(true);
-          tosubmit()
+          setUserVisible(true);
+          // tosubmit()
         }
       });
     }
@@ -188,20 +201,20 @@ function Registration(props) {
         message.success('保存成功');
         setSaveloading(false);
         router.push({
-          pathname: `/ITSM/releasemanage/to-do/record`,
+          pathname: `/ITSM/releasemanage/plan/to-do/record`,
           query: {
             Id: response.data.currentTaskStatus.businessKey,
             taskId: response.data.currentTaskStatus.taskId,
             taskName: '出厂测试'
           },
           state: {
-            runpath: `/ITSM/releasemanage/to-do`,
+            runpath: `/ITSM/releasemanage/plan/to-do`,
             dynamicpath: true,
             menuDesc: '发布工单',
           },
         });
         router.push({
-          pathname: `/ITSM/releasemanage/registration`,
+          pathname: `/ITSM/releasemanage/plan/registration`,
           query: { tabid, closecurrent: true }
         })
       } else {
@@ -211,12 +224,22 @@ function Registration(props) {
     })
   };
 
+  useEffect(() => {
+    querkeyVal('release', 'indexuser').then(res => {
+      if (res.code === 200) {
+        const arr = res.data.indexuser[0]?.val?.split('-')[1]?.split(',') || [];
+        const name = arr.filter(obj => obj.indexOf('开发商项目经理审核') > -1)
+        setIndexUser(name[0]?.split(':')[1]?.split('||') || []);
+      }
+    });
+  }, []);
+
   // 选人完成走提交接口
-  // useEffect(() => {
-  //   if (userchoice) {
-  //     tosubmit()
-  //   }
-  // }, [userchoice])
+  useEffect(() => {
+    if (userchoice) {
+      tosubmit()
+    }
+  }, [userchoice])
 
   // 重置表单信息
   useEffect(() => {
@@ -259,7 +282,7 @@ function Registration(props) {
         保存
       </Button>
       <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSubmit()} disabled={loading || saveloading || uploadstatus}>
-        流转
+        流转至开发商项目经理审核
       </Button>
       <Button type="default" onClick={() => handleclose()} disabled={loading || saveloading || uploadstatus}>关闭</Button>
     </>
@@ -297,7 +320,8 @@ function Registration(props) {
           ChangeUserVisible={v => setUserVisible(v)}    // 选人完成关闭选人modle
           changorder='平台验证'                         //  下一环节名
           ChangeChoice={v => setUserChoice(v)}         //  选人完成返回状态true，通过true判读，进行
-          ChangeType={v => (v)}                        //  取消，重置按钮类型         
+          ChangeType={v => (v)}                        //  取消，重置按钮类型  
+          indexUser={indexUser}
         />
         <TimeoutModal
           modalvisible={modalvisible}

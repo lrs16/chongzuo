@@ -151,7 +151,7 @@ function Statistics(props) {
             expand: true
           }
           router.push({
-            pathname: `/ITSM/releasemanage/query`,
+            pathname: `/ITSM/releasemanage/plan/query`,
             query: { pathpush: true },
             state: { cach: false, cacheinfo: val }
           });

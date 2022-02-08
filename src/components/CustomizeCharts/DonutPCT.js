@@ -65,7 +65,7 @@ class DonutPCT extends Component {
             if (linkdata && (linkdata.data || linkdata._origin) && onGetVal) {
               setTimeout(() => {
                 onGetVal(linkdata.data || linkdata._origin)
-              }, 200)
+              }, 100)
             }
           }}
           onDoubleClick={ev => {

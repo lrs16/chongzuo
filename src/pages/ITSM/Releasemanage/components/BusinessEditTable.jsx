@@ -9,7 +9,7 @@ const InputGroup = Input.Group;
 const RadioGroup = Radio.Group;
 
 const typemap = new Map([
-  ['业务验证', '业务审核人'],
+  ['业务验证', '业务验证人'],
   ['业务复核', '业务复核人'],
   ['发布验证', '操作人员'],
 ])
@@ -30,7 +30,7 @@ function BusinessEditTable(props) {
   const [classify, setClassify] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRecords, setSelectedRecords] = useState([]);
-  const [paginations, setPageinations] = useState({ current: 1, pageSize: 2 });
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 5 });
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -188,18 +188,24 @@ function BusinessEditTable(props) {
         return (
           <>
             <InputGroup compact>
-              <span style={{ width: 70, textAlign: 'right' }}>功能菜单：</span>
-              <span style={{ width: 310 }}>{record.testMenu}</span>
+              <div style={{ position: 'relative' }}>
+                <div style={{ width: 70, textAlign: 'right', position: 'absolute', left: 0, top: 0 }}>功能菜单：</div>
+                <div style={{ marginLeft: 70 }} dangerouslySetInnerHTML={{ __html: record.testMenu?.replace(/[\n]/g, '<br/>') }} />
+              </div>
             </InputGroup>
             <Divider type='horizontal' style={{ margin: '6px 0' }} />
             <InputGroup compact>
-              <span style={{ width: 70, textAlign: 'right' }}>预期效果：</span>
-              <span style={{ width: 310 }}>{record.testResult}</span>
+              <div style={{ position: 'relative' }}>
+                <div style={{ width: 70, textAlign: 'right', position: 'absolute', left: 0, top: 0 }}>预期效果：</div>
+                <div style={{ marginLeft: 70 }} dangerouslySetInnerHTML={{ __html: record.testResult?.replace(/[\n]/g, '<br/>') }} />
+              </div>
             </InputGroup>
             <Divider type='horizontal' style={{ margin: '6px 0' }} />
             <InputGroup compact>
-              <span style={{ width: 70, textAlign: 'right' }}>验证步骤：</span>
-              <span style={{ width: 310 }}>{record.testStep}</span>
+              <div style={{ position: 'relative' }}>
+                <div style={{ width: 70, textAlign: 'right', position: 'absolute', left: 0, top: 0 }}>验证步骤：</div>
+                <div style={{ marginLeft: 70 }} dangerouslySetInnerHTML={{ __html: record.testStep?.replace(/[\n]/g, '<br/>') }} />
+              </div>
             </InputGroup>
           </>
         );
@@ -225,18 +231,18 @@ function BusinessEditTable(props) {
       width: 100,
     },
     {
-      title: `${typemap.get(type)}`,
+      title: `${type}人`,
       dataIndex: 'operator',
       key: 'operator',
       align: 'center',
       width: 100,
     },
     {
-      title: '是否通过',
+      title: `${type}结果`,
       dataIndex: 'passTest',
       key: 'passTest',
       fixed: 'right',
-      width: 100,
+      width: 120,
       render: (text, record) => {
         return (
           <>
@@ -277,13 +283,20 @@ function BusinessEditTable(props) {
 
   const sclicecolumns = () => {
     if (type === '发布验证') {
-      const practicedone = columns.filter(item => item.key !== 'verifyStatus');
+      const practicedone = columns.filter(item => item.key !== 'verifyStatus' && item.key !== 'operator');
       const newarr = practicedone.slice(0);
       newarr.pop();
       return newarr;
     }
     return columns
-  }
+  };
+
+  const setTableHeight = () => {
+    let height = 500;
+    const clientHeight = window.document?.body?.clientHeight || 500;
+    height = clientHeight - 400
+    return height
+  };
 
   return (
     <>
@@ -301,7 +314,6 @@ function BusinessEditTable(props) {
             <Button type='primary' onClick={() => { handleDlownd() }}>导出清单</Button>
           </Col>)}
       </Row>
-
       <Table
         rowSelection={rowSelection}
         columns={sclicecolumns()}
@@ -310,7 +322,7 @@ function BusinessEditTable(props) {
         size='middle'
         rowKey={(_, index) => index.toString()}
         pagination={type === '发布验证' ? pagination : false}
-        scroll={{ x: 1700 }}
+        scroll={{ x: 1700, y: setTableHeight() }}
         loading={loading}
         style={{ marginTop: 12 }}
       />

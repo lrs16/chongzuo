@@ -1,7 +1,8 @@
-import React, { useRef, useImperativeHandle, useEffect, useState } from 'react';
+import React, { useRef, useImperativeHandle, useEffect, useState, useContext } from 'react';
 import router from 'umi/router';
 import moment from 'moment';
 import { Row, Col, Form, Input, Select, DatePicker, AutoComplete } from 'antd';
+import SubmitContext from '@/layouts/MenuContext';
 import SysUpload from '@/components/SysUpload';
 import { getAndField } from '@/pages/SysManage/services/api';
 
@@ -11,7 +12,7 @@ const { TextArea } = Input;
 const nextsmap = new Map([
   ['001', '结束'],
   ['002', '结束'],
-  ['003', '处理'],
+  ['003', '重分派'],
 ]);
 
 const typemaps = new Map([
@@ -40,6 +41,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
   const [desautodata, setDestoData] = useState([]);
   const [desrecords, setDesRecords] = useState([]);
+  const { ChangeSubmitType, ChangeButtonName } = useContext(SubmitContext);
 
   useEffect(() => {
     if (fileslist.ischange) {
@@ -58,35 +60,43 @@ const ReturnVisit = React.forwardRef((props, ref) => {
     Forms: props.form.validateFieldsAndScroll,
   }), []);
 
-  const routerRefresh = () => {
-    router.push({
-      pathname: location.pathname,
-      query: {
-        taskName,
-        taskId,
-        mainId,
-        next: sessionStorage.getItem('Nextflowmane'),
-        check,
-        orderNo
-      },
-      state: { ...location.state }
-    });
-  };
+  // const routerRefresh = () => {
+  //   router.push({
+  //     pathname: location.pathname,
+  //     query: {
+  //       taskName,
+  //       taskId,
+  //       mainId,
+  //       next: sessionStorage.getItem('Nextflowmane'),
+  //       check,
+  //       orderNo
+  //     },
+  //     state: { ...location.state }
+  //   });
+  // };
   useEffect(() => {
-    sessionStorage.setItem('Nextflowmane', nextsmap.get(finish.satisfaction));
-    sessionStorage.setItem('flowtype', typemaps.get(finish.satisfaction));
-    routerRefresh();
+    if (finish && finish.satisfaction) {
+      // sessionStorage.setItem('Nextflowmane', nextsmap.get(finish.satisfaction));
+      sessionStorage.setItem('flowtype', typemaps.get(finish.satisfaction));
+      ChangeButtonName(nextsmap.get(finish.satisfaction))
+    } else {
+      sessionStorage.setItem('flowtype', '1');
+      ChangeButtonName('结束')
+    }
+    // routerRefresh();
   }, [info]);
 
   const handlcheckChange = value => {
     if (value === '003') {
-      sessionStorage.setItem('Nextflowmane', '处理');
+      // sessionStorage.setItem('Nextflowmane', '处理');
       sessionStorage.setItem('flowtype', '3');
+      ChangeButtonName('重分派')
     } else {
-      sessionStorage.setItem('Nextflowmane', '结束');
+      // sessionStorage.setItem('Nextflowmane', '结束');
       sessionStorage.setItem('flowtype', '1');
+      ChangeButtonName('结束')
     }
-    routerRefresh();
+    // routerRefresh();
   };
 
   const handledesSearch = values => {
@@ -133,7 +143,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
             <Col span={8} style={{ display: 'none' }}>
               <Form.Item label="回访表单id">
                 {getFieldDecorator('finish_id', {
-                  initialValue: finish.id,
+                  initialValue: finish?.id || '',
                 })(<Input placeholder="请输入" disabled />)}
               </Form.Item>
             </Col>
@@ -141,7 +151,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
               <Form.Item label="回访方式">
                 {getFieldDecorator('finish_revisitWay', {
                   rules: [{ required, message: '请选择回访方式' }],
-                  initialValue: main.revisitWay,
+                  initialValue: main?.revisitWay || '',
                 })(
                   <Select placeholder="请选择">
                     {revisitwaymap.map(obj => [
@@ -157,7 +167,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
               <Form.Item label="处理结果">
                 {getFieldDecorator('main_eventResult', {
                   rules: [{ required, message: '请选择处理结果' }],
-                  initialValue: taskName === '确认中' ? main.eventResult : '',
+                  initialValue: main?.eventResult || '',
                 })(
                   <Select placeholder="请选择">
                     {handleresultmap.map(obj => [
@@ -174,7 +184,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
             <Form.Item label="满意度">
               {getFieldDecorator('finish_satisfaction', {
                 rules: [{ required, message: '请选择满意度' }],
-                initialValue: finish.satisfaction,
+                initialValue: finish?.satisfaction || '001',
               })(
                 <Select placeholder="请选择" onChange={handlcheckChange}>
                   {satisfactionmap.map(obj => [
@@ -190,7 +200,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
             <Form.Item label="回访内容" {...forminladeLayout}>
               {getFieldDecorator('finish_content', {
                 rules: [{ required, message: '请输入回访内容' }],
-                initialValue: finish.content,
+                initialValue: finish?.content || '',
               })(
                 <AutoComplete
                   dataSource={desautodata}
@@ -208,7 +218,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
             <Form.Item label="填单时间">
               {getFieldDecorator('finish_addTime', {
                 rules: [{ required }],
-                initialValue: moment(finish.addTime).format('YYYY-MM-DD HH:mm:ss'),
+                initialValue: moment(finish?.addTime || undefined).format('YYYY-MM-DD HH:mm:ss'),
               })(<Input disabled />)}
             </Form.Item>
           </Col>
@@ -216,7 +226,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
             <Form.Item label="回访时间">
               {getFieldDecorator('finish_revisitTime', {
                 rules: [{ required, message: '请选择回访时间' }],
-                initialValue: moment(finish.revisitTime),
+                initialValue: moment(finish?.revisitTime || undefined),
               })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
             </Form.Item>
           </Col>

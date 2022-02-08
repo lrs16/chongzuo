@@ -74,7 +74,7 @@ function Querylist(props) {
   // 重置
   const handleReset = () => {
     router.push({
-      pathname: `/ITSM/releasemanage/query`,
+      pathname: `/ITSM/releasemanage/plan/query`,
       query: { pathpush: true },
       state: { cach: false, }
     });
@@ -225,7 +225,7 @@ function Querylist(props) {
             },
           });
           router.push({
-            pathname: `/ITSM/releasemanage/query/details`,
+            pathname: `/ITSM/releasemanage/plan/query/details`,
             query: {
               Id: record.releaseNo,
               taskName: record.taskName,

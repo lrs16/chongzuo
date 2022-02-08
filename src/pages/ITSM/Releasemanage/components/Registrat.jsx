@@ -1,10 +1,11 @@
 import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect, useContext } from 'react';
 import moment from 'moment';
-import { Row, Col, Form, Input, Alert, DatePicker, Select, Radio } from 'antd';
+import { Row, Col, Form, Input, Alert, DatePicker, Select, Radio, message } from 'antd';
 import SubmitTypeContext from '@/layouts/MenuContext';
 import EditeTable from './EditeTable';
 import TestingFacility from './TestingFacility';
 import DocumentAtt from './NewDocAtt';
+import { saveVersion } from '../services/api';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -77,7 +78,12 @@ function Registrat(props, ref) {
     if (!value || value.length === 0) {
       callback()
     } if (isEdit) {
-      const target = value.filter(item => !item.module || !item.abilityType || !item.module || !item.appName || !item.problemType || !item.testMenu || !item.testResult || !item.testStep || !item.developer || !item.responsible);
+      let target = []
+      if (taskName === '新建' || taskName === '出厂测试') {
+        target = value.filter(item => !item.module || !item.abilityType || !item.module || !item.appName || !item.problemType || !item.testMenu || !item.testResult || !item.testStep || !item.developer || !item.responsible);
+      } else {
+        target = value.filter(item => !item.module || !item.operator || !item.abilityType || !item.module || !item.appName || !item.problemType || !item.testMenu || !item.testResult || !item.testStep || !item.developer || !item.responsible || !item.platformValidator);
+      };
       if (target.length > 0) {
         setCheck(true);
         callback(`请填写完整的发布清单信息`);
@@ -122,7 +128,7 @@ function Registrat(props, ref) {
       ChangeSubmitType(1)
     };
     if (e.target.value === '不通过') {
-      ChangeSubmitType(0)
+      ChangeSubmitType(taskName === '平台验证' ? 1 : 0)
     }
   };
 
@@ -163,7 +169,21 @@ function Registrat(props, ref) {
       setAlertVisible(true);
       setAlertMessage({ mes: `超时原因：${timeoutinfo}`, des: `` });
     };
-  }, [timeoutinfo])
+  }, [timeoutinfo]);
+
+  const VersionChange = (versionNo, releaseNo) => {
+    if (!versionNo) {
+      message.error('版本号不能为空')
+    } else {
+      saveVersion({ versionNo, releaseNo }).then(res => {
+        if (res.code !== 200) {
+          message.error(res.msg)
+        } else {
+          message.success(res.msg)
+        }
+      })
+    }
+  }
 
   const getTypebyId = key => {
     if (selectdata.ischange) {
@@ -197,7 +217,7 @@ function Registrat(props, ref) {
                 <Form.Item label="发布类型">
                   {getFieldDecorator('releaseType', {
                     rules: [{ required, message: `请选择发布类型` }],
-                    initialValue: info.releaseMain.releaseType,
+                    initialValue: info.releaseMain.releaseType || '计划发布',
                   })(
                     <Select placeholder="请选择" disabled={!isEdit}>
                       {typemap.map(obj => [
@@ -227,6 +247,18 @@ function Registrat(props, ref) {
               </Col>
             </>
           )}
+          {taskName === '平台验证' && (
+            <Col span={8}>
+              <Form.Item label='版本号' labelAlign='right'>
+                {getFieldDecorator('currentVersion', {
+                  rules: [{ required, message: `版本号不能为空` }],
+                  initialValue: info.versionNo,
+                })(
+                  < Input onChange={(e) => VersionChange(e.target.value, info.releaseNo)} />
+                )}
+              </Form.Item>
+            </Col>
+          )}
           {(taskName === '出厂测试' || taskName === '新建' || taskName === '平台验证') && (
             <>
               <Col span={8}>
@@ -245,8 +277,8 @@ function Registrat(props, ref) {
                   })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
                 </Form.Item>
               </Col>
-              <Col span={8}>
-                <Form.Item label="测试地点">
+              <Col span={24}>
+                <Form.Item label="测试地点" {...formuintLayout}>
                   {getFieldDecorator('testPlace', {
                     rules: [{ required, message: `请输入出厂测试地点` }],
                     initialValue: formmap.get(taskName).testPlace,
@@ -312,7 +344,7 @@ function Registrat(props, ref) {
               title='发布清单'
               functionmap={functionmap}
               modulamap={modulamap}
-              isEdit={isEdit}
+              isEdit={taskName !== '业务验证' && isEdit}
               taskName={taskName}
               dataSource={info.releaseLists}
               ChangeValue={v => { setFieldsValue({ releaseLists: v }); }}

@@ -4,7 +4,7 @@ import moment from 'moment';
 import router from 'umi/router';
 import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Cascader, message, Popover, Tooltip } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import { DownOutlined, UpOutlined, AlertTwoTone } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
 import TableColumns from '@/components/TableColumns';
 import AdminAuth from '@/components/AdminAuth';
@@ -172,6 +172,7 @@ function QueryList(props) {
       vote.key = tablecolumns[i].key;
       vote.width = 180;
       if (tablecolumns[i].key === 'demandId') {
+        vote.fixed = 'left';
         vote.render = (text, record) => {
           const handleClick = () => {
             dispatch({
@@ -204,6 +205,24 @@ function QueryList(props) {
             });
           };
           return <a onClick={handleClick}>{text}</a>;
+        }
+      } if (tablecolumns[i].key === 'timeoutStatus') {
+        vote.render = (text) => {
+          const blubnap = new Map([
+            ['未超时', <AlertTwoTone />],
+            ['即将超时', <AlertTwoTone twoToneColor="orange" />],
+            ['已超时', <AlertTwoTone twoToneColor="red" />]
+          ]);
+          const colormap = new Map([
+            ['未超时', '#108ee9'],
+            ['即将超时', 'orange'],
+            ['已超时', 'red']
+          ]);
+          return (
+            <><span style={{ fontSize: '1.4em', marginRight: 8 }}>{blubnap.get(text)}</span>
+              <span style={{ color: colormap.get(text) }}>{text}</span>
+            </>
+          )
         }
       } else {
         vote.onCell = () => {

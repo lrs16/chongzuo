@@ -8,7 +8,7 @@ import UploadContext from '@/layouts/MenuContext';
 message.config({
   top: 100,
   duration: 2,
-  maxCount: 2,
+  maxCount: 1,
 });
 
 function SysUpload(props) {

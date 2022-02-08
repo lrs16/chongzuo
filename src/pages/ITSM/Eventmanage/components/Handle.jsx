@@ -1,6 +1,7 @@
-import React, { useRef, useImperativeHandle, useEffect, useState } from 'react';
+import React, { useImperativeHandle, useEffect, useState, useContext } from 'react';
 import moment from 'moment';
-import { Row, Col, Form, Input, Select, DatePicker, Cascader, message } from 'antd';
+import { Row, Col, Form, Input, Select, DatePicker, Cascader } from 'antd';
+import SubmitContext from '@/layouts/MenuContext';
 import SysUpload from '@/components/SysUpload';
 import KnowledgCollect from '@/components/KnowledgeCollect';
 
@@ -24,12 +25,14 @@ const Handle = React.forwardRef((props, ref) => {
     location
   } = props;
   const { handle } = info;
-  const { orderNo } = location.query;
+  const { orderNo, taskName, taskId } = location.query;
   const { getFieldDecorator, setFieldsValue, getFieldsValue, resetFields, getFieldValue } = props.form;
   const required = true;
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
   const [knowledgecontent, setKonwledgeContent] = useState('');    // 知识内容
   const [valuealready, setValuealready] = useState(false)          // 告知知识子组件可以走接口了
+
+  const { ChangeSubmitType, ChangeButtonName } = useContext(SubmitContext);
 
   // 获取知识数据
   const getContent = () => {
@@ -56,9 +59,26 @@ const Handle = React.forwardRef((props, ref) => {
     Forms: props.form.validateFieldsAndScroll,
   }), []);
 
+  const ChangeResult = (e) => {
+    if ((e === '4' || e === '5') && !show) {
+      ChangeSubmitType(e);
+      sessionStorage.setItem('flowtype', e)
+    } else {
+      ChangeSubmitType('1');
+      sessionStorage.setItem('flowtype', '1')
+    }
+  }
+
   useEffect(() => {
-    sessionStorage.setItem('Nextflowmane', '确认');
-  }, []);
+    if (taskId && taskName === '事件处理') {
+      ChangeButtonName('回访');
+      if (info && info.handle) {
+        ChangeResult(info.handle.handleResult)
+      } else {
+        ChangeResult('其它选择')
+      }
+    }
+  }, [taskId]);
 
   const eventObject = main && main.eventObject && main.eventObject.split();
   if (main && main.eventObject && main.eventObject.length === 6) {
@@ -103,7 +123,7 @@ const Handle = React.forwardRef((props, ref) => {
           <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="处理表单id">
               {getFieldDecorator('handle_id', {
-                initialValue: handle.id,
+                initialValue: handle?.id || '',
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
           </Col>
@@ -189,9 +209,9 @@ const Handle = React.forwardRef((props, ref) => {
             <Form.Item label="处理结果">
               {getFieldDecorator('handle_handleResult', {
                 rules: [{ required, message: '请选择处理结果' }],
-                initialValue: handle.handleResult,
+                initialValue: handle?.handleResult || '',
               })(
-                <Select placeholder="请选择">
+                <Select placeholder="请选择" onChange={(e) => ChangeResult(e)}>
                   {resultmap.map(obj => [
                     <Option key={obj.key} value={obj.dict_code}>
                       {obj.title}
@@ -205,7 +225,7 @@ const Handle = React.forwardRef((props, ref) => {
             <Form.Item label="接单时间">
               {getFieldDecorator('handle_addTime', {
                 rules: [{ required }],
-                initialValue: moment(handle.addTime).format('YYYY-MM-DD HH:mm:ss'),
+                initialValue: moment(handle?.addTime || undefined).format('YYYY-MM-DD HH:mm:ss'),
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
           </Col>
@@ -213,7 +233,7 @@ const Handle = React.forwardRef((props, ref) => {
             <Form.Item label="完成时间">
               {getFieldDecorator('handle_endTime', {
                 rules: [{ required }],
-                initialValue: moment(handle.endTime),
+                initialValue: moment(handle?.endTime || undefined),
               })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
             </Form.Item>
           </Col>
@@ -248,7 +268,7 @@ const Handle = React.forwardRef((props, ref) => {
             <Form.Item label="解决方案" {...forminladeLayout}>
               {getFieldDecorator('handle_content', {
                 rules: [{ required, message: '请输入解决方案' }],
-                initialValue: handle.content,
+                initialValue: handle?.content || '',
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
             </Form.Item>
           </Col>

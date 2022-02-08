@@ -10,6 +10,7 @@ import SysDict from '@/components/SysDict';
 import styles from './index.less';
 import Handle from './components/Handle';
 import Registrat from './components/Registrat';
+import { EventFlowStart, EventSave, EventFlow } from './services/api';
 
 const { Panel } = Collapse;
 
@@ -42,7 +43,7 @@ function Registration(props) {
   const [formregistrat, setFormregistrat] = useState('');
   const [formhandle, setFormhandle] = useState('');
   const [show, setShow] = useState(false); // 自行处理
-  const [check, setCheck] = useState(false); // 审批
+  // const [check, setCheck] = useState(false); // 审批
   const [ischeck, setIscheck] = useState({ save: false, flow: false }); // 是否在校验状态
   const [activeKey, setActiveKey] = useState(['registratform']);
   const [defaultvalue, setDefaultvalue] = useState({});
@@ -51,6 +52,8 @@ function Registration(props) {
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
   const [uploadStatus, setUploadStatus] = useState(false);
   const [handleUploadStatus, setHandleUploadStatus] = useState(false);
+  const [submittype, setSubmitType] = useState(1);           // 流轉類型
+  const [buttonName, setButtonName] = useState('');
   const RegistratRef = useRef(null);
   const HandleRef = useRef(null);
 
@@ -65,7 +68,7 @@ function Registration(props) {
     setActiveKey(key);
   };
 
-  const submittype = type => {
+  const tosubmit = type => {
     switch (type) {
       case 'save':
         setIscheck({ ...ischeck, save: true });
@@ -92,6 +95,7 @@ function Registration(props) {
       register_fileIds: JSON.stringify(registratfiles.arr),
       register_selfhandle: String(Number(values.register_selfhandle)),
       register_supplement: String(Number(values.register_supplement)),
+      register_isCheck: String(Number(values.register_isCheck)),
     });
     if (show) {
       RegistratRef.current.Forms((err) => {
@@ -103,7 +107,7 @@ function Registration(props) {
     } else {
       RegistratRef.current.geteventObject(['main_eventObject'], err => {
         if (!err) {
-          submittype(type);
+          tosubmit(type);
         }
       });
     }
@@ -133,7 +137,7 @@ function Registration(props) {
           handle_fileIds: JSON.stringify(handlefiles.arr),
         });
         setIscheck({ save: false, flow: false });
-        submittype(type);
+        tosubmit(type);
       }
     });
   };
@@ -326,9 +330,12 @@ function Registration(props) {
 
   const operations = (
     <>
-      <Button type="primary" style={{ marginRight: 8 }} onClick={handlesubmit} disabled={uploadStatus || handleUploadStatus || loading}>
+      <Button type="primary" style={{ marginRight: 8 }} onClick={() => handlesubmit()} disabled={uploadStatus || handleUploadStatus || loading}>
         保存
       </Button>
+      {/* <Button type="primary" style={{ marginRight: 8 }} onClick={() => tosubmit()} disabled={uploadStatus || handleUploadStatus || loading}>
+        流转
+      </Button> */}
       <Button type="default" onClick={() => handleclose()} disabled={loading}>
         关闭
       </Button>
@@ -347,7 +354,10 @@ function Registration(props) {
           <HadleContext.Provider value={{
             handleUploadStatus,
             getUploadStatus: (v) => { setHandleUploadStatus(v) },
-            getRegistUploadStatus: (v) => { setUploadStatus(v) }
+            getRegistUploadStatus: (v) => { setUploadStatus(v) },
+            submittype,
+            ChangeSubmitType: (v => setSubmitType(v)),               // 根據選項返回流轉類型
+            ChangeButtonName: (v => setButtonName(v))                // 自行處理返回按鈕名稱
           }}>
             <Collapse
               expandIconPosition="right"
@@ -359,7 +369,7 @@ function Registration(props) {
               <Panel header="事件登记" key="registratform">
                 <Registrat
                   ChangeShow={isshow => setShow(isshow)}
-                  ChangeCheck={checked => setCheck(checked)}
+                  // ChangeCheck={checked => setCheck(checked)}
                   ChangeActiveKey={keys => setActiveKey(keys)}
                   changeDefaultvalue={values => setDefaultvalue(values)}
                   ChangeFiles={newvalue => { setRegistratFiles(newvalue) }}
@@ -376,7 +386,7 @@ function Registration(props) {
                   main={tabdata ? tabdata.main : undefined}
                 />
               </Panel>
-              {show && check === false && (
+              {show && (
                 <Panel header="事件处理" key="handleform">
                   <Handle
                     formItemLayout={formItemLayout}

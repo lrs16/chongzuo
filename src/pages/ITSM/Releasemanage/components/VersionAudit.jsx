@@ -311,6 +311,8 @@ function VersionAudit(props, ref) {
       saveVersion({ versionNo, releaseNo }).then(res => {
         if (res.code !== 200) {
           message.error(res.msg)
+        } else {
+          message.success(res.msg)
         }
       })
     }
@@ -434,6 +436,25 @@ function VersionAudit(props, ref) {
                   </Form.Item>
                 </Col>)}
             </>)}
+          {(taskName === '科室负责人审核' || taskName === '中心领导审核') && (
+            <Col span={8}>
+              <Form.Item label="审核时间" {...formuintLayout} labelAlign='left'>
+                {getFieldDecorator('checkTime', {
+                  rules: [{ required, message: `请选择审批时间` }],
+                  initialValue: moment(formmap.get(taskName).checkTime || undefined).format('YYYY-MM-DD HH:mm:ss'),
+                })(
+                  <><DatePicker
+                    showTime
+                    format="YYYY-MM-DD HH:mm:ss"
+                    defaultValue={moment(formmap.get(taskName).checkTime || undefined)}
+                    onChange={(v) => { setFieldsValue({ checkTime: moment(v).format('YYYY-MM-DD HH:mm:ss') }) }}
+                    disabled={!isEdit}
+                    style={{ width: '100%' }}
+                  /></>
+                )}
+              </Form.Item>
+            </Col>
+          )}
           <Col span={24}>
             <EditeTable
               title='功能验证表'
@@ -490,14 +511,16 @@ function VersionAudit(props, ref) {
               })(<Input disabled />)}
             </Form.Item>
           </Col>
-          <Col span={8}>
-            <Form.Item label="审核时间" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-              {getFieldDecorator('checkTime', {
-                rules: [{ required, message: `请选择审批时间` }],
-                initialValue: moment(formmap.get(taskName).checkTime || undefined).format('YYYY-MM-DD HH:mm:ss'),
-              })(<Input disabled />)}
-            </Form.Item>
-          </Col>
+          {taskName === '版本管理员审核' && (
+            <Col span={8}>
+              <Form.Item label="审核时间" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+                {getFieldDecorator('checkTime', {
+                  rules: [{ required, message: `请选择审批时间` }],
+                  initialValue: moment(formmap.get(taskName).checkTime || undefined).format('YYYY-MM-DD HH:mm:ss'),
+                })(<Input disabled />)}
+              </Form.Item>
+            </Col>
+          )}
           <Col span={8}>
             <Form.Item label="审核单位" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               {getFieldDecorator('checkUnit', {

@@ -40,7 +40,7 @@ function AllQuery(props) {
         break;
       case 'release':
         router.push({
-          pathname: `/ITSM/releasemanage/query`,
+          pathname: `/ITSM/releasemanage/plan/query`,
           query: { pathpush: true },
           state: { cache: false }
         });

@@ -16,11 +16,11 @@ export default {
       const subres = yield call(flowSubmit, payload);
       if (subres.code === 200) {
         router.push({
-          pathname: `/ITSM/releasemanage/registration`,
+          pathname: `/ITSM/releasemanage/plan/registration`,
           query: { tabid, closecurrent: true }
         });
         router.push({
-          pathname: `/ITSM/releasemanage/to-do`,
+          pathname: `/ITSM/releasemanage/plan/to-do`,
           query: { pathpush: true },
           state: { cach: false, }
         });

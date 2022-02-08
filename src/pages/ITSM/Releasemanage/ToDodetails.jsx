@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
-import { Button, Spin, message } from 'antd';
+import { Button, Spin, message, Tooltip } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SubmitTypeContext from '@/layouts/MenuContext';              // 引用上下文管理组件
+import { querkeyVal } from '@/services/api';
 import { expPracticePre, deleteFlow, saveGobackMsg, getTimeoutInfo, } from './services/api';
 import TimeoutModal from '../components/TimeoutModal';
 import WorkOrder from './WorkOrder';
@@ -24,6 +25,8 @@ function ToDodetails(props) {
   const [Popvisible, setVisible] = useState(false);
   const [modalvisible, setModalVisible] = useState(false);
   const [butandorder, setButandOrder] = useState('');
+  const [flowNode, setFlowNode] = useState([]);
+  const [indexUser, setIndexUser] = useState([]);
 
   const dowloadPre = () => {
     expPracticePre(taskId).then(res => {
@@ -51,7 +54,7 @@ function ToDodetails(props) {
         message.error(res.msg)
       };
       router.push({
-        pathname: `/ITSM/releasemanage/to-do`,
+        pathname: `/ITSM/releasemanage/plan/to-do`,
         query: { pathpush: true },
         state: { cach: false, closetabid: tabid }
       });
@@ -64,6 +67,22 @@ function ToDodetails(props) {
       query: { tabid, closecurrent: true }
     });
   }
+
+  useEffect(() => {
+    querkeyVal('release', 'statu').then(res => {
+      if (res.code === 200) {
+        setFlowNode(res.data.statu);
+        const nextnode = res.data.statu[res.data.statu.findIndex(obj => obj.val === taskName) + 1]?.val || '不对';
+        querkeyVal('release', 'indexuser').then(ress => {
+          if (res.code === 200) {
+            const arr = ress.data.indexuser[0]?.val?.split('-')[1]?.split(',') || [];
+            const name = arr.filter(obj => obj.indexOf(nextnode) > -1)
+            setIndexUser(name[0]?.split(':')[1]?.split('||') || []);
+          }
+        });
+      }
+    });
+  }, [taskName]);
 
   useEffect(() => {
     if (location.state) {
@@ -109,7 +128,7 @@ function ToDodetails(props) {
         message.error('操作失败');
         const tabid = sessionStorage.getItem('tabid');
         router.push({
-          pathname: `/ITSM/releasemanage/to-do`,
+          pathname: `/ITSM/releasemanage/plan/to-do`,
           query: { pathpush: true },
           state: { cach: false, closetabid: tabid }
         });
@@ -168,7 +187,7 @@ function ToDodetails(props) {
           message.error('操作失败');
           const tabid = sessionStorage.getItem('tabid');
           router.push({
-            pathname: `/ITSM/releasemanage/to-do`,
+            pathname: `/ITSM/releasemanage/plan/to-do`,
             query: { pathpush: true },
             state: { cach: false, closetabid: tabid }
           });
@@ -199,7 +218,7 @@ function ToDodetails(props) {
         message.error(res.msg);
         const tabid = sessionStorage.getItem('tabid');
         router.push({
-          pathname: `/ITSM/releasemanage/to-do`,
+          pathname: `/ITSM/releasemanage/plan/to-do`,
           query: { pathpush: true },
           state: { cach: false, closetabid: tabid }
         });
@@ -230,6 +249,7 @@ function ToDodetails(props) {
       tab: '发布工单',
     },
   ];
+
   const operations = (
     <>
       {tabActivekey === 'workorder' && (
@@ -239,7 +259,7 @@ function ToDodetails(props) {
               删除
             </Button>
           )}
-          {!saved && taskName !== '出厂测试' && taskName !== '发布验证' && taskName !== '业务复核' && (
+          {!saved && taskName !== '出厂测试' && taskName !== '开发商项目经理审核' && taskName !== '发布验证' && taskName !== '业务复核' && (
             <Button type="danger" ghost style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => { handleGoback() }} disabled={uploadstatus || allloading}>
               回退
             </Button>
@@ -253,13 +273,13 @@ function ToDodetails(props) {
             保存
           </Button>
           {submittype === 1 && (
-            <>{(taskName === '版本管理员审核' || taskName === '科室负责人审核' || taskName === '中心领导审核') && info && info.releaseMains && info.releaseMains.length > 1 ? (
+            <>{(taskName === '开发商项目经理审核' || taskName === '版本管理员审核' || taskName === '科室负责人审核' || taskName === '中心领导审核') && info && info.releaseMains && info.releaseMains.length > 1 ? (
               <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('flow')} disabled={uploadstatus || allloading}>
-                流转
+                流转至{flowNode[flowNode.findIndex(obj => obj.val === taskName) + 1]?.val || ''}
               </Button>
             ) : (
               <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => handleClick('flow')} disabled={uploadstatus || allloading}>
-                {taskName === '业务复核' ? '结束' : '流转'}
+                {taskName === '业务复核' ? '' : '流转至'}{taskName === '业务复核' ? '结束' : (flowNode[flowNode.findIndex(obj => obj.val === taskName) + 1]?.val || '')}
               </Button>
             )}
             </>
@@ -269,7 +289,7 @@ function ToDodetails(props) {
               结束
             </Button>
           )}
-          {((submittype === 0 && taskName === '平台验证') || (submittype === 3 && taskName === '发布实施准备')) && (
+          {((submittype === 0 && (taskName === '平台验证' || taskName === '开发商项目经理审核')) || (submittype === 3 && (taskName === '发布实施准备' || taskName === '系统运维商经理审核'))) && (
             <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => handleClick('noPass')} disabled={uploadstatus || allloading}>
               出厂测试
             </Button>
@@ -306,7 +326,7 @@ function ToDodetails(props) {
             releaseType,
             location,
           }}>
-            <WorkOrder location={location} buttype={buttype} />
+            <WorkOrder location={location} buttype={buttype} indexUser={indexUser} />
           </SubmitTypeContext.Provider>
         )}
         {tabActivekey === 'process' && (<Process />)}
@@ -322,6 +342,7 @@ function ToDodetails(props) {
         visible={Popvisible}
         ChangeVisible={v => setVisible(v)}
         rollbackSubmit={v => postRollBackmsg(v)}
+        lastNode={flowNode[flowNode.findIndex(obj => obj.val === taskName) - 1]?.val || ''}
       />
     </Spin>
   );

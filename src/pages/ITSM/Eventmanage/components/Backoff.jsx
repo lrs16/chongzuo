@@ -13,7 +13,7 @@ function ModelRollback(props) {
   const required = true;
   const {
     form: { getFieldDecorator, validateFields, resetFields },
-    title, visible, ChangeVisible
+    title, visible, ChangeVisible, lastNode
   } = props;
 
 
@@ -31,9 +31,6 @@ function ModelRollback(props) {
     })
   }
 
-
-
-
   return (
     <>
       <Modal
@@ -45,6 +42,7 @@ function ModelRollback(props) {
         onOk={handleOk}
       >
         <Row gutter={16}>
+          <Col span={24}>回退至{lastNode}</Col>
           <Form>
             <Col span={24}>
               <Form.Item label='回退意见'>

@@ -21,6 +21,7 @@ export default {
     tasklist: '',
     achievementlist: '',
     describe: '',
+    defaultUsers: ''            // 发布业务复核默认出厂测试登记人
   },
 
   effects: {
@@ -60,6 +61,9 @@ export default {
     },
     // 加载故障下一环节处理人列表
     *troubleuserlist({ payload: { taskId, result } }, { call, put }) {
+      yield put({
+        type: 'clearcache',
+      });
       const response = yield call(TroubleFlowUserList, taskId, result);
       yield put({
         type: 'savelist',
@@ -68,6 +72,9 @@ export default {
     },
     // 加载问题下一环节处理人列表
     *problemuserlist({ payload: { taskId, result } }, { call, put }) {
+      yield put({
+        type: 'clearcache',
+      });
       const response = yield call(ProblemFlowUserList, taskId, result);
       yield put({
         type: 'problemlist',
@@ -76,6 +83,9 @@ export default {
     },
     // 加载送审人列表
     *taskuserlist({ payload }, { call, put }) {
+      yield put({
+        type: 'clearcache',
+      });
       const response = yield call(taskFlowUserList);
       yield put({
         type: 'savelist',
@@ -91,11 +101,14 @@ export default {
       const response = yield call(releaseUserList, taskId, type);
       yield put({
         type: 'savereleaselist',
-        payload: { userlist: response.data.userList, describe: response.data.describe },
+        payload: { userlist: response.data.userList, describe: response.data.describe, defaultUsers: response.data.defaultUsers },
       });
     },
     // 加载绩效下一环节处理人
     *achievementsNextTaskUser({ payload: { taskId, type } }, { call, put }) {
+      yield put({
+        type: 'clearcache',
+      });
       const response = yield call(achievementsNextTaskUser, taskId, type);
       yield put({
         type: 'achievementlist',
@@ -109,7 +122,11 @@ export default {
       return {
         ...state,
         userlist: '',
+        problemlist: '',
+        tasklist: '',
+        achievementlist: '',
         describe: '',
+        defaultUsers: ''
       };
     },
     saveuser(state, action) {
@@ -157,6 +174,7 @@ export default {
         ...state,
         userlist: action.payload.userlist,
         describe: action.payload.describe,
+        defaultUsers: action.payload.defaultUsers,
       };
     },
   },

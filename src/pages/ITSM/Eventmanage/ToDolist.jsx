@@ -57,7 +57,9 @@ function ToDolist(props) {
         dispatch({
           type: 'eventtodo/eventdownload',
           payload: {
-            values,
+            ...values,
+            time3: values.time?.startTime || '',
+            time4: values.time?.endtime || '',
             ids: selectedRowKeys.toString(),
           },
         }).then(res => {
@@ -170,10 +172,10 @@ function ToDolist(props) {
           router.push({
             pathname: `/ITSM/eventmanage/to-do/record/workorder`,
             query: {
-              taskName: r.eventStatus,
+              taskName: r.flowNodeName,
               taskId: r.taskId,
               mainId: r.mainId,
-              check: r.checkResult,
+              // check: r.checkResult,
               orderNo: text,
             },
             state: {

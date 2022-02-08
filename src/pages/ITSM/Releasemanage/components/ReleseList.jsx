@@ -20,7 +20,7 @@ function ReleseList(props) {
   const [classify, setClassify] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRecords, setSelectedRecords] = useState([]);
-  const [paginations, setPageinations] = useState({ current: 1, pageSize: 2 });
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 5 });
 
   const onSelectChange = (RowKeys, record) => {
     setSelectedRowKeys(RowKeys);
@@ -132,23 +132,23 @@ function ReleseList(props) {
       title: '测试内容及预期效果',
       dataIndex: 't5',
       key: 't5',
-      width: 300,
+      width: 400,
       render: (text, record) => {
         return (
           <>
             <InputGroup compact>
               <span style={{ width: 70, textAlign: 'right' }}>功能菜单：</span>
-              <span style={{ width: 210 }}>{record.testMenu}</span>
+              <span style={{ width: 310 }}>{record.testMenu}</span>
             </InputGroup>
             <Divider type='horizontal' style={{ margin: '6px 0' }} />
             <InputGroup compact>
               <span style={{ width: 70, textAlign: 'right' }}>预期效果：</span>
-              <span style={{ width: 210 }}>{record.testResult}</span>
+              <span style={{ width: 310 }}>{record.testResult}</span>
             </InputGroup>
             <Divider type='horizontal' style={{ margin: '6px 0' }} />
             <InputGroup compact>
               <span style={{ width: 70, textAlign: 'right' }}>验证步骤：</span>
-              <span style={{ width: 210 }}>{record.testStep}</span>
+              <span style={{ width: 310 }}>{record.testStep}</span>
             </InputGroup>
           </>
         );
@@ -162,7 +162,13 @@ function ReleseList(props) {
       width: 100,
     },
     {
-      title: '是否通过',
+      title: '开发人员',
+      dataIndex: 'developer',
+      key: 'developer',
+      width: 100,
+    },
+    {
+      title: '业务复核结果',
       dataIndex: 'passTest',
       key: 'passTest',
       align: 'center',
@@ -172,22 +178,25 @@ function ReleseList(props) {
       title: '业务负责人',
       dataIndex: 'responsible',
       key: 'responsible',
+      align: 'center',
       width: 100,
     },
     {
-      title: '开发人员',
-      dataIndex: 'developer',
-      key: 'developer',
-      width: 100,
-    },
-    {
-      title: '操作人',
+      title: '业务复核人',
       dataIndex: 'operator',
       key: 'operator',
       align: 'center',
       width: 100,
     },
   ];
+
+  const setTableHeight = () => {
+    let height = 500;
+    const clientHeight = window.document?.body?.clientHeight || 500;
+    height = clientHeight - 400
+    return height
+  };
+
   return (
     <>
       {statistics === undefined && (<Row>
@@ -204,6 +213,7 @@ function ReleseList(props) {
         bordered
         size='middle'
         dataSource={dataSource}
+        scroll={{ x: 1350, y: setTableHeight(), }}
         rowKey={(_, index) => index.toString()}
         style={{ marginTop: 12 }}
       />

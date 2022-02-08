@@ -99,7 +99,7 @@ function RelevancyOrder(props) {
         const handleClick = () => {
           if (activeKey === 'release') {
             router.push({
-              pathname: `/ITSM/releasemanage/query/details`,
+              pathname: `/ITSM/releasemanage/plan/query/details`,
               query: {
                 Id: text,
                 taskName: record.status,

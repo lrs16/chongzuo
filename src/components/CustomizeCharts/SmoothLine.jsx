@@ -90,7 +90,7 @@ function SmoothLine(props) {
         if (linkdata && linkdata.data && !Array.isArray(linkdata.data) && onGetVal) {
           setTimeout(() => {
             onGetVal(linkdata.data)
-          }, 200)
+          }, 100)
         }
       }}
       onDoubleClick={ev => {

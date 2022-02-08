@@ -154,7 +154,7 @@ function ReleaseRepo(props) {
   // 重置
   const handleReset = () => {
     router.push({
-      pathname: `/ITSM/releasemanage/releaselibrary`,
+      pathname: `/ITSM/releasemanage/plan/releaselibrary`,
       query: { pathpush: true },
       state: { cach: false, }
     });

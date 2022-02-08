@@ -4,8 +4,9 @@ import moment from 'moment';
 import { Collapse, message } from 'antd';
 import SubmitTypeContext from '@/layouts/MenuContext';
 import DictLower from '@/components/SysDict/DictLower';
-// import User from '@/components/SelectUser/User';
+import User from '@/components/SelectUser/User';
 import Registrat from './components/Registrat';
+import Examine from './components/Examine';
 import ImplementationPre from './components/ImplementationPre';
 import VersionAudit from './components/VersionAudit';
 import Implementation from './components/Implementation';
@@ -17,31 +18,31 @@ import styles from './index.less';
 const { Panel } = Collapse;
 
 function WorkOrder(props) {
-  const { location, dispatch, userinfo, info, currentTaskStatus, buttype, statuse, tasklinks, historyinfo, timeoutinfo, userlist } = props;
+  const { location, dispatch, userinfo, info, currentTaskStatus, buttype, statuse, tasklinks, historyinfo, timeoutinfo, userlist, indexUser, defaultUsers } = props;
   const { taskName, Id } = location.query;
   const [activeKey, setActiveKey] = useState(['form']);
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
-  // const [uservisible, setUserVisible] = useState(false);        // 是否显示选人组件
-  // const [userchoice, setUserChoice] = useState(false);          // 已经选择人员  
+  const [uservisible, setUserVisible] = useState(false);        // 是否显示选人组件
+  const [userchoice, setUserChoice] = useState(false);          // 已经选择人员
   const { submittype } = useContext(SubmitTypeContext);
 
   // 保存，保存提交
   const RegistratRef = useRef();
+  const ExamineRef = useRef();
   const ImplementationPreRef = useRef();
   const VersionAuditRef = useRef();
   const ImplementationRef = useRef();
   const BusinessReviewRef = useRef();
 
   // 流程提交
-  const tosubmit = () => {
+  const tosubmit = (type) => {
     if (statuse === 200 && userlist) {
-      const userIds = userlist.map(obj => obj.userId);
       dispatch({
         type: 'releasetodo/releaseflow',
         payload: {
           taskId: currentTaskStatus.taskId,
-          type: submittype,
-          userIds,
+          type: type || submittype,
+          userIds: sessionStorage.getItem('NextflowUserId'),
         },
       });
     }
@@ -95,35 +96,106 @@ function WorkOrder(props) {
       });
     };
     if (buttype === 'flow') {
-      // setUserChoice(false);
+      setUserChoice(false);
       sessionStorage.removeItem('NextflowUserId');
       RegistratRef.current.Forms((err) => {
         if (err) {
           message.error('请将信息填写完整')
         } else {
           sessionStorage.setItem('flowtype', '1');
-          const userIds = userlist.map(obj => obj.userId);
           const register = getregistratformvalues();
           dispatch({
             type: 'releasetodo/factorytest',
             payload: {
               register,
               buttype,
-              submitval: {
-                taskId: currentTaskStatus.taskId,
-                type: submittype,
-                userIds: userIds.join(','),
-              }
             },
           });
+          setUserVisible(true)
         }
       })
+    }
+  }
+  // 开发商项目经理审核
+  const saveExamine = () => {
+    const val = ExamineRef.current.getVal();
+    const examineform = () => {
+      let formval = {}
+      if (taskName === '开发商项目经理审核') {
+        formval = {
+          saveItems: `'devmanageCheck,releaseAttaches'`,
+          releaseNo: Id,
+          devmanageCheck: {
+            checkResult: val.checkResult,
+            testResult: val.testResult,
+          },
+          releaseAttaches: val.releaseAttaches,
+        };
+      } else {
+        formval = {
+          saveItems: `'devopsCheck,releaseAttaches'`,
+          releaseNo: Id,
+          devopsCheck: {
+            checkResult: val.checkResult,
+            testResult: val.testResult,
+          },
+          releaseAttaches: val.releaseAttaches,
+        }
+      };
+      return formval;
+    }
+    dispatch({
+      type: 'releasetodo/check',
+      payload: {
+        examineform: examineform(),
+        buttype,
+        submitval: {
+          taskId: currentTaskStatus.taskId,
+          type: submittype,
+          userIds: sessionStorage.getItem('NextflowUserId'),
+        },
+        taskName
+      },
+    });
+  }
+  const examineSubmit = () => {
+    switch (buttype) {
+      case 'save':
+        saveExamine();
+        break;
+      case 'flow':
+        setUserChoice(false);
+        sessionStorage.removeItem('NextflowUserId');
+        ExamineRef.current.Forms((err) => {
+          if (err) {
+            message.error('请将信息填写完整')
+          } else {
+            sessionStorage.setItem('flowtype', '1');
+            saveExamine();
+            setUserVisible(true);
+            // tosubmit();  
+          }
+        })
+        break;
+      case 'noPass':
+        // setUserChoice(false);
+        sessionStorage.removeItem('NextflowUserId');
+        ExamineRef.current.Forms((err) => {
+          if (err) {
+            message.error('请将信息填写完整')
+          } else {
+            saveExamine();
+          }
+        })
+        break;
+      default:
+        break;
     }
   }
 
   // 平台验证保存流转
   const savelatformValid = () => {
-    const userIds = userlist.map(obj => obj.userId);
+    //  const userIds = userlist.map(obj => obj.userId);
     const platform = getregistratformvalues();
     dispatch({
       type: 'releasetodo/platformvalid',
@@ -140,7 +212,7 @@ function WorkOrder(props) {
         submitval: {
           taskId: currentTaskStatus.taskId,
           type: submittype,
-          userIds: userIds.join(','),
+          userIds: sessionStorage.getItem('NextflowUserId'),
         }
       },
     });
@@ -159,7 +231,7 @@ function WorkOrder(props) {
           } else {
             sessionStorage.setItem('flowtype', '1');
             savelatformValid();
-            // setUserVisible(true);
+            setUserVisible(true);
             // tosubmit();  
           }
         })
@@ -182,7 +254,7 @@ function WorkOrder(props) {
 
   // 业务验证保存流转
   const savebizValidate = () => {
-    const userIds = userlist.map(obj => obj.userId);
+    // const userIds = userlist.map(obj => obj.userId);
     const bizValidate = getregistratformvalues();
     dispatch({
       type: 'releasetodo/bizvalid',
@@ -196,7 +268,7 @@ function WorkOrder(props) {
           releaseLists: bizValidate.releaseLists,
         },
         buttype,
-        userIds: userIds.join(','),
+        userIds: sessionStorage.getItem('NextflowUserId'),
         taskId: currentTaskStatus.taskId,
       },
     });
@@ -221,7 +293,7 @@ function WorkOrder(props) {
             } else {
               savebizValidate();
               sessionStorage.setItem('flowtype', '1');
-              // setUserVisible(true);
+              setUserVisible(true);
               // tosubmit();
             }
           }
@@ -252,7 +324,7 @@ function WorkOrder(props) {
 
   // 发布实施准备保存流转
   const savepracticePre = () => {
-    const userIds = userlist.map(obj => obj.userId);
+    //  const userIds = userlist.map(obj => obj.userId);
     const val = ImplementationPreRef.current.getVal();
     dispatch({
       type: 'releasetodo/implementationpre',
@@ -289,7 +361,7 @@ function WorkOrder(props) {
         submitval: {
           taskId: currentTaskStatus.taskId,
           type: submittype,
-          userIds: userIds.join(','),
+          userIds: sessionStorage.getItem('NextflowUserId'),
         }
       },
     });
@@ -300,6 +372,17 @@ function WorkOrder(props) {
         savepracticePre();
         break;
       case 'flow':
+        ImplementationPreRef.current.Forms((err) => {
+          if (err) {
+            message.error('请将信息填写完整')
+          } else {
+            savepracticePre();
+            sessionStorage.setItem('flowtype', '1');
+            setUserVisible(true);
+            // tosubmit();
+          }
+        })
+        break;
       case 'noPass':
         // setUserChoice(false);
         sessionStorage.removeItem('NextflowUserId');
@@ -321,7 +404,7 @@ function WorkOrder(props) {
 
   // 版本管理员审核,科室负责人审核，中心领导审核保存流转
   const saveVersionAudit = () => {
-    const userIds = userlist.map(obj => obj.userId);
+    // const userIds = userlist.map(obj => obj.userId);
     const values = VersionAuditRef.current.getVal();
     dispatch({
       type: 'releasetodo/checkversion',
@@ -336,7 +419,7 @@ function WorkOrder(props) {
         releaseNo: Id,
         buttype,
         taskName,
-        userIds: userIds.join(','),
+        // userIds: sessionStorage.getItem('NextflowUserId'),
         taskId: currentTaskStatus.taskId,
       },
     });
@@ -347,7 +430,7 @@ function WorkOrder(props) {
         saveVersionAudit()
         break;
       case 'flow': {
-        // setUserChoice(false);
+        setUserChoice(false);
         sessionStorage.removeItem('NextflowUserId');
         const orderkeyAndTimeout = info && info.releaseMains && info.releaseMains.filter(item => item.timeoutResult && item.timeoutResult.timeout && !item.timeoutResult.reason);
         if (orderkeyAndTimeout.length > 0) {
@@ -359,6 +442,7 @@ function WorkOrder(props) {
             } else {
               sessionStorage.setItem('flowtype', '1');
               saveVersionAudit();
+              setUserVisible(true);
             }
           })
         }
@@ -381,7 +465,7 @@ function WorkOrder(props) {
 
   // 发布验证
   const saveracticeDone = () => {
-    const userIds = userlist.map(obj => obj.userId);
+    //  const userIds = userlist.map(obj => obj.userId);
     const values = ImplementationRef.current.getVal();
     const { releaseAttaches, releaseLists, practiceTime, practicer, doneDesc, legacyDesc } = values;
     dispatch({
@@ -395,7 +479,7 @@ function WorkOrder(props) {
           practiceDone: { practiceTime: moment(practiceTime).format('YYYY-MM-DD HH:mm:ss'), practicer, doneDesc, legacyDesc },
         },
         buttype,
-        userIds: userIds.join(','),
+        // userIds: userIds.join(','),
         taskId: currentTaskStatus.taskId,
       },
     });
@@ -406,7 +490,7 @@ function WorkOrder(props) {
         saveracticeDone()
         break;
       case 'flow':
-        // setUserChoice(false);
+        setUserChoice(false);
         sessionStorage.removeItem('NextflowUserId');
         ImplementationRef.current.Forms((err) => {
           if (err) {
@@ -416,6 +500,7 @@ function WorkOrder(props) {
             // setUserVisible(true);
             // tosubmit();
             saveracticeDone();
+            setUserVisible(true);
           }
         })
         break;
@@ -450,7 +535,7 @@ function WorkOrder(props) {
         savebusinessReview()
         break;
       case 'flow':
-        // setUserChoice(false);
+        setUserChoice(false);
         sessionStorage.removeItem('NextflowUserId');
         BusinessReviewRef.current.Forms((err, values) => {
           if (err) {
@@ -566,6 +651,10 @@ function WorkOrder(props) {
           case '出厂测试':
             FactorytestSubmit();
             break;
+          case '开发商项目经理审核':
+          case '系统运维商经理审核':
+            examineSubmit();
+            break;
           case '平台验证':
             platformValidSubmit();
             break;
@@ -590,16 +679,15 @@ function WorkOrder(props) {
             break;
         }
       }
-
     }
   }, [buttype])
 
   // 选人完成走提交接口
-  // useEffect(() => {
-  //   if (userchoice) {
-  //     tosubmit()
-  //   }
-  // }, [userchoice])
+  useEffect(() => {
+    if (userchoice) {
+      tosubmit()
+    }
+  }, [userchoice])
 
   return (
     <>
@@ -633,6 +721,21 @@ function WorkOrder(props) {
               </div>
             </Panel>
           )}
+          {taskName === '开发商项目经理审核' && info && info.devmanageCheck && (
+            <Panel header={taskName} key="form">
+              <div style={{ marginTop: 12 }}>
+                <Examine
+                  wrappedComponentRef={ExamineRef}
+                  selectdata={selectdata}
+                  isEdit
+                  taskName={taskName}
+                  info={info}
+                  userinfo={userinfo}
+                  timeoutinfo={timeoutinfo}
+                />
+              </div>
+            </Panel>
+          )}
           {taskName === '平台验证' && info && info.platformValid && (
             <Panel header={taskName} key="form">
               <div style={{ marginTop: 12 }}>
@@ -641,6 +744,21 @@ function WorkOrder(props) {
                   selectdata={selectdata}
                   isEdit
                   taskName='平台验证'
+                  info={info}
+                  userinfo={userinfo}
+                  timeoutinfo={timeoutinfo}
+                />
+              </div>
+            </Panel>
+          )}
+          {taskName === '系统运维商经理审核' && info && info.devopsCheck && (
+            <Panel header={taskName} key="form">
+              <div style={{ marginTop: 12 }}>
+                <Examine
+                  wrappedComponentRef={ExamineRef}
+                  selectdata={selectdata}
+                  isEdit
+                  taskName={taskName}
                   info={info}
                   userinfo={userinfo}
                   timeoutinfo={timeoutinfo}
@@ -739,16 +857,18 @@ function WorkOrder(props) {
         </Collapse>
       </div>
       {historyinfo && <HistoryOrderInfo records={historyinfo} selectdata={selectdata} />}
-      {/* {currentTaskStatus && currentTaskStatus.taskId && (
+      {currentTaskStatus && currentTaskStatus.taskId && (
         <User
           taskId={currentTaskStatus.taskId}
           visible={uservisible}                       // 传参显示选人modle
           ChangeUserVisible={v => setUserVisible(v)}  // 选人完成关闭选人modle
           changorder='平台验证'                        //  下一环节名
           ChangeChoice={v => setUserChoice(v)}         //  选人完成返回状态true，通过true判读，进行
-          ChangeType={v => (v)}                        //  取消，重置按钮类型         
+          ChangeType={v => (v)}                        //  取消，重置按钮类型    
+          indexUser={taskName === '发布验证' && defaultUsers?.length ? defaultUsers.map(obj => obj.userId) : indexUser}
+          defaultUsers={taskName === '发布验证' ? defaultUsers : undefined}
         />
-      )} */}
+      )}
     </>
   );
 }
@@ -762,5 +882,6 @@ export default connect(({ releasetodo, releaseview, itsmuser, loading }) => ({
   historyinfo: releaseview.historyinfo,
   userinfo: itsmuser.userinfo,
   userlist: itsmuser.userlist,
+  defaultUsers: itsmuser.defaultUsers,
   loading: loading.models.releasetodo,
 }))(WorkOrder);

@@ -7,7 +7,7 @@ import RelationDrawer from './RelationDrawer';
 const { TabPane } = Tabs;
 
 function RelevancyOrder(props) {
-  const { orderId, list, dispatch, relation, statuscode,search } = props;
+  const { orderId, list, dispatch, relation, statuscode, search } = props;
   const [activeKey, setActiveKey] = useState('release');
   const [visible, setVisible] = useState(false);
   const [title, setTitle] = useState('');
@@ -101,7 +101,7 @@ function RelevancyOrder(props) {
         const handleClick = () => {
           if (activeKey === 'release') {
             router.push({
-              pathname: `/ITSM/releasemanage/query/details`,
+              pathname: `/ITSM/releasemanage/plan/query/details`,
               query: {
                 Id: record.orderNo,
                 taskName: record.status,
@@ -137,7 +137,7 @@ function RelevancyOrder(props) {
       <Tabs onChange={callback} activeKey={activeKey}>
         <TabPane tab="发布单" key="release" />
       </Tabs>
-      {activeKey === 'release' &&  (
+      {activeKey === 'release' && (
         <Row>
           <Col span={8}>
             <Input onChange={e => setSearchKey(e.target.value)} placeholder="请输入事件单号" allowClear />

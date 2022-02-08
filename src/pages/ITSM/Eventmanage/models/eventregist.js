@@ -59,10 +59,9 @@ export default {
           router.push({
             pathname: `/ITSM/eventmanage/to-do/record/workorder`,
             query: {
-              taskName: register_selfhandle === '1' ? '处理中' : '已登记',
+              taskName: register_selfhandle === '1' ? '事件处理' : '事件登记',
               taskId: registres.taskId,
               mainId: flowInstanceId,
-              validate: false,
               orderNo: registres.eventNo,
             },
             state: {}

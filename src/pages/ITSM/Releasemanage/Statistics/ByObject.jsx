@@ -144,7 +144,7 @@ function ByObject(props) {
             paginations: { current: 1, pageSize: 15 }
           };
           router.push({
-            pathname: `/ITSM/releasemanage/library`,
+            pathname: `/ITSM/releasemanage/plan/library`,
             query: { pathpush: true },
             state: { cach: false, cacheinfo: val }
           });

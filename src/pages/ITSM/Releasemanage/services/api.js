@@ -37,9 +37,27 @@ export async function saveRegister(params) {
   });
 }
 
+// 开发商项目经理审核 保存
+export async function saveDevmanageCheck(params) {
+  return request(`/release/flow/saveDevmanageCheck`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}
+
 // 平台验证保存
 export async function saveplatformValid(params) {
   return request(`/release/flow/savePlatformValid`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}
+
+// 系统运维商经理审核保存
+export async function saveDevopsCheck(params) {
+  return request(`/release/flow/saveDevopsCheck`, {
     method: 'POST',
     data: JSON.stringify(params),
     requestType: 'formjosn',

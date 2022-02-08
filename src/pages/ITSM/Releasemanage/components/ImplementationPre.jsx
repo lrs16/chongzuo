@@ -2,6 +2,7 @@ import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect, us
 import moment from 'moment';
 import { Row, Col, Form, Input, Alert, DatePicker, Select, Radio, Divider } from 'antd';
 import SubmitTypeContext from '@/layouts/MenuContext';
+import { querkeyVal } from '@/services/api';
 import EditeTable from './EditeTable';
 import DocumentAtt from './NewDocAtt';
 import ImplementationEditTalbe from './ImplementationEditTalbe';
@@ -136,7 +137,19 @@ function ImplementationPre(props, ref) {
       setAlertVisible(true);
       setAlertMessage({ mes: `超时原因：${timeoutinfo}`, des: `` });
     };
-  }, [timeoutinfo])
+  }, [timeoutinfo]);
+
+  useEffect(() => {
+    if (info.practicePre && !info.practicePre.summary) {
+      querkeyVal('release', 'summary').then(res => {
+        if (res.code === 200) {
+          const text = res.data.summary[0]?.val.split('-')[1];
+          const str = text.replace(/a/g, info.versionNo).replace(/b/g, info.moduleCount)
+          setFieldsValue({ summary: str })
+        }
+      });
+    }
+  }, [info.practicePre]);
 
   // 校验文档
   const handleAttValidator = (rule, value, callback) => {
@@ -151,7 +164,8 @@ function ImplementationPre(props, ref) {
     } else {
       callback()
     }
-  }
+  };
+
 
   const changeatt = (v, files) => {
     setFieldsValue({ releaseAttaches: v });
@@ -194,43 +208,6 @@ function ImplementationPre(props, ref) {
               })(
                 <></>
               )}
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Form.Item label='实施准备结果' {...forminladeLayout} labelAlign='left'>
-              {getFieldDecorator('preResult', {
-                rules: [{ required, message: '请选择验证结果' }],
-                initialValue: info.practicePre && info.practicePre.preResult ? info.practicePre.preResult : '通过',
-              })(<RadioGroup onChange={handleAdopt} disabled={!isEdit}>
-                <Radio value='通过'>通过</Radio>
-                <Radio value='不通过'>不通过</Radio>
-              </RadioGroup>
-              )}
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            {adopt === '通过' && (
-              <Form.Item label="实施准备意见" {...forminladeLayout} labelAlign='left'>
-                {getFieldDecorator('preAdvise1', {
-                  initialValue: info.practicePre && info.practicePre.preAdvise ? info.practicePre.preAdvise : '',
-                })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
-              </Form.Item>
-            )}
-            {adopt === '不通过' && (
-              <Form.Item label="实施准备意见" {...forminladeLayout} labelAlign='left'>
-                {getFieldDecorator('preAdvise', {
-                  rules: [{ required, message: `请填写实施准备意见` }],
-                  initialValue: info.practicePre && info.practicePre.preAdvise ? info.practicePre.preAdvise : '',
-                })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
-              </Form.Item>
-            )}
-          </Col>
-          <Col span={24}>
-            <Form.Item label="总述" {...forminladeLayout} labelAlign='left'>
-              {getFieldDecorator('summary', {
-                rules: [{ required, message: `请填写总述` }],
-                initialValue: info.practicePre ? info.practicePre.summary : '',
-              })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -477,6 +454,42 @@ function ImplementationPre(props, ref) {
               {getFieldDecorator('platformCheck', {
                 rules: [{ required, message: `请填写系统平台检查` }],
                 initialValue: info.practicePre ? info.practicePre.platformCheck : '',
+              })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item label='实施准备结果' {...forminladeLayout} labelAlign='left'>
+              {getFieldDecorator('preResult', {
+                rules: [{ required, message: '请选择验证结果' }],
+                initialValue: info.practicePre && info.practicePre.preResult ? info.practicePre.preResult : '通过',
+              })(<RadioGroup onChange={handleAdopt} disabled={!isEdit}>
+                <Radio value='通过'>通过</Radio>
+                <Radio value='不通过'>不通过</Radio>
+              </RadioGroup>
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            {adopt === '通过' && (
+              <Form.Item label="实施准备意见" {...forminladeLayout} labelAlign='left'>
+                {getFieldDecorator('preAdvise1', {
+                  initialValue: info.practicePre && info.practicePre.preAdvise ? info.practicePre.preAdvise : '',
+                })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
+              </Form.Item>
+            )}
+            {adopt === '不通过' && (
+              <Form.Item label="实施准备意见" {...forminladeLayout} labelAlign='left'>
+                {getFieldDecorator('preAdvise', {
+                  rules: [{ required, message: `请填写实施准备意见` }],
+                  initialValue: info.practicePre && info.practicePre.preAdvise ? info.practicePre.preAdvise : '',
+                })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
+              </Form.Item>
+            )}
+          </Col>
+          <Col span={24}>
+            <Form.Item label="总述" {...forminladeLayout} labelAlign='left'>
+              {getFieldDecorator('summary', {
+                initialValue: info.practicePre?.summary || '',
               })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
             </Form.Item>
           </Col>

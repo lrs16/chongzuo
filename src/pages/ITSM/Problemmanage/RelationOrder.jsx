@@ -116,7 +116,7 @@ function RelevancyOrder(props) {
       key: 'orderNo',
       render: (text, record) => {
         const handleClick = () => {
-          switch(activeKey) {
+          switch (activeKey) {
             case 'event':
               router.push({
                 pathname: `/ITSM/eventmanage/query/details`,
@@ -138,7 +138,7 @@ function RelevancyOrder(props) {
               break;
             case 'release':
               router.push({
-                pathname: `/ITSM/releasemanage/query/details`,
+                pathname: `/ITSM/releasemanage/plan/query/details`,
                 query: {
                   Id: record.orderNo,
                   taskName: record.status,
@@ -282,7 +282,7 @@ function RelevancyOrder(props) {
         dataSource={searchrow === undefined ? list.rows : searchrow}
         rowKey={r => r.id}
         pagination={pagination}
-  
+
       />
       {relation && visible && (
         <RelationDrawer

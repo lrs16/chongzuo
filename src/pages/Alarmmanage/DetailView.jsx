@@ -68,7 +68,7 @@ function DetailView(props) {
 
   const handleclose = () => {
     router.push({
-      pathname: `/ITSM/releasemanage/registration`,
+      pathname: `/ITSM/releasemanage/plan/registration`,
       query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true, }
     });
   };

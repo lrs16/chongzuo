@@ -1,8 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import { Collapse, Steps, Spin, message } from 'antd';
 import SysDict from '@/components/SysDict';
+import SubmitTypeContext from '@/layouts/MenuContext';
 import styles from './index.less';
 import Registrat from './components/Registrat';
 import Check from './components/Check';
@@ -18,13 +19,12 @@ const { Step } = Steps;
 
 // panle,map
 const Collapsekeymap = new Map([
-  ['已登记', 'registratform'],
+  ['事件登记', 'registratform'],
   ['待审核', 'checkform'],
   ['审核中', 'checkform'],
-  ['待处理', '1'],
-  ['处理中', 'handleform'],
-  ['待确认', 'visitform'],
-  ['确认中', 'visitform'],
+  ['事件响应', '1'],
+  ['事件处理', 'handleform'],
+  ['事件确认', 'visitform'],
 ]);
 // panel详情
 const Panelheadermap = new Map([
@@ -81,16 +81,19 @@ function WorkOrder2(props) {
   const [formvisit, setFormvisit] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [registratfiles, setRegistratFiles] = useState({ arr: [], ischange: false }); // 登记上传
-  const [ischeck, setIscheck] = useState(false); // 是否在校验状态
+  // const [ischeck, setIscheck] = useState(false); // 是否在校验状态
   const [show, setShow] = useState(false); // 是否自行处理
-  const [check, setCheck] = useState(false); // 事件分类是否权限账号
+  // const [check, setCheck] = useState(false); // 事件分类是否权限账号
   const [activeKey, setActiveKey] = useState([]);
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
 
   const { flowInstanceId, flowNodeInstanceId, flowNodeName, editState, data, edit, main } = info; // 流程基本信息
+  const { submittype } = useContext(SubmitTypeContext);
   const HandleRef = useRef();
   const ReturnVisitRef = useRef();
+
   // console.log(registratfiles)
+  // console.log(info, info.edit);
 
   // 保存、流转表单信息
   const paloadvalues = {
@@ -114,41 +117,40 @@ function WorkOrder2(props) {
           taskName,
           flowInstanceId,
         },
-        locationquery: location.query
       },
     });
   };
-  // 流转
-  const eventflow = newflowtype => {
-    const handleresult = HandleRef.current && HandleRef.current.getHandleResult();
-    dispatch({
-      type: 'eventtodo/eventflow',
-      payload: {
-        flow: {
-          taskId,
-          userIds: show ? data[1].register.registerUserId : sessionStorage.getItem('NextflowUserId'),
-          type: (handleresult === '4' || handleresult === '5') ? handleresult : newflowtype,
-        },
-        paloadvalues,
-      },
-    });
-  };
-  // 确认
-  const eventcheck = newflowtype => {
-    const handleresult = HandleRef.current && HandleRef.current.getHandleResult();
-    dispatch({
-      type: 'eventtodo/eventflow',
-      payload: {
-        flow: {
-          taskId,
-          userIds: data[1].register.registerUserId,
-          type: (handleresult === '4' || handleresult === '5') ? handleresult : newflowtype,
-        },
-        paloadvalues,
-      },
-    });
-  };
+  // 流转    4转问题，5转故障，3审核且是档案或高级，4审核其它选项
+  const eventflow = (val) => {
 
+    //  const handleresult = HandleRef.current && HandleRef.current.getHandleResult();
+    const getuserIds = () => {
+      const nextNode = new Map([
+        ['运维商经理审核', '事件处理'],
+        ['自动化科审核', '事件处理'],
+        ['数据科审核', '事件处理'],
+        ['事件处理', '事件确认'],
+        ['事件确认', '结束'],
+      ]);
+      const userIds = [{ nodeName: nextNode.get(taskName), userIds: [info?.data[1]?.register?.registerUserId || '1'] }];
+      if (taskName === '运维商经理审核' || taskName === '自动化科审核' || taskName === '数据科审核' || type === '登记' || type === '回访' || type === '结束') {
+        return JSON.stringify(userIds);
+      }
+      return sessionStorage.getItem('NextflowUserId');
+    }
+    dispatch({
+      type: 'eventtodo/eventflow',
+      payload: {
+        flow: {
+          taskId,
+          userIds: getuserIds(),
+          // type: (handleresult === '4' || handleresult === '5') ? handleresult : sessionStorage.getItem('flowtype'),
+          type: val || sessionStorage.getItem('flowtype'),
+        },
+        paloadvalues,
+      },
+    });
+  };
   // 结束
   const overflow = () => {
     dispatch({
@@ -173,13 +175,13 @@ function WorkOrder2(props) {
   // 保存不需要校验
   const noverification = () => {
     ChangeChoice(true);
-    setIscheck(true);
+    // setIscheck(true);
   }
   // 自行处理保存、转回访、结束，需做校验无需打开选人组件
   const noUser = (err) => {
     if (!err) {
       ChangeChoice(true);
-      setIscheck(true);
+      // setIscheck(true);
     } else {
       formerr();
     }
@@ -188,12 +190,13 @@ function WorkOrder2(props) {
   const needUser = (err) => {
     if (!err) {
       ChangeUserVisible(true);
-      setIscheck(true);
+      ChangeChoice(false);
+      // setIscheck(true);
     } else {
       formerr();
     }
   }
-
+  // console.log(type);
   // 登记表单
   const RegistratRef = useRef();
   const getregistrats = () => {
@@ -210,6 +213,7 @@ function WorkOrder2(props) {
       register_applicationDeptId: values.applicationDept ? values.register_applicationDeptId : values.register_applicationUnitId,
       register_selfhandle: String(Number(values.register_selfhandle)),
       register_supplement: String(Number(values.register_supplement)),
+      register_isCheck: String(Number(values.register_isCheck)),
       register_fileIds: (registratfiles.arr && registratfiles.arr.length) ? JSON.stringify(registratfiles.arr) : null,
     });
     if (type === 'save') {
@@ -231,20 +235,16 @@ function WorkOrder2(props) {
       check_checkTime: moment(values.check_checkTime).format('YYYY-MM-DD HH:mm:ss'),
       check_fileIds: JSON.stringify(files.arr),
       check_content: values.check_checkResult === '001' ? values.content1 : values.content2,
+      check_checkType: info.flowNodeName
     });
     switch (type) {
       case 'save':
         noverification();
         break;
-      case 'check':
-      case 'goback':
+      case '处理':
+      case '登记':
         CheckRef.current.Forms(err => {
           noUser(err);
-        });
-        break;
-      case 'flow':
-        CheckRef.current.Forms(err => {
-          needUser(err);
         });
         break;
       default:
@@ -300,13 +300,12 @@ function WorkOrder2(props) {
       case 'save':
         noverification();
         break;
-      case 'flowcheck':
+      case '回访':
         HandleRef.current.Forms((err) => {
           noUser(err);
         })
         break;
-      case 'other':
-      case 'flow':
+      case '转单':
         HandleRef.current.Forms((err) => {
           needUser(err);
         })
@@ -329,12 +328,12 @@ function WorkOrder2(props) {
       case 'save':
         noverification()
         break;
-      case 'other':
+      case '重分派':
         ReturnVisitRef.current.Forms((err) => {
           needUser(err);
         })
         break;
-      case 'over':
+      case '结束':
         ReturnVisitRef.current.Forms((err) => {
           noUser(err);
         })
@@ -353,7 +352,7 @@ function WorkOrder2(props) {
   // 点击保存，流转触发表单校验
   const handlesubmit = () => {
     switch (taskName) {
-      case '已登记': {
+      case '事件登记': {
         if (show) {
           gethandleself();
         } else {
@@ -361,16 +360,13 @@ function WorkOrder2(props) {
         }
         break;
       }
-      case '待审核':
-      case '审核中':
+      case '运维商经理审核':
         getchecks();
         break;
-      case '处理中':
-      case '重分派':
+      case '事件处理':
         gethandles();
         break;
-      case '待确认':
-      case '确认中':
+      case '事件确认':
         getreturnvisit();
         break;
       default:
@@ -383,26 +379,22 @@ function WorkOrder2(props) {
       case 'save':
         eventsave();
         break;
-      case 'flow':
-        eventflow('1');
+      case '处理':
+      case '审核':
+      case '登记':
+      case '回访':
+      case '重分派':
+        eventflow();
         break;
-      case 'other':
+      case '转单':
         eventflow('3');
         break;
-      case 'check':
-        eventcheck('3');
-        break;
-      case 'flowcheck':
-        eventcheck('1');
-        break;
-      case 'over':
+      case '结束':
         overflow();
         break;
       default:
         break;
     }
-    ChangeType('');
-    setIscheck(false);
   };
 
   // 初始化打开编辑,获取用户信息，流转类型
@@ -429,12 +421,18 @@ function WorkOrder2(props) {
 
   // 获取事件流程记录
   useEffect(() => {
-    dispatch({
-      type: 'eventtodo/eventrecords',
-      payload: {
-        processId: mainId,
-      },
-    });
+    sessionStorage.removeItem('NextflowUserId');
+    if (taskId) {
+      dispatch({
+        type: 'eventtodo/eventrecords',
+        payload: {
+          processId: mainId,
+        },
+      });
+      if (!errmsg && taskName === '事件响应') {
+        message.info('请接单..', 1);
+      }
+    }
   }, [taskId]);
 
   // 点击页签右键刷新
@@ -464,7 +462,9 @@ function WorkOrder2(props) {
 
   // 初始化值panel
   useEffect(() => {
-    setActiveKey([`${Collapsekeymap.get(taskName)}`]);
+    if (taskName) {
+      setActiveKey([`${Collapsekeymap.get(taskName)}`]);
+    }
     return () => {
       setActiveKey([]);
     };
@@ -472,7 +472,7 @@ function WorkOrder2(props) {
 
   // 初始化历史附件
   useEffect(() => {
-    if (edit !== undefined && edit !== '' && Object.values(edit)[0] !== null) {
+    if (edit && Object.values(edit)[0] !== null) {
       if (Object.values(edit)[0].fileIds !== '' && taskName === '已登记') {
         setRegistratFiles({
           ...files,
@@ -484,26 +484,24 @@ function WorkOrder2(props) {
         setFiles({ ...files, arr: JSON.parse(Object.values(edit)[0].fileIds), ischange: false });
       }
     };
+    if (info.flowNodeName === '运维商经理审核' || info.flowNodeName === '数据科审核' || info.flowNodeName === '自动化科审核') {
+      setActiveKey('checkform')
+    }
   }, [info]);
 
-  useEffect(() => {
-    if (errmsg === '' && taskName === '待处理') {
-      message.info('请接单..', 1);
-    }
-  }, [])
 
   useEffect(() => {
-    if (type !== '') {
+    if (type) {
       handlesubmit();
     }
   }, [type]);
 
   // 选人完成触发流转
   useEffect(() => {
-    if (userchoice && ischeck) {
+    if (userchoice) {
       handletype();
     }
-  }, [userchoice, ischeck])
+  }, [userchoice])
 
   // 登记上传附件触发保存
   useEffect(() => {
@@ -574,11 +572,11 @@ function WorkOrder2(props) {
           onChange={callback}
           style={{ marginTop: '-25px' }}
         >
-          {taskName === '已登记' && edit && edit.register && (
+          {info?.flowNodeName === '事件登记' && (
             <Panel header="事件登记" key="registratform">
               <Registrat
-                ChangeShow={isshow => setShow(isshow)}
-                ChangeCheck={checked => setCheck(checked)}
+                ChangeShow={v => setShow(v)}
+                // ChangeCheck={checked => setCheck(checked)}
                 ChangeActiveKey={keys => setActiveKey(keys)}
                 ChangeFiles={newvalue => setRegistratFiles(newvalue)}
                 formItemLayout={formItemLayout}
@@ -589,13 +587,13 @@ function WorkOrder2(props) {
                 main={main}
                 userinfo={userinfo}
                 location={location}
-                files={(edit.register.fileIds === '[]' || !edit.register.fileIds) ? [] : JSON.parse(edit.register.fileIds)}
+                files={(!edit.register || edit.register?.fileIds === '[]' || !edit.register?.fileIds) ? [] : JSON.parse(edit.register.fileIds)}
                 selectdata={selectdata}
                 loading={loading}
               />
             </Panel>
           )}
-          {show === true && taskName === '已登记' && (
+          {show === true && taskName === '事件登记' && (
             <Panel header="事件处理" key="handleform">
               <Handle
                 formItemLayout={formItemLayout}
@@ -616,26 +614,8 @@ function WorkOrder2(props) {
               />
             </Panel>
           )}
-          {taskName === '待审核' && (
-            <Panel header="事件审核" key="checkform">
-              <Check
-                formItemLayout={formItemLayout}
-                forminladeLayout={forminladeLayout}
-                wrappedComponentRef={CheckRef}
-                main={main}
-                userinfo={userinfo}
-                location={location}
-                ChangeFiles={newvalue => {
-                  setFiles(newvalue);
-                }}
-                files={[]}
-                selectdata={selectdata}
-                loading={loading}
-              />
-            </Panel>
-          )}
-          {taskName === '审核中' && edit && edit.check && (
-            <Panel header="事件审核" key="checkform">
+          {(info.flowNodeName === '运维商经理审核' || info.flowNodeName === '数据科审核' || info.flowNodeName === '自动化科审核') && edit && (
+            <Panel header={info.flowNodeName} key="checkform">
               <Check
                 formItemLayout={formItemLayout}
                 forminladeLayout={forminladeLayout}
@@ -647,33 +627,13 @@ function WorkOrder2(props) {
                 ChangeFiles={newvalue => {
                   setFiles(newvalue);
                 }}
-                files={(edit.check.fileIds === '[]' || !edit.check.fileIds) ? [] : JSON.parse(edit.check.fileIds)}
+                files={(!edit.check || edit.check.fileIds === '[]' || !edit.check.fileIds) ? [] : JSON.parse(edit.check.fileIds)}
                 selectdata={selectdata}
                 loading={loading}
               />
             </Panel>
           )}
-          {taskName === '处理中' && edit && !edit.handle && (
-            <Panel header="事件处理" key="handleform">
-              <Handle
-                formItemLayout={formItemLayout}
-                forminladeLayout={forminladeLayout}
-                wrappedComponentRef={HandleRef}
-                main={main}
-                userinfo={userinfo}
-                location={location}
-                ChangeFiles={newvalue => {
-                  setFiles(newvalue);
-                }}
-                files={[]}
-                show={show}
-                selectdata={selectdata}
-                mainId={mainId}
-                loading={loading}
-              />
-            </Panel>
-          )}
-          {taskName === '处理中' && edit && edit.handle && (
+          {info?.flowNodeName === '事件处理' && edit && (
             <Panel header="事件处理" key="handleform">
               <Handle
                 formItemLayout={formItemLayout}
@@ -686,7 +646,7 @@ function WorkOrder2(props) {
                 ChangeFiles={newvalue => {
                   setFiles(newvalue);
                 }}
-                files={(edit.handle.fileIds === '[]' || !edit.handle.fileIds) ? [] : JSON.parse(edit.handle.fileIds)}
+                files={(!edit.handle || edit.handle.fileIds === '[]' || !edit.handle.fileIds) ? [] : JSON.parse(edit.handle.fileIds)}
                 show={show}
                 selectdata={selectdata}
                 mainId={mainId}
@@ -694,25 +654,7 @@ function WorkOrder2(props) {
               />
             </Panel>
           )}
-          {taskName === '待确认' && (
-            <Panel header="事件确认" key="visitform">
-              <ReturnVisit
-                formItemLayout={formItemLayout}
-                forminladeLayout={forminladeLayout}
-                wrappedComponentRef={ReturnVisitRef}
-                main={main}
-                userinfo={userinfo}
-                location={location}
-                ChangeFiles={newvalue => {
-                  setFiles(newvalue);
-                }}
-                files={[]}
-                selectdata={selectdata}
-                loading={loading}
-              />
-            </Panel>
-          )}
-          {taskName === '确认中' && edit && edit.finish && (
+          {taskName === '事件确认' && edit && (
             <Panel header="事件确认" key="visitform">
               <ReturnVisit
                 formItemLayout={formItemLayout}
@@ -725,7 +667,7 @@ function WorkOrder2(props) {
                 ChangeFiles={newvalue => {
                   setFiles(newvalue);
                 }}
-                files={(edit.finish.fileIds === '[]' || !edit.finish.fileIds) ? [] : JSON.parse(edit.finish.fileIds)}
+                files={(!edit.finish || edit.finish.fileIds === '[]' || !edit.finish.fileIds) ? [] : JSON.parse(edit.finish.fileIds)}
                 selectdata={selectdata}
                 loading={loading}
               />
@@ -744,7 +686,7 @@ function WorkOrder2(props) {
               return (
                 <Panel
                   Panel
-                  header={Panelheadermap.get(Object.keys(obj)[0])}
+                  header={Object.keys(obj)[0] === 'check' ? (obj.check?.checkType || '事件审核') : Panelheadermap.get(Object.keys(obj)[0])}
                   key={index.toString()}
                 >
                   {Paneldesmap.get(Object.keys(obj)[0])}

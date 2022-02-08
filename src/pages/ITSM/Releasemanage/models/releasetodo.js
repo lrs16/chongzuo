@@ -5,7 +5,9 @@ import {
   openFlow,
   saveRegister,
   flowSubmit,
+  saveDevmanageCheck,
   saveplatformValid,
+  saveDevopsCheck,
   savereleaseBizValid,
   releaseListAssign,
   savePracticePre,
@@ -24,7 +26,7 @@ import {
 const closeTab = () => {
   const tabid = sessionStorage.getItem('tabid');
   router.push({
-    pathname: `/ITSM/releasemanage/to-do`,
+    pathname: `/ITSM/releasemanage/plan/to-do`,
     query: { pathpush: true },
     state: { cach: false, closetabid: tabid }
   });
@@ -83,7 +85,9 @@ export default {
       if (response.code === 200) {
         const infomap = new Map([
           ['出厂测试', response.data.register],
+          ['开发商项目经理审核', response.data.devmanageCheck],
           ['平台验证', response.data.platformValidate],
+          ['系统运维商经理审核', response.data.devopsCheck],
           ['业务验证', response.data.bizValidateParam],
           ['发布实施准备', response.data.practicePreParam],
           ['版本管理员审核', response.data.checkVersionParam],
@@ -131,12 +135,12 @@ export default {
         payload: { statuse: response.code },
       });
       if (response.code === 200) {
+        yield put({
+          type: 'updateinfo',
+          payload: { info: response.data.saveRegister, currentTaskStatus: response.data.currentTaskStatus, },
+        });
         if (buttype === 'save') {
           message.success('保存成功');
-          yield put({
-            type: 'updateinfo',
-            payload: { info: response.data.saveRegister, currentTaskStatus: response.data.currentTaskStatus, },
-          });
         };
         if (buttype === 'over') {
           const overpayload = {
@@ -146,12 +150,50 @@ export default {
           const subres = yield call(flowSubmit, overpayload);
           toSubmit(subres)
         };
-        if (buttype === 'flow') {
-          const subres = yield call(flowSubmit, submitval);
-          toSubmit(subres)
-        }
       } else {
         message.error(response.msg);
+      }
+    },
+
+    // 开发商项目经理审核,系统运维商经理审核
+    * check({ payload: { examineform, buttype, submitval, taskName } }, { call, put }) {
+      yield put({
+        type: 'savestatuse',
+        payload: { statuse: -1 },
+      });
+      let response = {};
+      if (taskName === '开发商项目经理审核') {
+        response = yield call(saveDevmanageCheck, examineform);
+      } else {
+        response = yield call(saveDevopsCheck, examineform);
+      }
+      yield put({
+        type: 'savestatuse',
+        payload: { statuse: response.code },
+      });
+      if (response.code === 200) {
+        if (buttype === 'save') {
+          message.success('保存成功');
+        };
+        const infomap = new Map([
+          ['开发商项目经理审核', response.data.saveDevmanageCheck],
+          ['系统运维商经理审核', response.data.saveDevopsCheck],
+        ])
+        yield put({
+          type: 'updateinfo',
+          payload: { info: infomap.get(taskName), currentTaskStatus: response.data.currentTaskStatus, },
+        });
+        if (buttype === 'noPass') {
+          const subres = yield call(flowSubmit, submitval);
+          toSubmit(subres);
+        };
+        // if (buttype === 'flow') {
+        //   const subres = yield call(flowSubmit, submitval);
+        //   toSubmit(subres);
+        // }
+      } else {
+        message.error(response.msg);
+        closeTab();
       }
     },
 
@@ -167,14 +209,14 @@ export default {
         payload: { statuse: response.code },
       });
       if (response.code === 200) {
+        yield put({
+          type: 'updateinfo',
+          payload: { info: response.data.savePlatformValid, currentTaskStatus: response.data.currentTaskStatus, },
+        });
         if (buttype === 'save') {
           message.success('保存成功');
-          yield put({
-            type: 'updateinfo',
-            payload: { info: response.data.savePlatformValid, currentTaskStatus: response.data.currentTaskStatus, },
-          });
         };
-        if (buttype === 'noPass' || buttype === 'flow') {
+        if (buttype === 'noPass') {
           const subres = yield call(flowSubmit, submitval);
           toSubmit(subres);
         };
@@ -198,24 +240,24 @@ export default {
       if (response.code === 200) {
         if (buttype === 'save') {
           message.success('保存成功');
-          yield put({
-            type: 'updateinfo',
-            payload: { info: response.data.saveBizValid, currentTaskStatus: response.data.currentTaskStatus },
-          });
         };
-        if (buttype === 'flow') {
-          // const nopasspayload = {
-          //   taskId: response.data.currentTaskStatus.taskId,
-          //   type: 3,
-          // };
-          const flowpayload = {
-            taskId,
-            type: 1,
-            userIds,
-          };
-          const subres = yield call(flowSubmit, flowpayload);
-          toSubmit(subres);
-        };
+        yield put({
+          type: 'updateinfo',
+          payload: { info: response.data.saveBizValid, currentTaskStatus: response.data.currentTaskStatus },
+        });
+        // if (buttype === 'flow') {
+        //   // const nopasspayload = {
+        //   //   taskId: response.data.currentTaskStatus.taskId,
+        //   //   type: 3,
+        //   // };
+        //   const flowpayload = {
+        //     taskId,
+        //     type: 1,
+        //     userIds,
+        //   };
+        //   const subres = yield call(flowSubmit, flowpayload);
+        //   toSubmit(subres);
+        // };
       } else {
         message.error(response.msg);
         closeTab();
@@ -234,17 +276,17 @@ export default {
         payload: { statuse: response.code },
       });
       if (response.code === 200) {
+        yield put({
+          type: 'updateinfo',
+          payload: { info: response.data.practicePreParam, currentTaskStatus: response.data.currentTaskStatus, },
+        });
         if (buttype === 'save') {
           message.success('保存成功');
-          yield put({
-            type: 'updateinfo',
-            payload: { info: response.data.practicePreParam, currentTaskStatus: response.data.currentTaskStatus, },
-          });
         };
-        if (buttype === 'flow' || buttype === 'noPass') {
+        if (buttype === 'noPass') {
           const flowpayload = {
             ...submitval,
-            userIds: buttype === 'flow' ? submitval.userIds : '',
+            userIds: '',
           }
           const subres = yield call(flowSubmit, flowpayload);
           toSubmit(subres)
@@ -332,7 +374,7 @@ export default {
     // },
 
     // 版本管理员审核，科室负责人审核,中心领导审核
-    * checkversion({ payload: { values, releaseAttaches, buttype, releaseNo, taskName, userIds, taskId } }, { call, put }) {
+    * checkversion({ payload: { values, releaseAttaches, buttype, releaseNo, taskName, taskId } }, { call, put }) {
       yield put({
         type: 'savestatuse',
         payload: { statuse: -1 },
@@ -379,23 +421,23 @@ export default {
             const subres = yield call(flowSubmit, nopasspayload);
             toSubmit(subres)
           };
-          if (buttype === 'flow' && taskName === '中心领导审核') {
-            const nopasspayload = {
-              taskId,
-              type: 1,
-            };
-            const subres = yield call(flowSubmit, nopasspayload);
-            toSubmit(subres)
-          };
-          if (buttype === 'flow' && (taskName === '版本管理员审核' || taskName === '科室负责人审核')) {
-            const flowpayload = {
-              taskId,
-              type: 1,
-              userIds,
-            };
-            const subres = yield call(flowSubmit, flowpayload);
-            toSubmit(subres)
-          };
+          // if (buttype === 'flow' && taskName === '中心领导审核') {
+          //   const nopasspayload = {
+          //     taskId,
+          //     type: 1,
+          //   };
+          //   const subres = yield call(flowSubmit, nopasspayload);
+          //   toSubmit(subres)
+          // };
+          // if (buttype === 'flow' && (taskName === '版本管理员审核' || taskName === '科室负责人审核')) {
+          //   const flowpayload = {
+          //     taskId,
+          //     type: 1,
+          //     userIds,
+          //   };
+          //   const subres = yield call(flowSubmit, flowpayload);
+          //   toSubmit(subres)
+          // };
         } else {
           message.error(response.msg);
           closeTab();
@@ -422,15 +464,15 @@ export default {
             payload: { info: response.data.saveRegister, currentTaskStatus: response.data.currentTaskStatus, },
           });
         };
-        if (buttype === 'flow') {
-          const flowpayload = {
-            taskId,
-            type: 1,
-            userIds,
-          };
-          const subres = yield call(flowSubmit, flowpayload);
-          toSubmit(subres)
-        }
+        // if (buttype === 'flow') {
+        //   const flowpayload = {
+        //     taskId,
+        //     type: 1,
+        //     userIds,
+        //   };
+        //   const subres = yield call(flowSubmit, flowpayload);
+        //   toSubmit(subres)
+        // }
       } else {
         message.error(response.msg);
         closeTab();
@@ -449,13 +491,12 @@ export default {
         payload: { statuse: response.code },
       });
       if (response.code === 200) {
-
+        yield put({
+          type: 'updateinfo',
+          payload: { info: response.data.bizCheckParam, currentTaskStatus: response.data.currentTaskStatus, },
+        });
         if (buttype === 'save') {
           message.success('保存成功');
-          yield put({
-            type: 'updateinfo',
-            payload: { info: response.data.bizCheckParam, currentTaskStatus: response.data.currentTaskStatus, },
-          });
         };
         if (buttype === 'flow') {
           const nopasspayload = {

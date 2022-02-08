@@ -73,7 +73,7 @@ function ToDolist(props) {
 
   const handleReset = () => {
     router.push({
-      pathname: `/ITSM/releasemanage/to-do`,
+      pathname: `/ITSM/releasemanage/plan/to-do`,
       query: { pathpush: true },
       state: { cach: false, }
     });
@@ -207,7 +207,7 @@ function ToDolist(props) {
               // const values = getFieldsValue();
               // searchdata(values, paginations.current, paginations.pageSize);
               router.push({
-                pathname: `/ITSM/releasemanage/to-do/record`,
+                pathname: `/ITSM/releasemanage/plan/to-do/record`,
                 query: {
                   taskName: '版本管理员审核',
                   Id: target[0].releaseNo,
@@ -263,7 +263,7 @@ function ToDolist(props) {
             },
           });
           router.push({
-            pathname: `/ITSM/releasemanage/to-do/record`,
+            pathname: `/ITSM/releasemanage/plan/to-do/record`,
             query: {
               taskName: record.taskName,
               Id: record.releaseNo,

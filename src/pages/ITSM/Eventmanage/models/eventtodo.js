@@ -73,33 +73,36 @@ export default {
       });
     },
     // 编辑保存
-    *eventsave({ payload: { flow: { paloadvalues, flowInstanceId }, locationquery } }, { call, put }) {
+    *eventsave({ payload: { flow: { paloadvalues, flowInstanceId } } }, { call, put }) {
       const values = replacerec({ ...paloadvalues, flowInstanceId });
       const registres = yield call(EventSaveFlow, values);
       if (registres.code === -1) {
         message.error(registres.msg, 3);
       }
       if (registres.code === 200) {
-        const { taskId, eventStatus } = registres;
+        const { taskId } = registres;
         message.success('保存成功', 3);
         // 保存成功重新加载
         const response = yield call(EventopenFlow, taskId);
-        router.push({
-          pathname: `/ITSM/eventmanage/to-do/record/workorder`,
-          query: {
-            ...locationquery,
-            taskName: eventStatus,
-            taskId,
-            mainId: flowInstanceId,
-          },
-          state: {
-            updatetab: true,
-          }
-        });
-        yield put({
-          type: 'saveinfo',
-          payload: response,
-        });
+        if (response.code === 200) {
+          router.push({
+            pathname: `/ITSM/eventmanage/to-do/record/workorder`,
+            query: {
+              taskName: response.flowNodeName,
+              taskId,
+              mainId: flowInstanceId,
+            },
+            state: {
+              updatetab: true,
+            }
+          });
+          yield put({
+            type: 'saveinfo',
+            payload: response,
+          });
+        } else {
+          message.error(registres.msg, 5);
+        }
       } if (registres.code === -1) {
         message.error(registres.msg, 5);
       }
@@ -124,6 +127,21 @@ export default {
         } else {
           message.error(response.msg, 3);
           const ressave = yield call(EventopenFlow, registres.taskId);
+          if (ressave.code === 200) {
+            router.push({
+              pathname: `/ITSM/eventmanage/to-do/record/workorder`,
+              query: {
+                taskName: ressave.flowNodeName,
+                taskId: ressave.flowNodeInstanceId,
+                mainId: ressave.flowInstanceId,
+              },
+              state: {
+                updatetab: true,
+              }
+            });
+          } else {
+            message.error(ressave.msg, 3);
+          }
           yield put({
             type: 'saveinfo',
             payload: ressave,
@@ -183,10 +201,9 @@ export default {
         router.push({
           pathname: `/ITSM/eventmanage/to-do/record/workorder`,
           query: {
-            taskName: '处理中',
+            taskName: '事件处理',
             taskId,
             mainId: response.flowInstanceId,
-            next: sessionStorage.getItem('Nextflowmane'),
           },
           state: {
             updatetab: true,
@@ -283,6 +300,7 @@ export default {
         records: [],
         imgblob: '',
         download: '',
+        errmsg: ''
       };
     },
   },

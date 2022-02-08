@@ -139,7 +139,7 @@ function RelevancyOrder(props) {
               break;
             case 'release':
               router.push({
-                pathname: `/ITSM/releasemanage/query/details`,
+                pathname: `/ITSM/releasemanage/plan/query/details`,
                 query: {
                   Id: record.orderNo,
                   taskName: record.status,

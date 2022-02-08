@@ -4,7 +4,8 @@ import moment from 'moment';
 import { Table, Row, Button, Col, Cascader, Input, Radio, message, Divider, Select, Tabs, Alert, Tooltip } from 'antd';
 import UserContext from '@/layouts/MenuContext';
 import CheckOneUser from '@/components/SelectUser/CheckOneUser';
-import { dispatchBizUsers } from '@/services/user';
+import { dispatchBizUsers, dispatchPlatsers } from '@/services/user';
+import { querkeyVal } from '@/services/api';
 import styles from '../index.less';
 import OrderContent from './OrderContent';
 import { releaseListEdit, releaseListDel, classifyList, releaseListsDownload } from '../services/api';                   // 版本管理员审批清单添加编辑
@@ -36,14 +37,16 @@ function EditeTable(props) {
   const [choiceUser, setChoiceUser] = useState({ users: '', ischange: false });
   const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
   const [userlist, setUserList] = useState([]);
+  const [formValiduser, setFormValiduser] = useState([]);
   const [assign, setAssign] = useState('');              // 分派工单
   const [tabActivekey, settabActivekey] = useState(''); // 公司页签
   const [deletebut, setDeletBut] = useState(false);
   const [orderFilters, setOrderFilters] = useState([]);    // 所属工单筛选项
-  const [filteredInfo, setFilteredInfo] = useState({})     // 已选择的筛选项
+  const [filteredInfo, setFilteredInfo] = useState({});     // 已选择的筛选项
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 5 });
   const [releaseNoandId, setReleaseNo] = useState({ releaseNo: '', processInstanceId: '' });
   const [classify, setClassify] = useState('');
+  const [selectdata, setSelectData] = useState([]); // 下拉值
   const { ChangeButtype, taskId, ChangeaddAttaches, location } = useContext(UserContext);
 
   const listTypeFilter = [{ text: '计划', value: '计划' }, { text: '临时添加', value: '临时添加' }]
@@ -63,17 +66,16 @@ function EditeTable(props) {
     if (orderkeys.length === 1) {
       ChangeAttActiveKey(orderkeys[0])
     }
-  }
+  };
 
   // 新增一条记录
   const newMember = () => {
-    setPageinations({ ...paginations, pageSize: 5 });
     const newData = data.map(item => ({ ...item }));
     if (taskName === '版本管理员审核') {
       checknewpre(newData);
       ChangeTabdisabled(true);
     };
-    newData.unshift({
+    newData.push({
       key: data.length + 1,
       listType: (taskName === '新建' || taskName === '出厂测试') ? '计划' : '临时添加',
       abilityType: '',
@@ -89,7 +91,7 @@ function EditeTable(props) {
       passTest: '通过',
       developer: '',
       developerId: '',
-      addStatus: (taskName === '版本管理员审核' || taskName === '出厂测试' || taskName === '新建') ? 'add' : taskId,
+      addStatus: taskName === '新建' ? 'add' : taskId,
       verifyStatus: taskName === '版本管理员审核' ? '已验证' : '',
       operator: sessionStorage.getItem('userName'),
       operatorId: sessionStorage.getItem('userauthorityid'),
@@ -97,8 +99,21 @@ function EditeTable(props) {
       isNew: true,
     });
     setData(newData);
+    setPageinations({ current: Math.ceil(newData.length / 5), pageSize: 5 });
     setNewButton(true);
     ChangeaddAttaches('');
+    setTimeout(() => {
+      const tableBox = document.getElementsByClassName('ant-table-body')[1];
+      const scrollheight = tableBox?.scrollHeight;
+      const height = tableBox.clientHeight;
+      if (tableBox && scrollheight - height > 0) { tableBox.scrollTop = scrollheight - height; }
+    }, 100);
+
+    setTimeout(() => {
+      const isaddTr = document.getElementsByTagName('firstRow');
+      const tableTr = document.getElementsByClassName('ant-table-fixed')[3]?.getElementsByClassName('ant-table-tbody')[0].getElementsByTagName('tr');
+      if (tableTr && isaddTr) { tableTr[tableTr.length - 1].style.height = '145px' }
+    }, 300)
   };
 
   const onSelectChange = (RowKeys, record) => {
@@ -138,7 +153,12 @@ function EditeTable(props) {
       } else {
         message.error('获取用户列表失败')
       }
-    })
+    });
+    if (taskName === '平台验证') {
+      dispatchPlatsers().then(res => {
+        setFormValiduser(res?.data?.userList || [])
+      })
+    }
   }
 
   // 获取行
@@ -228,7 +248,7 @@ function EditeTable(props) {
       setNewButton(false)
       newData.sort((a, b) => a.key - b.key);
       setData(newData);
-      setPageinations({ current: Math.ceil(newData.length / 2), pageSize: 2 });
+      setPageinations({ current: Math.ceil(newData.length / 5), pageSize: 5 });
       ChangeValue(newData);
       if (taskName !== '新建') {
         ChangeButtype('save');
@@ -258,7 +278,7 @@ function EditeTable(props) {
         target.addStatus = newData[newData.length - 1].taskId;
       };
       setData(newData);
-      setPageinations({ current: Math.ceil(newData.length / 2), pageSize: 2 });
+      setPageinations({ current: Math.ceil(newData.length / 5), pageSize: 5 });
       const newlist = newData.filter(item => item.addStatus === item.taskId);
       if (newlist.length > 0) {
         ChangeaddAttaches('add');
@@ -483,7 +503,12 @@ function EditeTable(props) {
   }, [choiceUser.ischange])
 
   useEffect(() => {
-    getUserList()
+    getUserList();
+    querkeyVal('public', 'devdirector').then(res => {
+      if (res.code === 200) {
+        setSelectData(res.data.devdirector)
+      }
+    });
   }, [])
 
   // 分页
@@ -511,6 +536,14 @@ function EditeTable(props) {
     showTotal: total => `总共  ${total}  条记录`,
     onChange: page => changePage(page),
   };
+
+  const passTestmap = new Map([
+    ['新建', '出厂测试结果'],
+    ['出厂测试', '出厂测试结果'],
+    ['平台验证', '平台验证结果'],
+    ['业务验证', '业务验证结果'],
+    ['业务复核', '业务复核结果'],
+  ]);
 
   const column = [
     {
@@ -582,7 +615,7 @@ function EditeTable(props) {
       title: '功能名称',
       dataIndex: 'appName',
       key: 'appName',
-      width: 150,
+      width: 130,
       render: (text, record) => {
         if (record.isNew || record.editable) {
           return (
@@ -603,7 +636,7 @@ function EditeTable(props) {
       title: '问题类型',
       dataIndex: 'problemType',
       key: 'problemType',
-      width: 150,
+      width: 120,
       render: (text, record) => {
         if (record.isNew || record.editable) {
           return (
@@ -694,20 +727,38 @@ function EditeTable(props) {
       }
     },
     {
-      title: '开发人员',
+      title: '研发测试人员',
       dataIndex: 'developer',
       key: 'developer',
-      width: 100,
+      width: 120,
       render: (text, record) => {
         if (record.isNew || record.editable) {
           return (
-            <div className={!text ? styles.requiredform : ''}>
-              <TextArea
+            <div className={text ? '' : styles.requiredselect}>
+              {/* <TextArea
                 defaultValue={text}
                 autoSize
                 placeholder="请输入"
                 onChange={e => handleFieldChange(e.target.value, 'developer', record.key)}
-              />
+              /> */}
+              <Select
+                placeholder="请选择"
+                mode="multiple"
+                onChange={v => {
+                  let val = ''
+                  if (v && v.length && v.length > 0) {
+                    val = v.toString(',')
+                  };
+                  handleFieldChange(val, 'developer', record.key)
+                }}
+                defaultValue={text ? text.split(',') : []}
+              >
+                {selectdata && selectdata.length && selectdata.map(obj => [
+                  <Option key={obj.key} value={obj.val}>
+                    {obj.val}
+                  </Option>,
+                ])}
+              </Select>
             </div>
           )
         }
@@ -715,27 +766,20 @@ function EditeTable(props) {
       }
     },
     {
-      title: '操作人员',
-      dataIndex: 'operator',
-      key: 'operator',
-      align: 'center',
-      width: 100,
-    },
-    {
-      title: '是否通过',
+      title: `${passTestmap.get(taskName) || '是否通过'}`,
       dataIndex: 'passTest',
       key: 'passTest',
       fixed: 'right',
-      width: 100,
+      width: 120,
       render: (text, record) => {
         if ((record.isNew || record.editable || record.verification) && isEdit) {
           return (
-            <>
+            <div id='firstRow'>
               <RadioGroup value={text} onChange={e => handleFieldChange(e.target.value, 'passTest', record.key)}>
                 <Radio value='通过'>通过</Radio>
                 <Radio value='不通过'>不通过</Radio>
               </RadioGroup>
-            </>
+            </div>
           )
         }
         return <div style={{ textAlign: 'center' }}>{text}</div>;
@@ -829,6 +873,56 @@ function EditeTable(props) {
     }
   ];
 
+  const operator = {
+    title: `${taskName}人`,
+    dataIndex: 'operator',
+    key: 'operator',
+    align: 'center',
+    width: 100,
+    render: (text, record) => {
+      if (taskName === '业务验证' && record.verifyStatus === '已转出') {
+        return <></>
+      }
+      return <>{text}</>
+    }
+  };
+
+  const platformValidator = {
+    title: '平台验证人',
+    dataIndex: 'platformValidator',
+    key: 'platformValidator',
+    align: 'center',
+    width: 120,
+    render: (text, record) => {
+      if (record.verification && isEdit) {
+        return (
+          <div className={text ? '' : styles.requiredselect}>
+            <Select
+              placeholder="请选择"
+              mode="multiple"
+              onChange={v => {
+                let val = ''
+                if (v && v.length && v.length > 0) {
+                  val = v.toString(',')
+                };
+                handleFieldChange(val, 'platformValidator', record.key)
+              }}
+              defaultValue={text ? text.split(',') : []}
+            >
+              {formValiduser && formValiduser.length && formValiduser.map(obj => [
+                <Option key={obj.userId} value={obj.userName}>
+                  {obj.userName}
+                </Option>,
+              ])}
+            </Select>
+          </div>
+        )
+      }
+      return <>{text}</>
+
+    }
+  };
+
   const verifyStatus = {
     title: '状态',
     dataIndex: 'verifyStatus',
@@ -879,26 +973,47 @@ function EditeTable(props) {
   };
 
   const sclicecolumns = (arr) => {
-    const newarr = arr.slice(0);
+    const newarr = (arr || column).slice(0);
     newarr.pop();
     return newarr;
   };
 
   const addorderid = (arr) => {
-    if (taskName === '平台验证') {
-      const newarr = sclicecolumns(arr);
-      return newarr
-    }
-    if (taskName === '业务验证') {
-      const newarr = sclicecolumns(arr);
-      newarr.splice(-3, 0, verifyStatus)
-      return newarr
-    } if ((taskName === '版本管理员审核' || taskName === '科室负责人审核' || taskName === '中心领导审核') && orderNos && orderNos.length > 1) {
-      const newarr = sclicecolumns(arr);
-      newarr.splice(-1, 0, orderid);
-      return newarr
-    }
-    return arr
+    let newArr;
+    switch (taskName) {
+      case '新建':
+      case '出厂测试':
+      case '发布实施准备':
+        newArr = arr;
+        break;
+      case '平台验证': {
+        const newarr = sclicecolumns(arr);
+        newarr.splice(-2, 0, platformValidator);
+        newArr = newarr;
+        break;
+      }
+      case '业务验证': {
+        const newarr = arr;
+        newarr.splice(-3, 0, verifyStatus);
+        newarr.splice(-3, 0, operator);
+        newArr = newarr;
+        break;
+      }
+      case '版本管理员审核': {
+        if (orderNos && orderNos.length > 1) {
+          const newarr = sclicecolumns(arr);
+          newarr.splice(-1, 0, orderid);
+          newArr = newarr;
+        } else {
+          const newarr = sclicecolumns(arr);
+          newArr = newarr;
+        }
+        break;
+      }
+      default:
+        break;
+    };
+    return newArr
   };
   const columns = addorderid(column);
   const viewcolumns = sclicecolumns(columns);
@@ -980,6 +1095,7 @@ function EditeTable(props) {
     };
     return height
   }
+
   return (
     <>
       <h4 style={{ fontSize: '1.1em' }}>
@@ -992,7 +1108,7 @@ function EditeTable(props) {
         <div style={{ paddingBottom: 12 }}>{dutyUnitTotalMsg}</div>
       )}
       {(taskName === '版本管理员审核' || taskName === '科室负责人审核' || taskName === '中心领导审核') && dutyUnits && dutyUnits.length > 1 && (
-        <Tabs type='card' onClick={() => setPageinations({ current: 1, pageSize: 2 })} onChange={handleTabChange} activeKey={tabActivekey}>
+        <Tabs type='card' onClick={() => setPageinations({ current: 1, pageSize: 5 })} onChange={handleTabChange} activeKey={tabActivekey}>
           {dutyUnits.map((obj) => {
             return [
               <TabPane key={obj} tab={obj} />,
@@ -1035,7 +1151,17 @@ function EditeTable(props) {
                   重分派
                 </Button>
               )}
-              {(taskName === '新建' || taskName === '出厂测试') && (<Button type='primary' style={{ marginRight: 8 }} onClick={() => { newMember() }} disabled={newbutton} >新增</Button>)}
+              {(taskName === '新建' || taskName === '出厂测试') && (
+                <Button
+                  type='primary'
+                  style={{ marginRight: 8 }}
+                  onClick={() => {
+                    newMember();
+                  }}
+                  disabled={newbutton}
+                >
+                  新增
+                </Button>)}
               {taskName === '新建' && (
                 <Button
                   type='danger'
@@ -1086,7 +1212,7 @@ function EditeTable(props) {
           rowKey={(record) => record.key}
           pagination={pagination}
           rowSelection={rowSelection}
-          scroll={{ x: 1500, y: setTableHeight() }}
+          scroll={{ x: 1600, y: setTableHeight() }}
           rowClassName={(record, index) => {
             let className = 'light-row';
             if (index % 2 === 1) className = styles.darkRow;

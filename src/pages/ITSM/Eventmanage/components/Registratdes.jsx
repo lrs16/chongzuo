@@ -100,6 +100,11 @@ function Registratdes(props) {
               <Checkbox defaultChecked={info.supplement === '' ? '' : Boolean(Number(info.supplement))} disabled />
             </Form.Item>
           </Col>
+          <Col span={8}>
+            <Form.Item label="是否审核">
+              <Checkbox defaultChecked={info.isCheck === '' ? '' : Boolean(Number(info.isCheck))} disabled />
+            </Form.Item>
+          </Col>
           <Col span={24}>
             <Form.Item label="附件" {...forminladeLayout}>
               {info.fileIds !== '' && <Downloadfile files={info.fileIds} />}

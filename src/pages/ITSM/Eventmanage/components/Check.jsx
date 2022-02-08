@@ -1,15 +1,10 @@
-import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect } from 'react';
-import router from 'umi/router';
+import React, { useImperativeHandle, forwardRef, useState, useEffect, useContext } from 'react';
 import moment from 'moment';
 import { Row, Col, Form, Input, Radio, DatePicker } from 'antd';
+import SubmitContext from '@/layouts/MenuContext';
 import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
-
-const nextsmap = new Map([
-  ['001', '处理'],
-  ['002', '确认'],
-]);
 
 const typemaps = new Map([
   ['001', '1'],
@@ -17,12 +12,12 @@ const typemaps = new Map([
 ]);
 
 const Check = forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, info, userinfo, location, files, ChangeFiles, loading } = props;
-  const { taskName, taskId, mainId, orderNo } = location.query;
+  const { formItemLayout, forminladeLayout, info, userinfo, files, ChangeFiles, loading } = props;
   const { check } = info;
   const { getFieldDecorator, getFieldsValue, resetFields } = props.form;
   const [adopt, setAdopt] = useState('001');
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
+  const { ChangeSubmitType, ChangeButtonName } = useContext(SubmitContext);
   useEffect(() => {
     if (fileslist.ischange) {
       ChangeFiles(fileslist);
@@ -40,42 +35,27 @@ const Check = forwardRef((props, ref) => {
     Forms: props.form.validateFieldsAndScroll,
   }), []);
 
-  const routerRefresh = () => {
-    router.push({
-      pathname: location.pathname,
-      query: {
-        taskName,
-        taskId,
-        mainId,
-        next: sessionStorage.getItem('Nextflowmane'),
-        orderNo,
-      },
-      state: { ...location.state }
-    });
+  const handleAdopt = val => {
+    setAdopt(val);
+    if (val === '001') {
+      ChangeSubmitType('1');
+      ChangeButtonName('处理');
+      sessionStorage.setItem('flowtype', '1');
+    } else {
+      ChangeSubmitType('3');
+      ChangeButtonName('登记');
+      sessionStorage.setItem('flowtype', '3');
+    }
   };
 
   useEffect(() => {
-    if (check !== undefined) {
-      sessionStorage.setItem('Nextflowmane', nextsmap.get(check.checkResult));
+    if (check) {
       sessionStorage.setItem('flowtype', typemaps.get(check.checkResult));
-      setAdopt(check.checkResult);
-    }
-    routerRefresh();
-  }, [info]);
-
-  const handleAdopt = e => {
-    setAdopt(e.target.value);
-    if (e.target.value === '001') {
-      //  ChangeFlowtype('1');
-      sessionStorage.setItem('Nextflowmane', '处理');
-      sessionStorage.setItem('flowtype', '1');
+      handleAdopt(check.checkResult);
     } else {
-      //  ChangeFlowtype('3');
-      sessionStorage.setItem('Nextflowmane', '确认');
-      sessionStorage.setItem('flowtype', '3');
+      handleAdopt('001');
     }
-    routerRefresh();
-  };
+  }, [info]);
 
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>
@@ -84,16 +64,16 @@ const Check = forwardRef((props, ref) => {
           <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="审核表单id">
               {getFieldDecorator('check_id', {
-                initialValue: check.id,
+                initialValue: check?.id || '',
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
           </Col>
           <Form.Item label="审核结果" {...forminladeLayout}>
             {getFieldDecorator('check_checkResult', {
               rules: [{ required: true, message: '请选择审核结果' }],
-              initialValue: check.checkResult,
+              initialValue: check?.checkResult || '',
             })(
-              <Radio.Group onChange={handleAdopt}>
+              <Radio.Group onChange={(e) => handleAdopt(e.target.value)}>
                 <Radio value="001">通过</Radio>
                 <Radio value="002">不通过</Radio>
               </Radio.Group>,
@@ -104,7 +84,7 @@ const Check = forwardRef((props, ref) => {
           {adopt === '001' && (
             <Form.Item label="审核意见" {...forminladeLayout}>
               {getFieldDecorator('content1', {
-                initialValue: check.content,
+                initialValue: check?.content || '',
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
             </Form.Item>
           )}
@@ -112,16 +92,16 @@ const Check = forwardRef((props, ref) => {
             <Form.Item label="审核意见" {...forminladeLayout}>
               {getFieldDecorator('content2', {
                 rules: [{ required: true, message: '请输入审核意见' }],
-                initialValue: check.content,
+                initialValue: check?.content || '',
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
             </Form.Item>
           )}
         </Col>
-        <Col span={8}>
+        <Col span={8} >
           <Form.Item label="接单时间">
             {getFieldDecorator('check_addTime', {
               rules: [{ required: true }],
-              initialValue: check.addTime,
+              initialValue: moment(check?.addTime || undefined).format("YYYY-MM-DD HH:mm:ss"),
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
         </Col>
@@ -129,7 +109,7 @@ const Check = forwardRef((props, ref) => {
           <Form.Item label="审核时间">
             {getFieldDecorator('check_checkTime', {
               rules: [{ required: true }],
-              initialValue: moment(check.checkTime),
+              initialValue: moment(check?.checkTime || undefined),
             })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
           </Form.Item>
         </Col>
@@ -198,25 +178,5 @@ const Check = forwardRef((props, ref) => {
     </Row>
   );
 });
-
-Check.defaultProps = {
-  info: {
-    check: {
-      checkResult: '001',
-      content: '',
-      addTime: moment().format('YYYY-MM-DD HH:mm:ss'),
-      checkTime: moment().format('YYYY-MM-DD HH:mm:ss'),
-      id: '',
-    },
-  },
-  userinfo: {
-    deptName: '',
-    deptId: '',
-    unitName: '',
-    unitId: '',
-    userName: '',
-    userId: '',
-  },
-};
 
 export default Form.create({})(Check);

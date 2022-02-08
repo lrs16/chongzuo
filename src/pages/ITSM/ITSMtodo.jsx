@@ -18,7 +18,7 @@ const columns = [
             router.push({
               pathname: `/ITSM/eventmanage/to-do/record/workorder`,
               query: {
-                taskName: record.itemWorkStatus,
+                taskName: record.taskName,
                 taskId: record.taskId,
                 mainId: record.instanceId,
                 orderNo: text,
@@ -64,7 +64,7 @@ const columns = [
             break;
           case 'release':
             router.push({
-              pathname: `/ITSM/releasemanage/to-do/record`,
+              pathname: `/ITSM/releasemanage/plan/to-do/record`,
               query: {
                 taskName: record.taskName,
                 Id: record.itemWorkId,

@@ -16,23 +16,25 @@ const User = props => {
     ChangeUserVisible,
     ChangeChoice,
     ChangeType,
-    describe
+    describe,
+    indexUser,      // 默认选中人
+    defaultUsers,   //
   } = props;
-  const [isnew, setIsNew] = useState(false);
+  // const [isnew, setIsNew] = useState(false);
   const [demandvalue, setDemandValue] = useState([])
   const [defaultvalue, setDefaultValue] = useState([])
   const type = sessionStorage.getItem('Processtype');
 
-  useEffect(() => {
-    if (loading) {
-      setIsNew(true);
-    }
-    return () => {
-      setIsNew(false);
-      setDemandValue([]);
-      setDefaultValue([]);
-    };
-  }, [userlist]);
+  // useEffect(() => {
+  //   if (loading) {
+  //     setIsNew(true);
+  //   }
+  //   return () => {
+  //     setIsNew(false);
+  //     setDemandValue([]);
+  //     setDefaultValue([]);
+  //   };
+  // }, [userlist]);
 
   const dataArr = datas => {
     const newArr = [];
@@ -98,6 +100,7 @@ const User = props => {
   const showModal = () => {
     switch (type) {
       case 'event':
+      case 'eventregistrat':
         dispatch({
           type: 'itsmuser/eventuserlist',
           payload: {
@@ -164,6 +167,9 @@ const User = props => {
   useEffect(() => {
     if (visible) {
       showModal();
+      if (indexUser && indexUser.length && indexUser > 0) {
+        sessionStorage.setItem('NextflowUserId', indexUser.join(','));
+      }
     }
     return () => {
     }
@@ -172,7 +178,12 @@ const User = props => {
   const handleOk = () => {
     if (type !== 'demand' && type !== 'task') {
       if (value.length === 0) {
-        message.error('最少选择一个处理人！');
+        if (indexUser && indexUser.length && indexUser.length === 0) {
+          message.error('最少选择一个处理人！');
+        } else {
+          ChangeChoice(true);
+          ChangeUserVisible(false);
+        }
       } else {
         ChangeChoice(true);
         ChangeUserVisible(false);
@@ -217,27 +228,15 @@ const User = props => {
     <>
       <Modal title="选择下一环节处理人" visible={visible} onOk={handleOk} onCancel={handleCancel}>
         <Spin tip="正在加载数据..." spinning={Boolean(loading)}>
-          {loading === false && isnew && type !== 'demand' && (
+          {(type === 'demand' || type === 'event') ? (
             <>
-              {describe ? <div>{describe}</div> : <div>{nextflowuser}人员</div>}
-              <div style={{ marginTop: 12 }} className={styles.useritem}>
-                <Checkbox.Group
-                  defaultValue={defaultvalue}
-                  options={dataArr(userlist)}
-                  onChange={handleChange}
-                />
-              </div>
-            </>
-          )}
-          {(type === 'demand') && loading === false && isnew && userlist !== '' && (
-            <>
-              {userlist.map((obj, index) => {
+              {userlist && userlist.length && userlist.map((obj, index) => {
                 return (
                   <div key={index.toString()}>
                     <div>{obj.nodeName}人员</div>
                     <div style={{ marginTop: 12 }}>
                       <Checkbox.Group
-                        defaultValue={defaultvalue}
+                        defaultValue={indexUser || defaultvalue}
                         options={dataArr(obj.users)}
                         onChange={values => handledemandChange(values, obj.nodeName, index)}
                         key={index.toString()}
@@ -246,6 +245,17 @@ const User = props => {
                   </div>
                 );
               })}
+            </>
+          ) : (
+            <>
+              {describe ? <div>{describe}</div> : <div>{nextflowuser}人员</div>}
+              <div style={{ marginTop: 12 }} className={styles.useritem}>
+                <Checkbox.Group
+                  defaultValue={indexUser || defaultvalue}
+                  options={dataArr(defaultUsers || userlist)}
+                  onChange={handleChange}
+                />
+              </div>
             </>
           )}
         </Spin>

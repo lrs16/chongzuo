@@ -116,6 +116,7 @@ function Statistics(props) {
   const getList = (obj) => {
     const { type, name, taskName, item, unit, releaseType, timeout, ability, subAbility, datetype, date, userName, pageIndex, pageSize } = obj;
     setFetchType(obj);
+    setVisible(true);
     const beginTime = moment(values.beginTime).format('YYYY-MM-DD');
     const endTime = moment(values.endTime).format('YYYY-MM-DD');
     const beginformat = date && beginTime === endTime ? `YYYY-MM-DD ${date}:00:00` : 'YYYY-MM-DD 00:00:00';
@@ -131,7 +132,7 @@ function Statistics(props) {
       type: 'releaseanalysis/fetchlist',
       payload: { val, name, type, taskName, item, unit, releaseType, timeout, ability, subAbility, userName },
     });
-    setVisible(true);
+
   };
 
   const resdownload = (res) => {
@@ -254,7 +255,7 @@ function Statistics(props) {
                   <a
                     onMouseDown={() => setFetchType({})}
                     onClick={() => {
-                      setTimeout(() => { getList(val); setPageinations({ current: 1, pageSize: 12 }) }, 200)
+                      setTimeout(() => { getList(val); setPageinations({ current: 1, pageSize: 12 }) }, 100)
                     }}
                     onDoubleClick={(e) => { getList(val, e); setPageinations({ current: 1, pageSize: 12 }) }}
                   >
@@ -296,7 +297,7 @@ function Statistics(props) {
                             setTimeout(() => {
                               getList({ ...val, item: item.name === '平台验证通过项' ? '通过' : '不通过' });
                               setPageinations({ current: 1, pageSize: 12 });
-                            }, 200)
+                            }, 100)
                           }}>
                           {card(item, suffixmap)}
                         </a>
@@ -337,7 +338,7 @@ function Statistics(props) {
                             setTimeout(() => {
                               getList({ ...val, item: item.name === '业务验证通过项' ? '通过' : '不通过' });
                               setPageinations({ current: 1, pageSize: 12 })
-                            }, 200)
+                            }, 100)
                           }}>
                           {card(item, suffixmap)}
                         </a>
@@ -380,7 +381,7 @@ function Statistics(props) {
                             setTimeout(() => {
                               getList({ ...val, item: item.name === '发布验证通过项' ? '通过' : '不通过' });
                               setPageinations({ current: 1, pageSize: 12 })
-                            }, 200)
+                            }, 100)
                           }}>
                           {card(item, suffixmap)}
                         </a>
@@ -422,7 +423,7 @@ function Statistics(props) {
                             setTimeout(() => {
                               getList({ ...val, item: item.name === '业务复核通过项' ? '通过' : '不通过' });
                               setPageinations({ current: 1, pageSize: 12 })
-                            }, 200)
+                            }, 100)
                           }}>
                           {card(item, suffixmap)}
                         </a>

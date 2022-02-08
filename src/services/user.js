@@ -99,9 +99,16 @@ export async function releaseUserList(taskId, type) {
   });
 }
 
-// 加载发布业务验证分派人列表
+// 加载发布业务验证分派人列表   20220124改取发布清单验证这个角色
 export async function dispatchBizUsers() {
-  return request(`/release/from/getUserList?roleCodes=fb_responsible`, {
+  return request(`/release/from/getUserList?roleCodes=release.validate.list`, {
+    method: 'GET',
+  });
+}
+
+// 加载发布平台验证人
+export async function dispatchPlatsers() {
+  return request(`/release/from/getUserList?roleCodes=release.platformValid`, {
     method: 'GET',
   });
 }

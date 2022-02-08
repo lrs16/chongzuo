@@ -16,7 +16,7 @@ import {
   Button,
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import { DownOutlined, UpOutlined, AlertTwoTone } from '@ant-design/icons';
 import SysDict from '@/components/SysDict';
 import AdminAuth from '@/components/AdminAuth';
 import RangeTime from '@/components/SelectTime/RangeTime';
@@ -153,17 +153,46 @@ function QueryList(props) {
       render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
     {
+      title: '当前处理环节',
+      dataIndex: 'flowNodeName',
+      key: 'flowNodeName',
+      fixed: 'left',
+      width: 160,
+    },
+    {
+      title: '超时状态',
+      dataIndex: 'timeoutStatus',
+      key: 'timeoutStatus',
+      fixed: 'left',
+      width: 120,
+      render: (text) => {
+        const blubnap = new Map([
+          ['未超时', <AlertTwoTone />],
+          ['即将超时', <AlertTwoTone twoToneColor="orange" />],
+          ['已超时', <AlertTwoTone twoToneColor="red" />]
+        ]);
+        const colormap = new Map([
+          ['未超时', '#108ee9'],
+          ['即将超时', 'orange'],
+          ['已超时', 'red']
+        ]);
+        return (
+          <><span style={{ fontSize: '1.4em', marginRight: 8 }}>{blubnap.get(text)}</span>
+            <span style={{ color: colormap.get(text) }}>{text}</span>
+          </>
+        )
+      }
+    },
+    {
       title: '事件来源',
       dataIndex: 'eventSource',
       key: 'eventSource',
-      fixed: 'left',
       width: 160,
     },
     {
       title: '事件分类',
       dataIndex: 'eventType',
       key: 'eventType',
-      fixed: 'left',
       width: 100,
     },
     {
@@ -294,8 +323,8 @@ function QueryList(props) {
       payload: {
         values: {
           ...values,
-          time1: values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '',
-          time2: values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '',
+          time1: values.time?.startTime ? moment(values.time?.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          time2: values.time?.endtime ? moment(values.time?.endtime).format('YYYY-MM-DD HH:mm:ss') : '',
           eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : '',
         },
         ids: selectedRowKeys.toString(),

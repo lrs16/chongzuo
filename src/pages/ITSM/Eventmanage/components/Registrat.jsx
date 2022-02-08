@@ -1,5 +1,4 @@
-import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect, useContext } from 'react';
-import router from 'umi/router';
+import React, { useImperativeHandle, forwardRef, useState, useEffect, useContext } from 'react';
 import moment from 'moment';
 import {
   Row,
@@ -16,7 +15,6 @@ import {
   message,
   Spin,
   Drawer,
-  Alert
 } from 'antd';
 import { phone_reg } from '@/utils/Regexp';
 // import SysUpload from '@/components/SysUpload';
@@ -37,7 +35,7 @@ const Registrat = forwardRef((props, ref) => {
     formItemLayout,
     forminladeLayout,
     ChangeShow,
-    ChangeCheck,
+    // ChangeCheck,
     ChangeActiveKey,
     // ChangeFlowtype,
     info,
@@ -51,10 +49,10 @@ const Registrat = forwardRef((props, ref) => {
     getUploadStatus,
   } = props;
   const { register } = info;
-  const { taskName, taskId, mainId, orderNo } = location.query;
+  const { orderNo } = location.query;
   const { getFieldDecorator, getFieldsValue, setFieldsValue, validateFields, setFields, resetFields } = props.form;
   const required = true;
-  const [check, setCheck] = useState(false);
+  // const [check, setCheck] = useState(false);
   const [revisitway, setRevisitway] = useState(false);
   const [fileslist, setFilesList] = useState([]);
   const [filetype, setFileType] = useState('');
@@ -74,13 +72,13 @@ const Registrat = forwardRef((props, ref) => {
   const [showIcon, setShowIcon] = useState(true);
   const [banOpenFileDialog, setBanOpenFileDialog] = useState(true);
 
-  const { getRegistUploadStatus, handleUploadStatus } = useContext(UploadContext);
+  const { getRegistUploadStatus, handleUploadStatus, ChangeSubmitType, ChangeButtonName } = useContext(UploadContext);
 
   useEffect(() => {
     if (files && files.length > 0) {
       setFilesList(files);
     };
-    if (register.applicationUnitId !== '') {
+    if (register && register.applicationUnitId !== '') {
       setUnitRecord({ ...unitrecord, key: register.applicationUnitId })
     };
     return () => {
@@ -95,70 +93,85 @@ const Registrat = forwardRef((props, ref) => {
     geteventObject: props.form.validateFields,
   }), []);
 
-  const routerRefresh = () => {
-    if (orderNo) {
-      router.push({
-        pathname: location.pathname,
-        query: {
-          taskName,
-          taskId,
-          mainId,
-          next: sessionStorage.getItem('Nextflowmane'),
-          orderNo: main.eventNo,
-        },
-        state: { ...location.state }
-      });
-
-    }
-  };
-
   useEffect(() => {
     if (main.revisitWay === '002') {
       setRevisitway(true);
     }
-    if (main.eventType === '005' || main.eventType === '007' || main.eventType === '008') {
-      setCheck(true);
-    }
   }, [info]);
 
   useEffect(() => {
-    if (main.eventType === '005' || main.eventType === '007' || main.eventType === '008') {
-      sessionStorage.setItem('Nextflowmane', '审核');
-      sessionStorage.setItem('flowtype', '3');
-    } else {
-      sessionStorage.setItem('Nextflowmane', '处理');
-      sessionStorage.setItem('flowtype', '1');
-    }
-    routerRefresh();
+    if (info && info.register) {
+      if (register.isCheck === '1') {
+        ChangeSubmitType((main?.eventObject?.slice(0, 3) === '001' || main?.eventObject?.slice(0, 3) === '005') ? '3' : '4');
+        ChangeButtonName('审核');
+        sessionStorage.setItem('flowtype', (main?.eventObject?.slice(0, 3) === '001' || main?.eventObject?.slice(0, 3) === '005') ? '3' : '4');
+      } else {
+        ChangeSubmitType('1');
+        ChangeButtonName('处理');
+        sessionStorage.setItem('flowtype', '1');
+      };
+    };
   }, [info]);
 
   // 自行处理
-  const handleself = e => {
-    ChangeShow(e.target.checked);
-    ChangeActiveKey(['registratform', 'handleform']);
+  const handleself = checked => {
+    ChangeShow(checked);
+    ChangeSubmitType('1');
+    // sessionStorage.setItem('Nextflowmane', checked ? '确认' : '处理');
+    sessionStorage.setItem('flowtype', '1');
+    if (checked) {
+      ChangeButtonName('回访')
+      setFieldsValue({ register_isCheck: false });
+      ChangeActiveKey(['registratform', 'handleform']);
+    } else {
+      ChangeButtonName('处理')
+    };
+    // routerRefresh();
   };
 
   // 事件分类005，007，008时走审核
-  const handlcheckChange = value => {
-    if (value === '005' || value === '007' || value === '008') {
-      ChangeCheck(true);
-      setCheck(true);
-      ChangeShow(false);
-      sessionStorage.setItem('Nextflowmane', '审核');
-      sessionStorage.setItem('flowtype', '3');
+  const handlcheckChange = (checked) => {
+    const object = getFieldsValue(['main_eventObject'])?.main_eventObject[0];
+    ChangeButtonName(checked ? '审核' : '处理')
+    if (checked) {
+      ChangeSubmitType((object === '001' || object === '005') ? '3' : '4');
+      sessionStorage.setItem('flowtype', (object === '001' || object === '005') ? '3' : '4');
     } else {
-      ChangeCheck(false);
-      setCheck(false);
-      //  ChangeFlowtype('1');
-      sessionStorage.setItem('Nextflowmane', '处理');
+      ChangeSubmitType('1')
       sessionStorage.setItem('flowtype', '1');
     }
-    routerRefresh();
+
+    if (checked) {
+      ChangeShow(false);
+      setFieldsValue({ register_selfhandle: false })
+    };
   };
 
-  //
+  // 勾选审核时事件对象，档案与高级功能 flowtype:3,其它选项4
   const handlobjectChange = value => {
     setFieldsValue({ main_eventObject: value?.slice(-1)[0] }, () => { });
+    const isCheck = getFieldsValue(['register_isCheck'])?.register_isCheck;
+    if (isCheck) {
+      ChangeSubmitType((value[0] === '001' || value[0] === '005') ? '3' : '4')
+      ChangeButtonName('审核');
+      sessionStorage.setItem('flowtype', isCheck ? '3' : '4');
+    } else {
+      ChangeSubmitType('1');
+      ChangeButtonName('处理');
+      sessionStorage.setItem('flowtype', '1');
+    };
+    // if (value[0] === '001' || value[0] === '005') {
+
+    //   ChangeSubmitType(isCheck ? '3' : '1');
+    //   // ChangeButtonName((isCheck ? '审核' : '处理');
+    //   // sessionStorage.setItem('Nextflowmane', isCheck ? '审核' : '处理');
+    //   // sessionStorage.setItem('flowtype', isCheck ? '3' : '4');
+    // } else {
+    //   ChangeSubmitType('1');
+    //   ChangeButtonName('处理');
+    //   // sessionStorage.setItem('Nextflowmane', '处理');
+    //   // sessionStorage.setItem('flowtype', '1');
+    // }
   };
 
   // 002手机号码必填
@@ -174,17 +187,6 @@ const Registrat = forwardRef((props, ref) => {
   const displayRender = label => {
     return label[label.length - 1];
   };
-
-  // const changenulltostr = (datas) => {
-  //   for (var x in datas) {
-  //     if (datas[x] === null) { // 如果是null 把直接内容转为 ''
-  //       datas[x] = '';
-  //     };
-  //   }  
-  //   return datas;
-  // };
-  // changenulltostr(main);
-  // changenulltostr(register);
 
   const handletitleSearch = values => {
     getAndField(values).then(res => {
@@ -285,11 +287,6 @@ const Registrat = forwardRef((props, ref) => {
       mobilePhone1: mobile,
       mobilePhone2: mobile,
     });
-    // if (revisitway) {
-    //   setFieldsValue({ mobilePhone1: mobile, })
-    // } else {
-    //   setFieldsValue({ mobilePhone2: mobile, })
-    // }
   };
 
   // 关闭组织机构树抽屉
@@ -505,7 +502,7 @@ const Registrat = forwardRef((props, ref) => {
           <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="表单id">
               {getFieldDecorator('register_id', {
-                initialValue: register.id,
+                initialValue: register?.id || '',
               })(<Input disabled />)}
             </Form.Item>
           </Col>
@@ -528,7 +525,7 @@ const Registrat = forwardRef((props, ref) => {
             <Form.Item label="发生时间">
               {getFieldDecorator('register_occurTime', {
                 rules: [{ required, message: '请选择发生时间' }],
-                initialValue: moment(register.occurTime),
+                initialValue: moment(register?.occurTime),
               })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
             </Form.Item>
           </Col>
@@ -537,7 +534,7 @@ const Registrat = forwardRef((props, ref) => {
             <Form.Item label="申报人">
               {getFieldDecorator('register_applicationUser', {
                 rules: [{ required, message: '请输入申报人' }],
-                initialValue: register.applicationUser,
+                initialValue: register?.applicationUser,
               })(
                 <AutoComplete
                   dataSource={disableduser}
@@ -557,7 +554,7 @@ const Registrat = forwardRef((props, ref) => {
           <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="申报人id">
               {getFieldDecorator('register_applicationUserId', {
-                initialValue: register.applicationUserId,
+                initialValue: register?.applicationUserId,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
           </Col>
@@ -566,7 +563,7 @@ const Registrat = forwardRef((props, ref) => {
               <InputGroup compact>
                 {getFieldDecorator('applicationUnit', {
                   rules: [{ required, message: '请选择申报人单位' }],
-                  initialValue: register.applicationUnit,
+                  initialValue: register?.applicationUnit,
                 })(
                   <AutoComplete
                     defaultActiveFirstOption={false}
@@ -623,7 +620,7 @@ const Registrat = forwardRef((props, ref) => {
             <Form.Item label="申报人单位">
               {getFieldDecorator('register_applicationUnit', {
                 rules: [{ required, }],
-                initialValue: register.applicationUnit,
+                initialValue: register?.applicationUnit,
               })(<Input />)}
             </Form.Item>
           </Col>
@@ -631,7 +628,7 @@ const Registrat = forwardRef((props, ref) => {
             <Form.Item label="申报人单位id">
               {getFieldDecorator('register_applicationUnitId', {
                 rules: [{ required, }],
-                initialValue: register.applicationUnitId,
+                initialValue: register?.applicationUnitId,
               })(<Input />)}
             </Form.Item>
           </Col>
@@ -640,7 +637,7 @@ const Registrat = forwardRef((props, ref) => {
               <InputGroup compact>
                 {getFieldDecorator('applicationDept', {
                   rules: [{ message: '请输入关键字' }],
-                  initialValue: register.applicationDept,
+                  initialValue: register?.applicationDept,
                 })(
                   <AutoComplete
                     defaultActiveFirstOption={false}
@@ -701,14 +698,14 @@ const Registrat = forwardRef((props, ref) => {
           <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="申报人部门">
               {getFieldDecorator('register_applicationDept', {
-                initialValue: register.applicationDept,
+                initialValue: register?.applicationDept,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
           </Col>
           <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="申报人部门id">
               {getFieldDecorator('register_applicationDeptId', {
-                initialValue: register.applicationDeptId,
+                initialValue: register?.applicationDeptId,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
           </Col>
@@ -737,7 +734,7 @@ const Registrat = forwardRef((props, ref) => {
                     message: '请输入申报人电话',
                   },
                 ],
-                initialValue: register.applicationUserPhone,
+                initialValue: register?.applicationUserPhone,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
           </Col>
@@ -753,7 +750,7 @@ const Registrat = forwardRef((props, ref) => {
                       message: '请输入正确的正确的手机号码',
                     },
                   ],
-                  initialValue: register.mobilePhone,
+                  initialValue: register?.mobilePhone,
                 })(<Input placeholder="请输入" />)}
               </Form.Item>
             </Col>
@@ -770,7 +767,7 @@ const Registrat = forwardRef((props, ref) => {
                       message: '请输入正确的正确的手机号码',
                     },
                   ],
-                  initialValue: register.mobilePhone,
+                  initialValue: register?.mobilePhone,
                 })(<Input placeholder="请输入" />)}
               </Form.Item>
             </Col>
@@ -782,7 +779,7 @@ const Registrat = forwardRef((props, ref) => {
                 rules: [{ required, message: '请选择事件分类' }],
                 initialValue: main.eventType,
               })(
-                <Select placeholder="请选择" onChange={handlcheckChange}>
+                <Select placeholder="请选择" >
                   {typemap.map(obj => (
                     <Option key={obj.key} value={obj.dict_code}>
                       {obj.title}
@@ -933,22 +930,28 @@ const Registrat = forwardRef((props, ref) => {
               )}
             </Form.Item>
           </Col>
-          {check === false && (
-            <Col span={8}>
-              <Form.Item label="自行处理">
-                {getFieldDecorator('register_selfhandle', {
-                  valuePropName: 'checked',
-                  initialValue: Boolean(Number(register.selfhandle)),
-                })(<Checkbox onClick={handleself} />)}
-              </Form.Item>
-            </Col>
-          )}
+          <Col span={8}>
+            <Form.Item label="自行处理">
+              {getFieldDecorator('register_selfhandle', {
+                valuePropName: 'checked',
+                initialValue: Boolean(Number(register?.selfhandle)),
+              })(<Checkbox onClick={(e) => handleself(e.target.checked)} />)}
+            </Form.Item>
+          </Col>
           <Col span={8}>
             <Form.Item label="是否补单">
               {getFieldDecorator('register_supplement', {
                 valuePropName: 'checked',
-                initialValue: Boolean(Number(register.supplement)),
+                initialValue: Boolean(Number(register?.supplement)),
               })(<Checkbox />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="是否审核">
+              {getFieldDecorator('register_isCheck', {
+                valuePropName: 'checked',
+                initialValue: Boolean(Number(register?.isCheck)),
+              })(<Checkbox onChange={(e) => handlcheckChange(e.target.checked)} />)}
             </Form.Item>
           </Col>
         </Row>

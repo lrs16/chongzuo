@@ -12,21 +12,17 @@ import RelationOrder from './RelationOrder';
 import TimeoutModal from '../components/TimeoutModal';
 import { judgeTimeoutStatus, saveTimeoutMsg } from '../services/api';
 
-const pagetitlemaps = new Map([
-  ['已登记', '事件登记'],
-  ['待审核', '事件审核'],
-  ['已审核', '事件审核'],
-  ['待处理', '事件处理'],
-  ['处理中', '事件处理'],
-  ['待确认', '事件确认'],
-  ['已确认', '事件确认'],
-  ['重分派', '事件处理'],
-  ['已关闭', '事件详情'],
+const backnodemap = new Map([
+  ['事件响应', '事件登记'],
+  ['运维商经理审核', '事件登记'],
+  ['数据科审核', '事件登记'],
+  ['自动化科审核', '事件登记'],
+  ['事件确认', '事件处理'],
 ]);
 
 function ToDodetails(props) {
-  const { location, dispatch, allloading, olduploadstatus } = props;
-  const { taskName, taskId, mainId, check, next, orderNo } = location.query;
+  const { location, dispatch, allloading, olduploadstatus, info } = props;
+  const { taskName, taskId, mainId, orderNo } = location.query;
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [buttontype, setButtonType] = useState('');
   const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
@@ -34,13 +30,11 @@ function ToDodetails(props) {
   const [changorder, setChangeOrder] = useState(undefined);
   const [Popvisible, setVisible] = useState(false);
   const [modalvisible, setModalVisible] = useState(false);
+  const [submittype, setSubmitType] = useState('');           // 流轉類型，无效属性没有用到暂保留
+  const [buttonName, setButtonName] = useState('');
   const [butandorder, setButandOrder] = useState('');    // 流转，转回访，转单，审核，再处理时已经超时暂存按钮类型及选人order类型
   const [registUploadStatus, setRegistUploadStatus] = useState(false);
 
-  const handleHold = type => {
-    setUserChoice(false)
-    setButtonType(type);
-  };
   const handleclose = () => {
     if (olduploadstatus || registUploadStatus) {
       message.info('页签切换，中止文件上传...')
@@ -58,7 +52,7 @@ function ToDodetails(props) {
       type: 'eventtodo/eventback',
       payload: {
         id: taskId,
-        userIds: sessionStorage.getItem('userauthorityid'),
+        userIds: sessionStorage.getItem('userauthorityid'),// 相同的回退方式，审核回退不成功，旧流程回退成功
         type: '2',
         ...values,
       },
@@ -70,7 +64,7 @@ function ToDodetails(props) {
       if (res.code === 200 && res.status === 'yes' && res.timeoutMsg === '') {
         message.info('该事件单已超时，请填写超时原因...')
         setModalVisible(true);
-        setButtonType('goback');
+        setButtonType('回退');
         setUserVisible(false);
       };
       if (res.code === 200 && ((res.status === 'yes' && res.timeoutMsg !== '') || res.status === 'no')) {
@@ -103,11 +97,12 @@ function ToDodetails(props) {
         setButtonType('accpt');
       };
       if (res.code === 200 && ((res.status === 'yes' && res.timeoutMsg !== '') || res.status === 'no')) {
+        const userIds = [{ nodeName: '事件响应', userIds: [sessionStorage.getItem('userauthorityid')] }];
         dispatch({
           type: 'eventtodo/eventaccept',
           payload: {
             id: taskId,
-            userIds: sessionStorage.getItem('userauthorityid'),
+            userIds: JSON.stringify(userIds),
             type: '1',
             orderNo,
           },
@@ -134,7 +129,6 @@ function ToDodetails(props) {
 
   // 点击流转，审核，转回访，回退按钮
   const handleClick = (type, order) => {
-    setUserChoice(false)
     judgeTimeoutStatus(taskId).then(res => {
       if (res.code === 200 && res.status === 'yes' && res.timeoutMsg === '') {
         message.info('该事件单已超时，请填写超时原因...')
@@ -142,7 +136,7 @@ function ToDodetails(props) {
         setButandOrder({ type, order });
       };
       if (res.code === 200 && ((res.status === 'yes' && res.timeoutMsg !== '') || res.status === 'no')) {
-        handleHold(type);
+        setButtonType(type);
         setChangeOrder(order);
       };
       if (res.code === -1) {
@@ -178,7 +172,7 @@ function ToDodetails(props) {
           break;
         default:
           if (res.code === 200) {
-            handleHold(butandorder.type);
+            setButtonType(butandorder.type);
             setChangeOrder(butandorder.order);
           }
           break;
@@ -190,98 +184,55 @@ function ToDodetails(props) {
     <>
       {tabActivekey === 'workorder' && (
         <>
+
           {/* 测试下载功能 */}
           {/* <Button onClick={()=>test()}>下载</Button> */}
-          {taskName === '已登记' && !olduploadstatus && (
+          {taskName === '事件登记' && !olduploadstatus && (
             <Popconfirm title="确定删除此事件单吗？" onConfirm={() => deleteflow()}>
               <Button type="danger" ghost style={{ marginRight: 8 }} disabled={olduploadstatus || registUploadStatus || allloading}>
                 删除
               </Button>
             </Popconfirm>
           )}
-          {(taskName === '待审核' ||
-            (taskName === '待处理' && check === null) ||
-            (taskName === '待确认' && check === null)) && (
+          {(taskName === '事件响应'
+            || (info && info.edit && (
+              (taskName === '事件确认' && !info.edit.finish) ||
+              ((info.flowNodeName === '运维商经理审核' || info.flowNodeName === '数据科审核' || info.flowNodeName === '自动化科审核') && !info.edit.check)))) && (
               <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleGoback()} disabled={olduploadstatus || allloading}>
                 回退
               </Button>
             )}
-          {taskName !== '待处理' && (
-            <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('save')} disabled={olduploadstatus || registUploadStatus || allloading}>
+          {taskName !== '事件响应' && (
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => setButtonType('save')} disabled={olduploadstatus || registUploadStatus || allloading}>
               保存
             </Button>
           )}
-          {taskName === '已登记' && next === '审核' && (
+          {taskName === '事件响应' ? (
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => eventaccpt()}>
+              接单
+            </Button>
+          ) : (
             <Button
               type="primary"
               style={{ marginRight: 8 }}
-              onClick={() => { handleClick('other') }}
-              disabled={registUploadStatus || allloading}
+              onMouseDown={() => { setUserChoice(false); setButtonType('') }}
+              onClick={() => { handleClick(buttonName) }}
+              disabled={olduploadstatus || registUploadStatus || allloading}
             >
-              审核
+              {taskName === '事件确认' ? '' : '流转至'}{buttonName}
             </Button>
           )}
-          {taskName === '待处理' && (
-            <Button type="primary" style={{ marginRight: 8 }} onClick={eventaccpt}>
-              接单
-            </Button>
-          )}
-          {((taskName === '已登记' && next === '处理') ||
-            (next === '处理' && taskName === '待审核') ||
-            (next === '处理' && taskName === '审核中')) && (
-              <Button
-                type="primary"
-                style={{ marginRight: 8 }}
-                onClick={() => { handleClick('flow') }}
-                disabled={olduploadstatus || registUploadStatus || allloading}
-              >
-                流转
-              </Button>
-            )}
-          {next === '确认' && taskName !== '处理中' && (
-            <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('check')} disabled={olduploadstatus || allloading}>
-              转回访
-            </Button>
-          )}
-          {taskName === '处理中' && (
+          {taskName === '事件处理' && (
             <>
               <Button
                 type="primary"
                 style={{ marginRight: 8 }}
-                onClick={() => { handleClick('flowcheck') }}
-                disabled={olduploadstatus || allloading}
-              >
-                转回访
-              </Button>
-              <Button
-                type="primary"
-                style={{ marginRight: 8 }}
-                onClick={() => { handleClick('other'); setChangeOrder('处理') }}
+                onClick={() => { handleClick('转单'); setChangeOrder('处理') }}
                 disabled={olduploadstatus || allloading}
               >
                 转单
               </Button>
             </>
-          )}
-          {(taskName === '待确认' || taskName === '确认中') && next === '处理' && (
-            <Button
-              type="primary"
-              style={{ marginRight: 8 }}
-              onClick={() => { handleClick('other') }}
-              disabled={olduploadstatus || allloading}
-            >
-              重分派
-            </Button>
-          )}
-          {(taskName === '待确认' || taskName === '确认中') && next === '结束' && (
-            <Button
-              type="primary"
-              style={{ marginRight: 8 }}
-              onClick={() => { handleHold('over') }}
-              disabled={olduploadstatus || allloading}
-            >
-              结束
-            </Button>
           )}
         </>)}
       <Button onClick={handleclose} disabled={allloading}>关闭</Button>
@@ -307,7 +258,7 @@ function ToDodetails(props) {
   ];
   return (
     <PageHeaderWrapper
-      title={pagetitlemaps.get(taskName)}
+      title={info.flowNodeName}
       extra={operations}
       tabList={tabList}
       tabActiveKey={tabActivekey}
@@ -316,7 +267,10 @@ function ToDodetails(props) {
       {tabActivekey === 'workorder' && (
         <UploadContext.Provider value={{
           handleUploadStatus: olduploadstatus,
-          getRegistUploadStatus: (v) => { setRegistUploadStatus(v) }
+          getRegistUploadStatus: (v) => { setRegistUploadStatus(v) },
+          submittype,                                              // 流轉類型
+          ChangeSubmitType: (v => setSubmitType(v)),               // 根據選項返回流轉類型
+          ChangeButtonName: (v => setButtonName(v))                // 自行處理返回按鈕名稱
         }}>
           <WorkOrder
             location={location}
@@ -349,13 +303,14 @@ function ToDodetails(props) {
         visible={Popvisible}
         ChangeVisible={v => setVisible(v)}
         rollbackSubmit={v => postRollBackmsg(v)}
+        lastNode={backnodemap.get(taskName)}
       />
     </PageHeaderWrapper>
   );
 }
 
 export default connect(({ eventtodo, viewcache, loading }) => ({
-  eventtodo,
+  info: eventtodo.info,
   olduploadstatus: viewcache.olduploadstatus,
   loading: loading.effects['eventtodo/eventback'],
   allloading: loading.models.eventtodo,

@@ -68,7 +68,7 @@ function VerificationTodo(props) {
 
   const handleReset = () => {
     router.push({
-      pathname: `/ITSM/releasemanage/verificationtodo`,
+      pathname: `/ITSM/releasemanage/plan/verificationtodo`,
       query: { pathpush: true },
       state: { cach: false, }
     });
@@ -256,7 +256,7 @@ function VerificationTodo(props) {
             },
           });
           router.push({
-            pathname: `/ITSM/releasemanage/verificationtodo/record`,
+            pathname: `/ITSM/releasemanage/plan/verificationtodo/record`,
             query: {
               Id: record.todoCode,
               releaseNo: record.releaseNo,
