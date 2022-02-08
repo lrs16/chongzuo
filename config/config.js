@@ -618,107 +618,125 @@ export default {
                     },
                     {
                       path: '/ITSM/releasemanage',
-                      name: '故障管理',
+                      name: '发布管理',
                       icon: 'control',
-                      // component: './ITSM/Faultmanage/Registration',
-
                       routes: [
+                        // {
+                        //   path: '/ITSM/releasemanage',
+                        //   redirect: '/ITSM/releasemanage/registration',
+                        // },
                         {
-                          path: '/ITSM/releasemanage',
-                          redirect: '/ITSM/releasemanage/registration',
-                        },
-                        {
-                          path: '/ITSM/releasemanage/registration',
-                          name: '出厂测试',
-                          icon: 'control',
-                          component: './ITSM/Releasemanage/Registration',
-                        },
-                        {
-                          path: '/ITSM/releasemanage/to-do',
-                          name: '发布待办',
-                          icon: 'control',
-                          component: './ITSM/Releasemanage/ToDolist',
-                        },
-                        {
-                          path: '/ITSM/releasemanage/to-do/record',
-                          name: '发布工单处理',
-                          icon: 'cloud-server',
-                          component: './ITSM/Releasemanage/ToDodetails',
-                        },
-                        {
-                          path: '/ITSM/releasemanage/verificationtodo',
-                          name: '业务验证待办',
-                          icon: 'control',
-                          component: './ITSM/Releasemanage/VerificationTodo',
-                        },
-                        {
-                          path: '/ITSM/releasemanage/verificationtodo/record',
-                          name: '业务验证',
-                          icon: 'control',
-                          component: './ITSM/Releasemanage/BusinessDetail',
-                        },
-                        {
-                          path: '/ITSM/releasemanage/checktodo',
-                          name: '业务复核待办',
-                          icon: 'control',
-                          component: './ITSM/Releasemanage/Checktodo',
-                        },
-                        {
-                          path: '/ITSM/releasemanage/checktodo/record',
-                          name: '业务复核',
-                          icon: 'control',
-                          component: './ITSM/Releasemanage/BusinessDetail',
-                        },
-                        {
-                          path: '/ITSM/releasemanage/query',
-                          name: '发布查询',
-                          icon: 'control',
-                          component: './ITSM/Releasemanage/Querylist',
-                        },
-                        {
-                          path: '/ITSM/releasemanage/query/details',
-                          name: '发布工单详情',
-                          icon: 'control',
-                          component: './ITSM/Releasemanage/Details',
-                        },
-                        {
-                          path: '/ITSM/releasemanage/releaselibrary',
-                          name: '发布库',
-                          icon: 'control',
-                          component: './ITSM/Releasemanage/ReleaseRepo',
-                        },
-                        {
-                          path: '/ITSM/releasemanage/library',
-                          name: '发布功能统计结果',
-                          icon: 'control',
-                          component: './ITSM/Releasemanage/LibraryList',
-                        },
-                        {
-                          path: '/ITSM/releasemanage/statistics',
-                          name: '发布统计',
+                          path: '/ITSM/releasemanage/plan',
+                          name: '计划发布',
                           icon: 'control',
                           routes: [
                             {
-                              path: '/ITSM/releasemanage/statistics',
-                              redirect: '/ITSM/releasemanage/statistics/analysis',
+                              path: '/ITSM/releasemanage/plan/registration',
+                              name: '出厂测试',
+                              icon: 'control',
+                              component: './ITSM/Releasemanage/Registration',
                             },
                             {
-                              path: '/ITSM/releasemanage/statistics/index',
+                              path: '/ITSM/releasemanage/plan/to-do',
+                              name: '发布待办',
+                              icon: 'control',
+                              component: './ITSM/Releasemanage/ToDolist',
+                            },
+                            {
+                              path: '/ITSM/releasemanage/plan/to-do/record',
+                              name: '发布工单处理',
+                              icon: 'cloud-server',
+                              component: './ITSM/Releasemanage/ToDodetails',
+                            },
+                            {
+                              path: '/ITSM/releasemanage/plan/verificationtodo',
+                              name: '业务验证待办',
+                              icon: 'control',
+                              component: './ITSM/Releasemanage/VerificationTodo',
+                            },
+                            {
+                              path: '/ITSM/releasemanage/plan/verificationtodo/record',
+                              name: '业务验证',
+                              icon: 'control',
+                              component: './ITSM/Releasemanage/BusinessDetail',
+                            },
+                            {
+                              path: '/ITSM/releasemanage/plan/checktodo',
+                              name: '业务复核待办',
+                              icon: 'control',
+                              component: './ITSM/Releasemanage/Checktodo',
+                            },
+                            {
+                              path: '/ITSM/releasemanage/plan/checktodo/record',
+                              name: '业务复核',
+                              icon: 'control',
+                              component: './ITSM/Releasemanage/BusinessDetail',
+                            },
+                            {
+                              path: '/ITSM/releasemanage/plan/query',
+                              name: '发布查询',
+                              icon: 'control',
+                              component: './ITSM/Releasemanage/Querylist',
+                            },
+                            {
+                              path: '/ITSM/releasemanage/plan/query/details',
+                              name: '发布工单详情',
+                              icon: 'control',
+                              component: './ITSM/Releasemanage/Details',
+                            },
+                            {
+                              path: '/ITSM/releasemanage/plan/releaselibrary',
+                              name: '发布库',
+                              icon: 'control',
+                              component: './ITSM/Releasemanage/ReleaseRepo',
+                            },
+                            {
+                              path: '/ITSM/releasemanage/plan/library',
+                              name: '发布功能统计结果',
+                              icon: 'control',
+                              component: './ITSM/Releasemanage/LibraryList',
+                            },
+                            {
+                              path: '/ITSM/releasemanage/plan/statistics',
                               name: '发布统计',
                               icon: 'control',
-                              component: './ITSM/Releasemanage/Statistics',
+                              routes: [
+                                {
+                                  path: '/ITSM/releasemanage/plan/statistics',
+                                  redirect: '/ITSM/releasemanage/plan/statistics/analysis',
+                                },
+                                {
+                                  path: '/ITSM/releasemanage/plan/statistics/index',
+                                  name: '发布统计',
+                                  icon: 'control',
+                                  component: './ITSM/Releasemanage/Statistics',
+                                },
+                                {
+                                  path: '/ITSM/releasemanage/plan/statistics/object',
+                                  name: '发布功能统计',
+                                  icon: 'control',
+                                  component: './ITSM/Releasemanage/Statistics/ByObject',
+                                },
+                                {
+                                  path: '/ITSM/releasemanage/plan/statistics/analysis',
+                                  name: '发布统计分析',
+                                  icon: 'control',
+                                  component: './ITSM/Releasemanage/Statistics/Analysis',
+                                },
+                              ]
                             },
+                          ]
+                        },
+                        {
+                          path: '/ITSM/releasemanage/temporary',
+                          name: '临时发布',
+                          icon: 'control',
+                          routes: [
                             {
-                              path: '/ITSM/releasemanage/statistics/object',
-                              name: '发布功能统计',
+                              path: '/ITSM/releasemanage/temporary/registration',
+                              name: '出厂测试(临时发布)',
                               icon: 'control',
-                              component: './ITSM/Releasemanage/Statistics/ByObject',
-                            },
-                            {
-                              path: '/ITSM/releasemanage/statistics/analysis',
-                              name: '发布统计分析',
-                              icon: 'control',
-                              component: './ITSM/Releasemanage/Statistics/Analysis',
+                              component: './ITSM/Releasemanage/TemporaryRegistrat',
                             },
                           ]
                         },
@@ -1276,10 +1294,10 @@ export default {
                           component: '././ITSM/ServiceQuality/Statistics'
                         },
                         {
-                          path:'/ITSM/servicequalityassessment/statisticalquery',
-                          name:'服务绩效统计查询',
-                          icon:'caret-right',
-                          component:'././ITSM/ServiceQuality/Statisticalquery'
+                          path: '/ITSM/servicequalityassessment/statisticalquery',
+                          name: '服务绩效统计查询',
+                          icon: 'caret-right',
+                          component: '././ITSM/ServiceQuality/Statisticalquery'
                         }
                       ]
                     },
