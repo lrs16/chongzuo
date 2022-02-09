@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
-import { AlertOutlined } from '@ant-design/icons';
+import { AlertTwoTone } from '@ant-design/icons';
 import moment from 'moment';
 import {
   Drawer,
@@ -68,15 +68,20 @@ const columns = [
         }
       }
     },
-    render: (text, record) => {
+    render: (text) => {
+      const blubnap = new Map([
+        ['未超时', <AlertTwoTone twoToneColor="#52C41A" />],
+        ['即将超时', <AlertTwoTone twoToneColor="orange" />],
+        ['已超时', <AlertTwoTone twoToneColor="red" />]
+      ]);
       const colormap = new Map([
-        ['已超时', 'red'],
-        ['未超时', 'green'],
+        ['未超时', '#52C41A'],
         ['即将超时', 'orange'],
+        ['已超时', 'red']
       ]);
       return (
-        <><AlertOutlined style={{ fontSize: '1.4em', color: colormap.get(record.timeoutStatus), marginRight: '8px' }} />
-          <span>{text}</span>
+        <><span style={{ fontSize: '1.4em', marginRight: 8 }}>{blubnap.get(text)}</span>
+          <span style={{ color: colormap.get(text) }}>{text}</span>
         </>
       )
     }
@@ -1127,7 +1132,7 @@ function ChartDrawer(props) {
           rowKey={record => record.id}
           pagination={pagination}
           // rowSelection={rowSelection}
-          scroll={{ x: 3200 }}
+          scroll={{ x: 3500 }}
         />
       </Drawer>
     </>

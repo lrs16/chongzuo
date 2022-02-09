@@ -209,12 +209,12 @@ function QueryList(props) {
       } if (tablecolumns[i].key === 'timeoutStatus') {
         vote.render = (text) => {
           const blubnap = new Map([
-            ['未超时', <AlertTwoTone />],
+            ['未超时', <AlertTwoTone twoToneColor="#52C41A" />],
             ['即将超时', <AlertTwoTone twoToneColor="orange" />],
             ['已超时', <AlertTwoTone twoToneColor="red" />]
           ]);
           const colormap = new Map([
-            ['未超时', '#108ee9'],
+            ['未超时', '#52C41A'],
             ['即将超时', 'orange'],
             ['已超时', 'red']
           ]);

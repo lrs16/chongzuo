@@ -20,7 +20,7 @@ import {
   Checkbox,
   Tooltip
 } from 'antd';
-import { DownOutlined, UpOutlined, AlertOutlined } from '@ant-design/icons';
+import { DownOutlined, UpOutlined, AlertTwoTone } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
 
@@ -34,12 +34,6 @@ const formItemLayout = {
     sm: { span: 16 },
   },
 };
-
-const colormap = new Map([
-  ['已超时', 'red'],
-  ['未超时', 'green'],
-  ['即将超时', 'orange'],
-]);
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -155,12 +149,23 @@ function QueryList(props) {
           }
         }
       },
-      render: (text, record) => (
-        <>
-          <AlertOutlined style={{ fontSize: '1.4em', color: colormap.get(record.timeoutStatus), marginRight: '8px' }} />
-          <span>{text}</span>
-        </>
-      ),
+      render: (text) => {
+        const blubnap = new Map([
+          ['未超时', <AlertTwoTone twoToneColor="#52C41A" />],
+          ['即将超时', <AlertTwoTone twoToneColor="orange" />],
+          ['已超时', <AlertTwoTone twoToneColor="red" />]
+        ]);
+        const colormap = new Map([
+          ['未超时', '#52C41A'],
+          ['即将超时', 'orange'],
+          ['已超时', 'red']
+        ]);
+        return (
+          <><span style={{ fontSize: '1.4em', marginRight: 8 }}>{blubnap.get(text)}</span>
+            <span style={{ color: colormap.get(text) }}>{text}</span>
+          </>
+        )
+      }
     },
     {
       title: '故障发生时间',
@@ -1097,12 +1102,23 @@ function QueryList(props) {
       dataIndex: 'timeoutStatus',
       key: 'timeoutStatus',
       width: 150,
-      render: (text, arecord) => (
-        <>
-          <AlertOutlined style={{ fontSize: '1.4em', color: colormap.get(arecord.timeoutStatus), marginRight: '8px' }} />
-          <span>{text}</span>
-        </>
-      ),
+      render: (text) => {
+        const blubnap = new Map([
+          ['未超时', <AlertTwoTone twoToneColor="#52C41A" />],
+          ['即将超时', <AlertTwoTone twoToneColor="orange" />],
+          ['已超时', <AlertTwoTone twoToneColor="red" />]
+        ]);
+        const colormap = new Map([
+          ['未超时', '#52C41A'],
+          ['即将超时', 'orange'],
+          ['已超时', 'red']
+        ]);
+        return (
+          <><span style={{ fontSize: '1.4em', marginRight: 8 }}>{blubnap.get(text)}</span>
+            <span style={{ color: colormap.get(text) }}>{text}</span>
+          </>
+        )
+      }
     },
     {
       title: '故障发生时间',
@@ -1359,7 +1375,24 @@ function QueryList(props) {
             </a>)
         }
       }
-
+      if (val.title === '超时状态') {
+        const blubnap = new Map([
+          ['未超时', <AlertTwoTone twoToneColor="#52C41A" />],
+          ['即将超时', <AlertTwoTone twoToneColor="orange" />],
+          ['已超时', <AlertTwoTone twoToneColor="red" />]
+        ]);
+        const colormap = new Map([
+          ['未超时', '#52C41A'],
+          ['即将超时', 'orange'],
+          ['已超时', 'red']
+        ]);
+        obj.render = (text) => {
+          return (
+            <><span style={{ fontSize: '1.4em', marginRight: 8 }}>{blubnap.get(text)}</span>
+              <span style={{ color: colormap.get(text) }}>{text}</span>
+            </>)
+        }
+      }
       if (
         val.title === '故障概要' ||
         val.title === '故障详细描述' ||

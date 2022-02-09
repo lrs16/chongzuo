@@ -105,7 +105,7 @@ function SmoothLine(props) {
           setTimeout(() => {
             onGetVal(linkdata.data);
             handleGetDrawerVal({ ...linkdata.data, staticName, time1, time2, drawtitle: linkdata.data.name, timeType });
-          }, 200);
+          }, 100);
         }
       }}
       onDoubleClick={ev => {
@@ -174,7 +174,7 @@ function SmoothLine(props) {
                               setTimeout(() => {
                                 onGetVal(it.data);
                                 handleGetDrawerVal({ ...it.data, staticName, time1, time2, drawtitle: it.data.name, timeType });
-                              }, 200)
+                              }, 100)
                             }
                           }}
                           onDoubleClick={() => {

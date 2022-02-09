@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
-import { AlertOutlined } from '@ant-design/icons';
+import { AlertTwoTone } from '@ant-design/icons';
 import {
   Drawer,
   Button,
@@ -10,12 +10,6 @@ import {
   Tooltip,
   Popconfirm,
 } from 'antd';
-
-const colormap = new Map([
-  ['已超时', 'red'],
-  ['未超时', 'green'],
-  ['即将超时', 'orange'],
-]);
 
 const columns = [
   {
@@ -72,12 +66,23 @@ const columns = [
         }
       }
     },
-    render: (text, record) => (
-      <>
-        <AlertOutlined style={{ fontSize: '1.4em', color: colormap.get(record.timeoutStatus), marginRight: '8px' }} />
-        <span>{text}</span>
-      </>
-    ),
+    render: (text) => {
+      const blubnap = new Map([
+        ['未超时', <AlertTwoTone twoToneColor="#52C41A" />],
+        ['即将超时', <AlertTwoTone twoToneColor="orange" />],
+        ['已超时', <AlertTwoTone twoToneColor="red" />]
+      ]);
+      const colormap = new Map([
+        ['未超时', '#52C41A'],
+        ['即将超时', 'orange'],
+        ['已超时', 'red']
+      ]);
+      return (
+        <><span style={{ fontSize: '1.4em', marginRight: 8 }}>{blubnap.get(text)}</span>
+          <span style={{ color: colormap.get(text) }}>{text}</span>
+        </>
+      )
+    }
   },
   {
     title: '故障发生时间',

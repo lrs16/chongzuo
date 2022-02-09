@@ -27,7 +27,7 @@ function StatisticsCard(props) {
             onClick={() => {
               setTimeout(() => {
                 hanlestaticard({ value, staticName, time1, time2, drawtitle: staticName });
-              }, 200);
+              }, 100);
             }}>
             <Statistic
               value={value}

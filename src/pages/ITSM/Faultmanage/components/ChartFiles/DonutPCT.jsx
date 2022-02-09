@@ -110,7 +110,7 @@ function DonutPCT(props) {
               // if (onGettotalVal) {
               //   onGettotalVal(staticName)
               // }
-            }, 200);
+            }, 100);
           }}
             onDoubleClick={() => {
               switch (staticName) {
@@ -160,7 +160,7 @@ function DonutPCT(props) {
               onGetVal(linkdata._origin);
               handleGetDrawerVal({ ...linkdata._origin, staticName, drawtitle: linkdata._origin.type });
             }
-          }, 200);
+          }, 100);
         }}
         onDoubleClick={ev => {
           const linkdata = ev.data;

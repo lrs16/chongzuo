@@ -194,7 +194,8 @@ export default {
       const response = yield call(queryfaultTodoDetailEdit, id);
       if (response.code === -1) {
         message.error(response.msg)
-      } else {
+      }
+      if (response.code === 200) {
         yield put({
           type: 'detailslist',
           payload: response,
