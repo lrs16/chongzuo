@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState, createContext } from 'react';
 import { Form, Button, message, Collapse, Steps } from 'antd';
 import moment from 'moment';
 import { connect } from 'dva';
-import Link from 'umi/link';
 import router from 'umi/router';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import User from '@/components/ProblemSelect/User';
@@ -234,7 +233,7 @@ function Workorder(props) {
           state: { cach: false, closetabid: mainId },
         });
       } else {
-        message.success(res.error);
+        message.error(res.msg);
       }
     });
   };
@@ -668,7 +667,7 @@ function Workorder(props) {
         message.success('该故问题单已超时，请填写超时原因...');
         setModalVisible(true);
         setButtonType(buttype);
-      }
+      } 
       if (
         res.code === 200 &&
         ((res.status === 'yes' && res.timeoutMsg !== '') || res.status === 'no')
@@ -689,6 +688,8 @@ function Workorder(props) {
           default:
             break;
         }
+      } else {
+        message.error(res.msg);
       }
     });
   };
@@ -719,6 +720,8 @@ function Workorder(props) {
           default:
             break;
         }
+      } else {
+        message.error(res.msg)
       }
     });
   };
@@ -846,6 +849,7 @@ function Workorder(props) {
                       onClickSubmit('circaSign');
                       setProblemHandle('handle');
                       setChange();
+                      setUserChoice(false)
                     }}
                     disabled={olduploadstatus}
                   >
@@ -895,6 +899,7 @@ function Workorder(props) {
                     onClick={() => {
                       handleSubmit();
                       setButandOrder('end');
+                      setUserChoice(false)
                     }}
                     disabled={olduploadstatus}
                   >
@@ -914,6 +919,7 @@ function Workorder(props) {
                     onClick={() => {
                       cancelChangeorder();
                       onClickSubmit('flowNodeName');
+                      setUserChoice(false)
                     }}
                     disabled={olduploadstatus}
                   >

@@ -160,21 +160,6 @@ const User = props => {
         ChangeUserVisible(false);
       }
     }
-    if (type === 'demand') {
-      const newArr = [];
-      const nameArr = [];
-      for (let i = 0; i < demandvalue.length; i += 1) {
-        const idnum = demandvalue[i].userIds.length;
-        newArr.push(idnum);
-        nameArr.push(demandvalue[i].nodeName);
-      }
-      if (newArr.indexOf(0) !== -1 || nameArr.length < problemlist.data.length) {
-        message.error('最少选择一个处理人！');
-      } else {
-        ChangeChoice(true);
-        ChangeUserVisible(false);
-      }
-    }
   };
 
   const handleCancel = () => {
@@ -187,11 +172,17 @@ const User = props => {
     changorder !== undefined ? changorder : sessionStorage.getItem('Nextflowmane');
   return (
     <>
-      <Modal title={sessionStorage.getItem('flowtype') === '9' ? '请选择转单环节处理人' : '请选择下一环节处理人'} visible={visible} onOk={handleOk} onCancel={handleCancel}>
+      <Modal
+        title={sessionStorage.getItem('flowtype') === '9' ? '请选择转单环节处理人' : '请选择下一环节处理人'}
+        visible={visible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        destroyOnClose='true'
+      >
         <Spin tip="正在加载数据..." spinning={Boolean(loading)}>
           {loading === false && type !== 'demand' && isnew && problemlist !== '' && currentPeocess !== '系统运维商审核' && (
             <>
-              <div>{sessionStorage.getItem('flowtype') === '9' ? '转单' :nextflowuser}人员</div>
+              <div>{sessionStorage.getItem('flowtype') === '9' ? '转单' : nextflowuser}人员</div>
               <div style={{ marginTop: 12 }} className={styles.useritem}>
                 <Checkbox.Group
                   defaultValue={defaultvalue}
@@ -216,7 +207,6 @@ const User = props => {
                 </div>
               </>
             )
-
           }
 
           {

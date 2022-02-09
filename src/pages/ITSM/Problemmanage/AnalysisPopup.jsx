@@ -4,14 +4,18 @@ import {
   Form,
   Button,
   Table,
-  Tooltip
+  Tooltip,
+  Icon
 } from 'antd';
 import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
 
-
-
+const colorArr = new Map([
+  ['已超时', 'red'],
+  ['未超时', 'green'],
+  ['即将超时', 'orange'],
+]);
 function AnalysisPopup(props) {
   const {
     title,
@@ -82,6 +86,18 @@ function AnalysisPopup(props) {
           </Tooltip>
         );
       },
+    },
+    {
+      title: '超时状态',
+      dataIndex: 'timeoutStatus',
+      key: 'timeoutStatus',
+      width: 150,
+      render: (text) => (
+        <>
+          <Icon type="alert" style={{ fontSize: '1.4em', color: colorArr.get(text), marginRight: '8px' }} />
+          <span>{text}</span>
+        </>
+      )
     },
     {
       title: '问题分类',

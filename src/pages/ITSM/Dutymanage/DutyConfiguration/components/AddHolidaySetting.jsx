@@ -128,7 +128,6 @@ function AddholidaySetting(props) {
       target[fieldName] = e;
       setData(newData)
     }
-
   }
 
   const deleteObj = (key, newData) => {

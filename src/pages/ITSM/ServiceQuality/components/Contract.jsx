@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Table,Drawer, Form, Input, Button, DatePicker, Select, message } from 'antd';
+import { Table, Drawer, Form, Input, Button, DatePicker, Select, message } from 'antd';
 import moment from 'moment';
 
 const formItemLayout = {
@@ -17,7 +17,8 @@ let startTime;
 let endTime;
 const { Option } = Select;
 
-const withClick = (element, handleClick = () => {}) => {
+
+const withClick = (element, handleClick = () => { }) => {
   return <element.type {...element.props} onClick={handleClick} />;
 };
 
@@ -31,31 +32,88 @@ function Contract(props) {
     onSumit,
     isEdit,
   } = props;
+  const [data, setData] = useState([]);
+  const [newbutton, setNewButton] = useState(false);
+
+  const getRowByKey = (key, newData) => {
+    return (newData || data).filter(item => item.key === key)[0];
+  }
+
+  const handleFieldChange = (e, fieldName, key) => {
+    const newData = data.map(item => ({ ...item }));
+    const target = getRowByKey(key, newData);
+    if (target) {
+      if(fieldName === 'bb') {
+        console.log(moment(e).startOf('quarter').format("YYYY-MM-DD"),'e')
+        console.log(moment(e).endOf('quarter').format("YYYY-MM-DD"),'e4')
+        target.dd =  e
+      } else {
+        target[fieldName] = e;
+        setData(newData)
+      }
+    }
+  }
+
+  // console.log(moment().format("YYYY-02-01").startOf('quarter').format("YYYY-MM-DD"), 'quarter')
 
   const columns = [
     {
-      title:'考核年份',
-      dataIndex:'',
-      key:''
+      title: '考核年份',
+      dataIndex: 'aa',
+      key: 'aa',
+      render: (text, record) => {
+        return (
+          <DatePicker
+            value={moment(text)}
+            format='YYYY'
+            mode="year"
+            onPanelChange={value => handleFieldChange(value.format('YYYY'), 'aa', record.key)}
+          />
+        )
+      }
     },
     {
-      title:'考核周期',
-      dataIndex:'',
-      key:''
+      title: '考核周期',
+      dataIndex: 'bb',
+      key: 'bb',
+      render: (text, record) => {
+        return (
+          <Select onChange={(e) => handleFieldChange(e,'bb',record.key)}>
+            <Option value={record.aa ? moment(`${record.aa}-01-01`):''}>第一季度</Option>
+            <Option value={record.aa ? moment(`${record.aa}-04-01`):''}>第二季度</Option>
+            <Option value={record.aa ? moment(`${record.aa}-07-01`):''}>第三季度</Option>
+            <Option value={record.aa ? moment(`${record.aa}-10-01`):''}>第四季度</Option>
+          </Select>
+        )
+      }
     },
     {
-      title:'考核时段',
-      dataIndex:'',
-      key:''
+      title: '考核时段',
+      dataIndex: 'cc',
+      key: 'cc'
     },
     {
-      title:'操作',
-      dataIndex:'',
-      key:''
+      title: '操作',
+      dataIndex: '',
+      key: ''
     },
   ]
 
   const required = true;
+
+  const newMember = () => {
+    const newData = data.map(item => ({ ...item }));
+    newData.push({
+      key: data.length + 1,
+      aa: moment().format('YYYY'),
+      bb: '',
+      cc: '',
+      dd:'',
+      editable: true,
+    });
+    setData(newData);
+    setNewButton(true);
+  }
 
   const handleopenClick = () => {
     setVisible(true);
@@ -228,11 +286,20 @@ function Contract(props) {
               ],
               initialValue: '',
             })(
-                <Table
-                  columns={columns}
-                />
+              <Table
+                columns={columns}
+                dataSource={data}
+                pagination={false}
+              />
             )}
-          </Form.Item> */}
+          </Form.Item>
+
+          <Button
+            style={{ width: '100%', marginTop: '16', marginBottom: '8' }}
+            type='primary'
+            ghost
+            onClick={newMember}
+          >新增</Button> */}
 
           <Form.Item label="状态">
             {getFieldDecorator('status', {
@@ -258,6 +325,8 @@ function Contract(props) {
             )}
           </Form.Item>
         </Form>
+
+        <DatePicker mode="year" />
 
         <div
           style={{

@@ -300,8 +300,8 @@ function ProviderMaintenance(props) {
     director: '',
     directorPhone: '',
     paginations: {
-      current:1,
-      pageSize:15
+      current: 1,
+      pageSize: 15
     }
   };
 
