@@ -3,8 +3,9 @@ import moment from 'moment';
 import router from 'umi/router';
 import { Button } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+// import TemporaryRegistrat from './components/TemporaryRegistrat';
 
-function TemporaryRegistrat(props) {
+function TemporaryDetail(props) {
   const pagetitle = props.route.name;
 
   const handleclose = () => {
@@ -31,4 +32,4 @@ function TemporaryRegistrat(props) {
   );
 }
 
-export default TemporaryRegistrat;
+export default TemporaryDetail;

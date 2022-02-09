@@ -184,7 +184,6 @@ function ToDodetails(props) {
     <>
       {tabActivekey === 'workorder' && (
         <>
-
           {/* 测试下载功能 */}
           {/* <Button onClick={()=>test()}>下载</Button> */}
           {taskName === '事件登记' && !olduploadstatus && (
@@ -194,7 +193,7 @@ function ToDodetails(props) {
               </Button>
             </Popconfirm>
           )}
-          {(taskName === '事件响应'
+          {((taskName === '事件响应' && info && info.data && !info.data[info.data.length - 1]?.check)
             || (info && info.edit && (
               (taskName === '事件确认' && !info.edit.finish) ||
               ((info.flowNodeName === '运维商经理审核' || info.flowNodeName === '数据科审核' || info.flowNodeName === '自动化科审核') && !info.edit.check)))) && (
@@ -231,6 +230,18 @@ function ToDodetails(props) {
                 disabled={olduploadstatus || allloading}
               >
                 转单
+              </Button>
+            </>
+          )}
+          {taskName === '事件登记' && (
+            <>
+              <Button
+                type="primary"
+                style={{ marginRight: 8 }}
+                onClick={() => { handleClick('结束') }}
+                disabled={olduploadstatus || allloading}
+              >
+                结束
               </Button>
             </>
           )}

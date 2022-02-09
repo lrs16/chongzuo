@@ -697,28 +697,28 @@ export default {
                               component: './ITSM/Releasemanage/LibraryList',
                             },
                             {
-                              path: '/ITSM/releasemanage/plan/statistics',
+                              path: '/ITSM/releasemanage/statistics',
                               name: '发布统计',
                               icon: 'control',
                               routes: [
                                 {
-                                  path: '/ITSM/releasemanage/plan/statistics',
-                                  redirect: '/ITSM/releasemanage/plan/statistics/analysis',
+                                  path: '/ITSM/releasemanage/statistics',
+                                  redirect: '/ITSM/releasemanage/statistics/analysis',
                                 },
                                 {
-                                  path: '/ITSM/releasemanage/plan/statistics/index',
+                                  path: '/ITSM/releasemanage/statistics/index',
                                   name: '发布统计',
                                   icon: 'control',
                                   component: './ITSM/Releasemanage/Statistics',
                                 },
                                 {
-                                  path: '/ITSM/releasemanage/plan/statistics/object',
+                                  path: '/ITSM/releasemanage/statistics/object',
                                   name: '发布功能统计',
                                   icon: 'control',
                                   component: './ITSM/Releasemanage/Statistics/ByObject',
                                 },
                                 {
-                                  path: '/ITSM/releasemanage/plan/statistics/analysis',
+                                  path: '/ITSM/releasemanage/statistics/analysis',
                                   name: '发布统计分析',
                                   icon: 'control',
                                   component: './ITSM/Releasemanage/Statistics/Analysis',
@@ -736,7 +736,7 @@ export default {
                               path: '/ITSM/releasemanage/temporary/registration',
                               name: '出厂测试(临时发布)',
                               icon: 'control',
-                              component: './ITSM/Releasemanage/TemporaryRegistrat',
+                              component: './ITSM/Releasemanage/TemporaryDetail',
                             },
                           ]
                         },

@@ -159,7 +159,7 @@ function WorkOrder2(props) {
         flow: {
           id: taskId,
           userIds: sessionStorage.getItem('userauthorityid'),
-          type: '1',
+          type: taskName === '事件登记' ? '2' : '1',
         },
         paloadvalues,
         mainId,
@@ -218,6 +218,8 @@ function WorkOrder2(props) {
     });
     if (type === 'save') {
       noverification();
+    } if (type === '结束') {
+      noUser(false);
     } else {
       RegistratRef.current.Forms(err => {
         needUser(err);
@@ -361,6 +363,8 @@ function WorkOrder2(props) {
         break;
       }
       case '运维商经理审核':
+      case '自动化科审核':
+      case '数据科审核':
         getchecks();
         break;
       case '事件处理':
