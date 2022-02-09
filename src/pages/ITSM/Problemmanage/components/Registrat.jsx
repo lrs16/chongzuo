@@ -218,7 +218,7 @@ const Registrat = React.forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    message: '请选择问题申报人',
+                    message: '请下拉选择问题申报人',
                   },
                 ],
                 initialValue: register.complainUser,

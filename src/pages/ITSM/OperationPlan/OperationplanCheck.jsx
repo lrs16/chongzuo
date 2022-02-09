@@ -1295,7 +1295,11 @@ function OperationplanCheck(props) {
             </Button>
           </CheckModel>
 
-          <Back selectedRows={selectedRows} reasonSubmit={values => reasonSubmit(values)}>
+          <Back
+            selectedRows={selectedRows}
+            reasonSubmit={values => reasonSubmit(values)}
+            backProcessname='作业计划填报'
+          >
             <Button type="primary" style={{ marginRight: 8 }}>
               回退
             </Button>
