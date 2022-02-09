@@ -16,7 +16,11 @@ const colorArr = new Map([
   ['未超时', 'green'],
   ['即将超时', 'orange'],
 ]);
-
+const textmap = new Map([
+  ['未超时', '#52C41A'],
+  ['即将超时', 'orange'],
+  ['已超时', 'red']
+]);
 function AnalysisPopup(props) {
   const {
     title,
@@ -121,7 +125,7 @@ function AnalysisPopup(props) {
       render: (text) => (
         <>
           <Icon type="alert" style={{ fontSize: '1.4em', color: colorArr.get(text), marginRight: '8px' }} />
-          <span>{text}</span>
+          <span style={{ color: textmap.get(text)}}>{text}</span>
         </>
       )
     },
