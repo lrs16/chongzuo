@@ -78,6 +78,7 @@ function Workorder(props) {
   const [buttontype, setButtonType] = useState('');
   const [modalvisible, setModalVisible] = useState(false);
   const [modalrollback, setModalRollBack] = useState(false); // 回退信息modle
+  const [backTitle,setBackTitle] = useState('')
 
   const {
     dispatch,
@@ -659,6 +660,25 @@ function Workorder(props) {
     files.ischange = false;
   };
 
+  const setBacktitle = () => {
+    switch(flowNodeName) {
+      case '系统运维商审核':
+        setBackTitle('问题登记')
+        break;
+      case '系统运维商确认':
+        setBackTitle('系统开发商处理')
+        break;
+      case '问题登记人员确认':
+        setBackTitle('自动化科业务人员确认')
+        break;
+      case '自动化科业务人员确认':
+        setBackTitle('系统运维商确认')
+        break;
+      default:
+        break;
+    }
+  }
+
   // 点击回退,接单,流转、结束
   const onClickSubmit = buttype => {
     const taskId = id;
@@ -667,6 +687,7 @@ function Workorder(props) {
         message.success('该故问题单已超时，请填写超时原因...');
         setModalVisible(true);
         setButtonType(buttype);
+        setBacktitle()
       } 
       if (
         res.code === 200 &&
@@ -678,6 +699,7 @@ function Workorder(props) {
             break;
           case 'goback':
             setModalRollBack(true);
+            setBacktitle()
             break;
           case 'flowNodeName':
             handleSubmit(flowNodeName);
@@ -688,7 +710,8 @@ function Workorder(props) {
           default:
             break;
         }
-      } else {
+      } 
+      if(res.code !== 200) {
         message.error(res.msg);
       }
     });
@@ -1273,6 +1296,7 @@ function Workorder(props) {
       <Reasonregression
         title="填写回退意见"
         visible={modalrollback}
+        backProcessname={backTitle}
         ChangeVisible={v => setModalRollBack(v)}
         rollbackSubmit={v => reasonSubmit(v)}
       />

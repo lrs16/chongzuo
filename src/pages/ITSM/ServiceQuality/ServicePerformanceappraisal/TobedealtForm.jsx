@@ -70,14 +70,13 @@ function TobedealtForm(props) {
   const [modalrollback, setModalRollBack] = useState(false); // 回退信息modle
   const [handleUploadStatus, setHandleUploadStatus] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(false);
+  const [backTitle,setBackTitle] = useState('')
 
   const {
     taskId,
     assessNo,
     mainId,
     search,
-    myOrder,
-    tobelist,
     taskName,
     instanceId,
   } = props.location.query;
@@ -521,7 +520,9 @@ function TobedealtForm(props) {
       if (res.code === 200 && res.status === 'yes' && res.timeoutMsg === '') {
         message.success('该绩效单已超时，请填写超时原因...');
         setModalVisible(true);
+        setBackTitle('服务绩效考核登记')
       } else {
+        setBackTitle('服务绩效考核登记')
         setModalRollBack(true);
       }
     });
@@ -1002,6 +1003,7 @@ function TobedealtForm(props) {
       <Reasonregression
         title="填写回退意见"
         visible={modalrollback}
+        backProcessname={backTitle}
         ChangeVisible={v => setModalRollBack(v)}
         rollbackSubmit={v => reasonSubmit(v)}
       />

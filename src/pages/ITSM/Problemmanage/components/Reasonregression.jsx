@@ -13,9 +13,11 @@ function ModelRollback(props) {
   const required = true;
   const {
     form: { getFieldDecorator, validateFields, resetFields },
-    title, visible, ChangeVisible
+    title,
+    visible,
+    ChangeVisible,
+    backProcessname
   } = props;
-
 
   const handleCancel = () => {
     ChangeVisible(false);
@@ -31,14 +33,10 @@ function ModelRollback(props) {
     })
   }
 
-
-
-
   return (
     <>
       <Modal
         visible={visible}
-        maskClosable={false}
         title={title}
         checkable
         onCancel={handleCancel}
@@ -46,6 +44,7 @@ function ModelRollback(props) {
       >
         <Row gutter={16}>
           <Form>
+            <Col style={{color:'red'}}>回退至 【{backProcessname}】</Col>
             <Col span={24}>
               <Form.Item label='回退意见'>
                 {
