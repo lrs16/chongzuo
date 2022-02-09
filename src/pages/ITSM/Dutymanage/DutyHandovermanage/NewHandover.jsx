@@ -486,6 +486,7 @@ function NewHandover(props) {
         <Reasonregression
           title="填写回退意见"
           visible={modalrollback}
+          backProcessname='交班状态'
           ChangeVisible={v => setModalRollBack(v)}
           rollbackSubmit={v => reasonSubmit(v)}
         />

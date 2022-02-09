@@ -22,9 +22,8 @@ const User = props => {
   const [demandvalue, setDemandValue] = useState([])
   const [defaultvalue, setDefaultValue] = useState([])
   const [specialvalue, setSpecialvalue] = useState([]);
+  const [value, setValue] = useState('');
   const type = sessionStorage.getItem('Processtype');
-
-  // const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     if (loading) {
@@ -59,13 +58,6 @@ const User = props => {
     return newArr;
   };
 
-  const [value, setValue] = useState('');
-
-  // 单选下一环节人员
-  // const handleChange = e => {
-  //   setValue(e.target.value);
-  //   sessionStorage.setItem('NextflowUserId', e.target.value);
-  // };
   // 多选下一环节人员
   const handleChange = checkedValues => {
     setValue(checkedValues);
@@ -77,17 +69,6 @@ const User = props => {
     setSpecialvalue(checkedValues);
     sessionStorage.setItem('AutoflowUserId', checkedValues.join(','));
   };
-
-  // useEffect(() => {
-  //   sessionStorage.setItem('NextflowUserId', value);
-  // }, []);
-
-  useEffect(() => {
-    if (changorder !== undefined && type === 'event') {
-      sessionStorage.setItem('Nextflowmane', changorder);
-      sessionStorage.setItem('flowtype', '3');
-    }
-  }, [changorder]);
 
   const showModal = () => {
     switch (type) {
@@ -136,13 +117,14 @@ const User = props => {
     if (visible) {
       showModal();
     }
-
     return () => {
+      setSpecialvalue([]);
+      setValue([])
     }
+   
   }, [visible]);
 
   const handleOk = () => {
-    const params = value.length || specialvalue.length;
     if (currentPeocess !== '系统运维商审核') {
       if (value.length === 0) {
         message.error('最少选择一个处理人！');

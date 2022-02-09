@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { Modal, Form, Card, Input, message } from 'antd';
+import {
+  Modal,
+  Form,
+  Card,
+  Input,
+  message,
+  Row,
+  Col
+} from 'antd';
 
 const { TextArea } = Input;
 const formItemLayout = {
@@ -13,7 +21,7 @@ const formItemLayout = {
   },
 };
 
-const withClick = (element, handleClick = () => {}) => {
+const withClick = (element, handleClick = () => { }) => {
   return <element.type {...element.props} onClick={handleClick} />;
 };
 function Back(props) {
@@ -24,6 +32,7 @@ function Back(props) {
     children,
     selectedRows,
     detailPage,
+    backProcessname
   } = props;
   const handleopenClick = () => {
     if (!detailPage) {
@@ -68,25 +77,27 @@ function Back(props) {
       <Modal
         visible={visible}
         maskClosable={false}
-        width={850}
         checkable
         onCancel={handleCancel}
         onOk={handleReasonregression}
       >
-        <Card>
-          <Form {...formItemLayout}>
-            <Form.Item label="退回原因">
-              {getFieldDecorator('msg', {
-                rules: [
-                  {
-                    required,
-                    message: '请说明退回原因',
-                  },
-                ],
-              })(<TextArea style={{ height: '200px' }} />)}
-            </Form.Item>
+        <Row>
+          <Form>
+            <Col style={{ color: 'red' }}>回退至 【{backProcessname}】</Col>
+            <Col span={24}>
+              <Form.Item label="退回原因">
+                {getFieldDecorator('msg', {
+                  rules: [
+                    {
+                      required,
+                      message: '请说明退回原因',
+                    },
+                  ],
+                })(<TextArea rows={5} />)}
+              </Form.Item>
+            </Col>
           </Form>
-        </Card>
+        </Row>
       </Modal>
     </>
   );

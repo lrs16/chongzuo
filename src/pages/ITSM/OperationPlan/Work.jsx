@@ -614,7 +614,11 @@ function Work(props) {
             edit.check.result === null &&
             taskResult &&
             taskResult.length > 0 && (
-              <Back reasonSubmit={values => reasonSubmit(values)} detailPage="true">
+              <Back
+                reasonSubmit={values => reasonSubmit(values)}
+                detailPage="true"
+                backProcessname='作业计划填报'
+              >
                 <Button
                   type="danger"
                   ghost
