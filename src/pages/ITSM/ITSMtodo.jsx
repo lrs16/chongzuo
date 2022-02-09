@@ -233,6 +233,7 @@ function ITSMtodo(props) {
         todoUserId: values,
         pageNum: page,
         pageSize: size,
+        itemWorkType: location?.query?.itemWorkType || '',
       },
     });
   };
@@ -271,9 +272,10 @@ function ITSMtodo(props) {
         todoUserId: sessionStorage.getItem('userauthorityid'),
         pageNum: paginations.current,
         pageSize: paginations.pageSize,
+        itemWorkType: location?.query?.itemWorkType || '',
       },
     });
-  }, []);
+  }, [location.query.itemWorkType]);
 
   // 重置
   const handleReset = () => {
@@ -283,6 +285,7 @@ function ITSMtodo(props) {
         todoUserId: sessionStorage.getItem('userauthorityid'),
         pageNum: 1,
         pageSize: 15,
+        itemWorkType: location?.query?.itemWorkType || '',
       },
     });
     setPageinations({ current: 1, pageSize: 15 });

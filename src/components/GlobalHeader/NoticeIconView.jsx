@@ -12,11 +12,7 @@ class GlobalHeaderRight extends Component {
   state = {
     num: 0,
     pathname: '/',
-    timeoutnum: {
-      timeoutTimeNum: 0,
-      remindTimeNum: 0,
-      normalTimeNum: 0
-    },
+    timeoutnum: []
   };
 
   componentDidMount() {
@@ -64,7 +60,7 @@ class GlobalHeaderRight extends Component {
   }
 
   changeReadState = clickedItem => {
-    router.push({ pathname: `/ITSM/todo`, query: { pathpush: true }, state: {} });
+    router.push({ pathname: `/ITSM/todo`, query: { pathpush: true, itemWorkType: clickedItem.type }, state: {} });
   };
 
   handleNoticeClear = (title, key) => {
@@ -84,80 +80,31 @@ class GlobalHeaderRight extends Component {
   };
 
   getNoticeData = () => {
-    //  const { notices = [] } = this.props;
-    const notices = [
-      {
-        description: `总共有（${this.state.num}）个待办工单`,
-        // extra: '已超时',
-        id: '001',
-        // status: 'urgent',
-        title: `IT服务管理`,
-        type: 'event',
-      },
-      {
-        description: `（${this.state.timeoutnum.remindTimeNum}）个`,
-        id: '002',
-        status: 'doing',
-        title: `事件单`,
-        type: 'event',
-      },
-      {
-        description: `（${this.state.timeoutnum.normalTimeNum}）个`,
-        id: '003',
-        title: `故障单`,
-        type: 'event',
-      },
-      {
-        description: `（${this.state.timeoutnum.normalTimeNum}）个`,
-        id: '004',
-        title: `问题单`,
-        type: 'event',
-      },
-      {
-        description: `（${this.state.timeoutnum.normalTimeNum}）个`,
-        id: '005',
-        title: `需求单`,
-        type: 'event',
-      },
-      {
-        description: `（${this.state.timeoutnum.normalTimeNum}）个`,
-        id: '006',
-        title: `发布单`,
-        type: 'event',
-      },
-      {
-        description: `（${this.state.timeoutnum.normalTimeNum}）个`,
-        id: '007',
-        title: `服务绩效单`,
-        type: 'event',
-      },
-      {
-        description: `（${this.state.timeoutnum.normalTimeNum}）个`,
-        id: '008',
-        title: `工作计划单`,
-        type: 'event',
-      },
-      {
-        description: `（${this.state.timeoutnum.normalTimeNum}）个`,
-        id: '009',
-        title: `工作督办单`,
-        type: 'event',
-      },
-    ];
-
+    const notices = this.state.timeoutnum;
+    const typemap = new Map([
+      ['event', '事件'],
+      ['trouble', '故障'],
+      ['problem', '问题'],
+      ['demand', '需求'],
+      ['release', '发布'],
+      ['operation', '作业计划'],
+      ['work', '工作督办'],
+      ['quality', '服务绩效'],
+    ]);
     if (notices.length === 0) {
       return {};
     }
-
     const newNotices = notices.map(notice => {
-      const newNotice = { ...notice };
+      const newNotice = {
+        key: notice.itemWorkType,
+        title: `${typemap.get(notice.itemWorkType)}单`,
+        description: notice.num,
+        type: notice.itemWorkType,
+        status: 'doing'
+      };
 
       if (newNotice.datetime) {
         newNotice.datetime = moment(notice.datetime).fromNow();
-      }
-
-      if (newNotice.id) {
-        newNotice.key = newNotice.id;
       }
 
       if (newNotice.extra && newNotice.status) {
@@ -180,7 +127,8 @@ class GlobalHeaderRight extends Component {
       }
       return newNotice;
     });
-    return groupBy(newNotices, 'type');
+    return newNotices;
+    //  return groupBy(newNotices, 'type');
   };
 
   getUnreadData = noticeData => {
@@ -202,7 +150,7 @@ class GlobalHeaderRight extends Component {
   render() {
     const { loading, onNoticeVisibleChange } = this.props;
     const noticeData = this.getNoticeData();
-    const unreadMsg = this.getUnreadData(noticeData);
+    // const unreadMsg = this.getUnreadData(noticeData);
     return (
       <NoticeIcon
         className={styles.action}
@@ -214,9 +162,7 @@ class GlobalHeaderRight extends Component {
         clearText={formatMessage({
           id: 'component.noticeIcon.clear',
         })}
-        viewMoreText={formatMessage({
-          id: 'component.noticeIcon.view-more',
-        })}
+        viewMoreText='查看全部待办单'
         onClear={this.handleNoticeClear}
         onPopupVisibleChange={onNoticeVisibleChange}
         onViewMore={() => router.push({ pathname: `/ITSM/todo`, query: { pathpush: true } })}
@@ -224,15 +170,11 @@ class GlobalHeaderRight extends Component {
       >
         {/* 待办 */}
         <NoticeIcon.Tab
-          tabKey="event"
-          title={formatMessage({
-            id: 'component.globalHeader.event',
-          })}
-          emptyText={formatMessage({
-            id: 'component.globalHeader.event.empty',
-          })}
+          tabKey="todo"
+          title='待办'
+          emptyText='你已完成所有待办'
           count={this.state.num}
-          list={noticeData.event}
+          list={noticeData}
           showViewMore
         />
         {/* 通知 */}

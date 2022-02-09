@@ -10,11 +10,11 @@ export default class NoticeIcon extends Component {
   static Tab = NoticeList;
 
   static defaultProps = {
-    onItemClick: () => {},
-    onPopupVisibleChange: () => {},
-    onTabChange: () => {},
-    onClear: () => {},
-    onViewMore: () => {},
+    onItemClick: () => { },
+    onPopupVisibleChange: () => { },
+    onTabChange: () => { },
+    onClear: () => { },
+    onViewMore: () => { },
     loading: false,
     clearClose: false,
     emptyImage: 'https://gw.alipayobjects.com/zos/rmsportal/wAhyIChODzsoKIOBHcBk.svg',
@@ -76,6 +76,7 @@ export default class NoticeIcon extends Component {
         // tabKey, showClear,
         showViewMore,
       } = child.props;
+
       const len = list && list.length ? list.length : 0;
       const msgCount = count || count === 0 ? count : len;
       const tabTitle = msgCount > 0 ? `${title} (${msgCount})` : title;
