@@ -145,11 +145,11 @@ function AddProviderMaintenance(props) {
       dataIndex: 'dueTime',
       key: 'dueTime',
     },
-    {
-      title:'考核周期',
-      dataIndex:'',
-      key:''
-    },
+    // {
+    //   title:'考核周期',
+    //   dataIndex:'',
+    //   key:''
+    // },
     {
       title: '状态',
       dataIndex: 'status',

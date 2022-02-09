@@ -326,8 +326,6 @@ function Contract(props) {
           </Form.Item>
         </Form>
 
-        <DatePicker mode="year" />
-
         <div
           style={{
             position: 'absolute',
