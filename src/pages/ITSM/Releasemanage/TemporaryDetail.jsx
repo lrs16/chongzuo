@@ -1,9 +1,9 @@
 import React from 'react';
 import moment from 'moment';
 import router from 'umi/router';
-import { Button } from 'antd';
+import { Button, Card } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-// import TemporaryRegistrat from './components/TemporaryRegistrat';
+import TemporaryRegistrat from './components/TemporaryRegistrat';
 
 function TemporaryDetail(props) {
   const pagetitle = props.route.name;
@@ -27,7 +27,9 @@ function TemporaryDetail(props) {
   );
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
-      1111
+      <Card>
+        <TemporaryRegistrat />
+      </Card>
     </PageHeaderWrapper>
   );
 }

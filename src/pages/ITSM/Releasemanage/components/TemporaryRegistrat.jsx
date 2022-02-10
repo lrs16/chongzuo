@@ -1,16 +1,16 @@
 import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect, useContext } from 'react';
 import moment from 'moment';
-import { Row, Col, Form, Input, AutoComplete, Button, Select, Drawer, message } from 'antd';
+import { Row, Col, Form, Input, AutoComplete, Button, Select, Drawer, DatePicker, Radio } from 'antd';
 import { CaretRightOutlined } from '@ant-design/icons';
 import SubmitTypeContext from '@/layouts/MenuContext';
 import DeptSlectId from '@/components/DeptTree/SelectID';
 import { queryDisableduserByUser, queryUnitList, queryDeptList } from '@/services/common';
 import styles from '../index.less';
 
-const { TextArea } = Input;
 const InputGroup = Input.Group;
 const { Option } = Select;
 const { TextArea, Search } = Input;
+const RadioGroup = Radio.Group;
 
 const formItemLayout = {
   labelCol: {
@@ -41,8 +41,12 @@ function TemporaryRegistrat(props, ref) {
   const [deptdata, setDeptdata] = useState([]); // 自动完成部门下拉表
   const [unitopen, setUnitopen] = useState(false);
   const [deptopen, setDeptopen] = useState(false);
-  const [workload, setWorkLoad] = useState(false);
   const formRef = useRef();
+  useImperativeHandle(ref, () => ({
+    getVal: () => getFieldsValue(),
+    resetVal: () => resetFields(),
+    Forms: props.form.validateFieldsAndScroll,
+  }), []);
 
 
   // 自动完成报障用户
@@ -76,7 +80,7 @@ function TemporaryRegistrat(props, ref) {
     setFieldsValue({
       applicant: user,
       applicantId: v,
-      proposerPhone: phone,
+      tel: phone,
       applicantUnit: unit,
       Unit: unit,
       applicantUnitId: unitId,
@@ -351,17 +355,116 @@ function TemporaryRegistrat(props, ref) {
           </Col>
           <Col span={8}>
             <Form.Item label="联系电话">
-              {getFieldDecorator('proposerPhone', {
-                // rules: [
-                //   {
-                //     required,
-                //     // len: 11,
-                //     // validator: phone_reg,
-                //     message: '请输入联系电话',
-                //   },
-                // ],
-                initialValue: info.proposerPhone,
+              {getFieldDecorator('tel', {
+                rules: [{ required, message: '请输入联系电话' }],
+                initialValue: info.tel,
               })(<Input placeholder="请输入" />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="程序版本号">
+              {getFieldDecorator('versionNo', {
+                initialValue: info.versionNo,
+                rules: [{ required, message: '请输入程序版本号' }],
+              })(<Input placeholder="请输入" disabled={taskName === '出厂测试'} />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="发布等级">
+              {getFieldDecorator('releaseLevel', {
+                initialValue: info.releaseLevel,
+                rules: [{ required, message: '请输入程序版本号' }],
+              })(<Input placeholder="请输入" />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="计划工作开始时间" >
+              {getFieldDecorator('planStart', {
+                rules: [{ required, message: `请选择计划工作开始时间` }],
+                initialValue: moment(info.practicePre && info.practicePre.planStart ? info.practicePre.planStart : undefined),
+              })(
+                <div>
+                  {!info.practicePre && (<DatePicker
+                    showTime
+                    placeholder="请选择时间"
+                    format="YYYY-MM-DD HH:mm:ss"
+                    // disabled={!isEdit}
+                    style={{ width: '100%' }}
+                    defaultValue={moment(info.practicePre && info.practicePre.planStart ? info.practicePre.planStart : undefined)}
+                    onChange={(v) => { setFieldsValue({ planStart: moment(v).format('YYYY-MM-DD HH:mm:ss') }) }}
+                    disabledDate={(v) => {
+                      const dates = getFieldsValue(['planEnd']);
+                      return v && v > moment(dates.planEnd);
+                    }}
+                  />)}
+                </div>
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="计划工作结束时间">
+              {getFieldDecorator('planEnd', {
+                rules: [{ required, message: `请选择计划工作结束时间` }],
+                initialValue: moment(info.practicePre && info.practicePre.planEnd ? info.practicePre.planEnd : undefined),
+              })(
+                <div>
+                  {!info.practicePre && (<DatePicker
+                    showTime
+                    placeholder="请选择时间"
+                    format="YYYY-MM-DD HH:mm:ss"
+                    // disabled={!isEdit}
+                    style={{ width: '100%' }}
+                    defaultValue={moment(info.practicePre && info.practicePre.planEnd ? info.practicePre.planEnd : undefined)}
+                    onChange={(v) => { setFieldsValue({ planEnd: moment(v).format('YYYY-MM-DD HH:mm:ss') }) }}
+                    disabledDate={(v) => {
+                      const dates = getFieldsValue(['planStart']);
+                      return v && v < moment(dates.planStart);
+                    }}
+                  />)}
+                </div>
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="停止业务访问" >
+              {getFieldDecorator('bizStopVisit', {
+                rules: [{ required, message: `请选择停止业务访问` }],
+                initialValue: info.practicePre ? info.practicePre.bizStopVisit : '否',
+              })(
+                <RadioGroup disabled={!isEdit} >
+                  <Radio value='是'>是</Radio>
+                  <Radio value='否'>否</Radio>
+                </RadioGroup>
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="变更原因" >
+              {getFieldDecorator('bizStopVisit', {
+                rules: [{ required, message: `请选择停止业务访问` }],
+                initialValue: info.practicePre ? info.practicePre.bizStopVisit : '否',
+              })(
+                <RadioGroup disabled={!isEdit} >
+                  <Radio value='是'>是</Radio>
+                  <Radio value='否'>否</Radio>
+                </RadioGroup>
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="责任单位">
+              {getFieldDecorator('dutyUnit', {
+                rules: [{ required, message: `请选择责任单位` }],
+                initialValue: info.releaseMain.dutyUnit,
+              })(
+                <Select placeholder="请选择" disabled={!isEdit}>
+                  {unitmap.map(obj => [
+                    <Option key={obj.key} value={obj.title}>
+                      {obj.title}
+                    </Option>,
+                  ])}
+                </Select>
+              )}
             </Form.Item>
           </Col>
         </Form>

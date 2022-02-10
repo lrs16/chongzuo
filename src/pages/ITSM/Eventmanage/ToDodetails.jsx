@@ -186,14 +186,14 @@ function ToDodetails(props) {
         <>
           {/* 测试下载功能 */}
           {/* <Button onClick={()=>test()}>下载</Button> */}
-          {taskName === '事件登记' && !olduploadstatus && (
+          {taskName === '事件登记' && !olduploadstatus && info && info.data && info.data[info.data.length - 1]?.register && (
             <Popconfirm title="确定删除此事件单吗？" onConfirm={() => deleteflow()}>
               <Button type="danger" ghost style={{ marginRight: 8 }} disabled={olduploadstatus || registUploadStatus || allloading}>
                 删除
               </Button>
             </Popconfirm>
           )}
-          {((taskName === '事件响应' && info && info.data && !info.data[info.data.length - 1]?.check)
+          {((taskName === '事件响应' && info && info.data && info.data[info.data.length - 1]?.register)
             || (info && info.edit && (
               (taskName === '事件确认' && !info.edit.finish) ||
               ((info.flowNodeName === '运维商经理审核' || info.flowNodeName === '数据科审核' || info.flowNodeName === '自动化科审核') && !info.edit.check)))) && (

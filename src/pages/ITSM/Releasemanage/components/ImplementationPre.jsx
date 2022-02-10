@@ -330,7 +330,7 @@ function ImplementationPre(props, ref) {
           <Col span={8}>
             <Form.Item label="停止业务访问" >
               {getFieldDecorator('bizStopVisit', {
-                rules: [{ required, message: `请选择实停止业务访问` }],
+                rules: [{ required, message: `请选择停止业务访问` }],
                 initialValue: info.practicePre ? info.practicePre.bizStopVisit : '否',
               })(
                 <RadioGroup disabled={!isEdit} onChange={handleStopVisit}>

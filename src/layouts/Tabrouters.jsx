@@ -47,6 +47,7 @@ const multiplepath = [
   { path: '/ITSM/operationreport/monthlyreport/monthsoftreport', type: 'monthsoftreport' },
   { path: '/ITSM/knowledgemanage/myknowledge/new', type: 'knowledge' },
   { path: '/ITSM/releasemanage/plan/registration', type: 'release' },
+  { path: '/ITSM/releasemanage/temporary/registration', type: 'temprelease' },
   { path: '/ITSM/servicequalityassessment/addserviceprovidermaintenance', type: 'addscoringrulesmaintenance' },
   { path: '/ITSM/servicequalityassessment/creditcard/creditcardregister', type: 'creditcardregister' },
   { path: '/ITSM/servicequalityassessment/addscoringrulesmaintenance', type: 'addscoringrulesmaintenance' },
