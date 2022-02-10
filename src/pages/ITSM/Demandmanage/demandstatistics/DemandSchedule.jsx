@@ -128,6 +128,45 @@ function DemandSchedule(props) {
         return obj;
       },
     },
+    // {
+    //   title: '未开发',
+    //   dataIndex: 'countDevelop',
+    //   align: 'center',
+    //   render: (text, record) => {
+    //     const obj = {
+    //       children: text,
+    //       props: {},
+    //     };
+    //     obj.props.rowSpan = record.rowSpan;
+    //     return obj;
+    //   },
+    // },
+       // {
+    //   title: '需求取消',
+    //   dataIndex: 'countDevelop',
+    //   align: 'center',
+    //   render: (text, record) => {
+    //     const obj = {
+    //       children: text,
+    //       props: {},
+    //     };
+    //     obj.props.rowSpan = record.rowSpan;
+    //     return obj;
+    //   },
+    // },
+          // {
+    //   title: '需求进度',
+    //   dataIndex: 'countDevelop',
+    //   align: 'center',
+    //   render: (text, record) => {
+    //     const obj = {
+    //       children: text,
+    //       props: {},
+    //     };
+    //     obj.props.rowSpan = record.rowSpan;
+    //     return obj;
+    //   },
+    // },
     {
       title: '已发布',
       dataIndex: 'countAchieve',

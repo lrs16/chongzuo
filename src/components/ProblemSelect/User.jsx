@@ -17,6 +17,7 @@ const User = props => {
     ChangeUserVisible,
     ChangeChoice,
     ChangeType,
+    changeOrder
   } = props;
   const [isnew, setIsNew] = useState(false);
   const [demandvalue, setDemandValue] = useState([])
@@ -115,11 +116,13 @@ const User = props => {
 
   useEffect(() => {
     if (visible) {
+      sessionStorage.setItem('NextflowUserId', []);
+      sessionStorage.setItem('AutoflowUserId', []);
       showModal();
     }
     return () => {
       setSpecialvalue([]);
-      setValue([])
+      setValue([]);
     }
    
   }, [visible]);
@@ -149,13 +152,12 @@ const User = props => {
     ChangeType('');
   };
 
-
   const nextflowuser =
     changorder !== undefined ? changorder : sessionStorage.getItem('Nextflowmane');
   return (
     <>
       <Modal
-        title={sessionStorage.getItem('flowtype') === '9' ? '请选择转单环节处理人' : '请选择下一环节处理人'}
+        title={changeOrder === '转单' ? '请选择转单环节处理人' : '请选择下一环节处理人'}
         visible={visible}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -164,7 +166,7 @@ const User = props => {
         <Spin tip="正在加载数据..." spinning={Boolean(loading)}>
           {loading === false && type !== 'demand' && isnew && problemlist !== '' && currentPeocess !== '系统运维商审核' && (
             <>
-              <div>{sessionStorage.getItem('flowtype') === '9' ? '转单' : nextflowuser}人员</div>
+              <div>{changeOrder === '转单' ? '转单' : nextflowuser}人员</div>
               <div style={{ marginTop: 12 }} className={styles.useritem}>
                 <Checkbox.Group
                   defaultValue={defaultvalue}
@@ -176,11 +178,10 @@ const User = props => {
           )}
 
           {
-
             currentPeocess === '系统运维商审核' && (
               <>
                 <div>自动化业务人员</div>
-                <div style={{ marginTop: 12 }}>
+                <div>
                   <Checkbox.Group
                     defaultValue={defaultvalue}
                     options={dataArr(problemlist.serviceData)}
@@ -195,8 +196,8 @@ const User = props => {
 
             currentPeocess === '系统运维商审核' && (
               <>
-                <div>自动化科专责人员</div>
-                <div style={{ marginTop: 12 }}>
+                <div style={{ marginTop: 12 }}>自动化科专责人员</div>
+                <div>
                   <Checkbox.Group
                     defaultValue={defaultvalue}
                     options={dataArr(problemlist.dutyData)}

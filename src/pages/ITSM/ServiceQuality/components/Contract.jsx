@@ -1,5 +1,16 @@
 import React, { useState } from 'react';
-import { Table, Drawer, Form, Input, Button, DatePicker, Select, message } from 'antd';
+import {
+  Table,
+  Drawer,
+  Form,
+  Input,
+  Button,
+  DatePicker,
+  Select,
+  message,
+  Popconfirm,
+  Divider
+} from 'antd';
 import moment from 'moment';
 
 const formItemLayout = {
@@ -39,22 +50,49 @@ function Contract(props) {
     return (newData || data).filter(item => item.key === key)[0];
   }
 
+  const saveRow = (e,key) => {
+    const target = getRowByKey(key) || {};
+    console.log('target: ', target);
+    if(!target.aa && !target.bb && !target.cc && !target.ee) {
+      message.error('请填写完整信息');
+      e.target.focus();
+      return;
+    } 
+
+    // if((target.cc).valuesOf() > (target.ee).valuesOf()) {
+    //   message.error('开始时间必须小于结束时间');
+    //   e.target.focus();
+    //   return;
+    // }
+
+    target.editable = false;
+    setNewButton(false);
+  }
+
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData);
     if (target) {
-      if(fieldName === 'bb') {
-        console.log(moment(e).startOf('quarter').format("YYYY-MM-DD"),'e')
-        console.log(moment(e).endOf('quarter').format("YYYY-MM-DD"),'e4')
-        target.dd =  e
-      } else {
-        target[fieldName] = e;
-        setData(newData)
+      switch (fieldName) {
+        case 'aa':
+        case 'bb':
+          target.start = moment(e).startOf('quarter').format("YYYY-MM-DD");
+          target.end = moment(e).endOf('quarter').format("YYYY-MM-DD")
+          target[fieldName] = moment(e).format('YYYY')
+          setData(newData)
+          break;
+        case 'cc':
+        case 'ee':
+          target[fieldName] = moment(e).format('YYYY-MM-DD HH:mm:ss');
+          setData(newData)
+          break;
+        default:
+          break;
       }
     }
   }
 
-  // console.log(moment().format("YYYY-02-01").startOf('quarter').format("YYYY-MM-DD"), 'quarter')
+  console.log(data, 'data')
 
   const columns = [
     {
@@ -76,26 +114,66 @@ function Contract(props) {
       title: '考核周期',
       dataIndex: 'bb',
       key: 'bb',
+      width: 120,
       render: (text, record) => {
         return (
-          <Select onChange={(e) => handleFieldChange(e,'bb',record.key)}>
-            <Option value={record.aa ? moment(`${record.aa}-01-01`):''}>第一季度</Option>
-            <Option value={record.aa ? moment(`${record.aa}-04-01`):''}>第二季度</Option>
-            <Option value={record.aa ? moment(`${record.aa}-07-01`):''}>第三季度</Option>
-            <Option value={record.aa ? moment(`${record.aa}-10-01`):''}>第四季度</Option>
+          <Select
+            onChange={(e) => handleFieldChange(e, 'bb', record.key)}
+            style={{ width: '100%' }}
+          >
+            <Option value={record.aa ? moment(`${record.aa}-01-01`) : ''}>第一季度</Option>
+            <Option value={record.aa ? moment(`${record.aa}-04-01`) : ''}>第二季度</Option>
+            <Option value={record.aa ? moment(`${record.aa}-07-01`) : ''}>第三季度</Option>
+            <Option value={record.aa ? moment(`${record.aa}-10-01`) : ''}>第四季度</Option>
           </Select>
         )
       }
     },
     {
-      title: '考核时段',
+      title: '考核开始时间',
       dataIndex: 'cc',
-      key: 'cc'
+      key: 'cc',
+      render: (text, record) => {
+        return (
+          <DatePicker
+            defaultValue={text ? moment(text) : ''}
+            onChange={(e) => handleFieldChange(e, 'cc', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '考核结束时间',
+      dataIndex: 'ee',
+      key: 'ee',
+      render: (text, record) => {
+        return (
+          <DatePicker
+            defaultValue={text ? moment(text) : ''}
+            onChange={(e) => handleFieldChange(e, 'ee', record.key)}
+          />
+        )
+      }
     },
     {
       title: '操作',
-      dataIndex: '',
-      key: ''
+      dataIndex: 'action',
+      key: 'action',
+      width:150,
+      render: (text, record) => {
+        return (
+          <span>
+            <a onClick={e => saveRow(e, record.key)}>保存</a>
+            <Divider type='vertical'/>
+            <Popconfirm
+              title='是否要删除此行？'
+              onConfirm={() => remove(record.key)}
+            >
+              <a>删除</a>
+            </Popconfirm>
+          </span>
+        )
+      }
     },
   ]
 
@@ -108,7 +186,9 @@ function Contract(props) {
       aa: moment().format('YYYY'),
       bb: '',
       cc: '',
-      dd:'',
+      dd: '',
+      start: '',
+      end: '',
       editable: true,
     });
     setData(newData);
@@ -203,7 +283,7 @@ function Contract(props) {
       <Drawer
         title={title}
         visible={visible}
-        width={720}
+        width={750}
         centered="true"
         maskClosable="true"
         destroyOnClose="true"
@@ -281,7 +361,7 @@ function Contract(props) {
               rules: [
                 {
                   required,
-                  message: '请输入到期日期',
+                  message: '请输入考核周期',
                 },
               ],
               initialValue: '',
@@ -292,9 +372,9 @@ function Contract(props) {
                 pagination={false}
               />
             )}
-          </Form.Item>
+          </Form.Item> */}
 
-          <Button
+          {/* <Button
             style={{ width: '100%', marginTop: '16', marginBottom: '8' }}
             type='primary'
             ghost

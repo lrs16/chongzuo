@@ -141,7 +141,7 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
                     rules: [
                       {
                         required,
-                        message: '请输入审核意见'
+                        message: '请输入确认意见'
                       }
                     ],
                     initialValue: confirm.confirmContent,

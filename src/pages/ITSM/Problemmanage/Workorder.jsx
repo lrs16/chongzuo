@@ -78,7 +78,7 @@ function Workorder(props) {
   const [buttontype, setButtonType] = useState('');
   const [modalvisible, setModalVisible] = useState(false);
   const [modalrollback, setModalRollBack] = useState(false); // 回退信息modle
-  const [backTitle,setBackTitle] = useState('')
+  const [backTitle, setBackTitle] = useState('')
 
   const {
     dispatch,
@@ -127,8 +127,8 @@ function Workorder(props) {
       case '系统运维商确认':
         sessionStorage.setItem('Nextflowmane', '自动化科业务负责人确认');
         break;
-      case '自动化科业务负责人确认':
-        sessionStorage.setItem('Nextflowmane', '问题登记人员确认');
+      case '自动化科业务人员确认':
+        sessionStorage.setItem('Nextflowmane', '问题登记');
         break;
       default:
         break;
@@ -162,6 +162,7 @@ function Workorder(props) {
       type: 'itsmuser/fetchuser',
     });
   };
+
   const getNewno = () => {
     dispatch({
       type: 'problemmanage/getregisterNo',
@@ -209,9 +210,15 @@ function Workorder(props) {
 
     let selectPerson;
     if (flowNodeName === '系统运维商审核' && flowtype === '1') {
-      selectPerson = `${sessionStorage.getItem('NextflowUserId')},${sessionStorage.getItem(
-        'AutoflowUserId',
-      )}`;
+      if (sessionStorage.getItem('NextflowUserId') && sessionStorage.getItem('AutoflowUserId')) {
+        selectPerson = `${sessionStorage.getItem('NextflowUserId')},${sessionStorage.getItem(
+          'AutoflowUserId',
+        )}`;
+      } else {
+        selectPerson = sessionStorage.getItem('NextflowUserId') || sessionStorage.getItem(
+          'AutoflowUserId',
+        );
+      }
     } else {
       selectPerson = sessionStorage.getItem('NextflowUserId');
     }
@@ -265,6 +272,10 @@ function Workorder(props) {
 
         if (params2 && params2 !== '系统开发商处理' && flowtype === '0' && !files.ischange) {
           gotoCirapi();
+        }
+
+        if (params2 && flowNodeName === '自动化科业务人员确认' && flowtype === '1') {
+          setUserVisible(true);
         }
       } else {
         message.error(res.msg);
@@ -371,7 +382,7 @@ function Workorder(props) {
           handleAttachments: files.ischange ? JSON.stringify(files.arr) : null,
         };
         saveApi(saveData, params2, uploadSive);
-        if (params2 && changeOrder) {
+        if (params2) {
           setUserVisible(true);
         }
       }
@@ -661,7 +672,7 @@ function Workorder(props) {
   };
 
   const setBacktitle = () => {
-    switch(flowNodeName) {
+    switch (flowNodeName) {
       case '系统运维商审核':
         setBackTitle('问题登记')
         break;
@@ -688,7 +699,7 @@ function Workorder(props) {
         setModalVisible(true);
         setButtonType(buttype);
         setBacktitle()
-      } 
+      }
       if (
         res.code === 200 &&
         ((res.status === 'yes' && res.timeoutMsg !== '') || res.status === 'no')
@@ -710,8 +721,8 @@ function Workorder(props) {
           default:
             break;
         }
-      } 
-      if(res.code !== 200) {
+      }
+      if (res.code !== 200) {
         message.error(res.msg);
       }
     });
@@ -839,6 +850,7 @@ function Workorder(props) {
                   onClick={() => {
                     changeorderFunction();
                     onClickSubmit('flowNodeName');
+                    setFlowtype(9);
                   }}
                   disabled={olduploadstatus}
                 >
@@ -920,15 +932,16 @@ function Workorder(props) {
                     type="primary"
                     style={{ marginRight: 8 }}
                     onClick={() => {
-                      handleSubmit();
-                      setButandOrder('end');
-                      setUserChoice(false)
+                      handleSubmit(flowNodeName === '问题登记人员确认' ? '' : true);
+                      setButandOrder(flowNodeName === '问题登记人员确认' ? 'end' : '');
+                      // setUserChoice(false)
                     }}
                     disabled={olduploadstatus}
                   >
                     {flowNodeName === '问题登记人员确认' ? '结束' : '流转'}
                   </Button>
                 )}
+
               {((loading === false && flowtype === '0') || (problemlist && selSign === '0')) &&
                 handle !== undefined &&
                 loading === false &&
@@ -941,8 +954,9 @@ function Workorder(props) {
                     style={{ marginRight: 8 }}
                     onClick={() => {
                       cancelChangeorder();
-                      onClickSubmit('flowNodeName');
-                      setUserChoice(false)
+                      onClickSubmit('circaSign');
+                      setUserChoice(false);
+                      setFlowtype('1')
                     }}
                     disabled={olduploadstatus}
                   >
@@ -1281,6 +1295,7 @@ function Workorder(props) {
       {tabActiveKey === 'relevancy' && <RelationOrder orderId={location.query.mainId} relation />}
       <User
         taskId={id}
+        changeOrder={changeOrder}
         visible={uservisible}
         ChangeUserVisible={v => setUserVisible(v)}
         changorder={undefined}
