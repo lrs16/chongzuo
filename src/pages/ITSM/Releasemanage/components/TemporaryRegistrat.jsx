@@ -2,11 +2,11 @@ import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect, us
 import moment from 'moment';
 import { Row, Col, Form, Input, AutoComplete, Button, Select, Drawer, DatePicker, Radio } from 'antd';
 import { CaretRightOutlined } from '@ant-design/icons';
-import FilesContext from '@/layouts/MenuContext';
 import DeptSlectId from '@/components/DeptTree/SelectID';
 import { queryDisableduserByUser, queryUnitList, queryDeptList } from '@/services/common';
 import SysUpload from '@/components/SysUpload/Upload';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
+import EditeTable from './TempEditeTable';
 import styles from '../index.less';
 
 const InputGroup = Input.Group;
@@ -31,7 +31,7 @@ const formuintLayout = {
 };
 
 function TemporaryRegistrat(props, ref) {
-  const { taskName, info, userinfo, selectdata, isEdit, listmsg, timeoutinfo } = props;
+  const { taskName, info, userinfo, selectdata, isEdit, listmsg, uploadStatus } = props;
   const { getFieldDecorator, setFieldsValue, validateFields, setFields, getFieldsValue, resetFields, Spin } = props.form;
   const required = true;
   const [disablelist, setDisabledList] = useState([]); // 自动完成下拉列表
@@ -43,7 +43,6 @@ function TemporaryRegistrat(props, ref) {
   const [deptdata, setDeptdata] = useState([]); // 自动完成部门下拉表
   const [unitopen, setUnitopen] = useState(false);
   const [deptopen, setDeptopen] = useState(false);
-  const [uploadStatus, setUploadStatus] = useState(false);
 
   const formRef = useRef();
   useImperativeHandle(ref, () => ({
@@ -52,6 +51,27 @@ function TemporaryRegistrat(props, ref) {
     Forms: props.form.validateFieldsAndScroll,
   }), []);
 
+
+  // 校验发布清单
+  const releaseListsValidator = (rule, value, callback) => {
+    if (!value || value.length === 0) {
+      callback()
+    } if (isEdit) {
+      let target = []
+      if (taskName === '新建' || taskName === '出厂测试') {
+        target = value.filter(item => !item.module || !item.abilityType || !item.module || !item.appName || !item.problemType || !item.testMenu || !item.testResult || !item.testStep || !item.developer || !item.responsible);
+      } else {
+        target = value.filter(item => !item.module || !item.operator || !item.abilityType || !item.module || !item.appName || !item.problemType || !item.testMenu || !item.testResult || !item.testStep || !item.developer || !item.responsible || !item.platformValidator);
+      };
+      if (target.length > 0) {
+        callback(`请填写完整的发布清单信息`);
+      } else {
+        callback()
+      }
+    } else {
+      callback()
+    }
+  }
 
   // 自动完成报障用户
   const disableduser = disablelist.map(opt => (
@@ -180,6 +200,8 @@ function TemporaryRegistrat(props, ref) {
   const unitmap = getTypebyId(1052);       // 责任单位
   const grademap = getTypebyId(514);      // 发布等级
   const reasonmap = getTypebyId(13277);      // 变更原因
+  const functionmap = getTypebyId(451);   // 功能类型
+  const modulamap = getTypebyId(466);     // 模块
 
   return (
     <>
@@ -503,7 +525,28 @@ function TemporaryRegistrat(props, ref) {
               )}
             </Form.Item>
           </Col>
-          <Col span={24}>发布清单</Col>
+          <Col span={24}>
+            <EditeTable
+              title='发布清单'
+              functionmap={functionmap}
+              modulamap={modulamap}
+              isEdit={isEdit}
+              taskName={taskName}
+              dataSource={info.releaseLists}
+              ChangeValue={v => { setFieldsValue({ releaseLists: v }); }}
+              listmsg={listmsg}
+            />
+            <Form.Item wrapperCol={{ span: 24 }}>
+              {getFieldDecorator('releaseLists', {
+                rules: [{ required, message: '请填写发布清单' }, {
+                  validator: releaseListsValidator
+                }],
+                initialValue: info.releaseLists,
+              })(
+                <></>
+              )}
+            </Form.Item>
+          </Col>
           <Col span={24} >
             <Form.Item label="实施负责人" {...formuintLayout}>
               {getFieldDecorator('practicer', {
@@ -558,17 +601,7 @@ function TemporaryRegistrat(props, ref) {
             <Form.Item label='附件上传' {...formuintLayout}>
               {getFieldDecorator('attach', {
                 initialValue: info.tempRegister.attach,
-              })(
-                <>
-                  <FilesContext.Provider value={{
-                    files: [],
-                    ChangeFiles: (v => { console.log(v); }),
-                    getUploadStatus: (v) => { setUploadStatus(v) },
-                  }}>
-                    <SysUpload banOpenFileDialog={uploadStatus} />
-                  </FilesContext.Provider>
-                </>
-              )}
+              })(<><SysUpload banOpenFileDialog={uploadStatus} /></>)}
             </Form.Item>
           </Col>
           {info.tempRegister.attach && <Col span={24}>

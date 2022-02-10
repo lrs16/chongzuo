@@ -77,17 +77,23 @@ const User = props => {
     const obj = {};
     obj.nodeName = nodeName;
     obj.userIds = values;
-    const target = demandvalue.filter((_, index) => key === index)[0];
-    if (target === undefined) {
-      if (key === 1 && demandvalue.length === 0) {
-        setDemandValue([{}, { ...obj }])
+    const data = demandvalue.map(item => ({ ...item }));
+    const target = data.filter((item) => item.nodeName === nodeName)[0];
+    if (target) {
+      if (values.length === 0) {
+        const newArr = demandvalue.filter((item) => item.nodeName !== nodeName);
+        setDemandValue(newArr);
+        sessionStorage.setItem('NextflowUserId', JSON.stringify(newArr));
       } else {
-        demandvalue.push(obj);
+        target.userIds = values;
+        setDemandValue(data);
+        sessionStorage.setItem('NextflowUserId', JSON.stringify(data));
       }
     } else {
-      demandvalue.splice(key, 1, obj);
-    }
-    sessionStorage.setItem('NextflowUserId', JSON.stringify(demandvalue));
+      data.push(obj);
+      setDemandValue(data);
+      sessionStorage.setItem('NextflowUserId', JSON.stringify(data));
+    };
   };
 
   useEffect(() => {
@@ -200,14 +206,7 @@ const User = props => {
     }
 
     if (type === 'demand') {
-      const newArr = [];
-      const nameArr = [];
-      for (let i = 0; i < demandvalue.length; i += 1) {
-        const idnum = demandvalue[i].userIds.length;
-        newArr.push(idnum);
-        nameArr.push(demandvalue[i].nodeName);
-      }
-      if (newArr.indexOf(0) !== -1 || nameArr.length < userlist.length) {
+      if (demandvalue.length < 2) {
         message.error('最少选择一个处理人！');
       } else {
         ChangeChoice(true);

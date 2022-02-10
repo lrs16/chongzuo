@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
 import { Button, Card } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import FilesContext from '@/layouts/MenuContext';
 import DictLower from '@/components/SysDict/DictLower';
 import TemporaryRegistrat from './components/TemporaryRegistrat';
 
@@ -12,6 +13,8 @@ function TemporaryDetail(props) {
   const pagetitle = props.route.name;
 
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
+
+  const { ChangeButtype, taskId, location } = useContext(FilesContext);
 
   // 初始化用户信息，流程类型
   useEffect(() => {
@@ -44,11 +47,17 @@ function TemporaryDetail(props) {
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
       <Card>
-        <TemporaryRegistrat
-          selectdata={selectdata}
-          info={{ releaseMain: {}, tempRegister: {} }}
-          userinfo={userinfo || {}}
-        />
+        <FilesContext.Provider value={{
+          files: [],
+          ChangeFiles: (v => { console.log(v); }),
+          getUploadStatus: (v) => { console.log(v); },
+        }}>
+          <TemporaryRegistrat
+            selectdata={selectdata}
+            info={{ releaseMain: {}, tempRegister: {} }}
+            userinfo={userinfo || {}}
+          />
+        </FilesContext.Provider>
       </Card>
       <DictLower
         typeid="443"

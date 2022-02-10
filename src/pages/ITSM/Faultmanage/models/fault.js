@@ -141,14 +141,14 @@ export default {
         const { flowInstId, troubleNo, flowTaskId, flowNodeName } = response;
         router.push({
           pathname: `/ITSM/faultmanage/todolist/record`,
-          query: { 
-            taskName:flowNodeName,
+          query: {
+            taskName: flowNodeName,
             id: flowTaskId,
             mainId: flowInstId,
-            taskId:flowTaskId,
+            taskId: flowTaskId,
             orderNo: troubleNo,
           },
-          state: {closetabid: tabid},
+          state: { closetabid: tabid },
           paneKey: flowNodeName,
         });
       } else {
@@ -192,13 +192,17 @@ export default {
     //  故障待办详情页--编辑
     *getfaultTodoDetailData({ payload: { id } }, { call, put }) {
       const response = yield call(queryfaultTodoDetailEdit, id);
-      if (response.code === -1) {
-        message.error(response.msg)
-      }
       if (response.code === 200) {
         yield put({
           type: 'detailslist',
           payload: response,
+        });
+      } else {
+        message.error(response.msg);
+        router.push({
+          pathname: `/ITSM/faultmanage/todolist`,
+          query: { pathpush: true },
+          state: { cach: false, closetabid: id }
         });
       }
     },
