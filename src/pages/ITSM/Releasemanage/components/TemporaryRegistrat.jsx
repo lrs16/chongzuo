@@ -2,9 +2,11 @@ import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect, us
 import moment from 'moment';
 import { Row, Col, Form, Input, AutoComplete, Button, Select, Drawer, DatePicker, Radio } from 'antd';
 import { CaretRightOutlined } from '@ant-design/icons';
-import SubmitTypeContext from '@/layouts/MenuContext';
+import FilesContext from '@/layouts/MenuContext';
 import DeptSlectId from '@/components/DeptTree/SelectID';
 import { queryDisableduserByUser, queryUnitList, queryDeptList } from '@/services/common';
+import SysUpload from '@/components/SysUpload/Upload';
+import Downloadfile from '@/components/SysUpload/Downloadfile';
 import styles from '../index.less';
 
 const InputGroup = Input.Group;
@@ -41,6 +43,8 @@ function TemporaryRegistrat(props, ref) {
   const [deptdata, setDeptdata] = useState([]); // 自动完成部门下拉表
   const [unitopen, setUnitopen] = useState(false);
   const [deptopen, setDeptopen] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState(false);
+
   const formRef = useRef();
   useImperativeHandle(ref, () => ({
     getVal: () => getFieldsValue(),
@@ -165,6 +169,17 @@ function TemporaryRegistrat(props, ref) {
       {opt.deptName}
     </Option>
   ));
+
+  const getTypebyId = key => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.key === key)[0]?.children || [];
+    }
+    return [];
+  };
+
+  const unitmap = getTypebyId(1052);       // 责任单位
+  const grademap = getTypebyId(514);      // 发布等级
+  const reasonmap = getTypebyId(13277);      // 变更原因
 
   return (
     <>
@@ -370,11 +385,19 @@ function TemporaryRegistrat(props, ref) {
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="发布等级">
+            <Form.Item label="申请发布等级">
               {getFieldDecorator('releaseLevel', {
-                initialValue: info.releaseLevel,
-                rules: [{ required, message: '请输入程序版本号' }],
-              })(<Input placeholder="请输入" />)}
+                rules: [{ required, message: `请选择发布等级` }],
+                initialValue: info.mergeOrder ? info.mergeOrder.releaseLevel : '',
+              })(
+                <Select placeholder="请选择" disabled={!isEdit}>
+                  {grademap.map(obj => [
+                    <Option key={obj.key} value={obj.title}>
+                      {obj.title}
+                    </Option>,
+                  ])}
+                </Select>
+              )}
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -440,14 +463,17 @@ function TemporaryRegistrat(props, ref) {
           </Col>
           <Col span={8}>
             <Form.Item label="变更原因" >
-              {getFieldDecorator('bizStopVisit', {
-                rules: [{ required, message: `请选择停止业务访问` }],
-                initialValue: info.practicePre ? info.practicePre.bizStopVisit : '否',
+              {getFieldDecorator('changeReason', {
+                rules: [{ required, message: `请选择变更原因` }],
+                initialValue: info.testUnit && info.testUnit.length ? info.testUnit.split(',') : [],
               })(
-                <RadioGroup disabled={!isEdit} >
-                  <Radio value='是'>是</Radio>
-                  <Radio value='否'>否</Radio>
-                </RadioGroup>
+                <Select placeholder="请选择" mode="multiple">
+                  {reasonmap.map(obj => [
+                    <Option key={obj.key} value={obj.title}>
+                      {obj.title}
+                    </Option>,
+                  ])}
+                </Select>
               )}
             </Form.Item>
           </Col>
@@ -457,7 +483,7 @@ function TemporaryRegistrat(props, ref) {
                 rules: [{ required, message: `请选择责任单位` }],
                 initialValue: info.releaseMain.dutyUnit,
               })(
-                <Select placeholder="请选择" disabled={!isEdit}>
+                <Select placeholder="请选择">
                   {unitmap.map(obj => [
                     <Option key={obj.key} value={obj.title}>
                       {obj.title}
@@ -465,6 +491,111 @@ function TemporaryRegistrat(props, ref) {
                   ])}
                 </Select>
               )}
+            </Form.Item>
+          </Col>
+          <Col span={24} >
+            <Form.Item label="受影响业务范围" {...formuintLayout}>
+              {getFieldDecorator('affectedScope', {
+                rules: [{ required, message: `请填写受影响业务范围` }],
+                initialValue: info.tempRegister.affectedScope,
+              })(
+                <TextArea autoSize={{ minRows: 4 }} />
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={24}>发布清单</Col>
+          <Col span={24} >
+            <Form.Item label="实施负责人" {...formuintLayout}>
+              {getFieldDecorator('practicer', {
+                rules: [{ required, message: `请填写实施负责人` }],
+                initialValue: info.tempRegister.practicer,
+              })(
+                <TextArea autoSize={{ minRows: 1 }} />
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={24} >
+            <Form.Item label="实施监护人" {...formuintLayout}>
+              {getFieldDecorator('guarder', {
+                rules: [{ required, message: `请填写实施监护人` }],
+                initialValue: info.tempRegister.guarder,
+              })(
+                <TextArea autoSize={{ minRows: 1 }} />
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={24} >
+            <Form.Item label="实施人员" {...formuintLayout}>
+              {getFieldDecorator('member', {
+                rules: [{ required, message: `请填写实施人员` }],
+                initialValue: info.tempRegister.member,
+              })(
+                <TextArea autoSize={{ minRows: 1 }} />
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={24} >
+            <Form.Item label="发布操作关键步骤" {...formuintLayout}>
+              {getFieldDecorator('releaseStep', {
+                rules: [{ required, message: `请填写发布操作关键步骤` }],
+                initialValue: info.tempRegister.releaseStep,
+              })(
+                <TextArea autoSize={{ minRows: 5 }} />
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={24} >
+            <Form.Item label='风险预估及防范措施' {...formuintLayout}>
+              {getFieldDecorator('risks', {
+                rules: [{ required, message: `请填写风险预估及防范措施` }],
+                initialValue: info.tempRegister.risks,
+              })(
+                <TextArea autoSize={{ minRows: 5 }} />
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item label='附件上传' {...formuintLayout}>
+              {getFieldDecorator('attach', {
+                initialValue: info.tempRegister.attach,
+              })(
+                <>
+                  <FilesContext.Provider value={{
+                    files: [],
+                    ChangeFiles: (v => { console.log(v); }),
+                    getUploadStatus: (v) => { setUploadStatus(v) },
+                  }}>
+                    <SysUpload banOpenFileDialog={uploadStatus} />
+                  </FilesContext.Provider>
+                </>
+              )}
+            </Form.Item>
+          </Col>
+          {info.tempRegister.attach && <Col span={24}>
+            <Downloadfile files={info.tempRegister.attach || '[]'} />
+          </Col>}
+          <Col span={8}>
+            <Form.Item label="登记人" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+              {getFieldDecorator('registerUser', {
+                rules: [{ required, message: `请输入登记人` }],
+                initialValue: userinfo ? userinfo.userName : info.tempRegister.registerUser,
+              })(<Input disabled />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="登记时间" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+              {getFieldDecorator('registerTime', {
+                rules: [{ required, message: `请选择登记时间` }],
+                initialValue: moment(info.tempRegister.registerTime || undefined).format('YYYY-MM-DD HH:mm:ss'),
+              })(<Input disabled />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="登记单位" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+              {getFieldDecorator('registerUnit', {
+                rules: [{ required, message: `请选择登记单位` }],
+                initialValue: userinfo ? userinfo.unitName : info.tempRegister.registerUnit,
+              })(<Input disabled />)}
             </Form.Item>
           </Col>
         </Form>
@@ -500,6 +631,7 @@ const WrappedForm = Form.create({ name: 'form' })(forwardRef(TemporaryRegistrat)
 WrappedForm.defaultProps = {
   info: {
     releaseMain: {
+      id: '',
       releaseNo: '',
       releaseType: '',
       dutyUnit: '',
@@ -508,14 +640,27 @@ WrappedForm.defaultProps = {
       remindTime: undefined,
       revisitWay: ''
     },
-    releaseRegister: {
-      testStart: undefined,
-      testEnd: undefined,
-      testPlace: '',
-      testUnit: '',
-      testOperator: '',
-      influenceScope: '',
-      testResult: ''
+    tempRegister: {
+      applicant: "",
+      applicantId: "",
+      applicantUnit: "",
+      applicantUnitId: "",
+      tel: "",
+      versionNo: "",
+      releaseLevel: "",
+      planStart: "",
+      planEnd: "",
+      stopBiz: "",
+      changeReason: "",
+      dutyUnit: "",
+      dutyUnitId: "",
+      affectedScope: "",
+      practicer: "",
+      guarder: "",
+      member: "",
+      releaseStep: "",
+      risks: "",
+      attach: ""
     },
   },
 };

@@ -102,9 +102,11 @@ const Registrat = forwardRef((props, ref) => {
   useEffect(() => {
     if (info && info.register) {
       if (register.isCheck === '1') {
-        ChangeSubmitType((main?.eventObject?.slice(0, 3) === '001' || main?.eventObject?.slice(0, 3) === '005') ? '3' : '4');
+        // ChangeSubmitType((main?.eventObject?.slice(0, 3) === '001' || main?.eventObject?.slice(0, 3) === '005') ? '3' : '4');
+        ChangeSubmitType('3');
         ChangeButtonName('审核');
-        sessionStorage.setItem('flowtype', (main?.eventObject?.slice(0, 3) === '001' || main?.eventObject?.slice(0, 3) === '005') ? '3' : '4');
+        // sessionStorage.setItem('flowtype', (main?.eventObject?.slice(0, 3) === '001' || main?.eventObject?.slice(0, 3) === '005') ? '3' : '4');
+        sessionStorage.setItem('flowtype', '3')
       } else {
         ChangeSubmitType('1');
         ChangeButtonName('处理');
@@ -131,11 +133,13 @@ const Registrat = forwardRef((props, ref) => {
 
   // 事件分类005，007，008时走审核
   const handlcheckChange = (checked) => {
-    const object = getFieldsValue(['main_eventObject'])?.main_eventObject[0];
+    // const object = getFieldsValue(['main_eventObject'])?.main_eventObject[0];
     ChangeButtonName(checked ? '审核' : '处理')
     if (checked) {
-      ChangeSubmitType((object === '001' || object === '005') ? '3' : '4');
-      sessionStorage.setItem('flowtype', (object === '001' || object === '005') ? '3' : '4');
+      // ChangeSubmitType((object === '001' || object === '005') ? '3' : '4');
+      ChangeSubmitType('3');
+      // sessionStorage.setItem('flowtype', (object === '001' || object === '005') ? '3' : '4');
+      sessionStorage.setItem('flowtype', '3')
     } else {
       ChangeSubmitType('1')
       sessionStorage.setItem('flowtype', '1');
@@ -152,26 +156,16 @@ const Registrat = forwardRef((props, ref) => {
     setFieldsValue({ main_eventObject: value?.slice(-1)[0] }, () => { });
     const isCheck = getFieldsValue(['register_isCheck'])?.register_isCheck;
     if (isCheck) {
-      ChangeSubmitType((value[0] === '001' || value[0] === '005') ? '3' : '4')
+      // ChangeSubmitType((value[0] === '001' || value[0] === '005') ? '3' : '4')
+      ChangeSubmitType('3');
       ChangeButtonName('审核');
-      sessionStorage.setItem('flowtype', isCheck ? '3' : '4');
+      // sessionStorage.setItem('flowtype', isCheck ? '3' : '4');
+      sessionStorage.setItem('flowtype', '3')
     } else {
       ChangeSubmitType('1');
       ChangeButtonName('处理');
       sessionStorage.setItem('flowtype', '1');
     };
-    // if (value[0] === '001' || value[0] === '005') {
-
-    //   ChangeSubmitType(isCheck ? '3' : '1');
-    //   // ChangeButtonName((isCheck ? '审核' : '处理');
-    //   // sessionStorage.setItem('Nextflowmane', isCheck ? '审核' : '处理');
-    //   // sessionStorage.setItem('flowtype', isCheck ? '3' : '4');
-    // } else {
-    //   ChangeSubmitType('1');
-    //   ChangeButtonName('处理');
-    //   // sessionStorage.setItem('Nextflowmane', '处理');
-    //   // sessionStorage.setItem('flowtype', '1');
-    // }
   };
 
   // 002手机号码必填
