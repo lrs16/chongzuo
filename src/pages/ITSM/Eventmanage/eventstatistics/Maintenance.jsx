@@ -132,7 +132,7 @@ function Maintenance(props) {
           return (
             <>
             <span style={{ fontWeight: 700 }}>{text}</span>
-            { text.substring(0,1) === '-' ? <Icon type="caret-down" style={{ color: '#f5222d' }}/> : <Icon type="caret-up" style={{ color: '#52c41a' }}/>}
+            { text && text.substring(0,1) === '-' ? <Icon type="caret-down" style={{ color: '#f5222d' }}/> : <Icon type="caret-up" style={{ color: '#52c41a' }}/>}
           </>
           )
  
@@ -140,11 +140,9 @@ function Maintenance(props) {
         return (
           <>
            <span>{text}</span>
-           { text.substring(0,1) === '-' ? <Icon type="caret-down" style={{ color: '#f5222d' }}/> : <Icon type="caret-up" style={{ color: '#52c41a' }}/>}
+           { text && text.substring(0,1) === '-' ? <Icon type="caret-down" style={{ color: '#f5222d' }}/> : <Icon type="caret-up" style={{ color: '#52c41a' }}/>}
           </>
-
         )
-       
       }
     },
   ];
