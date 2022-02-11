@@ -9,12 +9,10 @@ import DictLower from '@/components/SysDict/DictLower';
 import TemporaryRegistrat from './components/TemporaryRegistrat';
 
 function TemporaryDetail(props) {
-  const { dispatch, userinfo } = props;
+  const { dispatch, userinfo, location } = props;
   const pagetitle = props.route.name;
 
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
-
-  const { ChangeButtype, taskId, location } = useContext(FilesContext);
 
   // 初始化用户信息，流程类型
   useEffect(() => {
@@ -44,6 +42,7 @@ function TemporaryDetail(props) {
       <Button type="default" onClick={() => handleclose()} >关闭</Button>
     </>
   );
+
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
       <Card>
@@ -51,6 +50,7 @@ function TemporaryDetail(props) {
           files: [],
           ChangeFiles: (v => { console.log(v); }),
           getUploadStatus: (v) => { console.log(v); },
+          ChangeButtype: (v) => { console.log(v); },
         }}>
           <TemporaryRegistrat
             selectdata={selectdata}

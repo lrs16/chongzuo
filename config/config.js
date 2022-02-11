@@ -690,41 +690,6 @@ export default {
                               icon: 'control',
                               component: './ITSM/Releasemanage/ReleaseRepo',
                             },
-                            {
-                              path: '/ITSM/releasemanage/plan/library',
-                              name: '发布功能统计结果',
-                              icon: 'control',
-                              component: './ITSM/Releasemanage/LibraryList',
-                            },
-                            {
-                              path: '/ITSM/releasemanage/statistics',
-                              name: '发布统计',
-                              icon: 'control',
-                              routes: [
-                                {
-                                  path: '/ITSM/releasemanage/statistics',
-                                  redirect: '/ITSM/releasemanage/statistics/analysis',
-                                },
-                                {
-                                  path: '/ITSM/releasemanage/statistics/index',
-                                  name: '发布统计',
-                                  icon: 'control',
-                                  component: './ITSM/Releasemanage/Statistics',
-                                },
-                                {
-                                  path: '/ITSM/releasemanage/statistics/object',
-                                  name: '发布功能统计',
-                                  icon: 'control',
-                                  component: './ITSM/Releasemanage/Statistics/ByObject',
-                                },
-                                {
-                                  path: '/ITSM/releasemanage/statistics/analysis',
-                                  name: '发布统计分析',
-                                  icon: 'control',
-                                  component: './ITSM/Releasemanage/Statistics/Analysis',
-                                },
-                              ]
-                            },
                           ]
                         },
                         {
@@ -740,6 +705,42 @@ export default {
                             },
                           ]
                         },
+                        {
+                          path: '/ITSM/releasemanage/statistics',
+                          name: '发布统计',
+                          icon: 'control',
+                          routes: [
+                            {
+                              path: '/ITSM/releasemanage/statistics',
+                              redirect: '/ITSM/releasemanage/statistics/analysis',
+                            },
+                            {
+                              path: '/ITSM/releasemanage/statistics/index',
+                              name: '发布统计',
+                              icon: 'control',
+                              component: './ITSM/Releasemanage/Statistics',
+                            },
+                            {
+                              path: '/ITSM/releasemanage/statistics/object',
+                              name: '发布功能统计',
+                              icon: 'control',
+                              component: './ITSM/Releasemanage/Statistics/ByObject',
+                            },
+                            {
+                              path: '/ITSM/releasemanage/statistics/analysis',
+                              name: '发布统计分析',
+                              icon: 'control',
+                              component: './ITSM/Releasemanage/Statistics/Analysis',
+                            },
+                            {
+                              path: '/ITSM/releasemanage/statistics/library',
+                              name: '发布功能统计结果',
+                              icon: 'control',
+                              component: './ITSM/Releasemanage/LibraryList',
+                            },
+                          ]
+                        },
+
                       ],
                     },
                     {

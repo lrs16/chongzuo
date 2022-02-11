@@ -30,6 +30,11 @@ const formuintLayout = {
   wrapperCol: { sm: { span: 24 } },
 };
 
+const formLayout = {
+  labelCol: { sm: { span: 2 } },
+  wrapperCol: { sm: { span: 22 } },
+};
+
 function TemporaryRegistrat(props, ref) {
   const { taskName, info, userinfo, selectdata, isEdit, listmsg, uploadStatus } = props;
   const { getFieldDecorator, setFieldsValue, validateFields, setFields, getFieldsValue, resetFields, Spin } = props.form;
@@ -50,7 +55,6 @@ function TemporaryRegistrat(props, ref) {
     resetVal: () => resetFields(),
     Forms: props.form.validateFieldsAndScroll,
   }), []);
-
 
   // 校验发布清单
   const releaseListsValidator = (rule, value, callback) => {
@@ -598,7 +602,7 @@ function TemporaryRegistrat(props, ref) {
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item label='' {...formuintLayout} labelAlign='left'>
+            <Form.Item label='上传附件' {...formuintLayout} labelAlign='left'>
               {getFieldDecorator('attach', {
                 initialValue: info.tempRegister.attach,
               })(<><SysUpload banOpenFileDialog={uploadStatus} /></>)}

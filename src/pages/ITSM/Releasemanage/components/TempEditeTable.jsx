@@ -14,7 +14,7 @@ const RadioGroup = Radio.Group;
 const { Option } = Select;
 
 function EditeTable(props) {
-  const { title, functionmap, modulamap, isEdit, taskName, dataSource, ChangeValue, } = props;
+  const { title, functionmap, modulamap, isEdit, taskName, dataSource, ChangeValue, listmsg } = props;
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -24,6 +24,7 @@ function EditeTable(props) {
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 5 });
   const [selectdata, setSelectData] = useState([]); // 下拉值
   const { ChangeButtype, taskId, location } = useContext(UserContext);
+  console.log(taskName);
 
   // 新增一条记录
   const newMember = () => {
@@ -559,6 +560,13 @@ function EditeTable(props) {
               <Button type='link' onClick={e => newcancel(e, record.key)}>取消</Button>
             </>
           );
+        } if (record.editable) {
+          return (
+            <>
+              <Button type='link' onMouseDown={() => ChangeButtype('')} onClick={e => saveRow(e, record.key)}>保存</Button>
+              <Button type='link' onClick={e => cancel(e, record.key)}>取消</Button>
+            </>
+          );
         }
         return (
           <>
@@ -709,8 +717,7 @@ function EditeTable(props) {
         {title}
       </h4>
       <Row style={{ marginBottom: 8 }} type='flex' align='bottom' >
-        <Col span={16}>   456456456465
-        </Col>
+        <Col span={16}>{listmsg}</Col>
         <Col span={8} style={{ textAlign: 'right' }}>
           {isEdit && (
             <>
