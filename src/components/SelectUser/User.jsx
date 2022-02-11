@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import { Modal, message, Spin, Checkbox } from 'antd';
+import { Modal, message, Spin, Checkbox, Divider } from 'antd';
 import styles from './index.less';
 
 const User = props => {
@@ -206,8 +206,8 @@ const User = props => {
     }
 
     if (type === 'demand') {
-      if (demandvalue.length < 2) {
-        message.error('最少选择一个处理人！');
+      if (demandvalue.length < userlist.length) {
+        message.error('每个环节最少选择一个处理人！');
       } else {
         ChangeChoice(true);
         ChangeUserVisible(false);
@@ -221,42 +221,43 @@ const User = props => {
     sessionStorage.removeItem('NextflowUserId');
   };
 
-  const nextflowuser =
-    changorder !== undefined ? changorder : sessionStorage.getItem('Nextflowmane');
+  const nextflowuser = changorder || sessionStorage.getItem('Nextflowmane');
   return (
     <>
-      <Modal title="选择下一环节处理人" visible={visible} onOk={handleOk} onCancel={handleCancel}>
+      <Modal title="选择下一环节处理人" visible={visible} onOk={handleOk} onCancel={handleCancel} width={700}>
         <Spin tip="正在加载数据..." spinning={Boolean(loading)}>
-          {(type === 'demand' || type === 'event') ? (
-            <>
-              {userlist && userlist.length && userlist.map((obj, index) => {
-                return (
-                  <div key={index.toString()}>
-                    <div>{obj.nodeName}人员</div>
-                    <div style={{ marginTop: 12 }}>
-                      <Checkbox.Group
-                        defaultValue={indexUser || defaultvalue}
-                        options={dataArr(obj.users)}
-                        onChange={values => handledemandChange(values, obj.nodeName, index)}
-                        key={index.toString()}
-                      />
+          <div id='user'>
+            {(type === 'demand' || type === 'event') ? (
+              <>
+                {userlist && userlist.length && userlist.map((obj, index) => {
+                  return (
+                    <div key={index.toString()}>
+                      <div style={{ marginTop: 12, fontSize: 16 }}>{obj.nodeName}人员</div>
+                      <div style={{ marginTop: 6 }}>
+                        <Checkbox.Group
+                          defaultValue={indexUser || defaultvalue}
+                          options={dataArr(obj.users)}
+                          onChange={values => handledemandChange(values, obj.nodeName, index)}
+                          key={index.toString()}
+                        />
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
-            </>
-          ) : (
-            <>
-              {describe ? <div>{describe}</div> : <div>{nextflowuser}人员</div>}
-              <div style={{ marginTop: 12 }} className={styles.useritem}>
-                <Checkbox.Group
-                  defaultValue={indexUser || defaultvalue}
-                  options={dataArr(defaultUsers || userlist)}
-                  onChange={handleChange}
-                />
-              </div>
-            </>
-          )}
+                  );
+                })}
+              </>
+            ) : (
+              <>
+                {describe ? <div style={{ fontSize: 16 }}>{describe}</div> : <div style={{ fontSize: 16 }}>{nextflowuser}人员</div>}
+                <div style={{ marginTop: 12 }} className={styles.useritem}>
+                  <Checkbox.Group
+                    defaultValue={indexUser || defaultvalue}
+                    options={dataArr(defaultUsers || userlist)}
+                    onChange={handleChange}
+                  />
+                </div>
+              </>
+            )}
+          </div>
         </Spin>
       </Modal>
     </>

@@ -26,8 +26,8 @@ const formItemLayout = {
 };
 
 const formuintLayout = {
-  labelCol: { sm: { span: 2 } },
-  wrapperCol: { sm: { span: 22 } },
+  labelCol: { sm: { span: 24 } },
+  wrapperCol: { sm: { span: 24 } },
 };
 
 function TemporaryRegistrat(props, ref) {
@@ -215,6 +215,30 @@ function TemporaryRegistrat(props, ref) {
             </Form.Item>
           </Col>
           <Col span={8}>
+            <Form.Item label="程序版本号">
+              {getFieldDecorator('versionNo', {
+                initialValue: info.versionNo,
+                rules: [{ required, message: '请输入程序版本号' }],
+              })(<Input placeholder="请输入" disabled={taskName === '出厂测试'} />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="申请发布等级">
+              {getFieldDecorator('releaseLevel', {
+                rules: [{ required, message: `请选择发布等级` }],
+                initialValue: info.mergeOrder ? info.mergeOrder.releaseLevel : '',
+              })(
+                <Select placeholder="请选择">
+                  {grademap.map(obj => [
+                    <Option key={obj.key} value={obj.title}>
+                      {obj.title}
+                    </Option>,
+                  ])}
+                </Select>
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
             <Form.Item label="申请人">
               {getFieldDecorator('applicant', {
                 rules: [{ required, message: '请输入申请人' }],
@@ -399,30 +423,6 @@ function TemporaryRegistrat(props, ref) {
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="程序版本号">
-              {getFieldDecorator('versionNo', {
-                initialValue: info.versionNo,
-                rules: [{ required, message: '请输入程序版本号' }],
-              })(<Input placeholder="请输入" disabled={taskName === '出厂测试'} />)}
-            </Form.Item>
-          </Col>
-          <Col span={8}>
-            <Form.Item label="申请发布等级">
-              {getFieldDecorator('releaseLevel', {
-                rules: [{ required, message: `请选择发布等级` }],
-                initialValue: info.mergeOrder ? info.mergeOrder.releaseLevel : '',
-              })(
-                <Select placeholder="请选择" disabled={!isEdit}>
-                  {grademap.map(obj => [
-                    <Option key={obj.key} value={obj.title}>
-                      {obj.title}
-                    </Option>,
-                  ])}
-                </Select>
-              )}
-            </Form.Item>
-          </Col>
-          <Col span={8}>
             <Form.Item label="计划工作开始时间" >
               {getFieldDecorator('planStart', {
                 rules: [{ required, message: `请选择计划工作开始时间` }],
@@ -516,7 +516,7 @@ function TemporaryRegistrat(props, ref) {
             </Form.Item>
           </Col>
           <Col span={24} >
-            <Form.Item label="受影响业务范围" {...formuintLayout}>
+            <Form.Item label="受影响业务范围" {...formuintLayout} labelAlign='left'>
               {getFieldDecorator('affectedScope', {
                 rules: [{ required, message: `请填写受影响业务范围` }],
                 initialValue: info.tempRegister.affectedScope,
@@ -548,7 +548,7 @@ function TemporaryRegistrat(props, ref) {
             </Form.Item>
           </Col>
           <Col span={24} >
-            <Form.Item label="实施负责人" {...formuintLayout}>
+            <Form.Item label="实施负责人" {...formuintLayout} labelAlign='left'>
               {getFieldDecorator('practicer', {
                 rules: [{ required, message: `请填写实施负责人` }],
                 initialValue: info.tempRegister.practicer,
@@ -558,7 +558,7 @@ function TemporaryRegistrat(props, ref) {
             </Form.Item>
           </Col>
           <Col span={24} >
-            <Form.Item label="实施监护人" {...formuintLayout}>
+            <Form.Item label="实施监护人" {...formuintLayout} labelAlign='left'>
               {getFieldDecorator('guarder', {
                 rules: [{ required, message: `请填写实施监护人` }],
                 initialValue: info.tempRegister.guarder,
@@ -568,7 +568,7 @@ function TemporaryRegistrat(props, ref) {
             </Form.Item>
           </Col>
           <Col span={24} >
-            <Form.Item label="实施人员" {...formuintLayout}>
+            <Form.Item label="实施人员" {...formuintLayout} labelAlign='left'>
               {getFieldDecorator('member', {
                 rules: [{ required, message: `请填写实施人员` }],
                 initialValue: info.tempRegister.member,
@@ -578,27 +578,27 @@ function TemporaryRegistrat(props, ref) {
             </Form.Item>
           </Col>
           <Col span={24} >
-            <Form.Item label="发布操作关键步骤" {...formuintLayout}>
+            <Form.Item label="发布操作关键步骤" {...formuintLayout} labelAlign='left'>
               {getFieldDecorator('releaseStep', {
                 rules: [{ required, message: `请填写发布操作关键步骤` }],
                 initialValue: info.tempRegister.releaseStep,
               })(
-                <TextArea autoSize={{ minRows: 5 }} />
+                <TextArea autoSize={{ minRows: 3 }} />
               )}
             </Form.Item>
           </Col>
           <Col span={24} >
-            <Form.Item label='风险预估及防范措施' {...formuintLayout}>
+            <Form.Item label='风险预估及防范措施' {...formuintLayout} labelAlign='left'>
               {getFieldDecorator('risks', {
                 rules: [{ required, message: `请填写风险预估及防范措施` }],
                 initialValue: info.tempRegister.risks,
               })(
-                <TextArea autoSize={{ minRows: 5 }} />
+                <TextArea autoSize={{ minRows: 3 }} />
               )}
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item label='附件上传' {...formuintLayout}>
+            <Form.Item label='' {...formuintLayout} labelAlign='left'>
               {getFieldDecorator('attach', {
                 initialValue: info.tempRegister.attach,
               })(<><SysUpload banOpenFileDialog={uploadStatus} /></>)}

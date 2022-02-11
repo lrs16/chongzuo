@@ -55,9 +55,9 @@ function EditeTable(props) {
     setPageinations({ current: Math.ceil(newData.length / 5), pageSize: 5 });
     setNewButton(true);
     setTimeout(() => {
-      const tableBox = document.getElementsByClassName('ant-table-body')[1];
+      const tableBox = document.getElementsByClassName('ant-table-body')[0];
       const scrollheight = tableBox?.scrollHeight;
-      const height = tableBox.clientHeight;
+      const height = tableBox?.clientHeight || 150;
       if (tableBox && scrollheight - height > 0) { tableBox.scrollTop = scrollheight - height; }
     }, 100);
 
@@ -709,6 +709,8 @@ function EditeTable(props) {
         {title}
       </h4>
       <Row style={{ marginBottom: 8 }} type='flex' align='bottom' >
+        <Col span={16}>   456456456465
+        </Col>
         <Col span={8} style={{ textAlign: 'right' }}>
           {isEdit && (
             <>

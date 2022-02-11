@@ -1224,8 +1224,8 @@ function QueryList(props) {
     },
     {
       title: '是否需要提供故障报告',
-      dataIndex: 'checkOneReportSign',
-      key: 'checkOneReportSign',
+      dataIndex: 'finishReportSign',
+      key: 'finishReportSign',
       width: 200,
     },
     {
@@ -1291,8 +1291,8 @@ function QueryList(props) {
     },
   ];
 
-   //  下载 /导出功能
-   const download = (page, pageSize) => {
+  //  下载 /导出功能
+  const download = (page, pageSize) => {
     const filterColumns = (columns.length > 0 ? columns : controlTable).filter((currentValue) => {
       return currentValue.title !== '操作'
     })
@@ -1398,13 +1398,13 @@ function QueryList(props) {
         val.title === '故障详细描述' ||
         val.title === '处理过程' ||
         val.title === '故障类型' ||
-        val.title === '故障措施或建议' || 
-        val.title === '故障名称' || 
-        val.title === '故障地点' || 
-        val.title === '系统运维商审核意见' || 
-        val.title === '故障分析及原因' || 
-        val.title === '确认说明' || 
-        val.title === '自动化科业务负责人审核意见' || 
+        val.title === '故障措施或建议' ||
+        val.title === '故障名称' ||
+        val.title === '故障地点' ||
+        val.title === '系统运维商审核意见' ||
+        val.title === '故障分析及原因' ||
+        val.title === '确认说明' ||
+        val.title === '自动化科业务负责人审核意见' ||
         val.title === '总结说明'
       ) {
         obj.ellipsis = true;

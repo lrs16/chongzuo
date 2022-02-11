@@ -56,6 +56,8 @@ function TemporaryDetail(props) {
             selectdata={selectdata}
             info={{ releaseMain: {}, tempRegister: {} }}
             userinfo={userinfo || {}}
+            isEdit
+            taskName={location?.query?.tabid ? '新建' : '出厂测试'}
           />
         </FilesContext.Provider>
       </Card>
