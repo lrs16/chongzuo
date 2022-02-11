@@ -290,7 +290,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
               <Col span={8}>
                 <Form.Item label="要求上传时间" >
                   {getFieldDecorator('finishRequiredTime', {
-                    initialValue: (finish && finish.finishRequiredTime) ? moment(finish.finishRequiredTime) : moment(new Date())
+                    initialValue: (tododetailslist && tododetailslist.requiredUploadTime) ? moment(tododetailslist.requiredUploadTime) : (finish.finishRequiredTime ? moment(finish.finishRequiredTime) : '')
                   })(<DatePicker showTime disabled format="YYYY-MM-DD HH:mm:ss" />)}
                 </Form.Item>
               </Col>
