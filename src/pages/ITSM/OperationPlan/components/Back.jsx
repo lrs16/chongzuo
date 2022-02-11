@@ -76,7 +76,6 @@ function Back(props) {
       {withClick(children, handleopenClick)}
       <Modal
         visible={visible}
-        maskClosable={false}
         checkable
         onCancel={handleCancel}
         onOk={handleReasonregression}

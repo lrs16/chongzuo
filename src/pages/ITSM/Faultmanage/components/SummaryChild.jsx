@@ -74,8 +74,6 @@ const SummaryChild = React.forwardRef((props, ref) => {
     ChangeFiles,
     tododetailslist,
     ChangeFileskey,
-    showFilelist,
-    showFilelist2,
     id,
     mainId,
     orderNo,
@@ -88,7 +86,9 @@ const SummaryChild = React.forwardRef((props, ref) => {
   const attRef = useRef();
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
   const [selectdata, setSelectData] = useState([]);
-  const [show, setShow] = useState(0);
+  const [show, setShow] = useState('0');
+  console.log('show: ', show);
+  console.log('finish: ', finish);
 
   useEffect(() => {
     ChangeFiles(fileslist);
@@ -97,6 +97,9 @@ const SummaryChild = React.forwardRef((props, ref) => {
   useEffect(() => {
     if (finish && finish.finishAnalysisAttachments !== '[]' && finish.finishAnalysisAttachments !== undefined && finish.finishAnalysisAttachments !== null) {
       setFieldsValue({ finishAnalysisAttachments: finish.finishAnalysisAttachments }, () => { });
+    }
+    if(finish && finish.finishReportSign) {
+      setShow(finish.finishReportSign)
     }
   }, []);
 
@@ -183,11 +186,11 @@ const SummaryChild = React.forwardRef((props, ref) => {
                     message: '请选择',
                   },
                 ],
-                initialValue: (finish && finish.finishReportSign) ? Number(finish.finishReportSign) : 0
+                initialValue: (finish && finish.finishReportSign) ? finish.finishReportSign :'0'
               })(
                 <RadioGroup onChange={showReport}>
-                  <Radio value={0}>是</Radio>
-                  <Radio value={1}>否</Radio>
+                  <Radio value='0'>是</Radio>
+                  <Radio value='1'>否</Radio>
                 </RadioGroup>,
               )}
             </Form.Item>
@@ -222,7 +225,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
           </Col>
 
           {
-            show === 0 && (finish && !finish.finishReportSign || finish.finishReportSign === '0') && (
+            (show === '0') && (
               <Col span={24}>
                 <Form.Item label="上传故障分析报告" {...ItemLayout}>
                   {getFieldDecorator('finishAnalysisAttachments', {
@@ -261,11 +264,10 @@ const SummaryChild = React.forwardRef((props, ref) => {
           }
 
           {
-            ((show === 1 && finish && finish.finishAnalysisAttachments)) && (
+            (show === '1') && finish && finish.finishAnalysisAttachments && (
               <Col span={24}>
                 <Form.Item label="故障分析报告" {...ItemLayout}>
                   {getFieldDecorator('finishAnalysisAttachments', {
-
                   })(
                     <>
                       {finish.finishAnalysisAttachments && <Downloadfile files={finish.finishAnalysisAttachments} />}
@@ -284,7 +286,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
           }
 
           {
-           (show === 0 || finish.finishAnalysisAttachments)  && (
+           ((show === '0') || finish.finishAnalysisAttachments)  && (
               <Col span={8}>
                 <Form.Item label="要求上传时间" >
                   {getFieldDecorator('finishRequiredTime', {
