@@ -131,16 +131,16 @@ function Maintenance(props) {
         if (record.second_object === '合计') {
           return (
             <>
-            <span style={{ fontWeight: 700 }}>{text}</span>
-            { text && text.substring(0,1) === '-' ? <Icon type="caret-down" style={{ color: '#f5222d' }}/> : <Icon type="caret-up" style={{ color: '#52c41a' }}/>}
-          </>
+              <span style={{ fontWeight: 700 }}>{text}</span>
+              {text && text.substring(0, 1) === '-' ? <Icon type="caret-down" style={{ color: '#f5222d' }} /> : <Icon type="caret-up" style={{ color: '#52c41a' }} />}
+            </>
           )
- 
+
         }
         return (
           <>
-           <span>{text}</span>
-           { text && text.substring(0,1) === '-' ? <Icon type="caret-down" style={{ color: '#f5222d' }}/> : <Icon type="caret-up" style={{ color: '#52c41a' }}/>}
+            <span>{text}</span>
+            {text && text.substring(0, 1) === '-' ? <Icon type="caret-down" style={{ color: '#f5222d' }} /> : <Icon type="caret-up" style={{ color: '#52c41a' }} />}
           </>
         )
       }
@@ -232,6 +232,10 @@ function Maintenance(props) {
         endTime = dateString;
         startTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
         setFieldsValue({ time1: moment(startTime) })
+        break;
+      case 'month':
+      case 'other':
+        endTime = dateString;
         break;
       default:
         break;
