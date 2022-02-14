@@ -194,7 +194,7 @@ function EventDetails(props) {
                 ]);
                 if (index > 0)
                   return (
-                    <Panel Panel header={Object.keys(obj)[0].checkType || Panelheadermap.get(Object.keys(obj)[0])} key={index.toString()}>
+                    <Panel Panel header={obj.check?.checkType || Panelheadermap.get(Object.keys(obj)[0])} key={index.toString()}>
                       {Paneldesmap.get(Object.keys(obj)[0])}
                     </Panel>
                   );
