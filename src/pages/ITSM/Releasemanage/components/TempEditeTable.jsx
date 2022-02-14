@@ -24,7 +24,6 @@ function EditeTable(props) {
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 5 });
   const [selectdata, setSelectData] = useState([]); // 下拉值
   const { ChangeButtype, taskId, location } = useContext(UserContext);
-  console.log(taskName);
 
   // 新增一条记录
   const newMember = () => {
@@ -699,8 +698,8 @@ function EditeTable(props) {
   const setTableHeight = () => {
     let height = 500;
     const clientHeight = window.document?.body?.clientHeight || 500;
-    const tableHeight = window.document.getElementById('list')?.offsetHeight || 0;
-    if (clientHeight - 320 < tableHeight) {
+    const tableHeight = window.document.getElementById('list')?.offsetHeight;
+    if (tableHeight && tableHeight > 235 && clientHeight - 320 < tableHeight) {
       height = clientHeight - 320
     } else {
       height = null

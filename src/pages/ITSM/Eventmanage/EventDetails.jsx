@@ -192,10 +192,9 @@ function EventDetails(props) {
                   ['check', <Checkdes info={Object.values(obj)[0]} main={info[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
                   ['finish', <ReturnVisitdes info={Object.values(obj)[0]} main={info[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
                 ]);
-
                 if (index > 0)
                   return (
-                    <Panel Panel header={Panelheadermap.get(Object.keys(obj)[0])} key={index.toString()}>
+                    <Panel Panel header={Object.keys(obj)[0].checkType || Panelheadermap.get(Object.keys(obj)[0])} key={index.toString()}>
                       {Paneldesmap.get(Object.keys(obj)[0])}
                     </Panel>
                   );
