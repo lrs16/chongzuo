@@ -250,7 +250,8 @@ function ToDodetails(props) {
     </>
   );
   const handleTabChange = key => {
-    settabActivekey(key)
+    settabActivekey(key);
+    setButtonType('');
   };
 
   const tabList = [

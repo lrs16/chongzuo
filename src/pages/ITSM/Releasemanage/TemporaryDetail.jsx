@@ -233,7 +233,7 @@ function TemporaryDetail(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      <TemporarySelectUser taskId={Id} type={type} />
+      <TemporarySelectUser taskId={Id || registratTaskId} type={type} visible={userModleVisible} />
     </PageHeaderWrapper>
   );
 }

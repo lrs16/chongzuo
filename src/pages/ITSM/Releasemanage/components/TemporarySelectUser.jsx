@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { Modal } from 'antd';
 
 function TemporarySelectUser(props) {
-  const { dispatch, visible, taskId, type, userlist } = props;
+  const { dispatch, visible, taskId, type, userlist, ChangeUserVisible } = props;
 
   useEffect(() => {
     if (taskId && type) {
@@ -17,10 +17,18 @@ function TemporarySelectUser(props) {
     };
   }, []);
 
+  const handleOk = () => {
+    ChangeUserVisible(false);
+  }
+
+  const handleCancel = () => {
+    ChangeUserVisible(false);
+  };
+
   console.log(userlist);
 
   return (
-    <Modal visible={visible}>
+    <Modal visible={visible} onOk={handleOk} onCancel={handleCancel} width={700}>
       11111
     </Modal>
   );

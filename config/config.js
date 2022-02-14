@@ -2076,24 +2076,24 @@ export default {
   },
   proxy: {
     '/auth/': {
-      target: ' http://172.16.10.33:9901/', // 登录
+      target: ' http://172.16.10.132:9901/', // 登录
       changeOrigin: true,
     },
     '/upms/': {
-      target: ' http://172.16.10.33:9901/', // 用户管理
+      target: ' http://172.16.10.132:9901/', // 用户管理
       changeOrigin: true,
     },
     '/auto/': {
-      target: ' http://172.16.10.33:9901/', // 软件启停
+      target: ' http://172.16.10.132:9901/', // 软件启停
       // target: 'http://172.16.10.11:9901/',
       changeOrigin: true,
     },
     '/monitor/': {
-      target: ' http://172.16.10.33:9901/', // 计量业务监控
+      target: ' http://172.16.10.132:9901/', // 计量业务监控
       changeOrigin: true,
     },
     '/inspection/': {
-      target: 'http://172.16.10.33:8083/', //  巡检
+      target: 'http://172.16.10.132:8083/', //  巡检
       changeOrigin: true,
       pathRewrite: { '^/inspection': '' },
     },
@@ -2104,11 +2104,11 @@ export default {
     },
     '/basicMonitor/': {
       // 检测管理，基础平台
-      target: 'http://172.16.10.33:8889/',
+      target: 'http://172.16.10.132:8889/',
       changeOrigin: true,
     },
     '/activiti/': {
-      target: ' http://172.16.10.33:9901/',
+      target: ' http://172.16.10.132:9901/',
       changeOrigin: true,
     },
     // '/activiti': {
@@ -2116,42 +2116,42 @@ export default {
     //   changeOrigin: true,
     // },
     '/modeler/': {
-      target: ' http://172.16.10.33:9901/',
+      target: ' http://172.16.10.132:9901/',
       changeOrigin: true,
     },
     // ITSM通用接口
     '/common/': {
-      target: ' http://172.16.10.33:9901/',
+      target: ' http://172.16.10.132:9901/',
       changeOrigin: true,
     },
     // 事件管理,问题，故障
     '/event/': {
-      target: ' http://172.16.10.33:9901/',
+      target: ' http://172.16.10.132:9901/',
       changeOrigin: true,
     },
     // 问题管理
     '/problem/': {
-      target: ' http://172.16.10.33:9901/',
+      target: ' http://172.16.10.132:9901/',
       changeOrigin: true,
     },
     // 故障管理
     '/trouble/': {
-      target: ' http://172.16.10.33:9901/',
+      target: ' http://172.16.10.132:9901/',
       changeOrigin: true,
     },
     // 需求管理
     '/demand/': {
-      target: ' http://172.16.10.33:9901/',
+      target: ' http://172.16.10.132:9901/',
       changeOrigin: true,
     },
     // 作业计划
     '/operation/': {
-      target: ' http://172.16.10.33:9901/',
+      target: ' http://172.16.10.132:9901/',
       changeOrigin: true,
     },
     // 工作督办
     '/work/': {
-      target: ' http://172.16.10.33:9901/',
+      target: ' http://172.16.10.132:9901/',
       changeOrigin: true,
     },
     '/api/': {
@@ -2159,63 +2159,63 @@ export default {
       changeOrigin: true,
     },
     '/sys/': {
-      target: ' http://172.16.10.33:9901/', // 数据字典
+      target: ' http://172.16.10.132:9901/', // 数据字典
       changeOrigin: true,
     },
     '/check/': {
-      target: ' http://172.16.10.33:9901/', // 数据字典
+      target: ' http://172.16.10.132:9901/', // 数据字典
       changeOrigin: true,
     },
     '/regist/': {
-      target: 'http://172.16.10.33:9901/', // 人员进出管理-人员进出登记
+      target: 'http://172.16.10.132:9901/', // 人员进出管理-人员进出登记
       changeOrigin: true
     },
     '/report/': {
-      target: 'http://172.16.10.33:9901/',
+      target: 'http://172.16.10.132:9901/',
       changeOrigin: true
     },
     '/image/': {
-      target: 'http://172.16.10.33:9901/',
+      target: 'http://172.16.10.132:9901/',
       changeOrigin: true
     },
     '/knowledge/': {
-      target: 'http://172.16.10.33:9901/',
+      target: 'http://172.16.10.132:9901/',
       changeOrigin: true
     },
     '/release/': {
-      target: 'http://172.16.10.33:9901/',        // 发布管理
+      target: 'http://172.16.10.132:9901/',        // 发布管理
       changeOrigin: true
     },
     '/lasting/': {
-      target: 'http://172.16.10.33:9901/',        // 自动化运维
+      target: 'http://172.16.10.132:9901/',        // 自动化运维
       changeOrigin: true
     },
     '/assets/': {
-      target: 'http://172.16.10.33:9901/',        // 自动化运维-设备管理、机柜管理
+      target: 'http://172.16.10.132:9901/',        // 自动化运维-设备管理、机柜管理
       changeOrigin: true
     },
     '/inspect/': {
-      target: 'http://172.16.10.33:9901/',        //  巡检
+      target: 'http://172.16.10.132:9901/',        //  巡检
       changeOrigin: true,
     },
     '/job/': {
-      target: 'http://172.16.10.33:9901/',        // 任务调度
+      target: 'http://172.16.10.132:9901/',        // 任务调度
       changeOrigin: true
     },
     '/quality/': {
-      target: 'http://172.16.10.33:9901/',
+      target: 'http://172.16.10.132:9901/',
       changeOrigin: true
     },
     '/warn/': {
-      target: 'http://172.16.10.33:9901/',
+      target: 'http://172.16.10.132:9901/',
       changeOrigin: true
     },
     '/duty/': {
-      target: 'http://172.16.10.33:9901/',
+      target: 'http://172.16.10.132:9901/',
       changeOrigin: true
     },
     '/main/': {
-      target: 'http://172.16.10.33:9901/',    // 主网集成
+      target: 'http://172.16.10.132:9901/',    // 主网集成
       changeOrigin: true
     },
   },
