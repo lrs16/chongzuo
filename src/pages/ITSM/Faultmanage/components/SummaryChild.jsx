@@ -87,8 +87,6 @@ const SummaryChild = React.forwardRef((props, ref) => {
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
   const [selectdata, setSelectData] = useState([]);
   const [show, setShow] = useState('0');
-  console.log('show: ', show);
-  console.log('finish: ', finish);
 
   useEffect(() => {
     ChangeFiles(fileslist);
@@ -103,6 +101,8 @@ const SummaryChild = React.forwardRef((props, ref) => {
     }
   }, []);
 
+
+
   useImperativeHandle(
     ref,
     () => ({
@@ -111,6 +111,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
     [],
   );
   const required = true;
+
   useEffect(() => {
     sessionStorage.setItem('Nextflowmane', '自动化科业务负责人审核');
   });
@@ -224,146 +225,119 @@ const SummaryChild = React.forwardRef((props, ref) => {
             </Form.Item>
           </Col>
 
-          {
-            (show === '0') && (
-              <Col span={24}>
-                <Form.Item label="上传故障分析报告" {...ItemLayout}>
-                  {getFieldDecorator('finishAnalysisAttachments', {
-                    rules: [
+          <Col span={24}>
+            <Form.Item label="上传故障分析报告" {...ItemLayout}>
+              {getFieldDecorator('finishAnalysisAttachments', {
+                rules: show === '0' ? [
                       {
                         required,
                         message: '请生成故障分析报告',
                       },
-                    ],
-                  })(
-                    <>
-                      {finish.finishAnalysisAttachments && <Downloadfile files={finish.finishAnalysisAttachments} />}
-                      {finish.finishAnalysisAttachments && (
-                        <Icon
-                          className="dynamic-delete-button"
-                          type="edit"
-                          onClick={() => handleAnalysisReport('noedit')}
-                        />
-                      )}
-
-                      {
-                        finish && !finish.finishAnalysisAttachments && (
-                          <Button
-                            type='primary'
-                            onClick={() => handleAnalysisReport('')}
-                          >
-                            自动生成报告
-                          </Button>
-                        )
-                      }
-                    </>
+                    ]:[],
+              })(
+                <>
+                  {finish.finishAnalysisAttachments && <Downloadfile files={finish.finishAnalysisAttachments} />}
+                  {finish.finishAnalysisAttachments && (
+                    <Icon
+                      className="dynamic-delete-button"
+                      type="edit"
+                      onClick={() => handleAnalysisReport('noedit')}
+                    />
                   )}
-                </Form.Item>
-              </Col>
-            )
-          }
+
+                  {
+                    finish && !finish.finishAnalysisAttachments && (
+                      <Button
+                        type='primary'
+                        onClick={() => handleAnalysisReport('')}
+                      >
+                        自动生成报告
+                      </Button>
+                    )
+                  }
+                </>
+              )}
+            </Form.Item>
+          </Col>
+
+          <Col span={8} style={{ display: (show === '0' || finish.finishAnalysisAttachments) ? 'block' : 'none' }}>
+            <Form.Item label="要求上传时间" >
+              {getFieldDecorator('finishRequiredTime', {
+                initialValue: (tododetailslist && tododetailslist.requiredUploadTime) ? moment(tododetailslist.requiredUploadTime) : (finish.finishRequiredTime ? moment(finish.finishRequiredTime) : '')
+              })(<DatePicker showTime disabled format="YYYY-MM-DD HH:mm:ss" />)}
+            </Form.Item>
+          </Col>
+
 
           {
-            (show === '1') && finish && finish.finishAnalysisAttachments && (
-              <Col span={24}>
-                <Form.Item label="故障分析报告" {...ItemLayout}>
-                  {getFieldDecorator('finishAnalysisAttachments', {
-                  })(
-                    <>
-                      {finish.finishAnalysisAttachments && <Downloadfile files={finish.finishAnalysisAttachments} />}
-                      {finish.finishAnalysisAttachments && (
-                        <Icon
-                          className="dynamic-delete-button"
-                          type="edit"
-                          onClick={() => handleAnalysisReport('noedit')}
-                        />
-                      )}
-                    </>
-                  )}
-                </Form.Item>
-              </Col>
+            (finish && finish.finishAnalysisAttachments) && (
+              <>
+                <Col span={8}>
+                  <Form.Item label="实际上传时间" >
+                    {getFieldDecorator('finishPracticeTime', {
+                      initialValue: (tododetailslist && tododetailslist.finishPracticeTime) ? moment(tododetailslist.finishPracticeTime) : (finish.finishPracticeTime ? moment(finish.finishPracticeTime) : '')
+                    })(<DatePicker showTime disabled format="YYYY-MM-DD HH:mm:ss" />)}
+                  </Form.Item>
+                </Col>
+
+              </>
             )
           }
 
+          <Col span={24}>
+            <Form.Item
+              label="上传附件"
+              {...forminladeLayout}
+            // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb" // 位置已调
+            >
+              {
+                getFieldDecorator('finishAttachments', {})(
+                  <div
+                    onMouseOver={() => {
+                      ChangeFileskey('2');
+                    }}
+                    onFocus={() => 0}
+                  >
+                    <SysUpload
+                      fileslist={(finish && finish.finishAttachments) ? JSON.parse(finish.finishAttachments) : []}
+                      ChangeFileslist={newvalue => {
+                        setFilesList(newvalue);
+                        setFieldsValue({ finishAttachments: JSON.stringify(newvalue.arr) });
+                      }
+                      }
+                      banOpenFileDialog={uploadStatus}
+                    />
+                  </div>
+                )
+              }
+            </Form.Item>
+          </Col>
 
-          <Col span={8} style={{ display: (show === '0' || finish.finishAnalysisAttachments) ? 'block':'none' }}>
-          <Form.Item label="要求上传时间" >
-            {getFieldDecorator('finishRequiredTime', {
-              initialValue: (tododetailslist && tododetailslist.requiredUploadTime) ? moment(tododetailslist.requiredUploadTime) : (finish.finishRequiredTime ? moment(finish.finishRequiredTime) : '')
-            })(<DatePicker showTime disabled format="YYYY-MM-DD HH:mm:ss" />)}
-          </Form.Item>
-        </Col>
+          <Col span={8}>
+            <Form.Item label="总结人">
+              {getFieldDecorator('finishUser', {
+                initialValue: finish.finishUser || curruserinfo.userName,
+              })(<Input allowClear disabled />)}
+            </Form.Item>
+          </Col>
 
+          <Col span={8}>
+            <Form.Item label="总结人单位">
+              {getFieldDecorator('finishUnit', {
+                initialValue: finish.finishUnit || curruserinfo.unitName,
+              })(<Input allowClear disabled />)}
+            </Form.Item>
+          </Col>
 
-        {
-          (finish && finish.finishAnalysisAttachments) && (
-            <>
-              <Col span={8}>
-                <Form.Item label="实际上传时间" >
-                  {getFieldDecorator('finishPracticeTime', {
-                    initialValue: (tododetailslist && tododetailslist.finishPracticeTime) ? moment(tododetailslist.finishPracticeTime) : (finish.finishPracticeTime ? moment(finish.finishPracticeTime) : '')
-                  })(<DatePicker showTime disabled format="YYYY-MM-DD HH:mm:ss" />)}
-                </Form.Item>
-              </Col>
-
-            </>
-          )
-        }
-
-        <Col span={24}>
-          <Form.Item
-            label="上传附件"
-            {...forminladeLayout}
-          // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb" // 位置已调
-          >
-            {
-              getFieldDecorator('finishAttachments', {})(
-                <div
-                  onMouseOver={() => {
-                    ChangeFileskey('2');
-                  }}
-                  onFocus={() => 0}
-                >
-                  <SysUpload
-                    fileslist={(finish && finish.finishAttachments) ? JSON.parse(finish.finishAttachments) : []}
-                    ChangeFileslist={newvalue => {
-                      setFilesList(newvalue);
-                      setFieldsValue({ finishAttachments: JSON.stringify(newvalue.arr) });
-                    }
-                    }
-                    banOpenFileDialog={uploadStatus}
-                  />
-                </div>
-              )
-            }
-          </Form.Item>
-        </Col>
-
-        <Col span={8}>
-          <Form.Item label="总结人">
-            {getFieldDecorator('finishUser', {
-              initialValue: finish.finishUser || curruserinfo.userName,
-            })(<Input allowClear disabled />)}
-          </Form.Item>
-        </Col>
-
-        <Col span={8}>
-          <Form.Item label="总结人单位">
-            {getFieldDecorator('finishUnit', {
-              initialValue: finish.finishUnit || curruserinfo.unitName,
-            })(<Input allowClear disabled />)}
-          </Form.Item>
-        </Col>
-
-        <Col span={8}>
-          <Form.Item label="总结人部门">
-            {getFieldDecorator('finishDept', {
-              initialValue: finish.finishDept || curruserinfo.deptName,
-            })(<Input allowClear disabled />)}
-          </Form.Item>
-        </Col>
-      </Form>
-    </Row>
+          <Col span={8}>
+            <Form.Item label="总结人部门">
+              {getFieldDecorator('finishDept', {
+                initialValue: finish.finishDept || curruserinfo.deptName,
+              })(<Input allowClear disabled />)}
+            </Form.Item>
+          </Col>
+        </Form>
+      </Row>
     </>
   );
 });
