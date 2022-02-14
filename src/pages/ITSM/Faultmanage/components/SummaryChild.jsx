@@ -227,13 +227,14 @@ const SummaryChild = React.forwardRef((props, ref) => {
 
           <Col span={24}>
             <Form.Item label="上传故障分析报告" {...ItemLayout}>
-              {getFieldDecorator('finishAnalysisAttachments', {
+              {getFieldDecorator(`${show === '0' ? 'finishAnalysisAttachments' : 'finishAnalysisAttachments2'}`, {
                 rules: show === '0' ? [
-                      {
-                        required,
-                        message: '请生成故障分析报告',
-                      },
-                    ]:[],
+                  {
+                    required,
+                    message: '请生成故障分析报告',
+                  },
+                ] : [],
+                initialValue: finish.finishAnalysisAttachments
               })(
                 <>
                   {finish.finishAnalysisAttachments && <Downloadfile files={finish.finishAnalysisAttachments} />}

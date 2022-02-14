@@ -445,6 +445,7 @@ function Todolistdetails(props) {
     SummaryRef.current.validateFields((err, values) => {
       if (cirStatus ? !err : true) {
         const formValues = values;
+        formValues.finishAnalysisAttachments = formValues.finishAnalysisAttachments || formValues.finishAnalysisAttachments2;
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
         formValues.finishUserId = userId; // 当前登录人id
