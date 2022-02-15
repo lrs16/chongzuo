@@ -182,11 +182,11 @@ export async function saveTimeoutMsg(params) {
 
 // 根据对象第一层查询
 export async function getOrderObjectByRoot(params) {
-  return request(`/event/analysis/getOrderObjectByRoot`,{
-    method:'POST',
-    data:params,
-    requestType:'form'
-  }); 
+  return request(`/event/analysis/getOrderObjectByRoot`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form'
+  });
 }
 
 // 根据对象第一层查询下载

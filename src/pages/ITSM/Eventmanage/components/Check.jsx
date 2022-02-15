@@ -81,7 +81,7 @@ const Check = forwardRef((props, ref) => {
           </Form.Item>
         </Col>
         <Col span={24}>
-          {(adopt === '001' || adopt === '') && (
+          {(adopt === '001' || !adopt) && (
             <Form.Item label="审核意见" {...forminladeLayout}>
               {getFieldDecorator('content1', {
                 initialValue: check?.content || '',

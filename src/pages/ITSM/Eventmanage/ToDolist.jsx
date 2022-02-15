@@ -34,6 +34,7 @@ function ToDolist(props) {
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [selectedRowRecord, setSelectedRowRecord] = useState([]);
   const [tabrecord, setTabRecord] = useState({});
 
   // 查询
@@ -53,14 +54,22 @@ function ToDolist(props) {
   //  下载
   const download = () => {
     validateFields((err, values) => {
+      let ids = [];
+      if (selectedRowKeys && selectedRowKeys.length > 0) {
+        ids = selectedRowRecord.map(item => {
+          return item.id
+        });
+      };
       if (!err) {
         dispatch({
           type: 'eventtodo/eventdownload',
           payload: {
-            ...values,
-            time3: values.time?.startTime || '',
-            time4: values.time?.endtime || '',
-            ids: selectedRowKeys.toString(),
+            values: {
+              ...values,
+              time3: values.time?.startTime || '',
+              time4: values.time?.endtime || '',
+            },
+            ids: ids.toString(),
           },
         }).then(res => {
           const filename = `事件待办_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
@@ -111,8 +120,9 @@ function ToDolist(props) {
     onChange: page => changePage(page),
   };
 
-  const onSelectChange = RowKeys => {
-    setSelectedRowKeys(RowKeys)
+  const onSelectChange = (RowKeys, rowRecords) => {
+    setSelectedRowKeys(RowKeys);
+    setSelectedRowRecord(rowRecords)
   };
 
   const rowSelection = {
@@ -442,7 +452,7 @@ function ToDolist(props) {
           loading={loading}
           columns={columns}
           dataSource={list.rows}
-          rowKey={r => r.id}
+          rowKey={r => r.taskId}
           pagination={pagination}
           rowSelection={rowSelection}
           scroll={{ x: 1400, y: setTableHeight() }}
