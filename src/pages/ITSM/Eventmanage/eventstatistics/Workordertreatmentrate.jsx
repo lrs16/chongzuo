@@ -72,8 +72,8 @@ function Workordertreatmentrate(props) {
           time2: record.end_time,
           unitName: record.unit || '',
           handler: record.handler || '',
-          eventStatus: '已完成',
-          status: ''
+          eventStatus: record.handler ? '已关闭':'',
+          status: record.unit ? '已关闭':''
         }
         return (
           <TreatmentrateDetail
