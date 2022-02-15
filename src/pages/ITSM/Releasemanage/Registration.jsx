@@ -156,8 +156,8 @@ function Registration(props) {
                       setModalVisible(true);
                     };
                     if ((timeoutres.data.timeout && res.data.reason) || !timeoutres.data.timeout) {
-                      // setUserVisible(true);
-                      tosubmit(res.data.currentTaskStatus.taskId, resuser.data.userList);
+                      setUserVisible(true);
+                      // tosubmit(res.data.currentTaskStatus.taskId, resuser.data.userList);
                     };
                   } else {
                     message.error(res.msg);
@@ -281,7 +281,7 @@ function Registration(props) {
       <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSave('save')} disabled={saveloading || loading || uploadstatus}>
         保存
       </Button>
-      <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSubmit()} disabled={loading || saveloading || uploadstatus}>
+      <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setUserVisible(false)} onClick={() => handleSubmit()} disabled={loading || saveloading || uploadstatus}>
         流转至开发商项目经理审核
       </Button>
       <Button type="default" onClick={() => handleclose()} disabled={loading || saveloading || uploadstatus}>关闭</Button>

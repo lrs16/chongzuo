@@ -26,7 +26,8 @@ export async function openOrder(releaseNo) {
 }
 
 // 获取下一环节的处理人
-export async function getNextFlowUserList(taskId, type) {
+export async function getNextFlowUserList({ taskId, type }) {
+  console.log(taskId, type);
   return request(`/release/temp/getNextFlowUserList?taskId=${taskId}&type=${type}`, {
     method: 'GET',
   });

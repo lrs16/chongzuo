@@ -35,8 +35,9 @@ const formLayout = {
   wrapperCol: { sm: { span: 22 } },
 };
 
+
 function TemporaryRegistrat(props, ref) {
-  const { taskName, info, userinfo, selectdata, isEdit, listmsg, uploadStatus, loading } = props;
+  const { taskName, info, userinfo, selectdata, isEdit, uploadStatus, loading, operationList } = props;
   const { getFieldDecorator, setFieldsValue, validateFields, setFields, getFieldsValue, resetFields } = props.form;
   const required = true;
   const [disablelist, setDisabledList] = useState([]); // 自动完成下拉列表
@@ -232,7 +233,7 @@ function TemporaryRegistrat(props, ref) {
                 rules: [{ required, message: `请选择发布等级` }],
                 initialValue: info?.tempRegister?.releaseLevel || '',
               })(
-                <Select placeholder="请选择">
+                <Select placeholder="请选择" disabled={!isEdit}>
                   {grademap.map(obj => [
                     <Option key={obj.key} value={obj.title}>
                       {obj.title}
@@ -253,6 +254,7 @@ function TemporaryRegistrat(props, ref) {
                   dropdownMatchSelectWidth={false}
                   dropdownStyle={{ width: 600 }}
                   onSelect={(v, opt) => handleDisableduser(v, opt)}
+                  disabled={!isEdit}
                 >
                   <Search
                     placeholder="可输入姓名搜索"
@@ -278,6 +280,7 @@ function TemporaryRegistrat(props, ref) {
                   initialValue: info?.tempRegister?.applicantUnit || '',
                 })(
                   <AutoComplete
+                    disabled={!isEdit}
                     defaultActiveFirstOption={false}
                     filterOption={false}
                     open={unitopen}
@@ -317,6 +320,7 @@ function TemporaryRegistrat(props, ref) {
                   </AutoComplete>,
                 )}
                 <Button
+                  disabled={!isEdit}
                   style={{ width: '15%' }}
                   onClick={() => {
                     SetDetpDrawer(!detpdrawer);
@@ -352,6 +356,7 @@ function TemporaryRegistrat(props, ref) {
                   initialValue: info?.tempRegister?.applicantDept || '',
                 })(
                   <AutoComplete
+                    disabled={!isEdit}
                     defaultActiveFirstOption={false}
                     filterOption={false}
                     open={deptopen}
@@ -389,6 +394,7 @@ function TemporaryRegistrat(props, ref) {
                   </AutoComplete>,
                 )}
                 <Button
+                  disabled={!isEdit}
                   style={{ width: '15%' }}
                   onClick={() => {
                     validateFields(['Unit'], err => {
@@ -423,7 +429,7 @@ function TemporaryRegistrat(props, ref) {
               {getFieldDecorator('tel', {
                 rules: [{ required, message: '请输入联系电话' }],
                 initialValue: info?.tempRegister?.tel || '',
-              })(<Input placeholder="请输入" />)}
+              })(<Input placeholder="请输入" disabled={!isEdit} />)}
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -434,6 +440,7 @@ function TemporaryRegistrat(props, ref) {
               })(
                 <div>
                   {info.tempRegister && (<DatePicker
+                    disabled={!isEdit}
                     showTime
                     placeholder="请选择时间"
                     format="YYYY-MM-DD HH:mm:ss"
@@ -458,6 +465,7 @@ function TemporaryRegistrat(props, ref) {
               })(
                 <div>
                   {info.tempRegister && (<DatePicker
+                    disabled={!isEdit}
                     showTime
                     placeholder="请选择时间"
                     format="YYYY-MM-DD HH:mm:ss"
@@ -493,7 +501,7 @@ function TemporaryRegistrat(props, ref) {
                 rules: [{ required, message: `请选择变更原因` }],
                 initialValue: info?.tempRegister?.changeReason && info.tempRegister.changeReason.length > 0 ? info.tempRegister.changeReason.split(',') : [],
               })(
-                <Select placeholder="请选择" mode="multiple">
+                <Select placeholder="请选择" mode="multiple" disabled={!isEdit}>
                   {reasonmap.map(obj => [
                     <Option key={obj.key} value={obj.title}>
                       {obj.title}
@@ -509,7 +517,7 @@ function TemporaryRegistrat(props, ref) {
                 rules: [{ required, message: `请选择责任单位` }],
                 initialValue: info?.releaseMain?.dutyUnit || '',
               })(
-                <Select placeholder="请选择">
+                <Select placeholder="请选择" disabled={!isEdit}>
                   {unitmap.map(obj => [
                     <Option key={obj.key} value={obj.title}>
                       {obj.title}
@@ -525,7 +533,7 @@ function TemporaryRegistrat(props, ref) {
                 rules: [{ required, message: `请填写受影响业务范围` }],
                 initialValue: info?.tempRegister?.affectedScope || '',
               })(
-                <TextArea autoSize={{ minRows: 4 }} />
+                <TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />
               )}
             </Form.Item>
           </Col>
@@ -534,11 +542,11 @@ function TemporaryRegistrat(props, ref) {
               title='发布清单'
               functionmap={functionmap}
               modulamap={modulamap}
-              isEdit={isEdit}
+              isEdit={operationList}
               taskName={taskName}
               dataSource={info.releaseListList || undefined}
               ChangeValue={v => { setFieldsValue({ releaseListList: v }); }}
-              listmsg={listmsg}
+              listmsg={info.releaseMsg}
             />
             <Form.Item wrapperCol={{ span: 24 }}>
               {getFieldDecorator('releaseListList', {
@@ -557,7 +565,7 @@ function TemporaryRegistrat(props, ref) {
                 rules: [{ required, message: `请填写实施负责人` }],
                 initialValue: info?.tempRegister?.practicer || '',
               })(
-                <TextArea autoSize={{ minRows: 1 }} />
+                <TextArea autoSize={{ minRows: 1 }} disabled={!isEdit} />
               )}
             </Form.Item>
           </Col>
@@ -567,7 +575,7 @@ function TemporaryRegistrat(props, ref) {
                 rules: [{ required, message: `请填写实施监护人` }],
                 initialValue: info?.tempRegister?.guarder || '',
               })(
-                <TextArea autoSize={{ minRows: 1 }} />
+                <TextArea autoSize={{ minRows: 1 }} disabled={!isEdit} />
               )}
             </Form.Item>
           </Col>
@@ -577,7 +585,7 @@ function TemporaryRegistrat(props, ref) {
                 rules: [{ required, message: `请填写实施人员` }],
                 initialValue: info?.tempRegister?.member || '',
               })(
-                <TextArea autoSize={{ minRows: 1 }} />
+                <TextArea autoSize={{ minRows: 1 }} disabled={!isEdit} />
               )}
             </Form.Item>
           </Col>
@@ -587,7 +595,7 @@ function TemporaryRegistrat(props, ref) {
                 rules: [{ required, message: `请填写发布操作关键步骤` }],
                 initialValue: info?.tempRegister?.releaseStep || '',
               })(
-                <TextArea autoSize={{ minRows: 3 }} />
+                <TextArea autoSize={{ minRows: 3 }} disabled={!isEdit} />
               )}
             </Form.Item>
           </Col>
@@ -597,11 +605,11 @@ function TemporaryRegistrat(props, ref) {
                 rules: [{ required, message: `请填写风险预估及防范措施` }],
                 initialValue: info?.tempRegister?.risks || '',
               })(
-                <TextArea autoSize={{ minRows: 3 }} />
+                <TextArea autoSize={{ minRows: 3 }} disabled={!isEdit} />
               )}
             </Form.Item>
           </Col>
-          <Col span={24}>
+          {isEdit && (<Col span={24}>
             <Form.Item label='上传附件' {...formLayout}>
               {getFieldDecorator('attach', {
                 initialValue: info?.tempRegister?.attach || '[]',
@@ -614,10 +622,10 @@ function TemporaryRegistrat(props, ref) {
                 )}</>
               )}
             </Form.Item>
-          </Col>
-          {/* {info.tempRegister.attach && <Col span={24}>
+          </Col>)}
+          {info.tempRegister.attach && !isEdit && <Col span={24}>
             <Downloadfile files={info.tempRegister.attach || '[]'} />
-          </Col>} */}
+          </Col>}
           <Col span={8}>
             <Form.Item label="登记人" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               {getFieldDecorator('registerUser', {

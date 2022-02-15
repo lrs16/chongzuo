@@ -274,7 +274,7 @@ function ToDodetails(props) {
           </Button>
           {submittype === 1 && (
             <>{(taskName === '开发商项目经理审核' || taskName === '版本管理员审核' || taskName === '科室负责人审核' || taskName === '中心领导审核') && info && info.releaseMains && info.releaseMains.length > 1 ? (
-              <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('flow')} disabled={uploadstatus || allloading}>
+              <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => { setButtype('') }} onClick={() => setButtype('flow')} disabled={uploadstatus || allloading}>
                 流转至{flowNode[flowNode.findIndex(obj => obj.val === taskName) + 1]?.val || ''}
               </Button>
             ) : (

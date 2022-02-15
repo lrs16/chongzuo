@@ -248,13 +248,13 @@ const User = props => {
             ) : (
               <>
                 {describe ? <div style={{ fontSize: 16 }}>{describe}</div> : <div style={{ fontSize: 16 }}>{nextflowuser}人员</div>}
-                <div style={{ marginTop: 12 }} className={styles.useritem}>
+                {userlist && userlist.length && (<div style={{ marginTop: 12 }} className={styles.useritem}>
                   <Checkbox.Group
                     defaultValue={indexUser || defaultvalue}
                     options={dataArr(defaultUsers || userlist)}
                     onChange={handleChange}
                   />
-                </div>
+                </div>)}
               </>
             )}
           </div>

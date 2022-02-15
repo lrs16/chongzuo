@@ -4,6 +4,7 @@ import moment from 'moment';
 import router from 'umi/router';
 import { Button, Card, Spin, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { querkeyVal } from '@/services/api';
 import FilesContext from '@/layouts/MenuContext';
 import DictLower from '@/components/SysDict/DictLower';
 import TemporaryRegistrat from './components/TemporaryRegistrat';
@@ -37,6 +38,7 @@ function TemporaryDetail(props) {
   const [userModleVisible, setUserModleVisible] = useState(false);
   const [type, setType] = useState('1');
   const [registratTaskId, setRegistratTaskId] = useState('');
+  const [indexUser, setIndexUser] = useState([]);
 
   const openFlow = () => {
     dispatch({
@@ -54,6 +56,13 @@ function TemporaryDetail(props) {
       type: 'itsmuser/fetchuser',
     });
     sessionStorage.setItem('Processtype', 'temprelease');
+    querkeyVal('release', 'indexuser').then(res => {
+      if (res.code === 200) {
+        const arr = res.data.indexuser[0]?.val?.split('-')[1]?.split(',') || [];
+        const name = arr.filter(obj => obj.indexOf('开发商项目经理审核') > -1)
+        setIndexUser(name[0]?.split(':')[1]?.split('||') || []);
+      }
+    });
     return () => {
       sessionStorage.removeItem('Processtype');
     }
@@ -176,6 +185,7 @@ function TemporaryDetail(props) {
         saveRegister(values).then(res => {
           if (res) {
             if (res.code === 200) {
+              setRegistratTaskId(res.data.taskId);
               setSaveLoading(false);
               setUserModleVisible(true)
             }
@@ -183,6 +193,13 @@ function TemporaryDetail(props) {
         })
       }
     })
+  };
+
+  const toSubmit = (val) => {
+    dispatch({
+      type: 'releasetemp/releaseflow',
+      payload: { ...val },
+    });
   }
 
   const operations = (
@@ -195,15 +212,18 @@ function TemporaryDetail(props) {
       >
         保存
       </Button>
-      <Button
-        type="primary"
-        style={{ marginRight: 8 }}
-        onMouseDown={() => setType('')}
-        onClick={() => handleSubmit()}
-        disabled={saveLoading || uploadStatus}
-      >
-        流转至开发商项目经理审核
-      </Button>
+      {location?.query?.tabid && (
+        <Button
+          type="primary"
+          style={{ marginRight: 8 }}
+          onMouseDown={() => setType('')}
+          onClick={() => handleSubmit()}
+          disabled={saveLoading || uploadStatus}
+        >
+          流转至开发商项目经理审核
+        </Button>
+      )}
+      <Button disabled={info?.taskInfo?.operationTask && !!loading}>流转至000</Button>
       <Button type="default" onClick={() => handleclose()} >关闭</Button>
     </>
   );
@@ -221,7 +241,7 @@ function TemporaryDetail(props) {
             selectdata={selectdata}
             info={info || { releaseMain: {}, tempRegister: {}, releaseListList: [] }}
             userinfo={userinfo || {}}
-            isEdit
+            isEdit={location?.query?.tabid || taskName === '出厂测试'}
             taskName={location?.query?.tabid ? '新建' : '出厂测试'}
             loading={loading}
             operationList={!!((info?.taskInfo?.operationList || location?.query?.tabid))} // 是否可编辑清单
@@ -233,7 +253,15 @@ function TemporaryDetail(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      <TemporarySelectUser taskId={Id || registratTaskId} type={type} visible={userModleVisible} />
+      <TemporarySelectUser
+        title={(location?.query?.tabid || taskName === '出厂测试') ? '出厂测试结论' : `${taskName}意见`}
+        taskId={Id || registratTaskId}
+        type={type}
+        visible={userModleVisible}
+        ChangeUserVisible={(v) => setUserModleVisible(v)}
+        GetVal={(v) => { toSubmit(v) }}
+        indexUser={indexUser}
+      />
     </PageHeaderWrapper>
   );
 }

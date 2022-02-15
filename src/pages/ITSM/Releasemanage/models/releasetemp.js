@@ -10,7 +10,7 @@ import {
 const closeTab = () => {
   const tabid = sessionStorage.getItem('tabid');
   router.push({
-    pathname: `/ITSM/releasemanage/plan/to-do`,
+    pathname: `/ITSM/releasemanage/temporary/list`,
     query: { pathpush: true },
     state: { cach: false, closetabid: tabid }
   });
@@ -74,8 +74,8 @@ export default {
     },
 
     // 选择下一环节处理人
-    *getuserlist({ payload: { taskId, type } }, { call }) {
-      const response = yield call(getNextFlowUserList, taskId, type);
+    *getuserlist({ payload }, { call, put }) {
+      const response = yield call(getNextFlowUserList, payload);
       if (response.code === 200) {
         yield put({
           type: 'saveuserlist',
@@ -132,7 +132,7 @@ export default {
     saveuserlist(state, action) {
       return {
         ...state,
-        userlist: action.payload,
+        userlist: action.payload.userlist,
       };
     },
   },

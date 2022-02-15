@@ -645,13 +645,11 @@ function EditeTable(props) {
     switch (taskName) {
       case '新建':
       case '出厂测试':
-      case '发布实施准备':
         newArr = arr;
         break;
       case '平台验证': {
         const newarr = sclicecolumns(arr);
-        newarr.splice(-2, 0, platformValidator);
-        newArr = newarr;
+        newArr = { ...newarr, platformValidator };
         break;
       }
       case '业务验证': {

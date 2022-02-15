@@ -128,7 +128,7 @@ function Registrat(props, ref) {
       ChangeSubmitType(1)
     };
     if (e.target.value === '不通过') {
-      ChangeSubmitType(taskName === '平台验证' ? 1 : 0)
+      ChangeSubmitType(0)
     }
   };
 
