@@ -233,7 +233,7 @@ function ToDodetails(props) {
               </Button>
             </>
           )}
-          {taskName === '事件登记' && (
+          {taskName === '事件登记' && info && info.data && !info.data[info.data.length - 1]?.register && (
             <>
               <Button
                 type="primary"

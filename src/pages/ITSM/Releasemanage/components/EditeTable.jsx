@@ -216,7 +216,7 @@ function EditeTable(props) {
     if (newlist.length > 0) {
       ChangeaddAttaches('add');
     }
-    setNewButton(false)
+    // setNewButton(false)
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData) || {};
     if (taskName === '业务验证') {
@@ -1168,6 +1168,7 @@ function EditeTable(props) {
                   style={{ marginRight: 8 }}
                   ghost
                   onMouseDown={() => ChangeButtype('')} onClick={() => handleDelete()}
+                  disabled={newbutton}
                 >
                   移除
                 </Button>

@@ -216,6 +216,7 @@ const User = props => {
   };
 
   const handleCancel = () => {
+    ChangeChoice(false);
     ChangeUserVisible(false);
     ChangeType('');
     sessionStorage.removeItem('NextflowUserId');

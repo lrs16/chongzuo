@@ -218,13 +218,14 @@ function WorkOrder2(props) {
     });
     if (type === 'save') {
       noverification();
-    } if (type === '结束') {
+    }
+    if (type === '结束') {
       noUser(false);
-    } else {
+    }
+    if (type === '处理' || type === '审核') {
       RegistratRef.current.Forms(err => {
         needUser(err);
       });
-      //  console.clear()
     }
   };
 
