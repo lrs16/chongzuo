@@ -15,7 +15,7 @@ import RelationOrder from './RelationOrder';
 import { saveTimeoutMsg } from '../services/api';
 
 function ToDodetails(props) {
-  const { location, dispatch, loading, loadingopen, allloading, currentTaskStatus, relationCount, submitTimes, info, uploadstatus, loadinguserloading } = props;
+  const { location, dispatch, loading, loadingopen, allloading, currentTaskStatus, relationCount, submitTimes, info, uploadstatus, loadinguserloading, records } = props;
   const { taskName, taskId, releaseType, Id, } = location.query;
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [buttype, setButtype] = useState('');                    // 点击的按钮类型
@@ -184,7 +184,7 @@ function ToDodetails(props) {
             setVisible(true);
           }
         } else {
-          message.error('操作失败');
+          message.error('操作失败！');
           const tabid = sessionStorage.getItem('tabid');
           router.push({
             pathname: `/ITSM/releasemanage/plan/to-do`,
@@ -215,7 +215,7 @@ function ToDodetails(props) {
           },
         });
       } else {
-        message.error(res.msg);
+        message.error(res.msg || '操作失败！');
         const tabid = sessionStorage.getItem('tabid');
         router.push({
           pathname: `/ITSM/releasemanage/plan/to-do`,
@@ -259,7 +259,7 @@ function ToDodetails(props) {
               删除
             </Button>
           )}
-          {!saved && taskName !== '出厂测试' && taskName !== '开发商项目经理审核' && taskName !== '发布验证' && taskName !== '业务复核' && (
+          {((taskName === '版本管理员审核' && (!saved && records[records.length - 1]?.taskName === '发布实施准备(已完成)')) || (!saved && taskName !== '版本管理员审核' && taskName !== '出厂测试' && taskName !== '开发商项目经理审核' && taskName !== '发布验证' && taskName !== '业务复核')) && (
             <Button type="danger" ghost style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => { handleGoback() }} disabled={uploadstatus || allloading}>
               回退
             </Button>
@@ -348,9 +348,10 @@ function ToDodetails(props) {
   );
 }
 
-export default connect(({ releasetodo, viewcache, itsmuser, loading }) => ({
+export default connect(({ releasetodo, releaseview, viewcache, itsmuser, loading }) => ({
   info: releasetodo.info,
   relationCount: releasetodo.relationCount,
+  records: releaseview.processLinks || [],
   submitTimes: releasetodo.submitTimes,
   currentTaskStatus: releasetodo.currentTaskStatus,
   uploadstatus: viewcache.uploadstatus,

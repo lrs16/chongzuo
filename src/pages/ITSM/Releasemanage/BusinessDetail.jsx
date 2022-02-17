@@ -46,7 +46,7 @@ function BusinessDetail(props) {
           state: { cache: false, closetabid: Id }
         });
       } else {
-        message.error(res.msg)
+        message.error(res.msg || '验证失败')
       };
     })
   }
@@ -79,7 +79,7 @@ function BusinessDetail(props) {
             state: { cache: false, closetabid: Id }
           });
         } else {
-          message.error(res.msg)
+          message.error(res.msg || '验证失败！')
         };
       })
     } else {

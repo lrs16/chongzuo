@@ -347,7 +347,7 @@ function VersionAudit(props, ref) {
                               rules: [{ required, message: `版本号不能为空` }],
                               initialValue: obj.currentVersion,
                             })(
-                              < Input onChange={(e) => VersionChange(e.target.value, obj.releaseNo)} />
+                              < Input onChange={(e) => VersionChange(e.target.value, obj.releaseNo)} disabled={!isEdit} />
                             )}
                           </Form.Item>
                         </Col>

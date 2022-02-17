@@ -703,6 +703,21 @@ function QueryList(props) {
                 </Form.Item>
               </Col>
               <Col span={8}>
+                <Form.Item label="是否审核">
+                  {getFieldDecorator('isCheck', {
+                    initialValue: cacheinfo.isCheck,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {yesornomap.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
                 <Form.Item label="审核结果">
                   {getFieldDecorator('checkResult', {
                     initialValue: cacheinfo.checkResult,

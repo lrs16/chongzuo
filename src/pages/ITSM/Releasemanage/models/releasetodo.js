@@ -108,7 +108,7 @@ export default {
           },
         });
       } else {
-        message.error(response.msg)
+        message.error(response.msg || '操作失败！')
       };
     },
 
@@ -151,7 +151,7 @@ export default {
           toSubmit(subres)
         };
       } else {
-        message.error(response.msg);
+        message.error(response.msg || '操作失败！');
       }
     },
 
@@ -221,7 +221,7 @@ export default {
           toSubmit(subres);
         };
       } else {
-        message.error(response.msg);
+        message.error(response.msg || '操作失败！');
         closeTab();
       }
     },
@@ -259,7 +259,7 @@ export default {
         //   toSubmit(subres);
         // };
       } else {
-        message.error(response.msg);
+        message.error(response.msg || '操作失败！');
         closeTab();
       }
     },
@@ -292,7 +292,7 @@ export default {
           toSubmit(subres)
         }
       } else {
-        message.error(response.msg);
+        message.error(response.msg || '操作失败！');
         closeTab();
       };
       return response.code
@@ -439,7 +439,7 @@ export default {
           //   toSubmit(subres)
           // };
         } else {
-          message.error(response.msg);
+          message.error(response.msg || '操作失败！');
           closeTab();
         }
       }
@@ -474,7 +474,7 @@ export default {
         //   toSubmit(subres)
         // }
       } else {
-        message.error(response.msg);
+        message.error(response.msg || '操作失败！');
         closeTab();
       };
     },
@@ -507,7 +507,7 @@ export default {
           toSubmit(subres)
         }
       } else {
-        message.error(response.msg)
+        message.error(response.msg || '操作失败！')
         closeTab();
       }
     },
@@ -520,7 +520,7 @@ export default {
           payload: response.data.msg,
         });
       } else {
-        message.error(response.msg)
+        message.error(response.msg || '操作失败！')
       }
     },
   },

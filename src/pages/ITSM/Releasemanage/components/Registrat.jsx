@@ -254,7 +254,7 @@ function Registrat(props, ref) {
                   rules: [{ required, message: `版本号不能为空` }],
                   initialValue: info.versionNo,
                 })(
-                  < Input onChange={(e) => VersionChange(e.target.value, info.releaseNo)} />
+                  < Input onChange={(e) => VersionChange(e.target.value, info.releaseNo)} disabled={!isEdit} />
                 )}
               </Form.Item>
             </Col>
