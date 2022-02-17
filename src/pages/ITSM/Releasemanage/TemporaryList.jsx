@@ -228,6 +228,7 @@ function Querylist(props) {
             pathname: `/ITSM/releasemanage/temporary/details`,
             query: {
               Id: record.releaseNo,
+              taskId: record.taskId,
               taskName: record.taskName,
             },
             state: {

@@ -6,7 +6,7 @@ import UserContext from '@/layouts/MenuContext';
 import { dispatchBizUsers, dispatchPlatsers } from '@/services/user';
 import { querkeyVal } from '@/services/api';
 import styles from '../index.less';
-import { releaseListEdit, releaseListsDownload } from '../services/api';                   // 版本管理员审批清单添加编辑
+import { releaseListEdit, releaseListsDownload } from '../services/temp';                   // 版本管理员审批清单添加编辑
 
 const { TextArea } = Input;
 const InputGroup = Input.Group;
@@ -41,7 +41,7 @@ function EditeTable(props) {
       testMenu: '',
       testResult: '',
       testStep: '',
-      passTest: '通过',
+      tempRegisterResult: '通过',
       developer: '',
       developerId: '',
       addStatus: taskName === '新建' ? 'add' : taskId,
@@ -104,10 +104,11 @@ function EditeTable(props) {
     const target = getRowByKey(key, newData);
     if (target) {
       target[fieldName] = e;
+      target.taskId = taskId;
       setData(newData);
       if (target.verification) {
         ChangeValue(newData);
-        releaseListEdit(target);
+        releaseListEdit({ taskId, });
       }
     }
   };
@@ -231,7 +232,7 @@ function EditeTable(props) {
       const newData = dataSource.map((item, index) => ({
         ...item,
         editable: false,
-        verification: taskName === '平台验证' && item.addStatus !== item.taskId,
+        verification: taskName === '平台验证',
         key: (index + 1).toString(),
       }));
       setData(newData);
@@ -282,13 +283,6 @@ function EditeTable(props) {
     onChange: page => changePage(page),
   };
 
-  const passTestmap = new Map([
-    ['新建', '出厂测试结果'],
-    ['出厂测试', '出厂测试结果'],
-    ['平台验证', '平台验证结果'],
-    ['业务验证', '业务验证结果'],
-    ['业务复核', '业务复核结果'],
-  ]);
 
   const column = [
     {
@@ -391,11 +385,11 @@ function EditeTable(props) {
       title: '测试内容及预期效果',
       dataIndex: 't5',
       key: 't5',
-      width: 400,
+      width: 370,
       render: (text, record) => {
         // const w = width - 80;
         if (record.isNew || record.editable) {
-          const w = (window.document?.getElementById('textbox')?.offsetWidth || 380) - 80
+          const w = (window.document?.getElementById('textbox')?.offsetWidth || 350) - 80
           return (
             <div id='textbox'>
               <div className={!record.testMenu ? styles.requiredform : ''}>
@@ -461,6 +455,25 @@ function EditeTable(props) {
       }
     },
     {
+      title: '出厂测试结果',
+      dataIndex: 'tempRegisterResult',
+      key: 'tempRegisterResult',
+      width: 120,
+      render: (text, record) => {
+        if ((record.isNew || record.editable) && isEdit) {
+          return (
+            <div id='firstRow'>
+              <RadioGroup value={text} onChange={e => handleFieldChange(e.target.value, 'tempRegisterResult', record.key)}>
+                <Radio value='通过'>通过</Radio>
+                <Radio value='不通过'>不通过</Radio>
+              </RadioGroup>
+            </div>
+          )
+        }
+        return <div style={{ textAlign: 'center' }}>{text}</div>;
+      }
+    },
+    {
       title: '研发测试人员',
       dataIndex: 'developer',
       key: 'developer',
@@ -494,34 +507,13 @@ function EditeTable(props) {
       }
     },
     {
-      title: `${passTestmap.get(taskName) || '是否通过'}`,
-      dataIndex: 'passTest',
-      key: 'passTest',
-      fixed: 'right',
-      width: 120,
-      render: (text, record) => {
-        if ((record.isNew || record.editable || record.verification) && isEdit) {
-          return (
-            <div id='firstRow'>
-              <RadioGroup value={text} onChange={e => handleFieldChange(e.target.value, 'passTest', record.key)}>
-                <Radio value='通过'>通过</Radio>
-                <Radio value='不通过'>不通过</Radio>
-              </RadioGroup>
-            </div>
-          )
-        }
-        return <div style={{ textAlign: 'center' }}>{text}</div>;
-      }
-    },
-    {
       title: '业务负责人',
       dataIndex: 'responsible',
       key: 'responsible',
-      fixed: 'right',
       align: 'center',
-      width: 120,
+      width: 100,
       render: (text, record) => {
-        if ((record.isNew || record.editable || record.verification) && isEdit) {
+        if ((record.isNew || record.editable) && isEdit) {
           return (
             <div className={text === '' ? styles.requiredselect : ''} onMouseDown={() => getUserList()}>
               {taskName !== '业务验证' && (
@@ -590,41 +582,66 @@ function EditeTable(props) {
     }
   };
 
-  const platformValidator = {
-    title: '平台验证人',
-    dataIndex: 'platformValidator',
-    key: 'platformValidator',
-    align: 'center',
-    width: 120,
-    render: (text, record) => {
-      if (record.verification && isEdit) {
-        return (
-          <div className={text ? '' : styles.requiredselect}>
-            <Select
-              placeholder="请选择"
-              mode="multiple"
-              onChange={v => {
-                let val = ''
-                if (v && v.length && v.length > 0) {
-                  val = v.toString(',')
-                };
-                handleFieldChange(val, 'platformValidator', record.key)
-              }}
-              defaultValue={text ? text.split(',') : []}
-            >
-              {formValiduser && formValiduser.length && formValiduser.map(obj => [
-                <Option key={obj.userId} value={obj.userName}>
-                  {obj.userName}
-                </Option>,
-              ])}
-            </Select>
-          </div>
-        )
+  const tempPlatformResult = [
+    {
+      title: `平台验证结果`,
+      dataIndex: 'tempPlatformResult',
+      key: 'tempPlatformResult',
+      fixed: 'right',
+      width: 120,
+      render: (text, record) => {
+        if (record.verification && isEdit) {
+          return (
+            <div id='firstRow'>
+              <RadioGroup value={text} onChange={e => handleFieldChange(e.target.value, 'tempPlatformResult', record.key)}>
+                <Radio value='通过'>通过</Radio>
+                <Radio value='不通过'>不通过</Radio>
+              </RadioGroup>
+            </div>
+          )
+        }
+        return <div style={{ textAlign: 'center' }}>{text}</div>;
       }
-      return <>{text}</>
+    },
+  ]
 
+  const platform = [
+    {
+      title: '平台验证人',
+      dataIndex: 'platformValidator',
+      key: 'platformValidator',
+      align: 'center',
+      fixed: 'right',
+      width: 120,
+      render: (text, record) => {
+        if (record.verification && isEdit) {
+          return (
+            <div className={text ? '' : styles.requiredselect}>
+              <Select
+                placeholder="请选择"
+                mode="multiple"
+                onChange={v => {
+                  let val = ''
+                  if (v && v.length && v.length > 0) {
+                    val = v.toString(',')
+                  };
+                  handleFieldChange(val, 'platformValidator', record.key)
+                }}
+                defaultValue={text ? text.split(',') : []}
+              >
+                {formValiduser && formValiduser.length && formValiduser.map(obj => [
+                  <Option key={obj.userId} value={obj.userName}>
+                    {obj.userName}
+                  </Option>,
+                ])}
+              </Select>
+            </div>
+          )
+        }
+        return <>{text}</>
+      }
     }
-  };
+  ];
 
   const verifyStatus = {
     title: '状态',
@@ -649,7 +666,7 @@ function EditeTable(props) {
         break;
       case '平台验证': {
         const newarr = sclicecolumns(arr);
-        newArr = { ...newarr, platformValidator };
+        newArr = [...newarr, ...platform, ...tempPlatformResult];
         break;
       }
       case '业务验证': {
@@ -765,7 +782,7 @@ function EditeTable(props) {
           rowKey={(record) => record.key}
           pagination={pagination}
           rowSelection={rowSelection}
-          scroll={{ x: 1600, y: setTableHeight() }}
+          scroll={{ x: 1500, y: setTableHeight() }}
           rowClassName={(record, index) => {
             let className = 'light-row';
             if (index % 2 === 1) className = styles.darkRow;

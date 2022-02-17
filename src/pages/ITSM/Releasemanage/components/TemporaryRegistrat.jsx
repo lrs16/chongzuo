@@ -35,9 +35,8 @@ const formLayout = {
   wrapperCol: { sm: { span: 22 } },
 };
 
-
 function TemporaryRegistrat(props, ref) {
-  const { taskName, info, userinfo, selectdata, isEdit, uploadStatus, loading, operationList } = props;
+  const { taskName, info, userinfo, selectdata, isEdit, uploadStatus, loading, operationList, location, taskId } = props;
   const { getFieldDecorator, setFieldsValue, validateFields, setFields, getFieldsValue, resetFields } = props.form;
   const required = true;
   const [disablelist, setDisabledList] = useState([]); // 自动完成下拉列表
@@ -484,9 +483,9 @@ function TemporaryRegistrat(props, ref) {
           </Col>
           <Col span={8}>
             <Form.Item label="停止业务访问" >
-              {getFieldDecorator('bizStopVisit', {
+              {getFieldDecorator('stopBiz', {
                 rules: [{ required, message: `请选择停止业务访问` }],
-                initialValue: info.tempRegister ? info.tempRegister.bizStopVisit : '',
+                initialValue: info.tempRegister ? info.tempRegister.stopBiz : '',
               })(
                 <RadioGroup disabled={!isEdit} >
                   <Radio value='是'>是</Radio>
@@ -539,21 +538,23 @@ function TemporaryRegistrat(props, ref) {
           </Col>
           <Col span={24}>
             <EditeTable
+              key={location?.query?.tabid || taskId}
               title='发布清单'
               functionmap={functionmap}
               modulamap={modulamap}
               isEdit={operationList}
               taskName={taskName}
-              dataSource={info.releaseListList || undefined}
+              dataSource={info.releaseListList}
               ChangeValue={v => { setFieldsValue({ releaseListList: v }); }}
               listmsg={info.releaseMsg}
+              location={location}
             />
             <Form.Item wrapperCol={{ span: 24 }}>
               {getFieldDecorator('releaseListList', {
                 rules: [{ required, message: '请填写发布清单' }, {
                   validator: releaseListsValidator
                 }],
-                initialValue: info?.releaseListList || undefined,
+                initialValue: info.releaseListList,
               })(
                 <></>
               )}

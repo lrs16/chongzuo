@@ -70,6 +70,9 @@ function ToDodetails(props) {
       if (res.code === 200 && ((res.status === 'yes' && res.timeoutMsg !== '') || res.status === 'no')) {
         setVisible(true);
       };
+      if (res.code !== 200) {
+        message.error(res.msg || '操作失败')
+      }
     })
   };
 
@@ -188,7 +191,7 @@ function ToDodetails(props) {
           {/* <Button onClick={()=>test()}>下载</Button> */}
           {taskName === '事件登记' && !olduploadstatus && info && info.data && info.data[info.data.length - 1]?.register && (
             <Popconfirm title="确定删除此事件单吗？" onConfirm={() => deleteflow()}>
-              <Button type="danger" ghost style={{ marginRight: 8 }} disabled={olduploadstatus || registUploadStatus || allloading}>
+              <Button type="danger" onMouseDown={() => { setButtonType('') }} ghost style={{ marginRight: 8 }} disabled={olduploadstatus || registUploadStatus || allloading}>
                 删除
               </Button>
             </Popconfirm>
@@ -197,12 +200,12 @@ function ToDodetails(props) {
             || (info && info.edit && (
               (taskName === '事件确认' && !info.edit.finish) ||
               ((info.flowNodeName === '运维商经理审核' || info.flowNodeName === '数据科审核' || info.flowNodeName === '自动化科审核') && !info.edit.check)))) && (
-              <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleGoback()} disabled={olduploadstatus || allloading}>
+              <Button type="danger" ghost style={{ marginRight: 8 }} onMouseDown={() => { setButtonType('') }} onClick={() => handleGoback()} disabled={olduploadstatus || allloading}>
                 回退
               </Button>
             )}
           {taskName !== '事件响应' && (
-            <Button type="primary" style={{ marginRight: 8 }} onClick={() => setButtonType('save')} disabled={olduploadstatus || registUploadStatus || allloading}>
+            <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => { setButtonType('') }} onClick={() => setButtonType('save')} disabled={olduploadstatus || registUploadStatus || allloading}>
               保存
             </Button>
           )}

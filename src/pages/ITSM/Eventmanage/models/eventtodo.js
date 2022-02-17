@@ -25,6 +25,16 @@ const replacerec = values => {
   return newarr;
 };
 
+const closeTab = (res) => {
+  message.error(res.msg || '操作失败');
+  const tabid = sessionStorage.getItem('tabid');
+  router.push({
+    pathname: `/ITSM/releasemanage/plan/to-do`,
+    query: { pathpush: true },
+    state: { cach: false, closetabid: tabid }
+  });
+}
+
 export default {
   namespace: 'eventtodo',
 
@@ -256,7 +266,7 @@ export default {
       if (ids.length === 0) {
         return yield call(querytododownload, { ...values });
       }
-      return yield call(querydownloadbyids, ids);
+      return yield call(querydownloadbyids, ids.toString());
     },
   },
 

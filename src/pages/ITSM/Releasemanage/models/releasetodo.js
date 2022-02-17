@@ -192,7 +192,7 @@ export default {
         //   toSubmit(subres);
         // }
       } else {
-        message.error(response.msg);
+        message.error(response.msg || '操作失败');
         closeTab();
       }
     },

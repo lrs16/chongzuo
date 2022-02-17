@@ -69,7 +69,7 @@ function ToDolist(props) {
               time3: values.time?.startTime || '',
               time4: values.time?.endtime || '',
             },
-            ids: ids.toString(),
+            ids,
           },
         }).then(res => {
           const filename = `事件待办_${moment().format('YYYY-MM-DD HH:mm')}.xls`;

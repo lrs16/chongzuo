@@ -27,7 +27,6 @@ export async function openOrder(releaseNo) {
 
 // 获取下一环节的处理人
 export async function getNextFlowUserList({ taskId, type }) {
-  console.log(taskId, type);
   return request(`/release/temp/getNextFlowUserList?taskId=${taskId}&type=${type}`, {
     method: 'GET',
   });
@@ -39,5 +38,24 @@ export async function toSubmit(params) {
     method: 'POST',
     data: params,
     requestType: 'form',
+  });
+}
+
+// 操作清单releaseListEdit
+export async function releaseListEdit(params) {
+  return request(`/release/temp/operationList`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}
+
+// 清单导出
+export async function releaseListsDownload(params) {
+  return request(`/release/fileProc/exportList`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+    responseType: 'blob',
   });
 }

@@ -2,14 +2,16 @@ import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
-import { Button, Card, Spin, message } from 'antd';
+import { Button, Card, Spin, message, Collapse } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { querkeyVal } from '@/services/api';
 import FilesContext from '@/layouts/MenuContext';
 import DictLower from '@/components/SysDict/DictLower';
 import TemporaryRegistrat from './components/TemporaryRegistrat';
 import TemporarySelectUser from './components/TemporarySelectUser';
-import { saveRegister } from './services/temp';
+import TemporaryList from './components/TemporaryList';
+import styles from './index.less';
+
+const { Panel } = Collapse;
 
 // const nextnode = new Map([
 //   ['开发商项目经理审核', '平台验证'],
@@ -22,23 +24,19 @@ import { saveRegister } from './services/temp';
 //   ['业务复核', '结束'],
 // ])
 
-// const backnode = new Map([
-//   ['开发商项目经理审核', '出厂测试'],
-//   ['平台验证', '出厂测试'],
-//   ['平台验证', '出厂测试'],
-// ])
 
 function TemporaryDetail(props) {
-  const { dispatch, userinfo, location, location: { query: { Id, taskName } }, info, loading } = props;
+  const { dispatch, userinfo, location, location: { query: { Id, taskName, taskId } }, info, loading, } = props;
   const pagetitle = props.route.name;
 
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
-  const [saveLoading, setSaveLoading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(false);
   const [userModleVisible, setUserModleVisible] = useState(false);
   const [type, setType] = useState('1');
-  const [registratTaskId, setRegistratTaskId] = useState('');
   const [indexUser, setIndexUser] = useState([]);
+  const [activeKey, setActiveKey] = useState(['form', 'list']);
+
+  const RegistratRef = useRef();
 
   const openFlow = () => {
     dispatch({
@@ -50,41 +48,6 @@ function TemporaryDetail(props) {
     });
   }
 
-  // 初始化用户信息，流程类型
-  useEffect(() => {
-    dispatch({
-      type: 'itsmuser/fetchuser',
-    });
-    sessionStorage.setItem('Processtype', 'temprelease');
-    querkeyVal('release', 'indexuser').then(res => {
-      if (res.code === 200) {
-        const arr = res.data.indexuser[0]?.val?.split('-')[1]?.split(',') || [];
-        const name = arr.filter(obj => obj.indexOf('开发商项目经理审核') > -1)
-        setIndexUser(name[0]?.split(':')[1]?.split('||') || []);
-      }
-    });
-    return () => {
-      sessionStorage.removeItem('Processtype');
-    }
-  }, []);
-
-  // 打开待办
-  useEffect(() => {
-    dispatch({
-      type: 'releasetemp/cleardata',
-    });
-    if (Id) {
-      // 打开待办
-      openFlow();
-      // 获取工单历史信息
-      // dispatch({
-      //   type: 'releaseview/fetchview',
-      //   payload: {
-      //     releaseNo: Id,
-      //   },
-      // });
-    }
-  }, [Id])
 
   const handleclose = () => {
     router.push({
@@ -93,7 +56,6 @@ function TemporaryDetail(props) {
     });
   };
 
-  const RegistratRef = useRef();
   const getformvalues = (saveItems, attach) => {
     const val = RegistratRef.current.getVal();
     const register = {
@@ -137,63 +99,37 @@ function TemporaryDetail(props) {
     return register;
   };
 
-  const handleSave = (attach) => {
-    const tabid = sessionStorage.getItem('tabid');
-    const values = getformvalues('register,releaseLists', attach);
-    setSaveLoading(true);
-    saveRegister(values).then(res => {
-      if (res) {
-        setSaveLoading(false);
-        if (res.code === 200) {
-          message.success('保存成功');
-          if (location?.query?.tabid) {
-            router.push({
-              pathname: `/ITSM/releasemanage/temporary/details`,
-              query: {
-                Id: res.data.releaseNo,
-                // taskId: res.data.taskId,
-                taskName: res.data.releaseMain.releaseStatus
-              },
-              state: {
-                runpath: `/ITSM/releasemanage/temporary/list`,
-                dynamicpath: true,
-                menuDesc: '临时发布工单',
-              },
-            });
-            router.push({
-              pathname: `/ITSM/releasemanage/temporary/registration`,
-              query: { tabid, closecurrent: true }
-            })
-          } else {
-            openFlow();
-          }
-        } else {
-          message.error(res.msg)
-        }
-      }
-    })
-  };
-
   const handleSubmit = () => {
     const values = getformvalues('register,releaseLists');
     RegistratRef.current.Forms((err) => {
       if (err) {
         message.error('请将信息填写完整')
       } else {
-        setSaveLoading(true);
-        setType('1');
-        saveRegister(values).then(res => {
-          if (res) {
-            if (res.code === 200) {
-              setRegistratTaskId(res.data.taskId);
-              setSaveLoading(false);
-              setUserModleVisible(true)
-            }
-          }
-        })
+        console.log(values);
       }
     })
   };
+
+  const getTypebyId = key => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.key === key)[0]?.children || [];
+    }
+    return [];
+  };
+
+  const flowNode = getTypebyId(13266);       // 流程环节
+  // 下一环节默认处理人
+  const indexUserList = selectdata?.ischange && selectdata.arr.filter(item => item.key === 13263)[0]?.title?.split('-')[1]?.split(',') || [];
+
+  const handlePass = (flowtype, uservisible) => {
+    setType(flowtype);
+    setUserModleVisible(uservisible);
+    if (flowNode && flowNode.length > 0 && indexUserList && indexUserList.length > 0 && taskName) {
+      const nextnodename = flowNode[flowNode.findIndex(item => item.title === taskName) + 1]?.title || '';
+      const name = indexUserList.filter(obj => obj.indexOf(nextnodename) > -1)
+      setIndexUser(name[0]?.split(':')[1]?.split('||') || []);
+    }
+  }
 
   const toSubmit = (val) => {
     dispatch({
@@ -202,67 +138,125 @@ function TemporaryDetail(props) {
     });
   }
 
+  const callback = key => {
+    setActiveKey(key);
+  };
+
+  // 初始化用户信息，流程类型
+  useEffect(() => {
+    dispatch({
+      type: 'itsmuser/fetchuser',
+    });
+    sessionStorage.setItem('Processtype', 'temprelease');
+    return () => {
+      sessionStorage.removeItem('Processtype');
+    }
+  }, []);
+
+  // 打开待办
+  useEffect(() => {
+    dispatch({
+      type: 'releasetemp/cleardata',
+    });
+    if (Id && indexUserList && flowNode) {
+      // 打开待办
+      openFlow();
+    }
+  }, [Id]);
+
   const operations = (
-    <>
-      <Button
-        type="primary"
-        style={{ marginRight: 8 }}
-        onClick={() => handleSave()}
-        disabled={saveLoading || uploadStatus}
-      >
-        保存
-      </Button>
-      {location?.query?.tabid && (
+    <>{taskName === '出厂测试' ? (
+      <Button type="primary" style={{ marginRight: 8 }} disabled={loading || uploadStatus}>流转至开发商项目经理审核</Button>
+    ) : (
+      <>
         <Button
           type="primary"
           style={{ marginRight: 8 }}
+          disabled={loading || uploadStatus || !info?.taskInfo?.operationTask}
           onMouseDown={() => setType('')}
-          onClick={() => handleSubmit()}
-          disabled={saveLoading || uploadStatus}
+          onClick={() => { setType('3') }}
         >
-          流转至开发商项目经理审核
+          {`${taskName?.substring(taskName.length - 2)}不通过`}
+
         </Button>
-      )}
-      <Button disabled={info?.taskInfo?.operationTask && !!loading}>流转至000</Button>
+        <Button
+          type="primary"
+          style={{ marginRight: 8 }}
+          disabled={loading || uploadStatus || !info?.taskInfo?.operationTask || !selectdata.ischange}
+          onMouseDown={() => setType('')}
+          onClick={() => { handlePass('1', true) }}
+        >
+          {`${taskName?.substring(taskName.length - 2)}通过`}
+        </Button>
+      </>
+    )
+    }
+      <Button type="primary" onClick={() => handleclose()} >结束</Button>
       <Button type="default" onClick={() => handleclose()} >关闭</Button>
     </>
   );
+
   return (
-    <PageHeaderWrapper title={pagetitle} extra={operations}>
-      <Card>
-        <FilesContext.Provider value={{
-          // files: info?.tempRegister?.attach ? JSON.parse(info.tempRegister.attach) : [],
-          ChangeFiles: (v => { handleSave(v) }),
-          getUploadStatus: (v) => { setUploadStatus(v) },
-          ChangeButtype: (v) => { console.log(v); },
-        }}>
-          <TemporaryRegistrat
-            wrappedComponentRef={RegistratRef}
-            selectdata={selectdata}
-            info={info || { releaseMain: {}, tempRegister: {}, releaseListList: [] }}
-            userinfo={userinfo || {}}
-            isEdit={location?.query?.tabid || taskName === '出厂测试'}
-            taskName={location?.query?.tabid ? '新建' : '出厂测试'}
-            loading={loading}
-            operationList={!!((info?.taskInfo?.operationList || location?.query?.tabid))} // 是否可编辑清单
-          />
-        </FilesContext.Provider>
-      </Card>
-      <DictLower
-        typeid="443"
-        ChangeSelectdata={newvalue => setSelectData(newvalue)}
-        style={{ display: 'none' }}
-      />
-      <TemporarySelectUser
-        title={(location?.query?.tabid || taskName === '出厂测试') ? '出厂测试结论' : `${taskName}意见`}
-        taskId={Id || registratTaskId}
-        type={type}
-        visible={userModleVisible}
-        ChangeUserVisible={(v) => setUserModleVisible(v)}
-        GetVal={(v) => { toSubmit(v) }}
-        indexUser={indexUser}
-      />
-    </PageHeaderWrapper>
+    <Spin spinning={loading}>
+      <PageHeaderWrapper title={pagetitle} extra={operations}>
+        <div className={styles.tempcollapse}>
+          <Collapse
+            expandIconPosition="right"
+            activeKey={activeKey}
+            bordered={false}
+            onChange={callback}
+          >
+            <Panel header='发布基本信息' key="form">
+              <div style={{ marginTop: 12 }}>
+                <FilesContext.Provider value={{
+                  // files: info?.tempRegister?.attach ? JSON.parse(info.tempRegister.attach) : [],
+                  ChangeFiles: (v => { console.log(v); }),
+                  getUploadStatus: (v) => { setUploadStatus(v) },
+                  ChangeButtype: (v) => { console.log(v); },
+                  taskId: info?.taskId,
+                  location,
+                }}>
+                  <TemporaryRegistrat
+                    wrappedComponentRef={RegistratRef}
+                    selectdata={selectdata}
+                    info={info}
+                    userinfo={userinfo || {}}
+                    isEdit={taskName === '出厂测试'}
+                    taskName={taskName}
+                    loading={loading}
+                    operationList={info?.taskInfo?.operationList} // 是否可编辑清单
+                    location={location}
+                    taskId={info?.taskId || taskId}
+                  />
+                </FilesContext.Provider>
+              </div>
+            </Panel>
+            <Panel header='处理过程' key="list">
+              <div style={{ marginTop: 12 }}>
+                <TemporaryList
+                  dataSource={info?.releaseTempLogs}
+                  loading={loading}
+                />
+              </div>
+            </Panel>
+          </Collapse>
+        </div>
+        <DictLower
+          typeid="443"
+          ChangeSelectdata={newvalue => setSelectData(newvalue)}
+          style={{ display: 'none' }}
+        />
+        <TemporarySelectUser
+          title={taskName === '出厂测试' ? '出厂测试结论' : `${taskName}意见`}
+          taskId={info?.taskId || taskId}
+          type={type}
+          visible={userModleVisible}
+          ChangeUserVisible={(v) => setUserModleVisible(v)}
+          GetVal={(v) => { toSubmit(v) }}
+          indexUser={indexUser}
+        />
+      </PageHeaderWrapper >
+    </Spin >
   );
 }
 
