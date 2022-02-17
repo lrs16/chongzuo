@@ -133,7 +133,7 @@ const Examine = forwardRef((props, ref) => {
     <>
       <Form {...formItemLayout}>
         <Row gutter={24} style={{ paddingTop: 24 }}>
-          {taskName !== '自动化科业务人员确认' ? (
+          {/* {taskName !== '自动化科业务人员确认' ? (
             <Col span={8}>
               <Form.Item label={`${text}结果`}>
                 {getFieldDecorator('result', {
@@ -148,22 +148,22 @@ const Examine = forwardRef((props, ref) => {
                 )}
               </Form.Item>
             </Col>
-          ) : (
-            <Col span={12}>
-              <Form.Item label={`${text}结果`} {...newLayout}>
-                {getFieldDecorator('result', {
-                  rules: [{ required: true, message: `请选择${text}结果` }],
-                  initialValue: info[0].result,
-                })(
-                  <Radio.Group onChange={handleAdopt}>
-                    <Radio value={1}>通过</Radio>
-                    <Radio value={0}>重新处理</Radio>
-                    <Radio value={2}>需求取消</Radio>
-                  </Radio.Group>,
-                )}
-              </Form.Item>
-            </Col>
-          )}
+          ) : ( */}
+          <Col span={12}>
+            <Form.Item label={`${text}结果`} {...newLayout}>
+              {getFieldDecorator('result', {
+                rules: [{ required: true, message: `请选择${text}结果` }],
+                initialValue: info[0].result,
+              })(
+                <Radio.Group onChange={handleAdopt}>
+                  <Radio value={1}>通过</Radio>
+                  <Radio value={0}>重新处理</Radio>
+                  <Radio value={2}>需求取消</Radio>
+                </Radio.Group>,
+              )}
+            </Form.Item>
+          </Col>
+          {/* )} */}
           <Col span={8}>
             <Form.Item label={`${text}时间`}>
               {getFieldDecorator('reviewTime', {
