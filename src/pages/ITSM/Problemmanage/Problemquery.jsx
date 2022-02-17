@@ -40,6 +40,16 @@ let pageParams = {
   current: 1,
   pageSize: 15
 }
+const colorArr = new Map([
+  ['已超时', 'red'],
+  ['未超时', '#52C41A'],
+  ['即将超时', 'orange'],
+]);
+const textmap = new Map([
+  ['未超时', '#52C41A'],
+  ['即将超时', 'orange'],
+  ['已超时', 'red']
+]);
 
 function Besolved(props) {
   const {
@@ -337,6 +347,37 @@ function Besolved(props) {
       },
     },
     {
+      title: '当前处理环节',
+      dataIndex: 'flowNodeName',
+      key: 'flowNodeName',
+      width: 150,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+            getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '超时状态',
+      dataIndex: 'timeoutStatus',
+      key: 'timeoutStatus',
+      width: 150,
+      render: (text) => (
+        <>
+          <Icon type="alert" style={{ fontSize: '1.4em', color: colorArr.get(text), marginRight: '8px' }} />
+          <span style={{ color: textmap.get(text)}}>{text}</span>
+        </>
+      )
+    },
+    {
       title: '问题分类',
       dataIndex: 'type',
       key: 'type',
@@ -463,6 +504,37 @@ function Besolved(props) {
       render: (text, record) => {
         return <a onClick={() => gotoDetail(text, record)}>{text}</a>;
       },
+    },
+    {
+      title: '当前处理环节',
+      dataIndex: 'flowNodeName',
+      key: 'flowNodeName',
+      width: 150,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+            getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: '超时状态',
+      dataIndex: 'timeoutStatus',
+      key: 'timeoutStatus',
+      width: 150,
+      render: (text) => (
+        <>
+          <Icon type="alert" style={{ fontSize: '1.4em', color: colorArr.get(text), marginRight: '8px' }} />
+          <span style={{ color: textmap.get(text)}}>{text}</span>
+        </>
+      )
     },
     {
       title: '问题分类',
@@ -1234,6 +1306,17 @@ function Besolved(props) {
             </Tooltip>
           );
         };
+      }
+
+      if(val.title === '超时状态') {
+        obj.render = (text) => {
+          return (
+            <>
+            <Icon type="alert" style={{ fontSize: '1.4em', color: colorArr.get(text), marginRight: '8px' }} />
+            <span style={{ color: textmap.get(text)}}>{text}</span>
+          </>
+          )
+        }
       }
       initialColumns.push(obj);
       setColumns(initialColumns);

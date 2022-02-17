@@ -9,7 +9,7 @@ import {
   Select,
   message,
   Popconfirm,
-  Divider
+  Divider,
 } from 'antd';
 import moment from 'moment';
 
