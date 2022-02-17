@@ -50,7 +50,7 @@ function WorkOrder(props) {
   // 获取出厂测试、平台验证表单信息
   const getregistratformvalues = () => {
     const val = RegistratRef.current.getVal();
-    const { releaseAttaches, releaseEnvs, releaseLists, testOperator, testPlace, testResult, testUnit, } = val;
+    const { releaseAttaches, releaseEnvs, releaseLists, testOperator, testPlace, testResult, testUnit, versionNo } = val;
     const testStart = moment(val.testStart).format('YYYY-MM-DD HH:mm:ss');
     const testEnd = moment(val.testEnd).format('YYYY-MM-DD HH:mm:ss');
     if (taskName === '出厂测试') {
@@ -71,6 +71,7 @@ function WorkOrder(props) {
     const { validResult } = val;
     const validform = {
       releaseNo: Id,
+      versionNo,
       formValid: {
         testUnit: testUnit ? testUnit.toString() : '',
         testStart, testEnd, testOperator, testPlace, testResult, validResult,
@@ -203,6 +204,7 @@ function WorkOrder(props) {
         platform: {
           saveItems: 'platformValid,releaseEnvs,releaseLists,releaseAttaches',
           releaseNo: Id,
+          versionNo: platform.versionNo,
           platformValid: platform.formValid,
           releaseAttaches: platform.releaseAttaches,
           releaseEnvs: platform.releaseEnvs,

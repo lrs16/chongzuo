@@ -250,7 +250,7 @@ function Registrat(props, ref) {
           {taskName === '平台验证' && (
             <Col span={8}>
               <Form.Item label='版本号' labelAlign='right'>
-                {getFieldDecorator('currentVersion', {
+                {getFieldDecorator('versionNo', {
                   rules: [{ required, message: `版本号不能为空` }],
                   initialValue: info.versionNo,
                 })(
