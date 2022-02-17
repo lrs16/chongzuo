@@ -11,6 +11,7 @@ import {
   Divider,
   message,
   Radio,
+  Tooltip,
 } from 'antd';
 import { phone_reg } from '@/utils/Regexp';
 import moment from 'moment';
@@ -145,11 +146,20 @@ function AddProviderMaintenance(props) {
       dataIndex: 'dueTime',
       key: 'dueTime',
     },
-    // {
-    //   title:'考核周期',
-    //   dataIndex:'',
-    //   key:''
-    // },
+    {
+      title: '考核周期',
+      dataIndex: 'phaseString',
+      key: 'phaseString',
+      ellipsis: true,
+      width: 150,
+      render: (text) => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+        </Tooltip>
+        )
+        }
+    },
     {
       title: '状态',
       dataIndex: 'status',

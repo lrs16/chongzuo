@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   Drawer,
@@ -9,7 +9,8 @@ import {
   Select,
   message,
   Popconfirm,
-  Divider,
+  Row,
+  Col
 } from 'antd';
 import moment from 'moment';
 
@@ -26,13 +27,12 @@ const formItemLayout = {
 
 let startTime;
 let endTime;
+
 const { Option } = Select;
-
-
+// let isopen = false;
 const withClick = (element, handleClick = () => { }) => {
   return <element.type {...element.props} onClick={handleClick} />;
 };
-
 function Contract(props) {
   const [visible, setVisible] = useState(false);
   const {
@@ -44,29 +44,10 @@ function Contract(props) {
     isEdit,
   } = props;
   const [data, setData] = useState([]);
-  const [newbutton, setNewButton] = useState(false);
+  const [deleteSign, setDeleteSign] = useState(false);
 
   const getRowByKey = (key, newData) => {
     return (newData || data).filter(item => item.key === key)[0];
-  }
-
-  const saveRow = (e,key) => {
-    const target = getRowByKey(key) || {};
-    console.log('target: ', target);
-    if(!target.aa && !target.bb && !target.cc && !target.ee) {
-      message.error('请填写完整信息');
-      e.target.focus();
-      return;
-    } 
-
-    // if((target.cc).valuesOf() > (target.ee).valuesOf()) {
-    //   message.error('开始时间必须小于结束时间');
-    //   e.target.focus();
-    //   return;
-    // }
-
-    target.editable = false;
-    setNewButton(false);
   }
 
   const handleFieldChange = (e, fieldName, key) => {
@@ -74,84 +55,131 @@ function Contract(props) {
     const target = getRowByKey(key, newData);
     if (target) {
       switch (fieldName) {
-        case 'aa':
-        case 'bb':
-          target.start = moment(e).startOf('quarter').format("YYYY-MM-DD");
-          target.end = moment(e).endOf('quarter').format("YYYY-MM-DD")
-          target[fieldName] = moment(e).format('YYYY')
-          setData(newData)
+        case 'assessYear':
+        case 'assessCycle':
+          // 获取季度时间
+          // target.start = moment(e).startOf('quarter').format("YYYY-MM-DD");
+          // target.end = moment(e).endOf('quarter').format("YYYY-MM-DD")
+          target[fieldName] = e;
+          setData(newData);
           break;
-        case 'cc':
-        case 'ee':
-          target[fieldName] = moment(e).format('YYYY-MM-DD HH:mm:ss');
-          setData(newData)
+        case 'beginTime':
+        case 'endTime':
+          target[fieldName] = moment(e).format('YYYY-MM-DD');
+          setData(newData);
           break;
         default:
           break;
       }
+      setFieldsValue({
+        phases: newData
+      })
     }
   }
 
-  console.log(data, 'data')
+  const deleteObj = (key, newData) => {
+    return (newData || data).filter(item => item.key !== key);
+  }
+
+  const remove = key => {
+    const target = deleteObj(key);
+    const newarr = target.map((item, index) => {
+      return Object.assign(item, { key: index })
+    })
+    setData(newarr);
+    setFieldsValue({
+      phases: newarr
+    })
+    setDeleteSign(true)
+  }
+
+
+  useEffect(() => {
+    if (deleteSign) {
+      setDeleteSign(false)
+    }
+  }, [data, deleteSign])
 
   const columns = [
     {
       title: '考核年份',
-      dataIndex: 'aa',
-      key: 'aa',
-      render: (text, record) => {
+      dataIndex: 'assessYear',
+      key: 'assessYear',
+      width: 120,
+      render: (text,record,index) => {
         return (
           <DatePicker
-            value={moment(text)}
+            getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+            allowClear={false}
+            // open={isopen}
+            value={moment(text.toString())}
             format='YYYY'
             mode="year"
-            onPanelChange={value => handleFieldChange(value.format('YYYY'), 'aa', record.key)}
+            // onFocus={() => { isopen = true }}
+            onPanelChange={value => {
+              handleFieldChange(value.format('YYYY'), 'assessYear', record.key);
+              // isopen = false
+            }
+            }
           />
         )
       }
     },
     {
       title: '考核周期',
-      dataIndex: 'bb',
-      key: 'bb',
+      dataIndex: 'assessCycle',
+      key: 'assessCycle',
       width: 120,
       render: (text, record) => {
         return (
           <Select
-            onChange={(e) => handleFieldChange(e, 'bb', record.key)}
+            onChange={(e) => handleFieldChange(e, 'assessCycle', record.key)}
             style={{ width: '100%' }}
+            defaultValue={text}
           >
-            <Option value={record.aa ? moment(`${record.aa}-01-01`) : ''}>第一季度</Option>
-            <Option value={record.aa ? moment(`${record.aa}-04-01`) : ''}>第二季度</Option>
-            <Option value={record.aa ? moment(`${record.aa}-07-01`) : ''}>第三季度</Option>
-            <Option value={record.aa ? moment(`${record.aa}-10-01`) : ''}>第四季度</Option>
+            {/* <Option value={record.aa ? moment(`${record.aa}-01-01`) : ''}>第一季度</Option>
+                <Option value={record.aa ? moment(`${record.aa}-04-01`) : ''}>第二季度</Option>
+                <Option value={record.aa ? moment(`${record.aa}-07-01`) : ''}>第三季度</Option>
+                <Option value={record.aa ? moment(`${record.aa}-10-01`) : ''}>第四季度</Option> */}
+            {/* 现在后端自己算了 */}
+            <Option value='第一季度'>第一季度</Option>
+            <Option value='第二季度'>第二季度</Option>
+            <Option value='第三季度'>第三季度</Option>
+            <Option value='第四季度'>第四季度</Option>
           </Select>
         )
       }
     },
     {
-      title: '考核开始时间',
-      dataIndex: 'cc',
-      key: 'cc',
+      title: '考核时段',
+      dataIndex: 'duringTime',
+      key: 'duringTime',
+      width: 300,
       render: (text, record) => {
         return (
-          <DatePicker
-            defaultValue={text ? moment(text) : ''}
-            onChange={(e) => handleFieldChange(e, 'cc', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '考核结束时间',
-      dataIndex: 'ee',
-      key: 'ee',
-      render: (text, record) => {
-        return (
-          <DatePicker
-            defaultValue={text ? moment(text) : ''}
-            onChange={(e) => handleFieldChange(e, 'ee', record.key)}
-          />
+          <Row>
+            <Col span={10}>
+              <DatePicker
+                allowClear={false}
+                onChange={(value) => { handleFieldChange(value.format('YYYY-MM-DD'), 'beginTime', record.key) }}
+                defaultValue={record.beginTime ? moment(record.beginTime) : undefined}
+                placeholder="开始时间"
+                format='YYYY-MM-DD'
+                style={{ minWidth: 100, width: '100%' }}
+              />
+            </Col>
+            <Col span={1} style={{ textAlign: 'center' }}>-</Col>
+            <Col span={10}>
+              <DatePicker
+                allowClear={false}
+                onChange={(value) => { handleFieldChange(value.format('YYYY-MM-DD'), 'endTime', record.key) }}
+                defaultValue={record.endTime ? moment(record.endTime) : undefined}
+                placeholder="结束时间"
+                format='YYYY-MM-DD'
+                style={{ minWidth: 100, width: '100%' }}
+              />
+            </Col>
+          </Row>
         )
       }
     },
@@ -159,14 +187,12 @@ function Contract(props) {
       title: '操作',
       dataIndex: 'action',
       key: 'action',
-      width:150,
+      width: 150,
       render: (text, record) => {
         return (
           <span>
-            <a onClick={e => saveRow(e, record.key)}>保存</a>
-            <Divider type='vertical'/>
             <Popconfirm
-              title='是否要删除此行？'
+              title='是否要删除此行'
               onConfirm={() => remove(record.key)}
             >
               <a>删除</a>
@@ -183,30 +209,48 @@ function Contract(props) {
     const newData = data.map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
-      aa: moment().format('YYYY'),
-      bb: '',
-      cc: '',
-      dd: '',
-      start: '',
-      end: '',
+      assessYear: moment().format('YYYY'),
+      assessCycle: '',
+      beginTime: '',
+      endTime: '',
       editable: true,
     });
     setData(newData);
-    setNewButton(true);
+    setFieldsValue({
+      phases: newData
+    });
   }
 
   const handleopenClick = () => {
+    const newarr = (contract.phases || []).map((item, index) => {
+      return Object.assign(item, { editable: false, key: index + 1 })
+    })
+    setData(newarr);
+    setFieldsValue({
+      phases: newarr
+    })
     setVisible(true);
   };
 
   const handleOk = () => {
     props.form.validateFields((err, values) => {
       if (!err) {
+        const newArray = data.map((item) => {
+          return {
+            assessYear: item.assessYear,
+            assessCycle: item.assessCycle,
+            beginTime: item.beginTime,
+            endTime: item.endTime,
+          }
+        });
+        const result = newArray.every((val => (
+          val.assessYear && val.assessCycle && val.beginTime && val.endTime && (val.beginTime).valueOf() < (val.endTime).valueOf()
+        )))
         const submitData = {
           ...values,
+          phases: newArray,
           id: contract.id || '',
         };
-
         switch (submitData.status) {
           case '在用':
             submitData.status = '1';
@@ -226,6 +270,8 @@ function Contract(props) {
           moment(values.dueTime).format('YYYY-MM-DD')
         ) {
           message.error('签订日期必须小于到期日期哦');
+        } else if (!result) { // 动态表格必填没有写完时提醒
+          message.error('请填完考核周期的数据且开始时间小于结束时间才能保存');
         } else {
           onSumit(submitData);
           startTime = '';
@@ -283,7 +329,7 @@ function Contract(props) {
       <Drawer
         title={title}
         visible={visible}
-        width={750}
+        width={900}
         centered="true"
         maskClosable="true"
         destroyOnClose="true"
@@ -313,13 +359,14 @@ function Contract(props) {
               rules: [
                 {
                   required,
-                  message: '请输入签订日期',
+                  message: '请选择签订日期',
                 },
               ],
               initialValue: contract.signTime ? moment(contract.signTime) : '',
             })(
               <div>
                 <DatePicker
+                  allowClear={false}
                   defaultValue={
                     startTime || contract.signTime ? moment(startTime || contract.signTime) : ''
                   }
@@ -337,13 +384,14 @@ function Contract(props) {
               rules: [
                 {
                   required,
-                  message: '请输入到期日期',
+                  message: '请选择到期日期',
                 },
               ],
               initialValue: contract.dueTime ? moment(contract.dueTime) : '',
             })(
               <div>
                 <DatePicker
+                  allowClear={false}
                   defaultValue={
                     endTime || contract.dueTime ? moment(endTime || contract.dueTime) : ''
                   }
@@ -356,37 +404,44 @@ function Contract(props) {
             )}
           </Form.Item>
 
-          {/* <Form.Item label="考核周期">
-            {getFieldDecorator('dueTime', {
-              rules: [
-                {
-                  required,
-                  message: '请输入考核周期',
-                },
-              ],
-              initialValue: '',
-            })(
-              <Table
-                columns={columns}
-                dataSource={data}
-                pagination={false}
-              />
-            )}
-          </Form.Item> */}
+          {
+            deleteSign === false && (
+              <Form.Item label="考核周期">
+                {getFieldDecorator('phases', {
+                  rules: [
+                    {
+                      required,
+                      message: '请填写考核周期',
+                    },
+                  ],
+                  initialValue: data,
+                })(
+                  <Table
+                    columns={columns}
+                    dataSource={data}
+                    pagination={false}
+                    style={{ overflowX: 'scroll' }}
+                  />
+                )}
+              </Form.Item>
+            )
+          }
 
-          {/* <Button
-            style={{ width: '100%', marginTop: '16', marginBottom: '8' }}
-            type='primary'
-            ghost
-            onClick={newMember}
-          >新增</Button> */}
+          <div style={{ textAlign: 'right', marginBottom: 18 }}>
+            <Button
+              style={{ width: '75%' }}
+              type='primary'
+              ghost
+              onClick={newMember}
+            >新增</Button>
+          </div>
 
           <Form.Item label="状态">
             {getFieldDecorator('status', {
               rules: [
                 {
                   required,
-                  message: '请输入状态',
+                  message: '请选择状态',
                 },
               ],
               initialValue: contract.status,
@@ -422,9 +477,13 @@ function Contract(props) {
             取消
           </Button>
 
-          <Button onClick={handleOk} type="primary">
+          <Button
+            onClick={handleOk}
+            type="primary">
             确定
           </Button>
+
+
         </div>
       </Drawer>
     </>
