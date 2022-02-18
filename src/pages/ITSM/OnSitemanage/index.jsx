@@ -186,7 +186,7 @@ function OnSitemanage(props) {
           // window.location.href = url;
           downloadreport(record.checkNo).then(res => {
             if (res) {
-              const filename = `广西系统巡检报告_${record.checkNo}.xls`;
+              const filename = `广西系统巡检报告_${record.checkNo}.docx`;
               const blob = new Blob([res]);
               const url = window.URL.createObjectURL(blob);
               const a = document.createElement('a');

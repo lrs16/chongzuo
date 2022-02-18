@@ -190,7 +190,10 @@ export default {
     },
 
     //  故障待办详情页--编辑
-    *getfaultTodoDetailData({ payload: { id } }, { call, put }) {
+    *getfaultTodoDetailData({ payload: { id, mainId } }, { call, put }) {
+      yield put({
+        type: 'clearcache',
+      })
       const response = yield call(queryfaultTodoDetailEdit, id);
       if (response.code === 200) {
         yield put({
@@ -202,7 +205,7 @@ export default {
         router.push({
           pathname: `/ITSM/faultmanage/todolist`,
           query: { pathpush: true },
-          state: { cach: false, closetabid: id }
+          state: { cach: false, closetabid: mainId }
         });
       }
     },
@@ -327,6 +330,13 @@ export default {
   },
 
   reducers: {
+    clearcache(state) {
+      // 打开待办清除缓存
+      return {
+        ...state,
+        tododetailslist: [],
+      }
+    },
     usermanage(state, { payload }) {
       // 查询 获取流转，转单 系统所有的用户
       return {

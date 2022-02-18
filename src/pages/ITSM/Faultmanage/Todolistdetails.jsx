@@ -207,7 +207,7 @@ function Todolistdetails(props) {
     // 故障待办详情数据
     dispatch({
       type: 'fault/getfaultTodoDetailData',
-      payload: { id },
+      payload: { id, mainId },
     });
   };
 
@@ -224,17 +224,16 @@ function Todolistdetails(props) {
   };
 
   useEffect(() => {
-    getfaultTodoDetailData();
-    getCurrUserInfo(); // 获取登录用户信息
-    sessionStorage.setItem('Processtype', 'troub');
-    setTabActiveKey('faultForm');
+    if (mainId) {
+      getfaultTodoDetailData();
+      getCurrUserInfo(); // 获取登录用户信息
+      sessionStorage.setItem('Processtype', 'troub');
+      setTabActiveKey('faultForm');
+      sessionStorage.setItem('flowtype', '1');
+    }
   }, [mainId]);
 
-  useEffect(() => {
-    sessionStorage.setItem('flowtype', '1');
-  }, [mainId]);
-
-
+  // 第一次打开组件loading是underfine,加载中true,加载完成false,第二次打开组件默认false,这样子判断不合理
   useEffect(() => {
     if (loading === false) {
       setActiveKey([`${Collapsekeymap.get(flowNodeName)}`]);
@@ -575,6 +574,11 @@ function Todolistdetails(props) {
         getfaultTodoDetailData();
       } else {
         message.error(res.msg);
+        router.push({
+          pathname: `/ITSM/faultmanage/todolist`,
+          query: { pathpush: true },
+          state: { cach: false, closetabid: mainId }
+        });
       }
     });
   };
@@ -866,8 +870,14 @@ function Todolistdetails(props) {
       }
       if (res.code === -1) {
         message.error(res.msg);
-        router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true, }, });
-      } 
+        router.push({
+          pathname: `/ITSM/faultmanage/todolist`,
+          query: {
+            tabid: sessionStorage.getItem('tabid'),
+            closecurrent: true,
+          },
+        });
+      }
     })
   };
 

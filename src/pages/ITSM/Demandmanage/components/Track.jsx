@@ -436,13 +436,6 @@ function Track(props) {
                   <DownloadOutlined /> 添加附件
                 </Button>
               </Upload>
-              {filetype && filetype.length > 0 && (
-                <div style={{ color: '#ccc', lineHeight: '20px' }}>
-                  <p style={{ marginBottom: '6px', }}>1、仅能上传{filetype.join('，')}类型文件;</p>
-                  <p style={{ marginBottom: '6px', }}>2、最多可上传20个文件;</p>
-                  <p style={{ marginBottom: '6px', }}>3、附件名称最长100个字符;</p>
-                </div>
-              )}
             </div>
           );
         }
@@ -623,6 +616,11 @@ function Track(props) {
         loading={loading}
         pagination={false}
       />
+      <div style={{ marginTop: 16 }}>附件上传说明：
+        {filetype && filetype.length > 0 && (
+          <>1、仅能上传{filetype.join('，')}类型文件；2、最多可上传20个文件；3、附件名称最长100个字符；</>
+        )}
+      </div>
       <Button
         style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
         type="primary"
