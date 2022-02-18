@@ -205,7 +205,7 @@ function ToDodetails(props) {
               </Button>
             )}
           {taskName !== '事件响应' && (
-            <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => { setButtonType('') }} onClick={() => setButtonType('save')} disabled={olduploadstatus || registUploadStatus || allloading}>
+            <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => { setButtonType(''); setUserChoice(false) }} onClick={() => setButtonType('save')} disabled={olduploadstatus || registUploadStatus || allloading}>
               保存
             </Button>
           )}

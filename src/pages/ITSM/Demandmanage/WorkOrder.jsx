@@ -440,7 +440,7 @@ function WorkOrder(props) {
       }
       case '业务科室领导审核':
       case '系统开发商审核':
-      case '自动化科专责审核':
+      case '自动化科审核':
       case '市场部领导审核':
       case '科室领导审核':
       case '中心领导审核':
@@ -643,7 +643,7 @@ function WorkOrder(props) {
                 />
               )}
               {(info.taskName === '系统开发商审核' ||
-                info.taskName === '自动化科专责审核' ||
+                info.taskName === '自动化科审核' ||
                 info.taskName === '自动化科业务人员审核' ||
                 info.taskName === '科室领导审核' ||
                 info.taskName === '中心领导审核' ||

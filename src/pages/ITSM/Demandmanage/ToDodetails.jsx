@@ -12,6 +12,7 @@ import TimeoutModal from '../components/TimeoutModal';
 import RelationOrder from './RelationOrder';
 import { judgeTimeoutStatus, saveTimeoutMsg } from '../services/api';
 
+
 function ToDoregist(props) {
   const { location, dispatch, workLoad, loading, allloading, olduploadstatus } = props;
   const { taskName, taskId, result, mainId } = location.query;
@@ -27,6 +28,26 @@ function ToDoregist(props) {
   const [butandorder, setButandOrder] = useState('');    // 暂存按钮类型
   const [modalvisible, setModalVisible] = useState(false);
   const [releaseTaskName, setReleaseTaskName] = useState('');
+
+
+  const nextnodemap = new Map([
+    ['需求登记', '业务科室领导审核'],
+    ['业务科室领导审核', '系统开发商审核'],
+    ['系统开发商审核', '自动化科审核'],
+    ['自动化科业务人员审核', '自动化科审核'],
+    ['系统开发商处理', '自动化科业务人员及登记人员确认'],
+  ]);
+
+  const autonodemap = new Map([
+    ['1', '系统开发商处理'],
+    ['2', '市场部、科室及中心领导审核'],
+    ['3', '市场部领导审核'],
+    ['4', '科室领导审核'],
+    ['5', '中心领导审核'],
+    ['6', '市场部及科室领导审核'],
+    ['7', '科室及中心领导审核'],
+    ['8', '市场部及中心领导审核'],
+  ])
 
   const ChangeReleaseTaskName = (v) => {
     setReleaseTaskName(v)
@@ -157,15 +178,15 @@ function ToDoregist(props) {
 
   const operations = (
     <>
-      {tabActivekey === 'workorder' && !allloading && (
+      {tabActivekey === 'workorder' && (
         <>
           {taskName === '需求登记' && iscolse === 0 && (
-            <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handledelete()} disabled={olduploadstatus}>
+            <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handledelete()} disabled={olduploadstatus || !allloading}>
               删除
             </Button>
           )}
           {taskName === '需求登记' && iscolse === 1 && (
-            <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleregisterclose()} disabled={olduploadstatus}>
+            <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleregisterclose()} disabled={olduploadstatus || !allloading}>
               结束
             </Button>
           )}
@@ -173,63 +194,58 @@ function ToDoregist(props) {
             taskName === '系统开发商审核' ||
             taskName === '自动化科业务人员确认' ||
             taskName === '需求登记人员确认') && histroytaskid !== null && (
-              <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleGoback()} disabled={olduploadstatus}>
+              <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleGoback()} disabled={olduploadstatus || !allloading}>
                 回退
               </Button>
             )}
           {taskName !== '系统开发商处理' && (
-            <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('save')} disabled={olduploadstatus}>
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('save')} disabled={olduploadstatus || !allloading}>
               保存
             </Button>
           )}
-          {result === '1' && (taskName === '需求登记' || taskName === '业务科室领导审核' || taskName === '系统开发商审核') && (
+          {result === '1' && (taskName === '需求登记' || taskName === '业务科室领导审核' || taskName === '系统开发商审核' || taskName === '系统开发商处理' || taskName === '自动化科业务人员审核') && (
             <Button
               type="primary"
               style={{ marginRight: 8 }}
               onClick={() => { handleClick('flow'); setButandOrder('flow') }}
-              disabled={olduploadstatus}
+              disabled={olduploadstatus || !allloading}
             >
-              流转
+              流转至{nextnodemap.get(taskName)}
             </Button>
           )}
-          {result === '1' && taskName === '系统开发商处理' && (
+          {taskName === '自动化科审核' && (
             <Button
               type="primary"
               style={{ marginRight: 8 }}
               onClick={() => { handleClick('flow'); setButandOrder('flow') }}
-            // disabled={releaseTaskName !== '结束' && releaseTaskName !== ''}
+              disabled={olduploadstatus || !allloading}
             >
-              流转
+              流转至{autonodemap.get(result)}
             </Button>
           )}
-          {taskName === '自动化科专责审核' && result !== '0' && result !== '1' && workLoad && (workLoad === '一般' || (workLoad === '重大' && result !== '4')) && (
+          {/* {taskName === '自动化科审核' && result !== '0' && result !== '1' && workLoad && (workLoad === '一般' || (workLoad === '重大' && result !== '4')) && (
             <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleClick('flow'); setButandOrder('flow') }} disabled={olduploadstatus}>
               流转
             </Button>
-          )}
-          {result === '1' && ((taskName === '自动化科专责审核' && workLoad === '一般') || taskName === '市场部领导审核' || taskName === '科室领导审核' || taskName === '中心领导审核') && (
-            <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleClick('toflow') }} disabled={olduploadstatus}>
-              流转
-            </Button>
-          )}
-          {result === '1' && taskName === '自动化科业务人员审核' && (
-            <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('flow')} disabled={olduploadstatus}>
-              流转
+          )} */}
+          {result === '1' && (taskName === '市场部领导审核' || taskName === '科室领导审核' || taskName === '中心领导审核') && (
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleClick('toflow') }} disabled={olduploadstatus || !allloading}>
+              流转至系统开发商处理
             </Button>
           )}
           {result === '1' && taskName === '自动化科业务人员确认' && (
-            <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('confirm')} disabled={olduploadstatus}>
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('confirm')} disabled={olduploadstatus || !allloading}>
               登记人确认
             </Button>
           )}
           {result === '0' && (taskName === '自动化科业务人员确认' || taskName === '需求登记人员确认') && (
-            <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleClick('flow'); setButandOrder('flow') }} disabled={olduploadstatus}>
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleClick('flow'); setButandOrder('flow') }} disabled={olduploadstatus || !allloading}>
               重新处理
             </Button>
           )}
           {((result === '2' && taskName === '自动化科业务人员确认') ||
             (result === '1' && taskName === '需求登记人员确认')) && (
-              <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('over')} disabled={olduploadstatus}>
+              <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('over')} disabled={olduploadstatus || !allloading}>
                 结束
               </Button>
             )}
@@ -237,10 +253,11 @@ function ToDoregist(props) {
             (taskName === '业务科室领导审核' ||
               taskName === '市场部领导审核' ||
               taskName === '科室领导审核' ||
+              taskName === '中心领导审核' ||
               taskName === '系统开发商审核' ||
-              taskName === '自动化科专责审核' ||
+              taskName === '自动化科审核' ||
               taskName === '自动化科业务人员审核') && (
-              <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('regist')} disabled={olduploadstatus}>
+              <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('regist')} disabled={olduploadstatus || !allloading}>
                 重新登记
               </Button>
             )}

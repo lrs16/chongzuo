@@ -206,7 +206,7 @@ function QueryList(props) {
           };
           return <a onClick={handleClick}>{text}</a>;
         }
-      } if (tablecolumns[i].key === 'timeoutStatus') {
+      } else if (tablecolumns[i].key === 'timeoutStatus') {
         vote.render = (text) => {
           const blubnap = new Map([
             ['未超时', <AlertTwoTone twoToneColor="#52C41A" />],

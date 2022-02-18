@@ -14,6 +14,15 @@ import {
   RegisterClose
 } from '../services/api';
 
+const closeTab = () => {
+  const closetabid = sessionStorage.getItem('tabid');
+  router.push({
+    pathname: `/ITSM/demandmanage/to-do`,
+    query: { pathpush: true },
+    state: { cache: false, closetabid }
+  })
+}
+
 export default {
   namespace: 'demandtodo',
 
@@ -71,10 +80,15 @@ export default {
         type: 'clearcache',
       });
       const response = yield call(DemandOpenFlow, processInstanceId, taskId);
-      yield put({
-        type: 'saveinfo',
-        payload: { data: response.data, workLoad: response.workLoad },
-      });
+      if (response.code === 200) {
+        yield put({
+          type: 'saveinfo',
+          payload: { data: response.data, workLoad: response.workLoad },
+        });
+      } else {
+        message.error(response.msg || '操作失败');
+        closeTab()
+      }
     },
     // 登记编辑保存
     *demandregisterupdate({ payload: { paloadvalues, processInstanceId, taskId } }, { call, put }) {
@@ -86,8 +100,9 @@ export default {
           type: 'saveinfo',
           payload: { data: resopen.data, workLoad: resopen.workLoad },
         });
-      } if (response.code === -1) {
-        message.error(response.msg, 5);
+      } else {
+        message.error(response.msg || '操作失败');
+        closeTab();
       }
     },
     // 编辑通用流转
@@ -100,8 +115,9 @@ export default {
           query: { pathpush: true },
           state: { cache: false, closetabid: payload.mainId }
         });
-      } if (response.code === -1) {
+      } else {
         message.error(response.msg, 5);
+        closeTab();
       }
     },
     // 编辑通用保存
@@ -114,6 +130,9 @@ export default {
           type: 'saveinfo',
           payload: { data: openres.data, workLoad: openres.workLoad },
         });
+      } else {
+        message.error(response.msg, 5);
+        closeTab();
       }
     },
     // 删除
@@ -126,8 +145,9 @@ export default {
           query: { pathpush: true },
           state: { cache: false, closetabid: processId }
         });
-      } if (response.code === -1) {
+      } else {
         message.error(response.msg, 5);
+        closeTab();
       }
     },
     // 编辑回退
@@ -140,8 +160,9 @@ export default {
           query: { pathpush: true },
           state: { cache: false, closetabid: payload.mainId }
         });
-      } if (resmsg.code === -1) {
+      } else {
         message.error(resmsg.msg, 5);
+        closeTab();
       }
     },
     // 登记时结束
@@ -154,8 +175,9 @@ export default {
           query: { pathpush: true },
           state: { cache: false, closetabid: mainId }
         });
-      } if (resmsg.code === -1) {
+      } else {
         message.error(resmsg.msg, 5);
+        closeTab();
       }
     },
   },
