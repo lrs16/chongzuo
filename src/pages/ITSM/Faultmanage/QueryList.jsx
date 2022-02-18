@@ -956,7 +956,7 @@ function QueryList(props) {
 
   const faultTypes = type === undefined ? [] : [type.substr(0, 3), type];
   // 设置初始值
-  const record = {
+  const recordlist = {
     checkUnit: '',
     taskUser: '',
     checkUser: '',
@@ -989,7 +989,7 @@ function QueryList(props) {
     paginations,
   };
 
-  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+  const cacheinfo = location.state.cacheinfo === undefined ? recordlist : location.state.cacheinfo;
 
   const handleReset = () => {
     router.push({
@@ -1119,6 +1119,24 @@ function QueryList(props) {
           </>
         )
       }
+    },
+    {
+      title: '故障名称',
+      dataIndex: 'title',
+      key: 'title',
+      width: 120,
+      onCell: () => {
+        return {
+          style: {
+            maxWidth: 120,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            cursor: 'pointer'
+          }
+        }
+      },
+      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
     {
       title: '故障发生时间',
@@ -1293,9 +1311,9 @@ function QueryList(props) {
 
   //  下载 /导出功能
   const download = (page, pageSize) => {
-    const filterColumns = (columns.length > 0 ? columns : controlTable).filter((currentValue) => {
-      return currentValue.title !== '操作'
-    })
+    // const filterColumns = (columns.length > 0 ? columns : controlTable).filter((currentValue) => {
+    //   return currentValue.title !== '操作'
+    // })
 
     const exportColumns = (initial ? controlTable : columns).map(item => {
       return {
