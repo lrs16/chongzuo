@@ -252,7 +252,7 @@ function ToDOlist(props) {
     type: [],
     paginations,
   };
-  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+  const cacheinfo = location?.state?.cacheinfo ? location.state.cacheinfo : record;
 
   // 获取数据
   useEffect(() => {

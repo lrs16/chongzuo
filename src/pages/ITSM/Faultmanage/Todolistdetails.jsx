@@ -233,7 +233,6 @@ function Todolistdetails(props) {
     }
   }, [mainId]);
 
-  // 第一次打开组件loading是underfine,加载中true,加载完成false,第二次打开组件默认false,这样子判断不合理
   useEffect(() => {
     if (loading === false) {
       setActiveKey([`${Collapsekeymap.get(flowNodeName)}`]);
@@ -266,6 +265,11 @@ function Todolistdetails(props) {
           });
       } else {
         message.error(res.msg);
+        router.push({
+          pathname: `/ITSM/faultmanage/todolist`,
+          query: { pathpush: true },
+          state: { cach: false, closetabid: mainId }
+        });
       }
     });
   };
@@ -298,7 +302,11 @@ function Todolistdetails(props) {
         router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true }, state: { cache: false } });
       } else {
         message.error(res.msg);
-        router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true }, state: { cache: false } });
+        router.push({
+          pathname: `/ITSM/faultmanage/todolist`,
+          query: { pathpush: true },
+          state: { cach: false, closetabid: mainId }
+        });
       }
     });
   };
@@ -342,6 +350,11 @@ function Todolistdetails(props) {
             }
           } else {
             message.error(res.msg);
+            router.push({
+              pathname: `/ITSM/faultmanage/todolist`,
+              query: { pathpush: true },
+              state: { cach: false, closetabid: mainId }
+            });
           }
         });
       }
@@ -391,6 +404,11 @@ function Todolistdetails(props) {
             }
           } else {
             message.error(res.msg);
+            router.push({
+              pathname: `/ITSM/faultmanage/todolist`,
+              query: { pathpush: true },
+              state: { cach: false, closetabid: mainId }
+            });
           }
         });
       }
@@ -431,13 +449,17 @@ function Todolistdetails(props) {
             }
           } else {
             message.error(res.msg);
+            router.push({
+              pathname: `/ITSM/faultmanage/todolist`,
+              query: { pathpush: true },
+              state: { cach: false, closetabid: mainId }
+            });
           }
         });
       }
       return formerr();
     });
   };
-
 
   const saveSummary = cirStatus => {
     // 系统运维商确认总结
@@ -480,6 +502,11 @@ function Todolistdetails(props) {
             }
           } else {
             message.error(res.msg);
+            router.push({
+              pathname: `/ITSM/faultmanage/todolist`,
+              query: { pathpush: true },
+              state: { cach: false, closetabid: mainId }
+            });
           }
         });
       }
@@ -518,6 +545,11 @@ function Todolistdetails(props) {
             }
           } else {
             message.error(res.msg);
+            router.push({
+              pathname: `/ITSM/faultmanage/todolist`,
+              query: { pathpush: true },
+              state: { cach: false, closetabid: mainId }
+            });
           }
         });
       }
@@ -803,20 +835,22 @@ function Todolistdetails(props) {
       type: 'fault/rollback',
       payload: { taskId: id, backReason: values.rollbackmsg, result: -1 },
     }).then(res => {
-      if (res.code === 200) {
+      if (res) {
+        if (res.code === 200) {
+          router.push({
+            pathname: `/ITSM/faultmanage/todolist`,
+            query: { pathpush: true },
+            state: { cach: false, closetabid: mainId }
+          });
+        }
         message.info(res.msg);
-        router.push({
-          pathname: `/ITSM/faultmanage/todolist/record`,
-          query: { mainId, closetab: true },
-          state: { cache: false }
-        });
+      } else {
+        message.error('回退失败！');
         router.push({
           pathname: `/ITSM/faultmanage/todolist`,
           query: { pathpush: true },
-          state: { cache: false }
+          state: { cach: false, closetabid: mainId }
         });
-      } else {
-        message.error(res.msg);
       }
     });
   }
