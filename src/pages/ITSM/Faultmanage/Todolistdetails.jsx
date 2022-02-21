@@ -341,12 +341,14 @@ function Todolistdetails(props) {
           type: 'fault/getfromsave', // 保存接口
           payload: { formValues },
         }).then(res => {
-          if (res.code === 200) {
-            getfaultTodoDetailData();
-            if (cirStatus) {
-              setUserVisible(true);
-            } else {
-              message.success(res.msg);
+          if (res) {
+            if (res.code === 200) {
+              getfaultTodoDetailData();
+              if (cirStatus) {
+                setUserVisible(true);
+              } else {
+                message.success(res.msg);
+              }
             }
           } else {
             message.error(res.msg);
