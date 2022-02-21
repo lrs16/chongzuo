@@ -100,7 +100,7 @@ const columns = [
         }
       }
     },
-    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+    render: (text) => <Tooltip placement='topLeft' title={text} getPopupContainer={() => document.querySelector('.ant-drawer-body')}>{text}</Tooltip>
   },
   {
     title: '故障发生时间',
