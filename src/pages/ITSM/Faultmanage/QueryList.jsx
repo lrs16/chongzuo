@@ -168,6 +168,24 @@ function QueryList(props) {
       }
     },
     {
+      title: '故障名称',
+      dataIndex: 'title',
+      key: 'title',
+      width: 120,
+      onCell: () => {
+        return {
+          style: {
+            maxWidth: 120,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            cursor: 'pointer'
+          }
+        }
+      },
+      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+    },
+    {
       title: '故障发生时间',
       dataIndex: 'registerOccurTime',
       key: 'registerOccurTime',
@@ -316,24 +334,6 @@ function QueryList(props) {
       dataIndex: 'taskUser',
       key: 'taskUser',
       width: 150,
-    },
-    {
-      title: '故障名称',
-      dataIndex: 'title',
-      key: 'title',
-      width: 120,
-      onCell: () => {
-        return {
-          style: {
-            maxWidth: 120,
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
-      },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
     {
       title: '故障来源',
