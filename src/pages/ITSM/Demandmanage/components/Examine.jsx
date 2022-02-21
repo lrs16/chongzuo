@@ -138,11 +138,12 @@ const Examine = forwardRef((props, ref) => {
               <Form.Item label={`${text}结果`}>
                 {getFieldDecorator('result', {
                   rules: [{ required: true, message: `请选择${text}结果` }],
-                  initialValue: info[0].result || 1,
+                  initialValue: info[0].result,
                 })(
                   <Radio.Group onChange={handleAdopt}>
-                    {(adopt === 1 || adopt === 0) && <Radio value={1}>通过</Radio>}
-                    {adopt !== 1 && adopt !== 0 && <Radio value={adopt}>通过</Radio>}
+                    {taskName !== '自动化科审核' ? (<Radio value={1}>通过</Radio>) : (
+                      <>{adopt !== 0 && <Radio value={adopt}>通过</Radio>}</>
+                    )}
                     <Radio value={0}>不通过</Radio>
                   </Radio.Group>,
                 )}

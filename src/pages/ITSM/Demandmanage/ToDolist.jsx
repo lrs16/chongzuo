@@ -144,7 +144,7 @@ function ToDolist(props) {
               taskName: r.taskName,
               taskId: r.taskId,
               mainId: r.processInstanceId,
-              result: '1',
+              // result: '1',
               orderNo: text,
             },
             state: {
