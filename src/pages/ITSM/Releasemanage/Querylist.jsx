@@ -50,6 +50,8 @@ function Querylist(props) {
         ...values,
         beginTime: values.beginTime ? moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
         endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        releaseBeginTime: values.releaseBeginTime ? moment(values.releaseBeginTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        releaseEndTime: values.releaseEndTime ? moment(values.releaseEndTime).format('YYYY-MM-DD HH:mm:ss') : '',
         pageSize: size,
         pageIndex: page,
       },
@@ -58,6 +60,8 @@ function Querylist(props) {
       ...values,
       beginTime: values.beginTime ? moment(values.beginTime).format('X') : '',
       endTime: values.endTime ? moment(values.endTime).format('X') : '',
+      releaseBeginTime: values.releaseBeginTime ? moment(values.releaseBeginTime).format('X') : '',
+      releaseEndTime: values.releaseEndTime ? moment(values.releaseEndTime).format('X') : '',
     });
   };
 
@@ -133,6 +137,8 @@ function Querylist(props) {
       ...val,
       beginTime: val.beginTime ? moment(val.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
       endTime: val.endTime ? moment(val.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      releaseBeginTime: val.releaseBeginTime ? moment(val.releaseBeginTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      releaseEndTime: val.releaseEndTime ? moment(val.releaseEndTime).format('YYYY-MM-DD HH:mm:ss') : '',
     };
     const releaseNos = selectedRecords.length > 0 && selectedRecords.map(item => {
       return item.releaseNo
@@ -327,6 +333,18 @@ function Querylist(props) {
       key: 'sendTime',
       sorter: (a, b) => a.sendTime.localeCompare(b.sendTime),
     },
+    {
+      title: '发布版本号',
+      dataIndex: 'versionNo',
+      key: 'versionNo',
+      // sorter: (a, b) => a.versionNo.localeCompare(b.versionNo),
+    },
+    {
+      title: '发布时间',
+      dataIndex: 'releaseTime',
+      key: 'releaseTime',
+      // sorter: (a, b) => a.releaseTime.localeCompare(b.releaseTime),
+    },
   ];
 
   const extra = (<>
@@ -430,6 +448,13 @@ function Querylist(props) {
                   </Form.Item>
                 </Col>
                 <Col span={8}>
+                  <Form.Item label="发布版本号">
+                    {getFieldDecorator('versionNo', {
+                      initialValue: cacheinfo.versionNo,
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
                   <Form.Item label="出厂测试登记人">
                     {getFieldDecorator('register', {
                       initialValue: cacheinfo.register,
@@ -464,6 +489,41 @@ function Querylist(props) {
                     <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                       {getFieldDecorator('endTime', {
                         initialValue: cacheinfo.endTime ? moment(cacheinfo.endTime * 1000) : '',
+                      })(
+                        <DatePicker
+                          showTime={{
+                            hideDisabledOptions: true,
+                            defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                          }}
+                          placeholder="结束时间"
+                          format='YYYY-MM-DD HH:mm:ss'
+                          style={{ minWidth: 120, width: '100%' }}
+                        />
+                      )}
+                    </div>
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="发布时间">
+                    <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                      {getFieldDecorator('releaseBeginTime', {
+                        initialValue: cacheinfo.releaseBeginTime ? moment(cacheinfo.releaseBeginTime * 1000) : '',
+                      })(
+                        <DatePicker
+                          showTime={{
+                            hideDisabledOptions: true,
+                            defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                          }}
+                          placeholder="开始时间"
+                          format='YYYY-MM-DD HH:mm:ss'
+                          style={{ minWidth: 120, width: '100%' }}
+                        />
+                      )}
+                    </div>
+                    <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
+                    <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                      {getFieldDecorator('releaseEndTime', {
+                        initialValue: cacheinfo.releaseEndTime ? moment(cacheinfo.releaseEndTime * 1000) : '',
                       })(
                         <DatePicker
                           showTime={{
