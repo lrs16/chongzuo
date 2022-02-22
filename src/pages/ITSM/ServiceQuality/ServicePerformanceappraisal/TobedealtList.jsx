@@ -27,6 +27,7 @@ import SysDict from '@/components/SysDict';
 import { providerList, scoreListpage, contractProvider, clauseListpage } from '../services/quality';
 
 import styles from './index.less';
+import { taskObjectList } from '@/pages/Automation/AutomatedJob/JobManagement/services/api';
 
 const formItemLayout = {
   labelCol: {
@@ -81,6 +82,7 @@ function TobedealtList(props) {
   const [target2Type, setTarget2Type] = useState('');
   const [spinloading, setSpinLoading] = useState(true);
   const [selectedKeys, setSelectedKeys] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
   const [selectdata, setSelectData] = useState('');
   const [columns, setColumns] = useState([]);
 
@@ -668,7 +670,6 @@ function TobedealtList(props) {
         : '', // 服务绩效考核确认时间
       finallyConfirmTime: '',
     };
-
     switch (pagetitle) {
       case '服务绩效考核待办':
         dispatch({
@@ -703,8 +704,9 @@ function TobedealtList(props) {
       default:
         break;
     }
-
     fromparams = newvalues;
+    setSelectedRows([])
+    setSelectedKeys([])
   };
 
   const record = {
@@ -766,11 +768,13 @@ function TobedealtList(props) {
     resetFields();
     searchdata({}, 1, 15);
     setPageinations({ current: 1, pageSize: 15 });
+    setSelectedRows([]);
+    setSelectedKeys([]);
   };
 
   //  设置时间
   useEffect(() => {
-  if(location && location.state && location.state.cacheinfo) {
+    if (location && location.state && location.state.cacheinfo) {
       const {
         applyBeginTime,
         applyEndTime,
@@ -802,7 +806,7 @@ function TobedealtList(props) {
           : '',
       });
     }
-  },[location.state])
+  }, [location.state])
 
   useEffect(() => {
     if (location.state) {
@@ -1033,9 +1037,12 @@ function TobedealtList(props) {
 
   const download = () => {
     validateFields((err, values) => {
+      const selectRow = (selectedRows || []).map( objs => {
+       return objs.assessNo
+      })
       const newValue = {
         ...values,
-        assessNo: selectedKeys.toString(),
+        assessNo: selectRow.toString(),
         assessBeginTime: values.timeoccurrence?.length
           ? moment(values.timeoccurrence[0]).format('YYYY-MM-DD HH:mm:ss')
           : '',
@@ -1141,14 +1148,38 @@ function TobedealtList(props) {
         default:
           break;
       }
+      setSelectedRows([])
     });
   };
 
   const rowSelection = {
-    onChange: index => {
-      setSelectedKeys([...index]);
+    onChange: (selectedRowKeys, selectedrows) => {
+      setSelectedRows([...selectedrows]);
+      setSelectedKeys([...selectedRowKeys]);
     },
   };
+
+  const handleDelete = () => {
+    if (selectedRows.length === 1) {
+      return dispatch({
+        type: 'performanceappraisal/assessDelete',
+        payload: selectedRows[0].assessNo
+      }).then(res => {
+        if (res.code === 200) {
+          searchdata({}, 1, 15);
+        } else {
+          message.error(res.msg)
+        }
+        setSelectedRows([])
+      })
+    }
+
+    if (selectedRows.length !== 1) {
+      message.info('请选择一条数据删除')
+    }
+
+    return []
+  }
 
   const extra = (
     <>
@@ -1309,7 +1340,7 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label="发生时间">
                   {getFieldDecorator('timeoccurrence', {
-                    initialValue:'',
+                    initialValue: '',
                   })(
                     <RangePicker
                       showTime={{
@@ -1438,7 +1469,7 @@ function TobedealtList(props) {
                       placeholder="请选择"
                       allowClear
                     >
-                      {target1.map(obj => [
+                      {(target1 || []).map(obj => [
                         <Option key={obj.id} value={obj.title}>
                           {obj.title}
                         </Option>,
@@ -1468,7 +1499,7 @@ function TobedealtList(props) {
                       placeholder="请选择"
                       allowClear
                     >
-                      {target2.map(obj => [
+                      {(target2 || []).map(obj => [
                         <Option key={obj.id} value={obj.title}>
                           {obj.title}
                         </Option>,
@@ -1709,7 +1740,7 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label="服务商确认时间">
                   {getFieldDecorator('providerConfirmTime', {
-                    initialValue:'',
+                    initialValue: '',
                   })(
                     <RangePicker
                       showTime={{
@@ -1764,7 +1795,7 @@ function TobedealtList(props) {
               <Col span={8}>
                 <Form.Item label="自动化科复核时间">
                   {getFieldDecorator('directorReviewTime', {
-                    initialValue:'',
+                    initialValue: '',
                   })(
                     <RangePicker
                       showTime={{
@@ -1887,6 +1918,17 @@ function TobedealtList(props) {
           <Button type="primary" onClick={() => download()}>
             导出数据
           </Button>
+
+          {
+            pagetitle === '服务绩效考核查询' && (
+              <Button
+                type='danger'
+                ghost
+                onClick={handleDelete}
+                style={{ marginLeft: 8 }}
+              >删除</Button>
+            )
+          }
         </div>
 
         <div style={{ textAlign: 'right', marginBottom: 8 }}>

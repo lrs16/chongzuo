@@ -28,7 +28,9 @@ import {
   exportmyAssess,
   scorecardPrint,
   getTypeTree,
-  getscorecardlistPagetobe
+  getscorecardlistPagetobe,
+  statsSearch,
+  statsExport
 } from '../services/serviceperformanceappraisalapi';
 
 export default {
@@ -49,6 +51,7 @@ export default {
     assessSearcharr: [],
     assessmyAssessarr: [],
     treeArr: [],
+    statsSearcharr:[]
   },
 
   effects: {
@@ -290,6 +293,18 @@ export default {
         type: 'clearTreearr',
         payload: [],
       });
+    },
+
+    *fetchstatsSearch({ payload }, { call, put }) {
+      const response = yield call(statsSearch,payload);
+      yield put({
+        type:'statsSearcharr',
+        payload:response
+      })
+    },
+
+    *fetchstatsExport({ payload }, { call, put }) {
+      return yield call(statsExport,payload)
     }
 
   },
@@ -378,5 +393,12 @@ export default {
         treeArr: [],
       };
     },
+
+    statsSearcharr(state,action) {
+      return {
+        ...state,
+        statsSearcharr: action.payload.data
+      }
+    }
   },
 };

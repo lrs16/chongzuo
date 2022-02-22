@@ -14,54 +14,55 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 const columns = [
   {
-    title: '合同名称',
-    dataIndex: '',
-    key: ''
+    title: '合同编号',
+    dataIndex: 'contractNo',
+    key: 'contractNo'
   },
   {
-    title: '合同编号',
-    dataIndex: '',
-    key: ''
+    title: '合同名称',
+    dataIndex: 'contractName',
+    key: 'contractName'
   },
   {
     title: '考核周期',
-    dataIndex: '',
-    key: ''
+    dataIndex: 'assessPhase',
+    key: 'assessPhase'
   },
   {
     title: '签订日期',
-    dataIndex: '',
-    key: ''
+    dataIndex: 'signTime',
+    key: 'signTime'
   },
   {
     title: '服务商名称',
-    dataIndex: '',
-    key: ''
+    dataIndex: 'providerName',
+    key: 'providerName'
   },
   {
     title: '累计扣分',
-    dataIndex: '',
-    key: ''
+    dataIndex: 'minus',
+    key: 'minus'
   },
   {
     title: '累计加分',
-    dataIndex: '',
-    key: ''
+    dataIndex: 'plus',
+    key: 'plus'
   },
   {
     title: '考核得分',
-    dataIndex: '',
-    key: ''
+    dataIndex: 'total',
+    key: 'total'
   },
 ];
 let startTime;
-let monthStarttime;
 let endTime;
 const { MonthPicker } = DatePicker;
 function Statisticalquery(props) {
   const { pagetitle } = props.route.name;
   const {
     form: { getFieldDecorator, setFieldsValue },
+    statsSearcharr,
+    dispatch
   } = props;
   const [tabActiveKey, setTabActiveKey] = useState('week');
 
@@ -106,8 +107,8 @@ function Statisticalquery(props) {
   }
 
   const defaultTime = () => {
-    startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
-    endTime = moment().format('YYYY-MM-DD');
+    startTime = moment().subtract('days', 6).format('YYYY-MM-DD HH:mm:ss');
+    endTime = moment().format('YYYY-MM-DD HH:mm:ss');
     switch (tabActiveKey) {
       case 'week':
         setFieldsValue({
@@ -117,15 +118,15 @@ function Statisticalquery(props) {
         break;
       case 'month':
 
-        startTime = moment().startOf('month').format('YYYY-MM-DD');
-        endTime = moment().endOf('month').format('YYYY-MM-DD');
+        startTime = moment().startOf('month').format('YYYY-MM-DD HH:mm:ss');
+        endTime = moment().endOf('month').format('YYYY-MM-DD HH:mm:ss');
         setFieldsValue({
           monthStarttime: moment(startTime)
         });
         break;
       case 'other':
-        startTime = moment().startOf('month').format('YYYY-MM-DD');
-        endTime = moment().endOf('month').format('YYYY-MM-DD');
+        startTime = moment().startOf('month').format('YYYY-MM-DD HH:mm:ss');
+        endTime = moment().endOf('month').format('YYYY-MM-DD HH:mm:ss');
         setFieldsValue({
           time1: moment(startTime),
           time2: moment(endTime)
@@ -136,8 +137,20 @@ function Statisticalquery(props) {
     }
   }
 
+  const getList = () => {
+    dispatch({
+      type: 'performanceappraisal/fetchstatsSearch',
+      payload: {
+        beginTime: moment(startTime).format('YYYY-MM-DD 00:00:00'),
+        endTime: moment(endTime).format('YYYY-MM-DD 23:59:59'),
+        type: tabActiveKey === 'week' ? 'W' : 'M'
+      }
+    })
+  }
+
   useEffect(() => {
     defaultTime();
+    getList()
   }, [tabActiveKey])
 
   const tabList = [
@@ -153,6 +166,26 @@ function Statisticalquery(props) {
 
   const handleTabChange = (key) => {
     setTabActiveKey(key);
+  }
+
+  const download = () => {
+    dispatch({
+      type: 'performanceappraisal/fetchstatsExport',
+      payload: {
+        beginTime: moment(startTime).format('YYYY-MM-DD 00:00:00'),
+        endTime: moment(endTime).format('YYYY-MM-DD 23:59:59'),
+        type: tabActiveKey === 'week' ? 'W' : 'M'
+      }
+    }).then(res => {
+      const filename = `统计查询.xls`;
+      const blob = new Blob([res]);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    })
   }
 
   return (
@@ -201,39 +234,39 @@ function Statisticalquery(props) {
                     </Form.Item>
 
                     <Button
-                    type='primary'
-                    style={{ marginTop: 6 }}
-                    // onClick={() => handleListdata('search')}
-                  >
-                    查询
-                  </Button>
+                      type='primary'
+                      style={{ marginTop: 6 }}
+                      onClick={getList}
+                    >
+                      查询
+                    </Button>
 
                   </Col>
                 )
               }
 
               {
-                 tabActiveKey === 'month' && (
+                tabActiveKey === 'month' && (
                   <Col span={24}>
-                  <Form.Item label='起始时间'>
-                    {getFieldDecorator('monthStarttime', {
-                      initialValue: moment(startTime)
-                    })(
-                      <MonthPicker
-                        allowClear='false'
-                        onChange={onChange}
-                      />)}
-                  </Form.Item>
+                    <Form.Item label='起始时间'>
+                      {getFieldDecorator('monthStarttime', {
+                        initialValue: moment(startTime)
+                      })(
+                        <MonthPicker
+                          allowClear='false'
+                          onChange={onChange}
+                        />)}
+                    </Form.Item>
 
-                  <Button
-                    type='primary'
-                    style={{ marginTop: 6 }}
-                    // onClick={() => handleListdata('search')}
-                  >
-                    查询
-                  </Button>
-                </Col>
-                 )
+                    <Button
+                      type='primary'
+                      style={{ marginTop: 6 }}
+                      onClick={getList}
+                    >
+                      查询
+                    </Button>
+                  </Col>
+                )
               }
             </Form>
 
@@ -243,13 +276,14 @@ function Statisticalquery(props) {
           <Button
             type='primary'
             style={{ marginBottom: 24, marginTop: 5 }}
-            // onClick={download}
+            onClick={download}
           >
             导出数据
           </Button>
 
           <Table
             columns={columns}
+            dataSource={statsSearcharr}
           />
         </Card>
 
@@ -259,8 +293,8 @@ function Statisticalquery(props) {
   )
 }
 export default Form.create({})(
-  connect(({ eventstatistics, loading }) => ({
-    maintenanceArr: eventstatistics.maintenanceArr,
-    loading: loading.models.eventstatistics,
+  connect(({ performanceappraisal, loading }) => ({
+    statsSearcharr: performanceappraisal.statsSearcharr,
+    loading: loading.models.performanceappraisal,
   }))(Statisticalquery),
 );

@@ -188,23 +188,11 @@ export async function clauseDel(id) {
 }
 
 //  统计页面数据
-export async function statsRatio(params) {
-  return request(`/quality/stats/ratio`,{
-    method:'POST',
-    data:params,
-    requestType:'form'
-  })
+export async function statsContract(selectyear) {
+  return request(`/quality/stats/contract?year=${selectyear}`)
 }
 
-// 项目考核情况
 
-export async function statsSum(params) {
-  return request(`/quality/stats/sum`,{
-    method:'POST',
-    data:params,
-    requestType:'form'
-  })
-}
 
 
 

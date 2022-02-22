@@ -112,9 +112,10 @@ function Contract(props) {
             getPopupContainer={() => document.querySelector('.ant-drawer-body')}
             allowClear={false}
             // open={isopen}
-            value={moment(text.toString())}
+            value={text ? moment(text.toString()):undefined}
             format='YYYY'
             mode="year"
+            placeholder='请选择年份'
             // onFocus={() => { isopen = true }}
             onPanelChange={value => {
               handleFieldChange(value.format('YYYY'), 'assessYear', record.key);
@@ -142,10 +143,10 @@ function Contract(props) {
                 <Option value={record.aa ? moment(`${record.aa}-07-01`) : ''}>第三季度</Option>
                 <Option value={record.aa ? moment(`${record.aa}-10-01`) : ''}>第四季度</Option> */}
             {/* 现在后端自己算了 */}
-            <Option value='第一季度'>第一季度</Option>
-            <Option value='第二季度'>第二季度</Option>
-            <Option value='第三季度'>第三季度</Option>
-            <Option value='第四季度'>第四季度</Option>
+            <Option value='第一周期'>第一周期</Option>
+            <Option value='第二周期'>第二周期</Option>
+            <Option value='第三周期'>第三周期</Option>
+            <Option value='第四周期'>第四周期</Option>
           </Select>
         )
       }
@@ -209,7 +210,7 @@ function Contract(props) {
     const newData = data.map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
-      assessYear: moment().format('YYYY'),
+      assessYear: '',
       assessCycle: '',
       beginTime: '',
       endTime: '',

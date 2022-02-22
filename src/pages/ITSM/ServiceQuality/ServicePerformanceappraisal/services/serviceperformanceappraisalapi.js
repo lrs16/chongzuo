@@ -217,3 +217,23 @@ export async function getTypeTree(type) {
   return request(`/quality/score/getTypeTree?type=${type}`)
 }
 
+//  服务绩效统计查询
+export async function statsSearch(params) {
+  return request(`/quality/stats/search`,{
+    method:'POST',
+    data:params,
+    requestType:'form'
+  })
+}
+
+//  服务绩效统计导出
+export async function statsExport(params) {
+  return request(`/quality/stats/export`,{
+    method:'POST',
+    data:params,
+    requestType:'form',
+    responseType:'blob'
+  })
+}
+
+

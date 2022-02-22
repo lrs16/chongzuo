@@ -25,14 +25,14 @@ import {
   scoreExport,
   clauseUpd,
   clauseDel,
-  statsRatio,
-  statsSum,
+  statsContract,
 } from '../services/quality';
 
 import {
   scoreGetTarget1,
   scoreGetTarget2,
 } from '../ServicePerformanceappraisal/services/serviceperformanceappraisalapi';
+import { CalendarFilled } from '@ant-design/icons';
 
 export default {
   namespace: 'qualityassessment',
@@ -51,8 +51,7 @@ export default {
     scorecardArr: [],
     target1: [],
     target2: [],
-    statisticData: [],
-    statsSumdata: [],
+    contractArr:[]
   },
 
   effects: {
@@ -304,29 +303,20 @@ export default {
       });
     },
 
-    //  统计接口
-    *fetchstatsRatio({ payload }, { call, put }) {
-      const response = yield call(statsRatio, payload);
-      yield put({
-        type: 'statisticData',
-        payload: response,
-      });
-    },
-
-    //  统计接口
-    *fetchstatsSum({ payload }, { call, put }) {
-      const response = yield call(statsSum, payload);
-      yield put({
-        type: 'statsSumdata',
-        payload: response,
-      });
-    },
-
     //  清除登记页面下拉值选择
     *clearRegister({ payload }, { call, put}) {
       yield put({
         type:'clearregister'
       })
+    },
+
+    *fetchstatsContract({ payload }, { call,put}) {
+      const response = yield call(statsContract,payload);
+      yield put({
+        type:'contractArr',
+        payload:response
+      })
+      // return yield call(statsContract,payload)
     }
   },
 
@@ -432,19 +422,6 @@ export default {
       };
     },
 
-    //
-    statisticData(state, action) {
-      return {
-        ...state,
-        statisticData: action.payload.data,
-      };
-    },
-    statsSumdata(state, action) {
-      return {
-        ...state,
-        statsSumdata: action.payload.data,
-      };
-    },
     clearregister(state, action) {
       return {
         target1: [],
@@ -452,5 +429,11 @@ export default {
         clauseList: [],
       };
     },
+
+    contractArr(state,action) {
+      return {
+        contractArr:action.payload.data
+      }
+    }
   },
 };
