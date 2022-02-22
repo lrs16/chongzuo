@@ -1,5 +1,7 @@
 import React from 'react';
 import { Input, Divider } from 'antd';
+import router from 'umi/router';
+import { AlertTwoTone } from '@ant-design/icons';
 
 const InputGroup = Input.Group;
 
@@ -8,7 +10,52 @@ export const columns = [
     title: '发布编号',
     dataIndex: 'releaseNo',
     key: 'releaseNo',
+    render: (text, record) => {
+      const handleClick = () => {
+        router.push({
+          pathname: `/ITSM/releasemanage/plan/query/details`,
+          query: {
+            Id: record.releaseNo,
+            taskName: record.taskName,
+          },
+          state: {
+            dynamicpath: true,
+            menuDesc: '发布工单详情',
+          }
+        });
+      };
+      return (<a onClick={handleClick}>{text}</a>);
+    },
     sorter: (a, b) => a.releaseNo.localeCompare(b.releaseNo),
+  },
+  {
+    title: '当前处理环节',
+    dataIndex: 'taskName',
+    key: 'taskName',
+    sorter: (a, b) => a.taskName.localeCompare(b.taskName),
+  },
+  {
+    title: '超时状态',
+    dataIndex: 'timeoutStatus',
+    key: 'timeoutStatus',
+    render: (text) => {
+      const blubnap = new Map([
+        ['未超时', <AlertTwoTone twoToneColor="#52C41A" />],
+        ['即将超时', <AlertTwoTone twoToneColor="orange" />],
+        ['已超时', <AlertTwoTone twoToneColor="red" />]
+      ]);
+      const colormap = new Map([
+        ['未超时', '#52C41A'],
+        ['即将超时', 'orange'],
+        ['已超时', 'red']
+      ]);
+      return (
+        <><span style={{ fontSize: '1.4em', marginRight: 8 }}>{blubnap.get(text)}</span>
+          <span style={{ color: colormap.get(text) }}>{text}</span>
+        </>
+      )
+    },
+    sorter: (a, b) => a.timeoutStatus.localeCompare(b.timeoutStatus),
   },
   {
     title: '发布类型',
@@ -46,6 +93,22 @@ export const columnstask = [
     title: '发布编号',
     dataIndex: 'releaseNo',
     key: 'releaseNo',
+    render: (text, record) => {
+      const handleClick = () => {
+        router.push({
+          pathname: `/ITSM/releasemanage/plan/query/details`,
+          query: {
+            Id: record.releaseNo,
+            taskName: record.taskName,
+          },
+          state: {
+            dynamicpath: true,
+            menuDesc: '发布工单详情',
+          }
+        });
+      };
+      return (<a onClick={handleClick}>{text}</a>);
+    },
     sorter: (a, b) => a.releaseNo.localeCompare(b.releaseNo),
   },
   {
@@ -80,6 +143,22 @@ export const columnrelease = [
     title: '发布编号',
     dataIndex: 'releaseNo',
     key: 'releaseNo',
+    render: (text, record) => {
+      const handleClick = () => {
+        router.push({
+          pathname: `/ITSM/releasemanage/plan/query/details`,
+          query: {
+            Id: record.releaseNo,
+            taskName: record.taskName,
+          },
+          state: {
+            dynamicpath: true,
+            menuDesc: '发布工单详情',
+          }
+        });
+      };
+      return (<a onClick={handleClick}>{text}</a>);
+    },
     sorter: (a, b) => a.releaseNo.localeCompare(b.releaseNo),
   },
   {

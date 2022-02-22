@@ -4,7 +4,7 @@ import moment from 'moment';
 import router from 'umi/router';
 import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, message, Tooltip } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import { DownOutlined, UpOutlined, AlertTwoTone } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
 import { exportReleaseOrder } from './services/api';
 
@@ -253,6 +253,29 @@ function Querylist(props) {
       dataIndex: 'taskName',
       key: 'taskName',
       sorter: (a, b) => a.taskName.localeCompare(b.taskName),
+    },
+    {
+      title: '超时状态',
+      dataIndex: 'timeoutStatus',
+      key: 'timeoutStatus',
+      sorter: (a, b) => a.timeoutStatus.localeCompare(b.timeoutStatus),
+      render: (text) => {
+        const blubnap = new Map([
+          ['未超时', <AlertTwoTone twoToneColor="#52C41A" />],
+          ['即将超时', <AlertTwoTone twoToneColor="orange" />],
+          ['已超时', <AlertTwoTone twoToneColor="red" />]
+        ]);
+        const colormap = new Map([
+          ['未超时', '#52C41A'],
+          ['即将超时', 'orange'],
+          ['已超时', 'red']
+        ]);
+        return (
+          <><span style={{ fontSize: '1.4em', marginRight: 8 }}>{blubnap.get(text)}</span>
+            <span style={{ color: colormap.get(text) }}>{text}</span>
+          </>
+        )
+      }
     },
     {
       title: '发布类型',
