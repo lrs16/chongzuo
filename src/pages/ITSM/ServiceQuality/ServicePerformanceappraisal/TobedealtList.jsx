@@ -27,7 +27,6 @@ import SysDict from '@/components/SysDict';
 import { providerList, scoreListpage, contractProvider, clauseListpage } from '../services/quality';
 
 import styles from './index.less';
-import { taskObjectList } from '@/pages/Automation/AutomatedJob/JobManagement/services/api';
 
 const formItemLayout = {
   labelCol: {
@@ -705,8 +704,6 @@ function TobedealtList(props) {
         break;
     }
     fromparams = newvalues;
-    setSelectedRows([])
-    setSelectedKeys([])
   };
 
   const record = {
@@ -768,8 +765,6 @@ function TobedealtList(props) {
     resetFields();
     searchdata({}, 1, 15);
     setPageinations({ current: 1, pageSize: 15 });
-    setSelectedRows([]);
-    setSelectedKeys([]);
   };
 
   //  设置时间
