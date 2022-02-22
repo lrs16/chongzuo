@@ -2126,7 +2126,7 @@ export default {
     },
     // 事件管理,问题，故障
     '/event/': {
-      target: ' http://172.16.10.120:9901/',
+      target: ' http://172.16.10.33:9901/',
       changeOrigin: true,
     },
     // 问题管理
@@ -2141,7 +2141,7 @@ export default {
     },
     // 需求管理
     '/demand/': {
-      target: ' http://172.16.10.120:9901/',
+      target: ' http://172.16.10.33:9901/',
       changeOrigin: true,
     },
     // 作业计划

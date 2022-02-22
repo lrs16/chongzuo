@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Table, Row, Button, Col, Cascader, Input, Radio, message, Divider, Select, Alert, Tooltip } from 'antd';
+import { Table, Row, Button, Col, Cascader, Input, Radio, message, Divider, Select, Alert, Popconfirm } from 'antd';
 import UserContext from '@/layouts/MenuContext';
 import { dispatchBizUsers, dispatchPlatsers } from '@/services/user';
 import { querkeyVal } from '@/services/api';
@@ -23,7 +23,9 @@ function EditeTable(props) {
   const [formValiduser, setFormValiduser] = useState([]);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 5 });
   const [selectdata, setSelectData] = useState([]); // 下拉值
-  const { ChangeButtype, taskId, location } = useContext(UserContext);
+  const [visible, setVisible] = useState(false);
+  const [reviewResult, setReviewResult] = useState(null);
+  const { ChangeButtype, taskId, location, getSelectedRecords, clearselect } = useContext(UserContext);
 
   // 新增一条记录
   const newMember = () => {
@@ -71,7 +73,17 @@ function EditeTable(props) {
   const onSelectChange = (RowKeys, record) => {
     setSelectedRowKeys(RowKeys);
     setSelectedRecords(record);
+    if (getSelectedRecords) {
+      getSelectedRecords(record)
+    }
   };
+
+  useEffect(() => {
+    if (clearselect) {
+      setSelectedRowKeys([]);
+      setSelectedRecords([]);
+    }
+  }, [clearselect])
 
   const rowSelection = {
     selectedRowKeys,
@@ -87,7 +99,7 @@ function EditeTable(props) {
         message.error('获取用户列表失败')
       }
     });
-    if (taskName === '平台验证') {
+    if (taskName === '平台验证' || taskName === '发布验证') {
       dispatchPlatsers().then(res => {
         setFormValiduser(res?.data?.userList || [])
       })
@@ -105,10 +117,24 @@ function EditeTable(props) {
     if (target) {
       target[fieldName] = e;
       target.taskId = taskId;
+      if (taskName === '科室负责人审核') {
+        target.tempDirector = sessionStorage.getItem('userName');
+      };
+      if (taskName === '业务复核') {
+        target.tempReviewVerifier = sessionStorage.getItem('userName');
+      };
       setData(newData);
-      if (target.verification) {
+      if (target.verification || target.depaudit || target.validate) {
         ChangeValue(newData);
-        releaseListEdit({ taskId, });
+        releaseListEdit({ taskId, itsmReleaseList: newData });
+      };
+      if (target.review) {
+        ChangeValue(newData);
+        releaseListEdit({ taskId, itsmReleaseList: newData });
+        const allreview = newData.filter(item => !item.tempReviewResult);
+        if (allreview.length === 0) {
+          ChangeButtype('submit')
+        }
       }
     }
   };
@@ -233,6 +259,9 @@ function EditeTable(props) {
         ...item,
         editable: false,
         verification: taskName === '平台验证',
+        depaudit: taskName === '科室负责人审核',
+        validate: taskName === '发布验证',
+        review: taskName === '业务复核',
         key: (index + 1).toString(),
       }));
       setData(newData);
@@ -568,26 +597,12 @@ function EditeTable(props) {
     }
   ];
 
-  const operator = {
-    title: `${taskName}人`,
-    dataIndex: 'operator',
-    key: 'operator',
-    align: 'center',
-    width: 100,
-    render: (text, record) => {
-      if (taskName === '业务验证' && record.verifyStatus === '已转出') {
-        return <></>
-      }
-      return <>{text}</>
-    }
-  };
-
-  const tempPlatformResult = [
+  const platform = [
     {
       title: `平台验证结果`,
       dataIndex: 'tempPlatformResult',
       key: 'tempPlatformResult',
-      fixed: 'right',
+      fixed: taskName === '平台验证' ? 'right' : '',
       width: 120,
       render: (text, record) => {
         if (record.verification && isEdit) {
@@ -603,15 +618,12 @@ function EditeTable(props) {
         return <div style={{ textAlign: 'center' }}>{text}</div>;
       }
     },
-  ]
-
-  const platform = [
     {
       title: '平台验证人',
-      dataIndex: 'platformValidator',
-      key: 'platformValidator',
+      dataIndex: 'tempPlatformVerifier',
+      key: 'tempPlatformVerifier',
       align: 'center',
-      fixed: 'right',
+      fixed: taskName === '平台验证' ? 'right' : '',
       width: 120,
       render: (text, record) => {
         if (record.verification && isEdit) {
@@ -625,7 +637,7 @@ function EditeTable(props) {
                   if (v && v.length && v.length > 0) {
                     val = v.toString(',')
                   };
-                  handleFieldChange(val, 'platformValidator', record.key)
+                  handleFieldChange(val, 'tempPlatformVerifier', record.key)
                 }}
                 defaultValue={text ? text.split(',') : []}
               >
@@ -643,13 +655,137 @@ function EditeTable(props) {
     }
   ];
 
-  const verifyStatus = {
-    title: '状态',
-    dataIndex: 'verifyStatus',
-    key: 'verifyStatus',
-    width: 100,
-    align: 'center',
-  };
+  const DirectorResult = [
+    {
+      title: '科室审核结果',
+      dataIndex: 'tempDirectorResult',
+      key: 'tempDirectorResult',
+      fixed: taskName === '科室负责人审核' ? 'right' : '',
+      width: 120,
+      render: (text, record) => {
+        if (record.depaudit && isEdit) {
+          return (
+            <RadioGroup value={text} onChange={e => handleFieldChange(e.target.value, 'tempDirectorResult', record.key)}>
+              <Radio value='通过'>通过</Radio>
+              <Radio value='不通过'>不通过</Radio>
+            </RadioGroup>
+          )
+        }
+        return <div style={{ textAlign: 'center' }}>{text}</div>;
+      }
+    },
+    {
+      title: '科室审核人',
+      dataIndex: 'tempDirector',
+      key: 'tempDirector',
+      align: 'center',
+      fixed: taskName === '科室负责人审核' ? 'right' : '',
+      width: 100,
+    }
+  ];
+
+  const ValidateResult = [
+    {
+      title: '发布验证结果',
+      dataIndex: 'tempValidateResult',
+      key: 'tempValidateResult',
+      fixed: taskName === '发布验证' ? 'right' : '',
+      width: 120,
+      render: (text, record) => {
+        if (record.validate && isEdit) {
+          return (
+            <RadioGroup value={text} onChange={e => handleFieldChange(e.target.value, 'tempValidateResult', record.key)}>
+              <Radio value='通过'>通过</Radio>
+              <Radio value='不通过'>不通过</Radio>
+            </RadioGroup>
+          )
+        }
+        return <div style={{ textAlign: 'center' }}>{text}</div>;
+      }
+    },
+    {
+      title: '发布验证人',
+      dataIndex: 'tempValidateVerifier',
+      key: 'tempValidateVerifier',
+      align: 'center',
+      fixed: taskName === '发布验证' ? 'right' : '',
+      width: 120,
+      render: (text, record) => {
+        if (record.validate && isEdit) {
+          return (
+            <div className={text ? '' : styles.requiredselect}>
+              <Select
+                placeholder="请选择"
+                mode="multiple"
+                onChange={v => {
+                  let val = ''
+                  if (v && v.length && v.length > 0) {
+                    val = v.toString(',')
+                  };
+                  handleFieldChange(val, 'tempValidateVerifier', record.key)
+                }}
+                defaultValue={text ? text.split(',') : []}
+              >
+                {formValiduser && formValiduser.length && formValiduser.map(obj => [
+                  <Option key={obj.userId} value={obj.userName}>
+                    {obj.userName}
+                  </Option>,
+                ])}
+              </Select>
+            </div >
+          )
+        }
+        return <>{text}</>
+      }
+    }
+  ];
+
+  const ReviewResult = [
+    {
+      title: '业务复核结果',
+      dataIndex: 'tempReviewResult',
+      key: 'tempReviewResult',
+      fixed: taskName === '业务复核' ? 'right' : '',
+      width: 120,
+      render: (text, record) => {
+        if (record.review && isEdit) {
+          return (
+            <Popconfirm
+              title="所选的清单有不属于您负责的业务的功能，确定验证吗?"
+              onConfirm={() => { setVisible(false); handleFieldChange(reviewResult, 'tempReviewResult', record.key) }}
+              visible={visible}
+              onCancel={() => setVisible(false)}
+              placement="leftTop"
+            >
+              <RadioGroup
+                value={text}
+                onMouseDown={() => { setVisible(false); setReviewResult(null); }}
+                onChange={e => {
+                  if (record.responsible !== sessionStorage.getItem('userName')) {
+                    setVisible(true);
+                    setReviewResult(e.target.value);
+                  } else {
+                    handleFieldChange(e.target.value, 'tempReviewResult', record.key)
+                  }
+                }}>
+                <Radio value='通过'>通过</Radio>
+                <Radio value='不通过'>不通过</Radio>
+              </RadioGroup>
+            </Popconfirm>
+          )
+        }
+        return <div style={{ textAlign: 'center' }}>{text}</div>;
+      }
+    },
+    {
+      title: '业务复核人',
+      dataIndex: 'tempReviewVerifier',
+      key: 'tempReviewVerifier',
+      align: 'center',
+      fixed: taskName === '业务复核' ? 'right' : '',
+      width: 100,
+    }
+  ];
 
   const sclicecolumns = (arr) => {
     const newarr = (arr || column).slice(0);
@@ -666,14 +802,27 @@ function EditeTable(props) {
         break;
       case '平台验证': {
         const newarr = sclicecolumns(arr);
-        newArr = [...newarr, ...platform, ...tempPlatformResult];
+        newArr = [...newarr, ...platform];
         break;
       }
-      case '业务验证': {
-        const newarr = arr;
-        newarr.splice(-3, 0, verifyStatus);
-        newarr.splice(-3, 0, operator);
-        newArr = newarr;
+      case '科室负责人审核':
+      case '版本管理员审核':
+      case '自动化科审核':
+      case '中心领导审核':
+        {
+          const newarr = sclicecolumns(arr);
+          newArr = [...newarr, ...platform, ...DirectorResult];
+          break;
+        }
+      case '发布验证': {
+        const newarr = sclicecolumns(arr);
+        newArr = [...newarr, ...platform, ...DirectorResult, ...ValidateResult];
+        break;
+      }
+      case '业务复核':
+      case '结束': {
+        const newarr = sclicecolumns(arr);
+        newArr = [...newarr, ...platform, ...DirectorResult, ...ValidateResult, ...ReviewResult];
         break;
       }
       default:
@@ -725,7 +874,7 @@ function EditeTable(props) {
   return (
     <>
       <h4 style={{ fontSize: '1.1em' }}>
-        {(taskName === '新建' || taskName === '出厂测试' || taskName === '平台验证' || taskName === '业务验证') && (
+        {(taskName === '新建' || taskName === '出厂测试' || taskName === '平台验证' || taskName === '科室负责人审核' || taskName === '业务验证') && (
           <span style={{ color: '#f5222d', marginRight: 4, fontWeight: 'normal' }}>*</span>
         )}
         {title}

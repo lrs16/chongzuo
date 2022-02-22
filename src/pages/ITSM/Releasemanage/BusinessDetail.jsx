@@ -135,7 +135,7 @@ function BusinessDetail(props) {
             验证我负责的业务
           </Button>
           <Popconfirm
-            title="所选的清单有不属于您负责的业务的功能，确定验证吗?"
+            title="该清单不属于您的功能业务复核，是否确定复核？"
             onConfirm={() => submitVerify()}
             visible={visible}
             onCancel={() => setVisible(false)}

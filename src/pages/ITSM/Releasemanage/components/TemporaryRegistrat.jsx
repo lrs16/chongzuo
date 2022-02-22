@@ -60,12 +60,18 @@ function TemporaryRegistrat(props, ref) {
   const releaseListsValidator = (rule, value, callback) => {
     if (!value || value.length === 0) {
       callback()
-    } if (isEdit) {
+    } if (operationList) {
       let target = []
       if (taskName === '新建' || taskName === '出厂测试') {
         target = value.filter(item => !item.module || !item.abilityType || !item.module || !item.appName || !item.problemType || !item.testMenu || !item.testResult || !item.testStep || !item.developer || !item.responsible);
-      } else {
-        target = value.filter(item => !item.module || !item.operator || !item.abilityType || !item.module || !item.appName || !item.problemType || !item.testMenu || !item.testResult || !item.testStep || !item.developer || !item.responsible || !item.platformValidator);
+      } else if (taskName === '平台验证') {
+        target = value.filter(item => !item.tempPlatformResult || !item.tempPlatformVerifier);
+      } else if (taskName === '科室负责人审核') {
+        target = value.filter(item => !item.tempDirectorResult || !item.tempDirector);
+      } else if (taskName === '发布验证') {
+        target = value.filter(item => !item.tempValidateResult || !item.tempValidateVerifier);
+      } else if (taskName === '业务复核') {
+        target = value.filter(item => !item.tempReviewResult || !item.tempReviewVerifier);
       };
       if (target.length > 0) {
         callback(`请填写完整的发布清单信息`);

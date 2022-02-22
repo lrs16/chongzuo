@@ -6,8 +6,8 @@ function TemporaryList(props) {
   const columns = [
     {
       title: '操作人',
-      dataIndex: 'assigneeName',
-      key: 'assigneeName',
+      dataIndex: 'operater',
+      key: 'operater',
     },
     {
       title: '操作时间',

@@ -2,27 +2,28 @@ import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
-import { Button, Card, Spin, message, Collapse } from 'antd';
+import { Button, Card, Spin, message, Collapse, Popconfirm } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import FilesContext from '@/layouts/MenuContext';
 import DictLower from '@/components/SysDict/DictLower';
 import TemporaryRegistrat from './components/TemporaryRegistrat';
 import TemporarySelectUser from './components/TemporarySelectUser';
 import TemporaryList from './components/TemporaryList';
+import { delOrder } from './services/temp';
+import { releaseToQuality } from './services/api';
 import styles from './index.less';
 
 const { Panel } = Collapse;
 
-// const nextnode = new Map([
-//   ['开发商项目经理审核', '平台验证'],
-//   ['平台验证', '科室负责人审核'],
-//   ['科室负责人审核', '版本管理员审核'],
-//   ['版本管理员审核', '自动化科审核'],
-//   ['自动化科审核', '中心领导审核'],
-//   ['中心领导审核', '发布验证'],
-//   ['发布验证', '业务复核'],
-//   ['业务复核', '结束'],
-// ])
+const backnode = new Map([
+  ['开发商项目经理审核', '出厂测试'],
+  ['平台验证', '出厂测试'],
+  ['科室负责人审核', '平台验证'],
+  ['版本管理员审核', '平台验证'],
+  ['自动化科审核', '版本管理员审核'],
+  ['中心领导审核', '版本管理员审核'],
+  ['业务复核', '版本管理员审核'],
+])
 
 
 function TemporaryDetail(props) {
@@ -35,6 +36,9 @@ function TemporaryDetail(props) {
   const [type, setType] = useState('1');
   const [indexUser, setIndexUser] = useState([]);
   const [activeKey, setActiveKey] = useState(['form', 'list']);
+  const [selectedRecords, setSelectedRecords] = useState([]);
+  const [visibleQuality, setVisibleQuality] = useState(false);
+  const [clearselect, setClearselect] = useState(false);
 
   const RegistratRef = useRef();
 
@@ -99,17 +103,6 @@ function TemporaryDetail(props) {
     return register;
   };
 
-  const handleSubmit = () => {
-    const values = getformvalues('register,releaseLists');
-    RegistratRef.current.Forms((err) => {
-      if (err) {
-        message.error('请将信息填写完整')
-      } else {
-        console.log(values);
-      }
-    })
-  };
-
   const getTypebyId = key => {
     if (selectdata.ischange) {
       return selectdata.arr.filter(item => item.key === key)[0]?.children || [];
@@ -121,17 +114,24 @@ function TemporaryDetail(props) {
   // 下一环节默认处理人
   const indexUserList = selectdata?.ischange && selectdata.arr.filter(item => item.key === 13263)[0]?.title?.split('-')[1]?.split(',') || [];
 
-  const handlePass = (flowtype, uservisible) => {
-    setType(flowtype);
-    setUserModleVisible(uservisible);
-    if (flowNode && flowNode.length > 0 && indexUserList && indexUserList.length > 0 && taskName) {
-      const nextnodename = flowNode[flowNode.findIndex(item => item.title === taskName) + 1]?.title || '';
-      const name = indexUserList.filter(obj => obj.indexOf(nextnodename) > -1)
-      setIndexUser(name[0]?.split(':')[1]?.split('||') || []);
-    }
+  const handleSubmit = (flowtype) => {
+    RegistratRef.current.Forms((err) => {
+      if (err) {
+        message.error('请将验证清单填写完整')
+      } else {
+        setType(flowtype);
+        setUserModleVisible(true);
+        if (flowtype === '1' && flowNode && flowNode.length > 0 && indexUserList && indexUserList.length > 0 && taskName && taskName !== '业务复核') {
+          const nextnodename = flowNode[flowNode.findIndex(item => item.title === taskName) + 1]?.title || '';
+          const name = indexUserList.filter(obj => obj.indexOf(nextnodename) > -1)
+          setIndexUser(name[0]?.split(':')[1]?.split('||') || []);
+        }
+      }
+    })
   }
 
   const toSubmit = (val) => {
+    console.log(val);
     dispatch({
       type: 'releasetemp/releaseflow',
       payload: { ...val },
@@ -164,34 +164,118 @@ function TemporaryDetail(props) {
     }
   }, [Id]);
 
-  const operations = (
-    <>{taskName === '出厂测试' ? (
-      <Button type="primary" style={{ marginRight: 8 }} disabled={loading || uploadStatus}>流转至开发商项目经理审核</Button>
-    ) : (
-      <>
-        <Button
-          type="primary"
-          style={{ marginRight: 8 }}
-          disabled={loading || uploadStatus || !info?.taskInfo?.operationTask}
-          onMouseDown={() => setType('')}
-          onClick={() => { setType('3') }}
-        >
-          {`${taskName?.substring(taskName.length - 2)}不通过`}
+  const handledel = () => {
+    delOrder(Id).then(res => {
+      if (res.code === 200) {
+        message.success(res.msg);
+        handleclose()
+      } else {
+        message.error(res.msg || '操作失败');
+        handleclose()
+      }
+    })
+  };
 
-        </Button>
-        <Button
-          type="primary"
-          style={{ marginRight: 8 }}
-          disabled={loading || uploadStatus || !info?.taskInfo?.operationTask || !selectdata.ischange}
-          onMouseDown={() => setType('')}
-          onClick={() => { handlePass('1', true) }}
-        >
-          {`${taskName?.substring(taskName.length - 2)}通过`}
-        </Button>
-      </>
-    )
+  const ToQuality = () => {
+    if (selectedRecords[0].id) {
+      setVisibleQuality(false);
+      releaseToQuality({ id: selectedRecords[0].id }).then(res => {
+        if (res.code === 200) {
+          message.success('操作成功！');
+        } else {
+          message.error('操作失败！')
+        };
+        setSelectedRecords([]);
+        setClearselect(true)
+      })
     }
-      <Button type="primary" onClick={() => handleclose()} >结束</Button>
+  }
+
+  const openToQuality = () => {
+    if (selectedRecords[0].assessNo) {
+      setVisibleQuality(true)
+    } else {
+      ToQuality()
+    }
+  }
+
+
+  const operations = (
+    <>
+      {info?.releaseTempLogs && info?.releaseTempLogs.length && info?.releaseTempLogs.length === 1 && (
+        <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handledel()} >删除</Button>
+      )}
+      {taskName === '出厂测试' ? (
+        <Button type="primary" style={{ marginRight: 8 }} disabled={loading || uploadStatus}>流转至开发商项目经理审核</Button>
+      ) : (
+        <>{taskName !== '发布验证' && taskName !== '业务复核' && taskName !== '结束' && (<>
+          <Button
+            type="primary"
+            style={{ marginRight: 8 }}
+            disabled={loading || uploadStatus || !info?.taskInfo?.operationTask}
+            onMouseDown={() => setType('')}
+            onClick={() => { handleSubmit('3') }}
+          >
+            {`${taskName?.substring(taskName.length - 2)}不通过`}
+
+          </Button>
+          <Button
+            type="primary"
+            style={{ marginRight: 8 }}
+            disabled={loading || uploadStatus || !info?.taskInfo?.operationTask || !selectdata.ischange}
+            onMouseDown={() => setType('')}
+            onClick={() => { handleSubmit('1') }}
+          >
+            {`${taskName?.substring(taskName.length - 2)}通过`}
+          </Button>
+        </>)}
+        </>
+      )}
+      {taskName === '发布验证' && (
+        <>
+          <Button
+            type="primary"
+            style={{ marginRight: 8 }}
+            disabled={loading || uploadStatus || !info?.taskInfo?.operationTask}
+            onMouseDown={() => setType('')}
+            onClick={() => { handleSubmit('1') }}
+          >
+            需要复核
+          </Button>
+          <Button
+            type="primary"
+            style={{ marginRight: 8 }}
+            disabled={loading || uploadStatus || !info?.taskInfo?.operationTask}
+            onMouseDown={() => setType('')}
+            onClick={() => { handleSubmit('4') }}
+          >
+            不需要复核
+          </Button>
+        </>
+      )}
+      {taskName === '业务复核' && (
+        <>
+          <Button
+            type="primary"
+            style={{ marginRight: 8 }}
+            disabled={loading || uploadStatus || !info?.taskInfo?.operationTask || !selectdata.ischange}
+            onMouseDown={() => setType('')}
+            onClick={() => { handleSubmit('1') }}
+          >
+            结束
+          </Button>
+          <Popconfirm
+            title="该功能曾发起服务绩效，确定再次发起服务绩效吗?"
+            onConfirm={() => ToQuality()}
+            visible={visibleQuality}
+            onCancel={() => setVisibleQuality(false)}
+            placement="leftTop"
+          >
+            <Button type='primary' onClick={() => openToQuality()} disabled={selectedRecords.length !== 1}>发起服务绩效</Button>
+          </Popconfirm>
+        </>
+      )}
+
       <Button type="default" onClick={() => handleclose()} >关闭</Button>
     </>
   );
@@ -212,9 +296,15 @@ function TemporaryDetail(props) {
                   // files: info?.tempRegister?.attach ? JSON.parse(info.tempRegister.attach) : [],
                   ChangeFiles: (v => { console.log(v); }),
                   getUploadStatus: (v) => { setUploadStatus(v) },
-                  ChangeButtype: (v) => { console.log(v); },
+                  ChangeButtype: (v) => {
+                    if (v === 'submit') {
+                      handleSubmit('1')
+                    }
+                  },
+                  getSelectedRecords: (v) => { setSelectedRecords(v) },
                   taskId: info?.taskId,
                   location,
+                  clearselect,
                 }}>
                   <TemporaryRegistrat
                     wrappedComponentRef={RegistratRef}
@@ -254,6 +344,8 @@ function TemporaryDetail(props) {
           ChangeUserVisible={(v) => setUserModleVisible(v)}
           GetVal={(v) => { toSubmit(v) }}
           indexUser={indexUser}
+          gobacknode={backnode.get(taskName)}
+          taskName={taskName}
         />
       </PageHeaderWrapper >
     </Spin >

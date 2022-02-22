@@ -6,13 +6,13 @@ import styles from '@/components/SelectUser/index.less';
 const { TextArea } = Input;
 
 function TemporarySelectUser(props) {
-  const { dispatch, visible, taskId, type, userlist, ChangeUserVisible, indexUser, title, form, GetVal } = props;
+  const { dispatch, visible, taskId, type, userlist, ChangeUserVisible, indexUser, title, form, GetVal, gobacknode, taskName } = props;
   const { getFieldDecorator, validateFields, resetFields, setFieldsValue } = form;
   // const [value, setValue] = useState('');
   const required = true;
 
   useEffect(() => {
-    if (taskId && type && visible) {
+    if (taskId && type === '1' && visible) {
       dispatch({
         type: 'releasetemp/getuserlist',
         payload: {
@@ -32,15 +32,26 @@ function TemporarySelectUser(props) {
   const handleOk = () => {
     validateFields((err, val) => {
       if (!err) {
-        GetVal({ ...val, taskId, type })
-        ChangeUserVisible(false);
+        if (taskName === '发布验证') {
+          if (type === '1') {
+            const newArr = userlist && userlist.userList.map(item => item.userId)
+            GetVal({ ...val, assignee: newArr.join(','), taskId, type });
+            ChangeUserVisible(false);
+          } else {
+            GetVal({ ...val, taskId, type });
+            ChangeUserVisible(false);
+          };
+        } else {
+          GetVal({ ...val, taskId, type });
+          ChangeUserVisible(false);
+        }
       }
-    })
-
+    });
   }
 
   const handleCancel = () => {
     ChangeUserVisible(false);
+    resetFields();
   };
 
   const dataArr = datas => {
@@ -75,39 +86,40 @@ function TemporarySelectUser(props) {
   return (
     <Modal
       visible={visible}
-      title={`填写${title}`}
+      title={type === '4' && taskName === '版本管理员审核' ? '填写取消发布说明' : `填写${title}`}
       onOk={handleOk}
       onCancel={handleCancel}
       width={700}>
       <Row>
         <Form>
-          <div>
+          {type === '1' && taskName !== '发布验证' && (<div>
             {userlist && (
               <div id='user'>
                 {userlist?.describe || ''}
-                <div style={{ marginTop: 12 }} className={styles.useritem}>
+                {taskName !== '业务复核' && (<div style={{ marginTop: 12 }} className={styles.useritem}>
                   <Checkbox.Group
                     defaultValue={indexUser}
                     options={dataArr(userlist.userList)}
                     onChange={handleChange}
                   />
-                </div>
+                </div>)}
               </div>
             )}
-            <Form.Item>
+            {taskName !== '业务复核' && (<Form.Item >
               {getFieldDecorator('assignee', {
                 rules: [{ required, message: '最少选择一个处理人！' }]
               })(<></>)}
-            </Form.Item>
-          </div>
+            </Form.Item>)}
+          </div>)}
+          {type === '3' && gobacknode && (<div>回退至{gobacknode}</div>)}
           <Col span={24}>
-            <Form.Item label={title}>
+            <Form.Item label={type === '4' && taskName === '版本管理员审核' ? '取消发布说明' : title}>
               {
                 getFieldDecorator('remark', {
                   rules: [
                     {
                       required,
-                      message: '请说明回退原因'
+                      message: type === '4' && taskName === '版本管理员审核' ? '请填写取消发布说明' : `请填写${title}`
                     }
                   ]
                 })(<TextArea rows={5} />)

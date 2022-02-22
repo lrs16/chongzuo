@@ -59,3 +59,20 @@ export async function releaseListsDownload(params) {
     responseType: 'blob',
   });
 }
+
+// 发布查询导出/release/fileProc/exportReleaseOrder
+export async function exportReleaseOrder(params) {
+  return request(`/release/temp/orderListExport`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+    responseType: 'blob',
+  });
+}
+
+// 删除流程/release/temp/delOrder?releaseNo=xxxx
+export async function delOrder(releaseNo) {
+  return request(`/release/temp/delOrder?releaseNo=${releaseNo}`, {
+    method: 'POST',
+  })
+}
