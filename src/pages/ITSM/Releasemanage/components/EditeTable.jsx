@@ -70,13 +70,13 @@ function EditeTable(props) {
 
   // 新增一条记录
   const newMember = () => {
-    const newData = data.map(item => ({ ...item }));
+    const newData = data.map((item, index) => ({ ...item, key: (index + 1).toString() }));
     if (taskName === '版本管理员审核') {
       checknewpre(newData);
       ChangeTabdisabled(true);
     };
     newData.push({
-      key: data.length + 1,
+      key: newData.length + 1,
       listType: (taskName === '新建' || taskName === '出厂测试') ? '计划' : '临时添加',
       abilityType: '',
       module: '',
@@ -335,7 +335,7 @@ function EditeTable(props) {
     // };
   };
 
-  // 移除按钮,新建的时候
+  // 移除按钮,新建，出厂测试的时候
   const handleDelete = () => {
     setNewButton(false);
     const arr = []
@@ -344,8 +344,9 @@ function EditeTable(props) {
         arr.push(item)
       }
     });
-    setData([...arr]);
-    ChangeValue(arr);
+    const newData = arr.map((item, index) => ({ ...item, key: (index + 1).toString() }));
+    setData(newData);
+    ChangeValue(newData);
     setSelectedRowKeys([]);
     if (taskName !== '新建' && !newbutton) {
       ChangeButtype('save');
@@ -1162,7 +1163,7 @@ function EditeTable(props) {
                 >
                   新增
                 </Button>)}
-              {taskName === '新建' && (
+              {(taskName === '新建' || taskName === '出厂测试') && (
                 <Button
                   type='danger'
                   style={{ marginRight: 8 }}
@@ -1173,7 +1174,7 @@ function EditeTable(props) {
                   移除
                 </Button>
               )}
-              {taskName === '出厂测试' && (
+              {/* {taskName === '出厂测试' && (
                 <Button
                   type='danger'
                   disabled={newbutton}
@@ -1184,7 +1185,7 @@ function EditeTable(props) {
                 >
                   移除
                 </Button>
-              )}
+              )} */}
               {/* {taskName === '版本管理员审核' && (
                 <Tooltip placement="topLeft" title="仅能移除同一个发布工单的数据">
                   <Button

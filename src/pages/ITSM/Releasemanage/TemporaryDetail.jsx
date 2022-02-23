@@ -9,8 +9,9 @@ import DictLower from '@/components/SysDict/DictLower';
 import TemporaryRegistrat from './components/TemporaryRegistrat';
 import TemporarySelectUser from './components/TemporarySelectUser';
 import TemporaryList from './components/TemporaryList';
-import { delOrder } from './services/temp';
+import { delOrder, saveRegister } from './services/temp';
 import { releaseToQuality } from './services/api';
+
 import styles from './index.less';
 
 const { Panel } = Collapse;
@@ -39,6 +40,7 @@ function TemporaryDetail(props) {
   const [selectedRecords, setSelectedRecords] = useState([]);
   const [visibleQuality, setVisibleQuality] = useState(false);
   const [clearselect, setClearselect] = useState(false);
+  const [saveLoading, setSaveLoading] = useState(false);
 
   const RegistratRef = useRef();
 
@@ -197,7 +199,25 @@ function TemporaryDetail(props) {
     } else {
       ToQuality()
     }
-  }
+  };
+
+  const handleSave = (attach) => {
+    const values = getformvalues('register,releaseLists', attach);
+    setSaveLoading(true);
+    saveRegister(values).then(res => {
+      if (res) {
+        setSaveLoading(false);
+        if (res.code === 200) {
+          message.success('保存成功');
+          openFlow();
+        } else {
+          message.error(res.msg || '操作失败')
+        }
+      } else {
+        message.error('操作失败')
+      }
+    })
+  };
 
 
   const operations = (
@@ -206,7 +226,13 @@ function TemporaryDetail(props) {
         <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handledel()} >删除</Button>
       )}
       {taskName === '出厂测试' ? (
-        <Button type="primary" style={{ marginRight: 8 }} disabled={loading || uploadStatus}>流转至开发商项目经理审核</Button>
+        <>
+          <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSave()} disabled={loading || uploadStatus}
+          >
+            保存
+          </Button>
+          <Button type="primary" style={{ marginRight: 8 }} disabled={loading || uploadStatus}>流转至开发商项目经理审核</Button>
+        </>
       ) : (
         <>{taskName !== '发布验证' && taskName !== '业务复核' && taskName !== '结束' && (<>
           <Button
@@ -281,7 +307,7 @@ function TemporaryDetail(props) {
   );
 
   return (
-    <Spin spinning={loading}>
+    <Spin spinning={loading || saveLoading}>
       <PageHeaderWrapper title={pagetitle} extra={operations}>
         <div className={styles.tempcollapse}>
           <Collapse
@@ -299,6 +325,9 @@ function TemporaryDetail(props) {
                   ChangeButtype: (v) => {
                     if (v === 'submit') {
                       handleSubmit('1')
+                    };
+                    if (v === 'save' && taskName === '出厂测试') {
+                      handleSave()
                     }
                   },
                   getSelectedRecords: (v) => { setSelectedRecords(v) },

@@ -29,7 +29,7 @@ function EditeTable(props) {
 
   // 新增一条记录
   const newMember = () => {
-    const newData = data.map(item => ({ ...item }));
+    const newData = data.map((item, index) => ({ ...item, key: (index + 1).toString() }));
     newData.push({
       key: data.length + 1,
       listType: (taskName === '新建' || taskName === '出厂测试') ? '计划' : '临时添加',
@@ -222,36 +222,15 @@ function EditeTable(props) {
         arr.push(item)
       }
     });
-    setData([...arr]);
-    ChangeValue(arr);
+    const newData = arr.map((item, index) => ({ ...item, key: (index + 1).toString() }));
+    setData(newData);
+    ChangeValue(newData);
     setSelectedRowKeys([]);
     if (taskName !== '新建' && !newbutton) {
       ChangeButtype('save');
     }
   };
-  // 有流程ID后的移除按钮
-  const ortherDelete = () => {
-    const haveNew = selectedRecords.filter(item => item.developerId === '');
-    if (selectedRecords.length === 0) {
-      message.error('您还没有选择数据')
-    } if (haveNew.length === 1 && selectedRecords.length === 1) {
-      const newArr = data.filter((x) => !selectedRecords.some((item) => x.key === item.key));
-      setData(newArr);
-    } else {
-      const newSelectds = selectedRecords.filter(item => item.taskId === item.addStatus);
-      if (newSelectds.length === 0) {
-        message.error('请选择本节点临时添加的数据')
-      } else {
-        const newArr = data.filter((x) => !selectedRecords.some((item) => item.taskId === item.addStatus && x.id === item.id));
-        setData(newArr);
-        ChangeValue(newArr);
-        ChangeButtype('save');
-      };
-    }
-    setSelectedRowKeys([]);
-    setSelectedRecords([]);
-    setNewButton(false);
-  }
+
 
   useEffect(() => {
     if (dataSource && dataSource.length > 0) {
@@ -885,38 +864,26 @@ function EditeTable(props) {
           {isEdit && (
             <>
               {(taskName === '新建' || taskName === '出厂测试') && (
-                <Button
-                  type='primary'
-                  style={{ marginRight: 8 }}
-                  onClick={() => {
-                    newMember();
-                  }}
-                  disabled={newbutton}
-                >
-                  新增
-                </Button>)}
-              {taskName === '新建' && (
-                <Button
-                  type='danger'
-                  style={{ marginRight: 8 }}
-                  ghost
-                  onMouseDown={() => ChangeButtype('')} onClick={() => handleDelete()}
-                >
-                  移除
-                </Button>
-              )}
-              {taskName === '出厂测试' && (
-                <Button
-                  type='danger'
-                  disabled={newbutton}
-                  style={{ marginRight: 8 }}
-                  ghost
-                  onMouseDown={() => { ChangeButtype(''); }}
-                  onClick={() => ortherDelete()}
-                >
-                  移除
-                </Button>
-              )}
+                <>
+                  <Button
+                    type='primary'
+                    style={{ marginRight: 8 }}
+                    onClick={() => { newMember() }}
+                    disabled={newbutton}
+                  >
+                    新增
+                  </Button>
+                  <Button
+                    type='danger'
+                    style={{ marginRight: 8 }}
+                    ghost
+                    onMouseDown={() => ChangeButtype('')}
+                    onClick={() => handleDelete()}
+                    disabled={newbutton}
+                  >
+                    移除
+                  </Button>
+                </>)}
             </>
           )}
           {taskName !== '新建' && (<Button type='primary' disabled={newbutton} onClick={() => handleDlownd()}>导出清单</Button>)}
