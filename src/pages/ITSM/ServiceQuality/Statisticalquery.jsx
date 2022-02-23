@@ -6,54 +6,14 @@ import {
   Row,
   Col,
   Form,
-  Button
+  Button,
+  message
 } from 'antd';
 import moment from 'moment';
 import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-const columns = [
-  {
-    title: '合同编号',
-    dataIndex: 'contractNo',
-    key: 'contractNo'
-  },
-  {
-    title: '合同名称',
-    dataIndex: 'contractName',
-    key: 'contractName'
-  },
-  {
-    title: '考核周期',
-    dataIndex: 'assessPhase',
-    key: 'assessPhase'
-  },
-  {
-    title: '签订日期',
-    dataIndex: 'signTime',
-    key: 'signTime'
-  },
-  {
-    title: '服务商名称',
-    dataIndex: 'providerName',
-    key: 'providerName'
-  },
-  {
-    title: '累计扣分',
-    dataIndex: 'minus',
-    key: 'minus'
-  },
-  {
-    title: '累计加分',
-    dataIndex: 'plus',
-    key: 'plus'
-  },
-  {
-    title: '考核得分',
-    dataIndex: 'total',
-    key: 'total'
-  },
-];
+
 let startTime;
 let endTime;
 const { MonthPicker } = DatePicker;
@@ -66,6 +26,103 @@ function Statisticalquery(props) {
   } = props;
   const [tabActiveKey, setTabActiveKey] = useState('week');
 
+  const columns = [
+    {
+      title: '合同编号',
+      dataIndex: 'contractNo',
+      key: 'contractNo'
+    },
+    {
+      title: '合同名称',
+      dataIndex: 'contractName',
+      key: 'contractName'
+    },
+    {
+      title: '考核周期',
+      dataIndex: 'assessPhase',
+      key: 'assessPhase'
+    },
+    {
+      title: '签订日期',
+      dataIndex: 'signTime',
+      key: 'signTime'
+    },
+    {
+      title: '服务商名称',
+      dataIndex: 'providerName',
+      key: 'providerName'
+    },
+    {
+      title: '本周扣分',
+      width: 120,
+      dataIndex: 'weekMinus',
+      key: 'weekMinus'
+    },
+    {
+      title: '本周加分',
+      width: 120,
+      dataIndex: 'weekPlus',
+      key: 'weekPlus'
+    },
+    {
+      title: '累计扣分',
+      dataIndex: 'minus',
+      key: 'minus'
+    },
+    {
+      title: '累计加分',
+      dataIndex: 'plus',
+      key: 'plus'
+    },
+    {
+      title: '考核得分',
+      dataIndex: 'total',
+      key: 'total'
+    },
+  ];
+  const columns2 = [
+    {
+      title: '合同编号',
+      dataIndex: 'contractNo',
+      key: 'contractNo'
+    },
+    {
+      title: '合同名称',
+      dataIndex: 'contractName',
+      key: 'contractName'
+    },
+    {
+      title: '考核周期',
+      dataIndex: 'assessPhase',
+      key: 'assessPhase'
+    },
+    {
+      title: '签订日期',
+      dataIndex: 'signTime',
+      key: 'signTime'
+    },
+    {
+      title: '服务商名称',
+      dataIndex: 'providerName',
+      key: 'providerName'
+    },
+    {
+      title: '累计扣分',
+      dataIndex: 'minus',
+      key: 'minus'
+    },
+    {
+      title: '累计加分',
+      dataIndex: 'plus',
+      key: 'plus'
+    },
+    {
+      title: '考核得分',
+      dataIndex: 'total',
+      key: 'total'
+    },
+  ];
+
   const onChange = (date, dateString) => {
     switch (tabActiveKey) {
       case 'week':
@@ -75,11 +132,7 @@ function Statisticalquery(props) {
         break;
       case 'month':
         startTime = date.startOf('month').format('YYYY-MM-DD');
-        endTime = date.endOf('month').format('YYYY-MM-DD');
-        break;
-      case 'other':
-        startTime = dateString;
-        setFieldsValue({ time1: moment(startTime) });
+        setFieldsValue({ monthStarttime: moment(startTime) });
         break;
       default:
         break;
@@ -93,17 +146,15 @@ function Statisticalquery(props) {
         startTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
         setFieldsValue({ time1: moment(startTime) })
         break;
+      case 'month':
+        endTime = date.endOf('month').format('YYYY-MM-DD');
+        setFieldsValue({
+          monthEndtime: moment(endTime),
+        })
+        break;
       default:
         break;
     }
-  }
-
-  const startdisabledDate = (current) => {
-    return current > moment().subtract('days', 6)
-  }
-
-  const enddisabledDate = (current) => {
-    return current > moment().endOf('day')
   }
 
   const defaultTime = () => {
@@ -117,19 +168,11 @@ function Statisticalquery(props) {
         });
         break;
       case 'month':
-
         startTime = moment().startOf('month').format('YYYY-MM-DD HH:mm:ss');
         endTime = moment().endOf('month').format('YYYY-MM-DD HH:mm:ss');
         setFieldsValue({
-          monthStarttime: moment(startTime)
-        });
-        break;
-      case 'other':
-        startTime = moment().startOf('month').format('YYYY-MM-DD HH:mm:ss');
-        endTime = moment().endOf('month').format('YYYY-MM-DD HH:mm:ss');
-        setFieldsValue({
-          time1: moment(startTime),
-          time2: moment(endTime)
+          monthStarttime: moment(startTime),
+          monthEndtime: moment(endTime)
         });
         break;
       default:
@@ -138,14 +181,18 @@ function Statisticalquery(props) {
   }
 
   const getList = () => {
-    dispatch({
-      type: 'performanceappraisal/fetchstatsSearch',
-      payload: {
-        beginTime: moment(startTime).format('YYYY-MM-DD 00:00:00'),
-        endTime: moment(endTime).format('YYYY-MM-DD 23:59:59'),
-        type: tabActiveKey === 'week' ? 'W' : 'M'
-      }
-    })
+    if (new Date(startTime).valueOf() > new Date(endTime).valueOf()) {
+      message.info('开始时间必须小于结束时间')
+    } else {
+      dispatch({
+        type: 'performanceappraisal/fetchstatsSearch',
+        payload: {
+          beginTime: moment(startTime).format('YYYY-MM-DD 00:00:00'),
+          endTime: moment(endTime).format('YYYY-MM-DD 23:59:59'),
+          type: tabActiveKey === 'week' ? 'W' : 'M'
+        }
+      })
+    }
   }
 
   useEffect(() => {
@@ -210,7 +257,7 @@ function Statisticalquery(props) {
                         })(
                           <DatePicker
                             allowClear={false}
-                            disabledDate={startdisabledDate}
+                            // disabledDate={startdisabledDate}
                             onChange={onChange}
                           />
                         )
@@ -227,7 +274,7 @@ function Statisticalquery(props) {
                         })
                           (<DatePicker
                             allowClear={false}
-                            disabledDate={enddisabledDate}
+                            // disabledDate={enddisabledDate}
                             onChange={endonChange}
                           />)
                       }
@@ -258,6 +305,20 @@ function Statisticalquery(props) {
                         />)}
                     </Form.Item>
 
+                    <p style={{ display: 'inline', marginRight: 8 }}>-</p>
+
+                    <Form.Item label=''>
+                      {
+                        getFieldDecorator('monthEndtime', {
+                          initialValue: moment(endTime)
+                        })
+                          (<MonthPicker
+                            allowClear={false}
+                            onChange={endonChange}
+                          />)
+                      }
+                    </Form.Item>
+
                     <Button
                       type='primary'
                       style={{ marginTop: 6 }}
@@ -269,8 +330,6 @@ function Statisticalquery(props) {
                 )
               }
             </Form>
-
-
           </Row>
 
           <Button
@@ -282,7 +341,7 @@ function Statisticalquery(props) {
           </Button>
 
           <Table
-            columns={columns}
+            columns={tabActiveKey === 'week' ? columns :columns2}
             dataSource={statsSearcharr}
           />
         </Card>
