@@ -35,6 +35,7 @@ function VerificationTodo(props) {
     location
   } = props;
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+  const [viewPages, setViewPages] = useState({ current: 1, pageSize: 5 });
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -311,7 +312,7 @@ function VerificationTodo(props) {
         width: 60,
         align: 'center',
         render: (text, record, index) => {
-          return <>{`${index + 1}`}</>;
+          return <>{`${(viewPages.current - 1) * viewPages.pageSize + index + 1}`}</>;
         },
       },
       {
@@ -395,6 +396,17 @@ function VerificationTodo(props) {
       width: 100,
     };
 
+    const viewpagination = {
+      showSizeChanger: true,
+      onShowSizeChange: (page, size) => { setViewPages({ ...viewPages, current: 1, pageSize: size }) },
+      current: viewPages.current,
+      pageSize: viewPages.pageSize,
+      pageSizeOptions: ['2', '5', '10', '20', '30', '40', '50'],
+      total: viewlist[key]?.length,
+      showTotal: total => `总共  ${total}  条记录`,
+      onChange: page => setViewPages({ ...viewPages, current: page }),
+    };
+
     return (
       <div style={{ margin: '0 48px 24px 0', }}>
         <div style={{ marginBottom: 12 }}>{viewmsg[key]}</div>
@@ -402,7 +414,7 @@ function VerificationTodo(props) {
           columns={columnSun}
           dataSource={viewlist && viewlist[key] || []}
           size='small'
-          pagination={false}
+          pagination={viewpagination}
           loading={viewloading}
           rowKey={r => r.id}
           bordered

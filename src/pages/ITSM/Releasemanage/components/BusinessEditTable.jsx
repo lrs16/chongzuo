@@ -122,6 +122,7 @@ function BusinessEditTable(props) {
   const onShowSizeChange = (page, size) => {
     setPageinations({
       ...paginations,
+      current: 1,
       pageSize: size,
     });
   };
@@ -321,7 +322,7 @@ function BusinessEditTable(props) {
         bordered
         size='middle'
         rowKey={(_, index) => index.toString()}
-        pagination={type === '发布验证' ? pagination : false}
+        pagination={pagination}
         scroll={{ x: 1700, y: setTableHeight() }}
         loading={loading}
         style={{ marginTop: 12 }}

@@ -232,10 +232,10 @@ function ToDoregist(props) {
               onClick={() => { handleClick('flow'); setButandOrder('flow') }}
               disabled={olduploadstatus || allloading}
             >
-              流转至{nextnodemap.get(taskName)}
+              {taskName === '自动化科业务人员审核' ? '流转' : `流转至${nextnodemap.get(taskName)}`}
             </Button>
           )}
-          {taskName === '自动化科审核' && (
+          {taskName === '自动化科审核' && result !== '0' && (
             <Button
               type="primary"
               style={{ marginRight: 8 }}

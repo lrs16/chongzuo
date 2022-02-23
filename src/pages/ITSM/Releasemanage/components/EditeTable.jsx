@@ -237,6 +237,7 @@ function EditeTable(props) {
       target.verification = false;
       newData.sort((a, b) => a.key - b.key);
       setData(newData);
+      setNewButton(false);
       // setPageinations({ ...paginations, pageSize: 2 });
       ChangeValue(newData);
       if (taskName !== '新建') {

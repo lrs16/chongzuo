@@ -33,7 +33,7 @@ function Examinedes(props) {
         <Form {...formItemLayout}>
           <Col span={8}>
             <Form.Item label={`${text}结果`}>
-              {info.taskName === '自动化科业务人员确认' ? (
+              {(info.taskName === '自动化科业务人员确认' || info.taskName === '需求登记人员确认') ? (
                 <Radio.Group value={confirresultmap.get(info.result)} disabled>
                   <Radio value='通过'>通过</Radio>
                   <Radio value='重新处理'>重新处理</Radio>

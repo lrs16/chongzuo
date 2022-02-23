@@ -171,7 +171,6 @@ function EditeTable(props) {
   // 保存记录
   const saveRow = (e, key) => {
     e.preventDefault();
-    setNewButton(false)
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData) || {};
     if (!target.module || !target.abilityType || !target.module || !target.appName || !target.problemType || !target.testMenu || !target.testResult || !target.testStep || !target.developer || !target.responsible || !target.responsibleId) {
@@ -179,8 +178,9 @@ function EditeTable(props) {
       e.target.focus();
       return;
     };
-    if (target && target.isNew) {
-      target.isNew = !target.isNew;
+    if (target && (target.isNew || target.editable)) {
+      target.isNew = false;
+      target.editable = false;
       setNewButton(false)
       newData.sort((a, b) => a.key - b.key);
       setData(newData);

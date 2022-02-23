@@ -142,7 +142,7 @@ const Examine = forwardRef((props, ref) => {
                 })(
                   <Radio.Group onChange={handleAdopt}>
                     {taskName !== '自动化科审核' ? (<Radio value={1}>通过</Radio>) : (
-                      <>{adopt !== 0 && <Radio value={adopt}>通过</Radio>}</>
+                      <Radio value={adopt !== 0 ? adopt : 1}>通过</Radio>
                     )}
                     <Radio value={0}>不通过</Radio>
                   </Radio.Group>,
