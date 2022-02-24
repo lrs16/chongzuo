@@ -100,7 +100,7 @@ const Registrat = forwardRef((props, ref) => {
           mainId,
           result: '1',
         },
-        state: { ...location.state }
+        state: { ...location.state, reset: false }
       });
     }
     sessionStorage.setItem('flowtype', 1);

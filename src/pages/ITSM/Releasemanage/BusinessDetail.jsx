@@ -165,7 +165,7 @@ function BusinessDetail(props) {
 
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
-      <Card title={`所属发布工单:${releaseNo}`} >
+      <Card title={releaseNo ? `所属发布工单:${releaseNo}` : ''} >
         <BusinessEditTable
           title='发布清单'
           type={pagetitle}
@@ -177,7 +177,7 @@ function BusinessDetail(props) {
           getSelectedRecords={(v) => setSelectedRecords(v)}
         />
       </Card>
-    </PageHeaderWrapper>
+    </PageHeaderWrapper >
   );
 }
 

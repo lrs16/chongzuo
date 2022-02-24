@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { connect } from 'dva';
-import { Table, Row, Button, Select, Input } from 'antd';
+import { Table, Row, Button, Select, Input, AutoComplete } from 'antd';
 import UserContext from '@/layouts/MenuContext';
 
 const { Option } = Select;
+const { TextArea } = Input;
 
 function TestingFacility(props) {
   const { title, isEdit, dataSource, ChangeValue, dispatch, statusY } = props;
@@ -14,7 +15,11 @@ function TestingFacility(props) {
 
   // 新增一条记录
   const newMember = () => {
-    const newData = data.map(item => ({ ...item }));
+    const newData = data.map((item, index) => ({
+      ...item,
+      editable: false,
+      key: (index + 1).toString(),
+    }));
     newData.push({
       key: data.length + 1,
       deviceName: '',
@@ -28,14 +33,70 @@ function TestingFacility(props) {
   };
 
   const handleChange = (value, key) => {
-    const rowdata = JSON.parse(value);
-    const newdata = [...data];
-    newdata[key - 1].deviceName = rowdata.deviceName;
-    newdata[key - 1].deviceConfig = rowdata.deviceConfig;
-    newdata[key - 1].deployApp = rowdata.deployApp;
+    const rowdata = data.filter(obj => obj.id === value)[0];
+    // const rowdata = JSON.parse(value);
+    const newdata = data.map(item => ({ ...item, isNew: false, editable: false }));
+    // console.log(newdata[key - 1]);
+    setData(newdata);
+    if (newdata[key - 1]) {
+      if (rowdata) {
+        newdata[key - 1].deviceName = rowdata.deviceName;
+        newdata[key - 1].deviceConfig = rowdata.deviceConfig;
+        newdata[key - 1].deployApp = rowdata.deployApp;
+      } else {
+        newdata[key - 1].deviceName = value;
+      }
+    };
     setData(newdata);
     ChangeValue(newdata);
+  };
+
+  // 获取行
+  const getRowByKey = (key, newData) => {
+    return (newData || data).filter(item => item.key === key)[0];
+  };
+  // 更新表单信息
+  const handleFieldChange = (e, fieldName, key) => {
+    const newData = data.map(item => ({ ...item }));
+    const target = getRowByKey(key, newData);
+    if (target) {
+      target[fieldName] = e;
+      setData(newData);
+    }
+  };
+  // 编辑记录
+  const editRow = (e, key) => {
+    e.preventDefault();
+    const newData = data.map(item => ({ ...item }));
+    const indexNew = newData.filter(item => item.isNew);
+    const target = getRowByKey(key, newData);
+    if (target && indexNew.length === 0) {
+      target.editable = true;
+      setData(newData);
+    }
   }
+  // 保存记录
+  const saveRow = (e, key) => {
+    e.preventDefault();
+    const newData = data.map(item => ({ ...item }));
+    const target = getRowByKey(key, newData) || {};
+    const targetval = Object.values(target);
+    const Nullvalue = targetval.indexOf('');
+    if (Nullvalue !== -1) {
+      e.target.focus();
+      return;
+    }
+    if (target && target.editable) {
+      target.editable = !target.editable;
+      setData(newData);
+      ChangeValue(newData);
+    }
+    if (target && target.isNew) {
+      target.isNew = !target.isNew;
+      setData(newData);
+      ChangeValue(newData);
+    }
+  };
 
   const handelDelete = () => {
     const newarr = [];
@@ -81,7 +142,7 @@ function TestingFacility(props) {
     if (dataSource && dataSource.length && dataSource.length > 0) {
       const newData = dataSource.map((item, index) => ({
         ...item,
-        isNew: true,
+        isNew: false,
         key: (index + 1).toString(),
       }));
       setData(newData)
@@ -113,16 +174,29 @@ function TestingFacility(props) {
       dataIndex: 'deviceName',
       key: 'deviceName',
       render: (text, record) => {
-        if (record.isNew && isEdit) {
+        if ((record.isNew || record.editable) && isEdit) {
           return (
             <>
-              <Select placeholder="请选择" onChange={v => handleChange(v, record.key)} value={text}>
+              {/* <Select placeholder="请选择" onChange={v => handleChange(v, record.key)} value={text}>
                 {statusY && statusY.map(obj => [
                   <Option key={obj.id} value={JSON.stringify(obj)}>
                     {obj.deviceName}
                   </Option>,
                 ])}
-              </Select>
+              </Select> */}
+              <AutoComplete
+                dataSource={statusY && statusY.length && statusY.map(opt => (
+                  <Option key={opt.id} value={opt.id}>
+                    {opt.deviceName}
+                  </Option>
+                ))}
+                style={{ width: 200 }}
+                // onSelect={(v) => { handleChange(v, record.key) }}
+                //  onChange={e => handleFieldChange(e, 'deviceName', record.key)}
+                onChange={(v) => { handleChange(v, record.key) }}
+                defaultValue={text}
+              // filterOption
+              />
             </>
           )
         }
@@ -133,7 +207,15 @@ function TestingFacility(props) {
       title: '设备型号配置',
       dataIndex: 'deviceConfig',
       key: 'deviceConfig',
-      render: (text) => {
+      render: (text, record) => {
+        if ((record.isNew || record.editable) && isEdit) {
+          return (
+            <TextArea
+              defaultValue={text}
+              rows={5}
+              onChange={e => handleFieldChange(e.target.value, 'deviceConfig', record.key)}
+            />)
+        }
         return (<span dangerouslySetInnerHTML={{ __html: text?.replace(/[\n]/g, '<br/>') }} />)
       }
     },
@@ -141,7 +223,15 @@ function TestingFacility(props) {
       title: '部署应用',
       dataIndex: 'deployApp',
       key: 'deployApp',
-      render: (text) => {
+      render: (text, record) => {
+        if ((record.isNew || record.editable) && isEdit) {
+          return (
+            <TextArea
+              defaultValue={text}
+              rows={5}
+              onChange={e => handleFieldChange(e.target.value, 'deployApp', record.key)}
+            />)
+        }
         return (<span dangerouslySetInnerHTML={{ __html: text?.replace(/[\n]/g, '<br/>') }} />)
       }
     },
@@ -168,6 +258,12 @@ function TestingFacility(props) {
         bordered
         size='middle'
         rowKey={(_, index) => index.toString()}
+        onRow={record => {
+          return {
+            onDoubleClick: e => { if (isEdit) { editRow(e, record.key) } },          // 点击行编辑
+            onMouseLeave: e => { if (isEdit) { saveRow(e, record.key) } },           // 鼠标移出行
+          };
+        }}
         pagination={false}
         rowSelection={rowSelection}
       />

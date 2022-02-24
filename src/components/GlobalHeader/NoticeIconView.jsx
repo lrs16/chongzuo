@@ -87,12 +87,13 @@ class GlobalHeaderRight extends Component {
       ['problem', '问题'],
       ['demand', '需求'],
       ['release', '发布'],
+      ['releaseBizTodo', '业务验证/复核'],
       ['operation', '作业计划'],
       ['work', '工作督办'],
       ['quality', '服务绩效'],
     ]);
     if (notices.length === 0) {
-      return {};
+      return [];
     }
     const newNotices = notices.map(notice => {
       const newNotice = {

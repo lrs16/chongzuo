@@ -24,7 +24,7 @@ function Downloadfile(props) {
   };
   return (
     <>
-      {JSON.parse(files).map(obj => {
+      {files && JSON.parse(files).map(obj => {
         return (
           <div key={obj.uid} style={{ float: 'left', marginRight: 30 }}>
             <PaperClipOutlined

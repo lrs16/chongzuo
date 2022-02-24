@@ -96,7 +96,7 @@ const Examine = forwardRef((props, ref) => {
         mainId,
         result: sessionStorage.getItem('flowtype'),
       },
-      state: { ...location.state }
+      state: { ...location.state, reset: false }
     });
   };
 

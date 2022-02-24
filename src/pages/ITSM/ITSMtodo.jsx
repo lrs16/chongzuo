@@ -4,222 +4,6 @@ import router from 'umi/router';
 import { Card, Table, Tooltip } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-const columns = [
-  {
-    title: '工单号',
-    dataIndex: 'itemWorkId',
-    key: 'itemWorkId',
-    with: 140,
-    fixed: 'left',
-    render: (text, record) => {
-      const handleClick = () => {
-        switch (record.itemWorkType) {
-          case 'event':
-            router.push({
-              pathname: `/ITSM/eventmanage/to-do/record/workorder`,
-              query: {
-                taskName: record.taskName,
-                taskId: record.taskId,
-                mainId: record.instanceId,
-                orderNo: text,
-                check: record.itemCheckStatus,
-              },
-            });
-            break;
-          case 'trouble':
-            router.push({
-              pathname: `/ITSM/faultmanage/todolist/record`,
-              query: {
-                // id: record.taskId,
-                taskName: record.taskName,
-                id: record.taskId,
-                mainId: record.instanceId,
-                result: '1',
-                orderNo: text,
-              },
-            });
-            break;
-          case 'problem':
-            router.push({
-              pathname: `/ITSM/problemmanage/besolveddetail/workorder`,
-              query: {
-                id: record.taskId,
-                taskName: record.currentNode,
-                mainId: record.instanceId,
-                orderNo: text,
-              },
-            });
-            break;
-          case 'demand':
-            router.push({
-              pathname: `/ITSM/demandmanage/to-do/record/workorder`,
-              query: {
-                taskName: record.taskName,
-                taskId: record.taskId,
-                mainId: record.instanceId,
-                result: '1',
-                orderNo: text,
-              },
-            });
-            break;
-          case 'release':
-            router.push({
-              pathname: `/ITSM/releasemanage/plan/to-do/record`,
-              query: {
-                taskName: record.taskName,
-                Id: record.itemWorkId,
-                taskId: record.taskId,
-              },
-              state: {
-                dynamicpath: true,
-                menuDesc: '发布工单',
-              }
-            });
-            break;
-          case 'operation':
-            router.push({
-              pathname: `/ITSM/operationplan/operationplanform`,
-              query: {
-                flowNodeName: record.nodeName,
-                mainId: record.instanceId,
-                status: record.itemWorkStatus,
-                checkStatus: record.itemCheckStatus,
-                orderNo: record.itemWorkId,
-              }
-            })
-            break;
-          case 'work':
-            if (record.taskName === '工作登记') {
-              router.push({
-                pathname: `/ITSM/supervisework/workplandetail`,
-                query: {
-                  mainId: record.instanceId,
-                  flowNodeName: record.nodeName,
-                  status: record.itemWorkStatus,
-                  checkStatus: record.itemCheckStatus,
-                  orderNo: text,
-                },
-                state: {
-                  dynamicpath: true,
-                  menuDesc: '工作任务',
-                }
-              })
-            }
-            if (record.taskName === '工作执行') {
-              router.push({
-                pathname: `/ITSM/supervisework/workplandetail`,
-                query: {
-                  // delay: 'delay',
-                  mainId: record.instanceId,
-                  flowNodeName: record.nodeName,
-                  status: record.itemWorkStatus,
-                  checkStatus: record.itemCheckStatus,
-                  orderNo: text,
-                  workUser: record.todoUserName
-                },
-                state: {
-                  dynamicpath: true,
-                  menuDesc: '工作执行',
-                }
-              })
-            }
-            break;
-          case 'quality':
-            router.push({
-              pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
-              query: {
-                assessNo: record.itemWorkId,
-                mainId: record.instanceId,
-                taskId: record.taskId,
-                instanceId: record.instanceId,
-                taskName: record.nodeName,
-                orderNo: record.itemWorkId,
-                search: record.itemWorkStatus === '绩效考核已完成',
-              },
-            });
-            break;
-          default:
-            break;
-        }
-      };
-      return <a onClick={handleClick}>{text}</a>;
-    },
-  },
-  {
-    title: '工单类型',
-    dataIndex: 'itemWorkType',
-    key: 'itemWorkType',
-    with: 100,
-    fixed: 'left',
-    sorter: (a, b) => a.itemWorkType.length - b.itemWorkType.length,
-    render: text => {
-      const typemap = new Map([
-        ['event', '事件'],
-        ['trouble', '故障'],
-        ['problem', '问题'],
-        ['demand', '需求'],
-        ['release', '发布'],
-        ['operation', '作业计划'],
-        ['work', '工作督办'],
-        ['quality', '服务绩效'],
-      ]);
-      return typemap.get(text);
-    },
-  },
-  {
-    title: '标题',
-    dataIndex: 'itemName',
-    key: 'itemName',
-    with: 250,
-    fixed: 'left',
-  },
-  {
-    title: '描述',
-    dataIndex: 'itemContent',
-    key: 'itemContent',
-    with: 250,
-    onCell: () => {
-      return {
-        style: {
-          maxWidth: 250,
-          overflow: 'hidden',
-          whiteSpace: 'nowrap',
-          textOverflow: 'ellipsis',
-          cursor: 'pointer'
-        }
-      }
-    },
-    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
-  },
-  {
-    title: '当前处理环节',
-    dataIndex: 'taskName',
-    key: 'taskName',
-    with: 150,
-  },
-  {
-    title: '超时状态',
-    dataIndex: 'timeoutTimeStatus',
-    key: 'timeoutTimeStatus',
-    with: 100,
-    sorter: (a, b) => a.itemWorkType.length - b.itemWorkType.length,
-    render: text => {
-      const statusmap = new Map([
-        ['0', '正常'],
-        ['1', '即将超时'],
-        ['2', '已超时'],
-      ]);
-      return statusmap.get(text);
-    },
-  },
-  {
-    title: '到达时间',
-    dataIndex: 'todoTime',
-    key: 'todoTime',
-    with: 150,
-  },
-];
-
 function ITSMtodo(props) {
   const { eventlist, loading, location } = props;
   const pagetitle = props.route.name;
@@ -266,15 +50,17 @@ function ITSMtodo(props) {
   };
 
   useEffect(() => {
-    dispatch({
-      type: 'global/fetchallevent',
-      payload: {
-        todoUserId: sessionStorage.getItem('userauthorityid'),
-        pageNum: paginations.current,
-        pageSize: paginations.pageSize,
-        itemWorkType: location?.query?.itemWorkType || '',
-      },
-    });
+    if (location.query.itemWorkType) {
+      dispatch({
+        type: 'global/fetchallevent',
+        payload: {
+          todoUserId: sessionStorage.getItem('userauthorityid'),
+          pageNum: paginations.current,
+          pageSize: paginations.pageSize,
+          itemWorkType: location?.query?.itemWorkType || '',
+        },
+      });
+    }
   }, [location.query.itemWorkType]);
 
   // 重置
@@ -292,11 +78,273 @@ function ITSMtodo(props) {
   };
 
   useEffect(() => {
-    if (location.state && location.state.reset) {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              itemWorkType: location.query.itemWorkType,
+              paginations,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
       // 点击菜单刷新
-      handleReset()
+      if (location.state.reset) {
+        handleReset()
+      };
+      // 标签切回设置初始值
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        setPageinations({ ...paginations, current, pageSize })
+      };
     }
   }, [location.state]);
+
+  const columns = [
+    {
+      title: '工单号',
+      dataIndex: 'itemWorkId',
+      key: 'itemWorkId',
+      with: 140,
+      fixed: 'left',
+      render: (text, record) => {
+        const handleClick = () => {
+          dispatch({
+            type: 'viewcache/gettabstate',
+            payload: {
+              cacheinfo: {
+                itemWorkType: location.query.itemWorkType,
+                paginations,
+              },
+              tabid: sessionStorage.getItem('tabid')
+            },
+          });
+          switch (record.itemWorkType) {
+            case 'event':
+              router.push({
+                pathname: `/ITSM/eventmanage/to-do/record/workorder`,
+                query: {
+                  taskName: record.taskName,
+                  taskId: record.taskId,
+                  mainId: record.instanceId,
+                  orderNo: text,
+                  check: record.itemCheckStatus,
+                },
+              });
+              break;
+            case 'trouble':
+              router.push({
+                pathname: `/ITSM/faultmanage/todolist/record`,
+                query: {
+                  // id: record.taskId,
+                  taskName: record.taskName,
+                  id: record.taskId,
+                  mainId: record.instanceId,
+                  result: '1',
+                  orderNo: text,
+                },
+              });
+              break;
+            case 'problem':
+              router.push({
+                pathname: `/ITSM/problemmanage/besolveddetail/workorder`,
+                query: {
+                  id: record.taskId,
+                  taskName: record.currentNode,
+                  mainId: record.instanceId,
+                  orderNo: text,
+                },
+              });
+              break;
+            case 'demand':
+              router.push({
+                pathname: `/ITSM/demandmanage/to-do/record/workorder`,
+                query: {
+                  taskName: record.taskName,
+                  taskId: record.taskId,
+                  mainId: record.instanceId,
+                  result: '1',
+                  orderNo: text,
+                },
+              });
+              break;
+            case 'release':
+              router.push({
+                pathname: `/ITSM/releasemanage/plan/to-do/record`,
+                query: {
+                  taskName: record.taskName,
+                  Id: record.itemWorkId,
+                  taskId: record.taskId,
+                },
+                state: {
+                  dynamicpath: true,
+                  menuDesc: '发布工单',
+                }
+              });
+              break;
+            case 'releaseBizTodo':
+              router.push({
+                pathname: record.taskName === '业务验证' ? `/ITSM/releasemanage/plan/verificationtodo/record` : `/ITSM/releasemanage/plan/checktodo/record`,
+                query: {
+                  Id: record.itemWorkId,
+                  releaseNo: record.releaseNo,
+                  titletype: record.taskName
+                },
+                state: {
+                  runpath: `/ITSM/todo`,
+                  dynamicpath: true,
+                  menuDesc: record.taskName,
+                }
+              });
+              break;
+            case 'operation':
+              router.push({
+                pathname: `/ITSM/operationplan/operationplanform`,
+                query: {
+                  flowNodeName: record.nodeName,
+                  mainId: record.instanceId,
+                  status: record.itemWorkStatus,
+                  checkStatus: record.itemCheckStatus,
+                  orderNo: record.itemWorkId,
+                }
+              })
+              break;
+            case 'work':
+              if (record.taskName === '工作登记') {
+                router.push({
+                  pathname: `/ITSM/supervisework/workplandetail`,
+                  query: {
+                    mainId: record.instanceId,
+                    flowNodeName: record.nodeName,
+                    status: record.itemWorkStatus,
+                    checkStatus: record.itemCheckStatus,
+                    orderNo: text,
+                  },
+                  state: {
+                    dynamicpath: true,
+                    menuDesc: '工作任务',
+                  }
+                })
+              }
+              if (record.taskName === '工作执行') {
+                router.push({
+                  pathname: `/ITSM/supervisework/workplandetail`,
+                  query: {
+                    // delay: 'delay',
+                    mainId: record.instanceId,
+                    flowNodeName: record.nodeName,
+                    status: record.itemWorkStatus,
+                    checkStatus: record.itemCheckStatus,
+                    orderNo: text,
+                    workUser: record.todoUserName
+                  },
+                  state: {
+                    dynamicpath: true,
+                    menuDesc: '工作执行',
+                  }
+                })
+              }
+              break;
+            case 'quality':
+              router.push({
+                pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
+                query: {
+                  assessNo: record.itemWorkId,
+                  mainId: record.instanceId,
+                  taskId: record.taskId,
+                  instanceId: record.instanceId,
+                  taskName: record.nodeName,
+                  orderNo: record.itemWorkId,
+                  search: record.itemWorkStatus === '绩效考核已完成',
+                },
+              });
+              break;
+            default:
+              break;
+          }
+        };
+        return <a onClick={handleClick}>{text}</a>;
+      },
+    },
+    {
+      title: '工单类型',
+      dataIndex: 'itemWorkType',
+      key: 'itemWorkType',
+      with: 100,
+      fixed: 'left',
+      sorter: (a, b) => a.itemWorkType.length - b.itemWorkType.length,
+      render: text => {
+        const typemap = new Map([
+          ['event', '事件'],
+          ['trouble', '故障'],
+          ['problem', '问题'],
+          ['demand', '需求'],
+          ['release', '计划发布'],
+          ['releaseBizTodo', '计划发布业务验证'],
+          ['operation', '作业计划'],
+          ['work', '工作督办'],
+          ['quality', '服务绩效'],
+        ]);
+        return typemap.get(text);
+      },
+    },
+    {
+      title: '标题',
+      dataIndex: 'itemName',
+      key: 'itemName',
+      with: 250,
+      fixed: 'left',
+    },
+    {
+      title: '描述',
+      dataIndex: 'itemContent',
+      key: 'itemContent',
+      with: 250,
+      onCell: () => {
+        return {
+          style: {
+            maxWidth: 250,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            cursor: 'pointer'
+          }
+        }
+      },
+      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+    },
+    {
+      title: '当前处理环节',
+      dataIndex: 'taskName',
+      key: 'taskName',
+      with: 150,
+    },
+    {
+      title: '超时状态',
+      dataIndex: 'timeoutTimeStatus',
+      key: 'timeoutTimeStatus',
+      with: 100,
+      sorter: (a, b) => a.itemWorkType.length - b.itemWorkType.length,
+      render: text => {
+        const statusmap = new Map([
+          ['0', '正常'],
+          ['1', '即将超时'],
+          ['2', '已超时'],
+        ]);
+        return statusmap.get(text);
+      },
+    },
+    {
+      title: '到达时间',
+      dataIndex: 'todoTime',
+      key: 'todoTime',
+      with: 150,
+    },
+  ];
 
   return (
     <PageHeaderWrapper title={pagetitle}>

@@ -81,7 +81,7 @@ function WorkOrder(props) {
 
   // 初始化历史附件
   useEffect(() => {
-    if (info !== '' && info !== undefined) {
+    if (info) {
       if (taskName === '需求登记' && info.demandForm.attachment !== '[]') {
         setFiles({ ...files, arr: JSON.parse(info.demandForm.attachment) });
       }
@@ -97,7 +97,7 @@ function WorkOrder(props) {
 
   // 加载流程记录，加载编辑历史
   useEffect(() => {
-    if (mainId !== undefined) {
+    if (mainId) {
       dispatch({
         type: 'demandtodo/demandrecords',
         payload: {

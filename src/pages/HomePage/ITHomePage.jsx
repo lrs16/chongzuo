@@ -61,10 +61,9 @@ const eventcolumns = [
         router.push({
           pathname: `/ITSM/eventmanage/to-do/record/workorder`,
           query: {
-            taskName: record.eventStatus,
+            taskName: record.flowNodeName,
             taskId: record.taskId,
             mainId: record.mainId,
-            check: record.checkResult,
             orderNo: text,
           },
         });

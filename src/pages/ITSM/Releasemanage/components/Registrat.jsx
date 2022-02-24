@@ -328,7 +328,7 @@ function Registrat(props, ref) {
               dataSource={info.releaseEnvs}
               ChangeValue={v => setFieldsValue({ releaseEnvs: v })}
             />
-            <Form.Item wrapperCol={{ span: 24 }}>
+            <Form.Item wrapperCol={{ span: 24 }} extra='双击行编辑表格信息，整行信息填写完整鼠标移开保存信息'>
               {getFieldDecorator('releaseEnvs', {
                 rules: [{ required, message: '请选择测试环境' }, {
                   validator: handleListValidator
