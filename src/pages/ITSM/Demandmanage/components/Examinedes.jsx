@@ -54,11 +54,12 @@ function Examinedes(props) {
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label=''>
-              {(info.result === 3 || info.result === 2 || info.result === 6 || info.result === 8) && <><Checkbox defaultChecked disabled />市场部领导审核</>}
-              {(info.result === 4 || info.result === 2 || info.result === 6 || info.result === 7) && <><Checkbox defaultChecked disabled />科室领导审核</>}
-              {(info.result === 5 || info.result === 2 || info.result === 7 || info.result === 8) && <><Checkbox defaultChecked disabled />中心领导审核</>}
-            </Form.Item>
+            {info.taskName === '自动化科审核' && (
+              <Form.Item label=''>
+                {(info.result === 3 || info.result === 2 || info.result === 6 || info.result === 8) && <><Checkbox defaultChecked disabled />市场部领导审核</>}
+                {(info.result === 4 || info.result === 2 || info.result === 6 || info.result === 7) && <><Checkbox defaultChecked disabled />科室领导审核</>}
+                {(info.result === 5 || info.result === 2 || info.result === 7 || info.result === 8) && <><Checkbox defaultChecked disabled />中心领导审核</>}
+              </Form.Item>)}
           </Col>
           {info.taskName === '系统开发商审核' && (
             <Col span={24}>
