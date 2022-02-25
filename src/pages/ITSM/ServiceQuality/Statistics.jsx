@@ -6,7 +6,8 @@ import {
   Card,
   DatePicker,
   Select,
-  Button
+  Button,
+  message
 } from 'antd';
 import { connect } from 'dva';
 import moment from 'moment';
@@ -127,7 +128,10 @@ function Statistics(props) {
                       assessEndTime: obj.endTime,
                       scoreType: '减'
                     });
-                    setVisible(true)
+                    setVisible(obj.beginTime);
+                    if(!obj.beginTime) {
+                      message.info('没有考核周期的点击无效')
+                    }
                     setTitle('合同名称:'+ obj.contractName +';'+ '考核周期:' + (obj.active ? obj.active +'('+ moment(obj.beginTime).format('YYYY-MM-DD') + '-'+ moment(obj.endTime).format('YYYY-MM-DD')+')' : ''))
                   }}
                 />
@@ -146,8 +150,11 @@ function Statistics(props) {
                       assessEndTime: obj.endTime,
                       scoreType: '加'
                     });
-                    setVisible(true)
-                    setTitle('合同名称:'+ obj.contractName +';'+ '考核周期:' + (obj.assessPhase || ''))
+                    setVisible(obj.beginTime);
+                    if(!obj.beginTime) {
+                      message.info('没有考核周期的点击无效')
+                    }
+                    setTitle('合同名称:'+ obj.contractName +';'+ '考核周期:' + (obj.active ? obj.active +'('+ moment(obj.beginTime).format('YYYY-MM-DD') + '-'+ moment(obj.endTime).format('YYYY-MM-DD')+')' : ''))
                   }}
                 />
               </Col>
@@ -165,8 +172,11 @@ function Statistics(props) {
                       assessEndTime: obj.endTime,
                       scoreType: ''
                     });
-                    setVisible(true)
-                    setTitle('合同名称:'+ obj.contractName +';'+ '考核周期:' + (obj.assessPhase || ''))
+                    setVisible(obj.beginTime);
+                    if(!obj.beginTime) {
+                      message.info('没有考核周期的点击无效')
+                    }
+                    setTitle('合同名称:'+ obj.contractName +';'+ '考核周期:' + (obj.active ? obj.active +'('+ moment(obj.beginTime).format('YYYY-MM-DD') + '-'+ moment(obj.endTime).format('YYYY-MM-DD')+')' : ''))
                   }}
                 />
               </Col>

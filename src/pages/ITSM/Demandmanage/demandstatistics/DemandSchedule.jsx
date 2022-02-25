@@ -160,7 +160,7 @@ function DemandSchedule(props) {
       align: 'center',
       render: (text, record) => {
         const obj = {
-          children: text,
+          children: `${text}%`,
           props: {},
         };
         obj.props.rowSpan = record.rowSpan;
