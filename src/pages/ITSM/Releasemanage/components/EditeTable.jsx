@@ -840,7 +840,7 @@ function EditeTable(props) {
               {taskName === '版本管理员审核' && (
                 <Button type='link' onMouseDown={() => { ChangeButtype('') }} onClick={e => checsaveRow(e, record.key)}>保存</Button>
               )}
-              <Button type='link' onClick={e => newcancel(e, record.key)}>取消</Button>
+              <Button type='link' onClick={e => newcancel(e, record.ke)}>取消</Button>
             </>
           );
         } if (record.editable) {
@@ -849,7 +849,7 @@ function EditeTable(props) {
               {taskName !== '版本管理员审核' && (
                 <>
                   <Button type='link' onMouseDown={() => ChangeButtype('')} onClick={e => saveRow(e, record.key)}>保存</Button>
-                  <Button type='link' onClick={e => cancel(e, record.key)}>取消</Button>
+                  {taskName !== '新建' && (<Button type='link' onClick={e => cancel(e, record.key)}>取消</Button>)}
                 </>
               )}
               {taskName === '版本管理员审核' && (
@@ -863,7 +863,7 @@ function EditeTable(props) {
         }
         return (
           <>
-            {(taskName === '新建' || taskName === '出厂测试') && userid === record.operatorId && !newbutton && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
+            {(taskName === '新建' || taskName === '出厂测试') && userid === record.operatorId && (<Button type='link' onClick={e => editRow(e, record.key)} disabled={newbutton}>编辑</Button>)}
             {taskName === '平台验证' && userid === record.operatorId && record.taskId === record.addStatus && !newbutton && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
             {taskName === '业务验证' && userid === record.operatorId && !newbutton && !record.verifyStatus && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
             {/* {(taskName === '平台验证' || taskName === '发布实施') && userid !== record.operatorId && !newbutton && (<Button type='link' onClick={e => verificationRow(e, record.key)}>验证</Button>)} */}

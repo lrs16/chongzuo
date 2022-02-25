@@ -8,6 +8,7 @@ const { TabPane } = Tabs;
 
 const typemap = new Map([
   ['release', '发布'],
+  ['tempRelease', '临时发布'],
   ['quality', '服务绩效'],
 ])
 
@@ -151,6 +152,7 @@ function RelevancyOrder(props) {
       <div onMouseDown={() => setClearsearchkey(true)} onMouseUp={() => setClearsearchkey(false)}>
         <Tabs onChange={callback} activeKey={activeKey}>
           <TabPane tab="发布单" key="release" />
+          <TabPane tab="临时发布单" key="tempRelease" />
           <TabPane tab="服务绩效" key="quality" />
         </Tabs>
       </div>

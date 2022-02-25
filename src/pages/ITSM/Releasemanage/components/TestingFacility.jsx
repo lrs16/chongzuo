@@ -33,16 +33,16 @@ function TestingFacility(props) {
   };
 
   const handleChange = (value, key) => {
-    const rowdata = data.filter(obj => obj.id === value)[0];
-    // const rowdata = JSON.parse(value);
-    const newdata = data.map(item => ({ ...item, isNew: false, editable: false }));
-    // console.log(newdata[key - 1]);
+    const rowdata = statusY.filter(obj => obj.id === value)[0];
+    const newdata = data.map(item => ({ ...item }));
     setData(newdata);
     if (newdata[key - 1]) {
       if (rowdata) {
         newdata[key - 1].deviceName = rowdata.deviceName;
         newdata[key - 1].deviceConfig = rowdata.deviceConfig;
         newdata[key - 1].deployApp = rowdata.deployApp;
+        newdata[key - 1].isNew = false;
+        newdata[key - 1].editable = false;
       } else {
         newdata[key - 1].deviceName = value;
       }
