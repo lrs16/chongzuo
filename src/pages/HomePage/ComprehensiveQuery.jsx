@@ -30,7 +30,7 @@ function ComprehensiveQuery(props) {
           <Menu.Item key="fault">故障查询</Menu.Item>
           <Menu.Item key="problem">问题查询</Menu.Item>
           <Menu.Item key="demand">需求查询</Menu.Item>
-          <Menu.Item key="release">发布查询</Menu.Item>
+          <Menu.Item key="release">计划发布查询</Menu.Item>
           <Menu.Item key="operationplan">作业计划查询</Menu.Item>
         </Menu>
       </div>

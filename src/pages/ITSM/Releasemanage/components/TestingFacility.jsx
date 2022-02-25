@@ -260,7 +260,7 @@ function TestingFacility(props) {
         rowKey={(_, index) => index.toString()}
         onRow={record => {
           return {
-            onDoubleClick: e => { if (isEdit) { editRow(e, record.key) } },          // 点击行编辑
+            onDoubleClick: e => { if (isEdit) { editRow(e, record.key) } },          // 双击行编辑
             onMouseLeave: e => { if (isEdit) { saveRow(e, record.key) } },           // 鼠标移出行
           };
         }}

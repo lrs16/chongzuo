@@ -126,6 +126,21 @@ function RelevancyOrder(props) {
               },
             });
           };
+          if (activeKey === 'tempRelease') {
+            router.push({
+              pathname:
+                '/ITSM/releasemanage/temporary/details',
+              query: {
+                Id: text,
+                taskId: record.taskId,
+                taskName: record.status,
+              },
+              state: {
+                dynamicpath: true,
+                menuDesc: '临时发布工单详情',
+              }
+            });
+          };
         };
         return <a onClick={handleClick}>{text}</a>;
       },
@@ -151,7 +166,7 @@ function RelevancyOrder(props) {
     <Card>
       <div onMouseDown={() => setClearsearchkey(true)} onMouseUp={() => setClearsearchkey(false)}>
         <Tabs onChange={callback} activeKey={activeKey}>
-          <TabPane tab="发布单" key="release" />
+          <TabPane tab="计划发布单" key="release" />
           <TabPane tab="临时发布单" key="tempRelease" />
           <TabPane tab="服务绩效" key="quality" />
         </Tabs>

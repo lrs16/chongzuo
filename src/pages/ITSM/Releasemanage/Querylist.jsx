@@ -48,6 +48,7 @@ function Querylist(props) {
       type: 'releaseview/fetchlist',
       payload: {
         ...values,
+        orderType: 'JH',
         beginTime: values.beginTime ? moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
         endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
         releaseBeginTime: values.releaseBeginTime ? moment(values.releaseBeginTime).format('YYYY-MM-DD HH:mm:ss') : '',
@@ -58,6 +59,7 @@ function Querylist(props) {
     });
     setTabRecord({
       ...values,
+      orderType: 'JH',
       beginTime: values.beginTime ? moment(values.beginTime).format('X') : '',
       endTime: values.endTime ? moment(values.endTime).format('X') : '',
       releaseBeginTime: values.releaseBeginTime ? moment(values.releaseBeginTime).format('X') : '',
@@ -287,8 +289,7 @@ function Querylist(props) {
       title: '发布类型',
       dataIndex: 'releaseType',
       key: 'releaseType',
-      width: 200,
-      sorter: (a, b) => a.releaseType.localeCompare(b.releaseType),
+      width: 120,
     },
     {
       title: '责任单位',
@@ -432,7 +433,7 @@ function Querylist(props) {
                     )}
                   </Form.Item>
                 </Col>
-                <Col span={8}>
+                {/* <Col span={8}>
                   <Form.Item label="发布类型">
                     {getFieldDecorator('releaseType', {
                       initialValue: cacheinfo.releaseType,
@@ -446,7 +447,7 @@ function Querylist(props) {
                       </Select>,
                     )}
                   </Form.Item>
-                </Col>
+                </Col> */}
                 <Col span={8}>
                   <Form.Item label="发布版本号">
                     {getFieldDecorator('versionNo', {
@@ -540,7 +541,7 @@ function Querylist(props) {
                 </Col>
               </>
             )}
-            <Col span={8} style={{ marginTop: 4, paddingLeft: 48 }}>{extra}</Col>
+            <Col span={extra ? 24 : 8} style={{ marginTop: 4, paddingLeft: 48, textAlign: extra ? 'right' : 'left' }}>{extra}</Col>
           </Form>
         </Row>
         <div>

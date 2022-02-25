@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
-import { Card, Row, Col, Form, DatePicker, Select, Button, Table } from 'antd';
+import { Card, Row, Col, Form, DatePicker, Select, Button, Table, Popover, Tooltip } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import DictLower from '@/components/SysDict/DictLower';
+import TableColumns from '@/components/TableColumns';
 import { querkeyVal } from '@/services/api';
 
 const { Option } = Select;
@@ -28,17 +29,20 @@ function Statistics(props) {
     successratelist, tasksumlist,
   } = props;
   const [tabActivekey, settabActivekey] = useState('successrate'); // 打开标签
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [selectdata, setSelectData] = useState('');
   const [tabColumns, setColumns] = useState('');
+  const [defaultColumns, setDefaultColumns] = useState([]);
+  const [visible, setVisible] = useState(false);
 
-  const handleSearch = () => {
+  const handleSearch = (pageIndex, pageSize) => {
     const values = getFieldsValue();
     const val = {
       ...values,
       beginTime: values.beginTime ? moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
       endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
-      pageIndex: 1,
-      pageSize: 100,
+      pageIndex,
+      pageSize,
     }
     if (tabActivekey === 'successrate') {
       dispatch({
@@ -60,7 +64,7 @@ function Statistics(props) {
 
   const handleReset = () => {
     resetFields();
-    handleSearch();
+    handleSearch(1, 15);
   }
 
   useEffect(() => {
@@ -77,10 +81,15 @@ function Statistics(props) {
         setColumns(res.data.successrate)
       }
     });
+    querkeyVal('release', 'indexsuccessrate').then(res => {
+      if (res.code === 200) {
+        setDefaultColumns(res.data.indexsuccessrate)
+      }
+    })
   }, []);
 
   useEffect(() => {
-    handleSearch()
+    handleSearch(1, 15)
   }, [tabActivekey]);
 
   const handleTabChange = key => {
@@ -98,16 +107,42 @@ function Statistics(props) {
     },
   ];
 
+  const onShowSizeChange = (page, size) => {
+    handleSearch(1, size);
+    setPageinations({
+      ...paginations,
+      current: 1,
+      pageSize: size,
+    });
+  };
+
+  const changePage = page => {
+    handleSearch(page, paginations.pageSize);
+    setPageinations({
+      ...paginations,
+      current: page,
+    });
+  };
+
+  const pagination = {
+    showSizeChanger: true,
+    onShowSizeChange: (page, size) => onShowSizeChange(page, size),
+    current: paginations.current,
+    pageSize: paginations.pageSize,
+    total: successratelist?.total || tasksumlist?.total || 0,
+    showTotal: total => `总共  ${total}  条记录`,
+    onChange: page => changePage(page),
+  };
+
   const getTypebyId = key => {
     if (selectdata.ischange) {
-      return selectdata.arr.filter(item => item.key === key)[0].children;
+      return selectdata.arr.filter(item => item.key === key)[0]?.children;
     }
     return [];
   };
 
   const typemap = getTypebyId(460);       // 发布类型
   const unitmap = getTypebyId(1052);       // 责任单位
-
 
   // 发布成功率表头
   const tableColumns = (tablecolumns) => {
@@ -159,7 +194,13 @@ function Statistics(props) {
         return (<a onClick={handleClick}>{text}</a>);
       },
     },
-  ]
+  ];
+
+  const content = (
+    <div style={{ width: 750, height: 400, overflow: 'scroll' }}>
+      <TableColumns defaultVal={defaultColumns} records={tabColumns} ChangeSelectVal={v => setDefaultColumns(v)} />
+    </div>
+  );
 
   return (
     <PageHeaderWrapper
@@ -211,24 +252,22 @@ function Statistics(props) {
                 </div>
               </Form.Item>
             </Col>
-            {tabActivekey === 'process' && (
-              <Col span={6}>
-                <Form.Item label="发布类型">
-                  {getFieldDecorator('releaseType', {
-                    initialValue: '',
-                  })(
-                    <Select placeholder="请选择" allowClear>
-                      {typemap.map(obj => (
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>
-                      ))}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-            )}
-            <Col span={tabActivekey === 'process' ? 6 : 8}>
+            <Col span={6}>
+              <Form.Item label="发布类型">
+                {getFieldDecorator('releaseType', {
+                  initialValue: tabActivekey === 'successrate' ? '' : '计划发布',
+                })(
+                  <Select placeholder="请选择" allowClear={tabActivekey === 'successrate'}>
+                    {typemap.map(obj => (
+                      <Option key={obj.key} value={obj.title}>
+                        {obj.title}
+                      </Option>
+                    ))}
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={6}>
               <Form.Item label="责任单位">
                 {getFieldDecorator('dutyUnit', {
                   initialValue: '',
@@ -243,22 +282,35 @@ function Statistics(props) {
                 )}
               </Form.Item>
             </Col>
-            <Col span={tabActivekey === 'process' ? 4 : 8} style={{ padding: '4px 0 0 48px' }}>
-              <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
+            <Col span={4} style={{ padding: '4px 0 0 48px' }}>
+              <Button type="primary" onClick={() => handleSearch(1, 15)}>查 询</Button>
               <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
+            </Col>
+            <Col span={24} style={{ textAlign: 'right' }}>
+              <Popover
+                content={content}
+                trigger="click"
+                visible={visible}
+                onVisibleChange={v => setVisible(v)}
+                placement="left"
+              >
+                <Tooltip title="自定义表头">
+                  <Button icon="setting" style={{ background: '#e1e1e1' }} />
+                </Tooltip>
+              </Popover>
             </Col>
           </Row>
         </Form>
         {tabActivekey === 'successrate' && (<Table
-          loading={loading}
-          columns={tabColumns && tabColumns.length > 0 ? tableColumns(tabColumns) : []}
-          dataSource={successratelist || []}
+          loading={loading || !selectdata.ischange}
+          columns={defaultColumns && defaultColumns.length > 0 ? tableColumns(defaultColumns) : []}
+          dataSource={successratelist?.records || []}
           rowKey={(_, index) => index.toString()}
-          pagination={false}
+          pagination={pagination}
           scroll={{ x: 1500 }}
         />)}
         {tabActivekey === 'process' && (<Table
-          loading={loading}
+          loading={loading || !selectdata.ischange}
           columns={columns}
           dataSource={tasksumlist || []}
           rowKey={(_, index) => index.toString()}
