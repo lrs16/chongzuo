@@ -472,9 +472,16 @@ function ManualExecuteList(props) {
     setColumns(initialColumns);
   }, [location]);
 
+  const setTableHeight = () => {
+    let height = 500;
+    const clientHeight = window.document?.body?.clientHeight || 500;
+    height = clientHeight - 400
+    return height;
+  };
+
   return (
     <>
-      <Card>
+      <Card bodyStyle={{ paddingBottom: 0 }}>
         <Row>
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={5}>
@@ -585,7 +592,7 @@ function ManualExecuteList(props) {
           pagination={pagination}
           rowSelection={rowSelection}
           loading={loading}
-          scroll={{ x: 1300 }}
+          scroll={{ x: 1300, y: setTableHeight() }}
         />)}
       </Card>
     </>

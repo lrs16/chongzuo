@@ -249,9 +249,16 @@ function ClockPatrol(props) {
     },
   ];
 
+  const setTableHeight = () => {
+    let height = 500;
+    const clientHeight = window.document?.body?.clientHeight || 500;
+    height = clientHeight - 400
+    return height;
+  };
+
   return (
     <PageHeaderWrapper title={pagetitle}>
-      <Card>
+      <Card bodyStyle={{ paddingBottom: 0 }}>
         <Row>
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={6}>
@@ -335,7 +342,7 @@ function ClockPatrol(props) {
           columns={columns}
           dataSource={clocklist.rows}
           pagination={pagination}
-          scroll={{ x: 1000 }}
+          scroll={{ x: 1000, y: setTableHeight() }}
         />
       </Card>
     </PageHeaderWrapper>

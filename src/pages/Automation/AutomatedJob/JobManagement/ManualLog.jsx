@@ -249,9 +249,16 @@ function ManualLog(props) {
     }
   ];
 
+  const setTableHeight = () => {
+    let height = 500;
+    const clientHeight = window.document?.body?.clientHeight || 500;
+    height = clientHeight - 400
+    return height;
+  };
+
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
-      <Card>
+      <Card bodyStyle={{ paddingBottom: 0 }}>
         <Row gutter={16}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>
@@ -349,7 +356,7 @@ function ManualLog(props) {
           dataSource={autotasklogslist.rows}
           rowKey={record => record.id}
           pagination={pagination}
-          scroll={{ x: 1300 }}
+          scroll={{ x: 1300, y: setTableHeight() }}
         />
       </Card>
     </PageHeaderWrapper>

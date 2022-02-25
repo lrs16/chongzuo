@@ -431,9 +431,23 @@ function SystemScriptList(props) {
     </Button></>
   );
 
+  const setTableHeight = () => {
+    let height = 500;
+    // 最小兼容1600的全屏显示器
+    const clientHeight = window.document?.body?.clientHeight;
+    if (clientHeight > 750) {
+      if (expand) {
+        height = clientHeight - 568
+      } else {
+        height = clientHeight - 510
+      }
+    }
+    return height;
+  };
+
   return (
     <>
-      <Card>
+      <Card bodyStyle={{ paddingBottom: 0 }}>
         <Row gutter={16}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>
@@ -631,7 +645,7 @@ function SystemScriptList(props) {
           columns={columns}
           loading={loading}
           rowKey={record => record.id}
-          scroll={{ x: 1300 }}
+          scroll={{ x: 1300, y: setTableHeight() }}
           pagination={pagination}
           rowSelection={rowSelection}
           dispatch={dispatch}

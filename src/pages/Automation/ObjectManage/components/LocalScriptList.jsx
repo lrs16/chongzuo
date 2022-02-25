@@ -410,9 +410,23 @@ function LocalScriptList(props) {
 
   const zonemap = getTypebyId(717); // 主机区域
 
+  const setTableHeight = () => {
+    let height = 500;
+    // 最小兼容1600的全屏显示器
+    const clientHeight = window.document?.body?.clientHeight;
+    if (clientHeight > 750) {
+      if (expand) {
+        height = clientHeight - 568
+      } else {
+        height = clientHeight - 510
+      }
+    }
+    return height;
+  };
+
   return (
     <>
-      <Card>
+      <Card bodyStyle={{ paddingBottom: 0 }}>
         <DictLower
           typeid={710}
           ChangeSelectdata={newvalue => setSelectData(newvalue)}
@@ -580,7 +594,7 @@ function LocalScriptList(props) {
         <Table
           dataSource={localscriptlist.rows}
           rowKey={record => record.id}
-          scroll={{ x: 1300 }}
+          scroll={{ x: 1300, y: setTableHeight() }}
           columns={columns}
           pagination={pagination}
           loading={loading}

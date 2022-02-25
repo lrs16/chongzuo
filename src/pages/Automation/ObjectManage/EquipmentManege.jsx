@@ -514,6 +514,20 @@ function EquipmentManege(props) {
   const hosttype = getTypebyId(727); // 设备类型
   const hostphysicmap = getTypebyId(728); // 物理机
 
+  const setTableHeight = () => {
+    let height = 500;
+    // 最小兼容1600的全屏显示器
+    const clientHeight = window.document?.body?.clientHeight;
+    if (clientHeight > 750) {
+      if (expand) {
+        height = clientHeight - 568
+      } else {
+        height = clientHeight - 510
+      }
+    }
+    return height;
+  };
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       <DictLower
@@ -521,7 +535,7 @@ function EquipmentManege(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      <Card>
+      <Card bodyStyle={{ paddingBottom: 0 }}>
         <Row gutter={16}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>
@@ -822,7 +836,7 @@ function EquipmentManege(props) {
           loading={loading}
           rowKey={r => r.id}
           pagination={pagination}
-          scroll={{ x: 1300 }}
+          scroll={{ x: 1300, y: setTableHeight() }}
         />
       </Card>
       {/* 抽屉 */}

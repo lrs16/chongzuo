@@ -469,6 +469,20 @@ function ToCheck(props) {
     });
   };
 
+  const setTableHeight = () => {
+    let height = 500;
+    // 最小兼容1600的全屏显示器
+    const clientHeight = window.document?.body?.clientHeight;
+    if (clientHeight > 750) {
+      if (expand) {
+        height = clientHeight - 568
+      } else {
+        height = clientHeight - 510
+      }
+    }
+    return height;
+  };
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       {/* <SysDict
@@ -477,7 +491,7 @@ function ToCheck(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       /> */}
-      <Card>
+      <Card bodyStyle={{ paddingBottom: 0 }}>
         <Row gutter={24}>
           <Form {...formItemLayout}>
             <>
@@ -675,7 +689,7 @@ function ToCheck(props) {
           loading={loading}
           columns={columns}
           dataSource={findChecklist.rows}
-          scroll={{ x: 1600 }}
+          scroll={{ x: 1600, y: setTableHeight() }}
           rowKey={r => r.registNo}
           pagination={pagination}
           rowSelection={rowSelection}

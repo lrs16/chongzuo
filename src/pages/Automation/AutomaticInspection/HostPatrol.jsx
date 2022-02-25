@@ -332,9 +332,16 @@ function HostPatrol(props) {
     },
   ];
 
+  const setTableHeight = () => {
+    let height = 500;
+    const clientHeight = window.document?.body?.clientHeight || 500;
+    height = clientHeight - 400
+    return height;
+  };
+
   return (
     <PageHeaderWrapper title={pagetitle}>
-      <Card>
+      <Card bodyStyle={{ paddingBottom: 0 }}>
         <Row>
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={6}>
@@ -418,7 +425,7 @@ function HostPatrol(props) {
           columns={columns}
           dataSource={hostlist.rows}
           pagination={pagination}
-          scroll={{ x: 1500 }}
+          scroll={{ x: 1500, y: setTableHeight() }}
         />
         <PatrolBriefDrawer
           visible={visible}

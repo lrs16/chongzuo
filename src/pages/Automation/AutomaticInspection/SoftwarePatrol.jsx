@@ -268,9 +268,16 @@ function SoftwarePatrol(props) {
     },
   ];
 
+  const setTableHeight = () => {
+    let height = 500;
+    const clientHeight = window.document?.body?.clientHeight || 500;
+    height = clientHeight - 400
+    return height;
+  };
+
   return (
     <PageHeaderWrapper title={pagetitle}>
-      <Card>
+      <Card bodyStyle={{ paddingBottom: 0 }}>
         <Row>
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={6}>
@@ -354,7 +361,7 @@ function SoftwarePatrol(props) {
           columns={columns}
           dataSource={softlist.rows}
           pagination={pagination}
-          scroll={{ x: 1300 }}
+          scroll={{ x: 1300, y: setTableHeight() }}
         />
       </Card>
     </PageHeaderWrapper>

@@ -1472,6 +1472,20 @@ function QueryList(props) {
     }
   }
 
+  const setTableHeight = () => {
+    let height = 500;
+    // 最小兼容1600的全屏显示器
+    const clientHeight = window.document?.body?.clientHeight;
+    if (clientHeight > 750) {
+      if (expand) {
+        height = clientHeight - 568
+      } else {
+        height = clientHeight - 510
+      }
+    }
+    return height;
+  };
+
   return (
     <PageHeaderWrapper title={titleParams}>
       <SysDict
@@ -1480,7 +1494,7 @@ function QueryList(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      <Card>
+      <Card bodyStyle={{ paddingBottom: 0 }}>
         <Row gutter={24}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>
@@ -1928,7 +1942,7 @@ function QueryList(props) {
           rowKey={r => r.id}
           pagination={pagination}
           rowSelection={rowSelection}
-          scroll={{ x: 800 }}
+          scroll={{ x: 1500, y: setTableHeight() }}
         />
       </Card>
     </PageHeaderWrapper>

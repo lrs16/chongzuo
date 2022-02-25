@@ -1260,6 +1260,13 @@ function ChartDrawer(props) {
     };
   };
 
+  const setTableHeight = () => {
+    let height = 500;
+    const clientHeight = window.document?.body?.clientHeight || 500;
+    height = clientHeight - 400
+    return height;
+  };
+
   return (
     <>
       <Drawer
@@ -1282,7 +1289,7 @@ function ChartDrawer(props) {
           rowKey={record => record.id}
           pagination={pagination}
           rowSelection={rowSelection}
-          scroll={{ x: 1300 }}
+          scroll={{ x: 1300, y: setTableHeight() }}
         />
       </Drawer>
     </>

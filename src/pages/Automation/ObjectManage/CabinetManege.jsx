@@ -422,6 +422,20 @@ function CabinetManege(props) {
 
   const zonemap = getTypebyId(717); // 区域
 
+  const setTableHeight = () => {
+    let height = 500;
+    // 最小兼容1600的全屏显示器
+    const clientHeight = window.document?.body?.clientHeight;
+    if (clientHeight > 750) {
+      if (expand) {
+        height = clientHeight - 568
+      } else {
+        height = clientHeight - 510
+      }
+    }
+    return height;
+  };
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       <DictLower
@@ -429,7 +443,7 @@ function CabinetManege(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      <Card>
+      <Card bodyStyle={{ paddingBottom: 0 }}>
         <Row gutter={8}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>
@@ -626,7 +640,7 @@ function CabinetManege(props) {
           loading={loading}
           rowKey={r => r.id}
           pagination={pagination}
-          scroll={{ x: 1300 }}
+          scroll={{ x: 1300, y: setTableHeight() }}
         />
       </Card>
       {/* 抽屉 */}
