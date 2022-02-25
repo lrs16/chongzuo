@@ -170,10 +170,12 @@ function Workorder(props) {
   };
 
   const getInformation = () => {
-    dispatch({
-      type: 'problemmanage/ToDodetails',
-      payload: { id },
-    });
+    if(id) {
+      dispatch({
+        type: 'problemmanage/ToDodetails',
+        payload: { id },
+      });
+    }
   };
 
   // 表单校验提示信息
@@ -569,14 +571,16 @@ function Workorder(props) {
   };
 
   const getSelectperson = () => {
-    const taskId = id;
-    dispatch({
-      type: 'itsmuser/problemuserlist',
-      payload: {
-        taskId,
-        result: 1,
-      },
-    });
+    if(id) {
+      const taskId = id;
+      dispatch({
+        type: 'itsmuser/problemuserlist',
+        payload: {
+          taskId,
+          result: 1,
+        },
+      });
+    }
   };
 
   useEffect(() => {

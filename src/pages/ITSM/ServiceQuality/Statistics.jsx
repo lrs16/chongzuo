@@ -56,6 +56,7 @@ function Statistics(props) {
     searchObj.minusRatio = replaceObj.minusRatio;
     searchObj.beginTime = replaceObj.beginTime;
     searchObj.endTime = replaceObj.endTime;
+    searchObj.active = replaceObj.assessCycle;
 
     const newArr = listdata;
     newArr.splice(index, 1, searchObj);
@@ -127,7 +128,7 @@ function Statistics(props) {
                       coreType: '减'
                     });
                     setVisible(true)
-                    setTitle('合同名称:'+ obj.contractName +';'+ '考核周期:' + (obj.assessPhase))
+                    setTitle('合同名称:'+ obj.contractName +';'+ '考核周期:' + (obj.active ? obj.active +'('+ moment(obj.beginTime).format('YYYY-MM-DD') + '-'+ moment(obj.endTime).format('YYYY-MM-DD')+')' : ''))
                   }}
                 />
               </Col>
@@ -146,7 +147,7 @@ function Statistics(props) {
                       coreType: '加'
                     });
                     setVisible(true)
-                    setTitle('合同名称:'+ obj.contractName +';'+ '考核周期:' + (obj.assessPhase))
+                    setTitle('合同名称:'+ obj.contractName +';'+ '考核周期:' + (obj.assessPhase || ''))
                   }}
                 />
               </Col>
@@ -165,7 +166,7 @@ function Statistics(props) {
                       coreType: ''
                     });
                     setVisible(true)
-                    setTitle('合同名称:'+ obj.contractName +';'+ '考核周期:' + (obj.assessPhase))
+                    setTitle('合同名称:'+ obj.contractName +';'+ '考核周期:' + (obj.assessPhase || ''))
                   }}
                 />
               </Col>

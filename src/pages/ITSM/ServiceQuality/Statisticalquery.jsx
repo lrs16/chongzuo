@@ -72,7 +72,7 @@ function Statisticalquery(props) {
               coreType: '减'
             });
             setVisible(true)
-            setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase))
+            setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase || ''))
           } else {
             message.info('请点击查询查询数据后才可查看本周扣分详情')
           }
@@ -93,7 +93,7 @@ function Statisticalquery(props) {
               coreType: '加'
             });
             setVisible(true)
-            setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase))
+            setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase || ''))
           } else {
             message.info('请点击查询查询数据后才可查看本周加分详情')
           }
@@ -112,7 +112,7 @@ function Statisticalquery(props) {
             assessEndTime: record.endTime,
             coreType: '减'
           });
-          setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase))
+          setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase || ''))
           setVisible(true)
         }}>{text}</a>
 
@@ -129,7 +129,7 @@ function Statisticalquery(props) {
             assessEndTime: record.endTime,
             coreType: '加'
           });
-          setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase))
+          setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase || ''))
           setVisible(true)
         }}>{text}</a>
       }
@@ -145,7 +145,7 @@ function Statisticalquery(props) {
             assessEndTime: record.endTime,
             coreType: ''
           });
-          setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase))
+          setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase || ''))
           setVisible(true)
         }}>{text}</a>
       }
@@ -189,7 +189,7 @@ function Statisticalquery(props) {
             assessEndTime: record.endTime,
             coreType: '减'
           });
-          setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase))
+          setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase  || ''))
           setVisible(true)
         }}>{text}</a>
       }
@@ -205,7 +205,7 @@ function Statisticalquery(props) {
             assessEndTime: record.endTime,
             coreType: '加'
           });
-          setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase))
+          setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase  || ''))
           setVisible(true)
         }}>{text}</a>
       }
@@ -221,7 +221,7 @@ function Statisticalquery(props) {
             assessEndTime: record.endTime,
             coreType: ''
           });
-          setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase))
+          setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase  || ''))
           setVisible(true)
         }}>{text}</a>
       }

@@ -56,6 +56,7 @@ function Queryworkdetail(props) {
     loading,
     location
   } = props;
+  const { No } = props.location.query;
 
   const { id, taskName } = props.location.query;
 
@@ -65,10 +66,12 @@ function Queryworkdetail(props) {
   }
 
   const getInformation = () => {
-    dispatch({
-      type: 'problemmanage/queryDetail',
-      payload: { id },
-    });
+    if (id) {
+      dispatch({
+        type: 'problemmanage/queryDetail',
+        payload: { id, No },
+      });
+    }
   };
 
   useEffect(() => {

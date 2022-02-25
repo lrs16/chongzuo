@@ -220,12 +220,22 @@ export default {
       return yield call(problemHandleOrder, id);
     },
 
-    *queryDetail({ payload: { id } }, { call, put }) {
+    *queryDetail({ payload: { id,No } }, { call, put }) {
       const response = yield call(queryDetail, id);
-      yield put({
-        type: 'queryDetaildata',
-        payload: response
-      })
+      if(response.code === -1) {
+        message.error(response.msg);
+        router.push({
+          pathname: `/ITSM/problemmanage/problemquery`,
+          query: { pathpush: true },
+          state: { cach: false, closetabid:No },
+        });
+      } else {
+        yield put({
+          type: 'queryDetaildata',
+          payload: response
+        })
+      }
+
     },
 
     *transferOrder({ payload: { taskId, userIds } }, { call }) {
