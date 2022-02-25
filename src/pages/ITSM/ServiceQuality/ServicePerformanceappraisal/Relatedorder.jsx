@@ -177,17 +177,33 @@ function RelevancyOrder(props) {
               });
               break;
             case 'release':
-              router.push({
-                pathname: `/ITSM/releasemanage/query/details`,
-                query: {
-                  Id: record.orderNo,
-                  taskName: record.taskName,
-                },
-                state: {
-                  dynamicpath: true,
-                  menuDesc: '发布工单详情',
-                }
-              });
+              if (record.orderNo.includes('LS')) {
+                router.push({
+                  pathname:
+                    '/ITSM/releasemanage/temporary/details',
+                  query: {
+                    Id: text,
+                    taskId: record.taskId,
+                    taskName: record.status,
+                  },
+                  state: {
+                    dynamicpath: true,
+                    menuDesc: '临时发布工单详情',
+                  }
+                });
+              } else {
+                router.push({
+                  pathname: `/ITSM/releasemanage/query/details`,
+                  query: {
+                    Id: record.orderNo,
+                    taskName: record.taskName,
+                  },
+                  state: {
+                    dynamicpath: true,
+                    menuDesc: '发布工单详情',
+                  }
+                });
+              }
               break;
             default:
               break;
