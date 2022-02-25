@@ -209,6 +209,7 @@ function Besolved(props) {
               taskName: record.currentNode,
               mainId: record.mainId,
               orderNo: text,
+              sign:'待办',
             },
             state: {
               runpath: '/ITSM/problemmanage/besolved',

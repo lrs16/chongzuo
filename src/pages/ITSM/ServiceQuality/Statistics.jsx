@@ -125,7 +125,7 @@ function Statistics(props) {
                     setPicVal({
                       assessBeginTime: obj.beginTime,
                       assessEndTime: obj.endTime,
-                      coreType: '减'
+                      scoreType: '减'
                     });
                     setVisible(true)
                     setTitle('合同名称:'+ obj.contractName +';'+ '考核周期:' + (obj.active ? obj.active +'('+ moment(obj.beginTime).format('YYYY-MM-DD') + '-'+ moment(obj.endTime).format('YYYY-MM-DD')+')' : ''))
@@ -144,7 +144,7 @@ function Statistics(props) {
                     setPicVal({
                       assessBeginTime: obj.beginTime,
                       assessEndTime: obj.endTime,
-                      coreType: '加'
+                      scoreType: '加'
                     });
                     setVisible(true)
                     setTitle('合同名称:'+ obj.contractName +';'+ '考核周期:' + (obj.assessPhase || ''))
@@ -163,7 +163,7 @@ function Statistics(props) {
                     setPicVal({
                       assessBeginTime: obj.beginTime,
                       assessEndTime: obj.endTime,
-                      coreType: ''
+                      scoreType: ''
                     });
                     setVisible(true)
                     setTitle('合同名称:'+ obj.contractName +';'+ '考核周期:' + (obj.assessPhase || ''))

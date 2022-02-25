@@ -204,12 +204,19 @@ export default {
     //  待办详情页
     *ToDodetails({ payload: { id } }, { call, put }) {
       const response = yield call(todoInformation, id);
-      yield put({
-        type: 'details',
-        payload: response,
-      });
+      if(response.code === -1) {
+        message.error(response.msg);
+        router.push({
+          pathname: `/ITSM/problemmanage/besolveddetail/workorder`,
+          query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
+        });
+      } else {
+        yield put({
+          type: 'details',
+          payload: response,
+        });
+      }
     },
-
 
     // 文件上传
     *tobaUpload(_, { call }) {
@@ -220,14 +227,13 @@ export default {
       return yield call(problemHandleOrder, id);
     },
 
-    *queryDetail({ payload: { id,No } }, { call, put }) {
+    *queryDetail({ payload: { id } }, { call, put }) {
       const response = yield call(queryDetail, id);
       if(response.code === -1) {
         message.error(response.msg);
         router.push({
-          pathname: `/ITSM/problemmanage/problemquery`,
-          query: { pathpush: true },
-          state: { cach: false, closetabid:No },
+          pathname: `/ITSM/problemmanage/problemquery/detail`,
+          query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
         });
       } else {
         yield put({
