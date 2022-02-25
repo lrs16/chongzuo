@@ -12,10 +12,13 @@ import {
 import moment from 'moment';
 import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import AnalysisPopup from './AnalysisPopup';
 
 
 let startTime;
 let endTime;
+let sign = true;
+
 const { MonthPicker } = DatePicker;
 function Statisticalquery(props) {
   const { pagetitle } = props.route.name;
@@ -25,6 +28,10 @@ function Statisticalquery(props) {
     dispatch
   } = props;
   const [tabActiveKey, setTabActiveKey] = useState('week');
+  const [visible, setVisible] = useState(false);
+  const [typeName, setTypename] = useState('');
+  const [title, setTitle] = useState('');
+  const [picval, setPicVal] = useState({});
 
   const columns = [
     {
@@ -54,32 +61,97 @@ function Statisticalquery(props) {
     },
     {
       title: '本周扣分',
-      width: 120,
       dataIndex: 'weekMinus',
-      key: 'weekMinus'
+      key: 'weekMinus',
+      render: (text, record) => {
+        return <a onClick={() => {
+          if (sign) {
+            setPicVal({
+              assessBeginTime: startTime,
+              assessEndTime: endTime,
+              coreType: '减'
+            });
+            setVisible(true)
+            setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase))
+          } else {
+            message.info('请点击查询查询数据后才可查看本周扣分详情')
+          }
+        }}>{text}</a>
+
+      }
     },
     {
       title: '本周加分',
-      width: 120,
       dataIndex: 'weekPlus',
-      key: 'weekPlus'
+      key: 'weekPlus',
+      render: (text, record) => {
+        return <a onClick={() => {
+          if (sign) {
+            setPicVal({
+              assessBeginTime: startTime,
+              assessEndTime: endTime,
+              coreType: '加'
+            });
+            setVisible(true)
+            setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase))
+          } else {
+            message.info('请点击查询查询数据后才可查看本周加分详情')
+          }
+        }}>{text}</a>
+
+      }
     },
     {
       title: '累计扣分',
       dataIndex: 'minus',
-      key: 'minus'
+      key: 'minus',
+      render: (text, record) => {
+        return <a onClick={() => {
+          setPicVal({
+            assessBeginTime: record.beginTime,
+            assessEndTime: record.endTime,
+            coreType: '减'
+          });
+          setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase))
+          setVisible(true)
+        }}>{text}</a>
+
+      }
     },
     {
       title: '累计加分',
       dataIndex: 'plus',
-      key: 'plus'
+      key: 'plus',
+      render: (text, record) => {
+        return <a onClick={() => {
+          setPicVal({
+            assessBeginTime: record.beginTime,
+            assessEndTime: record.endTime,
+            coreType: '加'
+          });
+          setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase))
+          setVisible(true)
+        }}>{text}</a>
+      }
     },
     {
       title: '考核得分',
       dataIndex: 'total',
-      key: 'total'
+      key: 'total',
+      render: (text, record) => {
+        return <a onClick={() => {
+          setPicVal({
+            assessBeginTime: record.beginTime,
+            assessEndTime: record.endTime,
+            coreType: ''
+          });
+          setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase))
+          setVisible(true)
+        }}>{text}</a>
+      }
     },
   ];
+
   const columns2 = [
     {
       title: '合同编号',
@@ -109,17 +181,50 @@ function Statisticalquery(props) {
     {
       title: '累计扣分',
       dataIndex: 'minus',
-      key: 'minus'
+      key: 'minus',
+      render: (text, record) => {
+        return <a onClick={() => {
+          setPicVal({
+            assessBeginTime: record.beginTime,
+            assessEndTime: record.endTime,
+            coreType: '减'
+          });
+          setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase))
+          setVisible(true)
+        }}>{text}</a>
+      }
     },
     {
       title: '累计加分',
       dataIndex: 'plus',
-      key: 'plus'
+      key: 'plus',
+      render: (text, record) => {
+        return <a onClick={() => {
+          setPicVal({
+            assessBeginTime: record.beginTime,
+            assessEndTime: record.endTime,
+            coreType: '加'
+          });
+          setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase))
+          setVisible(true)
+        }}>{text}</a>
+      }
     },
     {
       title: '考核得分',
       dataIndex: 'total',
-      key: 'total'
+      key: 'total',
+      render: (text, record) => {
+        return <a onClick={() => {
+          setPicVal({
+            assessBeginTime: record.beginTime,
+            assessEndTime: record.endTime,
+            coreType: ''
+          });
+          setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase))
+          setVisible(true)
+        }}>{text}</a>
+      }
     },
   ];
 
@@ -129,10 +234,12 @@ function Statisticalquery(props) {
         startTime = dateString;
         endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
         setFieldsValue({ time2: moment(endTime) });
+        sign = false;
         break;
       case 'month':
         startTime = date.startOf('month').format('YYYY-MM-DD');
         setFieldsValue({ monthStarttime: moment(startTime) });
+        sign = false;
         break;
       default:
         break;
@@ -144,13 +251,15 @@ function Statisticalquery(props) {
       case 'week':
         endTime = dateString;
         startTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
-        setFieldsValue({ time1: moment(startTime) })
+        setFieldsValue({ time1: moment(startTime) });
+        sign = false;
         break;
       case 'month':
         endTime = date.endOf('month').format('YYYY-MM-DD');
         setFieldsValue({
           monthEndtime: moment(endTime),
-        })
+        });
+        sign = false;
         break;
       default:
         break;
@@ -192,12 +301,13 @@ function Statisticalquery(props) {
           type: tabActiveKey === 'week' ? 'W' : 'M'
         }
       })
+      sign = true;
     }
   }
 
   useEffect(() => {
     defaultTime();
-    getList()
+    getList();
   }, [tabActiveKey])
 
   const tabList = [
@@ -292,6 +402,7 @@ function Statisticalquery(props) {
                 )
               }
 
+
               {
                 tabActiveKey === 'month' && (
                   <Col span={24}>
@@ -329,6 +440,7 @@ function Statisticalquery(props) {
                   </Col>
                 )
               }
+
             </Form>
           </Row>
 
@@ -341,10 +453,18 @@ function Statisticalquery(props) {
           </Button>
 
           <Table
-            columns={tabActiveKey === 'week' ? columns :columns2}
+            columns={tabActiveKey === 'week' ? columns : columns2}
             dataSource={statsSearcharr}
           />
         </Card>
+
+        <AnalysisPopup
+          visible={visible}
+          typeName={typeName}
+          title={title}
+          popupParameters={picval}
+          closePop={() => { setVisible(false); setTypename('') }}
+        />
 
       </>
 

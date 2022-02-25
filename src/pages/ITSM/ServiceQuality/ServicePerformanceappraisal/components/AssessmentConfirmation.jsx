@@ -222,7 +222,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                   placeholder="请选择"
                   allowClear={false}
                 >
-                  {target1.map(obj => [
+                  {(target1 || []).map(obj => [
                     <Option key={obj.id} value={obj.title}>
                       {obj.title}
                     </Option>,
@@ -258,7 +258,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                   placeholder="请选择"
                   allowClear={false}
                 >
-                  {target2.map(obj => [
+                  {(target2 || []).map(obj => [
                     <Option key={obj.id} value={obj.title}>
                       {obj.title}
                     </Option>,
@@ -282,7 +282,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                 initialValue: assessmentConfirmation.taskName,
               })(
                 <Select disabled={search || editSign} getPopupContainer={e => e.parentNode}>
-                  {appraisalStatus.map(obj => [
+                  {(appraisalStatus || []).map(obj => [
                     <Option key={obj.key} value={obj.title}>
                       {obj.title}
                     </Option>,

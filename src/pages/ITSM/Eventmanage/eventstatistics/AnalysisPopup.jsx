@@ -575,7 +575,7 @@ function AnalysisPopup(props) {
           dataSource={list.rows}
           rowKey={record => record.id}
           pagination={pagination}
-          scroll={{ x: 700, y: 800 }}
+          scroll={{ x: 1300, }}
         />
       </Drawer>
     </>

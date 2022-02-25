@@ -36,7 +36,7 @@ function StatisticsCard(props) {
           }
           }
         >
-          <Statistic value={value} suffix={suffix} />
+          <Statistic value={value || 0} suffix={suffix || 0} />
         </Col>
         <Col span={24} style={{ paddingBottom: 8 }}>
           <span style={{ paddingRight: 12 }}>{des}</span>

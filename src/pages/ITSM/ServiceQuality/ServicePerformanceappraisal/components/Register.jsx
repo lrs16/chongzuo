@@ -575,7 +575,7 @@ const Register = forwardRef((props, ref) => {
                 onChange={(value, option) => handleChange(value, option, 'contract')}
                 onFocus={() => handleFocus('contract')}
               >
-                {contractArr.map(obj => [
+                {(contractArr || []).map(obj => [
                   <Option key={obj.contractName} value={obj.id}>
                     <div className={styles.disableuser}>
                       {/* <span>{obj.contractNo}</span> */}
@@ -778,7 +778,7 @@ const Register = forwardRef((props, ref) => {
                 onFocus={() => handleFocus('one')}
                 placeholder="请选择"
               >
-                {target1.map(obj => [
+                {(target1 || []).map(obj => [
                   <Option key={obj.id} value={obj.title}>
                     {obj.title}
                   </Option>,
@@ -814,7 +814,7 @@ const Register = forwardRef((props, ref) => {
                 onFocus={() => handleFocus('two')}
                 placeholder="请选择"
               >
-                {target2.map(obj => [
+                {(target2 || []).map(obj => [
                   <Option key={obj.id} value={obj.title}>
                     {obj.title}
                   </Option>,

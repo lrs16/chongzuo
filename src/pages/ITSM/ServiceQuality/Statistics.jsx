@@ -10,7 +10,8 @@ import {
 } from 'antd';
 import { connect } from 'dva';
 import moment from 'moment';
-import StatisticsCard from './StatisticsCard';
+import StatisticsCard from '../Eventmanage/Eventstatistics/StatisticsCard';
+import AnalysisPopup from './AnalysisPopup';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -26,6 +27,9 @@ function Statistics(props) {
     isopen: false,
     time: moment().format('YYYY')
   });
+  const [visible, setVisible] = useState(false);
+  const [title, setTitle] = useState('');
+  const [picval, setPicVal] = useState({});
 
   const getList = () => {
     dispatch({
@@ -50,6 +54,8 @@ function Statistics(props) {
     searchObj.totalScore = replaceObj.totalScore;
     searchObj.extraRatio = replaceObj.extraRatio;
     searchObj.minusRatio = replaceObj.minusRatio;
+    searchObj.beginTime = replaceObj.beginTime;
+    searchObj.endTime = replaceObj.endTime;
 
     const newArr = listdata;
     newArr.splice(index, 1, searchObj);
@@ -91,13 +97,15 @@ function Statistics(props) {
                   <span>考核周期：</span>
                   <Select
                     getPopupContainer={triggerNode => triggerNode.parentNode}
-                    style={{ width: 150 }}
-                    defaultValue={obj.active}
+                    style={{ width: 250 }}
+                    defaultValue={obj.active ? obj.active + moment(obj.beginTime).format('YYYY-MM-DD') + -moment(obj.endTime).format('YYYY-MM-DD') :''}
                     onChange={(value, option) => handleSelectChange(value, option, index)}
                   >
                     {
-                      (obj.phases || []).map(objs => [
-                        <Option key={JSON.stringify(objs)} value={objs.assessCycle}>{objs.assessCycle}</Option>
+                      (obj.phases || []).map((objs) => [
+                        <Option key={JSON.stringify(objs)} value={objs.assessCycle + objs.beginTime + -objs.endTime}>
+                          <span>{objs.assessCycle} {objs.beginTime}-{objs.endTime}</span>
+                        </Option>
                       ])
                     }
                   </Select>
@@ -105,18 +113,73 @@ function Statistics(props) {
 
               </div>
               <Col span={8}>
-                <StatisticsCard title='累计扣分' value={obj.minusScore} suffix='累计扣分' des='环比' desval={obj.minusRatio} type={Number(obj.minusScore) > Number(obj.prevMinusScore) ? 'up' : 'down'} />
+                <StatisticsCard
+                  title='累计扣分'
+                  value={obj.minusScore}
+                  suffix='累计扣分'
+                  des='环比'
+                  desval={obj.minusRatio}
+                  type={Number(obj.minusScore) > Number(obj.prevMinusScore) ? 'up' : 'down'}
+                  onGetVal={() => {
+                    setPicVal({
+                      assessBeginTime: obj.beginTime,
+                      assessEndTime: obj.endTime,
+                      coreType: '减'
+                    });
+                    setVisible(true)
+                    setTitle('合同名称:'+ obj.contractName +';'+ '考核周期:' + (obj.assessPhase))
+                  }}
+                />
               </Col>
               <Col span={8}>
-                <StatisticsCard title='累计加分' value={obj.extraScore} suffix='累计加分' des='环比' desval={obj.extraRatio} type={Number(obj.extraScore) > Number(obj.prevExtraScore) ? 'up' : 'down'} />
+                <StatisticsCard
+                  title='累计加分'
+                  value={obj.extraScore}
+                  suffix='累计加分'
+                  des='环比'
+                  desval={obj.extraRatio}
+                  type={Number(obj.extraScore) > Number(obj.prevExtraScore) ? 'up' : 'down'}
+                  onGetVal={() => {
+                    setPicVal({
+                      assessBeginTime: obj.beginTime,
+                      assessEndTime: obj.endTime,
+                      coreType: '加'
+                    });
+                    setVisible(true)
+                    setTitle('合同名称:'+ obj.contractName +';'+ '考核周期:' + (obj.assessPhase))
+                  }}
+                />
               </Col>
               <Col span={8}>
-                <StatisticsCard title='合计分值' value={obj.totalScore} suffix='合计分值' des='环比' desval={obj.totalRatio} type={Number(obj.totalScore) > Number(obj.prevTotalScore) ? 'up' : 'down'} />
+                <StatisticsCard
+                  title='合计分值'
+                  value={obj.totalScore}
+                  suffix='合计分值'
+                  des='环比'
+                  desval={obj.totalRatio}
+                  type={Number(obj.totalScore) > Number(obj.prevTotalScore) ? 'up' : 'down'}
+                  onGetVal={() => {
+                    setPicVal({
+                      assessBeginTime: obj.beginTime,
+                      assessEndTime: obj.endTime,
+                      coreType: ''
+                    });
+                    setVisible(true)
+                    setTitle('合同名称:'+ obj.contractName +';'+ '考核周期:' + (obj.assessPhase))
+                  }}
+                />
               </Col>
             </Row>
+
           )
         })
       }
+      <AnalysisPopup
+        visible={visible}
+        title={title}
+        popupParameters={picval}
+        closePop={() => { setVisible(false)}}
+      />
     </>
   )
 }
