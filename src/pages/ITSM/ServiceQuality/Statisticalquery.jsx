@@ -69,6 +69,7 @@ function Statisticalquery(props) {
             setPicVal({
               assessBeginTime: startTime,
               assessEndTime: endTime,
+              contractId:record.contractId,
               scoreType: '减'
             });
             setVisible(true)
@@ -90,6 +91,7 @@ function Statisticalquery(props) {
             setPicVal({
               assessBeginTime: startTime,
               assessEndTime: endTime,
+              contractId:record.contractId,
               scoreType: '加'
             });
             setVisible(true)
@@ -110,6 +112,7 @@ function Statisticalquery(props) {
           setPicVal({
             assessBeginTime: record.beginTime,
             assessEndTime: record.endTime,
+            contractId:record.contractId,
             scoreType: '减'
           });
           setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase || ''))
@@ -127,6 +130,7 @@ function Statisticalquery(props) {
           setPicVal({
             assessBeginTime: record.beginTime,
             assessEndTime: record.endTime,
+            contractId:record.contractId,
             scoreType: '加'
           });
           setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase || ''))
@@ -143,6 +147,7 @@ function Statisticalquery(props) {
           setPicVal({
             assessBeginTime: record.beginTime,
             assessEndTime: record.endTime,
+            contractId:record.contractId,
             scoreType: ''
           });
           setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase || ''))
@@ -187,6 +192,7 @@ function Statisticalquery(props) {
           setPicVal({
             assessBeginTime: record.beginTime,
             assessEndTime: record.endTime,
+            contractId:record.contractId,
             scoreType: '减'
           });
           setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase  || ''))
@@ -203,6 +209,7 @@ function Statisticalquery(props) {
           setPicVal({
             assessBeginTime: record.beginTime,
             assessEndTime: record.endTime,
+            contractId:record.contractId,
             scoreType: '加'
           });
           setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase  || ''))
@@ -219,6 +226,7 @@ function Statisticalquery(props) {
           setPicVal({
             assessBeginTime: record.beginTime,
             assessEndTime: record.endTime,
+            contractId:record.contractId,
             scoreType: ''
           });
           setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase  || ''))
