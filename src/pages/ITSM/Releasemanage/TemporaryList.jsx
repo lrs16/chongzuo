@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
-import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, message, Tooltip } from 'antd';
+import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, message, Tooltip, Divider } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
 import { exportReleaseOrder } from './services/temp';
 
 const { Option } = Select;
+const InputGroup = Input.Group;
 
 const formItemLayout = {
   labelCol: {
@@ -29,12 +30,18 @@ function Querylist(props) {
     list,
     dispatch,
     location,
+    viewlist,
+    viewmsg,
+    viewloading
   } = props;
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+  const [viewPages, setViewPages] = useState({ current: 1, pageSize: 5 });
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRecords, setSelectedRecords] = useState([]);
+  const [expandedRowKeys, setExpandedRowKeys] = useState([]);
+  console.log(expandedRowKeys);
 
   // 缓存页签查询条件
   const [tabrecord, setTabRecord] = useState({});
@@ -48,6 +55,7 @@ function Querylist(props) {
       type: 'releasetemp/fetchlist',
       payload: {
         ...values,
+        orderType: 'LS',
         beginTime: values.beginTime ? moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
         endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
         pageSize: size,
@@ -56,6 +64,7 @@ function Querylist(props) {
     });
     setTabRecord({
       ...values,
+      orderType: 'LS',
       beginTime: values.beginTime ? moment(values.beginTime).format('X') : '',
       endTime: values.endTime ? moment(values.endTime).format('X') : '',
     });
@@ -195,21 +204,21 @@ function Querylist(props) {
 
   const getTypebyId = key => {
     if (selectdata.ischange) {
-      return selectdata.arr.filter(item => item.key === key)[0].children;
+      return selectdata.arr.filter(item => item.key === key)[0]?.children;
     }
     return [];
   };
 
   const typemap = getTypebyId(460);       // 发布类型
   const unitmap = getTypebyId(1052);       // 责任单位
-  const statumap = getTypebyId(469);       // 处理环节
+  const statumap = getTypebyId(13266);       // 处理环节
+  const grademap = getTypebyId(514);
 
   const columns = [
     {
       title: '临时发布编号',
       dataIndex: 'releaseNo',
       key: 'releaseNo',
-      fixed: 'left',
       render: (text, record) => {
         const handleClick = () => {
           dispatch({
@@ -312,7 +321,132 @@ function Querylist(props) {
     >
       {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
     </Button></>
-  )
+  );
+
+
+  // 查看清单
+  const getViewList = (releaseNo) => {
+    dispatch({
+      type: 'releasetemp/viewlist',
+      payload: {
+        releaseNo
+      },
+    })
+  }
+
+  const changeRowsKey = (expanded, record) => {
+    if (expanded) {
+      const arr = [record.taskId];
+      setExpandedRowKeys(arr);
+      getViewList(record.releaseNo);
+    } else {
+      setExpandedRowKeys([]);
+    }
+  }
+
+  const expandedRowRender = () => {
+    const columnSun = [
+      {
+        title: '序号',
+        dataIndex: 'key',
+        key: 'key',
+        width: 60,
+        align: 'center',
+        render: (text, record, index) => {
+          return <>{`${(viewPages.current - 1) * viewPages.pageSize + index + 1}`}</>;
+        },
+      },
+      {
+        title: '功能类型',
+        dataIndex: 'abilityType',
+        key: 'abilityType',
+        width: 150,
+      },
+      {
+        title: '模块',
+        dataIndex: 'module',
+        key: 'module',
+        width: 120,
+      },
+      {
+        title: '功能名称',
+        dataIndex: 'appName',
+        key: 'appName',
+        width: 150,
+      },
+      {
+        title: '问题类型',
+        dataIndex: 'problemType',
+        key: 'problemType',
+        width: 150,
+      },
+      {
+        title: '测试内容及预期效果',
+        dataIndex: 't5',
+        key: 't5',
+        width: 300,
+        render: (text, record) => {
+          return (
+            <>
+              <InputGroup compact>
+                <span style={{ width: 70, textAlign: 'right' }}>功能菜单：</span>
+                <span style={{ width: 200 }}>{record.testMenu}</span>
+              </InputGroup>
+              <Divider type='horizontal' style={{ margin: '6px 0' }} />
+              <InputGroup compact>
+                <span style={{ width: 70, textAlign: 'right' }}>预期效果：</span>
+                <span style={{ width: 200 }}>{record.testResult}</span>
+              </InputGroup>
+              <Divider type='horizontal' style={{ margin: '6px 0' }} />
+              <InputGroup compact>
+                <span style={{ width: 70, textAlign: 'right' }}>验证步骤：</span>
+                <span style={{ width: 200 }}>{record.testStep}</span>
+              </InputGroup>
+            </>
+          );
+        }
+      },
+      {
+        title: '是否通过',
+        dataIndex: 'passTest',
+        key: 'passTest',
+        align: 'center',
+        width: 100,
+      },
+      {
+        title: '开发人员',
+        dataIndex: 'developer',
+        key: 'developer',
+        width: 100,
+      },
+    ];
+    // const key = Object.keys(viewlist)[0];
+    const viewpagination = {
+      showSizeChanger: true,
+      onShowSizeChange: (page, size) => { setViewPages({ ...viewPages, current: 1, pageSize: size }) },
+      current: viewPages.current,
+      pageSize: viewPages.pageSize,
+      pageSizeOptions: ['2', '5', '10', '20', '30', '40', '50'],
+      total: viewlist?.length,
+      showTotal: total => `总共  ${total}  条记录`,
+      onChange: page => setViewPages({ ...viewPages, current: page }),
+    };
+
+    return (
+      <div style={{ margin: '0 48px 0 0', }}>
+        {/* <div style={{ marginBottom: 12 }}>{viewmsg}</div> */}
+        <Table
+          columns={columnSun}
+          dataSource={viewlist}
+          size='small'
+          pagination={viewpagination}
+          loading={viewloading}
+          bordered
+          scroll={{ y: 350 }}
+        />
+      </div>
+    );
+  };
 
   const setTableHeight = () => {
     let height = 500;
@@ -347,8 +481,8 @@ function Querylist(props) {
             </Col>
             <Col span={8}>
               <Form.Item label="当前处理环节">
-                {getFieldDecorator('releaseStatus', {
-                  initialValue: cacheinfo.releaseStatus,
+                {getFieldDecorator('taskName', {
+                  initialValue: cacheinfo.taskName,
                 })(
                   <Select placeholder="请选择" allowClear>
                     {statumap.map(obj => (
@@ -364,25 +498,25 @@ function Querylist(props) {
               <>
                 <Col span={8}>
                   <Form.Item label="当前处理人">
-                    {getFieldDecorator('assignee', {
-                      initialValue: cacheinfo.assignee,
+                    {getFieldDecorator('assigneeName', {
+                      initialValue: cacheinfo.assigneeName,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="程序版本号">
-                    {getFieldDecorator('dutyUnit', {
-                      initialValue: cacheinfo.dutyUnit,
+                    {getFieldDecorator('versionNo', {
+                      initialValue: cacheinfo.versionNo,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="发布等级">
-                    {getFieldDecorator('releaseType', {
-                      initialValue: cacheinfo.releaseType,
+                    {getFieldDecorator('releaseLevel', {
+                      initialValue: cacheinfo.releaseLevel,
                     })(
                       <Select placeholder="请选择" allowClear>
-                        {typemap.map(obj => (
+                        {grademap.map(obj => (
                           <Option key={obj.key} value={obj.title}>
                             {obj.title}
                           </Option>
@@ -393,8 +527,8 @@ function Querylist(props) {
                 </Col>
                 <Col span={8}>
                   <Form.Item label="申请人">
-                    {getFieldDecorator('sender', {
-                      initialValue: '',
+                    {getFieldDecorator('applicant', {
+                      initialValue: cacheinfo.applicant,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
@@ -444,10 +578,19 @@ function Querylist(props) {
         < Table
           loading={loading}
           columns={columns}
+          expandedRowKeys={expandedRowKeys}            // 默认展开的行
+          expandedRowRender={expandedRowRender}        // 展开的内容
+          expandRowByClick
+          onRow={record => {
+            return {
+              onClick: e => { e.preventDefault(); getViewList(record.releaseNo) },
+            };
+          }}
+          onExpand={(expanded, record) => changeRowsKey(expanded, record)}
           dataSource={list.records}
           pagination={pagination}
           rowSelection={rowSelection}
-          rowKey={(_, index) => index.toString()}
+          rowKey={(r) => r.taskId}
           scroll={{ y: setTableHeight() }}
         />
       </Card>
@@ -458,6 +601,9 @@ function Querylist(props) {
 export default Form.create({})(
   connect(({ releasetemp, loading }) => ({
     list: releasetemp.list,
+    viewlist: releasetemp.viewlist,
+    viewmsg: releasetemp.viewmsg,
     loading: loading.models.releasetemp,
+    viewloading: loading.effects['releasetemp/viewlist'],
   }))(Querylist),
 );

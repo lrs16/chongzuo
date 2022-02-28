@@ -19,6 +19,7 @@ const User = props => {
     describe,
     indexUser,      // 默认选中人
     defaultUsers,   //
+    submitStatus,   // 拦截流转
   } = props;
   // const [isnew, setIsNew] = useState(false);
   const [demandvalue, setDemandValue] = useState([])
@@ -182,7 +183,7 @@ const User = props => {
   }, [visible]);
 
   const handleOk = () => {
-    if (type !== 'demand' && type !== 'task') {
+    if (type !== 'demand' && type !== 'task' && type !== 'release') {
       if (value.length === 0) {
         if (indexUser && indexUser.length && indexUser.length === 0) {
           message.error('最少选择一个处理人！');
@@ -194,7 +195,7 @@ const User = props => {
         ChangeChoice(true);
         ChangeUserVisible(false);
       }
-    }
+    };
 
     if (type === 'task') {
       if (value.length !== 1) {
@@ -203,7 +204,7 @@ const User = props => {
         ChangeChoice(true);
         ChangeUserVisible(false);
       }
-    }
+    };
 
     if (type === 'demand') {
       if (demandvalue.length < userlist.length) {
@@ -212,6 +213,24 @@ const User = props => {
         ChangeChoice(true);
         ChangeUserVisible(false);
       };
+    };
+
+    if (type === 'release') {
+      if (submitStatus === 200) {
+        if (value.length === 0) {
+          if (indexUser && indexUser.length && indexUser.length === 0) {
+            message.error('最少选择一个处理人！');
+          } else {
+            ChangeChoice(true);
+            ChangeUserVisible(false);
+          }
+        } else {
+          ChangeChoice(true);
+          ChangeUserVisible(false);
+        }
+      } else {
+        message.info('数据加载中请稍等。。。')
+      }
     }
   };
 

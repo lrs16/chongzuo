@@ -869,6 +869,7 @@ function WorkOrder(props) {
           ChangeType={v => (v)}                        //  取消，重置按钮类型    
           indexUser={taskName === '发布验证' && defaultUsers?.length ? defaultUsers.map(obj => obj.userId) : indexUser}
           defaultUsers={taskName === '发布验证' ? defaultUsers : undefined}
+          submitStatus={statuse}
         />
       )}
     </>

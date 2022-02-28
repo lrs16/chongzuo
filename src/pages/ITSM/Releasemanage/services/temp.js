@@ -76,3 +76,10 @@ export async function delOrder(releaseNo) {
     method: 'POST',
   })
 }
+
+// 展开清单/release/temp/openList
+export async function openList(releaseNo) {
+  return request(`/release/temp/openList?releaseNo=${releaseNo}`, {
+    method: 'GET',
+  })
+}

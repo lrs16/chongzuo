@@ -5,6 +5,7 @@ import {
   openOrder,
   getNextFlowUserList,
   toSubmit,
+  openList,
 } from '../services/temp';
 
 const closeTab = () => {
@@ -33,6 +34,8 @@ export default {
     info: undefined,
     statuse: -1,
     userlist: undefined,
+    viewlist: undefined,
+    viewmsg: ''
   },
 
   effects: {
@@ -99,6 +102,22 @@ export default {
       closeTab();
     },
 
+    // 查看清单
+    *viewlist({ payload: { releaseNo } }, { call, put }) {
+      yield put({
+        type: 'clearviewcache',
+      });
+      const response = yield call(openList, releaseNo);
+      if (response.code === 200) {
+        yield put({
+          type: 'saveview',
+          payload: response.data,
+        });
+      } else {
+        message.error(response.msg)
+      }
+    },
+
   },
 
   reducers: {
@@ -127,6 +146,20 @@ export default {
       return {
         ...state,
         statuse: action.payload.statuse,
+      };
+    },
+    clearviewcache(state) {
+      return {
+        ...state,
+        viewlist: undefined,
+        viewmsg: ''
+      };
+    },
+    saveview(state, action) {
+      return {
+        ...state,
+        viewlist: action.payload || [],
+        // viewmsg: action.payload.dutyUnitListMsg || '',
       };
     },
     saveuserlist(state, action) {

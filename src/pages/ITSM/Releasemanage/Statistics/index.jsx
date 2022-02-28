@@ -177,6 +177,7 @@ function Statistics(props) {
       render: (text, record) => {
         const handleClick = () => {
           const values = getFieldsValue();
+          console.log(values);
           const val = {
             ...values,
             beginTime: values.beginTime ? moment(values.beginTime).format('X') : '',
@@ -184,12 +185,27 @@ function Statistics(props) {
             releaseStatus: record.taskName === '合计' ? '' : record.taskName,
             paginations: { current: 1, pageSize: 15 },
             expand: true
+          };
+          if (values.releaseType === '计划发布') {
+            router.push({
+              pathname: `/ITSM/releasemanage/plan/query`,
+              query: { pathpush: true },
+              state: { cach: false, cacheinfo: val }
+            });
+          };
+          if (values.releaseType === '临时发布') {
+            router.push({
+              pathname: `/ITSM/releasemanage/temporary/list`,
+              query: { pathpush: true },
+              state: {
+                cach: false,
+                cacheinfo: {
+                  ...val,
+                  taskName: record.taskName === '合计' ? '' : record.taskName,
+                }
+              }
+            });
           }
-          router.push({
-            pathname: `/ITSM/releasemanage/plan/query`,
-            query: { pathpush: true },
-            state: { cach: false, cacheinfo: val }
-          });
         };
         return (<a onClick={handleClick}>{text}</a>);
       },
