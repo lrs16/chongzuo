@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import { orderInfo, orderImg, searchOrder } from '../services/api';
+import { orderInfo, orderImg, searchOrder, getOpenLastList } from '../services/api';
 
 export default {
   namespace: 'releaseview',
@@ -11,6 +11,8 @@ export default {
     tasklinks: [],
     imgblob: '',
     processLinks: undefined,
+    viewlist: {},
+    viewmsg: '',
   },
 
   effects: {
@@ -50,6 +52,19 @@ export default {
       });
     },
 
+    // 查看清单
+    *viewlist({ payload: { releaseNo } }, { call, put }) {
+      const response = yield call(getOpenLastList, releaseNo);
+      if (response.code === 200) {
+        yield put({
+          type: 'saveview',
+          payload: response.data,
+        });
+      } else {
+        message.error(response.msg)
+      }
+    },
+
   },
 
   reducers: {
@@ -61,6 +76,8 @@ export default {
         tasklinks: [],
         imgblob: '',
         processLinks: [],
+        viewlist: {},
+        viewmsg: ''
       };
     },
     save(state, action) {
@@ -82,6 +99,14 @@ export default {
       return {
         ...state,
         imgblob: action.payload,
+      };
+    },
+
+    saveview(state, action) {
+      return {
+        ...state,
+        viewlist: action.payload.dutyUnitList || {},
+        viewmsg: action.payload.dutyUnitListMsg || '',
       };
     },
   },

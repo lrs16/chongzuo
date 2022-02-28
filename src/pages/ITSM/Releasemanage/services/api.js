@@ -425,3 +425,10 @@ export async function exportTaskToDocx(params) {
     responseType: 'blob',
   });
 }
+
+// 发布工单查最新的清单
+export async function getOpenLastList(releaseNo) {
+  return request(`/release/from/openLastList?releaseNo=${releaseNo}`, {
+    method: 'GET',
+  });
+}
