@@ -27,6 +27,7 @@ function Registration(props) {
   const [saveloading, setSaveloading] = useState(false);
   const [userlist, setUserlist] = useState([]);
   const [indexUser, setIndexUser] = useState([]);
+  const [submitStatus, setSubmitStatus] = useState('-1')
   const [indexvalue, setIndexValue] = useState({ releaseMain: {}, releaseRegister: {}, releaseEnvs: [], releaseLists: [], releaseAttaches: [] });
   // 初始化用户信息，流程类型,附件列表
   useEffect(() => {
@@ -142,6 +143,7 @@ function Registration(props) {
         setSaveloading(true);
         saveRegister(register).then(res => {
           if (res.code === 200) {
+            setSubmitStatus(res.code)
             setSaveloading(false);
             sessionStorage.setItem('flowtype', '1');
             setTaskId(res.data.currentTaskStatus.taskId);
@@ -163,6 +165,24 @@ function Registration(props) {
                     message.error(res.msg);
                     setSaveloading(false);
                   };
+                })
+              } else {
+                router.push({
+                  pathname: `/ITSM/releasemanage/plan/to-do/record`,
+                  query: {
+                    Id: res.data.currentTaskStatus.businessKey,
+                    taskId: res.data.currentTaskStatus.taskId,
+                    taskName: '出厂测试'
+                  },
+                  state: {
+                    runpath: `/ITSM/releasemanage/plan/to-do`,
+                    dynamicpath: true,
+                    menuDesc: '发布工单',
+                  },
+                });
+                router.push({
+                  pathname: `/ITSM/releasemanage/plan/registration`,
+                  query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
                 })
               }
             })
@@ -322,6 +342,7 @@ function Registration(props) {
           ChangeChoice={v => setUserChoice(v)}         //  选人完成返回状态true，通过true判读，进行
           ChangeType={v => (v)}                        //  取消，重置按钮类型  
           indexUser={indexUser}
+          submitStatus={submitStatus}
         />
         <TimeoutModal
           modalvisible={modalvisible}

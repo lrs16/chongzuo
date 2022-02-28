@@ -166,7 +166,7 @@ class GlobalHeaderRight extends Component {
         viewMoreText='查看全部待办单'
         onClear={this.handleNoticeClear}
         onPopupVisibleChange={onNoticeVisibleChange}
-        onViewMore={() => router.push({ pathname: `/ITSM/todo`, query: { pathpush: true } })}
+        onViewMore={() => router.push({ pathname: `/ITSM/todo`, query: { pathpush: true, itemWorkType: 'all' }, state: {} })}
         clearClose
       >
         {/* 待办 */}

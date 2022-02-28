@@ -57,7 +57,7 @@ function ITSMtodo(props) {
           todoUserId: sessionStorage.getItem('userauthorityid'),
           pageNum: paginations.current,
           pageSize: paginations.pageSize,
-          itemWorkType: location?.query?.itemWorkType || '',
+          itemWorkType: location?.query?.itemWorkType !== 'all' ? location?.query?.itemWorkType : '',
         },
       });
     }

@@ -133,7 +133,6 @@ function TemporaryDetail(props) {
   }
 
   const toSubmit = (val) => {
-    console.log(val);
     dispatch({
       type: 'releasetemp/releaseflow',
       payload: { ...val },
@@ -320,7 +319,7 @@ function TemporaryDetail(props) {
               <div style={{ marginTop: 12 }}>
                 <FilesContext.Provider value={{
                   // files: info?.tempRegister?.attach ? JSON.parse(info.tempRegister.attach) : [],
-                  ChangeFiles: (v => { console.log(v); }),
+                  ChangeFiles: ((v) => { handleSave(v); }),
                   getUploadStatus: (v) => { setUploadStatus(v) },
                   ChangeButtype: (v) => {
                     if (v === 'submit') {

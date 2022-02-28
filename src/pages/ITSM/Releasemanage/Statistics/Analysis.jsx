@@ -51,7 +51,7 @@ function Statistics(props) {
   const [visible, setVisible] = useState(false);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 12 });
   const [fetchType, setFetchType] = useState({});
-  const [selectedTags, setSelectedTags] = useState('全部');
+  const [selectTag, setSelectTag] = useState('全部');
 
   const piesum = (arr) => {
     let sum = 0;
@@ -98,7 +98,7 @@ function Statistics(props) {
 
   const handleChang = (tag, checked) => {
     if (checked) {
-      setSelectedTags(tag);
+      setSelectTag(tag);
       const val = {
         begin: moment(values.beginTime).format('YYYY-MM-DD'),
         end: moment(values.endTime).format('YYYY-MM-DD'),
@@ -130,7 +130,7 @@ function Statistics(props) {
         begin: moment(values.beginTime).format('YYYY-MM-DD'),
         end: moment(values.endTime).format('YYYY-MM-DD'),
         type: values.type,
-        orderType: tagmap.get(selectedTags),
+        orderType: tagmap.get(selectTag),
       }
       dispatch({
         type: 'releaseanalysis/fetchsum',
@@ -165,7 +165,7 @@ function Statistics(props) {
       pageSize,
       begin: moment(date && beginTime !== endTime ? date : values.beginTime).format(beginformat),
       end: moment(date && beginTime !== endTime ? date : values.endTime).format(endformat),
-      orderType: tagmap.get(selectedTags),
+      orderType: tagmap.get(selectTag),
     };
     dispatch({
       type: 'releaseanalysis/fetchlist',
@@ -278,7 +278,7 @@ function Statistics(props) {
           return (
             <CheckableTag
               key={obj}
-              checked={selectedTags === obj}
+              checked={selectTag === obj}
               onChange={checked => handleChang(obj, checked)}
             >
               {obj}

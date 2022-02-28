@@ -41,7 +41,6 @@ function Querylist(props) {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRecords, setSelectedRecords] = useState([]);
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
-  console.log(expandedRowKeys);
 
   // 缓存页签查询条件
   const [tabrecord, setTabRecord] = useState({});

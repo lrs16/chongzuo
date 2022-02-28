@@ -235,7 +235,7 @@ function TemporaryRegistration(props) {
       <Card>
         <FilesContext.Provider value={{
           // files: info?.tempRegister?.attach ? JSON.parse(info.tempRegister.attach) : [],
-          ChangeFiles: (() => { }),
+          ChangeFiles: ((v) => { handleSave(v); }),
           getUploadStatus: (v) => { setUploadStatus(v) },
           ChangeButtype: () => { },
         }}>

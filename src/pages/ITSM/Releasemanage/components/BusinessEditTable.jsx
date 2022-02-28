@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
-import { Table, Input, Radio, Divider, Row, Col, Button, } from 'antd';
+import { Table, Input, Radio, Divider, Row, Col, Button, message, Popconfirm } from 'antd';
 import { releaseListEdit, classifyList, releaseListsDownload, } from '../services/api'
 import styles from '../index.less';
 
@@ -32,6 +32,7 @@ function BusinessEditTable(props) {
   const [selectedRecords, setSelectedRecords] = useState([]);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 5 });
   const [visible, setVisible] = useState(false);
+  const [result, setResult] = useState({});
 
   useEffect(() => {
     if (dataSource && dataSource.length > 0) {
@@ -59,6 +60,15 @@ function BusinessEditTable(props) {
     }
   }, [loading])
 
+  useEffect(() => {
+    if (visible) {
+      setTimeout(() => {
+        const morepop = document.getElementsByClassName('ant-popover');
+        if (morepop[0]) { morepop[0].style.display = 'none' }
+      }, 100)
+    }
+  }, [visible])
+
   // 获取行
   const getRowByKey = (key, newData) => {
     return (newData || data).filter(item => item.key === key)[0];
@@ -73,7 +83,13 @@ function BusinessEditTable(props) {
       if (type === '发布验证') {
         ChangeValue(newData);
       } else {
-        releaseListEdit(target);
+        releaseListEdit(target).then(res => {
+          if (res.code) {
+            ChangeValue({ status: true, target });
+          } else {
+            message.error(res.msg || '操作失败')
+          }
+        });
       }
     }
   };
@@ -248,10 +264,31 @@ function BusinessEditTable(props) {
         return (
           <>
             {isEdit ? (
-              <RadioGroup value={text} onChange={e => handleFieldChange(e.target.value, 'passTest', record.key)}>
-                <Radio value='通过'>通过</Radio>
-                <Radio value='不通过'>不通过</Radio>
-              </RadioGroup>
+              <Popconfirm
+                title="该清单不属于您的功能业务，是否确定验证？"
+                onConfirm={() => { setVisible(false); handleFieldChange(result.passTest, 'passTest', record.key) }}
+                visible={visible}
+                onCancel={() => setVisible(false)}
+                placement="leftTop"
+              >
+                <RadioGroup
+                  value={text}
+                  // onChange={e => handleFieldChange(e.target.value, 'passTest', record.key)}
+                  onMouseDown={() => { setVisible(false); setResult({}); }}
+                  onChange={e => {
+                    if (record.responsible !== sessionStorage.getItem('userName') && type !== '发布验证') {
+                      setVisible(true);
+                      setResult({ ...result, passTest: e.target.value });
+
+                    } else {
+                      handleFieldChange(e.target.value, 'passTest', record.key)
+                    }
+                  }}
+                >
+                  <Radio value='通过'>通过</Radio>
+                  <Radio value='不通过'>不通过</Radio>
+                </RadioGroup>
+              </Popconfirm>
             ) : <>{text}</>}
           </>
         )

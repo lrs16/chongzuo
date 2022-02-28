@@ -16,6 +16,7 @@ function BusinessDetail(props) {
   const [selectedRecords, setSelectedRecords] = useState([]);
   const [visible, setVisible] = useState(false);
   const [visibleQuality, setVisibleQuality] = useState(false);
+  const [toVerify, setToVerify] = useState(false);
   const { currenttab } = useContext(EditContext);
   const user = sessionStorage.getItem('userName');
 
@@ -132,7 +133,7 @@ function BusinessDetail(props) {
       {titletype === taskName && (
         <>
           <Button type="primary" style={{ marginRight: 8 }} onClick={() => handlemycompleteverify()}>
-            验证我负责的业务
+            我负责的清单
           </Button>
           <Popconfirm
             title="该清单不属于您的功能业务复核，是否确定复核？"
@@ -170,11 +171,22 @@ function BusinessDetail(props) {
           title='发布清单'
           type={pagetitle}
           dataSource={info}
-          ChangeValue={() => { }}
+          ChangeValue={(v) => {
+            if (v.status) {
+              completeVerify({ listIds: v.target.id }).then(res => {
+                if (res.code === 200) {
+                  message.success(res.msg);
+                } else {
+                  message.error(res.msg || '验证失败')
+                };
+              })
+            }
+          }}
           scroll={{ x: 1740 }}
           loading={loading}
           isEdit={titletype === taskName}
           getSelectedRecords={(v) => setSelectedRecords(v)}
+
         />
       </Card>
     </PageHeaderWrapper >
