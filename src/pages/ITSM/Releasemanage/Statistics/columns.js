@@ -12,17 +12,32 @@ export const columns = [
     key: 'releaseNo',
     render: (text, record) => {
       const handleClick = () => {
-        router.push({
-          pathname: `/ITSM/releasemanage/plan/query/details`,
-          query: {
-            Id: record.releaseNo,
-            taskName: record.taskName,
-          },
-          state: {
-            dynamicpath: true,
-            menuDesc: '发布工单详情',
-          }
-        });
+        if (record.releaseNo.includes('LS')) {
+          router.push({
+            pathname: `/ITSM/releasemanage/temporary/details`,
+            query: {
+              Id: record.releaseNo,
+              taskId: record.taskId,
+              taskName: record.taskName,
+            },
+            state: {
+              dynamicpath: true,
+              menuDesc: '临时发布工单详情',
+            }
+          });
+        } else {
+          router.push({
+            pathname: `/ITSM/releasemanage/plan/query/details`,
+            query: {
+              Id: record.releaseNo,
+              taskName: record.taskName,
+            },
+            state: {
+              dynamicpath: true,
+              menuDesc: '发布工单详情',
+            }
+          });
+        }
       };
       return (<a onClick={handleClick}>{text}</a>);
     },
@@ -95,17 +110,32 @@ export const columnstask = [
     key: 'releaseNo',
     render: (text, record) => {
       const handleClick = () => {
-        router.push({
-          pathname: `/ITSM/releasemanage/plan/query/details`,
-          query: {
-            Id: record.releaseNo,
-            taskName: record.taskName,
-          },
-          state: {
-            dynamicpath: true,
-            menuDesc: '发布工单详情',
-          }
-        });
+        if (record.releaseNo.includes('LS')) {
+          router.push({
+            pathname: `/ITSM/releasemanage/temporary/details`,
+            query: {
+              Id: record.releaseNo,
+              taskId: record.taskId,
+              taskName: record.taskName,
+            },
+            state: {
+              dynamicpath: true,
+              menuDesc: '临时发布工单详情',
+            }
+          });
+        } else {
+          router.push({
+            pathname: `/ITSM/releasemanage/plan/query/details`,
+            query: {
+              Id: record.releaseNo,
+              taskName: record.taskName,
+            },
+            state: {
+              dynamicpath: true,
+              menuDesc: '发布工单详情',
+            }
+          });
+        }
       };
       return (<a onClick={handleClick}>{text}</a>);
     },
@@ -145,17 +175,32 @@ export const columnrelease = [
     key: 'releaseNo',
     render: (text, record) => {
       const handleClick = () => {
-        router.push({
-          pathname: `/ITSM/releasemanage/plan/query/details`,
-          query: {
-            Id: record.releaseNo,
-            taskName: record.taskName,
-          },
-          state: {
-            dynamicpath: true,
-            menuDesc: '发布工单详情',
-          }
-        });
+        if (record.releaseNo.includes('LS')) {
+          router.push({
+            pathname: `/ITSM/releasemanage/temporary/details`,
+            query: {
+              Id: record.releaseNo,
+              taskId: record.taskId,
+              taskName: record.taskName,
+            },
+            state: {
+              dynamicpath: true,
+              menuDesc: '临时发布工单详情',
+            }
+          });
+        } else {
+          router.push({
+            pathname: `/ITSM/releasemanage/plan/query/details`,
+            query: {
+              Id: record.releaseNo,
+              taskName: record.taskName,
+            },
+            state: {
+              dynamicpath: true,
+              menuDesc: '发布工单详情',
+            }
+          });
+        }
       };
       return (<a onClick={handleClick}>{text}</a>);
     },
