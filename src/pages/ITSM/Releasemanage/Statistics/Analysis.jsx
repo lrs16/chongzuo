@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Card, Row, Col, Avatar, Empty, Spin, InputNumber, Drawer, Table, Input, Divider, Button, message } from 'antd';
+import { Card, Row, Col, Avatar, Empty, Spin, InputNumber, Drawer, Table, Input, Divider, Button, message, Tag } from 'antd';
 import StatisticsCard from '@/components/StatisticsCard';
 import SelectTime from '@/components/SelectTime/SelectTime';
 import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
@@ -21,6 +21,14 @@ import {
 } from './services/api';
 
 import { columns, columnstask, columnrelease } from './columns'
+
+const { CheckableTag } = Tag;
+const tagsFromServer = ['全部', '计划', '临时'];
+const tagmap = new Map([
+  ['全部', ''],
+  ['计划', 'JH'],
+  ['临时', 'LS']
+])
 
 const cols = {
   rate: {
@@ -43,6 +51,7 @@ function Statistics(props) {
   const [visible, setVisible] = useState(false);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 12 });
   const [fetchType, setFetchType] = useState({});
+  const [selectedTags, setSelectedTags] = useState('全部');
 
   const piesum = (arr) => {
     let sum = 0;
@@ -87,12 +96,41 @@ function Statistics(props) {
     setTopN(val)
   };
 
+  const handleChang = (tag, checked) => {
+    if (checked) {
+      setSelectedTags(tag);
+      const val = {
+        begin: moment(values.beginTime).format('YYYY-MM-DD'),
+        end: moment(values.endTime).format('YYYY-MM-DD'),
+        type: values.type,
+        orderType: tagmap.get(tag),
+      }
+      dispatch({
+        type: 'releaseanalysis/fetchsum',
+        payload: { ...val },
+      });
+      dispatch({
+        type: 'releaseanalysis/fetchunit',
+        payload: { ...val },
+      });
+      dispatch({
+        type: 'releaseanalysis/fetchtimeout',
+        payload: { ...val },
+      });
+      dispatch({
+        type: 'releaseanalysis/fetchability',
+        payload: { ...val },
+      });
+    }
+  }
+
   useEffect(() => {
     if (values && values.type) {
       const val = {
         begin: moment(values.beginTime).format('YYYY-MM-DD'),
         end: moment(values.endTime).format('YYYY-MM-DD'),
-        type: values.type
+        type: values.type,
+        orderType: tagmap.get(selectedTags),
       }
       dispatch({
         type: 'releaseanalysis/fetchsum',
@@ -114,7 +152,7 @@ function Statistics(props) {
   }, [values]);
 
   const getList = (obj) => {
-    const { type, name, taskName, item, unit, releaseType, timeout, ability, subAbility, datetype, date, userName, pageIndex, pageSize } = obj;
+    const { type, name, taskName, item, unit, releaseType, timeout, timeoutStatus, ability, subAbility, datetype, date, userName, pageIndex, pageSize } = obj;
     setFetchType(obj);
     setVisible(true);
     const beginTime = moment(values.beginTime).format('YYYY-MM-DD');
@@ -127,10 +165,11 @@ function Statistics(props) {
       pageSize,
       begin: moment(date && beginTime !== endTime ? date : values.beginTime).format(beginformat),
       end: moment(date && beginTime !== endTime ? date : values.endTime).format(endformat),
+      orderType: tagmap.get(selectedTags),
     };
     dispatch({
       type: 'releaseanalysis/fetchlist',
-      payload: { val, name, type, taskName, item, unit, releaseType, timeout, ability, subAbility, userName },
+      payload: { val, name, type, taskName, item, unit, releaseType, timeout, timeoutStatus, ability, subAbility, userName },
     });
 
   };
@@ -170,7 +209,7 @@ function Statistics(props) {
         typeStatisticalExport({ ...val, releaseType: fetchType.releaseType, }).then(res => { resdownload(res) })
         break;
       case 'timeOutOrder':
-        timeOutOrderExport({ ...val, timeout: fetchType.timeout, }).then(res => { resdownload(res) })
+        timeOutOrderExport({ ...val, timeoutStatus: fetchType.timeout, }).then(res => { resdownload(res) })
         break;
       case 'abilityTimeOut':
         abilityTimeOutExport({ ...val, ability: fetchType.ability, subAbility: fetchType.subAbility }).then(res => { resdownload(res) })
@@ -231,9 +270,28 @@ function Statistics(props) {
       type={prevTotal * 100 < total * 100 ? 'up' : 'down'} />)
   }
 
+  const TypeSelect = () => {
+    return (
+      <>
+        <span style={{ fontSize: 16, fontWeight: 700, paddingRight: 12 }}>发布类型：</span>
+        {tagsFromServer.map(obj => {
+          return (
+            <CheckableTag
+              key={obj}
+              checked={selectedTags === obj}
+              onChange={checked => handleChang(obj, checked)}
+            >
+              {obj}
+            </CheckableTag>
+          )
+        })}
+      </>
+    )
+  }
+
   return (
     <div>
-      <SelectTime ChangeDate={(v) => setValues(v)} />
+      <SelectTime ChangeDate={(v) => setValues(v)} OtherSelect={TypeSelect} />
       <Spin spinning={loadingsum}>
         <Row style={{ marginTop: 16 }}>
           <div className={styles.statisticscard}>
@@ -554,7 +612,7 @@ function Statistics(props) {
         <Col span={12}>
           <div className={styles.statisticscard}>
             <Avatar icon="share-alt" />
-            <b>发布超时总情况</b>
+            <b>发布处理及时率</b>
           </div>
           <Card>
             {(!orederanalysis || (orederanalysis && orederanalysis.length === 0) ||
@@ -567,15 +625,15 @@ function Statistics(props) {
                 total={piesum(orederanalysis)}
                 padding={[10, 30, 30, 30]}
                 onGetVal={(v) => {
-                  getList({ type: 'timeOutOrder', name: v.type, timeout: v.type === '按时处理' ? 'N' : 'Y', pageIndex: 1, pageSize: 12 });
+                  getList({ type: 'timeOutOrder', name: v.type, timeoutStatus: v.type, pageIndex: 1, pageSize: 12 });
                   setPageinations({ current: 1, pageSize: 12 })
                 }}
                 onGetTotal={(v) => {
-                  getList({ type: 'timeOutOrder', name: '发布总次数', timeout: v, pageIndex: 1, pageSize: 12 });
+                  getList({ type: 'timeOutOrder', name: '发布总次数', timeoutStatus: v, pageIndex: 1, pageSize: 12 });
                   setPageinations({ current: 1, pageSize: 12 })
                 }}
                 totalType='all'
-                colors={['#ee6666', '#5AD8A6']}
+                colors={['#ee6666', '#faad14', '#5AD8A6']}
               />}
           </Card>
         </Col>
@@ -778,8 +836,9 @@ function Statistics(props) {
                 fetchType.name === '功能开发' ||
                 fetchType.name === '计划发布' ||
                 fetchType.name === '临时发布' ||
-                fetchType.name === '按时处理' ||
                 fetchType.name === '已超时' ||
+                fetchType.name === '取将超时' ||
+                fetchType.name === '未超时' ||
                 fetchType.listcolumns
               )
                 ? columns : columnrelease}

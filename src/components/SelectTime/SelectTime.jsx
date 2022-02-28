@@ -7,7 +7,7 @@ const { MonthPicker } = DatePicker;
 const tagsFromServer = ['按日', '按月', '按年'];
 
 function SelectTime(props) {
-  const { ChangeDate } = props;
+  const { ChangeDate, OtherSelect } = props;
   const [selectedTags, setSelectedTags] = useState('');
   const [startdates, setStartDates] = useState(undefined);
   const [enddates, setEndDates] = useState(undefined);
@@ -107,6 +107,7 @@ function SelectTime(props) {
 
   return (
     <Card>
+      {OtherSelect && OtherSelect()}
       <span style={{ fontSize: 16, fontWeight: 700, paddingRight: 12 }}>统计周期：</span>
       {tagsFromServer.map(obj => {
         return (

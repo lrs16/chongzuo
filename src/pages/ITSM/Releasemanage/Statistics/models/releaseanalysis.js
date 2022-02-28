@@ -108,7 +108,7 @@ export default {
       });
     },
     *fetchlist({
-      payload: { val, name, type, taskName, item, unit, releaseType, timeout, ability, subAbility, userName }
+      payload: { val, name, type, taskName, item, unit, releaseType, timeout, timeoutStatus, ability, subAbility, userName }
     }, { call, put }) {
       yield put({
         type: 'clearlist'
@@ -128,7 +128,7 @@ export default {
           response = yield call(typeStatisticalDetail, { ...val, releaseType });
           break;
         case 'timeOutOrder':
-          response = yield call(timeOutOrderDetail, { ...val, timeout });
+          response = yield call(timeOutOrderDetail, { ...val, timeoutStatus });
           break;
         case 'abilityTimeOut':
           response = yield call(abilityTimeOutDetail, { ...val, ability, subAbility });
