@@ -311,7 +311,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                   allowClear={false}
                   onChange={(value, option) => handleChange(value, option, 'clause')}
                 >
-                  {(clauseList.records || []).map(obj => [
+                  {(clauseList && clauseList.records || []).map(obj => [
                     <Option key={obj.detailed} value={obj.id}>
                       <div className={styles.disableuser}>
                         <span>{obj.orderNo}</span>

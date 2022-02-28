@@ -58,7 +58,6 @@ function Statistics(props) {
     searchObj.beginTime = replaceObj.beginTime;
     searchObj.endTime = replaceObj.endTime;
     searchObj.active = replaceObj.assessCycle;
-    searchObj.id = replaceObj.id;
 
     const newArr = listdata;
     newArr.splice(index, 1, searchObj);
@@ -174,7 +173,7 @@ function Statistics(props) {
                       assessBeginTime: obj.beginTime,
                       assessEndTime: obj.endTime,
                       contractId:obj.id,
-                      scoreType: ''
+                      scoreType: '合计'
                     });
                     setVisible(obj.beginTime);
                     if(!obj.beginTime) {

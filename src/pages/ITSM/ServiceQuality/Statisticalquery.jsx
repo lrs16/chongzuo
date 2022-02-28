@@ -148,7 +148,7 @@ function Statisticalquery(props) {
             assessBeginTime: record.beginTime,
             assessEndTime: record.endTime,
             contractId:record.contractId,
-            scoreType: ''
+            scoreType: '合计'
           });
           setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase || ''))
           setVisible(true)
@@ -227,7 +227,7 @@ function Statisticalquery(props) {
             assessBeginTime: record.beginTime,
             assessEndTime: record.endTime,
             contractId:record.contractId,
-            scoreType: ''
+            scoreType: '合计'
           });
           setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase  || ''))
           setVisible(true)
