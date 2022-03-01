@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, createContext } from 'react';
-import { Form, Button, message, Collapse, Steps } from 'antd';
+import { Form, Button, message, Collapse, Steps, Icon } from 'antd';
 import moment from 'moment';
 import { connect } from 'dva';
 import router from 'umi/router';
@@ -170,7 +170,7 @@ function Workorder(props) {
   };
 
   const getInformation = () => {
-    if(id) {
+    if (id) {
       dispatch({
         type: 'problemmanage/ToDodetails',
         payload: { id },
@@ -571,7 +571,7 @@ function Workorder(props) {
   };
 
   const getSelectperson = () => {
-    if(id) {
+    if (id) {
       const taskId = id;
       dispatch({
         type: 'itsmuser/problemuserlist',
@@ -996,24 +996,33 @@ function Workorder(props) {
                   padding: 24,
                   border: '1px solid #e8e8e8',
                   overflowX: 'auto',
-                  marginBottom: 24,
                 }}
               >
                 {problemFlowLogs &&
-                  problemFlowLogs.map(({ key, name, status, timeText, formHandler, startTime }) => [
-                    name !== '开始节点' && name !== '结束节点' && (
+                  problemFlowLogs.map((obj, index) => {
+                    let params;
+                    if (obj.name === '结束节点') {
+                      params = `${obj.name}${'\xa0'}${'\xa0'}${obj.timeText}`
+                    } else {
+                      params = `${obj.name}${'\xa0'}${'\xa0'}(${obj.status})${'\xa0'}${'\xa0'}${obj.timeText}`
+                    }
+
+                    return (
                       <Step
-                        key={key}
-                        title={`${name}${'\xa0'}${'\xa0'}(${status})${'\xa0'}${'\xa0'}${timeText}`}
+                        key={index}
+                        title={params}
                         description={
                           <div className={styles.stepDescription}>
-                            处理人：{formHandler}
-                            <div>结束时间：{moment(startTime).format('YYYY-MM-DD HH:mm:ss')}</div>
+                            处理人：{obj.formHandler}
+                            结束时间：{moment(obj.startTime).format('YYYY-MM-DD HH:mm:ss')}
                           </div>
                         }
+                        icon={index === problemFlowLogs.length - 1 ? <Icon type="sync" spin /> : ''}
                       />
-                    ),
-                  ])}
+                    )
+                  }
+                  )
+                }
               </Steps>
             )}
           </div>

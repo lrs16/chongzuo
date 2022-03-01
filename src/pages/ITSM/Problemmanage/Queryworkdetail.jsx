@@ -4,6 +4,7 @@ import {
   Button,
   Steps,
   Collapse,
+  Icon
 } from 'antd';
 import { connect } from 'dva';
 import router from 'umi/router';
@@ -142,15 +143,30 @@ function Queryworkdetail(props) {
                     overflowX: 'auto',
                   }}
                 >
-                  {
-                    problemFlowLogs && problemFlowLogs.map(({ key, name, status, timeText, formHandler, startTime }) => [
-                      name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})${'\xa0'}${'\xa0'}${timeText}`} description={
-                        <div className={styles.stepDescription}>
-                          处理人：{formHandler}
-                          <div>结束时间：{moment(startTime).format('YYYY-MM-DD HH:mm:ss')}</div>
-                        </div>
-                      } />
-                    ])}
+                  {problemFlowLogs &&
+                    problemFlowLogs.map((obj, index) => {
+                      let params;
+                      if (obj.name === '结束节点') {
+                        params = `${obj.name}${'\xa0'}${'\xa0'}${obj.timeText}`
+                      } else {
+                        params = `${obj.name}${'\xa0'}${'\xa0'}(${obj.status})${'\xa0'}${'\xa0'}${obj.timeText}`
+                      }
+                      return (
+                        <Step
+                          key={index}
+                          title={params}
+                          description={
+                            <div className={styles.stepDescription}>
+                              处理人：{obj.formHandler}
+                              <div>结束时间：{moment(obj.startTime).format('YYYY-MM-DD HH:mm:ss')}</div>
+                            </div>
+                          }
+                          icon={index === problemFlowLogs.length - 1 ? <Icon type="sync" spin /> : ''}
+                        />
+                      )
+                    }
+                    )
+                  }
                 </Steps>
               )
               }

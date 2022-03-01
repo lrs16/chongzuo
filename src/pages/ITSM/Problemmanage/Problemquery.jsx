@@ -249,7 +249,8 @@ function Besolved(props) {
   const currentNodeselect = getTypebyTitle('当前处理环节');
   const problemType = getTypebyTitle('问题分类');
   const scopeList = getTypebyTitle('影响范围');
-  const timeoutList = getTypebyTitle('超时状态');
+  const timeoutList = getTypebyTitle('处理状态');
+  const commontimeoutList = getTypebyTitle('超时状态');
 
   // 设置时间
   useEffect(() => {
@@ -293,6 +294,7 @@ function Besolved(props) {
     checkDeptId,
     status,
     createTime: '',
+    timeoutStatus: '',
     addTime: addTimeBegin ? [moment(addTimeBegin), moment(addTimeEnd)] : '',
     paginations: {
       current: 1,
@@ -373,7 +375,7 @@ function Besolved(props) {
       render: (text) => (
         <>
           <Icon type="alert" style={{ fontSize: '1.4em', color: colorArr.get(text), marginRight: '8px' }} />
-          <span style={{ color: textmap.get(text)}}>{text}</span>
+          <span style={{ color: textmap.get(text) }}>{text}</span>
         </>
       )
     },
@@ -532,7 +534,7 @@ function Besolved(props) {
       render: (text) => (
         <>
           <Icon type="alert" style={{ fontSize: '1.4em', color: colorArr.get(text), marginRight: '8px' }} />
-          <span style={{ color: textmap.get(text)}}>{text}</span>
+          <span style={{ color: textmap.get(text) }}>{text}</span>
         </>
       )
     },
@@ -1201,17 +1203,17 @@ function Besolved(props) {
               : addTimeEnd,
             createTime: '',
             registerOccurTimeBegin: values.registerOccurTime?.length
-            ? moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss')
-            : '',
-          registerOccurTimeEnd: values.registerOccurTime?.length
-            ? moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss')
-            : '',
-          registerOccurTime: values.registerOccurTime?.length
-            ? [
-              moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss'),
-              moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss'),
-            ]
-            : '',
+              ? moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss')
+              : '',
+            registerOccurTimeEnd: values.registerOccurTime?.length
+              ? moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss')
+              : '',
+            registerOccurTime: values.registerOccurTime?.length
+              ? [
+                moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+                moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+              ]
+              : '',
           },
         }).then(res => {
           const filename = `问题查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
@@ -1308,13 +1310,13 @@ function Besolved(props) {
         };
       }
 
-      if(val.title === '超时状态') {
+      if (val.title === '超时状态') {
         obj.render = (text) => {
           return (
             <>
-            <Icon type="alert" style={{ fontSize: '1.4em', color: colorArr.get(text), marginRight: '8px' }} />
-            <span style={{ color: textmap.get(text)}}>{text}</span>
-          </>
+              <Icon type="alert" style={{ fontSize: '1.4em', color: colorArr.get(text), marginRight: '8px' }} />
+              <span style={{ color: textmap.get(text) }}>{text}</span>
+            </>
           )
         }
       }
@@ -1504,7 +1506,7 @@ function Besolved(props) {
                 </Form.Item>
               </Col>
 
-              <Col span={8}>
+              <Col span={8} style={{ display: 'none' }}>
                 <Form.Item label="处理状态">
                   {getFieldDecorator('timeStatus', {
                     initialValue: cacheinfo.timeStatus,
@@ -1512,6 +1514,23 @@ function Besolved(props) {
                     <Select placeholder="请选择" allowClear>
                       {timeoutList.map(obj => [
                         <Option key={obj.key} value={obj.dict_code}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+
+
+              <Col span={8} style={{ display: 'block' }}>
+                <Form.Item label="超时状态">
+                  {getFieldDecorator('timeoutStatus', {
+                    initialValue: cacheinfo.timeoutStatus,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {commontimeoutList.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
                           {obj.title}
                         </Option>,
                       ])}
@@ -1529,6 +1548,7 @@ function Besolved(props) {
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
+
 
               <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
                 <Form.Item label="发生时间">
