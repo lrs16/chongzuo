@@ -379,6 +379,7 @@ function StatisticsAnalysis(props) {
                       <DonutPCT
                         data={toplist}
                         height={300}
+                        colors={['#5AD8A6','#ee6666']}
                         total={statratioArr && statratioArr.total}
                         totaltitle="问题处理总数"
                         padding={[10, 30, 30, 30]}
