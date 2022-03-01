@@ -19,7 +19,7 @@ const GlobalModel = {
     },
 
     *fetchallevent({ payload }, { call, put }) {
-      const list = yield call(queryAllEvent, payload);
+      const list = yield call(queryAllEvent, { ...payload, itemWorkType: payload.itemWorkType === 'all' ? '' : payload.itemWorkType });
       yield put({
         type: 'saveeventlist',
         payload: list,

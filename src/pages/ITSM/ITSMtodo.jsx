@@ -57,7 +57,7 @@ function ITSMtodo(props) {
           todoUserId: sessionStorage.getItem('userauthorityid'),
           pageNum: paginations.current,
           pageSize: paginations.pageSize,
-          itemWorkType: location?.query?.itemWorkType !== 'all' ? location?.query?.itemWorkType : '',
+          itemWorkType: location?.query?.itemWorkType || '',
         },
       });
     }
@@ -85,7 +85,7 @@ function ITSMtodo(props) {
           type: 'viewcache/gettabstate',
           payload: {
             cacheinfo: {
-              itemWorkType: location.query.itemWorkType,
+              itemWorkType: location.query.itemWorkType || location.state?.cacheinfo?.itemWorkType,
               paginations,
             },
             tabid: sessionStorage.getItem('tabid')
@@ -100,6 +100,15 @@ function ITSMtodo(props) {
       if (location.state.cacheinfo) {
         const { current, pageSize } = location.state.cacheinfo.paginations;
         setPageinations({ ...paginations, current, pageSize })
+        dispatch({
+          type: 'global/fetchallevent',
+          payload: {
+            todoUserId: sessionStorage.getItem('userauthorityid'),
+            pageNum: 1,
+            pageSize: 15,
+            itemWorkType: location.state?.cacheinfo?.itemWorkType,
+          },
+        });
       };
     }
   }, [location.state]);
@@ -117,7 +126,7 @@ function ITSMtodo(props) {
             type: 'viewcache/gettabstate',
             payload: {
               cacheinfo: {
-                itemWorkType: location.query.itemWorkType,
+                itemWorkType: location.query.itemWorkType || location.state?.cacheinfo?.itemWorkType,
                 paginations,
               },
               tabid: sessionStorage.getItem('tabid')
