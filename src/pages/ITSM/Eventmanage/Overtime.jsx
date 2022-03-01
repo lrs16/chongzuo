@@ -78,7 +78,6 @@ function Overtime(props) {
       fixed: 'left',
       render: (text, record) => {
         const handleClick = () => {
-          console.log(tabrecord);
           dispatch({
             type: 'viewcache/gettabstate',
             payload: {
@@ -297,7 +296,7 @@ function Overtime(props) {
       type: 'eventtimeout/query',
       payload: {
         tabType: tabkey,
-        pageIndex: 1,
+        pageIndex: 0,
         pageSize: 15,
       },
     });

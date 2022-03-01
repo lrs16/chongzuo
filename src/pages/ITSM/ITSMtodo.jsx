@@ -55,11 +55,12 @@ function ITSMtodo(props) {
         type: 'global/fetchallevent',
         payload: {
           todoUserId: sessionStorage.getItem('userauthorityid'),
-          pageNum: paginations.current,
-          pageSize: paginations.pageSize,
+          pageNum: 1,
+          pageSize: 15,
           itemWorkType: location?.query?.itemWorkType || '',
         },
       });
+      setPageinations({ current: 1, pageSize: 15 })
     }
   }, [location.query.itemWorkType]);
 

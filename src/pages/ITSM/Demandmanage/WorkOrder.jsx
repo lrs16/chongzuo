@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 // import moment from 'moment';
 import { connect } from 'dva';
-import { Collapse, Steps, Spin, message } from 'antd';
+import { Collapse, Steps, Spin, message, Icon } from 'antd';
 import styles from './index.less';
 import Registrat from './components/Registrat';
 import Examine from './components/Examine';
@@ -563,7 +563,7 @@ function WorkOrder(props) {
       {records !== '' && (
         <Steps
           current={records.length - 1}
-          progressDot
+          size="small"
           style={{
             background: '#fff',
             padding: 24,
@@ -579,7 +579,7 @@ function WorkOrder(props) {
                 <div>结束时间：{obj.endTime}</div>
               </div>
             );
-            return <Step title={obj.taskName} description={desc} key={index.toString()} />;
+            return <Step title={obj.taskName} description={desc} key={index.toString()} icon={index === records.length - 1 && !obj.endTime ? <Icon type="sync" spin /> : ''} />;
           })}
         </Steps>
       )}

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
-import { Steps, Collapse, Spin, Button } from 'antd';
+import { Steps, Collapse, Spin, Button, Icon } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import styles from './index.less';
 import Process from './Process';
@@ -119,10 +119,10 @@ function Details(props) {
     >
       {tabActivekey === 'workorder' && (
         <div className={styles.collapse}>
-          {records !== '' && (
+          {records && (
             <Steps
               current={records.length - 1}
-              progressDot
+              size="small"
               style={{
                 background: '#fff',
                 padding: 24,
@@ -138,8 +138,22 @@ function Details(props) {
                     <div>结束时间：{obj.endTime}</div>
                   </div>
                 );
-                return <Step title={obj.taskName} description={desc} key={index.toString()} />;
+                return (
+                  <Step
+                    title={obj.taskName}
+                    description={desc}
+                    key={index.toString()}
+                    icon={index === records.length - 1 && !obj.endTime ? <Icon type="sync" spin /> : <Icon type="check-circle" />}
+                  />);
               })}
+              {/* {(taskName === '已关闭' || taskName === '已完成') && (
+                <Step
+                  title='结束'
+                  description=''
+                  key={records.length.toString()}
+                  icon={<Icon type="check" />}
+                />
+              )} */}
             </Steps>
           )}
           <Spin spinning={loading}>

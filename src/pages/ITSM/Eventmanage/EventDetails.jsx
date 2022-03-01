@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import router from 'umi/router';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Button, Collapse, Steps } from 'antd';
+import { Button, Collapse, Steps, Icon } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import styles from './index.less';
 import Process from './Process';
@@ -173,7 +173,14 @@ function EventDetails(props) {
                     </div>)}
                   </div>
                 );
-                return <Step title={obj.nodeName} description={desc} key={index.toString()} />;
+                return (
+                  <Step
+                    title={obj.nodeName}
+                    description={desc}
+                    key={index.toString()}
+                    icon={index === records.length - 1 && !obj.endTime ? <Icon type="sync" spin /> : <Icon type="check-circle" />}
+                  />
+                );
               })}
             </Steps>
           )}
@@ -194,7 +201,7 @@ function EventDetails(props) {
                 ]);
                 if (index > 0)
                   return (
-                    <Panel Panel header={obj.check?.checkType || Panelheadermap.get(Object.keys(obj)[0])} key={index.toString()}>
+                    <Panel Panel header={obj.check?.checkType || Panelheadermap.get(Object.keys(obj)[0])} key={index.toString()} >
                       {Paneldesmap.get(Object.keys(obj)[0])}
                     </Panel>
                   );

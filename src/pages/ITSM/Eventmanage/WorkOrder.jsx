@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Collapse, Steps, Spin, message } from 'antd';
+import { Collapse, Steps, Spin, message, Icon } from 'antd';
 import SysDict from '@/components/SysDict';
 import SubmitTypeContext from '@/layouts/MenuContext';
 import styles from './index.less';
@@ -566,7 +566,7 @@ function WorkOrder2(props) {
                 </div>)}
               </div>
             );
-            return <Step title={obj.nodeName} description={desc} key={index.toString()} />;
+            return <Step title={obj.nodeName} description={desc} key={index.toString()} icon={index === records.length - 1 ? <Icon type="sync" spin /> : ''} />;
           })}
         </Steps>
         <Collapse

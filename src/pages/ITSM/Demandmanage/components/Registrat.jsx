@@ -630,7 +630,7 @@ const Registrat = forwardRef((props, ref) => {
               )}
             </Form.Item>
           </Col>
-          <Col span={24}>
+          <Col span={24} style={{ paddingBottom: 4 }}>
             <Form.Item label="需求标题" {...forminladeLayout}>
               {getFieldDecorator('title', {
                 rules: [{ required, message: '请输入需求标题' }],
@@ -650,7 +650,7 @@ const Registrat = forwardRef((props, ref) => {
               {getFieldDecorator('reason', {
                 rules: [{ required, message: '请输入需求原因' }],
                 initialValue: register.reason,
-              })(<TextArea autoSize={{ minRows: 3 }} allowClear placeholder="请输入" style={{ marginLeft: -4 }} />)}
+              })(<TextArea autoSize={{ minRows: 3 }} allowClear placeholder="请输入" />)}
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -666,7 +666,7 @@ const Registrat = forwardRef((props, ref) => {
                   }
                 //  onSelect={value => handleSearch(value, 'des')}
                 >
-                  <TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />
+                  <TextArea autoSize={{ minRows: 3 }} allowClear placeholder="请输入" />
                 </AutoComplete>,
               )}
             </Form.Item>
