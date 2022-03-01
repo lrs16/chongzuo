@@ -35,6 +35,12 @@ const formItemLayout = {
   },
 };
 
+const timeoutstatusmap = [
+  { key: '0', name: '未超时', statuscode: 'noTimeout' },
+  { key: '1', name: '即将超时', statuscode: 'remind' },
+  { key: '2', name: '已超时', statuscode: 'isTimeout' },
+];
+
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
@@ -226,6 +232,12 @@ function QueryList(props) {
         }
       },
       render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+    },
+    {
+      title: '是否影响计量主站',
+      dataIndex: 'master',
+      key: 'master',
+      width: 150,
     },
     {
       title: '影响范围',
@@ -1181,6 +1193,12 @@ function QueryList(props) {
       render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
     {
+      title: '是否影响计量主站',
+      dataIndex: 'master',
+      key: 'master',
+      width: 150,
+    },
+    {
       title: '影响范围',
       dataIndex: 'registerScope',
       key: 'registerScope',
@@ -1590,7 +1608,24 @@ function QueryList(props) {
               </Form.Item>
             </Col>
 
-            <Col span={8} >
+            <Col span={8}>
+              <Form.Item label="超时状态">
+                {getFieldDecorator('timeoutStatus', {
+                  initialValue: cacheinfo.timeoutStatus,
+                })(
+                  <Select placeholder="请选择" allowClear>
+                    {timeoutstatusmap.map(obj => [
+                      <Option key={obj.key} value={obj.statuscode}>
+                        {obj.name}
+                      </Option>,
+                    ])}
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
+
+
+            <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
               <Form.Item label="建单时间">
                 {getFieldDecorator('addTime', {
                   initialValue: '',

@@ -13,6 +13,7 @@ import {
   Spin,
   Modal
 } from 'antd';
+import { SyncOutlined } from '@ant-design/icons';
 
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import FaultEditContext from '@/layouts/MenuContext';
@@ -1104,6 +1105,7 @@ function Todolistdetails(props) {
                     <Step
                       key={key}
                       title={`${name}${'\xa0'}${'\xa0'}(${status})${'\xa0'}${'\xa0'}${timeText}`}
+                      icon={(name === troubleFlowLogs[troubleFlowLogs.length - 1].name && status === troubleFlowLogs[troubleFlowLogs.length - 1].status) ? <SyncOutlined spin style={{ color: '#52C41A' }} /> : ''}
                       description={
                         <div className={styles.stepDescription}>
                           处理人：{formHandler}

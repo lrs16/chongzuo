@@ -209,6 +209,7 @@ function Statistics(props) {
                   total={piesum1(piedatalist['需求处理情况占比'])}
                   padding={[10, 30, 30, 30]}
                   onGetVal={(v) => { setPicVal({ ...picval, dutyUnit: v }) }}
+                  colors={['#5AD8A6', '#faad14', '#ee6666']}
                 />
               )
             }

@@ -46,6 +46,25 @@
 }
 
 .collapse {
+  :global(.ant-steps-horizontal:not(.ant-steps-label-vertical) .ant-steps-item-finish .ant-steps-item-icon) {
+    background-color: #f6ffed;
+    border-color: #006400;
+  }
+}
+
+.collapse {
+  :global(.ant-steps-horizontal:not(.ant-steps-label-vertical) .ant-steps-item-finish .ant-steps-item-icon>.ant-steps-icon) {
+    color: #006400;
+  }
+}
+
+.collapse {
+  :global(.ant-steps-horizontal:not(.ant-steps-label-vertical) .ant-steps-item-finish>.ant-steps-item-container>.ant-steps-item-content>.ant-steps-item-title::after) {
+    background-color: #006400;
+  }
+}
+
+.collapse {
   :global(.ant-steps-horizontal:not(.ant-steps-label-vertical) .ant-steps-item) {
     min-width: 250px;
   }

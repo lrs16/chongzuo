@@ -9,6 +9,7 @@ import {
   Card,
   Steps
 } from 'antd';
+import { SyncOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import styles from './index.less';
 // 各个子组件
@@ -163,7 +164,9 @@ function Querylistdetails(props) {
                 >
                   {
                     troubleFlowLogs && troubleFlowLogs.map(({ key, name, status, timeText, formHandler, startTime }) => [
-                      name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})${'\xa0'}${'\xa0'}${timeText}`} description={
+                      name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})${'\xa0'}${'\xa0'}${timeText}`}
+                        icon={(name === troubleFlowLogs[troubleFlowLogs.length - 1].name && status === troubleFlowLogs[troubleFlowLogs.length - 1].status) ? <SyncOutlined spin style={{ color: '#52C41A' }} /> : ''}
+                        description={
                         <div className={styles.stepDescription}>
                           处理人：{formHandler}
                           <div>结束时间：{moment(startTime).format('YYYY-MM-DD HH:mm:ss')}</div>
