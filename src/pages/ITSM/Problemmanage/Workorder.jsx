@@ -1014,7 +1014,10 @@ function Workorder(props) {
                         description={
                           <div className={styles.stepDescription}>
                             处理人：{obj.formHandler}
-                            结束时间：{moment(obj.startTime).format('YYYY-MM-DD HH:mm:ss')}
+                            <div>
+                              结束时间：{moment(obj.startTime).format('YYYY-MM-DD HH:mm:ss')}
+                            </div>
+
                           </div>
                         }
                         icon={index === problemFlowLogs.length - 1 ? <Icon type="sync" spin /> : ''}
