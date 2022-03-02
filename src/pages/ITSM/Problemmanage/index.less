@@ -155,7 +155,7 @@
   font-size: 14px;
   text-align: left;
 
-  > div {
+  >div {
     margin-top: 0px;
     margin-bottom: 0px;
   }
@@ -169,7 +169,7 @@
   font-size: 14px;
   text-align: left;
 
-  > div {
+  >div {
     margin-top: 0px;
     margin-bottom: 0px;
   }
@@ -226,13 +226,7 @@
 }
 
 .pretable {
-  :global(.ant-table-middle
-      > .ant-table-content
-      > .ant-table-body
-      > table
-      > .ant-table-tbody
-      > tr
-      > td, ) {
+  :global(.ant-table-middle > .ant-table-content > .ant-table-body > table > .ant-table-tbody > tr > td, ) {
     padding: 0;
   }
 }
@@ -257,6 +251,19 @@
   vertical-align: middle;
 }
 
-.ant-col-4  {
+.ant-col-4 {
   width: 20%;
+}
+
+.collapse {
+  :global(.ant-steps:not(.ant-steps-vertical) .ant-steps-item-custom .ant-steps-item-icon) {
+    width: auto;
+    background-color: #C1EB08;
+    border-radius: 50%;
+  }
+}
+.collapse {
+  :global(.ant-steps-item-custom.ant-steps-item-process .ant-steps-item-icon > .ant-steps-icon) {
+    color: #0124c5;
+  }
 }

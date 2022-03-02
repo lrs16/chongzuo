@@ -22,6 +22,7 @@ import TimeoutModal from '../components/TimeoutModal'; // 超时信息填写
 import { judgeTimeoutStatus, saveTimeoutMsg } from '../services/api'; // 超时接口
 
 import RelationOrder from './RelationOrder';
+import iconfontUrl from '@/utils/iconfont';
 
 import styles from './index.less';
 
@@ -61,6 +62,9 @@ let selSign;
 let changeOrder = '';
 
 export const FatherContext = createContext();
+const IconFont = Icon.createFromIconfontCN({
+  scriptUrl: iconfontUrl,
+});
 function Workorder(props) {
   const RegistratRef = useRef();
   const PreviesRef = useRef();
@@ -1020,7 +1024,7 @@ function Workorder(props) {
 
                           </div>
                         }
-                        icon={index === problemFlowLogs.length - 1 ? <Icon type="sync" spin /> : ''}
+                        icon={index === problemFlowLogs.length - 1 ?  <Icon type="loading" spin /> : ''}
                       />
                     )
                   }
