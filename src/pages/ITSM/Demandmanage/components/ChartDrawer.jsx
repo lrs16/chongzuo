@@ -35,7 +35,6 @@ const columns = [
   },
   {
     title: '当前处理环节',
-    fixed: 'left',
     dataIndex: 'flowNodeName',
     key: 'flowNodeName',
     width: 200,
