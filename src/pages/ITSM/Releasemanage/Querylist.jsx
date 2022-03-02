@@ -23,6 +23,12 @@ const formItemLayout = {
   },
 };
 
+const timeoutstatusmap = [
+  { key: '0', name: '未超时' },
+  { key: '1', name: '即将超时' },
+  { key: '2', name: '已超时' },
+];
+
 function Querylist(props) {
   const pagetitle = props.route.name;
   const {
@@ -38,7 +44,7 @@ function Querylist(props) {
 
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [expand, setExpand] = useState(false);
-  const [selectdata, setSelectData] = useState('');
+  const [selectdata, setSelectData] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRecords, setSelectedRecords] = useState([]);
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
@@ -552,6 +558,21 @@ function Querylist(props) {
             </Col>
             {(expand || cacheinfo.expand) && (
               <>
+                <Col span={8}>
+                  <Form.Item label="超时状态">
+                    {getFieldDecorator('timeoutStatus', {
+                      initialValue: cacheinfo.timeoutStatus,
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {timeoutstatusmap.map(obj => (
+                          <Option key={obj.key} value={obj.name}>
+                            {obj.name}
+                          </Option>
+                        ))}
+                      </Select>
+                    )}
+                  </Form.Item>
+                </Col>
                 <Col span={8}>
                   <Form.Item label="当前处理人">
                     {getFieldDecorator('assignee', {

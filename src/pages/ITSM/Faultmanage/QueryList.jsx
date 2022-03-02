@@ -75,7 +75,7 @@ function QueryList(props) {
   const [tabrecord, setTabRecord] = useState({});
   const [columns, setColumns] = useState([]);
   const [selectedKeys, setSelectedKeys] = useState([]);
-  const [selectedRows, setSelectedRows] = useState([]);
+  // const [selectedRows, setSelectedRows] = useState([]);
 
   let formThead;
 
@@ -864,7 +864,7 @@ function QueryList(props) {
     setInitial(true)
   }, []);
 
-  const searchdata = (values, page, pageSize) => {
+  const searchdata = (values, page) => {
     dispatch({
       type: 'fault/getfaultQueryList',
       payload: {
@@ -1484,9 +1484,9 @@ function QueryList(props) {
   });
 
   const rowSelection = {
-    onChange: (index, handleSelect) => {
+    onChange: (index) => {
       setSelectedKeys([...index])
-      setSelectedRows([...handleSelect])
+      // setSelectedRows([...handleSelect])
     }
   }
 

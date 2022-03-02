@@ -411,6 +411,7 @@ function QueryList(props) {
   const yesornomap = getTypebykey(379); // 是否
   const handleresultmap = getTypebykey(1113); // 处理结果
   const satisfactionmap = getTypebykey(1120); // 满意度
+  const timeoutstatusmap = getTypebykey(13299); // 超时状态
 
   const record = {
     eventObject: eventObject || '',
@@ -764,13 +765,27 @@ function QueryList(props) {
               </Col>
             </span>
             <Col span={8}>
+              <Form.Item label="超时状态">
+                {getFieldDecorator('timeoutStatus', {
+                  initialValue: cacheinfo.timeoutStatus,
+                })(
+                  <Select placeholder="请选择" allowClear>
+                    {timeoutstatusmap.map(obj => (
+                      <Option key={obj.key} value={obj.title}>
+                        {obj.title}
+                      </Option>
+                    ))}
+                  </Select>
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
               <Form.Item label="事件标题">
                 {getFieldDecorator('eventTitle', {
                   initialValue: cacheinfo.eventTitle,
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
-
             <Col span={8}>
               <Form.Item label="申报人">
                 {getFieldDecorator('applicationUser', {
@@ -792,14 +807,14 @@ function QueryList(props) {
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
-            <Col span={8}>
-              <Form.Item label="登记人">
-                {getFieldDecorator('registerUser', {
-                  initialValue: cacheinfo.registerUser,
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
             <span style={{ display: expand ? 'block' : 'none' }}>
+              <Col span={8}>
+                <Form.Item label="登记人">
+                  {getFieldDecorator('registerUser', {
+                    initialValue: cacheinfo.registerUser,
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
+              </Col>
               <Col span={8}>
                 <Form.Item label="登记人单位">
                   {getFieldDecorator('registerUnit', {
