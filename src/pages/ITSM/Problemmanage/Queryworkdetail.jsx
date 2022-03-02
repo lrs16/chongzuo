@@ -134,7 +134,7 @@ function Queryworkdetail(props) {
             <div className={styles.collapse}>
               {problemFlowLogs && (
                 <Steps
-                  current={problemFlowLogs.length - 1}
+                  current={problemFlowLogs[problemFlowLogs.length -1].name === '结束节点' ? problemFlowLogs.length : problemFlowLogs.length-1}
                   size="small"
                   style={{
                     background: '#fff',
@@ -161,7 +161,7 @@ function Queryworkdetail(props) {
                               <div>结束时间：{moment(obj.startTime).format('YYYY-MM-DD HH:mm:ss')}</div>
                             </div>
                           }
-                          icon={index === problemFlowLogs.length - 1 ? <Icon type="sync" spin /> : ''}
+                          icon={(obj.name !== '结束节点' && index === problemFlowLogs.length - 1) ? <Icon type="sync" spin /> : ''}
                         />
                       )
                     }
