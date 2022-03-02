@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Collapse, ConfigProvider } from 'antd';
+import { Collapse } from 'antd';
 import Registrat from './Registrat';
 import Examine from './Examine';
 import ImplementationPre from './ImplementationPre';
