@@ -33,6 +33,7 @@ function BusinessEditTable(props) {
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 5 });
   const [visible, setVisible] = useState(false);
   const [result, setResult] = useState({});
+  const [rowKey, setRowKey] = useState(0)
 
   useEffect(() => {
     if (dataSource && dataSource.length > 0) {
@@ -65,7 +66,7 @@ function BusinessEditTable(props) {
       setTimeout(() => {
         const morepop = document.getElementsByClassName('ant-popover');
         if (morepop[0]) { morepop[0].style.display = 'none' }
-      }, 100)
+      }, 50)
     }
   }, [visible])
 
@@ -79,12 +80,13 @@ function BusinessEditTable(props) {
     const target = getRowByKey(key, newData);
     if (target) {
       target[fieldName] = e;
-      setData(newData);
       if (type === '发布验证') {
+        setData(newData);
         ChangeValue(newData);
       } else {
         releaseListEdit(target).then(res => {
-          if (res.code) {
+          if (res.code === 200) {
+            setData(newData);
             ChangeValue({ status: true, target });
           } else {
             message.error(res.msg || '操作失败')
@@ -264,31 +266,41 @@ function BusinessEditTable(props) {
         return (
           <>
             {isEdit ? (
-              <Popconfirm
-                title="该清单不属于您的功能业务，是否确定验证？"
-                onConfirm={() => { setVisible(false); handleFieldChange(result.passTest, 'passTest', record.key) }}
-                visible={visible}
-                onCancel={() => setVisible(false)}
-                placement="leftTop"
-              >
-                <RadioGroup
-                  value={text}
-                  // onChange={e => handleFieldChange(e.target.value, 'passTest', record.key)}
-                  onMouseDown={() => { setVisible(false); setResult({}); }}
-                  onChange={e => {
-                    if (record.responsible !== sessionStorage.getItem('userName') && type !== '发布验证') {
-                      setVisible(true);
-                      setResult({ ...result, passTest: e.target.value });
+              <>
+                {rowKey === Number(record.key) ? (
+                  <Popconfirm
+                    title="该清单不属于您的功能业务，是否确定验证？"
+                    onConfirm={() => { setVisible(false); handleFieldChange(result.passTest, 'passTest', record.key) }}
+                    visible={visible}
+                    onCancel={() => setVisible(false)}
+                    placement="leftTop"
+                  >
+                    <RadioGroup
+                      value={text}
+                      // onChange={e => handleFieldChange(e.target.value, 'passTest', record.key)}
+                      onMouseDown={() => { setVisible(false); setResult({}); }}
+                      onChange={e => {
+                        // setRowKey(Number(record.key - 1));
+                        if (record.responsible !== sessionStorage.getItem('userName') && type !== '发布验证') {
+                          setVisible(true);
+                          setResult({ ...result, passTest: e.target.value });
 
-                    } else {
-                      handleFieldChange(e.target.value, 'passTest', record.key)
-                    }
-                  }}
-                >
-                  <Radio value='通过'>通过</Radio>
-                  <Radio value='不通过'>不通过</Radio>
-                </RadioGroup>
-              </Popconfirm>
+                        } else {
+                          handleFieldChange(e.target.value, 'passTest', record.key)
+                        }
+                      }}
+                    >
+                      <Radio value='通过'>通过</Radio>
+                      <Radio value='不通过'>不通过</Radio>
+                    </RadioGroup>
+                  </Popconfirm>
+                ) : (
+                  <RadioGroup value={text}>
+                    <Radio value='通过'>通过</Radio>
+                    <Radio value='不通过'>不通过</Radio>
+                  </RadioGroup>
+                )}
+              </>
             ) : <>{text}</>}
           </>
         )
@@ -304,7 +316,7 @@ function BusinessEditTable(props) {
         return (
           <>
             {isEdit ? (
-              <div className={text === null && record.passTest === '不通过' ? styles.requiredform : ''}>
+              <div className={!text && record.passTest === '不通过' ? styles.requiredform : ''}>
                 <TextArea
                   value={text}
                   autoSize={{ minRows: 4 }}
@@ -359,6 +371,11 @@ function BusinessEditTable(props) {
         bordered
         size='middle'
         rowKey={(_, index) => index.toString()}
+        onRow={record => {
+          return {
+            onMouseEnter: e => { e.preventDefault(); setRowKey(Number(record.key)); setVisible(false) },
+          };
+        }}
         pagination={pagination}
         scroll={{ x: 1700, y: setTableHeight() }}
         loading={loading}

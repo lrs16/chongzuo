@@ -11,7 +11,9 @@ function TaskLinks(props) {
   useEffect(() => {
     if (records) {
       if (taskName === '结束') {
-        setCurrent(9)
+        const completeTimes = records.map(obj => obj.completeTime)
+        const nodeLength = completeTimes.indexOf(null) - 1;
+        setCurrent(nodeLength < 0 ? 10 : nodeLength)
       } else {
         const taskNames = records.map(item => { return item.taskName });
         setCurrent(taskNames.indexOf(taskName));
@@ -32,46 +34,28 @@ function TaskLinks(props) {
       }}
     >
       {records.map((obj, index) => {
-        // let tempTime = '';
-        // if (obj.prevCompleteTime && obj.completeTime) {
-        //   const addtime = moment(obj.prevCompleteTime);
-        //   const endtime = moment(obj.completeTime);
-        //   const dura = endtime.format('x') - addtime.format('x');
-        //   tempTime = moment.duration(dura);
-        // }
-        // const desc = (
-        //   <div className={obj.timeoutReason ? styles.timeoutstep : styles.stepDescription}>
-        //     处理人：{obj.assignee}
-        //     {/* <DingdingOutlined /> */}
-        //     <div>开始时间：{obj.prevCompleteTime}</div>
-        //     <div>结束时间：{obj.completeTime}</div>
-        //     {tempTime && (<div style={{ color: `${obj.timeoutReason ? '#ff4d4f' : 'rgba(0, 0, 0, 0.85)'}`, fontSize: '16px' }}>用时：
-        //       {tempTime.days() !== 0 && (<>{tempTime.days()}天</>)}
-        //       {tempTime.hours() !== 0 && (<>{tempTime.hours()}小时</>)}
-        //       {tempTime.minutes() !== 0 && (<>{tempTime.minutes()}分</>)}
-        //       {((tempTime.days() === 0 && tempTime.hours() === 0 && tempTime.minutes() === 0 && tempTime.seconds() === 0) || tempTime.seconds() !== 0) && (<>{tempTime.seconds()}秒</>)}
-        //     </div>)}
-        //   </div>
-        // );
+        const icondoing = (<Icon type="sync" spin style={{ color: obj.timeoutTime && moment() > moment(obj.timeoutTime) ? '#f5222d' : '' }} />)
+        const icons = () => {
+          if (obj.timeoutReason) {
+            return <Icon type="check-circle" style={{ color: '#f5222d' }} />
+          }
+          return ''
+        }
         if (taskName === '结束') {
           return (
             <Step
               title={obj.taskName}
-              // description={desc}
               key={index.toString()}
-              // status={obj.timeoutReason ? 'error' : 'finish'}
-              //  icon={obj.timeoutReason ? 'clock-circle' : 'check-circle'}
+              status={obj.timeoutReason ? 'error' : ''}
               icon={obj.completeTime ? <Icon type="check-circle" /> : ''}
             />);
         }
         return (
           <Step
             title={obj.taskName}
-            // description={desc}
             key={index.toString()}
-            // status={obj.timeoutReason ? 'error' : 'finish'}
-            //  icon={obj.timeoutReason ? 'clock-circle' : 'check-circle'}
-            icon={obj.taskName === taskName ? <Icon type="sync" spin /> : ''}
+            status={obj.timeoutReason ? 'error' : ''}
+            icon={obj.taskName === taskName ? icondoing : icons()}
           />);
 
       })}

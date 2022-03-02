@@ -9,6 +9,7 @@ import DictLower from '@/components/SysDict/DictLower';
 import TemporaryRegistrat from './components/TemporaryRegistrat';
 import TemporarySelectUser from './components/TemporarySelectUser';
 import TemporaryList from './components/TemporaryList';
+import TempTaskLinks from './components/TempTaskLinks';
 import { delOrder, saveRegister } from './services/temp';
 import { releaseToQuality } from './services/api';
 
@@ -133,6 +134,7 @@ function TemporaryDetail(props) {
   }
 
   const toSubmit = (val) => {
+    console.log(val);
     dispatch({
       type: 'releasetemp/releaseflow',
       payload: { ...val },
@@ -230,7 +232,15 @@ function TemporaryDetail(props) {
           >
             保存
           </Button>
-          <Button type="primary" style={{ marginRight: 8 }} disabled={loading || uploadStatus}>流转至开发商项目经理审核</Button>
+          <Button
+            type="primary"
+            style={{ marginRight: 8 }}
+            disabled={loading || uploadStatus}
+            onMouseDown={() => setType('')}
+            onClick={() => { handleSubmit('1') }}
+          >
+            流转至开发商项目经理审核
+          </Button>
         </>
       ) : (
         <>{taskName !== '发布验证' && taskName !== '业务复核' && taskName !== '结束' && (<>
@@ -242,7 +252,6 @@ function TemporaryDetail(props) {
             onClick={() => { handleSubmit('3') }}
           >
             {`${taskName?.substring(taskName.length - 2)}不通过`}
-
           </Button>
           <Button
             type="primary"
@@ -308,6 +317,7 @@ function TemporaryDetail(props) {
   return (
     <Spin spinning={loading || saveLoading}>
       <PageHeaderWrapper title={pagetitle} extra={operations}>
+        <TempTaskLinks taskName={taskName} />
         <div className={styles.tempcollapse}>
           <Collapse
             expandIconPosition="right"
@@ -339,7 +349,7 @@ function TemporaryDetail(props) {
                     selectdata={selectdata}
                     info={info}
                     userinfo={userinfo || {}}
-                    isEdit={taskName === '出厂测试'}
+                    isEdit={taskName === '出厂测试' && info?.taskInfo?.operationList}
                     taskName={taskName}
                     loading={loading}
                     operationList={info?.taskInfo?.operationList} // 是否可编辑清单

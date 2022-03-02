@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { connect } from 'dva';
 import { Table, Row, Button, Select, Input, AutoComplete } from 'antd';
+import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import UserContext from '@/layouts/MenuContext';
 
 const { Option } = Select;
@@ -11,6 +12,7 @@ function TestingFacility(props) {
   const [data, setData] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRowrecord, setSelectedRowRecord] = useState([]);
+  const [expand, setExpand] = useState(false);
   const { location, taskName } = useContext(UserContext);
 
   // 新增一条记录
@@ -30,6 +32,7 @@ function TestingFacility(props) {
     setData(newData);
     setSelectedRowKeys([]);
     setSelectedRowRecord([]);
+    setExpand(true);
   };
 
   const handleChange = (value, key) => {
@@ -249,12 +252,21 @@ function TestingFacility(props) {
             onClick={() => newMember()}
           >新增</Button>
           <Button type='danger' style={{ marginRight: 8 }} ghost onClick={() => handelDelete()}>移除</Button>
+          <Button
+            type="primary"
+            ghost
+            onClick={() => {
+              setExpand(!expand);
+            }}
+          >
+            {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
+          </Button>
         </div>
         )}
       </Row>
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={!expand && data.length > 0 ? [data[0]] : data}
         bordered
         size='middle'
         rowKey={(_, index) => index.toString()}
