@@ -1096,7 +1096,7 @@ function Todolistdetails(props) {
                 padding: 24,
                 border: '1px solid #e8e8e8',
                 overflowX: 'auto',
-                marginBottom: 50,
+                // marginBottom: 50,
               }}
             >
               {troubleFlowLogs &&
@@ -1105,7 +1105,7 @@ function Todolistdetails(props) {
                     <Step
                       key={key}
                       title={`${name}${'\xa0'}${'\xa0'}(${status})${'\xa0'}${'\xa0'}${timeText}`}
-                      icon={(name === troubleFlowLogs[troubleFlowLogs.length - 1].name && status === troubleFlowLogs[troubleFlowLogs.length - 1].status) ? <Icon type="sync" spin /> : <Icon type="check-circle" />}
+                      icon={(name === troubleFlowLogs[troubleFlowLogs.length - 1].name && status === troubleFlowLogs[troubleFlowLogs.length - 1].status) ? <Icon type="loading" spin /> : ''}
                       description={
                         <div className={styles.stepDescription}>
                           处理人：{formHandler}

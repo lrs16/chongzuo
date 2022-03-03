@@ -165,7 +165,7 @@ function Querylistdetails(props) {
                   {
                     troubleFlowLogs && troubleFlowLogs.map(({ key, name, status, timeText, formHandler, startTime }) => [
                       name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})${'\xa0'}${'\xa0'}${timeText}`}
-                        icon={(name === troubleFlowLogs[troubleFlowLogs.length - 1].name && status === troubleFlowLogs[troubleFlowLogs.length - 1].status) ? <Icon type="sync" spin /> : <Icon type="check-circle" />}
+                        icon={(name === troubleFlowLogs[troubleFlowLogs.length - 1].name && status === troubleFlowLogs[troubleFlowLogs.length - 1].status) ? <Icon type="loading" spin /> : ''}
                         description={
                         <div className={styles.stepDescription}>
                           处理人：{formHandler}

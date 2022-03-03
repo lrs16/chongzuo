@@ -143,7 +143,7 @@ function Details(props) {
                     title={obj.taskName}
                     description={desc}
                     key={index.toString()}
-                    icon={index === records.length - 1 && !obj.endTime ? <Icon type="sync" spin /> : <Icon type="check-circle" />}
+                    icon={index === records.length - 1 && !obj.endTime ? <Icon type="loading" spin /> : <Icon type="check-circle" style={{ color: '#10C510', backgroundColor: '#f6ffed' }} />}
                   />);
               })}
               {/* {(taskName === '已关闭' || taskName === '已完成') && (

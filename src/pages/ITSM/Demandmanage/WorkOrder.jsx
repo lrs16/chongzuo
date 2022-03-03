@@ -579,7 +579,7 @@ function WorkOrder(props) {
                 <div>结束时间：{obj.endTime}</div>
               </div>
             );
-            return <Step title={obj.taskName} description={desc} key={index.toString()} icon={index === records.length - 1 && !obj.endTime ? <Icon type="sync" spin /> : ''} />;
+            return <Step title={obj.taskName} description={desc} key={index.toString()} icon={index === records.length - 1 && !obj.endTime ? <Icon type="loading" spin /> : ''} />;
           })}
         </Steps>
       )}

@@ -566,7 +566,7 @@ function WorkOrder2(props) {
                 </div>)}
               </div>
             );
-            return <Step title={obj.nodeName} description={desc} key={index.toString()} icon={index === records.length - 1 ? <Icon type="sync" spin /> : ''} />;
+            return <Step title={obj.nodeName} description={desc} key={index.toString()} icon={index === records.length - 1 ? <Icon type="loading" spin /> : ''} />;
           })}
         </Steps>
         <Collapse
