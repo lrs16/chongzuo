@@ -22,7 +22,7 @@ import TimeoutModal from '../components/TimeoutModal'; // 超时信息填写
 import { judgeTimeoutStatus, saveTimeoutMsg } from '../services/api'; // 超时接口
 
 import RelationOrder from './RelationOrder';
-import iconfontUrl from '@/utils/iconfont';
+import { SyncOutlined } from '@ant-design/icons';
 
 import styles from './index.less';
 
@@ -62,9 +62,7 @@ let selSign;
 let changeOrder = '';
 
 export const FatherContext = createContext();
-const IconFont = Icon.createFromIconfontCN({
-  scriptUrl: iconfontUrl,
-});
+
 function Workorder(props) {
   const RegistratRef = useRef();
   const PreviesRef = useRef();
@@ -241,6 +239,7 @@ function Workorder(props) {
     }).then(res => {
       if (res.code === 200) {
         message.success(res.msg);
+        sessionStorage.removeItem('Nextflowmane');
         router.push({
           pathname: `/ITSM/problemmanage/besolved`,
           query: { pathpush: true },
@@ -602,6 +601,7 @@ function Workorder(props) {
     sessionStorage.setItem('Processtype', 'problem');
     sessionStorage.setItem('Nextflowmane', '');
     setTabActiveKey('workorder');
+    changeOrder = '';
   }, [mainId]);
 
   // 点击页签右键刷新
@@ -621,6 +621,7 @@ function Workorder(props) {
       sessionStorage.setItem('Processtype', 'problem');
       sessionStorage.setItem('Nextflowmane', '');
       setTabActiveKey('workorder');
+      changeOrder = '';
     }
   }, [location.state]);
 
@@ -1000,6 +1001,7 @@ function Workorder(props) {
                   padding: 24,
                   border: '1px solid #e8e8e8',
                   overflowX: 'auto',
+                  marginBottom: 50,
                 }}
               >
                 {problemFlowLogs &&
@@ -1024,7 +1026,7 @@ function Workorder(props) {
 
                           </div>
                         }
-                        icon={index === problemFlowLogs.length - 1 ?  <Icon type="loading" spin /> : ''}
+                        icon={index === problemFlowLogs.length - 1 ? <Icon type="loading" spin /> : ''}
                       />
                     )
                   }

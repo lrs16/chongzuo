@@ -172,6 +172,9 @@ function Queryworkdetail(props) {
               }
             </div>
 
+       
+
+
             <div className={styles.collapse}>
               {problemFlowNodeRows && loading === false && (
                 <Collapse
