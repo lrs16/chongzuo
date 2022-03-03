@@ -8,7 +8,7 @@ const { Step } = Steps;
 let image;
 
 function Process(props) {
-  const { location, dispatch, imgblob, records, loading } = props;
+  const { location, dispatch, imgblob, records } = props;
   const { mainId } = location.query;
 
   // const imgsrc = () => {
@@ -21,7 +21,7 @@ function Process(props) {
     dispatch({
       type: 'eventtodo/eventimage',
       payload: {
-        processInstanceId: mainId,
+        mainId,
       },
     });
     dispatch({

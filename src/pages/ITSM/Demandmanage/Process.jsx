@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import moment from 'moment';
+// import moment from 'moment';
 import { connect } from 'dva';
 import { Card, Steps } from 'antd';
 import styles from './index.less';
@@ -8,8 +8,11 @@ const { Step } = Steps;
 let image;
 
 function Process(props) {
-  const { location, dispatch, imgblob, processs, loading } = props;
-  const { id, mainId } = location.query;
+  const { location, dispatch, imgblob, processs } = props;
+  const {
+    // id,
+    mainId
+  } = location.query;
 
   // const imgsrc = () => {
   //   const img = document.createElement('img');
@@ -22,7 +25,7 @@ function Process(props) {
       dispatch({
         type: 'demandtodo/demandimage',
         payload: {
-          processId: mainId,
+          mainId,
         },
       });
       dispatch({

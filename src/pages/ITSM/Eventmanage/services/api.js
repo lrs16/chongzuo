@@ -82,9 +82,9 @@ export async function EventRecords(processId) {
     method: 'GET',
   });
 }
-// 编辑页流程图/event/flow/image
-export async function EventImage(processInstanceId) {
-  return request(`/event/flow/image?processInstanceId=${processInstanceId}`, {
+// 编辑页流程图/event/flow/image/processInstanceId 
+export async function EventImage(mainId) {
+  return request(`/activiti/process/readResource/${mainId}`, {
     method: 'GET',
     responseType: 'blob',
   });

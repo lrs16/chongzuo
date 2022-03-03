@@ -7,9 +7,9 @@ import {
   Button,
   Collapse,
   Card,
-  Steps
+  Steps,
+  Icon
 } from 'antd';
-import { SyncOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import styles from './index.less';
 // 各个子组件
@@ -85,7 +85,7 @@ function Querylistdetails(props) {
   const getFlowImage = () => { // 流程图片
     dispatch({
       type: 'fault/fetchGetFlowImage',
-      payload: { id: querydetailslist.main.id }
+      payload: { mainId: querydetailslist.main.id }
     });
   }
 
@@ -165,7 +165,7 @@ function Querylistdetails(props) {
                   {
                     troubleFlowLogs && troubleFlowLogs.map(({ key, name, status, timeText, formHandler, startTime }) => [
                       name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})${'\xa0'}${'\xa0'}${timeText}`}
-                        icon={(name === troubleFlowLogs[troubleFlowLogs.length - 1].name && status === troubleFlowLogs[troubleFlowLogs.length - 1].status) ? <SyncOutlined spin style={{ color: '#C1EB08' }} /> : ''}
+                        icon={(name === troubleFlowLogs[troubleFlowLogs.length - 1].name && status === troubleFlowLogs[troubleFlowLogs.length - 1].status) ? <Icon type="sync" spin /> : <Icon type="check-circle" />}
                         description={
                         <div className={styles.stepDescription}>
                           处理人：{formHandler}

@@ -184,8 +184,8 @@ export default {
     },
 
     //  获取工作流流程图
-    *getgetFlowImage({ payload: { id } }, { call, put }) {
-      const response = yield call(getFlowImage, id);
+    *getgetFlowImage({ payload: { mainId } }, { call, put }) {
+      const response = yield call(getFlowImage, mainId);
       yield put({
         type: 'imageSource',
         payload: response,

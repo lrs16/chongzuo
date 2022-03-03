@@ -183,9 +183,9 @@ export async function submitProToNextNode(taskId, result, userIds) {
   });
 }
 
-// 展示流程图 （*故障流程页）
-export async function getFlowImage(id) {
-  return request(`/trouble/flow/getFlowImage?id=${id}`, {
+// 展示流程图 （*故障流程页）/trouble/flow/getFlowImage?id=${id}
+export async function getFlowImage(mainId) {
+  return request(`/activiti/process/readResource/${mainId}`, {
     method: 'GET',
     responseType: 'blob', // 必须注明返回二进制流
   });

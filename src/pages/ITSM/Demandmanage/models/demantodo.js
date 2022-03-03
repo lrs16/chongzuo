@@ -67,8 +67,8 @@ export default {
       });
     },
     // 流程图
-    *demandimage({ payload: { processId } }, { call, put }) {
-      const response = yield call(DemandImage, processId);
+    *demandimage({ payload: { mainId } }, { call, put }) {
+      const response = yield call(DemandImage, mainId);
       yield put({
         type: 'saveimg',
         payload: response,

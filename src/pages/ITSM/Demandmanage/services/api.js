@@ -45,8 +45,8 @@ export async function DemandProcess(processId) {
 }
 
 // 编辑流程图/demand/todo/processImage/{processId}
-export async function DemandImage(processId) {
-  return request(`/demand/todo/processImage/${processId}`, {
+export async function DemandImage(mainId) {
+  return request(`/activiti/process/readResource/${mainId}`, {
     method: 'GET',
     responseType: 'blob',
   });

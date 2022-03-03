@@ -37,7 +37,7 @@ function Problemflow(props) {
   const getFlowImage = () => {
     dispatch({
       type: 'problemmanage/getgetFlowImage',
-      payload: { id },
+      payload: { mainId: id },
     });
   };
 

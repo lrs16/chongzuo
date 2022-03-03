@@ -91,9 +91,9 @@ export async function saveTobelist(params) {
   });
 }
 
-//  后端返回的流程
-export async function getFlowImage(id) {
-  return request(`/problem/flow/getFlowImage?id=${id}`, {
+//  后端返回的流程 /problem/flow/getFlowImage?id=${id}
+export async function getFlowImage(mainId) {
+  return request(`/activiti/process/readResource/${mainId}`, {
     method: 'GET',
     responseType: 'blob',
   });

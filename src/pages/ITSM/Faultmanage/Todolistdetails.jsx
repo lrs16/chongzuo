@@ -11,9 +11,9 @@ import {
   Popconfirm,
   message,
   Spin,
-  Modal
+  Modal,
+  Icon
 } from 'antd';
-import { SyncOutlined } from '@ant-design/icons';
 
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import FaultEditContext from '@/layouts/MenuContext';
@@ -172,7 +172,7 @@ function Todolistdetails(props) {
     // 流程图
     dispatch({
       type: 'fault/fetchGetFlowImage',
-      payload: { id: tododetailslist.main.id },
+      payload: { mainId: tododetailslist.main.id },
     });
   };
 
@@ -1105,7 +1105,7 @@ function Todolistdetails(props) {
                     <Step
                       key={key}
                       title={`${name}${'\xa0'}${'\xa0'}(${status})${'\xa0'}${'\xa0'}${timeText}`}
-                      icon={(name === troubleFlowLogs[troubleFlowLogs.length - 1].name && status === troubleFlowLogs[troubleFlowLogs.length - 1].status) ? <SyncOutlined spin style={{ color: '#C1EB08' }} /> : ''}
+                      icon={(name === troubleFlowLogs[troubleFlowLogs.length - 1].name && status === troubleFlowLogs[troubleFlowLogs.length - 1].status) ? <Icon type="sync" spin /> : <Icon type="check-circle" />}
                       description={
                         <div className={styles.stepDescription}>
                           处理人：{formHandler}
