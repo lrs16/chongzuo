@@ -406,7 +406,7 @@ function Querylist(props) {
         }
       },
       {
-        title: '是否通过',
+        title: '出厂测试结果',
         dataIndex: 'passTest',
         key: 'passTest',
         align: 'center',

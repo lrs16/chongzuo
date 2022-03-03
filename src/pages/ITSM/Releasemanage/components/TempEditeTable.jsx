@@ -25,6 +25,7 @@ function EditeTable(props) {
   const [selectdata, setSelectData] = useState([]); // 下拉值
   const [visible, setVisible] = useState(false);
   const [reviewResult, setReviewResult] = useState(null);
+  const [rowKey, setRowKey] = useState(0)
   const { ChangeButtype, taskId, location, getSelectedRecords, clearselect } = useContext(UserContext);
 
   // 新增一条记录
@@ -255,6 +256,14 @@ function EditeTable(props) {
       setData([]);
     }
   }, [location]);
+  useEffect(() => {
+    if (visible) {
+      setTimeout(() => {
+        const morepop = document.getElementsByClassName('ant-popover');
+        if (morepop[0]) { morepop[0].style.display = 'none' }
+      }, 50)
+    }
+  }, [visible])
 
   useEffect(() => {
     getUserList();
@@ -729,29 +738,38 @@ function EditeTable(props) {
       render: (text, record) => {
         if (record.review && isEdit) {
           return (
-            <Popconfirm
-              title="该清单不属于您的功能业务复核，是否确定复核？"
-              onConfirm={() => { setVisible(false); handleFieldChange(reviewResult, 'tempReviewResult', record.key) }}
-              visible={visible}
-              onCancel={() => setVisible(false)}
-              placement="leftTop"
-            >
-              <RadioGroup
-                value={text}
-                onMouseDown={() => { setVisible(false); setReviewResult(null); }}
-                onChange={e => {
-                  if (record.responsible !== sessionStorage.getItem('userName')) {
-                    setVisible(true);
-                    setReviewResult(e.target.value);
-                  } else {
-                    handleFieldChange(e.target.value, 'tempReviewResult', record.key)
-                  }
-                }}
-              >
-                <Radio value='通过'>通过</Radio>
-                <Radio value='不通过'>不通过</Radio>
-              </RadioGroup>
-            </Popconfirm>
+            <>
+              {rowKey === Number(record.key) ? (
+                <Popconfirm
+                  title="该清单不属于您的功能业务复核，是否确定复核？"
+                  onConfirm={() => { setVisible(false); handleFieldChange(reviewResult, 'tempReviewResult', record.key) }}
+                  visible={visible}
+                  onCancel={() => setVisible(false)}
+                  placement="leftTop"
+                  key={record.key}
+                >
+                  <RadioGroup
+                    value={text}
+                    onMouseDown={() => { setVisible(false); setReviewResult(null); }}
+                    onChange={e => {
+                      if (record.responsible !== sessionStorage.getItem('userName')) {
+                        setVisible(true);
+                        setReviewResult(e.target.value);
+                      } else {
+                        handleFieldChange(e.target.value, 'tempReviewResult', record.key)
+                      }
+                    }}
+                  >
+                    <Radio value='通过'>通过</Radio>
+                    <Radio value='不通过'>不通过</Radio>
+                  </RadioGroup>
+                </Popconfirm>) : (
+                <RadioGroup value={text}>
+                  <Radio value='通过'>通过</Radio>
+                  <Radio value='不通过'>不通过</Radio>
+                </RadioGroup>
+              )}
+            </>
           )
         }
         return <div style={{ textAlign: 'center' }}>{text}</div>;
@@ -892,7 +910,7 @@ function EditeTable(props) {
       </Row>
       <div id='list'>
         <Table
-          columns={isEdit ? columns : viewcolumns}
+          columns={!isEdit && (taskName === '出厂测试' || taskName === '新建') ? viewcolumns : columns}
           dataSource={data}
           bordered
           size='middle'
@@ -904,6 +922,11 @@ function EditeTable(props) {
             let className = 'light-row';
             if (index % 2 === 1) className = styles.darkRow;
             return className;
+          }}
+          onRow={record => {
+            return {
+              onMouseEnter: e => { e.preventDefault(); setRowKey(Number(record.key)); setVisible(false) },
+            };
           }}
           scrollToFirstRowOnChange
         />

@@ -1,8 +1,10 @@
+import React from 'react';
 import { parse } from 'querystring';
 import pathRegexp from 'path-to-regexp';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { RedditSquareFilled } from '@ant-design/icons';
 /* eslint no-useless-escape:0 import/prefer-default-export:0 */
+import { notification, Icon } from 'antd';
 
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/;
 export const isUrl = path => reg.test(path);
@@ -62,4 +64,27 @@ export const store = {
       return JSON.parse(sessionStorage.getItem(name) || '{}');
     }
   },
+};
+
+export const openNotification = (data) => {
+  const arr = data.reverse();
+  notification.error({
+    placement: 'topLeft',
+    duration: 1,
+    message: '请填写以下表单信息：',
+    description: <>
+      {arr?.map((obj, i) => <div key={i.toString()}>
+        {obj?.errors?.map((item, j) => <span key={`${item.field}${j.toString()}`}>{(i + 1).toString()}、{item.message}</span>)}
+      </div>)}
+    </>,
+    icon: <Icon type="close-circle" theme="twoTone" twoToneColor='#f5222d' />
+  });
+  setTimeout(() => {
+    const notificationBox = document.getElementsByClassName('ant-notification-topLeft');
+    if (notificationBox[0]) {
+      const scrollWidth = document.body.clientWidth / 2
+      const boxWidth = notificationBox[0].offsetWidth / 2;
+      notificationBox[0].style.left = `${scrollWidth - boxWidth}px`;
+    }
+  }, 50)
 };

@@ -64,20 +64,41 @@ function TemporaryRegistrat(props, ref) {
       let target = []
       if (taskName === '新建' || taskName === '出厂测试') {
         target = value.filter(item => !item.module || !item.abilityType || !item.module || !item.appName || !item.problemType || !item.testMenu || !item.testResult || !item.testStep || !item.developer || !item.responsible);
+        if (target.length > 0) {
+          callback(`请填写完整的发布清单信息`);
+        } else {
+          callback()
+        }
       } else if (taskName === '平台验证') {
         target = value.filter(item => !item.tempPlatformResult || !item.tempPlatformVerifier);
+        if (target.length > 0) {
+          callback(`发布清单未全部验证`);
+        } else {
+          callback();
+        };
       } else if (taskName === '科室负责人审核') {
         target = value.filter(item => !item.tempDirectorResult || !item.tempDirector);
+        if (target.length > 0) {
+          callback(`发布清单未全部审核`);
+        } else {
+          callback();
+        };
       } else if (taskName === '发布验证') {
         target = value.filter(item => !item.tempValidateResult || !item.tempValidateVerifier);
+        if (target.length > 0) {
+          callback(`发布清单未全部验证`);
+        } else {
+          callback();
+        };
       } else if (taskName === '业务复核') {
         target = value.filter(item => !item.tempReviewResult || !item.tempReviewVerifier);
+        if (target.length > 0) {
+          callback(`发布清单未全部复核`);
+        } else {
+          callback();
+        };
       };
-      if (target.length > 0) {
-        callback(`请填写完整的发布清单信息`);
-      } else {
-        callback()
-      }
+
     } else {
       callback()
     }
@@ -340,7 +361,7 @@ function TemporaryRegistrat(props, ref) {
           <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="申请单位">
               {getFieldDecorator('applicantUnit', {
-                rules: [{ required }],
+                rules: [{ required, message: '请选择申请单位' }],
                 initialValue: info?.tempRegister?.applicantUnit || '',
               })(<Input placeholder="请输入" />)}
             </Form.Item>
@@ -348,7 +369,7 @@ function TemporaryRegistrat(props, ref) {
           <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="申请单位ID">
               {getFieldDecorator('applicantUnitId', {
-                rules: [{ required }],
+                rules: [{ required, message: '请选择申请单位后获取单位ID' }],
                 initialValue: info?.tempRegister?.applicantUnitId || '',
               })(<Input placeholder="请输入" />)}
             </Form.Item>
@@ -441,17 +462,17 @@ function TemporaryRegistrat(props, ref) {
             <Form.Item label="计划工作开始时间" >
               {getFieldDecorator('planStart', {
                 rules: [{ required, message: `请选择计划工作开始时间` }],
-                initialValue: moment(info?.tempRegister?.planStart || undefined),
+                initialValue: moment(info?.tempRegister?.planStart),
               })(
                 <div>
-                  {info.tempRegister && (<DatePicker
+                  {info.tempRegister?.planStart && (<DatePicker
                     disabled={!isEdit}
                     showTime
                     placeholder="请选择时间"
                     format="YYYY-MM-DD HH:mm:ss"
                     // disabled={!isEdit}
                     style={{ width: '100%' }}
-                    defaultValue={moment(info?.tempRegister?.planStart || undefined)}
+                    defaultValue={moment(info?.tempRegister?.planStart)}
                     onChange={(v) => { setFieldsValue({ planStart: moment(v).format('YYYY-MM-DD HH:mm:ss') }) }}
                     disabledDate={(v) => {
                       const dates = getFieldsValue(['planEnd']);
@@ -466,17 +487,17 @@ function TemporaryRegistrat(props, ref) {
             <Form.Item label="计划工作结束时间">
               {getFieldDecorator('planEnd', {
                 rules: [{ required, message: `请选择计划工作结束时间` }],
-                initialValue: moment(info?.tempRegister?.planEnd || undefined),
+                initialValue: moment(info?.tempRegister?.planEnd),
               })(
                 <div>
-                  {info.tempRegister && (<DatePicker
+                  {info.tempRegister?.planEnd && (<DatePicker
                     disabled={!isEdit}
                     showTime
                     placeholder="请选择时间"
                     format="YYYY-MM-DD HH:mm:ss"
                     // disabled={!isEdit}
                     style={{ width: '100%' }}
-                    defaultValue={moment(info?.tempRegister?.planEnd || undefined)}
+                    defaultValue={moment(info?.tempRegister?.planEnd)}
                     onChange={(v) => { setFieldsValue({ planEnd: moment(v).format('YYYY-MM-DD HH:mm:ss') }) }}
                     disabledDate={(v) => {
                       const dates = getFieldsValue(['planStart']);
@@ -490,7 +511,7 @@ function TemporaryRegistrat(props, ref) {
           <Col span={8}>
             <Form.Item label="停止业务访问" >
               {getFieldDecorator('stopBiz', {
-                rules: [{ required, message: `请选择停止业务访问` }],
+                rules: [{ required, message: `请选择是否停止业务访问` }],
                 initialValue: info.tempRegister ? info.tempRegister.stopBiz : '',
               })(
                 <RadioGroup disabled={!isEdit} >
@@ -635,9 +656,9 @@ function TemporaryRegistrat(props, ref) {
           </Col>}
           <Col span={8}>
             <Form.Item label="登记人" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-              {getFieldDecorator('registerUser', {
+              {getFieldDecorator('register', {
                 rules: [{ required, message: `请输入登记人` }],
-                initialValue: userinfo ? userinfo.userName : info.tempRegister.registerUser,
+                initialValue: userinfo && (taskName === '出厂测试' || taskName === '新建') ? userinfo.userName : info.tempRegister.register,
               })(<Input disabled />)}
             </Form.Item>
           </Col>
@@ -653,7 +674,7 @@ function TemporaryRegistrat(props, ref) {
             <Form.Item label="登记单位" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               {getFieldDecorator('registerUnit', {
                 rules: [{ required, message: `请选择登记单位` }],
-                initialValue: userinfo ? userinfo.unitName : info.tempRegister.registerUnit,
+                initialValue: userinfo && (taskName === '出厂测试' || taskName === '新建') ? userinfo.unitName : info.tempRegister.registerUnit,
               })(<Input disabled />)}
             </Form.Item>
           </Col>

@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
-import { Button, Card, Spin, message, Collapse, Popconfirm } from 'antd';
+import { Button, Card, Spin, message, Collapse, Popconfirm, } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { openNotification } from '@/utils/utils';
 import FilesContext from '@/layouts/MenuContext';
 import DictLower from '@/components/SysDict/DictLower';
 import TemporaryRegistrat from './components/TemporaryRegistrat';
@@ -54,7 +55,6 @@ function TemporaryDetail(props) {
       },
     });
   }
-
 
   const handleclose = () => {
     router.push({
@@ -117,10 +117,34 @@ function TemporaryDetail(props) {
   // 下一环节默认处理人
   const indexUserList = selectdata?.ischange && selectdata.arr.filter(item => item.key === 13263)[0]?.title?.split('-')[1]?.split(',') || [];
 
+  const handleSave = (attach) => {
+    const values = getformvalues('register,releaseLists', attach);
+    setSaveLoading(true);
+    saveRegister(values).then(res => {
+      if (res) {
+        setSaveLoading(false);
+        if (res.code === 200) {
+          message.success('保存成功');
+          openFlow();
+        } else {
+          message.error(res.msg || '操作失败');
+        }
+      } else {
+        message.error('操作失败');
+        setSaveLoading(false);
+      }
+    })
+  };
+
   const handleSubmit = (flowtype) => {
+    if (taskName === '出厂测试') {
+      const values = getformvalues('register,releaseLists');
+      saveRegister(values);
+    };
     RegistratRef.current.Forms((err) => {
       if (err) {
-        message.error('请将验证清单填写完整')
+        openNotification(Object.values(err))
+        // message.error('请将信息填写完整')
       } else {
         setType(flowtype);
         setUserModleVisible(true);
@@ -131,10 +155,9 @@ function TemporaryDetail(props) {
         }
       }
     })
-  }
+  };
 
   const toSubmit = (val) => {
-    console.log(val);
     dispatch({
       type: 'releasetemp/releaseflow',
       payload: { ...val },
@@ -202,25 +225,6 @@ function TemporaryDetail(props) {
     }
   };
 
-  const handleSave = (attach) => {
-    const values = getformvalues('register,releaseLists', attach);
-    setSaveLoading(true);
-    saveRegister(values).then(res => {
-      if (res) {
-        setSaveLoading(false);
-        if (res.code === 200) {
-          message.success('保存成功');
-          openFlow();
-        } else {
-          message.error(res.msg || '操作失败')
-        }
-      } else {
-        message.error('操作失败')
-      }
-    })
-  };
-
-
   const operations = (
     <>
       {info?.releaseTempLogs && info?.releaseTempLogs.length && info?.releaseTempLogs.length === 1 && (
@@ -228,14 +232,14 @@ function TemporaryDetail(props) {
       )}
       {taskName === '出厂测试' ? (
         <>
-          <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSave()} disabled={loading || uploadStatus}
+          <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSave()} disabled={loading || uploadStatus || !info?.taskInfo?.operationTask || !selectdata.ischange}
           >
             保存
           </Button>
           <Button
             type="primary"
             style={{ marginRight: 8 }}
-            disabled={loading || uploadStatus}
+            disabled={loading || uploadStatus || !info?.taskInfo?.operationTask || !selectdata.ischange}
             onMouseDown={() => setType('')}
             onClick={() => { handleSubmit('1') }}
           >

@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
-import { Button, Card, Spin, message } from 'antd';
+import { Button, Card, Spin, message, notification } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { openNotification } from '@/utils/utils';
 import { querkeyVal } from '@/services/api';
 import FilesContext from '@/layouts/MenuContext';
 import DictLower from '@/components/SysDict/DictLower';
@@ -22,7 +23,7 @@ function TemporaryRegistration(props) {
   const [type, setType] = useState('1');
   const [registratTaskId, setRegistratTaskId] = useState('');
   const [indexUser, setIndexUser] = useState([]);
-  const indexvalue = { releaseMain: {}, tempRegister: {}, releaseListList: [] };
+  const indexvalue = { releaseMain: {}, tempRegister: { planStart: moment(), planEnd: moment() }, releaseListList: [] };
 
   const RegistratRef = useRef();
 
@@ -36,11 +37,21 @@ function TemporaryRegistration(props) {
     });
   }
 
-
   const handleclose = () => {
     router.push({
       pathname: `/ITSM/releasemanage/plan/registration`,
       query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true, }
+    });
+  };
+
+  const openNotificationWithIcon = (arr) => {
+    notification.error({
+      message: '请将以下信息填写完整',
+      description: <>
+        <div>111</div>
+        <div>222</div>
+      </>
+      ,
     });
   };
 
@@ -128,7 +139,8 @@ function TemporaryRegistration(props) {
     const values = getformvalues('register,releaseLists');
     RegistratRef.current.Forms((err) => {
       if (err) {
-        message.error('请将信息填写完整')
+        // message.error('请将信息填写完整')
+        openNotification(Object.values(err));
       } else {
         setSaveLoading(true);
         setType('1');

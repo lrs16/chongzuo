@@ -840,7 +840,7 @@ function EditeTable(props) {
               {taskName === '版本管理员审核' && (
                 <Button type='link' onMouseDown={() => { ChangeButtype('') }} onClick={e => checsaveRow(e, record.key)}>保存</Button>
               )}
-              <Button type='link' onClick={e => newcancel(e, record.ke)}>取消</Button>
+              <Button type='link' onClick={e => newcancel(e, record.key)}>取消</Button>
             </>
           );
         } if (record.editable) {

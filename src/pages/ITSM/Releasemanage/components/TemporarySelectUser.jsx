@@ -6,7 +6,7 @@ import styles from '@/components/SelectUser/index.less';
 const { TextArea } = Input;
 
 function TemporarySelectUser(props) {
-  const { dispatch, visible, taskId, type, userlist, ChangeUserVisible, indexUser, title, form, GetVal, gobacknode, taskName } = props;
+  const { dispatch, visible, taskId, type, userlist, ChangeUserVisible, indexUser, title, form, GetVal, gobacknode, taskName, loading } = props;
   const { getFieldDecorator, validateFields, resetFields, setFieldsValue } = form;
   // const [value, setValue] = useState('');
   const required = true;
@@ -93,7 +93,7 @@ function TemporarySelectUser(props) {
       <Row>
         <Form>
           {type === '1' && taskName !== '发布验证' && (<div>
-            {userlist && (
+            {userlist && !loading && (
               <div id='user'>
                 {userlist?.describe || ''}
                 {taskName !== '业务复核' && (<div style={{ marginTop: 12 }} className={styles.useritem}>

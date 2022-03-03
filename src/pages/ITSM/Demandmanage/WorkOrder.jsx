@@ -147,7 +147,11 @@ function WorkOrder(props) {
   }, [info]);
 
   const formerr = () => {
-    message.error('请将信息填写完整...');
+    // message.error('请将信息填写完整...');
+    message.error(<div>
+      <p>1111</p>
+      <p>222</p>
+    </div>)
   };
 
   // 刷新路由
@@ -182,7 +186,8 @@ function WorkOrder(props) {
       case 'flow':
         RegistratRef.current.Forms((err) => {
           if (err) {
-            formerr();
+            const allerr = Object.values(err)
+            formerr(allerr);
             ChangeType('');
           } else if (!userchoice) {
             ChangeUserVisible(true);
