@@ -180,12 +180,12 @@ function EditeTable(props) {
       return;
     };
     if (target && (target.isNew || target.editable)) {
+      setPageinations({ current: target.isNew ? Math.ceil(newData.length / 5) : paginations.current, pageSize: 5 });
       target.isNew = false;
       target.editable = false;
       setNewButton(false)
       newData.sort((a, b) => a.key - b.key);
       setData(newData);
-      setPageinations({ current: Math.ceil(newData.length / 5), pageSize: 5 });
       ChangeValue(newData);
       if (taskName !== '新建') {
         ChangeButtype('save');
@@ -798,6 +798,11 @@ function EditeTable(props) {
       case '出厂测试':
         newArr = arr;
         break;
+      case '开发商项目经理审核': {
+        const newarr = sclicecolumns(arr);
+        newArr = [...newarr];
+        break;
+      }
       case '平台验证': {
         const newarr = sclicecolumns(arr);
         newArr = [...newarr, ...platform];

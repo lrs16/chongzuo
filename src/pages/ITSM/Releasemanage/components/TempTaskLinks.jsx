@@ -17,18 +17,18 @@ const records = [
 ]
 
 function TempTaskLinks(props) {
-  const { taskName } = props;
+  const { taskName, releaseTempLogs } = props;
   const [current, setCurrent] = useState(0);
   useEffect(() => {
-    if (records) {
+    if (releaseTempLogs) {
       if (taskName === '结束') {
-        setCurrent(9)
+        const nodeLength = records.indexOf(releaseTempLogs[0]?.operatePrev) - 1;
+        setCurrent(releaseTempLogs[0]?.operatePrev === '业务复核' ? 9 : nodeLength);
       } else {
         setCurrent(records.indexOf(taskName));
       }
     }
-  }, [records]);
-
+  }, [releaseTempLogs]);
   return (
     <Steps
       current={current}
@@ -40,13 +40,14 @@ function TempTaskLinks(props) {
         overflowX: 'auto',
       }}
     >
-      {records.map((obj, index) => {
+      {releaseTempLogs && records.map((obj, index) => {
         if (taskName === '结束') {
+          const nodeLength = records.indexOf(releaseTempLogs[0]?.operatePrev) + 1;
           return (
             <Step
               title={obj}
               key={index.toString()}
-              icon={<Icon type="check-circle" />}
+              icon={index < nodeLength ? <Icon type="check-circle" /> : ''}
             />);
         }
         return (

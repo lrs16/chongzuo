@@ -59,10 +59,12 @@ export default {
     },
 
     // 打开待办
-    *openflow({ payload: { releaseNo } }, { call, put }) {
-      yield put({
-        type: 'clearcache',
-      });
+    *openflow({ payload: { releaseNo, clear } }, { call, put }) {
+      if (clear) {
+        yield put({
+          type: 'clearcache',
+        });
+      };
       const response = yield call(openOrder, releaseNo);
       if (response.code === 200) {
         yield put({

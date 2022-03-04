@@ -58,6 +58,7 @@ function TemporaryRegistrat(props, ref) {
 
   // 校验发布清单
   const releaseListsValidator = (rule, value, callback) => {
+    console.log(taskName);
     if (!value || value.length === 0) {
       callback()
     } if (operationList) {
@@ -98,7 +99,6 @@ function TemporaryRegistrat(props, ref) {
           callback();
         };
       };
-
     } else {
       callback()
     }

@@ -46,12 +46,13 @@ function TemporaryDetail(props) {
 
   const RegistratRef = useRef();
 
-  const openFlow = () => {
+  const openFlow = (clear) => {
     dispatch({
       type: 'releasetemp/openflow',
       payload: {
         releaseNo: Id,
-        taskName
+        taskName,
+        clear
       },
     });
   }
@@ -88,8 +89,8 @@ function TemporaryDetail(props) {
         tel: val.tel,
         versionNo: val.versionNo,
         releaseLevel: val.releaseLevel,
-        planStart: moment(val.planStart).format('YYYY-MM-DD hh:mm:ss'),
-        planEnd: moment(val.planEnd).format('YYYY-MM-DD hh:mm:ss'),
+        planStart: moment(val.planStart).format('YYYY-MM-DD HH:mm:ss'),
+        planEnd: moment(val.planEnd).format('YYYY-MM-DD HH:mm:ss'),
         stopBiz: val.stopBiz,
         changeReason: val.changeReason.toString(),
         dutyUnit: val.dutyUnit,
@@ -186,7 +187,7 @@ function TemporaryDetail(props) {
     });
     if (Id && indexUserList && flowNode) {
       // 打开待办
-      openFlow();
+      openFlow(true);
     }
   }, [Id]);
 
@@ -228,11 +229,28 @@ function TemporaryDetail(props) {
   const operations = (
     <>
       {info?.releaseTempLogs && info?.releaseTempLogs.length && info?.releaseTempLogs.length === 1 && (
-        <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handledel()} >删除</Button>
+        <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handledel()} disabled={loading || uploadStatus || !info?.taskInfo?.operationTask || !selectdata.ischange} >删除</Button>
       )}
+      {taskName === '版本管理员审核' && (<Button
+        type="primary"
+        style={{ marginRight: 8 }}
+        onClick={() => handleSubmit('4')} disabled={loading || uploadStatus || !info?.taskInfo?.operationTask || !selectdata.ischange}
+      >
+        取消发布
+      </Button>)}
       {taskName === '出厂测试' ? (
         <>
-          <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSave()} disabled={loading || uploadStatus || !info?.taskInfo?.operationTask || !selectdata.ischange}
+          <Button
+            type="primary"
+            style={{ marginRight: 8 }}
+            onClick={() => handleSubmit('4')} disabled={loading || uploadStatus || !info?.taskInfo?.showEndBtn || !selectdata.ischange}
+          >
+            结束
+          </Button>
+          <Button
+            type="primary"
+            style={{ marginRight: 8 }}
+            onClick={() => handleSave()} disabled={loading || uploadStatus || !info?.taskInfo?.operationTask || !selectdata.ischange}
           >
             保存
           </Button>
@@ -321,7 +339,7 @@ function TemporaryDetail(props) {
   return (
     <Spin spinning={loading || saveLoading}>
       <PageHeaderWrapper title={pagetitle} extra={operations}>
-        <TempTaskLinks taskName={taskName} />
+        <TempTaskLinks taskName={taskName} releaseTempLogs={info?.releaseTempLogs} />
         <div className={styles.tempcollapse}>
           <Collapse
             expandIconPosition="right"
@@ -330,7 +348,7 @@ function TemporaryDetail(props) {
             onChange={callback}
           >
             <Panel header='发布基本信息' key="form">
-              <div style={{ marginTop: 12 }}>
+              {info && (<div style={{ marginTop: 12 }}>
                 <FilesContext.Provider value={{
                   // files: info?.tempRegister?.attach ? JSON.parse(info.tempRegister.attach) : [],
                   ChangeFiles: ((v) => { handleSave(v); }),
@@ -361,7 +379,7 @@ function TemporaryDetail(props) {
                     taskId={info?.taskId || taskId}
                   />
                 </FilesContext.Provider>
-              </div>
+              </div>)}
             </Panel>
             <Panel header='处理过程' key="list">
               <div style={{ marginTop: 12 }}>
