@@ -281,68 +281,70 @@ function Operation(props) {
             onTabChange={handleTabChange}
           >
             {tabActivekey === 'workorder' && (
-              <Spin spinning={loading} >
-                {info && (
-                  <div className={styles.ordercollapse}>
-                    <Collapse
-                      expandIconPosition="right"
-                      activeKey={activeKey}
-                      bordered={false}
-                      onChange={callback}
-                    >
+              <div className='noexplain'>
+                <Spin spinning={loading} >
+                  {info && (
+                    <div className={styles.ordercollapse}>
+                      <Collapse
+                        expandIconPosition="right"
+                        activeKey={activeKey}
+                        bordered={false}
+                        onChange={callback}
+                      >
 
-                      {(title === '我的知识' || title === '知识维护') && status === '已登记' && (
-                        <Panel header='知识收录' key="formpanel">
-                          <EditContext.Provider value={{
-                            editable: true,
-                            files: (info.edit.main && info.edit.main.fileIds) ? JSON.parse(info.edit.main.fileIds) : [],
-                            ChangeFiles,
-                            getUploadStatus: (v) => { setUploadStatus(v) },
-                          }}>
-                            <Content
-                              wrappedComponentRef={ContentRef}
-                              formrecord={info.edit.main}
-                              isedit
-                              location={location}
+                        {(title === '我的知识' || title === '知识维护') && status === '已登记' && (
+                          <Panel header='知识收录' key="formpanel">
+                            <EditContext.Provider value={{
+                              editable: true,
+                              files: (info.edit.main && info.edit.main.fileIds) ? JSON.parse(info.edit.main.fileIds) : [],
+                              ChangeFiles,
+                              getUploadStatus: (v) => { setUploadStatus(v) },
+                            }}>
+                              <Content
+                                wrappedComponentRef={ContentRef}
+                                formrecord={info.edit.main}
+                                isedit
+                                location={location}
+                              />
+                            </EditContext.Provider>
+                          </Panel>
+                        )}
+                        {title === '知识审核' && status === '待审核' && (
+                          <Panel header='知识审核' key="formpanel">
+                            <Examine
+                              wrappedComponentRef={ExmaineRef}
+                              check={info.edit.check === '' ? undefined : info.edit.check}
+                              userinfo={userinfo}
                             />
-                          </EditContext.Provider>
-                        </Panel>
-                      )}
-                      {title === '知识审核' && status === '待审核' && (
-                        <Panel header='知识审核' key="formpanel">
-                          <Examine
-                            wrappedComponentRef={ExmaineRef}
-                            check={info.edit.check === '' ? undefined : info.edit.check}
-                            userinfo={userinfo}
-                          />
-                        </Panel>
-                      )}
-                      {(menuDesc === '知识详情' || title === '知识审核') && (
-                        <Panel header='知识收录' key="1">
-                          <EditContext.Provider value={{ editable: false }}>
-                            <Content
-                              wrappedComponentRef={ContentRef}
-                              formrecord={info.data[0].main}
-                              isedit
+                          </Panel>
+                        )}
+                        {(menuDesc === '知识详情' || title === '知识审核') && (
+                          <Panel header='知识收录' key="1">
+                            <EditContext.Provider value={{ editable: false }}>
+                              <Content
+                                wrappedComponentRef={ContentRef}
+                                formrecord={info.data[0].main}
+                                isedit
+                                Noediting
+                              />
+                            </EditContext.Provider>
+                          </Panel>
+                        )}
+                        {(menuDesc === '知识详情' || (title === '我的知识' && info.data && info.data[1] && info.data[1].check)) && info.data[1] && (
+                          <Panel header='知识审核' key="2">
+                            <Examine
+                              wrappedComponentRef={ExmaineRef}
+                              check={info.data[1].check}
                               Noediting
                             />
-                          </EditContext.Provider>
-                        </Panel>
-                      )}
-                      {(menuDesc === '知识详情' || (title === '我的知识' && info.data && info.data[1] && info.data[1].check)) && info.data[1] && (
-                        <Panel header='知识审核' key="2">
-                          <Examine
-                            wrappedComponentRef={ExmaineRef}
-                            check={info.data[1].check}
-                            Noediting
-                          />
-                        </Panel>
-                      )}
-                    </Collapse>
-                  </div >
-                )}
+                          </Panel>
+                        )}
+                      </Collapse>
+                    </div >
+                  )}
 
-              </Spin>
+                </Spin>
+              </div>
             )}
             {tabActivekey === 'List' && (
               <UpDataList data={updatas} loading={loading} />

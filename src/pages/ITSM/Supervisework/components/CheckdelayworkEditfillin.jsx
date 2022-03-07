@@ -81,7 +81,7 @@ const CheckdelayworkEditfillin = React.forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    message: '请输入审核时间'
+                    message: '请输入延期审核时间'
                   }
                 ],
                 initialValue: check.checkTime ? moment(check.checkTime) : moment(new Date()),
@@ -112,7 +112,7 @@ const CheckdelayworkEditfillin = React.forwardRef((props, ref) => {
             {adopt === '001' && (
               <Form.Item label="审核说明" {...forminladeLayout}>
                 {getFieldDecorator('check_content', {
-                  rules: [{ required: false, message: '请输入', }],
+                  rules: [{ required: false, message: '请输入审核说明', }],
                   initialValue: check.content
                 })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
               </Form.Item>
@@ -120,7 +120,7 @@ const CheckdelayworkEditfillin = React.forwardRef((props, ref) => {
             {adopt === '002' && (
               <Form.Item label="审核说明" {...forminladeLayout}>
                 {getFieldDecorator('check_content', {
-                  rules: [{ required: true, message: '请输入', }],
+                  rules: [{ required: true, message: '请输入审核说明', }],
                   initialValue: check.content
                 })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
               </Form.Item>

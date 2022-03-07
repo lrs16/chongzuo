@@ -136,7 +136,7 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
                     rules: [
                       {
                         required,
-                        message: '请输入'
+                        message: '请输入工作负责人'
                       }
                     ],
                     initialValue: main && main.workUser ? main.workUser.split(',') : []

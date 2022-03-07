@@ -103,48 +103,50 @@ function Work(props) {
         </>
       }
     >
-      {
-        tabActivekey === 'taskwork' && (
-          <Spin spinning={loading} >
-            <div className={styles.collapse}>
-              {openViewlist && loading === false && (
-                <Collapse
-                  expandIconPosition="right"
-                  defaultActiveKey={['0']}
-                  bordered={false}
-                >
-                  {openViewlist.map((obj, index) => {
-                    // panel详情组件
-                    const Paneldesmap = new Map([
-                      ['main', <TaskworkEditfillins
-                        info={Object.values(obj)[0]}
-                        main={openViewlist[0].main}
-                      />],
-                      ['check', <CheckdelayworkEditfillins
-                        info={Object.values(obj)[0]}
-                        main={openViewlist[0].main}
-                      />],
-                      ['execute', <ExecuteworkEditfillins
-                        info={Object.values(obj)[0]}
-                        main={openViewlist[0].main}
-                      />],
-                    ]);
-                    return (
-                      <Panel
-                        header={Panelheadermap.get(Object.keys(obj)[0])}
-                        key={index.toString()}>
-                        {Paneldesmap.get(Object.keys(obj)[0])}
-                      </Panel>
-                    );
-                  })}
-                </Collapse>
-              )}
-            </div>
-          </Spin>
+      <div className='noexplain'>
+        {
+          tabActivekey === 'taskwork' && (
+            <Spin spinning={loading} >
+              <div className={styles.collapse}>
+                {openViewlist && loading === false && (
+                  <Collapse
+                    expandIconPosition="right"
+                    defaultActiveKey={['0']}
+                    bordered={false}
+                  >
+                    {openViewlist.map((obj, index) => {
+                      // panel详情组件
+                      const Paneldesmap = new Map([
+                        ['main', <TaskworkEditfillins
+                          info={Object.values(obj)[0]}
+                          main={openViewlist[0].main}
+                        />],
+                        ['check', <CheckdelayworkEditfillins
+                          info={Object.values(obj)[0]}
+                          main={openViewlist[0].main}
+                        />],
+                        ['execute', <ExecuteworkEditfillins
+                          info={Object.values(obj)[0]}
+                          main={openViewlist[0].main}
+                        />],
+                      ]);
+                      return (
+                        <Panel
+                          header={Panelheadermap.get(Object.keys(obj)[0])}
+                          key={index.toString()}>
+                          {Paneldesmap.get(Object.keys(obj)[0])}
+                        </Panel>
+                      );
+                    })}
+                  </Collapse>
+                )}
+              </div>
+            </Spin>
+          )}
+        {tabActivekey === 'supervise' && (
+          <SuperviseList data={getSuperviseLists} loading={loading} />
         )}
-      {tabActivekey === 'supervise' && (
-        <SuperviseList data={getSuperviseLists} loading={loading} />
-      )}
+      </div>
     </PageHeaderWrapper >
   )
 }

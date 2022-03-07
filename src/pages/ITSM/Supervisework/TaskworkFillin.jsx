@@ -9,6 +9,7 @@ import {
   message,
 } from 'antd';
 import router from 'umi/router';
+import { openNotification } from '@/utils/utils';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import TaskworkEditfillin from './components/TaskworkEditfillin';
 
@@ -53,6 +54,11 @@ function TaskworkFillin(props) {
       xs: { span: 24 },
       sm: { span: 22 },
     },
+  };
+
+  // 表单校验提示信息
+  const formerr = (err) => {
+    openNotification(Object.values(err));
   };
 
   const queryDept = () => {
@@ -139,6 +145,8 @@ function TaskworkFillin(props) {
           }
         })
       }
+      const allerr = Object.values(err);
+      return formerr(allerr);
     });
   }
 
@@ -278,33 +286,35 @@ function TaskworkFillin(props) {
       </Button>
       <Button onClick={() => handleclose()} disabled={taskworkUploadStatus}>关闭</Button>
     </>
-  )
+  );
 
   return (
     <PageHeaderWrapper
       title={pagetitle}
       extra={extrabuttons}
     >
-      <Card>
-        <TaskworkContext.Provider value={{
-          getUploadStatus: (v) => { setTaskworkUploadStatus(v) },
-        }}>
-          <TaskworkEditfillin
-            ref={TaskworkfillinRef}
-            useInfo={userinfo}
-            formItemLayout={formItemLayout}
-            forminladeLayout={forminladeLayout}
-            //   getRichtext={(richText => setRichtext(richText))}
-            ChangeFiles={newvalue => {
-              setFiles(newvalue);
-            }}
-            files={[]}
-            superviseworkPersonSelect={superviseworkPersonSelect}
-            main={copyData}
-            location={location}
-            timeVisivle={timeVisivle}
-          /></TaskworkContext.Provider>
-      </Card>
+      <div className='noexplain'>
+        <Card>
+          <TaskworkContext.Provider value={{
+            getUploadStatus: (v) => { setTaskworkUploadStatus(v) },
+          }}>
+            <TaskworkEditfillin
+              ref={TaskworkfillinRef}
+              useInfo={userinfo}
+              formItemLayout={formItemLayout}
+              forminladeLayout={forminladeLayout}
+              //   getRichtext={(richText => setRichtext(richText))}
+              ChangeFiles={newvalue => {
+                setFiles(newvalue);
+              }}
+              files={[]}
+              superviseworkPersonSelect={superviseworkPersonSelect}
+              main={copyData}
+              location={location}
+              timeVisivle={timeVisivle}
+            /></TaskworkContext.Provider>
+        </Card>
+      </div>
     </PageHeaderWrapper>
   );
 }

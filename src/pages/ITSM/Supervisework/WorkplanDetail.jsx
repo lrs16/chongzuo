@@ -12,6 +12,7 @@ import {
 import router from 'umi/router';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
+import { openNotification } from '@/utils/utils';
 import styles from './index.less';
 import TimeoutModal from './components/TimeoutModel';
 import { judgeTimeoutStatus, saveTimeoutMsg } from '../services/api';
@@ -170,8 +171,9 @@ function WorkplanDetail(props) {
     })
   };
 
-  const formerr = () => {
-    message.error('请将信息填写完整');
+  const formerr = (err) => {
+    // message.error('请将信息填写完整');
+    openNotification(Object.values(err));
   };
 
   //  保存统一接口
@@ -212,7 +214,8 @@ function WorkplanDetail(props) {
         tosave(newvalues);
       }
       if (params && err) {
-        formerr();
+        const allerr = Object.values(err);
+        return formerr(allerr);
       }
     })
   };
@@ -356,6 +359,8 @@ function WorkplanDetail(props) {
           }
         })
       }
+      const allerr = Object.values(err);
+      return formerr(allerr);
     })
   };
 
@@ -391,6 +396,8 @@ function WorkplanDetail(props) {
           }
         })
       }
+      const allerr = Object.values(err);
+      return formerr(allerr);
     })
   }
 
@@ -503,7 +510,8 @@ function WorkplanDetail(props) {
           }
         });
       }
-      return null;
+      const allerr = Object.values(err);
+      return formerr(allerr);
     }
     )
   };
@@ -661,7 +669,7 @@ function WorkplanDetail(props) {
               type="primary"
               style={{ marginRight: 8 }}
               onClick={() => handlebeforeconfirm()}
-            disabled={taskworkUploadStatus}
+              disabled={taskworkUploadStatus}
             >
               确认
             </Button>)}
@@ -696,142 +704,147 @@ function WorkplanDetail(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      {
-        tabActivekey === 'taskwork' && (
-          <Spin spinning={loading} >
-            {
-              loading === false && executeResult && executeResult.length > 0 && data && (
-                <div className={styles.collapse}>
-                  <TaskworkContext.Provider value={{
-                    getUploadStatus: (v) => { setTaskworkUploadStatus(v) },
-                  }}>
-                    <Collapse
-                      expandIconPosition="right"
-                      defaultActiveKey={['1', '2', '3']}
-                      bordered={false}
-                    >
-                      <>
-                        {
-                          loading === false && ((edit && edit.main !== undefined) && flowNodeName === '工作登记' || delay) && (
+      <div className='noexplain'>
+        {
+          tabActivekey === 'taskwork' && (
+            <Spin spinning={loading} >
+              {
+                loading === false && executeResult && executeResult.length > 0 && data && (
+                  <div className={styles.collapse}>
+                    <TaskworkContext.Provider value={{
+                      getUploadStatus: (v) => { setTaskworkUploadStatus(v) },
+                    }}>
+                      <Collapse
+                        expandIconPosition="right"
+                        defaultActiveKey={['1', '2', '3']}
+                        bordered={false}
+                      >
+                        <>
+                          {
+                            loading === false && ((edit && edit.main !== undefined) && flowNodeName === '工作登记' || delay) && (
+                              <Panel
+                                header={status || flowNodeName}
+                                key='1'
+                                bordered
+                                style={{ backgroundColor: 'white' }}
+                              >
+                                <TaskworkEditfillin
+                                  formItemLayout={formItemLayout}
+                                  forminladeLayout={forminladeLayout}
+                                  main={openFlowList.main ? openFlowList.main : edit.main}
+                                  type={delay}
+                                  status={status}
+                                  useInfo={userinfo}
+                                  ref={SaveRef}
+                                  superviseworkPersonSelect={superviseworkPersonSelect}
+                                  files={
+                                    openFlowList !== [] && (openFlowList.main.fileIds) !== '' && (openFlowList.main.fileIds) ? JSON.parse(openFlowList.main.fileIds) : []
+                                  }
+                                  ChangeFiles={newvalue => {
+                                    setFiles(newvalue);
+                                  }}
+                                  timeVisivle='true'
+                                  location={location}
+                                />
+                              </Panel>
+                            )
+                          }
+                          {
+                            loading === false && !delay && (edit && edit.execute !== undefined) && flowNodeName === '工作执行' && (
+                              <Panel
+                                header='工作执行'
+                                key='2'
+                                style={{ backgroundColor: 'white' }}
+                                bordered
+                              >
+                                <ExecuteworkEditfillin
+                                  formItemLayout={formItemLayout}
+                                  forminladeLayout={forminladeLayout}
+                                  userinfo={userinfo}
+                                  executeResult={executeResult}
+                                  ref={SaveRef}
+                                  showEdit={show}
+                                  execute={edit.execute}
+                                  files={
+                                    (edit.execute.fileIds) && edit.execute.fileIds !== null ? JSON.parse(edit.execute.fileIds) : []
+                                  }
+                                  ChangeFiles={newvalue => {
+                                    setFiles(newvalue);
+                                  }}
+                                  location={location}
+                                />
+                              </Panel>
+                            )
+                          }
+                          {loading === false && !delay && (edit && edit.check !== undefined) && flowNodeName === '工作审核' && (
                             <Panel
-                              header={status || flowNodeName}
-                              key='1'
-                              bordered
+                              header='工作延期审核'
+                              key='3'
                               style={{ backgroundColor: 'white' }}
+                              bordered
                             >
-                              <TaskworkEditfillin
+                              <CheckdelayworkEditfillin
                                 formItemLayout={formItemLayout}
                                 forminladeLayout={forminladeLayout}
-                                main={openFlowList.main ? openFlowList.main : edit.main}
-                                type={delay}
-                                status={status}
-                                useInfo={userinfo}
-                                ref={SaveRef}
-                                superviseworkPersonSelect={superviseworkPersonSelect}
-                                files={
-                                  openFlowList !== [] && (openFlowList.main.fileIds) !== '' && (openFlowList.main.fileIds) ? JSON.parse(openFlowList.main.fileIds) : []
-                                }
-                                ChangeFiles={newvalue => {
-                                  setFiles(newvalue);
-                                }}
-                                timeVisivle='true'
-                                location={location}
-                              />
-                            </Panel>
-                          )
-                        }
-                        {
-                          loading === false && !delay && (edit && edit.execute !== undefined) && flowNodeName === '工作执行' && (
-                            <Panel
-                              header='工作执行'
-                              key='2'
-                              style={{ backgroundColor: 'white' }}
-                              bordered
-                            >
-                              <ExecuteworkEditfillin
-                                formItemLayout={formItemLayout}
-                                forminladeLayout={forminladeLayout}
+                                check={edit.check}
                                 userinfo={userinfo}
-                                executeResult={executeResult}
                                 ref={SaveRef}
-                                showEdit={show}
-                                execute={edit.execute}
-                                files={
-                                  (edit.execute.fileIds) && edit.execute.fileIds !== null ? JSON.parse(edit.execute.fileIds) : []
-                                }
-                                ChangeFiles={newvalue => {
-                                  setFiles(newvalue);
-                                }}
-                                location={location}
                               />
                             </Panel>
-                          )
-                        }
-                        {loading === false && !delay && (edit && edit.check !== undefined) && flowNodeName === '工作审核' && (
+                          )}
+                        </>
+                      </Collapse>
+                    </TaskworkContext.Provider>
+                  </div>
+                )
+              }
+              <div className={styles.collapse}>
+                {loading === false && executeResult && executeResult.length > 0 && data && (
+                  <Collapse
+                    expandIconPosition="right"
+                    defaultActiveKey={['0', '1', '2']}
+                    bordered={false}
+                  >
+                    <>
+                      {data.map((obj, index) => {
+                        // panel详情组件
+                        const Paneldesmap = new Map([
+                          ['main', <TaskworkEditfillins
+                            info={Object.values(obj)[0]}
+                            key='0'
+                          />],
+                          ['check', <CheckdelayworkEditfillins
+                            info={Object.values(obj)[0]}
+                            key='2'
+                          />],
+                          ['execute', <ExecuteworkEditfillins
+                            info={Object.values(obj)[0]}
+                            key='1'
+                          />],
+                        ]);
+                        return (
                           <Panel
-                            header='工作延期审核'
-                            key='3'
-                            style={{ backgroundColor: 'white' }}
-                            bordered
-                          >
-                            <CheckdelayworkEditfillin
-                              formItemLayout={formItemLayout}
-                              forminladeLayout={forminladeLayout}
-                              check={edit.check}
-                              userinfo={userinfo}
-                              ref={SaveRef}
-                            />
+                            header={Panelheadermap.get(Object.keys(obj)[0])}
+                            key={index.toString()}>
+                            {Paneldesmap.get(Object.keys(obj)[0])}
                           </Panel>
-                        )}
-                      </>
-                    </Collapse>
-                  </TaskworkContext.Provider>
-                </div>
-              )
-            }
-            <div className={styles.collapse}>
-              {loading === false && executeResult && executeResult.length > 0 && data && (
-                <Collapse
-                  expandIconPosition="right"
-                  // defaultActiveKey={['0']}
-                  bordered={false}
-                >
-                  <>
-                    {data.map((obj, index) => {
-                      // panel详情组件
-                      const Paneldesmap = new Map([
-                        ['main', <TaskworkEditfillins
-                          info={Object.values(obj)[0]}
-                        />],
-                        ['check', <CheckdelayworkEditfillins
-                          info={Object.values(obj)[0]}
-                        />],
-                        ['execute', <ExecuteworkEditfillins
-                          info={Object.values(obj)[0]}
-                        />],
-                      ]);
-                      return (
-                        <Panel
-                          header={Panelheadermap.get(Object.keys(obj)[0])}
-                          key={index.toString()}>
-                          {Paneldesmap.get(Object.keys(obj)[0])}
-                        </Panel>
-                      );
-                    })}
-                  </>
-                </Collapse>
-              )}
-            </div>
-            <TimeoutModal
-              modalvisible={modalvisible}
-              ChangeModalVisible={v => setModalVisible(v)}
-              ChangeTimeOutMsg={v => postTimeOutMsg(v)}
-            />
-          </Spin>
+                        );
+                      })}
+                    </>
+                  </Collapse>
+                )}
+              </div>
+              <TimeoutModal
+                modalvisible={modalvisible}
+                ChangeModalVisible={v => setModalVisible(v)}
+                ChangeTimeOutMsg={v => postTimeOutMsg(v)}
+              />
+            </Spin>
+          )}
+        {tabActivekey === 'supervise' && (
+          <SuperviseList data={getSuperviseLists} loading={loading} />
         )}
-      {tabActivekey === 'supervise' && (
-        <SuperviseList data={getSuperviseLists} loading={loading} />
-      )}
+      </div>
     </PageHeaderWrapper >
   )
 }
