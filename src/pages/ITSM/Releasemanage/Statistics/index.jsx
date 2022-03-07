@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
-import { Card, Row, Col, Form, DatePicker, Select, Button, Table, Popover, Tooltip } from 'antd';
+import { Card, Row, Col, Form, DatePicker, Select, Button, Table, Popover, Tooltip, Tag } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import DictLower from '@/components/SysDict/DictLower';
 import TableColumns from '@/components/TableColumns';
 import { querkeyVal } from '@/services/api';
 
 const { Option } = Select;
+const { CheckableTag } = Tag;
 
 const formItemLayout = {
   labelCol: {
@@ -20,6 +21,8 @@ const formItemLayout = {
     sm: { span: 18 },
   },
 };
+
+const tagsFromServer = ['全部', '计划', '临时'];
 
 function Statistics(props) {
   const pagetitle = props.route.name;
@@ -33,6 +36,7 @@ function Statistics(props) {
   const [selectdata, setSelectData] = useState('');
   const [tabColumns, setColumns] = useState('');
   const [defaultColumns, setDefaultColumns] = useState([]);
+  const [selectTag, setSelectTag] = useState('全部');
   const [visible, setVisible] = useState(false);
 
   const handleSearch = (pageIndex, pageSize) => {
@@ -65,6 +69,10 @@ function Statistics(props) {
   const handleReset = () => {
     resetFields();
     handleSearch(1, 15);
+  }
+
+  const handleChang = (tag, checked) => {
+    console.log(tag, checked);
   }
 
   useEffect(() => {
@@ -177,7 +185,6 @@ function Statistics(props) {
       render: (text, record) => {
         const handleClick = () => {
           const values = getFieldsValue();
-          console.log(values);
           const val = {
             ...values,
             beginTime: values.beginTime ? moment(values.beginTime).format('X') : '',
@@ -233,6 +240,20 @@ function Statistics(props) {
       <Card>
         <Form {...formItemLayout}>
           <Row>
+            <Col span={8}>
+              <span style={{ fontSize: 16, fontWeight: 700, paddingRight: 12 }}>发布类型：</span>
+              {tagsFromServer.map(obj => {
+                return (
+                  <CheckableTag
+                    key={obj}
+                    checked={selectTag === obj}
+                    onChange={checked => handleChang(obj, checked)}
+                  >
+                    {obj}
+                  </CheckableTag>
+                )
+              })}
+            </Col>
             <Col span={8}>
               <Form.Item label="出厂测试登记时间">
                 <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>

@@ -404,7 +404,7 @@ function WorkOrder2(props) {
 
   // 初始化打开编辑,获取用户信息，流转类型
   useEffect(() => {
-    if (mainId) {
+    if (mainId && taskId) {
       dispatch({
         type: 'eventtodo/eventopenflow',
         payload: {
