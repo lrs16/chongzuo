@@ -93,7 +93,7 @@ function Details(props) {
           style={{ display: 'none' }}
         />
         {tabActivekey === 'workorder' && historyinfo && (
-          <>
+          <div className='noexplain'>
             <TaskLinks records={tasklinks || []} taskName={taskName} />
             <SubmitTypeContext.Provider value={{
               addAttaches: '',                                   // 清单临时添加，fasle文档列表不需要加列，true文档列表需要加列
@@ -101,7 +101,7 @@ function Details(props) {
             }}>
               <HistoryOrderInfo records={historyinfo} selectdata={selectdata} view taskName={taskName} />
             </SubmitTypeContext.Provider>
-          </>
+          </div>
         )}
         {tabActivekey === 'process' && (<Process />)}
         {tabActivekey === 'relevancy' && currentTaskStatus && currentTaskStatus.processInstanceId && <RelationOrder mainId={currentTaskStatus.processInstanceId} />}

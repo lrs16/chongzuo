@@ -4,6 +4,7 @@ import moment from 'moment';
 import router from 'umi/router';
 import { Card, Button, Spin, message, Tooltip } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { openNotification } from '@/utils/utils';
 import SubmitTypeContext from '@/layouts/MenuContext';              // 引用上下文管理组件
 import DictLower from '@/components/SysDict/DictLower';
 import User from '@/components/SelectUser/User';
@@ -138,7 +139,8 @@ function Registration(props) {
     const register = getformvalues();
     RegistratRef.current.Forms((err) => {
       if (err) {
-        message.error('请将信息填写完整')
+        // message.error('请将信息填写完整')
+        openNotification(Object.values(err))
       } else {
         setSaveloading(true);
         saveRegister(register).then(res => {
@@ -317,22 +319,24 @@ function Registration(props) {
           style={{ display: 'none' }}
         />
         <Card>
-          <SubmitTypeContext.Provider value={{
-            ChangeButtype: ((v) => { if (v === 'save') { handleSave('save'); } }),
-            taskId: '',
-            addAttaches: false,
-            ChangeaddAttaches: (() => { }),
-            location,
-          }}>
-            <Registrat
-              wrappedComponentRef={RegistratRef}
-              userinfo={userinfo}
-              selectdata={selectdata}
-              isEdit
-              taskName='新建'
-              info={tabdata || indexvalue}
-            />
-          </SubmitTypeContext.Provider>
+          <div className='noexplain'>
+            <SubmitTypeContext.Provider value={{
+              ChangeButtype: ((v) => { if (v === 'save') { handleSave('save'); } }),
+              taskId: '',
+              addAttaches: false,
+              ChangeaddAttaches: (() => { }),
+              location,
+            }}>
+              <Registrat
+                wrappedComponentRef={RegistratRef}
+                userinfo={userinfo}
+                selectdata={selectdata}
+                isEdit
+                taskName='新建'
+                info={tabdata || indexvalue}
+              />
+            </SubmitTypeContext.Provider>
+          </div>
         </Card>
         <User
           taskId={taskId}

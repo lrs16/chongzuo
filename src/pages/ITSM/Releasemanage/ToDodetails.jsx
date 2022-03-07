@@ -313,24 +313,25 @@ function ToDodetails(props) {
         tabActiveKey={tabActivekey}
         onTabChange={handleTabChange}
       >
-
-        {tabActivekey === 'workorder' && (
-          <SubmitTypeContext.Provider value={{
-            submittype,
-            taskId,
-            ChangeSubmitType: (v => setSubmitType(v)),
-            ChangeButtype: (v => setButtype(v)),
-            addAttaches,                                   // 清单临时添加，fasle文档列表不需要加列，true文档列表需要加列
-            ChangeaddAttaches: (v => setAddAttaches(v)),
-            saved,
-            releaseType,
-            location,
-          }}>
-            <WorkOrder location={location} buttype={buttype} indexUser={indexUser} />
-          </SubmitTypeContext.Provider>
-        )}
-        {tabActivekey === 'process' && (<Process />)}
-        {tabActivekey === 'relevancy' && currentTaskStatus && currentTaskStatus.processInstanceId && <RelationOrder relation mainId={currentTaskStatus.processInstanceId} />}
+        <div className='noexplain'>
+          {tabActivekey === 'workorder' && (
+            <SubmitTypeContext.Provider value={{
+              submittype,
+              taskId,
+              ChangeSubmitType: (v => setSubmitType(v)),
+              ChangeButtype: (v => setButtype(v)),
+              addAttaches,                                   // 清单临时添加，fasle文档列表不需要加列，true文档列表需要加列
+              ChangeaddAttaches: (v => setAddAttaches(v)),
+              saved,
+              releaseType,
+              location,
+            }}>
+              <WorkOrder location={location} buttype={buttype} indexUser={indexUser} />
+            </SubmitTypeContext.Provider>
+          )}
+          {tabActivekey === 'process' && (<Process />)}
+          {tabActivekey === 'relevancy' && currentTaskStatus && currentTaskStatus.processInstanceId && <RelationOrder relation mainId={currentTaskStatus.processInstanceId} />}
+        </div>
       </PageHeaderWrapper>
       <TimeoutModal
         modalvisible={modalvisible}

@@ -245,25 +245,27 @@ function TemporaryRegistration(props) {
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
       <Card>
-        <FilesContext.Provider value={{
-          // files: info?.tempRegister?.attach ? JSON.parse(info.tempRegister.attach) : [],
-          ChangeFiles: ((v) => { handleSave(v); }),
-          getUploadStatus: (v) => { setUploadStatus(v) },
-          ChangeButtype: () => { },
-        }}>
-          <TemporaryRegistrat
-            wrappedComponentRef={RegistratRef}
-            selectdata={selectdata}
-            info={tabdata || indexvalue}
-            userinfo={userinfo || {}}
-            isEdit
-            taskName='新建'
-            loading={loading}
-            operationList // 是否可编辑清单
-            location={location}
-            taskId={Id}
-          />
-        </FilesContext.Provider>
+        <div className='noexplain'>
+          <FilesContext.Provider value={{
+            // files: info?.tempRegister?.attach ? JSON.parse(info.tempRegister.attach) : [],
+            ChangeFiles: ((v) => { handleSave(v); }),
+            getUploadStatus: (v) => { setUploadStatus(v) },
+            ChangeButtype: () => { },
+          }}>
+            <TemporaryRegistrat
+              wrappedComponentRef={RegistratRef}
+              selectdata={selectdata}
+              info={tabdata || indexvalue}
+              userinfo={userinfo || {}}
+              isEdit
+              taskName='新建'
+              loading={loading}
+              operationList // 是否可编辑清单
+              location={location}
+              taskId={Id}
+            />
+          </FilesContext.Provider>
+        </div>
       </Card>
       <DictLower
         typeid="443"

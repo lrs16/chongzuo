@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useContext } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import { Collapse, message } from 'antd';
+import { openNotification } from '@/utils/utils';
 import SubmitTypeContext from '@/layouts/MenuContext';
 import DictLower from '@/components/SysDict/DictLower';
 import User from '@/components/SelectUser/User';
@@ -101,7 +102,8 @@ function WorkOrder(props) {
       sessionStorage.removeItem('NextflowUserId');
       RegistratRef.current.Forms((err) => {
         if (err) {
-          message.error('请将信息填写完整')
+          // message.error('请将信息填写完整')
+          openNotification(Object.values(err))
         } else {
           sessionStorage.setItem('flowtype', '1');
           const register = getregistratformvalues();
@@ -169,7 +171,8 @@ function WorkOrder(props) {
         sessionStorage.removeItem('NextflowUserId');
         ExamineRef.current.Forms((err) => {
           if (err) {
-            message.error('请将信息填写完整')
+            // message.error('请将信息填写完整')
+            openNotification(Object.values(err))
           } else {
             sessionStorage.setItem('flowtype', '1');
             saveExamine();
@@ -183,7 +186,8 @@ function WorkOrder(props) {
         sessionStorage.removeItem('NextflowUserId');
         ExamineRef.current.Forms((err) => {
           if (err) {
-            message.error('请将信息填写完整')
+            // message.error('请将信息填写完整')
+            openNotification(Object.values(err))
           } else {
             saveExamine();
           }
@@ -229,7 +233,8 @@ function WorkOrder(props) {
         sessionStorage.removeItem('NextflowUserId');
         RegistratRef.current.Forms((err) => {
           if (err) {
-            message.error('请将信息填写完整')
+            // message.error('请将信息填写完整')
+            openNotification(Object.values(err))
           } else {
             sessionStorage.setItem('flowtype', '1');
             savelatformValid();
@@ -243,7 +248,8 @@ function WorkOrder(props) {
         sessionStorage.removeItem('NextflowUserId');
         RegistratRef.current.Forms((err) => {
           if (err) {
-            message.error('请将信息填写完整')
+            // message.error('请将信息填写完整')
+            openNotification(Object.values(err))
           } else {
             savelatformValid();
           }
@@ -285,7 +291,8 @@ function WorkOrder(props) {
         sessionStorage.removeItem('NextflowUserId');
         RegistratRef.current.Forms((err, values) => {
           if (err) {
-            message.error('请将信息填写完整')
+            // message.error('请将信息填写完整')
+            openNotification(Object.values(err))
           } else {
             const releaseStatus = values.releaseLists.map(item => {
               return item.verifyStatus;
@@ -306,7 +313,8 @@ function WorkOrder(props) {
         sessionStorage.removeItem('NextflowUserId');
         RegistratRef.current.Forms((err, values) => {
           if (err) {
-            message.error('请将信息填写完整')
+            // message.error('请将信息填写完整')
+            openNotification(Object.values(err))
           } else {
             const releaseStatus = values.releaseLists.map(item => {
               return item.verifyStatus;
@@ -376,7 +384,8 @@ function WorkOrder(props) {
       case 'flow':
         ImplementationPreRef.current.Forms((err) => {
           if (err) {
-            message.error('请将信息填写完整')
+            // message.error('请将信息填写完整')
+            openNotification(Object.values(err))
           } else {
             savepracticePre();
             sessionStorage.setItem('flowtype', '1');
@@ -390,7 +399,8 @@ function WorkOrder(props) {
         sessionStorage.removeItem('NextflowUserId');
         ImplementationPreRef.current.Forms((err) => {
           if (err) {
-            message.error('请将信息填写完整')
+            // message.error('请将信息填写完整')
+            openNotification(Object.values(err))
           } else {
             savepracticePre();
             sessionStorage.setItem('flowtype', '1');
@@ -440,7 +450,8 @@ function WorkOrder(props) {
         } else {
           VersionAuditRef.current.Forms((err) => {
             if (err) {
-              message.error('请将信息填写完整')
+              // message.error('请将信息填写完整')
+              openNotification(Object.values(err))
             } else {
               sessionStorage.setItem('flowtype', '1');
               saveVersionAudit();
@@ -454,7 +465,8 @@ function WorkOrder(props) {
         sessionStorage.removeItem('NextflowUserId');
         VersionAuditRef.current.Forms((err) => {
           if (err) {
-            message.error('请将信息填写完整')
+            // message.error('请将信息填写完整')
+            openNotification(Object.values(err))
           } else {
             saveVersionAudit();
           }
@@ -496,7 +508,8 @@ function WorkOrder(props) {
         sessionStorage.removeItem('NextflowUserId');
         ImplementationRef.current.Forms((err) => {
           if (err) {
-            message.error('请将信息填写完整')
+            // message.error('请将信息填写完整')
+            openNotification(Object.values(err))
           } else {
             sessionStorage.setItem('flowtype', '1');
             // setUserVisible(true);
@@ -541,7 +554,8 @@ function WorkOrder(props) {
         sessionStorage.removeItem('NextflowUserId');
         BusinessReviewRef.current.Forms((err, values) => {
           if (err) {
-            message.error('请将信息填写完整')
+            // message.error('请将信息填写完整')
+            openNotification(Object.values(err))
           } else {
             const releaseStatus = values.releaseLists.map(item => {
               return item.verifyStatus;

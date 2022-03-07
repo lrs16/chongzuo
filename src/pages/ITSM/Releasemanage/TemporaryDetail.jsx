@@ -340,56 +340,58 @@ function TemporaryDetail(props) {
     <Spin spinning={loading || saveLoading}>
       <PageHeaderWrapper title={pagetitle} extra={operations}>
         <TempTaskLinks taskName={taskName} releaseTempLogs={info?.releaseTempLogs} />
-        <div className={styles.tempcollapse}>
-          <Collapse
-            expandIconPosition="right"
-            activeKey={activeKey}
-            bordered={false}
-            onChange={callback}
-          >
-            <Panel header='发布基本信息' key="form">
-              {info && (<div style={{ marginTop: 12 }}>
-                <FilesContext.Provider value={{
-                  // files: info?.tempRegister?.attach ? JSON.parse(info.tempRegister.attach) : [],
-                  ChangeFiles: ((v) => { handleSave(v); }),
-                  getUploadStatus: (v) => { setUploadStatus(v) },
-                  ChangeButtype: (v) => {
-                    if (v === 'submit') {
-                      handleSubmit('1')
-                    };
-                    if (v === 'save' && taskName === '出厂测试') {
-                      handleSave()
-                    }
-                  },
-                  getSelectedRecords: (v) => { setSelectedRecords(v) },
-                  taskId: info?.taskId,
-                  location,
-                  clearselect,
-                }}>
-                  <TemporaryRegistrat
-                    wrappedComponentRef={RegistratRef}
-                    selectdata={selectdata}
-                    info={info}
-                    userinfo={userinfo || {}}
-                    isEdit={taskName === '出厂测试' && info?.taskInfo?.operationList}
-                    taskName={taskName}
+        <div className='noexplain'>
+          <div className={styles.tempcollapse}>
+            <Collapse
+              expandIconPosition="right"
+              activeKey={activeKey}
+              bordered={false}
+              onChange={callback}
+            >
+              <Panel header='发布基本信息' key="form">
+                {info && (<div style={{ marginTop: 12 }}>
+                  <FilesContext.Provider value={{
+                    // files: info?.tempRegister?.attach ? JSON.parse(info.tempRegister.attach) : [],
+                    ChangeFiles: ((v) => { handleSave(v); }),
+                    getUploadStatus: (v) => { setUploadStatus(v) },
+                    ChangeButtype: (v) => {
+                      if (v === 'submit') {
+                        handleSubmit('1')
+                      };
+                      if (v === 'save' && taskName === '出厂测试') {
+                        handleSave()
+                      }
+                    },
+                    getSelectedRecords: (v) => { setSelectedRecords(v) },
+                    taskId: info?.taskId,
+                    location,
+                    clearselect,
+                  }}>
+                    <TemporaryRegistrat
+                      wrappedComponentRef={RegistratRef}
+                      selectdata={selectdata}
+                      info={info}
+                      userinfo={userinfo || {}}
+                      isEdit={taskName === '出厂测试' && info?.taskInfo?.operationList}
+                      taskName={taskName}
+                      loading={loading}
+                      operationList={info?.taskInfo?.operationList} // 是否可编辑清单
+                      location={location}
+                      taskId={info?.taskId || taskId}
+                    />
+                  </FilesContext.Provider>
+                </div>)}
+              </Panel>
+              <Panel header='处理过程' key="list">
+                <div style={{ marginTop: 12 }}>
+                  <TemporaryList
+                    dataSource={info?.releaseTempLogs}
                     loading={loading}
-                    operationList={info?.taskInfo?.operationList} // 是否可编辑清单
-                    location={location}
-                    taskId={info?.taskId || taskId}
                   />
-                </FilesContext.Provider>
-              </div>)}
-            </Panel>
-            <Panel header='处理过程' key="list">
-              <div style={{ marginTop: 12 }}>
-                <TemporaryList
-                  dataSource={info?.releaseTempLogs}
-                  loading={loading}
-                />
-              </div>
-            </Panel>
-          </Collapse>
+                </div>
+              </Panel>
+            </Collapse>
+          </div>
         </div>
         <DictLower
           typeid="443"

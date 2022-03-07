@@ -80,9 +80,9 @@ function Registrat(props, ref) {
     } if (isEdit) {
       let target = []
       if (taskName === '新建' || taskName === '出厂测试') {
-        target = value.filter(item => !item.module || !item.abilityType || !item.module || !item.appName || !item.problemType || !item.testMenu || !item.testResult || !item.testStep || !item.developer || !item.responsible);
+        target = value.filter(item => !item.module || !item.abilityType || !item.module || !item.appName || !item.problemType || !item.testMenu || !item.testResult || !item.testStep || !item.developer || !item.responsible || !item.passTest);
       } else {
-        target = value.filter(item => !item.module || !item.operator || !item.abilityType || !item.module || !item.appName || !item.problemType || !item.testMenu || !item.testResult || !item.testStep || !item.developer || !item.responsible || !item.platformValidator);
+        target = value.filter(item => !item.module || !item.operator || !item.abilityType || !item.module || !item.appName || !item.problemType || !item.testMenu || !item.testResult || !item.testStep || !item.developer || !item.responsible || !item.platformValidator || !item.passTest);
       };
       if (target.length > 0) {
         setCheck(true);
