@@ -164,7 +164,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请选择时间',
+                  message: '请选择登记时间',
                 },
               ],
               initialValue: tododetailslist
@@ -187,7 +187,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请选择时间',
+                  message: '请选择发生时间',
                 },
               ],
               initialValue: tododetailslist
@@ -209,7 +209,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请选择',
+                  message: '请选择故障来源',
                 },
               ],
               initialValue: main.source || '',
@@ -234,7 +234,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请选择',
+                  message: '请选择系统模块',
                 },
               ],
               initialValue: tododetailslist ? tododetailslist.register.registerModel : '',
@@ -259,7 +259,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请选择',
+                  message: '请选择故障类型',
                 },
               ],
               initialValue: type
@@ -280,7 +280,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请输入',
+                  message: '请输入故障地点',
                 },
               ],
               initialValue: tododetailslist ? tododetailslist.register.registerAddress : '',
@@ -294,7 +294,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请选择',
+                  message: '请选择严重程度',
                 },
               ],
               initialValue: tododetailslist ? tododetailslist.register.registerLevel : '',
@@ -319,7 +319,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请选择',
+                  message: '请选择影响范围',
                 },
               ],
               initialValue: tododetailslist ? tododetailslist.register.registerScope : '',
@@ -344,7 +344,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请输入',
+                  message: '请输入故障名称',
                 },
               ],
               initialValue: main.title || '',
@@ -366,7 +366,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请输入',
+                  message: '请输入故障概要',
                 },
               ],
               initialValue: main.content || '',
@@ -404,7 +404,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请选择',
+                  message: '请选择是否影响计量主站',
                 },
               ],
               initialValue: tododetailslist && tododetailslist.register && tododetailslist.register.registerMaster,

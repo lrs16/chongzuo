@@ -70,7 +70,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请选择时间',
+                  message: '请选择审核时间',
                 },
               ],
               initialValue: check.checkTime ? moment(check.checkTime) : moment(Date.now())
@@ -89,7 +89,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
           {adopt === '1' && (
             <Form.Item label="审核意见" {...forminladeLayout}>
               {getFieldDecorator('checkOpinion1', {
-                rules: [{ required: false, message: '请输入', }],
+                rules: [{ required: false, message: '请输入审核意见', }],
                 initialValue: check.checkOpinion
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
             </Form.Item>
@@ -97,7 +97,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
           {adopt === '0' && (
             <Form.Item label="审核意见" {...forminladeLayout}>
               {getFieldDecorator('checkOpinion2', {
-                rules: [{ required: true, message: '请输入', }],
+                rules: [{ required: true, message: '请输入审核意见', }],
                 initialValue: check.checkOpinion
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
             </Form.Item>

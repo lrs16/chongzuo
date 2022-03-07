@@ -137,7 +137,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请选择时间',
+                  message: '请选择审核时间',
                 },
               ],
               initialValue: check.checkTime ? moment(check.checkTime) : moment(new Date())
@@ -157,7 +157,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请选择',
+                  message: '请选择严重程度',
                 },
               ],
               initialValue: (check && check.checkLevel) ? check.checkLevel : (tododetailslist && tododetailslist.troubleFlowNodeRows[0].registerLevel)
@@ -181,7 +181,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请选择',
+                  message: '请选择是否影响计量主站',
                 },
               ],
               initialValue: (check && check.checkMaster) ? check.checkMaster : (tododetailslist && tododetailslist.troubleFlowNodeRows[0].registerMaster)
@@ -198,7 +198,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
           {adopt === '1' && ( // 1 通过
             <Form.Item label="审核意见" {...forminladeLayout}>
               {getFieldDecorator('checkOpinion1', {
-                rules: [{ required: false, message: '请输入', }],
+                rules: [{ required: false, message: '请输入审核意见', }],
                 initialValue: check ? check.checkOpinion : ''
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
             </Form.Item>
@@ -206,7 +206,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
           {adopt === '0' && ( // 0 不通过
             <Form.Item label="审核意见" {...forminladeLayout}>
               {getFieldDecorator('checkOpinion2', {
-                rules: [{ required: true, message: '请输入', }],
+                rules: [{ required: true, message: '请输入审核意见', }],
                 initialValue: check ? check.checkOpinion : ''
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
             </Form.Item>

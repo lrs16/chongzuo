@@ -165,7 +165,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    message: '请选择',
+                    message: '请选择故障责任方',
                   },
                 ],
                 initialValue: finish.finishBlame,
@@ -184,7 +184,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    message: '请选择',
+                    message: '请选择是否需要提供故障报告',
                   },
                 ],
                 initialValue: (finish && finish.finishReportSign) ? finish.finishReportSign : '0'
@@ -202,7 +202,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    message: '请选择时间',
+                    message: '请选择总结时间',
                   },
                 ],
                 initialValue: finish.finishTime ? moment(finish.finishTime) : moment(Date.now())

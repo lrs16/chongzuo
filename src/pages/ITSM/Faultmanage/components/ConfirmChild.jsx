@@ -8,7 +8,6 @@ import {
   DatePicker,
   Radio,
   Select,
-  Button
 } from 'antd';
 import SysUpload from '@/components/SysUpload'; // 附件下载组件
 import SysDict from '@/components/SysDict';
@@ -84,7 +83,7 @@ const ConfirmChild = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请选择',
+                  message: '请选择确认结果',
                 },
               ],
               initialValue: confirm ? confirm.confirmResult : '1'
@@ -124,7 +123,7 @@ const ConfirmChild = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请选择时间',
+                  message: '请选择确认时间',
                 },
               ],
               initialValue: confirm.confirmTime ? moment(confirm.confirmTime) : moment(new Date())
@@ -142,7 +141,7 @@ const ConfirmChild = React.forwardRef((props, ref) => {
           {adopt === '1' && (
             <Form.Item label="确认说明" {...forminladeLayout}>
               {getFieldDecorator('confirmContent1', {
-                rules: [{ required: false, message: '请输入', }],
+                rules: [{ required: false, message: '请输入确认说明', }],
                 initialValue: confirm ? confirm.confirmContent : ''
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
             </Form.Item>
@@ -150,7 +149,7 @@ const ConfirmChild = React.forwardRef((props, ref) => {
           {adopt === '0' && (
             <Form.Item label="确认说明" {...forminladeLayout}>
               {getFieldDecorator('confirmContent2', {
-                rules: [{ required: true, message: '请输入', }],
+                rules: [{ required: true, message: '请输入确认说明', }],
                 initialValue: confirm ? confirm.confirmContent : ''
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
             </Form.Item>

@@ -1055,17 +1055,17 @@ function Todolistdetails(props) {
                   </Button>
                 )}
               {result === '0' && (
-                <Button type="primary" onClick={() => handleSubmit('registback')} disabled={faultUploadStatus}>
+                <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSubmit('registback')} disabled={faultUploadStatus}>
                   重新登记
                 </Button>
               )}
               {resultsecond === '0' && (
-                <Button type="primary" onClick={() => handleSubmit('handleback')} disabled={faultUploadStatus}>
+                <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSubmit('handleback')} disabled={faultUploadStatus}>
                   重新处理
                 </Button>
               )}
               {resultconfirm === '0' && (
-                <Button type="primary" onClick={() => handleSubmit('handle')} disabled={faultUploadStatus}>
+                <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSubmit('handle')} disabled={faultUploadStatus}>
                   重新处理
                 </Button>
               )}

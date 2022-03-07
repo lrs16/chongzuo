@@ -1,7 +1,7 @@
 import React, { useRef, useImperativeHandle, useEffect, useState } from 'react';
 import moment from 'moment';
 import SysUpload from '@/components/SysUpload'; // 附件下载组件
-import { Form, Row, Col, Input, DatePicker, Select,AutoComplete } from 'antd';
+import { Form, Row, Col, Input, DatePicker, Select, AutoComplete } from 'antd';
 import KeyVal from '@/components/SysDict/KeyVal';
 import KnowledgCollect from '@/components/KnowledgeCollect';
 import { getAndField } from '@/pages/SysManage/services/api';
@@ -138,7 +138,7 @@ const HandleChild = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请输入',
+                  message: '请输入故障详细描述',
                 },
               ],
               initialValue: handle ? handle.handleContent : '',
@@ -152,7 +152,7 @@ const HandleChild = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请输入',
+                  message: '请输入故障分析及原因',
                 },
               ],
               initialValue: handle ? handle.handleReason : '',
@@ -166,7 +166,7 @@ const HandleChild = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请输入',
+                  message: '请输入解决措施或建议',
                 },
               ],
               initialValue: handle ? handle.handleAdvise : '',
@@ -180,21 +180,21 @@ const HandleChild = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请输入',
+                  message: '请输入处理过程',
                 },
               ],
               initialValue: handle ? handle.handleProcess : '',
             })(
               <AutoComplete
-              getPopupContainer={e => e.parentNode}
-              dataSource={desautodata}
-              filterOption={(inputValue, option) =>
-                option.props.children.includes(inputValue)
-              }
-            //  onSelect={value => handleSearch(value, 'des')}
-            >
-              <TextArea autoSize={{ minRows: 5 }} placeholder="请输入" />
-            </AutoComplete>,
+                getPopupContainer={e => e.parentNode}
+                dataSource={desautodata}
+                filterOption={(inputValue, option) =>
+                  option.props.children.includes(inputValue)
+                }
+              //  onSelect={value => handleSearch(value, 'des')}
+              >
+                <TextArea autoSize={{ minRows: 5 }} placeholder="请输入" />
+              </AutoComplete>,
             )}
           </Form.Item>
         </Col>
@@ -205,7 +205,7 @@ const HandleChild = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请选择时间',
+                  message: '请选择处理开始时间',
                 },
               ],
               initialValue:
@@ -228,7 +228,7 @@ const HandleChild = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请选择时间',
+                  message: '请选择处理完成时间',
                 },
               ],
               initialValue:
@@ -245,7 +245,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    message: '请选择',
+                    message: '请选择处理结果',
                   },
                 ],
                 initialValue: handle ? handle.handleResult : '',
@@ -321,7 +321,7 @@ const HandleChild = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请故障系统截图！',
+                  message: '请上传故障系统截图！',
                 },
               ],
             })(
