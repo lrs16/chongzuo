@@ -310,6 +310,10 @@ function TobedealtForm(props) {
           }
         });
       }
+
+      if(err) {
+        openNotification(Object.values(err))
+      }
       return null;
     });
   };
@@ -366,7 +370,7 @@ function TobedealtForm(props) {
         });
       }
 
-      if (err) {
+      if (err && circulation) {
         openNotification(Object.values(err))
       }
       return []
@@ -437,7 +441,7 @@ function TobedealtForm(props) {
           }
         });
       }
-      if(err) {
+      if(err && circulation) {
         openNotification(Object.values(err))
       }
       return [];

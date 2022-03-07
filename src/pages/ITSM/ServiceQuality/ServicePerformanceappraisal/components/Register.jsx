@@ -482,6 +482,28 @@ const Register = forwardRef((props, ref) => {
         </Col>
 
         <Col span={8}>
+          <Form.Item label="发生时间">
+            {getFieldDecorator('assessTime', {
+              rules: [
+                {
+                  required,
+                  message: '请选择发生时间',
+                },
+              ],
+              initialValue: moment(register.assessTime),
+            })(
+              <DatePicker
+                disabled={search || noEdit}
+                showTime
+                allowClear={false}
+                format="YYYY-MM-DD HH:mm"
+              />
+
+            )}
+          </Form.Item>
+        </Col>
+
+        <Col span={8}>
           <Form.Item label="服务商">
             {getFieldDecorator('providerName', {
               rules: [
@@ -506,28 +528,6 @@ const Register = forwardRef((props, ref) => {
                   allowClear
                 />
               </AutoComplete>,
-            )}
-          </Form.Item>
-        </Col>
-
-        <Col span={8}>
-          <Form.Item label="发生时间">
-            {getFieldDecorator('assessTime', {
-              rules: [
-                {
-                  required,
-                  message: '请选择发生时间',
-                },
-              ],
-              initialValue: moment(register.assessTime),
-            })(
-              <DatePicker
-                disabled={search || noEdit}
-                showTime
-                allowClear={false}
-                format="YYYY-MM-DD HH:mm"
-              />
-
             )}
           </Form.Item>
         </Col>
@@ -571,6 +571,36 @@ const Register = forwardRef((props, ref) => {
             )}
           </Form.Item>
         </Col>
+
+        <Col span={8}>
+          <Form.Item label="责任人">
+            {getFieldDecorator('directorNamesign', {
+              rules: [
+                {
+                  required,
+                  message: '请选择责任人',
+                },
+              ],
+              initialValue: register.directorName,
+            })(
+              <AutoComplete
+                getPopupContainer={e => e.parentNode}
+                disabled={search || noEdit}
+                dataSource={directoruser}
+                dropdownMatchSelectWidth={false}
+                dropdownStyle={{ width: 600 }}
+                onSelect={(v, opt) => handleDisableduser(v, opt, 'director')}
+              >
+                <Search
+                  placeholder="可输入人名称搜索"
+                  onSearch={values => SearchDisableduser(values, 'director')}
+                  allowClear
+                />
+              </AutoComplete>,
+            )}
+          </Form.Item>
+        </Col>
+
 
 
 
@@ -645,35 +675,7 @@ const Register = forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-        <Col span={8}>
-          <Form.Item label="责任人">
-            {getFieldDecorator('directorNamesign', {
-              rules: [
-                {
-                  required,
-                  message: '请选择责任人',
-                },
-              ],
-              initialValue: register.directorName,
-            })(
-              <AutoComplete
-                getPopupContainer={e => e.parentNode}
-                disabled={search || noEdit}
-                dataSource={directoruser}
-                dropdownMatchSelectWidth={false}
-                dropdownStyle={{ width: 600 }}
-                onSelect={(v, opt) => handleDisableduser(v, opt, 'director')}
-              >
-                <Search
-                  placeholder="可输入人名称搜索"
-                  onSearch={values => SearchDisableduser(values, 'director')}
-                  allowClear
-                />
-              </AutoComplete>,
-            )}
-          </Form.Item>
-        </Col>
-
+      
 
         <Col span={8}>
           <Form.Item label="考核对象">
