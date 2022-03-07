@@ -1,4 +1,4 @@
-import React, { useEffect,useState,createContext } from 'react';
+import React, { useEffect, useState, createContext } from 'react';
 import { connect } from 'dva';
 import {
   Button,
@@ -97,45 +97,51 @@ function Work(props) {
     >
       {
         tabActiveKey === 'workorder' && (
-          <div className={styles.collapse}>
-            {openViewlist && loading === false && (
-              <Collapse
-                expandIconPosition="right"
-                defaultActiveKey={['0']}
-                bordered={false}
-              >
-                {openViewlist.map((obj, index) => {
-                  // panel详情组件
-                  const Paneldesmap = new Map([
-                    ['main', <OperationPlanfillindes
-                      info={Object.values(obj)[0]}
-                      main={openViewlist[0].main}
-                    />],
-                    ['check', <TaskCheckdes
-                      info={Object.values(obj)[0]}
-                      main={openViewlist[0].main}
-                    />],
-                    ['execute', <TaskExecutedes
-                      info={Object.values(obj)[0]}
-                      main={openViewlist[0].main}
-                    />],
-                  ]);
-                  return (
-                    <Panel
-                      header={Panelheadermap.get(Object.keys(obj)[0])}
-                      key={index}>
-                      {Paneldesmap.get(Object.keys(obj)[0])}
-                    </Panel>
-                  );
-                })}
-              </Collapse>
-            )}
+          <div className='noexplain'>
+            <div className={styles.collapse}>
+              {openViewlist && loading === false && (
+                <Collapse
+                  expandIconPosition="right"
+                  defaultActiveKey={['0']}
+                  bordered={false}
+                >
+                  {openViewlist.map((obj, index) => {
+                    // panel详情组件
+                    const Paneldesmap = new Map([
+                      ['main', <OperationPlanfillindes
+                        info={Object.values(obj)[0]}
+                        main={openViewlist[0].main}
+                        key="0"
+                      />],
+                      ['check', <TaskCheckdes
+                        info={Object.values(obj)[0]}
+                        main={openViewlist[0].main}
+                        key="0"
+                      />],
+                      ['execute', <TaskExecutedes
+                        info={Object.values(obj)[0]}
+                        main={openViewlist[0].main}
+                        key="0"
+                      />],
+                    ]);
+                    return (
+                      <Panel
+                        header={Panelheadermap.get(Object.keys(obj)[0])}
+                        key='0'>
+                        {Paneldesmap.get(Object.keys(obj)[0])}
+                      </Panel>
+                    );
+                  })}
+                </Collapse>
+              )}
+            </div>
           </div>
+
         )
       }
 
       {
-        tabActiveKey === 'relevancy' && <RelationOrder orderId={location.query.mainId} relation search/>
+        tabActiveKey === 'relevancy' && <RelationOrder orderId={location.query.mainId} relation search />
       }
 
     </PageHeaderWrapper >

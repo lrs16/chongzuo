@@ -8,7 +8,6 @@ import {
 } from 'antd';
 import { connect } from 'dva';
 import router from 'umi/router';
-import Link from 'umi/link';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import moment from 'moment';
 import Problemsolving from './components/Problemsolving';
@@ -134,7 +133,7 @@ function Queryworkdetail(props) {
             <div className={styles.collapse}>
               {problemFlowLogs && (
                 <Steps
-                  current={problemFlowLogs[problemFlowLogs.length -1].name === '结束节点' ? problemFlowLogs.length : problemFlowLogs.length-1}
+                  current={problemFlowLogs[problemFlowLogs.length - 1].name === '结束节点' ? problemFlowLogs.length : problemFlowLogs.length - 1}
                   size="small"
                   style={{
                     background: '#fff',
@@ -161,7 +160,7 @@ function Queryworkdetail(props) {
                               <div>结束时间：{moment(obj.startTime).format('YYYY-MM-DD HH:mm:ss')}</div>
                             </div>
                           }
-                          icon={(obj.name !== '结束节点' && index === problemFlowLogs.length - 1) ? <Icon type="loading" spin /> : ''}
+                          icon={(obj.name !== '结束节点' && index === problemFlowLogs.length - 1 || obj.status === '待审核') ? <Icon type="loading" spin /> : ''}
                         />
                       )
                     }
@@ -172,80 +171,80 @@ function Queryworkdetail(props) {
               }
             </div>
 
-       
-
-
-            <div className={styles.collapse}>
-              {problemFlowNodeRows && loading === false && (
-                <Collapse
-                  expandIconPosition="right"
-                  defaultActiveKey={['0']}
-                  bordered={false}
-                >
-                  {problemFlowNodeRows.map((obj, index) => {
-                    // panel详情组件
-                    const Paneldesmap = new Map([
-                      ['问题登记', <Problemregistration
-                        key={index}
-                        info={obj}
-                        statue={currntStatus}
-                        problemFlowNodeRows={problemFlowNodeRows}
-                        main={main}
-                        formItemLayout={formItemLayout}
-                        forminladeLayout={forminladeLayout}
-                      />],
-                      ['系统运维商审核', <Problemreview
-                        key={index}
-                        info={obj}
-                        main={main}
-                        formItemLayout={formItemLayout}
-                        forminladeLayout={forminladeLayout}
-                      />],
-                      ['自动化科审核', <Problemreview
-                        key={index}
-                        info={obj}
-                        main={main}
-                        formItemLayout={formItemLayout}
-                        forminladeLayout={forminladeLayout}
-                      />],
-                      ['系统开发商处理', <Problemsolving
-                        key={index}
-                        info={obj}
-                        main={main}
-                        formItemLayout={formItemLayout}
-                        forminladeLayout={forminladeLayout}
-                      />],
-                      ['系统运维商确认', <Operatorconfirmades
-                        key={index}
-                        info={obj}
-                        main={main}
-                        formItemLayout={formItemLayout}
-                        forminladeLayout={forminladeLayout}
-                      />],
-                      ['自动化科业务人员确认', <Operatorconfirmades
-                        key={index}
-                        info={obj}
-                        main={main}
-                        formItemLayout={formItemLayout}
-                        forminladeLayout={forminladeLayout}
-                      />],
-                      ['问题登记人员确认', <Operatorconfirmades
-                        key={index}
-                        info={obj}
-                        main={main}
-                        formItemLayout={formItemLayout}
-                        forminladeLayout={forminladeLayout}
-                      />],
-                    ]);
-                    return (
-                      <Panel Panel header={obj.fnname} key={index}>
-                        {Paneldesmap.get(obj.fnname)}
-                      </Panel>
-                    );
-                  })}
-                </Collapse>
-              )}
+            <div className='noexplain'>
+              <div className={styles.collapse}>
+                {problemFlowNodeRows && loading === false && (
+                  <Collapse
+                    expandIconPosition="right"
+                    defaultActiveKey={['0']}
+                    bordered={false}
+                  >
+                    {problemFlowNodeRows.map((obj, index) => {
+                      // panel详情组件
+                      const Paneldesmap = new Map([
+                        ['问题登记', <Problemregistration
+                          key='0'
+                          info={obj}
+                          statue={currntStatus}
+                          problemFlowNodeRows={problemFlowNodeRows}
+                          main={main}
+                          formItemLayout={formItemLayout}
+                          forminladeLayout={forminladeLayout}
+                        />],
+                        ['系统运维商审核', <Problemreview
+                          key='0'
+                          info={obj}
+                          main={main}
+                          formItemLayout={formItemLayout}
+                          forminladeLayout={forminladeLayout}
+                        />],
+                        ['自动化科审核', <Problemreview
+                          key='0'
+                          info={obj}
+                          main={main}
+                          formItemLayout={formItemLayout}
+                          forminladeLayout={forminladeLayout}
+                        />],
+                        ['系统开发商处理', <Problemsolving
+                          key='0'
+                          info={obj}
+                          main={main}
+                          formItemLayout={formItemLayout}
+                          forminladeLayout={forminladeLayout}
+                        />],
+                        ['系统运维商确认', <Operatorconfirmades
+                          key='0'
+                          info={obj}
+                          main={main}
+                          formItemLayout={formItemLayout}
+                          forminladeLayout={forminladeLayout}
+                        />],
+                        ['自动化科业务人员确认', <Operatorconfirmades
+                          key='0'
+                          info={obj}
+                          main={main}
+                          formItemLayout={formItemLayout}
+                          forminladeLayout={forminladeLayout}
+                        />],
+                        ['问题登记人员确认', <Operatorconfirmades
+                          key='0'
+                          info={obj}
+                          main={main}
+                          formItemLayout={formItemLayout}
+                          forminladeLayout={forminladeLayout}
+                        />],
+                      ]);
+                      return (
+                        <Panel Panel header={obj.fnname} key='0'>
+                          {Paneldesmap.get(obj.fnname)}
+                        </Panel>
+                      );
+                    })}
+                  </Collapse>
+                )}
+              </div>
             </div>
+
 
           </>
         )

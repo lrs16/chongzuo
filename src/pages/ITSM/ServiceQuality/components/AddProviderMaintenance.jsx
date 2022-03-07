@@ -19,6 +19,7 @@ import { connect } from 'dva';
 import router from 'umi/router';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Contract from './Contract';
+import { openNotification } from '@/utils/utils';
 
 const formItemLayout = {
   labelCol: {
@@ -156,9 +157,9 @@ function AddProviderMaintenance(props) {
         return (
           <Tooltip placement="topLeft" title={text}>
             <span>{text}</span>
-        </Tooltip>
+          </Tooltip>
         )
-        }
+      }
     },
     {
       title: '状态',
@@ -241,6 +242,9 @@ function AddProviderMaintenance(props) {
             payload: value,
           });
         }
+        if (err) {
+          openNotification(Object.values(err).reverse())
+        }
       });
     }
   };
@@ -260,100 +264,103 @@ function AddProviderMaintenance(props) {
         </>
       }
     >
-      <Card>
-        {(id ? loading === false : true) && (
-          <Row>
-            <Form {...formItemLayout}>
-              <Col span={8}>
-                <Form.Item label="服务商编号">
-                  {getFieldDecorator('providerNo', {
-                    initialValue: searchProviderobj.providerNo,
-                  })(<Input disabled />)}
-                </Form.Item>
-              </Col>
+      <div className='noexplain'>
+        <Card>
+          {(id ? loading === false : true) && (
+            <Row>
+              <Form {...formItemLayout}>
+                <Col span={8}>
+                  <Form.Item label="服务商编号">
+                    {getFieldDecorator('providerNo', {
+                      initialValue: searchProviderobj.providerNo,
+                    })(<Input disabled />)}
+                  </Form.Item>
+                </Col>
 
-              <Col span={8}>
-                <Form.Item label="服务商名称">
-                  {getFieldDecorator('providerName', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入服务商名称',
-                      },
-                    ],
-                    initialValue: searchProviderobj.providerName,
-                  })(<Input disabled={providerSearch} />)}
-                </Form.Item>
-              </Col>
+                <Col span={8}>
+                  <Form.Item label="服务商名称">
+                    {getFieldDecorator('providerName', {
+                      rules: [
+                        {
+                          required,
+                          message: '请输入服务商名称',
+                        },
+                      ],
+                      initialValue: searchProviderobj.providerName,
+                    })(<Input disabled={providerSearch} />)}
+                  </Form.Item>
+                </Col>
 
-              <Col span={8}>
-                <Form.Item label="负责人">
-                  {getFieldDecorator('director', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入负责人',
-                      },
-                    ],
-                    initialValue: searchProviderobj.director,
-                  })(<Input disabled={providerSearch} />)}
-                </Form.Item>
-              </Col>
+                <Col span={8}>
+                  <Form.Item label="负责人">
+                    {getFieldDecorator('director', {
+                      rules: [
+                        {
+                          required,
+                          message: '请输入负责人',
+                        },
+                      ],
+                      initialValue: searchProviderobj.director,
+                    })(<Input disabled={providerSearch} />)}
+                  </Form.Item>
+                </Col>
 
-              <Col span={8}>
-                <Form.Item label="负责人手机号">
-                  {getFieldDecorator('directorPhone', {
-                    rules: [
-                      {
-                        required,
-                        len: 11,
-                        validator: phone_reg,
-                        message: '请输入正确的手机号',
-                      },
-                    ],
-                    initialValue: searchProviderobj.directorPhone,
-                  })(<Input disabled={providerSearch} />)}
-                </Form.Item>
-              </Col>
+                <Col span={8}>
+                  <Form.Item label="负责人手机号">
+                    {getFieldDecorator('directorPhone', {
+                      rules: [
+                        {
+                          required,
+                          len: 11,
+                          validator: phone_reg,
+                          message: '请输入正确的手机号',
+                        },
+                      ],
+                      initialValue: searchProviderobj.directorPhone,
+                    })(<Input disabled={providerSearch} />)}
+                  </Form.Item>
+                </Col>
 
-              <Col span={8}>
-                <Form.Item label="状态">
-                  {getFieldDecorator('status', {
-                    initialValue: searchProviderobj.status || '1',
-                  })(
-                    <Radio.Group disabled={providerSearch}>
-                      <Radio value="1">启用</Radio>
-                      <Radio value="0">禁用</Radio>
-                    </Radio.Group>,
-                  )}
-                </Form.Item>
-              </Col>
-            </Form>
-          </Row>
-        )}
+                <Col span={8}>
+                  <Form.Item label="状态">
+                    {getFieldDecorator('status', {
+                      initialValue: searchProviderobj.status || '1',
+                    })(
+                      <Radio.Group disabled={providerSearch}>
+                        <Radio value="1">启用</Radio>
+                        <Radio value="0">禁用</Radio>
+                      </Radio.Group>,
+                    )}
+                  </Form.Item>
+                </Col>
+              </Form>
+            </Row>
+          )}
 
-        {id && !providerSearch && (
-          <Contract
-            title="新增合同"
-            Contract=""
-            formItemLayout={formItemLayout}
-            onSumit={values => handleonSumit(values)}
-          >
-            <Button style={{ width: '100%', marginTop: 16, marginBottom: 8 }} icon="plus">
-              添加合同
-            </Button>
-          </Contract>
-        )}
+          {id && !providerSearch && (
+            <Contract
+              title="新增合同"
+              Contract=""
+              formItemLayout={formItemLayout}
+              onSumit={values => handleonSumit(values)}
+            >
+              <Button style={{ width: '100%', marginTop: 16, marginBottom: 8 }} icon="plus">
+                添加合同
+              </Button>
+            </Contract>
+          )}
 
-        {loading === false && (
-          <Table
-            loading={loading}
-            columns={columns}
-            dataSource={contractProviderobj}
-            rowKey={r => r.id}
-          />
-        )}
-      </Card>
+          {loading === false && (
+            <Table
+              loading={loading}
+              columns={columns}
+              dataSource={contractProviderobj}
+              rowKey={r => r.id}
+            />
+          )}
+        </Card>
+      </div>
+
     </PageHeaderWrapper>
   );
 }

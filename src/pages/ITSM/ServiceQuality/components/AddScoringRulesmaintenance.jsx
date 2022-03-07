@@ -20,6 +20,7 @@ import SysDict from '@/components/SysDict';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Clause from './Clause';
 import styles from '../index.less';
+import { openNotification } from '@/utils/utils';
 
 const formItemLayout = {
   labelCol: {
@@ -231,6 +232,9 @@ function AddScoringRulesmaintenance(props) {
           });
         }
       }
+      if (err) {
+        openNotification(Object.values(err))
+      }
     });
   };
 
@@ -243,11 +247,10 @@ function AddScoringRulesmaintenance(props) {
 
   const submitClause = clauseData => {
     return dispatch({
-      type: `${
-        clauseData.title === '编辑详细条款'
+      type: `${clauseData.title === '编辑详细条款'
           ? 'qualityassessment/clauseUpd'
           : 'qualityassessment/clauseAdd'
-      }`,
+        }`,
       payload: {
         ...clauseData,
         scoreId: id,
@@ -396,158 +399,161 @@ function AddScoringRulesmaintenance(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      <Card>
-        <Row>
-          <Form {...formItemLayout}>
-            {(id ? loading === false : true) && assessmentType && assessmentType.length > 0 && (
-              <>
-                <Col span={8}>
-                  <Form.Item label="评分细则编号">
-                    {getFieldDecorator('scoreNo', {
-                      initialValue: scoreDetail && scoreDetail.scoreNo,
-                    })(<Input disabled />)}
-                  </Form.Item>
-                </Col>
+      <div className='noexplain'>
+        <Card>
+          <Row>
+            <Form {...formItemLayout}>
+              {(id ? loading === false : true) && assessmentType && assessmentType.length > 0 && (
+                <>
+                  <Col span={8}>
+                    <Form.Item label="评分细则编号">
+                      {getFieldDecorator('scoreNo', {
+                        initialValue: scoreDetail && scoreDetail.scoreNo,
+                      })(<Input disabled />)}
+                    </Form.Item>
+                  </Col>
 
-                <Col span={8}>
-                  <Form.Item label="评分细则名称">
-                    {getFieldDecorator('scoreName', {
-                      rules: [
-                        {
-                          required,
-                          message: '请输入评分细则名称',
-                        },
-                      ],
-                      initialValue: scoreDetail && scoreDetail.scoreName,
-                    })(<Input disabled={scoreSearch} />)}
-                  </Form.Item>
-                </Col>
-              </>
-            )}
-
-            <Col span={8}>
-              <Form.Item label="考核类型">
-                {getFieldDecorator('assessType', {
-                  rules: [
-                    {
-                      required,
-                      message: '请选择考核类型',
-                    },
-                  ],
-                  initialValue: (scoreDetail && scoreDetail.assessType) || '1',
-                })(
-                  <Select placeholder="请选择" onChange={handleChange} disabled={scoreSearch}>
-                    {assessmentType.map(obj => [
-                      <Option key={obj.dict_code} value={obj.dict_code}>
-                        {obj.title}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-          </Form>
-        </Row>
-
-        <Layout className={styles.headcolor}>
-          <Card title="指标明细">
-            <Sider theme="light">
-              {loading === false && treeData && treeData.length > 0 && (
-                <Tree
-                  defaultSelectedKeys={type === '1' || type === '' ? ['605'] : ['613']}
-                  onSelect={handleClick}
-                  defaultExpandAll
-                >
-                  {renderTreeNodes(treeData)}
-                </Tree>
-              )}
-            </Sider>
-          </Card>
-
-          <Content style={{ marginLeft: 10 }}>
-            <Card title="编辑指标">
-              <Form {...formItemLayout}>
-                <Col span={13}>
-                  <Form.Item label="一级指标">
-                    {getFieldDecorator('target1Name', {
-                      initialValue: treeForm && treeForm.target1,
-                    })(<Input disabled />)}
-                  </Form.Item>
-                </Col>
-
-                <Col span={13}>
-                  <Form.Item label="一级指标满分">
-                    {getFieldDecorator('value1', {
-                      initialValue: treeForm && treeForm.value1,
-                    })(<Input disabled />)}
-                  </Form.Item>
-                </Col>
-
-                <Col span={13}>
-                  <Form.Item label="二级指标">
-                    {getFieldDecorator('target2Name', {
-                      initialValue: treeForm && treeForm.target2,
-                    })(<Input disabled />)}
-                  </Form.Item>
-                </Col>
-
-                <Col span={13}>
-                  <Form.Item label="二级指标满分">
-                    {getFieldDecorator('value2', {
-                      initialValue: treeForm && treeForm.value2,
-                    })(<Input disabled />)}
-                  </Form.Item>
-                </Col>
-
-                <Col span={13}>
-                  <Form.Item label="详细条款">
-                    {getFieldDecorator('detailed', {})(<Input />)}
-                  </Form.Item>
-                </Col>
-
-                <Col span={13} style={{ textAlign: 'right' }}>
-                  <Button
-                    type="primary"
-                    style={{ marginRight: 8 }}
-                    onClick={() => getlist(selectId)}
-                  >
-                    查询
-                  </Button>
-                  <Button onClick={handleReset}>重置</Button>
-                </Col>
-              </Form>
-
-              {!scoreSearch && (
-                <Clause
-                  id={id}
-                  selectId={selectId}
-                  defaultSelect={type === '1' ? ['1417306125605756929'] : ['1417307840400809985']}
-                  title="添加详细条款"
-                  formItemLayout={formItemLayout}
-                  submitClause={newdata => submitClause(newdata)}
-                >
-                  <Button
-                    style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-                    type="dashed"
-                    icon="plus"
-                  >
-                    新增详细条款
-                  </Button>
-                </Clause>
+                  <Col span={8}>
+                    <Form.Item label="评分细则名称">
+                      {getFieldDecorator('scoreName', {
+                        rules: [
+                          {
+                            required,
+                            message: '请输入评分细则名称',
+                          },
+                        ],
+                        initialValue: scoreDetail && scoreDetail.scoreName,
+                      })(<Input disabled={scoreSearch} />)}
+                    </Form.Item>
+                  </Col>
+                </>
               )}
 
-              <Col span={24}>
-                <Table
-                  dataSource={clauseList.records}
-                  columns={columns}
-                  rowKey={record => record.id}
-                  scroll={{ x: 1300 }}
-                />
+              <Col span={8}>
+                <Form.Item label="考核类型">
+                  {getFieldDecorator('assessType', {
+                    rules: [
+                      {
+                        required,
+                        message: '请选择考核类型',
+                      },
+                    ],
+                    initialValue: (scoreDetail && scoreDetail.assessType) || '1',
+                  })(
+                    <Select placeholder="请选择" onChange={handleChange} disabled={scoreSearch}>
+                      {assessmentType.map(obj => [
+                        <Option key={obj.dict_code} value={obj.dict_code}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
               </Col>
+            </Form>
+          </Row>
+
+          <Layout className={styles.headcolor}>
+            <Card title="指标明细">
+              <Sider theme="light">
+                {loading === false && treeData && treeData.length > 0 && (
+                  <Tree
+                    defaultSelectedKeys={type === '1' || type === '' ? ['605'] : ['613']}
+                    onSelect={handleClick}
+                    defaultExpandAll
+                  >
+                    {renderTreeNodes(treeData)}
+                  </Tree>
+                )}
+              </Sider>
             </Card>
-          </Content>
-        </Layout>
-      </Card>
+
+            <Content style={{ marginLeft: 10 }}>
+              <Card title="编辑指标">
+                <Form {...formItemLayout}>
+                  <Col span={13}>
+                    <Form.Item label="一级指标">
+                      {getFieldDecorator('target1Name', {
+                        initialValue: treeForm && treeForm.target1,
+                      })(<Input disabled />)}
+                    </Form.Item>
+                  </Col>
+
+                  <Col span={13}>
+                    <Form.Item label="一级指标满分">
+                      {getFieldDecorator('value1', {
+                        initialValue: treeForm && treeForm.value1,
+                      })(<Input disabled />)}
+                    </Form.Item>
+                  </Col>
+
+                  <Col span={13}>
+                    <Form.Item label="二级指标">
+                      {getFieldDecorator('target2Name', {
+                        initialValue: treeForm && treeForm.target2,
+                      })(<Input disabled />)}
+                    </Form.Item>
+                  </Col>
+
+                  <Col span={13}>
+                    <Form.Item label="二级指标满分">
+                      {getFieldDecorator('value2', {
+                        initialValue: treeForm && treeForm.value2,
+                      })(<Input disabled />)}
+                    </Form.Item>
+                  </Col>
+
+                  <Col span={13}>
+                    <Form.Item label="详细条款">
+                      {getFieldDecorator('detailed', {})(<Input />)}
+                    </Form.Item>
+                  </Col>
+
+                  <Col span={13} style={{ textAlign: 'right' }}>
+                    <Button
+                      type="primary"
+                      style={{ marginRight: 8 }}
+                      onClick={() => getlist(selectId)}
+                    >
+                      查询
+                    </Button>
+                    <Button onClick={handleReset}>重置</Button>
+                  </Col>
+                </Form>
+
+                {!scoreSearch && (
+                  <Clause
+                    id={id}
+                    selectId={selectId}
+                    defaultSelect={type === '1' ? ['1417306125605756929'] : ['1417307840400809985']}
+                    title="添加详细条款"
+                    formItemLayout={formItemLayout}
+                    submitClause={newdata => submitClause(newdata)}
+                  >
+                    <Button
+                      style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+                      type="dashed"
+                      icon="plus"
+                    >
+                      新增详细条款
+                    </Button>
+                  </Clause>
+                )}
+
+                <Col span={24}>
+                  <Table
+                    dataSource={clauseList.records}
+                    columns={columns}
+                    rowKey={record => record.id}
+                    scroll={{ x: 1300 }}
+                  />
+                </Col>
+              </Card>
+            </Content>
+          </Layout>
+        </Card>
+      </div>
+
     </PageHeaderWrapper>
   );
 }

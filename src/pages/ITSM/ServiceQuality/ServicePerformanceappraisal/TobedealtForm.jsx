@@ -17,6 +17,7 @@ import { judgeTimeoutStatus, saveTimeoutMsg } from '../../services/api';
 import TimeoutModal from '../../components/TimeoutModal';
 import Reasonregression from '../../Problemmanage/components/Reasonregression';
 import styles from './index.less';
+import { openNotification } from '@/utils/utils';
 
 const formItemLayout = {
   labelCol: {
@@ -70,7 +71,7 @@ function TobedealtForm(props) {
   const [modalrollback, setModalRollBack] = useState(false); // 回退信息modle
   const [handleUploadStatus, setHandleUploadStatus] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(false);
-  const [backTitle,setBackTitle] = useState('')
+  const [backTitle, setBackTitle] = useState('')
 
   const {
     taskId,
@@ -269,7 +270,7 @@ function TobedealtForm(props) {
         router.push({
           pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtlist`,
           query: { pathpush: true },
-          state: { cache: false,closetabid:mainId },
+          state: { cache: false, closetabid: mainId },
         });
       }
     });
@@ -364,6 +365,10 @@ function TobedealtForm(props) {
           }
         });
       }
+
+      if (err) {
+        openNotification(Object.values(err))
+      }
       return []
     });
   };
@@ -394,6 +399,10 @@ function TobedealtForm(props) {
             }
           }
         });
+      }
+
+      if (circulation && err) {
+        openNotification(Object.values(err))
       }
       return [];
     });
@@ -428,6 +437,9 @@ function TobedealtForm(props) {
           }
         });
       }
+      if(err) {
+        openNotification(Object.values(err))
+      }
       return [];
     });
   };
@@ -442,7 +454,7 @@ function TobedealtForm(props) {
         router.push({
           pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtlist`,
           query: { pathpush: true },
-          state: { cache: false,closetabid:mainId },
+          state: { cache: false, closetabid: mainId },
         });
       } else {
         message.error(res.msg);
@@ -508,7 +520,7 @@ function TobedealtForm(props) {
         router.push({
           pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtlist`,
           query: { pathpush: true },
-          state: { cache: false,closetabid:mainId },
+          state: { cache: false, closetabid: mainId },
         });
       }
       message.success(res.msg);
@@ -727,7 +739,7 @@ function TobedealtForm(props) {
       )}
 
       {loading === false && taskData && taskData.currentTask && tabActiveKey === 'workorder' && (
-        <>
+        <div className='noexplain'>
           {taskData && currentTask && (
             <div className={styles.collapse}>
               <Collapse expandIconPosition="right" defaultActiveKey={['1']} bordered={false}>
@@ -850,124 +862,127 @@ function TobedealtForm(props) {
               </Collapse>
             </div>
           )}
-        </>
+        </div>
       )}
 
       {loading === false && hisTasks && hisTasks.length > 0 && tabActiveKey === 'workorder' && (
-        <div className={styles.collapse}>
-          <Collapse expandIconPosition="right" bordered={false} defaultActiveKey={['0']}>
-            {hisTasks.map((obj, index) => {
-              const Paneldesmap = new Map([
-                [
-                  '服务绩效考核登记',
-                  <Register
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    userinfo={userinfo}
-                    getTarget1={getTarget1}
-                    getTarget2={getTarget2}
-                    target1={target1}
-                    target2={target2}
-                    getclausedetail={getclausedetail}
-                    clauseList={clauseList}
-                    register={Object.values(obj)[0]}
-                    contractArr={contractArr}
-                    getContrractname={getContrractname}
-                    files={Object.values(obj)[0] && Object.values(obj)[0].attachment ? JSON.parse(Object.values(obj)[0].attachment) : []}
-                    ChangeFiles={newvalue => {
-                      setFiles(newvalue);
-                    }}
-                    loading={loading}
-                    search={search}
-                    key="0"
-                    noEdit="true"
-                  />,
-                ],
-                [
-                  `业务负责人审核`,
-                  <BusinessAudit
-                    key={index}
-                    businessAudit={Object.values(obj)[0]}
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    userinfo={userinfo}
-                    selectPersonstate={newvalue => setNoselect(newvalue)}
-                    noEdit="true"
-                    search={search}
-                  />,
-                ],
-                [
-                  `自动化科专责审核`,
-                  <BusinessAudit
-                    key={index}
-                    businessAudit={Object.values(obj)[0]}
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    userinfo={userinfo}
-                    selectPersonstate={newvalue => setNoselect(newvalue)}
-                    noEdit="true"
-                    search={search}
-                  />,
-                ],
-                [
-                  `自动化科复核`,
-                  <BusinessAudit
-                    key={index}
-                    businessAudit={Object.values(obj)[0]}
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    userinfo={userinfo}
-                    selectPersonstate={newvalue => setNoselect(newvalue)}
-                    noEdit="true"
-                    search={search}
-                  />,
-                ],
-                [
-                  `服务商确认`,
-                  <ProviderConfirmation
-                    key={index}
-                    providerConfirmation={Object.values(obj)[0]}
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    userinfo={userinfo}
-                    selectPersonstate={newvalue => setNoselect(newvalue)}
-                    files={Object.values(obj)[0] && Object.values(obj)[0].annex ? JSON.parse(Object.values(obj)[0].annex) : []}
-                    ChangeFiles={newvalue => {
-                      setFiles(newvalue);
-                    }}
-                    noEdit="true"
-                    search={search}
-                  />,
-                ],
-                [
-                  `服务绩效考核确认`,
-                  <AssessmentConfirmation
-                    key={index}
-                    ref={formRef}
-                    assessmentConfirmation={Object.values(obj)[0]}
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    userinfo={userinfo}
-                    getTarget1={getTarget1}
-                    getTarget2={getTarget2}
-                    getclausedetail={getclausedetail}
-                    target1={target1}
-                    target2={target2}
-                    clauseList={clauseList}
-                    search={search}
-                    editSign='true'
-                    noEdit="true"
-                  />,
-                ],
-              ]);
-              return (
-                <Panel Panel header={Object.keys(obj)[0]} key={index}>
-                  {Paneldesmap.get(Object.keys(obj)[0])}
-                </Panel>
-              );
-            })}
-          </Collapse>
+        <div className='noexplain'>
+          <div className={styles.collapse}>
+            <Collapse expandIconPosition="right" bordered={false} defaultActiveKey={['0']}>
+              {hisTasks.map((obj, index) => {
+                const Paneldesmap = new Map([
+                  [
+                    '服务绩效考核登记',
+                    <Register
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                      userinfo={userinfo}
+                      getTarget1={getTarget1}
+                      getTarget2={getTarget2}
+                      target1={target1}
+                      target2={target2}
+                      getclausedetail={getclausedetail}
+                      clauseList={clauseList}
+                      register={Object.values(obj)[0]}
+                      contractArr={contractArr}
+                      getContrractname={getContrractname}
+                      files={Object.values(obj)[0] && Object.values(obj)[0].attachment ? JSON.parse(Object.values(obj)[0].attachment) : []}
+                      ChangeFiles={newvalue => {
+                        setFiles(newvalue);
+                      }}
+                      loading={loading}
+                      search={search}
+                      key="0"
+                      noEdit="true"
+                    />,
+                  ],
+                  [
+                    `业务负责人审核`,
+                    <BusinessAudit
+                      key={index}
+                      businessAudit={Object.values(obj)[0]}
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                      userinfo={userinfo}
+                      selectPersonstate={newvalue => setNoselect(newvalue)}
+                      noEdit="true"
+                      search={search}
+                    />,
+                  ],
+                  [
+                    `自动化科专责审核`,
+                    <BusinessAudit
+                      key={index}
+                      businessAudit={Object.values(obj)[0]}
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                      userinfo={userinfo}
+                      selectPersonstate={newvalue => setNoselect(newvalue)}
+                      noEdit="true"
+                      search={search}
+                    />,
+                  ],
+                  [
+                    `自动化科复核`,
+                    <BusinessAudit
+                      key={index}
+                      businessAudit={Object.values(obj)[0]}
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                      userinfo={userinfo}
+                      selectPersonstate={newvalue => setNoselect(newvalue)}
+                      noEdit="true"
+                      search={search}
+                    />,
+                  ],
+                  [
+                    `服务商确认`,
+                    <ProviderConfirmation
+                      key={index}
+                      providerConfirmation={Object.values(obj)[0]}
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                      userinfo={userinfo}
+                      selectPersonstate={newvalue => setNoselect(newvalue)}
+                      files={Object.values(obj)[0] && Object.values(obj)[0].annex ? JSON.parse(Object.values(obj)[0].annex) : []}
+                      ChangeFiles={newvalue => {
+                        setFiles(newvalue);
+                      }}
+                      noEdit="true"
+                      search={search}
+                    />,
+                  ],
+                  [
+                    `服务绩效考核确认`,
+                    <AssessmentConfirmation
+                      key={index}
+                      ref={formRef}
+                      assessmentConfirmation={Object.values(obj)[0]}
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                      userinfo={userinfo}
+                      getTarget1={getTarget1}
+                      getTarget2={getTarget2}
+                      getclausedetail={getclausedetail}
+                      target1={target1}
+                      target2={target2}
+                      clauseList={clauseList}
+                      search={search}
+                      editSign='true'
+                      noEdit="true"
+                    />,
+                  ],
+                ]);
+                return (
+                  <Panel Panel header={Object.keys(obj)[0]} key={index}>
+                    {Paneldesmap.get(Object.keys(obj)[0])}
+                  </Panel>
+                );
+              })}
+            </Collapse>
+          </div>
         </div>
+
       )}
 
       {tabActiveKey === 'process' && (

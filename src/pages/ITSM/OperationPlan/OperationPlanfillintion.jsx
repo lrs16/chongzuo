@@ -203,28 +203,31 @@ function OperationPlanfillintion(props) {
       }
     >
 
-      <Card>
-        <HadleContext.Provider value={{
-          handleUploadStatus,
-          getUploadStatus: (v) => { setHandleUploadStatus(v) },
-          getRegistUploadStatus: (v) => { setUploadStatus(v) }
-        }}>
-          <OperationPlanfillin
-            ref={PlanfillinRef}
-            useInfo={userinfo}
-            formItemLayout={formItemLayout}
-            forminladeLayout={forminladeLayout}
-            ChangeFiles={newvalue => {
-              setFiles(newvalue);
-            }}
-            files={[]}
-            loading={loading}
-            getUploadStatus={v => { setUploadStatus(v) }}
-            operationPersonSelect={operationPersonSelect}
-            main={copyData}
-          />
-        </HadleContext.Provider>
-      </Card>
+      <div className='noexplain'>
+        <Card>
+          <HadleContext.Provider value={{
+            handleUploadStatus,
+            getUploadStatus: (v) => { setHandleUploadStatus(v) },
+            getRegistUploadStatus: (v) => { setUploadStatus(v) }
+          }}>
+            <OperationPlanfillin
+              ref={PlanfillinRef}
+              useInfo={userinfo}
+              formItemLayout={formItemLayout}
+              forminladeLayout={forminladeLayout}
+              ChangeFiles={newvalue => {
+                setFiles(newvalue);
+              }}
+              files={[]}
+              loading={loading}
+              getUploadStatus={v => { setUploadStatus(v) }}
+              operationPersonSelect={operationPersonSelect}
+              main={copyData}
+            />
+          </HadleContext.Provider>
+        </Card>
+      </div>
+
 
 
     </PageHeaderWrapper>

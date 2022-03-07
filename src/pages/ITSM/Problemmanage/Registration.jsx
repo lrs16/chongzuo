@@ -1,9 +1,10 @@
 import React, { useEffect, useState, createContext, useRef } from 'react';
 import router from 'umi/router';
-import { Form, Button, Card } from 'antd';
+import { Form, Button, Card, Collapse } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
 import Registrat from './components/Registrat';
+import styles from './index.less';
 
 const formItemLayout = {
   labelCol: {
@@ -25,6 +26,7 @@ const forminladeLayout = {
     sm: { span: 22 },
   },
 };
+const { Panel } = Collapse;
 
 export const RegistratContext = createContext();
 
@@ -146,29 +148,38 @@ function Registration(props) {
         </>
       }
     >
-      <Card>
-        <RegistratContext.Provider>
-          <Registrat
-            formItemLayout={formItemLayout}
-            forminladeLayout={forminladeLayout}
-            ref={RegistratRef}
-            list={list}
-            useInfo={userinfo}
-            register={tabdata}
-            main={tabdata}
-            files={files.arr}
-            ChangeFiles={newvalue => {
-              setFiles(newvalue);
-            }}
-            source={keyVallist.source}
-            type={typelist.type}
-            priority={prioritylist.priority}
-            scope={scopeList.effect}
-            project={projectList.project}
-            antoArr={antoArr}
-          />
-        </RegistratContext.Provider>
-      </Card>
+        <div className={styles.collapse}>
+          <Collapse
+            expandIconPosition="right"
+            defaultActiveKey={['1']}
+            bordered={false}
+          >
+            <Panel header='问题登记' key="1">
+              <RegistratContext.Provider>
+                <Registrat
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
+                  ref={RegistratRef}
+                  list={list}
+                  useInfo={userinfo}
+                  register={tabdata}
+                  main={tabdata}
+                  files={files.arr}
+                  ChangeFiles={newvalue => {
+                    setFiles(newvalue);
+                  }}
+                  source={keyVallist.source}
+                  type={typelist.type}
+                  priority={prioritylist.priority}
+                  scope={scopeList.effect}
+                  project={projectList.project}
+                  antoArr={antoArr}
+                />
+              </RegistratContext.Provider>
+            </Panel>
+
+          </Collapse>
+        </div>
     </PageHeaderWrapper>
   );
 }

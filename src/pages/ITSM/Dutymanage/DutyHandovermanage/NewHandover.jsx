@@ -16,6 +16,7 @@ import {
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Reasonregression from '../../Problemmanage/components/Reasonregression';
 import Registrat from './components/Registrat';
+import { openNotification } from '@/utils/utils';
 
 const forminladeLayout = {
   labelCol: {
@@ -106,7 +107,7 @@ function NewHandover(props) {
         })
       }
       if (err) {
-        message.error('请将信息填写完整...');
+        openNotification(Object.values(err))
       }
       return []
     })
@@ -156,7 +157,7 @@ function NewHandover(props) {
           saveValues(value, params)
         }
         if (err) {
-          message.error('请将信息填写完整...');
+          openNotification(Object.values(err).reverse())
         }
         return []
       })

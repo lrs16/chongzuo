@@ -20,7 +20,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
     files, ChangeFiles,
     flowNodeName,
     allInfo,
-     } = props;
+  } = props;
   let secondFiles = [];
   if (flowNodeName === '自动化科审核') {
     if (allInfo.editState !== undefined && (allInfo.editState === 'add')) {
@@ -96,7 +96,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
                   message: '请输入审核时间'
                 }
               ],
-              initialValue: check.checkTime ? moment(check.checkTime):moment(Date.now()),
+              initialValue: check.checkTime ? moment(check.checkTime) : moment(Date.now()),
             })(<DatePicker
               showTime
               format="YYYY-MM-DD HH:mm:ss"

@@ -17,6 +17,7 @@ import styles from './index.less';
 import TimeoutModal from './components/TimeoutModel';
 import { judgeTimeoutStatus, saveTimeoutMsg } from '../services/api';
 import RelationOrder from './components/RelationOrder';
+import { openNotification } from '@/utils/utils';
 
 const { Panel } = Collapse;
 
@@ -179,10 +180,6 @@ function Work(props) {
     });
   }
 
-  const formerr = () => {
-    message.error('请将信息填写完整');
-  };
-
   //  保存统一接口
   const saveApi = (params, tobatch) => {
     return dispatch({
@@ -272,7 +269,7 @@ function Work(props) {
       SaveRef.current.validateFields((err, values) => {
         if (params ? !err : true) {
           if ((values.main_plannedStartTime).valueOf() > (values.main_plannedEndTime).valueOf()) {
-            message.error('计划开始时间必须小于计划结束时间')
+            message.error('计划开始时间必须小于计划结束时间');
           } else {
             const result = {
               ...values,
@@ -302,7 +299,7 @@ function Work(props) {
         }
 
         if (params && err) {
-          formerr();
+          openNotification(Object.values(err))
         }
       });
     }
@@ -439,6 +436,10 @@ function Work(props) {
           }
         });
       }
+
+      if (err) {
+        openNotification(Object.values(err))
+      }
       return null;
     });
   };
@@ -476,6 +477,11 @@ function Work(props) {
           }
         });
       }
+
+      if (err) {
+        openNotification(Object.values(err))
+      }
+
       return [];
     });
   };
@@ -717,7 +723,7 @@ function Work(props) {
 
       {
         tabActiveKey === 'workorder' && (
-          <>
+          <div className='noexplain'>
             {loading === false && taskResult && taskResult.length > 0 && data && (
               <div className={styles.collapse}>
                 <Collapse
@@ -813,7 +819,7 @@ function Work(props) {
 
             <div className={styles.collapse}>
               {loading === false && taskResult && taskResult.length > 0 && data && (
-                <Collapse expandIconPosition="right" bordered={false}>
+                <Collapse expandIconPosition="right" bordered={false}   defaultActiveKey={['0']}>
                   {data.map((obj, index) => {
                     // panel详情组件
                     const Paneldesmap = new Map([
@@ -827,15 +833,23 @@ function Work(props) {
                       ],
                       [
                         'check',
-                        <TaskCheckdes info={Object.values(obj)[0]} main={data[0].main} key="1" />,
+                        <TaskCheckdes
+                          info={Object.values(obj)[0]}
+                          main={data[0].main}
+                          key="0"
+                        />,
                       ],
                       [
                         'execute',
-                        <TaskExecutedes info={Object.values(obj)[0]} main={data[0].main} key="2" />,
+                        <TaskExecutedes
+                          info={Object.values(obj)[0]}
+                          main={data[0].main}
+                          key="0"
+                        />,
                       ],
                     ]);
                     return (
-                      <Panel header={Panelheadermap.get(Object.keys(obj)[0])} key={index}>
+                      <Panel header={Panelheadermap.get(Object.keys(obj)[0])} key='0'>
                         {Paneldesmap.get(Object.keys(obj)[0])}
                       </Panel>
                     );
@@ -843,7 +857,7 @@ function Work(props) {
                 </Collapse>
               )}
             </div>
-          </>
+          </div>
         )
       }
 

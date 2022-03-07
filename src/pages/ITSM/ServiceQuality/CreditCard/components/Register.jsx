@@ -293,7 +293,7 @@ const Register = forwardRef((props, ref) => {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-
+      <div className='noexplain'>
       <Row gutter={24} style={{ paddingTop: 24 }}>
         <Form {...formItemLayout}>
           {/* <Row> */}
@@ -371,7 +371,7 @@ const Register = forwardRef((props, ref) => {
                   <Select
                     disabled={search}
                     placeholder="请选择"
-                    allowClear
+                    allowClear={false}
                     onChange={(value, option) => handleChange(value, option, 'contract')}
                     onFocus={() => handleFocus('contract')}
                   >
@@ -392,12 +392,6 @@ const Register = forwardRef((props, ref) => {
           <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="关联合同名称">
               {getFieldDecorator('contractName', {
-                rules: [
-                  {
-                    required,
-                    message: '请输入关联合同名称',
-                  },
-                ],
                 initialValue: register.contractName,
               })(<Input disabled={search} />)}
             </Form.Item>
@@ -543,12 +537,12 @@ const Register = forwardRef((props, ref) => {
                   </div>
                 </Col>
               )}
-
-              {/* <Input  onChange={e => test(e.target.value)}/> */}
             </>
           )}
         </Form>
       </Row>
+      </div>
+   
     </>
   );
 });

@@ -7,6 +7,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Register from './components/Register';
 import { contractProvider } from '../services/quality';
 import styles from '../ServicePerformanceappraisal/index.less';
+import { openNotification } from '@/utils/utils';
 
 const formItemLayout = {
   labelCol: {
@@ -137,6 +138,10 @@ function CreditCardRegister(props) {
           });
         }
       }
+
+      if(err) {
+        openNotification(Object.values(err).reverse())
+      }
       return null;
     });
   };
@@ -220,37 +225,6 @@ function CreditCardRegister(props) {
       query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
     });
   };
-
-  // useEffect(() => {
-  //   if (tabdata) {
-  //     if (tabdata.providerId) {
-  //       getContrractname(tabdata.providerId)
-  //     }
-  //   }
-  // }, [tabdata])
-
-  // 获取页签信息
-  // useEffect(() => {
-  //   if (location.state) {
-  //     if (location.state.cache) {
-  //       const values = RegistratRef.current.getVal();
-  //       console.log('values:', values.evaluationInterval?.length ? moment(values.evaluationInterval[0]).format('YYYY-MM-DD HH:mm:ss'):'');
-  //       dispatch({
-  //         type: 'viewcache/gettabstate',
-  //         payload: {
-  //           cacheinfo: {
-  //             ...values,
-  //             beginTime:values.evaluationInterval?.length ? moment(values.evaluationInterval[0]).format('YYYY-MM-DD HH:mm:ss'):'',
-  //             endTime:values.evaluationInterval?.length ? moment(values.evaluationInterval[1]).format('YYYY-MM-DD HH:mm:ss'):'',
-  //             // evaluationInterval: values.evaluationInterval?.length ? [moment(values.evaluationInterval[0]), moment(values.evaluationInterval[1])]:'',
-  //           },
-  //           tabid: sessionStorage.getItem('tabid')
-  //         },
-  //       });
-  //       RegistratRef.current.resetVal();
-  //     }
-  //   }
-  // }, [location]);
 
   return (
     <PageHeaderWrapper

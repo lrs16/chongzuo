@@ -22,7 +22,7 @@ import TimeoutModal from '../components/TimeoutModal'; // 超时信息填写
 import { judgeTimeoutStatus, saveTimeoutMsg } from '../services/api'; // 超时接口
 
 import RelationOrder from './RelationOrder';
-import { SyncOutlined } from '@ant-design/icons';
+import { openNotification } from '@/utils/utils';
 
 import styles from './index.less';
 
@@ -180,11 +180,6 @@ function Workorder(props) {
     }
   };
 
-  // 表单校验提示信息
-  const formerr = () => {
-    message.error('请将信息填写完整...');
-  };
-
   const getUserinfo = () => {
     dispatch({
       type: 'problemmanage/fetchUseinfo',
@@ -328,15 +323,10 @@ function Workorder(props) {
             }
           });
         }
-
-        if (params2 && !values.complainUser) {
-          message.error('请通过问题申报人下拉值形式选择问题申报人')
-        }
-
       }
 
       if (params2 && uservisible === false) {
-        return formerr();
+        openNotification(Object.values(err))
       }
 
       return [];
@@ -363,7 +353,7 @@ function Workorder(props) {
       }
 
       if (params2 && err) {
-        return formerr();
+        openNotification(Object.values(err))
       }
 
       return [];
@@ -393,7 +383,7 @@ function Workorder(props) {
       }
 
       if (params2 && err) {
-        return formerr();
+        openNotification(Object.values(err))
       }
 
       return [];
@@ -430,8 +420,11 @@ function Workorder(props) {
         }
         saveApi(saveData, params2, uploadSive);
       }
-      if (params2 && uservisible === true) {
-        return formerr();
+      // if (params2 && uservisible === true) {
+      //   openNotification(Object.values(err))
+      // }
+      if (params2 && err) {
+        openNotification(Object.values(err))
       }
 
       return [];
@@ -1026,7 +1019,7 @@ function Workorder(props) {
 
                           </div>
                         }
-                        icon={index === problemFlowLogs.length - 1 ? <Icon type="loading" spin /> : ''}
+                        icon={(index === problemFlowLogs.length - 1 || obj.status === '待审核') ? <Icon type="loading" spin /> : ''}
                       />
                     )
                   }
@@ -1036,278 +1029,283 @@ function Workorder(props) {
             )}
           </div>
 
-          <div className={styles.collapse}>
-            <Collapse expandIconPosition="right" defaultActiveKey={['1']} bordered={false}>
-              {(currntStatus === 5 || currntStatus === 0) && loading === false && (
-                <Panel header="问题登记" key="1" style={{ backgroundColor: 'white' }}>
-                  <Registrat
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    ref={RegistratRef}
-                    registerno={newno}
-                    useInfo={userinfo}
-                    register={register}
-                    main={main}
-                    loading={loading}
-                    // location={location}
-                    files={
-                      todoDetail.register !== undefined && todoDetail.register.registerAttachments
-                        ? JSON.parse(todoDetail.register.registerAttachments)
-                        : []
-                    }
-                    ChangeFiles={newvalue => {
-                      setFiles(newvalue);
-                    }}
-                    source={keyVallist.source}
-                    type={typelist.type}
-                    priority={prioritylist.priority}
-                    scope={scopeList.effect}
-                    project={projectList.project}
-                  />
-                </Panel>
-              )}
-
-              {flowNodeName === '系统运维商审核' && loading === false && (
-                <Panel header="系统运维商审核环节" key="1" style={{ backgroundColor: 'white' }}>
-                  <FatherContext.Provider value={{ flowtype, setFlowtype }}>
-                    <Systemoperatoredit
+          <div className='noexplain'>
+            <div  className={styles.collapse}>
+              <Collapse expandIconPosition="right" defaultActiveKey={['1']} bordered={false}>
+                {(currntStatus === 5 || currntStatus === 0) && loading === false && (
+                  <Panel header="问题登记" key="1" style={{ backgroundColor: 'white' }}>
+                    <Registrat
                       formItemLayout={formItemLayout}
                       forminladeLayout={forminladeLayout}
-                      ref={PreviesRef}
+                      ref={RegistratRef}
+                      registerno={newno}
                       useInfo={userinfo}
-                      check={check}
+                      register={register}
+                      main={main}
                       loading={loading}
-                      flowNodeName={flowNodeName}
-                      allInfo={todoDetail}
+                      // location={location}
                       files={
-                        todoDetail.check !== undefined && todoDetail.check.checkAttachments
-                          ? JSON.parse(todoDetail.check.checkAttachments)
+                        todoDetail.register !== undefined && todoDetail.register.registerAttachments
+                          ? JSON.parse(todoDetail.register.registerAttachments)
                           : []
                       }
                       ChangeFiles={newvalue => {
                         setFiles(newvalue);
                       }}
-                    // location={location}
+                      source={keyVallist.source}
+                      type={typelist.type}
+                      priority={prioritylist.priority}
+                      scope={scopeList.effect}
+                      project={projectList.project}
                     />
-                  </FatherContext.Provider>
-                </Panel>
-              )}
+                  </Panel>
+                )}
 
-              {flowNodeName === '自动化科审核' && loading === false && (
-                <Panel header="自动化科审核" key="1" style={{ backgroundColor: 'white' }}>
-                  <FatherContext.Provider value={{ flowtype, setFlowtype }}>
-                    <Systemoperatoredit
-                      formItemLayout={formItemLayout}
-                      forminladeLayout={forminladeLayout}
-                      ref={PreviesRef}
-                      useInfo={userinfo}
-                      check={check}
-                      loading={loading}
-                      flowNodeName={flowNodeName}
-                      allInfo={todoDetail}
-                      files={
-                        todoDetail.check !== undefined && todoDetail.check.checkAttachments
-                          ? JSON.parse(todoDetail.check.checkAttachments)
-                          : []
-                      }
-                      ChangeFiles={newvalue => {
-                        setFiles(newvalue);
-                      }}
-                    />
-                  </FatherContext.Provider>
-                </Panel>
-              )}
+                {flowNodeName === '系统运维商审核' && loading === false && (
+                  <Panel header="系统运维商审核环节" key="1" style={{ backgroundColor: 'white' }}>
+                    <FatherContext.Provider value={{ flowtype, setFlowtype }}>
+                      <Systemoperatoredit
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
+                        ref={PreviesRef}
+                        useInfo={userinfo}
+                        check={check}
+                        loading={loading}
+                        flowNodeName={flowNodeName}
+                        allInfo={todoDetail}
+                        files={
+                          todoDetail.check !== undefined && todoDetail.check.checkAttachments
+                            ? JSON.parse(todoDetail.check.checkAttachments)
+                            : []
+                        }
+                        ChangeFiles={newvalue => {
+                          setFiles(newvalue);
+                        }}
+                      // location={location}
+                      />
+                    </FatherContext.Provider>
+                  </Panel>
+                )}
 
-              {flowNodeName === '系统开发商处理' && handle !== undefined && loading === false && (
-                <Panel header="系统开发商处理" key="1" style={{ backgroundColor: 'white' }}>
-                  <Developerprocessdit
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    showEdit={showEdit}
-                    ref={HandleRef}
-                    useInfo={userinfo}
-                    handle={handle}
-                    handleresult={handleList.handleresult}
-                    files={
-                      todoDetail.handle !== undefined && todoDetail.handle.handleAttachments
-                        ? JSON.parse(todoDetail.handle.handleAttachments)
-                        : []
-                    }
-                    ChangeFiles={newvalue => {
-                      setFiles(newvalue);
-                    }}
-                    loading={loading}
-                    mainId={mainId}
-                  />
-                </Panel>
-              )}
+                {flowNodeName === '自动化科审核' && loading === false && (
+                  <Panel header="自动化科审核" key="1" style={{ backgroundColor: 'white' }}>
+                    <FatherContext.Provider value={{ flowtype, setFlowtype }}>
+                      <Systemoperatoredit
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
+                        ref={PreviesRef}
+                        useInfo={userinfo}
+                        check={check}
+                        loading={loading}
+                        flowNodeName={flowNodeName}
+                        allInfo={todoDetail}
+                        files={
+                          todoDetail.check !== undefined && todoDetail.check.checkAttachments
+                            ? JSON.parse(todoDetail.check.checkAttachments)
+                            : []
+                        }
+                        ChangeFiles={newvalue => {
+                          setFiles(newvalue);
+                        }}
+                      />
+                    </FatherContext.Provider>
+                  </Panel>
+                )}
 
-              {flowNodeName === '系统运维商确认' && loading === false && (
-                <Panel header="系统运维商确认" key="1" style={{ backgroundColor: 'white' }}>
-                  <FatherContext.Provider value={{ flowtype, setFlowtype }}>
-                    <Systemoperatorsecond
+                {flowNodeName === '系统开发商处理' && handle !== undefined && loading === false && (
+                  <Panel header="系统开发商处理" key="1" style={{ backgroundColor: 'white' }}>
+                    <Developerprocessdit
                       formItemLayout={formItemLayout}
                       forminladeLayout={forminladeLayout}
                       showEdit={showEdit}
-                      ref={ProblemconfirmRef}
+                      ref={HandleRef}
                       useInfo={userinfo}
-                      handle={confirm}
-                      flowNodeName={flowNodeName}
+                      handle={handle}
+                      handleresult={handleList.handleresult}
                       files={
-                        todoDetail.confirm !== undefined && todoDetail.confirm.confirmAttachments
-                          ? JSON.parse(todoDetail.confirm.confirmAttachments)
+                        todoDetail.handle !== undefined && todoDetail.handle.handleAttachments
+                          ? JSON.parse(todoDetail.handle.handleAttachments)
                           : []
                       }
                       ChangeFiles={newvalue => {
                         setFiles(newvalue);
                       }}
                       loading={loading}
-                      confirm={confirm}
+                      mainId={mainId}
                     />
-                  </FatherContext.Provider>
-                </Panel>
-              )}
+                  </Panel>
+                )}
 
-              {flowNodeName === '自动化科业务人员确认' && loading === false && (
-                <Panel header="自动化科业务负责人确认" key="1" style={{ backgroundColor: 'white' }}>
-                  <FatherContext.Provider value={{ flowtype, setFlowtype }}>
-                    <Systemoperatorsecond
-                      formItemLayout={formItemLayout}
-                      forminladeLayout={forminladeLayout}
-                      showEdit={showEdit}
-                      ref={ProblemconfirmRef}
-                      useInfo={userinfo}
-                      confirm={confirm}
-                      flowNodeName={flowNodeName}
-                      files={
-                        todoDetail.confirm !== undefined && todoDetail.confirm.confirmAttachments
-                          ? JSON.parse(todoDetail.confirm.confirmAttachments)
-                          : []
-                      }
-                      ChangeFiles={newvalue => {
-                        setFiles(newvalue);
-                      }}
-                      loading={loading}
-                    />
-                  </FatherContext.Provider>
-                </Panel>
-              )}
+                {flowNodeName === '系统运维商确认' && loading === false && (
+                  <Panel header="系统运维商确认" key="1" style={{ backgroundColor: 'white' }}>
+                    <FatherContext.Provider value={{ flowtype, setFlowtype }}>
+                      <Systemoperatorsecond
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
+                        showEdit={showEdit}
+                        ref={ProblemconfirmRef}
+                        useInfo={userinfo}
+                        handle={confirm}
+                        flowNodeName={flowNodeName}
+                        files={
+                          todoDetail.confirm !== undefined && todoDetail.confirm.confirmAttachments
+                            ? JSON.parse(todoDetail.confirm.confirmAttachments)
+                            : []
+                        }
+                        ChangeFiles={newvalue => {
+                          setFiles(newvalue);
+                        }}
+                        loading={loading}
+                        confirm={confirm}
+                      />
+                    </FatherContext.Provider>
+                  </Panel>
+                )}
 
-              {flowNodeName === '问题登记人员确认' && loading === false && (
-                <Panel header="问题登记人员确认" key="1" style={{ backgroundColor: 'white' }}>
-                  <FatherContext.Provider value={{ flowtype, setFlowtype }}>
-                    <Operatorconfirmaedit
-                      formItemLayout={formItemLayout}
-                      forminladeLayout={forminladeLayout}
-                      showEdit={showEdit}
-                      ref={ProblemconfirmRef}
-                      useInfo={userinfo}
-                      handle={confirm}
-                      flowNodeName={flowNodeName}
-                      files={
-                        todoDetail.confirm !== undefined && todoDetail.confirm.confirmAttachments
-                          ? JSON.parse(todoDetail.confirm.confirmAttachments)
-                          : []
-                      }
-                      ChangeFiles={newvalue => {
-                        setFiles(newvalue);
-                      }}
-                      confirm={confirm}
-                      loading={loading}
-                    />
-                  </FatherContext.Provider>
-                </Panel>
-              )}
-            </Collapse>
+                {flowNodeName === '自动化科业务人员确认' && loading === false && (
+                  <Panel header="自动化科业务负责人确认" key="1" style={{ backgroundColor: 'white' }}>
+                    <FatherContext.Provider value={{ flowtype, setFlowtype }}>
+                      <Systemoperatorsecond
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
+                        showEdit={showEdit}
+                        ref={ProblemconfirmRef}
+                        useInfo={userinfo}
+                        confirm={confirm}
+                        flowNodeName={flowNodeName}
+                        files={
+                          todoDetail.confirm !== undefined && todoDetail.confirm.confirmAttachments
+                            ? JSON.parse(todoDetail.confirm.confirmAttachments)
+                            : []
+                        }
+                        ChangeFiles={newvalue => {
+                          setFiles(newvalue);
+                        }}
+                        loading={loading}
+                      />
+                    </FatherContext.Provider>
+                  </Panel>
+                )}
+
+                {flowNodeName === '问题登记人员确认' && loading === false && (
+                  <Panel header="问题登记人员确认" key="1" style={{ backgroundColor: 'white' }}>
+                    <FatherContext.Provider value={{ flowtype, setFlowtype }}>
+                      <Operatorconfirmaedit
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
+                        showEdit={showEdit}
+                        ref={ProblemconfirmRef}
+                        useInfo={userinfo}
+                        handle={confirm}
+                        flowNodeName={flowNodeName}
+                        files={
+                          todoDetail.confirm !== undefined && todoDetail.confirm.confirmAttachments
+                            ? JSON.parse(todoDetail.confirm.confirmAttachments)
+                            : []
+                        }
+                        ChangeFiles={newvalue => {
+                          setFiles(newvalue);
+                        }}
+                        confirm={confirm}
+                        loading={loading}
+                      />
+                    </FatherContext.Provider>
+                  </Panel>
+                )}
+              </Collapse>
+            </div>
+
           </div>
 
-          <div className={styles.collapse}>
-            {problemFlowNodeRows && loading === false && (
-              <Collapse expandIconPosition="right" bordered={false} defaultActiveKey={['0']}>
-                {problemFlowNodeRows.map((obj, index) => {
-                  // panel详情组件
-                  const Paneldesmap = new Map([
-                    [
-                      '问题登记',
-                      <Problemregistration
-                        info={obj}
-                        statue={currntStatus}
-                        problemFlowNodeRows={problemFlowNodeRows}
-                        main={main}
-                        key="0"
-                        formItemLayout={formItemLayout}
-                        forminladeLayout={forminladeLayout}
-                      />,
-                    ],
-                    [
-                      '系统运维商审核',
-                      <Problemreview
-                        info={obj}
-                        key="1"
-                        main={main}
-                        formItemLayout={formItemLayout}
-                        forminladeLayout={forminladeLayout}
-                      />,
-                    ],
-                    [
-                      '自动化科审核',
-                      <Problemreview
-                        info={obj}
-                        key="2"
-                        main={main}
-                        formItemLayout={formItemLayout}
-                        forminladeLayout={forminladeLayout}
-                      />,
-                    ],
-                    [
-                      '系统开发商处理',
-                      <Problemsolving
-                        info={obj}
-                        key="3"
-                        main={main}
-                        formItemLayout={formItemLayout}
-                        forminladeLayout={forminladeLayout}
-                      />,
-                    ],
-                    [
-                      '系统运维商确认',
-                      <Operatorconfirmades
-                        info={obj}
-                        key="4"
-                        main={main}
-                        formItemLayout={formItemLayout}
-                        forminladeLayout={forminladeLayout}
-                      />,
-                    ],
-                    [
-                      '自动化科业务人员确认',
-                      <Operatorconfirmades
-                        info={obj}
-                        key="5"
-                        main={main}
-                        formItemLayout={formItemLayout}
-                        forminladeLayout={forminladeLayout}
-                      />,
-                    ],
-                    [
-                      '问题登记人员确认',
-                      <Operatorconfirmades
-                        info={obj}
-                        key="6"
-                        main={main}
-                        formItemLayout={formItemLayout}
-                        forminladeLayout={forminladeLayout}
-                      />,
-                    ],
-                  ]);
-                  return (
-                    <Panel Panel header={obj.fnname} key={index}>
-                      {Paneldesmap.get(obj.fnname)}
-                    </Panel>
-                  );
-                })}
-              </Collapse>
-            )}
+          <div className='noexplain'>
+            <div className={styles.collapse}>
+              {problemFlowNodeRows && loading === false && (
+                <Collapse expandIconPosition="right" bordered={false} defaultActiveKey={['0']}>
+                  {problemFlowNodeRows.map((obj, index) => {
+                    // panel详情组件
+                    const Paneldesmap = new Map([
+                      [
+                        '问题登记',
+                        <Problemregistration
+                          info={obj}
+                          statue={currntStatus}
+                          problemFlowNodeRows={problemFlowNodeRows}
+                          main={main}
+                          key="0"
+                          formItemLayout={formItemLayout}
+                          forminladeLayout={forminladeLayout}
+                        />,
+                      ],
+                      [
+                        '系统运维商审核',
+                        <Problemreview
+                          info={obj}
+                          key="0"
+                          main={main}
+                          formItemLayout={formItemLayout}
+                          forminladeLayout={forminladeLayout}
+                        />,
+                      ],
+                      [
+                        '自动化科审核',
+                        <Problemreview
+                          info={obj}
+                          key="0"
+                          main={main}
+                          formItemLayout={formItemLayout}
+                          forminladeLayout={forminladeLayout}
+                        />,
+                      ],
+                      [
+                        '系统开发商处理',
+                        <Problemsolving
+                          info={obj}
+                          key="0"
+                          main={main}
+                          formItemLayout={formItemLayout}
+                          forminladeLayout={forminladeLayout}
+                        />,
+                      ],
+                      [
+                        '系统运维商确认',
+                        <Operatorconfirmades
+                          info={obj}
+                          key="0"
+                          main={main}
+                          formItemLayout={formItemLayout}
+                          forminladeLayout={forminladeLayout}
+                        />,
+                      ],
+                      [
+                        '自动化科业务人员确认',
+                        <Operatorconfirmades
+                          info={obj}
+                          key="0"
+                          main={main}
+                          formItemLayout={formItemLayout}
+                          forminladeLayout={forminladeLayout}
+                        />,
+                      ],
+                      [
+                        '问题登记人员确认',
+                        <Operatorconfirmades
+                          info={obj}
+                          key="0"
+                          main={main}
+                          formItemLayout={formItemLayout}
+                          forminladeLayout={forminladeLayout}
+                        />,
+                      ],
+                    ]);
+                    return (
+                      <Panel Panel header={obj.fnname} key='0'>
+                        {Paneldesmap.get(obj.fnname)}
+                      </Panel>
+                    );
+                  })}
+                </Collapse>
+              )}
+            </div>
           </div>
         </>
       )}

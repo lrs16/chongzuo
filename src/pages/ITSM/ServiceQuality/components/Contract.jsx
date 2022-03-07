@@ -242,6 +242,7 @@ function Contract(props) {
             assessCycle: item.assessCycle,
             beginTime: item.beginTime,
             endTime: item.endTime,
+            id:item.id || ''
           }
         });
         const result = newArray.every((val => (
