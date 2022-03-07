@@ -310,25 +310,27 @@ function ToDoregist(props) {
         tabActiveKey={tabActivekey}
         onTabChange={handleTabChange}
       >
-        {tabActivekey === 'workorder' && (
-          <EditContext.Provider value={{
-            ChangeReleaseTaskName,
-          }}>
-            <WorkOrder
-              location={location}
-              type={buttontype}
-              ChangeType={newvalue => setButtonType(newvalue)}
-              changRegisterId={newvalue => setRegisterId(newvalue)}
-              ChangeHistroyTaskId={newvalue => setHistroyTaskId(newvalue)}
-              ChangeISClose={v => setIsClose(v)}
-              userchoice={userchoice}
-              ChangeChoice={v => setUserChoice(v)}
-              ChangeUserVisible={v => setUserVisible(v)}
-            />
-          </EditContext.Provider>
-        )}
-        {tabActivekey === 'process' && <Process location={location} />}
-        {tabActivekey === 'relevancy' && <RelationOrder location={location} relation />}
+        <div className='noexplain'>
+          {tabActivekey === 'workorder' && (
+            <EditContext.Provider value={{
+              ChangeReleaseTaskName,
+            }}>
+              <WorkOrder
+                location={location}
+                type={buttontype}
+                ChangeType={newvalue => setButtonType(newvalue)}
+                changRegisterId={newvalue => setRegisterId(newvalue)}
+                ChangeHistroyTaskId={newvalue => setHistroyTaskId(newvalue)}
+                ChangeISClose={v => setIsClose(v)}
+                userchoice={userchoice}
+                ChangeChoice={v => setUserChoice(v)}
+                ChangeUserVisible={v => setUserVisible(v)}
+              />
+            </EditContext.Provider>
+          )}
+          {tabActivekey === 'process' && <Process location={location} />}
+          {tabActivekey === 'relevancy' && <RelationOrder location={location} relation />}
+        </div>
         <User
           taskId={taskId}
           visible={uservisible}

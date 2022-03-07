@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 // import moment from 'moment';
 import { connect } from 'dva';
 import { Collapse, Steps, Spin, message, Icon } from 'antd';
+import { openNotification } from '@/utils/utils';
 import styles from './index.less';
 import Registrat from './components/Registrat';
 import Examine from './components/Examine';
@@ -146,12 +147,9 @@ function WorkOrder(props) {
     };
   }, [info]);
 
-  const formerr = () => {
+  const formerr = (err) => {
     // message.error('请将信息填写完整...');
-    message.error(<div>
-      <p>1111</p>
-      <p>222</p>
-    </div>)
+    openNotification(Object.values(err))
   };
 
   // 刷新路由
@@ -250,7 +248,7 @@ function WorkOrder(props) {
       case 'flow':
         ExamineRef.current.Forms((err) => {
           if (err) {
-            formerr();
+            formerr(err);
             ChangeType('');
           } else if (!userchoice) {
             ChangeUserVisible(true);
@@ -271,7 +269,7 @@ function WorkOrder(props) {
       case 'toflow':
         ExamineRef.current.Forms((err) => {
           if (err) {
-            formerr();
+            formerr(err);
             ChangeType('');
           } else {
             dispatch({
@@ -289,7 +287,7 @@ function WorkOrder(props) {
       case 'regist':
         ExamineRef.current.Forms((err) => {
           if (err) {
-            formerr();
+            formerr(err);
             ChangeType('');
           } else {
             dispatch({
@@ -307,7 +305,7 @@ function WorkOrder(props) {
       case 'confirm':
         ExamineRef.current.Forms((err) => {
           if (err) {
-            formerr();
+            formerr(err);
             ChangeType('');
           } else {
             dispatch({
@@ -326,7 +324,7 @@ function WorkOrder(props) {
       case 'over':
         ExamineRef.current.Forms((err) => {
           if (err) {
-            formerr();
+            formerr(err);
             ChangeType('');
           } else {
             dispatch({
@@ -386,7 +384,7 @@ function WorkOrder(props) {
               },
             });
           } else {
-            formerr();
+            formerr(err);
           }
         })
         break;
@@ -403,7 +401,7 @@ function WorkOrder(props) {
               },
             });
           } else {
-            formerr();
+            formerr(err);
           }
         })
         break;

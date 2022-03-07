@@ -92,7 +92,6 @@ function WorkOrder2(props) {
   const HandleRef = useRef();
   const ReturnVisitRef = useRef();
 
-  // console.log(registratfiles)
   // console.log(info, info.edit);
 
   // 保存、流转表单信息
@@ -122,7 +121,6 @@ function WorkOrder2(props) {
   };
   // 流转    4转问题，5转故障，3审核且是档案或高级，4审核其它选项
   const eventflow = (val) => {
-
     //  const handleresult = HandleRef.current && HandleRef.current.getHandleResult();
     const getuserIds = () => {
       const nextNode = new Map([
@@ -478,14 +476,14 @@ function WorkOrder2(props) {
   // 初始化历史附件
   useEffect(() => {
     if (edit && Object.values(edit)[0] !== null) {
-      if (Object.values(edit)[0].fileIds !== '' && taskName === '已登记') {
+      if (Object.values(edit)[0].fileIds !== '' && taskName === '事件登记') {
         setRegistratFiles({
           ...files,
           arr: JSON.parse(Object.values(edit)[0].fileIds),
           ischange: false,
         });
       }
-      if (Object.values(edit)[0].fileIds !== '' && taskName !== '已登记') {
+      if (Object.values(edit)[0].fileIds !== '' && taskName !== '事件登记') {
         setFiles({ ...files, arr: JSON.parse(Object.values(edit)[0].fileIds), ischange: false });
       }
     };
