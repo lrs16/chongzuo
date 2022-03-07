@@ -467,138 +467,140 @@ function Overtime(props) {
         dictType="status"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
       />
-      <Card bodyStyle={{ paddingBottom: 0 }}>
-        <Row gutter={24}>
-          <Form {...formItemLayout}>
-            <Col span={6}>
-              <Form.Item label="事件编号">
-                {getFieldDecorator('eventNo', {
-                  initialValue: cacheinfo.eventNo,
-                })(<Input placeholder="请输入" />)}
-              </Form.Item>
-            </Col>
-            <Col span={6}>
-              <Form.Item label="当前环节">
-                {getFieldDecorator('flowNodeName', {
-                  initialValue: cacheinfo.flowNodeName,
-                })(
-                  <Select
-                    style={{ width: '100%' }}
-                    placeholder="请选择"
-                  >
-                    {selectdata.status.map(obj => {
-                      if (obj.val !== '已关闭') {
-                        return (
-                          <Option key={obj.key} value={obj.val}>
-                            {obj.val}
-                          </Option>
-                        )
-                      }
-                      return null;
-                    })}
-                  </Select>
-                  // <Select>
-                  //   <Option value="事件登记">事件登记</Option>
-                  //   <Option value="事件响应">事件响应</Option>
-                  //   <Option value="事件审核">事件审核</Option>
-                  //   <Option value="事件处理">事件处理</Option>
-                  //   <Option value="事件确认">事件确认</Option>
-                  // </Select>,
-                )}
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item label="建单时间" {...forminladeLayout}>
-                {getFieldDecorator('time1', {
-                  initialValue: cacheinfo.time1 ? moment(cacheinfo.time1) : undefined,
-                })(
-                  <DatePicker
-                    showTime={{
-                      hideDisabledOptions: true,
-                      defaultValue: moment('00:00:00', 'HH:mm:ss'),
-                    }}
-                    placeholder="开始时间"
-                    format='YYYY-MM-DD HH:mm:ss' />
-                )}
-                <span style={{ padding: '0 10px' }}>-</span>
-                {getFieldDecorator('time2', {
-                  initialValue: cacheinfo.time2 ? moment(cacheinfo.time2) : undefined,
-                })(
-                  <DatePicker
-                    showTime={{
-                      hideDisabledOptions: true,
-                      defaultValue: moment('23:59:59', 'HH:mm:ss'),
-                    }}
-                    placeholder="结束时间"
-                    format='YYYY-MM-DD HH:mm:ss' />
-                )}
-              </Form.Item>
-            </Col>
-            {(expand || cacheinfo.expand) && (
-              <>
-                <Col span={6}>
-                  <Form.Item label="事件标题">
-                    {getFieldDecorator('eventTitle', {
-                      initialValue: cacheinfo.eventTitle,
-                    })(<Input placeholder="请输入" />)}
-                  </Form.Item>
-                </Col>
-                <Col span={6}>
-                  <Form.Item label="当前处理人">
-                    {getFieldDecorator('userName', {
-                      initialValue: cacheinfo.userName,
-                    })(<Input placeholder="请输入" />)}
-                  </Form.Item>
-                </Col>
+      <div className='noexplain'>
+        <Card bodyStyle={{ paddingBottom: 0 }}>
+          <Row gutter={24}>
+            <Form {...formItemLayout}>
+              <Col span={6}>
+                <Form.Item label="事件编号">
+                  {getFieldDecorator('eventNo', {
+                    initialValue: cacheinfo.eventNo,
+                  })(<Input placeholder="请输入" />)}
+                </Form.Item>
+              </Col>
+              <Col span={6}>
+                <Form.Item label="当前环节">
+                  {getFieldDecorator('flowNodeName', {
+                    initialValue: cacheinfo.flowNodeName,
+                  })(
+                    <Select
+                      style={{ width: '100%' }}
+                      placeholder="请选择"
+                    >
+                      {selectdata.status.map(obj => {
+                        if (obj.val !== '已关闭') {
+                          return (
+                            <Option key={obj.key} value={obj.val}>
+                              {obj.val}
+                            </Option>
+                          )
+                        }
+                        return null;
+                      })}
+                    </Select>
+                    // <Select>
+                    //   <Option value="事件登记">事件登记</Option>
+                    //   <Option value="事件响应">事件响应</Option>
+                    //   <Option value="事件审核">事件审核</Option>
+                    //   <Option value="事件处理">事件处理</Option>
+                    //   <Option value="事件确认">事件确认</Option>
+                    // </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="建单时间" {...forminladeLayout}>
+                  {getFieldDecorator('time1', {
+                    initialValue: cacheinfo.time1 ? moment(cacheinfo.time1) : undefined,
+                  })(
+                    <DatePicker
+                      showTime={{
+                        hideDisabledOptions: true,
+                        defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                      }}
+                      placeholder="开始时间"
+                      format='YYYY-MM-DD HH:mm:ss' />
+                  )}
+                  <span style={{ padding: '0 10px' }}>-</span>
+                  {getFieldDecorator('time2', {
+                    initialValue: cacheinfo.time2 ? moment(cacheinfo.time2) : undefined,
+                  })(
+                    <DatePicker
+                      showTime={{
+                        hideDisabledOptions: true,
+                        defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                      }}
+                      placeholder="结束时间"
+                      format='YYYY-MM-DD HH:mm:ss' />
+                  )}
+                </Form.Item>
+              </Col>
+              {(expand || cacheinfo.expand) && (
+                <>
+                  <Col span={6}>
+                    <Form.Item label="事件标题">
+                      {getFieldDecorator('eventTitle', {
+                        initialValue: cacheinfo.eventTitle,
+                      })(<Input placeholder="请输入" />)}
+                    </Form.Item>
+                  </Col>
+                  <Col span={6}>
+                    <Form.Item label="当前处理人">
+                      {getFieldDecorator('userName', {
+                        initialValue: cacheinfo.userName,
+                      })(<Input placeholder="请输入" />)}
+                    </Form.Item>
+                  </Col>
 
-              </>
-            )}
-            <Col span={24} style={{ textAlign: 'right', marginBottom: 8 }}>
-              <Button type="primary" onClick={handleSearch}>
-                查 询
-              </Button>
-              <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>
-                重 置
-              </Button>
-              <Button
-                style={{ marginLeft: 8 }}
-                type="link"
-                onClick={() => {
-                  setExpand(!expand);
-                }}
-              >
-                {expand ? (
-                  <>
-                    关 闭 <UpOutlined />
-                  </>
-                ) : (
-                  <>
-                    展 开 <DownOutlined />
-                  </>
-                )}
-              </Button>
-            </Col>
-          </Form>
-        </Row>
-        <div>
-          <Button
-            type="primary"
-            onClick={() => download()}
-          >
-            导出数据
-          </Button>
-        </div>
-        <Table
-          columns={tabActivekey === 'timeout' ? timeoutcolumns : columns}
-          dataSource={list.rows}
-          loading={loading}
-          rowKey={(_, index) => index.toString()}
-          pagination={pagination}
-          scroll={{ x: 1400, y: setTableHeight() }}
-          bordered={tabActivekey === 'timeout'}
-          size={tabActivekey === 'timeout' ? 'middle' : 'default'}
-        />
-      </Card>
+                </>
+              )}
+              <Col span={24} style={{ textAlign: 'right', marginBottom: 8 }}>
+                <Button type="primary" onClick={handleSearch}>
+                  查 询
+                </Button>
+                <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>
+                  重 置
+                </Button>
+                <Button
+                  style={{ marginLeft: 8 }}
+                  type="link"
+                  onClick={() => {
+                    setExpand(!expand);
+                  }}
+                >
+                  {expand ? (
+                    <>
+                      关 闭 <UpOutlined />
+                    </>
+                  ) : (
+                    <>
+                      展 开 <DownOutlined />
+                    </>
+                  )}
+                </Button>
+              </Col>
+            </Form>
+          </Row>
+          <div>
+            <Button
+              type="primary"
+              onClick={() => download()}
+            >
+              导出数据
+            </Button>
+          </div>
+          <Table
+            columns={tabActivekey === 'timeout' ? timeoutcolumns : columns}
+            dataSource={list.rows}
+            loading={loading}
+            rowKey={(_, index) => index.toString()}
+            pagination={pagination}
+            scroll={{ x: 1400, y: setTableHeight() }}
+            bordered={tabActivekey === 'timeout'}
+            size={tabActivekey === 'timeout' ? 'middle' : 'default'}
+          />
+        </Card>
+      </div>
     </PageHeaderWrapper>
   );
 }

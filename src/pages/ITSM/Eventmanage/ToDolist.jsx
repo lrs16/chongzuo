@@ -350,31 +350,48 @@ function ToDolist(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      <Card bodyStyle={{ paddingBottom: 0 }}>
-        <Row gutter={24}>
-          <Form {...formItemLayout} onSubmit={() => handleSearch()}>
-            <Col span={8}>
-              <Form.Item label="事件编号">
-                {getFieldDecorator('eventNo', {
-                  initialValue: cacheinfo.eventNo,
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-            <span style={{ display: expand ? 'block' : 'none' }}>
+      <div className='noexplain'>
+        <Card bodyStyle={{ paddingBottom: 0 }}>
+          <Row gutter={24}>
+            <Form {...formItemLayout} onSubmit={() => handleSearch()}>
               <Col span={8}>
-                <Form.Item label="事件标题">
-                  {getFieldDecorator('eventTitle', {
-                    initialValue: cacheinfo.eventTitle,
+                <Form.Item label="事件编号">
+                  {getFieldDecorator('eventNo', {
+                    initialValue: cacheinfo.eventNo,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
+              <span style={{ display: expand ? 'block' : 'none' }}>
+                <Col span={8}>
+                  <Form.Item label="事件标题">
+                    {getFieldDecorator('eventTitle', {
+                      initialValue: cacheinfo.eventTitle,
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="事件来源">
+                    {getFieldDecorator('eventSource', {
+                      initialValue: cacheinfo.eventSource,
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {sourcemap.map(obj => (
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>
+                        ))}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+              </span>
               <Col span={8}>
-                <Form.Item label="事件来源">
-                  {getFieldDecorator('eventSource', {
-                    initialValue: cacheinfo.eventSource,
+                <Form.Item label="工单状态">
+                  {getFieldDecorator('eventStatus', {
+                    initialValue: cacheinfo.eventStatus,
                   })(
                     <Select placeholder="请选择" allowClear>
-                      {sourcemap.map(obj => (
+                      {statusmap.map(obj => (
                         <Option key={obj.key} value={obj.title}>
                           {obj.title}
                         </Option>
@@ -383,81 +400,66 @@ function ToDolist(props) {
                   )}
                 </Form.Item>
               </Col>
-            </span>
-            <Col span={8}>
-              <Form.Item label="工单状态">
-                {getFieldDecorator('eventStatus', {
-                  initialValue: cacheinfo.eventStatus,
-                })(
-                  <Select placeholder="请选择" allowClear>
-                    {statusmap.map(obj => (
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>
-                    ))}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-            <span style={{ display: expand ? 'block' : 'none' }}>
-              <Col span={8}>
-                <Form.Item label="登记人">
-                  {getFieldDecorator('registerUser', {
-                    initialValue: cacheinfo.registerUser,
-                  })(<Input placeholder="请输入" allowClear />)}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="申报人">
-                  {getFieldDecorator('applicationUser', {
-                    initialValue: cacheinfo.applicationUser,
-                  })(<Input placeholder="请输入" allowClear />)}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="优先级">
-                  {getFieldDecorator('eventPrior', {
-                    initialValue: cacheinfo.eventPrior,
-                  })(
-                    <Select placeholder="请选择">
-                      {priormap.map(obj => (
-                        <Option key={obj.key} value={obj.title} allowClear>
-                          {obj.title}
-                        </Option>
-                      ))}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="发送时间">
-                  {getFieldDecorator('time', {
-                    initialValue: { startTime: cacheinfo.time3, endtime: cacheinfo.time4 },
-                  })(<></>)}
-                  <RangeTime
-                    startVal={cacheinfo.time3}
-                    endVal={cacheinfo.time4}
-                    getTimes={(v) => { setFieldsValue({ time: v }) }}
-                  />
-                </Form.Item>
-              </Col>
-            </span>
-            {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
-          </Form>
-        </Row>
-        <Button type="primary" onClick={() => download()}>
-          导出数据
-        </Button>
-        <Table
-          loading={loading}
-          columns={columns}
-          dataSource={list.rows}
-          rowKey={r => r.taskId}
-          pagination={pagination}
-          rowSelection={rowSelection}
-          scroll={{ x: 1400, y: setTableHeight() }}
-        />
-      </Card>
+              <span style={{ display: expand ? 'block' : 'none' }}>
+                <Col span={8}>
+                  <Form.Item label="登记人">
+                    {getFieldDecorator('registerUser', {
+                      initialValue: cacheinfo.registerUser,
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="申报人">
+                    {getFieldDecorator('applicationUser', {
+                      initialValue: cacheinfo.applicationUser,
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="优先级">
+                    {getFieldDecorator('eventPrior', {
+                      initialValue: cacheinfo.eventPrior,
+                    })(
+                      <Select placeholder="请选择">
+                        {priormap.map(obj => (
+                          <Option key={obj.key} value={obj.title} allowClear>
+                            {obj.title}
+                          </Option>
+                        ))}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="发送时间">
+                    {getFieldDecorator('time', {
+                      initialValue: { startTime: cacheinfo.time3, endtime: cacheinfo.time4 },
+                    })(<></>)}
+                    <RangeTime
+                      startVal={cacheinfo.time3}
+                      endVal={cacheinfo.time4}
+                      getTimes={(v) => { setFieldsValue({ time: v }) }}
+                    />
+                  </Form.Item>
+                </Col>
+              </span>
+              {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
+            </Form>
+          </Row>
+          <Button type="primary" onClick={() => download()}>
+            导出数据
+          </Button>
+          <Table
+            loading={loading}
+            columns={columns}
+            dataSource={list.rows}
+            rowKey={r => r.taskId}
+            pagination={pagination}
+            rowSelection={rowSelection}
+            scroll={{ x: 1400, y: setTableHeight() }}
+          />
+        </Card>
+      </div>
     </PageHeaderWrapper >
   );
 }

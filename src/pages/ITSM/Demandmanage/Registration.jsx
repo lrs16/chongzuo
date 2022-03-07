@@ -159,19 +159,21 @@ function Registration(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      <Spin tip="正在提交数据..." spinning={!!loading}>
-        <Card>
-          <Registrat
-            wrappedComponentRef={RegistratRef}
-            userinfo={userinfo}
-            files={files.arr}
-            ChangeFiles={newvalue => { setFiles(newvalue) }}
-            selectdata={selectdata}
-            register={tabdata}
-            location={location}
-          />
-        </Card>
-      </Spin>
+      <div className='noexplain'>
+        <Spin tip="正在提交数据..." spinning={!!loading}>
+          <Card>
+            <Registrat
+              wrappedComponentRef={RegistratRef}
+              userinfo={userinfo}
+              files={files.arr}
+              ChangeFiles={newvalue => { setFiles(newvalue) }}
+              selectdata={selectdata}
+              register={tabdata}
+              location={location}
+            />
+          </Card>
+        </Spin>
+      </div>
     </PageHeaderWrapper>
   );
 }

@@ -329,30 +329,49 @@ function ToDOlist(props) {
         style={{ display: 'none' }}
       />
       <Card>
-        <Row gutter={16}>
-          <Form {...formItemLayout} onSubmit={() => getTodolists()}>
-            <Col span={8}>
-              <Form.Item label="故障编号">
-                {getFieldDecorator('no', {
-                  initialValue: cacheinfo.no,
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-            <span style={{ display: expand ? 'block' : 'none' }}>
+        <div className='noexplain'>
+          <Row gutter={16}>
+            <Form {...formItemLayout} onSubmit={() => getTodolists()}>
               <Col span={8}>
-                <Form.Item label="故障名称">
-                  {getFieldDecorator('title', {
-                    initialValue: cacheinfo.title,
+                <Form.Item label="故障编号">
+                  {getFieldDecorator('no', {
+                    initialValue: cacheinfo.no,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
+              <span style={{ display: expand ? 'block' : 'none' }}>
+                <Col span={8}>
+                  <Form.Item label="故障名称">
+                    {getFieldDecorator('title', {
+                      initialValue: cacheinfo.title,
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="故障来源">
+                    {getFieldDecorator('source', {
+                      initialValue: cacheinfo.source,
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {faultSource.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+              </span>
               <Col span={8}>
-                <Form.Item label="故障来源">
-                  {getFieldDecorator('source', {
-                    initialValue: cacheinfo.source,
-                  })(
+                <Form.Item label="当前处理环节">
+                  {getFieldDecorator(
+                    'currentNode', {
+                    initialValue: cacheinfo.currentNode,
+                  },
+                  )(
                     <Select placeholder="请选择" allowClear>
-                      {faultSource.map(obj => [
+                      {currentNode.map(obj => [
                         <Option key={obj.key} value={obj.title}>
                           {obj.title}
                         </Option>,
@@ -361,84 +380,67 @@ function ToDOlist(props) {
                   )}
                 </Form.Item>
               </Col>
-            </span>
-            <Col span={8}>
-              <Form.Item label="当前处理环节">
-                {getFieldDecorator(
-                  'currentNode', {
-                  initialValue: cacheinfo.currentNode,
-                },
-                )(
-                  <Select placeholder="请选择" allowClear>
-                    {currentNode.map(obj => [
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-            <span style={{ display: expand ? 'block' : 'none' }}>
-              <Col span={8}>
-                <Form.Item label="故障类型">
-                  {getFieldDecorator('type', {
-                    initialValue: cacheinfo.type,
-                  })(
-                    <Cascader
-                      placeholder="请选择"
-                      options={faultType}
-                      fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
-                      allowClear
-                    />,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="登记人">
-                  {getFieldDecorator('registerUser', {
-                    initialValue: cacheinfo.registerUser,
-                  })(<Input placeholder="请输入" allowClear />)}
-                </Form.Item>
-              </Col>
+              <span style={{ display: expand ? 'block' : 'none' }}>
+                <Col span={8}>
+                  <Form.Item label="故障类型">
+                    {getFieldDecorator('type', {
+                      initialValue: cacheinfo.type,
+                    })(
+                      <Cascader
+                        placeholder="请选择"
+                        options={faultType}
+                        fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
+                        allowClear
+                      />,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="登记人">
+                    {getFieldDecorator('registerUser', {
+                      initialValue: cacheinfo.registerUser,
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
 
-              <Col xl={8}>
-                <Form.Item label="严重程度">
-                  {getFieldDecorator('registerLevel', {
-                    initialValue: cacheinfo.registerLevel,
-                  })(
-                    <Select placeholder="请选择" allowClear>
-                      {priority.map(obj => [
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="发生时间">
-                  {getFieldDecorator('createTime', {
-                    initialValue: ''
-                  })(
-                    <RangePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                      }}
-                      format="YYYY-MM-DD HH:mm:ss"
-                      style={{ width: '100%' }}
-                      placeholder="请选择"
-                      allowClear
-                    />,
-                  )}
-                </Form.Item>
-              </Col>
-            </span>
-            {expand ? (<Col span={8} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
-          </Form>
-        </Row>
+                <Col xl={8}>
+                  <Form.Item label="严重程度">
+                    {getFieldDecorator('registerLevel', {
+                      initialValue: cacheinfo.registerLevel,
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {priority.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="发生时间">
+                    {getFieldDecorator('createTime', {
+                      initialValue: ''
+                    })(
+                      <RangePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                        }}
+                        format="YYYY-MM-DD HH:mm:ss"
+                        style={{ width: '100%' }}
+                        placeholder="请选择"
+                        allowClear
+                      />,
+                    )}
+                  </Form.Item>
+                </Col>
+              </span>
+              {expand ? (<Col span={8} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
+            </Form>
+          </Row>
+        </div>
         {/* <div style={{ marginBottom: 24 }}>
           <Popconfirm title="确定导出数据？" onConfirm={() => download()}>
             <Button type="primary">导出数据</Button>

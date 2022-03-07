@@ -467,7 +467,7 @@ const Registrat = forwardRef((props, ref) => {
           <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="申请单位">
               {getFieldDecorator('proposingUnit', {
-                rules: [{ required }],
+                rules: [{ required, message: '请通过选择获取申请人单位' }],
                 initialValue: register.proposingUnit,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
@@ -475,7 +475,7 @@ const Registrat = forwardRef((props, ref) => {
           <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="申请单位ID">
               {getFieldDecorator('proposingUnitId', {
-                rules: [{ required }],
+                rules: [{ required, message: '请选择申请人单位获取申请人单位ID' }],
                 initialValue: register.proposingUnitId,
               })(<Input placeholder="请输入" />)}
             </Form.Item>

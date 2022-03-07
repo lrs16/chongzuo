@@ -537,421 +537,423 @@ function QueryList(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      <Card bodyStyle={{ paddingBottom: 0 }}>
-        <Row gutter={24}>
-          <Form {...formItemLayout} onSubmit={handleSearch}>
-            <>
+      <div className='noexplain'>
+        <Card bodyStyle={{ paddingBottom: 0 }}>
+          <Row gutter={24}>
+            <Form {...formItemLayout} onSubmit={handleSearch}>
+              <>
+                <Col span={8}>
+                  <Form.Item label="事件编号">
+                    {getFieldDecorator('eventNo', {
+                      initialValue: cacheinfo.eventNo,
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="处理环节">
+                    {getFieldDecorator('eventStatus', {
+                      initialValue: cacheinfo.eventStatus,
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {statusmap.map(obj => (
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>
+                        ))}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="事件对象">
+                    {getFieldDecorator('eventObject', {
+                      initialValue: cacheinfo.eventObject,
+                    })(
+                      <Cascader
+                        fieldNames={{ label: 'title', value: 'title', children: 'children' }}
+                        options={objectmap}
+                        placeholder="请选择"
+                        expandTrigger="hover"
+                        displayRender={displayRender}
+                        allowClear
+                      />,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="事件分类">
+                    {getFieldDecorator('eventType', {
+                      initialValue: cacheinfo.eventType,
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {typemap.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+              </>
+              <span style={{ display: expand ? 'block' : 'none' }}>
+                <Col span={8}>
+                  <Form.Item label="回访方式">
+                    {getFieldDecorator('revisitWay', {
+                      initialValue: cacheinfo.revisitWay,
+                    })(
+                      <Select placeholder="请选择"
+                        allowClear
+                      >
+                        {returnvisit.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="事件来源">
+                    {getFieldDecorator('eventSource', {
+                      initialValue: cacheinfo.eventSource,
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {sourcemap.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="影响度">
+                    {getFieldDecorator('eventEffect', {
+                      initialValue: cacheinfo.eventEffect,
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {effectmap.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="紧急度">
+                    {getFieldDecorator('eventEmergent', {
+                      initialValue: cacheinfo.eventEmergent,
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {emergentmap.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="优先级">
+                    {getFieldDecorator('eventPrior', {
+                      initialValue: cacheinfo.eventPrior,
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {priormap.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="自行处理">
+                    {getFieldDecorator('selfhandle', {
+                      initialValue: cacheinfo.selfhandle,
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {yesornomap.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="是否补单">
+                    {getFieldDecorator('supplement', {
+                      initialValue: cacheinfo.supplement,
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {yesornomap.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="是否审核">
+                    {getFieldDecorator('isCheck', {
+                      initialValue: cacheinfo.isCheck,
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {yesornomap.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="审核结果">
+                    {getFieldDecorator('checkResult', {
+                      initialValue: cacheinfo.checkResult,
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {checkresultmap.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="处理结果">
+                    {getFieldDecorator('handleResult', {
+                      initialValue: cacheinfo.handleResult,
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {handleresultmap.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="满意度">
+                    {getFieldDecorator('satisfaction', {
+                      initialValue: cacheinfo.satisfaction,
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {satisfactionmap.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+              </span>
               <Col span={8}>
-                <Form.Item label="事件编号">
-                  {getFieldDecorator('eventNo', {
-                    initialValue: cacheinfo.eventNo,
-                  })(<Input placeholder="请输入" allowClear />)}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="处理环节">
-                  {getFieldDecorator('eventStatus', {
-                    initialValue: cacheinfo.eventStatus,
+                <Form.Item label="超时状态">
+                  {getFieldDecorator('timeoutStatus', {
+                    initialValue: cacheinfo.timeoutStatus,
                   })(
                     <Select placeholder="请选择" allowClear>
-                      {statusmap.map(obj => (
+                      {timeoutstatusmap.map(obj => (
                         <Option key={obj.key} value={obj.title}>
                           {obj.title}
                         </Option>
                       ))}
-                    </Select>,
+                    </Select>
                   )}
                 </Form.Item>
               </Col>
               <Col span={8}>
-                <Form.Item label="事件对象">
-                  {getFieldDecorator('eventObject', {
-                    initialValue: cacheinfo.eventObject,
-                  })(
-                    <Cascader
-                      fieldNames={{ label: 'title', value: 'title', children: 'children' }}
-                      options={objectmap}
-                      placeholder="请选择"
-                      expandTrigger="hover"
-                      displayRender={displayRender}
-                      allowClear
-                    />,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="事件分类">
-                  {getFieldDecorator('eventType', {
-                    initialValue: cacheinfo.eventType,
-                  })(
-                    <Select placeholder="请选择" allowClear>
-                      {typemap.map(obj => [
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-            </>
-            <span style={{ display: expand ? 'block' : 'none' }}>
-              <Col span={8}>
-                <Form.Item label="回访方式">
-                  {getFieldDecorator('revisitWay', {
-                    initialValue: cacheinfo.revisitWay,
-                  })(
-                    <Select placeholder="请选择"
-                      allowClear
-                    >
-                      {returnvisit.map(obj => [
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="事件来源">
-                  {getFieldDecorator('eventSource', {
-                    initialValue: cacheinfo.eventSource,
-                  })(
-                    <Select placeholder="请选择" allowClear>
-                      {sourcemap.map(obj => [
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="影响度">
-                  {getFieldDecorator('eventEffect', {
-                    initialValue: cacheinfo.eventEffect,
-                  })(
-                    <Select placeholder="请选择" allowClear>
-                      {effectmap.map(obj => [
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="紧急度">
-                  {getFieldDecorator('eventEmergent', {
-                    initialValue: cacheinfo.eventEmergent,
-                  })(
-                    <Select placeholder="请选择" allowClear>
-                      {emergentmap.map(obj => [
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="优先级">
-                  {getFieldDecorator('eventPrior', {
-                    initialValue: cacheinfo.eventPrior,
-                  })(
-                    <Select placeholder="请选择" allowClear>
-                      {priormap.map(obj => [
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="自行处理">
-                  {getFieldDecorator('selfhandle', {
-                    initialValue: cacheinfo.selfhandle,
-                  })(
-                    <Select placeholder="请选择" allowClear>
-                      {yesornomap.map(obj => [
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="是否补单">
-                  {getFieldDecorator('supplement', {
-                    initialValue: cacheinfo.supplement,
-                  })(
-                    <Select placeholder="请选择" allowClear>
-                      {yesornomap.map(obj => [
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="是否审核">
-                  {getFieldDecorator('isCheck', {
-                    initialValue: cacheinfo.isCheck,
-                  })(
-                    <Select placeholder="请选择" allowClear>
-                      {yesornomap.map(obj => [
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="审核结果">
-                  {getFieldDecorator('checkResult', {
-                    initialValue: cacheinfo.checkResult,
-                  })(
-                    <Select placeholder="请选择" allowClear>
-                      {checkresultmap.map(obj => [
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="处理结果">
-                  {getFieldDecorator('handleResult', {
-                    initialValue: cacheinfo.handleResult,
-                  })(
-                    <Select placeholder="请选择" allowClear>
-                      {handleresultmap.map(obj => [
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="满意度">
-                  {getFieldDecorator('satisfaction', {
-                    initialValue: cacheinfo.satisfaction,
-                  })(
-                    <Select placeholder="请选择" allowClear>
-                      {satisfactionmap.map(obj => [
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-            </span>
-            <Col span={8}>
-              <Form.Item label="超时状态">
-                {getFieldDecorator('timeoutStatus', {
-                  initialValue: cacheinfo.timeoutStatus,
-                })(
-                  <Select placeholder="请选择" allowClear>
-                    {timeoutstatusmap.map(obj => (
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>
-                    ))}
-                  </Select>
-                )}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="事件标题">
-                {getFieldDecorator('eventTitle', {
-                  initialValue: cacheinfo.eventTitle,
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="申报人">
-                {getFieldDecorator('applicationUser', {
-                  initialValue: cacheinfo.applicationUser,
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="申报人单位">
-                {getFieldDecorator('applicationUnit', {
-                  initialValue: cacheinfo.applicationUnit,
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-            <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
-              <Form.Item label="申报人部门">
-                {getFieldDecorator('applicationDept', {
-                  initialValue: cacheinfo.applicationDept,
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-            <span style={{ display: expand ? 'block' : 'none' }}>
-              <Col span={8}>
-                <Form.Item label="登记人">
-                  {getFieldDecorator('registerUser', {
-                    initialValue: cacheinfo.registerUser,
+                <Form.Item label="事件标题">
+                  {getFieldDecorator('eventTitle', {
+                    initialValue: cacheinfo.eventTitle,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
               <Col span={8}>
-                <Form.Item label="登记人单位">
-                  {getFieldDecorator('registerUnit', {
-                    initialValue: cacheinfo.registerUnit,
+                <Form.Item label="申报人">
+                  {getFieldDecorator('applicationUser', {
+                    initialValue: cacheinfo.applicationUser,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
               <Col span={8}>
-                <Form.Item label="登记人部门">
-                  {getFieldDecorator('registerDept', {
-                    iinitialValue: cacheinfo.registerDept,
+                <Form.Item label="申报人单位">
+                  {getFieldDecorator('applicationUnit', {
+                    initialValue: cacheinfo.applicationUnit,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="申报人部门">
+                  {getFieldDecorator('applicationDept', {
+                    initialValue: cacheinfo.applicationDept,
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
+              </Col>
+              <span style={{ display: expand ? 'block' : 'none' }}>
+                <Col span={8}>
+                  <Form.Item label="登记人">
+                    {getFieldDecorator('registerUser', {
+                      initialValue: cacheinfo.registerUser,
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="登记人单位">
+                    {getFieldDecorator('registerUnit', {
+                      initialValue: cacheinfo.registerUnit,
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="登记人部门">
+                    {getFieldDecorator('registerDept', {
+                      iinitialValue: cacheinfo.registerDept,
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="审核人">
+                    {getFieldDecorator('checkUser', {
+                      initialValue: cacheinfo.checkUser,
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="审核人单位">
+                    {getFieldDecorator('checkUnit', {
+                      iinitialValue: cacheinfo.checkUnit,
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="审核人部门">
+                    {getFieldDecorator('checkDept', {
+                      initialValue: cacheinfo.checkDept,
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="处理人">
+                    {getFieldDecorator('handler', {
+                      initialValue: cacheinfo.handler,
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="处理人单位">
+                    {getFieldDecorator('handleUnit', {
+                      initialValue: cacheinfo.handleUnit,
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="处理人部门">
+                    {getFieldDecorator('handleDept', {
+                      iinitialValue: cacheinfo.handleDept,
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="回访人">
+                    {getFieldDecorator('revisitor', {
+                      initialValue: cacheinfo.revisitor,
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="回访人单位">
+                    {getFieldDecorator('revisitUnit', {
+                      initialValue: cacheinfo.revisitUnit,
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="回访人部门">
+                    {getFieldDecorator('revisitDept', {
+                      initialValue: cacheinfo.revisitDept,
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+              </span>
               <Col span={8}>
-                <Form.Item label="审核人">
-                  {getFieldDecorator('checkUser', {
-                    initialValue: cacheinfo.checkUser,
-                  })(<Input placeholder="请输入" allowClear />)}
+                <Form.Item label="建单时间">
+                  {getFieldDecorator('time', {
+                    initialValue: { startTime: cacheinfo.time1, endtime: cacheinfo.time2 },
+                  })(<></>)}
+                  <RangeTime
+                    startVal={cacheinfo.time1}
+                    endVal={cacheinfo.time2}
+                    getTimes={(v) => { setFieldsValue({ time: v }) }}
+                  />
                 </Form.Item>
               </Col>
-              <Col span={8}>
-                <Form.Item label="审核人单位">
-                  {getFieldDecorator('checkUnit', {
-                    iinitialValue: cacheinfo.checkUnit,
-                  })(<Input placeholder="请输入" allowClear />)}
-                </Form.Item>
+              <Col span={24} style={{ textAlign: 'right' }}>
+                <Button type="primary" onClick={() => handleSearch('search')}>
+                  查 询
+                </Button>
+                <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>
+                  重 置
+                </Button>
+                <Button
+                  style={{ marginLeft: 8 }}
+                  type="link"
+                  onClick={() => {
+                    setExpand(!expand);
+                  }}
+                >
+                  {expand ? (
+                    <>
+                      关 闭 <UpOutlined />
+                    </>
+                  ) : (
+                    <>
+                      展 开 <DownOutlined />
+                    </>
+                  )}
+                </Button>
               </Col>
-              <Col span={8}>
-                <Form.Item label="审核人部门">
-                  {getFieldDecorator('checkDept', {
-                    initialValue: cacheinfo.checkDept,
-                  })(<Input placeholder="请输入" allowClear />)}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="处理人">
-                  {getFieldDecorator('handler', {
-                    initialValue: cacheinfo.handler,
-                  })(<Input placeholder="请输入" allowClear />)}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="处理人单位">
-                  {getFieldDecorator('handleUnit', {
-                    initialValue: cacheinfo.handleUnit,
-                  })(<Input placeholder="请输入" allowClear />)}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="处理人部门">
-                  {getFieldDecorator('handleDept', {
-                    iinitialValue: cacheinfo.handleDept,
-                  })(<Input placeholder="请输入" allowClear />)}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="回访人">
-                  {getFieldDecorator('revisitor', {
-                    initialValue: cacheinfo.revisitor,
-                  })(<Input placeholder="请输入" allowClear />)}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="回访人单位">
-                  {getFieldDecorator('revisitUnit', {
-                    initialValue: cacheinfo.revisitUnit,
-                  })(<Input placeholder="请输入" allowClear />)}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="回访人部门">
-                  {getFieldDecorator('revisitDept', {
-                    initialValue: cacheinfo.revisitDept,
-                  })(<Input placeholder="请输入" allowClear />)}
-                </Form.Item>
-              </Col>
-            </span>
-            <Col span={8}>
-              <Form.Item label="建单时间">
-                {getFieldDecorator('time', {
-                  initialValue: { startTime: cacheinfo.time1, endtime: cacheinfo.time2 },
-                })(<></>)}
-                <RangeTime
-                  startVal={cacheinfo.time1}
-                  endVal={cacheinfo.time2}
-                  getTimes={(v) => { setFieldsValue({ time: v }) }}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={24} style={{ textAlign: 'right' }}>
-              <Button type="primary" onClick={() => handleSearch('search')}>
-                查 询
-              </Button>
-              <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>
-                重 置
-              </Button>
-              <Button
-                style={{ marginLeft: 8 }}
-                type="link"
-                onClick={() => {
-                  setExpand(!expand);
-                }}
-              >
-                {expand ? (
-                  <>
-                    关 闭 <UpOutlined />
-                  </>
-                ) : (
-                  <>
-                    展 开 <DownOutlined />
-                  </>
-                )}
-              </Button>
-            </Col>
-          </Form>
-        </Row>
-        <div>
-          <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>
-            导出数据
-          </Button>
-          <AdminAuth getAuth={v => setUserName(v)} code='admin' />
-          {username === 'admin' && (
-            <Button type="danger" ghost onClick={() => deleteorder()}>删 除</Button>
-          )}
-        </div>
-        <Table
-          loading={loading}
-          columns={columns}
-          dataSource={list.rows}
-          scroll={{ x: 1600, y: setTableHeight() }}
-          rowKey={r => r.id}
-          // rowKey={(_, index) => index.toString()}
-          pagination={pagination}
-          rowSelection={rowSelection}
-        />
-      </Card>
+            </Form>
+          </Row>
+          <div>
+            <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>
+              导出数据
+            </Button>
+            <AdminAuth getAuth={v => setUserName(v)} code='admin' />
+            {username === 'admin' && (
+              <Button type="danger" ghost onClick={() => deleteorder()}>删 除</Button>
+            )}
+          </div>
+          <Table
+            loading={loading}
+            columns={columns}
+            dataSource={list.rows}
+            scroll={{ x: 1600, y: setTableHeight() }}
+            rowKey={r => r.id}
+            // rowKey={(_, index) => index.toString()}
+            pagination={pagination}
+            rowSelection={rowSelection}
+          />
+        </Card>
+      </div>
     </PageHeaderWrapper >
   );
 }

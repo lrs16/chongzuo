@@ -137,81 +137,83 @@ function EventDetails(props) {
       extra={<Button onClick={() => handleclose()}>关闭</Button>}
       onTabChange={handleTabChange}
     >
-      {tabActivekey === 'workorder' && (
-        <div className={styles.collapse}>
-          {recordsloading === false && (
-            <Steps
-              current={records.length - 1}
-              size="small"
-              // progressDot
-              style={{
-                background: '#fff',
-                padding: 24,
-                border: '1px solid #e8e8e8',
-                overflowX: 'auto',
-              }}
-            >
-              {records.map((obj, index) => {
-                let tempTime = '';
-                if (obj.addTime && obj.endTime) {
-                  const addtime = moment(obj.addTime);
-                  const endtime = moment(obj.endTime);
-                  const dura = endtime.format('x') - addtime.format('x');
-                  tempTime = moment.duration(dura);
-                }
-                const desc = (
-                  <div className={styles.stepDescription}>
-                    处理人：{obj.user}
-                    {/* <DingdingOutlined /> */}
-                    <div>开始时间：{obj.addTime}</div>
-                    <div>结束时间：{obj.endTime}</div>
-                    {tempTime && (<div style={{ color: 'rgba(0, 0, 0, 0.75)', fontSize: '16px' }}>用时：
-                      {tempTime.days() !== 0 && (<>{tempTime.days()}天</>)}
-                      {tempTime.hours() !== 0 && (<>{tempTime.hours()}小时</>)}
-                      {tempTime.minutes() !== 0 && (<>{tempTime.minutes()}分</>)}
-                      {((tempTime.days() === 0 && tempTime.hours() === 0 && tempTime.minutes() === 0 && tempTime.seconds() === 0) || tempTime.seconds() !== 0) && (<>{tempTime.seconds()}秒</>)}
-                    </div>)}
-                  </div>
-                );
-                return (
-                  <Step
-                    title={obj.nodeName}
-                    description={desc}
-                    key={index.toString()}
-                    icon={index === records.length - 1 && !obj.endTime ? <Icon type="loading" spin /> : <Icon type="check-circle" style={{ color: '#10C510', backgroundColor: '#f6ffed' }} />}
-                  />
-                );
-              })}
-            </Steps>
-          )}
-          {info !== '' && info !== undefined && loading === false && (
-            <Collapse
-              expandIconPosition="right"
-              activeKey={activeKey}
-              bordered={false}
-              onChange={callback}
-            >
-              {info.map((obj, index) => {
-                // panel详情组件
-                const Paneldesmap = new Map([
-                  ['register', <Registratdes info={Object.values(obj)[0]} main={info[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                  ['handle', <Handledes info={Object.values(obj)[0]} main={info[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                  ['check', <Checkdes info={Object.values(obj)[0]} main={info[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                  ['finish', <ReturnVisitdes info={Object.values(obj)[0]} main={info[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                ]);
-                if (index > 0)
-                  return (
-                    <Panel Panel header={obj.check?.checkType || Panelheadermap.get(Object.keys(obj)[0])} key={index.toString()} >
-                      {Paneldesmap.get(Object.keys(obj)[0])}
-                    </Panel>
+      <div className='noexplain'>
+        {tabActivekey === 'workorder' && (
+          <div className={styles.collapse}>
+            {recordsloading === false && (
+              <Steps
+                current={records.length - 1}
+                size="small"
+                // progressDot
+                style={{
+                  background: '#fff',
+                  padding: 24,
+                  border: '1px solid #e8e8e8',
+                  overflowX: 'auto',
+                }}
+              >
+                {records.map((obj, index) => {
+                  let tempTime = '';
+                  if (obj.addTime && obj.endTime) {
+                    const addtime = moment(obj.addTime);
+                    const endtime = moment(obj.endTime);
+                    const dura = endtime.format('x') - addtime.format('x');
+                    tempTime = moment.duration(dura);
+                  }
+                  const desc = (
+                    <div className={styles.stepDescription}>
+                      处理人：{obj.user}
+                      {/* <DingdingOutlined /> */}
+                      <div>开始时间：{obj.addTime}</div>
+                      <div>结束时间：{obj.endTime}</div>
+                      {tempTime && (<div style={{ color: 'rgba(0, 0, 0, 0.75)', fontSize: '16px' }}>用时：
+                        {tempTime.days() !== 0 && (<>{tempTime.days()}天</>)}
+                        {tempTime.hours() !== 0 && (<>{tempTime.hours()}小时</>)}
+                        {tempTime.minutes() !== 0 && (<>{tempTime.minutes()}分</>)}
+                        {((tempTime.days() === 0 && tempTime.hours() === 0 && tempTime.minutes() === 0 && tempTime.seconds() === 0) || tempTime.seconds() !== 0) && (<>{tempTime.seconds()}秒</>)}
+                      </div>)}
+                    </div>
                   );
-              })}
-            </Collapse>
-          )}
-        </div>
-      )}
-      {tabActivekey === 'process' && <Process location={location} />}
-      {tabActivekey === 'relevancy' && <RelationOrder location={location} relation={false} />}
+                  return (
+                    <Step
+                      title={obj.nodeName}
+                      description={desc}
+                      key={index.toString()}
+                      icon={index === records.length - 1 && !obj.endTime ? <Icon type="loading" spin /> : <Icon type="check-circle" />}
+                    />
+                  );
+                })}
+              </Steps>
+            )}
+            {info !== '' && info !== undefined && loading === false && (
+              <Collapse
+                expandIconPosition="right"
+                activeKey={activeKey}
+                bordered={false}
+                onChange={callback}
+              >
+                {info.map((obj, index) => {
+                  // panel详情组件
+                  const Paneldesmap = new Map([
+                    ['register', <Registratdes info={Object.values(obj)[0]} main={info[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                    ['handle', <Handledes info={Object.values(obj)[0]} main={info[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                    ['check', <Checkdes info={Object.values(obj)[0]} main={info[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                    ['finish', <ReturnVisitdes info={Object.values(obj)[0]} main={info[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                  ]);
+                  if (index > 0)
+                    return (
+                      <Panel Panel header={obj.check?.checkType || Panelheadermap.get(Object.keys(obj)[0])} key={index.toString()} >
+                        {Paneldesmap.get(Object.keys(obj)[0])}
+                      </Panel>
+                    );
+                })}
+              </Collapse>
+            )}
+          </div>
+        )}
+        {tabActivekey === 'process' && <Process location={location} />}
+        {tabActivekey === 'relevancy' && <RelationOrder location={location} relation={false} />}
+      </div>
     </PageHeaderWrapper>
   );
 }

@@ -145,117 +145,119 @@ function Querylistdetails(props) {
       onTabChange={handleTabChange}
       tabActiveKey={tabActiveKey}
     >
-      {
-        (tabActiveKey === 'faultForm' &&
-          (<div className={styles.collapse}>
-            <Card
-              style={{
-                background: '#fff',
-                // padding: 10,
-                border: '1px solid #e8e8e8',
-                overflowX: 'auto',
-              }}
-            >
-              {troubleFlowLogs &&
-                (<Steps
-                  // current={stepcurrentmap.get(paneKey)}
-                  current={troubleFlowLogs.length - 1}
-                  size="small"
-                >
-                  {
-                    troubleFlowLogs && troubleFlowLogs.map(({ key, name, status, timeText, formHandler, startTime }) => [
-                      name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})${'\xa0'}${'\xa0'}${timeText}`}
-                        icon={(name === troubleFlowLogs[troubleFlowLogs.length - 1].name && status === troubleFlowLogs[troubleFlowLogs.length - 1].status) ? <Icon type="loading" spin /> : ''}
-                        description={
-                        <div className={styles.stepDescription}>
-                          处理人：{formHandler}
-                          <div>结束时间：{moment(startTime).format('YYYY-MM-DD HH:mm:ss')}</div>
-                        </div>
-                      } />
-                    ])}
-                </Steps>)
-              }
-            </Card>
-            <div className={styles.collapse}>
-              {troubleFlowNodeRows && loading === false && (
-                <Collapse
-                  expandIconPosition="right"
-                  activeKey={activeKey}
-                  bordered={false}
-                  onChange={callback}
-                >
-                  {troubleFlowNodeRows.map((obj, index) => {
-                    // panel详情组件
-                    const Paneldesmap = new Map([
-                      ['故障登记', <RegisterQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                      ['系统运维商审核', <ExamineQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                      ['系统运维商处理', <HandleQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                      ['系统运维商确认总结', <SummaryQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} showFilelist={troubleFlowNodeRows[1]} showFilelist2={troubleFlowNodeRows[2]}/>],
-                      ['自动化科业务负责人审核', <ExamineSecondQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                      // ['自动化科专责确认', <ConfirmQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                      ['自动化科审核', <ConfirmQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                    ]);
-                    return (
-                      <Panel Panel header={obj.fnname} key={index.toString()}>
-                        {Paneldesmap.get(obj.fnname)}
-                      </Panel>
-                    );
-                  })}
-                </Collapse>
-              )}
-            </div>
-          </div>)
-        )
-      }
-      {
-        (tabActiveKey === 'faultPro' && (
-          <div className={styles.collapse}>
-            <Card title='故障管理流程'>
-              <div
+      <div className='noexplain'>
+        {
+          (tabActiveKey === 'faultForm' &&
+            (<div className={styles.collapse}>
+              <Card
                 style={{
                   background: '#fff',
-                  // padding: 20,
+                  // padding: 10,
+                  border: '1px solid #e8e8e8',
+                  overflowX: 'auto',
                 }}
               >
-                <img src={image} alt='' />
-              </div>
-            </Card>
-            <Card title='流转日志' style={{ marginTop: '-1px' }}>
-              {
-                loading === false && flowlog &&
-                (
-                  <div className={styles.steps}>
-                    <Steps
-                      // current={stepcurrentmap.get(paneKey)}
-                      current={flowlog.troubleFlowLogs.length - 1}
-                      size="small"
-                      direction="vertical"
-                      progressDot
-                      style={{
-                        background: '#fff',
-                        padding: 24,
-                        border: '1px solid #e8e8e8',
-                      }}
-                    >
-                      {
-                        flowlog && flowlog.troubleFlowLogs.map(({ key, name, status, startTime, formHandler, backReason }) => [
-                          name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})`} description={
+                {troubleFlowLogs &&
+                  (<Steps
+                    // current={stepcurrentmap.get(paneKey)}
+                    current={troubleFlowLogs.length - 1}
+                    size="small"
+                  >
+                    {
+                      troubleFlowLogs && troubleFlowLogs.map(({ key, name, status, timeText, formHandler, startTime }) => [
+                        name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})${'\xa0'}${'\xa0'}${timeText}`}
+                          icon={(name === troubleFlowLogs[troubleFlowLogs.length - 1].name && status === troubleFlowLogs[troubleFlowLogs.length - 1].status) ? <Icon type="loading" spin /> : ''}
+                          description={
                             <div className={styles.stepDescription}>
                               处理人：{formHandler}
-                              <div>{moment(startTime).format('YYYY-MM-DD hh:mm:ss')}</div>
-                              <div>{status === '退回' && `回退原因：${backReason}`}</div>
+                              <div>结束时间：{moment(startTime).format('YYYY-MM-DD HH:mm:ss')}</div>
                             </div>
                           } />
-                        ])}
-                    </Steps>
-                  </div>
-                )
-              }
-            </Card>
-          </div>
-        ))
-      }
-      {tabActiveKey === 'relevancy' && <RelationOrder orderId={location.query.id} relation={false} />}
+                      ])}
+                  </Steps>)
+                }
+              </Card>
+              <div className={styles.collapse}>
+                {troubleFlowNodeRows && loading === false && (
+                  <Collapse
+                    expandIconPosition="right"
+                    activeKey={activeKey}
+                    bordered={false}
+                    onChange={callback}
+                  >
+                    {troubleFlowNodeRows.map((obj, index) => {
+                      // panel详情组件
+                      const Paneldesmap = new Map([
+                        ['故障登记', <RegisterQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                        ['系统运维商审核', <ExamineQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                        ['系统运维商处理', <HandleQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                        ['系统运维商确认总结', <SummaryQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} showFilelist={troubleFlowNodeRows[1]} showFilelist2={troubleFlowNodeRows[2]} />],
+                        ['自动化科业务负责人审核', <ExamineSecondQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                        // ['自动化科专责确认', <ConfirmQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                        ['自动化科审核', <ConfirmQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                      ]);
+                      return (
+                        <Panel Panel header={obj.fnname} key={index.toString()}>
+                          {Paneldesmap.get(obj.fnname)}
+                        </Panel>
+                      );
+                    })}
+                  </Collapse>
+                )}
+              </div>
+            </div>)
+          )
+        }
+        {
+          (tabActiveKey === 'faultPro' && (
+            <div className={styles.collapse}>
+              <Card title='故障管理流程'>
+                <div
+                  style={{
+                    background: '#fff',
+                    // padding: 20,
+                  }}
+                >
+                  <img src={image} alt='' />
+                </div>
+              </Card>
+              <Card title='流转日志' style={{ marginTop: '-1px' }}>
+                {
+                  loading === false && flowlog &&
+                  (
+                    <div className={styles.steps}>
+                      <Steps
+                        // current={stepcurrentmap.get(paneKey)}
+                        current={flowlog.troubleFlowLogs.length - 1}
+                        size="small"
+                        direction="vertical"
+                        progressDot
+                        style={{
+                          background: '#fff',
+                          padding: 24,
+                          border: '1px solid #e8e8e8',
+                        }}
+                      >
+                        {
+                          flowlog && flowlog.troubleFlowLogs.map(({ key, name, status, startTime, formHandler, backReason }) => [
+                            name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})`} description={
+                              <div className={styles.stepDescription}>
+                                处理人：{formHandler}
+                                <div>{moment(startTime).format('YYYY-MM-DD hh:mm:ss')}</div>
+                                <div>{status === '退回' && `回退原因：${backReason}`}</div>
+                              </div>
+                            } />
+                          ])}
+                      </Steps>
+                    </div>
+                  )
+                }
+              </Card>
+            </div>
+          ))
+        }
+        {tabActiveKey === 'relevancy' && <RelationOrder orderId={location.query.id} relation={false} />}
+      </div>
     </PageHeaderWrapper >
   );
 }

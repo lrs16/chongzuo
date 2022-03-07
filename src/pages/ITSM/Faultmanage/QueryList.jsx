@@ -1513,407 +1513,409 @@ function QueryList(props) {
         style={{ display: 'none' }}
       />
       <Card bodyStyle={{ paddingBottom: 0 }}>
-        <Row gutter={24}>
-          <Form {...formItemLayout} onSubmit={handleSearch}>
-            <Col span={8}>
-              <Form.Item label="故障编号">
-                {getFieldDecorator('no', {
-                  initialValue: cacheinfo.no,
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
+        <div className='noexplain'>
+          <Row gutter={24}>
+            <Form {...formItemLayout} onSubmit={handleSearch}>
+              <Col span={8}>
+                <Form.Item label="故障编号">
+                  {getFieldDecorator('no', {
+                    initialValue: cacheinfo.no,
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
+              </Col>
 
-            <Col span={8}>
-              <Form.Item label="当前处理环节">
-                {getFieldDecorator('currentNode', {
-                  initialValue: cacheinfo.currentNode,
-                },
-                )(
-                  <Select placeholder="请选择" allowClear>
-                    {currentNodeselect.map(obj => [
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
+              <Col span={8}>
+                <Form.Item label="当前处理环节">
+                  {getFieldDecorator('currentNode', {
+                    initialValue: cacheinfo.currentNode,
+                  },
+                  )(
+                    <Select placeholder="请选择" allowClear>
+                      {currentNodeselect.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
 
-            <Col span={8}>
-              <Form.Item label='当前环节处理人'>
-                {
-                  getFieldDecorator('taskUser', {
-                    initialValue: cacheinfo.taskUser
-                  })(<Input />)
-                }
+              <Col span={8}>
+                <Form.Item label='当前环节处理人'>
+                  {
+                    getFieldDecorator('taskUser', {
+                      initialValue: cacheinfo.taskUser
+                    })(<Input />)
+                  }
 
-              </Form.Item>
-            </Col>
+                </Form.Item>
+              </Col>
 
-            <Col span={8}>
-              <Form.Item label="工单状态">
-                {getFieldDecorator('status', {
-                  initialValue: cacheinfo.status,
-                })(
-                  <Select placeholder="请选择" allowClear>
-                    {workStatues.map(obj => [
-                      <Option key={obj.key} value={obj.dict_code}>
-                        {obj.title}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
+              <Col span={8}>
+                <Form.Item label="工单状态">
+                  {getFieldDecorator('status', {
+                    initialValue: cacheinfo.status,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {workStatues.map(obj => [
+                        <Option key={obj.key} value={obj.dict_code}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
 
-            <Col xl={8} xs={12}>
-              <Form.Item label="故障类型">
-                {getFieldDecorator('type', {
-                  initialValue: cacheinfo.type,
-                })(
-                  <Cascader
-                    placeholder="请选择"
-                    options={faultType}
-                    fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
-                    allowClear
-                  />,
-                )}
-              </Form.Item>
-            </Col>
+              <Col xl={8} xs={12}>
+                <Form.Item label="故障类型">
+                  {getFieldDecorator('type', {
+                    initialValue: cacheinfo.type,
+                  })(
+                    <Cascader
+                      placeholder="请选择"
+                      options={faultType}
+                      fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
+                      allowClear
+                    />,
+                  )}
+                </Form.Item>
+              </Col>
 
-            <Col xl={8} xs={12}>
-              <Form.Item label="是否需要提供故障报告">
-                {getFieldDecorator('finishReportSign', {
-                  initialValue: cacheinfo.finishReportSign
-                })(
-                  <Select>
-                    <Option value='是'>是</Option>
-                    <Option value='否'>否</Option>
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
+              <Col xl={8} xs={12}>
+                <Form.Item label="是否需要提供故障报告">
+                  {getFieldDecorator('finishReportSign', {
+                    initialValue: cacheinfo.finishReportSign
+                  })(
+                    <Select>
+                      <Option value='是'>是</Option>
+                      <Option value='否'>否</Option>
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
 
-            <Col xl={8} xs={12}>
-              <Form.Item label="是否影响计量主站">
-                {getFieldDecorator('master', {
-                  initialValue: cacheinfo.master
-                })(
-                  <Select>
-                    <Option value='是'>是</Option>
-                    <Option value='否'>否</Option>
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
+              <Col xl={8} xs={12}>
+                <Form.Item label="是否影响计量主站">
+                  {getFieldDecorator('master', {
+                    initialValue: cacheinfo.master
+                  })(
+                    <Select>
+                      <Option value='是'>是</Option>
+                      <Option value='否'>否</Option>
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
 
-            <Col span={8}>
-              <Form.Item label="超时状态">
-                {getFieldDecorator('timeoutStatus', {
-                  initialValue: cacheinfo.timeoutStatus,
-                })(
-                  <Select placeholder="请选择" allowClear>
-                    {timeoutstatusmap.map(obj => [
-                      <Option key={obj.key} value={obj.statuscode}>
-                        {obj.name}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
+              <Col span={8}>
+                <Form.Item label="超时状态">
+                  {getFieldDecorator('timeoutStatus', {
+                    initialValue: cacheinfo.timeoutStatus,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {timeoutstatusmap.map(obj => [
+                        <Option key={obj.key} value={obj.statuscode}>
+                          {obj.name}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
 
 
-            <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
-              <Form.Item label="建单时间">
-                {getFieldDecorator('addTime', {
-                  initialValue: '',
-                },
-                )(
-                  <RangePicker
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="建单时间">
+                  {getFieldDecorator('addTime', {
+                    initialValue: '',
+                  },
+                  )(
+                    <RangePicker
+                      showTime={{
+                        hideDisabledOptions: true,
+                        defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                      }}
+                      format="YYYY-MM-DD HH:mm:ss"
+                      style={{ width: '100%' }}
+                      allowClear
+                    />)}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="发生时间">
+                  {getFieldDecorator('registerOccurTime', {
+                    initialValue: ''
+                  })(
+                    <RangePicker
+                      showTime={{
+                        hideDisabledOptions: true,
+                        defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                      }}
+                      format="YYYY-MM-DD HH:mm:ss"
+                      style={{ width: '100%' }}
+                      placeholder="请选择"
+                      allowClear
+                    />,
+                  )}
+                </Form.Item>
+              </Col>
+
+
+              <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="故障来源">
+                  {getFieldDecorator('source', {
+                    initialValue: cacheinfo.source,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {faultSource.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="系统模块">
+                  {getFieldDecorator('registerModel', {
+                    initialValue: cacheinfo.registerModel,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {sysmodular.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="故障名称">
+                  {getFieldDecorator('title', {
+                    initialValue: cacheinfo.title,
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
+              </Col>
+
+              <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="故障地点">
+                  {getFieldDecorator('registerAddress', {
+                    initialValue: cacheinfo.registerAddress,
+                  })(
+                    <Input placeholder="请输入" allowClear />,
+                  )}
+                </Form.Item>
+              </Col>
+
+              <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="严重程度">
+                  {getFieldDecorator('registerLevel', {
+                    initialValue: cacheinfo.registerLevel,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {priority.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+
+              <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="影响范围">
+                  {getFieldDecorator('registerScope', {
+                    initialValue: cacheinfo.registerScope,
+                  },
+                  )(
+                    <Select placeholder="请选择" allowClear>
+                      {effect.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+
+              <Col xl={8} xs={12}>
+                <Form.Item label="处理时间">
+                  {getFieldDecorator('handleTime', {
+                    initialValue: '',
+                  },
+                  )(<RangePicker
                     showTime={{
                       hideDisabledOptions: true,
                       defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
                     }}
                     format="YYYY-MM-DD HH:mm:ss"
-                    style={{ width: '100%' }}
-                    allowClear
-                  />)}
-              </Form.Item>
-            </Col>
+                    style={{ width: '100%' }} allowClear />)}
+                </Form.Item>
+              </Col>
 
-            <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
-              <Form.Item label="发生时间">
-                {getFieldDecorator('registerOccurTime', {
-                  initialValue: ''
-                })(
-                  <RangePicker
-                    showTime={{
-                      hideDisabledOptions: true,
-                      defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+              <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="处理结果">
+                  {getFieldDecorator('handleResult', {
+                    initialValue: cacheinfo.handleResult,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {handleResult.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="登记人">
+                  {getFieldDecorator('registerUser', {
+                    initialValue: cacheinfo.registerUser,
+                  })(<Input allowClear />)}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="登记人单位">
+                  {getFieldDecorator('registerUnit', {
+                    initialValue: cacheinfo.registerUnit,
+                  })(<Input allowClear />)}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="审核人">
+                  {getFieldDecorator('checkUser', {
+                    initialValue: cacheinfo.checkUser,
+                  })(<Input allowClear />)}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="审核人单位">
+                  {getFieldDecorator('checkUnit', {
+                    initialValue: cacheinfo.checkUnit,
+                  })(<Input allowClear />)}
+                </Form.Item>
+              </Col>
+
+              <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="处理人">
+                  {getFieldDecorator('handler', {
+                    initialValue: cacheinfo.handler,
+                  })(<Input allowClear />)}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="处理人单位">
+                  {getFieldDecorator('handleUnit', {
+                    initialValue: cacheinfo.handleUnit,
+                  })(<Input allowClear />)}
+                </Form.Item>
+              </Col>
+
+              <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="总结人">
+                  {getFieldDecorator('finishUser', {
+                    initialValue: cacheinfo.finishUser,
+                  })(<Input allowClear />)}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="总结人单位">
+                  {getFieldDecorator('finishUnit', {
+                    initialValue: cacheinfo.finishUnit,
+                  })(<Input allowClear />)}
+                </Form.Item>
+              </Col>
+
+              <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="确认人">
+                  {getFieldDecorator('confirmUser', {
+                    initialValue: cacheinfo.confirmUser,
+                  })(<Input allowClear />)}
+                </Form.Item>
+              </Col>
+
+              <Col span={8}>
+                <Form.Item label="确认人单位" style={{ display: expand ? 'block' : 'none' }}>
+                  {getFieldDecorator('confirmUnit', {
+                    initialValue: cacheinfo.confirmUnit,
+                  })(<Input allowClear />)}
+                </Form.Item>
+              </Col>
+
+              {expand === false && (
+                <Col span={24} style={{ textAlign: 'right' }}>
+                  <Button type="primary" onClick={handleSearch}>
+                    查 询
+                  </Button>
+                  <Button style={{ marginLeft: 8 }} onClick={handleReset}>
+                    重 置
+                  </Button>
+                  <Button
+                    style={{ marginLeft: 8 }}
+                    type="link"
+                    onClick={() => {
+                      setExpand(!expand);
                     }}
-                    format="YYYY-MM-DD HH:mm:ss"
-                    style={{ width: '100%' }}
-                    placeholder="请选择"
-                    allowClear
-                  />,
-                )}
-              </Form.Item>
-            </Col>
+                  >
+                    {expand ? (
+                      <>
+                        关 闭 <UpOutlined />
+                      </>
+                    ) : (
+                      <>
+                        展 开 <DownOutlined />
+                      </>
+                    )}
+                  </Button>
+                </Col>
+              )}
 
-
-            <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
-              <Form.Item label="故障来源">
-                {getFieldDecorator('source', {
-                  initialValue: cacheinfo.source,
-                })(
-                  <Select placeholder="请选择" allowClear>
-                    {faultSource.map(obj => [
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-            <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
-              <Form.Item label="系统模块">
-                {getFieldDecorator('registerModel', {
-                  initialValue: cacheinfo.registerModel,
-                })(
-                  <Select placeholder="请选择" allowClear>
-                    {sysmodular.map(obj => [
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-
-            <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
-              <Form.Item label="故障名称">
-                {getFieldDecorator('title', {
-                  initialValue: cacheinfo.title,
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-
-            <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
-              <Form.Item label="故障地点">
-                {getFieldDecorator('registerAddress', {
-                  initialValue: cacheinfo.registerAddress,
-                })(
-                  <Input placeholder="请输入" allowClear />,
-                )}
-              </Form.Item>
-            </Col>
-
-            <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
-              <Form.Item label="严重程度">
-                {getFieldDecorator('registerLevel', {
-                  initialValue: cacheinfo.registerLevel,
-                })(
-                  <Select placeholder="请选择" allowClear>
-                    {priority.map(obj => [
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-
-            <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
-              <Form.Item label="影响范围">
-                {getFieldDecorator('registerScope', {
-                  initialValue: cacheinfo.registerScope,
-                },
-                )(
-                  <Select placeholder="请选择" allowClear>
-                    {effect.map(obj => [
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-
-            <Col xl={8} xs={12}>
-              <Form.Item label="处理时间">
-                {getFieldDecorator('handleTime', {
-                  initialValue: '',
-                },
-                )(<RangePicker
-                  showTime={{
-                    hideDisabledOptions: true,
-                    defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                  }}
-                  format="YYYY-MM-DD HH:mm:ss"
-                  style={{ width: '100%' }} allowClear />)}
-              </Form.Item>
-            </Col>
-
-            <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
-              <Form.Item label="处理结果">
-                {getFieldDecorator('handleResult', {
-                  initialValue: cacheinfo.handleResult,
-                })(
-                  <Select placeholder="请选择" allowClear>
-                    {handleResult.map(obj => [
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-
-            <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
-              <Form.Item label="登记人">
-                {getFieldDecorator('registerUser', {
-                  initialValue: cacheinfo.registerUser,
-                })(<Input allowClear />)}
-              </Form.Item>
-            </Col>
-
-            <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
-              <Form.Item label="登记人单位">
-                {getFieldDecorator('registerUnit', {
-                  initialValue: cacheinfo.registerUnit,
-                })(<Input allowClear />)}
-              </Form.Item>
-            </Col>
-
-            <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
-              <Form.Item label="审核人">
-                {getFieldDecorator('checkUser', {
-                  initialValue: cacheinfo.checkUser,
-                })(<Input allowClear />)}
-              </Form.Item>
-            </Col>
-
-            <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
-              <Form.Item label="审核人单位">
-                {getFieldDecorator('checkUnit', {
-                  initialValue: cacheinfo.checkUnit,
-                })(<Input allowClear />)}
-              </Form.Item>
-            </Col>
-
-            <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
-              <Form.Item label="处理人">
-                {getFieldDecorator('handler', {
-                  initialValue: cacheinfo.handler,
-                })(<Input allowClear />)}
-              </Form.Item>
-            </Col>
-
-            <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
-              <Form.Item label="处理人单位">
-                {getFieldDecorator('handleUnit', {
-                  initialValue: cacheinfo.handleUnit,
-                })(<Input allowClear />)}
-              </Form.Item>
-            </Col>
-
-            <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
-              <Form.Item label="总结人">
-                {getFieldDecorator('finishUser', {
-                  initialValue: cacheinfo.finishUser,
-                })(<Input allowClear />)}
-              </Form.Item>
-            </Col>
-
-            <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
-              <Form.Item label="总结人单位">
-                {getFieldDecorator('finishUnit', {
-                  initialValue: cacheinfo.finishUnit,
-                })(<Input allowClear />)}
-              </Form.Item>
-            </Col>
-
-            <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
-              <Form.Item label="确认人">
-                {getFieldDecorator('confirmUser', {
-                  initialValue: cacheinfo.confirmUser,
-                })(<Input allowClear />)}
-              </Form.Item>
-            </Col>
-
-            <Col span={8}>
-              <Form.Item label="确认人单位" style={{ display: expand ? 'block' : 'none' }}>
-                {getFieldDecorator('confirmUnit', {
-                  initialValue: cacheinfo.confirmUnit,
-                })(<Input allowClear />)}
-              </Form.Item>
-            </Col>
-
-            {expand === false && (
-              <Col span={24} style={{ textAlign: 'right' }}>
-                <Button type="primary" onClick={handleSearch}>
-                  查 询
-                </Button>
-                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-                  重 置
-                </Button>
-                <Button
-                  style={{ marginLeft: 8 }}
-                  type="link"
-                  onClick={() => {
-                    setExpand(!expand);
-                  }}
-                >
-                  {expand ? (
-                    <>
-                      关 闭 <UpOutlined />
-                    </>
-                  ) : (
-                    <>
-                      展 开 <DownOutlined />
-                    </>
-                  )}
-                </Button>
-              </Col>
-            )}
-
-            {expand === true && (
-              <Col span={24} style={{ textAlign: 'right' }}>
-                <Button type="primary" onClick={() => handleSearch('search')}>
-                  查 询
-                </Button>
-                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-                  重 置
-                </Button>
-                <Button
-                  style={{ marginLeft: 8 }}
-                  type="link"
-                  onClick={() => {
-                    setExpand(!expand);
-                  }}
-                >
-                  {expand ? (
-                    <>
-                      收起 <Icon type="up" />
-                    </>
-                  ) : (
-                    <>
-                      展开 <Icon type="down" />
-                    </>
-                  )}
-                </Button>
-              </Col>
-            )}
-          </Form>
-        </Row>
-        <div style={{ marginBottom: 24 }}>
+              {expand === true && (
+                <Col span={24} style={{ textAlign: 'right' }}>
+                  <Button type="primary" onClick={() => handleSearch('search')}>
+                    查 询
+                  </Button>
+                  <Button style={{ marginLeft: 8 }} onClick={handleReset}>
+                    重 置
+                  </Button>
+                  <Button
+                    style={{ marginLeft: 8 }}
+                    type="link"
+                    onClick={() => {
+                      setExpand(!expand);
+                    }}
+                  >
+                    {expand ? (
+                      <>
+                        收起 <Icon type="up" />
+                      </>
+                    ) : (
+                      <>
+                        展开 <Icon type="down" />
+                      </>
+                    )}
+                  </Button>
+                </Col>
+              )}
+            </Form>
+          </Row>
+        </div>
+        <div style={{ marginBottom: 16 }}>
           <Popconfirm title="确定导出数据？" onConfirm={() => download()}>
             <Button type="primary">导出数据</Button>
           </Popconfirm>

@@ -4,6 +4,7 @@ import moment from 'moment';
 import { Collapse, Steps, Spin, message, Icon } from 'antd';
 import SysDict from '@/components/SysDict';
 import SubmitTypeContext from '@/layouts/MenuContext';
+import { openNotification } from '@/utils/utils';
 import styles from './index.less';
 import Registrat from './components/Registrat';
 import Check from './components/Check';
@@ -166,8 +167,9 @@ function WorkOrder2(props) {
   };
 
   // 校验不通过
-  const formerr = () => {
-    message.error('请将信息填写完整...');
+  const formerr = (err) => {
+    // message.error('请将信息填写完整...');
+    openNotification(Object.values(err))
     ChangeType('');
   };
   // 保存不需要校验
@@ -181,7 +183,7 @@ function WorkOrder2(props) {
       ChangeChoice(true);
       // setIscheck(true);
     } else {
-      formerr();
+      formerr(err);
     }
   }
   // 流转、转单，需做校验需打开选人组件
@@ -191,7 +193,7 @@ function WorkOrder2(props) {
       ChangeChoice(false);
       // setIscheck(true);
     } else {
-      formerr();
+      formerr(err);
     }
   }
   // console.log(type);
@@ -285,7 +287,7 @@ function WorkOrder2(props) {
           // console.clear();
         }
       } else {
-        formerr();
+        formerr(e);
       }
     })
   };

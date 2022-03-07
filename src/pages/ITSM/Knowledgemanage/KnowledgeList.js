@@ -584,185 +584,186 @@ function KnowledgeList(props) {
         style={{ display: 'none' }}
       />
       <Card bodyStyle={{ paddingBottom: 0 }}>
-        <Row gutter={8}>
-          <Form {...formItemLayout} onSubmit={handleSearch}>
-            <Col span={8}>
-              <Form.Item label="知识编号">
-                {getFieldDecorator('no', {
-                  initialValue: cacheinfo.no,
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="知识分类">
-                {getFieldDecorator('type', {
-                  initialValue: type || cacheinfo.type,
-                })(
-                  <Select placeholder="请选择" allowClear>
-                    {typemap.map(obj => (
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>
-                    ))}
-                  </Select>)}
-              </Form.Item>
-            </Col>
-            <span style={{ display: expand || starttime || endtime ? 'block' : 'none' }}>
+        <div className='noexplain'>
+          <Row gutter={8}>
+            <Form {...formItemLayout} onSubmit={handleSearch}>
               <Col span={8}>
-                <Form.Item label="登记时间" >
-                  <Row>
-                    <Col span={11}>
-                      {getFieldDecorator('time1', {
-                        initialValue: cacheinfo.time1,
-                      })(
-                        <DatePicker
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: moment('00:00:00', 'HH:mm:ss'),
-                          }}
-                          placeholder="开始时间"
-                          format='YYYY-MM-DD HH:mm:ss'
-                          style={{ minWidth: 120, width: '100%' }}
-                        />
-                      )}
-                    </Col>
-                    <Col span={2} style={{ textAlign: 'center' }}>-</Col>
-                    <Col span={11}>
-                      {getFieldDecorator('time2', {
-                        initialValue: time2 ? moment(time2) : '',
-                      })(
-                        <DatePicker
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: moment('23:59:59', 'HH:mm:ss'),
-                          }}
-                          placeholder="结束时间"
-                          format='YYYY-MM-DD HH:mm:ss'
-                          style={{ minWidth: 120, width: '100%' }}
-                        />
-                      )}
-                    </Col>
-                  </Row>
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="知识标题">
-                  {getFieldDecorator('title', {
-                    initialValue: '',
+                <Form.Item label="知识编号">
+                  {getFieldDecorator('no', {
+                    initialValue: cacheinfo.no,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
-            </span>
-            {pagetitle === '我的知识' && (<Col span={8}>
-              <Form.Item label="知识状态">
-                {getFieldDecorator('status', {
-                  initialValue: cacheinfo.status,
-                })(
-                  <Select placeholder="请选择" allowClear>
-                    {statusmap.map(obj => {
-                      if (obj.title !== '已废止') return (
+              <Col span={8}>
+                <Form.Item label="知识分类">
+                  {getFieldDecorator('type', {
+                    initialValue: type || cacheinfo.type,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {typemap.map(obj => (
                         <Option key={obj.key} value={obj.title}>
                           {obj.title}
                         </Option>
-                      )
-                      return null
-                    })}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>)}
-            {(pagetitle === '知识维护' || pagetitle === '知识审核') && (<Col span={8}>
-              <Form.Item label="知识状态">
-                {getFieldDecorator('status', {
-                  initialValue: cacheinfo.status,
-                })(
-                  <Select placeholder="请选择" allowClear>
-                    {statusmap.map(obj => {
-                      return (
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>
-                      )
-                    })}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>)}
-            <span style={{ display: expand ? 'block' : 'none' }}>
-              <Col span={8}>
-                <Form.Item label="知识内容">
-                  {getFieldDecorator('content', {
-                    initialValue: cacheinfo.content,
-                  })(<Input placeholder="请输入" allowClear />,)}
+                      ))}
+                    </Select>)}
                 </Form.Item>
               </Col>
-            </span>
-            <span style={{ display: expand || pagetitle === '知识查询' ? 'block' : 'none' }}>
-              <Col span={8}>
-                <Form.Item label="作者">
-                  {getFieldDecorator('addUser', {
-                    initialValue: addUser || cacheinfo.addUser,
-                  })(<Input placeholder="请输入" allowClear />)}
+              <span style={{ display: expand || starttime || endtime ? 'block' : 'none' }}>
+                <Col span={8}>
+                  <Form.Item label="登记时间" >
+                    <Row>
+                      <Col span={11}>
+                        {getFieldDecorator('time1', {
+                          initialValue: cacheinfo.time1,
+                        })(
+                          <DatePicker
+                            showTime={{
+                              hideDisabledOptions: true,
+                              defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                            }}
+                            placeholder="开始时间"
+                            format='YYYY-MM-DD HH:mm:ss'
+                            style={{ minWidth: 120, width: '100%' }}
+                          />
+                        )}
+                      </Col>
+                      <Col span={2} style={{ textAlign: 'center' }}>-</Col>
+                      <Col span={11}>
+                        {getFieldDecorator('time2', {
+                          initialValue: time2 ? moment(time2) : '',
+                        })(
+                          <DatePicker
+                            showTime={{
+                              hideDisabledOptions: true,
+                              defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                            }}
+                            placeholder="结束时间"
+                            format='YYYY-MM-DD HH:mm:ss'
+                            style={{ minWidth: 120, width: '100%' }}
+                          />
+                        )}
+                      </Col>
+                    </Row>
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="知识标题">
+                    {getFieldDecorator('title', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+              </span>
+              {pagetitle === '我的知识' && (<Col span={8}>
+                <Form.Item label="知识状态">
+                  {getFieldDecorator('status', {
+                    initialValue: cacheinfo.status,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {statusmap.map(obj => {
+                        if (obj.title !== '已废止') return (
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>
+                        )
+                        return null
+                      })}
+                    </Select>,
+                  )}
                 </Form.Item>
-              </Col>
-            </span>
-            <span style={{ display: expand ? 'block' : 'none' }}>
-              <Col span={8}>
-                <Form.Item label="编辑人">
-                  {getFieldDecorator('updateUser', {
-                    initialValue: cacheinfo.updateUser,
-                  })(<Input placeholder="请输入" allowClear />)}
+              </Col>)}
+              {(pagetitle === '知识维护' || pagetitle === '知识审核') && (<Col span={8}>
+                <Form.Item label="知识状态">
+                  {getFieldDecorator('status', {
+                    initialValue: cacheinfo.status,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {statusmap.map(obj => {
+                        return (
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>
+                        )
+                      })}
+                    </Select>,
+                  )}
                 </Form.Item>
-              </Col>
-              {/* <Col span={8}>
+              </Col>)}
+              <span style={{ display: expand ? 'block' : 'none' }}>
+                <Col span={8}>
+                  <Form.Item label="知识内容">
+                    {getFieldDecorator('content', {
+                      initialValue: cacheinfo.content,
+                    })(<Input placeholder="请输入" allowClear />,)}
+                  </Form.Item>
+                </Col>
+              </span>
+              <span style={{ display: expand || pagetitle === '知识查询' ? 'block' : 'none' }}>
+                <Col span={8}>
+                  <Form.Item label="作者">
+                    {getFieldDecorator('addUser', {
+                      initialValue: addUser || cacheinfo.addUser,
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+              </span>
+              <span style={{ display: expand ? 'block' : 'none' }}>
+                <Col span={8}>
+                  <Form.Item label="编辑人">
+                    {getFieldDecorator('updateUser', {
+                      initialValue: cacheinfo.updateUser,
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+                {/* <Col span={8}>
                   <Form.Item label="阅读量">
                     {getFieldDecorator('lookNum', {
                       initialValue: '',
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col> */}
-              <Col span={8}>
-                <Form.Item label="编辑时间" >
-                  <Row>
-                    <Col span={11}>
-                      {getFieldDecorator('time3', {
-                        initialValue: cacheinfo.time3 ? moment(cacheinfo.time3) : '',
-                      })(
-                        <DatePicker
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: moment('00:00:00', 'HH:mm:ss'),
-                          }}
-                          placeholder="开始时间"
-                          format='YYYY-MM-DD HH:mm:ss'
-                          style={{ minWidth: 120, width: '100%' }}
-                        />
-                      )}
-                    </Col>
-                    <Col span={2} style={{ textAlign: 'center' }}>-</Col>
-                    <Col span={11}>
-                      {getFieldDecorator('time4', {
-                        initialValue: cacheinfo.time4 ? moment(cacheinfo.time4) : '',
-                      })(
-                        <DatePicker
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: moment('23:59:59', 'HH:mm:ss'),
-                          }}
-                          placeholder="结束时间"
-                          format='YYYY-MM-DD HH:mm:ss'
-                          style={{ minWidth: 120, width: '100%' }}
-                        />
-                      )}
-                    </Col>
-                  </Row>
-                </Form.Item>
-              </Col>
-            </span>
-            <Col span={24} style={{ paddingTop: 4, textAlign: 'right' }}>{extra}</Col>
-          </Form>
-        </Row>
-
+                <Col span={8}>
+                  <Form.Item label="编辑时间" >
+                    <Row>
+                      <Col span={11}>
+                        {getFieldDecorator('time3', {
+                          initialValue: cacheinfo.time3 ? moment(cacheinfo.time3) : '',
+                        })(
+                          <DatePicker
+                            showTime={{
+                              hideDisabledOptions: true,
+                              defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                            }}
+                            placeholder="开始时间"
+                            format='YYYY-MM-DD HH:mm:ss'
+                            style={{ minWidth: 120, width: '100%' }}
+                          />
+                        )}
+                      </Col>
+                      <Col span={2} style={{ textAlign: 'center' }}>-</Col>
+                      <Col span={11}>
+                        {getFieldDecorator('time4', {
+                          initialValue: cacheinfo.time4 ? moment(cacheinfo.time4) : '',
+                        })(
+                          <DatePicker
+                            showTime={{
+                              hideDisabledOptions: true,
+                              defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                            }}
+                            placeholder="结束时间"
+                            format='YYYY-MM-DD HH:mm:ss'
+                            style={{ minWidth: 120, width: '100%' }}
+                          />
+                        )}
+                      </Col>
+                    </Row>
+                  </Form.Item>
+                </Col>
+              </span>
+              <Col span={24} style={{ paddingTop: 4, textAlign: 'right' }}>{extra}</Col>
+            </Form>
+          </Row>
+        </div>
         <div>
           {pagetitle === '我的知识' && (
             <>

@@ -4,6 +4,7 @@ import router from 'umi/router';
 import { Button, Card, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import EditContext from '@/layouts/MenuContext';
+import { openNotification } from '@/utils/utils';
 import { knowledgeCheckUserList } from '@/services/user';
 import CheckOneUser from '@/components/SelectUser/CheckOneUser';
 import Content from './components/Content';
@@ -21,7 +22,8 @@ function New(props) {
   const handleClick = (buttype) => {
     ContentRef.current.Forms((err, values) => {
       if (err) {
-        message.error('请将信息填写完整')
+        // message.error('请将信息填写完整')
+        openNotification(Object.values(err))
       } else {
         dispatch({
           type: 'knowledg/add',
@@ -39,7 +41,8 @@ function New(props) {
   const handleSubmit = () => {
     ContentRef.current.Forms((err) => {
       if (err) {
-        message.error('请将信息填写完整')
+        // message.error('请将信息填写完整')
+        openNotification(Object.values(err))
       } else {
         knowledgeCheckUserList().then(res => {
           if (res.code === 200) {
@@ -62,7 +65,8 @@ function New(props) {
   const ChangeFiles = (v) => {
     ContentRef.current.Forms((err, values) => {
       if (err) {
-        message.error('请将信息填写完整');
+        // message.error('请将信息填写完整');
+        openNotification(Object.values(err))
         setFileslist(v)
       } else {
         dispatch({
@@ -143,20 +147,22 @@ function New(props) {
 
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
-      <Card>
-        <EditContext.Provider value={{
-          editable: true,
-          files: null,
-          ChangeFiles,
-          getUploadStatus: (v) => { setUploadStatus(v) },
-        }}>
-          <Content
-            wrappedComponentRef={ContentRef}
-            formrecord={tabdata}
-            location={location}
-          />
-        </EditContext.Provider>
-      </Card>
+      <div className='noexplain'>
+        <Card>
+          <EditContext.Provider value={{
+            editable: true,
+            files: null,
+            ChangeFiles,
+            getUploadStatus: (v) => { setUploadStatus(v) },
+          }}>
+            <Content
+              wrappedComponentRef={ContentRef}
+              formrecord={tabdata}
+              location={location}
+            />
+          </EditContext.Provider>
+        </Card>
+      </div>
       <EditContext.Provider value={{ setChoiceUser, uservisible, setUserVisible, title: '审核' }}>
         <CheckOneUser userlist={userlist} />
       </EditContext.Provider>

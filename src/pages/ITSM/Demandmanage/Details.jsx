@@ -143,7 +143,7 @@ function Details(props) {
                     title={obj.taskName}
                     description={desc}
                     key={index.toString()}
-                    icon={index === records.length - 1 && !obj.endTime ? <Icon type="loading" spin /> : <Icon type="check-circle" style={{ color: '#10C510', backgroundColor: '#f6ffed' }} />}
+                    icon={index === records.length - 1 && !obj.endTime ? <Icon type="loading" spin /> : <Icon type="check-circle" />}
                   />);
               })}
               {/* {(taskName === '已关闭' || taskName === '已完成') && (
@@ -156,36 +156,38 @@ function Details(props) {
               )} */}
             </Steps>
           )}
-          <Spin spinning={loading}>
-            {info && (
-              <Collapse
-                expandIconPosition="right"
-                activeKey={activeKey}
-                bordered={false}
-                onChange={callback}
-              >
-                <Panel header="需求登记" key="registdes">
-                  <Registratdes info={info.demandForm} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />
-                </Panel>
+          <div className='noexplain'>
+            <Spin spinning={loading}>
+              {info && (
+                <Collapse
+                  expandIconPosition="right"
+                  activeKey={activeKey}
+                  bordered={false}
+                  onChange={callback}
+                >
+                  <Panel header="需求登记" key="registdes">
+                    <Registratdes info={info.demandForm} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />
+                  </Panel>
 
-                {info.historys.map((obj, index) => {
-                  // panel详情组件
-                  if (obj.taskName !== '系统开发商处理')
-                    return (
-                      <Panel header={obj.taskName} key={index.toString()}>
-                        <Examinedes info={obj} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />
-                      </Panel>
-                    );
-                  if (obj.taskName === '系统开发商处理')
-                    return (
-                      <Panel header={obj.taskName} key={index.toString()}>
-                        <Tracklist demandId={info.demandForm.demandId} />
-                      </Panel>
-                    );
-                })}
-              </Collapse>
-            )}
-          </Spin>
+                  {info.historys.map((obj, index) => {
+                    // panel详情组件
+                    if (obj.taskName !== '系统开发商处理')
+                      return (
+                        <Panel header={obj.taskName} key={index.toString()}>
+                          <Examinedes info={obj} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />
+                        </Panel>
+                      );
+                    if (obj.taskName === '系统开发商处理')
+                      return (
+                        <Panel header={obj.taskName} key={index.toString()}>
+                          <Tracklist demandId={info.demandForm.demandId} />
+                        </Panel>
+                      );
+                  })}
+                </Collapse>
+              )}
+            </Spin>
+          </div>
         </div>
       )}
       {tabActivekey === 'process' && <Process location={location} />}

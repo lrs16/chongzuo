@@ -4,6 +4,7 @@ import moment from 'moment';
 import router from 'umi/router';
 import { Button, Collapse, message, Spin } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { openNotification } from '@/utils/utils';
 import HadleContext from '@/layouts/MenuContext';
 // import SelectUser from '@/components/SelectUser';
 import SysDict from '@/components/SysDict';
@@ -101,13 +102,16 @@ function Registration(props) {
       RegistratRef.current.Forms((err) => {
         if (err) {
           setIscheck({ save: false, flow: false });
-          message.error('请将登记信息填写完整...');
+          openNotification(Object.values(err))
+          // message.error('请将登记信息填写完整...');
         }
       })
     } else {
       RegistratRef.current.geteventObject(['main_eventObject'], err => {
         if (!err) {
           tosubmit(type);
+        } else {
+          openNotification(Object.values(err))
         }
       });
     }
@@ -349,66 +353,68 @@ function Registration(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      <Spin tip="正在提交数据..." spinning={!!loading}>
-        <div className={styles.collapse}>
-          <HadleContext.Provider value={{
-            handleUploadStatus,
-            getUploadStatus: (v) => { setHandleUploadStatus(v) },
-            getRegistUploadStatus: (v) => { setUploadStatus(v) },
-            submittype,
-            ChangeSubmitType: (v => setSubmitType(v)),               // 根據選項返回流轉類型
-            ChangeButtonName: (v => setButtonName(v))                // 自行處理返回按鈕名稱
-          }}>
-            <Collapse
-              expandIconPosition="right"
-              // defaultActiveKey={['1']}
-              activeKey={activeKey}
-              bordered={false}
-              onChange={callback}
-            >
-              <Panel header="事件登记" key="registratform">
-                <Registrat
-                  ChangeShow={isshow => setShow(isshow)}
-                  // ChangeCheck={checked => setCheck(checked)}
-                  ChangeActiveKey={keys => setActiveKey(keys)}
-                  changeDefaultvalue={values => setDefaultvalue(values)}
-                  ChangeFiles={newvalue => { setRegistratFiles(newvalue) }}
-                  // getUploadStatus={v => { setUploadStatus(v) }}
-                  formItemLayout={formItemLayout}
-                  forminladeLayout={forminladeLayout}
-                  show={show}
-                  wrappedComponentRef={RegistratRef}
-                  userinfo={userinfo}
-                  location={location}
-                  files={registratfiles.arr}
-                  selectdata={selectdata}
-                  info={tabdata ? { register: tabdata.register } : undefined}
-                  main={tabdata ? tabdata.main : undefined}
-                />
-              </Panel>
-              {show && (
-                <Panel header="事件处理" key="handleform">
-                  <Handle
+      <div className='noexplain'>
+        <Spin tip="正在提交数据..." spinning={!!loading}>
+          <div className={styles.collapse}>
+            <HadleContext.Provider value={{
+              handleUploadStatus,
+              getUploadStatus: (v) => { setHandleUploadStatus(v) },
+              getRegistUploadStatus: (v) => { setUploadStatus(v) },
+              submittype,
+              ChangeSubmitType: (v => setSubmitType(v)),               // 根據選項返回流轉類型
+              ChangeButtonName: (v => setButtonName(v))                // 自行處理返回按鈕名稱
+            }}>
+              <Collapse
+                expandIconPosition="right"
+                // defaultActiveKey={['1']}
+                activeKey={activeKey}
+                bordered={false}
+                onChange={callback}
+              >
+                <Panel header="事件登记" key="registratform">
+                  <Registrat
+                    ChangeShow={isshow => setShow(isshow)}
+                    // ChangeCheck={checked => setCheck(checked)}
+                    ChangeActiveKey={keys => setActiveKey(keys)}
+                    changeDefaultvalue={values => setDefaultvalue(values)}
+                    ChangeFiles={newvalue => { setRegistratFiles(newvalue) }}
+                    // getUploadStatus={v => { setUploadStatus(v) }}
                     formItemLayout={formItemLayout}
                     forminladeLayout={forminladeLayout}
-                    wrappedComponentRef={HandleRef}
-                    userinfo={userinfo}
-                    defaultvalue={defaultvalue}
-                    location={location}
-                    ChangeFiles={newvalue => { setHandleFiles(newvalue) }}
                     show={show}
+                    wrappedComponentRef={RegistratRef}
+                    userinfo={userinfo}
+                    location={location}
+                    files={registratfiles.arr}
                     selectdata={selectdata}
-                    files={handlefiles.arr}
-                    info={(!tabdata || !tabdata.handle) ? undefined : { handle: tabdata.handle }}
-                    main={(!tabdata || !tabdata.handlemain) ? undefined : tabdata.handlemain}
-                    uploadStatus={uploadStatus}
+                    info={tabdata ? { register: tabdata.register } : undefined}
+                    main={tabdata ? tabdata.main : undefined}
                   />
                 </Panel>
-              )}
-            </Collapse>
-          </HadleContext.Provider>
-        </div>
-      </Spin>
+                {show && (
+                  <Panel header="事件处理" key="handleform">
+                    <Handle
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                      wrappedComponentRef={HandleRef}
+                      userinfo={userinfo}
+                      defaultvalue={defaultvalue}
+                      location={location}
+                      ChangeFiles={newvalue => { setHandleFiles(newvalue) }}
+                      show={show}
+                      selectdata={selectdata}
+                      files={handlefiles.arr}
+                      info={(!tabdata || !tabdata.handle) ? undefined : { handle: tabdata.handle }}
+                      main={(!tabdata || !tabdata.handlemain) ? undefined : tabdata.handlemain}
+                      uploadStatus={uploadStatus}
+                    />
+                  </Panel>
+                )}
+              </Collapse>
+            </HadleContext.Provider>
+          </div>
+        </Spin>
+      </div>
     </PageHeaderWrapper>
   );
 }

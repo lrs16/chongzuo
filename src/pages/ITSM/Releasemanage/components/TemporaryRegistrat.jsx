@@ -361,7 +361,7 @@ function TemporaryRegistrat(props, ref) {
           <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="申请单位">
               {getFieldDecorator('applicantUnit', {
-                rules: [{ required, message: '请选择申请单位' }],
+                rules: [{ required, message: '请通过选择获取申请单位' }],
                 initialValue: info?.tempRegister?.applicantUnit || '',
               })(<Input placeholder="请输入" />)}
             </Form.Item>
@@ -369,7 +369,7 @@ function TemporaryRegistrat(props, ref) {
           <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="申请单位ID">
               {getFieldDecorator('applicantUnitId', {
-                rules: [{ required, message: '请选择申请单位后获取单位ID' }],
+                rules: [{ required, message: '请选择申请单位获取申请单位ID' }],
                 initialValue: info?.tempRegister?.applicantUnitId || '',
               })(<Input placeholder="请输入" />)}
             </Form.Item>

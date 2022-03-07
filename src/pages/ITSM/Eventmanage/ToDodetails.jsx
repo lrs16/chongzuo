@@ -279,27 +279,29 @@ function ToDodetails(props) {
       tabActiveKey={tabActivekey}
       onTabChange={handleTabChange}
     >
-      {tabActivekey === 'workorder' && (
-        <UploadContext.Provider value={{
-          handleUploadStatus: olduploadstatus,
-          getRegistUploadStatus: (v) => { setRegistUploadStatus(v) },
-          submittype,                                              // 流轉類型
-          ChangeSubmitType: (v => setSubmitType(v)),               // 根據選項返回流轉類型
-          ChangeButtonName: (v => setButtonName(v))                // 自行處理返回按鈕名稱
-        }}>
-          <WorkOrder
-            location={location}
-            type={buttontype}
-            ChangeType={v => setButtonType(v)}
-            userchoice={userchoice}
-            ChangeChoice={v => setUserChoice(v)}
-            ChangeUserVisible={v => setUserVisible(v)}
-            registUploadStatus={registUploadStatus}
-          />
-        </UploadContext.Provider>
-      )}
-      {tabActivekey === 'process' && <Process location={location} />}
-      {tabActivekey === 'relevancy' && <RelationOrder location={location} relation />}
+      <div className='noexplain'>
+        {tabActivekey === 'workorder' && (
+          <UploadContext.Provider value={{
+            handleUploadStatus: olduploadstatus,
+            getRegistUploadStatus: (v) => { setRegistUploadStatus(v) },
+            submittype,                                              // 流轉類型
+            ChangeSubmitType: (v => setSubmitType(v)),               // 根據選項返回流轉類型
+            ChangeButtonName: (v => setButtonName(v))                // 自行處理返回按鈕名稱
+          }}>
+            <WorkOrder
+              location={location}
+              type={buttontype}
+              ChangeType={v => setButtonType(v)}
+              userchoice={userchoice}
+              ChangeChoice={v => setUserChoice(v)}
+              ChangeUserVisible={v => setUserVisible(v)}
+              registUploadStatus={registUploadStatus}
+            />
+          </UploadContext.Provider>
+        )}
+        {tabActivekey === 'process' && <Process location={location} />}
+        {tabActivekey === 'relevancy' && <RelationOrder location={location} relation />}
+      </div>
       <User
         taskId={taskId}
         visible={uservisible}

@@ -85,7 +85,7 @@ function Registratdes(props) {
               <Input defaultValue={main.title} disabled />
             </Form.Item>
           </Col>
-          <Col span={24}>
+          <Col span={24} style={{ marginTop: 4 }}>
             <Form.Item label="事件描述"  {...forminladeLayout}>
               <TextArea autoSize={{ minRows: 3 }} defaultValue={main.content} disabled />
             </Form.Item>

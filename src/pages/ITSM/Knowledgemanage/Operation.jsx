@@ -7,6 +7,7 @@ import styles from '@/utils/utils.less';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import EditContext from '@/layouts/MenuContext';              // 引用上下文管理组件
 import CheckOneUser from '@/components/SelectUser/CheckOneUser';
+import { openNotification } from '@/utils/utils';
 import { knowledgeCheckUserList } from '@/services/user';
 import Content from './components/Content';
 import Examine from './components/Examine';
@@ -46,7 +47,8 @@ function Operation(props) {
   const handleClick = (buttype) => {
     ContentRef.current.Forms((err, values) => {
       if (err) {
-        message.error('请将信息填写完整')
+        // message.error('请将信息填写完整')
+        openNotification(Object.values(err))
       } else {
         dispatch({
           type: 'knowledg/saveorsubmit',
@@ -65,7 +67,8 @@ function Operation(props) {
   const handleCheck = (buttype) => {
     ExmaineRef.current.Forms((err) => {
       if (err) {
-        message.error('请将信息填写完整')
+        // message.error('请将信息填写完整')
+        openNotification(Object.values(err))
       } else {
         const values = ExmaineRef.current.getVal();
         dispatch({
@@ -98,7 +101,8 @@ function Operation(props) {
   const handleSubmit = () => {
     ContentRef.current.Forms((err) => {
       if (err) {
-        message.error('请将信息填写完整')
+        // message.error('请将信息填写完整')
+        openNotification(Object.values(err))
       } else {
         knowledgeCheckUserList().then(res => {
           if (res.code === 200) {
