@@ -408,17 +408,17 @@ function DutyclassesSetting(props) {
         handleReset();
       };
 
-      if(location.state.cacheinfo) {
+      if (location.state.cacheinfo) {
         const { beginTime, endTime } = location.state.cacheinfo;
         setFieldsValue({
-          beginTime: beginTime ? moment(beginTime):'',
-          endTime: endTime ? moment(endTime):'',
+          beginTime: beginTime ? moment(beginTime) : '',
+          endTime: endTime ? moment(endTime) : '',
         })
       }
     }
   }, [location.state])
 
-  
+
   useEffect(() => {
     const value = getFieldsValue();
     searchdata(value, 1, 15)
@@ -443,76 +443,77 @@ function DutyclassesSetting(props) {
         style={{ display: 'none' }}
       />
       <Card>
-        <Row gutter={8}>
-          <Form {...formItemLayout} onSubmit={handleSearch}>
-            <Col span={8}>
-              <Form.Item label="班次编号">
-                {getFieldDecorator('shiftNo', {
-                  initialValue: cacheinfo.shiftNo,
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
+        <div className='noexplain'>
+          <Row gutter={8}>
+            <Form {...formItemLayout} onSubmit={handleSearch}>
+              <Col span={8}>
+                <Form.Item label="班次编号">
+                  {getFieldDecorator('shiftNo', {
+                    initialValue: cacheinfo.shiftNo,
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
+              </Col>
 
-            <Col span={8}>
-              <Form.Item label="创建时间" >
-                <Row>
-                  <Col span={11}>
-                    {getFieldDecorator('beginTime', {
-                    })(
-                      <DatePicker
-                        disabledDate={(value) => disabledStartDate(value, 'create')}
-                        onChange={(value) => onStartChange(value, 'create')}
-                        onOpenChange={(value) => handleStartOpenChange(value, 'create')}
-                        showTime={{
-                          hideDisabledOptions: true,
-                          defaultValue: moment('00:00:00', 'HH:mm:ss'),
-                        }}
-                        placeholder="开始时间"
-                        format='YYYY-MM-DD HH:mm:ss'
-                        style={{ minWidth: 120, width: '100%' }}
-                      />
-                    )}
-                  </Col>
-                  <Col span={2} style={{ textAlign: 'center' }}>-</Col>
-                  <Col span={11}>
-                    {getFieldDecorator('endTime', {
-                    })(
-                      <DatePicker
-                        disabledDate={(value) => disabledEndDate(value, 'create')}
-                        onChange={(value) => onEndChange(value, 'create')}
-                        open={time.endOpen}
-                        onOpenChange={(value) => handleEndOpenChange(value, 'create')}
-                        showTime={{
-                          hideDisabledOptions: true,
-                          defaultValue: moment('23:59:59', 'HH:mm:ss'),
-                        }}
-                        placeholder="结束时间"
-                        format='YYYY-MM-DD HH:mm:ss'
-                        style={{ minWidth: 120, width: '100%' }}
-                      />
-                    )}
-                  </Col>
-                </Row>
-              </Form.Item>
-            </Col>
+              <Col span={8}>
+                <Form.Item label="创建时间" >
+                  <Row>
+                    <Col span={11}>
+                      {getFieldDecorator('beginTime', {
+                      })(
+                        <DatePicker
+                          disabledDate={(value) => disabledStartDate(value, 'create')}
+                          onChange={(value) => onStartChange(value, 'create')}
+                          onOpenChange={(value) => handleStartOpenChange(value, 'create')}
+                          showTime={{
+                            hideDisabledOptions: true,
+                            defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                          }}
+                          placeholder="开始时间"
+                          format='YYYY-MM-DD HH:mm:ss'
+                          style={{ minWidth: 120, width: '100%' }}
+                        />
+                      )}
+                    </Col>
+                    <Col span={2} style={{ textAlign: 'center' }}>-</Col>
+                    <Col span={11}>
+                      {getFieldDecorator('endTime', {
+                      })(
+                        <DatePicker
+                          disabledDate={(value) => disabledEndDate(value, 'create')}
+                          onChange={(value) => onEndChange(value, 'create')}
+                          open={time.endOpen}
+                          onOpenChange={(value) => handleEndOpenChange(value, 'create')}
+                          showTime={{
+                            hideDisabledOptions: true,
+                            defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                          }}
+                          placeholder="结束时间"
+                          format='YYYY-MM-DD HH:mm:ss'
+                          style={{ minWidth: 120, width: '100%' }}
+                        />
+                      )}
+                    </Col>
+                  </Row>
+                </Form.Item>
+              </Col>
 
-            <Col span={8}>
-              <Form.Item label="创建人">
-                {getFieldDecorator('creatorName', {
-                  initialValue: cacheinfo.creatorName,
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
+              <Col span={8}>
+                <Form.Item label="创建人">
+                  {getFieldDecorator('creatorName', {
+                    initialValue: cacheinfo.creatorName,
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
+              </Col>
 
-            <Col span={8}>
-              <Form.Item label="班次名称">
-                {getFieldDecorator('shiftName', {
-                  initialValue: cacheinfo.shiftName,
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
+              <Col span={8}>
+                <Form.Item label="班次名称">
+                  {getFieldDecorator('shiftName', {
+                    initialValue: cacheinfo.shiftName,
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
+              </Col>
 
-            {/* <Col span={8}>
+              {/* <Col span={8}>
             <Form.Item label="值班时段" >
               <Row>
                 <Col span={11}>
@@ -556,49 +557,51 @@ function DutyclassesSetting(props) {
               </Row>
             </Form.Item>
           </Col> */}
-            <Col span={8}>
-              <Form.Item label="启用状态">
-                {getFieldDecorator('status', {
-                  initialValue: cacheinfo.status,
-                })(
-                  <Select placeholder="请选择" allowClear>
-                    {enableStatus.map(obj => (
-                      <Option key={obj.key} value={obj.key}>
-                        {obj.title}
-                      </Option>
-                    ))}
-                  </Select>
-                )}
-              </Form.Item>
-            </Col>
+              <Col span={8}>
+                <Form.Item label="启用状态">
+                  {getFieldDecorator('status', {
+                    initialValue: cacheinfo.status,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {enableStatus.map(obj => (
+                        <Option key={obj.key} value={obj.key}>
+                          {obj.title}
+                        </Option>
+                      ))}
+                    </Select>
+                  )}
+                </Form.Item>
+              </Col>
 
-            <Col span={8}>
-              <Form.Item label='班组名称'>
-                {getFieldDecorator('groupId', {
-                  initialValue: cacheinfo.groupId
-                })(
-                  <Select placeholder="请选择" onChange={hancleChange}>
-                    {teamname.map(obj => [
-                      <Option
-                        key={obj.key}
-                        values={obj.title}
-                      >
-                        {obj.title}
-                      </Option>
-                    ])}
-                  </Select>
-                )}
-              </Form.Item>
-            </Col>
+              <Col span={8}>
+                <Form.Item label='班组名称'>
+                  {getFieldDecorator('groupId', {
+                    initialValue: cacheinfo.groupId
+                  })(
+                    <Select placeholder="请选择" onChange={hancleChange}>
+                      {teamname.map(obj => [
+                        <Option
+                          key={obj.key}
+                          values={obj.title}
+                        >
+                          {obj.title}
+                        </Option>
+                      ])}
+                    </Select>
+                  )}
+                </Form.Item>
+              </Col>
 
-            <Form.Item style={{ display: 'none' }}>
-              {getFieldDecorator('groupName', {
-                initialValue: cacheinfo.groupName
-              })(<Input />)}
-            </Form.Item>
-            <Col span={24} style={{ textAlign: 'right', paddingTop: 4 }}>{extra}</Col>
-          </Form>
-        </Row>
+              <Form.Item style={{ display: 'none' }}>
+                {getFieldDecorator('groupName', {
+                  initialValue: cacheinfo.groupName
+                })(<Input />)}
+              </Form.Item>
+              <Col span={24} style={{ textAlign: 'right', paddingTop: 4 }}>{extra}</Col>
+            </Form>
+          </Row>
+        </div>
+
 
 
 

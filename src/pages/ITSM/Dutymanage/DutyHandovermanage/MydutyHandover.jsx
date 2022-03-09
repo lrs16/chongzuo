@@ -70,7 +70,7 @@ function MydutyHandover(props) {
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [newtitle, setNewtitle] = useState('')
-  
+
   const todetail = (record, type) => {
     dispatch({
       type: 'viewcache/gettabstate',
@@ -407,8 +407,8 @@ function MydutyHandover(props) {
     handoverItems: '',
     handoverStatus: '',
     paginations: {
-      current:1,
-      pageSize:15
+      current: 1,
+      pageSize: 15
     }
   }
 
@@ -654,188 +654,15 @@ function MydutyHandover(props) {
       <Card>
         {
           pagetitle === '值班交接查询' && (
-            <Row gutter={16}>
-              <Form {...formItemLayout} onSubmit={handleSearch}>
-                <Col span={8}>
-                  <Form.Item label="登记时间">
-                    {getFieldDecorator('registerTime', {
-                       initialValue: cacheinfo.registerBeginTime
-                       ? [moment(cacheinfo.registerBeginTime), moment(cacheinfo.registerEndTime)]
-                       : '',
-                    })
-                      (
-                        <RangePicker
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                          }}
-                          format="YYYY-MM-DD HH:mm:ss"
-                          style={{ width: '100%' }}
-                        />
-                      )}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8}>
-                  <Form.Item label="值班人">
-                    {getFieldDecorator('dutyStaffName', {
-                      initialValue: cacheinfo.dutyStaffName,
-                    })(
-                      <Input />,
-                    )}
-                  </Form.Item>
-                </Col>
-
-                <span style={{ display: expand ? 'block' : 'none' }}>
+            <div className='noexplain'>
+              <Row gutter={16}>
+                <Form {...formItemLayout} onSubmit={handleSearch}>
                   <Col span={8}>
-                    <Form.Item label="值班班组">
-                      {getFieldDecorator('groupName', {
-                        initialValue: cacheinfo.groupName,
-                      })(
-                        <Select
-                          allowClear={false}
-                          placeholder="请选择"
-                          getPopupContainer={e => e.parentNode}
-                          onChange={(value, option) => handleChange(value, option, 'groupName')}
-                        >
-                          {teamname.map(obj => [
-                            <Option
-                              key={obj.title}
-                              values={obj.key}
-                            >
-                              {obj.title}
-                            </Option>
-                          ])}
-                        </Select>,
-                      )}
-                    </Form.Item>
-                  </Col>
-
-                  <Col span={8}>
-                    <Form.Item label="值班班次">
-                      {getFieldDecorator('shiftName', {
-                        initialValue: cacheinfo.shiftName,
-                      })(
-                        <Select
-                          placeholder="请选择"
-                          allowClear
-                          getPopupContainer={e => e.parentNode}
-                          onFocus={() => handleFocus('shiftName')}
-                        >
-                          {(shift || []).map((obj) => [
-                            <Option
-                              key={obj.shiftName}
-                              value={obj.shiftName}
-                            >
-                              {obj.shiftName}
-                            </Option>
-                          ])}
-                        </Select>,
-                      )}
-                    </Form.Item>
-                  </Col>
-
-                  <Col span={8}>
-                    <Form.Item label="巡检及监控记录">
-                      {getFieldDecorator('monitorNotes', {
-                        initialValue: cacheinfo.monitorNotes,
-                      })(<Input placeholder="请输入" allowClear />,)}
-                    </Form.Item>
-                  </Col>
-
-                  <Col span={8}>
-                    <Form.Item label="异常情况记录">
-                      {getFieldDecorator('alarmNotes', {
-                        initialValue: cacheinfo.alarmNotes,
-                      })(<Input placeholder="请输入" allowClear />)}
-                    </Form.Item>
-                  </Col>
-
-                  <Col span={8}>
-                    <Form.Item label="重大运维事件">
-                      {getFieldDecorator('devopsNotes', {
-                        initialValue: cacheinfo.devopsNotes,
-                      })(<Input placeholder="请输入" allowClear />,)}
-                    </Form.Item>
-                  </Col>
-
-                  <Col span={8}>
-                    <Form.Item label="其他情况记录">
-                      {getFieldDecorator('otherNotes', {
-                        initialValue: cacheinfo.otherNotes,
-                      })(<Input placeholder="请输入" allowClear />)}
-                    </Form.Item>
-                  </Col>
-
-                  <Col span={8}>
-                    <Form.Item label="交班人">
-                      {getFieldDecorator('handoverName', {
-                        initialValue: cacheinfo.handoverName,
-                      })(<Input placeholder="请输入" allowClear />)}
-                    </Form.Item>
-                  </Col>
-
-                  <Col span={8}>
-                    <Form.Item label="接班人">
-                      {getFieldDecorator('heirName', {
-                        initialValue: cacheinfo.heirName,
-                      })(<Input placeholder="请输入" allowClear />)}
-                    </Form.Item>
-                  </Col>
-
-                  <Col span={8}>
-                    <Form.Item label="接班班组">
-                      {getFieldDecorator('heirGroupName', {
-                        initialValue: cacheinfo.heirGroupName,
-                      })(
-                        <Select
-                          placeholder="请选择"
-                          allowClear={false}
-                          getPopupContainer={e => e.parentNode}
-                          onChange={(value, option) => handleChange(value, option, 'heirGroupName')}
-                        >
-                          {teamname.map(obj => [
-                            <Option
-                              key={obj.title}
-                              values={obj.key}
-                            >
-                              {obj.title}
-                            </Option>
-                          ])}
-                        </Select>,
-                      )}
-                    </Form.Item>
-                  </Col>
-
-                  <Col span={8}>
-                    <Form.Item label="接班班次">
-                      {getFieldDecorator('heirShiftName', {
-                        initialValue: cacheinfo.heirShiftName,
-                      })(
-                        <Select
-                          placeholder="请选择"
-                          allowClear
-                          getPopupContainer={e => e.parentNode}
-                          onFocus={() => handleFocus('heirShiftName')}
-                        >
-                          {(acceptshift || []).map((obj) => [
-                            <Option
-                              key={obj.shiftName}
-                              value={obj.shiftName}
-                            >
-                              {obj.shiftName}
-                            </Option>
-                          ])}
-                        </Select>,
-                      )}
-                    </Form.Item>
-                  </Col>
-
-                  <Col span={8}>
-                    <Form.Item label="交班时间">
-                      {getFieldDecorator('handoverTime', {
-                        initialValue: cacheinfo.handoverBeginTime ?
-                        [moment(cacheinfo.handoverBeginTime),moment(cacheinfo.handoverEndTime)]:''
+                    <Form.Item label="登记时间">
+                      {getFieldDecorator('registerTime', {
+                        initialValue: cacheinfo.registerBeginTime
+                          ? [moment(cacheinfo.registerBeginTime), moment(cacheinfo.registerEndTime)]
+                          : '',
                       })
                         (
                           <RangePicker
@@ -851,76 +678,252 @@ function MydutyHandover(props) {
                   </Col>
 
                   <Col span={8}>
-                    <Form.Item label="需注意事项">
-                      {getFieldDecorator('attention', {
-                        initialValue: cacheinfo.attention,
-                      })(<Input placeholder="请输入" allowClear />)}
-                    </Form.Item>
-                  </Col>
-
-                  <Col span={8}>
-                    <Form.Item label="交接物品">
-                      {getFieldDecorator('handoverItems', {
-                        initialValue: cacheinfo.handoverItems && (cacheinfo.handoverItems).split(',') || undefined,
+                    <Form.Item label="值班人">
+                      {getFieldDecorator('dutyStaffName', {
+                        initialValue: cacheinfo.dutyStaffName,
                       })(
-                        <Select
-                          placeholder="请选择"
-                          mode="multiple"
-                          allowClear
-                        >
-                          {(handoveritems || []).map(obj => [
-                            <Option key={obj.key} value={obj.title}>
-                              {obj.title}
-                            </Option>,
-                          ])}
-                        </Select>,
+                        <Input />,
                       )}
                     </Form.Item>
                   </Col>
 
-                  <Col span={8}>
-                    <Form.Item label="交接状态">
-                      {getFieldDecorator('handoverStatus', {
-                        initialValue: cacheinfo.handoverStatus,
-                      })(
-                        <Select
-                          placeholder="请选择"
-                          allowClear
-                          getPopupContainer={e => e.parentNode}
-                        >
-                          {allstatusmap6.map(obj => (
-                            <Option key={obj.title} value={obj.title}>
-                              {obj.title}
-                            </Option>
-                          ))}
-                        </Select>,
-                      )}
-                    </Form.Item>
-                  </Col>
-
-                  <Col span={8}>
-                    <Form.Item label="接班时间">
-                      {getFieldDecorator('receiveTime', {
-                        initialValue: cacheinfo.receiveBeginTime
-                        ? [moment(cacheinfo.receiveBeginTime), moment(cacheinfo.receiveEndTime)]
-                        : '',
-                      })
-                        (
-                          <RangePicker
-                            showTime={{
-                              hideDisabledOptions: true,
-                              defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                            }}
-                            format="YYYY-MM-DD HH:mm:ss"
-                            style={{ width: '100%' }}
-                          />
+                  <span style={{ display: expand ? 'block' : 'none' }}>
+                    <Col span={8}>
+                      <Form.Item label="值班班组">
+                        {getFieldDecorator('groupName', {
+                          initialValue: cacheinfo.groupName,
+                        })(
+                          <Select
+                            allowClear={false}
+                            placeholder="请选择"
+                            getPopupContainer={e => e.parentNode}
+                            onChange={(value, option) => handleChange(value, option, 'groupName')}
+                          >
+                            {teamname.map(obj => [
+                              <Option
+                                key={obj.title}
+                                values={obj.key}
+                              >
+                                {obj.title}
+                              </Option>
+                            ])}
+                          </Select>,
                         )}
-                    </Form.Item>
-                  </Col>
-                </span>
-                {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
-              </Form>
-            </Row>
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                      <Form.Item label="值班班次">
+                        {getFieldDecorator('shiftName', {
+                          initialValue: cacheinfo.shiftName,
+                        })(
+                          <Select
+                            placeholder="请选择"
+                            allowClear
+                            getPopupContainer={e => e.parentNode}
+                            onFocus={() => handleFocus('shiftName')}
+                          >
+                            {(shift || []).map((obj) => [
+                              <Option
+                                key={obj.shiftName}
+                                value={obj.shiftName}
+                              >
+                                {obj.shiftName}
+                              </Option>
+                            ])}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                      <Form.Item label="巡检及监控记录">
+                        {getFieldDecorator('monitorNotes', {
+                          initialValue: cacheinfo.monitorNotes,
+                        })(<Input placeholder="请输入" allowClear />,)}
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                      <Form.Item label="异常情况记录">
+                        {getFieldDecorator('alarmNotes', {
+                          initialValue: cacheinfo.alarmNotes,
+                        })(<Input placeholder="请输入" allowClear />)}
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                      <Form.Item label="重大运维事件">
+                        {getFieldDecorator('devopsNotes', {
+                          initialValue: cacheinfo.devopsNotes,
+                        })(<Input placeholder="请输入" allowClear />,)}
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                      <Form.Item label="其他情况记录">
+                        {getFieldDecorator('otherNotes', {
+                          initialValue: cacheinfo.otherNotes,
+                        })(<Input placeholder="请输入" allowClear />)}
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                      <Form.Item label="交班人">
+                        {getFieldDecorator('handoverName', {
+                          initialValue: cacheinfo.handoverName,
+                        })(<Input placeholder="请输入" allowClear />)}
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                      <Form.Item label="接班人">
+                        {getFieldDecorator('heirName', {
+                          initialValue: cacheinfo.heirName,
+                        })(<Input placeholder="请输入" allowClear />)}
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                      <Form.Item label="接班班组">
+                        {getFieldDecorator('heirGroupName', {
+                          initialValue: cacheinfo.heirGroupName,
+                        })(
+                          <Select
+                            placeholder="请选择"
+                            allowClear={false}
+                            getPopupContainer={e => e.parentNode}
+                            onChange={(value, option) => handleChange(value, option, 'heirGroupName')}
+                          >
+                            {teamname.map(obj => [
+                              <Option
+                                key={obj.title}
+                                values={obj.key}
+                              >
+                                {obj.title}
+                              </Option>
+                            ])}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                      <Form.Item label="接班班次">
+                        {getFieldDecorator('heirShiftName', {
+                          initialValue: cacheinfo.heirShiftName,
+                        })(
+                          <Select
+                            placeholder="请选择"
+                            allowClear
+                            getPopupContainer={e => e.parentNode}
+                            onFocus={() => handleFocus('heirShiftName')}
+                          >
+                            {(acceptshift || []).map((obj) => [
+                              <Option
+                                key={obj.shiftName}
+                                value={obj.shiftName}
+                              >
+                                {obj.shiftName}
+                              </Option>
+                            ])}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                      <Form.Item label="交班时间">
+                        {getFieldDecorator('handoverTime', {
+                          initialValue: cacheinfo.handoverBeginTime ?
+                            [moment(cacheinfo.handoverBeginTime), moment(cacheinfo.handoverEndTime)] : ''
+                        })
+                          (
+                            <RangePicker
+                              showTime={{
+                                hideDisabledOptions: true,
+                                defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                              }}
+                              format="YYYY-MM-DD HH:mm:ss"
+                              style={{ width: '100%' }}
+                            />
+                          )}
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                      <Form.Item label="需注意事项">
+                        {getFieldDecorator('attention', {
+                          initialValue: cacheinfo.attention,
+                        })(<Input placeholder="请输入" allowClear />)}
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                      <Form.Item label="交接物品">
+                        {getFieldDecorator('handoverItems', {
+                          initialValue: cacheinfo.handoverItems && (cacheinfo.handoverItems).split(',') || undefined,
+                        })(
+                          <Select
+                            placeholder="请选择"
+                            mode="multiple"
+                            allowClear
+                          >
+                            {(handoveritems || []).map(obj => [
+                              <Option key={obj.key} value={obj.title}>
+                                {obj.title}
+                              </Option>,
+                            ])}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                      <Form.Item label="交接状态">
+                        {getFieldDecorator('handoverStatus', {
+                          initialValue: cacheinfo.handoverStatus,
+                        })(
+                          <Select
+                            placeholder="请选择"
+                            allowClear
+                            getPopupContainer={e => e.parentNode}
+                          >
+                            {allstatusmap6.map(obj => (
+                              <Option key={obj.title} value={obj.title}>
+                                {obj.title}
+                              </Option>
+                            ))}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                      <Form.Item label="接班时间">
+                        {getFieldDecorator('receiveTime', {
+                          initialValue: cacheinfo.receiveBeginTime
+                            ? [moment(cacheinfo.receiveBeginTime), moment(cacheinfo.receiveEndTime)]
+                            : '',
+                        })
+                          (
+                            <RangePicker
+                              showTime={{
+                                hideDisabledOptions: true,
+                                defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                              }}
+                              format="YYYY-MM-DD HH:mm:ss"
+                              style={{ width: '100%' }}
+                            />
+                          )}
+                      </Form.Item>
+                    </Col>
+                  </span>
+                  {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
+                </Form>
+              </Row>
+            </div>
+
           )
         }
 

@@ -945,434 +945,437 @@ function MyoperationPlan(props) {
         style={{ display: 'none' }}
       />
       <Card>
-        <Row gutter={16}>
-          <Form {...formItemLayout}>
-            <Col span={8}>
-              <Form.Item label="作业计划编号">
-                {getFieldDecorator('operationNo', {
-                  initialValue: cacheinfo.operationNo,
-                })(<Input allowClear />)}
-              </Form.Item>
-            </Col>
-
-            <Col span={8}>
-              <Form.Item label="作业系统名称">
-                {getFieldDecorator('systemName', {
-                  initialValue: cacheinfo.systemName,
-                })(<Input allowClear />)}
-              </Form.Item>
-            </Col>
-            <span style={{ display: expand ? 'block' : 'none' }}>
+        <div className='noexplain'>
+          <Row gutter={16}>
+            <Form {...formItemLayout}>
               <Col span={8}>
-                <Form.Item label="作业类型">
-                  {getFieldDecorator('type', {
-                    initialValue: cacheinfo.type,
-                  })(
-                    <Select placeholder="请选择" allowClear>
-                      {taskType.map(obj => [
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="作业性质">
-                  {getFieldDecorator('nature', {
-                    initialValue: cacheinfo.nature,
-                  })(
-                    <Select placeholder="请选择" allowClear>
-                      {taskNature.map(obj => [
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="作业单位">
-                  {getFieldDecorator('operationUnit', {
-                    initialValue: cacheinfo.operationUnit,
-                  })(
-                    <Select placeholder="请选择" allowClear>
-                      {taskCompany.map(obj => [
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="作业负责人">
-                  {getFieldDecorator('operationUser', {
-                    initialValue: cacheinfo.operationUser || '',
-                  })(
-                    <Select allowClear>
-                      {operationPersonSelect.map(obj => [
-                        <Option key={obj.key} value={obj.value}>
-                          {obj.value}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="是否开票">
-                  {getFieldDecorator('billing', {
-                    initialValue: cacheinfo.billing,
-                  })(
-                    <Select placeholder="请选择" allowClear>
-                      {taskBilling.map(obj => [
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="作业对象">
-                  {getFieldDecorator('object', {
-                    initialValue: cacheinfo.object,
+                <Form.Item label="作业计划编号">
+                  {getFieldDecorator('operationNo', {
+                    initialValue: cacheinfo.operationNo,
                   })(<Input allowClear />)}
                 </Form.Item>
               </Col>
 
               <Col span={8}>
-                <Form.Item label="作业内容">
-                  {getFieldDecorator('content', {
-                    initialValue: cacheinfo.content,
+                <Form.Item label="作业系统名称">
+                  {getFieldDecorator('systemName', {
+                    initialValue: cacheinfo.systemName,
                   })(<Input allowClear />)}
                 </Form.Item>
               </Col>
-              <Col span={8}>
-                <Form.Item label="计划开始时间">
-                  {getFieldDecorator('plannedStartTime', {
-                    initialValue: '',
-                  })(
-                    <RangePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: [
-                          moment('00:00:00', 'HH:mm:ss'),
-                          moment('23:59:59', 'HH:mm:ss'),
-                        ],
-                      }}
-                      format="YYYY-MM-DD HH:mm:ss"
-                      style={{ width: '100%' }}
-                    />,
-                  )}
-                </Form.Item>
-              </Col>
+              <span style={{ display: expand ? 'block' : 'none' }}>
+                <Col span={8}>
+                  <Form.Item label="作业类型">
+                    {getFieldDecorator('type', {
+                      initialValue: cacheinfo.type,
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {taskType.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="作业性质">
+                    {getFieldDecorator('nature', {
+                      initialValue: cacheinfo.nature,
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {taskNature.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
 
-              <Col span={8}>
-                <Form.Item label="计划结束时间">
-                  {getFieldDecorator('plannedendTime', {
-                    initialValue: '',
-                  })(
-                    <RangePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: [
-                          moment('00:00:00', 'HH:mm:ss'),
-                          moment('23:59:59', 'HH:mm:ss'),
-                        ],
-                      }}
-                      format="YYYY-MM-DD HH:mm:ss"
-                      style={{ width: '100%' }}
-                    />,
-                  )}
-                </Form.Item>
-              </Col>
+                <Col span={8}>
+                  <Form.Item label="作业单位">
+                    {getFieldDecorator('operationUnit', {
+                      initialValue: cacheinfo.operationUnit,
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {taskCompany.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
 
-              <Col span={8}>
-                <Form.Item label="作业状态">
-                  {getFieldDecorator('status', {
-                    initialValue: cacheinfo.status,
-                  })(
-                    <Select placeholder="请选择" allowClear>
-                      {executeStatus.map(obj => [
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="审核状态">
-                  {getFieldDecorator('checkStatus', {
-                    initialValue: cacheinfo.checkStatus,
-                  })(
-                    <Select placeholder="请选择" allowClear>
-                      {checkStatus.map(obj => [
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
+                <Col span={8}>
+                  <Form.Item label="作业负责人">
+                    {getFieldDecorator('operationUser', {
+                      initialValue: cacheinfo.operationUser || '',
+                    })(
+                      <Select allowClear>
+                        {operationPersonSelect.map(obj => [
+                          <Option key={obj.key} value={obj.value}>
+                            {obj.value}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="是否开票">
+                    {getFieldDecorator('billing', {
+                      initialValue: cacheinfo.billing,
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {taskBilling.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
 
-              <Col span={8}>
-                <Form.Item label="超时状态">
-                  {getFieldDecorator('timeoutStatus', {
-                    initialValue: cacheinfo.timeoutStatus,
-                  })(
-                    <Select placeholder="请选择" allowClear>
-                      {timeoutStatus.map(obj => [
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
+                <Col span={8}>
+                  <Form.Item label="作业对象">
+                    {getFieldDecorator('object', {
+                      initialValue: cacheinfo.object,
+                    })(<Input allowClear />)}
+                  </Form.Item>
+                </Col>
 
-              <Col span={8}>
-                <Form.Item label="作业结果">
-                  {getFieldDecorator('executeResult', {
-                    initialValue: cacheinfo.executeResult,
-                  })(
-                    <Select placeholder="请选择" allowClear>
-                      {taskResult.map(obj => [
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
+                <Col span={8}>
+                  <Form.Item label="作业内容">
+                    {getFieldDecorator('content', {
+                      initialValue: cacheinfo.content,
+                    })(<Input allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="计划开始时间">
+                    {getFieldDecorator('plannedStartTime', {
+                      initialValue: '',
+                    })(
+                      <RangePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: [
+                            moment('00:00:00', 'HH:mm:ss'),
+                            moment('23:59:59', 'HH:mm:ss'),
+                          ],
+                        }}
+                        format="YYYY-MM-DD HH:mm:ss"
+                        style={{ width: '100%' }}
+                      />,
+                    )}
+                  </Form.Item>
+                </Col>
 
-              <Col span={8}>
-                <Form.Item label="作业执行情况说明">
-                  {getFieldDecorator('executeContent', {
-                    initialValue: cacheinfo.executeContent,
-                  })(<Input allowClear />)}
-                </Form.Item>
-              </Col>
+                <Col span={8}>
+                  <Form.Item label="计划结束时间">
+                    {getFieldDecorator('plannedendTime', {
+                      initialValue: '',
+                    })(
+                      <RangePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: [
+                            moment('00:00:00', 'HH:mm:ss'),
+                            moment('23:59:59', 'HH:mm:ss'),
+                          ],
+                        }}
+                        format="YYYY-MM-DD HH:mm:ss"
+                        style={{ width: '100%' }}
+                      />,
+                    )}
+                  </Form.Item>
+                </Col>
 
-              <Col span={8}>
-                <Form.Item label="审核结果">
-                  {getFieldDecorator('checkResult', {
-                    initialValue: cacheinfo.checkResult,
-                  })(
-                    <Select placeholder="请选择" allowClear>
-                      {checkResult.map(obj => [
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="实际开始时间">
-                  {getFieldDecorator('startTime', {
-                    initialValue: '',
-                  })(
-                    <RangePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: [
-                          moment('00:00:00', 'HH:mm:ss'),
-                          moment('23:59:59', 'HH:mm:ss'),
-                        ],
-                      }}
-                      format="YYYY-MM-DD HH:mm:ss"
-                      style={{ width: '100%' }}
-                    />,
-                  )}
-                </Form.Item>
-              </Col>
+                <Col span={8}>
+                  <Form.Item label="作业状态">
+                    {getFieldDecorator('status', {
+                      initialValue: cacheinfo.status,
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {executeStatus.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="审核状态">
+                    {getFieldDecorator('checkStatus', {
+                      initialValue: cacheinfo.checkStatus,
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {checkStatus.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
 
-              <Col span={8}>
-                <Form.Item label="实际结束时间">
-                  {getFieldDecorator('endTime', {
-                    initialValue: '',
-                  })(
-                    <RangePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: [
-                          moment('00:00:00', 'HH:mm:ss'),
-                          moment('23:59:59', 'HH:mm:ss'),
-                        ],
-                      }}
-                      format="YYYY-MM-DD HH:mm:ss"
-                      style={{ width: '100%' }}
-                    />,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="执行操作时间">
-                  {getFieldDecorator('executeOperationTime', {
-                    initialValue: cacheinfo.executeOperationTime,
-                  })(
-                    <RangePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: [
-                          moment('00:00:00', 'HH:mm:ss'),
-                          moment('23:59:59', 'HH:mm:ss'),
-                        ],
-                      }}
-                      format="YYYY-MM-DD HH:mm:ss"
-                      style={{ width: '100%' }}
-                      allowClear
-                    />,
-                  )}
-                </Form.Item>
-              </Col>
+                <Col span={8}>
+                  <Form.Item label="超时状态">
+                    {getFieldDecorator('timeoutStatus', {
+                      initialValue: cacheinfo.timeoutStatus,
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {timeoutStatus.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
 
-              <Col span={8}>
-                <Form.Item label="填报人">
-                  {getFieldDecorator('addUser', {
-                    initialValue: cacheinfo.addUser,
-                  })(<Input allowClear />)}
-                </Form.Item>
-              </Col>
+                <Col span={8}>
+                  <Form.Item label="作业结果">
+                    {getFieldDecorator('executeResult', {
+                      initialValue: cacheinfo.executeResult,
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {taskResult.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
 
-              <Col span={8}>
-                <Form.Item label="填报单位">
-                  {getFieldDecorator('addUnit', {
-                    initialValue: cacheinfo.addUnit,
-                  })(<Input allowClear />)}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="审核人">
-                  {getFieldDecorator('checkUser', {
-                    initialValue: cacheinfo.checkUser,
-                  })(<Input allowClear />)}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="审核时间">
-                  {getFieldDecorator('checkTime', {
-                    initialValue: '',
-                  })(
-                    <RangePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: [
-                          moment('00:00:00', 'HH:mm:ss'),
-                          moment('23:59:59', 'HH:mm:ss'),
-                        ],
-                      }}
-                      format="YYYY-MM-DD HH:mm:ss"
-                      style={{ width: '100%' }}
-                      allowClear
-                    />,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="审核说明">
-                  {getFieldDecorator('checkContent', {
-                    initialValue: cacheinfo.checkContent,
-                  })(<Input allowClear />)}
-                </Form.Item>
-              </Col>
+                <Col span={8}>
+                  <Form.Item label="作业执行情况说明">
+                    {getFieldDecorator('executeContent', {
+                      initialValue: cacheinfo.executeContent,
+                    })(<Input allowClear />)}
+                  </Form.Item>
+                </Col>
 
-              <Col span={8}>
-                <Form.Item label="填报时间">
-                  {getFieldDecorator('addTime', {
-                    initialValue: '',
-                  })(
-                    <RangePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: [
-                          moment('00:00:00', 'HH:mm:ss'),
-                          moment('23:59:59', 'HH:mm:ss'),
-                        ],
-                      }}
-                      format="YYYY-MM-DD HH:mm:ss"
-                      style={{ width: '100%' }}
-                      allowClear
-                    />,
-                  )}
-                </Form.Item>
-              </Col>
-            </span>
+                <Col span={8}>
+                  <Form.Item label="审核结果">
+                    {getFieldDecorator('checkResult', {
+                      initialValue: cacheinfo.checkResult,
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {checkResult.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="实际开始时间">
+                    {getFieldDecorator('startTime', {
+                      initialValue: '',
+                    })(
+                      <RangePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: [
+                            moment('00:00:00', 'HH:mm:ss'),
+                            moment('23:59:59', 'HH:mm:ss'),
+                          ],
+                        }}
+                        format="YYYY-MM-DD HH:mm:ss"
+                        style={{ width: '100%' }}
+                      />,
+                    )}
+                  </Form.Item>
+                </Col>
 
-            {expand === false && (
-              <Col span={8}>
-                <Button type="primary" onClick={() => handleSearch()}>
-                  查询
-                </Button>
+                <Col span={8}>
+                  <Form.Item label="实际结束时间">
+                    {getFieldDecorator('endTime', {
+                      initialValue: '',
+                    })(
+                      <RangePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: [
+                            moment('00:00:00', 'HH:mm:ss'),
+                            moment('23:59:59', 'HH:mm:ss'),
+                          ],
+                        }}
+                        format="YYYY-MM-DD HH:mm:ss"
+                        style={{ width: '100%' }}
+                      />,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="执行操作时间">
+                    {getFieldDecorator('executeOperationTime', {
+                      initialValue: cacheinfo.executeOperationTime,
+                    })(
+                      <RangePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: [
+                            moment('00:00:00', 'HH:mm:ss'),
+                            moment('23:59:59', 'HH:mm:ss'),
+                          ],
+                        }}
+                        format="YYYY-MM-DD HH:mm:ss"
+                        style={{ width: '100%' }}
+                        allowClear
+                      />,
+                    )}
+                  </Form.Item>
+                </Col>
 
-                <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>
-                  重置
-                </Button>
+                <Col span={8}>
+                  <Form.Item label="填报人">
+                    {getFieldDecorator('addUser', {
+                      initialValue: cacheinfo.addUser,
+                    })(<Input allowClear />)}
+                  </Form.Item>
+                </Col>
 
-                <Button
-                  style={{ marginLeft: 8 }}
-                  type="link"
-                  onClick={() => {
-                    expand = !expand
-                  }}
-                >
-                  {expand ? (
-                    <>
-                      关闭 <UpOutlined />
-                    </>
-                  ) : (
-                    <>
-                      展开 <DownOutlined />
-                    </>
-                  )}
-                </Button>
-              </Col>
-            )}
+                <Col span={8}>
+                  <Form.Item label="填报单位">
+                    {getFieldDecorator('addUnit', {
+                      initialValue: cacheinfo.addUnit,
+                    })(<Input allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="审核人">
+                    {getFieldDecorator('checkUser', {
+                      initialValue: cacheinfo.checkUser,
+                    })(<Input allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="审核时间">
+                    {getFieldDecorator('checkTime', {
+                      initialValue: '',
+                    })(
+                      <RangePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: [
+                            moment('00:00:00', 'HH:mm:ss'),
+                            moment('23:59:59', 'HH:mm:ss'),
+                          ],
+                        }}
+                        format="YYYY-MM-DD HH:mm:ss"
+                        style={{ width: '100%' }}
+                        allowClear
+                      />,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="审核说明">
+                    {getFieldDecorator('checkContent', {
+                      initialValue: cacheinfo.checkContent,
+                    })(<Input allowClear />)}
+                  </Form.Item>
+                </Col>
 
-            {expand === true && (
-              <Col span={24} style={{ textAlign: 'right' }}>
-                <Button type="primary" onClick={() => handleSearch()}>
-                  查询
-                </Button>
-                <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>
-                  重置
-                </Button>
-                <Button
-                  style={{ marginLeft: 8 }}
-                  type="link"
-                  onClick={() => {
-                    expand = !expand
-                  }}
-                >
-                  {expand ? (
-                    <>
-                      关闭 <UpOutlined />
-                    </>
-                  ) : (
-                    <>
-                      展开 <DownOutlined />
-                    </>
-                  )}
-                </Button>
-              </Col>
-            )}
-          </Form>
-        </Row>
+                <Col span={8}>
+                  <Form.Item label="填报时间">
+                    {getFieldDecorator('addTime', {
+                      initialValue: '',
+                    })(
+                      <RangePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: [
+                            moment('00:00:00', 'HH:mm:ss'),
+                            moment('23:59:59', 'HH:mm:ss'),
+                          ],
+                        }}
+                        format="YYYY-MM-DD HH:mm:ss"
+                        style={{ width: '100%' }}
+                        allowClear
+                      />,
+                    )}
+                  </Form.Item>
+                </Col>
+              </span>
+
+              {expand === false && (
+                <Col span={8}>
+                  <Button type="primary" onClick={() => handleSearch()}>
+                    查询
+                  </Button>
+
+                  <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>
+                    重置
+                  </Button>
+
+                  <Button
+                    style={{ marginLeft: 8 }}
+                    type="link"
+                    onClick={() => {
+                      expand = !expand
+                    }}
+                  >
+                    {expand ? (
+                      <>
+                        关闭 <UpOutlined />
+                      </>
+                    ) : (
+                      <>
+                        展开 <DownOutlined />
+                      </>
+                    )}
+                  </Button>
+                </Col>
+              )}
+
+              {expand === true && (
+                <Col span={24} style={{ textAlign: 'right' }}>
+                  <Button type="primary" onClick={() => handleSearch()}>
+                    查询
+                  </Button>
+                  <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>
+                    重置
+                  </Button>
+                  <Button
+                    style={{ marginLeft: 8 }}
+                    type="link"
+                    onClick={() => {
+                      expand = !expand
+                    }}
+                  >
+                    {expand ? (
+                      <>
+                        关闭 <UpOutlined />
+                      </>
+                    ) : (
+                      <>
+                        展开 <DownOutlined />
+                      </>
+                    )}
+                  </Button>
+                </Col>
+              )}
+            </Form>
+          </Row>
+        </div>
+
 
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleFillin()}>

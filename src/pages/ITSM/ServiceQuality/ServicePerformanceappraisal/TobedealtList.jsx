@@ -1032,8 +1032,8 @@ function TobedealtList(props) {
 
   const download = () => {
     validateFields((err, values) => {
-      const selectRow = (selectedRows || []).map( objs => {
-       return objs.assessNo
+      const selectRow = (selectedRows || []).map(objs => {
+        return objs.assessNo
       })
       const newValue = {
         ...values,
@@ -1288,626 +1288,629 @@ function TobedealtList(props) {
         style={{ display: 'none' }}
       />
       <Card>
-        <Row gutter={16}>
-          <Form {...formItemLayout}>
-            <Col span={8}>
-              <Form.Item label="考核编号">
-                {getFieldDecorator('assessNo', {
-                  initialValue: cacheinfo.assessNo,
-                })(<Input />)}
-              </Form.Item>
-            </Col>
+        <div className='noexplain'>
+          <Row gutter={16}>
+            <Form {...formItemLayout}>
+              <Col span={8}>
+                <Form.Item label="考核编号">
+                  {getFieldDecorator('assessNo', {
+                    initialValue: cacheinfo.assessNo,
+                  })(<Input />)}
+                </Form.Item>
+              </Col>
 
-            <Col span={8}>
-              <Form.Item label="当前处理环节">
-                {getFieldDecorator('currentTaskName', {
-                  initialValue: cacheinfo.currentTaskName,
-                })(
-                  <Select getPopupContainer={e => e.parentNode} allowClear>
-                    {currentProssing.map(obj => [
-                      <Option key={obj.dict_code} value={obj.title}>
-                        {obj.title}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
+              <Col span={8}>
+                <Form.Item label="当前处理环节">
+                  {getFieldDecorator('currentTaskName', {
+                    initialValue: cacheinfo.currentTaskName,
+                  })(
+                    <Select getPopupContainer={e => e.parentNode} allowClear>
+                      {currentProssing.map(obj => [
+                        <Option key={obj.dict_code} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
 
 
 
-            <div style={{ display: expand ? 'block' : 'none' }}>
+              <div style={{ display: expand ? 'block' : 'none' }}>
 
-              {
-                pagetitle === '服务绩效考核查询' && (
+                {
+                  pagetitle === '服务绩效考核查询' && (
+                    <Col span={8}>
+                      <Form.Item label="当前环节处理人">
+                        {getFieldDecorator('assignee', {
+                          initialValue: cacheinfo.assignee,
+                        })(
+                          <Input />,
+                        )}
+                      </Form.Item>
+                    </Col>
+                  )
+                }
+
+                <Col span={8}>
+                  <Form.Item label="发生时间">
+                    {getFieldDecorator('timeoccurrence', {
+                      initialValue: '',
+                    })(
+                      <RangePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: [
+                            moment('00:00:00', 'HH:mm:ss'),
+                            moment('23:59:59', 'HH:mm:ss'),
+                          ],
+                        }}
+                        format="YYYY-MM-DD HH:mm:ss"
+                        style={{ width: '100%' }}
+                        placeholder="请选择"
+                        allowClear
+                      />,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="服务商">
+                    {getFieldDecorator('providerName', {
+                      initialValue: cacheinfo.providerName,
+                    })(
+                      <AutoComplete
+                        getPopupContainer={e => e.parentNode}
+                        dataSource={disableduser}
+                        dropdownMatchSelectWidth={false}
+                        dropdownStyle={{ width: 600 }}
+                        onSelect={(v, opt) => handleDisableduser(v, opt, 'provider')}
+                      >
+                        <Search
+                          placeholder="可输入姓名搜索"
+                          onSearch={values => SearchDisableduser(values, 'provider')}
+                          allowClear
+                        />
+                      </AutoComplete>,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col style={{ display: 'none' }}>
+                  {getFieldDecorator('providerId', {
+                    initialValue: cacheinfo.providerId,
+                  })(<Input />)}
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="关联合同名称">
+                    {getFieldDecorator('contractId', {
+                      initialValue: cacheinfo.contractId,
+                    })(
+                      <Select
+                        getPopupContainer={e => e.parentNode}
+                        placeholder="请选择"
+                        onChange={(value, option) => handleChange(value, option, 'contractId')}
+                        onFocus={() => handleFocus('contract')}
+                        allowClear
+                      >
+                        {contractArr.map(obj => [
+                          <Option key={obj.contractName} value={obj.id}>
+                            <div className={styles.disableuser}>
+                              <span>{obj.contractNo}</span>
+                              <span>{obj.contractName}</span>
+                            </div>
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col style={{ display: 'none' }}>
+                  {getFieldDecorator('contractName', {
+                    initialValue: cacheinfo.contractName,
+                  })(<Input />)}
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="责任人">
+                    {getFieldDecorator('directorName', {
+                      initialValue: cacheinfo.directorName,
+                    })(
+                      <Input />,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="考核类型">
+                    {getFieldDecorator('assessType', {
+                      initialValue: cacheinfo.assessType,
+                    })(
+                      <Select
+                        getPopupContainer={e => e.parentNode}
+                        onChange={(value, option) => handleChange(value, option, 'assessType')}
+                        allowClear
+                      >
+                        <Option key="1" value="1">
+                          功能开发
+                        </Option>
+                        <Option key="2" value="2">
+                          系统运维
+                        </Option>
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="考核内容说明">
+                    {getFieldDecorator('assessContent', {
+                      initialValue: cacheinfo.assessContent,
+                    })(<Input />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="一级指标">
+                    {getFieldDecorator('target1Name', {
+                      initialValue: cacheinfo.target1Name,
+                    })(
+                      <Select
+                        getPopupContainer={e => e.parentNode}
+                        onChange={(value, option) => handleChange(value, option, 'target1Name')}
+                        onFocus={() => handleFocus('one')}
+                        placeholder="请选择"
+                        allowClear
+                      >
+                        {(target1 || []).map(obj => [
+                          <Option key={obj.id} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8} style={{ display: 'none' }}>
+                  <Form.Item label="一级指标id">
+                    {getFieldDecorator('target1Id', {
+                      initialValue: cacheinfo.target1Id,
+                    })(<Input />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="二级指标">
+                    {getFieldDecorator('target2Name', {
+                      initialValue: cacheinfo.target2Name,
+                    })(
+                      <Select
+                        getPopupContainer={e => e.parentNode}
+                        onChange={(value, option) => handleChange(value, option, 'target2Name')}
+                        onFocus={() => handleFocus('two')}
+                        placeholder="请选择"
+                        allowClear
+                      >
+                        {(target2 || []).map(obj => [
+                          <Option key={obj.id} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8} style={{ display: 'none' }}>
+                  <Form.Item label=" 二级指标">
+                    {getFieldDecorator('target2Id', {
+                      initialValue: cacheinfo.target2Id,
+                    })(<Input />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="是否申诉">
+                    {getFieldDecorator('isAppeal', {
+                      initialValue: cacheinfo.isAppeal,
+                    })(
+                      <Select getPopupContainer={e => e.parentNode} allowClear>
+                        <Option key="1" value="1">
+                          是
+                        </Option>
+                        <Option key="0" value="0">
+                          否
+                        </Option>
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="考核对象">
+                    {getFieldDecorator('assessObject', {
+                      initialValue: cacheinfo.assessObject,
+                    })(
+                      <Select getPopupContainer={e => e.parentNode} allowClear>
+                        {(assessmentObject || []).map(obj => [
+                          <Option key={obj.dict_code} value={obj.dict_code}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={16}>
+                  <Form.Item label="详细条款" {...forminladeLayout}>
+                    {getFieldDecorator('clauseId', {
+                      initialValue: cacheinfo.clauseId,
+                    })(
+                      <Select
+                        getPopupContainer={e => e.parentNode}
+                        onChange={(value, option) => handleChange(value, option, 'clause')}
+                        onFocus={() => handleFocus('clause')}
+                        allowClear
+                      >
+                        {((clauseList && clauseList.records) || []).map(obj => [
+                          <Option key={obj.detailed} value={obj.id}>
+                            <div className={styles.disableuser}>
+                              <span>{obj.orderNo}</span>
+                              <span>{obj.detailed}</span>
+                              <span>{obj.calc}</span>
+                              <span>{obj.scoreValue}</span>
+                              <span>{obj.sources}</span>
+                            </div>
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8} style={{ display: 'none' }}>
+                  <Form.Item label="得分">
+                    {getFieldDecorator('clauseName', {
+                      initialValue: cacheinfo.clauseName,
+                    })(<Input />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="得分">
+                    {getFieldDecorator('assessValue', {
+                      initialValue: cacheinfo.assessValue,
+                    })(<Input />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8} style={{ display: 'none' }}>
+                  <Form.Item label="登记人id">
+                    {getFieldDecorator('register', {})(<Input />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="登记人">
+                    {getFieldDecorator('registerName', {
+                      initialValue: cacheinfo.registerName,
+                    })(<Input />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="登记时间">
+                    {getFieldDecorator('applyTime', {
+                      initialValue: '',
+                    })(
+                      <RangePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: [
+                            moment('00:00:00', 'HH:mm:ss'),
+                            moment('23:59:59', 'HH:mm:ss'),
+                          ],
+                        }}
+                        format="YYYY-MM-DD HH:mm:ss"
+                        style={{ width: '100%' }}
+                        placeholder="请选择"
+                        allowClear
+                      />,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="业务负责人审核结果">
+                    {getFieldDecorator('directorVerifyValue', {
+                      initialValue: cacheinfo.directorVerifyValue,
+                    })(
+                      <Select getPopupContainer={e => e.parentNode} allowClear>
+                        <Option key="1" value="1">
+                          通过
+                        </Option>
+                        <Option key="0" value="0">
+                          不通过
+                        </Option>
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="业务负责人审核说明">
+                    {getFieldDecorator('directorVerifyContent', {
+                      initialValue: cacheinfo.directorVerifyContent,
+                    })(<Input />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="业务负责人审核状态">
+                    {getFieldDecorator('directorVerifyStatus', {
+                      initialValue: cacheinfo.directorVerifyStatus,
+                    })(
+                      <Select getPopupContainer={e => e.parentNode} allowClear>
+                        <Option key="待审核" value="待审核">
+                          待审核
+                        </Option>
+                        <Option key="已审核" value="已审核">
+                          已审核
+                        </Option>
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="业务负责审核人">
+                    {getFieldDecorator('directorVerifierName', {
+                      initialValue: cacheinfo.directorVerifierName,
+                    })(<Input />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="业务负责人审核时间">
+                    {getFieldDecorator('directorVerifyTime', {
+                      initialValue: '',
+                    })(
+                      <RangePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: [
+                            moment('00:00:00', 'HH:mm:ss'),
+                            moment('23:59:59', 'HH:mm:ss'),
+                          ],
+                        }}
+                        format="YYYY-MM-DD HH:mm:ss"
+                        style={{ width: '100%' }}
+                        placeholder="请选择"
+                        allowClear
+                      />,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="申诉内容">
+                    {getFieldDecorator('appealContent', {
+                      initialValue: cacheinfo.appealContent,
+                    })(<Input />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="申诉内容">
+                    {getFieldDecorator('appealContent', {
+                      initialValue: cacheinfo.appealContent,
+                    })(<Input />)}
+                  </Form.Item>
+                </Col>
+
+                {performanceLeader && performanceLeader.length && (
                   <Col span={8}>
-                    <Form.Item label="当前环节处理人">
-                      {getFieldDecorator('assignee', {
-                        initialValue: cacheinfo.assignee,
+                    <Form.Item label="服务商确认人">
+                      {getFieldDecorator('providerConfirmerName', {
+                        initialValue: cacheinfo.providerConfirmerName,
                       })(
                         <Input />,
                       )}
                     </Form.Item>
                   </Col>
-                )
-              }
+                )}
 
-              <Col span={8}>
-                <Form.Item label="发生时间">
-                  {getFieldDecorator('timeoccurrence', {
-                    initialValue: '',
-                  })(
-                    <RangePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: [
-                          moment('00:00:00', 'HH:mm:ss'),
-                          moment('23:59:59', 'HH:mm:ss'),
-                        ],
-                      }}
-                      format="YYYY-MM-DD HH:mm:ss"
-                      style={{ width: '100%' }}
-                      placeholder="请选择"
-                      allowClear
-                    />,
-                  )}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="服务商">
-                  {getFieldDecorator('providerName', {
-                    initialValue: cacheinfo.providerName,
-                  })(
-                    <AutoComplete
-                      getPopupContainer={e => e.parentNode}
-                      dataSource={disableduser}
-                      dropdownMatchSelectWidth={false}
-                      dropdownStyle={{ width: 600 }}
-                      onSelect={(v, opt) => handleDisableduser(v, opt, 'provider')}
-                    >
-                      <Search
-                        placeholder="可输入姓名搜索"
-                        onSearch={values => SearchDisableduser(values, 'provider')}
-                        allowClear
-                      />
-                    </AutoComplete>,
-                  )}
-                </Form.Item>
-              </Col>
-
-              <Col style={{ display: 'none' }}>
-                {getFieldDecorator('providerId', {
-                  initialValue: cacheinfo.providerId,
-                })(<Input />)}
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="关联合同名称">
-                  {getFieldDecorator('contractId', {
-                    initialValue: cacheinfo.contractId,
-                  })(
-                    <Select
-                      getPopupContainer={e => e.parentNode}
-                      placeholder="请选择"
-                      onChange={(value, option) => handleChange(value, option, 'contractId')}
-                      onFocus={() => handleFocus('contract')}
-                      allowClear
-                    >
-                      {contractArr.map(obj => [
-                        <Option key={obj.contractName} value={obj.id}>
-                          <div className={styles.disableuser}>
-                            <span>{obj.contractNo}</span>
-                            <span>{obj.contractName}</span>
-                          </div>
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-
-              <Col style={{ display: 'none' }}>
-                {getFieldDecorator('contractName', {
-                  initialValue: cacheinfo.contractName,
-                })(<Input />)}
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="责任人">
-                  {getFieldDecorator('directorName', {
-                    initialValue: cacheinfo.directorName,
-                  })(
-                    <Input />,
-                  )}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="考核类型">
-                  {getFieldDecorator('assessType', {
-                    initialValue: cacheinfo.assessType,
-                  })(
-                    <Select
-                      getPopupContainer={e => e.parentNode}
-                      onChange={(value, option) => handleChange(value, option, 'assessType')}
-                      allowClear
-                    >
-                      <Option key="1" value="1">
-                        功能开发
-                      </Option>
-                      <Option key="2" value="2">
-                        系统运维
-                      </Option>
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="考核内容说明">
-                  {getFieldDecorator('assessContent', {
-                    initialValue: cacheinfo.assessContent,
-                  })(<Input />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="一级指标">
-                  {getFieldDecorator('target1Name', {
-                    initialValue: cacheinfo.target1Name,
-                  })(
-                    <Select
-                      getPopupContainer={e => e.parentNode}
-                      onChange={(value, option) => handleChange(value, option, 'target1Name')}
-                      onFocus={() => handleFocus('one')}
-                      placeholder="请选择"
-                      allowClear
-                    >
-                      {(target1 || []).map(obj => [
-                        <Option key={obj.id} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-
-              <Col span={8} style={{ display: 'none' }}>
-                <Form.Item label="一级指标id">
-                  {getFieldDecorator('target1Id', {
-                    initialValue: cacheinfo.target1Id,
-                  })(<Input />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="二级指标">
-                  {getFieldDecorator('target2Name', {
-                    initialValue: cacheinfo.target2Name,
-                  })(
-                    <Select
-                      getPopupContainer={e => e.parentNode}
-                      onChange={(value, option) => handleChange(value, option, 'target2Name')}
-                      onFocus={() => handleFocus('two')}
-                      placeholder="请选择"
-                      allowClear
-                    >
-                      {(target2 || []).map(obj => [
-                        <Option key={obj.id} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-
-              <Col span={8} style={{ display: 'none' }}>
-                <Form.Item label=" 二级指标">
-                  {getFieldDecorator('target2Id', {
-                    initialValue: cacheinfo.target2Id,
-                  })(<Input />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="是否申诉">
-                  {getFieldDecorator('isAppeal', {
-                    initialValue: cacheinfo.isAppeal,
-                  })(
-                    <Select getPopupContainer={e => e.parentNode} allowClear>
-                      <Option key="1" value="1">
-                        是
-                      </Option>
-                      <Option key="0" value="0">
-                        否
-                      </Option>
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="考核对象">
-                  {getFieldDecorator('assessObject', {
-                    initialValue: cacheinfo.assessObject,
-                  })(
-                    <Select getPopupContainer={e => e.parentNode} allowClear>
-                      {(assessmentObject || []).map(obj => [
-                        <Option key={obj.dict_code} value={obj.dict_code}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-
-              <Col span={16}>
-                <Form.Item label="详细条款" {...forminladeLayout}>
-                  {getFieldDecorator('clauseId', {
-                    initialValue: cacheinfo.clauseId,
-                  })(
-                    <Select
-                      getPopupContainer={e => e.parentNode}
-                      onChange={(value, option) => handleChange(value, option, 'clause')}
-                      onFocus={() => handleFocus('clause')}
-                      allowClear
-                    >
-                      {((clauseList && clauseList.records) || []).map(obj => [
-                        <Option key={obj.detailed} value={obj.id}>
-                          <div className={styles.disableuser}>
-                            <span>{obj.orderNo}</span>
-                            <span>{obj.detailed}</span>
-                            <span>{obj.calc}</span>
-                            <span>{obj.scoreValue}</span>
-                            <span>{obj.sources}</span>
-                          </div>
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-
-              <Col span={8} style={{ display: 'none' }}>
-                <Form.Item label="得分">
-                  {getFieldDecorator('clauseName', {
-                    initialValue: cacheinfo.clauseName,
-                  })(<Input />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="得分">
-                  {getFieldDecorator('assessValue', {
-                    initialValue: cacheinfo.assessValue,
-                  })(<Input />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={8} style={{ display: 'none' }}>
-                <Form.Item label="登记人id">
-                  {getFieldDecorator('register', {})(<Input />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="登记人">
-                  {getFieldDecorator('registerName', {
-                    initialValue: cacheinfo.registerName,
-                  })(<Input />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="登记时间">
-                  {getFieldDecorator('applyTime', {
-                    initialValue: '',
-                  })(
-                    <RangePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: [
-                          moment('00:00:00', 'HH:mm:ss'),
-                          moment('23:59:59', 'HH:mm:ss'),
-                        ],
-                      }}
-                      format="YYYY-MM-DD HH:mm:ss"
-                      style={{ width: '100%' }}
-                      placeholder="请选择"
-                      allowClear
-                    />,
-                  )}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="业务负责人审核结果">
-                  {getFieldDecorator('directorVerifyValue', {
-                    initialValue: cacheinfo.directorVerifyValue,
-                  })(
-                    <Select getPopupContainer={e => e.parentNode} allowClear>
-                      <Option key="1" value="1">
-                        通过
-                      </Option>
-                      <Option key="0" value="0">
-                        不通过
-                      </Option>
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="业务负责人审核说明">
-                  {getFieldDecorator('directorVerifyContent', {
-                    initialValue: cacheinfo.directorVerifyContent,
-                  })(<Input />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="业务负责人审核状态">
-                  {getFieldDecorator('directorVerifyStatus', {
-                    initialValue: cacheinfo.directorVerifyStatus,
-                  })(
-                    <Select getPopupContainer={e => e.parentNode} allowClear>
-                      <Option key="待审核" value="待审核">
-                        待审核
-                      </Option>
-                      <Option key="已审核" value="已审核">
-                        已审核
-                      </Option>
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="业务负责审核人">
-                  {getFieldDecorator('directorVerifierName', {
-                    initialValue: cacheinfo.directorVerifierName,
-                  })(<Input />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="业务负责人审核时间">
-                  {getFieldDecorator('directorVerifyTime', {
-                    initialValue: '',
-                  })(
-                    <RangePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: [
-                          moment('00:00:00', 'HH:mm:ss'),
-                          moment('23:59:59', 'HH:mm:ss'),
-                        ],
-                      }}
-                      format="YYYY-MM-DD HH:mm:ss"
-                      style={{ width: '100%' }}
-                      placeholder="请选择"
-                      allowClear
-                    />,
-                  )}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="申诉内容">
-                  {getFieldDecorator('appealContent', {
-                    initialValue: cacheinfo.appealContent,
-                  })(<Input />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="申诉内容">
-                  {getFieldDecorator('appealContent', {
-                    initialValue: cacheinfo.appealContent,
-                  })(<Input />)}
-                </Form.Item>
-              </Col>
-
-              {performanceLeader && performanceLeader.length && (
-                <Col span={8}>
-                  <Form.Item label="服务商确认人">
+                <Col span={8} style={{ display: 'none' }}>
+                  <Form.Item label="服务商确认人id">
                     {getFieldDecorator('providerConfirmerName', {
                       initialValue: cacheinfo.providerConfirmerName,
-                    })(
-                      <Input />,
-                    )}
+                    })(<Input />)}
                   </Form.Item>
                 </Col>
-              )}
 
-              <Col span={8} style={{ display: 'none' }}>
-                <Form.Item label="服务商确认人id">
-                  {getFieldDecorator('providerConfirmerName', {
-                    initialValue: cacheinfo.providerConfirmerName,
-                  })(<Input />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="服务商确认时间">
-                  {getFieldDecorator('providerConfirmTime', {
-                    initialValue: '',
-                  })(
-                    <RangePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: [
-                          moment('00:00:00', 'HH:mm:ss'),
-                          moment('23:59:59', 'HH:mm:ss'),
-                        ],
-                      }}
-                      format="YYYY-MM-DD HH:mm:ss"
-                      style={{ width: '100%' }}
-                      placeholder="请选择"
-                      allowClear
-                    />,
-                  )}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="自动化科复核结果">
-                  {getFieldDecorator('directorReviewValue', {
-                    initialValue: cacheinfo.directorReviewValue,
-                  })(
-                    <Select getPopupContainer={e => e.parentNode} allowClear>
-                      <Option key="1" value="1">
-                        同意
-                      </Option>
-                      <Option key="0" value="0">
-                        不同意
-                      </Option>
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="自动化科复核说明">
-                  {getFieldDecorator('directorReviewContent', {
-                    initialValue: cacheinfo.directorReviewContent,
-                  })(<Input />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="自动化科复核人">
-                  {getFieldDecorator('directorReviewerName', {
-                    initialValue: cacheinfo.directorReviewerName,
-                  })(<Input />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="自动化科复核时间">
-                  {getFieldDecorator('directorReviewTime', {
-                    initialValue: '',
-                  })(
-                    <RangePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: [
-                          moment('00:00:00', 'HH:mm:ss'),
-                          moment('23:59:59', 'HH:mm:ss'),
-                        ],
-                      }}
-                      format="YYYY-MM-DD HH:mm:ss"
-                      style={{ width: '100%' }}
-                      placeholder="请选择"
-                      allowClear
-                    />,
-                  )}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="服务绩效考核确认结果">
-                  {getFieldDecorator('finallyConfirmValue', {
-                    initialValue: cacheinfo.finallyConfirmValue,
-                  })(
-                    <Select getPopupContainer={e => e.parentNode} allowClear>
-                      <Option key="完成" value="完成">
-                        完成
-                      </Option>
-                      <Option key="取消" value="取消">
-                        取消
-                      </Option>
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="服务绩效考核确认说明">
-                  {getFieldDecorator('finallyConfirmContent', {
-                    initialValue: cacheinfo.finallyConfirmContent,
-                  })(<Input />)}
-                </Form.Item>
-              </Col>
-
-              {performanceLeader && performanceLeader.length && (
                 <Col span={8}>
-                  <Form.Item label="服务绩效考核确认人">
-                    {getFieldDecorator('finallyConfirmerName', {
-                      initialValue: cacheinfo.finallyConfirmerName,
+                  <Form.Item label="服务商确认时间">
+                    {getFieldDecorator('providerConfirmTime', {
+                      initialValue: '',
                     })(
-                      <Input />,
+                      <RangePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: [
+                            moment('00:00:00', 'HH:mm:ss'),
+                            moment('23:59:59', 'HH:mm:ss'),
+                          ],
+                        }}
+                        format="YYYY-MM-DD HH:mm:ss"
+                        style={{ width: '100%' }}
+                        placeholder="请选择"
+                        allowClear
+                      />,
                     )}
                   </Form.Item>
                 </Col>
-              )}
 
-              <Col span={8} style={{ display: 'none' }}>
-                <Form.Item label="服务商确认人id">
-                  {getFieldDecorator('finallyConfirmer', {
-                    initialValue: cacheinfo.finallyConfirmer,
-                  })(<Input />)}
-                </Form.Item>
-              </Col>
+                <Col span={8}>
+                  <Form.Item label="自动化科复核结果">
+                    {getFieldDecorator('directorReviewValue', {
+                      initialValue: cacheinfo.directorReviewValue,
+                    })(
+                      <Select getPopupContainer={e => e.parentNode} allowClear>
+                        <Option key="1" value="1">
+                          同意
+                        </Option>
+                        <Option key="0" value="0">
+                          不同意
+                        </Option>
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
 
-              <Col span={8}>
-                <Form.Item label="服务绩效考核确认时间">
-                  {getFieldDecorator('finallyConfirmTime', {
-                    initialValue: '',
-                  })(
-                    <RangePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: [
-                          moment('00:00:00', 'HH:mm:ss'),
-                          moment('23:59:59', 'HH:mm:ss'),
-                        ],
-                      }}
-                      format="YYYY-MM-DD HH:mm:ss"
-                      style={{ width: '100%' }}
-                      placeholder="请选择"
-                      allowClear
-                    />,
-                  )}
-                </Form.Item>
-              </Col>
+                <Col span={8}>
+                  <Form.Item label="自动化科复核说明">
+                    {getFieldDecorator('directorReviewContent', {
+                      initialValue: cacheinfo.directorReviewContent,
+                    })(<Input />)}
+                  </Form.Item>
+                </Col>
 
-              {
-                pagetitle === '服务绩效考核查询' && (
+                <Col span={8}>
+                  <Form.Item label="自动化科复核人">
+                    {getFieldDecorator('directorReviewerName', {
+                      initialValue: cacheinfo.directorReviewerName,
+                    })(<Input />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="自动化科复核时间">
+                    {getFieldDecorator('directorReviewTime', {
+                      initialValue: '',
+                    })(
+                      <RangePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: [
+                            moment('00:00:00', 'HH:mm:ss'),
+                            moment('23:59:59', 'HH:mm:ss'),
+                          ],
+                        }}
+                        format="YYYY-MM-DD HH:mm:ss"
+                        style={{ width: '100%' }}
+                        placeholder="请选择"
+                        allowClear
+                      />,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="服务绩效考核确认结果">
+                    {getFieldDecorator('finallyConfirmValue', {
+                      initialValue: cacheinfo.finallyConfirmValue,
+                    })(
+                      <Select getPopupContainer={e => e.parentNode} allowClear>
+                        <Option key="完成" value="完成">
+                          完成
+                        </Option>
+                        <Option key="取消" value="取消">
+                          取消
+                        </Option>
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="服务绩效考核确认说明">
+                    {getFieldDecorator('finallyConfirmContent', {
+                      initialValue: cacheinfo.finallyConfirmContent,
+                    })(<Input />)}
+                  </Form.Item>
+                </Col>
+
+                {performanceLeader && performanceLeader.length && (
                   <Col span={8}>
-                    <Form.Item label="考核来源">
-                      {getFieldDecorator('source', {
-                        initialValue: cacheinfo.source,
+                    <Form.Item label="服务绩效考核确认人">
+                      {getFieldDecorator('finallyConfirmerName', {
+                        initialValue: cacheinfo.finallyConfirmerName,
                       })(
-                        <Select getPopupContainer={e => e.parentNode} allowClear>
-                          {(assessmentSource || []).map(obj => [
-                            <Option key={obj.dict_code} value={obj.title}>
-                              {obj.title}
-                            </Option>,
-                          ])}
-                        </Select>,
+                        <Input />,
                       )}
                     </Form.Item>
                   </Col>
-                )
-              }
-            </div>
+                )}
 
-            {expand ? (
-              <Col span={24} style={{ textAlign: 'right' }}>
-                {extra}
-              </Col>
-            ) : (
-              <Col span={8} style={{ marginTop: 4 }}>
-                {extra}
-              </Col>
-            )}
-          </Form>
-        </Row>
+                <Col span={8} style={{ display: 'none' }}>
+                  <Form.Item label="服务商确认人id">
+                    {getFieldDecorator('finallyConfirmer', {
+                      initialValue: cacheinfo.finallyConfirmer,
+                    })(<Input />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="服务绩效考核确认时间">
+                    {getFieldDecorator('finallyConfirmTime', {
+                      initialValue: '',
+                    })(
+                      <RangePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: [
+                            moment('00:00:00', 'HH:mm:ss'),
+                            moment('23:59:59', 'HH:mm:ss'),
+                          ],
+                        }}
+                        format="YYYY-MM-DD HH:mm:ss"
+                        style={{ width: '100%' }}
+                        placeholder="请选择"
+                        allowClear
+                      />,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                {
+                  pagetitle === '服务绩效考核查询' && (
+                    <Col span={8}>
+                      <Form.Item label="考核来源">
+                        {getFieldDecorator('source', {
+                          initialValue: cacheinfo.source,
+                        })(
+                          <Select getPopupContainer={e => e.parentNode} allowClear>
+                            {(assessmentSource || []).map(obj => [
+                              <Option key={obj.dict_code} value={obj.title}>
+                                {obj.title}
+                              </Option>,
+                            ])}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
+                  )
+                }
+              </div>
+
+              {expand ? (
+                <Col span={24} style={{ textAlign: 'right' }}>
+                  {extra}
+                </Col>
+              ) : (
+                <Col span={8} style={{ marginTop: 4 }}>
+                  {extra}
+                </Col>
+              )}
+            </Form>
+          </Row>
+        </div>
+
 
         <div style={{ marginBottom: 24 }}>
           <Button type="primary" onClick={() => download()}>

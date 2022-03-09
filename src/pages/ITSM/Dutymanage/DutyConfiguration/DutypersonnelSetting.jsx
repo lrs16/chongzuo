@@ -309,67 +309,70 @@ function DutypersonnelSetting(props) {
         style={{ display: 'none' }}
       />
       <Card>
-        <Row gutter={8}>
-          <Form {...formItemLayout} onSubmit={handleSearch}>
-            <Col span={8}>
-              <Form.Item label="值班人员">
-                {getFieldDecorator('staffName', {
-                  initialValue: cacheinfo.staffName,
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="所属部门">
-                {getFieldDecorator('deptName', {
-                  initialValue: cacheinfo.deptName,
-                })(
-                  <Input />
-                )}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="所属岗位">
-                {getFieldDecorator('jobId', {
-                  initialValue: cacheinfo.jobId,
-                })(
-                  <Select
-                    getPopupContainer={e => e.parentNode}
-                    placeholder="请选择"
-                    onChange={(value, option) => handleChange(value, option, 'jobName')}
-                  >
-                    {teamjobName.map(obj => [
-                      <Option
-                        key={obj.key}
-                        values={obj.title}
-                      >
-                        {obj.title}
-                      </Option>
-                    ])}
-                  </Select>
-                )}
-              </Form.Item>
-            </Col>
+        <div className='noexplain'>
+          <Row gutter={8}>
+            <Form {...formItemLayout} onSubmit={handleSearch}>
+              <Col span={8}>
+                <Form.Item label="值班人员">
+                  {getFieldDecorator('staffName', {
+                    initialValue: cacheinfo.staffName,
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="所属部门">
+                  {getFieldDecorator('deptName', {
+                    initialValue: cacheinfo.deptName,
+                  })(
+                    <Input />
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="所属岗位">
+                  {getFieldDecorator('jobId', {
+                    initialValue: cacheinfo.jobId,
+                  })(
+                    <Select
+                      getPopupContainer={e => e.parentNode}
+                      placeholder="请选择"
+                      onChange={(value, option) => handleChange(value, option, 'jobName')}
+                    >
+                      {teamjobName.map(obj => [
+                        <Option
+                          key={obj.key}
+                          values={obj.title}
+                        >
+                          {obj.title}
+                        </Option>
+                      ])}
+                    </Select>
+                  )}
+                </Form.Item>
+              </Col>
 
-            <Form.Item label='' style={{ display: 'none' }}>
-              {
-                getFieldDecorator('jobName', {
-                  initialValue: cacheinfo.jobName
-                })(<Input />)
-              }
-            </Form.Item>
-
-            <Col span={8}>
-              <Form.Item label="联系电话">
-                {getFieldDecorator('phone', {
-                  initialValue: cacheinfo.phone,
-                })(<Input placeholder="请输入" allowClear />)}
+              <Form.Item label='' style={{ display: 'none' }}>
+                {
+                  getFieldDecorator('jobName', {
+                    initialValue: cacheinfo.jobName
+                  })(<Input />)
+                }
               </Form.Item>
-            </Col>
+
+              <Col span={8}>
+                <Form.Item label="联系电话">
+                  {getFieldDecorator('phone', {
+                    initialValue: cacheinfo.phone,
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
+              </Col>
 
 
-            <Col span={24} style={{ textAlign: 'right', paddingTop: 4, marginBottom: 24 }}>{extra}</Col>
-          </Form>
-        </Row>
+              <Col span={24} style={{ textAlign: 'right', paddingTop: 4, marginBottom: 24 }}>{extra}</Col>
+            </Form>
+          </Row>
+        </div>
+
 
         {
           loading === false && (

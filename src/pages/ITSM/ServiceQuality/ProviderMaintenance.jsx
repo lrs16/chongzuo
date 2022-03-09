@@ -344,49 +344,52 @@ function ProviderMaintenance(props) {
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
-        <Row>
-          <Form {...formItemLayout}>
-            <Col span={8}>
-              <Form.Item label="服务商编号">
-                {getFieldDecorator('providerNo', {
-                  initialValue: cacheinfo.providerNo,
-                })(<Input />)}
-              </Form.Item>
-            </Col>
+        <div className='noexplain'>
+          <Row>
+            <Form {...formItemLayout}>
+              <Col span={8}>
+                <Form.Item label="服务商编号">
+                  {getFieldDecorator('providerNo', {
+                    initialValue: cacheinfo.providerNo,
+                  })(<Input />)}
+                </Form.Item>
+              </Col>
 
-            <Col span={8}>
-              <Form.Item label="服务商名称">
-                {getFieldDecorator('providerName', {
-                  initialValue: cacheinfo.providerName,
-                })(<Input />)}
-              </Form.Item>
-            </Col>
+              <Col span={8}>
+                <Form.Item label="服务商名称">
+                  {getFieldDecorator('providerName', {
+                    initialValue: cacheinfo.providerName,
+                  })(<Input />)}
+                </Form.Item>
+              </Col>
 
-            <Col span={8}>
-              <Form.Item label="负责人">
-                {getFieldDecorator('director', {
-                  initialValue: cacheinfo.director,
-                })(<Input />)}
-              </Form.Item>
-            </Col>
+              <Col span={8}>
+                <Form.Item label="负责人">
+                  {getFieldDecorator('director', {
+                    initialValue: cacheinfo.director,
+                  })(<Input />)}
+                </Form.Item>
+              </Col>
 
-            <Col span={8}>
-              <Form.Item label="负责人手机号">
-                {getFieldDecorator('directorPhone', {
-                  initialValue: cacheinfo.directorPhone,
-                })(<Input />)}
-              </Form.Item>
-            </Col>
+              <Col span={8}>
+                <Form.Item label="负责人手机号">
+                  {getFieldDecorator('directorPhone', {
+                    initialValue: cacheinfo.directorPhone,
+                  })(<Input />)}
+                </Form.Item>
+              </Col>
 
-            <Col span={16} style={{ textAlign: 'right' }}>
-              <Button type="primary" style={{ marginRight: 8 }} onClick={handlesearch}>
-                查询
-              </Button>
+              <Col span={16} style={{ textAlign: 'right' }}>
+                <Button type="primary" style={{ marginRight: 8 }} onClick={handlesearch}>
+                  查询
+                </Button>
 
-              <Button onClick={handleReset}>重置</Button>
-            </Col>
-          </Form>
-        </Row>
+                <Button onClick={handleReset}>重置</Button>
+              </Col>
+            </Form>
+          </Row>
+        </div>
+
 
         <Button type="primary" onClick={() => download()}>
           导出数据

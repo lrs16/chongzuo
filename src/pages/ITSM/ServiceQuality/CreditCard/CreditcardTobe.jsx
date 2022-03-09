@@ -89,7 +89,7 @@ function CreditcardTobe(props) {
     });
     setPaginations({ current: 1, pageSize: 15 });
   };
-  
+
   const handleDelete = id => {
     return dispatch({
       type: 'performanceappraisal/scorecardDel',
@@ -315,9 +315,9 @@ function CreditcardTobe(props) {
     contractName: '',
     beginTime: '',
     endTime: '',
-    paginations:{
-      current:1,
-      pageSize:10
+    paginations: {
+      current: 1,
+      pageSize: 10
     }
   };
 
@@ -413,111 +413,114 @@ function CreditcardTobe(props) {
         pagetitle === '计分卡登记' && (
           <PageHeaderWrapper title={pagetitle}>
             <Card>
-              <Row>
-                <Form {...formItemLayout}>
-                  <Col span={8}>
-                    <Form.Item label="计分卡编号">
-                      {getFieldDecorator('cardNo', {
-                        initialValue: cacheinfo.cardNo,
-                      })(<Input />)}
-                    </Form.Item>
-                  </Col>
+              <div className='noexplain'>
+                <Row>
+                  <Form {...formItemLayout}>
+                    <Col span={8}>
+                      <Form.Item label="计分卡编号">
+                        {getFieldDecorator('cardNo', {
+                          initialValue: cacheinfo.cardNo,
+                        })(<Input />)}
+                      </Form.Item>
+                    </Col>
 
-                  <Col span={8}>
-                    <Form.Item label="评价计分卡名称">
-                      {getFieldDecorator('cardName', {
-                        initialValue: cacheinfo.cardName,
-                      })(<Input />)}
-                    </Form.Item>
-                  </Col>
+                    <Col span={8}>
+                      <Form.Item label="评价计分卡名称">
+                        {getFieldDecorator('cardName', {
+                          initialValue: cacheinfo.cardName,
+                        })(<Input />)}
+                      </Form.Item>
+                    </Col>
 
-                  <Col span={8}>
-                    <Form.Item label="评分细则名称">
-                      {getFieldDecorator('scoreName', {
-                        initialValue: cacheinfo.scoreName,
-                      })(<Input />)}
-                    </Form.Item>
-                  </Col>
+                    <Col span={8}>
+                      <Form.Item label="评分细则名称">
+                        {getFieldDecorator('scoreName', {
+                          initialValue: cacheinfo.scoreName,
+                        })(<Input />)}
+                      </Form.Item>
+                    </Col>
 
-                  <Col span={8}>
-                    <Form.Item label="考核类型">
-                      {getFieldDecorator('assessType', {
-                        initialValue: cacheinfo.assessType,
-                      })(
-                        <Select placeholder="请选择">
-                          {(assessmentType || []).map(obj => [
-                            <Option key={obj.dict_code} value={obj.dict_code}>
-                              {obj.title}
-                            </Option>,
-                          ])}
-                        </Select>,
-                      )}
-                    </Form.Item>
-                  </Col>
+                    <Col span={8}>
+                      <Form.Item label="考核类型">
+                        {getFieldDecorator('assessType', {
+                          initialValue: cacheinfo.assessType,
+                        })(
+                          <Select placeholder="请选择">
+                            {(assessmentType || []).map(obj => [
+                              <Option key={obj.dict_code} value={obj.dict_code}>
+                                {obj.title}
+                              </Option>,
+                            ])}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
 
-                  <Col span={8}>
-                    <Form.Item label="版本号">
-                      {getFieldDecorator('version', {
-                        initialValue: cacheinfo.version,
-                      })(<Input />)}
-                    </Form.Item>
-                  </Col>
-                  <Col span={8}>
-                    <Form.Item label="专业部门">
-                      {getFieldDecorator('deptName', {
-                        initialValue: cacheinfo.deptName,
-                      })(<Input />)}
-                    </Form.Item>
-                  </Col>
-                  <Col span={8}>
-                    <Form.Item label="评价区间">
-                      {getFieldDecorator('evaluationInterval', {
-                        initialValue: cacheinfo.beginTime
-                          ? [moment(cacheinfo.beginTime), moment(cacheinfo.endTime)]
-                          : '',
-                      })(
-                        <RangePicker
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: [
-                              moment('00:00:00', 'HH:mm:ss'),
-                              moment('23:59:59', 'HH:mm:ss'),
-                            ],
-                          }}
-                          format="YYYY-MM-DD HH:mm:ss"
-                          style={{ width: '100%' }}
-                          placeholder="请选择"
-                          allowClear
-                        />,
-                      )}
-                    </Form.Item>
-                  </Col>
+                    <Col span={8}>
+                      <Form.Item label="版本号">
+                        {getFieldDecorator('version', {
+                          initialValue: cacheinfo.version,
+                        })(<Input />)}
+                      </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                      <Form.Item label="专业部门">
+                        {getFieldDecorator('deptName', {
+                          initialValue: cacheinfo.deptName,
+                        })(<Input />)}
+                      </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                      <Form.Item label="评价区间">
+                        {getFieldDecorator('evaluationInterval', {
+                          initialValue: cacheinfo.beginTime
+                            ? [moment(cacheinfo.beginTime), moment(cacheinfo.endTime)]
+                            : '',
+                        })(
+                          <RangePicker
+                            showTime={{
+                              hideDisabledOptions: true,
+                              defaultValue: [
+                                moment('00:00:00', 'HH:mm:ss'),
+                                moment('23:59:59', 'HH:mm:ss'),
+                              ],
+                            }}
+                            format="YYYY-MM-DD HH:mm:ss"
+                            style={{ width: '100%' }}
+                            placeholder="请选择"
+                            allowClear
+                          />,
+                        )}
+                      </Form.Item>
+                    </Col>
 
-                  <Col span={8}>
-                    <Form.Item label="服务商">
-                      {getFieldDecorator('providerName', {
-                        initialValue: cacheinfo.providerName,
-                      })(<Input />)}
-                    </Form.Item>
-                  </Col>
+                    <Col span={8}>
+                      <Form.Item label="服务商">
+                        {getFieldDecorator('providerName', {
+                          initialValue: cacheinfo.providerName,
+                        })(<Input />)}
+                      </Form.Item>
+                    </Col>
 
-                  <Col span={8}>
-                    <Form.Item label="合同名称">
-                      {getFieldDecorator('contractName', {
-                        initialValue: cacheinfo.contractName,
-                      })(<Input />)}
-                    </Form.Item>
-                  </Col>
+                    <Col span={8}>
+                      <Form.Item label="合同名称">
+                        {getFieldDecorator('contractName', {
+                          initialValue: cacheinfo.contractName,
+                        })(<Input />)}
+                      </Form.Item>
+                    </Col>
 
-                  <Col span={24} style={{ textAlign: 'right' }}>
-                    <Button type="primary" style={{ marginRight: 8 }} onClick={handlesearch}>
-                      查询
-                    </Button>
+                    <Col span={24} style={{ textAlign: 'right' }}>
+                      <Button type="primary" style={{ marginRight: 8 }} onClick={handlesearch}>
+                        查询
+                      </Button>
 
-                    <Button onClick={handleReset}>重置</Button>
-                  </Col>
-                </Form>
-              </Row>
+                      <Button onClick={handleReset}>重置</Button>
+                    </Col>
+                  </Form>
+                </Row>
+              </div>
+
 
               <div style={{ marginBottom: 10 }}>
                 <Button type="primary" onClick={handleAdd} style={{ marginRight: 10 }}>
@@ -556,111 +559,114 @@ function CreditcardTobe(props) {
               {
                 tabActiveKey === 'search' && (
                   <Card>
-                    <Row>
-                      <Form {...formItemLayout}>
-                        <Col span={8}>
-                          <Form.Item label="计分卡编号">
-                            {getFieldDecorator('cardNo', {
-                              initialValue: cacheinfo.cardNo,
-                            })(<Input />)}
-                          </Form.Item>
-                        </Col>
+                    <div className='noexplain'>
+                      <Row>
+                        <Form {...formItemLayout}>
+                          <Col span={8}>
+                            <Form.Item label="计分卡编号">
+                              {getFieldDecorator('cardNo', {
+                                initialValue: cacheinfo.cardNo,
+                              })(<Input />)}
+                            </Form.Item>
+                          </Col>
 
-                        <Col span={8}>
-                          <Form.Item label="评价计分卡名称">
-                            {getFieldDecorator('cardName', {
-                              initialValue: cacheinfo.cardName,
-                            })(<Input />)}
-                          </Form.Item>
-                        </Col>
+                          <Col span={8}>
+                            <Form.Item label="评价计分卡名称">
+                              {getFieldDecorator('cardName', {
+                                initialValue: cacheinfo.cardName,
+                              })(<Input />)}
+                            </Form.Item>
+                          </Col>
 
-                        <Col span={8}>
-                          <Form.Item label="评分细则名称">
-                            {getFieldDecorator('scoreName', {
-                              initialValue: cacheinfo.scoreName,
-                            })(<Input />)}
-                          </Form.Item>
-                        </Col>
+                          <Col span={8}>
+                            <Form.Item label="评分细则名称">
+                              {getFieldDecorator('scoreName', {
+                                initialValue: cacheinfo.scoreName,
+                              })(<Input />)}
+                            </Form.Item>
+                          </Col>
 
-                        <Col span={8}>
-                          <Form.Item label="考核类型">
-                            {getFieldDecorator('assessType', {
-                              initialValue: cacheinfo.assessType,
-                            })(
-                              <Select placeholder="请选择">
-                                {(assessmentType || []).map(obj => [
-                                  <Option key={obj.dict_code} value={obj.dict_code}>
-                                    {obj.title}
-                                  </Option>,
-                                ])}
-                              </Select>,
-                            )}
-                          </Form.Item>
-                        </Col>
+                          <Col span={8}>
+                            <Form.Item label="考核类型">
+                              {getFieldDecorator('assessType', {
+                                initialValue: cacheinfo.assessType,
+                              })(
+                                <Select placeholder="请选择">
+                                  {(assessmentType || []).map(obj => [
+                                    <Option key={obj.dict_code} value={obj.dict_code}>
+                                      {obj.title}
+                                    </Option>,
+                                  ])}
+                                </Select>,
+                              )}
+                            </Form.Item>
+                          </Col>
 
-                        <Col span={8}>
-                          <Form.Item label="版本号">
-                            {getFieldDecorator('version', {
-                              initialValue: cacheinfo.version,
-                            })(<Input />)}
-                          </Form.Item>
-                        </Col>
-                        <Col span={8}>
-                          <Form.Item label="专业部门">
-                            {getFieldDecorator('deptName', {
-                              initialValue: cacheinfo.deptName,
-                            })(<Input />)}
-                          </Form.Item>
-                        </Col>
-                        <Col span={8}>
-                          <Form.Item label="评价区间">
-                            {getFieldDecorator('evaluationInterval', {
-                              initialValue: cacheinfo.beginTime
-                                ? [moment(cacheinfo.beginTime), moment(cacheinfo.endTime)]
-                                : '',
-                            })(
-                              <RangePicker
-                                showTime={{
-                                  hideDisabledOptions: true,
-                                  defaultValue: [
-                                    moment('00:00:00', 'HH:mm:ss'),
-                                    moment('23:59:59', 'HH:mm:ss'),
-                                  ],
-                                }}
-                                format="YYYY-MM-DD HH:mm:ss"
-                                style={{ width: '100%' }}
-                                placeholder="请选择"
-                                allowClear
-                              />,
-                            )}
-                          </Form.Item>
-                        </Col>
+                          <Col span={8}>
+                            <Form.Item label="版本号">
+                              {getFieldDecorator('version', {
+                                initialValue: cacheinfo.version,
+                              })(<Input />)}
+                            </Form.Item>
+                          </Col>
+                          <Col span={8}>
+                            <Form.Item label="专业部门">
+                              {getFieldDecorator('deptName', {
+                                initialValue: cacheinfo.deptName,
+                              })(<Input />)}
+                            </Form.Item>
+                          </Col>
+                          <Col span={8}>
+                            <Form.Item label="评价区间">
+                              {getFieldDecorator('evaluationInterval', {
+                                initialValue: cacheinfo.beginTime
+                                  ? [moment(cacheinfo.beginTime), moment(cacheinfo.endTime)]
+                                  : '',
+                              })(
+                                <RangePicker
+                                  showTime={{
+                                    hideDisabledOptions: true,
+                                    defaultValue: [
+                                      moment('00:00:00', 'HH:mm:ss'),
+                                      moment('23:59:59', 'HH:mm:ss'),
+                                    ],
+                                  }}
+                                  format="YYYY-MM-DD HH:mm:ss"
+                                  style={{ width: '100%' }}
+                                  placeholder="请选择"
+                                  allowClear
+                                />,
+                              )}
+                            </Form.Item>
+                          </Col>
 
-                        <Col span={8}>
-                          <Form.Item label="服务商">
-                            {getFieldDecorator('providerName', {
-                              initialValue: cacheinfo.providerName,
-                            })(<Input />)}
-                          </Form.Item>
-                        </Col>
+                          <Col span={8}>
+                            <Form.Item label="服务商">
+                              {getFieldDecorator('providerName', {
+                                initialValue: cacheinfo.providerName,
+                              })(<Input />)}
+                            </Form.Item>
+                          </Col>
 
-                        <Col span={8}>
-                          <Form.Item label="合同名称">
-                            {getFieldDecorator('contractName', {
-                              initialValue: cacheinfo.contractName,
-                            })(<Input />)}
-                          </Form.Item>
-                        </Col>
+                          <Col span={8}>
+                            <Form.Item label="合同名称">
+                              {getFieldDecorator('contractName', {
+                                initialValue: cacheinfo.contractName,
+                              })(<Input />)}
+                            </Form.Item>
+                          </Col>
 
-                        <Col span={24} style={{ textAlign: 'right' }}>
-                          <Button type="primary" style={{ marginRight: 8 }} onClick={handlesearch}>
-                            查询
-                          </Button>
+                          <Col span={24} style={{ textAlign: 'right' }}>
+                            <Button type="primary" style={{ marginRight: 8 }} onClick={handlesearch}>
+                              查询
+                            </Button>
 
-                          <Button onClick={handleReset}>重置</Button>
-                        </Col>
-                      </Form>
-                    </Row>
+                            <Button onClick={handleReset}>重置</Button>
+                          </Col>
+                        </Form>
+                      </Row>
+                    </div>
+
 
                     <Button
                       type="primary"

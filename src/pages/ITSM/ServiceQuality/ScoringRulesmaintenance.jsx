@@ -184,7 +184,7 @@ function ScoringRulesmaintenance(props) {
 
 
 
-  
+
 
   const handleReset = () => {
     router.push({
@@ -314,53 +314,56 @@ function ScoringRulesmaintenance(props) {
         style={{ display: 'none' }}
       />
       <Card>
-        <Row>
-          <Form {...formItemLayout}>
-            <Col span={8}>
-              <Form.Item label="评分细则编号">
-                {getFieldDecorator('scoreNo', {
-                  initialValue: cacheinfo.scoreNo,
-                })(<Input />)}
-              </Form.Item>
+        <div className='noexplain'>
+          <Row>
+            <Form {...formItemLayout}>
+              <Col span={8}>
+                <Form.Item label="评分细则编号">
+                  {getFieldDecorator('scoreNo', {
+                    initialValue: cacheinfo.scoreNo,
+                  })(<Input />)}
+                </Form.Item>
+              </Col>
+
+              <Col span={8}>
+                <Form.Item label="评分细则名称">
+                  {getFieldDecorator('scoreName', {
+                    initialValue: cacheinfo.scoreName,
+                  })(<Input />)}
+                </Form.Item>
+              </Col>
+
+              <Col span={8}>
+                <Form.Item label="考核类型">
+                  {getFieldDecorator('assessType', {
+                    initialValue: cacheinfo.assessType,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {assessmentType.map(obj => [
+                        <Option key={obj.key} value={obj.dict_code}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+            </Form>
+
+            <Col span={24} style={{ textAlign: 'right' }}>
+              <Button type="primary" style={{ marginRight: 8 }} onClick={handlesearch}>
+                查询
+              </Button>
+
+              <Button onClick={handleReset}>重置</Button>
             </Col>
 
-            <Col span={8}>
-              <Form.Item label="评分细则名称">
-                {getFieldDecorator('scoreName', {
-                  initialValue: cacheinfo.scoreName,
-                })(<Input />)}
-              </Form.Item>
-            </Col>
-
-            <Col span={8}>
-              <Form.Item label="考核类型">
-                {getFieldDecorator('assessType', {
-                  initialValue: cacheinfo.assessType,
-                })(
-                  <Select placeholder="请选择" allowClear>
-                    {assessmentType.map(obj => [
-                      <Option key={obj.key} value={obj.dict_code}>
-                        {obj.title}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-          </Form>
-
-          <Col span={24} style={{ textAlign: 'right' }}>
-            <Button type="primary" style={{ marginRight: 8 }} onClick={handlesearch}>
-              查询
+            <Button type="primary" onClick={() => download()}>
+              导出数据
             </Button>
+          </Row>
+        </div>
 
-            <Button onClick={handleReset}>重置</Button>
-          </Col>
-
-          <Button type="primary" onClick={() => download()}>
-            导出数据
-          </Button>
-        </Row>
 
         {pagetitle === '评分细则维护' && (
           <Button
