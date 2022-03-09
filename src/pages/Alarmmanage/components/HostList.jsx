@@ -432,104 +432,105 @@ function HostList(props) {
     <>
 
       <Card>
-        <Form {...formItemLayout} onSubmit={handleSearch}>
-          <Row gutter={24}>
-            <Col span={8}>
-              <Form.Item label="区域">
-                {getFieldDecorator('firstClassify', {
-                  initialValue: '',
-                })(
-                  <Select placeholder="请选择" onChange={handleChange} allowClear>
-                    {assets.map(({ key, val }) => [
-                      <Option key={key} value={val}>
-                        {val}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="设备名称">
-                {getFieldDecorator('thirdClassify')(
-                  <Input allowClear />
-                )}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="设备IP">
-                {getFieldDecorator('fourthClassify')(
-                  <Input allowClear />,
-                )}
-              </Form.Item>
-            </Col>
+        <div className='noexplain'>
+          <Form {...formItemLayout} onSubmit={handleSearch}>
+            <Row gutter={24}>
+              <Col span={8}>
+                <Form.Item label="区域">
+                  {getFieldDecorator('firstClassify', {
+                    initialValue: '',
+                  })(
+                    <Select placeholder="请选择" onChange={handleChange} allowClear>
+                      {assets.map(({ key, val }) => [
+                        <Option key={key} value={val}>
+                          {val}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="设备名称">
+                  {getFieldDecorator('thirdClassify')(
+                    <Input allowClear />
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="设备IP">
+                  {getFieldDecorator('fourthClassify')(
+                    <Input allowClear />,
+                  )}
+                </Form.Item>
+              </Col>
 
-            {expand === true && (
-              <>
-                {(pagetitle === '软件巡检告警' || pagetitle === '应用程序运行状态告警') && (
-                  <>
+              {expand === true && (
+                <>
+                  {(pagetitle === '软件巡检告警' || pagetitle === '应用程序运行状态告警') && (
+                    <>
+                      <Col span={8}>
+                        <Form.Item label="软件名称">
+                          {getFieldDecorator('fifthClassify')(
+                            <Input allowClear />,
+                          )}
+                        </Form.Item>
+                      </Col>
+                      <Col span={8}>
+                        <Form.Item label="进程名称">
+                          {getFieldDecorator('sixthClassify')(
+                            <Input allowClear />,
+                          )}
+                        </Form.Item>
+                      </Col>
+                    </>
+                  )}
+                  {pagetitle === '主机巡检告警' && (
                     <Col span={8}>
-                      <Form.Item label="软件名称">
-                        {getFieldDecorator('fifthClassify')(
-                          <Input allowClear />,
+                      <Form.Item label="巡检内容">
+                        {getFieldDecorator('secondClassify')(
+                          <Select placeholder="请选择" allowClear>
+                            {hostinspectionmmap.map(({ dict_code, title }) => [
+                              <Option key={dict_code} value={title}>
+                                {title}
+                              </Option>,
+                            ])}
+                          </Select>,
                         )}
                       </Form.Item>
                     </Col>
+                  )}
+                  {pagetitle === '软件巡检告警' && (
                     <Col span={8}>
-                      <Form.Item label="进程名称">
-                        {getFieldDecorator('sixthClassify')(
-                          <Input allowClear />,
+                      <Form.Item label="巡检内容">
+                        {getFieldDecorator('secondClassify')(
+                          <Select placeholder="请选择" allowClear>
+                            {softinspectionmmap.map(({ dict_code, title }) => [
+                              <Option key={dict_code} value={title}>
+                                {title}
+                              </Option>,
+                            ])}
+                          </Select>,
                         )}
                       </Form.Item>
                     </Col>
-                  </>
-                )}
-                {pagetitle === '主机巡检告警' && (
-                  <Col span={8}>
-                    <Form.Item label="巡检内容">
-                      {getFieldDecorator('secondClassify')(
-                        <Select placeholder="请选择" allowClear>
-                          {hostinspectionmmap.map(({ dict_code, title }) => [
-                            <Option key={dict_code} value={title}>
-                              {title}
-                            </Option>,
-                          ])}
-                        </Select>,
-                      )}
-                    </Form.Item>
-                  </Col>
-                )}
-                {pagetitle === '软件巡检告警' && (
-                  <Col span={8}>
-                    <Form.Item label="巡检内容">
-                      {getFieldDecorator('secondClassify')(
-                        <Select placeholder="请选择" allowClear>
-                          {softinspectionmmap.map(({ dict_code, title }) => [
-                            <Option key={dict_code} value={title}>
-                              {title}
-                            </Option>,
-                          ])}
-                        </Select>,
-                      )}
-                    </Form.Item>
-                  </Col>
-                )}
-                {pagetitle === '应用程序运行状态告警' && (
-                  <Col span={8}>
-                    <Form.Item label="监测内容">
-                      {getFieldDecorator('secondClassify')(
-                        <Select placeholder="请选择">
-                          {hostmonitormap.map(({ dict_code, title }) => [
-                            <Option key={dict_code} value={title}>
-                              {title}
-                            </Option>,
-                          ])}
-                        </Select>,
-                      )}
-                    </Form.Item>
-                  </Col>
-                )}
-                {/* <Col span={8}>
+                  )}
+                  {pagetitle === '应用程序运行状态告警' && (
+                    <Col span={8}>
+                      <Form.Item label="监测内容">
+                        {getFieldDecorator('secondClassify')(
+                          <Select placeholder="请选择">
+                            {hostmonitormap.map(({ dict_code, title }) => [
+                              <Option key={dict_code} value={title}>
+                                {title}
+                              </Option>,
+                            ])}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
+                  )}
+                  {/* <Col span={8}>
                   <Form.Item label="告警时间">
                     <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                       {getFieldDecorator('time1', {
@@ -564,82 +565,82 @@ function HostList(props) {
                     </div>
                   </Form.Item>
                 </Col> */}
-                <Col span={8}>
-                  <Form.Item label="告警确认时间">
-                    <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                      {getFieldDecorator('beginConfirmTime', {
-                        initialValue: '',
-                      })(
-                        <DatePicker
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: moment('00:00:00', 'HH:mm:ss'),
-                          }}
-                          placeholder="开始时间"
-                          format='YYYY-MM-DD HH:mm:ss'
-                          style={{ minWidth: 120, width: '100%' }}
-                        />
-                      )}
-                    </div>
-                    <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
-                    <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                      {getFieldDecorator('endConfirmTime', {
-                        initialValue: '',
-                      })(
-                        <DatePicker
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: moment('23:59:59', 'HH:mm:ss'),
-                          }}
-                          placeholder="结束时间"
-                          format='YYYY-MM-DD HH:mm:ss'
-                          style={{ minWidth: 120, width: '100%' }}
-                        />
-                      )}
-                    </div>
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="告警消除时间">
-                    <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                      {getFieldDecorator('beginClearTime', {
-                        initialValue: '',
-                      })(
-                        <DatePicker
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: moment('00:00:00', 'HH:mm:ss'),
-                          }}
-                          placeholder="开始时间"
-                          format='YYYY-MM-DD HH:mm:ss'
-                          style={{ minWidth: 120, width: '100%' }}
-                        />
-                      )}
-                    </div>
-                    <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
-                    <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                      {getFieldDecorator('endClearTime', {
-                        initialValue: '',
-                      })(
-                        <DatePicker
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: moment('23:59:59', 'HH:mm:ss'),
-                          }}
-                          placeholder="结束时间"
-                          format='YYYY-MM-DD HH:mm:ss'
-                          style={{ minWidth: 120, width: '100%' }}
-                        />
-                      )}
-                    </div>
-                  </Form.Item>
-                </Col>
-              </>
-            )}
-            {(pagetitle === '主机巡检告警' || (pagetitle !== '主机巡检告警' && !expand)) ? <Col span={24} style={{ textAlign: 'right' }}>{extra}</Col> : <Col span={8}><Form.Item>{extra}</Form.Item></Col>}
-          </Row>
-        </Form>
-
+                  <Col span={8}>
+                    <Form.Item label="告警确认时间">
+                      <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                        {getFieldDecorator('beginConfirmTime', {
+                          initialValue: '',
+                        })(
+                          <DatePicker
+                            showTime={{
+                              hideDisabledOptions: true,
+                              defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                            }}
+                            placeholder="开始时间"
+                            format='YYYY-MM-DD HH:mm:ss'
+                            style={{ minWidth: 120, width: '100%' }}
+                          />
+                        )}
+                      </div>
+                      <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
+                      <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                        {getFieldDecorator('endConfirmTime', {
+                          initialValue: '',
+                        })(
+                          <DatePicker
+                            showTime={{
+                              hideDisabledOptions: true,
+                              defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                            }}
+                            placeholder="结束时间"
+                            format='YYYY-MM-DD HH:mm:ss'
+                            style={{ minWidth: 120, width: '100%' }}
+                          />
+                        )}
+                      </div>
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item label="告警消除时间">
+                      <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                        {getFieldDecorator('beginClearTime', {
+                          initialValue: '',
+                        })(
+                          <DatePicker
+                            showTime={{
+                              hideDisabledOptions: true,
+                              defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                            }}
+                            placeholder="开始时间"
+                            format='YYYY-MM-DD HH:mm:ss'
+                            style={{ minWidth: 120, width: '100%' }}
+                          />
+                        )}
+                      </div>
+                      <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
+                      <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                        {getFieldDecorator('endClearTime', {
+                          initialValue: '',
+                        })(
+                          <DatePicker
+                            showTime={{
+                              hideDisabledOptions: true,
+                              defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                            }}
+                            placeholder="结束时间"
+                            format='YYYY-MM-DD HH:mm:ss'
+                            style={{ minWidth: 120, width: '100%' }}
+                          />
+                        )}
+                      </div>
+                    </Form.Item>
+                  </Col>
+                </>
+              )}
+              {(pagetitle === '主机巡检告警' || (pagetitle !== '主机巡检告警' && !expand)) ? <Col span={24} style={{ textAlign: 'right' }}>{extra}</Col> : <Col span={8}><Form.Item>{extra}</Form.Item></Col>}
+            </Row>
+          </Form>
+        </div>
         <ButtonGroup
           selectedRowKeys={selectedRowKeys}
           selectRowdata={selectRowdata}

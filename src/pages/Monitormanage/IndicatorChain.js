@@ -279,80 +279,82 @@ class IndicatorChain extends Component {
     return (
       <PageHeaderWrapper title="指标环比数据">
         <Card>
-          <Form {...formItemLayout} onSubmit={this.handleSearch}>
-            <Row>
-              <Col span={8}>
-                <Form.Item label="供电单位">
-                  {getFieldDecorator('gddwmc', { initialValue: '' })(
-                    <Input placeholder="请输入" />,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="指标名称">
-                  {getFieldDecorator('mc', {
-                    initialValue: 'fgl',
-                  })(
-                    <Select onChange={this.handleringtypeChange}>
-                      {ringtypemap.map(({ key, value }) => [
-                        <Option key={key} value={key}>
-                          {value}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="统计类别">
-                  {getFieldDecorator('lb', { initialValue: '' })(
-                    <Select placeholder="请选择">
-                      {statisticstypemap.map(({ key, value }) => [
-                        <Option key={key} value={key}>
-                          {value}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="管理单位">
-                  {getFieldDecorator('gldwlxbm', { initialValue: '' })(
-                    <Select placeholder="请选择">
-                      {areatypemap.map(({ key, value }) => [
-                        <Option key={key} value={key}>
-                          {value}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="数据时间">
-                  {getFieldDecorator(
-                    'sjsj',
-                    //  { initialValue: moment(toTime) }
-                  )(<DatePicker />)}
-                </Form.Item>
-              </Col>
-              <Col span={8} style={{ textAlign: 'right' }}>
-                <Button type="primary" onClick={this.handleSearch}>
-                  查 询
-                </Button>
-                <Button style={{ marginLeft: 8 }} onClick={this.handleReset}>
-                  重 置
-                </Button>
-                {/* <Button style={{ marginLeft: 8 }} onClick={this.handleDownload}>
+          <div className='noexplain'>
+            <Form {...formItemLayout} onSubmit={this.handleSearch}>
+              <Row>
+                <Col span={8}>
+                  <Form.Item label="供电单位">
+                    {getFieldDecorator('gddwmc', { initialValue: '' })(
+                      <Input placeholder="请输入" />,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="指标名称">
+                    {getFieldDecorator('mc', {
+                      initialValue: 'fgl',
+                    })(
+                      <Select onChange={this.handleringtypeChange}>
+                        {ringtypemap.map(({ key, value }) => [
+                          <Option key={key} value={key}>
+                            {value}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="统计类别">
+                    {getFieldDecorator('lb', { initialValue: '' })(
+                      <Select placeholder="请选择">
+                        {statisticstypemap.map(({ key, value }) => [
+                          <Option key={key} value={key}>
+                            {value}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="管理单位">
+                    {getFieldDecorator('gldwlxbm', { initialValue: '' })(
+                      <Select placeholder="请选择">
+                        {areatypemap.map(({ key, value }) => [
+                          <Option key={key} value={key}>
+                            {value}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="数据时间">
+                    {getFieldDecorator(
+                      'sjsj',
+                      //  { initialValue: moment(toTime) }
+                    )(<DatePicker />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8} style={{ textAlign: 'right' }}>
+                  <Button type="primary" onClick={this.handleSearch}>
+                    查 询
+                  </Button>
+                  <Button style={{ marginLeft: 8 }} onClick={this.handleReset}>
+                    重 置
+                  </Button>
+                  {/* <Button style={{ marginLeft: 8 }} onClick={this.handleDownload}>
                   下 载
                 </Button>
                 <Button style={{ marginLeft: 8 }} type="link" onClick={this.handleextractData}>
                   抽 数
                 </Button> */}
-              </Col>
-            </Row>
-          </Form>
+                </Col>
+              </Row>
+            </Form>
+          </div>
           <Table
             scroll={{ x: 1400 }}
             loading={loading}

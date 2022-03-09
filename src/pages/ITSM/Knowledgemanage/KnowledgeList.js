@@ -46,8 +46,8 @@ function KnowledgeList(props) {
   const ExmaineRef = useRef(null);
 
   const userId = sessionStorage.getItem('userauthorityid');
-  const time1 = starttime ? moment(starttime).format('YYYY-MM-DD HH:mm:ss') : '';
-  const time2 = endtime ? moment(endtime).format('YYYY-MM-DD HH:mm:ss') : '';
+  const time1 = starttime ? moment(starttime) : undefined;
+  const time2 = endtime ? moment(endtime) : undefined;
 
   // 设置表单初始值
   const indexval = {

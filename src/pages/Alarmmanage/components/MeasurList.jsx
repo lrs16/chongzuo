@@ -371,9 +371,10 @@ function MeasurList(props) {
   return (
     <>
       <Card>
-        <Form {...formItemLayout} onSubmit={handleSearch}>
-          <Row gutter={24}>
-            {/* <Col span={8}>
+        <div className='noexplain'>
+          <Form {...formItemLayout} onSubmit={handleSearch}>
+            <Row gutter={24}>
+              {/* <Col span={8}>
               <Form.Item label="确认状态">
                 {getFieldDecorator('confirmStatus')(
                   <Select placeholder="请选择">
@@ -399,29 +400,29 @@ function MeasurList(props) {
                 )}
               </Form.Item>
             </Col> */}
-            <Col span={8}>
-              <Form.Item label="监控项/内容/子类" >
-                {getFieldDecorator('Classify', {
-                  initialValue: locationState?.cacheinfo?.Classify || '',
-                })(
-                  <Cascader
-                    fieldNames={{ label: 'title', value: 'title', children: 'children' }}
-                    options={typemap}
-                    changeOnSelect
-                    onChange={handleChange}
-                  />,
-                )}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="告警内容">{
-                getFieldDecorator('warnContent', {
-                  initialValue: locationState?.cacheinfo?.warnContent || '',
-                })(
-                  <Input allowClear />
-                )}</Form.Item>
-            </Col>
-            {/* <Col span={8}>
+              <Col span={8}>
+                <Form.Item label="监控项/内容/子类" >
+                  {getFieldDecorator('Classify', {
+                    initialValue: locationState?.cacheinfo?.Classify || '',
+                  })(
+                    <Cascader
+                      fieldNames={{ label: 'title', value: 'title', children: 'children' }}
+                      options={typemap}
+                      changeOnSelect
+                      onChange={handleChange}
+                    />,
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="告警内容">{
+                  getFieldDecorator('warnContent', {
+                    initialValue: locationState?.cacheinfo?.warnContent || '',
+                  })(
+                    <Input allowClear />
+                  )}</Form.Item>
+              </Col>
+              {/* <Col span={8}>
               <Form.Item label="告警时间">
                 <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                   {getFieldDecorator('beginWarnTime', {
@@ -458,79 +459,80 @@ function MeasurList(props) {
                 </div>
               </Form.Item>
             </Col> */}
-            <Col span={8}>
-              <Form.Item label="告警确认时间">
-                <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                  {getFieldDecorator('beginConfirmTime', {
-                    initialValue: locationState?.cacheinfo?.beginConfirmTime || '',
-                  })(
-                    <DatePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: moment('00:00:00', 'HH:mm:ss'),
-                      }}
-                      placeholder="开始时间"
-                      format='YYYY-MM-DD HH:mm:ss'
-                      style={{ minWidth: 120, width: '100%' }}
-                    />
-                  )}
-                </div>
-                <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
-                <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                  {getFieldDecorator('endConfirmTime', {
-                    initialValue: locationState?.cacheinfo?.endConfirmTime || '',
-                  })(
-                    <DatePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: moment('23:59:59', 'HH:mm:ss'),
-                      }}
-                      placeholder="结束时间"
-                      format='YYYY-MM-DD HH:mm:ss'
-                      style={{ minWidth: 120, width: '100%' }}
-                    />
-                  )}
-                </div>
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="告警消除时间">
-                <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                  {getFieldDecorator('beginClearTime', {
-                    initialValue: locationState?.cacheinfo?.beginClearTime || '',
-                  })(
-                    <DatePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: moment('00:00:00', 'HH:mm:ss'),
-                      }}
-                      placeholder="开始时间"
-                      format='YYYY-MM-DD HH:mm:ss'
-                      style={{ minWidth: 120, width: '100%' }}
-                    />
-                  )}
-                </div>
-                <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
-                <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                  {getFieldDecorator('endClearTime', {
-                    initialValue: locationState?.cacheinfo?.endClearTime || '',
-                  })(
-                    <DatePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: moment('23:59:59', 'HH:mm:ss'),
-                      }}
-                      placeholder="结束时间"
-                      format='YYYY-MM-DD HH:mm:ss'
-                      style={{ minWidth: 120, width: '100%' }}
-                    />
-                  )}
-                </div>
-              </Form.Item>
-            </Col>
-            <Col span={8} style={{ paddingLeft: 48 }}><Form.Item>{extra}</Form.Item></Col>
-          </Row>
-        </Form>
+              <Col span={8}>
+                <Form.Item label="告警确认时间">
+                  <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                    {getFieldDecorator('beginConfirmTime', {
+                      initialValue: locationState?.cacheinfo?.beginConfirmTime || '',
+                    })(
+                      <DatePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                        }}
+                        placeholder="开始时间"
+                        format='YYYY-MM-DD HH:mm:ss'
+                        style={{ minWidth: 120, width: '100%' }}
+                      />
+                    )}
+                  </div>
+                  <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
+                  <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                    {getFieldDecorator('endConfirmTime', {
+                      initialValue: locationState?.cacheinfo?.endConfirmTime || '',
+                    })(
+                      <DatePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                        }}
+                        placeholder="结束时间"
+                        format='YYYY-MM-DD HH:mm:ss'
+                        style={{ minWidth: 120, width: '100%' }}
+                      />
+                    )}
+                  </div>
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="告警消除时间">
+                  <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                    {getFieldDecorator('beginClearTime', {
+                      initialValue: locationState?.cacheinfo?.beginClearTime || '',
+                    })(
+                      <DatePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                        }}
+                        placeholder="开始时间"
+                        format='YYYY-MM-DD HH:mm:ss'
+                        style={{ minWidth: 120, width: '100%' }}
+                      />
+                    )}
+                  </div>
+                  <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
+                  <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                    {getFieldDecorator('endClearTime', {
+                      initialValue: locationState?.cacheinfo?.endClearTime || '',
+                    })(
+                      <DatePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                        }}
+                        placeholder="结束时间"
+                        format='YYYY-MM-DD HH:mm:ss'
+                        style={{ minWidth: 120, width: '100%' }}
+                      />
+                    )}
+                  </div>
+                </Form.Item>
+              </Col>
+              <Col span={8} style={{ paddingLeft: 48 }}><Form.Item>{extra}</Form.Item></Col>
+            </Row>
+          </Form>
+        </div>
         <ButtonGroup
           selectedRowKeys={selectedRowKeys}
           selectRowdata={selectRowdata}

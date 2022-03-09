@@ -350,54 +350,55 @@ function MessagesList(props) {
 
   return (
     <Card style={{ marginTop: 24 }}>
-      <Form {...formItemLayout} onSubmit={handleSearch}>
-        <Row gutter={24}>
-          <Col span={8}>
-            <Form.Item label="监测类型">
-              {getFieldDecorator('secondClassify')(
-                <Select placeholder="请选择">
-                  {monitormap.map(({ dict_code, title }) => [
-                    <Option key={dict_code} value={title}>
-                      {title}
-                    </Option>,
-                  ])}
-                </Select>,
-              )}
-            </Form.Item>
-          </Col>
-          <Col span={8}>
-            <Form.Item label="单位">
-              {getFieldDecorator('firstClassify')(
-                <Select placeholder="请选择">
-                  {company.map(({ key, val }) => [
-                    <Option key={key} value={val}>
-                      {val}
-                    </Option>,
-                  ])}
-                </Select>
-              )}
-            </Form.Item>
-          </Col>
-          <Col span={8}>
-            <Form.Item label="终端资产编号">
-              {getFieldDecorator('thirdClassify')(
-                <Input allowClear />
-              )}
-            </Form.Item>
-          </Col>
-          {expand && (
-            <>
-              <Col span={8}>
-                <Form.Item label="终端地址">
-                  {getFieldDecorator('fourthClassify')(
-                    <Input allowClear />
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="告警内容">{getFieldDecorator('warnContent')(<Input allowClear />)}</Form.Item>
-              </Col>
-              {/* <Col span={8}>
+      <div className='noexplain'>
+        <Form {...formItemLayout} onSubmit={handleSearch}>
+          <Row gutter={24}>
+            <Col span={8}>
+              <Form.Item label="监测类型">
+                {getFieldDecorator('secondClassify')(
+                  <Select placeholder="请选择">
+                    {monitormap.map(({ dict_code, title }) => [
+                      <Option key={dict_code} value={title}>
+                        {title}
+                      </Option>,
+                    ])}
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="单位">
+                {getFieldDecorator('firstClassify')(
+                  <Select placeholder="请选择">
+                    {company.map(({ key, val }) => [
+                      <Option key={key} value={val}>
+                        {val}
+                      </Option>,
+                    ])}
+                  </Select>
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="终端资产编号">
+                {getFieldDecorator('thirdClassify')(
+                  <Input allowClear />
+                )}
+              </Form.Item>
+            </Col>
+            {expand && (
+              <>
+                <Col span={8}>
+                  <Form.Item label="终端地址">
+                    {getFieldDecorator('fourthClassify')(
+                      <Input allowClear />
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="告警内容">{getFieldDecorator('warnContent')(<Input allowClear />)}</Form.Item>
+                </Col>
+                {/* <Col span={8}>
                 <Form.Item label="告警时间">
                   <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                     {getFieldDecorator('time1', {
@@ -432,12 +433,13 @@ function MessagesList(props) {
                   </div>
                 </Form.Item>
               </Col> */}
-            </>
-          )}
+              </>
+            )}
 
-          <Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>
-        </Row>
-      </Form>
+            <Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>
+          </Row>
+        </Form>
+      </div>
       <ButtonGroup
         selectedRowKeys={selectedRowKeys}
         selectRowdata={selectRowdata}

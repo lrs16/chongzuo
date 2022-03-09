@@ -460,79 +460,80 @@ function ConfigurationFileList(props) {
   return (
     <>
       <Card>
-        <Form {...formItemLayout} onSubmit={handleSearch}>
-          <Row gutter={24}>
-            <Col span={8}>
-              <Form.Item label="区域">
-                {getFieldDecorator('firstClassify')(
-                  <Select placeholder="请选择" onChange={handleChange} allowClear>
-                    {assets.map(({ key, val }) => [
-                      <Option key={key} value={val}>
-                        {val}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="监测内容">
-                {getFieldDecorator('secondClassify')(
-                  <Select placeholder="请选择" allowClear>
-                    {alarmmap && alarmmap.map(({ key, title }) => [
-                      <Option key={key} value={title}>
-                        {title}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="设备名称">
-                {getFieldDecorator('thirdClassify')(
-                  <Input allowClear />
-                )}
-              </Form.Item>
-            </Col>
-            {expand && (
-              <>
-                {pagetitle === '配置文件变更告警' && (
-                  <>
-                    <Col span={8}>
-                      <Form.Item label="设备IP">
-                        {getFieldDecorator('fourthClassify')(
-                          <Input allowClear />,
-                        )}
-                      </Form.Item>
-                    </Col>
-                    <Col span={8}>
-                      <Form.Item label="软件名称">
-                        {getFieldDecorator('fifthClassify')(
-                          <Input allowClear />,
-                        )}
-                      </Form.Item>
-                    </Col>
-                    <Col span={8}>
-                      <Form.Item label="配置文件名称">
-                        {getFieldDecorator('seventhClassify')(
-                          <Input allowClear />,
-                        )}
-                      </Form.Item>
-                    </Col>
-                    <Col span={8}>
-                      <Form.Item label="配置文件路径">
-                        {getFieldDecorator('sixthClassify')(
-                          <Input allowClear />,
-                        )}
-                      </Form.Item>
-                    </Col>
-                    <Col span={8}>
-                      <Form.Item label="告警内容">{getFieldDecorator('warnContent ')(<Input allowClear />)}</Form.Item>
-                    </Col>
-                  </>
-                )}
-                {/* <Col span={8}>
+        <div className='noexplain'>
+          <Form {...formItemLayout} onSubmit={handleSearch}>
+            <Row gutter={24}>
+              <Col span={8}>
+                <Form.Item label="区域">
+                  {getFieldDecorator('firstClassify')(
+                    <Select placeholder="请选择" onChange={handleChange} allowClear>
+                      {assets.map(({ key, val }) => [
+                        <Option key={key} value={val}>
+                          {val}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="监测内容">
+                  {getFieldDecorator('secondClassify')(
+                    <Select placeholder="请选择" allowClear>
+                      {alarmmap && alarmmap.map(({ key, title }) => [
+                        <Option key={key} value={title}>
+                          {title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="设备名称">
+                  {getFieldDecorator('thirdClassify')(
+                    <Input allowClear />
+                  )}
+                </Form.Item>
+              </Col>
+              {expand && (
+                <>
+                  {pagetitle === '配置文件变更告警' && (
+                    <>
+                      <Col span={8}>
+                        <Form.Item label="设备IP">
+                          {getFieldDecorator('fourthClassify')(
+                            <Input allowClear />,
+                          )}
+                        </Form.Item>
+                      </Col>
+                      <Col span={8}>
+                        <Form.Item label="软件名称">
+                          {getFieldDecorator('fifthClassify')(
+                            <Input allowClear />,
+                          )}
+                        </Form.Item>
+                      </Col>
+                      <Col span={8}>
+                        <Form.Item label="配置文件名称">
+                          {getFieldDecorator('seventhClassify')(
+                            <Input allowClear />,
+                          )}
+                        </Form.Item>
+                      </Col>
+                      <Col span={8}>
+                        <Form.Item label="配置文件路径">
+                          {getFieldDecorator('sixthClassify')(
+                            <Input allowClear />,
+                          )}
+                        </Form.Item>
+                      </Col>
+                      <Col span={8}>
+                        <Form.Item label="告警内容">{getFieldDecorator('warnContent ')(<Input allowClear />)}</Form.Item>
+                      </Col>
+                    </>
+                  )}
+                  {/* <Col span={8}>
                   <Form.Item label="告警时间">
                     <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                       {getFieldDecorator('time1', {
@@ -567,11 +568,12 @@ function ConfigurationFileList(props) {
                     </div>
                   </Form.Item>
                 </Col> */}
-              </>
-            )}
-            {(expand || pagetitle === '时钟巡检告警') ? (<Col span={8} style={{ padding: '4px 0 0 48px' }} >{extra}</Col>) : (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>)}
-          </Row>
-        </Form>
+                </>
+              )}
+              {(expand || pagetitle === '时钟巡检告警') ? (<Col span={8} style={{ padding: '4px 0 0 48px' }} >{extra}</Col>) : (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>)}
+            </Row>
+          </Form>
+        </div>
         <ButtonGroup
           selectedRowKeys={selectedRowKeys}
           selectRowdata={selectRowdata}
