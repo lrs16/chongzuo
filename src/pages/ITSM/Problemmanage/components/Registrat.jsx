@@ -215,7 +215,7 @@ const Registrat = React.forwardRef((props, ref) => {
 
             <Col span={8}>
               <Form.Item label="问题申报人">
-                {getFieldDecorator('selectcomplainUser', {
+                {getFieldDecorator('complainUser', {
                   rules: [
                     {
                       required,
@@ -241,13 +241,13 @@ const Registrat = React.forwardRef((props, ref) => {
               </Form.Item>
             </Col>
 
-            <Col span={8} style={{ display: 'none' }}>
+            {/* <Col span={8} style={{ display: 'none' }}>
               <Form.Item>
                 {getFieldDecorator('complainUser', {
                   initialValue: register.complainUser,
                 })(<Input />)}
               </Form.Item>
-            </Col>
+            </Col> */}
 
             <Col span={8}>
               <Form.Item label="问题来源">

@@ -325,7 +325,7 @@ function Workorder(props) {
         }
       }
 
-      if (params2 && uservisible === false) {
+      if (params2 && err) {
         openNotification(Object.values(err))
       }
 
