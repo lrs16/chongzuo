@@ -47,25 +47,27 @@ body {
   color: rgba(0, 0, 0, 0.65);
 }
 
-.ant-table-thead > tr > th, .ant-table-tbody > tr > td{
+.ant-table-thead>tr>th,
+.ant-table-tbody>tr>td {
   padding: 12px 12px;
 }
 
-.noexplain .ant-form-explain{
+.noexplain .ant-form-explain {
   display: none;
 }
-.ant-form-explain, .ant-form-extra{
-min-height: 16px;
+.ant-form-explain,
+.ant-form-extra {
+  min-height: 16px;
 }
 
-.noexplain .ant-form-item{
-  margin-bottom:2px
+.noexplain .ant-form-item {
+  margin-bottom: 2px
 }
-.ant-form-item{
-  margin-bottom:18px
+.ant-form-item {
+  margin-bottom: 18px
 }
-.ant-form-item-with-help{
- margin-bottom: 0;
+.ant-form-item-with-help {
+  margin-bottom: 0;
 }
 
 .ant-form-item-label>label {
@@ -139,7 +141,7 @@ min-height: 16px;
   cursor: not-allowed;
 }
 
-.ant-tabs-bar{
+.ant-tabs-bar {
   margin: 0 0 8px 0;
 }
 
@@ -190,47 +192,47 @@ min-height: 16px;
   color: #0366c3;
 }
 
-.ant-page-header{
+.ant-page-header {
   padding: 8px 16px 12px 16px;
 }
 
-.ant-page-header-footer{
+.ant-page-header-footer {
   margin-top: 0px;
 }
 
-.ant-pro-page-header-wrap .ant-page-header.has-breadcrumb{
+.ant-pro-page-header-wrap .ant-page-header.has-breadcrumb {
   padding-top: 0;
 }
 
-.ant-pro-page-header-wrap  .ant-pro-page-header-wrap-children-content{
-  margin:16px 12px 0
+.ant-pro-page-header-wrap .ant-pro-page-header-wrap-children-content {
+  margin: 16px 12px 0
 }
 
-.ant-breadcrumb + .ant-page-header-heading{
+.ant-breadcrumb+.ant-page-header-heading {
   margin-top: 0;
 }
-.antd-pro-pages-i-t-s-m-eventmanage-index-collapse .ant-collapse-borderless > .ant-collapse-item{
+.antd-pro-pages-i-t-s-m-eventmanage-index-collapse .ant-collapse-borderless>.ant-collapse-item {
   margin-top: 16px;
 }
-.ant-modal{
+.ant-modal {
   color: rgba(0, 0, 0, 1);
 }
-.ant-checkbox-group{
-  color: rgba(0, 0, 0, 1);  
-}
-.ant-checkbox-wrapper{
+.ant-checkbox-group {
   color: rgba(0, 0, 0, 1);
 }
-.ant-modal-body #user .ant-checkbox-group .ant-checkbox-wrapper{
+.ant-checkbox-wrapper {
+  color: rgba(0, 0, 0, 1);
+}
+.ant-modal-body #user .ant-checkbox-group .ant-checkbox-wrapper {
   width: 120px;
 }
-.ant-form-item .ant-col-sm-24{
+.ant-form-item .ant-col-sm-24 {
   line-height: 30px;
 }
 .ant-select-auto-complete.ant-select .ant-input[disabled] {
   color: rgba(0, 0, 0, 0.65);
 }
-.ant-select-disabled .ant-select-selection--multiple .ant-select-selection__choice{
+.ant-select-disabled .ant-select-selection--multiple .ant-select-selection__choice {
   color: rgba(0, 0, 0, 0.65);
 }
 // label换行
@@ -241,28 +243,40 @@ min-height: 16px;
 //     content: none !important;
 //   }
 // }
+.ant-steps-dot .ant-steps-item-finish .ant-steps-item-icon {
+  border: none;
+}
+
+.ant-steps-dot .ant-steps-item-process .ant-steps-item-icon {
+  background-color: #fff;
+}
+
 .ant-steps-item-finish .ant-steps-item-icon {
-  background-color: #C1EB08;    // 这个配色绝了
+  background-color: #C1EB08; // 这个配色绝了
   border: 2px solid #10C510;
 }
-.ant-steps-item-finish .ant-steps-item-icon > .ant-steps-icon{
+.ant-steps-item-finish .ant-steps-item-icon>.ant-steps-icon {
   color: #10C510;
-//  background-color: #C1EB08;
+  //  background-color: #C1EB08;
 }
-.ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title::after{
+.ant-steps-item-finish>.ant-steps-item-container>.ant-steps-item-content>.ant-steps-item-title::after {
   background-color: #10C510;
 }
-.ant-steps-item-process .ant-steps-item-icon{
+.ant-steps-item-process .ant-steps-item-icon {
   background-color: #10C510;
 }
-.ant-steps-item-custom.ant-steps-item-process .ant-steps-item-icon > .ant-steps-icon{
-  color: #0124c5;
-  }
+.ant-steps-item-custom.ant-steps-item-process .ant-steps-item-icon>.ant-steps-icon {
+  color: #10C510;
 
-  .ant-steps:not(.ant-steps-vertical) .ant-steps-item-custom .ant-steps-item-icon {
-    width: auto;
-    background-color: #C1EB08;
-    border-radius: 50%;
+  .anticon-loading {
+    color: #0124c5;
+  }
+}
+
+.ant-steps:not(.ant-steps-vertical) .ant-steps-item-custom .ant-steps-item-icon {
+  width: auto;
+  background-color: #C1EB08;
+  border-radius: 50%;
 }
 // .ant-steps-item-process .ant-steps-item-icon{
 //   background-color: #52c41a;
