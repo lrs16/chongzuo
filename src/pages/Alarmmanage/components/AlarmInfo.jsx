@@ -116,8 +116,8 @@ function AlarmInfo(props) {
           pathname: `/ITSM/eventmanage/query/details`,
           query: {
             pangekey: val.flowNodeName,
-            id: val.taskId,
-            mainId: val.mainId,
+            id: val.mainId,
+            // mainId: val.mainId,
             No: val.orderNo,
           },
         });

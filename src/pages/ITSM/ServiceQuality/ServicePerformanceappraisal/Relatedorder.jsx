@@ -141,7 +141,7 @@ function RelevancyOrder(props) {
                 query: {
                   pangekey: record.status,
                   id: record.id,
-                  mainId: record.mainId,
+                  // mainId: record.mainId,
                   No: text,
                 },
               });

@@ -117,8 +117,8 @@ function QueryList(props) {
             pathname: `/ITSM/eventmanage/query/details`,
             query: {
               pangekey: record.eventStatus,
-              id: record.taskId,
-              mainId: record.id,
+              id: record.id,
+              // mainId: record.id,
               No: text,
             },
             state: {

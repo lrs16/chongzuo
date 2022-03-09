@@ -101,6 +101,7 @@ export default {
               taskName: response.flowNodeName,
               taskId,
               mainId: flowInstanceId,
+              orderNo: registres.eventNo,
             },
             state: {
               updatetab: true,
@@ -144,6 +145,7 @@ export default {
                 taskName: ressave.flowNodeName,
                 taskId: ressave.flowNodeInstanceId,
                 mainId: ressave.flowInstanceId,
+                orderNo: ressave.eventNo,
               },
               state: {
                 updatetab: true,
@@ -214,6 +216,7 @@ export default {
             taskName: '事件处理',
             taskId,
             mainId: response.flowInstanceId,
+            orderNo: payload.orderNo,
           },
           state: {
             updatetab: true,

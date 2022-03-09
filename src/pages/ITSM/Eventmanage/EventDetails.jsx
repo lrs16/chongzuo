@@ -57,7 +57,7 @@ const pagetitlemaps = new Map([
 
 function EventDetails(props) {
   const { location, dispatch, recordsloading, info, records, loading } = props;
-  const { pangekey, id, mainId } = location.query;
+  const { pangekey, id } = location.query;
   const [activeKey, setActiveKey] = useState([]);
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const handleclose = () => {
@@ -91,33 +91,35 @@ function EventDetails(props) {
 
   // 初始化打开
   useEffect(() => {
-    dispatch({
-      type: 'eventquery/fetchopenview',
-      payload: {
-        mainId,
-      },
-    });
-    dispatch({
-      type: 'eventtodo/eventrecords',
-      payload: {
-        processId: mainId,
-      },
-    });
-    settabActivekey('workorder');
-  }, [mainId]);
-
-  useEffect(() => {
-    if (location.state && location.state.reset && mainId) {
+    if (id) {
       dispatch({
         type: 'eventquery/fetchopenview',
         payload: {
-          mainId,
+          mainId: id,
         },
       });
       dispatch({
         type: 'eventtodo/eventrecords',
         payload: {
-          processId: mainId,
+          processId: id,
+        },
+      });
+      settabActivekey('workorder');
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (location.state && location.state.reset && id) {
+      dispatch({
+        type: 'eventquery/fetchopenview',
+        payload: {
+          mainId: id,
+        },
+      });
+      dispatch({
+        type: 'eventtodo/eventrecords',
+        payload: {
+          processId: id,
         },
       });
       settabActivekey('workorder');

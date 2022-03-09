@@ -89,8 +89,8 @@ function AnalysisPopup(props) {
             pathname: `/ITSM/eventmanage/query/details`,
             query: {
               pangekey: records.eventStatus,
-              id: records.taskId,
-              mainId: records.id,
+              id: records.id,
+              // mainId: records.id,
               No: text,
             },
           });
@@ -125,7 +125,7 @@ function AnalysisPopup(props) {
       render: (text) => (
         <>
           <Icon type="alert" style={{ fontSize: '1.4em', color: colorArr.get(text), marginRight: '8px' }} />
-          <span style={{ color: textmap.get(text)}}>{text}</span>
+          <span style={{ color: textmap.get(text) }}>{text}</span>
         </>
       )
     },
