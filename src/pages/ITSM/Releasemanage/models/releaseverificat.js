@@ -41,10 +41,12 @@ export default {
     },
 
     // 打开待办
-    *openflow({ payload }, { call, put }) {
-      yield put({
-        type: 'clearcache',
-      });
+    *openflow({ payload, noclear }, { call, put }) {
+      if (!noclear) {
+        yield put({
+          type: 'clearcache',
+        });
+      };
       const response = yield call(openBizTodoList, payload);
       if (response.code === 200) {
         yield put({

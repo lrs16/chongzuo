@@ -191,6 +191,18 @@ function TemporaryDetail(props) {
     }
   }, [Id]);
 
+  useEffect(() => {
+    if (location.state) {
+      // 点击菜单刷新,并获取数据
+      if (location.state.reset) {
+        dispatch({
+          type: 'releasetemp/cleardata',
+        });
+        openFlow(true);
+      };
+    }
+  }, [location.state]);
+
   const handledel = () => {
     delOrder(Id).then(res => {
       if (res.code === 200) {

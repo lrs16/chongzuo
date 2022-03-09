@@ -5,7 +5,7 @@ import { Button, message, Card, Popconfirm } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import EditContext from '@/layouts/MenuContext';
 import BusinessEditTable from './components/BusinessEditTable';
-import { completeVerify, releaseToQuality } from './services/api';
+import { completeVerify, releaseToQuality, openBizTodoList } from './services/api';
 
 function BusinessDetail(props) {
   const { dispatch, info, loading, taskName, location } = props;
@@ -184,6 +184,13 @@ function BusinessDetail(props) {
                 } else {
                   message.error(res.msg || '验证失败')
                 };
+                dispatch({
+                  type: 'releaseverificat/openflow',
+                  payload: {
+                    todoCode: Id,
+                  },
+                  noclear: true,
+                });
               })
             }
           }}

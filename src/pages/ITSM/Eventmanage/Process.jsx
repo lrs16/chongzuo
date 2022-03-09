@@ -9,7 +9,7 @@ let image;
 
 function Process(props) {
   const { location, dispatch, imgblob, records } = props;
-  const { mainId } = location.query;
+  const { mainId, id } = location.query;
 
   // const imgsrc = () => {
   //   const img = document.createElement('img');
@@ -21,16 +21,16 @@ function Process(props) {
     dispatch({
       type: 'eventtodo/eventimage',
       payload: {
-        mainId,
+        mainId: mainId || id,
       },
     });
     dispatch({
       type: 'eventtodo/eventrecords',
       payload: {
-        processId: mainId,
+        processId: mainId || id,
       },
     });
-  }, [mainId]);
+  }, []);
 
   // 二进制展示流程图
   const blob = new Blob([imgblob]);

@@ -80,16 +80,26 @@ function Registrat(props, ref) {
     } if (isEdit) {
       let target = []
       if (taskName === '新建' || taskName === '出厂测试') {
-        target = value.filter(item => !item.module || !item.abilityType || !item.module || !item.appName || !item.problemType || !item.testMenu || !item.testResult || !item.testStep || !item.developer || !item.responsible || !item.passTest);
+        target = value.filter(item => !item.module || !item.abilityType || !item.appName || !item.problemType || !item.testMenu || !item.testResult || !item.testStep || !item.developer || !item.responsible || !item.passTest);
+        if (target.length > 0) {
+          setCheck(true);
+          callback(`请填写完整的发布清单信息`);
+        } else {
+          callback()
+        }
       } else {
-        target = value.filter(item => !item.module || !item.operator || !item.abilityType || !item.module || !item.appName || !item.problemType || !item.testMenu || !item.testResult || !item.testStep || !item.developer || !item.responsible || !item.platformValidator || !item.passTest);
+        target = value.filter(item => !item.platformValidator || !item.passTest);
+        const backmsg = new Map([
+          ['平台验证', '发布清单平台验证人不能为空'],
+          ['业务验证', '发布清单还未全部验证']
+        ])
+        if (target.length > 0) {
+          setCheck(true);
+          callback(backmsg.get(taskName) || `请填写完整的发布清单信息`);
+        } else {
+          callback()
+        }
       };
-      if (target.length > 0) {
-        setCheck(true);
-        callback(`请填写完整的发布清单信息`);
-      } else {
-        callback()
-      }
     } else {
       callback()
     }

@@ -379,9 +379,9 @@ function VerificationTodo(props) {
         width: 100,
       },
       {
-        title: '操作人员',
-        dataIndex: 'operator',
-        key: 'operator',
+        title: '业务负责人',
+        dataIndex: 'responsible',
+        key: 'responsible',
         align: 'center',
         width: 100,
       },

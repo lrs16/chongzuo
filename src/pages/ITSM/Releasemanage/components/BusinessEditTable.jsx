@@ -80,6 +80,7 @@ function BusinessEditTable(props) {
     const target = getRowByKey(key, newData);
     if (target) {
       target[fieldName] = e;
+      target.operator = sessionStorage.getItem('userName');
       if (type === '发布验证') {
         setData(newData);
         ChangeValue(newData);
@@ -87,7 +88,9 @@ function BusinessEditTable(props) {
         releaseListEdit(target).then(res => {
           if (res.code === 200) {
             setData(newData);
-            ChangeValue({ status: true, target });
+            if (fieldName === 'passTest') {
+              ChangeValue({ status: true, target });
+            };
           } else {
             message.error(res.msg || '操作失败')
           }

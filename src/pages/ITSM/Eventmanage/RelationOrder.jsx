@@ -32,7 +32,7 @@ function RelevancyOrder(props) {
     dispatch({
       type: 'relationorder/fetcht',
       payload: {
-        orderId: location.query.mainId,
+        orderId: location.query.mainId || location.query.id,
         orderType: 'event',
         pageIndex,
         pageSize,
@@ -186,7 +186,7 @@ function RelevancyOrder(props) {
         <RelationDrawer
           title={typemap.get(activeKey)}
           visible={visible}
-          orderIdPre={location.query.mainId}
+          orderIdPre={location.query.mainId || location.query.id}
           orderTypePre='event'
           orderTypeSuf={activeKey}
           ChangeVisible={(v) => setVisible(v)}
