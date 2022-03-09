@@ -228,7 +228,7 @@ function TemporaryDetail(props) {
 
   const operations = (
     <>
-      {info?.releaseTempLogs && info?.releaseTempLogs.length && info?.releaseTempLogs.length === 1 && (
+      {info?.releaseTempLogs && info?.releaseTempLogs.length && info?.releaseTempLogs.length === 1 && taskName === '出厂测试' && (
         <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handledel()} disabled={loading || uploadStatus || !info?.taskInfo?.operationTask || !selectdata.ischange} >删除</Button>
       )}
       {taskName === '版本管理员审核' && (<Button
