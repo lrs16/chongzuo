@@ -34,7 +34,7 @@ function TaskLinks(props) {
       }}
     >
       {records.map((obj, index) => {
-        const icondoing = (<Icon type="sync" spin style={{ color: obj.timeoutTime && moment() > moment(obj.timeoutTime) ? '#f5222d' : '' }} />)
+        const icondoing = (<Icon type="loading" spin style={{ color: obj.timeoutTime && moment() > moment(obj.timeoutTime) ? '#f5222d' : '' }} />)
         const icons = () => {
           if (obj.timeoutReason) {
             return <Icon type="check-circle" style={{ color: '#f5222d' }} />

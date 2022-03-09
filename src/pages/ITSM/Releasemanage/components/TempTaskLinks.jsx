@@ -54,7 +54,7 @@ function TempTaskLinks(props) {
           <Step
             title={obj}
             key={index.toString()}
-            icon={obj === taskName ? <Icon type="sync" spin /> : ''}
+            icon={obj === taskName ? <Icon type="loading" spin /> : ''}
           />);
 
       })}

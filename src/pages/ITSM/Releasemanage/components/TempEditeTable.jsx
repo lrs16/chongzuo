@@ -492,8 +492,8 @@ function EditeTable(props) {
     },
     {
       title: '研发测试人员',
-      dataIndex: 'tempDeveloper',
-      key: 'tempDeveloper',
+      dataIndex: 'developer',
+      key: 'developer',
       width: 120,
       render: (text, record) => {
         if (record.isNew || record.editable) {
