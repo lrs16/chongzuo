@@ -97,12 +97,12 @@ function CreditCardRegister(props) {
               beginTime:
                 rangerTime.start ||
                 (values.evaluationInterval?.length
-                  ? moment(values.evaluationInterval[0]).format('YYYY-MM-DD HH:mm:ss')
+                  ? moment(values.evaluationInterval[0]).format('YYYY-MM-DD 00:00:00')
                   : ''),
               endTime:
                 rangerTime.end ||
                 (values.evaluationInterval?.length
-                  ? moment(values.evaluationInterval[1]).format('YYYY-MM-DD HH:mm:ss')
+                  ? moment(values.evaluationInterval[1]).format('YYYY-MM-DD 23:59:59')
                   : ''),
               evaluationInterval: '',
               assessType: values.assessType && values.assessType === '功能开发' ? '1' : '2',

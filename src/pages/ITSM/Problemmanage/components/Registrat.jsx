@@ -272,6 +272,28 @@ const Registrat = React.forwardRef((props, ref) => {
             </Col>
 
             <Col span={8}>
+              <Form.Item label="问题分类">
+                {getFieldDecorator('type', {
+                  rules: [
+                    {
+                      required,
+                      message: '请输入问题分类',
+                    },
+                  ],
+                  initialValue: main.type ? main.type.split(',') : '',
+                })(
+                  <Cascader
+                    fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
+                    options={problemType}
+                    placeholder="请选择"
+                    onChange={() => handlobjectChange()}
+                  />,
+                  <Input />,
+                )}
+              </Form.Item>
+            </Col>
+
+            <Col span={8}>
               <Form.Item label="重要程度">
                 {getFieldDecorator('importance', {
                   rules: [
@@ -293,19 +315,6 @@ const Registrat = React.forwardRef((props, ref) => {
               </Form.Item>
             </Col>
 
-            <Col span={8}>
-              <Form.Item label="联系电话">
-                {getFieldDecorator('registerUserPhone', {
-                  rules: [
-                    {
-                      required,
-                      message: '请输入手机号码',
-                    },
-                  ],
-                  initialValue: register ? register.registerUserPhone : '',
-                })(<Input placeholder="请输入" />)}
-              </Form.Item>
-            </Col>
 
             <Col span={8}>
               <Form.Item label="期望完成时间">
@@ -359,25 +368,18 @@ const Registrat = React.forwardRef((props, ref) => {
               </Form.Item>
             </Col>
 
+
             <Col span={8}>
-              <Form.Item label="问题分类">
-                {getFieldDecorator('type', {
+              <Form.Item label="联系电话">
+                {getFieldDecorator('registerUserPhone', {
                   rules: [
                     {
                       required,
-                      message: '请输入问题分类',
+                      message: '请输入手机号码',
                     },
                   ],
-                  initialValue: main.type ? main.type.split(',') : '',
-                })(
-                  <Cascader
-                    fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
-                    options={problemType}
-                    placeholder="请选择"
-                    onChange={() => handlobjectChange()}
-                  />,
-                  <Input />,
-                )}
+                  initialValue: register ? register.registerUserPhone : '',
+                })(<Input placeholder="请输入" />)}
               </Form.Item>
             </Col>
 
