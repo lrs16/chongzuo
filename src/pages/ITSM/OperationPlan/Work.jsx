@@ -743,6 +743,7 @@ function Work(props) {
                             userinfo={userinfo}
                             checkStatus={checkStatus}
                             ref={SaveRef}
+                            key='1'
                           />
                         </FatherContext.Provider>
                       </Panel>
@@ -775,6 +776,7 @@ function Work(props) {
                             ChangeFiles={newvalue => {
                               setFiles(newvalue);
                             }}
+                            key='1'
                           />
                         </Panel>
                       )}
@@ -808,6 +810,7 @@ function Work(props) {
                             ChangeFiles={newvalue => {
                               setFiles(newvalue);
                             }}
+                            key='1'
                           />
                         </HadleContext.Provider>
                       </Panel>

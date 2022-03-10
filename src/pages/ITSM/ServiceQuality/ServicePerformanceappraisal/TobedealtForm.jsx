@@ -776,6 +776,7 @@ function TobedealtForm(props) {
                         loading={loading}
                         noEdit={search}
                         search={search}
+                        key='1'
                       />
                     </HadleContext.Provider>
                   </Panel>
@@ -792,6 +793,7 @@ function TobedealtForm(props) {
                       selectPersonstate={newvalue => setNoselect(newvalue)}
                       noEdit={search}
                       search={search}
+                      key='1'
                     />
                   </Panel>
                 )}
@@ -807,6 +809,7 @@ function TobedealtForm(props) {
                       selectPersonstate={newvalue => setNoselect(newvalue)}
                       noEdit={search}
                       search={search}
+                      key='1'
                     />
                   </Panel>
                 )}
@@ -825,6 +828,7 @@ function TobedealtForm(props) {
                         setFiles(newvalue);
                       }}
                       search={search}
+                      key='1'
                     />
                   </Panel>
                 )}
@@ -840,6 +844,7 @@ function TobedealtForm(props) {
                       userinfo={userinfo}
                       selectPersonstate={newvalue => setNoselect(newvalue)}
                       search={search}
+                      key='1'
                     />
                   </Panel>
                 )}
@@ -860,6 +865,7 @@ function TobedealtForm(props) {
                       search={search}
                       clauseList={clauseList}
                       editSign={currentTask.isEdit === '0' ? 'true' : ''}
+                      key='1'
                     />
                   </Panel>
                 )}
@@ -873,7 +879,7 @@ function TobedealtForm(props) {
         <div className='noexplain'>
           <div className={styles.collapse}>
             <Collapse expandIconPosition="right" bordered={false} defaultActiveKey={['0']}>
-              {hisTasks.map((obj, index) => {
+              {hisTasks.map((obj) => {
                 const Paneldesmap = new Map([
                   [
                     '服务绩效考核登记',
@@ -903,7 +909,6 @@ function TobedealtForm(props) {
                   [
                     `业务负责人审核`,
                     <BusinessAudit
-                      key={index}
                       businessAudit={Object.values(obj)[0]}
                       formItemLayout={formItemLayout}
                       forminladeLayout={forminladeLayout}
@@ -911,12 +916,12 @@ function TobedealtForm(props) {
                       selectPersonstate={newvalue => setNoselect(newvalue)}
                       noEdit="true"
                       search={search}
+                      key="0"
                     />,
                   ],
                   [
                     `自动化科专责审核`,
                     <BusinessAudit
-                      key={index}
                       businessAudit={Object.values(obj)[0]}
                       formItemLayout={formItemLayout}
                       forminladeLayout={forminladeLayout}
@@ -924,12 +929,12 @@ function TobedealtForm(props) {
                       selectPersonstate={newvalue => setNoselect(newvalue)}
                       noEdit="true"
                       search={search}
+                      key="0"
                     />,
                   ],
                   [
                     `自动化科复核`,
                     <BusinessAudit
-                      key={index}
                       businessAudit={Object.values(obj)[0]}
                       formItemLayout={formItemLayout}
                       forminladeLayout={forminladeLayout}
@@ -937,12 +942,12 @@ function TobedealtForm(props) {
                       selectPersonstate={newvalue => setNoselect(newvalue)}
                       noEdit="true"
                       search={search}
+                      key="0"
                     />,
                   ],
                   [
                     `服务商确认`,
                     <ProviderConfirmation
-                      key={index}
                       providerConfirmation={Object.values(obj)[0]}
                       formItemLayout={formItemLayout}
                       forminladeLayout={forminladeLayout}
@@ -954,12 +959,12 @@ function TobedealtForm(props) {
                       }}
                       noEdit="true"
                       search={search}
+                      key="0"
                     />,
                   ],
                   [
                     `服务绩效考核确认`,
                     <AssessmentConfirmation
-                      key={index}
                       ref={formRef}
                       assessmentConfirmation={Object.values(obj)[0]}
                       formItemLayout={formItemLayout}
@@ -974,11 +979,12 @@ function TobedealtForm(props) {
                       search={search}
                       editSign='true'
                       noEdit="true"
+                      key="0"
                     />,
                   ],
                 ]);
                 return (
-                  <Panel Panel header={Object.keys(obj)[0]} key={index}>
+                  <Panel Panel header={Object.keys(obj)[0]} key='0'>
                     {Paneldesmap.get(Object.keys(obj)[0])}
                   </Panel>
                 );
