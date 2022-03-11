@@ -142,14 +142,13 @@ export default {
         const response = yield call(scorecardSave, payload);
         if (response.code === 200 && response.data && response.data.id) {
           router.push({
-            pathname: '/ITSM/eventmanage/registration',
+            pathname: '/ITSM/servicequalityassessment/creditcard/creditcardregister',
             query: {
               tabid: sessionStorage.getItem('tabid'),
               closecurrent: true,
             },
           });
           const { id, cardNo } = response.data;
-          if (cardNo) {
             router.push({
               pathname: '/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail',
               query: {
@@ -161,7 +160,6 @@ export default {
                 menuDesc: '记分详情页',
               },
             });
-          }
         } else {
           message.error('保存失败');
         }

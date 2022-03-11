@@ -93,6 +93,7 @@ function CreditCardRegister(props) {
             payload: {
               id: paramId,
               ...values,
+              phaseId:values.phaseId || '',
               details: editTablesource,
               beginTime:
                 rangerTime.start ||

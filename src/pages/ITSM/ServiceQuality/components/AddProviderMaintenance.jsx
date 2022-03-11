@@ -148,6 +148,11 @@ function AddProviderMaintenance(props) {
       key: 'dueTime',
     },
     {
+      title: '考核评分细则',
+      dataIndex: 'scoreNo',
+      key: 'scoreNo',
+    },
+    {
       title: '考核周期',
       dataIndex: 'phaseString',
       key: 'phaseString',

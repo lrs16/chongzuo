@@ -39,6 +39,7 @@ const Register = forwardRef((props, ref) => {
   const [providerId, setProviderId] = useState(''); //  设置服务商的id
   const [spinloading, setSpinLoading] = useState(true);
   const [selectdata, setSelectData] = useState('');
+  const [phaseArr, setPhaseArr] = useState([]);
 
   useImperativeHandle(
     ref,
@@ -73,8 +74,29 @@ const Register = forwardRef((props, ref) => {
   };
 
   useEffect(() => {
+    const requestData = {
+      scoreName: '',
+      pageNum: 1,
+      pageSize: 1000,
+      status: '1',
+    };
     handleTabledata();
+    scoreListpage({ ...requestData }).then(res => {
+      if (res) {
+        const arr = [...res.data.records];
+        setSpinLoading(false);
+        setScorelist(arr);
+      }
+    });
+
+
   }, [register]);
+
+  useEffect(() => {
+    const phaseArrresult = contractArr.filter(obj => obj.id === register.contractId)
+    setPhaseArr(phaseArrresult[0]?.phases || [])
+  }, [contractArr])
+
 
   function useDebounce(fn, delay) {
     const { current } = useRef({ fn, timer: null });
@@ -195,6 +217,7 @@ const Register = forwardRef((props, ref) => {
           providerId: id, // 服务商id
           contractName,
           contractId: '',
+          phaseId: ''
         });
         getContrractname(id);
         setProviderId(id);
@@ -232,41 +255,26 @@ const Register = forwardRef((props, ref) => {
         });
         break;
 
-      case 'score':
-        scoreListpage({ ...requestData }).then(res => {
-          if (res) {
-            const arr = [...res.data.records];
-            setSpinLoading(false);
-            setScorelist(arr);
-          }
-        });
-        break;
-
       default:
         break;
     }
   };
 
-  // 自动完成评分细则
-  const scorenameList = scorelist.map(opt => (
-    <Option key={opt.id} value={opt.id} disableuser={opt}>
-      <Spin spinning={spinloading}>
-        <div className={styles.disableuser}>
-          <span>{opt.scoreNo}</span>
-          <span>{opt.scoreName}</span>
-        </div>
-      </Spin>
-    </Option>
-  ));
-
   const handleChange = (values, option) => {
     const {
       key,
-      props: { value },
+      props: { value, scoreId, scoreName },
     } = option;
+    const phaseArrresult = contractArr.filter(obj => obj.id === value)
+    setPhaseArr(phaseArrresult[0]?.phases || [])
+    const findassessType = scorelist.filter(obj => obj.id === scoreId)
     setFieldsValue({
       contractName: key,
       contractId: value,
+      scoreId,
+      scoreName,
+      assessType: findassessType[0]?.assessType || '',
+      phaseId: ''
     });
   };
 
@@ -283,6 +291,20 @@ const Register = forwardRef((props, ref) => {
     return [];
   };
 
+  const setevaluationInterval = (value, option) => {
+    if (value) {
+      const {
+        props: {
+          beginTime, endTime
+        },
+      } = option;
+      setFieldsValue({
+        evaluationInterval: [moment(beginTime), moment(endTime)]
+      })
+    }
+
+  }
+
   const grade = getTypebyTitle('评价等级');
 
   return (
@@ -294,255 +316,266 @@ const Register = forwardRef((props, ref) => {
         style={{ display: 'none' }}
       />
       <div className='noexplain'>
-      <Row gutter={24} style={{ paddingTop: 24 }}>
-        <Form {...formItemLayout}>
-          {/* <Row> */}
-          {/* <Col span={8}> */}
-          <Col span={8}>
-            <Form.Item label="计分卡编号">
-              {getFieldDecorator('cardNo', {
-                initialValue: register.cardNo,
-              })(<Input disabled />)}
-            </Form.Item>
-          </Col>
-
-          <Col span={8}>
-            <Form.Item label="评价计分卡名称">
-              {getFieldDecorator('cardName', {
-                rules: [
-                  {
-                    required,
-                    message: '请输入评价计分卡名称',
-                  },
-                ],
-                initialValue: register.cardName,
-              })(<Input disabled={search} />)}
-            </Form.Item>
-          </Col>
-
-          <Col span={8}>
-            <Form.Item label="服务商">
-              {getFieldDecorator('providerName', {
-                rules: [
-                  {
-                    required,
-                    message: '请选择服务商',
-                  },
-                ],
-                initialValue: register.providerName,
-              })(
-                <AutoComplete
-                  disabled={search}
-                  dataSource={disableduser}
-                  dropdownMatchSelectWidth={false}
-                  dropdownStyle={{ width: 600 }}
-                  onSelect={(v, opt) => handleDisableduser(v, opt, 'provider')}
-                >
-                  <Search
-                    placeholder="可输入服务商名称搜索"
-                    onSearch={values => SearchDisableduser({ providerName: values }, 'provider')}
-                    allowClear
-                  />
-                </AutoComplete>,
-              )}
-            </Form.Item>
-          </Col>
-
-          <Col span={8} style={{ display: 'none' }}>
-            <Form.Item label="服务商">
-              {getFieldDecorator('providerId', {
-                initialValue: register.providerId,
-              })(<Input disabled={search} />)}
-            </Form.Item>
-          </Col>
-
-          {(id ? contractArr : true) && (
+        <Row gutter={24} style={{ paddingTop: 24 }}>
+          <Form {...formItemLayout}>
+            {/* <Row> */}
+            {/* <Col span={8}> */}
             <Col span={8}>
-              <Form.Item label="关联合同名称">
-                {getFieldDecorator('contractId', {
+              <Form.Item label="计分卡编号">
+                {getFieldDecorator('cardNo', {
+                  initialValue: register.cardNo,
+                })(<Input disabled />)}
+              </Form.Item>
+            </Col>
+
+            <Col span={8}>
+              <Form.Item label="评价计分卡名称">
+                {getFieldDecorator('cardName', {
                   rules: [
                     {
                       required,
-                      message: '请选择关联合同名称',
+                      message: '请输入评价计分卡名称',
                     },
                   ],
-                  initialValue: register.contractId,
+                  initialValue: register.cardName,
+                })(<Input disabled={search} />)}
+              </Form.Item>
+            </Col>
+
+            <Col span={8}>
+              <Form.Item label="服务商">
+                {getFieldDecorator('providerName', {
+                  rules: [
+                    {
+                      required,
+                      message: '请选择服务商',
+                    },
+                  ],
+                  initialValue: register.providerName,
+                })(
+                  <AutoComplete
+                    disabled={search}
+                    dataSource={disableduser}
+                    dropdownMatchSelectWidth={false}
+                    dropdownStyle={{ width: 600 }}
+                    onSelect={(v, opt) => handleDisableduser(v, opt, 'provider')}
+                  >
+                    <Search
+                      placeholder="可输入服务商名称搜索"
+                      onSearch={values => SearchDisableduser({ providerName: values }, 'provider')}
+                      allowClear
+                    />
+                  </AutoComplete>,
+                )}
+              </Form.Item>
+            </Col>
+
+            <Col span={8} style={{ display: 'none' }}>
+              <Form.Item label="服务商">
+                {getFieldDecorator('providerId', {
+                  initialValue: register.providerId,
+                })(<Input disabled={search} />)}
+              </Form.Item>
+            </Col>
+
+            {(id ? contractArr : true) && (
+              <Col span={8}>
+                <Form.Item label="关联合同名称">
+                  {getFieldDecorator('contractId', {
+                    rules: [
+                      {
+                        required,
+                        message: '请选择关联合同名称',
+                      },
+                    ],
+                    initialValue: register.contractId,
+                  })(
+                    <Select
+                      disabled={search}
+                      placeholder="请选择"
+                      allowClear={false}
+                      onChange={(value, option) => handleChange(value, option, 'contract')}
+                      onFocus={() => handleFocus('contract')}
+                    >
+                      {contractArr.map(obj => [
+                        <Option key={obj.contractName} value={obj.id} scoreId={obj.scoreId} scoreName={obj.scoreNo}>
+                          <div className={styles.disableuser}>
+                            <span>{obj.contractNo}</span>
+                            <span>{obj.contractName}</span>
+                          </div>
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+            )}
+
+            <Col span={8} style={{ display: 'none' }}>
+              <Form.Item label="关联合同名称">
+                {getFieldDecorator('contractName', {
+                  initialValue: register.contractName,
+                })(<Input disabled={search} />)}
+              </Form.Item>
+            </Col>
+
+            <Col span={8}>
+              <Form.Item label="评分细则名称">
+                {getFieldDecorator('scoreId', {
+                  rules: [
+                    {
+                      required,
+                      message: '评分细则名称为空,请选择有效的关联合同',
+                    },
+                  ],
+                  initialValue: register.scoreId,
                 })(
                   <Select
-                    disabled={search}
-                    placeholder="请选择"
+                    disabled
                     allowClear={false}
-                    onChange={(value, option) => handleChange(value, option, 'contract')}
-                    onFocus={() => handleFocus('contract')}
                   >
-                    {contractArr.map(obj => [
-                      <Option key={obj.contractName} value={obj.id}>
-                        <div className={styles.disableuser}>
-                          <span>{obj.contractNo}</span>
-                          <span>{obj.contractName}</span>
-                        </div>
+                    {scorelist.map(obj => [
+                      <Option key={obj.id} value={obj.id}>
+                        {obj.scoreName}
                       </Option>,
                     ])}
                   </Select>,
                 )}
               </Form.Item>
             </Col>
-          )}
 
-          <Col span={8} style={{ display: 'none' }}>
-            <Form.Item label="关联合同名称">
-              {getFieldDecorator('contractName', {
-                initialValue: register.contractName,
-              })(<Input disabled={search} />)}
-            </Form.Item>
-          </Col>
+            <Col span={8} style={{ display: 'none' }}>
+              <Form.Item label="评分细则名称id">
+                {getFieldDecorator('scoreName', {
+                  initialValue: register.scoreName,
+                })(<Input disabled={search} />)}
+              </Form.Item>
+            </Col>
 
-          <Col span={8}>
-            <Form.Item label="评分细则名称">
-              {getFieldDecorator('scoreName', {
-                rules: [
-                  {
-                    required,
-                    message: '请选择评分细则名称',
-                  },
-                ],
-                initialValue: register.scoreName,
-              })(
-                <AutoComplete
-                  disabled={search}
-                  dataSource={scorenameList}
-                  dropdownMatchSelectWidth={false}
-                  dropdownStyle={{ width: 600 }}
-                  onSelect={(v, opt) => handleDisableduser(v, opt, 'score')}
-                >
-                  <Search
-                    placeholder="请输入评分细则名称"
-                    onSearch={values => SearchDisableduser({ scoreName: values }, 'score')}
-                    allowClear
-                  />
-                </AutoComplete>,
-              )}
-            </Form.Item>
-          </Col>
+            <Col span={8}>
+              <Form.Item label="考核类型">
+                {getFieldDecorator('assessType', {
+                  // initialValue: (register.assessType === '1') ? '功能开发' : (register.assessType === '2') ? '系统运维' : ''
+                  initialValue:
+                    register && register.assessType && register.assessType === '1'
+                      ? '功能开发'
+                      : register.assessType === '2'
+                        ? '系统运维'
+                        : '',
+                })(<Input disabled />)}
+              </Form.Item>
+            </Col>
 
-          <Col span={8} style={{ display: 'none' }}>
-            <Form.Item label="评分细则名称">
-              {getFieldDecorator('scoreId', {
-                rules: [
-                  {
-                    required,
-                    message: '请输入评分细则名称',
-                  },
-                ],
-                initialValue: register.scoreId,
-              })(<Input disabled={search} />)}
-            </Form.Item>
-          </Col>
+            <Col span={8}>
+              <Form.Item label="版本号">
+                {getFieldDecorator('version', {
+                  rules: [
+                    {
+                      required,
+                      message: '请输入版本号',
+                    },
+                  ],
+                  initialValue: register.version,
+                })(<Input disabled={search} />)}
+              </Form.Item>
+            </Col>
 
-          <Col span={8}>
-            <Form.Item label="考核类型">
-              {getFieldDecorator('assessType', {
-                // initialValue: (register.assessType === '1') ? '功能开发' : (register.assessType === '2') ? '系统运维' : ''
-                initialValue:
-                  register && register.assessType && register.assessType === '1'
-                    ? '功能开发'
-                    : register.assessType === '2'
-                      ? '系统运维'
+            <Col span={8}>
+              <Form.Item label="专业部门">
+                {getFieldDecorator('deptName', {
+                  rules: [
+                    {
+                      required,
+                      message: '请输入专业部门',
+                    },
+                  ],
+                  initialValue: register.deptName,
+                })(<Input disabled={search} />)}
+              </Form.Item>
+            </Col>
+
+            <Col span={8}>
+              <Form.Item label="评价区间">
+                {getFieldDecorator('evaluationInterval', {
+                  initialValue:
+                    register && register.beginTime
+                      ? [moment(register.beginTime), moment(register.endTime)]
                       : '',
-              })(<Input disabled />)}
-            </Form.Item>
-          </Col>
+                })(
+                  <RangePicker
+                    disabled={search}
+                    showTime
+                    format="YYYY-MM-DD HH:mm:ss"
+                    style={{ width: '100%' }}
+                    placeholder="请选择"
+                  />
 
-          <Col span={8}>
-            <Form.Item label="版本号">
-              {getFieldDecorator('version', {
-                rules: [
-                  {
-                    required,
-                    message: '请输入版本号',
-                  },
-                ],
-                initialValue: register.version,
-              })(<Input disabled={search} />)}
-            </Form.Item>
-          </Col>
+                )}
+              </Form.Item>
+            </Col>
 
-          <Col span={8}>
-            <Form.Item label="专业部门">
-              {getFieldDecorator('deptName', {
-                rules: [
-                  {
-                    required,
-                    message: '请输入专业部门',
-                  },
-                ],
-                initialValue: register.deptName,
-              })(<Input disabled={search} />)}
-            </Form.Item>
-          </Col>
+            <Col span={8}>
+              <Form.Item label="考核周期">
+                {getFieldDecorator('phaseId', {
+                  initialValue: register.phaseId,
+                })(
+                  <Select
+                    disabled={search}
+                    allowClear
+                    onChange={(value, option) => setevaluationInterval(value, option)}
 
-          <Col span={8}>
-            <Form.Item label="评价区间">
-              {getFieldDecorator('evaluationInterval', {
-                initialValue:
-                  register && register.beginTime
-                    ? [moment(register.beginTime), moment(register.endTime)]
-                    : '',
-              })(
-                <RangePicker
-                  allowClear={false}
-                  disabled={search}
-                  showTime
-                  format="YYYY-MM-DD HH:mm:ss"
-                  style={{ width: '100%' }}
-                  placeholder="请选择"
-                />
+                  >
+                    {phaseArr.map(obj => [
+                      <Option key={obj.id} value={obj.id} beginTime={obj.beginTime} endTime={obj.endTime}>
+                        <span>{obj.assessCycle} {obj.beginTime}-{obj.endTime}</span>
+                      </Option>,
+                    ])}
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
 
-              )}
-            </Form.Item>
-          </Col>
-
-          {id && (
-            <>
-              <Col span={24}>
-                <Form.Item label="评价详情" {...formItemdeLayout}>
-                  {getFieldDecorator(
-                    'details',
-                    {},
-                  )(<MergeTable column={columns} tableSource={data} mergecell="target1Name" />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="评价得分">
-                  {getFieldDecorator('totalScore', {
-                    initialValue: register.totalScore,
-                  })(<Input disabled />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="评价等级">
-                  {getFieldDecorator('grade', {
-                    initialValue: register.grade,
-                  })(<Input disabled />)}
-                </Form.Item>
-              </Col>
-
-              {grade && grade.length && (
-                <Col span={24} {...formItemdeLayout}>
-                  <div style={{ textIndent: '4em' }}>
-                    <p>注：{grade[0].title}</p>
-                    <p style={{ textIndent: '6em' }}>{grade[1].title} </p>
-                  </div>
+            {id && (
+              <>
+                <Col span={24}>
+                  <Form.Item label="评价详情" {...formItemdeLayout}>
+                    {getFieldDecorator(
+                      'details',
+                      {},
+                    )(<MergeTable column={columns} tableSource={data} mergecell="target1Name" />)}
+                  </Form.Item>
                 </Col>
-              )}
-            </>
-          )}
-        </Form>
-      </Row>
+
+                <Col span={8}>
+                  <Form.Item label="评价得分">
+                    {getFieldDecorator('totalScore', {
+                      initialValue: register.totalScore,
+                    })(<Input disabled />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="评价等级">
+                    {getFieldDecorator('grade', {
+                      initialValue: register.grade,
+                    })(<Input disabled />)}
+                  </Form.Item>
+                </Col>
+
+                {grade && grade.length && (
+                  <Col span={24} {...formItemdeLayout}>
+                    <div style={{ textIndent: '4em' }}>
+                      <p>注：{grade[0].title}</p>
+                      <p style={{ textIndent: '6em' }}>{grade[1].title} </p>
+                    </div>
+                  </Col>
+                )}
+              </>
+            )}
+          </Form>
+        </Row>
       </div>
-   
+
     </>
   );
 });
@@ -565,6 +598,7 @@ Register.defaultProps = {
     cardYear: '',
     totalScore: '',
     grade: '',
+    phaseId: ''
   },
 };
 

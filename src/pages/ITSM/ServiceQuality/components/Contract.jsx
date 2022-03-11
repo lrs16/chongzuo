@@ -13,6 +13,7 @@ import {
   Col
 } from 'antd';
 import moment from 'moment';
+import { scoreListpage } from '../services/quality'
 
 const formItemLayout = {
   labelCol: {
@@ -35,6 +36,8 @@ const withClick = (element, handleClick = () => { }) => {
 };
 function Contract(props) {
   const [visible, setVisible] = useState(false);
+  const [scorelist, setScorelist] = useState([]); // 评分细则
+
   const {
     form: { getFieldDecorator, setFieldsValue },
     children,
@@ -57,9 +60,6 @@ function Contract(props) {
       switch (fieldName) {
         case 'assessYear':
         case 'assessCycle':
-          // 获取季度时间
-          // target.start = moment(e).startOf('quarter').format("YYYY-MM-DD");
-          // target.end = moment(e).endOf('quarter').format("YYYY-MM-DD")
           target[fieldName] = e;
           setData(newData);
           break;
@@ -106,13 +106,13 @@ function Contract(props) {
       dataIndex: 'assessYear',
       key: 'assessYear',
       width: 120,
-      render: (text,record,index) => {
+      render: (text, record, index) => {
         return (
           <DatePicker
             getPopupContainer={() => document.querySelector('.ant-drawer-body')}
             allowClear={false}
             // open={isopen}
-            value={text ? moment(text.toString()):undefined}
+            value={text ? moment(text.toString()) : undefined}
             format='YYYY'
             mode="year"
             placeholder='请选择年份'
@@ -202,7 +202,16 @@ function Contract(props) {
         )
       }
     },
-  ]
+  ];
+
+  const handleChange = (values, option) => {
+    const {
+      props: {  scoreName },
+    } = option;
+    setFieldsValue({
+      scoreNo:scoreName
+    });
+  };
 
   const required = true;
 
@@ -231,6 +240,18 @@ function Contract(props) {
       phases: newarr
     })
     setVisible(true);
+    const requestData = {
+      scoreName: '',
+      pageNum: 1,
+      pageSize: 1000,
+      status: '1',
+    };
+    scoreListpage({ ...requestData }).then(res => {
+      if (res) {
+        const arr = [...res.data.records];
+        setScorelist(arr);
+      }
+    });
   };
 
   const handleOk = () => {
@@ -242,7 +263,8 @@ function Contract(props) {
             assessCycle: item.assessCycle,
             beginTime: item.beginTime,
             endTime: item.endTime,
-            id:item.id || ''
+            id: item.id || '',
+            scoreId: item.scoreId
           }
         });
         const result = newArray.every((val => (
@@ -406,6 +428,36 @@ function Contract(props) {
             )}
           </Form.Item>
 
+          <Form.Item label="考核评分细则">
+            {getFieldDecorator('scoreId', {
+              rules: [
+                {
+                  required,
+                  message: '请选择考核评分细则',
+                },
+              ],
+              initialValue: contract.scoreId,
+            })(
+              <Select placeholder="请选择" 
+              onChange={(value, option) => handleChange(value, option, 'contract')}
+              >
+                {(scorelist).map(obj => [
+                  <Option key={obj.id} value={obj.id} scoreName={obj.scoreName}>
+                    {obj.scoreName}
+                  </Option>,
+                ])}
+              </Select>,
+            )}
+          </Form.Item>
+
+          <Form.Item label="考核评分细则" style={{display:'none'}}>
+            {getFieldDecorator('scoreNo', {
+              initialValue: contract.scoreNo,
+            })(
+              <Input/>
+            )}
+          </Form.Item>
+
           {
             deleteSign === false && (
               <Form.Item label="考核周期">
@@ -501,6 +553,7 @@ Contract.defaultProps = {
     // data: new Date(),
     // enddata: new Date(),
     status: '',
+    scoreId:''
   },
 };
 export default Form.create({})(Contract);

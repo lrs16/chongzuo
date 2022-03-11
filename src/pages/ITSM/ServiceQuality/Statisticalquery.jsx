@@ -7,12 +7,13 @@ import {
   Col,
   Form,
   Button,
-  message
+  message,
 } from 'antd';
 import moment from 'moment';
 import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import AnalysisPopup from './AnalysisPopup';
+import { scoreListpage } from '../ServiceQuality/services/quality';
 
 
 let startTime;
@@ -32,6 +33,7 @@ function Statisticalquery(props) {
   const [typeName, setTypename] = useState('');
   const [title, setTitle] = useState('');
   const [picval, setPicVal] = useState({});
+  const [scorelist, setScorelist] = useState([]); // 评分细则
 
   const columns = [
     {
@@ -69,11 +71,11 @@ function Statisticalquery(props) {
             setPicVal({
               assessBeginTime: startTime,
               assessEndTime: endTime,
-              contractId:record.contractId,
+              contractId: record.contractId,
               scoreType: '减'
             });
             setVisible(true)
-            setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase || ''))
+            setTitle('合同名称:' + record.contractName + ';' + '考核周期:' + (record.assessPhase || ''))
           } else {
             message.info('请点击查询查询数据后才可查看本周扣分详情')
           }
@@ -91,11 +93,11 @@ function Statisticalquery(props) {
             setPicVal({
               assessBeginTime: startTime,
               assessEndTime: endTime,
-              contractId:record.contractId,
+              contractId: record.contractId,
               scoreType: '加'
             });
             setVisible(true)
-            setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase || ''))
+            setTitle('合同名称:' + record.contractName + ';' + '考核周期:' + (record.assessPhase || ''))
           } else {
             message.info('请点击查询查询数据后才可查看本周加分详情')
           }
@@ -112,10 +114,10 @@ function Statisticalquery(props) {
           setPicVal({
             assessBeginTime: record.beginTime,
             assessEndTime: record.endTime,
-            contractId:record.contractId,
+            contractId: record.contractId,
             scoreType: '减'
           });
-          setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase || ''))
+          setTitle('合同名称:' + record.contractName + ';' + '考核周期:' + (record.assessPhase || ''))
           setVisible(true)
         }}>{text}</a>
 
@@ -130,10 +132,10 @@ function Statisticalquery(props) {
           setPicVal({
             assessBeginTime: record.beginTime,
             assessEndTime: record.endTime,
-            contractId:record.contractId,
+            contractId: record.contractId,
             scoreType: '加'
           });
-          setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase || ''))
+          setTitle('合同名称:' + record.contractName + ';' + '考核周期:' + (record.assessPhase || ''))
           setVisible(true)
         }}>{text}</a>
       }
@@ -147,14 +149,47 @@ function Statisticalquery(props) {
           setPicVal({
             assessBeginTime: record.beginTime,
             assessEndTime: record.endTime,
-            contractId:record.contractId,
+            contractId: record.contractId,
             scoreType: '合计'
           });
-          setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase || ''))
+          setTitle('合同名称:' + record.contractName + ';' + '考核周期:' + (record.assessPhase || ''))
           setVisible(true)
         }}>{text}</a>
       }
     },
+    {
+      title: '操作',
+      dataIndex: 'action',
+      fixed: 'right',
+      width: 150,
+      render: (text, record) => {
+        const scorecardSave = () => {
+          const findassessType = scorelist.filter(obj => obj.id === record.scoreId)
+          dispatch({
+            type: 'performanceappraisal/scorecardSave',
+            payload: {
+              cardNo: '',
+              cardName: '生成计分卡',
+              providerName: record.providerName,
+              providerId: record.providerId || '11',
+              contractId: record.contractId,
+              contractName: record.contractName,
+              scoreName: '',
+              scoreId: record.scoreId || '1',
+              assessType: findassessType[0].assessType === '功能开发' ? '1' : '2' || '1',
+              version: '1.1',
+              deptName: '广西电网责任有限责任公司',
+              evaluationInterval: [],
+              details: [],
+              beginTime: record.beginTime,
+              endTime: record.endTime,
+              phaseId: record.phaseId,
+            }
+          })
+        }
+        return <a onClick={scorecardSave}>生成计分卡</a>
+      }
+    }
   ];
 
   const columns2 = [
@@ -192,10 +227,10 @@ function Statisticalquery(props) {
           setPicVal({
             assessBeginTime: record.beginTime,
             assessEndTime: record.endTime,
-            contractId:record.contractId,
+            contractId: record.contractId,
             scoreType: '减'
           });
-          setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase  || ''))
+          setTitle('合同名称:' + record.contractName + ';' + '考核周期:' + (record.assessPhase || ''))
           setVisible(true)
         }}>{text}</a>
       }
@@ -209,10 +244,10 @@ function Statisticalquery(props) {
           setPicVal({
             assessBeginTime: record.beginTime,
             assessEndTime: record.endTime,
-            contractId:record.contractId,
+            contractId: record.contractId,
             scoreType: '加'
           });
-          setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase  || ''))
+          setTitle('合同名称:' + record.contractName + ';' + '考核周期:' + (record.assessPhase || ''))
           setVisible(true)
         }}>{text}</a>
       }
@@ -226,14 +261,47 @@ function Statisticalquery(props) {
           setPicVal({
             assessBeginTime: record.beginTime,
             assessEndTime: record.endTime,
-            contractId:record.contractId,
+            contractId: record.contractId,
             scoreType: '合计'
           });
-          setTitle('合同名称:'+ record.contractName +';'+ '考核周期:' + (record.assessPhase  || ''))
+          setTitle('合同名称:' + record.contractName + ';' + '考核周期:' + (record.assessPhase || ''))
           setVisible(true)
         }}>{text}</a>
       }
     },
+    {
+      title: '操作',
+      dataIndex: 'action',
+      fixed: 'right',
+      width: 150,
+      render: (text, record) => {
+        const scorecardSave = () => {
+          const findassessType = scorelist.filter(obj => obj.id === record.scoreId)
+          dispatch({
+            type: 'performanceappraisal/scorecardSave',
+            payload: {
+              cardNo: '',
+              cardName: '生成计分卡',
+              providerName: record.providerName,
+              providerId: record.providerId || '11',
+              contractId: record.contractId,
+              contractName: record.contractName,
+              scoreName: '',
+              scoreId: record.scoreId || '1',
+              assessType: findassessType[0].assessType === '功能开发' ? '1' : '2' || '1',
+              version: '1.1',
+              deptName: '广西电网责任有限责任公司',
+              evaluationInterval: [],
+              details: [],
+              beginTime: record.beginTime,
+              endTime: record.endTime,
+              phaseId: record.phaseId,
+            }
+          })
+        }
+        return <a onClick={scorecardSave}>生成计分卡</a>
+      }
+    }
   ];
 
   const onChange = (date, dateString) => {
@@ -314,8 +382,20 @@ function Statisticalquery(props) {
   }
 
   useEffect(() => {
+    const requestData = {
+      scoreName: '',
+      pageNum: 1,
+      pageSize: 1000,
+      status: '1',
+    };
     defaultTime();
     getList();
+    scoreListpage({ ...requestData }).then(res => {
+      if (res) {
+        const arr = [...res.data.records];
+        setScorelist(arr);
+      }
+    });
   }, [tabActiveKey])
 
   const tabList = [
@@ -371,11 +451,10 @@ function Statisticalquery(props) {
                     <Form.Item label='起始时间'>
                       {
                         getFieldDecorator('time1', {
-                          initialValue: ''
+                          initialValue: undefined
                         })(
                           <DatePicker
                             allowClear={false}
-                            // disabledDate={startdisabledDate}
                             onChange={onChange}
                           />
                         )
@@ -388,7 +467,7 @@ function Statisticalquery(props) {
                     <Form.Item label=''>
                       {
                         getFieldDecorator('time2', {
-                          initialValue: moment(endTime)
+                          initialValue: undefined
                         })
                           (<DatePicker
                             allowClear={false}
@@ -416,7 +495,7 @@ function Statisticalquery(props) {
                   <Col span={24}>
                     <Form.Item label='起始时间'>
                       {getFieldDecorator('monthStarttime', {
-                        initialValue: moment(startTime)
+                        initialValue: undefined
                       })(
                         <MonthPicker
                           allowClear='false'
@@ -429,7 +508,7 @@ function Statisticalquery(props) {
                     <Form.Item label=''>
                       {
                         getFieldDecorator('monthEndtime', {
-                          initialValue: moment(endTime)
+                          initialValue: undefined
                         })
                           (<MonthPicker
                             allowClear={false}
@@ -463,6 +542,7 @@ function Statisticalquery(props) {
           <Table
             columns={tabActiveKey === 'week' ? columns : columns2}
             dataSource={statsSearcharr}
+            rowKey={record => record.phaseId}
           />
         </Card>
 

@@ -419,9 +419,9 @@ function AnalysisPopup(props) {
           loading={loading}
           columns={column}
           dataSource={tobeDealtarr.records}
-          rowKey={record => record.id}
           pagination={pagination}
           scroll={{ x: true }}
+          rowKey={(record,index)=>{return index}}
         />
       </Drawer>
     </>
