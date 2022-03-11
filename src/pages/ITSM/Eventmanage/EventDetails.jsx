@@ -181,7 +181,7 @@ function EventDetails(props) {
                       title={obj.nodeName}
                       description={desc}
                       key={index.toString()}
-                      icon={index === records.length - 1 && !obj.endTime ? <Icon type="loading" spin /> : <Icon type="check-circle" />}
+                      icon={!obj.endTime ? <Icon type="loading" spin style={{ color: '#0124c5' }} /> : <Icon type="check-circle" />}
                     />
                   );
                 })}

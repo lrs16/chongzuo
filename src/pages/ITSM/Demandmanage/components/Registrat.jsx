@@ -653,7 +653,7 @@ const Registrat = forwardRef((props, ref) => {
               })(<TextArea autoSize={{ minRows: 3 }} allowClear placeholder="请输入" />)}
             </Form.Item>
           </Col>
-          <Col span={24}>
+          <Col span={24} style={{ marginTop: '-10px' }}>
             <Form.Item label="需求描述" {...forminladeLayout}>
               {getFieldDecorator('detail', {
                 rules: [{ required, message: '请输入需求描述' }],
@@ -671,7 +671,7 @@ const Registrat = forwardRef((props, ref) => {
               )}
             </Form.Item>
           </Col>
-          <Col span={24}>
+          <Col span={24} style={{ marginTop: '-10px' }}>
             <Form.Item
               label="上传附件"
               {...forminladeLayout}

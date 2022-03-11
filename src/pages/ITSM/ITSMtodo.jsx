@@ -287,7 +287,7 @@ function ITSMtodo(props) {
       with: 100,
       fixed: 'left',
       sorter: (a, b) => a.itemWorkType.length - b.itemWorkType.length,
-      render: text => {
+      render: (text, record) => {
         const typemap = new Map([
           ['event', '事件'],
           ['trouble', '故障'],
@@ -299,6 +299,13 @@ function ITSMtodo(props) {
           ['work', '工作督办'],
           ['quality', '服务绩效'],
         ]);
+        const releaseBizTodomap = new Map([
+          ['业务验证', '计划发布业务验证'],
+          ['业务复核', '计划发布业务复核'],
+        ])
+        if (text === 'releaseBizTodo') {
+          return releaseBizTodomap.get(record.taskName);
+        }
         return typemap.get(text);
       },
     },

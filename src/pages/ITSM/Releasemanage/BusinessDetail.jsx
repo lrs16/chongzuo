@@ -27,6 +27,13 @@ function BusinessDetail(props) {
     }
   }, [currenttab])
 
+  useEffect(() => {
+    if (info && myList) {
+      const Arr = info.filter(obj => obj.responsible === user);
+      setMyList(Arr);
+    }
+  }, [info])
+
   const handleclose = () => {
     const tabid = sessionStorage.getItem('tabid');
     router.push({

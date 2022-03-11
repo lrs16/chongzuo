@@ -82,12 +82,12 @@ function Registratdes(props) {
             </Form.Item>
           </Col>
         </Form>
-        <Col span={24}>
+        <Col span={24} style={{ marginTop: 4 }}>
           <Form.Item label='需求原因'  {...forminladeLayout}>
             <TextArea autoSize={{ minRows: 3 }} defaultValue={info.reason} disabled />
           </Form.Item>
         </Col>
-        <Col span={24}>
+        <Col span={24} style={{ marginTop: 8 }}>
           <Form.Item label='需求描述'  {...forminladeLayout}>
             <TextArea autoSize={{ minRows: 3 }} defaultValue={info.detail} disabled />
           </Form.Item>

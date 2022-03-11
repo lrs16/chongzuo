@@ -422,7 +422,7 @@ function WorkOrder2(props) {
         type: 'eventtodo/clearinfo',
       });
     }
-  }, [mainId, taskId]);
+  }, [taskId]);
 
   // 获取事件流程记录
   useEffect(() => {
@@ -566,7 +566,7 @@ function WorkOrder2(props) {
                 </div>)}
               </div>
             );
-            return <Step title={obj.nodeName} description={desc} key={index.toString()} icon={index === records.length - 1 ? <Icon type="loading" spin /> : ''} />;
+            return <Step title={obj.nodeName} description={desc} key={index.toString()} icon={!obj.endTime ? <Icon type="loading" spin style={{ color: '#0124c5' }} /> : ''} />;
           })}
         </Steps>
         <Collapse
@@ -575,7 +575,6 @@ function WorkOrder2(props) {
           activeKey={activeKey}
           bordered={false}
           onChange={callback}
-          style={{ marginTop: '-25px' }}
         >
           {info?.flowNodeName === '事件登记' && (
             <Panel header="事件登记" key="registratform">

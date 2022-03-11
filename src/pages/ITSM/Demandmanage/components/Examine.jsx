@@ -207,7 +207,7 @@ const Examine = forwardRef((props, ref) => {
               </Form.Item>
             </Col>
           )}
-          <Col span={24}>
+          <Col span={24} style={{ marginTop: 4 }}>
             {adopt !== 0 && (
               <Form.Item label={`${text}意见`} {...forminladeLayout}>
                 {getFieldDecorator('opinion1', {
@@ -246,7 +246,7 @@ const Examine = forwardRef((props, ref) => {
               </>
             )}
           </Col>
-          <Col span={24}>
+          <Col span={24} style={{ marginTop: '-12px' }}>
             <Form.Item
               label="上传附件"
               {...forminladeLayout}

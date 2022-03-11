@@ -243,6 +243,7 @@ function Querylist(props) {
       title: '发布编号',
       dataIndex: 'releaseNo',
       key: 'releaseNo',
+      width: 150,
       render: (text, record) => {
         const handleClick = () => {
           dispatch({
@@ -327,6 +328,7 @@ function Querylist(props) {
       dataIndex: 'registerUser',
       key: 'registerUser',
       sorter: (a, b) => a.registerUser.localeCompare(b.registerUser),
+      width: 150,
     },
     {
       title: '当前处理人',
@@ -725,7 +727,7 @@ function Querylist(props) {
           pagination={pagination}
           rowSelection={rowSelection}
           rowKey={(r) => r.taskId}
-          scroll={{ y: setTableHeight() }}
+          scroll={{ y: setTableHeight(), x: 1700 }}
         />
       </Card>
     </PageHeaderWrapper>

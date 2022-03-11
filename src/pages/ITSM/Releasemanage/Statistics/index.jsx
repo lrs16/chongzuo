@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
-import { Card, Row, Col, Form, DatePicker, Select, Button, Table, Popover, Tooltip, Tag } from 'antd';
+import { Card, Row, Col, Form, DatePicker, Select, Button, Table, Popover, Tooltip, Tag, Radio, Icon } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import DictLower from '@/components/SysDict/DictLower';
 import TableColumns from '@/components/TableColumns';
@@ -14,21 +14,33 @@ const { CheckableTag } = Tag;
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 6 },
+    sm: { span: 8 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 18 },
+    sm: { span: 16 },
   },
 };
 
-const tagsFromServer = ['全部', '计划', '临时'];
+const tagsFromServer = ['按日', '按月', '按年'];
+
+const modemap = new Map([
+  ['按日', 'date'],
+  ['按月', 'month'],
+  ['按年', 'year'],
+]);
+
+const formatmap = new Map([
+  ['按日', 'YYYY-MM-DD'],
+  ['按月', 'YYYY-MM'],
+  ['按年', 'YYYY'],
+])
 
 function Statistics(props) {
   const pagetitle = props.route.name;
   const {
     dispatch, location,
-    form: { getFieldDecorator, resetFields, getFieldsValue }, loading,
+    form: { getFieldDecorator, resetFields, getFieldsValue, }, loading,
     successratelist, tasksumlist,
   } = props;
   const [tabActivekey, settabActivekey] = useState('successrate'); // 打开标签
@@ -36,15 +48,19 @@ function Statistics(props) {
   const [selectdata, setSelectData] = useState('');
   const [tabColumns, setColumns] = useState('');
   const [defaultColumns, setDefaultColumns] = useState([]);
-  const [selectTag, setSelectTag] = useState('全部');
+  const [defaultColRecord, setDefaultColRecord] = useState({ success: undefined, fail: undefined });
+  const [selectTag, setSelectTag] = useState('按日');
   const [visible, setVisible] = useState(false);
+  const [dateOpen, setDateOpen] = useState({ start: false, end: false });
+  const [startdates, setStartDates] = useState(undefined);
+  const [enddates, setEndDates] = useState(undefined);
 
   const handleSearch = (pageIndex, pageSize) => {
     const values = getFieldsValue();
     const val = {
       ...values,
-      beginTime: values.beginTime ? moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
-      endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      beginTime: startdates ? moment(startdates).format('YYYY-MM-DD HH:mm:ss') : '',
+      endTime: enddates ? moment(enddates).format('YYYY-MM-DD HH:mm:ss') : '',
       pageIndex,
       pageSize,
     }
@@ -72,7 +88,12 @@ function Statistics(props) {
   }
 
   const handleChang = (tag, checked) => {
-    console.log(tag, checked);
+    if (checked) {
+      setSelectTag(tag);
+      setStartDates(undefined);
+      setEndDates(undefined);
+    };
+    // handleSearch(1, 15)
   }
 
   useEffect(() => {
@@ -86,14 +107,20 @@ function Statistics(props) {
   useEffect(() => {
     querkeyVal('release', 'successrate').then(res => {
       if (res.code === 200) {
-        setColumns(res.data.successrate)
+        setColumns(res.data.successrate);
       }
     });
     querkeyVal('release', 'indexsuccessrate').then(res => {
       if (res.code === 200) {
         setDefaultColumns(res.data.indexsuccessrate)
+        querkeyVal('release', 'indexfailrate').then(resfail => {
+          if (res.code === 200) {
+            setDefaultColRecord({ ...defaultColRecord, success: res.data.indexsuccessrate, fail: resfail.data.indexfailrate })
+          }
+        })
       }
-    })
+    });
+
   }, []);
 
   useEffect(() => {
@@ -103,6 +130,10 @@ function Statistics(props) {
   const handleTabChange = key => {
     settabActivekey(key);
     resetFields();
+    setSelectTag('按日');
+    setStartDates(undefined);
+    setEndDates(undefined);
+    setDateOpen({ start: false, end: false });
   };
   const tabList = [
     {
@@ -187,8 +218,8 @@ function Statistics(props) {
           const values = getFieldsValue();
           const val = {
             ...values,
-            beginTime: values.beginTime ? moment(values.beginTime).format('X') : '',
-            endTime: values.endTime ? moment(values.endTime).format('X') : '',
+            beginTime: startdates ? moment(startdates).format('X') : '',
+            endTime: enddates ? moment(enddates).format('X') : '',
             releaseStatus: record.taskName === '合计' ? '' : record.taskName,
             paginations: { current: 1, pageSize: 15 },
             expand: true
@@ -225,6 +256,76 @@ function Statistics(props) {
     </div>
   );
 
+  const disastartbledDate = (current) => {
+    return current && enddates && current > moment();
+  }
+  const disaendbledDate = (current) => {
+    return current && current < moment() && startdates && current < startdates;
+  }
+
+  setTimeout(() => {
+    const yeartext = document.getElementsByClassName('ant-calendar-month-panel-year-select-content')[0]?.innerHTML;
+    if (enddates && dateOpen.start) {
+      if (selectTag === '按月') {
+        const monthtrs = document.getElementsByClassName('ant-calendar-month-panel-tbody')[0]?.getElementsByTagName('td')
+        const disablemonths = moment(enddates).format('M');
+        if (monthtrs && monthtrs.length) {
+          if (moment(enddates).format('YYYY') <= moment(yeartext).format('YYYY')) {
+            for (let i = moment(enddates).format('YYYY') === moment(yeartext).format('YYYY') ? Number(disablemonths) : 0; i <= monthtrs.length - 1; i += 1) {
+              monthtrs[i]?.setAttribute('class', 'ant-calendar-month-panel-cell-disabled');
+            };
+          } else {
+            for (let i = 0; i < monthtrs.length; i += 1) {
+              monthtrs[i]?.removeAttribute('class', 'ant-calendar-month-panel-cell-disabled');
+            };
+          };
+          if (moment(startdates).format('YYYY') === moment(yeartext).format('YYYY')) {
+            const startmonth = moment(startdates).format('M');
+            monthtrs[Number(startmonth) - 1]?.setAttribute('class', 'ant-calendar-month-panel-selected-cell');
+          };
+        };
+      };
+      if (selectTag === '按年') {
+        const yeartds = document.getElementsByClassName('ant-calendar-year-panel-tbody')[0]?.getElementsByTagName('td');
+        if (yeartds && yeartds.length) {
+          for (let i = 1; i < 11; i += 1) {
+            if (moment(yeartds[i]?.children[0]?.innerHTML).format('YYYY') > moment(enddates).format('YYYY')) {
+              yeartds[i]?.setAttribute('class', 'ant-calendar-year-panel-cell-disabled');
+            }
+          };
+        }
+      }
+    };
+    if (startdates && dateOpen.end) {
+      if (selectTag === '按月') {
+        const monthtrs = document.getElementsByClassName('ant-calendar-month-panel-tbody')[0]?.getElementsByTagName('td')
+        const disablemonths = moment(startdates).format('M');
+        if (monthtrs && monthtrs.length) {
+          if (moment(yeartext).format('YYYY') <= moment(startdates).format('YYYY')) {
+            const length = moment(startdates).format('YYYY') === moment(yeartext).format('YYYY') ? Number(disablemonths) : 12
+            for (let i = 0; i < length; i += 1) {
+              monthtrs[i]?.setAttribute('class', 'ant-calendar-month-panel-cell-disabled');
+            };
+          } else {
+            for (let i = 0; i < monthtrs.length; i += 1) {
+              monthtrs[i]?.removeAttribute('class', 'ant-calendar-month-panel-cell-disabled');
+            };
+          }
+        }
+      };
+      if (selectTag === '按年') {
+        const yeartds = document.getElementsByClassName('ant-calendar-year-panel-tbody')[0]?.getElementsByTagName('td');
+        if (yeartds && yeartds.length) {
+          for (let i = 1; i < 11; i += 1) {
+            if (moment(yeartds[i]?.children[0]?.innerHTML).format('YYYY') < moment(startdates).format('YYYY')) {
+              yeartds[i]?.setAttribute('class', 'ant-calendar-year-panel-cell-disabled');
+            }
+          };
+        }
+      }
+    }
+  }, 5)
+
   return (
     <PageHeaderWrapper
       title={pagetitle}
@@ -240,61 +341,86 @@ function Statistics(props) {
       <Card>
         <Form {...formItemLayout}>
           <Row>
-            <Col span={8}>
-              <span style={{ fontSize: 16, fontWeight: 700, paddingRight: 12 }}>发布类型：</span>
-              {tagsFromServer.map(obj => {
-                return (
-                  <CheckableTag
-                    key={obj}
-                    checked={selectTag === obj}
-                    onChange={checked => handleChang(obj, checked)}
-                  >
-                    {obj}
-                  </CheckableTag>
-                )
-              })}
-            </Col>
-            <Col span={8}>
-              <Form.Item label="出厂测试登记时间">
+            <Col span={12} style={{ paddingTop: 4 }}>
+              <div style={{ width: 280, textAlign: 'right', position: 'absolute', left: '-10px', top: 12, paddingLeft: 0 }}>
+                <span style={{ fontSize: 14, }}>{tabActivekey === 'successrate' ? '发布时间' : '出厂测试登记时间'}：</span>
+                {tagsFromServer.map(obj => {
+                  return (
+                    <CheckableTag
+                      key={obj}
+                      checked={selectTag === obj}
+                      onChange={checked => handleChang(obj, checked)}
+                    >
+                      {obj}
+                    </CheckableTag>
+                  )
+                })}
+              </div>
+              <div style={{ marginLeft: 280 }}>
                 <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                  {getFieldDecorator('beginTime', {
-                    initialValue: '',
-                  })(
-                    <DatePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: moment('00:00:00', 'HH:mm:ss'),
-                      }}
-                      placeholder="开始时间"
-                      format='YYYY-MM-DD HH:mm:ss'
-                      style={{ minWidth: 120, width: '100%' }}
-                    />
-                  )}
+                  <DatePicker
+                    value={startdates}
+                    placeholder="开始时间"
+                    format={formatmap.get(selectTag)}
+                    style={{ minWidth: 120, width: '100%' }}
+                    mode={modemap.get(selectTag)}
+                    onPanelChange={(v) => {
+                      if (selectTag === '按月' && ((enddates && (moment(v).format('YYYY-MM') <= moment(enddates).format('YYYY-MM')) || !enddates))) {
+                        setStartDates(moment(v).startOf('month'));
+                        setDateOpen({ start: false, end: false });
+                      };
+                      if (selectTag === '按年' && ((enddates && (moment(v).format('YYYY') <= moment(enddates).format('YYYY'))) || !enddates)) {
+                        setStartDates(moment(v).startOf('year'));
+                        setDateOpen({ start: false, end: false });
+                      }
+                    }}
+                    onOpenChange={(status) => {
+                      setDateOpen({ start: status, end: false });
+                    }}
+                    onChange={(v) => {
+                      setStartDates(v);
+                    }}
+                    open={dateOpen.start}
+                    disabledDate={disastartbledDate}
+                  />
                 </div>
                 <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
                 <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                  {getFieldDecorator('endTime', {
-                    initialValue: '',
-                  })(
-                    <DatePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: moment('23:59:59', 'HH:mm:ss'),
-                      }}
-                      placeholder="结束时间"
-                      format='YYYY-MM-DD HH:mm:ss'
-                      style={{ minWidth: 120, width: '100%' }}
-                    />
-                  )}
+                  <DatePicker
+                    value={enddates}
+                    placeholder="结束时间"
+                    format={formatmap.get(selectTag)}
+                    style={{ minWidth: 120, width: '100%' }}
+                    mode={modemap.get(selectTag)}
+                    onPanelChange={(v) => {
+                      if (selectTag === '按月' && ((startdates && (moment(v).format('YYYY-MM') >= moment(startdates).format('YYYY-MM')) || !enddates))) {
+                        setEndDates(moment(v).endOf('month'));
+                        setDateOpen({ start: false, end: false });
+                      };
+                      if (selectTag === '按年' && ((startdates && (moment(v).format('YYYY') >= moment(startdates).format('YYYY'))) || !enddates)) {
+                        setEndDates(moment(v).endOf('year'));
+                        setDateOpen({ start: false, end: false });
+                      }
+                    }}
+                    onOpenChange={(status) => {
+                      setDateOpen({ start: false, end: status })
+                    }}
+                    onChange={(v) => {
+                      setEndDates(v);
+                    }}
+                    open={dateOpen.end}
+                    disabledDate={disaendbledDate}
+                  />
                 </div>
-              </Form.Item>
+              </div>
             </Col>
-            <Col span={6}>
+            <Col span={4}>
               <Form.Item label="发布类型">
                 {getFieldDecorator('releaseType', {
                   initialValue: tabActivekey === 'successrate' ? '' : '计划发布',
                 })(
                   <Select placeholder="请选择" allowClear={tabActivekey === 'successrate'}>
+                    {tabActivekey === 'successrate' && (<Option key='3' value=''>全部</Option>)}
                     {typemap.map(obj => (
                       <Option key={obj.key} value={obj.title}>
                         {obj.title}
@@ -304,7 +430,7 @@ function Statistics(props) {
                 )}
               </Form.Item>
             </Col>
-            <Col span={6}>
+            {tabActivekey === 'process' && (<Col span={4}>
               <Form.Item label="责任单位">
                 {getFieldDecorator('dutyUnit', {
                   initialValue: '',
@@ -318,12 +444,33 @@ function Statistics(props) {
                   </Select>
                 )}
               </Form.Item>
-            </Col>
-            <Col span={4} style={{ padding: '4px 0 0 48px' }}>
+            </Col>)}
+            <Col span={4} style={{ padding: '4px 0 0 24px' }}>
               <Button type="primary" onClick={() => handleSearch(1, 15)}>查 询</Button>
               <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
             </Col>
-            <Col span={24} style={{ textAlign: 'right' }}>
+            {tabActivekey === 'successrate' && (<Col span={24} style={{ textAlign: 'right' }}>
+              <Radio.Group>
+                <Radio.Button value="sucess" onClick={() => setDefaultColumns(defaultColRecord.success)} >通过项</Radio.Button>
+                <Radio.Button value="fail" onClick={() => setDefaultColumns(defaultColRecord.fail)}>未通过项</Radio.Button>
+                <Popover
+                  content={content}
+                  trigger="click"
+                  visible={visible}
+                  onVisibleChange={v => setVisible(v)}
+                  placement="left"
+                >
+                  <Tooltip title="自定义表头">
+                    <Radio.Button value="setting" style={{ background: '#e1e1e1' }}  >
+                      <Icon type="setting" />
+                    </Radio.Button>
+                  </Tooltip>
+                </Popover>
+              </Radio.Group>
+              {/* <ButtonGroup style={{ background: '#e1e1e1', }} >
+                <Button onClick={() => setDefaultColumns(defaultColRecord.success)}>显示通过项</Button>
+                <Button onClick={() => setDefaultColumns(defaultColRecord.fail)}>显示未通过项</Button>
+              </ButtonGroup>
               <Popover
                 content={content}
                 trigger="click"
@@ -332,10 +479,10 @@ function Statistics(props) {
                 placement="left"
               >
                 <Tooltip title="自定义表头">
-                  <Button icon="setting" style={{ background: '#e1e1e1' }} />
+                  <Button icon="setting" style={{ background: '#e1e1e1', marginLeft: 8 }} />
                 </Tooltip>
-              </Popover>
-            </Col>
+              </Popover> */}
+            </Col>)}
           </Row>
         </Form>
         {tabActivekey === 'successrate' && (<Table

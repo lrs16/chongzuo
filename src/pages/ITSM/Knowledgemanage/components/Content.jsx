@@ -110,7 +110,7 @@ const Content = forwardRef((props, ref) => {
               })(<Input disabled={Noediting} />)}
             </Form.Item>
           </Col>
-          <Col span={24}>
+          <Col span={24} style={{ marginTop: 4 }}>
             <Form.Item label="知识内容" {...formallItemLayout}>
               {getFieldDecorator('content', {
                 rules: [{ required, message: '请输入知识内容' }, {
@@ -124,7 +124,7 @@ const Content = forwardRef((props, ref) => {
               )}
             </Form.Item>
           </Col>
-          <Col span={24} style={{ paddingBottom: 24 }}>
+          <Col span={24} style={{ padding: '8px 0' }}>
             <Row>
               <Col span={2} style={{ paddingTop: 4, textAlign: 'right' }}>上传附件：</Col>
               <Col span={22} >

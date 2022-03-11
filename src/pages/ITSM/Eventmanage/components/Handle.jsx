@@ -116,8 +116,6 @@ const Handle = React.forwardRef((props, ref) => {
   const resultmap = getTypebykey(1113);
   const typemaps = adddisabled(typemap);
 
-  console.log(((location && location.state && !location.state.cache) || orderNo) && !loading, ((location && location.state && !location.state.cache), orderNo), !loading);
-
   return (
     <>
       <Row gutter={24} style={{ marginTop: 24 }}>
@@ -266,7 +264,7 @@ const Handle = React.forwardRef((props, ref) => {
             </div>
           </div>
         </Col> */}
-          <Col span={24}>
+          <Col span={24} style={{ marginTop: 4 }}>
             <Form.Item label="解决方案" {...forminladeLayout}>
               {getFieldDecorator('handle_content', {
                 rules: [{ required, message: '请输入解决方案' }],
