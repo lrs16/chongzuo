@@ -67,17 +67,19 @@ export const store = {
 };
 
 export const openNotification = (data) => {
-  const arr = data.reverse();
+  // const arr = data.reverse();
+  const arr = data.map(item => ({ ...item }))
   notification.error({
     placement: 'topLeft',
-    duration: 1,
+    duration: 3,
     message: '请填写以下表单信息：',
     description: <>
       {arr?.map((obj, i) => <div key={i.toString()}>
         {obj?.errors?.map((item, j) => <span key={`${item.field}${j.toString()}`}>{(i + 1).toString()}、{item.message}</span>)}
       </div>)}
     </>,
-    icon: <Icon type="close-circle" theme="twoTone" twoToneColor='#f5222d' />
+    icon: <Icon type="close-circle" theme="twoTone" twoToneColor='#f5222d' />,
+    key: sessionStorage.getItem('tabid')
   });
   setTimeout(() => {
     const notificationBox = document.getElementsByClassName('ant-notification-topLeft');
