@@ -421,11 +421,13 @@ function Statistics(props) {
                 })(
                   <Select placeholder="请选择" allowClear={tabActivekey === 'successrate'}>
                     {tabActivekey === 'successrate' && (<Option key='3' value=''>全部</Option>)}
-                    {typemap.map(obj => (
+                    {/* {typemap.map(obj => (
                       <Option key={obj.key} value={obj.title}>
                         {obj.title}
                       </Option>
-                    ))}
+                    ))} */}
+                    <Option key='1' value='计划发布'>计划发布</Option>
+                    <Option key='2' value='临时发布'>临时发布</Option>
                   </Select>,
                 )}
               </Form.Item>
