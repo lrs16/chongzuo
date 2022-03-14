@@ -116,7 +116,7 @@ function TemporaryDetail(props) {
 
   const flowNode = getTypebyId(13266);       // 流程环节
   // 下一环节默认处理人
-  const indexUserList = selectdata?.ischange && selectdata.arr.filter(item => item.key === 13263)[0]?.title?.split('-')[1]?.split(',') || [];
+  const indexUserList = selectdata?.ischange && selectdata.arr.filter(item => item.key === 13281)[0]?.title?.split('-')[1]?.split(',') || [];
 
   const handleSave = (attach) => {
     const values = getformvalues('register,releaseLists', attach);
@@ -151,7 +151,7 @@ function TemporaryDetail(props) {
         setUserModleVisible(true);
         if (flowtype === '1' && flowNode && flowNode.length > 0 && indexUserList && indexUserList.length > 0 && taskName && taskName !== '业务复核') {
           const nextnodename = flowNode[flowNode.findIndex(item => item.title === taskName) + 1]?.title || '';
-          const name = indexUserList.filter(obj => obj.indexOf(nextnodename) > -1)
+          const name = indexUserList.filter(obj => obj.indexOf(nextnodename) > -1);
           setIndexUser(name[0]?.split(':')[1]?.split('||') || []);
         }
       }
