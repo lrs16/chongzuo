@@ -176,7 +176,7 @@ function Queryworkdetail(props) {
                 {problemFlowNodeRows && loading === false && (
                   <Collapse
                     expandIconPosition="right"
-                    defaultActiveKey={['0']}
+                    defaultActiveKey={['0','1','2','3','4','5','6']}
                     bordered={false}
                   >
                     {problemFlowNodeRows.map((obj, index) => {
@@ -235,7 +235,7 @@ function Queryworkdetail(props) {
                         />],
                       ]);
                       return (
-                        <Panel Panel header={obj.fnname} key='0'>
+                        <Panel Panel header={obj.fnname} key={index.toString()}>
                           {Paneldesmap.get(obj.fnname)}
                         </Panel>
                       );

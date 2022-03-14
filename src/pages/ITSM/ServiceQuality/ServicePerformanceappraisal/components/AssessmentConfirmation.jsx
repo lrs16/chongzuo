@@ -364,17 +364,8 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
               {getFieldDecorator('confirmTime', {
                 initialValue: moment(assessmentConfirmation.confirmationtime || new Date()),
               })(
-                // <div>
-                //   <DatePicker
-                //     disabled={true}
-                //     defaultValue={moment(assessmentConfirmation.confirmationtime || new Date())}
-                //     format='YYYY-MM-DD HH:mm'
-                //     onChange={onChange}
-                //   />
-                // </div>
                 <DatePicker
                   disabled
-                  // defaultValue={moment(assessmentConfirmation.confirmationtime || new Date())}
                   format='YYYY-MM-DD HH:mm'
                   onChange={onChange}
                 />

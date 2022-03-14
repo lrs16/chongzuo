@@ -71,7 +71,6 @@ const Register = forwardRef((props, ref) => {
 
   const required = true;
 
-
   useImperativeHandle(
     ref,
     () => ({
@@ -86,20 +85,42 @@ const Register = forwardRef((props, ref) => {
   useEffect(() => {
     setProviderId(register.providerId);
     setScoreId(register.scoreId);
+    const requestData = {
+      scoreName: '',
+      pageNum: 1,
+      pageSize: 1000,
+      status: '1',
+    };
+    scoreListpage({ ...requestData }).then(res => {
+      if (res) {
+        const arr = [...res.data.records];
+        setScorelist(arr);
+      }
+    });
   }, [register])
 
   const handleChange = (values, option, params) => {
     const {
       key,
-      props: { value },
+      props: { value, scoresid, scoreName },
     } = option;
     switch (params) {
-      case 'contract':
+      case 'contract': {
+        const findassessType = scorelist.filter(obj => obj.id === scoresid)
         setFieldsValue({
           contractName: key,
           contractId: value,
+          scoreId: scoresid,
+          scoreName,
+          assessType: findassessType[0]?.assessType || '',
+          target1Name:'',
+          target2Name:'',
+          clauseId:'',
         });
+        setScoreId(findassessType[0]?.id || '');
+        getTarget1(findassessType[0]?.assessType === '功能开发' ? '1' : '2');
         break;
+      }
       case 'target1Name':
         setFieldsValue({
           target1Name: value,
@@ -158,7 +179,7 @@ const Register = forwardRef((props, ref) => {
         }
         break;
       case 'clause':
-        if (loading !== true && clauseList && clauseList.length === 0) {
+        if (loading !== true && clauseList && clauseList.records && clauseList.records.length === 0) {
           message.error('请选择有效的二级指标');
         }
         break;
@@ -176,18 +197,6 @@ const Register = forwardRef((props, ref) => {
           <span>{opt.providerNo}</span>
           <span>{opt.providerName}</span>
           <span>{opt.director}</span>
-        </div>
-      </Spin>
-    </Option>
-  ));
-
-  // 自动完成评分细则
-  const scorenameList = scorelist.map(opt => (
-    <Option key={opt.id} value={opt.id} disableuser={opt}>
-      <Spin spinning={spinloading}>
-        <div className={styles.disableuser}>
-          <span>{opt.scoreNo}</span>
-          <span>{opt.scoreName}</span>
         </div>
       </Spin>
     </Option>
@@ -267,7 +276,6 @@ const Register = forwardRef((props, ref) => {
     switch (type) {
       case 'provider':
         setFieldsValue({
-          ifproviderName: providerName,
           providerName, // 服务商
           providerId: id, // 服务商id
           contractName: '',
@@ -561,7 +569,7 @@ const Register = forwardRef((props, ref) => {
                 onFocus={() => handleFocus('contract')}
               >
                 {(contractArr || []).map(obj => [
-                  <Option key={obj.contractName} value={obj.id}>
+                  <Option key={obj.contractName} value={obj.id} scoresid={obj.scoreId} scoreName={obj.scoreNo}>
                     <div className={styles.disableuser}>
                       <span>{obj.contractName}</span>
                     </div>
@@ -601,9 +609,6 @@ const Register = forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-
-
-
         <Col span={8} style={{ display: 'none' }}>
           <Form.Item label="关联合同名称">
             {getFieldDecorator('contractName', {
@@ -632,29 +637,25 @@ const Register = forwardRef((props, ref) => {
 
         <Col span={8}>
           <Form.Item label="评分细则名称">
-            {getFieldDecorator('score', {
+            {getFieldDecorator('scoreId', {
               rules: [
                 {
                   required,
-                  message: '请选择评分细则名称',
+                  message: '评分细则名称为空,请选择有效的关联合同',
                 },
               ],
-              initialValue: register.score?.scoreName ? register.score.scoreName : register.score,
+              initialValue: register.scoreId,
             })(
-              <AutoComplete
-                getPopupContainer={e => e.parentNode}
-                disabled={search || noEdit}
-                dataSource={scorenameList}
-                dropdownMatchSelectWidth={false}
-                dropdownStyle={{ width: 600 }}
-                onSelect={(v, opt) => handleDisableduser(v, opt, 'score')}
+              <Select
+                disabled
+                allowClear={false}
               >
-                <Search
-                  placeholder="可输入评分细则名称搜索"
-                  onSearch={values => SearchDisableduser(values, 'score')}
-                  allowClear
-                />
-              </AutoComplete>,
+                {(scorelist || []).map(obj => [
+                  <Option key={obj.id} value={obj.id}>
+                    {obj.scoreName}
+                  </Option>,
+                ])}
+              </Select>,
             )}
           </Form.Item>
         </Col>
@@ -668,14 +669,13 @@ const Register = forwardRef((props, ref) => {
         </Col>
 
         <Col span={8} style={{ display: 'none' }}>
-          <Form.Item label="评分细则名称">
-            {getFieldDecorator('scoreId', {
-              initialValue: register.scoreId,
-            })(<Input />)}
+          <Form.Item label="评分细则名称id">
+            {getFieldDecorator('scoreName', {
+              initialValue: register.scoreName,
+            })(<Input disabled={search} />)}
           </Form.Item>
         </Col>
 
-      
 
         <Col span={8}>
           <Form.Item label="考核对象">

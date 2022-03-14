@@ -1220,8 +1220,8 @@ function Workorder(props) {
           <div className='noexplain'>
             <div className={styles.collapse}>
               {problemFlowNodeRows && loading === false && (
-                <Collapse expandIconPosition="right" bordered={false} defaultActiveKey={['0']}>
-                  {problemFlowNodeRows.map((obj, index) => {
+                <Collapse expandIconPosition="right" bordered={false} defaultActiveKey={['0','1','2','3','4','5','6']}>
+                  {problemFlowNodeRows.map((obj,index) => {
                     // panel详情组件
                     const Paneldesmap = new Map([
                       [
@@ -1298,7 +1298,7 @@ function Workorder(props) {
                       ],
                     ]);
                     return (
-                      <Panel Panel header={obj.fnname} key='0'>
+                      <Panel Panel header={obj.fnname} key={index.toString()}>
                         {Paneldesmap.get(obj.fnname)}
                       </Panel>
                     );

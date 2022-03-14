@@ -102,7 +102,7 @@ function Work(props) {
               {openViewlist && loading === false && (
                 <Collapse
                   expandIconPosition="right"
-                  defaultActiveKey={['0']}
+                  defaultActiveKey={['0','1','2']}
                   bordered={false}
                 >
                   {openViewlist.map((obj, index) => {
@@ -127,7 +127,7 @@ function Work(props) {
                     return (
                       <Panel
                         header={Panelheadermap.get(Object.keys(obj)[0])}
-                        key='0'>
+                        key={index.toString()}>
                         {Paneldesmap.get(Object.keys(obj)[0])}
                       </Panel>
                     );

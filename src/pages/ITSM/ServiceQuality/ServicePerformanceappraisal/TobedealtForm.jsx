@@ -312,7 +312,7 @@ function TobedealtForm(props) {
       }
 
       if(err) {
-        openNotification(Object.values(err))
+        openNotification(Object.values(err).reverse())
       }
       return null;
     });
@@ -878,8 +878,8 @@ function TobedealtForm(props) {
       {loading === false && hisTasks && hisTasks.length > 0 && tabActiveKey === 'workorder' && (
         <div className='noexplain'>
           <div className={styles.collapse}>
-            <Collapse expandIconPosition="right" bordered={false} defaultActiveKey={['0']}>
-              {hisTasks.map((obj) => {
+            <Collapse expandIconPosition="right" bordered={false} defaultActiveKey={['0','1','2','3','4','5']}>
+              {hisTasks.map((obj,index) => {
                 const Paneldesmap = new Map([
                   [
                     '服务绩效考核登记',
@@ -984,7 +984,7 @@ function TobedealtForm(props) {
                   ],
                 ]);
                 return (
-                  <Panel Panel header={Object.keys(obj)[0]} key='0'>
+                  <Panel Panel header={Object.keys(obj)[0]} key={index.toString()}>
                     {Paneldesmap.get(Object.keys(obj)[0])}
                   </Panel>
                 );

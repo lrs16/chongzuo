@@ -822,7 +822,7 @@ function Work(props) {
 
             <div className={styles.collapse}>
               {loading === false && taskResult && taskResult.length > 0 && data && (
-                <Collapse expandIconPosition="right" bordered={false}   defaultActiveKey={['0']}>
+                <Collapse expandIconPosition="right" bordered={false}   defaultActiveKey={['0','1','2']}>
                   {data.map((obj, index) => {
                     // panel详情组件
                     const Paneldesmap = new Map([
@@ -852,7 +852,7 @@ function Work(props) {
                       ],
                     ]);
                     return (
-                      <Panel header={Panelheadermap.get(Object.keys(obj)[0])} key='0'>
+                      <Panel header={Panelheadermap.get(Object.keys(obj)[0])} key={index.toString()}>
                         {Paneldesmap.get(Object.keys(obj)[0])}
                       </Panel>
                     );
