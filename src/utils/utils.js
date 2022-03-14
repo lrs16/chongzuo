@@ -4,7 +4,7 @@ import pathRegexp from 'path-to-regexp';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { RedditSquareFilled } from '@ant-design/icons';
 /* eslint no-useless-escape:0 import/prefer-default-export:0 */
-import { notification, Icon } from 'antd';
+import { notification, Icon, message } from 'antd';
 
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/;
 export const isUrl = path => reg.test(path);
@@ -69,24 +69,32 @@ export const store = {
 export const openNotification = (data) => {
   // const arr = data.reverse();
   const arr = data.map(item => ({ ...item }))
-  notification.error({
-    placement: 'topLeft',
-    duration: 3,
-    message: '请填写以下表单信息：',
-    description: <>
-      {arr?.map((obj, i) => <div key={i.toString()}>
+  const content = () => {
+    return <><span style={{ fontSize: 16, paddingBottom: '48px', color: '#f5222d' }}>请填写以下表单信息：</span>
+      {arr?.map((obj, i) => <p key={i.toString()} style={{ textAlign: 'left', marginBlockEnd: 2, paddingLeft: 12 }}>
         {obj?.errors?.map((item, j) => <span key={`${item.field}${j.toString()}`}>{(i + 1).toString()}、{item.message}</span>)}
-      </div>)}
-    </>,
-    icon: <Icon type="close-circle" theme="twoTone" twoToneColor='#f5222d' />,
-    key: sessionStorage.getItem('tabid')
-  });
-  setTimeout(() => {
-    const notificationBox = document.getElementsByClassName('ant-notification-topLeft');
-    if (notificationBox[0]) {
-      const scrollWidth = document.body.clientWidth / 2
-      const boxWidth = notificationBox[0].offsetWidth / 2;
-      notificationBox[0].style.left = `${scrollWidth - boxWidth}px`;
-    }
-  }, 50)
+      </p>)}
+    </>
+  };
+  message.error(content(), 3);
+  // notification.error({
+  //   placement: 'topLeft',
+  //   duration: 3,
+  //   message: '请填写以下表单信息：',
+  //   description: <>
+  //     {arr?.map((obj, i) => <div key={i.toString()}>
+  //       {obj?.errors?.map((item, j) => <span key={`${item.field}${j.toString()}`}>{(i + 1).toString()}、{item.message}</span>)}
+  //     </div>)}
+  //   </>,
+  //   icon: <Icon type="close-circle" theme="twoTone" twoToneColor='#f5222d' />,
+  //   key: sessionStorage.getItem('tabid')
+  // });
+  // setTimeout(() => {
+  //   const notificationBox = document.getElementsByClassName('ant-notification-topLeft');
+  //   if (notificationBox[0]) {
+  //     const scrollWidth = document.body.clientWidth / 2
+  //     const boxWidth = notificationBox[0].offsetWidth / 2;
+  //     notificationBox[0].style.left = `${scrollWidth - boxWidth}px`;
+  //   }
+  // }, 50)
 };
