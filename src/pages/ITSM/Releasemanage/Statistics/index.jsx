@@ -378,7 +378,7 @@ function Statistics(props) {
                       setDateOpen({ start: status, end: false });
                     }}
                     onChange={(v) => {
-                      setStartDates(v);
+                      setStartDates(moment(v).startOf('date'));
                     }}
                     open={dateOpen.start}
                     disabledDate={disastartbledDate}
@@ -406,7 +406,7 @@ function Statistics(props) {
                       setDateOpen({ start: false, end: status })
                     }}
                     onChange={(v) => {
-                      setEndDates(v);
+                      setEndDates(moment(v).endOf('date'));
                     }}
                     open={dateOpen.end}
                     disabledDate={disaendbledDate}

@@ -532,7 +532,7 @@ function Querylist(props) {
                   </Form.Item>
                 </Col>
                 <Col span={8}>
-                  <Form.Item label="发布时间">
+                  <Form.Item label="出厂测试时间">
                     <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                       {getFieldDecorator('beginTime', {
                         initialValue: cacheinfo.beginTime ? moment(cacheinfo.beginTime * 1000) : '',
@@ -552,6 +552,41 @@ function Querylist(props) {
                     <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                       {getFieldDecorator('endTime', {
                         initialValue: cacheinfo.endTime ? moment(cacheinfo.endTime * 1000) : '',
+                      })(
+                        <DatePicker
+                          showTime={{
+                            hideDisabledOptions: true,
+                            defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                          }}
+                          placeholder="结束时间"
+                          format='YYYY-MM-DD HH:mm:ss'
+                          style={{ minWidth: 120, width: '100%' }}
+                        />
+                      )}
+                    </div>
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="发布时间">
+                    <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                      {getFieldDecorator('releaseBeginTime', {
+                        initialValue: cacheinfo.releaseBeginTime ? moment(cacheinfo.releaseBeginTime * 1000) : '',
+                      })(
+                        <DatePicker
+                          showTime={{
+                            hideDisabledOptions: true,
+                            defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                          }}
+                          placeholder="开始时间"
+                          format='YYYY-MM-DD HH:mm:ss'
+                          style={{ minWidth: 120, width: '100%' }}
+                        />
+                      )}
+                    </div>
+                    <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
+                    <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                      {getFieldDecorator('endTime', {
+                        initialValue: cacheinfo.releaseBeginTime ? moment(cacheinfo.releaseBeginTime * 1000) : '',
                       })(
                         <DatePicker
                           showTime={{
