@@ -30,7 +30,6 @@ function HistoryOrderInfo(props) {
 
   const [activeKey, setActiveKey] = useState([]);
   const [todoRecords, setTodoRecords] = useState([]);
-  console.log(activeKey);
 
   const callback = key => {
     setActiveKey(key);

@@ -394,7 +394,7 @@ function QueryList(props) {
 
   const getTypebykey = key => {
     if (selectdata.ischange) {
-      return selectdata.arr.filter(item => item.key === key)[0].children;
+      return selectdata.arr.filter(item => item.key === key)[0]?.children;
     }
     return [];
   };
@@ -411,7 +411,7 @@ function QueryList(props) {
   const yesornomap = getTypebykey(379); // 是否
   const handleresultmap = getTypebykey(1113); // 处理结果
   const satisfactionmap = getTypebykey(1120); // 满意度
-  const timeoutstatusmap = getTypebykey(13299); // 超时状态
+  const timeoutstatusmap = getTypebykey(13295); // 超时状态
 
   const record = {
     eventObject: eventObject || '',

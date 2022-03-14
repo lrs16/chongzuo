@@ -493,7 +493,7 @@ function ImplementationPre(props, ref) {
               })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
             </Form.Item>
           </Col>
-          <Col span={24} style={{ marginBottom: 24 }}>
+          <Col span={24} style={{ marginBottom: 16, marginTop: 4 }}>
             <DocumentAtt
               // rowkey='5'
               isEdit={isEdit}

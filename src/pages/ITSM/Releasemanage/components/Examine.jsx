@@ -88,7 +88,7 @@ function Examine(props, ref) {
   const docunitmap = getTypebyId(1289);       // 出具文档单位
 
   return (
-    <Row gutter={12} style={{ paddingTop: 24, }}>
+    <Row gutter={12}>
       <Form ref={formRef} {...formItemLayout}>
         <Col span={24}>
           <Form.Item label='审核结果' {...formuintLayout}>
@@ -126,7 +126,7 @@ function Examine(props, ref) {
             )}
           </Form.Item>
         </Col>
-        <Col span={24} style={{ marginBottom: 24 }}>
+        <Col span={24} style={{ marginBottom: 16, marginTop: 4 }}>
           <DocumentAtt
             // rowkey={statumap.get(taskName)}
             isEdit={isEdit}

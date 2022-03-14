@@ -91,7 +91,7 @@ function Implementation(props, ref) {
   return (
     <>
       {alertvisible && (<Alert message={alertmessage.mes} type='warning' showIcon />)}
-      <Row gutter={12} style={{ marginTop: 24 }} >
+      <Row gutter={12}>
         <Form ref={formRef} {...formItemLayout}>
           <Col span={8}>
             <Form.Item label="发布实施时间" >
@@ -157,7 +157,7 @@ function Implementation(props, ref) {
               })(<></>)}
             </Form.Item>
           </Col>
-          <Col span={24} style={{ marginBottom: 24 }}>
+          <Col span={24} style={{ marginBottom: 16, marginTop: 4 }}>
             <DocumentAtt
               // rowkey='8'
               isEdit={isEdit}

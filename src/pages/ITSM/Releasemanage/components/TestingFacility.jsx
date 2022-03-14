@@ -243,15 +243,17 @@ function TestingFacility(props) {
 
   return (
     <>
-      <Row>
+      <Row style={{ paddingBottom: 8 }}>
         <h4 style={{ float: 'left' }}><span style={{ color: '#f5222d', marginRight: 4, fontWeight: 'normal' }}>*</span>{title}</h4>
-        {isEdit && (<div style={{ float: 'right' }}>
-          <Button
-            type='primary'
-            style={{ marginRight: 8 }}
-            onClick={() => newMember()}
-          >新增</Button>
-          <Button type='danger' style={{ marginRight: 8 }} ghost onClick={() => handelDelete()}>移除</Button>
+        <div style={{ float: 'right' }}>
+          {isEdit && (<>
+            <Button
+              type='primary'
+              style={{ marginRight: 8 }}
+              onClick={() => newMember()}
+            >新增</Button>
+            <Button type='danger' style={{ marginRight: 8 }} ghost onClick={() => handelDelete()}>移除</Button>
+          </>)}
           <Button
             type="primary"
             ghost
@@ -262,7 +264,6 @@ function TestingFacility(props) {
             {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
           </Button>
         </div>
-        )}
       </Row>
       <Table
         columns={columns}

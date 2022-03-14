@@ -284,7 +284,7 @@ export async function orderInfo(releaseNo) {
 
 // 流程图 /release/flow/image?processInstanceId=742501
 export async function orderImg(processInstanceId) {
-  return request(`/release/flow/image?processInstanceId=${processInstanceId}`, {
+  return request(`/activiti/process/readResource/${processInstanceId}`, {
     method: 'GET',
     responseType: 'blob',
   });

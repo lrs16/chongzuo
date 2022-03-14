@@ -99,7 +99,7 @@ function BusinessReview(props, ref) {
     return Arr.join('\n')
   }
   return (
-    <Row gutter={12} style={{ paddingTop: 24, }}>
+    <Row gutter={12}>
       {alertvisible && (<Alert message={alertmessage.mes} type='warning' showIcon style={{ marginBottom: 12 }} />)}
       <Form ref={formRef} {...formItemLayout}>
         {/* <Col span={24}>
@@ -114,7 +114,7 @@ function BusinessReview(props, ref) {
             })(<TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />)}
           </Form.Item>
         </Col>
-        <Col span={24} style={{ marginBottom: 12 }}>
+        <Col span={24}>
           <h4>发布清单</h4>
           <ReleseList
             title='发布清单'
@@ -128,7 +128,7 @@ function BusinessReview(props, ref) {
           </Form.Item>
         </Col>
         {/* <Col span={24}><Button type='primary'>发起服务绩效考核</Button></Col> */}
-        <Col span={24} style={{ marginBottom: 24, marginTop: 24 }}>
+        <Col span={24} style={{ marginBottom: 16, }}>
           <DocumentAtt
             // rowkey='0'
             isEdit={isEdit}

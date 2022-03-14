@@ -724,7 +724,7 @@ function WorkOrder(props) {
         >
           {taskName === '出厂测试' && info && info.releaseRegister && (
             <Panel header={taskName} key="form">
-              <div style={{ marginTop: 12 }}>
+              <div>
                 <Registrat
                   wrappedComponentRef={RegistratRef}
                   selectdata={selectdata}
@@ -739,7 +739,7 @@ function WorkOrder(props) {
           )}
           {taskName === '开发商项目经理审核' && info && info.devmanageCheck && (
             <Panel header={taskName} key="form">
-              <div style={{ marginTop: 12 }}>
+              <div>
                 <Examine
                   wrappedComponentRef={ExamineRef}
                   selectdata={selectdata}
@@ -754,7 +754,7 @@ function WorkOrder(props) {
           )}
           {taskName === '平台验证' && info && info.platformValid && (
             <Panel header={taskName} key="form">
-              <div style={{ marginTop: 12 }}>
+              <div>
                 <Registrat
                   wrappedComponentRef={RegistratRef}
                   selectdata={selectdata}
@@ -769,7 +769,7 @@ function WorkOrder(props) {
           )}
           {taskName === '系统运维商经理审核' && info && info.devopsCheck && (
             <Panel header={taskName} key="form">
-              <div style={{ marginTop: 12 }}>
+              <div>
                 <Examine
                   wrappedComponentRef={ExamineRef}
                   selectdata={selectdata}
@@ -784,7 +784,7 @@ function WorkOrder(props) {
           )}
           {taskName === '业务验证' && info && info.releaseBizValid && (
             <Panel header={taskName} key="form">
-              <div style={{ marginTop: 12 }}>
+              <div>
                 <Registrat
                   wrappedComponentRef={RegistratRef}
                   selectdata={selectdata}
@@ -799,7 +799,7 @@ function WorkOrder(props) {
           )}
           {taskName === '发布实施准备' && info && info.releaseAttaches && (
             <Panel header={taskName} key="form">
-              <div style={{ marginTop: 12 }}>
+              <div>
                 <ImplementationPre
                   wrappedComponentRef={ImplementationPreRef}
                   selectdata={selectdata}
@@ -814,7 +814,7 @@ function WorkOrder(props) {
           )}
           {taskName === '版本管理员审核' && info && info.mergeOrder && (
             <Panel header={taskName} key="form">
-              <div style={{ marginTop: 12 }}>
+              <div>
                 <VersionAudit
                   wrappedComponentRef={VersionAuditRef}
                   selectdata={selectdata}
@@ -829,7 +829,7 @@ function WorkOrder(props) {
           )}
           {(taskName === '科室负责人审核' || taskName === '中心领导审核') && info && info.checkMerge && (
             <Panel header={taskName} key="form">
-              <div style={{ marginTop: 12 }}>
+              <div>
                 <VersionAudit
                   wrappedComponentRef={VersionAuditRef}
                   selectdata={selectdata}
@@ -844,7 +844,7 @@ function WorkOrder(props) {
           )}
           {taskName === '发布验证' && info && info.practiceDone && (
             <Panel header={taskName} key="form">
-              <div style={{ marginTop: 12 }}>
+              <div>
                 <Implementation
                   wrappedComponentRef={ImplementationRef}
                   selectdata={selectdata}

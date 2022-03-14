@@ -334,7 +334,7 @@ function VersionAudit(props, ref) {
                   return (
                     <>
                       {info.releaseMains.length > 1 ? (
-                        <Col span={8} style={{ marginBottom: 24 }}>
+                        <Col span={8} style={{ marginBottom: 12 }}>
                           <Input
                             defaultValue={obj.currentVersion}
                             addonBefore={`工单${obj.releaseNo}版本号：`}
@@ -475,7 +475,7 @@ function VersionAudit(props, ref) {
               listmsg={listmsg}
             />
           </Col>
-          <Col span={24} style={{ marginBottom: 24 }}>
+          <Col span={24} style={{ marginBottom: 16, marginTop: 4 }}>
             {info.releaseMains && info.releaseMains.length > 1 && (
               <Tabs type='card' onChange={handleTabChange} activeKey={activeKey}>
                 {orderkeys.length > 1 && orderkeys.map((obj) => {

@@ -73,6 +73,7 @@ function Registrat(props, ref) {
     callback()
   }
 
+
   // 校验发布清单
   const releaseListsValidator = (rule, value, callback) => {
     if (!value || value.length === 0) {
@@ -212,7 +213,7 @@ function Registrat(props, ref) {
   return (
     <>
       {alertvisible && (<Alert message={alertmessage.mes} type='warning' showIcon />)}
-      <Row gutter={12} style={{ marginTop: 24, }}>
+      <Row gutter={12}>
         <Form ref={formRef} {...formItemLayout}>
           {(taskName === '出厂测试' || taskName === '新建') && (
             <>
@@ -322,7 +323,7 @@ function Registrat(props, ref) {
             </>
           )}
           {(taskName === '出厂测试' || taskName === '新建') && (
-            <Col span={24}>
+            <Col span={24} style={{ marginTop: 4 }}>
               <Form.Item label="受影响业务范围" {...formuintLayout}>
                 {getFieldDecorator('influenceScope', {
                   rules: [{ required, message: `请填写受影响业务范围` }],
@@ -414,7 +415,7 @@ function Registrat(props, ref) {
               </Form.Item>
             </Col>
           )}
-          <Col span={24} style={{ marginBottom: 24 }}>
+          <Col span={24} style={{ marginBottom: 16, marginTop: 4 }}>
             {((location && location.state && !location.state.cache && isEdit) || !isEdit) && (
               <DocumentAtt
                 // rowkey={statumap.get(taskName)}

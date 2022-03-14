@@ -10,7 +10,7 @@ import styles from '../index.less';
 const { TabPane } = Tabs;
 
 function OrderContent(props) {
-  const { dispatch, visible, handleChange, data, historyinfo, tasklinks, loading } = props;
+  const { dispatch, visible, handleChange, data, historyinfo, tasklinks, loading, taskName } = props;
 
   useEffect(() => {
     if (data.releaseNo) {
@@ -35,9 +35,7 @@ function OrderContent(props) {
   const onClose = () => {
     handleChange(false)
   }
-  const callback = (k) => {
-    console.log(k)
-  }
+
   return (
     <Drawer
       title={`工单详情（工单编号：${data.releaseNo}）`}
@@ -52,7 +50,7 @@ function OrderContent(props) {
         <Tabs defaultActiveKey="1">
           <TabPane tab="发布工单" key="1">
             <div className={styles.collapse}>
-              <TaskLinks records={tasklinks || []} />
+              <TaskLinks records={tasklinks || []} taskName={taskName} />
             </div>
             <HistoryOrderInfo records={historyinfo} selectdata={[]} view />
           </TabPane>

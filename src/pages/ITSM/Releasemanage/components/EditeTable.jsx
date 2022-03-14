@@ -1230,7 +1230,7 @@ function EditeTable(props) {
       <UserContext.Provider value={{ setChoiceUser, uservisible, setUserVisible, title: '分派' }}>
         <CheckOneUser userlist={userlist} />
       </UserContext.Provider>
-      <OrderContent data={releaseNoandId} visible={drawervisible} handleChange={v => setDrawerVisible(v)} />
+      <OrderContent data={releaseNoandId} visible={drawervisible} handleChange={v => setDrawerVisible(v)} taskName={taskName} />
     </>
   );
 }
