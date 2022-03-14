@@ -525,7 +525,22 @@ function Querylist(props) {
                   </Form.Item>
                 </Col>
                 <Col span={8}>
-                  <Form.Item label="申请人">
+                  <Form.Item label="责任单位">
+                    {getFieldDecorator('dutyUnit', {
+                      initialValue: cacheinfo.dutyUnit,
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {unitmap.map(obj => (
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>
+                        ))}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="责任单位">
                     {getFieldDecorator('applicant', {
                       initialValue: cacheinfo.applicant,
                     })(<Input placeholder="请输入" allowClear />)}
@@ -603,7 +618,10 @@ function Querylist(props) {
                 </Col>
               </>
             )}
-            <Col span={8} style={{ marginTop: 4, paddingLeft: 48 }}>{extra}</Col>
+            {expand ? (
+              <Col span={24} style={{ marginTop: 4, textAlign: 'right' }}>{extra}</Col>
+            ) : (
+              <Col span={8} style={{ marginTop: 4, paddingLeft: 48 }}>{extra}</Col>)}
           </Form>
         </Row>
         <div>

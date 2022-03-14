@@ -53,6 +53,23 @@ function Statistics(props) {
   const [fetchType, setFetchType] = useState({});
   const [selectTag, setSelectTag] = useState('全部');
 
+  const linecols = (datas) => {
+    let max = 5;
+    if (!Array.isArray(datas)) {
+      return max;
+    }
+    for (let i = 0; i < datas.length; i += 1) {
+      const cur = datas[i].value;
+      max = cur > max ? cur : max;
+    };
+    return {
+      value: {
+        min: 0,
+        max,
+      },
+    }
+  };
+
   const piesum = (arr) => {
     let sum = 0;
     if (arr && arr.length > 0) {
@@ -546,6 +563,7 @@ function Statistics(props) {
                   }}
                   uncheckedname={['总数']}
                   lock
+                  cols={linecols(unitanalysis.lineChart)}
                 />
               )}
             </Card>
@@ -602,6 +620,7 @@ function Statistics(props) {
                   }}
                   uncheckedname={['总数']}
                   lock
+                  cols={linecols(typeanalysis.lineChart)}
                 />
               )}
             </Card>
