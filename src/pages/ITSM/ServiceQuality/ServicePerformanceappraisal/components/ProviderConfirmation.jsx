@@ -25,12 +25,12 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
     selectPersonstate,
     files,
     ChangeFiles,
-    search
+    search,
+    changeIsappeal
   } = props;
 
   const [showContent, setShowContent] = useState('1');
   const [fileslist, setFilesList] = useState([]);
-  const [selectdata, setSelectData] = useState('');
 
   const required = true;
   const attRef = useRef();
@@ -46,17 +46,19 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
   )
 
   useEffect(() => {
-    selectPersonstate(providerConfirmation.isAppeal === null ? '1' : providerConfirmation.isAppeal)
+    selectPersonstate(providerConfirmation.isAppeal === null ? '1' : providerConfirmation.isAppeal);
+    changeIsappeal(providerConfirmation.isAppeal === null ? '1' : providerConfirmation.isAppeal)
   }, [])
 
 
   const handleChange = (e) => {
     setShowContent(e.target.value);
     selectPersonstate(e.target.value)
+    changeIsappeal(e.target.value)
   }
 
   const onChange = (date, dateString) => {
-    setFieldsValue({ confirmTime: moment(dateString) })
+    setFieldsValue({ confirmTime: moment(dateString) });
   }
 
   return (
@@ -189,18 +191,8 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
                 initialValue: providerConfirmation.confirmTime ? moment(providerConfirmation.confirmTime) : moment(new Date())
               })
                 (
-                  // <div>
-                  //   <DatePicker
-                  //     showTime
-                  //     defaultValue={moment(providerConfirmation.confirmTime || new Date())}
-                  //     format='YYYY-MM-DD HH:mm'
-                  //     disabled={true}
-                  //     onChange={onChange}
-                  //   />
-                  // </div>
                   <DatePicker
                     showTime
-                    // defaultValue={moment(providerConfirmation.confirmTime || new Date())}
                     format='YYYY-MM-DD HH:mm'
                     disabled
                     onChange={onChange}

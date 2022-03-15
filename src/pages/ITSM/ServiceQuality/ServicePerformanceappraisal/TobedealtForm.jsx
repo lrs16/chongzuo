@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Form, Button, message, Collapse, Steps } from 'antd';
+import { Form, Button, message, Collapse, Steps,Icon } from 'antd';
 import moment from 'moment';
 import router from 'umi/router';
 import HadleContext from '@/layouts/MenuContext';
@@ -71,7 +71,8 @@ function TobedealtForm(props) {
   const [modalrollback, setModalRollBack] = useState(false); // 回退信息modle
   const [handleUploadStatus, setHandleUploadStatus] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(false);
-  const [backTitle, setBackTitle] = useState('')
+  const [backTitle, setBackTitle] = useState('');
+  const [isappeal,setIsAppeal] = useState('1')
 
   const {
     taskId,
@@ -156,7 +157,7 @@ function TobedealtForm(props) {
       case '服务商确认':
         sessionStorage.setItem(
           'Nextflowmane',
-          `${noselect === '0' ? '服务绩效考核确认' : '自动化科复核'}`,
+          `${isappeal === '0'? '服务绩效考核确认' : '自动化科复核'}`,
         );
         break;
       case '自动化科复核':
@@ -717,7 +718,7 @@ function TobedealtForm(props) {
             >
               {hisTaskArr &&
                 hisTaskArr.map(
-                  ({ key, name, taskStatus, totalTime, assignee, startTime, endTime }) => [
+                  ({ key, name, taskStatus, totalTime, assignee, startTime, endTime },index) => [
                     name !== '开始节点' && name !== '结束节点' && (
                       <Step
                         key={key}
@@ -733,6 +734,7 @@ function TobedealtForm(props) {
                             </div>
                           </div>
                         }
+                        icon={(index === hisTaskArr.length - 1) ? <Icon type="loading" spin /> : ''}
                       />
                     ),
                   ],
@@ -822,13 +824,14 @@ function TobedealtForm(props) {
                       formItemLayout={formItemLayout}
                       forminladeLayout={forminladeLayout}
                       userinfo={userinfo}
-                      selectPersonstate={newvalue => setNoselect(newvalue)}
+                      selectPersonstate={newvalue =>setNoselect(newvalue)}
                       files={currentTask.annex ? JSON.parse(currentTask.annex) : []}
                       ChangeFiles={newvalue => {
                         setFiles(newvalue);
                       }}
                       search={search}
                       key='1'
+                      changeIsappeal={(e) => {setIsAppeal(e)}}
                     />
                   </Panel>
                 )}
@@ -960,6 +963,7 @@ function TobedealtForm(props) {
                       noEdit="true"
                       search={search}
                       key="0"
+                      changeIsappeal={(e) => {setIsAppeal(e)}}
                     />,
                   ],
                   [

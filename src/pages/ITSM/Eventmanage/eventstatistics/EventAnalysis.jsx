@@ -18,6 +18,41 @@ import ColumnarY from './ColumnarY';
 import AnalysisPopup from './AnalysisPopup';
 import styles from '../../Problemmanage/index.less';
 
+const linecols = (datas) => {
+  let max = 5;
+  if (!Array.isArray(datas)) {
+    return max;
+  }
+  const arrValue = datas.map(item => {
+    return item.value
+  });
+  const maxNumber = Math.max(...arrValue);
+  for (let i = 0; i < datas.length; i += 1) {
+    const cur = datas[i].value;
+    max = cur > max ? cur : max;
+  };
+  if (maxNumber < 20) {
+    return {
+      value: {
+        min: 0,
+        max,
+        tickInterval: 2
+      }
+    }
+  }
+  if (maxNumber > 20) {
+    return {
+      value: {
+        min: 0,
+        max,
+      }
+    }
+  }
+
+  return null
+ 
+};
+
 function EventAnalysis(props) {
   const {
     dispatch,
@@ -67,6 +102,8 @@ function EventAnalysis(props) {
     }
     return newArr.reverse();
   };
+
+
 
   const dataCylinder1 = (datas) => { // 柱状图集成数组
     const newArr = [];
@@ -480,6 +517,9 @@ function EventAnalysis(props) {
                           setTitle(v.name);
                         }
                       }}
+                      uncheckedname={['总数']}
+                      lock
+                      cols={linecols(getTypeConditionsdata && getTypeConditionsdata.lineChart)}
                     />
                   )}
 
@@ -521,6 +561,7 @@ function EventAnalysis(props) {
                         setVisible(true)
                         setTitle(v === 'center' ? '事件对象总数' : v.type)
                       }}
+
                     />
                   )}
                 </Card>
@@ -544,8 +585,8 @@ function EventAnalysis(props) {
                           setTypename('事件总数');
                           setVisible(true)
                         }
-                        
-                        if((moment(values.beginTime).format('YYYY-MM-DD') !== moment(values.endTime).format('YYYY-MM-DD') && values.type !== 'Y')) {
+
+                        if ((moment(values.beginTime).format('YYYY-MM-DD') !== moment(values.endTime).format('YYYY-MM-DD') && values.type !== 'Y')) {
                           setPicVal({
                             object: v.name,
                             time1: `${v.date} 00:00:00`,
@@ -556,7 +597,7 @@ function EventAnalysis(props) {
                           setTitle(v.name)
                         }
 
-                        if(values.type === 'Y') {
+                        if (values.type === 'Y') {
                           setPicVal({
                             object: v.name,
                             time1: moment(v.date).startOf('month').format('YYYY-MM-DD 00:00:00'),
@@ -567,6 +608,8 @@ function EventAnalysis(props) {
                           setTitle(v.name);
                         }
                       }}
+                      lock
+                      cols={linecols(getObjectConditionsdata && getObjectConditionsdata.lineChart)}
                     />
                   )}
                 </Card>

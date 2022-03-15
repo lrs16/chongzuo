@@ -18,6 +18,40 @@ import ColumnarY from '../Eventmanage/Eventstatistics/ColumnarY';
 import AnalysisPopup from './AnalysisPopup';
 import styles from './index.less';
 
+const linecols = (datas) => {
+  let max = 5;
+  if (!Array.isArray(datas)) {
+    return max;
+  }
+  const arrValue = datas.map(item => {
+    return item.value
+  });
+  const maxNumber = Math.max(...arrValue);
+  for (let i = 0; i < datas.length; i += 1) {
+    const cur = datas[i].value;
+    max = cur > max ? cur : max;
+  };
+  if (maxNumber < 20) {
+    return {
+      value: {
+        min: 0,
+        max,
+        tickInterval: 2
+      }
+    }
+  }
+  if (maxNumber > 20) {
+    return {
+      value: {
+        min: 0,
+        max,
+      }
+    }
+  }
+
+  return null
+};
+
 function StatisticsAnalysis(props) {
   const {
     dispatch,
@@ -440,6 +474,7 @@ function StatisticsAnalysis(props) {
                         }
                         setTitle(v.name)
                       }}
+                      cols={linecols(lineArr && lineArr['问题工单量趋势'])}
                     />
                   )}
                 </Card>
@@ -523,6 +558,7 @@ function StatisticsAnalysis(props) {
                           }
                           setTitle(v.name)
                         }}
+                        cols={linecols(lineArr && lineArr['问题分类总趋势'])}
                       />
                     </>
                   )}
@@ -603,6 +639,7 @@ function StatisticsAnalysis(props) {
                             }
                             setTitle(v.name)
                           }}
+                          cols={linecols(lineArr && lineArr['程序问题趋势'])}
                         />
                       )}
                     </>
@@ -683,6 +720,7 @@ function StatisticsAnalysis(props) {
                           }
                           setTitle(v.name)
                         }}
+                        cols={linecols(lineArr && lineArr['功能问题趋势'])}
                       />
                     </>
                   )}
@@ -760,6 +798,7 @@ function StatisticsAnalysis(props) {
                         }
                         setTitle(v.name)
                       }}
+                      cols={linecols(lineArr && lineArr['问题来源'])}
                     />
                   )}
                 </Card>
