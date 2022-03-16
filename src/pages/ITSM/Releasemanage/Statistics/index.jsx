@@ -303,7 +303,7 @@ function Statistics(props) {
         if (monthtrs && monthtrs.length) {
           if (moment(yeartext).format('YYYY') <= moment(startdates).format('YYYY')) {
             const length = moment(startdates).format('YYYY') === moment(yeartext).format('YYYY') ? Number(disablemonths) : 12
-            for (let i = 0; i < length; i += 1) {
+            for (let i = 0; i < length - 1; i += 1) {
               monthtrs[i]?.setAttribute('class', 'ant-calendar-month-panel-cell-disabled');
             };
           } else {
