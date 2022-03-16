@@ -58,7 +58,7 @@ function Querylist(props) {
         beginTime: values.beginTime ? moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
         endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
         releaseBeginTime: values.releaseBeginTime ? moment(values.releaseBeginTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        releaseendTime: values.releaseendTime ? moment(values.releaseendTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        releaseEndTime: values.releaseEndTime ? moment(values.releaseEndTime).format('YYYY-MM-DD HH:mm:ss') : '',
         pageSize: size,
         pageIndex: page,
       },
@@ -69,7 +69,7 @@ function Querylist(props) {
       beginTime: values.beginTime ? moment(values.beginTime).format('X') : '',
       endTime: values.endTime ? moment(values.endTime).format('X') : '',
       releasebeginTime: values.releasebeginTime ? moment(values.releasebeginTime).format('X') : '',
-      releaseendTime: values.releaseendTime ? moment(values.releaseendTime).format('X') : '',
+      releaseEndTime: values.releaseEndTime ? moment(values.releaseEndTime).format('X') : '',
     });
   };
 
