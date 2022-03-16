@@ -568,9 +568,9 @@ function KnowledgeList(props) {
     const clientHeight = window.document?.body?.clientHeight;
     if (clientHeight > 750) {
       if (expand) {
-        height = clientHeight - 572
+        height = clientHeight - 524
       } else {
-        height = clientHeight - 456
+        height = clientHeight - 440
       }
     }
     return height

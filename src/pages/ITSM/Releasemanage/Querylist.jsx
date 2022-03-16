@@ -518,9 +518,9 @@ function Querylist(props) {
     const clientHeight = window.document?.body?.clientHeight;
     if (clientHeight > 750) {
       if (expand) {
-        height = clientHeight - 536
+        height = clientHeight - 566
       } else {
-        height = clientHeight - 420
+        height = clientHeight - 406
       }
     }
     return height
@@ -533,71 +533,72 @@ function Querylist(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      <Card bodyStyle={{ paddingBottom: 0 }}>
-        <Row gutter={24}>
-          <Form {...formItemLayout} onSubmit={handleSearch}>
-            <Col span={8}>
-              <Form.Item label="发布编号">
-                {getFieldDecorator('releaseNo', {
-                  initialValue: cacheinfo.releaseNo,
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="当前处理环节">
-                {getFieldDecorator('releaseStatus', {
-                  initialValue: cacheinfo.releaseStatus,
-                })(
-                  <Select placeholder="请选择" allowClear>
-                    {statumap.map(obj => (
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>
-                    ))}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-            {(expand || cacheinfo.expand) && (
-              <>
-                <Col span={8}>
-                  <Form.Item label="超时状态">
-                    {getFieldDecorator('timeoutStatus', {
-                      initialValue: cacheinfo.timeoutStatus,
-                    })(
-                      <Select placeholder="请选择" allowClear>
-                        {timeoutstatusmap.map(obj => (
-                          <Option key={obj.key} value={obj.name}>
-                            {obj.name}
-                          </Option>
-                        ))}
-                      </Select>
-                    )}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="当前处理人">
-                    {getFieldDecorator('assignee', {
-                      initialValue: cacheinfo.assignee,
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="责任单位">
-                    {getFieldDecorator('dutyUnit', {
-                      initialValue: cacheinfo.dutyUnit,
-                    })(
-                      <Select placeholder="请选择" allowClear>
-                        {unitmap.map(obj => (
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>
-                        ))}
-                      </Select>
-                    )}
-                  </Form.Item>
-                </Col>
-                {/* <Col span={8}>
+      <div className='noexplain'>
+        <Card bodyStyle={{ paddingBottom: 0 }}>
+          <Row gutter={24}>
+            <Form {...formItemLayout} onSubmit={handleSearch}>
+              <Col span={8}>
+                <Form.Item label="发布编号">
+                  {getFieldDecorator('releaseNo', {
+                    initialValue: cacheinfo.releaseNo,
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="当前处理环节">
+                  {getFieldDecorator('releaseStatus', {
+                    initialValue: cacheinfo.releaseStatus,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {statumap.map(obj => (
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>
+                      ))}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+              {(expand || cacheinfo.expand) && (
+                <>
+                  <Col span={8}>
+                    <Form.Item label="超时状态">
+                      {getFieldDecorator('timeoutStatus', {
+                        initialValue: cacheinfo.timeoutStatus,
+                      })(
+                        <Select placeholder="请选择" allowClear>
+                          {timeoutstatusmap.map(obj => (
+                            <Option key={obj.key} value={obj.name}>
+                              {obj.name}
+                            </Option>
+                          ))}
+                        </Select>
+                      )}
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item label="当前处理人">
+                      {getFieldDecorator('assignee', {
+                        initialValue: cacheinfo.assignee,
+                      })(<Input placeholder="请输入" allowClear />)}
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item label="责任单位">
+                      {getFieldDecorator('dutyUnit', {
+                        initialValue: cacheinfo.dutyUnit,
+                      })(
+                        <Select placeholder="请选择" allowClear>
+                          {unitmap.map(obj => (
+                            <Option key={obj.key} value={obj.title}>
+                              {obj.title}
+                            </Option>
+                          ))}
+                        </Select>
+                      )}
+                    </Form.Item>
+                  </Col>
+                  {/* <Col span={8}>
                   <Form.Item label="发布类型">
                     {getFieldDecorator('releaseType', {
                       initialValue: cacheinfo.releaseType,
@@ -612,124 +613,125 @@ function Querylist(props) {
                     )}
                   </Form.Item>
                 </Col> */}
-                <Col span={8}>
-                  <Form.Item label="发布版本号">
-                    {getFieldDecorator('versionNo', {
-                      initialValue: cacheinfo.versionNo,
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="出厂测试登记人">
-                    {getFieldDecorator('register', {
-                      initialValue: cacheinfo.register,
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="发送人">
-                    {getFieldDecorator('sender', {
-                      initialValue: '',
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="发送时间">
-                    <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                      {getFieldDecorator('beginTime', {
-                        initialValue: cacheinfo.beginTime ? moment(cacheinfo.beginTime * 1000) : '',
-                      })(
-                        <DatePicker
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: moment('00:00:00', 'HH:mm:ss'),
-                          }}
-                          placeholder="开始时间"
-                          format='YYYY-MM-DD HH:mm:ss'
-                          style={{ minWidth: 120, width: '100%' }}
-                        />
-                      )}
-                    </div>
-                    <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
-                    <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                      {getFieldDecorator('endTime', {
-                        initialValue: cacheinfo.endTime ? moment(cacheinfo.endTime * 1000) : '',
-                      })(
-                        <DatePicker
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: moment('23:59:59', 'HH:mm:ss'),
-                          }}
-                          placeholder="结束时间"
-                          format='YYYY-MM-DD HH:mm:ss'
-                          style={{ minWidth: 120, width: '100%' }}
-                        />
-                      )}
-                    </div>
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="发布时间">
-                    <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                      {getFieldDecorator('releaseBeginTime', {
-                        initialValue: cacheinfo.releaseBeginTime ? moment(cacheinfo.releaseBeginTime * 1000) : '',
-                      })(
-                        <DatePicker
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: moment('00:00:00', 'HH:mm:ss'),
-                          }}
-                          placeholder="开始时间"
-                          format='YYYY-MM-DD HH:mm:ss'
-                          style={{ minWidth: 120, width: '100%' }}
-                        />
-                      )}
-                    </div>
-                    <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
-                    <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                      {getFieldDecorator('releaseEndTime', {
-                        initialValue: cacheinfo.releaseEndTime ? moment(cacheinfo.releaseEndTime * 1000) : '',
-                      })(
-                        <DatePicker
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: moment('23:59:59', 'HH:mm:ss'),
-                          }}
-                          placeholder="结束时间"
-                          format='YYYY-MM-DD HH:mm:ss'
-                          style={{ minWidth: 120, width: '100%' }}
-                        />
-                      )}
-                    </div>
-                  </Form.Item>
-                </Col>
-              </>
-            )}
-            <Col span={expand ? 24 : 8} style={{ marginTop: 4, paddingLeft: 48, textAlign: expand ? 'right' : 'left' }}>{extra}</Col>
-          </Form>
-        </Row>
-        <div>
-          <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>导出数据</Button >
-        </div>
-        < Table
-          loading={loading}
-          columns={columns}
-          expandedRowKeys={expandedRowKeys}   // 默认展开的行
-          expandedRowRender={expandedRowRender}   // 展开的内容
-          expandRowByClick
-          onRow={(record) => {
-            return {
-              onClick: e => { e.preventDefault(); getViewList(record.releaseNo) },
-            };
-          }}
-          onExpand={(expanded, record) => changeRowsKey(expanded, record)}
-          dataSource={list.records}
-          pagination={pagination}
-          rowSelection={rowSelection}
-          rowKey={(r) => r.taskId}
-          scroll={{ y: setTableHeight(), x: 1700 }}
-        />
-      </Card>
+                  <Col span={8}>
+                    <Form.Item label="发布版本号">
+                      {getFieldDecorator('versionNo', {
+                        initialValue: cacheinfo.versionNo,
+                      })(<Input placeholder="请输入" allowClear />)}
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item label="出厂测试登记人">
+                      {getFieldDecorator('register', {
+                        initialValue: cacheinfo.register,
+                      })(<Input placeholder="请输入" allowClear />)}
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item label="发送人">
+                      {getFieldDecorator('sender', {
+                        initialValue: '',
+                      })(<Input placeholder="请输入" allowClear />)}
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item label="发送时间">
+                      <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                        {getFieldDecorator('beginTime', {
+                          initialValue: cacheinfo.beginTime ? moment(cacheinfo.beginTime * 1000) : '',
+                        })(
+                          <DatePicker
+                            showTime={{
+                              hideDisabledOptions: true,
+                              defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                            }}
+                            placeholder="开始时间"
+                            format='YYYY-MM-DD HH:mm:ss'
+                            style={{ minWidth: 120, width: '100%' }}
+                          />
+                        )}
+                      </div>
+                      <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
+                      <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                        {getFieldDecorator('endTime', {
+                          initialValue: cacheinfo.endTime ? moment(cacheinfo.endTime * 1000) : '',
+                        })(
+                          <DatePicker
+                            showTime={{
+                              hideDisabledOptions: true,
+                              defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                            }}
+                            placeholder="结束时间"
+                            format='YYYY-MM-DD HH:mm:ss'
+                            style={{ minWidth: 120, width: '100%' }}
+                          />
+                        )}
+                      </div>
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item label="发布时间">
+                      <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                        {getFieldDecorator('releaseBeginTime', {
+                          initialValue: cacheinfo.releaseBeginTime ? moment(cacheinfo.releaseBeginTime * 1000) : '',
+                        })(
+                          <DatePicker
+                            showTime={{
+                              hideDisabledOptions: true,
+                              defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                            }}
+                            placeholder="开始时间"
+                            format='YYYY-MM-DD HH:mm:ss'
+                            style={{ minWidth: 120, width: '100%' }}
+                          />
+                        )}
+                      </div>
+                      <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
+                      <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                        {getFieldDecorator('releaseEndTime', {
+                          initialValue: cacheinfo.releaseEndTime ? moment(cacheinfo.releaseEndTime * 1000) : '',
+                        })(
+                          <DatePicker
+                            showTime={{
+                              hideDisabledOptions: true,
+                              defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                            }}
+                            placeholder="结束时间"
+                            format='YYYY-MM-DD HH:mm:ss'
+                            style={{ minWidth: 120, width: '100%' }}
+                          />
+                        )}
+                      </div>
+                    </Form.Item>
+                  </Col>
+                </>
+              )}
+              <Col span={expand ? 24 : 8} style={{ marginTop: 4, paddingLeft: 48, textAlign: expand ? 'right' : 'left' }}>{extra}</Col>
+            </Form>
+          </Row>
+          <div>
+            <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>导出数据</Button >
+          </div>
+          < Table
+            loading={loading}
+            columns={columns}
+            expandedRowKeys={expandedRowKeys}   // 默认展开的行
+            expandedRowRender={expandedRowRender}   // 展开的内容
+            expandRowByClick
+            onRow={(record) => {
+              return {
+                onClick: e => { e.preventDefault(); getViewList(record.releaseNo) },
+              };
+            }}
+            onExpand={(expanded, record) => changeRowsKey(expanded, record)}
+            dataSource={list.records}
+            pagination={pagination}
+            rowSelection={rowSelection}
+            rowKey={(r) => r.taskId}
+            scroll={{ y: setTableHeight(), x: 1700 }}
+          />
+        </Card>
+      </div>
     </PageHeaderWrapper>
   );
 }

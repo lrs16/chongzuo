@@ -334,9 +334,9 @@ function ToDolist(props) {
     const clientHeight = window.document?.body?.clientHeight;
     if (clientHeight > 750) {
       if (expand) {
-        height = clientHeight - 568
+        height = clientHeight - 520
       } else {
-        height = clientHeight - 420
+        height = clientHeight - 404
       }
     }
     return height

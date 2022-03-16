@@ -283,46 +283,47 @@ function ReleaseRepo(props) {
     // 最小兼容1600的全屏显示器，顶部高度64，页签：40，面头：92，间隔：16，card:24,导出按钮：32，分页：64
     const clientHeight = window.document?.body?.clientHeight;
     if (clientHeight > 750) {
-      height = clientHeight - 478
+      height = clientHeight - 448
     }
     return height
   };
 
   return (
     <PageHeaderWrapper title={pagetitle}>
-      <Card bodyStyle={{ paddingBottom: 0 }}>
-        <Row gutter={24}>
-          <Form {...formItemLayout} onSubmit={handleSearch}>
-            <Col span={8}>
-              <Form.Item label="发布来源">
-                {getFieldDecorator('source', {
-                  initialValue: cacheinfo.source,
-                })(
-                  <Select placeholder="请选择" allowClear>
-                    {sourcemap.map(obj => (
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>
-                    ))}
-                  </Select>)}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="发布状态">
-                {getFieldDecorator('status', {
-                  initialValue: cacheinfo.status,
-                })(
-                  <Select placeholder="请选择" allowClear>
-                    {statumap.map(obj => (
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>
-                    ))}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-            {/* <Col span={8}>
+      <div className='noexplain'>
+        <Card bodyStyle={{ paddingBottom: 0 }}>
+          <Row gutter={24}>
+            <Form {...formItemLayout} onSubmit={handleSearch}>
+              <Col span={8}>
+                <Form.Item label="发布来源">
+                  {getFieldDecorator('source', {
+                    initialValue: cacheinfo.source,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {sourcemap.map(obj => (
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>
+                      ))}
+                    </Select>)}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="发布状态">
+                  {getFieldDecorator('status', {
+                    initialValue: cacheinfo.status,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {statumap.map(obj => (
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>
+                      ))}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+              {/* <Col span={8}>
               <Form.Item label="发布类型">
                 {getFieldDecorator('releaseType', {
                   initialValue: cacheinfo.releaseStatus,
@@ -337,87 +338,88 @@ function ReleaseRepo(props) {
                 )}
               </Form.Item>
             </Col> */}
-            <Col span={8}>
-              <Form.Item label="出厂测试登记人">
-                {getFieldDecorator('register', {
-                  initialValue: cacheinfo.register,
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="登记时间">
-                <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                  {getFieldDecorator('beginRegisterTime', {
-                    initialValue: cacheinfo.beginRegisterTime ? moment(cacheinfo.beginRegisterTime * 1000) : '',
-                  })(
-                    <DatePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: moment('00:00:00', 'HH:mm:ss'),
-                      }}
-                      placeholder="开始时间"
-                      format='YYYY-MM-DD HH:mm:ss'
-                      style={{ minWidth: 120, width: '100%' }}
-                    />
-                  )}
+              <Col span={8}>
+                <Form.Item label="出厂测试登记人">
+                  {getFieldDecorator('register', {
+                    initialValue: cacheinfo.register,
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="登记时间">
+                  <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                    {getFieldDecorator('beginRegisterTime', {
+                      initialValue: cacheinfo.beginRegisterTime ? moment(cacheinfo.beginRegisterTime * 1000) : '',
+                    })(
+                      <DatePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                        }}
+                        placeholder="开始时间"
+                        format='YYYY-MM-DD HH:mm:ss'
+                        style={{ minWidth: 120, width: '100%' }}
+                      />
+                    )}
+                  </div>
+                  <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
+                  <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                    {getFieldDecorator('endRegisterTime', {
+                      initialValue: cacheinfo.endRegisterTime ? moment(cacheinfo.endRegisterTime * 1000) : '',
+                    })(
+                      <DatePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                        }}
+                        placeholder="结束时间"
+                        format='YYYY-MM-DD HH:mm:ss'
+                        style={{ minWidth: 120, width: '100%' }}
+                      />
+                    )}
+                  </div>
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="关联工单编号">
+                  {getFieldDecorator('sourceNo', {
+                    initialValue: cacheinfo.sourceNo,
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
+              </Col>
+              <Col span={8} style={{ paddingTop: 4 }}>
+                <div style={{ paddingLeft: '25%' }}>
+                  <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
+                  <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
                 </div>
-                <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
-                <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                  {getFieldDecorator('endRegisterTime', {
-                    initialValue: cacheinfo.endRegisterTime ? moment(cacheinfo.endRegisterTime * 1000) : '',
-                  })(
-                    <DatePicker
-                      showTime={{
-                        hideDisabledOptions: true,
-                        defaultValue: moment('23:59:59', 'HH:mm:ss'),
-                      }}
-                      placeholder="结束时间"
-                      format='YYYY-MM-DD HH:mm:ss'
-                      style={{ minWidth: 120, width: '100%' }}
-                    />
-                  )}
-                </div>
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="关联工单编号">
-                {getFieldDecorator('sourceNo', {
-                  initialValue: cacheinfo.sourceNo,
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-            <Col span={8} style={{ paddingTop: 4 }}>
-              <div style={{ paddingLeft: '25%' }}>
-                <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
-                <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
-              </div>
-            </Col>
-          </Form>
-        </Row>
-        <div>
-          <Button type="primary" style={{ marginRight: 8 }} onClick={() => handlerepoRegister()} disabled={selectedRowKeys.length === 0}>出厂测试</Button >
-          <AdminAuth getAuth={v => setUserName(v)} code='admin' />
-          {username === 'admin' && (
-            <Button type="danger"
-              ghost
-              style={{ marginRight: 8 }}
-              onClick={() => handleDel()}
-              disabled={selectedRowKeys.length === 0}
-            >
-              删 除
-            </Button >
-          )}
-        </div>
-        < Table
-          loading={loading}
-          columns={columns}
-          dataSource={list.records}
-          pagination={pagination}
-          rowSelection={rowSelection}
-          rowKey={r => r.id}
-          scroll={{ x: 1500, y: setTableHeight() }}
-        />
-      </Card>
+              </Col>
+            </Form>
+          </Row>
+          <div>
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => handlerepoRegister()} disabled={selectedRowKeys.length === 0}>出厂测试</Button >
+            <AdminAuth getAuth={v => setUserName(v)} code='admin' />
+            {username === 'admin' && (
+              <Button type="danger"
+                ghost
+                style={{ marginRight: 8 }}
+                onClick={() => handleDel()}
+                disabled={selectedRowKeys.length === 0}
+              >
+                删 除
+              </Button >
+            )}
+          </div>
+          < Table
+            loading={loading}
+            columns={columns}
+            dataSource={list.records}
+            pagination={pagination}
+            rowSelection={rowSelection}
+            rowKey={r => r.id}
+            scroll={{ x: 1500, y: setTableHeight() }}
+          />
+        </Card>
+      </div>
     </PageHeaderWrapper>
   );
 }

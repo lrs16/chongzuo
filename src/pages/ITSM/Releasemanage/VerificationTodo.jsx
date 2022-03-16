@@ -408,7 +408,7 @@ function VerificationTodo(props) {
     };
 
     return (
-      <div style={{ margin: '0 48px 24px 0', }}>
+      <div style={{ margin: '0 48px 0 0', }}>
         <div style={{ marginBottom: 12 }}>{viewmsg[key]}</div>
         <Table
           columns={columnSun}
@@ -418,7 +418,7 @@ function VerificationTodo(props) {
           loading={viewloading}
           rowKey={r => r.id}
           bordered
-          scroll={{ y: 350 }}
+          scroll={{ y: 374 }}
         />
       </div>
     );
@@ -440,9 +440,9 @@ function VerificationTodo(props) {
     const clientHeight = window.document?.body?.clientHeight;
     if (clientHeight > 750) {
       if (expand) {
-        height = clientHeight - 446
+        height = clientHeight - 416
       } else {
-        height = clientHeight - 388
+        height = clientHeight - 374
       }
     }
     return height
@@ -455,105 +455,107 @@ function VerificationTodo(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      <Card bodyStyle={{ paddingBottom: 0 }}>
-        <Row gutter={24}>
-          <Form {...formItemLayout} onSubmit={handleSearch}>
-            <Col span={8}>
-              <Form.Item label="发布编号">
-                {getFieldDecorator('releaseNo', {
-                  initialValue: cacheinfo.releaseNo,
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="状态">
-                {getFieldDecorator('verifyStatus', {
-                  initialValue: cacheinfo.verifyStatus || '待验证',
-                })(
-                  <Select placeholder="请选择">
-                    {checkstatusmap.map(obj => (
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>
-                    ))}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-            <span style={{ display: expand ? 'block' : 'none' }}>
+      <div className='noexplain'>
+        <Card bodyStyle={{ paddingBottom: 0 }}>
+          <Row gutter={24}>
+            <Form {...formItemLayout} onSubmit={handleSearch}>
               <Col span={8}>
-                <Form.Item label="功能类型">
-                  {getFieldDecorator('abilityType', {
-                    initialValue: cacheinfo.abilityType,
-                  })(
-                    <Cascader
-                      fieldNames={{ label: 'title', value: 'title', children: 'children' }}
-                      options={functionmap}
-                      changeOnSelect
-                    />,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="功能名称">
-                  {getFieldDecorator('appName', {
-                    initialValue: cacheinfo.appName,
-                  })(
-                    <Input placeholder="请输入" allowClear />
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="问题类型">
-                  {getFieldDecorator('problemType', {
-                    initialValue: cacheinfo.problemType,
+                <Form.Item label="发布编号">
+                  {getFieldDecorator('releaseNo', {
+                    initialValue: cacheinfo.releaseNo,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
-            </span>
-            <Col span={8}>
-              <Form.Item style={{ textAlign: 'right' }}>
-                <Button type="primary" onClick={handleSearch}>
-                  查 询
-                </Button>
-                <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
-                <Button
-                  style={{ marginLeft: 8 }}
-                  type="link"
-                  onClick={() => {
-                    setExpand(!expand);
-                  }}
-                >
-                  {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
-                </Button>
-              </Form.Item>
-            </Col>
-          </Form>
-        </Row>
-        {/* <div style={{ marginBottom: 24 }}>
+              <Col span={8}>
+                <Form.Item label="状态">
+                  {getFieldDecorator('verifyStatus', {
+                    initialValue: cacheinfo.verifyStatus || '待验证',
+                  })(
+                    <Select placeholder="请选择">
+                      {checkstatusmap.map(obj => (
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>
+                      ))}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+              <span style={{ display: expand ? 'block' : 'none' }}>
+                <Col span={8}>
+                  <Form.Item label="功能类型">
+                    {getFieldDecorator('abilityType', {
+                      initialValue: cacheinfo.abilityType,
+                    })(
+                      <Cascader
+                        fieldNames={{ label: 'title', value: 'title', children: 'children' }}
+                        options={functionmap}
+                        changeOnSelect
+                      />,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="功能名称">
+                    {getFieldDecorator('appName', {
+                      initialValue: cacheinfo.appName,
+                    })(
+                      <Input placeholder="请输入" allowClear />
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="问题类型">
+                    {getFieldDecorator('problemType', {
+                      initialValue: cacheinfo.problemType,
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+              </span>
+              <Col span={8}>
+                <Form.Item style={{ textAlign: 'right' }}>
+                  <Button type="primary" onClick={handleSearch}>
+                    查 询
+                  </Button>
+                  <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
+                  <Button
+                    style={{ marginLeft: 8 }}
+                    type="link"
+                    onClick={() => {
+                      setExpand(!expand);
+                    }}
+                  >
+                    {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
+                  </Button>
+                </Form.Item>
+              </Col>
+            </Form>
+          </Row>
+          {/* <div style={{ marginBottom: 24 }}>
           <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>导出数据</Button >
         </div> */}
 
-        <Table
-          loading={loading}
-          columns={columns}
-          expandedRowKeys={expandedRowKeys}            // 默认展开的行
-          expandedRowRender={expandedRowRender}        // 展开的内容
-          expandRowByClick
-          onRow={(record) => {
-            return {
-              onClick: () => { getViewList(record.todoCode) },
-            };
-          }}
-          onExpand={(expanded, record) => changeRowsKey(expanded, record)}
-          expandIconColumnIndex={3}
-          dataSource={list}
-          pagination={pagination}
-          rowSelection={rowSelection}
-          rowKey={(record) => record.todoCode}
-          scroll={{ y: setTableHeight() }}
-        />
-      </Card>
+          <Table
+            loading={loading}
+            columns={columns}
+            expandedRowKeys={expandedRowKeys}            // 默认展开的行
+            expandedRowRender={expandedRowRender}        // 展开的内容
+            expandRowByClick
+            onRow={(record) => {
+              return {
+                onClick: () => { getViewList(record.todoCode) },
+              };
+            }}
+            onExpand={(expanded, record) => changeRowsKey(expanded, record)}
+            expandIconColumnIndex={3}
+            dataSource={list}
+            pagination={pagination}
+            rowSelection={rowSelection}
+            rowKey={(record) => record.todoCode}
+            scroll={{ y: setTableHeight() }}
+          />
+        </Card>
+      </div>
     </PageHeaderWrapper>
   );
 }

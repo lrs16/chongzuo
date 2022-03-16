@@ -323,9 +323,9 @@ function ToDolist(props) {
     const clientHeight = window.document?.body?.clientHeight;
     if (clientHeight > 750) {
       if (expand) {
-        height = clientHeight - 478
+        height = clientHeight - 446
       } else {
-        height = clientHeight - 420
+        height = clientHeight - 374
       }
     }
     return height
@@ -339,47 +339,25 @@ function ToDolist(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      <Card bodyStyle={{ paddingBottom: 0 }}>
-        <Row gutter={24}>
-          <Form {...formItemLayout} onSubmit={() => handleSearch()}>
-            <Col span={8}>
-              <Form.Item label="需求编号">
-                {getFieldDecorator('demandId', {
-                  initialValue: cacheinfo.demandId,
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="当前处理环节">
-                {getFieldDecorator('taskName', {
-                  initialValue: cacheinfo.taskName
-                })(
-                  <Select placeholder="请选择" allowClear>
-                    {statemap && statemap.map((obj) => (
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>
-                    ))}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-            <span style={{ display: expand ? 'block' : 'none' }}>
+      <div className='noexplain'>
+        <Card bodyStyle={{ paddingBottom: 0 }}>
+          <Row gutter={24}>
+            <Form {...formItemLayout} onSubmit={() => handleSearch()}>
               <Col span={8}>
-                <Form.Item label="需求标题">
-                  {getFieldDecorator('title', {
-                    initialValue: cacheinfo.title,
+                <Form.Item label="需求编号">
+                  {getFieldDecorator('demandId', {
+                    initialValue: cacheinfo.demandId,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
               <Col span={8}>
-                <Form.Item label="需求类型">
-                  {getFieldDecorator('demandType', {
-                    initialValue: cacheinfo.demandType
+                <Form.Item label="当前处理环节">
+                  {getFieldDecorator('taskName', {
+                    initialValue: cacheinfo.taskName
                   })(
                     <Select placeholder="请选择" allowClear>
-                      {souremap && souremap.map(obj => (
-                        <Option key={obj.dict_code} value={obj.title}>
+                      {statemap && statemap.map((obj) => (
+                        <Option key={obj.key} value={obj.title}>
                           {obj.title}
                         </Option>
                       ))}
@@ -387,36 +365,60 @@ function ToDolist(props) {
                   )}
                 </Form.Item>
               </Col>
-              <Col span={8}>
-                <Form.Item label="登记人">
-                  {getFieldDecorator('registerPerson', {
-                    initialValue: cacheinfo.registerPerson,
-                  })(<Input placeholder="请输入" allowClear />)}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="创建时间">
-                  {getFieldDecorator('creationTime', {
-                    initialValue: '',
-                  })(<DatePicker allowClear style={{ width: '100%' }} />)}
-                </Form.Item>
-              </Col>
-            </span>
-            {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8}><Form.Item wrapperCol={24}>{extra}</Form.Item></Col>)}
-          </Form>
-        </Row>
-        {/* <div style={{ marginBottom: 24 }}>
+              <span style={{ display: expand ? 'block' : 'none' }}>
+                <Col span={8}>
+                  <Form.Item label="需求标题">
+                    {getFieldDecorator('title', {
+                      initialValue: cacheinfo.title,
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="需求类型">
+                    {getFieldDecorator('demandType', {
+                      initialValue: cacheinfo.demandType
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {souremap && souremap.map(obj => (
+                          <Option key={obj.dict_code} value={obj.title}>
+                            {obj.title}
+                          </Option>
+                        ))}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="登记人">
+                    {getFieldDecorator('registerPerson', {
+                      initialValue: cacheinfo.registerPerson,
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="创建时间">
+                    {getFieldDecorator('creationTime', {
+                      initialValue: '',
+                    })(<DatePicker allowClear style={{ width: '100%' }} />)}
+                  </Form.Item>
+                </Col>
+              </span>
+              {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8}><Form.Item wrapperCol={24}>{extra}</Form.Item></Col>)}
+            </Form>
+          </Row>
+          {/* <div style={{ marginBottom: 24 }}>
           <Button type="primary">导出数据</Button>
         </div> */}
-        <Table
-          loading={loading}
-          columns={columns}
-          dataSource={list.rows}
-          rowKey={(_, index) => index.toString()}
-          pagination={pagination}
-          scroll={{ x: 1500, y: setTableHeight() }}
-        />
-      </Card>
+          <Table
+            loading={loading}
+            columns={columns}
+            dataSource={list.rows}
+            rowKey={(_, index) => index.toString()}
+            pagination={pagination}
+            scroll={{ x: 1500, y: setTableHeight() }}
+          />
+        </Card>
+      </div>
     </PageHeaderWrapper >
 
   );

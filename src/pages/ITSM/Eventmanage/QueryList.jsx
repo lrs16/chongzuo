@@ -524,7 +524,7 @@ function QueryList(props) {
     // 最小兼容1600的全屏显示器
     const clientHeight = window.document?.body?.clientHeight;
     if (clientHeight > 750 && !expand) {
-      height = clientHeight - 568
+      height = clientHeight - 520
     }
     return height
   };

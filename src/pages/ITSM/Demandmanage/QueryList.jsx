@@ -507,9 +507,9 @@ function QueryList(props) {
     const clientHeight = window.document?.body?.clientHeight;
     if (clientHeight > 750) {
       if (expand) {
-        height = clientHeight - 568
+        height = clientHeight - 522
       } else {
-        height = clientHeight - 510
+        height = clientHeight - 478
       }
     }
     return height
@@ -522,162 +522,164 @@ function QueryList(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      <Card bodyStyle={{ paddingBottom: 0 }}>
-        <Row gutter={24}>
-          <Form {...formItemLayout} onSubmit={handleSearch}>
-            <Col span={8}>
-              <Form.Item label="需求编号">
-                {getFieldDecorator('demandId', {
-                  initialValue: cacheinfo.demandId,
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="当前处理环节">
-                {getFieldDecorator('taskName', { initialValue: cacheinfo.taskName })(
-                  <Select placeholder="请选择" allowClear>
-                    {statemap.map((obj) => (
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>
-                    ))}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="功能模块" >
-                {getFieldDecorator('module', {
-                  initialValue: cacheinfo.module,
-                })(
-                  <Cascader
-                    fieldNames={{ label: 'title', value: 'title', children: 'children' }}
-                    options={modulemap}
-                  />,
-                )}
-              </Form.Item>
-            </Col>
-            {(expand || (location && location.state && location.state.expand)) && (
-              <>
-                <Col span={8}>
-                  <Form.Item label="需求标题">
-                    {getFieldDecorator('demandTitle', {
-                      initialValue: cacheinfo.demandTitle,
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="需求类型">
-                    {getFieldDecorator('demandType', { initialValue: cacheinfo.demandType })(
-                      <Select placeholder="请选择" allowClear>
-                        {demandtype.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="登记人">
-                    {getFieldDecorator('sender', {
-                      initialValue: cacheinfo.sender,
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-              </>
-            )}
-            <Col span={8}>
-              <Form.Item label="当前环节处理人">
-                {getFieldDecorator('taskUser', {
-                  initialValue: cacheinfo.taskUser,
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="超时状态">
-                {getFieldDecorator('completeStatus', {
-                  initialValue: cacheinfo.completeStatus
-                })(
-                  <Select placeholder="请选择" allowClear>
-                    {overtimemap.map(obj => [
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="建单时间" >
-                {getFieldDecorator('createTime', {
-                  initialValue: '',
-                })(<RangePicker
-                  showTime={{
-                    hideDisabledOptions: true,
-                    defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+      <div className='noexplain'>
+        <Card bodyStyle={{ paddingBottom: 0 }}>
+          <Row gutter={24}>
+            <Form {...formItemLayout} onSubmit={handleSearch}>
+              <Col span={8}>
+                <Form.Item label="需求编号">
+                  {getFieldDecorator('demandId', {
+                    initialValue: cacheinfo.demandId,
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="当前处理环节">
+                  {getFieldDecorator('taskName', { initialValue: cacheinfo.taskName })(
+                    <Select placeholder="请选择" allowClear>
+                      {statemap.map((obj) => (
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>
+                      ))}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="功能模块" >
+                  {getFieldDecorator('module', {
+                    initialValue: cacheinfo.module,
+                  })(
+                    <Cascader
+                      fieldNames={{ label: 'title', value: 'title', children: 'children' }}
+                      options={modulemap}
+                    />,
+                  )}
+                </Form.Item>
+              </Col>
+              {(expand || (location && location.state && location.state.expand)) && (
+                <>
+                  <Col span={8}>
+                    <Form.Item label="需求标题">
+                      {getFieldDecorator('demandTitle', {
+                        initialValue: cacheinfo.demandTitle,
+                      })(<Input placeholder="请输入" allowClear />)}
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item label="需求类型">
+                      {getFieldDecorator('demandType', { initialValue: cacheinfo.demandType })(
+                        <Select placeholder="请选择" allowClear>
+                          {demandtype.map(obj => [
+                            <Option key={obj.key} value={obj.title}>
+                              {obj.title}
+                            </Option>,
+                          ])}
+                        </Select>,
+                      )}
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item label="登记人">
+                      {getFieldDecorator('sender', {
+                        initialValue: cacheinfo.sender,
+                      })(<Input placeholder="请输入" allowClear />)}
+                    </Form.Item>
+                  </Col>
+                </>
+              )}
+              <Col span={8}>
+                <Form.Item label="当前环节处理人">
+                  {getFieldDecorator('taskUser', {
+                    initialValue: cacheinfo.taskUser,
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="超时状态">
+                  {getFieldDecorator('completeStatus', {
+                    initialValue: cacheinfo.completeStatus
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {overtimemap.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="建单时间" >
+                  {getFieldDecorator('createTime', {
+                    initialValue: '',
+                  })(<RangePicker
+                    showTime={{
+                      hideDisabledOptions: true,
+                      defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                    }}
+                    format='YYYY-MM-DD'
+                    allowClear
+                    style={{ width: '100%' }}
+                  />)}
+                </Form.Item>
+              </Col>
+              <Col span={24} style={{ textAlign: 'right' }}>
+                <Button type="primary" onClick={handleSearch}>
+                  查 询
+                </Button>
+                <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>
+                  重 置
+                </Button>
+                <Button
+                  style={{ marginLeft: 8 }}
+                  type="link"
+                  onClick={() => {
+                    setExpand(!expand);
                   }}
-                  format='YYYY-MM-DD'
-                  allowClear
-                  style={{ width: '100%' }}
-                />)}
-              </Form.Item>
+                >
+                  {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
+                </Button>
+              </Col>
+            </Form>
+          </Row>
+          <Row>
+            <Col span={12}>
+              <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>
+                导出数据
+              </Button>
+              <AdminAuth getAuth={v => setUserName(v)} code='admin' />
+              {username === 'admin' && (
+                <Button type="danger" ghost onClick={() => deleteorder()}>删 除</Button>
+              )}
             </Col>
-            <Col span={24} style={{ textAlign: 'right' }}>
-              <Button type="primary" onClick={handleSearch}>
-                查 询
-              </Button>
-              <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>
-                重 置
-              </Button>
-              <Button
-                style={{ marginLeft: 8 }}
-                type="link"
-                onClick={() => {
-                  setExpand(!expand);
-                }}
+            <Col span={12} style={{ textAlign: 'right' }}>
+              <Popover
+                content={content}
+                trigger="click"
+                visible={visible}
+                onVisibleChange={v => setVisible(v)}
+                placement="left"
               >
-                {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
-              </Button>
+                <Tooltip title="自定义表头">
+                  <Button icon="setting" style={{ background: '#e1e1e1' }} />
+                </Tooltip>
+              </Popover>
             </Col>
-          </Form>
-        </Row>
-        <Row>
-          <Col span={12}>
-            <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>
-              导出数据
-            </Button>
-            <AdminAuth getAuth={v => setUserName(v)} code='admin' />
-            {username === 'admin' && (
-              <Button type="danger" ghost onClick={() => deleteorder()}>删 除</Button>
-            )}
-          </Col>
-          <Col span={12} style={{ textAlign: 'right' }}>
-            <Popover
-              content={content}
-              trigger="click"
-              visible={visible}
-              onVisibleChange={v => setVisible(v)}
-              placement="left"
-            >
-              <Tooltip title="自定义表头">
-                <Button icon="setting" style={{ background: '#e1e1e1' }} />
-              </Tooltip>
-            </Popover>
-          </Col>
-        </Row>
-        <Table
-          loading={loading}
-          columns={defaultColumns && defaultColumns.length > 0 ? tableColumns(defaultColumns) : columns}
-          dataSource={list.rows}
-          rowKey={r => r.processId}
-          pagination={pagination}
-          rowSelection={rowSelection}
-          scroll={{ x: 1500, y: setTableHeight() }}
-        />
-      </Card>
+          </Row>
+          <Table
+            loading={loading}
+            columns={defaultColumns && defaultColumns.length > 0 ? tableColumns(defaultColumns) : columns}
+            dataSource={list.rows}
+            rowKey={r => r.processId}
+            pagination={pagination}
+            rowSelection={rowSelection}
+            scroll={{ x: 1500, y: setTableHeight() }}
+          />
+        </Card>
+      </div>
     </PageHeaderWrapper >
   );
 }
