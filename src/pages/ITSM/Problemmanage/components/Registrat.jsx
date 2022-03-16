@@ -357,7 +357,7 @@ const Registrat = React.forwardRef((props, ref) => {
                   ],
                   initialValue: register.registerScope,
                 })(
-                  <Select placeholder="请选择" getPopupContainer={e => e.parentNode}>
+                  <Select placeholder='请选择'>
                     {(scope || []).map(obj => [
                       <Option key={obj.key} value={obj.dict_code}>
                         {obj.title}
@@ -396,7 +396,11 @@ const Registrat = React.forwardRef((props, ref) => {
                     initialValue:
                       (register.developmentLead && register.developmentLead.split(',')) || undefined,
                   })(
-                    <Select placeholder="请选择" mode="multiple" getPopupContainer={e => e.parentNode}>
+                    <Select 
+                    placeholder="请选择"
+                     mode="multiple"
+                      
+                      >
                       {persondata.map(obj => [
                         <Option key={obj.key} value={obj.val}>
                           {obj.val}
