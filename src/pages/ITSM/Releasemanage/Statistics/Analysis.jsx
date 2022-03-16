@@ -387,9 +387,11 @@ function Statistics(props) {
               <Avatar icon="file-protect" />
               <b>业务验证情况</b>
             </div>
-            {(!bizsum || (bizsum && bizsum.length === 0)) && <Empty style={{ height: '100px' }} />}
+            {selectTag === '临时' ? (<Card bodyStyle={{ padding: 0 }}><Empty style={{ height: '143px', }} /></Card>) : (<>
+              {(!bizsum || (bizsum && bizsum.length === 0)) && <Empty style={{ height: '100px', }} />}
+            </>)}
             <Row>
-              {bizsum && bizsum.length > 0 && bizsum.map((item) => {
+              {selectTag !== '临时' && bizsum && bizsum.length > 0 && bizsum.map((item) => {
                 const suffixmap = new Map([
                   ['业务验证通过项', '项'],
                   ['业务验证未通过项', '项'],

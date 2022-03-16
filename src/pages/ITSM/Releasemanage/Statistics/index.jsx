@@ -196,6 +196,12 @@ function Statistics(props) {
       vote.key = tablecolumns[i].key;
       vote.width = 150;
       vote.align = 'center';
+      vote.render = (text) => {
+        return (
+          <>{text && text !== 0 ? (<span>{text}</span>) : (<span>-</span>)}
+          </>
+        )
+      }
       newArr.push(vote);
     };
     return newArr;

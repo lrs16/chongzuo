@@ -29,6 +29,12 @@ function TemporarySelectUser(props) {
     }
   }, [indexUser]);
 
+  useEffect(() => {
+    if (indexUser && indexUser.length && indexUser > 0 && !loading) {
+      setFieldsValue({ assignee: indexUser.join(',') })
+    }
+  }, [loading]);
+
   const handleOk = () => {
     validateFields((err, val) => {
       if (!err) {

@@ -540,7 +540,7 @@ function Querylist(props) {
                   </Form.Item>
                 </Col>
                 <Col span={8}>
-                  <Form.Item label="责任单位">
+                  <Form.Item label="申请人">
                     {getFieldDecorator('applicant', {
                       initialValue: cacheinfo.applicant,
                     })(<Input placeholder="请输入" allowClear />)}
@@ -600,7 +600,7 @@ function Querylist(props) {
                     </div>
                     <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
                     <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                      {getFieldDecorator('endTime', {
+                      {getFieldDecorator('releaseendTime', {
                         initialValue: cacheinfo.releaseBeginTime ? moment(cacheinfo.releaseBeginTime * 1000) : '',
                       })(
                         <DatePicker
