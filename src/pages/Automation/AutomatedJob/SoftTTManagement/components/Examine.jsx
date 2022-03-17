@@ -25,7 +25,9 @@ const formItemLayout = {
 
 const Examine = forwardRef((props, ref) => {
   const {
-    userinfo, check, Noediting,
+    userinfo,
+    check,
+    Noediting,
     form: { getFieldDecorator, getFieldsValue, resetFields, setFieldsValue },
   } = props;
 
@@ -34,15 +36,19 @@ const Examine = forwardRef((props, ref) => {
   const [adopt, setAdopt] = useState('0');
   const [files, setFiles] = useState([]);
 
-  useImperativeHandle(ref, () => ({
-    getVal: () => getFieldsValue(),
-    resetVal: () => resetFields(),
-    Forms: props.form.validateFieldsAndScroll,
-  }), []);
+  useImperativeHandle(
+    ref,
+    () => ({
+      getVal: () => getFieldsValue(),
+      resetVal: () => resetFields(),
+      Forms: props.form.validateFieldsAndScroll,
+    }),
+    [],
+  );
 
   const handleAdopt = e => {
     setAdopt(e.target.value);
-  }
+  };
 
   useEffect(() => {
     if (check !== undefined) {
@@ -52,13 +58,13 @@ const Examine = forwardRef((props, ref) => {
 
   const handleAttValidator = (rule, value, callback) => {
     if (value === '') {
-      callback()
+      callback();
     }
-    callback()
+    callback();
   };
 
   return (
-    <div style={{ marginRight: 24, marginTop: 24 }}>
+    <div style={{ marginRight: 24 }}>
       <Row gutter={24}>
         <Form {...formallItemLayout}>
           <Col span={8} style={{ display: 'none' }}>
@@ -68,7 +74,7 @@ const Examine = forwardRef((props, ref) => {
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
           </Col>
-          <Col span={8} >
+          <Col span={8}>
             <Form.Item label="审核结果">
               {getFieldDecorator('examineStatus', {
                 rules: [{ required: true, message: '请选择审核结果' }],
@@ -86,7 +92,14 @@ const Examine = forwardRef((props, ref) => {
               {getFieldDecorator('examineTime', {
                 rules: [{ required: true }],
                 initialValue: moment(check.examineTime),
-              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={Noediting} />)}
+              })(
+                <DatePicker
+                  showTime
+                  placeholder="请选择时间"
+                  format="YYYY-MM-DD HH:mm:ss"
+                  disabled={Noediting}
+                />,
+              )}
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -94,7 +107,9 @@ const Examine = forwardRef((props, ref) => {
               <Form.Item label="审核说明" {...formItemLayout}>
                 {getFieldDecorator('examineRemarks', {
                   initialValue: check.examineRemarks,
-                })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" disabled={Noediting} />)}
+                })(
+                  <TextArea autoSize={{ minRows: 3 }} placeholder="请输入" disabled={Noediting} />,
+                )}
               </Form.Item>
             )}
             {adopt === '0' && (
@@ -102,32 +117,52 @@ const Examine = forwardRef((props, ref) => {
                 {getFieldDecorator('examineRemarks', {
                   rules: [{ required: true, message: '请输入审核说明' }],
                   initialValue: check.examineRemarks,
-                })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" disabled={Noediting} />)}
+                })(
+                  <TextArea autoSize={{ minRows: 3 }} placeholder="请输入" disabled={Noediting} />,
+                )}
               </Form.Item>
             )}
           </Col>
-          <Col span={24} >
-            <Form.Item label="上传附件" {...formItemLayout}
-            >{getFieldDecorator('examineFiles', {
-              rules: [{ required: true, message: '请上传附件' }, {
-                validator: handleAttValidator
-              }],
-              initialValue: check && check.examineFiles && check.examineFiles !== '[]' && Array.isArray(check.examineFiles) ? check.examineFiles : '',
-            })( // 位置已调
-              <div>
-                {
-                  location && (!location.state || (location.state && !location.state.cache)) && (
-                    <FilesContext.Provider value={{
-                      files: check && check.examineFiles && Array.isArray(check.examineFiles) ? JSON.parse(check.examineFiles) : files,
-                      ChangeFiles: (v => { setFieldsValue({ examineFiles: JSON.stringify(v) }); setFiles(v); }),
-                      getUploadStatus: (v) => { setUploadStatus(v) },
-                    }}>
+          <Col span={24}>
+            <Form.Item label="上传附件" {...formItemLayout}>
+              {getFieldDecorator('examineFiles', {
+                rules: [
+                  { required: true, message: '请上传附件' },
+                  {
+                    validator: handleAttValidator,
+                  },
+                ],
+                initialValue:
+                  check &&
+                  check.examineFiles &&
+                  check.examineFiles !== '[]' &&
+                  Array.isArray(check.examineFiles)
+                    ? check.examineFiles
+                    : '',
+              })(
+                // 位置已调
+                <div>
+                  {location && (!location.state || (location.state && !location.state.cache)) && (
+                    <FilesContext.Provider
+                      value={{
+                        files:
+                          check && check.examineFiles && Array.isArray(check.examineFiles)
+                            ? JSON.parse(check.examineFiles)
+                            : files,
+                        ChangeFiles: v => {
+                          setFieldsValue({ examineFiles: JSON.stringify(v) });
+                          setFiles(v);
+                        },
+                        getUploadStatus: v => {
+                          setUploadStatus(v);
+                        },
+                      }}
+                    >
                       <SysUpload banOpenFileDialog={uploadStatus} />
                     </FilesContext.Provider>
-                  )
-                }
-              </div>
-            )}
+                  )}
+                </div>,
+              )}
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -175,7 +210,7 @@ Examine.defaultProps = {
     checkTime: new Date(),
     examineRemarks: '',
   },
-  userinfo: {}
-}
+  userinfo: {},
+};
 
 export default Form.create()(Examine);

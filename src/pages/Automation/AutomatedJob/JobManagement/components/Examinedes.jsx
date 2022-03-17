@@ -7,13 +7,13 @@ function Examinedes(props) {
   const { formItemLayout, forminladeLayout } = props;
   return (
     <>
-      <Row gutter={24} style={{ marginTop: 24 }}>
+      <Row gutter={24}>
         <Form {...formItemLayout}>
           <Col span={8}>
             <Form.Item label="审核结果">
               <Radio.Group value="{resultmap.get(info.result)}" disabled>
-                <Radio value='通过'>通过</Radio>
-                <Radio value='不通过'>不通过</Radio>
+                <Radio value="通过">通过</Radio>
+                <Radio value="不通过">不通过</Radio>
               </Radio.Group>
             </Form.Item>
           </Col>
@@ -23,7 +23,7 @@ function Examinedes(props) {
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item label="审核说明"  {...forminladeLayout}>
+            <Form.Item label="审核说明" {...forminladeLayout}>
               <TextArea autoSize={{ minRows: 5 }} defaultValue="{info.opinion}" disabled />
             </Form.Item>
           </Col>

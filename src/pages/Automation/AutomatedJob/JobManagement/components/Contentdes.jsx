@@ -133,57 +133,71 @@ function Contentdes(props) {
   ];
 
   return (
-    contentInfo &&
-    (<>
-      <Row gutter={24} style={{ marginTop: 24 }}>
-        <Form {...forminladeLayout}>
-          <Col span={24}>
-            <Form.Item label='作业名称'>
-              <Input defaultValue={contentInfo[0].taskName} disabled />
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Form.Item label='作业对象'>
-              <Alert message={`已选择【${contentInfo[0].taskObjectNum}】个agent` || `已选择【0】个agent`} type="info" style={{ marginBottom: 10 }} />
-              <Table
-                dataSource={taskobjectdata.rows}
-                columns={columns}
-                scroll={{ x: 200 }}
-                rowKey={record => record.id}
-                pagination={false}
-              />
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Form.Item label='作业脚本' >
-              {data.map((item, index) => (
-                <a onClick={() => handleShowscriptModel('脚本详情', item)}>{`脚本${index + 1}【${item.scriptName}】`}<br /></a>
-              ))}
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Form.Item label='作业备注'>
-              <TextArea autoSize={{ minRows: 3 }} defaultValue={contentInfo[0].taskRemarks} disabled />
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Form.Item label="执行方式">
-              <Radio.Group value={contentInfo[0].taskModes} disabled>
-                <Radio value='手动'>手动</Radio>
-                <Radio value='定时'>定时</Radio>
-              </Radio.Group>
-            </Form.Item>
-          </Col>
-        </Form>
-      </Row>
-      {/* 窗窗 */}
-      <AviewMadel
-        visible={visible}
-        ChangeVisible={newvalue => setVisible(newvalue)}
-        title={title}
-        getdetaildata={detaildata}
-      />
-    </>)
+    contentInfo && (
+      <>
+        <Row gutter={24}>
+          <Form {...forminladeLayout}>
+            <Col span={24}>
+              <Form.Item label="作业名称">
+                <Input defaultValue={contentInfo[0].taskName} disabled />
+              </Form.Item>
+            </Col>
+            <Col span={24}>
+              <Form.Item label="作业对象">
+                <Alert
+                  message={
+                    `已选择【${contentInfo[0].taskObjectNum}】个agent` || `已选择【0】个agent`
+                  }
+                  type="info"
+                  style={{ marginBottom: 10 }}
+                />
+                <Table
+                  dataSource={taskobjectdata.rows}
+                  columns={columns}
+                  scroll={{ x: 200 }}
+                  rowKey={record => record.id}
+                  pagination={false}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={24}>
+              <Form.Item label="作业脚本">
+                {data.map((item, index) => (
+                  <a onClick={() => handleShowscriptModel('脚本详情', item)}>
+                    {`脚本${index + 1}【${item.scriptName}】`}
+                    <br />
+                  </a>
+                ))}
+              </Form.Item>
+            </Col>
+            <Col span={24}>
+              <Form.Item label="作业备注">
+                <TextArea
+                  autoSize={{ minRows: 3 }}
+                  defaultValue={contentInfo[0].taskRemarks}
+                  disabled
+                />
+              </Form.Item>
+            </Col>
+            <Col span={24}>
+              <Form.Item label="执行方式">
+                <Radio.Group value={contentInfo[0].taskModes} disabled>
+                  <Radio value="手动">手动</Radio>
+                  <Radio value="定时">定时</Radio>
+                </Radio.Group>
+              </Form.Item>
+            </Col>
+          </Form>
+        </Row>
+        {/* 窗窗 */}
+        <AviewMadel
+          visible={visible}
+          ChangeVisible={newvalue => setVisible(newvalue)}
+          title={title}
+          getdetaildata={detaildata}
+        />
+      </>
+    )
   );
 }
 

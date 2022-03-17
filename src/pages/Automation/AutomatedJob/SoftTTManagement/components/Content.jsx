@@ -1,7 +1,4 @@
-import React, {
-  useState,
-  forwardRef, useImperativeHandle
-} from 'react';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import moment from 'moment';
 import { Button, Form, Input, DatePicker, Row, Col } from 'antd';
 import AddagentObjDrawer from './AddagentObjDrawer';
@@ -38,56 +35,74 @@ const formItemLayout1 = {
 
 const Content = forwardRef((props, ref) => {
   const {
-    userinfo, Noediting,
+    userinfo,
+    Noediting,
     registrat,
-    form: { getFieldDecorator, getFieldsValue, resetFields, setFieldsValue }
+    form: { getFieldDecorator, getFieldsValue, resetFields, setFieldsValue },
   } = props;
 
   const [visible, setVisible] = useState(false); // 抽屉是否显示
   const [title, setTitle] = useState('');
   const [rows, setRows] = useState([]);
 
-  useImperativeHandle(ref, () => ({
-    getVal: () => getFieldsValue(),
-    resetVal: () => resetFields(),
-    Forms: props.form.validateFieldsAndScroll,
-  }), []);
+  useImperativeHandle(
+    ref,
+    () => ({
+      getVal: () => getFieldsValue(),
+      resetVal: () => resetFields(),
+      Forms: props.form.validateFieldsAndScroll,
+    }),
+    [],
+  );
 
-  const handleShowDrawer = (drwertitle) => {
+  const handleShowDrawer = drwertitle => {
     setVisible(!visible);
     setTitle(drwertitle);
   };
 
   return (
-    <div style={{ marginRight: 24, marginTop: 24 }}>
+    <div style={{ marginRight: 24 }}>
       <Row gutter={24}>
         <Form {...formallItemLayout}>
-          <Col span={24} >
-            {
-              registrat.id && (
-                <Col span={8} style={{ display: 'none' }}>
-                  <Form.Item label="审核表单id">
-                    {getFieldDecorator('id', {
-                      initialValue: registrat.id,
-                    })(<Input placeholder="请输入" disabled />)}
-                  </Form.Item>
-                </Col>
-              )
-            }
+          <Col span={24}>
+            {registrat.id && (
+              <Col span={8} style={{ display: 'none' }}>
+                <Form.Item label="审核表单id">
+                  {getFieldDecorator('id', {
+                    initialValue: registrat.id,
+                  })(<Input placeholder="请输入" disabled />)}
+                </Form.Item>
+              </Col>
+            )}
             <Form.Item label="启停对象" {...formItemLayout1}>
               {getFieldDecorator('workSoftIds', {
                 rules: [{ required: true, message: '请选择作业对象' }],
                 initialValue: registrat.workSoftIds,
-              })(<Button block onClick={() => {
-                handleShowDrawer('添加作业对象');
-              }} disabled={Noediting}>+添加对象</Button>)}
+              })(
+                <Button
+                  block
+                  onClick={() => {
+                    handleShowDrawer('添加作业对象');
+                  }}
+                  disabled={Noediting}
+                >
+                  +添加对象
+                </Button>,
+              )}
             </Form.Item>
             <Form.Item span={24} {...formItemLayout}>
-              <SoftTaskObjectList onChangeSelect={(v) => setRows(v)} selectrowsData={rows} GetRowskeysData={(v) => { setFieldsValue({ workSoftIds: v }); }} Noediting={Noediting} />
+              <SoftTaskObjectList
+                onChangeSelect={v => setRows(v)}
+                selectrowsData={rows}
+                GetRowskeysData={v => {
+                  setFieldsValue({ workSoftIds: v });
+                }}
+                Noediting={Noediting}
+              />
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item label="申请说明" {...formItemLayout} >
+            <Form.Item label="申请说明" {...formItemLayout}>
               {getFieldDecorator('workRemarks', {
                 rules: [{ required: true, message: '请输入审核说明' }],
                 initialValue: registrat.workRemarks || '',
@@ -102,7 +117,7 @@ const Content = forwardRef((props, ref) => {
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
           </Col>
-          <Col span={8} >
+          <Col span={8}>
             <Form.Item label="申请人单位">
               {getFieldDecorator('createDeptName', {
                 rules: [{ required: true }],
@@ -115,7 +130,14 @@ const Content = forwardRef((props, ref) => {
               {getFieldDecorator('createTime', {
                 rules: [{ required: true }],
                 initialValue: moment(registrat.createTime),
-              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled />)}
+              })(
+                <DatePicker
+                  showTime
+                  placeholder="请选择时间"
+                  format="YYYY-MM-DD HH:mm:ss"
+                  disabled
+                />,
+              )}
             </Form.Item>
           </Col>
           <Col span={8} style={{ display: 'none' }}>
@@ -142,7 +164,9 @@ const Content = forwardRef((props, ref) => {
         ChangeVisible={newvalue => setVisible(newvalue)}
         title={title}
         GetRowsData={newvalue => setRows(newvalue)}
-        GetRowskeysData={(v) => { setFieldsValue({ workSoftIds: v }); }}
+        GetRowskeysData={v => {
+          setFieldsValue({ workSoftIds: v });
+        }}
         rows={rows}
         destroyOnClose
       />
@@ -156,7 +180,7 @@ Content.defaultProps = {
     workSoftIds: '',
     createTime: new Date(),
   },
-  userinfo: {}
-}
+  userinfo: {},
+};
 
 export default Form.create()(Content);
