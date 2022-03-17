@@ -1,15 +1,6 @@
 import React, { useRef, useImperativeHandle, useEffect, useState } from 'react';
 import moment from 'moment';
-import {
-  Form,
-  Row,
-  Col,
-  Input,
-  DatePicker,
-  Radio,
-  Select,
-  Button,
-} from 'antd';
+import { Form, Row, Col, Input, DatePicker, Radio, Select, Button } from 'antd';
 import SysUpload from '@/components/SysUpload'; // 附件下载组件
 import SysDict from '@/components/SysDict';
 
@@ -38,7 +29,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
     ChangeResult,
     location,
     createQualityByMainId,
-    tododetailslist
+    tododetailslist,
   } = props;
   const { getFieldDecorator, setFieldsValue } = props.form;
   const attRef = useRef();
@@ -70,10 +61,10 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
     sessionStorage.setItem('Nextflowmane', '自动化科审核');
   });
 
-  const onChange = (e) => {
+  const onChange = e => {
     setAdopt(e.target.value);
     ChangeResult(e.target.value);
-  }
+  };
 
   const getTypebyTitle = title => {
     if (selectdata.ischange) {
@@ -86,7 +77,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
   const priority = getTypebyTitle('严重程度');
 
   return (
-    <Row gutter={24} style={{ paddingTop: 24 }}>
+    <Row gutter={24}>
       <SysDict
         typeid="333"
         commonid="335"
@@ -101,8 +92,8 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
               initialValue: check.checkResult,
             })(
               <Radio.Group onChange={onChange}>
-                <Radio value='1'>通过</Radio>
-                <Radio value='0'>不通过</Radio>
+                <Radio value="1">通过</Radio>
+                <Radio value="0">不通过</Radio>
               </Radio.Group>,
             )}
           </Form.Item>
@@ -117,7 +108,10 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
                   message: '请输入故障责任方',
                 },
               ],
-              initialValue: (check && check.checkBlame) ? check.checkBlame : (tododetailslist && tododetailslist.troubleFlowNodeRows[2].finishBlame)
+              initialValue:
+                check && check.checkBlame
+                  ? check.checkBlame
+                  : tododetailslist && tododetailslist.troubleFlowNodeRows[2].finishBlame,
             })(
               <Select placeholder="请选择" allowClear>
                 {responsible.map(obj => [
@@ -125,11 +119,10 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
                     {obj.title}
                   </Option>,
                 ])}
-              </Select>
+              </Select>,
             )}
           </Form.Item>
         </Col>
-
 
         <Col span={8}>
           <Form.Item label="审核时间">
@@ -140,14 +133,19 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
                   message: '请选择审核时间',
                 },
               ],
-              initialValue: check.checkTime ? moment(check.checkTime) : moment(new Date())
-            })(<>
-              <DatePicker
-                showTime
-                format="YYYY-MM-DD HH:mm:ss"
-                defaultValue={moment(check && check.checkTime ? check.checkTime : new Date())}
-                onChange={(v) => { setFieldsValue({ checkTime: moment(v) }) }}
-              /></>)}
+              initialValue: check.checkTime ? moment(check.checkTime) : moment(new Date()),
+            })(
+              <>
+                <DatePicker
+                  showTime
+                  format="YYYY-MM-DD HH:mm:ss"
+                  defaultValue={moment(check && check.checkTime ? check.checkTime : new Date())}
+                  onChange={v => {
+                    setFieldsValue({ checkTime: moment(v) });
+                  }}
+                />
+              </>,
+            )}
           </Form.Item>
         </Col>
 
@@ -160,11 +158,12 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
                   message: '请选择严重程度',
                 },
               ],
-              initialValue: (check && check.checkLevel) ? check.checkLevel : (tododetailslist && tododetailslist.troubleFlowNodeRows[0].registerLevel)
+              initialValue:
+                check && check.checkLevel
+                  ? check.checkLevel
+                  : tododetailslist && tododetailslist.troubleFlowNodeRows[0].registerLevel,
             })(
-              <Select
-                getPopupContainer={e => e.parentNode}
-                placeholder="请选择">
+              <Select getPopupContainer={e => e.parentNode} placeholder="请选择">
                 {priority.map(obj => [
                   <Option key={obj.key} value={obj.title}>
                     {obj.title}
@@ -176,7 +175,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
         </Col>
 
         <Col span={16}>
-          <Form.Item label="是否影响计量主站" {...forminladeLayout1} >
+          <Form.Item label="是否影响计量主站" {...forminladeLayout1}>
             {getFieldDecorator('checkMaster', {
               rules: [
                 {
@@ -184,11 +183,14 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
                   message: '请选择是否影响计量主站',
                 },
               ],
-              initialValue: (check && check.checkMaster) ? check.checkMaster : (tododetailslist && tododetailslist.troubleFlowNodeRows[0].registerMaster)
+              initialValue:
+                check && check.checkMaster
+                  ? check.checkMaster
+                  : tododetailslist && tododetailslist.troubleFlowNodeRows[0].registerMaster,
             })(
               <RadioGroup>
-                <Radio value='0'>是</Radio>
-                <Radio value='1'>否</Radio>
+                <Radio value="0">是</Radio>
+                <Radio value="1">否</Radio>
               </RadioGroup>,
             )}
           </Form.Item>
@@ -198,16 +200,16 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
           {adopt === '1' && ( // 1 通过
             <Form.Item label="审核意见" {...forminladeLayout}>
               {getFieldDecorator('checkOpinion1', {
-                rules: [{ required: false, message: '请输入审核意见', }],
-                initialValue: check ? check.checkOpinion : ''
+                rules: [{ required: false, message: '请输入审核意见' }],
+                initialValue: check ? check.checkOpinion : '',
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
             </Form.Item>
           )}
           {adopt === '0' && ( // 0 不通过
             <Form.Item label="审核意见" {...forminladeLayout}>
               {getFieldDecorator('checkOpinion2', {
-                rules: [{ required: true, message: '请输入审核意见', }],
-                initialValue: check ? check.checkOpinion : ''
+                rules: [{ required: true, message: '请输入审核意见' }],
+                initialValue: check ? check.checkOpinion : '',
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
             </Form.Item>
           )}
@@ -217,28 +219,25 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
           <Form.Item
             label="上传附件"
             {...forminladeLayout}
-          // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+            // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
           >
-            {
-              location && (!location.state || (location.state && !location.state.cache)) && ( // 位置已调
+            {location &&
+            (!location.state || (location.state && !location.state.cache)) && ( // 位置已调
                 <div>
-                  <SysUpload fileslist={(check && check.checkAttachments) ? JSON.parse(check.checkAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                  <SysUpload
+                    fileslist={
+                      check && check.checkAttachments ? JSON.parse(check.checkAttachments) : []
+                    }
+                    ChangeFileslist={newvalue => setFilesList(newvalue)}
+                  />
                 </div>
-              )
-            }
+              )}
           </Form.Item>
         </Col>
 
-        <Col span={24} >
-          <Form.Item
-            label=""
-            {...forminladeLayout}
-            style={{ paddingLeft: '8%' }}
-          >
-            <Button
-              onClick={createQualityByMainId}
-              type='primary'
-            >
+        <Col span={24}>
+          <Form.Item label="" {...forminladeLayout} style={{ paddingLeft: '8%' }}>
+            <Button onClick={createQualityByMainId} type="primary">
               发起绩效考核
             </Button>
           </Form.Item>
@@ -247,7 +246,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="审核人">
             {getFieldDecorator('checkUser', {
-              initialValue: check.checkUser || curruserinfo.userName
+              initialValue: check.checkUser || curruserinfo.userName,
             })(<Input allowClear disabled />)}
           </Form.Item>
         </Col>
@@ -255,7 +254,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="审核人单位">
             {getFieldDecorator('checkUnit', {
-              initialValue: check.checkUnit || curruserinfo.unitName
+              initialValue: check.checkUnit || curruserinfo.unitName,
             })(<Input allowClear disabled />)}
           </Form.Item>
         </Col>
@@ -263,7 +262,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="审核人部门">
             {getFieldDecorator('checkDept', {
-              initialValue: check.checkDept || curruserinfo.deptName
+              initialValue: check.checkDept || curruserinfo.deptName,
             })(<Input allowClear disabled />)}
           </Form.Item>
         </Col>
@@ -282,13 +281,13 @@ ExamineSecondChild.defaultProps = {
     checkOpinion: '',
     checkResult: '1',
     checkTime: '',
-    checkBlame: ''
+    checkBlame: '',
   },
   curruserinfo: {
     deptName: '',
     unitName: '',
-    userName: ''
-  }
-}
+    userName: '',
+  },
+};
 
 export default Form.create({})(ExamineSecondChild);

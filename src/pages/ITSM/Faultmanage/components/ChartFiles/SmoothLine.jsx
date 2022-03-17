@@ -34,10 +34,23 @@ const tickLine = {
     stroke: '#bbb', // 刻度线的颜色
   },
   length: 12, // 刻度线的长度, **原来的属性为 line**,可以通过将值设置为负数来改变其在轴上的方向
-}
+};
 
 function SmoothLine(props) {
-  const { data, cols, height, padding, onGetVal, staticName, beginTime, endTime, uncheckedname, colors, lock, timeType } = props;
+  const {
+    data,
+    cols,
+    height,
+    padding,
+    onGetVal,
+    staticName,
+    beginTime,
+    endTime,
+    uncheckedname,
+    colors,
+    lock,
+    timeType,
+  } = props;
   const [visible, setVisible] = useState(false); // 抽屉是否显示
   const [drawerval, onGetDrawerVal] = useState('');
   const [legendItem, setlegendItem] = useState(null);
@@ -49,8 +62,19 @@ function SmoothLine(props) {
   //   order: 'ASC', // 默认为 ASC，DESC 则为逆序
   // });
 
-  const indexcolors = ['#5B8FF9', '#5AD8A6', '#5D7092', '#F6BD16', '#E86452', '#6DC8EC', '#945FB9', '#FF9845', '#1E9493', '#FF99C3'];
-  const ChangeItem = (item) => {
+  const indexcolors = [
+    '#5B8FF9',
+    '#5AD8A6',
+    '#5D7092',
+    '#F6BD16',
+    '#E86452',
+    '#6DC8EC',
+    '#945FB9',
+    '#FF9845',
+    '#1E9493',
+    '#FF99C3',
+  ];
+  const ChangeItem = item => {
     // console.log(item, data);
     const newArr = [];
     if (data && item) {
@@ -61,7 +85,7 @@ function SmoothLine(props) {
         vote.name = keyItem[i].name;
         vote.value = keyItem[i].name;
         vote.marker = {
-          symbol: "circle",
+          symbol: 'circle',
           style: { fill: colors?.[i] || indexcolors[i], r: 5 },
         };
         if (item && item.length > 0) {
@@ -76,9 +100,9 @@ function SmoothLine(props) {
         }
         newArr.push(vote);
       }
-    };
+    }
     setlegendItem(newArr);
-    setPointSize(newArr)
+    setPointSize(newArr);
   };
 
   useEffect(() => {
@@ -92,122 +116,165 @@ function SmoothLine(props) {
     onGetDrawerVal(val);
   };
 
-  return (<>
-    <Chart
-      padding={padding}
-      scale={cols}
-      autoFit
-      height={height}
-      data={data}
-      onClick={ev => {
-        setTimeout(() => {
+  return (
+    <>
+      <Chart
+        padding={padding}
+        scale={cols}
+        autoFit
+        height={height}
+        data={data}
+        onClick={ev => {
+          setTimeout(() => {
+            const linkdata = ev.data;
+            if (linkdata && linkdata.data && !Array.isArray(linkdata.data) && onGetVal) {
+              onGetVal(linkdata.data);
+              handleGetDrawerVal({
+                ...linkdata.data,
+                staticName,
+                beginTime,
+                endTime,
+                drawtitle: linkdata.data.name,
+                timeType,
+              });
+            }
+          }, 100);
+        }}
+        onDoubleClick={ev => {
           const linkdata = ev.data;
           if (linkdata && linkdata.data && !Array.isArray(linkdata.data) && onGetVal) {
             onGetVal(linkdata.data);
-            handleGetDrawerVal({ ...linkdata.data, staticName, beginTime, endTime, drawtitle: linkdata.data.name, timeType });
+            handleGetDrawerVal({
+              ...linkdata.data,
+              staticName,
+              beginTime,
+              endTime,
+              drawtitle: linkdata.data.name,
+              timeType,
+            });
           }
-        }, 100);
-      }}
-      onDoubleClick={ev => {
-        const linkdata = ev.data;
-        if (linkdata && linkdata.data && !Array.isArray(linkdata.data) && onGetVal) {
-          onGetVal(linkdata.data);
-          handleGetDrawerVal({ ...linkdata.data, staticName, beginTime, endTime, drawtitle: linkdata.data.name, timeType });
-        }
-      }}
-    >
-      <Legend
-        name="name"
-        position="bottom"
-        title={null}
-        dx={20}
-        items={legendItem}
-      />
-      <Legend name="date" visible={false} />
-      <Legend name="value" visible={false} />
-      <Line
-        shape="smooth"
-        position="date*value"
-        color="name"
-        size={['name', (name) => {
-          const arr = pointSize.filter(item => !item.unchecked);
-          const newArr = ObjkeyToArr(arr, 'name');
-          if (newArr && Array.isArray(newArr) && newArr.indexOf(name) > -1) {
-            return 2;
-          }
-          return 0;
-        }]}
-      />
-      <Point
-        position="date*value"
-        color="name"
-        shape="circle"
-        size={['name', (name) => {
-          const arr = pointSize.filter(item => !item.unchecked);
-          const newArr = ObjkeyToArr(arr, 'name')
-          if (newArr && Array.isArray(newArr) && newArr.indexOf(name) > -1) {
-            return 3;
-          }
-          return 0;
-        }]}
-      />
-      <Tooltip shared showCrosshairs lock={!!lock} >
-        {
-          (name, items) => {
+        }}
+      >
+        <Legend name="name" position="bottom" title={null} dx={20} items={legendItem} />
+        <Legend name="date" visible={false} />
+        <Legend name="value" visible={false} />
+        <Line
+          shape="smooth"
+          position="date*value"
+          color="name"
+          size={[
+            'name',
+            name => {
+              const arr = pointSize.filter(item => !item.unchecked);
+              const newArr = ObjkeyToArr(arr, 'name');
+              if (newArr && Array.isArray(newArr) && newArr.indexOf(name) > -1) {
+                return 2;
+              }
+              return 0;
+            },
+          ]}
+        />
+        <Point
+          position="date*value"
+          color="name"
+          shape="circle"
+          size={[
+            'name',
+            name => {
+              const arr = pointSize.filter(item => !item.unchecked);
+              const newArr = ObjkeyToArr(arr, 'name');
+              if (newArr && Array.isArray(newArr) && newArr.indexOf(name) > -1) {
+                return 3;
+              }
+              return 0;
+            },
+          ]}
+        />
+        <Tooltip shared showCrosshairs lock={!!lock}>
+          {(name, items) => {
             return (
               <div>
                 <div style={{ margin: '10px 0' }}>{name}</div>
                 <ul className={styles.tooltipul}>
-                  {
-                    items.map(it => {
-                      const newArr = legendItem;
-                      const uncheckedArr = newArr.filter(obj => !obj.unchecked);
-                      const uncheckedKey = ObjkeyToArr(uncheckedArr, 'id');
-                      const uncheckName = uncheckedKey && uncheckedKey.indexOf(it.data.name);
-                      if (uncheckName < 0) {
-                        return null
-                      }
-                      return (
-                        <li
-                          onClick={() => {
-                            if (onGetVal && it?.data) {
-                              setTimeout(() => {
-                                onGetVal(it.data);
-                                handleGetDrawerVal({ ...it.data, staticName, beginTime, endTime, drawtitle: it.data.name, timeType });
-                              }, 100)
-                            }
-                          }}
-                          onDoubleClick={() => {
-                            if (onGetVal && it?.data) {
+                  {items.map(it => {
+                    const newArr = legendItem;
+                    const uncheckedArr = newArr.filter(obj => !obj.unchecked);
+                    const uncheckedKey = ObjkeyToArr(uncheckedArr, 'id');
+                    const uncheckName = uncheckedKey && uncheckedKey.indexOf(it.data.name);
+                    if (uncheckName < 0) {
+                      return null;
+                    }
+                    return (
+                      <li
+                        onClick={() => {
+                          if (onGetVal && it?.data) {
+                            setTimeout(() => {
                               onGetVal(it.data);
-                              handleGetDrawerVal({ ...it.data, staticName, beginTime, endTime, drawtitle: it.data.name, timeType });
-                            }
+                              handleGetDrawerVal({
+                                ...it.data,
+                                staticName,
+                                beginTime,
+                                endTime,
+                                drawtitle: it.data.name,
+                                timeType,
+                              });
+                            }, 100);
+                          }
+                        }}
+                        onDoubleClick={() => {
+                          if (onGetVal && it?.data) {
+                            onGetVal(it.data);
+                            handleGetDrawerVal({
+                              ...it.data,
+                              staticName,
+                              beginTime,
+                              endTime,
+                              drawtitle: it.data.name,
+                              timeType,
+                            });
+                          }
+                        }}
+                      >
+                        <span
+                          style={{
+                            width: 8,
+                            height: 8,
+                            borderRadius: '50%',
+                            display: 'inline-block',
+                            marginRight: 8,
+                            background: it.mappingData.color,
                           }}
-                        >
-                          <span style={{ width: 8, height: 8, borderRadius: '50%', display: 'inline-block', marginRight: 8, background: it.mappingData.color }} />
-                          <span style={{ pointerEvents: 'none' }}>{it.data.name}</span>
-                          <span style={{ display: 'inline-block', float: 'right', marginLeft: 30 }}>{it.data.value}</span>
-                        </li>)
-                    })
-                  }
+                        />
+                        <span style={{ pointerEvents: 'none' }}>{it.data.name}</span>
+                        <span style={{ display: 'inline-block', float: 'right', marginLeft: 30 }}>
+                          {it.data.value}
+                        </span>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
-            )
-          }
-        }
-      </Tooltip>
-      <Axis name="date"  {...axisConfig} tickLine={tickLine} label={{ offset: 25 }} />
-      <Axis name="value"   {...axisConfig} label={{ offset: 10 }} />
-      {lock && <span style={{ position: 'absolute', top: 0, right: 0 }}> <Icon type="info-circle" style={{ marginRight: 8 }} />单击参考线锁定/解锁提示信息</span>}
-    </Chart>
-    {/* 抽屉 */}
-    <ChartDrawer
-      visible={visible}
-      ChangeVisible={newvalue => setVisible(newvalue)}
-      drawerdata={drawerval}
-      destroyOnClose
-    />
-  </>
+            );
+          }}
+        </Tooltip>
+        <Axis name="date" {...axisConfig} tickLine={tickLine} label={{ offset: 25 }} />
+        <Axis name="value" {...axisConfig} label={{ offset: 10 }} />
+        {lock && (
+          <span style={{ position: 'absolute', top: 0, right: 0 }}>
+            {' '}
+            <Icon type="info-circle" style={{ marginRight: 8 }} />
+            单击参考线锁定/解锁提示信息
+          </span>
+        )}
+      </Chart>
+      {/* 抽屉 */}
+      <ChartDrawer
+        visible={visible}
+        ChangeVisible={newvalue => setVisible(newvalue)}
+        drawerdata={drawerval}
+        destroyOnClose
+      />
+    </>
   );
 }
 

@@ -77,12 +77,7 @@ function Registration(props) {
   const [faultUploadStatus, setFaultUploadStatus] = useState(false);
 
   const {
-    form: {
-      getFieldDecorator,
-      resetFields,
-      getFieldsValue,
-      setFieldsValue
-    },
+    form: { getFieldDecorator, resetFields, getFieldsValue, setFieldsValue },
     dispatch,
     // newno, // 新的故障编号
     curruserinfo, // 获取登录用户信息
@@ -91,9 +86,8 @@ function Registration(props) {
     location,
     tabnew,
     tabdata,
-    loading
+    loading,
   } = props;
-
 
   // const cascaderOnchange = (value, selectedOptions) => {
   //   selectCascader = selectedOptions[1].dict_code;
@@ -128,7 +122,7 @@ function Registration(props) {
   const close = () => {
     router.push({
       pathname: `/ITSM/faultmanage/registration`,
-      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true, }
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true },
     });
   };
 
@@ -142,7 +136,7 @@ function Registration(props) {
           ...formValues,
           registerOccurTime: formValues.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
           registerTime: formValues.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-          registerLevelCode: registerLevelmap.get(formValues.registerLevel),    // 超时用：一般001，重大002，紧急003
+          registerLevelCode: registerLevelmap.get(formValues.registerLevel), // 超时用：一般001，重大002，紧急003
           editState: 'add',
           registerAttachments: JSON.stringify(files.arr),
           type: formValues.type?.slice(-1)[0],
@@ -230,15 +224,15 @@ function Registration(props) {
               ...formValues,
               registerOccurTime: formValues.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
               registerTime: formValues.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-              registerLevelCode: registerLevelmap.get(formValues.registerLevel),    // 超时用：一般001，重大002，紧急003
+              registerLevelCode: registerLevelmap.get(formValues.registerLevel), // 超时用：一般001，重大002，紧急003
               editState: 'add',
               registerAttachments: JSON.stringify(files.arr),
             },
-            tabid: sessionStorage.getItem('tabid')
+            tabid: sessionStorage.getItem('tabid'),
           },
         });
       }
-    };
+    }
     resetFields();
   }, [location]);
 
@@ -262,7 +256,12 @@ function Registration(props) {
 
   const operations = (
     <>
-      <Button type="primary" style={{ marginRight: 8 }} onClick={handleSave} disabled={faultUploadStatus}>
+      <Button
+        type="primary"
+        style={{ marginRight: 8 }}
+        onClick={handleSave}
+        disabled={faultUploadStatus}
+      >
         保存
       </Button>
       <Button type="default" onClick={() => close()}>
@@ -271,7 +270,10 @@ function Registration(props) {
     </>
   );
 
-  const cacheinfo = tabdata === undefined ? { registerLevel: '一般', registerEffect: '', registerMaster: '' } : tabdata;
+  const cacheinfo =
+    tabdata === undefined
+      ? { registerLevel: '一般', registerEffect: '', registerMaster: '' }
+      : tabdata;
 
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
@@ -281,13 +283,17 @@ function Registration(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      <div className='noexplain'>
+      <div className="noexplain">
         <Card>
-          <FaultContext.Provider value={{
-            getUploadStatus: (v) => { setFaultUploadStatus(v) },
-          }}>
+          <FaultContext.Provider
+            value={{
+              getUploadStatus: v => {
+                setFaultUploadStatus(v);
+              },
+            }}
+          >
             <Form {...formItemLayout}>
-              <Row gutter={24} style={{ paddingTop: 24 }}>
+              <Row gutter={24}>
                 <Col xl={8} xs={12}>
                   <Form.Item label="故障编号">
                     {getFieldDecorator('no', {
@@ -298,15 +304,25 @@ function Registration(props) {
                 <Col xl={8} xs={12}>
                   <Form.Item label="登记时间">
                     {getFieldDecorator('registerTime', {
-                      initialValue: moment(cacheinfo && cacheinfo.registerTime ? cacheinfo.registerTime : undefined),
-                    })(<>
-                      <DatePicker
-                        showTime
-                        format="YYYY-MM-DD HH:mm:ss"
-                        style={{ width: '100%' }}
-                        defaultValue={moment(cacheinfo && cacheinfo.registerTime ? cacheinfo.registerTime : undefined)}
-                        onChange={(v) => { setFieldsValue({ registerTime: moment(v) }) }}
-                      /></>
+                      initialValue: moment(
+                        cacheinfo && cacheinfo.registerTime ? cacheinfo.registerTime : undefined,
+                      ),
+                    })(
+                      <>
+                        <DatePicker
+                          showTime
+                          format="YYYY-MM-DD HH:mm:ss"
+                          style={{ width: '100%' }}
+                          defaultValue={moment(
+                            cacheinfo && cacheinfo.registerTime
+                              ? cacheinfo.registerTime
+                              : undefined,
+                          )}
+                          onChange={v => {
+                            setFieldsValue({ registerTime: moment(v) });
+                          }}
+                        />
+                      </>,
                     )}
                   </Form.Item>
                 </Col>
@@ -314,15 +330,28 @@ function Registration(props) {
                 <Col xl={8} xs={12}>
                   <Form.Item label="发生时间">
                     {getFieldDecorator('registerOccurTime', {
-                      initialValue: moment(cacheinfo && cacheinfo.registerOccurTime ? cacheinfo.registerOccurTime : undefined),
-                    })(<>
-                      <DatePicker
-                        showTime
-                        format="YYYY-MM-DD HH:mm:ss"
-                        style={{ width: '100%' }}
-                        defaultValue={moment(cacheinfo && cacheinfo.registerOccurTime ? cacheinfo.registerOccurTime : undefined)}
-                        onChange={(v) => { setFieldsValue({ registerOccurTime: moment(v) }) }}
-                      /></>)}
+                      initialValue: moment(
+                        cacheinfo && cacheinfo.registerOccurTime
+                          ? cacheinfo.registerOccurTime
+                          : undefined,
+                      ),
+                    })(
+                      <>
+                        <DatePicker
+                          showTime
+                          format="YYYY-MM-DD HH:mm:ss"
+                          style={{ width: '100%' }}
+                          defaultValue={moment(
+                            cacheinfo && cacheinfo.registerOccurTime
+                              ? cacheinfo.registerOccurTime
+                              : undefined,
+                          )}
+                          onChange={v => {
+                            setFieldsValue({ registerOccurTime: moment(v) });
+                          }}
+                        />
+                      </>,
+                    )}
                   </Form.Item>
                 </Col>
 
@@ -337,9 +366,7 @@ function Registration(props) {
                       ],
                       initialValue: cacheinfo.source || '',
                     })(
-                      <Select
-                        getPopupContainer={e => e.parentNode}
-                        placeholder="请选择">
+                      <Select getPopupContainer={e => e.parentNode} placeholder="请选择">
                         {faultSource.map(obj => [
                           <Option key={obj.key} value={obj.title}>
                             {obj.title}
@@ -359,11 +386,9 @@ function Registration(props) {
                           message: '请选择',
                         },
                       ],
-                      initialValue: cacheinfo.registerModel || ''
+                      initialValue: cacheinfo.registerModel || '',
                     })(
-                      <Select
-                        getPopupContainer={e => e.parentNode}
-                        placeholder="请选择">
+                      <Select getPopupContainer={e => e.parentNode} placeholder="请选择">
                         {sysmodular.map(obj => [
                           <Option key={obj.key} value={obj.title}>
                             {obj.title}
@@ -420,9 +445,7 @@ function Registration(props) {
                       ],
                       initialValue: cacheinfo.registerLevel || '',
                     })(
-                      <Select
-                        getPopupContainer={e => e.parentNode}
-                        placeholder="请选择">
+                      <Select getPopupContainer={e => e.parentNode} placeholder="请选择">
                         {priority.map(obj => [
                           <Option key={obj.key} value={obj.title}>
                             {obj.title}
@@ -444,9 +467,7 @@ function Registration(props) {
                       ],
                       initialValue: cacheinfo.registerScope || '',
                     })(
-                      <Select
-                        getPopupContainer={e => e.parentNode}
-                        placeholder="请选择">
+                      <Select getPopupContainer={e => e.parentNode} placeholder="请选择">
                         {effect.map(obj => [
                           <Option key={obj.key} value={obj.title}>
                             {obj.title}
@@ -458,7 +479,7 @@ function Registration(props) {
                 </Col>
 
                 <Col span={24}>
-                  <Form.Item label="故障名称"{...forminladeLayout}>
+                  <Form.Item label="故障名称" {...forminladeLayout}>
                     {getFieldDecorator('title', {
                       rules: [
                         {
@@ -515,8 +536,8 @@ function Registration(props) {
                       initialValue: cacheinfo.registerEffect || '0',
                     })(
                       <RadioGroup>
-                        <Radio value='0'>是</Radio>
-                        <Radio value='1'>否</Radio>
+                        <Radio value="0">是</Radio>
+                        <Radio value="1">否</Radio>
                       </RadioGroup>,
                     )}
                   </Form.Item>
@@ -534,8 +555,8 @@ function Registration(props) {
                       initialValue: cacheinfo.registerMaster || '0',
                     })(
                       <RadioGroup>
-                        <Radio value='0'>是</Radio>
-                        <Radio value='1'>否</Radio>
+                        <Radio value="0">是</Radio>
+                        <Radio value="1">否</Radio>
                       </RadioGroup>,
                     )}
                   </Form.Item>
@@ -545,16 +566,19 @@ function Registration(props) {
                   <Form.Item
                     label="上传附件"
                     {...forminladeLayout}
-                  // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+                    // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
                   >
-                    {(location && location.state && !location.state.cache) && !loading && ( // 位置已调
-                      <div>
-                        <SysUpload
-                          fileslist={files.arr}
-                          ChangeFileslist={newvalue => setFiles(newvalue)}
-                        />
-                      </div>
-                    )}
+                    {location &&
+                    location.state &&
+                    !location.state.cache &&
+                    !loading && ( // 位置已调
+                        <div>
+                          <SysUpload
+                            fileslist={files.arr}
+                            ChangeFileslist={newvalue => setFiles(newvalue)}
+                          />
+                        </div>
+                      )}
                   </Form.Item>
                 </Col>
 
@@ -586,7 +610,7 @@ function Registration(props) {
           </FaultContext.Provider>
         </Card>
       </div>
-    </PageHeaderWrapper >
+    </PageHeaderWrapper>
   );
 }
 

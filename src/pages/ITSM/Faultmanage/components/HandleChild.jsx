@@ -37,16 +37,16 @@ const HandleChild = React.forwardRef((props, ref) => {
   const attRef = useRef();
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
   const [selectdata, setSelectData] = useState([]);
-  const [knowledgecontent, setKonwledgeContent] = useState('');    // 知识内容
-  const [valuealready, setValuealready] = useState(false)          // 告知知识子组件可以走接口了
+  const [knowledgecontent, setKonwledgeContent] = useState(''); // 知识内容
+  const [valuealready, setValuealready] = useState(false); // 告知知识子组件可以走接口了
   const [desautodata, setDestoData] = useState([]);
 
   // 获取知识数据
   const getContent = () => {
-    const values = getFieldsValue(['handleAdvise'])
+    const values = getFieldsValue(['handleAdvise']);
     setKonwledgeContent(values.handleAdvise);
-    setValuealready(true)
-  }
+    setValuealready(true);
+  };
   useEffect(() => {
     if (fileslist.ischange) {
       ChangeFiles(fileslist);
@@ -60,7 +60,7 @@ const HandleChild = React.forwardRef((props, ref) => {
       handle.handleRecordAttachments !== undefined &&
       handle.handleRecordAttachments !== null
     ) {
-      setFieldsValue({ handleRecordAttachments: handle.handleRecordAttachments }, () => { });
+      setFieldsValue({ handleRecordAttachments: handle.handleRecordAttachments }, () => {});
     }
 
     if (
@@ -69,7 +69,7 @@ const HandleChild = React.forwardRef((props, ref) => {
       handle.handlePictureAttachments !== undefined &&
       handle.handlePictureAttachments !== null
     ) {
-      setFieldsValue({ handlePictureAttachments: handle.handlePictureAttachments }, () => { });
+      setFieldsValue({ handlePictureAttachments: handle.handlePictureAttachments }, () => {});
     }
 
     if (
@@ -78,7 +78,7 @@ const HandleChild = React.forwardRef((props, ref) => {
       handle.handleAttachments !== undefined &&
       handle.handleAttachments !== null
     ) {
-      setFieldsValue({ handleAttachments: handle.handleAttachments }, () => { });
+      setFieldsValue({ handleAttachments: handle.handleAttachments }, () => {});
     }
   }, []);
 
@@ -124,7 +124,7 @@ const HandleChild = React.forwardRef((props, ref) => {
   }, []);
 
   return (
-    <Row gutter={24} style={{ paddingTop: 24 }}>
+    <Row gutter={24}>
       <Form {...formItemLayout}>
         <KeyVal
           style={{ display: 'none' }}
@@ -188,10 +188,8 @@ const HandleChild = React.forwardRef((props, ref) => {
               <AutoComplete
                 getPopupContainer={e => e.parentNode}
                 dataSource={desautodata}
-                filterOption={(inputValue, option) =>
-                  option.props.children.includes(inputValue)
-                }
-              //  onSelect={value => handleSearch(value, 'des')}
+                filterOption={(inputValue, option) => option.props.children.includes(inputValue)}
+                //  onSelect={value => handleSearch(value, 'des')}
               >
                 <TextArea autoSize={{ minRows: 5 }} placeholder="请输入" />
               </AutoComplete>,
@@ -212,13 +210,21 @@ const HandleChild = React.forwardRef((props, ref) => {
                 handle && handle.handleStartTime
                   ? moment(handle.handleStartTime)
                   : moment(Date.now()),
-            })(<>
-              <DatePicker
-                showTime
-                format="YYYY-MM-DD HH:mm:ss"
-                defaultValue={moment(handle && handle.handleStartTime ? handle.handleStartTime : Date.now())}
-                onChange={(v) => { setFieldsValue({ handleStartTime: moment(v) }) }}
-                style={{ width: '100%' }} /></>)}
+            })(
+              <>
+                <DatePicker
+                  showTime
+                  format="YYYY-MM-DD HH:mm:ss"
+                  defaultValue={moment(
+                    handle && handle.handleStartTime ? handle.handleStartTime : Date.now(),
+                  )}
+                  onChange={v => {
+                    setFieldsValue({ handleStartTime: moment(v) });
+                  }}
+                  style={{ width: '100%' }}
+                />
+              </>,
+            )}
           </Form.Item>
         </Col>
 
@@ -261,13 +267,13 @@ const HandleChild = React.forwardRef((props, ref) => {
             </Form.Item>
           </Col>
         )}
-        <Col span={24} style={{ paddingLeft: '8.33333333% ' }} >
+        <Col span={24} style={{ paddingLeft: '8.33333333% ' }}>
           <KnowledgCollect
             valuealready={valuealready}
             content={knowledgecontent}
-            orderType='trouble'
+            orderType="trouble"
             orderId={mainId}
-            ChangeValuealready={(v) => setValuealready(v)}
+            ChangeValuealready={v => setValuealready(v)}
             HandleGEtContent={() => getContent()}
           />
         </Col>
@@ -275,7 +281,7 @@ const HandleChild = React.forwardRef((props, ref) => {
           <Form.Item
             label="上传故障处理记录表"
             {...forminladeLayout}
-          // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb" // 位置已调
+            // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb" // 位置已调
           >
             {getFieldDecorator('handleRecordAttachments', {
               rules: [
@@ -294,16 +300,14 @@ const HandleChild = React.forwardRef((props, ref) => {
               >
                 <SysUpload
                   fileslist={
-                    handle && (handle.handleRecordAttachments !== null)
+                    handle && handle.handleRecordAttachments !== null
                       ? JSON.parse(handle.handleRecordAttachments)
                       : []
                   }
-                  ChangeFileslist={
-                    newvalue => {
-                      setFieldsValue({ handleRecordAttachments: JSON.stringify(newvalue.arr) });
-                      setFilesList(newvalue);
-                    }
-                  }
+                  ChangeFileslist={newvalue => {
+                    setFieldsValue({ handleRecordAttachments: JSON.stringify(newvalue.arr) });
+                    setFilesList(newvalue);
+                  }}
                   banOpenFileDialog={uploadStatus}
                 />
               </div>,
@@ -315,7 +319,7 @@ const HandleChild = React.forwardRef((props, ref) => {
           <Form.Item
             label="故障系统截图"
             {...forminladeLayout}
-          // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb" // 位置已调
+            // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb" // 位置已调
           >
             {getFieldDecorator('handlePictureAttachments', {
               rules: [
@@ -337,12 +341,10 @@ const HandleChild = React.forwardRef((props, ref) => {
                       ? JSON.parse(handle.handlePictureAttachments)
                       : []
                   }
-                  ChangeFileslist={
-                    newvalue => {
-                      setFieldsValue({ handlePictureAttachments: JSON.stringify(newvalue.arr) });
-                      setFilesList(newvalue);
-                    }
-                  }
+                  ChangeFileslist={newvalue => {
+                    setFieldsValue({ handlePictureAttachments: JSON.stringify(newvalue.arr) });
+                    setFilesList(newvalue);
+                  }}
                   banOpenFileDialog={uploadStatus}
                 />
               </div>,
@@ -353,7 +355,7 @@ const HandleChild = React.forwardRef((props, ref) => {
           <Form.Item
             label="上传附件"
             {...forminladeLayout}
-          // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb" // 位置已调
+            // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb" // 位置已调
           >
             {getFieldDecorator(
               'handleAttachments',
@@ -371,12 +373,10 @@ const HandleChild = React.forwardRef((props, ref) => {
                       ? JSON.parse(handle.handleAttachments)
                       : []
                   }
-                  ChangeFileslist={
-                    newvalue => {
-                      setFieldsValue({ handleAttachments: JSON.stringify(newvalue.arr) });
-                      setFilesList(newvalue);
-                    }
-                  }
+                  ChangeFileslist={newvalue => {
+                    setFieldsValue({ handleAttachments: JSON.stringify(newvalue.arr) });
+                    setFilesList(newvalue);
+                  }}
                   banOpenFileDialog={uploadStatus}
                 />
               </div>,
@@ -418,7 +418,7 @@ HandleChild.defaultProps = {
     handleReason: '',
     handleAdvise: '',
     handleResult: '',
-    handleProcess: ''
+    handleProcess: '',
   },
   curruserinfo: {
     deptName: '',

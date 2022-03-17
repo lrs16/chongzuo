@@ -10,13 +10,13 @@ function ConfirmQuery(props) {
 
   return (
     <>
-      <Row gutter={24} style={{ marginTop: 24 }}>
+      <Row gutter={24}>
         <Form {...formItemLayout}>
           <Col span={8}>
             <Form.Item label="确认结果">
               <RadioGroup defaultValue={info.confirmResult} disabled>
-                <Radio value='1'>通过</Radio>
-                <Radio value='0'>不通过</Radio>
+                <Radio value="1">通过</Radio>
+                <Radio value="0">不通过</Radio>
               </RadioGroup>
             </Form.Item>
           </Col>
@@ -31,8 +31,12 @@ function ConfirmQuery(props) {
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item label="确认说明"  {...forminladeLayout}>
-              <TextArea autoSize={{ minRows: 3 }} defaultValue={info.confirmContent || ''} disabled />
+            <Form.Item label="确认说明" {...forminladeLayout}>
+              <TextArea
+                autoSize={{ minRows: 3 }}
+                defaultValue={info.confirmContent || ''}
+                disabled
+              />
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -59,6 +63,6 @@ function ConfirmQuery(props) {
       </Row>
     </>
   );
-};
+}
 
 export default ConfirmQuery;

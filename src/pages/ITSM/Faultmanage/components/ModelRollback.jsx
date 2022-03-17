@@ -1,11 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Modal,
-  Form,
-  Input,
-  Row,
-  Col
-} from 'antd';
+import { Modal, Form, Input, Row, Col } from 'antd';
 import SysDict from '@/components/SysDict';
 
 const { TextArea } = Input;
@@ -14,7 +8,10 @@ function ModelRollback(props) {
   const required = true;
   const {
     form: { getFieldDecorator, validateFields, resetFields },
-    title, visible, ChangeVisible, flowNodeName
+    title,
+    visible,
+    ChangeVisible,
+    flowNodeName,
   } = props;
 
   const [selectdata, setSelectData] = useState([]);
@@ -22,7 +19,7 @@ function ModelRollback(props) {
 
   const handleCancel = () => {
     ChangeVisible(false);
-  }
+  };
 
   const handleOk = () => {
     validateFields((err, values) => {
@@ -31,8 +28,8 @@ function ModelRollback(props) {
         props.rollbackSubmit(values);
         resetFields();
       }
-    })
-  }
+    });
+  };
 
   const getTypebyTitle = nodetitle => {
     if (selectdata.ischange) {
@@ -69,25 +66,22 @@ function ModelRollback(props) {
           <Form>
             <span style={{ color: 'red', marginLeft: 19 }}>回退至【{prevNodeName}】</span>
             <Col span={22}>
-              <Form.Item label='回退意见'>
-                {
-                  getFieldDecorator('rollbackmsg', {
-                    rules: [
-                      {
-                        required,
-                        message: '请说明回退原因'
-                      }
-                    ]
-                  })(<TextArea rows={5} />)
-                }
+              <Form.Item label="回退意见">
+                {getFieldDecorator('rollbackmsg', {
+                  rules: [
+                    {
+                      required,
+                      message: '请说明回退原因',
+                    },
+                  ],
+                })(<TextArea rows={5} />)}
               </Form.Item>
             </Col>
           </Form>
         </Row>
       </Modal>
-
     </>
-  )
+  );
 }
 
-export default Form.create()(ModelRollback)
+export default Form.create()(ModelRollback);

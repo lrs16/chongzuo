@@ -21,7 +21,7 @@ function RegisterQuery(props) {
 
   return (
     <>
-      <Row gutter={24} style={{ marginTop: 24 }}>
+      <Row gutter={24}>
         <Form {...formItemLayout}>
           <Col span={8}>
             <Form.Item label="故障编号">
@@ -77,7 +77,7 @@ function RegisterQuery(props) {
             </Form.Item>
           </Col>
           <Col span={16}>
-            <Form.Item label="是否影响计量主站"  {...forminladeLayout1}>
+            <Form.Item label="是否影响计量主站" {...forminladeLayout1}>
               <RadioGroup defaultValue={Number(info.registerMaster)} disabled>
                 <Radio value={0}>是</Radio>
                 <Radio value={1}>否</Radio>
@@ -90,7 +90,7 @@ function RegisterQuery(props) {
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item label="故障概要"  {...forminladeLayout}>
+            <Form.Item label="故障概要" {...forminladeLayout}>
               <TextArea autoSize={{ minRows: 3 }} defaultValue={maindata.content || ''} disabled />
             </Form.Item>
           </Col>
@@ -118,6 +118,6 @@ function RegisterQuery(props) {
       </Row>
     </>
   );
-};
+}
 
 export default RegisterQuery;

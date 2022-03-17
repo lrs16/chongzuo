@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
-import { Card, Tabs, Input, Row, Col, Button, Table, } from 'antd';
+import { Card, Tabs, Input, Row, Col, Button, Table } from 'antd';
 import RelationDrawer from './components/RelationDrawer';
 
 const { TabPane } = Tabs;
@@ -15,7 +15,7 @@ function RelevancyOrder(props) {
   const [searchkey, setSearchKey] = useState('');
   const [searchrow, setSearchRow] = useState(undefined);
 
-  const callback = (key) => {
+  const callback = key => {
     setActiveKey(key);
     setSearchRow(undefined);
     dispatch({
@@ -28,7 +28,7 @@ function RelevancyOrder(props) {
         relationType: key,
       },
     });
-  }
+  };
 
   const getlist = (pageIndex, pageSize) => {
     dispatch({
@@ -40,8 +40,8 @@ function RelevancyOrder(props) {
         pageSize,
         relationType: activeKey,
       },
-    })
-  }
+    });
+  };
 
   const onShowSizeChange = (page, size) => {
     getlist(page - 1, size);
@@ -79,17 +79,17 @@ function RelevancyOrder(props) {
     } else {
       setSearchRow([]);
     }
-  }
+  };
 
   useEffect(() => {
-    getlist(paginations.current - 1, paginations.pageSize)
-  }, [activeKey])
+    getlist(paginations.current - 1, paginations.pageSize);
+  }, [activeKey]);
 
   useEffect(() => {
     if (statuscode === 200) {
-      getlist(paginations.current - 1, paginations.pageSize)
+      getlist(paginations.current - 1, paginations.pageSize);
     }
-  }, [statuscode])
+  }, [statuscode]);
 
   let orderNotype;
   switch (activeKey) {
@@ -106,7 +106,7 @@ function RelevancyOrder(props) {
       orderNotype = '绩效单编号';
       break;
     default:
-      break
+      break;
   }
 
   const columns = [
@@ -147,7 +147,7 @@ function RelevancyOrder(props) {
                 state: {
                   dynamicpath: true,
                   menuDesc: '发布工单详情',
-                }
+                },
               });
               break;
             case 'quality':
@@ -199,16 +199,27 @@ function RelevancyOrder(props) {
       {activeKey === 'event' && (
         <Row>
           <Col span={8}>
-            <Input onChange={e => setSearchKey(e.target.value)} placeholder="请输入事件单号" allowClear />
+            <Input
+              onChange={e => setSearchKey(e.target.value)}
+              placeholder="请输入事件单号"
+              allowClear
+            />
           </Col>
           <Col span={8}>
-            <Button type="primary" style={{ marginLeft: 16 }} onClick={() => handleSearch()} >本页查询</Button>
-            <Button style={{ marginLeft: 16 }} onClick={() => setSearchRow(undefined)} >重 置</Button>
+            <Button type="primary" style={{ marginLeft: 16 }} onClick={() => handleSearch()}>
+              本页查询
+            </Button>
+            <Button style={{ marginLeft: 16 }} onClick={() => setSearchRow(undefined)}>
+              重 置
+            </Button>
             {relation && (
               <Button
                 type="primary"
                 style={{ marginLeft: 8 }}
-                onClick={() => { setVisible(true); setTitle('事件'); }}
+                onClick={() => {
+                  setVisible(true);
+                  setTitle('事件');
+                }}
               >
                 关联工单
               </Button>
@@ -219,16 +230,27 @@ function RelevancyOrder(props) {
       {activeKey === 'problem' && (
         <Row>
           <Col span={8}>
-            <Input onChange={e => setSearchKey(e.target.value)} placeholder="请输入问题单号" allowClear />
+            <Input
+              onChange={e => setSearchKey(e.target.value)}
+              placeholder="请输入问题单号"
+              allowClear
+            />
           </Col>
           <Col span={8}>
-            <Button type="primary" style={{ marginLeft: 16 }} >本页查询</Button>
-            <Button style={{ marginLeft: 16 }} onClick={() => setSearchRow(undefined)} >重 置</Button>
+            <Button type="primary" style={{ marginLeft: 16 }}>
+              本页查询
+            </Button>
+            <Button style={{ marginLeft: 16 }} onClick={() => setSearchRow(undefined)}>
+              重 置
+            </Button>
             {relation && (
               <Button
                 type="primary"
                 style={{ marginLeft: 8 }}
-                onClick={() => { setVisible(true); setTitle('问题') }}
+                onClick={() => {
+                  setVisible(true);
+                  setTitle('问题');
+                }}
               >
                 关联工单
               </Button>
@@ -239,16 +261,27 @@ function RelevancyOrder(props) {
       {activeKey === 'release' && (
         <Row>
           <Col span={8}>
-            <Input onChange={e => setSearchKey(e.target.value)} placeholder="请输入发布单号" allowClear />
+            <Input
+              onChange={e => setSearchKey(e.target.value)}
+              placeholder="请输入发布单号"
+              allowClear
+            />
           </Col>
           <Col span={8}>
-            <Button type="primary" style={{ marginLeft: 16 }} onClick={() => handleSearch()} >本页查询</Button>
-            <Button style={{ marginLeft: 16 }} onClick={() => setSearchRow(undefined)} >重 置</Button>
+            <Button type="primary" style={{ marginLeft: 16 }} onClick={() => handleSearch()}>
+              本页查询
+            </Button>
+            <Button style={{ marginLeft: 16 }} onClick={() => setSearchRow(undefined)}>
+              重 置
+            </Button>
             {relation && (
               <Button
                 type="primary"
                 style={{ marginLeft: 8 }}
-                onClick={() => { setVisible(true); setTitle('发布'); }}
+                onClick={() => {
+                  setVisible(true);
+                  setTitle('发布');
+                }}
               >
                 关联工单
               </Button>
@@ -260,16 +293,27 @@ function RelevancyOrder(props) {
       {activeKey === 'quality' && (
         <Row>
           <Col span={8}>
-            <Input onChange={e => setSearchKey(e.target.value)} placeholder="请输入绩效单号" allowClear />
+            <Input
+              onChange={e => setSearchKey(e.target.value)}
+              placeholder="请输入绩效单号"
+              allowClear
+            />
           </Col>
           <Col span={8}>
-            <Button type="primary" style={{ marginLeft: 16 }} onClick={() => handleSearch()} >本页查询</Button>
-            <Button style={{ marginLeft: 16 }} onClick={() => setSearchRow(undefined)} >重 置</Button>
+            <Button type="primary" style={{ marginLeft: 16 }} onClick={() => handleSearch()}>
+              本页查询
+            </Button>
+            <Button style={{ marginLeft: 16 }} onClick={() => setSearchRow(undefined)}>
+              重 置
+            </Button>
             {relation && (
               <Button
                 type="primary"
                 style={{ marginLeft: 8 }}
-                onClick={() => { setVisible(true); setTitle('绩效'); }}
+                onClick={() => {
+                  setVisible(true);
+                  setTitle('绩效');
+                }}
               >
                 关联工单
               </Button>
@@ -289,9 +333,9 @@ function RelevancyOrder(props) {
           title={title}
           visible={visible}
           orderIdPre={orderId}
-          orderTypePre='trouble'
+          orderTypePre="trouble"
           orderTypeSuf={activeKey}
-          ChangeVisible={(v) => setVisible(v)}
+          ChangeVisible={v => setVisible(v)}
         />
       )}
     </Card>

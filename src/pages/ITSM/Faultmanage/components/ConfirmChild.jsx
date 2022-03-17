@@ -1,14 +1,6 @@
 import React, { useRef, useImperativeHandle, useEffect, useState } from 'react';
 import moment from 'moment';
-import {
-  Form,
-  Row,
-  Col,
-  Input,
-  DatePicker,
-  Radio,
-  Select,
-} from 'antd';
+import { Form, Row, Col, Input, DatePicker, Radio, Select } from 'antd';
 import SysUpload from '@/components/SysUpload'; // 附件下载组件
 import SysDict from '@/components/SysDict';
 
@@ -53,10 +45,10 @@ const ConfirmChild = React.forwardRef((props, ref) => {
     }
   }, []);
 
-  const onChange = (e) => {
+  const onChange = e => {
     setAdopt(e.target.value);
     ChangeResult(e.target.value);
-  }
+  };
 
   const getTypebyTitle = title => {
     if (selectdata.ischange) {
@@ -68,7 +60,7 @@ const ConfirmChild = React.forwardRef((props, ref) => {
   const responsible = getTypebyTitle('故障责任方');
 
   return (
-    <Row gutter={24} style={{ paddingTop: 24 }}>
+    <Row gutter={24}>
       <SysDict
         typeid="333"
         commonid="335"
@@ -76,7 +68,6 @@ const ConfirmChild = React.forwardRef((props, ref) => {
         style={{ display: 'none' }}
       />
       <Form {...formItemLayout}>
-
         <Col span={8}>
           <Form.Item label="确认结果">
             {getFieldDecorator('confirmResult', {
@@ -86,11 +77,11 @@ const ConfirmChild = React.forwardRef((props, ref) => {
                   message: '请选择确认结果',
                 },
               ],
-              initialValue: confirm ? confirm.confirmResult : '1'
+              initialValue: confirm ? confirm.confirmResult : '1',
             })(
               <Radio.Group onChange={onChange}>
-                <Radio value='1'>通过</Radio>
-                <Radio value='0'>不通过</Radio>
+                <Radio value="1">通过</Radio>
+                <Radio value="0">不通过</Radio>
               </Radio.Group>,
             )}
           </Form.Item>
@@ -105,7 +96,7 @@ const ConfirmChild = React.forwardRef((props, ref) => {
                   message: '请输入故障责任方',
                 },
               ],
-              initialValue: main ? main.blame : ''
+              initialValue: main ? main.blame : '',
             })(
               <Select placeholder="请选择" allowClear>
                 {responsible.map(obj => [
@@ -113,7 +104,8 @@ const ConfirmChild = React.forwardRef((props, ref) => {
                     {obj.title}
                   </Option>,
                 ])}
-              </Select>)}
+              </Select>,
+            )}
           </Form.Item>
         </Col>
 
@@ -126,14 +118,22 @@ const ConfirmChild = React.forwardRef((props, ref) => {
                   message: '请选择确认时间',
                 },
               ],
-              initialValue: confirm.confirmTime ? moment(confirm.confirmTime) : moment(new Date())
-            })(<><DatePicker
-              showTime
-              format="YYYY-MM-DD HH:mm:ss"
-              defaultValue={moment(confirm && confirm.confirmTime ? confirm.confirmTime : new Date())}
-              onChange={(v) => { setFieldsValue({ confirmTime: moment(v) }) }}
-              style={{ width: '100%' }}
-            /></>)}
+              initialValue: confirm.confirmTime ? moment(confirm.confirmTime) : moment(new Date()),
+            })(
+              <>
+                <DatePicker
+                  showTime
+                  format="YYYY-MM-DD HH:mm:ss"
+                  defaultValue={moment(
+                    confirm && confirm.confirmTime ? confirm.confirmTime : new Date(),
+                  )}
+                  onChange={v => {
+                    setFieldsValue({ confirmTime: moment(v) });
+                  }}
+                  style={{ width: '100%' }}
+                />
+              </>,
+            )}
           </Form.Item>
         </Col>
 
@@ -141,16 +141,16 @@ const ConfirmChild = React.forwardRef((props, ref) => {
           {adopt === '1' && (
             <Form.Item label="确认说明" {...forminladeLayout}>
               {getFieldDecorator('confirmContent1', {
-                rules: [{ required: false, message: '请输入确认说明', }],
-                initialValue: confirm ? confirm.confirmContent : ''
+                rules: [{ required: false, message: '请输入确认说明' }],
+                initialValue: confirm ? confirm.confirmContent : '',
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
             </Form.Item>
           )}
           {adopt === '0' && (
             <Form.Item label="确认说明" {...forminladeLayout}>
               {getFieldDecorator('confirmContent2', {
-                rules: [{ required: true, message: '请输入确认说明', }],
-                initialValue: confirm ? confirm.confirmContent : ''
+                rules: [{ required: true, message: '请输入确认说明' }],
+                initialValue: confirm ? confirm.confirmContent : '',
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
             </Form.Item>
           )}
@@ -160,15 +160,21 @@ const ConfirmChild = React.forwardRef((props, ref) => {
           <Form.Item
             label="上传附件"
             {...forminladeLayout}
-          // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+            // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
           >
-            {
-              location && (!location.state || (location.state && !location.state.cache)) && ( // 位置已调
+            {location &&
+            (!location.state || (location.state && !location.state.cache)) && ( // 位置已调
                 <div>
-                  <SysUpload fileslist={(confirm && confirm.confirmAttachments) ? JSON.parse(confirm.confirmAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                  <SysUpload
+                    fileslist={
+                      confirm && confirm.confirmAttachments
+                        ? JSON.parse(confirm.confirmAttachments)
+                        : []
+                    }
+                    ChangeFileslist={newvalue => setFilesList(newvalue)}
+                  />
                 </div>
-              )
-            }
+              )}
           </Form.Item>
         </Col>
 
@@ -183,7 +189,7 @@ const ConfirmChild = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="确认人单位">
             {getFieldDecorator('confirmUnit', {
-              initialValue: confirm.confirmUnit || curruserinfo.unitName
+              initialValue: confirm.confirmUnit || curruserinfo.unitName,
             })(<Input allowClear disabled />)}
           </Form.Item>
         </Col>
@@ -214,8 +220,8 @@ ConfirmChild.defaultProps = {
   curruserinfo: {
     deptName: '',
     unitName: '',
-    userName: ''
-  }
-}
+    userName: '',
+  },
+};
 
 export default Form.create({})(ConfirmChild);

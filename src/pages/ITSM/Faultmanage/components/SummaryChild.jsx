@@ -1,17 +1,6 @@
 import React, { useRef, useImperativeHandle, useEffect, useState } from 'react';
 import moment from 'moment';
-import {
-  Form,
-  Row,
-  Col,
-  Input,
-  DatePicker,
-  Alert,
-  Button,
-  Icon,
-  Select,
-  Radio,
-} from 'antd';
+import { Form, Row, Col, Input, DatePicker, Alert, Button, Icon, Select, Radio } from 'antd';
 import router from 'umi/router';
 import SysUpload from '@/components/SysUpload'; // 附件下载组件
 import Downloadfile from '@/components/SysUpload/Downloadfile'; // 下载组件调用
@@ -65,7 +54,6 @@ const forminladeLayout1 = {
   },
 };
 
-
 const SummaryChild = React.forwardRef((props, ref) => {
   const {
     form: { getFieldsValue },
@@ -79,9 +67,9 @@ const SummaryChild = React.forwardRef((props, ref) => {
     orderNo,
     editState,
     finishId,
-    uploadStatus
+    uploadStatus,
   } = props;
-  const message = '上传故障分析报告已超时， 实际上传时间已超过要求上传时间。'
+  const message = '上传故障分析报告已超时， 实际上传时间已超过要求上传时间。';
   const { getFieldDecorator, setFieldsValue } = props.form;
   const attRef = useRef();
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
@@ -93,15 +81,18 @@ const SummaryChild = React.forwardRef((props, ref) => {
   }, [fileslist]);
 
   useEffect(() => {
-    if (finish && finish.finishAnalysisAttachments !== '[]' && finish.finishAnalysisAttachments !== undefined && finish.finishAnalysisAttachments !== null) {
-      setFieldsValue({ finishAnalysisAttachments: finish.finishAnalysisAttachments }, () => { });
+    if (
+      finish &&
+      finish.finishAnalysisAttachments !== '[]' &&
+      finish.finishAnalysisAttachments !== undefined &&
+      finish.finishAnalysisAttachments !== null
+    ) {
+      setFieldsValue({ finishAnalysisAttachments: finish.finishAnalysisAttachments }, () => {});
     }
     if (finish && finish.finishReportSign) {
-      setShow(finish.finishReportSign)
+      setShow(finish.finishReportSign);
     }
   }, []);
-
-
 
   useImperativeHandle(
     ref,
@@ -116,11 +107,11 @@ const SummaryChild = React.forwardRef((props, ref) => {
     sessionStorage.setItem('Nextflowmane', '自动化科业务负责人审核');
   });
 
-  const showReport = (e) => {
-    setShow(e.target.value)
-  }
+  const showReport = e => {
+    setShow(e.target.value);
+  };
 
-  const handleAnalysisReport = (sign) => {
+  const handleAnalysisReport = sign => {
     const values = getFieldsValue();
     router.push({
       pathname: '/ITSM/faultmanage/analysisreport',
@@ -131,9 +122,9 @@ const SummaryChild = React.forwardRef((props, ref) => {
         orderNo,
         tobeeditState: editState,
         finishId,
-        sign
-      }
-    })
+        sign,
+      },
+    });
   };
 
   const getTypebyTitle = title => {
@@ -147,11 +138,20 @@ const SummaryChild = React.forwardRef((props, ref) => {
 
   return (
     <>
-      <Row gutter={24} style={{ paddingTop: 24 }}>
-        {
-          (finish && finish.finishRequiredTime !== undefined && finish.finishPracticeTime !== undefined) && (new Date(Date.parse(finish.finishRequiredTime)) < new Date(Date.parse(finish.finishPracticeTime))) === true &&
-          <Alert message={message} type="error" showIcon style={{ width: '94%', marginLeft: '3%', marginBottom: 15 }} />
-        }
+      <Row gutter={24}>
+        {finish &&
+          finish.finishRequiredTime !== undefined &&
+          finish.finishPracticeTime !== undefined &&
+          new Date(Date.parse(finish.finishRequiredTime)) <
+            new Date(Date.parse(finish.finishPracticeTime)) ===
+            true && (
+            <Alert
+              message={message}
+              type="error"
+              showIcon
+              style={{ width: '94%', marginLeft: '3%', marginBottom: 15 }}
+            />
+          )}
         <SysDict
           typeid="333"
           commonid="335"
@@ -169,13 +169,15 @@ const SummaryChild = React.forwardRef((props, ref) => {
                   },
                 ],
                 initialValue: finish.finishBlame,
-              })(<Select placeholder="请选择" allowClear>
-                {responsible.map(obj => [
-                  <Option key={obj.key} value={obj.title}>
-                    {obj.title}
-                  </Option>,
-                ])}
-              </Select>)}
+              })(
+                <Select placeholder="请选择" allowClear>
+                  {responsible.map(obj => [
+                    <Option key={obj.key} value={obj.title}>
+                      {obj.title}
+                    </Option>,
+                  ])}
+                </Select>,
+              )}
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -187,11 +189,11 @@ const SummaryChild = React.forwardRef((props, ref) => {
                     message: '请选择是否需要提供故障报告',
                   },
                 ],
-                initialValue: (finish && finish.finishReportSign) ? finish.finishReportSign : '0'
+                initialValue: finish && finish.finishReportSign ? finish.finishReportSign : '0',
               })(
                 <RadioGroup onChange={showReport}>
-                  <Radio value='0'>是</Radio>
-                  <Radio value='1'>否</Radio>
+                  <Radio value="0">是</Radio>
+                  <Radio value="1">否</Radio>
                 </RadioGroup>,
               )}
             </Form.Item>
@@ -205,39 +207,53 @@ const SummaryChild = React.forwardRef((props, ref) => {
                     message: '请选择总结时间',
                   },
                 ],
-                initialValue: finish.finishTime ? moment(finish.finishTime) : moment(Date.now())
-              })(<>
-                <DatePicker
-                  showTime
-                  format="YYYY-MM-DD HH:mm:ss"
-                  defaultValue={moment(finish && finish.finishTime ? finish.finishTime : Date.now())}
-                  onChange={(v) => { setFieldsValue({ finishTime: moment(v) }) }}
-                /></>)}
+                initialValue: finish.finishTime ? moment(finish.finishTime) : moment(Date.now()),
+              })(
+                <>
+                  <DatePicker
+                    showTime
+                    format="YYYY-MM-DD HH:mm:ss"
+                    defaultValue={moment(
+                      finish && finish.finishTime ? finish.finishTime : Date.now(),
+                    )}
+                    onChange={v => {
+                      setFieldsValue({ finishTime: moment(v) });
+                    }}
+                  />
+                </>,
+              )}
             </Form.Item>
           </Col>
-
 
           <Col span={24}>
             <Form.Item label="总结说明" {...forminladeLayout}>
               {getFieldDecorator('finishContent', {
-                initialValue: finish.finishContent
+                initialValue: finish.finishContent,
               })(<TextArea rows={5} placeholder="请输入" />)}
             </Form.Item>
           </Col>
 
           <Col span={24}>
             <Form.Item label="上传故障分析报告" {...ItemLayout}>
-              {getFieldDecorator(`${show === '0' ? 'finishAnalysisAttachments' : 'finishAnalysisAttachments2'}`, {
-                rules: show === '0' ? [
-                  {
-                    required,
-                    message: '请生成故障分析报告',
-                  },
-                ] : [],
-                initialValue: finish.finishAnalysisAttachments
-              })(
+              {getFieldDecorator(
+                `${show === '0' ? 'finishAnalysisAttachments' : 'finishAnalysisAttachments2'}`,
+                {
+                  rules:
+                    show === '0'
+                      ? [
+                          {
+                            required,
+                            message: '请生成故障分析报告',
+                          },
+                        ]
+                      : [],
+                  initialValue: finish.finishAnalysisAttachments,
+                },
+              )(
                 <>
-                  {finish.finishAnalysisAttachments && <Downloadfile files={finish.finishAnalysisAttachments} />}
+                  {finish.finishAnalysisAttachments && (
+                    <Downloadfile files={finish.finishAnalysisAttachments} />
+                  )}
                   {finish.finishAnalysisAttachments && (
                     <Icon
                       className="dynamic-delete-button"
@@ -246,71 +262,77 @@ const SummaryChild = React.forwardRef((props, ref) => {
                     />
                   )}
 
-                  {
-                    finish && !finish.finishAnalysisAttachments && (
-                      <Button
-                        type='primary'
-                        onClick={() => handleAnalysisReport('')}
-                      >
-                        自动生成报告
-                      </Button>
-                    )
-                  }
-                </>
+                  {finish && !finish.finishAnalysisAttachments && (
+                    <Button type="primary" onClick={() => handleAnalysisReport('')}>
+                      自动生成报告
+                    </Button>
+                  )}
+                </>,
               )}
             </Form.Item>
           </Col>
 
-          <Col span={8} style={{ display: (show === '0' || finish.finishAnalysisAttachments) ? 'block' : 'none' }}>
-            <Form.Item label="要求上传时间" >
+          <Col
+            span={8}
+            style={{ display: show === '0' || finish.finishAnalysisAttachments ? 'block' : 'none' }}
+          >
+            <Form.Item label="要求上传时间">
               {getFieldDecorator('finishRequiredTime', {
-                initialValue: (tododetailslist && tododetailslist.requiredUploadTime) ? moment(tododetailslist.requiredUploadTime) : (finish.finishRequiredTime ? moment(finish.finishRequiredTime) : '')
+                initialValue:
+                  tododetailslist && tododetailslist.requiredUploadTime
+                    ? moment(tododetailslist.requiredUploadTime)
+                    : finish.finishRequiredTime
+                    ? moment(finish.finishRequiredTime)
+                    : '',
               })(<DatePicker showTime disabled format="YYYY-MM-DD HH:mm:ss" />)}
             </Form.Item>
           </Col>
 
-
-          {
-            (finish && finish.finishAnalysisAttachments) && (
-              <>
-                <Col span={8}>
-                  <Form.Item label="实际上传时间" >
-                    {getFieldDecorator('finishPracticeTime', {
-                      initialValue: (tododetailslist && tododetailslist.finishPracticeTime) ? moment(tododetailslist.finishPracticeTime) : (finish.finishPracticeTime ? moment(finish.finishPracticeTime) : '')
-                    })(<DatePicker showTime disabled format="YYYY-MM-DD HH:mm:ss" />)}
-                  </Form.Item>
-                </Col>
-
-              </>
-            )
-          }
+          {finish && finish.finishAnalysisAttachments && (
+            <>
+              <Col span={8}>
+                <Form.Item label="实际上传时间">
+                  {getFieldDecorator('finishPracticeTime', {
+                    initialValue:
+                      tododetailslist && tododetailslist.finishPracticeTime
+                        ? moment(tododetailslist.finishPracticeTime)
+                        : finish.finishPracticeTime
+                        ? moment(finish.finishPracticeTime)
+                        : '',
+                  })(<DatePicker showTime disabled format="YYYY-MM-DD HH:mm:ss" />)}
+                </Form.Item>
+              </Col>
+            </>
+          )}
 
           <Col span={24}>
             <Form.Item
               label="上传附件"
               {...forminladeLayout}
-            // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb" // 位置已调
+              // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb" // 位置已调
             >
-              {
-                getFieldDecorator('finishAttachments', {})(
-                  <div
-                    onMouseOver={() => {
-                      ChangeFileskey('2');
+              {getFieldDecorator(
+                'finishAttachments',
+                {},
+              )(
+                <div
+                  onMouseOver={() => {
+                    ChangeFileskey('2');
+                  }}
+                  onFocus={() => 0}
+                >
+                  <SysUpload
+                    fileslist={
+                      finish && finish.finishAttachments ? JSON.parse(finish.finishAttachments) : []
+                    }
+                    ChangeFileslist={newvalue => {
+                      setFilesList(newvalue);
+                      setFieldsValue({ finishAttachments: JSON.stringify(newvalue.arr) });
                     }}
-                    onFocus={() => 0}
-                  >
-                    <SysUpload
-                      fileslist={(finish && finish.finishAttachments) ? JSON.parse(finish.finishAttachments) : []}
-                      ChangeFileslist={newvalue => {
-                        setFilesList(newvalue);
-                        setFieldsValue({ finishAttachments: JSON.stringify(newvalue.arr) });
-                      }
-                      }
-                      banOpenFileDialog={uploadStatus}
-                    />
-                  </div>
-                )
-              }
+                    banOpenFileDialog={uploadStatus}
+                  />
+                </div>,
+              )}
             </Form.Item>
           </Col>
 
@@ -350,8 +372,8 @@ SummaryChild.defaultProps = {
   curruserinfo: {
     deptName: '',
     unitName: '',
-    userName: ''
-  }
-}
+    userName: '',
+  },
+};
 
 export default Form.create({})(SummaryChild);

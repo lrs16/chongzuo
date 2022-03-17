@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import { Drawer, Button, Table, Row, Col, Input, Form, Select, Layout, Tooltip } from 'antd';
-import { querkeyVal } from '@/services/api'
+import { querkeyVal } from '@/services/api';
 
 const { Option } = Select;
 const { Content, Sider } = Layout;
@@ -28,14 +28,12 @@ function RelationDrawer(props) {
     orderTypeSuf,
     ChangeVisible,
     orderlist,
-    loading } = props;
+    loading,
+  } = props;
 
   const {
-    form: {
-      getFieldDecorator,
-      getFieldsValue,
-      resetFields,
-    }, } = props;
+    form: { getFieldDecorator, getFieldsValue, resetFields },
+  } = props;
   const [eventstatus, setEventstatus] = useState([]);
   const [problemstatus, setproblemstatus] = useState([]);
   const [releasestatus, setreleasestatus] = useState([]);
@@ -61,13 +59,13 @@ function RelationDrawer(props) {
         orderIdSuf: selectedRowKeys,
         orderTypePre,
         orderTypeSuf,
-        relationType: 1
+        relationType: 1,
       },
     });
-  }
+  };
 
   const hanldleCancel = () => {
-    ChangeVisible(false)
+    ChangeVisible(false);
   };
 
   const handleSearch = (no, status, pageIndex, pageSize) => {
@@ -75,34 +73,34 @@ function RelationDrawer(props) {
       dispatch({
         type: 'relationorder/fetchevent',
         payload: { no, status: status === undefined ? '' : status, pageIndex, pageSize },
-      })
-    };
+      });
+    }
     if (orderTypeSuf === 'problem') {
       dispatch({
         type: 'relationorder/fetchproblem',
         payload: { no, status: status === undefined ? '' : status, pageIndex, pageSize },
-      })
+      });
     }
 
     if (orderTypeSuf === 'release') {
       dispatch({
         type: 'relationorder/fetchrelease',
         payload: { no, status: status === undefined ? '' : status, pageIndex, pageSize },
-      })
+      });
     }
 
     if (orderTypeSuf === 'quality') {
       dispatch({
         type: 'relationorder/fetchqualitySearch',
         payload: { assessNo: no || '', currentTaskName: status || '', pageIndex, pageSize },
-      })
+      });
     }
-  }
+  };
 
   const handleSumit = () => {
     const values = getFieldsValue();
     handleSearch(values.no, values.status, 0, 15);
-  }
+  };
 
   const onShowSizeChange = (page, size) => {
     const values = getFieldsValue();
@@ -133,26 +131,26 @@ function RelationDrawer(props) {
   };
 
   useEffect(() => {
-    handleSearch('', '', 0, 15)
-  }, [orderTypeSuf])
+    handleSearch('', '', 0, 15);
+  }, [orderTypeSuf]);
 
   useEffect(() => {
     querkeyVal('event', 'status').then(res => {
       if (res.code === 200) {
-        setEventstatus(res.data.status)
+        setEventstatus(res.data.status);
       }
     });
     querkeyVal('problem', 'orderstate').then(res => {
       if (res.code === 200) {
-        setproblemstatus(res.data.orderstate)
+        setproblemstatus(res.data.orderstate);
       }
-    })
+    });
     querkeyVal('release', 'statu').then(res => {
       if (res.code === 200) {
-        setreleasestatus(res.data.statu)
+        setreleasestatus(res.data.statu);
       }
-    })
-  }, [])
+    });
+  }, []);
 
   let notype;
   let indexType;
@@ -222,17 +220,15 @@ function RelationDrawer(props) {
             <Row>
               <Form {...formItemLayout}>
                 <Col span={10}>
-                  <Form.Item label={`${title}编号`} >
+                  <Form.Item label={`${title}编号`}>
                     {getFieldDecorator('no', {
                       initialValue: '',
-                    })(
-                      <Input placeholder="请输入" allowClear />,
-                    )}
+                    })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   {orderTypeSuf === 'event' && (
-                    <Form.Item label='状态' >
+                    <Form.Item label="状态">
                       {getFieldDecorator('status', {
                         initialValue: '',
                       })(
@@ -247,7 +243,7 @@ function RelationDrawer(props) {
                     </Form.Item>
                   )}
                   {orderTypeSuf === 'problem' && (
-                    <Form.Item label='状态' >
+                    <Form.Item label="状态">
                       {getFieldDecorator('status', {
                         initialValue: '',
                       })(
@@ -262,7 +258,7 @@ function RelationDrawer(props) {
                     </Form.Item>
                   )}
                   {orderTypeSuf === 'release' && (
-                    <Form.Item label='状态' >
+                    <Form.Item label="状态">
                       {getFieldDecorator('status', {
                         initialValue: '',
                       })(
@@ -278,7 +274,7 @@ function RelationDrawer(props) {
                   )}
 
                   {orderTypeSuf === 'quality' && (
-                    <Form.Item label='状态' >
+                    <Form.Item label="状态">
                       {getFieldDecorator('status', {
                         initialValue: '',
                       })(
@@ -308,8 +304,18 @@ function RelationDrawer(props) {
                 </Col>
 
                 <Col span={6} style={{ paddingTop: 4 }}>
-                  <Button type='primary' style={{ marginLeft: 16 }} onClick={() => handleSumit()} >查询</Button>
-                  <Button style={{ marginLeft: 8 }} onClick={() => { resetFields(); handleSearch('', '', 0, 15) }}>重置</Button>
+                  <Button type="primary" style={{ marginLeft: 16 }} onClick={() => handleSumit()}>
+                    查询
+                  </Button>
+                  <Button
+                    style={{ marginLeft: 8 }}
+                    onClick={() => {
+                      resetFields();
+                      handleSearch('', '', 0, 15);
+                    }}
+                  >
+                    重置
+                  </Button>
                 </Col>
               </Form>
             </Row>
@@ -320,19 +326,21 @@ function RelationDrawer(props) {
               dataSource={orderlist.rows}
               rowKey={r => {
                 if (orderTypeSuf === 'quality') {
-                  return r.instanceId
+                  return r.instanceId;
                 }
                 if (orderTypeSuf !== 'quality') {
-                  return r.id
+                  return r.id;
                 }
-                return []
+                return [];
               }}
               rowSelection={rowSelection}
               pagination={pagination}
               onRow={record => {
                 return {
-                  onClick: () => { setRowRecord(record) }, // 点击行
-                }
+                  onClick: () => {
+                    setRowRecord(record);
+                  }, // 点击行
+                };
               }}
             />
           </Content>
@@ -340,19 +348,56 @@ function RelationDrawer(props) {
             collapsible
             collapsed={collapsed}
             onCollapse={() => setCollapsed(!collapsed)}
-            theme='light'
-            width='250'
+            theme="light"
+            width="250"
           >
-            <h3 style={{ background: '#f8f8f8', padding: 20, border: '1px solid #e8e8e8', borderLeft: 0 }}>工单详情</h3>
+            <h3
+              style={{
+                background: '#f8f8f8',
+                padding: 20,
+                border: '1px solid #e8e8e8',
+                borderLeft: 0,
+              }}
+            >
+              工单详情
+            </h3>
             <div style={{ padding: '8px 0 0 24px' }}>
               <h4 style={{ padding: '8px 0' }}>{title}编号</h4>
-              <Input value={rowrecord.no || rowrecord.releaseNo || rowrecord.eventNo || rowrecord.assessNo} />
+              <Input
+                value={
+                  rowrecord.no || rowrecord.releaseNo || rowrecord.eventNo || rowrecord.assessNo
+                }
+              />
               <h4 style={{ padding: '8px 0' }}>{title}来源</h4>
-              <Input value={rowrecord.source || rowrecord.eventSource || rowrecord.dataSource || rowrecord.releaseType} />
-              <h4 style={{ padding: '8px 0' }}>{title}{orderTypeSuf === 'release' ? '状态' : '类型'}</h4>
-              <Input value={rowrecord.type || rowrecord.eventType || rowrecord.releaseStatus || rowrecord.applyTime} />
+              <Input
+                value={
+                  rowrecord.source ||
+                  rowrecord.eventSource ||
+                  rowrecord.dataSource ||
+                  rowrecord.releaseType
+                }
+              />
+              <h4 style={{ padding: '8px 0' }}>
+                {title}
+                {orderTypeSuf === 'release' ? '状态' : '类型'}
+              </h4>
+              <Input
+                value={
+                  rowrecord.type ||
+                  rowrecord.eventType ||
+                  rowrecord.releaseStatus ||
+                  rowrecord.applyTime
+                }
+              />
               <h4 style={{ padding: '8px 0' }}>建单时间</h4>
-              <Input value={rowrecord.addTime || rowrecord.sendTime || rowrecord.creationTime || rowrecord.ctime} />
+              <Input
+                value={
+                  rowrecord.addTime ||
+                  rowrecord.sendTime ||
+                  rowrecord.creationTime ||
+                  rowrecord.ctime
+                }
+              />
               <h4 style={{ padding: '8px 0' }}>{title}标题</h4>
               <Input value={rowrecord.title} />
               <h4 style={{ padding: '8px 0' }}>{title}描述</h4>
@@ -373,18 +418,29 @@ function RelationDrawer(props) {
             padding: '10px 16px',
             background: '#fff',
             textAlign: 'right',
-            zIndex: 999
+            zIndex: 999,
           }}
         >
-          <Button type='primary' onClick={() => handleSave()} style={{ marginRight: 8 }} disabled={selectedRowKeys.length === 0}>保存</Button>
-          <Button onClick={() => hanldleCancel()} style={{ marginRight: 8 }}>关闭</Button>
+          <Button
+            type="primary"
+            onClick={() => handleSave()}
+            style={{ marginRight: 8 }}
+            disabled={selectedRowKeys.length === 0}
+          >
+            保存
+          </Button>
+          <Button onClick={() => hanldleCancel()} style={{ marginRight: 8 }}>
+            关闭
+          </Button>
         </div>
       </Drawer>
     </>
   );
 }
 
-export default Form.create({})(connect(({ relationorder, loading }) => ({
-  orderlist: relationorder.order,
-  loading: loading.models.relationorder,
-}))(RelationDrawer));
+export default Form.create({})(
+  connect(({ relationorder, loading }) => ({
+    orderlist: relationorder.order,
+    loading: loading.models.relationorder,
+  }))(RelationDrawer),
+);

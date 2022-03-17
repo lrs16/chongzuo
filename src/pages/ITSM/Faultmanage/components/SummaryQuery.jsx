@@ -21,7 +21,7 @@ function SummaryQuery(props) {
 
   return (
     <>
-      <Row gutter={24} style={{ marginTop: 24 }}>
+      <Row gutter={24}>
         <Form {...formItemLayout}>
           <Col span={8}>
             <Form.Item label="故障责任方">
@@ -42,32 +42,36 @@ function SummaryQuery(props) {
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item label="总结说明"  {...forminladeLayout}>
-              <TextArea autoSize={{ minRows: 3 }} defaultValue={info.finishContent || ''} disabled />
+            <Form.Item label="总结说明" {...forminladeLayout}>
+              <TextArea
+                autoSize={{ minRows: 3 }}
+                defaultValue={info.finishContent || ''}
+                disabled
+              />
             </Form.Item>
           </Col>
 
-          {
-            (info && info.finishAnalysisAttachments) && (
-              <>
-                <Col span={24}>
-                  <Form.Item label="故障分析报告" {...forminladeLayout}>
-                    {info.finishAnalysisAttachments && <Downloadfile files={info.finishAnalysisAttachments} />}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="要求上传时间">
-                    <Input defaultValue={info.finishRequiredTime || ''} disabled />
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="实际上传时间">
-                    <Input defaultValue={info.finishPracticeTime || ''} disabled />
-                  </Form.Item>
-                </Col>
-              </>
-            )
-          }
+          {info && info.finishAnalysisAttachments && (
+            <>
+              <Col span={24}>
+                <Form.Item label="故障分析报告" {...forminladeLayout}>
+                  {info.finishAnalysisAttachments && (
+                    <Downloadfile files={info.finishAnalysisAttachments} />
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="要求上传时间">
+                  <Input defaultValue={info.finishRequiredTime || ''} disabled />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="实际上传时间">
+                  <Input defaultValue={info.finishPracticeTime || ''} disabled />
+                </Form.Item>
+              </Col>
+            </>
+          )}
 
           <Col span={24}>
             <Form.Item label="附件" {...forminladeLayout}>
@@ -93,6 +97,6 @@ function SummaryQuery(props) {
       </Row>
     </>
   );
-};
+}
 
 export default SummaryQuery;

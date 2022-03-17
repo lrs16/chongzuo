@@ -21,13 +21,13 @@ function ExamineSecondQuery(props) {
 
   return (
     <>
-      <Row gutter={24} style={{ marginTop: 24 }}>
+      <Row gutter={24}>
         <Form {...formItemLayout}>
           <Col span={8}>
             <Form.Item label="审核结果">
               <RadioGroup defaultValue={info.checkResult} disabled>
-                <Radio value='1'>通过</Radio>
-                <Radio value='0'>不通过</Radio>
+                <Radio value="1">通过</Radio>
+                <Radio value="0">不通过</Radio>
               </RadioGroup>
             </Form.Item>
           </Col>
@@ -47,7 +47,7 @@ function ExamineSecondQuery(props) {
             </Form.Item>
           </Col>
           <Col span={16}>
-            <Form.Item label="是否影响计量主站"  {...forminladeLayout1}>
+            <Form.Item label="是否影响计量主站" {...forminladeLayout1}>
               <RadioGroup defaultValue={Number(info.checkMaster)} disabled>
                 <Radio value={0}>是</Radio>
                 <Radio value={1}>否</Radio>
@@ -55,7 +55,7 @@ function ExamineSecondQuery(props) {
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item label="审核意见"  {...forminladeLayout}>
+            <Form.Item label="审核意见" {...forminladeLayout}>
               <TextArea autoSize={{ minRows: 3 }} defaultValue={info.checkOpinion || ''} disabled />
             </Form.Item>
           </Col>
@@ -83,6 +83,6 @@ function ExamineSecondQuery(props) {
       </Row>
     </>
   );
-};
+}
 
 export default ExamineSecondQuery;

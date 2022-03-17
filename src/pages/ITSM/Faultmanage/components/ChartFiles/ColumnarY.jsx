@@ -26,7 +26,11 @@ function ColumnarY(props) {
             const clickdata = ev.data;
             if (clickdata && clickdata.data) {
               onGetVal(clickdata.data);
-              handleGetDrawerVal({ ...clickdata.data, staticName, drawtitle: `${staticName}：${clickdata.data.type}` });
+              handleGetDrawerVal({
+                ...clickdata.data,
+                staticName,
+                drawtitle: `${staticName}：${clickdata.data.type}`,
+              });
             }
           }, 100);
         }}
@@ -34,7 +38,11 @@ function ColumnarY(props) {
           const clickdata = ev.data;
           if (clickdata && clickdata.data) {
             onGetVal(clickdata.data);
-            handleGetDrawerVal({ ...clickdata.data, staticName, drawtitle: `${staticName}：${clickdata.data.type}` });
+            handleGetDrawerVal({
+              ...clickdata.data,
+              staticName,
+              drawtitle: `${staticName}：${clickdata.data.type}`,
+            });
           }
         }}
       >
@@ -44,9 +52,9 @@ function ColumnarY(props) {
           label={{
             formatter: val => {
               if (val > 10000) {
-                return `${(val / 10000).toFixed(1)}w`
+                return `${(val / 10000).toFixed(1)}w`;
               }
-              return val
+              return val;
             },
             autoRotate: false,
           }}

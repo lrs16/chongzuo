@@ -13,14 +13,15 @@ function StatisticsCard(props) {
       setVisible(false);
       onGetDrawerVal({});
     }
-  }
+  };
   return (
     <>
       <Card style={{ marginLeft: '-1px' }}>
         <Row type="flex" justify="space-between" align="bottom">
           <Col span={24}>{title}</Col>
-          <Col span={24}
-            style={{ cursor: (staticName === undefined || staticName === '') ? '' : 'pointer' }}
+          <Col
+            span={24}
+            style={{ cursor: staticName === undefined || staticName === '' ? '' : 'pointer' }}
             onClick={() => {
               setTimeout(() => {
                 hanlestaticard({ value, staticName, time1, time2, drawtitle: staticName });
@@ -30,10 +31,7 @@ function StatisticsCard(props) {
               hanlestaticard({ value, staticName, time1, time2, drawtitle: staticName });
             }}
           >
-            <Statistic
-              value={value}
-              suffix={suffix}
-            />
+            <Statistic value={value} suffix={suffix} />
           </Col>
           <Col span={24} style={{ paddingBottom: 8 }}>
             <span style={{ paddingRight: 12 }}>{des}</span>
@@ -49,7 +47,8 @@ function StatisticsCard(props) {
         ChangeVisible={newvalue => setVisible(newvalue)}
         drawerdata={drawerval}
         destroyOnClose
-      /></>
+      />
+    </>
   );
 }
 

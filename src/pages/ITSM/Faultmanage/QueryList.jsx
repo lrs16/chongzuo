@@ -18,7 +18,7 @@ import {
   Cascader,
   Popover,
   Checkbox,
-  Tooltip
+  Tooltip,
 } from 'antd';
 import { DownOutlined, UpOutlined, AlertTwoTone } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -44,13 +44,12 @@ const timeoutstatusmap = [
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-
 function QueryList(props) {
   // const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, resetFields, validateFields, setFieldsValue, getFieldsValue },
-    location: { query:
-      {
+    location: {
+      query: {
         // dictCode,
         type,
         status,
@@ -68,7 +67,7 @@ function QueryList(props) {
   let titleParams;
 
   const [expand, setExpand] = useState(false);
-  const [initial, setInitial] = useState(false)
+  const [initial, setInitial] = useState(false);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 }); // 分页state
   // const [selectedRow, setSelectedRow] = useState([]);
   const [selectdata, setSelectData] = useState([]);
@@ -98,8 +97,8 @@ function QueryList(props) {
         a.click();
         window.URL.revokeObjectURL(url);
       }
-    })
-  }
+    });
+  };
 
   const gotoDetail = (text, record) => {
     dispatch({
@@ -109,9 +108,9 @@ function QueryList(props) {
           ...tabrecord,
           paginations,
           expand,
-          key: 'fault',     // 综合查询用到
+          key: 'fault', // 综合查询用到
         },
-        tabid: sessionStorage.getItem('tabid')
+        tabid: sessionStorage.getItem('tabid'),
       },
     });
     router.push({
@@ -121,7 +120,7 @@ function QueryList(props) {
         No: text,
       },
     });
-  }
+  };
 
   const initialColumns = [
     {
@@ -151,27 +150,28 @@ function QueryList(props) {
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
+            cursor: 'pointer',
+          },
+        };
       },
-      render: (text) => {
+      render: text => {
         const blubnap = new Map([
           ['未超时', <AlertTwoTone twoToneColor="#52C41A" />],
           ['即将超时', <AlertTwoTone twoToneColor="orange" />],
-          ['已超时', <AlertTwoTone twoToneColor="red" />]
+          ['已超时', <AlertTwoTone twoToneColor="red" />],
         ]);
         const colormap = new Map([
           ['未超时', '#52C41A'],
           ['即将超时', 'orange'],
-          ['已超时', 'red']
+          ['已超时', 'red'],
         ]);
         return (
-          <><span style={{ fontSize: '1.4em', marginRight: 8 }}>{blubnap.get(text)}</span>
+          <>
+            <span style={{ fontSize: '1.4em', marginRight: 8 }}>{blubnap.get(text)}</span>
             <span style={{ color: colormap.get(text) }}>{text}</span>
           </>
-        )
-      }
+        );
+      },
     },
     {
       title: '故障名称',
@@ -185,11 +185,15 @@ function QueryList(props) {
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
+            cursor: 'pointer',
+          },
+        };
       },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      render: text => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '故障发生时间',
@@ -209,11 +213,15 @@ function QueryList(props) {
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
+            cursor: 'pointer',
+          },
+        };
       },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      render: text => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '故障详细描述',
@@ -227,11 +235,15 @@ function QueryList(props) {
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
+            cursor: 'pointer',
+          },
+        };
       },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      render: text => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '是否影响计量主站',
@@ -257,11 +269,15 @@ function QueryList(props) {
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
+            cursor: 'pointer',
+          },
+        };
       },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      render: text => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '故障类型',
@@ -275,11 +291,15 @@ function QueryList(props) {
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
+            cursor: 'pointer',
+          },
+        };
       },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      render: text => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '故障措施或建议',
@@ -293,11 +313,15 @@ function QueryList(props) {
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
+            cursor: 'pointer',
+          },
+        };
       },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      render: text => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '是否需要提供故障报告',
@@ -395,11 +419,15 @@ function QueryList(props) {
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
+            cursor: 'pointer',
+          },
+        };
       },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      render: text => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '系统模块',
@@ -473,11 +501,15 @@ function QueryList(props) {
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
+            cursor: 'pointer',
+          },
+        };
       },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      render: text => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '系统运维商审核人单位',
@@ -539,11 +571,15 @@ function QueryList(props) {
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
+            cursor: 'pointer',
+          },
+        };
       },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      render: text => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '处理开始时间',
@@ -617,11 +653,15 @@ function QueryList(props) {
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
+            cursor: 'pointer',
+          },
+        };
       },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      render: text => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '确认人单位',
@@ -683,11 +723,15 @@ function QueryList(props) {
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
+            cursor: 'pointer',
+          },
+        };
       },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      render: text => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '自动化科业务负责人是否上传故障报告',
@@ -755,11 +799,15 @@ function QueryList(props) {
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
+            cursor: 'pointer',
+          },
+        };
       },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      render: text => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '实际上传时间',
@@ -831,37 +879,38 @@ function QueryList(props) {
         return (
           <a type="link" onClick={() => handledownFileToZip(record.id, record.no)}>
             附件下载
-          </a>)
+          </a>
+        );
       },
     },
   ];
 
   if (status || type) {
-    titleParams = '故障统计查询'
+    titleParams = '故障统计查询';
   } else {
-    titleParams = '故障查询'
+    titleParams = '故障查询';
   }
 
   useEffect(() => {
     if (type) {
       setFieldsValue({
-        type: [type.substr(0, 3), type]
-      })
+        type: [type.substr(0, 3), type],
+      });
     }
 
     if (status || currentNode) {
       setFieldsValue({
         status,
-        currentNode
-      })
+        currentNode,
+      });
     }
 
     if (addTimeBegin) {
       setFieldsValue({
         addTime: [moment(addTimeBegin), moment(addTimeEnd)] || '',
-      })
+      });
     }
-    setInitial(true)
+    setInitial(true);
   }, []);
 
   const searchdata = (values, page) => {
@@ -871,17 +920,44 @@ function QueryList(props) {
         ...values,
         // registerTimeBegin: values.registerTime?.length ? moment(values.registerTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
         // registerTimeEnd: values.registerTime?.length ? moment(values.registerTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        addTimeBegin: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-        addTimeEnd: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        addTime: values.addTime?.length ? [moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+        addTimeBegin: values.addTime?.length
+          ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss')
+          : '',
+        addTimeEnd: values.addTime?.length
+          ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss')
+          : '',
+        addTime: values.addTime?.length
+          ? [
+              moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+              moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+            ]
+          : '',
         registerTime: '',
-        handleStartTimeBegin: values.handleTime?.length ? moment(values.handleTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-        handleStartTimeEnd: values.handleTime?.length ? moment(values.handleTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        handleTime: values.handleTime?.length ? [moment(values.handleTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.handleTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
-        type: values.type ? (values.type).slice(-1)[0] : '',
-        registerOccurTimeBegin: values.registerOccurTime?.length ? moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-        registerOccurTimeEnd: values.registerOccurTime?.length ? moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        registerOccurTime: values.registerOccurTime?.length ? [moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+        handleStartTimeBegin: values.handleTime?.length
+          ? moment(values.handleTime[0]).format('YYYY-MM-DD HH:mm:ss')
+          : '',
+        handleStartTimeEnd: values.handleTime?.length
+          ? moment(values.handleTime[1]).format('YYYY-MM-DD HH:mm:ss')
+          : '',
+        handleTime: values.handleTime?.length
+          ? [
+              moment(values.handleTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+              moment(values.handleTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+            ]
+          : '',
+        type: values.type ? values.type.slice(-1)[0] : '',
+        registerOccurTimeBegin: values.registerOccurTime?.length
+          ? moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss')
+          : '',
+        registerOccurTimeEnd: values.registerOccurTime?.length
+          ? moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss')
+          : '',
+        registerOccurTime: values.registerOccurTime?.length
+          ? [
+              moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+              moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+            ]
+          : '',
         pageNum: page,
         pageSize: paginations.pageSize,
       },
@@ -889,17 +965,49 @@ function QueryList(props) {
     setTabRecord({
       ...values,
       sendTime: '',
-      addTimeBegin: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      addTimeEnd: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-      addTime: values.addTime?.length ? [moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
-      handleStartTimeBegin: values.handleStartTimeBegin ? values.handleStartTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
-      handleStartTimeEnd: values.handleStartTimeEnd ? values.handleStartTimeEnd.format('YYYY-MM-DD HH:mm:ss') : '',
-      registerOccurTimeBegin: values.registerOccurTime?.length ? moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      registerOccurTimeEnd: values.registerOccurTime?.length ? moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-      registerOccurTime: values.registerOccurTime?.length ? [moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
-      registerTime: values.registerTime?.length ? [moment(values.registerTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.registerTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
-      handleTime: values.handleTime?.length ? [moment(values.handleTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.handleTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
-    })
+      addTimeBegin: values.addTime?.length
+        ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      addTimeEnd: values.addTime?.length
+        ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      addTime: values.addTime?.length
+        ? [
+            moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+            moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+          ]
+        : '',
+      handleStartTimeBegin: values.handleStartTimeBegin
+        ? values.handleStartTimeBegin.format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      handleStartTimeEnd: values.handleStartTimeEnd
+        ? values.handleStartTimeEnd.format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      registerOccurTimeBegin: values.registerOccurTime?.length
+        ? moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      registerOccurTimeEnd: values.registerOccurTime?.length
+        ? moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      registerOccurTime: values.registerOccurTime?.length
+        ? [
+            moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+            moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+          ]
+        : '',
+      registerTime: values.registerTime?.length
+        ? [
+            moment(values.registerTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+            moment(values.registerTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+          ]
+        : '',
+      handleTime: values.handleTime?.length
+        ? [
+            moment(values.handleTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+            moment(values.handleTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+          ]
+        : '',
+    });
   };
 
   const handleSearch = search => {
@@ -1007,13 +1115,12 @@ function QueryList(props) {
     router.push({
       pathname: location.pathname,
       query: {},
-      state: {}
+      state: {},
     });
     resetFields();
-    searchdata({}, 1, 15)
+    searchdata({}, 1, 15);
     setPageinations({ current: 1, pageSize: 15 });
   };
-
 
   // 设置时间
   useEffect(() => {
@@ -1023,12 +1130,14 @@ function QueryList(props) {
       setFieldsValue({
         addTime: addTime?.length ? [moment(addTime[0]), moment(addTime[1])] : '',
         handleTime: handleTime?.length ? [moment(handleTime[0]), moment(handleTime[1])] : '',
-        registerOccurTime: registerOccurTime?.length ? [moment(registerOccurTime[0]), moment(registerOccurTime[1])] : ''
-      })
+        registerOccurTime: registerOccurTime?.length
+          ? [moment(registerOccurTime[0]), moment(registerOccurTime[1])]
+          : '',
+      });
     } else {
       setFieldsValue({
         addTime: addTimeBegin ? [moment(addTimeBegin), moment(addTimeEnd)] : '',
-      })
+      });
     }
   }, [location.state]);
 
@@ -1043,16 +1152,16 @@ function QueryList(props) {
               ...tabrecord,
               paginations,
               expand,
-              key: 'fault',     // 综合查询用到
+              key: 'fault', // 综合查询用到
             },
-            tabid: sessionStorage.getItem('tabid')
+            tabid: sessionStorage.getItem('tabid'),
           },
         });
-      };
+      }
       // 点击菜单刷新,并获取数据
       if (location.state.reset) {
-        handleReset()
-      };
+        handleReset();
+      }
       if (location.state.cacheinfo) {
         const { current, pageSize } = location.state.cacheinfo.paginations;
         // const { createTime } = location.state.cacheinfo;
@@ -1067,8 +1176,8 @@ function QueryList(props) {
           // addTime: (addTime && addTime.length) ? [moment(addTime[0]), moment(addTime[1])] : '',
           // registerOccurTime: registerOccurTime?.length ? [moment(registerOccurTime[0], registerOccurTime[1])] : '',
           handleTime: handleTime?.length ? [moment(handleTime[0]), moment(handleTime[1])] : '',
-        })
-      };
+        });
+      }
     }
   }, [location.state]);
 
@@ -1087,9 +1196,9 @@ function QueryList(props) {
                 ...tabrecord,
                 paginations,
                 expand,
-                key: 'fault',     // 综合查询用到
+                key: 'fault', // 综合查询用到
               },
-              tabid: sessionStorage.getItem('tabid')
+              tabid: sessionStorage.getItem('tabid'),
             },
           });
           router.push({
@@ -1114,23 +1223,24 @@ function QueryList(props) {
       dataIndex: 'timeoutStatus',
       key: 'timeoutStatus',
       width: 150,
-      render: (text) => {
+      render: text => {
         const blubnap = new Map([
           ['未超时', <AlertTwoTone twoToneColor="#52C41A" />],
           ['即将超时', <AlertTwoTone twoToneColor="orange" />],
-          ['已超时', <AlertTwoTone twoToneColor="red" />]
+          ['已超时', <AlertTwoTone twoToneColor="red" />],
         ]);
         const colormap = new Map([
           ['未超时', '#52C41A'],
           ['即将超时', 'orange'],
-          ['已超时', 'red']
+          ['已超时', 'red'],
         ]);
         return (
-          <><span style={{ fontSize: '1.4em', marginRight: 8 }}>{blubnap.get(text)}</span>
+          <>
+            <span style={{ fontSize: '1.4em', marginRight: 8 }}>{blubnap.get(text)}</span>
             <span style={{ color: colormap.get(text) }}>{text}</span>
           </>
-        )
-      }
+        );
+      },
     },
     {
       title: '故障名称',
@@ -1144,11 +1254,15 @@ function QueryList(props) {
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
+            cursor: 'pointer',
+          },
+        };
       },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      render: text => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '故障发生时间',
@@ -1168,11 +1282,15 @@ function QueryList(props) {
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
+            cursor: 'pointer',
+          },
+        };
       },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      render: text => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '故障详细描述',
@@ -1186,11 +1304,15 @@ function QueryList(props) {
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
+            cursor: 'pointer',
+          },
+        };
       },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      render: text => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '是否影响计量主站',
@@ -1216,11 +1338,15 @@ function QueryList(props) {
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
+            cursor: 'pointer',
+          },
+        };
       },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      render: text => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '故障类型',
@@ -1234,11 +1360,15 @@ function QueryList(props) {
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
+            cursor: 'pointer',
+          },
+        };
       },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      render: text => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '故障措施或建议',
@@ -1252,11 +1382,15 @@ function QueryList(props) {
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
+            cursor: 'pointer',
+          },
+        };
       },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      render: text => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '是否需要提供故障报告',
@@ -1294,11 +1428,15 @@ function QueryList(props) {
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
+            cursor: 'pointer',
+          },
+        };
       },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      render: text => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '系统运维商处理结果',
@@ -1322,7 +1460,8 @@ function QueryList(props) {
         return (
           <a type="link" onClick={() => handledownFileToZip(record.id, record.no)}>
             附件下载
-          </a>)
+          </a>
+        );
       },
     },
   ];
@@ -1336,9 +1475,9 @@ function QueryList(props) {
     const exportColumns = (initial ? controlTable : columns).map(item => {
       return {
         column: item.dataIndex,
-        field: item.title
-      }
-    })
+        field: item.title,
+      };
+    });
     validateFields((err, values) => {
       if (!err) {
         dispatch({
@@ -1348,14 +1487,28 @@ function QueryList(props) {
             ids: selectedKeys.toString(),
             ...values,
             sendTime: '',
-            registerOccurTimeBegin: values.registerOccurTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
-            addTimeBegin: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-            addTimeEnd: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-            handleStartTimeBegin: values.handleStartTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
-            handleStartTimeEnd: values.handleStartTimeEnd ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
-            type: values.type ? (values.type).slice(-1)[0] : '',
-            createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-            createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+            registerOccurTimeBegin: values.registerOccurTimeBegin
+              ? values.registerOccurTimeBegin.format('YYYY-MM-DD')
+              : '',
+            addTimeBegin: values.addTime?.length
+              ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss')
+              : '',
+            addTimeEnd: values.addTime?.length
+              ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss')
+              : '',
+            handleStartTimeBegin: values.handleStartTimeBegin
+              ? values.registerOccurTimeBegin.format('YYYY-MM-DD')
+              : '',
+            handleStartTimeEnd: values.handleStartTimeEnd
+              ? values.registerOccurTimeBegin.format('YYYY-MM-DD')
+              : '',
+            type: values.type ? values.type.slice(-1)[0] : '',
+            createTimeBegin: values.createTime?.length
+              ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss')
+              : '',
+            createTimeEnd: values.createTime?.length
+              ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss')
+              : '',
             createTime: '',
             pageSize,
             current: page,
@@ -1392,14 +1545,12 @@ function QueryList(props) {
         key: val.key,
         title: val.title,
         dataIndex: val.key,
-        width: val.width
+        width: val.width,
       };
       if (key === 0 && val.title !== '操作') {
         obj.render = (text, records) => {
-          return (
-            <a onClick={() => gotoDetail(text, records)}>{text}</a>
-          )
-        }
+          return <a onClick={() => gotoDetail(text, records)}>{text}</a>;
+        };
         obj.fixed = 'left';
         obj.width = 200;
       }
@@ -1408,26 +1559,29 @@ function QueryList(props) {
           return (
             <a type="link" onClick={() => handledownFileToZip(records.id, records.no)}>
               附件下载
-            </a>)
-        }
+            </a>
+          );
+        };
       }
       if (val.title === '超时状态') {
         const blubnap = new Map([
           ['未超时', <AlertTwoTone twoToneColor="#52C41A" />],
           ['即将超时', <AlertTwoTone twoToneColor="orange" />],
-          ['已超时', <AlertTwoTone twoToneColor="red" />]
+          ['已超时', <AlertTwoTone twoToneColor="red" />],
         ]);
         const colormap = new Map([
           ['未超时', '#52C41A'],
           ['即将超时', 'orange'],
-          ['已超时', 'red']
+          ['已超时', 'red'],
         ]);
-        obj.render = (text) => {
+        obj.render = text => {
           return (
-            <><span style={{ fontSize: '1.4em', marginRight: 8 }}>{blubnap.get(text)}</span>
+            <>
+              <span style={{ fontSize: '1.4em', marginRight: 8 }}>{blubnap.get(text)}</span>
               <span style={{ color: colormap.get(text) }}>{text}</span>
-            </>)
-        }
+            </>
+          );
+        };
       }
       if (
         val.title === '故障概要' ||
@@ -1459,36 +1613,35 @@ function QueryList(props) {
 
       initialColumns.push(obj);
       setColumns(initialColumns);
-      setInitial(false)
+      setInitial(false);
       return null;
-    })
-  }
-
-  const onCheckAllChange = e => {
-    setColumns(e.target.checked ? initialColumns : []); setInitial(false)
+    });
   };
 
-  const onCheck = (checkedValues) => {
-    formThead = initialColumns.filter(i =>
-      checkedValues.indexOf(i.title) >= 0
-    );
+  const onCheckAllChange = e => {
+    setColumns(e.target.checked ? initialColumns : []);
+    setInitial(false);
+  };
+
+  const onCheck = checkedValues => {
+    formThead = initialColumns.filter(i => checkedValues.indexOf(i.title) >= 0);
 
     if (formThead.length === 0) {
-      setColumns([])
+      setColumns([]);
     }
     creataColumns();
   };
 
   const defaultAllkey = (initial ? controlTable : columns).map(item => {
-    return item.title
+    return item.title;
   });
 
   const rowSelection = {
-    onChange: (index) => {
-      setSelectedKeys([...index])
+    onChange: index => {
+      setSelectedKeys([...index]);
       // setSelectedRows([...handleSelect])
-    }
-  }
+    },
+  };
 
   const setTableHeight = () => {
     let height = 500;
@@ -1496,9 +1649,9 @@ function QueryList(props) {
     const clientHeight = window.document?.body?.clientHeight;
     if (clientHeight > 750) {
       if (expand) {
-        height = clientHeight - 568
+        height = clientHeight - 568;
       } else {
-        height = clientHeight - 510
+        height = clientHeight - 510;
       }
     }
     return height;
@@ -1513,7 +1666,7 @@ function QueryList(props) {
         style={{ display: 'none' }}
       />
       <Card bodyStyle={{ paddingBottom: 0 }}>
-        <div className='noexplain'>
+        <div className="noexplain">
           <Row gutter={24}>
             <Form {...formItemLayout} onSubmit={handleSearch}>
               <Col span={8}>
@@ -1528,8 +1681,7 @@ function QueryList(props) {
                 <Form.Item label="当前处理环节">
                   {getFieldDecorator('currentNode', {
                     initialValue: cacheinfo.currentNode,
-                  },
-                  )(
+                  })(
                     <Select placeholder="请选择" allowClear>
                       {currentNodeselect.map(obj => [
                         <Option key={obj.key} value={obj.title}>
@@ -1542,13 +1694,10 @@ function QueryList(props) {
               </Col>
 
               <Col span={8}>
-                <Form.Item label='当前环节处理人'>
-                  {
-                    getFieldDecorator('taskUser', {
-                      initialValue: cacheinfo.taskUser
-                    })(<Input />)
-                  }
-
+                <Form.Item label="当前环节处理人">
+                  {getFieldDecorator('taskUser', {
+                    initialValue: cacheinfo.taskUser,
+                  })(<Input />)}
                 </Form.Item>
               </Col>
 
@@ -1586,11 +1735,11 @@ function QueryList(props) {
               <Col xl={8} xs={12}>
                 <Form.Item label="是否需要提供故障报告">
                   {getFieldDecorator('finishReportSign', {
-                    initialValue: cacheinfo.finishReportSign
+                    initialValue: cacheinfo.finishReportSign,
                   })(
                     <Select>
-                      <Option value='是'>是</Option>
-                      <Option value='否'>否</Option>
+                      <Option value="是">是</Option>
+                      <Option value="否">否</Option>
                     </Select>,
                   )}
                 </Form.Item>
@@ -1599,11 +1748,11 @@ function QueryList(props) {
               <Col xl={8} xs={12}>
                 <Form.Item label="是否影响计量主站">
                   {getFieldDecorator('master', {
-                    initialValue: cacheinfo.master
+                    initialValue: cacheinfo.master,
                   })(
                     <Select>
-                      <Option value='是'>是</Option>
-                      <Option value='否'>否</Option>
+                      <Option value="是">是</Option>
+                      <Option value="否">否</Option>
                     </Select>,
                   )}
                 </Form.Item>
@@ -1625,34 +1774,39 @@ function QueryList(props) {
                 </Form.Item>
               </Col>
 
-
               <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
                 <Form.Item label="建单时间">
                   {getFieldDecorator('addTime', {
                     initialValue: '',
-                  },
-                  )(
+                  })(
                     <RangePicker
                       showTime={{
                         hideDisabledOptions: true,
-                        defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                        defaultValue: [
+                          moment('00:00:00', 'HH:mm:ss'),
+                          moment('23:59:59', 'HH:mm:ss'),
+                        ],
                       }}
                       format="YYYY-MM-DD HH:mm:ss"
                       style={{ width: '100%' }}
                       allowClear
-                    />)}
+                    />,
+                  )}
                 </Form.Item>
               </Col>
 
               <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
                 <Form.Item label="发生时间">
                   {getFieldDecorator('registerOccurTime', {
-                    initialValue: ''
+                    initialValue: '',
                   })(
                     <RangePicker
                       showTime={{
                         hideDisabledOptions: true,
-                        defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                        defaultValue: [
+                          moment('00:00:00', 'HH:mm:ss'),
+                          moment('23:59:59', 'HH:mm:ss'),
+                        ],
                       }}
                       format="YYYY-MM-DD HH:mm:ss"
                       style={{ width: '100%' }}
@@ -1662,7 +1816,6 @@ function QueryList(props) {
                   )}
                 </Form.Item>
               </Col>
-
 
               <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
                 <Form.Item label="故障来源">
@@ -1707,9 +1860,7 @@ function QueryList(props) {
                 <Form.Item label="故障地点">
                   {getFieldDecorator('registerAddress', {
                     initialValue: cacheinfo.registerAddress,
-                  })(
-                    <Input placeholder="请输入" allowClear />,
-                  )}
+                  })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
 
@@ -1733,8 +1884,7 @@ function QueryList(props) {
                 <Form.Item label="影响范围">
                   {getFieldDecorator('registerScope', {
                     initialValue: cacheinfo.registerScope,
-                  },
-                  )(
+                  })(
                     <Select placeholder="请选择" allowClear>
                       {effect.map(obj => [
                         <Option key={obj.key} value={obj.title}>
@@ -1750,14 +1900,20 @@ function QueryList(props) {
                 <Form.Item label="处理时间">
                   {getFieldDecorator('handleTime', {
                     initialValue: '',
-                  },
-                  )(<RangePicker
-                    showTime={{
-                      hideDisabledOptions: true,
-                      defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                    }}
-                    format="YYYY-MM-DD HH:mm:ss"
-                    style={{ width: '100%' }} allowClear />)}
+                  })(
+                    <RangePicker
+                      showTime={{
+                        hideDisabledOptions: true,
+                        defaultValue: [
+                          moment('00:00:00', 'HH:mm:ss'),
+                          moment('23:59:59', 'HH:mm:ss'),
+                        ],
+                      }}
+                      format="YYYY-MM-DD HH:mm:ss"
+                      style={{ width: '100%' }}
+                      allowClear
+                    />,
+                  )}
                 </Form.Item>
               </Col>
 
@@ -1935,7 +2091,7 @@ function QueryList(props) {
                   <Checkbox
                     // indeterminate={this.state.indeterminate}
                     onChange={onCheckAllChange}
-                    checked={columns.length === initialColumns.length === true}
+                    checked={(columns.length === initialColumns.length) === true}
                   >
                     列表展示
                   </Checkbox>
@@ -1950,19 +2106,13 @@ function QueryList(props) {
                 >
                   {initialColumns.map(item => (
                     <Col key={`item_${item.key}`} style={{ marginBottom: '8px' }}>
-                      <Checkbox
-                        value={item.title}
-                        key={item.key}
-                        checked={columns}
-                      >
+                      <Checkbox value={item.title} key={item.key} checked={columns}>
                         {item.title}
                       </Checkbox>
                     </Col>
                   ))}
-
                 </Checkbox.Group>
               </>
-
             }
           >
             <Button>

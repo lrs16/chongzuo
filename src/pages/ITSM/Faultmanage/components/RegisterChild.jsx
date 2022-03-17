@@ -142,7 +142,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
   const faultType = getTypebyTitle('故障分类');
 
   return (
-    <Row gutter={24} style={{ paddingTop: 24 }}>
+    <Row gutter={24}>
       <SysDict
         typeid="333"
         commonid="335"
@@ -170,13 +170,22 @@ const RegisterChild = React.forwardRef((props, ref) => {
               initialValue: tododetailslist
                 ? moment(tododetailslist.register.registerTime)
                 : moment(Date.now()),
-            })(<>
-              <DatePicker
-                showTime
-                format="YYYY-MM-DD HH:mm:ss"
-                defaultValue={moment(tododetailslist && tododetailslist.register.registerTime ? tododetailslist.register.registerTime : Date.now())}
-                onChange={(v) => { setFieldsValue({ registerTime: moment(v) }) }}
-                style={{ width: '100%' }} /></>
+            })(
+              <>
+                <DatePicker
+                  showTime
+                  format="YYYY-MM-DD HH:mm:ss"
+                  defaultValue={moment(
+                    tododetailslist && tododetailslist.register.registerTime
+                      ? tododetailslist.register.registerTime
+                      : Date.now(),
+                  )}
+                  onChange={v => {
+                    setFieldsValue({ registerTime: moment(v) });
+                  }}
+                  style={{ width: '100%' }}
+                />
+              </>,
             )}
           </Form.Item>
         </Col>
@@ -193,12 +202,22 @@ const RegisterChild = React.forwardRef((props, ref) => {
               initialValue: tododetailslist
                 ? moment(tododetailslist.register.registerOccurTime)
                 : moment(Date.now()),
-            })(<><DatePicker
-              showTime
-              format="YYYY-MM-DD HH:mm:ss"
-              defaultValue={moment(tododetailslist && tododetailslist.register.registerOccurTime ? tododetailslist.register.registerOccurTime : Date.now())}
-              onChange={(v) => { setFieldsValue({ registerOccurTime: moment(v) }) }}
-              style={{ width: '100%' }} /></>
+            })(
+              <>
+                <DatePicker
+                  showTime
+                  format="YYYY-MM-DD HH:mm:ss"
+                  defaultValue={moment(
+                    tododetailslist && tododetailslist.register.registerOccurTime
+                      ? tododetailslist.register.registerOccurTime
+                      : Date.now(),
+                  )}
+                  onChange={v => {
+                    setFieldsValue({ registerOccurTime: moment(v) });
+                  }}
+                  style={{ width: '100%' }}
+                />
+              </>,
             )}
           </Form.Item>
         </Col>
@@ -214,10 +233,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
               ],
               initialValue: main.source || '',
             })(
-              <Select
-                placeholder="请选择"
-                getPopupContainer={e => e.parentNode}
-              >
+              <Select placeholder="请选择" getPopupContainer={e => e.parentNode}>
                 {faultSource.map(obj => [
                   <Option key={obj.key} value={obj.title}>
                     {obj.title}
@@ -239,10 +255,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
               ],
               initialValue: tododetailslist ? tododetailslist.register.registerModel : '',
             })(
-              <Select
-                placeholder="请选择"
-                getPopupContainer={e => e.parentNode}
-              >
+              <Select placeholder="请选择" getPopupContainer={e => e.parentNode}>
                 {sysmodular.map(obj => [
                   <Option key={obj.key} value={obj.title}>
                     {obj.title}
@@ -262,7 +275,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
                   message: '请选择故障类型',
                 },
               ],
-              initialValue: type
+              initialValue: type,
             })(
               <Cascader
                 placeholder="请选择"
@@ -299,10 +312,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
               ],
               initialValue: tododetailslist ? tododetailslist.register.registerLevel : '',
             })(
-              <Select
-                placeholder="请选择"
-                getPopupContainer={e => e.parentNode}
-              >
+              <Select placeholder="请选择" getPopupContainer={e => e.parentNode}>
                 {priority.map(obj => [
                   <Option key={obj.key} value={obj.title}>
                     {obj.title}
@@ -324,10 +334,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
               ],
               initialValue: tododetailslist ? tododetailslist.register.registerScope : '',
             })(
-              <Select
-                getPopupContainer={e => e.parentNode}
-                placeholder="请选择"
-              >
+              <Select getPopupContainer={e => e.parentNode} placeholder="请选择">
                 {effect.map(obj => [
                   <Option key={obj.key} value={obj.title}>
                     {obj.title}
@@ -374,10 +381,8 @@ const RegisterChild = React.forwardRef((props, ref) => {
               <AutoComplete
                 getPopupContainer={e => e.parentNode}
                 dataSource={desautodata}
-                filterOption={(inputValue, option) =>
-                  option.props.children.includes(inputValue)
-                }
-              //  onSelect={value => handleSearch(value, 'des')}
+                filterOption={(inputValue, option) => option.props.children.includes(inputValue)}
+                //  onSelect={value => handleSearch(value, 'des')}
               >
                 <TextArea autoSize={{ minRows: 5 }} placeholder="请输入" />
               </AutoComplete>,
@@ -388,11 +393,14 @@ const RegisterChild = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="是否影响业务">
             {getFieldDecorator('registerEffect', {
-              initialValue: tododetailslist && tododetailslist.register && tododetailslist.register.registerEffect,
+              initialValue:
+                tododetailslist &&
+                tododetailslist.register &&
+                tododetailslist.register.registerEffect,
             })(
               <RadioGroup>
-                <Radio value='0'>是</Radio>
-                <Radio value='1'>否</Radio>
+                <Radio value="0">是</Radio>
+                <Radio value="1">否</Radio>
               </RadioGroup>,
             )}
           </Form.Item>
@@ -407,11 +415,14 @@ const RegisterChild = React.forwardRef((props, ref) => {
                   message: '请选择是否影响计量主站',
                 },
               ],
-              initialValue: tododetailslist && tododetailslist.register && tododetailslist.register.registerMaster,
+              initialValue:
+                tododetailslist &&
+                tododetailslist.register &&
+                tododetailslist.register.registerMaster,
             })(
               <RadioGroup>
-                <Radio value='0'>是</Radio>
-                <Radio value='1'>否</Radio>
+                <Radio value="0">是</Radio>
+                <Radio value="1">否</Radio>
               </RadioGroup>,
             )}
           </Form.Item>
@@ -421,20 +432,21 @@ const RegisterChild = React.forwardRef((props, ref) => {
           <Form.Item
             label="上传附件"
             {...forminladeLayout}
-          // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+            // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
           >
-            {
-              location && (!location.state || (location.state && !location.state.cache)) && ( // 位置已调
+            {location &&
+            (!location.state || (location.state && !location.state.cache)) && ( // 位置已调
                 <div>
                   <SysUpload
                     fileslist={
-                      (tododetailslist && tododetailslist.register.registerAttachments) ? JSON.parse(tododetailslist.register.registerAttachments) : []
+                      tododetailslist && tododetailslist.register.registerAttachments
+                        ? JSON.parse(tododetailslist.register.registerAttachments)
+                        : []
                     }
                     ChangeFileslist={newvalue => setFilesList(newvalue)}
                   />
                 </div>
-              )
-            }
+              )}
           </Form.Item>
         </Col>
 

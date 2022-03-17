@@ -10,13 +10,13 @@ function ExamineQuery(props) {
 
   return (
     <>
-      <Row gutter={24} style={{ marginTop: 24 }}>
-        <Form >
+      <Row gutter={24}>
+        <Form>
           <Col span={8}>
             <Form.Item label="审核结果" {...formItemLayout}>
               <RadioGroup defaultValue={info.checkResult} disabled>
-                <Radio value='1'>通过</Radio>
-                <Radio value='0'>不通过</Radio>
+                <Radio value="1">通过</Radio>
+                <Radio value="0">不通过</Radio>
               </RadioGroup>
             </Form.Item>
           </Col>
@@ -34,7 +34,7 @@ function ExamineQuery(props) {
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item label="审核意见"  {...forminladeLayout}>
+            <Form.Item label="审核意见" {...forminladeLayout}>
               <TextArea autoSize={{ minRows: 3 }} defaultValue={info.checkOpinion || ''} disabled />
             </Form.Item>
           </Col>
@@ -45,7 +45,7 @@ function ExamineQuery(props) {
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="审核人"{...formItemLayout}>
+            <Form.Item label="审核人" {...formItemLayout}>
               <Input defaultValue={info.checkUser} disabled />
             </Form.Item>
           </Col>
@@ -63,6 +63,6 @@ function ExamineQuery(props) {
       </Row>
     </>
   );
-};
+}
 
 export default ExamineQuery;

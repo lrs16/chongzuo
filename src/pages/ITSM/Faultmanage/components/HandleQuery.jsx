@@ -34,20 +34,24 @@ function HandleQuery(props) {
 
   return (
     <>
-      <Row gutter={24} style={{ marginTop: 24 }}>
+      <Row gutter={24}>
         <Form {...formItemLayout}>
           <Col span={24}>
-            <Form.Item label="故障详细描述"  {...forminladeLayout}>
-              <TextArea autoSize={{ minRows: 3 }} defaultValue={info.handleContent || ''} disabled />
+            <Form.Item label="故障详细描述" {...forminladeLayout}>
+              <TextArea
+                autoSize={{ minRows: 3 }}
+                defaultValue={info.handleContent || ''}
+                disabled
+              />
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item label="故障分析及原因"  {...forminladeLayout}>
+            <Form.Item label="故障分析及原因" {...forminladeLayout}>
               <TextArea autoSize={{ minRows: 1 }} defaultValue={info.handleReason || ''} disabled />
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item label="故障措施或建议"  {...forminladeLayout}>
+            <Form.Item label="故障措施或建议" {...forminladeLayout}>
               <TextArea autoSize={{ minRows: 1 }} defaultValue={info.handleAdvise || ''} disabled />
             </Form.Item>
           </Col>
@@ -78,14 +82,17 @@ function HandleQuery(props) {
 
           <Col span={24}>
             <Form.Item label="故障处理记录表" {...forminladeLayout}>
-              {info.handleRecordAttachments && <Downloadfile files={info.handleRecordAttachments} />}
+              {info.handleRecordAttachments && (
+                <Downloadfile files={info.handleRecordAttachments} />
+              )}
             </Form.Item>
           </Col>
 
-
           <Col span={24}>
             <Form.Item label="故障系统截图" {...forminladeLayout}>
-              {info.handlePictureAttachments && <Downloadfile files={info.handlePictureAttachments} />}
+              {info.handlePictureAttachments && (
+                <Downloadfile files={info.handlePictureAttachments} />
+              )}
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -112,6 +119,6 @@ function HandleQuery(props) {
       </Row>
     </>
   );
-};
+}
 
 export default HandleQuery;

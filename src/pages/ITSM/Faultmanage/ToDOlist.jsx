@@ -80,7 +80,7 @@ function ToDOlist(props) {
                 paginations,
                 expand,
               },
-              tabid: sessionStorage.getItem('tabid')
+              tabid: sessionStorage.getItem('tabid'),
             },
           });
           router.push({
@@ -96,7 +96,7 @@ function ToDOlist(props) {
                 paginations,
                 expand,
               },
-            }
+            },
           });
         };
         return <a onClick={() => handleClick()}>{text}</a>;
@@ -151,14 +151,23 @@ function ToDOlist(props) {
       const newvalues = {
         ...values,
         // type: values.type ? (values.type).slice(-1)[0] : '',
-        createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-        createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        createTimeBegin: values.createTime?.length
+          ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss')
+          : '',
+        createTimeEnd: values.createTime?.length
+          ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss')
+          : '',
         createTime: '',
-      }
+      };
       if (!err) {
         dispatch({
           type: 'fault/getSearchfaultTodo',
-          payload: { pageNum: current, pageSize, ...newvalues, type: values.type === [] ? '' : (values.type).slice(-1)[0], },
+          payload: {
+            pageNum: current,
+            pageSize,
+            ...newvalues,
+            type: values.type === [] ? '' : values.type.slice(-1)[0],
+          },
         });
         setTabRecord({ ...newvalues });
       }
@@ -169,7 +178,7 @@ function ToDOlist(props) {
     router.push({
       pathname: location.pathname,
       query: {},
-      state: {}
+      state: {},
     });
     resetFields();
     getTodolists(1, 15);
@@ -256,7 +265,7 @@ function ToDOlist(props) {
 
   // 获取数据
   useEffect(() => {
-    getTodolists(cacheinfo.paginations.current, cacheinfo.paginations.pageSize)
+    getTodolists(cacheinfo.paginations.current, cacheinfo.paginations.pageSize);
   }, []);
 
   useEffect(() => {
@@ -271,15 +280,15 @@ function ToDOlist(props) {
               paginations,
               expand,
             },
-            tabid: sessionStorage.getItem('tabid')
+            tabid: sessionStorage.getItem('tabid'),
           },
         });
-      };
+      }
       // 点击菜单刷新,并获取数据
       if (location.state.reset) {
         handleReset();
         setExpand(false);
-      };
+      }
       if (location.state.cacheinfo) {
         if (location.state.cacheinfo.paginations) {
           const { current, pageSize } = location.state.cacheinfo.paginations;
@@ -291,7 +300,7 @@ function ToDOlist(props) {
         setFieldsValue({
           createTime: createTimeBegin ? [moment(createTimeBegin), moment(createTimeEnd)] : '',
         });
-      };
+      }
     }
   }, [location.state]);
 
@@ -306,19 +315,33 @@ function ToDOlist(props) {
   const currentNode = getTypebyTitle('当前处理环节');
   const faultType = getTypebyTitle('故障分类');
 
-  const extra = (<>
-    <Button type="primary" onClick={() => getTodolists(1, 15)}>查 询</Button>
-    <Button style={{ marginLeft: 8 }} onClick={handleReset}>重 置</Button>
-    <Button
-      style={{ marginLeft: 8 }}
-      type="link"
-      onClick={() => {
-        setExpand(!expand);
-      }}
-    >
-      {expand ? (<>收起 <Icon type="up" /></>) : (<>展开 <Icon type="down" /></>)}
-    </Button>
-  </>)
+  const extra = (
+    <>
+      <Button type="primary" onClick={() => getTodolists(1, 15)}>
+        查 询
+      </Button>
+      <Button style={{ marginLeft: 8 }} onClick={handleReset}>
+        重 置
+      </Button>
+      <Button
+        style={{ marginLeft: 8 }}
+        type="link"
+        onClick={() => {
+          setExpand(!expand);
+        }}
+      >
+        {expand ? (
+          <>
+            收起 <Icon type="up" />
+          </>
+        ) : (
+          <>
+            展开 <Icon type="down" />
+          </>
+        )}
+      </Button>
+    </>
+  );
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -329,7 +352,7 @@ function ToDOlist(props) {
         style={{ display: 'none' }}
       />
       <Card>
-        <div className='noexplain'>
+        <div className="noexplain">
           <Row gutter={16}>
             <Form {...formItemLayout} onSubmit={() => getTodolists()}>
               <Col span={8}>
@@ -365,11 +388,9 @@ function ToDOlist(props) {
               </span>
               <Col span={8}>
                 <Form.Item label="当前处理环节">
-                  {getFieldDecorator(
-                    'currentNode', {
+                  {getFieldDecorator('currentNode', {
                     initialValue: cacheinfo.currentNode,
-                  },
-                  )(
+                  })(
                     <Select placeholder="请选择" allowClear>
                       {currentNode.map(obj => [
                         <Option key={obj.key} value={obj.title}>
@@ -421,12 +442,15 @@ function ToDOlist(props) {
                 <Col span={8}>
                   <Form.Item label="发生时间">
                     {getFieldDecorator('createTime', {
-                      initialValue: ''
+                      initialValue: '',
                     })(
                       <RangePicker
                         showTime={{
                           hideDisabledOptions: true,
-                          defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                          defaultValue: [
+                            moment('00:00:00', 'HH:mm:ss'),
+                            moment('23:59:59', 'HH:mm:ss'),
+                          ],
                         }}
                         format="YYYY-MM-DD HH:mm:ss"
                         style={{ width: '100%' }}
@@ -437,7 +461,15 @@ function ToDOlist(props) {
                   </Form.Item>
                 </Col>
               </span>
-              {expand ? (<Col span={8} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
+              {expand ? (
+                <Col span={8} style={{ textAlign: 'right' }}>
+                  {extra}
+                </Col>
+              ) : (
+                <Col span={8} style={{ marginTop: 4 }}>
+                  {extra}
+                </Col>
+              )}
             </Form>
           </Row>
         </div>
@@ -453,7 +485,7 @@ function ToDOlist(props) {
           rowKey={r => r.id}
           pagination={pagination}
           scroll={{ x: 800 }}
-        // rowSelection={rowSelection}
+          // rowSelection={rowSelection}
         />
       </Card>
     </PageHeaderWrapper>
