@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Row, Col, } from 'antd';
+import { Form, Input, Row, Col } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
 
 const { TextArea } = Input;
@@ -29,15 +29,15 @@ function TaskworkEditfillins(props) {
   const { info } = props;
 
   return (
-    <Row gutter={24} style={{ marginTop: 24 }}>
+    <Row gutter={24}>
       <Form {...formItemLayout}>
         <Col span={8}>
-          <Form.Item label='工作任务编号'>
+          <Form.Item label="工作任务编号">
             <Input defaultValue={info.no} disabled />
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label='填报时间'>
+          <Form.Item label="填报时间">
             <Input defaultValue={info.addTime} disabled />
           </Form.Item>
         </Col>
@@ -66,12 +66,12 @@ function TaskworkEditfillins(props) {
             <Input defaultValue={info.plannedEndTime} disabled />
           </Form.Item>
         </Col>
-        <Col span={24} >
+        <Col span={24}>
           <Form.Item label="附件" {...forminladeLayout}>
             {info.fileIds && <Downloadfile files={info.fileIds} />}
           </Form.Item>
         </Col>
-        <Col span={8} >
+        <Col span={8}>
           <Form.Item label="填报人">
             <Input defaultValue={info.addUser} disabled />
           </Form.Item>

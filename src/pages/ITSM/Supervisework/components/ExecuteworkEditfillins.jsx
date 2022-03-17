@@ -28,7 +28,7 @@ function ExecuteworkEditfillins(props) {
   const { info } = props;
 
   return (
-    <Row gutter={24} style={{ marginTop: 24 }}>
+    <Row gutter={24}>
       <Form {...formItemLayout}>
         <Col span={8}>
           <Form.Item label="工作执行结果">
@@ -36,7 +36,7 @@ function ExecuteworkEditfillins(props) {
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="实际开始时间" >
+          <Form.Item label="实际开始时间">
             <Input defaultValue={info.startTime} disabled />
           </Form.Item>
         </Col>
@@ -66,7 +66,7 @@ function ExecuteworkEditfillins(props) {
           </Form.Item>
         </Col>
       </Form>
-    </Row >
+    </Row>
   );
 }
 export default ExecuteworkEditfillins;

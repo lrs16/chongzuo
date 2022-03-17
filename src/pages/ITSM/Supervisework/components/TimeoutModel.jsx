@@ -16,20 +16,15 @@ function TimeoutModal(props) {
       ChangeTimeOutMsg(values);
       ChangeModalVisible(false);
     });
-  }
+  };
 
   // 超时信息
   const handleCancel = () => {
     ChangeModalVisible(false);
-  }
+  };
 
   return (
-    <Modal
-      title="填写超时原因"
-      visible={modalvisible}
-      onOk={handleOk}
-      onCancel={handleCancel}
-    >
+    <Modal title="填写超时原因" visible={modalvisible} onOk={handleOk} onCancel={handleCancel}>
       <Form>
         <Form.Item label="超时原因">
           {getFieldDecorator('msg', {

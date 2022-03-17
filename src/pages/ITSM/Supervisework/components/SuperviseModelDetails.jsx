@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Row, Col, } from 'antd';
+import { Form, Input, Row, Col } from 'antd';
 
 const { TextArea } = Input;
 
@@ -27,7 +27,7 @@ const forminladeLayout = {
 function SuperviseModelDetails(props) {
   const { info, userinfo } = props;
   return (
-    <Row gutter={24} style={{ marginTop: 24 }}>
+    <Row gutter={24}>
       <Form {...formItemLayout}>
         <Col span={24}>
           <Form.Item label="督办内容" {...forminladeLayout}>

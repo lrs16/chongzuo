@@ -2,12 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import TaskworkContext from '@/layouts/MenuContext';
 import { connect } from 'dva';
 import moment from 'moment';
-import {
-  Form,
-  Card,
-  Button,
-  message,
-} from 'antd';
+import { Form, Card, Button, message } from 'antd';
 import router from 'umi/router';
 import { openNotification } from '@/utils/utils';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -22,7 +17,7 @@ function TaskworkFillin(props) {
     superviseworkPersonArr,
     // loading,
     tabdata,
-    tabnew
+    tabnew,
   } = props;
 
   let superviseworkPersonSelect;
@@ -57,7 +52,7 @@ function TaskworkFillin(props) {
   };
 
   // 表单校验提示信息
-  const formerr = (err) => {
+  const formerr = err => {
     openNotification(Object.values(err));
   };
 
@@ -79,9 +74,9 @@ function TaskworkFillin(props) {
     superviseworkPersonSelect = superviseworkPersonArr.map(item => {
       return {
         key: item.userId,
-        value: item.userName
-      }
-    })
+        value: item.userName,
+      };
+    });
   }
 
   useEffect(() => {
@@ -98,21 +93,28 @@ function TaskworkFillin(props) {
           ...values,
           main_workUser: JSON.stringify(values.main_workUser),
           main_workUserId: JSON.stringify(values.main_workUserId),
-          main_addTime: values.main_addTime ? values.main_addTime.format('YYYY-MM-DD HH:mm:ss') : '',
-          main_plannedStartTime: values.main_plannedStartTime ? values.main_plannedStartTime.format('YYYY-MM-DD HH:mm:ss') : '',
-          main_plannedEndTime: values.main_plannedEndTime ? values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss') : '',
+          main_addTime: values.main_addTime
+            ? values.main_addTime.format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          main_plannedStartTime: values.main_plannedStartTime
+            ? values.main_plannedStartTime.format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          main_plannedEndTime: values.main_plannedEndTime
+            ? values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss')
+            : '',
           main_fileIds: files.ischange ? JSON.stringify(files.arr) : null,
           flowNodeName: '工作登记',
           editState: 'add',
           main_status: '1',
           main_addUserId: userinfo.userId,
           main_addUnitId: userinfo.unitId,
-        }
-      })
+        },
+      });
     });
   };
 
-  const handlesubmit = () => { // 提交传mainId
+  const handlesubmit = () => {
+    // 提交传mainId
     const tabid = sessionStorage.getItem('tabid');
     TaskworkfillinRef.current.validateFields((err, values) => {
       if (!err) {
@@ -120,9 +122,15 @@ function TaskworkFillin(props) {
           type: 'supervisemodel/tosubmitForm',
           payload: {
             ...values,
-            main_addTime: values.main_addTime ? values.main_addTime.format('YYYY-MM-DD HH:mm:ss') : '',
-            main_plannedStartTime: values.main_plannedStartTime ? values.main_plannedStartTime.format('YYYY-MM-DD HH:mm:ss') : '',
-            main_plannedEndTime: values.main_plannedEndTime ? values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss') : '',
+            main_addTime: values.main_addTime
+              ? values.main_addTime.format('YYYY-MM-DD HH:mm:ss')
+              : '',
+            main_plannedStartTime: values.main_plannedStartTime
+              ? values.main_plannedStartTime.format('YYYY-MM-DD HH:mm:ss')
+              : '',
+            main_plannedEndTime: values.main_plannedEndTime
+              ? values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss')
+              : '',
             main_fileIds: files.ischange ? JSON.stringify(files.arr) : null,
             flowNodeName: '工作登记',
             editState: 'add',
@@ -131,24 +139,24 @@ function TaskworkFillin(props) {
             main_addUnitId: userinfo.unitId,
             main_workUser: JSON.stringify(values.main_workUser),
             main_workUserId: JSON.stringify(values.main_workUserId),
-          }
+          },
         }).then(res => {
           if (res.code === 200) {
             message.success(res.msg);
             router.push({
               pathname: `/ITSM/supervisework/mycreatework`,
               query: { pathpush: true },
-              state: { cache: false, closetabid: tabid }
+              state: { cache: false, closetabid: tabid },
             });
           } else {
             message.error(res.msg);
           }
-        })
+        });
       }
       const allerr = Object.values(err);
       return formerr(allerr);
     });
-  }
+  };
 
   // 上传删除附件触发保存
   useEffect(() => {
@@ -161,9 +169,9 @@ function TaskworkFillin(props) {
     router.push({
       // pathname: `/ITSM/supervisework/mycreatework`,
       pathname: location.pathname,
-      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true, },
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true },
     });
-  }
+  };
 
   //  删除
   // const handleDelete = () => {
@@ -186,7 +194,8 @@ function TaskworkFillin(props) {
   //     })
   // }
 
-  const handlePaste = () => { // 粘贴
+  const handlePaste = () => {
+    // 粘贴
     setTimeVisible(true);
     const strObj = sessionStorage.getItem('copyrecord');
     const result = JSON.parse(strObj);
@@ -224,7 +233,9 @@ function TaskworkFillin(props) {
                 workUser: values.main_workUser.toString(), // 工作负责人
                 workUserId: values.main_workUserId,
                 addTime: moment(values.main_addTime).format('YYYY-MM-DD HH:mm:ss'),
-                plannedStartTime: moment(values.main_plannedStartTime).format('YYYY-MM-DD HH:mm:ss'),
+                plannedStartTime: moment(values.main_plannedStartTime).format(
+                  'YYYY-MM-DD HH:mm:ss',
+                ),
                 plannedEndTime: moment(values.main_plannedEndTime).format('YYYY-MM-DD HH:mm:ss'),
                 status: values.main_status, // 工作状态
                 content: values.main_content, // 工作内容
@@ -284,20 +295,23 @@ function TaskworkFillin(props) {
       >
         提交
       </Button>
-      <Button onClick={() => handleclose()} disabled={taskworkUploadStatus}>关闭</Button>
+      <Button onClick={() => handleclose()} disabled={taskworkUploadStatus}>
+        关闭
+      </Button>
     </>
   );
 
   return (
-    <PageHeaderWrapper
-      title={pagetitle}
-      extra={extrabuttons}
-    >
-      <div className='noexplain'>
+    <PageHeaderWrapper title={pagetitle} extra={extrabuttons}>
+      <div className="noexplain">
         <Card>
-          <TaskworkContext.Provider value={{
-            getUploadStatus: (v) => { setTaskworkUploadStatus(v) },
-          }}>
+          <TaskworkContext.Provider
+            value={{
+              getUploadStatus: v => {
+                setTaskworkUploadStatus(v);
+              },
+            }}
+          >
             <TaskworkEditfillin
               ref={TaskworkfillinRef}
               useInfo={userinfo}
@@ -312,7 +326,8 @@ function TaskworkFillin(props) {
               main={copyData}
               location={location}
               timeVisivle={timeVisivle}
-            /></TaskworkContext.Provider>
+            />
+          </TaskworkContext.Provider>
         </Card>
       </div>
     </PageHeaderWrapper>

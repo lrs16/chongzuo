@@ -1,21 +1,11 @@
 import React, { useState } from 'react';
 import moment from 'moment';
-import {
-  Form,
-  Input,
-  Modal,
-  DatePicker,
-  Tag,
-  Radio,
-  Row,
-  Col,
-  message
-} from 'antd';
+import { Form, Input, Modal, DatePicker, Tag, Radio, Row, Col, message } from 'antd';
 
 const { TextArea } = Input;
-const color = ['blue', 'green', 'blue']
+const color = ['blue', 'green', 'blue'];
 
-const withClick = (element, handleClick = () => { }) => {
+const withClick = (element, handleClick = () => {}) => {
   return <element.type {...element.props} onClick={handleClick} />;
 };
 
@@ -55,7 +45,7 @@ function CheckModel(props) {
 
   const handleopenClick = () => {
     if (selectedRows.length === 0) {
-      message.info('请至少选择一条数据')
+      message.info('请至少选择一条数据');
       return false;
     }
     const res = selectedRows.every(item => {
@@ -64,7 +54,7 @@ function CheckModel(props) {
       }
       message.info('请选择执行状态:待审核');
       return false;
-    })
+    });
 
     if (res === false) {
       return false;
@@ -87,9 +77,9 @@ function CheckModel(props) {
     });
   };
 
-  const handleAdopt = (e) => {
-    setAdopt(e.target.value)
-  }
+  const handleAdopt = e => {
+    setAdopt(e.target.value);
+  };
 
   return (
     <>
@@ -106,24 +96,21 @@ function CheckModel(props) {
         <Row gutter={16}>
           <Form {...formItemLayout}>
             <Col span={8}>
-              <Form.Item label='延期审核结果'>
+              <Form.Item label="延期审核结果">
                 {getFieldDecorator('check_result', {
                   rules: [
                     {
                       required,
-                      message: '请输入审核结果'
-                    }
+                      message: '请输入审核结果',
+                    },
                   ],
-                  initialValue: '001'
+                  initialValue: '001',
                 })(
-                  <Radio.Group
-                    onChange={handleAdopt}
-                  >
-                    <Radio value='001'>通过</Radio>
-                    <Radio value='002'>不通过</Radio>
-                  </Radio.Group>
-                )
-                }
+                  <Radio.Group onChange={handleAdopt}>
+                    <Radio value="001">通过</Radio>
+                    <Radio value="002">不通过</Radio>
+                  </Radio.Group>,
+                )}
               </Form.Item>
             </Col>
 
@@ -133,29 +120,28 @@ function CheckModel(props) {
                   rules: [
                     {
                       required,
-                      message: '请输入审核时间'
-                    }
+                      message: '请输入审核时间',
+                    },
                   ],
                   initialValue: moment(new Date()),
-                })(<>
-                  <DatePicker
-                    showTime
-                    format="YYYY-MM-DD HH:mm:ss"
-                    defaultValue={moment(new Date())}
-                    onChange={(v) => { setFieldsValue({ check_checkTime: moment(v) }) }}
-                  /></>)}
+                })(
+                  <>
+                    <DatePicker
+                      showTime
+                      format="YYYY-MM-DD HH:mm:ss"
+                      defaultValue={moment(new Date())}
+                      onChange={v => {
+                        setFieldsValue({ check_checkTime: moment(v) });
+                      }}
+                    />
+                  </>,
+                )}
               </Form.Item>
             </Col>
 
             <Col span={8}>
-              <Form.Item label='延期审核状态'>
-                {
-                  getFieldDecorator('check_status', {
-                  })(
-                    <Tag
-                      color={color[0]}>待审核</Tag>
-                  )
-                }
+              <Form.Item label="延期审核状态">
+                {getFieldDecorator('check_status', {})(<Tag color={color[0]}>待审核</Tag>)}
               </Form.Item>
             </Col>
 
@@ -163,14 +149,14 @@ function CheckModel(props) {
               {adopt === '001' && (
                 <Form.Item label="审核说明" {...forminladeLayout}>
                   {getFieldDecorator('check_content', {
-                    rules: [{ required: false, message: '请输入', }],
+                    rules: [{ required: false, message: '请输入' }],
                   })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
                 </Form.Item>
               )}
               {adopt === '002' && (
                 <Form.Item label="审核说明" {...forminladeLayout}>
                   {getFieldDecorator('check_content', {
-                    rules: [{ required: true, message: '请输入', }],
+                    rules: [{ required: true, message: '请输入' }],
                   })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
                 </Form.Item>
               )}

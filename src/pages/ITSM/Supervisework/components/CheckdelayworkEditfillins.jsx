@@ -1,5 +1,5 @@
 import React from 'react';
-import { Radio, Form, Input, Row, Col, } from 'antd';
+import { Radio, Form, Input, Row, Col } from 'antd';
 
 const { TextArea } = Input;
 
@@ -27,18 +27,18 @@ const forminladeLayout = {
 function CheckdelayworkEditfillins(props) {
   const { info } = props;
   return (
-    <Row gutter={24} style={{ marginTop: 24 }}>
+    <Row gutter={24}>
       <Form {...formItemLayout}>
         <Col span={8}>
-          <Form.Item label='延期审核结果'>
+          <Form.Item label="延期审核结果">
             <Radio.Group value={info.result} disabled>
-              <Radio value='通过'>通过</Radio>
-              <Radio value='不通过'>不通过</Radio>
+              <Radio value="通过">通过</Radio>
+              <Radio value="不通过">不通过</Radio>
             </Radio.Group>
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="延期审核时间" >
+          <Form.Item label="延期审核时间">
             <Input defaultValue={info.checkTime} disabled />
           </Form.Item>
         </Col>

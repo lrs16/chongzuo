@@ -1,20 +1,12 @@
 import React, { useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import {
-  Form,
-  Input,
-  Modal,
-  DatePicker,
-  Row,
-  Col,
-  message
-} from 'antd';
+import { Form, Input, Modal, DatePicker, Row, Col, message } from 'antd';
 
 const { TextArea } = Input;
 
 // 克隆子元素按钮，并添加事件
-const withClick = (element, handleClick = () => { }) => {
+const withClick = (element, handleClick = () => {}) => {
   return <element.type {...element.props} onClick={handleClick} />;
 };
 
@@ -46,7 +38,7 @@ function SuperviseModel(props) {
     form: { getFieldDecorator, validateFields, resetFields },
     children,
     userinfo,
-    selectedRows
+    selectedRows,
   } = props;
 
   const required = true;
@@ -63,13 +55,13 @@ function SuperviseModel(props) {
         props.onSumit(values);
         resetFields();
       }
-    })
-  }
+    });
+  };
 
   const handleopenClick = () => {
     const len = selectedRows.length;
     if (len === 0) {
-      message.info('请至少选择一条数据')
+      message.info('请至少选择一条数据');
       return false;
     }
     setVisible(true);
@@ -80,7 +72,7 @@ function SuperviseModel(props) {
     <>
       {withClick(children, handleopenClick)}
       <Modal
-        title='工作督办'
+        title="工作督办"
         visible={visible}
         width={1000}
         centered
@@ -91,18 +83,16 @@ function SuperviseModel(props) {
         <Row gutter={16}>
           <Form {...formItemLayout}>
             <Col span={24}>
-              <Form.Item label='督办内容' {...forminladeLayout}>
-                {
-                  getFieldDecorator('content', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入'
-                      }
-                    ],
-                    initialValue: ''
-                  })(<TextArea rows={4} />)
-                }
+              <Form.Item label="督办内容" {...forminladeLayout}>
+                {getFieldDecorator('content', {
+                  rules: [
+                    {
+                      required,
+                      message: '请输入',
+                    },
+                  ],
+                  initialValue: '',
+                })(<TextArea rows={4} />)}
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -121,12 +111,7 @@ function SuperviseModel(props) {
               <Form.Item label="督办时间">
                 {getFieldDecorator('superviseTime', {
                   initialValue: moment(new Date()),
-                })(
-                  <DatePicker
-                    disabled
-                    showTime
-                    format="YYYY-MM-DD HH:mm:ss"
-                  />)}
+                })(<DatePicker disabled showTime format="YYYY-MM-DD HH:mm:ss" />)}
               </Form.Item>
             </Col>
           </Form>
@@ -135,6 +120,4 @@ function SuperviseModel(props) {
     </>
   );
 }
-export default Form.create({})(
-  connect()(SuperviseModel),
-);
+export default Form.create({})(connect()(SuperviseModel));

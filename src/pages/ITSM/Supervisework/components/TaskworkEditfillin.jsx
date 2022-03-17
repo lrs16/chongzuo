@@ -1,13 +1,5 @@
 import React, { useState, useRef, useImperativeHandle, useEffect } from 'react';
-import {
-  Row,
-  Col,
-  Form,
-  Input,
-  Select,
-  DatePicker,
-  Tag
-} from 'antd';
+import { Row, Col, Form, Input, Select, DatePicker, Tag } from 'antd';
 import moment from 'moment';
 import SysUpload from '@/components/SysUpload';
 
@@ -27,23 +19,23 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
     status,
     superviseworkPersonSelect,
     location,
-    timeVisivle
+    timeVisivle,
   } = props;
 
-  const statusContent = ['计划中', '延期中', '已超时', '已完成']
+  const statusContent = ['计划中', '延期中', '已超时', '已完成'];
   const color = ['blue', 'orange', 'red', 'green'];
   const [fileslist, setFilesList] = useState([]);
   const [startdates, setStartDates] = useState(undefined);
   const [enddates, setEndDates] = useState(undefined);
 
   // 选择计划开始时间
-  const onStartChange = (dateString) => {
+  const onStartChange = dateString => {
     setStartDates(dateString);
     setFieldsValue({ main_plannedStartTime: dateString });
   };
 
   // 选择计划结束时间
-  const onEndChange = (dateString) => {
+  const onEndChange = dateString => {
     setEndDates(dateString);
     setFieldsValue({ main_plannedEndTime: dateString });
   };
@@ -62,12 +54,16 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
   }, [fileslist]);
 
   const attRef = useRef();
-  useImperativeHandle(ref, () => ({
-    getVal: () => getFieldsValue(),
-    resetVal: () => resetFields(),
-    Forms: props.form.validateFieldsAndScroll,
-    attRef
-  }), []);
+  useImperativeHandle(
+    ref,
+    () => ({
+      getVal: () => getFieldsValue(),
+      resetVal: () => resetFields(),
+      Forms: props.form.validateFieldsAndScroll,
+      attRef,
+    }),
+    [],
+  );
 
   const selectOnchange = (value, option) => {
     const optionkey = option.map(item => {
@@ -77,27 +73,29 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
       main_workUser: value,
       main_workUserId: optionkey,
     });
-  }
+  };
 
   const required = true;
 
-  const disabledendDate = (current) => { // 延期审核时间大于结束时间
+  const disabledendDate = current => {
+    // 延期审核时间大于结束时间
     return current && current < moment(main.plannedEndTime);
-  }
+  };
 
-  const newplannedEndTime = main.plannedEndTime !== undefined ? main.plannedEndTime : moment().add(1, 'days'); // 延期审核时间
+  const newplannedEndTime =
+    main.plannedEndTime !== undefined ? main.plannedEndTime : moment().add(1, 'days'); // 延期审核时间
 
   return (
-    <div style={{ paddingRight: 24, marginTop: 24 }}>
+    <div style={{ paddingRight: 24 }}>
       <Row gutter={24}>
-        <Form {...formItemLayout} >
+        <Form {...formItemLayout}>
           <Col span={8}>
             <Form.Item label="表单id" style={{ display: 'none' }}>
               {getFieldDecorator('main_id', {
                 initialValue: '',
               })(<Input disabled />)}
             </Form.Item>
-            <Form.Item label="工作任务编号" >
+            <Form.Item label="工作任务编号">
               {getFieldDecorator('main_no', {
                 initialValue: main.no,
               })(<Input disabled />)}
@@ -113,85 +111,78 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
                   showTime
                   format="YYYY-MM-DD hh:mm:ss"
                   style={{ width: '100%' }}
-                  allowClear />
+                  allowClear
+                />,
               )}
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item label="工作状态">
-              {getFieldDecorator('main_status', {})
-                (
-                  <Tag
-                    color={status ? color[statusContent.indexOf(status)] : "blue"}>
-                    {status || '计划中'}
-                  </Tag>
-                )}
+              {getFieldDecorator(
+                'main_status',
+                {},
+              )(
+                <Tag color={status ? color[statusContent.indexOf(status)] : 'blue'}>
+                  {status || '计划中'}
+                </Tag>,
+              )}
             </Form.Item>
           </Col>
-          {
-            superviseworkPersonSelect && superviseworkPersonSelect.length && (
-              <Col span={8}>
-                <Form.Item label="工作负责人">
-                  {getFieldDecorator('main_workUser', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入工作负责人'
-                      }
-                    ],
-                    initialValue: main && main.workUser ? main.workUser.split(',') : []
-                  })
-                    (
-                      <Select
-                        mode="multiple"
-                        showArrow
-                        getPopupContainer={triggerNode => triggerNode.parentNode}
-                        placeholder="请选择工作负责人"
-                        onChange={selectOnchange}
-                        disabled={type === 'delay'}
-                      >
-                        {superviseworkPersonSelect.map(obj => [
-                          <Option key={obj.key} value={obj.value}>
-                            {obj.value}
-                          </Option>
-                        ])}
-                      </Select>
-                    )}
-                </Form.Item>
-                <Form.Item label="工作负责人Id" style={{ display: 'none' }}>
-                  {getFieldDecorator('main_workUserId', {
-                    initialValue: main.workUserId
-                  })
-                    (
-                      <Select
-                        onChange={selectOnchange}
-                        getPopupContainer={triggerNode => triggerNode.parentNode}
-                        mode="multiple"
-                        showArrow
-                        placeholder="请选择工作负责人id"
-                      >
-                        {superviseworkPersonSelect.map(obj => [
-                          <Option key={obj.key} value={obj.value}>
-                            {obj.value}
-                          </Option>
-                        ])}
-                      </Select>
-                    )}
-                </Form.Item>
-              </Col>
-            )
-          }
+          {superviseworkPersonSelect && superviseworkPersonSelect.length && (
+            <Col span={8}>
+              <Form.Item label="工作负责人">
+                {getFieldDecorator('main_workUser', {
+                  rules: [
+                    {
+                      required,
+                      message: '请输入工作负责人',
+                    },
+                  ],
+                  initialValue: main && main.workUser ? main.workUser.split(',') : [],
+                })(
+                  <Select
+                    mode="multiple"
+                    showArrow
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
+                    placeholder="请选择工作负责人"
+                    onChange={selectOnchange}
+                    disabled={type === 'delay'}
+                  >
+                    {superviseworkPersonSelect.map(obj => [
+                      <Option key={obj.key} value={obj.value}>
+                        {obj.value}
+                      </Option>,
+                    ])}
+                  </Select>,
+                )}
+              </Form.Item>
+              <Form.Item label="工作负责人Id" style={{ display: 'none' }}>
+                {getFieldDecorator('main_workUserId', {
+                  initialValue: main.workUserId,
+                })(
+                  <Select
+                    onChange={selectOnchange}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
+                    mode="multiple"
+                    showArrow
+                    placeholder="请选择工作负责人id"
+                  >
+                    {superviseworkPersonSelect.map(obj => [
+                      <Option key={obj.key} value={obj.value}>
+                        {obj.value}
+                      </Option>,
+                    ])}
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
+          )}
           <Col span={24}>
             <Form.Item label="工作内容" {...forminladeLayout}>
               {getFieldDecorator('main_content', {
-                rules: [{ required, message: '请输入工作内容' }, {
-                }],
-                initialValue: main.content
-              })(
-                <TextArea
-                  disabled={type === 'delay'}
-                  rows={4} />
-              )}
+                rules: [{ required, message: '请输入工作内容' }, {}],
+                initialValue: main.content,
+              })(<TextArea disabled={type === 'delay'} rows={4} />)}
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -200,22 +191,27 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    message: '请输入计划开始时间'
-                  }
+                    message: '请输入计划开始时间',
+                  },
                 ],
-                initialValue: main.plannedStartTime ? moment(main.plannedStartTime) : startdates
-              })
-                (<>
-                  {timeVisivle && (<DatePicker
-                    disabled={type}
-                    allowClear={false}
-                    onChange={onStartChange}
-                    // disabledDate={disastartbledDate}
-                    defaultValue={main.plannedStartTime ? moment(main.plannedStartTime) : startdates}
-                    showTime
-                    format="YYYY-MM-DD HH:mm:ss"
-                  />)}</>
-                )}
+                initialValue: main.plannedStartTime ? moment(main.plannedStartTime) : startdates,
+              })(
+                <>
+                  {timeVisivle && (
+                    <DatePicker
+                      disabled={type}
+                      allowClear={false}
+                      onChange={onStartChange}
+                      // disabledDate={disastartbledDate}
+                      defaultValue={
+                        main.plannedStartTime ? moment(main.plannedStartTime) : startdates
+                      }
+                      showTime
+                      format="YYYY-MM-DD HH:mm:ss"
+                    />
+                  )}
+                </>,
+              )}
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -224,89 +220,84 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    message: '请输入计划结束时间'
-                  }
+                    message: '请输入计划结束时间',
+                  },
                 ],
-                initialValue: main.plannedEndTime ? moment(main.plannedEndTime) : enddates
-              })
-                (<>
-                  {
-                    timeVisivle && (<DatePicker
+                initialValue: main.plannedEndTime ? moment(main.plannedEndTime) : enddates,
+              })(
+                <>
+                  {timeVisivle && (
+                    <DatePicker
                       disabled={type}
                       onChange={onEndChange}
                       showTime
                       allowClear={false}
                       format="YYYY-MM-DD HH:mm:ss"
                       defaultValue={main.plannedEndTime ? moment(main.plannedEndTime) : enddates}
-                    // disabledDate={disaendbledDate}
-                    />)
-                  }
-                </>
-                )}
+                      // disabledDate={disaendbledDate}
+                    />
+                  )}
+                </>,
+              )}
             </Form.Item>
           </Col>
-          {(type !== '计划中' && type) && (
+          {type !== '计划中' && type && (
             <Col span={8}>
               <Form.Item label="延期结束时间">
                 {getFieldDecorator('plannedEndTime', {
                   rules: [
                     {
                       required,
-                      message: '请输入延期结束时间'
-                    }
+                      message: '请输入延期结束时间',
+                    },
                   ],
-                  initialValue: moment(newplannedEndTime)
-                })
-                  (<>
+                  initialValue: moment(newplannedEndTime),
+                })(
+                  <>
                     <DatePicker
                       showTime
                       format="YYYY-MM-DD HH:mm:ss"
                       disabledDate={disabledendDate}
                       defaultValue={moment(newplannedEndTime)}
-                      onChange={(v) => { setFieldsValue({ plannedEndTime: moment(v) }) }}
-                    /></>
-                  )}
+                      onChange={v => {
+                        setFieldsValue({ plannedEndTime: moment(v) });
+                      }}
+                    />
+                  </>,
+                )}
               </Form.Item>
             </Col>
           )}
           <Col span={24}>
-            <Form.Item label="上传附件" {...forminladeLayout} >
+            <Form.Item label="上传附件" {...forminladeLayout}>
               {getFieldDecorator('main_fileIds', {
                 initialValue: main && main.fileIds ? main.fileIds : '',
-              })
-                ( // 位置已调
-                  <div>
-                    {
-                      location && (!location.state || (location.state && !location.state.cache)) && (
-                        <SysUpload
-                          disabled={type === 'delay'}
-                          fileslist={files}
-                          ChangeFileslist={newvalue => setFilesList(newvalue)}
-                        />
-                      )
-                    }
-                  </div>
-                )}
+              })(
+                // 位置已调
+                <div>
+                  {location && (!location.state || (location.state && !location.state.cache)) && (
+                    <SysUpload
+                      disabled={type === 'delay'}
+                      fileslist={files}
+                      ChangeFileslist={newvalue => setFilesList(newvalue)}
+                    />
+                  )}
+                </div>,
+              )}
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item label="填报人">
               {getFieldDecorator('main_addUser', {
-                initialValue: useInfo.userName
-              })
-                (
-                  <Input disabled />
-                )}
+                initialValue: useInfo.userName,
+              })(<Input disabled />)}
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item label="填报单位">
               {getFieldDecorator('main_addUnit', {
-                initialValue: useInfo.unitName
-              })
-                (
-                  <Input disabled />
-                )}
+                initialValue: useInfo.unitName,
+              })(<Input disabled />)}
             </Form.Item>
           </Col>
         </Form>
@@ -325,12 +316,12 @@ TaskworkEditfillin.defaultProps = {
     plannedStartTime: undefined,
     plannedEndTime: undefined,
     status: '',
-    type: ''
+    type: '',
   },
   useInfo: {
     userName: '',
-    unitName: ''
-  }
+    unitName: '',
+  },
 };
 
 export default Form.create({})(TaskworkEditfillin);

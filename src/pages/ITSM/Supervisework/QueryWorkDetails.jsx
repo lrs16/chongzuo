@@ -1,11 +1,6 @@
 import React, { useEffect, useState, createContext } from 'react';
 import { connect } from 'dva';
-import {
-  Button,
-  Collapse,
-  Form,
-  Spin
-} from 'antd';
+import { Button, Collapse, Form, Spin } from 'antd';
 import router from 'umi/router';
 
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -23,7 +18,9 @@ export const FatherContext = createContext();
 function Work(props) {
   const {
     location,
-    location: { query: { mainId, } },
+    location: {
+      query: { mainId },
+    },
     openViewlist,
     getSuperviseLists,
     dispatch,
@@ -42,14 +39,14 @@ function Work(props) {
   const getInformation = () => {
     dispatch({
       type: 'supervisemodel/openViews',
-      payload: mainId
-    })
-  }
+      payload: mainId,
+    });
+  };
 
   // 初始化获取用户信息
   useEffect(() => {
     getInformation();
-  }, [])
+  }, []);
 
   // 点击页签右键刷新
   useEffect(() => {
@@ -64,10 +61,10 @@ function Work(props) {
       pathname: location.pathname,
       query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true },
     });
-  }
+  };
 
   const handleTabChange = key => {
-    settabActivekey(key)
+    settabActivekey(key);
   };
 
   // 督办内容
@@ -75,9 +72,9 @@ function Work(props) {
     if (tabActivekey === 'supervise') {
       dispatch({
         type: 'supervisemodel/togetSuperviseList',
-        payload: mainId
-      })
-    };
+        payload: mainId,
+      });
+    }
   }, [tabActivekey]);
 
   const tabList = [
@@ -103,52 +100,57 @@ function Work(props) {
         </>
       }
     >
-      <div className='noexplain'>
-        {
-          tabActivekey === 'taskwork' && (
-            <Spin spinning={loading} >
-              <div className={styles.collapse}>
-                {openViewlist && loading === false && (
-                  <Collapse
-                    expandIconPosition="right"
-                    defaultActiveKey={['0']}
-                    bordered={false}
-                  >
-                    {openViewlist.map((obj, index) => {
-                      // panel详情组件
-                      const Paneldesmap = new Map([
-                        ['main', <TaskworkEditfillins
+      <div className="noexplain">
+        {tabActivekey === 'taskwork' && (
+          <Spin spinning={loading}>
+            <div className={styles.collapse}>
+              {openViewlist && loading === false && (
+                <Collapse expandIconPosition="right" defaultActiveKey={['0']} bordered={false}>
+                  {openViewlist.map((obj, index) => {
+                    // panel详情组件
+                    const Paneldesmap = new Map([
+                      [
+                        'main',
+                        <TaskworkEditfillins
                           info={Object.values(obj)[0]}
                           main={openViewlist[0].main}
-                        />],
-                        ['check', <CheckdelayworkEditfillins
+                        />,
+                      ],
+                      [
+                        'check',
+                        <CheckdelayworkEditfillins
                           info={Object.values(obj)[0]}
                           main={openViewlist[0].main}
-                        />],
-                        ['execute', <ExecuteworkEditfillins
+                        />,
+                      ],
+                      [
+                        'execute',
+                        <ExecuteworkEditfillins
                           info={Object.values(obj)[0]}
                           main={openViewlist[0].main}
-                        />],
-                      ]);
-                      return (
-                        <Panel
-                          header={Panelheadermap.get(Object.keys(obj)[0])}
-                          key={index.toString()}>
-                          {Paneldesmap.get(Object.keys(obj)[0])}
-                        </Panel>
-                      );
-                    })}
-                  </Collapse>
-                )}
-              </div>
-            </Spin>
-          )}
+                        />,
+                      ],
+                    ]);
+                    return (
+                      <Panel
+                        header={Panelheadermap.get(Object.keys(obj)[0])}
+                        key={index.toString()}
+                      >
+                        {Paneldesmap.get(Object.keys(obj)[0])}
+                      </Panel>
+                    );
+                  })}
+                </Collapse>
+              )}
+            </div>
+          </Spin>
+        )}
         {tabActivekey === 'supervise' && (
           <SuperviseList data={getSuperviseLists} loading={loading} />
         )}
       </div>
-    </PageHeaderWrapper >
-  )
+    </PageHeaderWrapper>
+  );
 }
 
 export default Form.create({})(
@@ -157,5 +159,5 @@ export default Form.create({})(
     openViewlist: supervisemodel.openViewlist,
     getSuperviseLists: supervisemodel.getSuperviseLists,
     loading: loading.models.supervisemodel,
-  }))(Work)
-)
+  }))(Work),
+);

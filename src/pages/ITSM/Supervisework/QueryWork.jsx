@@ -2,7 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
-import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Badge, Popover, Checkbox, Icon, Tooltip } from 'antd';
+import {
+  Card,
+  Row,
+  Col,
+  Form,
+  Input,
+  Select,
+  Button,
+  DatePicker,
+  Table,
+  Badge,
+  Popover,
+  Checkbox,
+  Icon,
+  Tooltip,
+} from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
@@ -73,7 +88,7 @@ function QueryWork(props) {
   let cacheinfo = {};
   cacheinfo = location.state && location.state.cacheinfo ? location.state.cacheinfo : searchrecord;
 
-  const onSelectChange = (RowKeys) => {
+  const onSelectChange = RowKeys => {
     setSelectedRowKeys(RowKeys);
   };
 
@@ -89,7 +104,7 @@ function QueryWork(props) {
   };
 
   //  打开查询详情页
-  const gotoDetail = (record) => {
+  const gotoDetail = record => {
     dispatch({
       type: 'viewcache/gettabstate',
       payload: {
@@ -98,7 +113,7 @@ function QueryWork(props) {
           paginations,
           expand,
         },
-        tabid: sessionStorage.getItem('tabid')
+        tabid: sessionStorage.getItem('tabid'),
       },
     });
     router.push({
@@ -115,8 +130,8 @@ function QueryWork(props) {
           paginations,
           expand,
         },
-      }
-    })
+      },
+    });
   };
 
   const searchdata = (values, page, pageSize) => {
@@ -126,23 +141,47 @@ function QueryWork(props) {
       time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
       time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
       plannedStartTime: '',
-      plannedStartTime1: values.plannedStartTime?.length ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      plannedStartTime2: values.plannedStartTime?.length ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      plannedStartTime1: values.plannedStartTime?.length
+        ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      plannedStartTime2: values.plannedStartTime?.length
+        ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
       plannedEndTime: '',
-      plannedEndTime1: values.plannedEndTime?.length ? moment(values.plannedEndTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      plannedEndTime2: values.plannedEndTime?.length ? moment(values.plannedEndTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      plannedEndTime1: values.plannedEndTime?.length
+        ? moment(values.plannedEndTime[0]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      plannedEndTime2: values.plannedEndTime?.length
+        ? moment(values.plannedEndTime[1]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
       checkTime: '',
-      checkTime1: values.checkTime?.length ? moment(values.checkTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      checkTime2: values.checkTime?.length ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      checkTime1: values.checkTime?.length
+        ? moment(values.checkTime[0]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      checkTime2: values.checkTime?.length
+        ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
       startTime: '',
-      startTime1: values.startTime?.length ? moment(values.startTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      startTime2: values.startTime?.length ? moment(values.startTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      startTime1: values.startTime?.length
+        ? moment(values.startTime[0]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      startTime2: values.startTime?.length
+        ? moment(values.startTime[1]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
       endTime: '',
-      endTime1: values.endTime?.length ? moment(values.endTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      endTime2: values.endTime?.length ? moment(values.endTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      endTime1: values.endTime?.length
+        ? moment(values.endTime[0]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      endTime2: values.endTime?.length
+        ? moment(values.endTime[1]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
       executeTime: '',
-      executeTime1: values.executeOperationTime?.length ? moment(values.executeOperationTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      executeTime2: values.executeOperationTime?.length ? moment(values.executeOperationTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      executeTime1: values.executeOperationTime?.length
+        ? moment(values.executeOperationTime[0]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
+      executeTime2: values.executeOperationTime?.length
+        ? moment(values.executeOperationTime[1]).format('YYYY-MM-DD HH:mm:ss')
+        : '',
     };
     setTabRecord({ ...newvalues });
     dispatch({
@@ -151,7 +190,7 @@ function QueryWork(props) {
         ...newvalues,
         tab: '4',
         pageIndex: page,
-        pageSize
+        pageSize,
       },
     });
   };
@@ -175,7 +214,7 @@ function QueryWork(props) {
     router.push({
       pathname: `/ITSM/supervisework/querywork`,
       query: { pathpush: true },
-      state: { cach: false, }
+      state: { cach: false },
     });
     resetFields();
     searchdata(searchrecord, 1, 15);
@@ -194,15 +233,15 @@ function QueryWork(props) {
               paginations,
               expand,
             },
-            tabid: sessionStorage.getItem('tabid')
+            tabid: sessionStorage.getItem('tabid'),
           },
         });
-      };
+      }
       // 点击菜单刷新
       if (location.state.reset) {
         handleReset();
         setExpand(false);
-      };
+      }
       // 标签切回设置初始值
       if (location.state.cacheinfo) {
         const { current, pageSize } = location.state.cacheinfo.paginations;
@@ -228,16 +267,14 @@ function QueryWork(props) {
           addTime: time1 ? [moment(time1), moment(time2)] : '',
           checkTime: checkTime1 ? [moment(checkTime1), moment(checkTime2)] : '',
           endTime: endTime1 ? [moment(endTime1), moment(endTime2)] : '',
-          executeTime: executeTime1
-            ? [moment(executeTime1), moment(executeTime2)]
-            : '',
+          executeTime: executeTime1 ? [moment(executeTime1), moment(executeTime2)] : '',
           plannedEndTime: plannedEndTime1 ? [moment(plannedEndTime1), moment(plannedEndTime2)] : '',
           startTime: startTime1 ? [moment(startTime1), moment(startTime2)] : '',
           plannedStartTime: plannedStartTime1
             ? [moment(plannedStartTime1), moment(plannedStartTime2)]
             : '',
         });
-      };
+      }
     }
   }, [location.state]);
 
@@ -248,7 +285,7 @@ function QueryWork(props) {
       key: 'no',
       width: 250,
       render: (text, record) => {
-        return <a onClick={() => gotoDetail(record)}>{text}</a>
+        return <a onClick={() => gotoDetail(record)}>{text}</a>;
       },
     },
     {
@@ -269,11 +306,15 @@ function QueryWork(props) {
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
+            cursor: 'pointer',
+          },
+        };
       },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      render: text => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '工作负责人',
@@ -287,11 +328,15 @@ function QueryWork(props) {
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
+            cursor: 'pointer',
+          },
+        };
       },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      render: text => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '督办内容',
@@ -305,11 +350,15 @@ function QueryWork(props) {
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
+            cursor: 'pointer',
+          },
+        };
       },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      render: text => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '督办时间',
@@ -328,11 +377,9 @@ function QueryWork(props) {
       dataIndex: 'timeoutStatus',
       key: 'timeoutStatus',
       width: 100,
-      render: (text) => (
+      render: text => (
         <span>
-          <Badge
-            status={statusMap[statusContent.indexOf(text)]}
-            text={text} />
+          <Badge status={statusMap[statusContent.indexOf(text)]} text={text} />
         </span>
       ),
     },
@@ -390,11 +437,15 @@ function QueryWork(props) {
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
+            cursor: 'pointer',
+          },
+        };
       },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      render: text => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '执行操作时间',
@@ -450,11 +501,15 @@ function QueryWork(props) {
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            cursor: 'pointer'
-          }
-        }
+            cursor: 'pointer',
+          },
+        };
       },
-      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
+      render: text => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
   ];
 
@@ -494,7 +549,7 @@ function QueryWork(props) {
     pageSize: paginations.pageSize,
     total: getWorkQueryLists.total,
     showTotal: total => `总共  ${total}  条记录`,
-    onChange: (page) => changePage(page),
+    onChange: page => changePage(page),
   };
 
   // 导出
@@ -502,9 +557,9 @@ function QueryWork(props) {
     const exportColumns = columns.map(item => {
       return {
         column: item.dataIndex,
-        field: item.title
-      }
-    })
+        field: item.title,
+      };
+    });
     validateFields((err, values) => {
       dispatch({
         type: 'supervisemodel/downloadMyWorkExcel',
@@ -516,24 +571,44 @@ function QueryWork(props) {
           time1: values.addTime ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
           time2: values.addTime ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
           plannedStartTime: '',
-          plannedStartTime1: values.plannedStartTime ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-          plannedStartTime2: values.plannedStartTime ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          plannedStartTime1: values.plannedStartTime
+            ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          plannedStartTime2: values.plannedStartTime
+            ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
           plannedEndTime: '',
-          plannedEndTime1: values.plannedEndTime ? moment(values.plannedEndTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-          plannedEndTime2: values.plannedEndTime ? moment(values.plannedEndTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          plannedEndTime1: values.plannedEndTime
+            ? moment(values.plannedEndTime[0]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          plannedEndTime2: values.plannedEndTime
+            ? moment(values.plannedEndTime[1]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
           checkTime: '',
-          checkTime1: values.checkTime ? moment(values.checkTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-          checkTime2: values.checkTime ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          checkTime1: values.checkTime
+            ? moment(values.checkTime[0]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          checkTime2: values.checkTime
+            ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
           startTime: '',
-          startTime1: values.startTime ? moment(values.startTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-          startTime2: values.startTime ? moment(values.startTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          startTime1: values.startTime
+            ? moment(values.startTime[0]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          startTime2: values.startTime
+            ? moment(values.startTime[1]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
           endTime: '',
           endTime1: values.endTime ? moment(values.endTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
           endTime2: values.endTime ? moment(values.endTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
           executeTime: '',
-          executeTime1: values.executeOperationTime ? moment(values.executeOperationTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-          executeTime2: values.executeOperationTime ? moment(values.executeOperationTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        }
+          executeTime1: values.executeOperationTime
+            ? moment(values.executeOperationTime[0]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
+          executeTime2: values.executeOperationTime
+            ? moment(values.executeOperationTime[1]).format('YYYY-MM-DD HH:mm:ss')
+            : '',
+        },
       }).then(res => {
         const filename = '下载.xls';
         const blob = new Blob([res]);
@@ -543,8 +618,8 @@ function QueryWork(props) {
         a.download = filename;
         a.click();
         window.URL.revokeObjectURL(url);
-      })
-    })
+      });
+    });
   };
 
   // 创建列表
@@ -560,27 +635,22 @@ function QueryWork(props) {
       };
       if (key === 0) {
         obj.render = (text, record) => {
-          return (
-            <a onClick={() => gotoDetail(record)}>{text}</a>
-          )
-        }
-        obj.fixed = 'left'
+          return <a onClick={() => gotoDetail(record)}>{text}</a>;
+        };
+        obj.fixed = 'left';
       }
       initialColumns.push(obj);
       setColumns(initialColumns);
       return null;
-    }
-    )
+    });
   };
 
   const onCheckAllChange = e => {
-    setColumns(e.target.checked ? initialColumns : [])
+    setColumns(e.target.checked ? initialColumns : []);
   };
 
-  const onCheck = (checkedValues) => {
-    formThead = initialColumns.filter(i =>
-      checkedValues.indexOf(i.title) >= 0
-    );
+  const onCheck = checkedValues => {
+    formThead = initialColumns.filter(i => checkedValues.indexOf(i.title) >= 0);
 
     if (formThead.length === 0) {
       setColumns([]);
@@ -620,18 +690,32 @@ function QueryWork(props) {
   const executestatus = getTypebyTitle('执行状态');
 
   // 查询
-  const extra = (<>
-    <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
-    <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
-    <Button
-      style={{ marginLeft: 8 }}
-      type="link"
-      onClick={() => {
-        setExpand(!expand);
-      }}
-    >
-      {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
-    </Button></>
+  const extra = (
+    <>
+      <Button type="primary" onClick={() => handleSearch()}>
+        查 询
+      </Button>
+      <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>
+        重 置
+      </Button>
+      <Button
+        style={{ marginLeft: 8 }}
+        type="link"
+        onClick={() => {
+          setExpand(!expand);
+        }}
+      >
+        {expand ? (
+          <>
+            关 闭 <UpOutlined />
+          </>
+        ) : (
+          <>
+            展 开 <DownOutlined />
+          </>
+        )}
+      </Button>
+    </>
   );
 
   const setTableHeight = () => {
@@ -640,9 +724,9 @@ function QueryWork(props) {
     const clientHeight = window.document?.body?.clientHeight;
     if (clientHeight > 750) {
       if (expand) {
-        height = clientHeight - 568
+        height = clientHeight - 568;
       } else {
-        height = clientHeight - 510
+        height = clientHeight - 510;
       }
     }
     return height;
@@ -657,24 +741,26 @@ function QueryWork(props) {
         style={{ display: 'none' }}
       />
       <Card bodyStyle={{ paddingBottom: 0 }}>
-        <div className='noexplain'>
+        <div className="noexplain">
           <Row gutter={16}>
             <Form {...formItemLayout} onSubmit={handleSearch}>
               <Col span={8}>
                 <Form.Item label="填报时间">
                   {getFieldDecorator('addTime', {
                     initialValue: '',
-                  })
-                    (
-                      <RangePicker
-                        showTime={{
-                          hideDisabledOptions: true,
-                          defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                        }}
-                        format="YYYY-MM-DD HH:mm:ss"
-                        style={{ width: '100%' }}
-                      />
-                    )}
+                  })(
+                    <RangePicker
+                      showTime={{
+                        hideDisabledOptions: true,
+                        defaultValue: [
+                          moment('00:00:00', 'HH:mm:ss'),
+                          moment('23:59:59', 'HH:mm:ss'),
+                        ],
+                      }}
+                      format="YYYY-MM-DD HH:mm:ss"
+                      style={{ width: '100%' }}
+                    />,
+                  )}
                 </Form.Item>
               </Col>
               <Col span={8}>
@@ -713,7 +799,7 @@ function QueryWork(props) {
                   <Form.Item label="工作内容">
                     {getFieldDecorator('content', {
                       initialValue: cacheinfo.content,
-                    })(<Input placeholder="请输入" allowClear />,)}
+                    })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
@@ -727,34 +813,38 @@ function QueryWork(props) {
                   <Form.Item label="计划开始时间">
                     {getFieldDecorator('plannedStartTime', {
                       initialValue: '',
-                    })
-                      (
-                        <RangePicker
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                          }}
-                          format="YYYY-MM-DD HH:mm:ss"
-                          style={{ width: '100%' }}
-                        />
-                      )}
+                    })(
+                      <RangePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: [
+                            moment('00:00:00', 'HH:mm:ss'),
+                            moment('23:59:59', 'HH:mm:ss'),
+                          ],
+                        }}
+                        format="YYYY-MM-DD HH:mm:ss"
+                        style={{ width: '100%' }}
+                      />,
+                    )}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="计划结束时间">
                     {getFieldDecorator('plannedEndTime', {
                       initialValue: '',
-                    })
-                      (
-                        <RangePicker
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                          }}
-                          format="YYYY-MM-DD HH:mm:ss"
-                          style={{ width: '100%' }}
-                        />
-                      )}
+                    })(
+                      <RangePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: [
+                            moment('00:00:00', 'HH:mm:ss'),
+                            moment('23:59:59', 'HH:mm:ss'),
+                          ],
+                        }}
+                        format="YYYY-MM-DD HH:mm:ss"
+                        style={{ width: '100%' }}
+                      />,
+                    )}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
@@ -806,58 +896,64 @@ function QueryWork(props) {
                   <Form.Item label="实际开始时间">
                     {getFieldDecorator('startTime', {
                       initialValue: '',
-                    })
-                      (
-                        <RangePicker
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                          }}
-                          format="YYYY-MM-DD HH:mm:ss"
-                          style={{ width: '100%' }}
-                        />
-                      )}
+                    })(
+                      <RangePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: [
+                            moment('00:00:00', 'HH:mm:ss'),
+                            moment('23:59:59', 'HH:mm:ss'),
+                          ],
+                        }}
+                        format="YYYY-MM-DD HH:mm:ss"
+                        style={{ width: '100%' }}
+                      />,
+                    )}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="实际结束时间">
                     {getFieldDecorator('endTime', {
                       initialValue: '',
-                    })
-                      (
-                        <RangePicker
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                          }}
-                          format="YYYY-MM-DD HH:mm:ss"
-                          style={{ width: '100%' }}
-                        />
-                      )}
+                    })(
+                      <RangePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: [
+                            moment('00:00:00', 'HH:mm:ss'),
+                            moment('23:59:59', 'HH:mm:ss'),
+                          ],
+                        }}
+                        format="YYYY-MM-DD HH:mm:ss"
+                        style={{ width: '100%' }}
+                      />,
+                    )}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="工作执行情况说明">
                     {getFieldDecorator('executeContent', {
                       initialValue: cacheinfo.executeContent,
-                    })(<Input placeholder="请输入" allowClear />,)}
+                    })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="执行操作时间">
                     {getFieldDecorator('executeTime', {
                       initialValue: '',
-                    })
-                      (
-                        <RangePicker
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                          }}
-                          format="YYYY-MM-DD HH:mm:ss"
-                          style={{ width: '100%' }}
-                        />
-                      )}
+                    })(
+                      <RangePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: [
+                            moment('00:00:00', 'HH:mm:ss'),
+                            moment('23:59:59', 'HH:mm:ss'),
+                          ],
+                        }}
+                        format="YYYY-MM-DD HH:mm:ss"
+                        style={{ width: '100%' }}
+                      />,
+                    )}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
@@ -907,17 +1003,19 @@ function QueryWork(props) {
                   <Form.Item label="延期审核时间">
                     {getFieldDecorator('checkTime', {
                       initialValue: '',
-                    })
-                      (
-                        <RangePicker
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                          }}
-                          format="YYYY-MM-DD HH:mm:ss"
-                          style={{ width: '100%' }}
-                        />
-                      )}
+                    })(
+                      <RangePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: [
+                            moment('00:00:00', 'HH:mm:ss'),
+                            moment('23:59:59', 'HH:mm:ss'),
+                          ],
+                        }}
+                        format="YYYY-MM-DD HH:mm:ss"
+                        style={{ width: '100%' }}
+                      />,
+                    )}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
@@ -936,12 +1034,22 @@ function QueryWork(props) {
                 </Col>
               </span>
               {/* )} */}
-              {(expand || (location && location.state && location.state.expand)) ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
+              {expand || (location && location.state && location.state.expand) ? (
+                <Col span={8} style={{ marginTop: 4, paddingLeft: '8.666667%' }}>
+                  {extra}
+                </Col>
+              ) : (
+                <Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>
+                  {extra}
+                </Col>
+              )}
             </Form>
           </Row>
         </div>
         <div>
-          <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>导出数据</Button>
+          <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>
+            导出数据
+          </Button>
         </div>
         <div style={{ textAlign: 'right', marginBottom: 8 }}>
           <Popover
@@ -952,25 +1060,17 @@ function QueryWork(props) {
                 <div style={{ borderBottom: '1px solid #E9E9E9' }}>
                   <Checkbox
                     onChange={onCheckAllChange}
-                    checked={columns.length === initialColumns.length === true}
+                    checked={(columns.length === initialColumns.length) === true}
                   >
                     列表展示
                   </Checkbox>
                   <br />
                 </div>
 
-                <Checkbox.Group
-                  onChange={onCheck}
-                  value={defaultAllkey}
-                  defaultValue={columns}
-                >
+                <Checkbox.Group onChange={onCheck} value={defaultAllkey} defaultValue={columns}>
                   {initialColumns.map(item => (
                     <Col key={`item_${item.key}`} style={{ marginBottom: '8px' }}>
-                      <Checkbox
-                        value={item.title}
-                        key={item.key}
-                        checked={columns}
-                      >
+                      <Checkbox value={item.title} key={item.key} checked={columns}>
                         {item.title}
                       </Checkbox>
                     </Col>
@@ -984,7 +1084,7 @@ function QueryWork(props) {
             </Button>
           </Popover>
         </div>
-        < Table
+        <Table
           loading={loading}
           columns={initialColumns && initialColumns.length > 0 ? initialColumns : columns}
           scroll={{ x: 1600, y: setTableHeight() }}
