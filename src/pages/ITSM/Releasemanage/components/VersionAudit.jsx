@@ -321,9 +321,9 @@ function VersionAudit(props, ref) {
   return (
     <>
 
-      {info.releaseMains && info.releaseMains.length === 1 && alertvisible && (<Alert message={alertmessage.mes} type='warning' showIcon style={{ marginBottom: 12 }} />)}
+      {info.releaseMains && info.releaseMains.length === 1 && alertvisible && (<Alert message={alertmessage.mes} type='warning' showIcon style={{ marginBottom: 6 }} />)}
       {info.releaseMains && info.releaseMains.length > 1 && (
-        <Alert message='已合并工单' description={descriptionopion} type='info' style={{ marginBottom: 24 }} />
+        <Alert message='已合并工单' description={descriptionopion} type='info' style={{ marginBottom: 10 }} />
       )}
       <Row gutter={12}>
         <Form ref={formRef} {...formItemLayout}>
@@ -334,7 +334,7 @@ function VersionAudit(props, ref) {
                   return (
                     <>
                       {info.releaseMains.length > 1 ? (
-                        <Col span={8} style={{ marginBottom: 12 }}>
+                        <Col span={8} style={{ marginBottom: 4 }}>
                           <Input
                             defaultValue={obj.currentVersion}
                             addonBefore={`工单${obj.releaseNo}版本号：`}

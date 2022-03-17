@@ -236,7 +236,7 @@ function TemporaryRegistrat(props, ref) {
 
   return (
     <>
-      <Row gutter={12} style={{ marginTop: 24, }}>
+      <Row gutter={12}>
         <Form ref={formRef} {...formItemLayout}>
           <Col span={8}>
             <Form.Item label="临时发布编号">

@@ -90,7 +90,7 @@ function Implementation(props, ref) {
   const docunitmap = getTypebyId(1289);       // 出具文档单位
   return (
     <>
-      {alertvisible && (<Alert message={alertmessage.mes} type='warning' showIcon />)}
+      {alertvisible && (<Alert message={alertmessage.mes} type='warning' showIcon style={{ marginBottom: 6 }} />)}
       <Row gutter={12}>
         <Form ref={formRef} {...formItemLayout}>
           <Col span={8}>

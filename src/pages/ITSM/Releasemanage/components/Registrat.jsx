@@ -210,9 +210,17 @@ function Registrat(props, ref) {
   const testunitmap = getTypebyId(1288);     // 参与测试单位
   const docunitmap = getTypebyId(1289);     // 出具文档单位
 
+  function range(start, end) {
+    const result = [];
+    for (let i = start; i < end; i++) {
+      result.push(i);
+    }
+    return result;
+  }
+
   return (
     <>
-      {alertvisible && (<Alert message={alertmessage.mes} type='warning' showIcon />)}
+      {alertvisible && (<Alert message={alertmessage.mes} type='warning' showIcon style={{ marginBottom: 6 }} />)}
       <Row gutter={12}>
         <Form ref={formRef} {...formItemLayout}>
           {(taskName === '出厂测试' || taskName === '新建') && (
@@ -277,7 +285,40 @@ function Registrat(props, ref) {
                   {getFieldDecorator('testStart', {
                     rules: [{ required, message: `请选择出厂测试开始时间` }],
                     initialValue: moment(formmap.get(taskName).testStart || undefined),
-                  })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
+                  })(<DatePicker
+                    showTime
+                    placeholder="请选择时间"
+                    format="YYYY-MM-DD HH:mm:ss"
+                    disabled={!isEdit}
+                    style={{ width: '100%' }}
+                    disabledDate={(v) => {
+                      return getFieldsValue(['testEnd'])?.testEnd && v && moment(v) > moment(getFieldsValue(['testEnd'])?.testEnd);
+                    }}
+                    disabledTime={() => {
+                      const time = getFieldsValue(['testEnd', 'testStart']);
+                      const Hours = moment(time.testEnd).format('HH');
+                      const Minutes = moment(time.testEnd).format('mm');
+                      const Seconds = moment(time.testEnd).format('ss');
+                      if (time.testStart && time.testEnd && moment(time.testStart).format('YYYY-MM-DD') === moment(time.testEnd).format('YYYY-MM-DD')) {
+                        return {
+                          disabledHours: () => range(Hours, 24),
+                          disabledMinutes: () => {
+                            if (moment(time.testStart).format('YYYY-MM-DD HH') === moment(time.testEnd).format('YYYY-MM-DD HH')) {
+                              return range(Minutes, 60)
+                            }
+                            return []
+                          },
+                          disabledSeconds: () => {
+                            if (moment(time.testStart).format('YYYY-MM-DD HH:mm') === moment(time.testEnd).format('YYYY-MM-DD HH:mm')) {
+                              return range(Seconds, 60)
+                            }
+                            return []
+                          },
+                        };
+                      }
+                      return null
+                    }}
+                  />)}
                 </Form.Item>
               </Col>
               <Col span={8}>
@@ -285,7 +326,40 @@ function Registrat(props, ref) {
                   {getFieldDecorator('testEnd', {
                     rules: [{ required, message: `请选择出厂测试结束时间` }],
                     initialValue: moment(formmap.get(taskName).testEnd || undefined),
-                  })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
+                  })(<DatePicker
+                    showTime
+                    placeholder="请选择时间"
+                    format="YYYY-MM-DD HH:mm:ss"
+                    disabled={!isEdit}
+                    style={{ width: '100%' }}
+                    disabledDate={(v) => {
+                      return getFieldsValue(['testStart'])?.testStart && v && moment(v) < moment(getFieldsValue(['testStart'])?.testStart);
+                    }}
+                    disabledTime={() => {
+                      const time = getFieldsValue(['testEnd', 'testStart']);
+                      const Hours = moment(time.testStart).format('HH');
+                      const Minutes = moment(time.testStart).format('mm');
+                      const Seconds = moment(time.testStart).format('ss');
+                      if (time.testStart && time.testEnd && moment(time.testStart).format('YYYY-MM-DD') === moment(time.testEnd).format('YYYY-MM-DD')) {
+                        return {
+                          disabledHours: () => range(0, Hours),
+                          disabledMinutes: () => {
+                            if (moment(time.testStart).format('YYYY-MM-DD HH') === moment(time.testEnd).format('YYYY-MM-DD HH')) {
+                              return range(0, Minutes)
+                            }
+                            return []
+                          },
+                          disabledSeconds: () => {
+                            if (moment(time.testStart).format('YYYY-MM-DD HH:mm') === moment(time.testEnd).format('YYYY-MM-DD HH:mm')) {
+                              return range(0, Seconds)
+                            }
+                            return []
+                          },
+                        };
+                      }
+                      return null
+                    }}
+                  />)}
                 </Form.Item>
               </Col>
               <Col span={24}>

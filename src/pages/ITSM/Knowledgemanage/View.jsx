@@ -100,43 +100,45 @@ function Operation(props) {
         tabActiveKey={tabActivekey}
         onTabChange={handleTabChange}
       >
-        {tabActivekey === 'workorder' && (
-          <Spin spinning={loading} >
-            {viewinfo && (
-              <div className={styles.ordercollapse}>
-                <Collapse
-                  expandIconPosition="right"
-                  activeKey={activeKey}
-                  bordered={false}
-                  onChange={callback}
-                >
-                  <Panel header='知识收录' key="1">
-                    <EditContext.Provider value={{ editable: false }}>
-                      <Content
-                        wrappedComponentRef={ContentRef}
-                        formrecord={viewinfo[0].main}
-                        isedit
-                        Noediting
-                      />
-                    </EditContext.Provider>
-                  </Panel>
-                  {viewinfo[1] && (
-                    <Panel header='知识审核' key="2">
-                      <Examine
-                        wrappedComponentRef={ExmaineRef}
-                        check={viewinfo[1].check}
-                        Noediting
-                      />
+        <div className='noexplain'>
+          {tabActivekey === 'workorder' && (
+            <Spin spinning={loading} >
+              {viewinfo && (
+                <div className={styles.ordercollapse}>
+                  <Collapse
+                    expandIconPosition="right"
+                    activeKey={activeKey}
+                    bordered={false}
+                    onChange={callback}
+                  >
+                    <Panel header='知识收录' key="1">
+                      <EditContext.Provider value={{ editable: false }}>
+                        <Content
+                          wrappedComponentRef={ContentRef}
+                          formrecord={viewinfo[0].main}
+                          isedit
+                          Noediting
+                        />
+                      </EditContext.Provider>
                     </Panel>
-                  )}
-                </Collapse>
-              </div >
-            )}
-          </Spin>
-        )}
-        {tabActivekey === 'List' && (
-          <UpDataList data={updatas} loading={loading} />
-        )}
+                    {viewinfo[1] && (
+                      <Panel header='知识审核' key="2">
+                        <Examine
+                          wrappedComponentRef={ExmaineRef}
+                          check={viewinfo[1].check}
+                          Noediting
+                        />
+                      </Panel>
+                    )}
+                  </Collapse>
+                </div >
+              )}
+            </Spin>
+          )}
+          {tabActivekey === 'List' && (
+            <UpDataList data={updatas} loading={loading} />
+          )}
+        </div>
       </PageHeaderWrapper>
     </div>
   );

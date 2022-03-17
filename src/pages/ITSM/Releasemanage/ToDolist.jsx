@@ -5,6 +5,7 @@ import router from 'umi/router';
 import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import RangeTime from '@/components/SelectTime/RangeTime';
 import AdminAuth from '@/components/AdminAuth';
 import DictLower from '@/components/SysDict/DictLower';
 import { mergeOrders, exportReleaseOrder } from './services/api';
@@ -25,7 +26,7 @@ const formItemLayout = {
 function ToDolist(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, resetFields, validateFields, getFieldsValue },
+    form: { getFieldDecorator, resetFields, getFieldsValue, setFieldsValue },
     loading,
     list,
     dispatch,
@@ -49,16 +50,16 @@ function ToDolist(props) {
       type: 'releasetodo/fetchlist',
       payload: {
         ...values,
-        beginTime: values.beginTime ? moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        beginTime: values.time?.startTime || '',
+        endTime: values.time?.endTime || '',
         pageSize: size,
         pageIndex: page,
       },
     });
     setTabRecord({
       ...values,
-      beginTime: values.beginTime ? moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
-      endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      beginTime: values.time?.startTime || '',
+      endTime: values.time?.endTime || '',
     });
   };
 
@@ -128,8 +129,8 @@ function ToDolist(props) {
     const val = getFieldsValue();
     const formval = {
       ...val,
-      beginTime: val.beginTime ? moment(val.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
-      endTime: val.endTime ? moment(val.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      beginTime: values.time?.beginTime || '',
+      endTime: values.time?.endTime || '',
     };
     const userid = sessionStorage.getItem('userauthorityid');
     const releaseNos = selectedRecords.length > 0 && selectedRecords.map(item => {
@@ -435,37 +436,14 @@ function ToDolist(props) {
                 </Col>
                 <Col span={8}>
                   <Form.Item label="发送时间">
-                    <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                      {getFieldDecorator('beginTime', {
-                        initialValue: cacheinfo.beginTime,
-                      })(
-                        <DatePicker
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: moment('00:00:00', 'HH:mm:ss'),
-                          }}
-                          placeholder="开始时间"
-                          format='YYYY-MM-DD HH:mm:ss'
-                          style={{ minWidth: 120, width: '100%' }}
-                        />
-                      )}
-                    </div>
-                    <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
-                    <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
-                      {getFieldDecorator('endTime', {
-                        initialValue: cacheinfo.endTime,
-                      })(
-                        <DatePicker
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: moment('23:59:59', 'HH:mm:ss'),
-                          }}
-                          placeholder="结束时间"
-                          format='YYYY-MM-DD HH:mm:ss'
-                          style={{ minWidth: 120, width: '100%' }}
-                        />
-                      )}
-                    </div>
+                    {getFieldDecorator('time', {
+                      initialValue: { beginTime: cacheinfo.beginTime, endTime: cacheinfo.endTime },
+                    })(<></>)}
+                    <RangeTime
+                      startVal={cacheinfo.beginTime}
+                      endVal={cacheinfo.endTime}
+                      getTimes={(v) => { setFieldsValue({ time: v }) }}
+                    />
                   </Form.Item>
                 </Col>
               </span>

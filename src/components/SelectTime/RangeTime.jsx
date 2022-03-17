@@ -5,7 +5,7 @@ import { DatePicker, } from 'antd';
 function RangeTime(props) {
   const { startVal, endVal, getTimes } = props;
   const [startTime, setStartTime] = useState(undefined);
-  const [endtime, setEndTime] = useState(undefined);
+  const [endTime, setEndTime] = useState(undefined);
 
   useEffect(() => {
     if (startVal) {
@@ -29,7 +29,7 @@ function RangeTime(props) {
     <>
       <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
         <DatePicker
-          defaultValue={startVal ? moment(startVal, timeformat) : undefined}
+          defaultValue={startVal ? moment(startVal, timeformat) : null}
           showTime={{
             hideDisabledOptions: true,
             defaultValue: moment('00:00:00', 'HH:mm:ss'),
@@ -40,27 +40,27 @@ function RangeTime(props) {
           onChange={(_, dateString) => {
             setStartTime(dateString);
             if (getTimes) {
-              getTimes({ startTime: dateString, endtime: endtime || '' });
+              getTimes({ startTime: dateString, endTime: endTime || '' });
             }
           }}
           disabledDate={(v) => {
-            return v && v > moment(endtime || undefined);
+            return endTime && v && moment(v) > moment(endTime);
           }}
           disabledTime={() => {
-            const Hours = moment(endtime).format('HH');
-            const Minutes = moment(endtime).format('mm');
-            const Seconds = moment(endtime).format('ss');
-            if (startTime && endtime && moment(startTime).format('YYYY-MM-DD') === moment(endtime).format('YYYY-MM-DD')) {
+            const Hours = moment(endTime).format('HH');
+            const Minutes = moment(endTime).format('mm');
+            const Seconds = moment(endTime).format('ss');
+            if (startTime && endTime && moment(startTime).format('YYYY-MM-DD') === moment(endTime).format('YYYY-MM-DD')) {
               return {
                 disabledHours: () => range(Hours, 24),
                 disabledMinutes: () => {
-                  if (moment(startTime).format('YYYY-MM-DD HH') === moment(endtime).format('YYYY-MM-DD HH')) {
+                  if (moment(startTime).format('YYYY-MM-DD HH') === moment(endTime).format('YYYY-MM-DD HH')) {
                     return range(Minutes, 60)
                   }
                   return []
                 },
                 disabledSeconds: () => {
-                  if (moment(startTime).format('YYYY-MM-DD HH:mm') === moment(endtime).format('YYYY-MM-DD HH:mm')) {
+                  if (moment(startTime).format('YYYY-MM-DD HH:mm') === moment(endTime).format('YYYY-MM-DD HH:mm')) {
                     return range(Seconds, 60)
                   }
                   return []
@@ -74,7 +74,7 @@ function RangeTime(props) {
       <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
       <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
         <DatePicker
-          defaultValue={endVal ? moment(endVal, timeformat) : undefined}
+          defaultValue={endVal ? moment(endVal, timeformat) : null}
           showTime={{
             hideDisabledOptions: true,
             defaultValue: moment('23:59:59', 'HH:mm:ss'),
@@ -85,27 +85,27 @@ function RangeTime(props) {
           onChange={(_, dateString) => {
             setEndTime(dateString);
             if (getTimes) {
-              getTimes({ startTime: startTime || '', endtime: dateString });
+              getTimes({ startTime: startTime || '', endTime: dateString });
             }
           }}
           disabledDate={(v) => {
-            return v && v < moment(startTime || null);
+            return startTime && v && moment(v) < moment(startTime);
           }}
           disabledTime={() => {
             const Hours = moment(startTime).format('HH');
             const Minutes = moment(startTime).format('mm');
             const Seconds = moment(startTime).format('ss');
-            if (startTime && endtime && moment(startTime).format('YYYY-MM-DD') === moment(endtime).format('YYYY-MM-DD')) {
+            if (startTime && endTime && moment(startTime).format('YYYY-MM-DD') === moment(endTime).format('YYYY-MM-DD')) {
               return {
                 disabledHours: () => range(0, Hours),
                 disabledMinutes: () => {
-                  if (moment(startTime).format('YYYY-MM-DD HH') === moment(endtime).format('YYYY-MM-DD HH')) {
+                  if (moment(startTime).format('YYYY-MM-DD HH') === moment(endTime).format('YYYY-MM-DD HH')) {
                     return range(0, Minutes)
                   }
                   return []
                 },
                 disabledSeconds: () => {
-                  if (moment(startTime).format('YYYY-MM-DD HH:mm') === moment(endtime).format('YYYY-MM-DD HH:mm')) {
+                  if (moment(startTime).format('YYYY-MM-DD HH:mm') === moment(endTime).format('YYYY-MM-DD HH:mm')) {
                     return range(0, Seconds)
                   }
                   return []

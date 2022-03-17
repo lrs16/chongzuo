@@ -263,10 +263,10 @@ function Statistics(props) {
   );
 
   const disastartbledDate = (current) => {
-    return current && enddates && current > moment();
+    return current && enddates && moment(current) > moment(enddates);
   }
   const disaendbledDate = (current) => {
-    return current && current < moment() && startdates && current < startdates;
+    return current && startdates && moment(current) < moment(startdates);
   }
 
   setTimeout(() => {
@@ -365,7 +365,7 @@ function Statistics(props) {
               <div style={{ marginLeft: 280 }}>
                 <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                   <DatePicker
-                    value={startdates}
+                    value={startdates || ''}
                     placeholder="开始时间"
                     format={formatmap.get(selectTag)}
                     style={{ minWidth: 120, width: '100%' }}
@@ -384,7 +384,7 @@ function Statistics(props) {
                       setDateOpen({ start: status, end: false });
                     }}
                     onChange={(v) => {
-                      setStartDates(moment(v).startOf('date'));
+                      setStartDates(v ? moment(v).startOf('date') : '');
                     }}
                     open={dateOpen.start}
                     disabledDate={disastartbledDate}
@@ -412,7 +412,7 @@ function Statistics(props) {
                       setDateOpen({ start: false, end: status })
                     }}
                     onChange={(v) => {
-                      setEndDates(moment(v).endOf('date'));
+                      setEndDates(v ? moment(v).endOf('date') : '');
                     }}
                     open={dateOpen.end}
                     disabledDate={disaendbledDate}

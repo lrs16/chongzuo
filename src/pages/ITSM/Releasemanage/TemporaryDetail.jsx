@@ -361,7 +361,7 @@ function TemporaryDetail(props) {
               onChange={callback}
             >
               <Panel header='发布基本信息' key="form">
-                {info && (<div style={{ marginTop: 12 }}>
+                {info && (
                   <FilesContext.Provider value={{
                     // files: info?.tempRegister?.attach ? JSON.parse(info.tempRegister.attach) : [],
                     ChangeFiles: ((v) => { handleSave(v); }),
@@ -392,15 +392,14 @@ function TemporaryDetail(props) {
                       taskId={info?.taskId || taskId}
                     />
                   </FilesContext.Provider>
-                </div>)}
+                )}
               </Panel>
               <Panel header='处理过程' key="list">
-                <div style={{ marginTop: 12 }}>
-                  <TemporaryList
-                    dataSource={info?.releaseTempLogs}
-                    loading={loading}
-                  />
-                </div>
+
+                <TemporaryList
+                  dataSource={info?.releaseTempLogs}
+                  loading={loading}
+                />
               </Panel>
             </Collapse>
           </div>

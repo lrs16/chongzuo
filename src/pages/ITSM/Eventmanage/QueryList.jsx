@@ -82,13 +82,13 @@ function QueryList(props) {
         pageSize: size,
         pageIndex: page,
         time1: values.time?.startTime || '',
-        time2: values.time?.endtime || '',
+        time2: values.time?.endTime || '',
       },
     });
     setTabRecord({
       ...values,
       time1: values.time?.startTime || '',
-      time2: values.time?.endtime || '',
+      time2: values.time?.endTime || '',
     });
   };
 
@@ -324,7 +324,7 @@ function QueryList(props) {
         values: {
           ...values,
           time1: values.time?.startTime ? moment(values.time?.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
-          time2: values.time?.endtime ? moment(values.time?.endtime).format('YYYY-MM-DD HH:mm:ss') : '',
+          time2: values.time?.endTime ? moment(values.time?.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
           eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : '',
         },
         ids: selectedRowKeys.toString(),
@@ -897,7 +897,7 @@ function QueryList(props) {
               <Col span={8}>
                 <Form.Item label="建单时间">
                   {getFieldDecorator('time', {
-                    initialValue: { startTime: cacheinfo.time1, endtime: cacheinfo.time2 },
+                    initialValue: { startTime: cacheinfo.time1, endTime: cacheinfo.time2 },
                   })(<></>)}
                   <RangeTime
                     startVal={cacheinfo.time1}

@@ -42,7 +42,7 @@ function ToDolist(props) {
     const newvalue = {
       ...values,
       time3: values.time?.startTime || '',
-      time4: values.time?.endtime || '',
+      time4: values.time?.endTime || '',
     }
     dispatch({
       type: 'eventtodo/fetchlist',
@@ -67,7 +67,7 @@ function ToDolist(props) {
             values: {
               ...values,
               time3: values.time?.startTime || '',
-              time4: values.time?.endtime || '',
+              time4: values.time?.endTime || '',
             },
             ids,
           },
@@ -433,7 +433,7 @@ function ToDolist(props) {
                 <Col span={8}>
                   <Form.Item label="发送时间">
                     {getFieldDecorator('time', {
-                      initialValue: { startTime: cacheinfo.time3, endtime: cacheinfo.time4 },
+                      initialValue: { startTime: cacheinfo.time3, endTime: cacheinfo.time4 },
                     })(<></>)}
                     <RangeTime
                       startVal={cacheinfo.time3}

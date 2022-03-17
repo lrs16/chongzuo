@@ -87,9 +87,7 @@ function HistoryOrderInfo(props) {
           ]);
           return (
             <Panel header={Panelheadermap.get(key)} key={index.toString()} className={Object.values(obj)[0] || Object.values(obj)[1] === '已超时' ? styles.timeout : ''} >
-              <div style={{ marginTop: 12 }}>
-                {Paneldesmap.get(key)}
-              </div>
+              {Paneldesmap.get(key)}
             </Panel>
           );
         })}

@@ -185,7 +185,7 @@ function ImplementationPre(props, ref) {
 
   return (
     <>
-      {alertvisible && (<Alert message={alertmessage.mes} type='warning' showIcon />)}
+      {alertvisible && (<Alert message={alertmessage.mes} type='warning' showIcon style={{ marginBottom: 6 }} />)}
       <Row gutter={12}>
         <Form ref={formRef}>
           <Col span={24}>

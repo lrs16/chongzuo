@@ -5,6 +5,7 @@ import router from 'umi/router';
 import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, message, Tooltip, Divider } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import RangeTime from '@/components/SelectTime/RangeTime';
 import DictLower from '@/components/SysDict/DictLower';
 import { exportReleaseOrder } from './services/temp';
 
@@ -55,10 +56,10 @@ function Querylist(props) {
       payload: {
         ...values,
         orderType: 'LS',
-        beginTime: values.beginTime ? moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        releaseBeginTime: values.releaseBeginTime ? moment(values.releaseBeginTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        releaseEndTime: values.releaseEndTime ? moment(values.releaseEndTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        beginTime: values.time?.startTime ? moment(values.time?.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        endTime: values.time?.endTime ? moment(values.time?.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        releaseBeginTime: values.releasetime?.startTime ? moment(values.releasetime?.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        releaseEndTime: values.releasetime?.endTime ? moment(values.releasetime?.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
         pageSize: size,
         pageIndex: page,
       },
@@ -66,10 +67,12 @@ function Querylist(props) {
     setTabRecord({
       ...values,
       orderType: 'LS',
-      beginTime: values.beginTime ? moment(values.beginTime).format('X') : '',
-      endTime: values.endTime ? moment(values.endTime).format('X') : '',
-      releasebeginTime: values.releasebeginTime ? moment(values.releasebeginTime).format('X') : '',
-      releaseEndTime: values.releaseEndTime ? moment(values.releaseEndTime).format('X') : '',
+      beginTime: values.time?.startTime ? moment(values.time?.startTime).format('X') : '',
+      endTime: values.time?.endTime ? moment(values.time?.endTime).format('X') : '',
+      releaseBeginTime: values.releasetime?.startTime ? moment(values.releasetime?.startTime).format('X') : '',
+      releaseEndTime: values.releasetime?.endTime ? moment(values.releasetime?.endTime).format('X') : '',
+      time: {},
+      releasetime: {},
     });
   };
 
@@ -143,8 +146,10 @@ function Querylist(props) {
     const val = getFieldsValue();
     const formval = {
       ...val,
-      beginTime: val.beginTime ? moment(val.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
-      endTime: val.endTime ? moment(val.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      beginTime: values.time?.startTime ? moment(values.time?.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      endTime: values.time?.endTime ? moment(values.time?.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      releaseBeginTime: values.releasetime?.startTime ? moment(values.releasetime?.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      releaseEndTime: values.releasetime?.endTime ? moment(values.releasetime?.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
     };
     const releaseNos = selectedRecords.length > 0 && selectedRecords.map(item => {
       return item.releaseNo
@@ -553,6 +558,36 @@ function Querylist(props) {
                   </Col>
                   <Col span={8}>
                     <Form.Item label="出厂测试时间">
+                      {getFieldDecorator('time', {
+                        initialValue: {
+                          startTime: cacheinfo.beginTime ? moment(cacheinfo.beginTime * 1000) : '',
+                          endTime: cacheinfo.endTime ? moment(cacheinfo.endTime * 1000) : ''
+                        },
+                      })(<></>)}
+                      <RangeTime
+                        startVal={cacheinfo?.beginTime ? moment(cacheinfo.beginTime * 1000) : ''}
+                        endVal={cacheinfo?.endTime ? moment(cacheinfo.endTime * 1000) : ''}
+                        getTimes={(v) => { setFieldsValue({ time: v }) }}
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item label="发布时间">
+                      {getFieldDecorator('releasetime', {
+                        initialValue: {
+                          releaseBeginTime: cacheinfo.releaseBeginTime ? moment(cacheinfo.releaseBeginTime * 1000) : '',
+                          releaseEndTime: cacheinfo.releaseEndTime ? moment(cacheinfo.releaseEndTime * 1000) : ''
+                        },
+                      })(<></>)}
+                      <RangeTime
+                        startVal={cacheinfo?.releaseBeginTime ? moment(cacheinfo.releaseBeginTime * 1000) : ''}
+                        endVal={cacheinfo?.releaseEndTime ? moment(cacheinfo.releaseEndTime * 1000) : ''}
+                        getTimes={(v) => { setFieldsValue({ releasetime: v }) }}
+                      />
+                    </Form.Item>
+                  </Col>
+                  {/* <Col span={8}>
+                    <Form.Item label="出厂测试时间">
                       <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                         {getFieldDecorator('beginTime', {
                           initialValue: cacheinfo.beginTime ? moment(cacheinfo.beginTime * 1000) : '',
@@ -585,8 +620,8 @@ function Querylist(props) {
                         )}
                       </div>
                     </Form.Item>
-                  </Col>
-                  <Col span={8}>
+                  </Col> */}
+                  {/* <Col span={8}>
                     <Form.Item label="发布时间">
                       <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                         {getFieldDecorator('releaseBeginTime', {
@@ -620,7 +655,7 @@ function Querylist(props) {
                         )}
                       </div>
                     </Form.Item>
-                  </Col>
+                  </Col> */}
                 </>
               )}
               {expand ? (

@@ -9,6 +9,7 @@ import DictLower from '@/components/SysDict/DictLower';
 import UserContext from '@/layouts/MenuContext';
 import CheckOneUser from '@/components/SelectUser/CheckOneUser';
 import { knowledgeCheckUserList } from '@/services/user';
+import RangeTime from '@/components/SelectTime/RangeTime';
 import { submitkowledge, releasekowledge, revokekowledge, abolishkowledge, deletekowledge } from './services/api';
 import Examine from './components/Examine';
 
@@ -89,11 +90,13 @@ function KnowledgeList(props) {
       pageSize: size,
       addUserId: pagetitle === '我的知识' ? sessionStorage.getItem('userauthorityid') : '',
       checkUserId: pagetitle === '知识审核' ? sessionStorage.getItem('userauthorityid') : '',
-      time1: values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '',
-      time2: values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '',
-      time3: values.time3 ? moment(values.time3).format('YYYY-MM-DD HH:mm:ss') : '',
-      time4: values.time4 ? moment(values.time4).format('YYYY-MM-DD HH:mm:ss') : '',
+      time1: values.registtime?.startTime ? moment(values.registtime?.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      time2: values.registtime?.endTime ? moment(values.registtime?.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      time3: values.edittime?.startTime ? moment(values.edittime?.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      time4: values.edittime?.endTime ? moment(values.edittime?.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
       tab: statusmap.get(pagetitle),
+      registtime: {},
+      edittime: {},
     };
     dispatch({
       type: 'knowledg/fetchlist',
@@ -139,10 +142,10 @@ function KnowledgeList(props) {
         ...values,
         addUserId: pagetitle === '我的知识' ? sessionStorage.getItem('userauthorityid') : '',
         checkUserId: pagetitle === '知识审核' ? sessionStorage.getItem('userauthorityid') : '',
-        time1: values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '',
-        time2: values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '',
-        time3: values.time3 ? moment(values.time3).format('YYYY-MM-DD HH:mm:ss') : '',
-        time4: values.time4 ? moment(values.time4).format('YYYY-MM-DD HH:mm:ss') : '',
+        time1: values.registtime?.startTime || '',
+        time2: values.registtime?.endTime || '',
+        time3: values.edittime?.startTime || '',
+        time4: values.edittime?.endTime || '',
         tab: statusmap.get(pagetitle),
         ids: selectedRowKeys.length === 0 ? '' : selectedRowKeys.toString(),
       },
@@ -610,7 +613,17 @@ function KnowledgeList(props) {
               </Col>
               <span style={{ display: expand || starttime || endtime ? 'block' : 'none' }}>
                 <Col span={8}>
-                  <Form.Item label="登记时间" >
+                  <Form.Item label="登记时间">
+                    {getFieldDecorator('registtime', {
+                      initialValue: { startTime: cacheinfo.time1, endTime: cacheinfo.time2 },
+                    })(<></>)}
+                    <RangeTime
+                      startVal={cacheinfo?.time1}
+                      endVal={cacheinfo?.time2}
+                      getTimes={(v) => { setFieldsValue({ registtime: v }) }}
+                    />
+                  </Form.Item>
+                  {/* <Form.Item label="登记时间" >
                     <Row>
                       <Col span={11}>
                         {getFieldDecorator('time1', {
@@ -644,7 +657,7 @@ function KnowledgeList(props) {
                         )}
                       </Col>
                     </Row>
-                  </Form.Item>
+                  </Form.Item> */}
                 </Col>
                 <Col span={8}>
                   <Form.Item label="知识标题">
@@ -723,7 +736,17 @@ function KnowledgeList(props) {
                   </Form.Item>
                 </Col> */}
                 <Col span={8}>
-                  <Form.Item label="编辑时间" >
+                  <Form.Item label="编辑时间">
+                    {getFieldDecorator('edittime', {
+                      initialValue: { startTime: cacheinfo.time3, endTime: cacheinfo.time4 },
+                    })(<></>)}
+                    <RangeTime
+                      startVal={cacheinfo?.time3}
+                      endVal={cacheinfo?.time4}
+                      getTimes={(v) => { setFieldsValue({ edittime: v }) }}
+                    />
+                  </Form.Item>
+                  {/* <Form.Item label="编辑时间" >
                     <Row>
                       <Col span={11}>
                         {getFieldDecorator('time3', {
@@ -757,7 +780,7 @@ function KnowledgeList(props) {
                         )}
                       </Col>
                     </Row>
-                  </Form.Item>
+                  </Form.Item> */}
                 </Col>
               </span>
               <Col span={24} style={{ paddingTop: 4, textAlign: 'right' }}>{extra}</Col>

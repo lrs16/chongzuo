@@ -132,7 +132,7 @@ const Examine = forwardRef((props, ref) => {
   return (
     <>
       <Form {...formItemLayout}>
-        <Row gutter={24} style={{ paddingTop: 24 }}>
+        <Row gutter={24}>
           {(taskName !== '自动化科业务人员确认' && taskName !== '需求登记人员确认') ? (
             <Col span={8}>
               <Form.Item label={`${text}结果`}>

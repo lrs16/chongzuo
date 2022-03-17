@@ -118,7 +118,7 @@ const Handle = React.forwardRef((props, ref) => {
 
   return (
     <>
-      <Row gutter={24} style={{ marginTop: 24 }}>
+      <Row gutter={24}>
         <Form {...formItemLayout}>
           <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="处理表单id">

@@ -58,7 +58,7 @@ const Check = forwardRef((props, ref) => {
   }, [info]);
 
   return (
-    <Row gutter={24} style={{ paddingTop: 24 }}>
+    <Row gutter={24}>
       <Form {...formItemLayout}>
         <Col span={24}>
           <Col span={8} style={{ display: 'none' }}>

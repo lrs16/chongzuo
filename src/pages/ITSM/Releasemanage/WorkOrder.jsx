@@ -724,137 +724,119 @@ function WorkOrder(props) {
         >
           {taskName === '出厂测试' && info && info.releaseRegister && (
             <Panel header={taskName} key="form">
-              <div>
-                <Registrat
-                  wrappedComponentRef={RegistratRef}
-                  selectdata={selectdata}
-                  isEdit
-                  taskName='出厂测试'
-                  info={info}
-                  userinfo={userinfo}
-                  timeoutinfo={timeoutinfo}
-                />
-              </div>
+              <Registrat
+                wrappedComponentRef={RegistratRef}
+                selectdata={selectdata}
+                isEdit
+                taskName='出厂测试'
+                info={info}
+                userinfo={userinfo}
+                timeoutinfo={timeoutinfo}
+              />
             </Panel>
           )}
           {taskName === '开发商项目经理审核' && info && info.devmanageCheck && (
             <Panel header={taskName} key="form">
-              <div>
-                <Examine
-                  wrappedComponentRef={ExamineRef}
-                  selectdata={selectdata}
-                  isEdit
-                  taskName={taskName}
-                  info={info}
-                  userinfo={userinfo}
-                  timeoutinfo={timeoutinfo}
-                />
-              </div>
+              <Examine
+                wrappedComponentRef={ExamineRef}
+                selectdata={selectdata}
+                isEdit
+                taskName={taskName}
+                info={info}
+                userinfo={userinfo}
+                timeoutinfo={timeoutinfo}
+              />
             </Panel>
           )}
           {taskName === '平台验证' && info && info.platformValid && (
             <Panel header={taskName} key="form">
-              <div>
-                <Registrat
-                  wrappedComponentRef={RegistratRef}
-                  selectdata={selectdata}
-                  isEdit
-                  taskName='平台验证'
-                  info={info}
-                  userinfo={userinfo}
-                  timeoutinfo={timeoutinfo}
-                />
-              </div>
+              <Registrat
+                wrappedComponentRef={RegistratRef}
+                selectdata={selectdata}
+                isEdit
+                taskName='平台验证'
+                info={info}
+                userinfo={userinfo}
+                timeoutinfo={timeoutinfo}
+              />
             </Panel>
           )}
           {taskName === '系统运维商经理审核' && info && info.devopsCheck && (
             <Panel header={taskName} key="form">
-              <div>
-                <Examine
-                  wrappedComponentRef={ExamineRef}
-                  selectdata={selectdata}
-                  isEdit
-                  taskName={taskName}
-                  info={info}
-                  userinfo={userinfo}
-                  timeoutinfo={timeoutinfo}
-                />
-              </div>
+              <Examine
+                wrappedComponentRef={ExamineRef}
+                selectdata={selectdata}
+                isEdit
+                taskName={taskName}
+                info={info}
+                userinfo={userinfo}
+                timeoutinfo={timeoutinfo}
+              />
             </Panel>
           )}
           {taskName === '业务验证' && info && info.releaseBizValid && (
             <Panel header={taskName} key="form">
-              <div>
-                <Registrat
-                  wrappedComponentRef={RegistratRef}
-                  selectdata={selectdata}
-                  isEdit
-                  taskName='业务验证'
-                  info={info}
-                  userinfo={userinfo}
-                  timeoutinfo={timeoutinfo}
-                />
-              </div>
+              <Registrat
+                wrappedComponentRef={RegistratRef}
+                selectdata={selectdata}
+                isEdit
+                taskName='业务验证'
+                info={info}
+                userinfo={userinfo}
+                timeoutinfo={timeoutinfo}
+              />
             </Panel>
           )}
           {taskName === '发布实施准备' && info && info.releaseAttaches && (
             <Panel header={taskName} key="form">
-              <div>
-                <ImplementationPre
-                  wrappedComponentRef={ImplementationPreRef}
-                  selectdata={selectdata}
-                  isEdit
-                  taskName={taskName}
-                  info={info}
-                  userinfo={userinfo}
-                  timeoutinfo={timeoutinfo}
-                />
-              </div>
+              <ImplementationPre
+                wrappedComponentRef={ImplementationPreRef}
+                selectdata={selectdata}
+                isEdit
+                taskName={taskName}
+                info={info}
+                userinfo={userinfo}
+                timeoutinfo={timeoutinfo}
+              />
             </Panel>
           )}
           {taskName === '版本管理员审核' && info && info.mergeOrder && (
             <Panel header={taskName} key="form">
-              <div>
-                <VersionAudit
-                  wrappedComponentRef={VersionAuditRef}
-                  selectdata={selectdata}
-                  isEdit
-                  taskName={taskName}
-                  info={info}
-                  userinfo={userinfo}
-                  timeoutinfo={timeoutinfo}
-                />
-              </div>
+              <VersionAudit
+                wrappedComponentRef={VersionAuditRef}
+                selectdata={selectdata}
+                isEdit
+                taskName={taskName}
+                info={info}
+                userinfo={userinfo}
+                timeoutinfo={timeoutinfo}
+              />
             </Panel>
           )}
           {(taskName === '科室负责人审核' || taskName === '中心领导审核') && info && info.checkMerge && (
             <Panel header={taskName} key="form">
-              <div>
-                <VersionAudit
-                  wrappedComponentRef={VersionAuditRef}
-                  selectdata={selectdata}
-                  isEdit
-                  taskName={taskName}
-                  info={info}
-                  userinfo={userinfo}
-                  timeoutinfo={timeoutinfo}
-                />
-              </div>
+              <VersionAudit
+                wrappedComponentRef={VersionAuditRef}
+                selectdata={selectdata}
+                isEdit
+                taskName={taskName}
+                info={info}
+                userinfo={userinfo}
+                timeoutinfo={timeoutinfo}
+              />
             </Panel>
           )}
           {taskName === '发布验证' && info && info.practiceDone && (
             <Panel header={taskName} key="form">
-              <div>
-                <Implementation
-                  wrappedComponentRef={ImplementationRef}
-                  selectdata={selectdata}
-                  isEdit
-                  taskName={taskName}
-                  info={info}
-                  userinfo={userinfo}
-                  timeoutinfo={timeoutinfo}
-                />
-              </div>
+              <Implementation
+                wrappedComponentRef={ImplementationRef}
+                selectdata={selectdata}
+                isEdit
+                taskName={taskName}
+                info={info}
+                userinfo={userinfo}
+                timeoutinfo={timeoutinfo}
+              />
             </Panel>
           )}
           {taskName === '业务复核' && info && info.releaseBizCheck && (

@@ -8,7 +8,7 @@ function Checkdes(props) {
   const { info, formItemLayout, forminladeLayout, } = props;
   return (
     <>
-      <Row gutter={24} style={{ marginTop: 24 }}>
+      <Row gutter={24}>
         <Form {...formItemLayout}>
           <Col span={8}>
             <Form.Item label="审核结果">
