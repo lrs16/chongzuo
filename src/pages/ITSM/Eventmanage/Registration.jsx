@@ -8,7 +8,6 @@ import { openNotification } from '@/utils/utils';
 import HadleContext from '@/layouts/MenuContext';
 // import SelectUser from '@/components/SelectUser';
 import SysDict from '@/components/SysDict';
-import styles from './index.less';
 import Handle from './components/Handle';
 import Registrat from './components/Registrat';
 import { EventFlowStart, EventSave, EventFlow } from './services/api';
@@ -355,7 +354,7 @@ function Registration(props) {
       />
       <div className='noexplain'>
         <Spin tip="正在提交数据..." spinning={!!loading}>
-          <div className={styles.collapse}>
+          <div className='ordercollapse'>
             <HadleContext.Provider value={{
               handleUploadStatus,
               getUploadStatus: (v) => { setHandleUploadStatus(v) },

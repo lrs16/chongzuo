@@ -8,6 +8,9 @@ body,
 
 body {
   color: rgba(0, 0, 0, 0.85);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .colorWeak {
@@ -33,14 +36,14 @@ body {
 }
 
 .ant-pro-top-nav-header-logo h1 {
-  font-size: 18px;
-  font-weight: 600;
   margin: 0 0 0 6px;
+  font-weight: 600;
+  font-size: 18px;
 }
 
 .ant-layout .ant-layout {
-  min-height: calc(100vh - 257px);
   position: 'fixed';
+  min-height: calc(100vh - 257px);
 }
 
 .ant-input[disabled] {
@@ -133,7 +136,7 @@ body {
 }
 
 .ant-collapse-borderless > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box{
-  padding: 16px;
+  padding:8px 16px;
 }
 
 .ant-menu-item>a {
@@ -191,9 +194,9 @@ body {
 }
 
 .ant-statistic-content-value-int {
-  font-size: 30px;
-  font-weight: 500;
   color: #0366c3;
+  font-weight: 500;
+  font-size: 30px;
 }
 
 .ant-page-header {
@@ -201,7 +204,7 @@ body {
 }
 
 .ant-page-header-footer {
-  margin-top: 0px;
+  margin-top: 0;
 }
 
 .ant-pro-page-header-wrap .ant-page-header.has-breadcrumb {
@@ -215,9 +218,7 @@ body {
 .ant-breadcrumb+.ant-page-header-heading {
   margin-top: 0;
 }
-.antd-pro-pages-i-t-s-m-eventmanage-index-collapse .ant-collapse-borderless > .ant-collapse-item{
-  margin-top: 12px;
-}
+
 .ant-modal {
   color: rgba(0, 0, 0, 1);
 }
@@ -285,9 +286,9 @@ body {
 
 // 日期选择禁选年
 .ant-calendar-year-panel-cell-disabled .ant-calendar-year-panel-year,.ant-calendar-year-panel-cell-disabled .ant-calendar-year-panel-year:hover{
-    color: rgba(0, 0, 0, 0.25);
-    background: #f5f5f5;
-    cursor: not-allowed;
+  color: rgba(0, 0, 0, 0.25);
+  background: #f5f5f5;
+  cursor: not-allowed;
 }
 // .ant-steps-item-process .ant-steps-item-icon{
 //   background-color: #52c41a;
@@ -305,11 +306,7 @@ canvas {
   display: block;
 }
 
-body {
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+
 
 ul,
 ol {
@@ -342,4 +339,95 @@ ol {
       margin: 0 -24px;
     }
   }
+}
+
+// 工单详情
+.ordercollapse .ant-collapse > .ant-collapse-item > .ant-collapse-header{
+  font-weight: 900;
+  font-size: 1.1em;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.ordercollapse .ant-collapse{
+  border-radius: 0;
+}
+
+.ordercollapse  .ant-collapse-borderless > .ant-collapse-item{
+  margin-top: 4px;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+}
+
+.ordercollapse  .ant-collapse-borderless{
+  background: none;
+}
+
+.ordercollapse .ant-steps-horizontal:not(.ant-steps-label-vertical) .ant-steps-item-description{
+  max-width: 210px;
+  text-align: left;
+}
+
+.ordercollapse .ant-steps-horizontal:not(.ant-steps-label-vertical) .ant-steps-item{
+  min-width: 250px;
+}
+
+.ordercollapse .ant-descriptions-item-label{
+  vertical-align: top;
+}
+
+.ordercollapse .ant-descriptions-row > td{
+  width: 33%;
+}
+
+.ordercollapse .ant-descriptions-bordered.ant-descriptions-small .ant-descriptions-item-label{
+  padding: 8px 24px;
+}
+
+.ordercollapse th {
+  display: table-cell;
+  padding-left: 30px;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.ordercollapse tr {
+  vertical-align: middle;
+}
+// 工单流程
+.stepDescription {
+  position: relative;
+  left: 0;
+  padding-top: 8px;
+  font-size: 14px;
+  text-align: left;
+
+  >div {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+@media screen and (max-width: @screen-sm) {
+  .stepDescription {
+    left: 8px;
+  }
+}
+
+.processstept .ant-steps-dot .ant-steps-item-content {
+  width: 500px;
+}
+
+// 事件管理推荐标签
+.margin_r button {
+  margin-right: 8px;
+}
+.textSecondary {
+  color: @text-color-secondary;
+}
+
+.blobimg img {
+  width: calc(100vw - 400px);
+}
+
+.disableuser span {
+  padding-right: 16px;
 }

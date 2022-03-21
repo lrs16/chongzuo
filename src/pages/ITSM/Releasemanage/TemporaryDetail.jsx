@@ -14,8 +14,6 @@ import TempTaskLinks from './components/TempTaskLinks';
 import { delOrder, saveRegister } from './services/temp';
 import { releaseToQuality } from './services/api';
 
-import styles from './index.less';
-
 const { Panel } = Collapse;
 
 const backnode = new Map([
@@ -353,7 +351,7 @@ function TemporaryDetail(props) {
       <PageHeaderWrapper title={pagetitle} extra={operations}>
         <TempTaskLinks taskName={taskName} releaseTempLogs={info?.releaseTempLogs} />
         <div className='noexplain'>
-          <div className={styles.tempcollapse}>
+          <div className='ordercollapse'>
             <Collapse
               expandIconPosition="right"
               activeKey={activeKey}

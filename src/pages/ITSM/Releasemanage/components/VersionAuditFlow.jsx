@@ -1,6 +1,5 @@
 import React from 'react';
 import { Steps } from 'antd';
-import styles from '../index.less';
 
 const { Step } = Steps;
 
@@ -18,28 +17,26 @@ const records = [
 
 function VersionAuditFlow(props) {
   return (
-    <div className={styles.collapse}>
-      <Steps
-        current={records.length - 1}
-        progressDot
-        style={{
-          background: '#fff',
-          padding: 24,
-          overflowX: 'auto',
-        }}
-      >
-        {records.map((obj, index) => {
-          const desc = (
-            <div>
-              <div>处理人：{obj.userName}</div>
-              <div>开始时间：{obj.startTime}</div>
-              <div>结束时间：{obj.endTime}</div>
-            </div>
-          );
-          return <Step title={obj.taskName} description={desc} key={index.toString()} />;
-        })}
-      </Steps>
-    </div>
+    <Steps
+      current={records.length - 1}
+      progressDot
+      style={{
+        background: '#fff',
+        padding: 24,
+        overflowX: 'auto',
+      }}
+    >
+      {records.map((obj, index) => {
+        const desc = (
+          <div>
+            <div>处理人：{obj.userName}</div>
+            <div>开始时间：{obj.startTime}</div>
+            <div>结束时间：{obj.endTime}</div>
+          </div>
+        );
+        return <Step title={obj.taskName} description={desc} key={index.toString()} />;
+      })}
+    </Steps>
   );
 }
 

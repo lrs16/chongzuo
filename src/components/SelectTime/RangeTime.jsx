@@ -3,7 +3,7 @@ import moment from 'moment';
 import { DatePicker, } from 'antd';
 
 function RangeTime(props) {
-  const { startVal, endVal, getTimes } = props;
+  const { startVal, endVal, getTimes, clear } = props;
   const [startTime, setStartTime] = useState(undefined);
   const [endTime, setEndTime] = useState(undefined);
 
@@ -15,6 +15,13 @@ function RangeTime(props) {
       setEndTime(endVal)
     }
   }, [])
+
+  useEffect(() => {
+    if (clear) {
+      setStartTime(undefined);
+      setEndTime(undefined)
+    }
+  }, [clear])
 
   function range(start, end) {
     const result = [];
@@ -29,7 +36,7 @@ function RangeTime(props) {
     <>
       <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
         <DatePicker
-          defaultValue={startVal ? moment(startVal, timeformat) : null}
+          value={startTime ? moment(startTime, timeformat) : null}
           showTime={{
             hideDisabledOptions: true,
             defaultValue: moment('00:00:00', 'HH:mm:ss'),
@@ -74,7 +81,7 @@ function RangeTime(props) {
       <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
       <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
         <DatePicker
-          defaultValue={endVal ? moment(endVal, timeformat) : null}
+          value={endTime ? moment(endTime, timeformat) : ''}
           showTime={{
             hideDisabledOptions: true,
             defaultValue: moment('23:59:59', 'HH:mm:ss'),

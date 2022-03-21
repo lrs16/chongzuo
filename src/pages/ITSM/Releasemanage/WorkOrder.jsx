@@ -14,7 +14,6 @@ import Implementation from './components/Implementation';
 import BusinessReview from './components/BusinessReview';
 import TaskLinks from './components/TaskLinks';
 import HistoryOrderInfo from './components/HistoryOrderInfo';
-import styles from './index.less';
 
 const { Panel } = Collapse;
 
@@ -715,7 +714,7 @@ function WorkOrder(props) {
       {(taskName !== '版本管理员审核' || taskName === '版本管理员审核' && info && info.releaseMains && info.releaseMains.length === 1) && (
         <TaskLinks records={tasklinks || []} taskName={taskName} />
       )}
-      <div className={styles.collapse}>
+      <div className='ordercollapse'>
         <Collapse
           expandIconPosition="right"
           activeKey={activeKey}

@@ -24,7 +24,6 @@ import { FileDownload, FileDelete, getFileSecuritySuffix } from '@/services/uplo
 import { queryDisableduserByUser, queryUnitList, queryDeptList } from '@/services/common';
 import DeptSlectId from '@/components/DeptTree/SelectID';
 import { DownloadOutlined, CaretRightOutlined } from '@ant-design/icons';
-import styles from '../index.less';
 
 const InputGroup = Input.Group;
 const { Option } = Select;
@@ -244,7 +243,7 @@ const Registrat = forwardRef((props, ref) => {
   const disableduser = disablelist.map(opt => (
     <Option key={opt.id} value={opt.id} disableuser={opt}>
       <Spin spinning={spinloading}>
-        <div className={styles.disableuser}>
+        <div className='disableuser'>
           <span>{opt.user}</span>
           <span>{opt.phone}</span>
           <span>{opt.unit}</span>

@@ -9,7 +9,6 @@ import HistoryOrderInfo from './components/HistoryOrderInfo';
 import Process from './Process';
 import TaskLinks from './components/TaskLinks';
 import RelationOrder from './RelationOrder';
-import styles from './index.less';
 
 function Details(props) {
   const { location, dispatch, currentTaskStatus, historyinfo, tasklinks, loading } = props;

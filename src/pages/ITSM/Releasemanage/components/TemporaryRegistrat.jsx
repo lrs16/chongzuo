@@ -7,7 +7,6 @@ import { queryDisableduserByUser, queryUnitList, queryDeptList } from '@/service
 import SysUpload from '@/components/SysUpload/Upload';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
 import EditeTable from './TempEditeTable';
-import styles from '../index.less';
 
 const InputGroup = Input.Group;
 const { Option } = Select;
@@ -107,7 +106,7 @@ function TemporaryRegistrat(props, ref) {
     return (
       <Option key={opt.id} value={opt.id} disableuser={opt}>
         <Spin spinning={spinloading}>
-          <div className={styles.disableuser}>
+          <div className='disableuser'>
             <span>{opt.user}</span>
             <span>{opt.phone}</span>
             <span>{opt.unit}</span>

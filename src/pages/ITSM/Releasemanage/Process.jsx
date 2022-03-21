@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
 import { Card, Steps } from 'antd';
-import styles from './index.less';
 
 const { Step } = Steps;
 
@@ -17,13 +16,13 @@ function Process(props) {
   return (
     <>
       <Card title="流程图">
-        <div style={{ background: '#fff' }} className={styles.blobimg} >
+        <div style={{ background: '#fff' }} className='blobimg' >
           <img src={image} alt="" />
         </div>
       </Card>
       <Card title="流转日志" style={{ marginTop: '-1px' }}>
         {records !== '' && (
-          <div className={styles.processstept}>
+          <div className='processstept'>
             <Steps
               current={records.length - 1}
               progressDot

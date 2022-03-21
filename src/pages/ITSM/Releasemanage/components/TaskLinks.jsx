@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import { Steps, Icon } from 'antd';
-import styles from '../index.less';
 
 const { Step } = Steps;
 

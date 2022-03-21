@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
-import { Card, Row, Col, Form, Input, Select, DatePicker, Button, Table, List, Tooltip } from 'antd';
+import { Card, Row, Col, Form, Input, Select, Button, Table, List, Tooltip } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import KeyVal from '@/components/SysDict/KeyVal';
+import RangeTime from '@/components/SelectTime/RangeTime';
 
 // const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -18,17 +19,6 @@ const formItemLayout = {
   wrapperCol: {
     xs: { span: 24 },
     sm: { span: 18 },
-  },
-};
-
-const forminladeLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 4 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 20 },
   },
 };
 
@@ -50,13 +40,14 @@ const tabList = [
 function Overtime(props) {
   const pagetitle = props.route.name;
   const { dispatch, list, loading, location } = props;
-  const { getFieldDecorator, resetFields, validateFields } = props.form;
+  const { getFieldDecorator, resetFields, validateFields, setFieldsValue } = props.form;
 
   const [tabActivekey, settabActivekey] = useState('notHandle'); // 打开标签
   const [expand, setExpand] = useState(false);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [selectdata, setSelectData] = useState({ status: [] });
   const [tabrecord, setTabRecord] = useState({});
+  const [timeclear, setTimeclear] = useState(false);
 
   // 设置表单初始值
   const record = {
@@ -76,7 +67,7 @@ function Overtime(props) {
       key: 'eventNo',
       width: 150,
       fixed: 'left',
-      render: (text, record) => {
+      render: (text) => {
         const handleClick = () => {
           dispatch({
             type: 'viewcache/gettabstate',
@@ -154,7 +145,7 @@ function Overtime(props) {
       key: 'eventNo',
       width: 150,
       fixed: 'left',
-      render: (text, record) => {
+      render: (text) => {
         const handleClick = () => {
           dispatch({
             type: 'viewcache/gettabstate',
@@ -285,7 +276,6 @@ function Overtime(props) {
       },
       render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
-
   ];
 
 
@@ -303,27 +293,33 @@ function Overtime(props) {
   };
 
   const handleTabChange = key => {
-    settabActivekey(key)
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: { cach: false, }
+    });
+    setTimeclear(true)
+    settabActivekey(key);
     resetFields();
     setPageinations({ ...paginations, current: 1, pageSize: 15 });
     getdatas(key);
   };
 
   // 查询按钮和翻页
-  const searchdata = (values, page, size) => {
+  const searchdata = (values, page, size, tabType) => {
     setTabRecord({
       ...values,
-      tabType: tabActivekey,
-      time1: values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '',
-      time2: values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '',
+      tabType: tabType || tabActivekey,
+      time1: values.time?.startTime ? moment(values.time?.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      time2: values.time?.endTime ? moment(values.time?.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
     })
     dispatch({
       type: 'eventtimeout/query',
       payload: {
         ...values,
-        time1: values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '',
-        time2: values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '',
-        tabType: tabActivekey,
+        time1: values.time?.startTime ? moment(values.time?.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        time2: values.time?.endTime ? moment(values.time?.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        tabType: tabType || tabActivekey,
         pageIndex: page - 1,
         pageSize: size,
       },
@@ -333,7 +329,11 @@ function Overtime(props) {
   useEffect(() => {
     validateFields((err, values) => {
       if (!err) {
-        searchdata(values, location.state?.paginations?.current || 1, location.state?.paginations?.pageSize || 15);
+        searchdata(
+          values, location.state?.cacheinfo?.paginations?.current || 1,
+          location.state?.cacheinfo?.paginations?.pageSize || 15,
+          location.state?.cacheinfo?.tabType || 'notHandle'
+        );
       }
     });
   }, []);
@@ -382,6 +382,11 @@ function Overtime(props) {
   };
 
   const handleReset = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: { cach: false, }
+    });
     settabActivekey('notHandle');
     resetFields();
     getdatas('notHandle');
@@ -414,6 +419,7 @@ function Overtime(props) {
           setPageinations({ ...paginations, current, pageSize });
         }
         setExpand(location.state.cacheinfo.expand);
+        settabActivekey(location.state.cacheinfo.tabType || 'notHandle');
       };
     }
   }, [location.state]);
@@ -425,8 +431,8 @@ function Overtime(props) {
         payload: {
           tabType: tabActivekey,
           ...values,
-          time1: values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '',
-          time2: values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '',
+          time1: values.time?.startTime ? moment(values.time?.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          time2: values.time?.endTime ? moment(values.time?.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
         },
       }).then(res => {
         const filename = `事件超时查询${moment().format('YYYY-MM-DD HH:mm')}.xls`;
@@ -475,7 +481,7 @@ function Overtime(props) {
                 <Form.Item label="事件编号">
                   {getFieldDecorator('eventNo', {
                     initialValue: cacheinfo.eventNo,
-                  })(<Input placeholder="请输入" />)}
+                  })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
               <Col span={6}>
@@ -490,7 +496,7 @@ function Overtime(props) {
                       {selectdata.status.map(obj => {
                         if (obj.val !== '已关闭') {
                           return (
-                            <Option key={obj.key} value={obj.val}>
+                            <Option key={obj.key} value={obj.val} allowClear>
                               {obj.val}
                             </Option>
                           )
@@ -509,7 +515,18 @@ function Overtime(props) {
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item label="建单时间" {...forminladeLayout}>
+                <Form.Item label="建单时间">
+                  {getFieldDecorator('time', {
+                    initialValue: { startTime: cacheinfo.time1, endTime: cacheinfo.time2 },
+                  })(<></>)}
+                  <RangeTime
+                    startVal={cacheinfo.time1}
+                    endVal={cacheinfo.time2}
+                    clear={timeclear}
+                    getTimes={(v) => { setFieldsValue({ time: v }); }}
+                  />
+                </Form.Item>
+                {/* <Form.Item label="建单时间" {...forminladeLayout}>
                   {getFieldDecorator('time1', {
                     initialValue: cacheinfo.time1 ? moment(cacheinfo.time1) : undefined,
                   })(
@@ -519,7 +536,36 @@ function Overtime(props) {
                         defaultValue: moment('00:00:00', 'HH:mm:ss'),
                       }}
                       placeholder="开始时间"
-                      format='YYYY-MM-DD HH:mm:ss' />
+                      format='YYYY-MM-DD HH:mm:ss'
+                      disabledDate={(v) => {
+                        const time = getFieldsValue(['time2'])
+                        return time.time2 && v && moment(v) > moment(time.time2);
+                      }}
+                      disabledTime={() => {
+                        const time = getFieldsValue(['time1', 'time2'])
+                        const Hours = moment(time.time2).format('HH');
+                        const Minutes = moment(time.time2).format('mm');
+                        const Seconds = moment(time.time2).format('ss');
+                        if (time.time1 && time.time2 && moment(time.time1).format('YYYY-MM-DD') === moment(time.time2).format('YYYY-MM-DD')) {
+                          return {
+                            disabledHours: () => range(Hours, 24),
+                            disabledMinutes: () => {
+                              if (moment(time.time1).format('YYYY-MM-DD HH') === moment(time.time2).format('YYYY-MM-DD HH')) {
+                                return range(Minutes, 60)
+                              }
+                              return []
+                            },
+                            disabledSeconds: () => {
+                              if (moment(time.time1).format('YYYY-MM-DD HH:mm') === moment(time.time2).format('YYYY-MM-DD HH:mm')) {
+                                return range(Seconds, 60)
+                              }
+                              return []
+                            },
+                          };
+                        }
+                        return null
+                      }}
+                    />
                   )}
                   <span style={{ padding: '0 10px' }}>-</span>
                   {getFieldDecorator('time2', {
@@ -533,7 +579,7 @@ function Overtime(props) {
                       placeholder="结束时间"
                       format='YYYY-MM-DD HH:mm:ss' />
                   )}
-                </Form.Item>
+                </Form.Item> */}
               </Col>
               {(expand || cacheinfo.expand) && (
                 <>

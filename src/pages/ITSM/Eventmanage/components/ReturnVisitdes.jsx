@@ -1,7 +1,6 @@
 import React from 'react';
 import { Descriptions, Form, Input, Row, Col } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
-import styles from '../index.less';
 
 const { TextArea } = Input;
 function ReturnVisitdes(props) {

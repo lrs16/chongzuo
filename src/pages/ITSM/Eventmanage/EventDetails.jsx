@@ -4,7 +4,6 @@ import { connect } from 'dva';
 import moment from 'moment';
 import { Button, Collapse, Steps, Icon } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import styles from './index.less';
 import Process from './Process';
 import Registratdes from './components/Registratdes';
 import Checkdes from './components/Checkdes';
@@ -141,7 +140,7 @@ function EventDetails(props) {
     >
       <div className='noexplain'>
         {tabActivekey === 'workorder' && (
-          <div className={styles.collapse}>
+          <div className='ordercollapse'>
             {recordsloading === false && (
               <Steps
                 current={records.length - 1}
@@ -163,7 +162,7 @@ function EventDetails(props) {
                     tempTime = moment.duration(dura);
                   }
                   const desc = (
-                    <div className={styles.stepDescription}>
+                    <div className='stepDescription'>
                       处理人：{obj.user}
                       {/* <DingdingOutlined /> */}
                       <div>开始时间：{obj.addTime}</div>

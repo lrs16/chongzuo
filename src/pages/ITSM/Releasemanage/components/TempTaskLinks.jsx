@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Steps, Icon } from 'antd';
-import styles from '../index.less';
 
 const { Step } = Steps;
 

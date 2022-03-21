@@ -5,7 +5,6 @@ import { Collapse, Steps, Spin, message, Icon } from 'antd';
 import SysDict from '@/components/SysDict';
 import SubmitTypeContext from '@/layouts/MenuContext';
 import { openNotification } from '@/utils/utils';
-import styles from './index.less';
 import Registrat from './components/Registrat';
 import Check from './components/Check';
 import Handle from './components/Handle';
@@ -525,7 +524,7 @@ function WorkOrder2(props) {
   }, [files.ischange]);
 
   return (
-    <div className={styles.collapse}>
+    <div className='ordercollapse'>
       <SysDict
         typeid="331"
         commonid="335"
@@ -553,7 +552,7 @@ function WorkOrder2(props) {
               tempTime = moment.duration(dura);
             }
             const desc = (
-              <div className={styles.stepDescription}>
+              <div className='stepDescription'>
                 处理人：{obj.user}
                 {/* <DingdingOutlined /> */}
                 <div>开始时间：{obj.addTime}</div>

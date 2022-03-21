@@ -4,8 +4,6 @@ import { Drawer, Tabs, Spin } from 'antd';
 import HistoryOrderInfo from './HistoryOrderInfo';
 import Process from '../Process';
 import TaskLinks from './TaskLinks';
-import styles from '../index.less';
-
 
 const { TabPane } = Tabs;
 
@@ -49,13 +47,12 @@ function OrderContent(props) {
       <Spin tip="正在加载数据..." spinning={!!loading}>
         <Tabs defaultActiveKey="1">
           <TabPane tab="发布工单" key="1">
-            <div className={styles.collapse}>
+            <div className='ordercollapse'>
               <TaskLinks records={tasklinks || []} taskName={taskName} />
             </div>
             <HistoryOrderInfo records={historyinfo} selectdata={[]} view />
           </TabPane>
           <TabPane tab="发布流程" key="2"><Process /></TabPane>
-          <TabPane tab="关联工单" key="3">Content of Tab Pane 3</TabPane>
         </Tabs>
       </Spin>
     </Drawer>

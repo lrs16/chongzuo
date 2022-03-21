@@ -4,7 +4,6 @@ import router from 'umi/router';
 import { connect } from 'dva';
 import { Steps, Collapse, Spin, Button, Icon } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import styles from './index.less';
 import Process from './Process';
 import Registratdes from './components/Registratdes';
 import Examinedes from './components/Examinedes';
@@ -118,7 +117,7 @@ function Details(props) {
       extra={<Button onClick={handleclose}>关闭</Button>}
     >
       {tabActivekey === 'workorder' && (
-        <div className={styles.collapse}>
+        <div className='ordercollapse'>
           {records && (
             <Steps
               current={records.length - 1}

@@ -3,7 +3,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { connect } from 'dva';
 import { Collapse, Steps, Spin, message, Icon } from 'antd';
 import { openNotification } from '@/utils/utils';
-import styles from './index.less';
 import Registrat from './components/Registrat';
 import Examine from './components/Examine';
 import Track from './components/Track';
@@ -562,7 +561,7 @@ function WorkOrder(props) {
   };
 
   return (
-    <div className={styles.collapse}>
+    <div className='ordercollapse'>
       {records !== '' && (
         <Steps
           current={records.length - 1}

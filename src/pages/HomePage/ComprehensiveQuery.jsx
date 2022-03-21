@@ -24,7 +24,7 @@ function ComprehensiveQuery(props) {
 
   return (
     <>
-      <div style={{ margin: '-48px -24px 24px -24px', padding: '24px 16px 0', background: '#fff' }}>
+      <div style={{ margin: '-48px -24px 4px -24px', padding: '24px 16px 0', background: '#fff' }}>
         <Menu onClick={handleClick} selectedKeys={current} mode="horizontal">
           <Menu.Item key="event">事件查询</Menu.Item>
           <Menu.Item key="fault">故障查询</Menu.Item>

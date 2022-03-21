@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 // import moment from 'moment';
 import { connect } from 'dva';
 import { Card, Steps } from 'antd';
-import styles from './index.less';
 
 const { Step } = Steps;
 let image;
@@ -49,12 +48,12 @@ function Process(props) {
   return (
     <>
       <Card title="流程图">
-        <div style={{ background: '#fff' }} className={styles.blobimg} >
+        <div style={{ background: '#fff' }} className='blobimg' >
           <img src={image} alt="" />
         </div>
       </Card>
       <Card title="流转日志" style={{ marginTop: '-1px' }}>
-        <div className={styles.processstept}>
+        <div className='processstept'>
           {processs !== '' && (
             <Steps
               current={processs.length - 1}
