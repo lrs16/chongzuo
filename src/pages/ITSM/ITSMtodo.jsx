@@ -196,6 +196,20 @@ function ITSMtodo(props) {
                 }
               });
               break;
+            case 'tempRelease':
+              router.push({
+                pathname: `/ITSM/releasemanage/temporary/details`,
+                query: {
+                  taskName: record.taskName,
+                  Id: record.itemWorkId,
+                  taskId: record.taskId,
+                },
+                state: {
+                  dynamicpath: true,
+                  menuDesc: '临时发布工单详情',
+                }
+              });
+              break;
             case 'releaseBizTodo':
               router.push({
                 pathname: record.taskName === '业务验证' ? `/ITSM/releasemanage/plan/verificationtodo/record` : `/ITSM/releasemanage/plan/checktodo/record`,
