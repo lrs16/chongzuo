@@ -520,6 +520,9 @@ function Todolistdetails(props) {
     ConfirmRef.current.validateFields((err, values) => {
       if (cirStatus ? !err : true) {
         const formValues = values;
+        formValues.confirmContent = values.confirmContent1 || values.confirmContent2;
+        formValues.confirmContent1 = '';
+        formValues.confirmContent2 = '';
         formValues.confirmTime = values.confirmTime.format('YYYY-MM-DD HH:mm:ss');
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
