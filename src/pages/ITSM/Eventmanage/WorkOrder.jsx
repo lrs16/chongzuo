@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Collapse, Steps, Spin, message, Icon } from 'antd';
+import { Collapse, Steps, Spin, message, Icon, Badge } from 'antd';
 import SysDict from '@/components/SysDict';
 import SubmitTypeContext from '@/layouts/MenuContext';
 import { openNotification } from '@/utils/utils';
@@ -71,7 +71,7 @@ function WorkOrder2(props) {
     ChangeChoice,
     ChangeUserVisible,
     registUploadStatus,
-    olduploadstatus
+    olduploadstatus,
   } = props;
 
   const { mainId, taskId, taskName } = location.query;
@@ -120,7 +120,7 @@ function WorkOrder2(props) {
     });
   };
   // 流转    4转问题，5转故障，3审核且是档案或高级，4审核其它选项
-  const eventflow = (val) => {
+  const eventflow = val => {
     //  const handleresult = HandleRef.current && HandleRef.current.getHandleResult();
     const getuserIds = () => {
       const nextNode = new Map([
@@ -130,12 +130,24 @@ function WorkOrder2(props) {
         ['事件处理', '事件确认'],
         ['事件确认', '结束'],
       ]);
-      const userIds = [{ nodeName: nextNode.get(taskName), userIds: [info?.data[1]?.register?.registerUserId || '1'] }];
-      if (taskName === '运维商经理审核' || taskName === '自动化科审核' || taskName === '数据科审核' || type === '登记' || type === '回访' || type === '结束') {
+      const userIds = [
+        {
+          nodeName: nextNode.get(taskName),
+          userIds: [info?.data[1]?.register?.registerUserId || '1'],
+        },
+      ];
+      if (
+        taskName === '运维商经理审核' ||
+        taskName === '自动化科审核' ||
+        taskName === '数据科审核' ||
+        type === '登记' ||
+        type === '回访' ||
+        type === '结束'
+      ) {
         return JSON.stringify(userIds);
       }
       return sessionStorage.getItem('NextflowUserId');
-    }
+    };
     dispatch({
       type: 'eventtodo/eventflow',
       payload: {
@@ -166,27 +178,27 @@ function WorkOrder2(props) {
   };
 
   // 校验不通过
-  const formerr = (err) => {
+  const formerr = err => {
     // message.error('请将信息填写完整...');
-    openNotification(Object.values(err))
+    openNotification(Object.values(err));
     ChangeType('');
   };
   // 保存不需要校验
   const noverification = () => {
     ChangeChoice(true);
     // setIscheck(true);
-  }
+  };
   // 自行处理保存、转回访、结束，需做校验无需打开选人组件
-  const noUser = (err) => {
+  const noUser = err => {
     if (!err) {
       ChangeChoice(true);
       // setIscheck(true);
     } else {
       formerr(err);
     }
-  }
+  };
   // 流转、转单，需做校验需打开选人组件
-  const needUser = (err) => {
+  const needUser = err => {
     if (!err) {
       ChangeUserVisible(true);
       ChangeChoice(false);
@@ -194,7 +206,7 @@ function WorkOrder2(props) {
     } else {
       formerr(err);
     }
-  }
+  };
   // console.log(type);
   // 登记表单
   const RegistratRef = useRef();
@@ -205,15 +217,22 @@ function WorkOrder2(props) {
       main_eventObject: values.main_eventObject.slice(-1)[0],
       register_occurTime: moment(values.register_occurTime).format('YYYY-MM-DD HH:mm:ss'),
       // register_applicationUserId: values.register_applicationUser === '' ? '' : values.register_applicationUser,
-      register_mobilePhone: values.main_revisitWay === '002' ? values.mobilePhone1 : values.mobilePhone2,
+      register_mobilePhone:
+        values.main_revisitWay === '002' ? values.mobilePhone1 : values.mobilePhone2,
       register_applicationUnit: values.applicationUnit,
-      register_applicationUnitId: values.applicationUnit === '' ? '' : values.register_applicationUnitId,
-      register_applicationDept: values.applicationDept ? values.register_applicationDept : values.register_applicationUnit,
-      register_applicationDeptId: values.applicationDept ? values.register_applicationDeptId : values.register_applicationUnitId,
+      register_applicationUnitId:
+        values.applicationUnit === '' ? '' : values.register_applicationUnitId,
+      register_applicationDept: values.applicationDept
+        ? values.register_applicationDept
+        : values.register_applicationUnit,
+      register_applicationDeptId: values.applicationDept
+        ? values.register_applicationDeptId
+        : values.register_applicationUnitId,
       register_selfhandle: String(Number(values.register_selfhandle)),
       register_supplement: String(Number(values.register_supplement)),
       register_isCheck: String(Number(values.register_isCheck)),
-      register_fileIds: (registratfiles.arr && registratfiles.arr.length) ? JSON.stringify(registratfiles.arr) : null,
+      register_fileIds:
+        registratfiles.arr && registratfiles.arr.length ? JSON.stringify(registratfiles.arr) : null,
     });
     if (type === 'save') {
       noverification();
@@ -237,7 +256,7 @@ function WorkOrder2(props) {
       check_checkTime: moment(values.check_checkTime).format('YYYY-MM-DD HH:mm:ss'),
       check_fileIds: JSON.stringify(files.arr),
       check_content: values.check_checkResult === '001' ? values.content1 : values.content2,
-      check_checkType: info.flowNodeName
+      check_checkType: info.flowNodeName,
     });
     switch (type) {
       case 'save':
@@ -265,8 +284,14 @@ function WorkOrder2(props) {
           register_occurTime: moment(v.register_occurTime).format('YYYY-MM-DD HH:mm:ss'),
           register_applicationUnit: v.applicationUnit,
           register_applicationUnitId: v.applicationUnit === '' ? '' : v.register_applicationUnitId,
-          register_applicationDept: v.register_applicationDept !== '' ? v.register_applicationDept : v.register_applicationUnit,
-          register_applicationDeptId: v.register_applicationDeptId !== '' ? v.register_applicationDeptId : v.register_applicationUnitId,
+          register_applicationDept:
+            v.register_applicationDept !== ''
+              ? v.register_applicationDept
+              : v.register_applicationUnit,
+          register_applicationDeptId:
+            v.register_applicationDeptId !== ''
+              ? v.register_applicationDeptId
+              : v.register_applicationUnitId,
           register_selfhandle: String(Number(v.register_selfhandle)),
           register_supplement: String(Number(v.register_supplement)),
           register_fileIds: JSON.stringify(registratfiles.arr),
@@ -280,15 +305,15 @@ function WorkOrder2(props) {
         if (type === 'save') {
           noverification();
         } else {
-          HandleRef.current.Forms((err) => {
+          HandleRef.current.Forms(err => {
             noUser(err);
-          })
+          });
           // console.clear();
         }
       } else {
         formerr(e);
       }
-    })
+    });
   };
   const gethandles = () => {
     const values = HandleRef.current.getVal();
@@ -303,14 +328,14 @@ function WorkOrder2(props) {
         noverification();
         break;
       case '回访':
-        HandleRef.current.Forms((err) => {
+        HandleRef.current.Forms(err => {
           noUser(err);
-        })
+        });
         break;
       case '转单':
-        HandleRef.current.Forms((err) => {
+        HandleRef.current.Forms(err => {
           needUser(err);
-        })
+        });
         break;
       default:
         break;
@@ -328,17 +353,17 @@ function WorkOrder2(props) {
     });
     switch (type) {
       case 'save':
-        noverification()
+        noverification();
         break;
       case '重分派':
-        ReturnVisitRef.current.Forms((err) => {
+        ReturnVisitRef.current.Forms(err => {
           needUser(err);
-        })
+        });
         break;
       case '结束':
-        ReturnVisitRef.current.Forms((err) => {
+        ReturnVisitRef.current.Forms(err => {
           noUser(err);
-        })
+        });
         // console.clear()
         break;
       default:
@@ -420,7 +445,7 @@ function WorkOrder2(props) {
       dispatch({
         type: 'eventtodo/clearinfo',
       });
-    }
+    };
   }, [taskId]);
 
   // 获取事件流程记录
@@ -453,7 +478,7 @@ function WorkOrder2(props) {
         type: 'itsmuser/fetchuser',
       });
       sessionStorage.setItem('Processtype', 'event');
-    };
+    }
     if (taskId) {
       dispatch({
         type: 'eventtodo/eventrecords',
@@ -462,7 +487,7 @@ function WorkOrder2(props) {
         },
       });
     }
-  }, [location.state])
+  }, [location.state]);
 
   // 初始化值panel
   useEffect(() => {
@@ -487,12 +512,15 @@ function WorkOrder2(props) {
       if (Object.values(edit)[0].fileIds !== '' && taskName !== '事件登记') {
         setFiles({ ...files, arr: JSON.parse(Object.values(edit)[0].fileIds), ischange: false });
       }
-    };
-    if (info.flowNodeName === '运维商经理审核' || info.flowNodeName === '数据科审核' || info.flowNodeName === '自动化科审核') {
-      setActiveKey('checkform')
+    }
+    if (
+      info.flowNodeName === '运维商经理审核' ||
+      info.flowNodeName === '数据科审核' ||
+      info.flowNodeName === '自动化科审核'
+    ) {
+      setActiveKey('checkform');
     }
   }, [info]);
-
 
   useEffect(() => {
     if (type) {
@@ -505,7 +533,7 @@ function WorkOrder2(props) {
     if (userchoice) {
       handletype();
     }
-  }, [userchoice])
+  }, [userchoice]);
 
   // 登记上传附件触发保存
   useEffect(() => {
@@ -523,8 +551,30 @@ function WorkOrder2(props) {
     }
   }, [files.ischange]);
 
+  const pheadertitle = (obj, index) => {
+    return (
+      <>
+        <Badge
+          count={index}
+          style={{
+            backgroundColor: '#C1EB08',
+            color: '#10C510',
+            boxShadow: '0 0 0 1px #10C510 inset',
+            marginRight: 4,
+            marginBottom: 2,
+          }}
+        />
+        <span>
+          {Object.keys(obj)[0] === 'check'
+            ? obj.check?.checkType || '事件审核'
+            : Panelheadermap.get(Object.keys(obj)[0])}
+        </span>
+      </>
+    );
+  };
+
   return (
-    <div className='ordercollapse'>
+    <div className="ordercollapse">
       <SysDict
         typeid="331"
         commonid="335"
@@ -552,20 +602,34 @@ function WorkOrder2(props) {
               tempTime = moment.duration(dura);
             }
             const desc = (
-              <div className='stepDescription'>
+              <div className="stepDescription">
                 处理人：{obj.user}
                 {/* <DingdingOutlined /> */}
                 <div>开始时间：{obj.addTime}</div>
                 <div>结束时间：{obj.endTime}</div>
-                {tempTime && (<div style={{ color: 'rgba(0, 0, 0, 0.85)', fontSize: '16px' }}>用时：
-                  {tempTime.days() !== 0 && (<>{tempTime.days()}天</>)}
-                  {tempTime.hours() !== 0 && (<>{tempTime.hours()}小时</>)}
-                  {tempTime.minutes() !== 0 && (<>{tempTime.minutes()}分</>)}
-                  {((tempTime.days() === 0 && tempTime.hours() === 0 && tempTime.minutes() === 0 && tempTime.seconds() === 0) || tempTime.seconds() !== 0) && (<>{tempTime.seconds()}秒</>)}
-                </div>)}
+                {tempTime && (
+                  <div style={{ color: 'rgba(0, 0, 0, 0.85)', fontSize: '16px' }}>
+                    用时：
+                    {tempTime.days() !== 0 && <>{tempTime.days()}天</>}
+                    {tempTime.hours() !== 0 && <>{tempTime.hours()}小时</>}
+                    {tempTime.minutes() !== 0 && <>{tempTime.minutes()}分</>}
+                    {((tempTime.days() === 0 &&
+                      tempTime.hours() === 0 &&
+                      tempTime.minutes() === 0 &&
+                      tempTime.seconds() === 0) ||
+                      tempTime.seconds() !== 0) && <>{tempTime.seconds()}秒</>}
+                  </div>
+                )}
               </div>
             );
-            return <Step title={obj.nodeName} description={desc} key={index.toString()} icon={!obj.endTime ? <Icon type="loading" spin style={{ color: '#0124c5' }} /> : ''} />;
+            return (
+              <Step
+                title={obj.nodeName}
+                description={desc}
+                key={index.toString()}
+                icon={!obj.endTime ? <Icon type="loading" spin style={{ color: '#0124c5' }} /> : ''}
+              />
+            );
           })}
         </Steps>
         <Collapse
@@ -590,7 +654,11 @@ function WorkOrder2(props) {
                 main={main}
                 userinfo={userinfo}
                 location={location}
-                files={(!edit.register || edit.register?.fileIds === '[]' || !edit.register?.fileIds) ? [] : JSON.parse(edit.register.fileIds)}
+                files={
+                  !edit.register || edit.register?.fileIds === '[]' || !edit.register?.fileIds
+                    ? []
+                    : JSON.parse(edit.register.fileIds)
+                }
                 selectdata={selectdata}
                 loading={loading}
               />
@@ -617,25 +685,32 @@ function WorkOrder2(props) {
               />
             </Panel>
           )}
-          {(info.flowNodeName === '运维商经理审核' || info.flowNodeName === '数据科审核' || info.flowNodeName === '自动化科审核') && edit && (
-            <Panel header={info.flowNodeName} key="checkform">
-              <Check
-                formItemLayout={formItemLayout}
-                forminladeLayout={forminladeLayout}
-                wrappedComponentRef={CheckRef}
-                info={edit}
-                main={main}
-                userinfo={userinfo}
-                location={location}
-                ChangeFiles={newvalue => {
-                  setFiles(newvalue);
-                }}
-                files={(!edit.check || edit.check.fileIds === '[]' || !edit.check.fileIds) ? [] : JSON.parse(edit.check.fileIds)}
-                selectdata={selectdata}
-                loading={loading}
-              />
-            </Panel>
-          )}
+          {(info.flowNodeName === '运维商经理审核' ||
+            info.flowNodeName === '数据科审核' ||
+            info.flowNodeName === '自动化科审核') &&
+            edit && (
+              <Panel header={info.flowNodeName} key="checkform">
+                <Check
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
+                  wrappedComponentRef={CheckRef}
+                  info={edit}
+                  main={main}
+                  userinfo={userinfo}
+                  location={location}
+                  ChangeFiles={newvalue => {
+                    setFiles(newvalue);
+                  }}
+                  files={
+                    !edit.check || edit.check.fileIds === '[]' || !edit.check.fileIds
+                      ? []
+                      : JSON.parse(edit.check.fileIds)
+                  }
+                  selectdata={selectdata}
+                  loading={loading}
+                />
+              </Panel>
+            )}
           {info?.flowNodeName === '事件处理' && edit && (
             <Panel header="事件处理" key="handleform">
               <Handle
@@ -649,7 +724,11 @@ function WorkOrder2(props) {
                 ChangeFiles={newvalue => {
                   setFiles(newvalue);
                 }}
-                files={(!edit.handle || edit.handle.fileIds === '[]' || !edit.handle.fileIds) ? [] : JSON.parse(edit.handle.fileIds)}
+                files={
+                  !edit.handle || edit.handle.fileIds === '[]' || !edit.handle.fileIds
+                    ? []
+                    : JSON.parse(edit.handle.fileIds)
+                }
                 show={show}
                 selectdata={selectdata}
                 mainId={mainId}
@@ -670,33 +749,70 @@ function WorkOrder2(props) {
                 ChangeFiles={newvalue => {
                   setFiles(newvalue);
                 }}
-                files={(!edit.finish || edit.finish.fileIds === '[]' || !edit.finish.fileIds) ? [] : JSON.parse(edit.finish.fileIds)}
+                files={
+                  !edit.finish || edit.finish.fileIds === '[]' || !edit.finish.fileIds
+                    ? []
+                    : JSON.parse(edit.finish.fileIds)
+                }
                 selectdata={selectdata}
                 loading={loading}
               />
             </Panel>
           )}
 
-          {data && data.map((obj, index) => {
-            // panel详情组件
-            const Paneldesmap = new Map([
-              ['register', <Registratdes info={Object.values(obj)[0]} main={data[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-              ['handle', <Handledes info={Object.values(obj)[0]} main={data[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-              ['check', <Checkdes info={Object.values(obj)[0]} main={data[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-              ['finish', <ReturnVisitdes info={Object.values(obj)[0]} main={data[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-            ]);
-            if (index > 0)
-              return (
-                <Panel
-                  Panel
-                  header={Object.keys(obj)[0] === 'check' ? (obj.check?.checkType || '事件审核') : Panelheadermap.get(Object.keys(obj)[0])}
-                  key={index.toString()}
-                >
-                  {Paneldesmap.get(Object.keys(obj)[0])}
-                </Panel>
-              );
-          }
-          )}
+          {data &&
+            data.map((obj, index) => {
+              // panel详情组件
+              const Paneldesmap = new Map([
+                [
+                  'register',
+                  <Registratdes
+                    info={Object.values(obj)[0]}
+                    main={data[0].main}
+                    formItemLayout={formItemLayout}
+                    forminladeLayout={forminladeLayout}
+                  />,
+                ],
+                [
+                  'handle',
+                  <Handledes
+                    info={Object.values(obj)[0]}
+                    main={data[0].main}
+                    formItemLayout={formItemLayout}
+                    forminladeLayout={forminladeLayout}
+                  />,
+                ],
+                [
+                  'check',
+                  <Checkdes
+                    info={Object.values(obj)[0]}
+                    main={data[0].main}
+                    formItemLayout={formItemLayout}
+                    forminladeLayout={forminladeLayout}
+                  />,
+                ],
+                [
+                  'finish',
+                  <ReturnVisitdes
+                    info={Object.values(obj)[0]}
+                    main={data[0].main}
+                    formItemLayout={formItemLayout}
+                    forminladeLayout={forminladeLayout}
+                  />,
+                ],
+              ]);
+              if (index > 0)
+                return (
+                  <Panel
+                    Panel
+                    header={pheadertitle(obj, index)}
+                    // header={Object.keys(obj)[0] === 'check' ? (obj.check?.checkType || '事件审核') : Panelheadermap.get(Object.keys(obj)[0])}
+                    key={index.toString()}
+                  >
+                    {Paneldesmap.get(Object.keys(obj)[0])}
+                  </Panel>
+                );
+            })}
         </Collapse>
       </Spin>
     </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import router from 'umi/router';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Button, Collapse, Steps, Icon } from 'antd';
+import { Button, Collapse, Steps, Icon, Badge } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Process from './Process';
 import Registratdes from './components/Registratdes';
@@ -63,11 +63,11 @@ function EventDetails(props) {
     const tabid = sessionStorage.getItem('tabid');
     router.push({
       pathname: location.pathname,
-      query: { tabid, closecurrent: true }
+      query: { tabid, closecurrent: true },
     });
   };
   const handleTabChange = key => {
-    settabActivekey(key)
+    settabActivekey(key);
   };
   const tabList = [
     {
@@ -81,7 +81,7 @@ function EventDetails(props) {
     {
       key: 'relevancy',
       tab: '关联工单',
-    }
+    },
   ];
 
   const callback = key => {
@@ -122,13 +122,31 @@ function EventDetails(props) {
         },
       });
       settabActivekey('workorder');
-    };
-  }, [location.state])
+    }
+  }, [location.state]);
 
   // 初始化值panel
   useEffect(() => {
     setActiveKey([1]);
   }, [info]);
+
+  const pheadertitle = (obj, index) => {
+    return (
+      <>
+        <Badge
+          count={index}
+          style={{
+            backgroundColor: '#C1EB08',
+            color: '#10C510',
+            boxShadow: '0 0 0 1px #10C510 inset',
+            marginRight: 4,
+            marginBottom: 2,
+          }}
+        />
+        <span>{obj.check?.checkType || Panelheadermap.get(Object.keys(obj)[0])}</span>
+      </>
+    );
+  };
 
   return (
     <PageHeaderWrapper
@@ -138,9 +156,9 @@ function EventDetails(props) {
       extra={<Button onClick={() => handleclose()}>关闭</Button>}
       onTabChange={handleTabChange}
     >
-      <div className='noexplain'>
+      <div className="noexplain">
         {tabActivekey === 'workorder' && (
-          <div className='ordercollapse'>
+          <div className="ordercollapse">
             {recordsloading === false && (
               <Steps
                 current={records.length - 1}
@@ -162,17 +180,24 @@ function EventDetails(props) {
                     tempTime = moment.duration(dura);
                   }
                   const desc = (
-                    <div className='stepDescription'>
+                    <div className="stepDescription">
                       处理人：{obj.user}
                       {/* <DingdingOutlined /> */}
                       <div>开始时间：{obj.addTime}</div>
                       <div>结束时间：{obj.endTime}</div>
-                      {tempTime && (<div style={{ color: 'rgba(0, 0, 0, 0.75)', fontSize: '16px' }}>用时：
-                        {tempTime.days() !== 0 && (<>{tempTime.days()}天</>)}
-                        {tempTime.hours() !== 0 && (<>{tempTime.hours()}小时</>)}
-                        {tempTime.minutes() !== 0 && (<>{tempTime.minutes()}分</>)}
-                        {((tempTime.days() === 0 && tempTime.hours() === 0 && tempTime.minutes() === 0 && tempTime.seconds() === 0) || tempTime.seconds() !== 0) && (<>{tempTime.seconds()}秒</>)}
-                      </div>)}
+                      {tempTime && (
+                        <div style={{ color: 'rgba(0, 0, 0, 0.75)', fontSize: '16px' }}>
+                          用时：
+                          {tempTime.days() !== 0 && <>{tempTime.days()}天</>}
+                          {tempTime.hours() !== 0 && <>{tempTime.hours()}小时</>}
+                          {tempTime.minutes() !== 0 && <>{tempTime.minutes()}分</>}
+                          {((tempTime.days() === 0 &&
+                            tempTime.hours() === 0 &&
+                            tempTime.minutes() === 0 &&
+                            tempTime.seconds() === 0) ||
+                            tempTime.seconds() !== 0) && <>{tempTime.seconds()}秒</>}
+                        </div>
+                      )}
                     </div>
                   );
                   return (
@@ -180,7 +205,13 @@ function EventDetails(props) {
                       title={obj.nodeName}
                       description={desc}
                       key={index.toString()}
-                      icon={!obj.endTime ? <Icon type="loading" spin style={{ color: '#0124c5' }} /> : <Icon type="check-circle" />}
+                      icon={
+                        !obj.endTime ? (
+                          <Icon type="loading" spin style={{ color: '#0124c5' }} />
+                        ) : (
+                          <Icon type="check-circle" />
+                        )
+                      }
                     />
                   );
                 })}
@@ -196,14 +227,46 @@ function EventDetails(props) {
                 {info.map((obj, index) => {
                   // panel详情组件
                   const Paneldesmap = new Map([
-                    ['register', <Registratdes info={Object.values(obj)[0]} main={info[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                    ['handle', <Handledes info={Object.values(obj)[0]} main={info[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                    ['check', <Checkdes info={Object.values(obj)[0]} main={info[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                    ['finish', <ReturnVisitdes info={Object.values(obj)[0]} main={info[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                    [
+                      'register',
+                      <Registratdes
+                        info={Object.values(obj)[0]}
+                        main={info[0].main}
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
+                      />,
+                    ],
+                    [
+                      'handle',
+                      <Handledes
+                        info={Object.values(obj)[0]}
+                        main={info[0].main}
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
+                      />,
+                    ],
+                    [
+                      'check',
+                      <Checkdes
+                        info={Object.values(obj)[0]}
+                        main={info[0].main}
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
+                      />,
+                    ],
+                    [
+                      'finish',
+                      <ReturnVisitdes
+                        info={Object.values(obj)[0]}
+                        main={info[0].main}
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
+                      />,
+                    ],
                   ]);
                   if (index > 0)
                     return (
-                      <Panel Panel header={obj.check?.checkType || Panelheadermap.get(Object.keys(obj)[0])} key={index.toString()} >
+                      <Panel Panel header={pheadertitle(obj, index)}>
                         {Paneldesmap.get(Object.keys(obj)[0])}
                       </Panel>
                     );

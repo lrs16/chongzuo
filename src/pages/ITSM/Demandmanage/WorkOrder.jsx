@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 // import moment from 'moment';
 import { connect } from 'dva';
-import { Collapse, Steps, Spin, message, Icon } from 'antd';
+import { Collapse, Steps, Spin, message, Icon, Badge } from 'antd';
 import { openNotification } from '@/utils/utils';
 import Registrat from './components/Registrat';
 import Examine from './components/Examine';
@@ -68,11 +68,14 @@ function WorkOrder(props) {
   // 回调用户ID
   useEffect(() => {
     if (info) {
-      changRegisterId(info.demandForm.id); //  
-      if ((taskName === '业务科室领导审核' ||
-        taskName === '系统开发商审核' ||
-        taskName === '自动化科业务人员确认' ||
-        taskName === '需求登记人员确认') && info.historys.length > 0) {
+      changRegisterId(info.demandForm.id); //
+      if (
+        (taskName === '业务科室领导审核' ||
+          taskName === '系统开发商审核' ||
+          taskName === '自动化科业务人员确认' ||
+          taskName === '需求登记人员确认') &&
+        info.historys.length > 0
+      ) {
         ChangeHistroyTaskId(info.historys?.slice(-1)[0].taskId);
       }
       ChangeISClose(info.is_close);
@@ -116,7 +119,7 @@ function WorkOrder(props) {
       dispatch({
         type: 'demandtodo/clearinfo',
       });
-    }
+    };
   }, [mainId]);
 
   // 点击页签右键刷新
@@ -136,7 +139,7 @@ function WorkOrder(props) {
         },
       });
     }
-  }, [location.state])
+  }, [location.state]);
 
   // 监听info是否已更新
   useEffect(() => {
@@ -146,9 +149,9 @@ function WorkOrder(props) {
     };
   }, [info]);
 
-  const formerr = (err) => {
+  const formerr = err => {
     // message.error('请将信息填写完整...');
-    openNotification(Object.values(err))
+    openNotification(Object.values(err));
   };
 
   // 刷新路由
@@ -181,9 +184,9 @@ function WorkOrder(props) {
         });
         break;
       case 'flow':
-        RegistratRef.current.Forms((err) => {
+        RegistratRef.current.Forms(err => {
           if (err) {
-            const allerr = Object.values(err)
+            const allerr = Object.values(err);
             formerr(allerr);
             ChangeType('');
           } else if (!userchoice) {
@@ -200,7 +203,7 @@ function WorkOrder(props) {
               },
             });
           }
-        })
+        });
         break;
       default:
         break;
@@ -228,7 +231,10 @@ function WorkOrder(props) {
       business: Number(values.business),
       releases: Number(values.releases),
       attachment: JSON.stringify(files.arr),
-      developmentLead: values.developmentLead && values.developmentLead.length > 0 ? values.developmentLead.toString() : '',
+      developmentLead:
+        values.developmentLead && values.developmentLead.length > 0
+          ? values.developmentLead.toString()
+          : '',
       registerId: info.demandForm.id,
       id,
       taskName: info.taskName,
@@ -245,7 +251,7 @@ function WorkOrder(props) {
         });
         break;
       case 'flow':
-        ExamineRef.current.Forms((err) => {
+        ExamineRef.current.Forms(err => {
           if (err) {
             formerr(err);
             ChangeType('');
@@ -263,10 +269,10 @@ function WorkOrder(props) {
               },
             });
           }
-        })
+        });
         break;
       case 'toflow':
-        ExamineRef.current.Forms((err) => {
+        ExamineRef.current.Forms(err => {
           if (err) {
             formerr(err);
             ChangeType('');
@@ -281,10 +287,10 @@ function WorkOrder(props) {
               },
             });
           }
-        })
+        });
         break;
       case 'regist':
-        ExamineRef.current.Forms((err) => {
+        ExamineRef.current.Forms(err => {
           if (err) {
             formerr(err);
             ChangeType('');
@@ -293,16 +299,18 @@ function WorkOrder(props) {
               type: 'demandtodo/demandnextstep',
               payload: {
                 ...formvalue,
-                nextUserIds: [{ nodeName: '需求登记', userIds: info.demandForm.registerPersonId.split() }],
+                nextUserIds: [
+                  { nodeName: '需求登记', userIds: info.demandForm.registerPersonId.split() },
+                ],
                 taskId,
                 mainId,
               },
             });
           }
-        })
+        });
         break;
       case 'confirm':
-        ExamineRef.current.Forms((err) => {
+        ExamineRef.current.Forms(err => {
           if (err) {
             formerr(err);
             ChangeType('');
@@ -311,17 +319,19 @@ function WorkOrder(props) {
               type: 'demandtodo/demandnextstep',
               payload: {
                 ...formvalue,
-                nextUserIds: [{ nodeName: '需求登记人员确认', userIds: [info.demandForm.registerPersonId] }],
+                nextUserIds: [
+                  { nodeName: '需求登记人员确认', userIds: [info.demandForm.registerPersonId] },
+                ],
                 taskId,
                 id,
                 mainId,
               },
             });
           }
-        })
+        });
         break;
       case 'over':
-        ExamineRef.current.Forms((err) => {
+        ExamineRef.current.Forms(err => {
           if (err) {
             formerr(err);
             ChangeType('');
@@ -337,7 +347,7 @@ function WorkOrder(props) {
               },
             });
           }
-        })
+        });
         break;
       default:
         break;
@@ -371,7 +381,7 @@ function WorkOrder(props) {
         });
         break;
       case 'flow':
-        ExamineRef.current.Forms((err) => {
+        ExamineRef.current.Forms(err => {
           if (!err) {
             dispatch({
               type: 'demandtodo/demandnextstep',
@@ -385,16 +395,18 @@ function WorkOrder(props) {
           } else {
             formerr(err);
           }
-        })
+        });
         break;
       case 'regist':
-        ExamineRef.current.Forms((err) => {
+        ExamineRef.current.Forms(err => {
           if (!err) {
             dispatch({
               type: 'demandtodo/demandnextstep',
               payload: {
                 ...formvalue,
-                nextUserIds: [{ nodeName: '需求登记', userIds: info.demandForm.registerPersonId.split() }],
+                nextUserIds: [
+                  { nodeName: '需求登记', userIds: info.demandForm.registerPersonId.split() },
+                ],
                 taskId,
                 mainId,
               },
@@ -402,7 +414,7 @@ function WorkOrder(props) {
           } else {
             formerr(err);
           }
-        })
+        });
         break;
       default:
         break;
@@ -431,7 +443,6 @@ function WorkOrder(props) {
           },
         });
       }
-
     }
   };
   const handleflow = () => {
@@ -500,7 +511,6 @@ function WorkOrder(props) {
     };
   }, [mainId]);
 
-
   // 保存删除附件驱动表单保存
   useEffect(() => {
     if (taskName === '需求登记' && files.ischange === true) {
@@ -514,9 +524,7 @@ function WorkOrder(props) {
             registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
             completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
             proposingDepartment:
-              values.proposingDepartment !== ''
-                ? values.proposingDepartment
-                : values.proposingUnit,
+              values.proposingDepartment !== '' ? values.proposingDepartment : values.proposingUnit,
             attachment: JSON.stringify(files.arr),
             functionalModule: values.functionalModule.join('/'),
             nextUserIds: [{ nodeName: '', userIds: [] }],
@@ -543,7 +551,10 @@ function WorkOrder(props) {
             releases: Number(values.releases),
             attachment: JSON.stringify(files.arr),
             registerId: info.demandForm.id,
-            developmentLead: values.developmentLead && values.developmentLead.length > 0 ? values.developmentLead.toString() : '',
+            developmentLead:
+              values.developmentLead && values.developmentLead.length > 0
+                ? values.developmentLead.toString()
+                : '',
             id,
             taskName: info.taskName,
           },
@@ -560,8 +571,26 @@ function WorkOrder(props) {
     setActiveKey(key);
   };
 
+  const pheadertitle = (obj, index) => {
+    return (
+      <>
+        <Badge
+          count={index}
+          style={{
+            backgroundColor: '#C1EB08',
+            color: '#10C510',
+            boxShadow: '0 0 0 1px #10C510 inset',
+            marginRight: 4,
+            marginBottom: 2,
+          }}
+        />
+        <span>{obj.taskName}</span>
+      </>
+    );
+  };
+
   return (
-    <div className='ordercollapse'>
+    <div className="ordercollapse">
       {records !== '' && (
         <Steps
           current={records.length - 1}
@@ -581,7 +610,20 @@ function WorkOrder(props) {
                 <div>结束时间：{obj.endTime}</div>
               </div>
             );
-            return <Step title={obj.taskName} description={desc} key={index.toString()} icon={!obj.endTime ? <Icon type="loading" spin style={{ color: '#0124c5' }} /> : <Icon type="check-circle" />} />;
+            return (
+              <Step
+                title={obj.taskName}
+                description={desc}
+                key={index.toString()}
+                icon={
+                  !obj.endTime ? (
+                    <Icon type="loading" spin style={{ color: '#0124c5' }} />
+                  ) : (
+                    <Icon type="check-circle" />
+                  )
+                }
+              />
+            );
           })}
         </Steps>
       )}
@@ -596,8 +638,12 @@ function WorkOrder(props) {
             <Panel header={info.taskName} key="form">
               {info.taskName === '需求登记' && (
                 <Registrat
-                  files={info.demandForm.attachment !== '' ? JSON.parse(info.demandForm.attachment) : []}
-                  ChangeFiles={newvalue => { setFiles(newvalue) }}
+                  files={
+                    info.demandForm.attachment !== '' ? JSON.parse(info.demandForm.attachment) : []
+                  }
+                  ChangeFiles={newvalue => {
+                    setFiles(newvalue);
+                  }}
                   wrappedComponentRef={RegistratRef}
                   register={info.demandForm}
                   userinfo={userinfo}
@@ -617,7 +663,9 @@ function WorkOrder(props) {
                   taskName={info.taskName}
                   info={undefined}
                   files={[]}
-                  ChangeFiles={newvalue => { setFiles(newvalue) }}
+                  ChangeFiles={newvalue => {
+                    setFiles(newvalue);
+                  }}
                 />
               )}
               {info.taskName === '业务科室领导审核' && info.historys.length > 0 && (
@@ -650,51 +698,12 @@ function WorkOrder(props) {
                 info.taskName === '科室领导审核' ||
                 info.taskName === '中心领导审核' ||
                 info.taskName === '市场部领导审核') && (
-                  <Examine
-                    wrappedComponentRef={ExamineRef}
-                    location={location}
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    text="审核"
-                    userinfo={userinfo}
-                    taskName={info.taskName}
-                    info={
-                      info.historys?.slice(-1)[0].taskName === info.taskName
-                        ? info.historys.slice(-1)
-                        : undefined
-                    }
-                    files={
-                      info.historys?.slice(-1)[0].taskName === info.taskName
-                        ? JSON.parse(info.historys?.slice(-1)[0].attachment)
-                        : []
-                    }
-                    ChangeFiles={newvalue => {
-                      setFiles(newvalue);
-                    }}
-                  />
-                )}
-              {taskName === '系统开发商处理' && info.taskName === '系统开发商处理' && (
-                <Track
-                  userinfo={userinfo}
-                  taskName={info.taskName}
-                  taskId={info.taskId}
-                  mainId={info.taskId}
-                  info={
-                    info.historys?.slice(-1)[0].taskName === info.taskName
-                      ? info.historys.slice(-1)
-                      : undefined
-                  }
-                  demandId={info.demandForm.demandId}
-                  ChangeTrackLength={newvalue => setTrackLength(newvalue)}
-                />
-              )}
-              {(info.taskName === '自动化科业务人员确认' || info.taskName === '需求登记人员确认') && info.historys && info.historys.length > 0 && (
                 <Examine
                   wrappedComponentRef={ExamineRef}
                   location={location}
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
-                  text="确认"
+                  text="审核"
                   userinfo={userinfo}
                   taskName={info.taskName}
                   info={
@@ -712,27 +721,82 @@ function WorkOrder(props) {
                   }}
                 />
               )}
+              {taskName === '系统开发商处理' && info.taskName === '系统开发商处理' && (
+                <Track
+                  userinfo={userinfo}
+                  taskName={info.taskName}
+                  taskId={info.taskId}
+                  mainId={info.taskId}
+                  info={
+                    info.historys?.slice(-1)[0].taskName === info.taskName
+                      ? info.historys.slice(-1)
+                      : undefined
+                  }
+                  demandId={info.demandForm.demandId}
+                  ChangeTrackLength={newvalue => setTrackLength(newvalue)}
+                />
+              )}
+              {(info.taskName === '自动化科业务人员确认' || info.taskName === '需求登记人员确认') &&
+                info.historys &&
+                info.historys.length > 0 && (
+                  <Examine
+                    wrappedComponentRef={ExamineRef}
+                    location={location}
+                    formItemLayout={formItemLayout}
+                    forminladeLayout={forminladeLayout}
+                    text="确认"
+                    userinfo={userinfo}
+                    taskName={info.taskName}
+                    info={
+                      info.historys?.slice(-1)[0].taskName === info.taskName
+                        ? info.historys.slice(-1)
+                        : undefined
+                    }
+                    files={
+                      info.historys?.slice(-1)[0].taskName === info.taskName
+                        ? JSON.parse(info.historys?.slice(-1)[0].attachment)
+                        : []
+                    }
+                    ChangeFiles={newvalue => {
+                      setFiles(newvalue);
+                    }}
+                  />
+                )}
             </Panel>
 
-            <Panel header="需求登记" key="registdes">
-              <Registratdes info={info.demandForm} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />
+            <Panel header={pheadertitle({ taskName: '需求登记' }, 1)} key="registdes">
+              <Registratdes
+                info={info.demandForm}
+                formItemLayout={formItemLayout}
+                forminladeLayout={forminladeLayout}
+              />
             </Panel>
 
-            {info && info.historys.length > 0 && info.historys.map((obj, index) => {
-              // panel详情组件
-              if (obj.taskName !== '系统开发商处理')
-                return (
-                  <Panel header={obj.taskName} key={index.toString()}>
-                    <Examinedes info={obj} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />
-                  </Panel>
-                );
-              if (obj.taskName === '系统开发商处理')
-                return (
-                  <Panel header={obj.taskName} key={index.toString()}>
-                    <Tracklist demandId={info.demandForm.demandId} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />
-                  </Panel>
-                );
-            })}
+            {info &&
+              info.historys.length > 0 &&
+              info.historys.map((obj, index) => {
+                // panel详情组件
+                if (obj.taskName !== '系统开发商处理')
+                  return (
+                    <Panel header={pheadertitle(obj, index + 2)} key={index.toString()}>
+                      <Examinedes
+                        info={obj}
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
+                      />
+                    </Panel>
+                  );
+                if (obj.taskName === '系统开发商处理')
+                  return (
+                    <Panel header={pheadertitle(obj, index + 2)} key={index.toString()}>
+                      <Tracklist
+                        demandId={info.demandForm.demandId}
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
+                      />
+                    </Panel>
+                  );
+              })}
           </Collapse>
         )}
       </Spin>

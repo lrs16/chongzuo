@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
-import { Steps, Collapse, Spin, Button, Icon } from 'antd';
+import { Steps, Collapse, Spin, Button, Icon, Badge } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Process from './Process';
 import Registratdes from './components/Registratdes';
@@ -44,11 +44,11 @@ function Details(props) {
     const tabid = sessionStorage.getItem('tabid');
     router.push({
       pathname: location.pathname,
-      query: { tabid, closecurrent: true }
+      query: { tabid, closecurrent: true },
     });
   };
   const handleTabChange = key => {
-    settabActivekey(key)
+    settabActivekey(key);
   };
   const tabList = [
     {
@@ -86,7 +86,9 @@ function Details(props) {
         },
       });
     }
-    return () => { setActiveKey('workorder') }
+    return () => {
+      setActiveKey('workorder');
+    };
   }, [mainId]);
 
   // 点击页签右键刷新
@@ -106,7 +108,25 @@ function Details(props) {
         },
       });
     }
-  }, [location.state])
+  }, [location.state]);
+
+  const pheadertitle = (obj, index) => {
+    return (
+      <>
+        <Badge
+          count={index}
+          style={{
+            backgroundColor: '#C1EB08',
+            color: '#10C510',
+            boxShadow: '0 0 0 1px #10C510 inset',
+            marginRight: 4,
+            marginBottom: 2,
+          }}
+        />
+        <span>{obj.taskName}</span>
+      </>
+    );
+  };
 
   return (
     <PageHeaderWrapper
@@ -117,7 +137,7 @@ function Details(props) {
       extra={<Button onClick={handleclose}>关闭</Button>}
     >
       {tabActivekey === 'workorder' && (
-        <div className='ordercollapse'>
+        <div className="ordercollapse">
           {records && (
             <Steps
               current={records.length - 1}
@@ -142,8 +162,15 @@ function Details(props) {
                     title={obj.taskName}
                     description={desc}
                     key={index.toString()}
-                    icon={!obj.endTime ? <Icon type="loading" spin style={{ color: '#0124c5' }} /> : <Icon type="check-circle" />}
-                  />);
+                    icon={
+                      !obj.endTime ? (
+                        <Icon type="loading" spin style={{ color: '#0124c5' }} />
+                      ) : (
+                        <Icon type="check-circle" />
+                      )
+                    }
+                  />
+                );
               })}
               {/* {(taskName === '已关闭' || taskName === '已完成') && (
                 <Step
@@ -155,7 +182,7 @@ function Details(props) {
               )} */}
             </Steps>
           )}
-          <div className='noexplain'>
+          <div className="noexplain">
             <Spin spinning={loading}>
               {info && (
                 <Collapse
@@ -165,20 +192,28 @@ function Details(props) {
                   onChange={callback}
                 >
                   <Panel header="需求登记" key="registdes">
-                    <Registratdes info={info.demandForm} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />
+                    <Registratdes
+                      info={info.demandForm}
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                    />
                   </Panel>
 
                   {info.historys.map((obj, index) => {
                     // panel详情组件
                     if (obj.taskName !== '系统开发商处理')
                       return (
-                        <Panel header={obj.taskName} key={index.toString()}>
-                          <Examinedes info={obj} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />
+                        <Panel header={pheadertitle(obj, index + 1)} key={index.toString()}>
+                          <Examinedes
+                            info={obj}
+                            formItemLayout={formItemLayout}
+                            forminladeLayout={forminladeLayout}
+                          />
                         </Panel>
                       );
                     if (obj.taskName === '系统开发商处理')
                       return (
-                        <Panel header={obj.taskName} key={index.toString()}>
+                        <Panel header={pheadertitle(obj, index + 1)} key={index.toString()}>
                           <Tracklist demandId={info.demandForm.demandId} />
                         </Panel>
                       );
