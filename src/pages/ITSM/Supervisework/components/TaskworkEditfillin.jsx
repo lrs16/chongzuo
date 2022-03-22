@@ -182,7 +182,7 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
               {getFieldDecorator('main_content', {
                 rules: [{ required, message: '请输入工作内容' }, {}],
                 initialValue: main.content,
-              })(<TextArea disabled={type === 'delay'} rows={4} />)}
+              })(<TextArea disabled={type === 'delay'} autoSize={{ minRows: 1 }} />)}
             </Form.Item>
           </Col>
           <Col span={8}>

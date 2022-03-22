@@ -229,7 +229,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
             <Form.Item label="总结说明" {...forminladeLayout}>
               {getFieldDecorator('finishContent', {
                 initialValue: finish.finishContent,
-              })(<TextArea rows={5} placeholder="请输入" />)}
+              })(<TextArea autoSize={{ minRows: 1 }} placeholder="请输入" />)}
             </Form.Item>
           </Col>
 

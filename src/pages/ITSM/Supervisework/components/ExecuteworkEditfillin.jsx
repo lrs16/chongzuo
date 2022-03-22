@@ -128,7 +128,7 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
               {getFieldDecorator('execute_content', {
                 rules: [{ required, message: '请输入工作执行情况说明' }],
                 initialValue: execute && execute.content ? execute.content : '',
-              })(<TextArea disabled={!showEdit} rows={4} />)}
+              })(<TextArea disabled={!showEdit} autoSize={{ minRows: 1 }} />)}
             </Form.Item>
           </Col>
 

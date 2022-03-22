@@ -39,7 +39,7 @@ function HandleQuery(props) {
           <Col span={24}>
             <Form.Item label="故障详细描述" {...forminladeLayout}>
               <TextArea
-                autoSize={{ minRows: 3 }}
+                autoSize={{ minRows: 1 }}
                 defaultValue={info.handleContent || ''}
                 disabled
               />
@@ -73,7 +73,7 @@ function HandleQuery(props) {
           <Col span={24}>
             <Form.Item label="处理过程" {...forminladeLayout}>
               <TextArea
-                autoSize={{ minRows: 3 }}
+                autoSize={{ minRows: 1 }}
                 defaultValue={info.handleProcess || ''}
                 disabled
               />

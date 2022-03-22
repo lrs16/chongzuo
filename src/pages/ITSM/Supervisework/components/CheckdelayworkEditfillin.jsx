@@ -106,7 +106,7 @@ const CheckdelayworkEditfillin = React.forwardRef((props, ref) => {
                 {getFieldDecorator('check_content', {
                   rules: [{ required: false, message: '请输入审核说明' }],
                   initialValue: check.content,
-                })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+                })(<TextArea autoSize={{ minRows: 1 }} placeholder="请输入" />)}
               </Form.Item>
             )}
             {adopt === '002' && (
@@ -114,7 +114,7 @@ const CheckdelayworkEditfillin = React.forwardRef((props, ref) => {
                 {getFieldDecorator('check_content', {
                   rules: [{ required: true, message: '请输入审核说明' }],
                   initialValue: check.content,
-                })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+                })(<TextArea autoSize={{ minRows: 1 }} placeholder="请输入" />)}
               </Form.Item>
             )}
           </Col>

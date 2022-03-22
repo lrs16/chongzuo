@@ -47,7 +47,7 @@ function ExecuteworkEditfillins(props) {
         </Col>
         <Col span={24}>
           <Form.Item label="工作执行情况说明" {...forminladeLayout}>
-            <TextArea autoSize={{ minRows: 3 }} defaultValue={info.content} disabled />
+            <TextArea autoSize={{ minRows: 1 }} defaultValue={info.content} disabled />
           </Form.Item>
         </Col>
         <Col span={24}>

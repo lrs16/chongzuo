@@ -56,7 +56,7 @@ function ExamineSecondQuery(props) {
           </Col>
           <Col span={24}>
             <Form.Item label="审核意见" {...forminladeLayout}>
-              <TextArea autoSize={{ minRows: 3 }} defaultValue={info.checkOpinion || ''} disabled />
+              <TextArea autoSize={{ minRows: 1 }} defaultValue={info.checkOpinion || ''} disabled />
             </Form.Item>
           </Col>
           <Col span={24}>

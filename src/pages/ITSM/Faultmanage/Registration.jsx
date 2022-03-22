@@ -283,7 +283,7 @@ function Registration(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      <div className="noexplain">
+      <div className="noexplain noregpad">
         <Card>
           <FaultContext.Provider
             value={{
@@ -518,7 +518,7 @@ function Registration(props) {
                           option.props.children.includes(inputValue)
                         }
                       >
-                        <TextArea autoSize={{ minRows: 5 }} placeholder="请输入" />
+                        <TextArea autoSize={{ minRows: 1 }} placeholder="请输入" />
                       </AutoComplete>,
                     )}
                   </Form.Item>

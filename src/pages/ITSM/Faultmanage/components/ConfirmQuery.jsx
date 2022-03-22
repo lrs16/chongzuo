@@ -33,7 +33,7 @@ function ConfirmQuery(props) {
           <Col span={24}>
             <Form.Item label="确认说明" {...forminladeLayout}>
               <TextArea
-                autoSize={{ minRows: 3 }}
+                autoSize={{ minRows: 1 }}
                 defaultValue={info.confirmContent || ''}
                 disabled
               />

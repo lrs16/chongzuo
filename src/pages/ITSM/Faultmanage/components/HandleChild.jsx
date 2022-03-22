@@ -142,7 +142,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                 },
               ],
               initialValue: handle ? handle.handleContent : '',
-            })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+            })(<TextArea autoSize={{ minRows: 1 }} placeholder="请输入" />)}
           </Form.Item>
         </Col>
 
@@ -156,7 +156,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                 },
               ],
               initialValue: handle ? handle.handleReason : '',
-            })(<TextArea autoSize={{ minRows: 3 }} allowClear />)}
+            })(<TextArea autoSize={{ minRows: 1 }} allowClear />)}
           </Form.Item>
         </Col>
 
@@ -170,7 +170,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                 },
               ],
               initialValue: handle ? handle.handleAdvise : '',
-            })(<TextArea autoSize={{ minRows: 3 }} allowClear />)}
+            })(<TextArea autoSize={{ minRows: 1 }} allowClear />)}
           </Form.Item>
         </Col>
 
@@ -191,7 +191,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                 filterOption={(inputValue, option) => option.props.children.includes(inputValue)}
                 //  onSelect={value => handleSearch(value, 'des')}
               >
-                <TextArea autoSize={{ minRows: 5 }} placeholder="请输入" />
+                <TextArea autoSize={{ minRows: 1 }} placeholder="请输入" />
               </AutoComplete>,
             )}
           </Form.Item>

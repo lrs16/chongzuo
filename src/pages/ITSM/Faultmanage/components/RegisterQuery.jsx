@@ -91,7 +91,7 @@ function RegisterQuery(props) {
           </Col>
           <Col span={24}>
             <Form.Item label="故障概要" {...forminladeLayout}>
-              <TextArea autoSize={{ minRows: 3 }} defaultValue={maindata.content || ''} disabled />
+              <TextArea autoSize={{ minRows: 1 }} defaultValue={maindata.content || ''} disabled />
             </Form.Item>
           </Col>
           <Col span={24}>

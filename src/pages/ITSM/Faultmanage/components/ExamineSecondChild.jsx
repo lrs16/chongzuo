@@ -202,7 +202,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
               {getFieldDecorator('checkOpinion1', {
                 rules: [{ required: false, message: '请输入审核意见' }],
                 initialValue: check ? check.checkOpinion : '',
-              })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+              })(<TextArea autoSize={{ minRows: 1 }} placeholder="请输入" />)}
             </Form.Item>
           )}
           {adopt === '0' && ( // 0 不通过
@@ -210,7 +210,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
               {getFieldDecorator('checkOpinion2', {
                 rules: [{ required: true, message: '请输入审核意见' }],
                 initialValue: check ? check.checkOpinion : '',
-              })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+              })(<TextArea autoSize={{ minRows: 1 }} placeholder="请输入" />)}
             </Form.Item>
           )}
         </Col>

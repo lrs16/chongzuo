@@ -44,7 +44,7 @@ function SummaryQuery(props) {
           <Col span={24}>
             <Form.Item label="总结说明" {...forminladeLayout}>
               <TextArea
-                autoSize={{ minRows: 3 }}
+                autoSize={{ minRows: 1 }}
                 defaultValue={info.finishContent || ''}
                 disabled
               />
