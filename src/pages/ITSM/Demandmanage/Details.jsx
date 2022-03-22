@@ -191,7 +191,7 @@ function Details(props) {
                   bordered={false}
                   onChange={callback}
                 >
-                  <Panel header="需求登记" key="registdes">
+                  <Panel header={pheadertitle({ taskName: '需求登记' }, 1)} key="registdes">
                     <Registratdes
                       info={info.demandForm}
                       formItemLayout={formItemLayout}
@@ -203,7 +203,7 @@ function Details(props) {
                     // panel详情组件
                     if (obj.taskName !== '系统开发商处理')
                       return (
-                        <Panel header={pheadertitle(obj, index + 1)} key={index.toString()}>
+                        <Panel header={pheadertitle(obj, index + 2)} key={index.toString()}>
                           <Examinedes
                             info={obj}
                             formItemLayout={formItemLayout}
@@ -213,7 +213,7 @@ function Details(props) {
                       );
                     if (obj.taskName === '系统开发商处理')
                       return (
-                        <Panel header={pheadertitle(obj, index + 1)} key={index.toString()}>
+                        <Panel header={pheadertitle(obj, index + 2)} key={index.toString()}>
                           <Tracklist demandId={info.demandForm.demandId} />
                         </Panel>
                       );
