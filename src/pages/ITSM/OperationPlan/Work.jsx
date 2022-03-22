@@ -1,6 +1,12 @@
 import React, { useEffect, useState, createContext, useRef } from 'react';
 import { connect } from 'dva';
-import { Button, Collapse, Form, message } from 'antd';
+import {
+  Button,
+  Collapse,
+  Form,
+  message,
+  Badge
+} from 'antd';
 import User from '@/components/SelectUser/User';
 import HadleContext from '@/layouts/MenuContext';
 import router from 'umi/router';
@@ -578,6 +584,26 @@ function Work(props) {
 
   }, [openFlowList])
 
+  const pheadertitle = (obj, index) => {
+    return (
+      <>
+        <Badge
+          count={index}
+          style={{
+            backgroundColor: '#C1EB08',
+            color: '#10C510',
+            // boxShadow: '0 0 0 1px #10C510 inset',
+            marginRight: 4,
+            marginBottom: 2,
+          }}
+        />
+        <span>
+        {Panelheadermap.get(Object.keys(obj)[0])}
+        </span>
+      </>
+    );
+  };
+
   const tabList = [
     {
       key: 'workorder',
@@ -822,7 +848,7 @@ function Work(props) {
 
             <div className={styles.collapse}>
               {loading === false && taskResult && taskResult.length > 0 && data && (
-                <Collapse expandIconPosition="right" bordered={false}   defaultActiveKey={['0','1','2']}>
+                <Collapse expandIconPosition="right" bordered={false} defaultActiveKey={['0', '1', '2']}>
                   {data.map((obj, index) => {
                     // panel详情组件
                     const Paneldesmap = new Map([
@@ -852,7 +878,10 @@ function Work(props) {
                       ],
                     ]);
                     return (
-                      <Panel header={Panelheadermap.get(Object.keys(obj)[0])} key={index.toString()}>
+                      <Panel
+                        // header={Panelheadermap.get(Object.keys(obj)[0])}
+                        header={pheadertitle(obj, index + 1)}
+                        key={index.toString()}>
                         {Paneldesmap.get(Object.keys(obj)[0])}
                       </Panel>
                     );

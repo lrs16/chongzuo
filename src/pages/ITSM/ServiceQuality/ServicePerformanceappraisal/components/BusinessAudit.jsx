@@ -44,7 +44,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
 
 
   return (
-    <Row gutter={24} style={{ paddingTop: 24 }}>
+    <Row gutter={24}>
       <Form {...formItemLayout}>
         <Col span={8}>
           <Form.Item label="审核结果">

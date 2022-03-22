@@ -33,7 +33,7 @@ function Operatorconfirmades(props) {
     value = info.confirmResult;
   }
   return (
-    <Row gutter={24} style={{ marginTop: 24 }}>
+    <Row gutter={24}>
       <Form {...formItemLayout}>
         <Col span={8}>
           <Form.Item label="审核结果">

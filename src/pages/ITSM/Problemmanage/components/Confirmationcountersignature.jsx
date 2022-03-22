@@ -13,7 +13,7 @@ function Confirmationcountersignature(props) {
     <>
       <Collapse
         expandIconPosition="right"
-        style={{ backgroundColor: 'white', marginTop: '20px' }}
+        style={{ backgroundColor: 'white'}}
         defaultActiveKey={['65']}
       >
         <Panel header="确认会签" key={statue}>

@@ -1,5 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Form, Button, message, Collapse, Steps,Icon } from 'antd';
+import {
+  Form,
+  Button,
+  message,
+  Collapse,
+  Steps,
+  Icon,
+  Badge
+} from 'antd';
 import moment from 'moment';
 import router from 'umi/router';
 import HadleContext from '@/layouts/MenuContext';
@@ -72,7 +80,7 @@ function TobedealtForm(props) {
   const [handleUploadStatus, setHandleUploadStatus] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(false);
   const [backTitle, setBackTitle] = useState('');
-  const [isappeal,setIsAppeal] = useState('1')
+  const [isappeal, setIsAppeal] = useState('1')
 
   const {
     taskId,
@@ -157,7 +165,7 @@ function TobedealtForm(props) {
       case '服务商确认':
         sessionStorage.setItem(
           'Nextflowmane',
-          `${isappeal === '0'? '服务绩效考核确认' : '自动化科复核'}`,
+          `${isappeal === '0' ? '服务绩效考核确认' : '自动化科复核'}`,
         );
         break;
       case '自动化科复核':
@@ -179,6 +187,12 @@ function TobedealtForm(props) {
     }
     setTabActiveKey('workorder');
   }, [assessNo]);
+
+  const getArrayindex = (data) => {
+    return data.map((obj,index) => {
+      return index
+    })
+  }
 
   useEffect(() => {
     if (location.state && location.state.reset && assessNo) {
@@ -312,7 +326,7 @@ function TobedealtForm(props) {
         });
       }
 
-      if(err) {
+      if (err) {
         openNotification(Object.values(err).reverse())
       }
       return null;
@@ -442,7 +456,7 @@ function TobedealtForm(props) {
           }
         });
       }
-      if(err && circulation) {
+      if (err && circulation) {
         openNotification(Object.values(err))
       }
       return [];
@@ -472,6 +486,26 @@ function TobedealtForm(props) {
       gotoCirapi();
     }
   }, [userchoice, butandorder]);
+
+  const pheadertitle = (obj, index) => {
+    return (
+      <>
+        <Badge
+          count={index}
+          style={{
+            backgroundColor: '#C1EB08',
+            color: '#10C510',
+            // boxShadow: '0 0 0 1px #10C510 inset',
+            marginRight: 4,
+            marginBottom: 2,
+          }}
+        />
+        <span>
+        {Object.keys((obj))[0]}
+        </span>
+      </>
+    );
+  };
 
   const onClickSubmit = (flowType, requestType) => {
     switch (flowType) {
@@ -713,12 +747,11 @@ function TobedealtForm(props) {
                 padding: 24,
                 border: '1px solid #e8e8e8',
                 overflowX: 'auto',
-                marginBottom: 24,
               }}
             >
               {hisTaskArr &&
                 hisTaskArr.map(
-                  ({ key, name, taskStatus, totalTime, assignee, startTime, endTime },index) => [
+                  ({ key, name, taskStatus, totalTime, assignee, startTime, endTime }, index) => [
                     name !== '开始节点' && name !== '结束节点' && (
                       <Step
                         key={key}
@@ -824,14 +857,14 @@ function TobedealtForm(props) {
                       formItemLayout={formItemLayout}
                       forminladeLayout={forminladeLayout}
                       userinfo={userinfo}
-                      selectPersonstate={newvalue =>setNoselect(newvalue)}
+                      selectPersonstate={newvalue => setNoselect(newvalue)}
                       files={currentTask.annex ? JSON.parse(currentTask.annex) : []}
                       ChangeFiles={newvalue => {
                         setFiles(newvalue);
                       }}
                       search={search}
                       key='1'
-                      changeIsappeal={(e) => {setIsAppeal(e)}}
+                      changeIsappeal={(e) => { setIsAppeal(e) }}
                     />
                   </Panel>
                 )}
@@ -881,8 +914,8 @@ function TobedealtForm(props) {
       {loading === false && hisTasks && hisTasks.length > 0 && tabActiveKey === 'workorder' && (
         <div className='noexplain'>
           <div className={styles.collapse}>
-            <Collapse expandIconPosition="right" bordered={false} defaultActiveKey={['0','1','2','3','4','5']}>
-              {hisTasks.map((obj,index) => {
+            <Collapse expandIconPosition="right" bordered={false} defaultActiveKey={getArrayindex(hisTasks)}>
+              {hisTasks.map((obj, index) => {
                 const Paneldesmap = new Map([
                   [
                     '服务绩效考核登记',
@@ -963,7 +996,7 @@ function TobedealtForm(props) {
                       noEdit="true"
                       search={search}
                       key="0"
-                      changeIsappeal={(e) => {setIsAppeal(e)}}
+                      changeIsappeal={(e) => { setIsAppeal(e) }}
                     />,
                   ],
                   [
@@ -988,7 +1021,11 @@ function TobedealtForm(props) {
                   ],
                 ]);
                 return (
-                  <Panel Panel header={Object.keys(obj)[0]} key={index.toString()}>
+                  <Panel 
+                  Panel
+                  header={pheadertitle(obj, index + 1)}
+                    key={index.toString()}
+                    >
                     {Paneldesmap.get(Object.keys(obj)[0])}
                   </Panel>
                 );

@@ -473,7 +473,7 @@ const Register = forwardRef((props, ref) => {
   };
 
   return (
-    <Row gutter={24} style={{ paddingTop: 24 }}>
+    <Row gutter={24}>
       <SysDict
         typeid='576'
         commonid="335"

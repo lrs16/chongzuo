@@ -4,6 +4,7 @@ import {
   Button,
   Collapse,
   Form,
+  Badge
 } from 'antd';
 import router from 'umi/router';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -67,6 +68,26 @@ function Work(props) {
     });
   }
 
+  const pheadertitle = (obj, index) => {
+    return (
+      <>
+        <Badge
+          count={index}
+          style={{
+            backgroundColor: '#C1EB08',
+            color: '#10C510',
+            // boxShadow: '0 0 0 1px #10C510 inset',
+            marginRight: 4,
+            marginBottom: 2,
+          }}
+        />
+        <span>
+        {Panelheadermap.get(Object.keys(obj)[0])}
+        </span>
+      </>
+    );
+  };
+
   const handleTabChange = key => {
     // tab切换
     setTabActiveKey(key);
@@ -126,7 +147,7 @@ function Work(props) {
                     ]);
                     return (
                       <Panel
-                        header={Panelheadermap.get(Object.keys(obj)[0])}
+                      header={pheadertitle(obj, index + 1)}
                         key={index.toString()}>
                         {Paneldesmap.get(Object.keys(obj)[0])}
                       </Panel>
@@ -136,7 +157,6 @@ function Work(props) {
               )}
             </div>
           </div>
-
         )
       }
 

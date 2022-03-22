@@ -170,7 +170,7 @@ const Registrat = React.forwardRef((props, ref) => {
         style={{ display: 'none' }}
       />
       <div className='noexplain'>
-        <Row gutter={24} style={{ paddingTop: 24 }}>
+        <Row>
           <Form {...formItemLayout}>
             <Col span={8}>
               <Form.Item label="问题编号">
@@ -315,20 +315,60 @@ const Registrat = React.forwardRef((props, ref) => {
               </Form.Item>
             </Col>
 
+            {persondata && persondata.length > 0 && (
+              <Col span={8}>
+                <Form.Item label="开发负责人">
+                  {getFieldDecorator('developmentLead', {
+                    rules: [
+                      {
+                        required,
+                        message: '请输入开发负责人',
+                      },
+                    ],
+                    initialValue:
+                      (register.developmentLead && register.developmentLead.split(',')) || undefined,
+                  })(
+                    <Select
+                      placeholder="请选择"
+                      mode="multiple"
+                      getPopupContainer={e => e.parentNode}
+                    >
+                      {persondata.map(obj => [
+                        <Option key={obj.key} value={obj.val}>
+                          {obj.val}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+            )}
 
             <Col span={8}>
-              <Form.Item label="期望完成时间">
-                {getFieldDecorator('registerExpectTime', {
+              <Form.Item label="影响范围">
+                {getFieldDecorator('registerScope', {
                   rules: [
                     {
                       required,
-                      message: '请选择期望完成时间',
+                      message: '请选择影响范围',
                     },
                   ],
-                  initialValue: (register && register.registerExpectTime) ? moment(register.registerExpectTime) : moment(new Date()),
-                })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
+                  initialValue: register.registerScope,
+                })(
+                  <Select
+                    placeholder='请选择'
+                    getPopupContainer={e => e.parentNode}
+                  >
+                    {(scope || []).map(obj => [
+                      <Option key={obj.key} value={obj.dict_code}>
+                        {obj.title}
+                      </Option>,
+                    ])}
+                  </Select>,
+                )}
               </Form.Item>
             </Col>
+
 
             <Col span={8}>
               <Form.Item label="所属项目">
@@ -347,29 +387,6 @@ const Registrat = React.forwardRef((props, ref) => {
             </Col>
 
             <Col span={8}>
-              <Form.Item label="影响范围">
-                {getFieldDecorator('registerScope', {
-                  rules: [
-                    {
-                      required,
-                      message: '请选择影响范围',
-                    },
-                  ],
-                  initialValue: register.registerScope,
-                })(
-                  <Select placeholder='请选择'>
-                    {(scope || []).map(obj => [
-                      <Option key={obj.key} value={obj.dict_code}>
-                        {obj.title}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-
-
-            <Col span={8}>
               <Form.Item label="联系电话">
                 {getFieldDecorator('registerUserPhone', {
                   rules: [
@@ -383,34 +400,19 @@ const Registrat = React.forwardRef((props, ref) => {
               </Form.Item>
             </Col>
 
-            {persondata && persondata.length > 0 && (
-              <Col span={8}>
-                <Form.Item label="开发负责人">
-                  {getFieldDecorator('developmentLead', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入开发负责人',
-                      },
-                    ],
-                    initialValue:
-                      (register.developmentLead && register.developmentLead.split(',')) || undefined,
-                  })(
-                    <Select 
-                    placeholder="请选择"
-                     mode="multiple"
-                      
-                      >
-                      {persondata.map(obj => [
-                        <Option key={obj.key} value={obj.val}>
-                          {obj.val}
-                        </Option>,
-                      ])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-            )}
+            <Col span={8}>
+              <Form.Item label="期望完成时间">
+                {getFieldDecorator('registerExpectTime', {
+                  rules: [
+                    {
+                      required,
+                      message: '请选择期望完成时间',
+                    },
+                  ],
+                  initialValue: (register && register.registerExpectTime) ? moment(register.registerExpectTime) : moment(new Date()),
+                })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
+              </Form.Item>
+            </Col>
 
             <Col span={24}>
               <Form.Item label="问题标题" {...forminladeLayout}>

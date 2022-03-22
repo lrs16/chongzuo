@@ -4,7 +4,8 @@ import {
   Button,
   Steps,
   Collapse,
-  Icon
+  Icon,
+  Badge
 } from 'antd';
 import { connect } from 'dva';
 import router from 'umi/router';
@@ -74,6 +75,12 @@ function Queryworkdetail(props) {
     }
   };
 
+  const getArrayindex = (data) => {
+   return data.map((obj,index) => {
+      return index
+    })
+  }
+
   useEffect(() => {
     getInformation()
     setTabActiveKey('workorder')
@@ -102,6 +109,26 @@ function Queryworkdetail(props) {
 
   const handleTabChange = (key) => { // tab切换
     setTabActiveKey(key);
+  };
+
+  const pheadertitle = (obj, index) => {
+    return (
+      <>
+        <Badge
+          count={index}
+          style={{
+            backgroundColor: '#C1EB08',
+            color: '#10C510',
+            // boxShadow: '0 0 0 1px #10C510 inset',
+            marginRight: 4,
+            marginBottom: 2,
+          }}
+        />
+        <span>
+          {obj.fnname}
+        </span>
+      </>
+    );
   };
 
   const handClose = () => {
@@ -176,7 +203,7 @@ function Queryworkdetail(props) {
                 {problemFlowNodeRows && loading === false && (
                   <Collapse
                     expandIconPosition="right"
-                    defaultActiveKey={['0','1','2','3','4','5','6']}
+                    defaultActiveKey={getArrayindex(problemFlowNodeRows)}
                     bordered={false}
                   >
                     {problemFlowNodeRows.map((obj, index) => {
@@ -235,7 +262,11 @@ function Queryworkdetail(props) {
                         />],
                       ]);
                       return (
-                        <Panel Panel header={obj.fnname} key={index.toString()}>
+                        <Panel
+                          Panel
+                          header={pheadertitle(obj, index + 1)}
+                          key={index.toString()}
+                        >
                           {Paneldesmap.get(obj.fnname)}
                         </Panel>
                       );

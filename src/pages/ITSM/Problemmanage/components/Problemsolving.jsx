@@ -7,7 +7,7 @@ const { TextArea } = Input;
 function Problemsolving(props) {
   const { info, formItemLayout, forminladeLayout } = props;
   return (
-    <Row gutter={24} style={{ marginTop: 24 }}>
+    <Row gutter={24}>
       <Form {...formItemLayout}>
         <Col span={8}>
           <Form.Item label="接单时间">

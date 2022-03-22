@@ -148,7 +148,8 @@ function Registration(props) {
         </>
       }
     >
-        <div className={styles.collapse}>
+      <div className='noexplain'>
+        <div className='ordercollapse'>
           <Collapse
             expandIconPosition="right"
             defaultActiveKey={['1']}
@@ -180,6 +181,8 @@ function Registration(props) {
 
           </Collapse>
         </div>
+      </div>
+
     </PageHeaderWrapper>
   );
 }

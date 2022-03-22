@@ -316,7 +316,7 @@ const Register = forwardRef((props, ref) => {
         style={{ display: 'none' }}
       />
       <div className='noexplain'>
-        <Row gutter={24} style={{ paddingTop: 24 }}>
+        <Row gutter={24}>
           <Form {...formItemLayout}>
             {/* <Row> */}
             {/* <Col span={8}> */}

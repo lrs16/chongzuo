@@ -1,5 +1,13 @@
 import React, { useEffect, useRef, useState, createContext } from 'react';
-import { Form, Button, message, Collapse, Steps, Icon } from 'antd';
+import {
+  Form,
+  Button,
+  message,
+  Collapse,
+  Steps,
+  Icon,
+  Badge
+} from 'antd';
 import moment from 'moment';
 import { connect } from 'dva';
 import router from 'umi/router';
@@ -692,6 +700,26 @@ function Workorder(props) {
     }
   }
 
+  const pheadertitle = (obj, index) => {
+    return (
+      <>
+        <Badge
+          count={index}
+          style={{
+            backgroundColor: '#C1EB08',
+            color: '#10C510',
+            // boxShadow: '0 0 0 1px #10C510 inset',
+            marginRight: 4,
+            marginBottom: 2,
+          }}
+        />
+        <span>
+          {obj.fnname}
+        </span>
+      </>
+    );
+  };
+
   // 点击回退,接单,流转、结束
   const onClickSubmit = buttype => {
     const taskId = id;
@@ -768,6 +796,12 @@ function Workorder(props) {
       query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
     });
   };
+
+  const getArrayindex = (data) => {
+    return data.map((obj,index) => {
+      return index
+    })
+  }
 
   return (
     <PageHeaderWrapper
@@ -994,7 +1028,6 @@ function Workorder(props) {
                   padding: 24,
                   border: '1px solid #e8e8e8',
                   overflowX: 'auto',
-                  marginBottom: 50,
                 }}
               >
                 {problemFlowLogs &&
@@ -1011,7 +1044,7 @@ function Workorder(props) {
                         key={index}
                         title={params}
                         description={
-                          <div className={styles.stepDescription}>
+                          <div>
                             处理人：{obj.formHandler}
                             <div>
                               结束时间：{moment(obj.startTime).format('YYYY-MM-DD HH:mm:ss')}
@@ -1030,7 +1063,7 @@ function Workorder(props) {
           </div>
 
           <div className='noexplain'>
-            <div  className={styles.collapse}>
+            <div className={styles.collapse}>
               <Collapse expandIconPosition="right" defaultActiveKey={['1']} bordered={false}>
                 {(currntStatus === 5 || currntStatus === 0) && loading === false && (
                   <Panel header="问题登记" key="1" style={{ backgroundColor: 'white' }}>
@@ -1220,8 +1253,8 @@ function Workorder(props) {
           <div className='noexplain'>
             <div className={styles.collapse}>
               {problemFlowNodeRows && loading === false && (
-                <Collapse expandIconPosition="right" bordered={false} defaultActiveKey={['0','1','2','3','4','5','6']}>
-                  {problemFlowNodeRows.map((obj,index) => {
+                <Collapse expandIconPosition="right" bordered={false} defaultActiveKey={getArrayindex(problemFlowNodeRows)}>
+                  {problemFlowNodeRows.map((obj, index) => {
                     // panel详情组件
                     const Paneldesmap = new Map([
                       [
@@ -1298,7 +1331,11 @@ function Workorder(props) {
                       ],
                     ]);
                     return (
-                      <Panel Panel header={obj.fnname} key={index.toString()}>
+                      <Panel
+                        Panel
+                        header={pheadertitle(obj, index+1)}
+                        key={index.toString()}
+                      >
                         {Paneldesmap.get(obj.fnname)}
                       </Panel>
                     );

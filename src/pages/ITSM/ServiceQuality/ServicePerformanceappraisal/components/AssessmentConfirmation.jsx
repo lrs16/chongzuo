@@ -110,7 +110,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
   const appraisalStatus = getTypebyTitle('考核状态');
 
   return (
-    <Row gutter={24} style={{ paddingTop: 24 }}>
+    <Row gutter={24}>
       <SysDict
         typeid='576'
         commonid="335"

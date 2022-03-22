@@ -10,7 +10,7 @@ function Problemclosed(props) {
     <>
       <Collapse
         expandIconPosition="right"
-        style={{ backgroundColor: 'white', marginTop: '20px' }}
+        style={{ backgroundColor: 'white'}}
       >
         <Panel header="问题关闭">
           <Descriptions>

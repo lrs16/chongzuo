@@ -18,6 +18,7 @@ import Reasonregression from '../../Problemmanage/components/Reasonregression';
 import Registrat from './components/Registrat';
 import { openNotification } from '@/utils/utils';
 
+
 const forminladeLayout = {
   labelCol: {
     xs: { span: 24 },
