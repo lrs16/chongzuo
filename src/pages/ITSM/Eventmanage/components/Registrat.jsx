@@ -125,7 +125,8 @@ const Registrat = forwardRef((props, ref) => {
       setFieldsValue({ register_isCheck: false });
       ChangeActiveKey(['registratform', 'handleform']);
     } else {
-      ChangeButtonName('处理')
+      ChangeButtonName('处理');
+      ChangeActiveKey(['registratform']);
     };
     // routerRefresh();
   };

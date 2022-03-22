@@ -20,6 +20,7 @@ import { queryDisableduserByUser, queryUnitList, queryDeptList } from '@/service
 import DeptSlectId from '@/components/DeptTree/SelectID';
 import { CaretRightOutlined } from '@ant-design/icons';
 import { querkeyVal } from '@/services/api';
+import FormTextArea from '@/components/FormTextArea';
 import styles from './style.less';
 
 const InputGroup = Input.Group;
@@ -650,7 +651,7 @@ const Registrat = forwardRef((props, ref) => {
               {getFieldDecorator('reason', {
                 rules: [{ required, message: '请输入需求原因' }],
                 initialValue: register.reason,
-              })(<TextArea autoSize={{ minRows: 3 }} allowClear placeholder="请输入" />)}
+              })(<FormTextArea Areakey='reason' autoSize={3} indexText={register.reason} isEdit />)}
             </Form.Item>
           </Col>
           <Col span={24} style={{ marginTop: '-10px' }}>
@@ -666,7 +667,7 @@ const Registrat = forwardRef((props, ref) => {
                   }
                 //  onSelect={value => handleSearch(value, 'des')}
                 >
-                  <TextArea autoSize={{ minRows: 3 }} allowClear placeholder="请输入" />
+                  <FormTextArea Areakey='detail' autoSize={3} indexText={register.reason} isEdit />
                 </AutoComplete>,
               )}
             </Form.Item>

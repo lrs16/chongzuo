@@ -79,8 +79,20 @@ function WorkOrder(props) {
         ChangeHistroyTaskId(info.historys?.slice(-1)[0].taskId);
       }
       ChangeISClose(info.is_close);
-    }
+    };
   }, [info]);
+
+  useEffect(() => {
+    if (loading) {
+      setActiveKey(['form'])
+    }
+    if (info && info.historys && info.historys.length >= 0 && !loading) {
+      activeKey.push('registdes');
+      for (let i = 0; i < info.historys.length; i += 1) {
+        activeKey.push(i)
+      }
+    };
+  }, [loading]);
 
   // 初始化历史附件
   useEffect(() => {
@@ -698,29 +710,29 @@ function WorkOrder(props) {
                 info.taskName === '科室领导审核' ||
                 info.taskName === '中心领导审核' ||
                 info.taskName === '市场部领导审核') && (
-                <Examine
-                  wrappedComponentRef={ExamineRef}
-                  location={location}
-                  formItemLayout={formItemLayout}
-                  forminladeLayout={forminladeLayout}
-                  text="审核"
-                  userinfo={userinfo}
-                  taskName={info.taskName}
-                  info={
-                    info.historys?.slice(-1)[0].taskName === info.taskName
-                      ? info.historys.slice(-1)
-                      : undefined
-                  }
-                  files={
-                    info.historys?.slice(-1)[0].taskName === info.taskName
-                      ? JSON.parse(info.historys?.slice(-1)[0].attachment)
-                      : []
-                  }
-                  ChangeFiles={newvalue => {
-                    setFiles(newvalue);
-                  }}
-                />
-              )}
+                  <Examine
+                    wrappedComponentRef={ExamineRef}
+                    location={location}
+                    formItemLayout={formItemLayout}
+                    forminladeLayout={forminladeLayout}
+                    text="审核"
+                    userinfo={userinfo}
+                    taskName={info.taskName}
+                    info={
+                      info.historys?.slice(-1)[0].taskName === info.taskName
+                        ? info.historys.slice(-1)
+                        : undefined
+                    }
+                    files={
+                      info.historys?.slice(-1)[0].taskName === info.taskName
+                        ? JSON.parse(info.historys?.slice(-1)[0].attachment)
+                        : []
+                    }
+                    ChangeFiles={newvalue => {
+                      setFiles(newvalue);
+                    }}
+                  />
+                )}
               {taskName === '系统开发商处理' && info.taskName === '系统开发商处理' && (
                 <Track
                   userinfo={userinfo}

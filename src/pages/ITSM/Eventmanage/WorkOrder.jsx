@@ -60,7 +60,7 @@ function WorkOrder2(props) {
     location,
     dispatch,
     loading,
-    recordsloading,
+    openloading,
     errmsg,
     info,
     records,
@@ -490,14 +490,28 @@ function WorkOrder2(props) {
   }, [location.state]);
 
   // 初始化值panel
+  // useEffect(() => {
+  //   if (taskName) {
+  //     setActiveKey([`${Collapsekeymap.get(taskName)}`]);
+  //   }
+  //   return () => {
+  //     setActiveKey([]);
+  //   };
+  // }, [taskName]);
+
   useEffect(() => {
-    if (taskName) {
-      setActiveKey([`${Collapsekeymap.get(taskName)}`]);
-    }
-    return () => {
+    if (openloading) {
       setActiveKey([]);
+    }
+    if (info && info.data && info.data.length > 0 && !openloading) {
+      // console.log('11');
+      // setActiveKey([`${Collapsekeymap.get(taskName)}`]);
+      activeKey.push(Collapsekeymap.get(taskName))
+      for (let i = 1; i < info.data.length; i += 1) {
+        activeKey.push(i)
+      }
     };
-  }, [taskName]);
+  }, [openloading])
 
   // 初始化历史附件
   useEffect(() => {
@@ -644,7 +658,14 @@ function WorkOrder2(props) {
               <Registrat
                 ChangeShow={v => setShow(v)}
                 // ChangeCheck={checked => setCheck(checked)}
-                ChangeActiveKey={keys => setActiveKey(keys)}
+                ChangeActiveKey={
+                  keys => {
+                    const datas = [];
+                    for (let i = 1; i < info.data.length; i += 1) {
+                      datas.push(i)
+                    }
+                    setActiveKey([...datas, ...keys]);
+                  }}
                 ChangeFiles={newvalue => setRegistratFiles(newvalue)}
                 formItemLayout={formItemLayout}
                 forminladeLayout={forminladeLayout}
@@ -827,4 +848,5 @@ export default connect(({ eventtodo, itsmuser, viewcache, loading }) => ({
   records: eventtodo.records,
   loading: loading.models.eventtodo,
   recordsloading: loading.effects['eventtodo/eventrecords'],
+  openloading: loading.effects['eventtodo/eventopenflow'],
 }))(WorkOrder2);

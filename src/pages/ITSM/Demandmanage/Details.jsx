@@ -91,6 +91,17 @@ function Details(props) {
     };
   }, [mainId]);
 
+  useEffect(() => {
+    if (loading) {
+      setActiveKey(['registdes'])
+    }
+    if (info && info.historys && info.historys.length >= 0 && !loading) {
+      for (let i = 0; i < info.historys.length; i += 1) {
+        activeKey.push(i)
+      }
+    };
+  }, [loading]);
+
   // 点击页签右键刷新
   useEffect(() => {
     if (location.state && location.state.reset && mainId) {
@@ -217,6 +228,16 @@ function Details(props) {
                           <Tracklist demandId={info.demandForm.demandId} />
                         </Panel>
                       );
+                  }
+                    return (
+                  <Panel header={pheadertitle(obj, index + 1)} key={index.toString()}>
+                    <Examinedes
+                      info={obj}
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                    />
+                  </Panel>
+                  );
                   })}
                 </Collapse>
               )}
@@ -233,5 +254,5 @@ function Details(props) {
 export default connect(({ demandtodo, demandquery, loading }) => ({
   records: demandtodo.records,
   info: demandquery.info,
-  loading: loading.models.demandtodo,
+  loading: loading.models.demandquery,
 }))(Details);

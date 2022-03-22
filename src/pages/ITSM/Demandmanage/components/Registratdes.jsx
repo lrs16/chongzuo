@@ -1,8 +1,9 @@
 import React from 'react';
-import { Descriptions, Form, Input, Row, Col } from 'antd';
+import { Form, Input, Row, Col } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
+import FormTextArea from '@/components/FormTextArea';
 
-const { TextArea } = Input;
+// const { TextArea } = Input;
 
 function Registratdes(props) {
   const { info, formItemLayout, forminladeLayout } = props;
@@ -83,12 +84,12 @@ function Registratdes(props) {
         </Form>
         <Col span={24} style={{ marginTop: 4 }}>
           <Form.Item label='需求原因'  {...forminladeLayout}>
-            <TextArea autoSize={{ minRows: 3 }} defaultValue={info.reason} disabled />
+            <FormTextArea autoSize={3} indexText={info.reason} />
           </Form.Item>
         </Col>
         <Col span={24} style={{ marginTop: 8 }}>
           <Form.Item label='需求描述'  {...forminladeLayout}>
-            <TextArea autoSize={{ minRows: 3 }} defaultValue={info.detail} disabled />
+            <FormTextArea autoSize={3} indexText={info.detail} />
           </Form.Item>
         </Col>
         <Col span={24}>
@@ -97,17 +98,17 @@ function Registratdes(props) {
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label='登记人'>
+          <Form.Item label='登记人' {...formItemLayout}>
             <Input defaultValue={info.registerPerson} disabled />
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label='登记人单位'>
+          <Form.Item label='登记人单位' {...formItemLayout}>
             <Input defaultValue={info.registrationUnit} disabled />
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label='登记人部门'>
+          <Form.Item label='登记人部门' {...formItemLayout}>
             <Input defaultValue={info.registrationDepartment} disabled />
           </Form.Item>
         </Col>
