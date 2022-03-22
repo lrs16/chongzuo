@@ -1,7 +1,7 @@
 import React, { useEffect, useState, createContext, useRef } from 'react';
 import TaskworkContext from '@/layouts/MenuContext';
 import { connect } from 'dva';
-import { Button, Collapse, Form, message, Spin } from 'antd';
+import { Button, Collapse, Form, message, Spin, Badge } from 'antd';
 
 import router from 'umi/router';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -607,6 +607,24 @@ function WorkplanDetail(props) {
     },
   ];
 
+  const pheadertitle = (obj, index) => {
+    return (
+      <>
+        <Badge
+          count={index + 1}
+          style={{
+            backgroundColor: '#C1EB08',
+            color: '#10C510',
+            boxShadow: '0 0 0 1px #10C510 inset',
+            marginRight: 4,
+            marginBottom: 2,
+          }}
+        />
+        <span>{Panelheadermap.get(Object.keys(obj)[0])}</span>
+      </>
+    );
+  };
+
   return (
     <PageHeaderWrapper
       title={flowNodeName}
@@ -870,7 +888,8 @@ function WorkplanDetail(props) {
                       ]);
                       return (
                         <Panel
-                          header={Panelheadermap.get(Object.keys(obj)[0])}
+                          // header={Panelheadermap.get(Object.keys(obj)[0])}
+                          header={pheadertitle(obj, index)}
                           key={index.toString()}
                         >
                           {Paneldesmap.get(Object.keys(obj)[0])}

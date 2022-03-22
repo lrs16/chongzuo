@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
-import { Form, Button, Collapse, Card, Steps, Icon } from 'antd';
+import { Form, Button, Collapse, Card, Steps, Icon, Badge } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import styles from './index.less';
 // 各个子组件
@@ -56,7 +56,7 @@ const forminladeLayout = {
 };
 
 function Querylistdetails(props) {
-  const [activeKey, setActiveKey] = useState();
+  const [activeKey, setActiveKey] = useState(['0']);
   const [tabActiveKey, setTabActiveKey] = useState('faultForm'); // tab切换
 
   const {
@@ -124,15 +124,44 @@ function Querylistdetails(props) {
   };
 
   // 初始化值panel
+  // useEffect(() => {
+  //   setActiveKey('0'); // 初始化值panel
+  // }, [troubleFlowNodeRows]);
+
   useEffect(() => {
-    setActiveKey('0'); // 初始化值panel
-  }, [troubleFlowNodeRows]);
+    if (loading) {
+      setActiveKey(['0']);
+    }
+    if (troubleFlowNodeRows && troubleFlowNodeRows.length >= 0 && !loading) {
+      for (let i = 0; i < troubleFlowNodeRows.length; i += 1) {
+        activeKey.push(i);
+      }
+    }
+  }, [loading]);
 
   const handleTabChange = key => {
     // tab切换
     setTabActiveKey(key);
     getFlowImage();
     getFlowlog();
+  };
+
+  const pheadertitle = (obj, index) => {
+    return (
+      <>
+        <Badge
+          count={index + 1}
+          style={{
+            backgroundColor: '#C1EB08',
+            color: '#10C510',
+            boxShadow: '0 0 0 1px #10C510 inset',
+            marginRight: 4,
+            marginBottom: 2,
+          }}
+        />
+        <span>{obj.fnname}</span>
+      </>
+    );
   };
 
   return (
@@ -201,6 +230,7 @@ function Querylistdetails(props) {
                   activeKey={activeKey}
                   bordered={false}
                   onChange={callback}
+                  defaultActiveKey={activeKey}
                 >
                   {troubleFlowNodeRows.map((obj, index) => {
                     // panel详情组件
@@ -264,7 +294,7 @@ function Querylistdetails(props) {
                       ],
                     ]);
                     return (
-                      <Panel Panel header={obj.fnname} key={index.toString()}>
+                      <Panel Panel header={pheadertitle(obj, index)} key={index.toString()}>
                         {Paneldesmap.get(obj.fnname)}
                       </Panel>
                     );

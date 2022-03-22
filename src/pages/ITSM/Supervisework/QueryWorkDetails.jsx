@@ -1,6 +1,6 @@
 import React, { useEffect, useState, createContext } from 'react';
 import { connect } from 'dva';
-import { Button, Collapse, Form, Spin } from 'antd';
+import { Button, Collapse, Form, Spin, Badge } from 'antd';
 import router from 'umi/router';
 
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -88,6 +88,24 @@ function Work(props) {
     },
   ];
 
+  const pheadertitle = (obj, index) => {
+    return (
+      <>
+        <Badge
+          count={index + 1}
+          style={{
+            backgroundColor: '#C1EB08',
+            color: '#10C510',
+            boxShadow: '0 0 0 1px #10C510 inset',
+            marginRight: 4,
+            marginBottom: 2,
+          }}
+        />
+        <span>{Panelheadermap.get(Object.keys(obj)[0])}</span>
+      </>
+    );
+  };
+
   return (
     <PageHeaderWrapper
       title={headTitle}
@@ -105,13 +123,18 @@ function Work(props) {
           <Spin spinning={loading}>
             <div className={styles.collapse}>
               {openViewlist && loading === false && (
-                <Collapse expandIconPosition="right" defaultActiveKey={['0']} bordered={false}>
+                <Collapse
+                  expandIconPosition="right"
+                  defaultActiveKey={['0', '1', '2']}
+                  bordered={false}
+                >
                   {openViewlist.map((obj, index) => {
                     // panel详情组件
                     const Paneldesmap = new Map([
                       [
                         'main',
                         <TaskworkEditfillins
+                          key="0"
                           info={Object.values(obj)[0]}
                           main={openViewlist[0].main}
                         />,
@@ -119,6 +142,7 @@ function Work(props) {
                       [
                         'check',
                         <CheckdelayworkEditfillins
+                          key="2"
                           info={Object.values(obj)[0]}
                           main={openViewlist[0].main}
                         />,
@@ -126,6 +150,7 @@ function Work(props) {
                       [
                         'execute',
                         <ExecuteworkEditfillins
+                          key="1"
                           info={Object.values(obj)[0]}
                           main={openViewlist[0].main}
                         />,
@@ -133,7 +158,8 @@ function Work(props) {
                     ]);
                     return (
                       <Panel
-                        header={Panelheadermap.get(Object.keys(obj)[0])}
+                        // header={Panelheadermap.get(Object.keys(obj)[0])}
+                        header={pheadertitle(obj, index)}
                         key={index.toString()}
                       >
                         {Paneldesmap.get(Object.keys(obj)[0])}

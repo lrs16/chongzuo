@@ -2,7 +2,19 @@ import React, { useState, useRef, useEffect } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
-import { Card, Form, Button, Steps, Collapse, Popconfirm, message, Spin, Modal, Icon } from 'antd';
+import {
+  Card,
+  Form,
+  Button,
+  Steps,
+  Collapse,
+  Popconfirm,
+  message,
+  Spin,
+  Modal,
+  Icon,
+  Badge,
+} from 'antd';
 
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import FaultEditContext from '@/layouts/MenuContext';
@@ -225,10 +237,22 @@ function Todolistdetails(props) {
   }, [mainId]);
 
   useEffect(() => {
-    if (loading === false) {
-      setActiveKey([`${Collapsekeymap.get(flowNodeName)}`]);
+    // if (loading === false) {
+    // setActiveKey([`${Collapsekeymap.get(flowNodeName)}`]);
+    // if (main && (main.status === '40' || main.status === '45') && editState === 'add') {
+    //   setActiveKey('0');
+    // }
+    // }
+    if (loading) {
+      setActiveKey(['0']);
+    }
+    if (troubleFlowNodeRows && troubleFlowNodeRows.length >= 0 && !loading) {
       if (main && (main.status === '40' || main.status === '45') && editState === 'add') {
-        setActiveKey('0');
+        setActiveKey(['0']);
+      }
+      activeKey.push(Collapsekeymap.get(flowNodeName));
+      for (let i = 0; i < troubleFlowNodeRows.length; i += 1) {
+        activeKey.push(i);
       }
     }
   }, [loading]);
@@ -971,6 +995,24 @@ function Todolistdetails(props) {
     });
   };
 
+  const pheadertitle = (obj, index) => {
+    return (
+      <>
+        <Badge
+          count={index + 1}
+          style={{
+            backgroundColor: '#C1EB08',
+            color: '#10C510',
+            boxShadow: '0 0 0 1px #10C510 inset',
+            marginRight: 4,
+            marginBottom: 2,
+          }}
+        />
+        <span>{obj.fnname}</span>
+      </>
+    );
+  };
+
   return (
     <PageHeaderWrapper
       extra={
@@ -1198,6 +1240,7 @@ function Todolistdetails(props) {
                     bordered={false}
                     style={{ marginTop: '-25px' }}
                     onChange={callback}
+                    defaultActiveKey={activeKey}
                   >
                     {// 故障登记编辑页---（故障登记时）
                     flowNodeName === '故障登记' && (
@@ -1389,7 +1432,7 @@ function Todolistdetails(props) {
                           ['自动化科审核', <ConfirmQuery key={6} info={obj} maindata={main} />],
                         ]);
                         return (
-                          <Panel Panel header={obj.fnname} key={index.toString()}>
+                          <Panel Panel header={pheadertitle(obj, index)} key={index.toString()}>
                             {Paneldesmap.get(obj.fnname)}
                           </Panel>
                         );
