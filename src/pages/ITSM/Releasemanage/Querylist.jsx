@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
-import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, message, Tooltip, Divider } from 'antd';
+import { Card, Row, Col, Form, Input, Select, Button, Table, message, Tooltip, Divider } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined, AlertTwoTone } from '@ant-design/icons';
 import RangeTime from '@/components/SelectTime/RangeTime';
@@ -56,7 +56,6 @@ function Querylist(props) {
   const searchrecord = { releaseNo: '', releaseStatus: '' };
   let cacheinfo = {};
   cacheinfo = location.state && location.state.cacheinfo ? location.state.cacheinfo : searchrecord;
-  console.log(cacheinfo);
 
   // 查询
   const searchdata = (values, page, size) => {
@@ -157,10 +156,10 @@ function Querylist(props) {
     const val = getFieldsValue();
     const formval = {
       ...val,
-      beginTime: values.time?.startTime ? moment(values.time?.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
-      endTime: values.time?.endTime ? moment(values.time?.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
-      releaseBeginTime: values.releasetime?.startTime ? moment(values.releasetime?.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
-      releaseEndTime: values.releasetime?.endTime ? moment(values.releasetime?.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      beginTime: val.time?.startTime ? moment(val.time?.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      endTime: val.time?.endTime ? moment(val.time?.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      releaseBeginTime: val.releasetime?.startTime ? moment(val.releasetime?.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      releaseEndTime: val.releasetime?.endTime ? moment(val.releasetime?.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
     };
     const releaseNos = selectedRecords.length > 0 && selectedRecords.map(item => {
       return item.releaseNo

@@ -3,8 +3,9 @@ import moment from 'moment';
 import { Row, Col, Form, Input, Radio, DatePicker } from 'antd';
 import SubmitContext from '@/layouts/MenuContext';
 import SysUpload from '@/components/SysUpload';
+import FormTextArea from '@/components/FormTextArea';
 
-const { TextArea } = Input;
+// const { TextArea } = Input;
 
 const typemaps = new Map([
   ['001', '1'],
@@ -14,7 +15,7 @@ const typemaps = new Map([
 const Check = forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout, info, userinfo, files, ChangeFiles, loading } = props;
   const { check } = info;
-  const { getFieldDecorator, getFieldsValue, resetFields } = props.form;
+  const { getFieldDecorator, getFieldsValue, resetFields, setFieldsValue } = props.form;
   const [adopt, setAdopt] = useState('001');
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
   const { ChangeSubmitType, ChangeButtonName } = useContext(SubmitContext);
@@ -85,7 +86,12 @@ const Check = forwardRef((props, ref) => {
             <Form.Item label="审核意见" {...forminladeLayout}>
               {getFieldDecorator('content1', {
                 initialValue: check?.content || '',
-              })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+              })(<FormTextArea
+                autoSize={3}
+                indexText={check?.content || ''}
+                isEdit
+                getVal={v => setFieldsValue({ content1: v })}
+              />)}
             </Form.Item>
           )}
           {adopt === '002' && (
@@ -93,7 +99,12 @@ const Check = forwardRef((props, ref) => {
               {getFieldDecorator('content2', {
                 rules: [{ required: true, message: '请输入审核意见' }],
                 initialValue: check?.content || '',
-              })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+              })(<FormTextArea
+                autoSize={3}
+                indexText={check?.content || ''}
+                isEdit
+                getVal={v => setFieldsValue({ content2: v })}
+              />)}
             </Form.Item>
           )}
         </Col>

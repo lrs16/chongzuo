@@ -1,6 +1,7 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import moment from 'moment';
 import { Row, Col, Form, Input, Radio, DatePicker, Tag } from 'antd';
+import FormTextArea from '@/components/FormTextArea';
 
 const { TextArea } = Input;
 
@@ -24,7 +25,7 @@ const formItemLayout = {
 const Examine = forwardRef((props, ref) => {
   const {
     userinfo, check, Noediting,
-    form: { getFieldDecorator, getFieldsValue, resetFields }
+    form: { getFieldDecorator, getFieldsValue, resetFields, setFieldsValue }
   } = props;
   const [adopt, setAdopt] = useState('通过');
 
@@ -86,7 +87,14 @@ const Examine = forwardRef((props, ref) => {
               <Form.Item label="审核说明" {...formItemLayout}>
                 {getFieldDecorator('content', {
                   initialValue: check.content,
-                })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" disabled={Noediting} />)}
+                })(
+                  <FormTextArea
+                    autoSize={3}
+                    indexText={check.content}
+                    isEdit={!Noediting}
+                    getVal={v => setFieldsValue({ content: v })}
+                  />
+                )}
               </Form.Item>
             </Col>) : (
             <Col span={24}>
@@ -94,7 +102,14 @@ const Examine = forwardRef((props, ref) => {
                 {getFieldDecorator('content1', {
                   rules: [{ required: true, message: '请输入审核说明' }],
                   initialValue: check.content,
-                })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" disabled={Noediting} />)}
+                })(
+                  <FormTextArea
+                    autoSize={3}
+                    indexText={check.content}
+                    isEdit={!Noediting}
+                    getVal={v => setFieldsValue({ content1: v })}
+                  />
+                )}
               </Form.Item>
             </Col>)}
           <Col span={8}>

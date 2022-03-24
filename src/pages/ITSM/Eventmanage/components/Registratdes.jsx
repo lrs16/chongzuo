@@ -1,8 +1,9 @@
 import React from 'react';
 import { Checkbox, Form, Input, Row, Col } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
+import FormTextArea from '@/components/FormTextArea';
 
-const { TextArea } = Input;
+// const { TextArea } = Input;
 
 function Registratdes(props) {
   const { info, main, formItemLayout, forminladeLayout, } = props;
@@ -87,7 +88,7 @@ function Registratdes(props) {
           </Col>
           <Col span={24} style={{ marginTop: 4 }}>
             <Form.Item label="事件描述"  {...forminladeLayout}>
-              <TextArea autoSize={{ minRows: 3 }} defaultValue={main.content} disabled />
+              <FormTextArea autoSize={3} indexText={main.content} />
             </Form.Item>
           </Col>
           <Col span={8}>

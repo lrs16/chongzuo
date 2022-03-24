@@ -1,6 +1,7 @@
 import React from 'react';
-import { Descriptions, Form, Input, Row, Col } from 'antd';
+import { Form, Input, Row, Col } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
+import FormTextArea from '@/components/FormTextArea';
 
 const { TextArea } = Input;
 function ReturnVisitdes(props) {
@@ -26,7 +27,7 @@ function ReturnVisitdes(props) {
           </Col>
           <Col span={24}>
             <Form.Item label="回访内容"  {...forminladeLayout}>
-              <TextArea autoSize={{ minRows: 3 }} defaultValue={info.content} disabled />
+              <FormTextArea autoSize={3} indexText={info.content} />
             </Form.Item>
           </Col>
           <Col span={8}>

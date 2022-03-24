@@ -4,6 +4,7 @@ import moment from 'moment';
 import { Row, Col, Form, Input, Radio, DatePicker, Select, Checkbox } from 'antd';
 import SysUpload from '@/components/SysUpload';
 import { querkeyVal } from '@/services/api';
+import FormTextArea from '@/components/FormTextArea';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -213,7 +214,12 @@ const Examine = forwardRef((props, ref) => {
                 {getFieldDecorator('opinion1', {
                   rules: [{ required: false, message: `请输入${text}意见` }],
                   initialValue: info[0].opinion,
-                })(<TextArea autoSize={{ minRows: 3 }} allowClear placeholder="请输入" />)}
+                })(<FormTextArea
+                  autoSize={3}
+                  indexText={info[0].opinion}
+                  isEdit
+                  getVal={v => setFieldsValue({ opinion1: v })}
+                />)}
               </Form.Item>
             )}
             {adopt === 0 && (
@@ -221,7 +227,12 @@ const Examine = forwardRef((props, ref) => {
                 {getFieldDecorator('opinion2', {
                   rules: [{ required: true, message: `请输入${text}意见` }],
                   initialValue: info[0].opinion,
-                })(<TextArea autoSize={{ minRows: 3 }} allowClear placeholder="请输入" />)}
+                })(<FormTextArea
+                  autoSize={3}
+                  indexText={info[0].opinion}
+                  isEdit
+                  getVal={v => setFieldsValue({ opinion2: v })}
+                />)}
               </Form.Item>
             )}
 

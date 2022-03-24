@@ -4,52 +4,67 @@ import { Input } from 'antd';
 const { TextArea } = Input;
 
 function FormTextArea(props) {
-  const { indexText, isEdit, autoSize, Areakey } = props;
+  const { indexText, isEdit, autoSize, getVal } = props;
   const [disabled, setDisabled] = useState(false);
   const [indexHight, setIndexHight] = useState(true);
 
-  useEffect(() => {
-    if (Areakey) {
-      setIndexHight(true)
+  const handleChange = (e) => {
+    if (getVal) {
+      getVal(e?.target?.value || undefined)
     }
-  }, [Areakey]);
+  }
+
+  useEffect(() => {
+    setIndexHight(true)
+  }, [indexText]);
+
+  // const inputElement = useRef(null)
 
   return (
     <span
-      className={Areakey}
+      className='collapseArea'
       onDoubleClick={(e) => {
         if (isEdit) {
           setDisabled(false);
         };
         setTimeout(() => {
-          const textAreas = document.getElementsByClassName(Areakey);
-          if (textAreas && textAreas.length > 1) {
-            console.error('FormTextArea配置了相同Areakey');
-          };
-          if (textAreas && textAreas.length === 1) {
-            const inputs = document.getElementsByClassName(Areakey)[0]?.getElementsByTagName('textarea');
-            if (inputs) {
-              if (indexHight) {
-                const textheight = inputs[0]?.scrollHeight + 2;
-                inputs[0].style.maxHeight = '9.0072e+15px';
-                inputs[0].style.height = `${textheight}px`;
-              } else {
-                inputs[0].style.maxHeight = '73px';
-                inputs[0].style.height = '73px';
-              }
-              setIndexHight(!indexHight)
-            };
+          if (e.target) {
+            if (indexHight) {
+              const textheight = e.target.scrollHeight + 2;
+              e.target.style.maxHeight = '9.0072e+15px';
+              e.target.style.height = `${textheight}px`;
+            } else {
+              e.target.style.maxHeight = '73px';
+              e.target.style.height = '73px';
+            }
+            setIndexHight(!indexHight)
           }
         }, 50)
       }}>
-      <TextArea
-        autoSize={{ minRows: autoSize, maxRows: autoSize }}
-        defaultValue={indexText}
-        disabled={(!indexText && !isEdit) || disabled}
-        allowClear
-        placeholder="请输入"
-      />
+      {indexHight ? (
+        <TextArea
+          autoSize={{ minRows: autoSize, maxRows: autoSize }}
+          defaultValue={indexText}
+          disabled={!isEdit || disabled}
+          allowClear
+          placeholder="请输入"
+          onChange={handleChange}
+          key={sessionStorage.getItem('tabid')}
+        // ref={inputElement}
+        />) : (
+        <TextArea
+          autoSize={{ minRows: autoSize }}
+          defaultValue={indexText}
+          disabled={!isEdit || disabled}
+          allowClear
+          placeholder="请输入"
+          onChange={handleChange}
+          key={sessionStorage.getItem('tabid')}
+        // ref={inputElement}
+        />
+      )}
     </span>
+
   );
 }
 

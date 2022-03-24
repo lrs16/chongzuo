@@ -6,6 +6,7 @@ import DeptSlectId from '@/components/DeptTree/SelectID';
 import { queryDisableduserByUser, queryUnitList, queryDeptList } from '@/services/common';
 import SysUpload from '@/components/SysUpload/Upload';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
+import FormTextArea from '@/components/FormTextArea';
 import EditeTable from './TempEditeTable';
 
 const InputGroup = Input.Group;
@@ -557,7 +558,12 @@ function TemporaryRegistrat(props, ref) {
                 rules: [{ required, message: `请填写受影响业务范围` }],
                 initialValue: info?.tempRegister?.affectedScope || '',
               })(
-                <TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />
+                <FormTextArea
+                  autoSize={3}
+                  indexText={info?.tempRegister?.affectedScope || ''}
+                  isEdit={isEdit}
+                  getVal={v => setFieldsValue({ affectedScope: v })}
+                />
               )}
             </Form.Item>
           </Col>
@@ -621,7 +627,12 @@ function TemporaryRegistrat(props, ref) {
                 rules: [{ required, message: `请填写发布操作关键步骤` }],
                 initialValue: info?.tempRegister?.releaseStep || '',
               })(
-                <TextArea autoSize={{ minRows: 3 }} disabled={!isEdit} />
+                <FormTextArea
+                  autoSize={3}
+                  indexText={info?.tempRegister?.releaseStep || ''}
+                  isEdit={isEdit}
+                  getVal={v => setFieldsValue({ releaseStep: v })}
+                />
               )}
             </Form.Item>
           </Col>
@@ -631,7 +642,12 @@ function TemporaryRegistrat(props, ref) {
                 rules: [{ required, message: `请填写风险预估及防范措施` }],
                 initialValue: info?.tempRegister?.risks || '',
               })(
-                <TextArea autoSize={{ minRows: 3 }} disabled={!isEdit} />
+                <FormTextArea
+                  autoSize={3}
+                  indexText={info?.tempRegister?.risks || ''}
+                  isEdit={isEdit}
+                  getVal={v => setFieldsValue({ risks: v })}
+                />
               )}
             </Form.Item>
           </Col>

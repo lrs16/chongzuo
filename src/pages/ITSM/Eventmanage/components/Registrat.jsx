@@ -69,6 +69,7 @@ const Registrat = forwardRef((props, ref) => {
   const [unitopen, setUnitopen] = useState(false);
   const [deptopen, setDeptopen] = useState(false);
   const [showIcon, setShowIcon] = useState(true);
+  const [daileArea, setDaileArea] = useState(true);
   const [banOpenFileDialog, setBanOpenFileDialog] = useState(true);
 
   const { getRegistUploadStatus, handleUploadStatus, ChangeSubmitType, ChangeButtonName } = useContext(UploadContext);
@@ -488,6 +489,20 @@ const Registrat = forwardRef((props, ref) => {
       }
     },
   };
+
+  const handleDoubleClick = (e) => {
+    if (e.target) {
+      if (!daileArea) {
+        const textheight = e.target.scrollHeight + 2;
+        e.target.style.maxHeight = '9.0072e+15px';
+        e.target.style.height = `${textheight}px`;
+      } else {
+        e.target.style.maxHeight = '73px';
+        e.target.style.height = '73px';
+      };
+      setDaileArea(!daileArea)
+    }
+  }
 
   return (
     <>
@@ -919,7 +934,19 @@ const Registrat = forwardRef((props, ref) => {
                   }
                 //  onSelect={value => handleSearch(value, 'des')}
                 >
-                  <TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />
+                  {daileArea ? (<TextArea
+                    style={{ height: 73 }}
+                    allowClear
+                    placeholder="请输入"
+                    onDoubleClick={(e) => handleDoubleClick(e)}
+                  />) : (
+                    <TextArea
+                      autoSize={{ minRows: 3 }}
+                      auto
+                      allowClear
+                      placeholder="请输入"
+                      onDoubleClick={(e) => handleDoubleClick(e)}
+                    />)}
                 </AutoComplete>,
               )}
             </Form.Item>

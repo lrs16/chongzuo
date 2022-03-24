@@ -83,3 +83,12 @@ export async function openList(releaseNo) {
     method: 'GET',
   })
 }
+
+// 临时发布申请表/release/fileProc/exportTempReleaseApply
+export async function exportTempReleaseApply(releaseNo) {
+  return request(`/release/fileProc/exportTempReleaseApply?releaseNo=${releaseNo}`, {
+    method: 'POST',
+    requestType: 'formjosn',
+    responseType: 'blob',
+  })
+}

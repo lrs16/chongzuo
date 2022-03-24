@@ -1,8 +1,9 @@
 import React from 'react';
 import { Form, Input, Row, Col, Radio } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
+import FormTextArea from '@/components/FormTextArea';
 
-const { TextArea } = Input;
+// const { TextArea } = Input;
 
 function Checkdes(props) {
   const { info, formItemLayout, forminladeLayout, } = props;
@@ -25,7 +26,7 @@ function Checkdes(props) {
           </Col>
           <Col span={24}>
             <Form.Item label="审核意见"  {...forminladeLayout}>
-              <TextArea autoSize={{ minRows: 3 }} defaultValue={info.content} disabled />
+              <FormTextArea autoSize={3} indexText={info.content} />
             </Form.Item>
           </Col>
           <Col span={24}>

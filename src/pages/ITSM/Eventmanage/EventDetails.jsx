@@ -55,7 +55,7 @@ const pagetitlemaps = new Map([
 ]);
 
 function EventDetails(props) {
-  const { location, dispatch, recordsloading, info, records, loading } = props;
+  const { location, dispatch, recordsloading, info, records, loading, openloading } = props;
   const { pangekey, id } = location.query;
   const [activeKey, setActiveKey] = useState([]);
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
@@ -125,10 +125,21 @@ function EventDetails(props) {
     }
   }, [location.state]);
 
-  // 初始化值panel
+  // // 初始化值panel
+  // useEffect(() => {
+  //   setActiveKey([1]);
+  // }, [info]);
+
   useEffect(() => {
-    setActiveKey([1]);
-  }, [info]);
+    if (openloading) {
+      setActiveKey([])
+    };
+    if (info && info.length > 0 && !openloading) {
+      for (let i = 1; i < info.length; i += 1) {
+        activeKey.push(i)
+      }
+    };
+  }, [openloading])
 
   const pheadertitle = (obj, index) => {
     return (
@@ -217,7 +228,7 @@ function EventDetails(props) {
                 })}
               </Steps>
             )}
-            {info !== '' && info !== undefined && loading === false && (
+            {info && !loading && (
               <Collapse
                 expandIconPosition="right"
                 activeKey={activeKey}
@@ -287,4 +298,5 @@ export default connect(({ eventquery, eventtodo, loading }) => ({
   records: eventtodo.records,
   loading: loading.models.eventquery,
   recordsloading: loading.effects['eventtodo/eventrecords'],
+  openloading: loading.effects['eventquery/fetchopenview'],
 }))(EventDetails);

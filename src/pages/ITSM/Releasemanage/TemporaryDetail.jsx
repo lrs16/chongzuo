@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
-import { Button, Card, Spin, message, Collapse, Popconfirm, } from 'antd';
+import { Button, Card, Spin, message, Collapse, Popconfirm, Badge } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { openNotification } from '@/utils/utils';
 import FilesContext from '@/layouts/MenuContext';
@@ -11,7 +11,7 @@ import TemporaryRegistrat from './components/TemporaryRegistrat';
 import TemporarySelectUser from './components/TemporarySelectUser';
 import TemporaryList from './components/TemporaryList';
 import TempTaskLinks from './components/TempTaskLinks';
-import { delOrder, saveRegister } from './services/temp';
+import { delOrder, saveRegister, exportTempReleaseApply } from './services/temp';
 import { releaseToQuality } from './services/api';
 
 const { Panel } = Collapse;
@@ -236,6 +236,23 @@ function TemporaryDetail(props) {
     }
   };
 
+  const handleDownload = () => {
+    exportTempReleaseApply(Id).then(res => {
+      if (res) {
+        const filename = `临时发布申请审批表_${moment().format('YYYY-MM-DD HH:mm')}.docx`;
+        const blob = new Blob([res]);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      } else {
+        message.error('导出失败')
+      }
+    })
+  }
+
   const operations = (
     <>
       {info?.releaseTempLogs && info?.releaseTempLogs.length && info?.releaseTempLogs.length === 1 && taskName === '出厂测试' && (
@@ -341,10 +358,28 @@ function TemporaryDetail(props) {
           </Popconfirm>
         </>
       )}
-
+      {taskName === '结束' && <Button type="primary" onClick={() => handleDownload()} >导出Word</Button>}
       <Button type="default" onClick={() => handleclose()} >关闭</Button>
     </>
   );
+
+  const pheadertitle = (title, index) => {
+    return (
+      <>
+        <Badge
+          count={index}
+          style={{
+            backgroundColor: '#C1EB08',
+            color: '#10C510',
+            boxShadow: '0 0 0 1px #10C510 inset',
+            marginRight: 4,
+            marginBottom: 2,
+          }}
+        />
+        <span>{title}</span>
+      </>
+    );
+  };
 
   return (
     <Spin spinning={loading || saveLoading}>
@@ -358,7 +393,7 @@ function TemporaryDetail(props) {
               bordered={false}
               onChange={callback}
             >
-              <Panel header='发布基本信息' key="form">
+              <Panel header={pheadertitle('发布基本信息', 1)} key="form">
                 {info && (
                   <FilesContext.Provider value={{
                     // files: info?.tempRegister?.attach ? JSON.parse(info.tempRegister.attach) : [],
@@ -392,7 +427,7 @@ function TemporaryDetail(props) {
                   </FilesContext.Provider>
                 )}
               </Panel>
-              <Panel header='处理过程' key="list">
+              <Panel header={pheadertitle('处理过程', 2)} key="list">
 
                 <TemporaryList
                   dataSource={info?.releaseTempLogs}

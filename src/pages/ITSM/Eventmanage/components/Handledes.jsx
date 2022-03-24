@@ -1,8 +1,9 @@
 import React from 'react';
 import { Form, Input, Row, Col } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
+import FormTextArea from '@/components/FormTextArea';
 
-const { TextArea } = Input;
+// const { TextArea } = Input;
 
 function Handledes(props) {
   const { info, main, formItemLayout, forminladeLayout, } = props;
@@ -37,7 +38,7 @@ function Handledes(props) {
           </Col>
           <Col span={24}>
             <Form.Item label="解决方案"  {...forminladeLayout}>
-              <TextArea autoSize={{ minRows: 3 }} defaultValue={info.content} disabled />
+              <FormTextArea autoSize={3} indexText={info.content} />
             </Form.Item>
           </Col>
           <Col span={24}>

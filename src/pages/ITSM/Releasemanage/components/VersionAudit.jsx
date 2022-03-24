@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import moment from 'moment';
 import { Row, Col, Form, Input, Alert, DatePicker, Select, Checkbox, Button, Radio, Tabs, message } from 'antd';
 import SubmitTypeContext from '@/layouts/MenuContext';
+import FormTextArea from '@/components/FormTextArea';
 import DocumentAtt from './NewDocAtt';
 import EditeTable from './EditeTable';
 import TimeoutModal from '../../components/TimeoutModal';
@@ -423,7 +424,12 @@ function VersionAudit(props, ref) {
                   <Form.Item label='审核说明' {...formuintLayout} labelAlign='left'>
                     {getFieldDecorator('checkComment', {
                       initialValue: formmap.get(taskName).checkComment,
-                    })(<TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />)}
+                    })(<FormTextArea
+                      autoSize={3}
+                      indexText={formmap.get(taskName).checkComment}
+                      isEdit={isEdit}
+                      getVal={v => setFieldsValue({ checkComment: v })}
+                    />)}
                   </Form.Item>
                 </Col>)
                 :
@@ -432,7 +438,12 @@ function VersionAudit(props, ref) {
                     {getFieldDecorator('checkComment', {
                       rules: [{ required, message: `请输入审核说明` }],
                       initialValue: formmap.get(taskName).checkComment,
-                    })(<TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />)}
+                    })(<FormTextArea
+                      autoSize={3}
+                      indexText={formmap.get(taskName).checkComment}
+                      isEdit={isEdit}
+                      getVal={v => setFieldsValue({ checkComment: v })}
+                    />)}
                   </Form.Item>
                 </Col>)}
             </>)}

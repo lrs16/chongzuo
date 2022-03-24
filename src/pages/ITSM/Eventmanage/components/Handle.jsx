@@ -4,9 +4,10 @@ import { Row, Col, Form, Input, Select, DatePicker, Cascader } from 'antd';
 import SubmitContext from '@/layouts/MenuContext';
 import SysUpload from '@/components/SysUpload';
 import KnowledgCollect from '@/components/KnowledgeCollect';
+import FormTextArea from '@/components/FormTextArea';
 
 const { Option } = Select;
-const { TextArea } = Input;
+// const { TextArea } = Input;
 
 const Handle = React.forwardRef((props, ref) => {
   const {
@@ -269,7 +270,12 @@ const Handle = React.forwardRef((props, ref) => {
               {getFieldDecorator('handle_content', {
                 rules: [{ required, message: '请输入解决方案' }],
                 initialValue: handle?.content || '',
-              })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+              })(<FormTextArea
+                autoSize={3}
+                indexText={handle?.content || ''}
+                isEdit
+                getVal={v => setFieldsValue({ handle_content: v })}
+              />)}
             </Form.Item>
           </Col>
           <Col span={24} style={{ paddingLeft: '8.33333333% ' }} >

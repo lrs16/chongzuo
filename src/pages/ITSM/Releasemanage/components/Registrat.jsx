@@ -2,6 +2,7 @@ import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect, us
 import moment from 'moment';
 import { Row, Col, Form, Input, Alert, DatePicker, Select, Radio, message } from 'antd';
 import SubmitTypeContext from '@/layouts/MenuContext';
+import FormTextArea from '@/components/FormTextArea';
 import EditeTable from './EditeTable';
 import TestingFacility from './TestingFacility';
 import DocumentAtt from './NewDocAtt';
@@ -402,7 +403,15 @@ function Registrat(props, ref) {
                 {getFieldDecorator('influenceScope', {
                   rules: [{ required, message: `请填写受影响业务范围` }],
                   initialValue: info.releaseRegister.influenceScope,
-                })(<TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />)}
+                })(
+                  // <TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />
+                  <FormTextArea
+                    autoSize={3}
+                    indexText={info.releaseRegister.influenceScope}
+                    isEdit={isEdit}
+                    getVal={v => setFieldsValue({ influenceScope: v })}
+                  />
+                )}
               </Form.Item>
             </Col>
           )}
@@ -485,7 +494,14 @@ function Registrat(props, ref) {
                 {getFieldDecorator('testResult', {
                   rules: [{ required, message: taskName === '新建' ? `请填写出厂测试结论` : `请填写${taskName}结论` }],
                   initialValue: formmap.get(taskName).testResult,
-                })(<TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />)}
+                })(
+                  <FormTextArea
+                    autoSize={3}
+                    indexText={formmap.get(taskName).testResult}
+                    isEdit={isEdit}
+                    getVal={v => setFieldsValue({ testResult: v })}
+                  />
+                )}
               </Form.Item>
             </Col>
           )}

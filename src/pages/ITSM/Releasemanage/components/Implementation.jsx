@@ -2,6 +2,7 @@ import React, { useRef, useImperativeHandle, forwardRef, useEffect, useState, us
 import moment from 'moment';
 import { Row, Col, Form, Input, DatePicker, Select, Radio, Alert } from 'antd';
 import SubmitTypeContext from '@/layouts/MenuContext';
+import FormTextArea from '@/components/FormTextArea';
 import DocumentAtt from './NewDocAtt';
 import BusinessEditTable from './BusinessEditTable';
 
@@ -131,14 +132,24 @@ function Implementation(props, ref) {
             <Form.Item label="实施情况说明" {...formuintLayout}>
               {getFieldDecorator('doneDesc', {
                 initialValue: info.practiceDone.doneDesc || '',
-              })(<TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />)}
+              })(<FormTextArea
+                autoSize={3}
+                indexText={info.practiceDone.doneDesc || ''}
+                isEdit={isEdit}
+                getVal={v => setFieldsValue({ doneDesc: v })}
+              />)}
             </Form.Item>
           </Col>
           <Col span={24}>
             <Form.Item label="遗留问题说明" {...formuintLayout}>
               {getFieldDecorator('legacyDesc', {
                 initialValue: info.practiceDone.legacyDesc || '',
-              })(<TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />)}
+              })(<FormTextArea
+                autoSize={3}
+                indexText={info.practiceDone.legacyDesc || ''}
+                isEdit={isEdit}
+                getVal={v => setFieldsValue({ legacyDesc: v })}
+              />)}
             </Form.Item>
           </Col>
           <Col span={24}>

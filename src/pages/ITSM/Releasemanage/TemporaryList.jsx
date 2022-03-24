@@ -146,10 +146,10 @@ function Querylist(props) {
     const val = getFieldsValue();
     const formval = {
       ...val,
-      beginTime: values.time?.startTime ? moment(values.time?.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
-      endTime: values.time?.endTime ? moment(values.time?.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
-      releaseBeginTime: values.releasetime?.startTime ? moment(values.releasetime?.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
-      releaseEndTime: values.releasetime?.endTime ? moment(values.releasetime?.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      beginTime: val.time?.startTime ? moment(val.time?.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      endTime: val.time?.endTime ? moment(val.time?.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      releaseBeginTime: val.releasetime?.startTime ? moment(val.releasetime?.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      releaseEndTime: val.releasetime?.endTime ? moment(val.releasetime?.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
     };
     const releaseNos = selectedRecords.length > 0 && selectedRecords.map(item => {
       return item.releaseNo

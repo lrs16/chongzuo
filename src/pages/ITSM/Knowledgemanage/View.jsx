@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import router from 'umi/router';
 import { connect } from 'dva';
-import { Collapse, Button, Breadcrumb, Spin } from 'antd';
-import styles from '@/utils/utils.less';
+import { Collapse, Button, Breadcrumb, Spin, Badge } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import EditContext from '@/layouts/MenuContext';              // 引用上下文管理组件
 import Content from './components/Content';
@@ -84,6 +83,24 @@ function Operation(props) {
 
   const operations = (<Button onClick={handleclose}>关闭</Button>)
 
+  const pheadertitle = (title, index) => {
+    return (
+      <>
+        <Badge
+          count={index}
+          style={{
+            backgroundColor: '#C1EB08',
+            color: '#10C510',
+            boxShadow: '0 0 0 1px #10C510 inset',
+            marginRight: 4,
+            marginBottom: 2,
+          }}
+        />
+        <span>{title}</span>
+      </>
+    );
+  };
+
   return (
     <div style={{ marginTop: '-24px' }}>
       <Breadcrumb style={{ padding: '12px 24px 16px 24px', background: '#fff', margin: '0 -24px' }}>
@@ -104,14 +121,14 @@ function Operation(props) {
           {tabActivekey === 'workorder' && (
             <Spin spinning={loading} >
               {viewinfo && (
-                <div className={styles.ordercollapse}>
+                <div className="ordercollapse">
                   <Collapse
                     expandIconPosition="right"
                     activeKey={activeKey}
                     bordered={false}
                     onChange={callback}
                   >
-                    <Panel header='知识收录' key="1">
+                    <Panel header={pheadertitle('知识收录', 1)} key="1">
                       <EditContext.Provider value={{ editable: false }}>
                         <Content
                           wrappedComponentRef={ContentRef}
@@ -122,7 +139,7 @@ function Operation(props) {
                       </EditContext.Provider>
                     </Panel>
                     {viewinfo[1] && (
-                      <Panel header='知识审核' key="2">
+                      <Panel header={pheadertitle('知识审核', 2)} key="2">
                         <Examine
                           wrappedComponentRef={ExmaineRef}
                           check={viewinfo[1].check}

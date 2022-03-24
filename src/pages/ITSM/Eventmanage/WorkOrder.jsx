@@ -20,8 +20,9 @@ const { Step } = Steps;
 // panle,map
 const Collapsekeymap = new Map([
   ['事件登记', 'registratform'],
-  ['待审核', 'checkform'],
-  ['审核中', 'checkform'],
+  ['自动化科审核', 'checkform'],
+  ['数据科审核', 'checkform'],
+  ['运维商经理审核', 'checkform'],
   ['事件响应', '1'],
   ['事件处理', 'handleform'],
   ['事件确认', 'visitform'],
@@ -526,13 +527,6 @@ function WorkOrder2(props) {
       if (Object.values(edit)[0].fileIds !== '' && taskName !== '事件登记') {
         setFiles({ ...files, arr: JSON.parse(Object.values(edit)[0].fileIds), ischange: false });
       }
-    }
-    if (
-      info.flowNodeName === '运维商经理审核' ||
-      info.flowNodeName === '数据科审核' ||
-      info.flowNodeName === '自动化科审核'
-    ) {
-      setActiveKey('checkform');
     }
   }, [info]);
 

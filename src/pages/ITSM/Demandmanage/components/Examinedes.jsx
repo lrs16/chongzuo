@@ -1,8 +1,9 @@
 import React from 'react';
 import { Form, Input, Row, Col, Checkbox, Radio } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
+import FormTextArea from '@/components/FormTextArea';
 
-const { TextArea } = Input;
+// const { TextArea } = Input;
 
 const resultmap = new Map([
   [1, '通过'],
@@ -70,7 +71,7 @@ function Examinedes(props) {
           )}
           <Col span={24} style={{ marginTop: 3 }}>
             <Form.Item label={`${text}意见`}  {...forminladeLayout}>
-              <TextArea autoSize={{ minRows: 3 }} defaultValue={info.opinion} disabled />
+              <FormTextArea autoSize={3} indexText={info.opinion} />
             </Form.Item>
           </Col>
           <Col span={24}>

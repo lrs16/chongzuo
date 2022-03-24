@@ -67,6 +67,7 @@ const Registrat = forwardRef((props, ref) => {
   const [unitopen, setUnitopen] = useState(false);
   const [deptopen, setDeptopen] = useState(false);
   const [workload, setWorkLoad] = useState(false);
+  const [daileArea, setDaileArea] = useState(true);
 
   useEffect(() => {
     if (fileslist.ischange) {
@@ -302,7 +303,21 @@ const Registrat = forwardRef((props, ref) => {
     return current && current < moment().add(45, 'days').endOf('day');
   }
 
-  const newcompleteTime = register.completeTime !== undefined ? register.completeTime : moment().add(90, 'days');
+  const newcompleteTime = register.completeTime ? register.completeTime : moment().add(90, 'days');
+
+  const handleDoubleClick = (e) => {
+    if (e.target) {
+      if (!daileArea) {
+        const textheight = e.target.scrollHeight + 2;
+        e.target.style.maxHeight = '9.0072e+15px';
+        e.target.style.height = `${textheight}px`;
+      } else {
+        e.target.style.maxHeight = '73px';
+        e.target.style.height = '73px';
+      };
+      setDaileArea(!daileArea)
+    }
+  }
 
   return (
     <>
@@ -651,10 +666,17 @@ const Registrat = forwardRef((props, ref) => {
               {getFieldDecorator('reason', {
                 rules: [{ required, message: '请输入需求原因' }],
                 initialValue: register.reason,
-              })(<FormTextArea Areakey='reason' autoSize={3} indexText={register.reason} isEdit />)}
+              })(
+                <FormTextArea
+                  autoSize={3}
+                  indexText={register.reason}
+                  isEdit
+                  getVal={v => setFieldsValue({ reason: v })}
+                />
+              )}
             </Form.Item>
           </Col>
-          <Col span={24} style={{ marginTop: '-10px' }}>
+          <Col span={24} style={{ marginTop: '-10px' }} id='detail'>
             <Form.Item label="需求描述" {...forminladeLayout}>
               {getFieldDecorator('detail', {
                 rules: [{ required, message: '请输入需求描述' }],
@@ -667,7 +689,19 @@ const Registrat = forwardRef((props, ref) => {
                   }
                 //  onSelect={value => handleSearch(value, 'des')}
                 >
-                  <FormTextArea Areakey='detail' autoSize={3} indexText={register.reason} isEdit />
+                  {daileArea ? (<TextArea
+                    style={{ height: 73 }}
+                    allowClear
+                    placeholder="请输入"
+                    onDoubleClick={(e) => handleDoubleClick(e)}
+                  />) : (
+                    <TextArea
+                      autoSize={{ minRows: 3 }}
+                      auto
+                      allowClear
+                      placeholder="请输入"
+                      onDoubleClick={(e) => handleDoubleClick(e)}
+                    />)}
                 </AutoComplete>,
               )}
             </Form.Item>

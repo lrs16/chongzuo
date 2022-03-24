@@ -3,14 +3,15 @@ import moment from 'moment';
 import { Row, Col, Form, Input, Alert, DatePicker, Select, Radio, Divider } from 'antd';
 import SubmitTypeContext from '@/layouts/MenuContext';
 import { querkeyVal } from '@/services/api';
+import FormTextArea from '@/components/FormTextArea';
 import EditeTable from './EditeTable';
 import DocumentAtt from './NewDocAtt';
 import ImplementationEditTalbe from './ImplementationEditTalbe';
 import Implementationsteps from './Implementationsteps';
 
 const { TextArea } = Input;
-const { Option } = Select;
-const InputGroup = Input.Group;
+// const { Option } = Select;
+// const InputGroup = Input.Group;
 const RadioGroup = Radio.Group;
 
 // const formItemLayout = {
@@ -233,7 +234,12 @@ function ImplementationPre(props, ref) {
               {getFieldDecorator('adjustRunMode', {
                 rules: [{ required, message: `请填写系统（设备）运行方式调整` }],
                 initialValue: info.practicePre ? info.practicePre.adjustRunMode : '',
-              })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
+              })(<FormTextArea
+                autoSize={3}
+                indexText={info.practicePre ? info.practicePre.adjustRunMode : ''}
+                isEdit={isEdit}
+                getVal={v => setFieldsValue({ adjustRunMode: v })}
+              />)}
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -241,7 +247,12 @@ function ImplementationPre(props, ref) {
               {getFieldDecorator('appModule', {
                 rules: [{ required, message: `请填写涉级功能模块` }],
                 initialValue: info.practicePre ? info.practicePre.appModule : '',
-              })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
+              })(<FormTextArea
+                autoSize={3}
+                indexText={info.practicePre ? info.practicePre.appModule : ''}
+                isEdit={isEdit}
+                getVal={v => setFieldsValue({ appModule: v })}
+              />)}
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -316,7 +327,12 @@ function ImplementationPre(props, ref) {
               {getFieldDecorator('affectBiz', {
                 rules: [{ required, message: `请填写影响范围` }],
                 initialValue: info.practicePre ? info.practicePre.affectBiz : '',
-              })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
+              })(<FormTextArea
+                autoSize={3}
+                indexText={info.practicePre ? info.practicePre.affectBiz : ''}
+                isEdit={isEdit}
+                getVal={v => setFieldsValue({ affectBiz: v })}
+              />)}
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -324,7 +340,12 @@ function ImplementationPre(props, ref) {
               {getFieldDecorator('affectUser', {
                 rules: [{ required, message: `请填写影响范围` }],
                 initialValue: info.practicePre ? info.practicePre.affectUser : '',
-              })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
+              })(<FormTextArea
+                autoSize={3}
+                indexText={info.practicePre ? info.practicePre.affectUser : ''}
+                isEdit={isEdit}
+                getVal={v => setFieldsValue({ affectUser: v })}
+              />)}
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -397,7 +418,12 @@ function ImplementationPre(props, ref) {
               {getFieldDecorator('syncData', {
                 rules: [{ required, message: `请填写数据同步影响情况` }],
                 initialValue: info.practicePre ? info.practicePre.syncData : '',
-              })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
+              })(<FormTextArea
+                autoSize={3}
+                indexText={info.practicePre ? info.practicePre.syncData : ''}
+                isEdit={isEdit}
+                getVal={v => setFieldsValue({ syncData: v })}
+              />)}
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -438,7 +464,12 @@ function ImplementationPre(props, ref) {
             <Form.Item label="特殊要求" {...forminladeLayout} labelAlign='left'>
               {getFieldDecorator('specialRequest', {
                 initialValue: info.practicePre ? info.practicePre.specialRequest : '',
-              })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
+              })(<FormTextArea
+                autoSize={3}
+                indexText={info.practicePre ? info.practicePre.specialRequest : ''}
+                isEdit={isEdit}
+                getVal={v => setFieldsValue({ specialRequest: v })}
+              />)}
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -446,7 +477,12 @@ function ImplementationPre(props, ref) {
               {getFieldDecorator('rollbackPaln', {
                 rules: [{ required, message: `请填写回退方案` }],
                 initialValue: info.practicePre ? info.practicePre.rollbackPaln : '',
-              })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
+              })(<FormTextArea
+                autoSize={3}
+                indexText={info.practicePre ? info.practicePre.rollbackPaln : ''}
+                isEdit={isEdit}
+                getVal={v => setFieldsValue({ rollbackPaln: v })}
+              />)}
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -454,7 +490,12 @@ function ImplementationPre(props, ref) {
               {getFieldDecorator('platformCheck', {
                 rules: [{ required, message: `请填写系统平台检查` }],
                 initialValue: info.practicePre ? info.practicePre.platformCheck : '',
-              })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
+              })(<FormTextArea
+                autoSize={3}
+                indexText={info.practicePre ? info.practicePre.platformCheck : ''}
+                isEdit={isEdit}
+                getVal={v => setFieldsValue({ platformCheck: v })}
+              />)}
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -474,7 +515,12 @@ function ImplementationPre(props, ref) {
               <Form.Item label="实施准备意见" {...forminladeLayout} labelAlign='left'>
                 {getFieldDecorator('preAdvise1', {
                   initialValue: info.practicePre && info.practicePre.preAdvise ? info.practicePre.preAdvise : '',
-                })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
+                })(<FormTextArea
+                  autoSize={3}
+                  indexText={info.practicePre && info.practicePre.preAdvise ? info.practicePre.preAdvise : ''}
+                  isEdit={isEdit}
+                  getVal={v => setFieldsValue({ preAdvise1: v })}
+                />)}
               </Form.Item>
             )}
             {adopt === '不通过' && (
@@ -482,7 +528,12 @@ function ImplementationPre(props, ref) {
                 {getFieldDecorator('preAdvise', {
                   rules: [{ required, message: `请填写实施准备意见` }],
                   initialValue: info.practicePre && info.practicePre.preAdvise ? info.practicePre.preAdvise : '',
-                })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
+                })(<FormTextArea
+                  autoSize={3}
+                  indexText={info.practicePre && info.practicePre.preAdvise ? info.practicePre.preAdvise : ''}
+                  isEdit={isEdit}
+                  getVal={v => setFieldsValue({ preAdvise: v })}
+                />)}
               </Form.Item>
             )}
           </Col>
@@ -490,7 +541,12 @@ function ImplementationPre(props, ref) {
             <Form.Item label="总述" {...forminladeLayout} labelAlign='left'>
               {getFieldDecorator('summary', {
                 initialValue: info.practicePre?.summary || '',
-              })(<TextArea autoSize={{ minRows: 5 }} disabled={!isEdit} />)}
+              })(<FormTextArea
+                autoSize={3}
+                indexText={info.practicePre?.summary || ''}
+                isEdit={isEdit}
+                getVal={v => setFieldsValue({ summary: v })}
+              />)}
             </Form.Item>
           </Col>
           <Col span={24} style={{ marginBottom: 16, marginTop: 4 }}>

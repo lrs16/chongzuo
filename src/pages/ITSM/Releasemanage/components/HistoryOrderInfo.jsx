@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Collapse } from 'antd';
+import { Collapse, Badge } from 'antd';
 import Registrat from './Registrat';
 import Examine from './Examine';
 import ImplementationPre from './ImplementationPre';
@@ -60,6 +60,24 @@ function HistoryOrderInfo(props) {
     }
   }, [records])
 
+  const pheadertitle = (title, index) => {
+    return (
+      <>
+        <Badge
+          count={index}
+          style={{
+            backgroundColor: '#C1EB08',
+            color: '#10C510',
+            boxShadow: '0 0 0 1px #10C510 inset',
+            marginRight: 4,
+            marginBottom: 2,
+          }}
+        />
+        <span>{title}</span>
+      </>
+    );
+  };
+
   return (
     <div className={styles.collapsetimeout}>
       <Collapse
@@ -86,7 +104,7 @@ function HistoryOrderInfo(props) {
             ['bizCheck', <BusinessReview info={Object.values(obj)[2]} timeoutinfo={Object.values(obj)[0]} listmsg={Object.values(obj)[3]?.dutyUnitListMsg} selectdata={selectdata} isEdit={false} taskName='业务复核' />],
           ]);
           return (
-            <Panel header={Panelheadermap.get(key)} key={index.toString()} className={Object.values(obj)[0] || Object.values(obj)[1] === '已超时' ? styles.timeout : ''} >
+            <Panel header={pheadertitle(Panelheadermap.get(key), index + 1)} key={index.toString()} className={Object.values(obj)[0] || Object.values(obj)[1] === '已超时' ? styles.timeout : ''} >
               {Paneldesmap.get(key)}
             </Panel>
           );

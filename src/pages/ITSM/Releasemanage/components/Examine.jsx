@@ -2,10 +2,11 @@ import React, { useRef, useImperativeHandle, forwardRef, useState, useContext, u
 import moment from 'moment';
 import { Row, Col, Form, Input, DatePicker, Select, Radio } from 'antd';
 import SubmitTypeContext from '@/layouts/MenuContext';
+import FormTextArea from '@/components/FormTextArea';
 import DocumentAtt from './NewDocAtt';
 
-const { TextArea } = Input;
-const { Option } = Select;
+// const { TextArea } = Input;
+// const { Option } = Select;
 const RadioGroup = Radio.Group;
 
 const formItemLayout = {
@@ -107,7 +108,12 @@ function Examine(props, ref) {
             {getFieldDecorator('testResult', {
               rules: [{ required, message: `请输入${taskName === '开发商项目经理审核' ? '出厂测试' : '审核说明'}` }],
               initialValue: formmap.get(taskName).testResult,
-            })(<TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />)}
+            })(<FormTextArea
+              autoSize={3}
+              indexText={formmap.get(taskName).testResult}
+              isEdit={isEdit}
+              getVal={v => setFieldsValue({ testResult: v })}
+            />)}
           </Form.Item>
         </Col>
         <Col span={8}>

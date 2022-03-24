@@ -3,7 +3,6 @@ import router from 'umi/router';
 import { connect } from 'dva';
 import moment from 'moment';
 import { Collapse, Button, Breadcrumb, Spin, message } from 'antd';
-import styles from '@/utils/utils.less';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import EditContext from '@/layouts/MenuContext';              // 引用上下文管理组件
 import CheckOneUser from '@/components/SelectUser/CheckOneUser';
@@ -284,7 +283,7 @@ function Operation(props) {
               <div className='noexplain'>
                 <Spin spinning={loading} >
                   {info && (
-                    <div className={styles.ordercollapse}>
+                    <div className="ordercollapse">
                       <Collapse
                         expandIconPosition="right"
                         activeKey={activeKey}

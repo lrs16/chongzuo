@@ -1,7 +1,8 @@
 import React, { useRef, useImperativeHandle, forwardRef, useState, useContext, useEffect } from 'react';
 import moment from 'moment';
-import { Row, Col, Form, Input, Button, Select, Radio, Alert } from 'antd';
+import { Row, Col, Form, Input, Alert } from 'antd';
 import SubmitTypeContext from '@/layouts/MenuContext';
+import FormTextArea from '@/components/FormTextArea';
 import DocumentAtt from './NewDocAtt';
 import ReleseList from './ReleseList';
 
@@ -111,7 +112,12 @@ function BusinessReview(props, ref) {
             {getFieldDecorator('checkComments', {
               rules: [{ required, message: `请填写复核说明` }],
               initialValue: info.releaseBizCheck && info.releaseBizCheck.checkComments || indexVal(),
-            })(<TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />)}
+            })(<FormTextArea
+              autoSize={3}
+              indexText={info.releaseBizCheck && info.releaseBizCheck.checkComments || indexVal()}
+              isEdit={isEdit}
+              getVal={v => setFieldsValue({ checkComments: v })}
+            />)}
           </Form.Item>
         </Col>
         <Col span={24}>
