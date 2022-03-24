@@ -50,7 +50,7 @@ function Overtime(props) {
   const [timeclear, setTimeclear] = useState(false);
 
   // 设置表单初始值
-  const record = {
+  const inforecord = {
     eventNo: '',
     flowNodeName: '',
     time1: '',
@@ -58,7 +58,7 @@ function Overtime(props) {
     paginations,
     expand,
   };
-  const cacheinfo = location.state?.cacheinfo ? location.state.cacheinfo : record;
+  const cacheinfo = location.state?.cacheinfo ? location.state.cacheinfo : inforecord;
 
   const columns = [
     {
@@ -67,7 +67,7 @@ function Overtime(props) {
       key: 'eventNo',
       width: 150,
       fixed: 'left',
-      render: (text) => {
+      render: (text, record) => {
         const handleClick = () => {
           dispatch({
             type: 'viewcache/gettabstate',
@@ -145,7 +145,7 @@ function Overtime(props) {
       key: 'eventNo',
       width: 150,
       fixed: 'left',
-      render: (text) => {
+      render: (text, record) => {
         const handleClick = () => {
           dispatch({
             type: 'viewcache/gettabstate',

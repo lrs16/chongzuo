@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import { Table, Input, Radio, Divider, Row, Col, Button, message, Popconfirm } from 'antd';
+import debounce from 'lodash/debounce';
 import { releaseListEdit, classifyList, releaseListsDownload, } from '../services/api'
 import styles from '../index.less';
 
@@ -85,18 +86,41 @@ function BusinessEditTable(props) {
         setData(newData);
         ChangeValue(newData);
       } else {
+        setData(newData);
         releaseListEdit(target).then(res => {
           if (res.code === 200) {
-            setData(newData);
             if (fieldName === 'passTest') {
               ChangeValue({ status: true, target });
             };
           } else {
-            message.error(res.msg || '操作失败')
+            message.error(res.msg || '操作失败');
+            setData(newData);
           }
         });
       }
     }
+  };
+
+  const getAreaMember = (val) => {
+    const newData = data.map(item => ({ ...item }));
+    const target = getRowByKey(val.key, newData);
+    if (target) {
+      target[val.fieldName] = val.e;
+      target.operator = sessionStorage.getItem('userName');
+      setData(newData);
+      releaseListEdit(target).then(res => {
+        if (res.code !== 200) {
+          message.error(res.msg || '操作失败');
+          setData(data);
+        }
+      })
+    }
+  }
+
+  const callAreaAjax = debounce(getAreaMember, 500);
+
+  const handleAreaChange = (e, fieldName, key) => {
+    callAreaAjax({ e, fieldName, key })
   };
 
   const onSelectChange = (RowKeys, record) => {
@@ -321,10 +345,10 @@ function BusinessEditTable(props) {
             {isEdit ? (
               <div className={!text && record.passTest === '不通过' ? styles.requiredform : ''}>
                 <TextArea
-                  value={text}
+                  defaultValue={text}
                   autoSize={{ minRows: 4 }}
                   placeholder="请输入"
-                  onChange={e => handleFieldChange(e.target.value, 'verifyComment', record.key)}
+                  onChange={e => handleAreaChange(e.target.value, 'verifyComment', record.key, e)}
                 />
               </div >
             ) : (<>{text}</>)}
