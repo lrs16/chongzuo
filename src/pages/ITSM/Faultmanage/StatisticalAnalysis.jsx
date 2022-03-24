@@ -33,6 +33,7 @@ const linecols = datas => {
     value: {
       min: 0,
       max,
+      tickInterval: max < 20 ? 2 : 0,
     },
   };
 };
