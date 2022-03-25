@@ -34,8 +34,9 @@ function FormTextArea(props) {
               e.target.style.maxHeight = '9.0072e+15px';
               e.target.style.height = `${textheight}px`;
             } else {
-              e.target.style.maxHeight = '73px';
-              e.target.style.height = '73px';
+              const h = autoSize * 21 + 10
+              e.target.style.maxHeight = `${h}px`;
+              e.target.style.height = `${h}px`;
             }
             setIndexHight(!indexHight)
           }

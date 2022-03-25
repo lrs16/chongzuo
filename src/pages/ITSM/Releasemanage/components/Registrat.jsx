@@ -8,7 +8,7 @@ import TestingFacility from './TestingFacility';
 import DocumentAtt from './NewDocAtt';
 import { saveVersion } from '../services/api';
 
-const { TextArea } = Input;
+// const { TextArea } = Input;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
 
@@ -392,7 +392,14 @@ function Registrat(props, ref) {
                   {getFieldDecorator('testOperator', {
                     rules: [{ required, message: `请输入测试人员` }],
                     initialValue: formmap.get(taskName).testOperator,
-                  })(<TextArea autoSize disabled={!isEdit} />)}
+                  })(
+                    <FormTextArea
+                      autoSize={1}
+                      indexText={formmap.get(taskName).testOperator}
+                      isEdit={isEdit}
+                      getVal={v => setFieldsValue({ testOperator: v })}
+                    />
+                  )}
                 </Form.Item>
               </Col>
             </>

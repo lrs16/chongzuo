@@ -125,7 +125,14 @@ function Implementation(props, ref) {
               {getFieldDecorator('practicer', {
                 rules: [{ required, message: `请输入发布实施人员名` }],
                 initialValue: info.practiceDone.practicer || '',
-              })(<TextArea autoSize disabled={!isEdit} />)}
+              })(
+                <FormTextArea
+                  autoSize={1}
+                  indexText={info.practiceDone.practicer || ''}
+                  isEdit={isEdit}
+                  getVal={v => setFieldsValue({ practicer: v })}
+                />
+              )}
             </Form.Item>
           </Col>
           <Col span={24}>

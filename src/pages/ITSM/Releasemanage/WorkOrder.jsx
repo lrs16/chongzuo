@@ -526,7 +526,7 @@ function WorkOrder(props) {
   // 业务复核
   const savebusinessReview = () => {
     const values = BusinessReviewRef.current.getVal();
-    const { releaseAttaches, releaseLists, practiceTime, practicer, doneDesc, legacyDesc } = values;
+    const { releaseAttaches, releaseLists, practiceTime, practicer, doneDesc, legacyDesc, checkComments } = values;
     dispatch({
       type: 'releasetodo/bizcheck',
       payload: {
@@ -535,7 +535,7 @@ function WorkOrder(props) {
           saveItems: 'releaseBizCheck, releaseLists, releaseAttaches',
           releaseAttaches,
           releaseLists,
-          releaseBizCheck: { practiceTime: moment(practiceTime).format('YYYY-MM-DD HH:mm:ss'), practicer, doneDesc, legacyDesc },
+          releaseBizCheck: { practiceTime: moment(practiceTime).format('YYYY-MM-DD HH:mm:ss'), practicer, doneDesc, legacyDesc, checkComments },
         },
         buttype,
         userIds: '',
