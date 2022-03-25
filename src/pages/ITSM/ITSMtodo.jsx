@@ -312,6 +312,7 @@ function ITSMtodo(props) {
           ['operation', '作业计划'],
           ['work', '工作督办'],
           ['quality', '服务绩效'],
+          ['tempRelease', '临时发布'],
         ]);
         const releaseBizTodomap = new Map([
           ['业务验证', '计划发布业务验证'],
