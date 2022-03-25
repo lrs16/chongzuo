@@ -212,32 +212,22 @@ function Details(props) {
 
                   {info.historys.map((obj, index) => {
                     // panel详情组件
-                    if (obj.taskName !== '系统开发商处理')
-                      return (
-                        <Panel header={pheadertitle(obj, index + 2)} key={index.toString()}>
-                          <Examinedes
-                            info={obj}
-                            formItemLayout={formItemLayout}
-                            forminladeLayout={forminladeLayout}
-                          />
-                        </Panel>
-                      );
-                    if (obj.taskName === '系统开发商处理')
+                    if (obj.taskName === '系统开发商处理') {
                       return (
                         <Panel header={pheadertitle(obj, index + 2)} key={index.toString()}>
                           <Tracklist demandId={info.demandForm.demandId} />
                         </Panel>
                       );
-                  }
+                    }
                     return (
-                  <Panel header={pheadertitle(obj, index + 1)} key={index.toString()}>
-                    <Examinedes
-                      info={obj}
-                      formItemLayout={formItemLayout}
-                      forminladeLayout={forminladeLayout}
-                    />
-                  </Panel>
-                  );
+                      <Panel header={pheadertitle(obj, index + 1)} key={index.toString()}>
+                        <Examinedes
+                          info={obj}
+                          formItemLayout={formItemLayout}
+                          forminladeLayout={forminladeLayout}
+                        />
+                      </Panel>
+                    );
                   })}
                 </Collapse>
               )}
