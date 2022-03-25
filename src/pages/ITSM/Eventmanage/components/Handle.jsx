@@ -271,7 +271,7 @@ const Handle = React.forwardRef((props, ref) => {
                 rules: [{ required, message: '请输入解决方案' }],
                 initialValue: handle?.content || '',
               })(<FormTextArea
-                autoSize={3}
+                autoSize={1}
                 indexText={handle?.content || ''}
                 isEdit
                 getVal={v => setFieldsValue({ handle_content: v })}

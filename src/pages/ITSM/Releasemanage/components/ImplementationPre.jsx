@@ -235,7 +235,7 @@ function ImplementationPre(props, ref) {
                 rules: [{ required, message: `请填写系统（设备）运行方式调整` }],
                 initialValue: info.practicePre ? info.practicePre.adjustRunMode : '',
               })(<FormTextArea
-                autoSize={3}
+                autoSize={1}
                 indexText={info.practicePre ? info.practicePre.adjustRunMode : ''}
                 isEdit={isEdit}
                 getVal={v => setFieldsValue({ adjustRunMode: v })}
@@ -248,7 +248,7 @@ function ImplementationPre(props, ref) {
                 rules: [{ required, message: `请填写涉级功能模块` }],
                 initialValue: info.practicePre ? info.practicePre.appModule : '',
               })(<FormTextArea
-                autoSize={3}
+                autoSize={1}
                 indexText={info.practicePre ? info.practicePre.appModule : ''}
                 isEdit={isEdit}
                 getVal={v => setFieldsValue({ appModule: v })}
@@ -328,7 +328,7 @@ function ImplementationPre(props, ref) {
                 rules: [{ required, message: `请填写影响范围` }],
                 initialValue: info.practicePre ? info.practicePre.affectBiz : '',
               })(<FormTextArea
-                autoSize={3}
+                autoSize={1}
                 indexText={info.practicePre ? info.practicePre.affectBiz : ''}
                 isEdit={isEdit}
                 getVal={v => setFieldsValue({ affectBiz: v })}
@@ -341,7 +341,7 @@ function ImplementationPre(props, ref) {
                 rules: [{ required, message: `请填写影响范围` }],
                 initialValue: info.practicePre ? info.practicePre.affectUser : '',
               })(<FormTextArea
-                autoSize={3}
+                autoSize={1}
                 indexText={info.practicePre ? info.practicePre.affectUser : ''}
                 isEdit={isEdit}
                 getVal={v => setFieldsValue({ affectUser: v })}
@@ -419,7 +419,7 @@ function ImplementationPre(props, ref) {
                 rules: [{ required, message: `请填写数据同步影响情况` }],
                 initialValue: info.practicePre ? info.practicePre.syncData : '',
               })(<FormTextArea
-                autoSize={3}
+                autoSize={1}
                 indexText={info.practicePre ? info.practicePre.syncData : ''}
                 isEdit={isEdit}
                 getVal={v => setFieldsValue({ syncData: v })}
@@ -465,7 +465,7 @@ function ImplementationPre(props, ref) {
               {getFieldDecorator('specialRequest', {
                 initialValue: info.practicePre ? info.practicePre.specialRequest : '',
               })(<FormTextArea
-                autoSize={3}
+                autoSize={1}
                 indexText={info.practicePre ? info.practicePre.specialRequest : ''}
                 isEdit={isEdit}
                 getVal={v => setFieldsValue({ specialRequest: v })}
@@ -478,7 +478,7 @@ function ImplementationPre(props, ref) {
                 rules: [{ required, message: `请填写回退方案` }],
                 initialValue: info.practicePre ? info.practicePre.rollbackPaln : '',
               })(<FormTextArea
-                autoSize={3}
+                autoSize={1}
                 indexText={info.practicePre ? info.practicePre.rollbackPaln : ''}
                 isEdit={isEdit}
                 getVal={v => setFieldsValue({ rollbackPaln: v })}
@@ -491,7 +491,7 @@ function ImplementationPre(props, ref) {
                 rules: [{ required, message: `请填写系统平台检查` }],
                 initialValue: info.practicePre ? info.practicePre.platformCheck : '',
               })(<FormTextArea
-                autoSize={3}
+                autoSize={1}
                 indexText={info.practicePre ? info.practicePre.platformCheck : ''}
                 isEdit={isEdit}
                 getVal={v => setFieldsValue({ platformCheck: v })}
@@ -516,7 +516,7 @@ function ImplementationPre(props, ref) {
                 {getFieldDecorator('preAdvise1', {
                   initialValue: info.practicePre && info.practicePre.preAdvise ? info.practicePre.preAdvise : '',
                 })(<FormTextArea
-                  autoSize={3}
+                  autoSize={1}
                   indexText={info.practicePre && info.practicePre.preAdvise ? info.practicePre.preAdvise : ''}
                   isEdit={isEdit}
                   getVal={v => setFieldsValue({ preAdvise1: v })}
@@ -529,7 +529,7 @@ function ImplementationPre(props, ref) {
                   rules: [{ required, message: `请填写实施准备意见` }],
                   initialValue: info.practicePre && info.practicePre.preAdvise ? info.practicePre.preAdvise : '',
                 })(<FormTextArea
-                  autoSize={3}
+                  autoSize={1}
                   indexText={info.practicePre && info.practicePre.preAdvise ? info.practicePre.preAdvise : ''}
                   isEdit={isEdit}
                   getVal={v => setFieldsValue({ preAdvise: v })}
@@ -542,7 +542,7 @@ function ImplementationPre(props, ref) {
               {getFieldDecorator('summary', {
                 initialValue: info.practicePre?.summary || '',
               })(<FormTextArea
-                autoSize={3}
+                autoSize={1}
                 indexText={info.practicePre?.summary || ''}
                 isEdit={isEdit}
                 getVal={v => setFieldsValue({ summary: v })}

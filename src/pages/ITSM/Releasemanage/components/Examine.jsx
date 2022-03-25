@@ -109,7 +109,7 @@ function Examine(props, ref) {
               rules: [{ required, message: `请输入${taskName === '开发商项目经理审核' ? '出厂测试' : '审核说明'}` }],
               initialValue: formmap.get(taskName).testResult,
             })(<FormTextArea
-              autoSize={3}
+              autoSize={1}
               indexText={formmap.get(taskName).testResult}
               isEdit={isEdit}
               getVal={v => setFieldsValue({ testResult: v })}

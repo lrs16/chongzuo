@@ -113,7 +113,7 @@ function BusinessReview(props, ref) {
               rules: [{ required, message: `请填写复核说明` }],
               initialValue: info.releaseBizCheck && info.releaseBizCheck.checkComments || indexVal(),
             })(<FormTextArea
-              autoSize={3}
+              autoSize={1}
               indexText={info.releaseBizCheck && info.releaseBizCheck.checkComments || indexVal()}
               isEdit={isEdit}
               getVal={v => setFieldsValue({ checkComments: v })}

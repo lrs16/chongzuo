@@ -89,7 +89,7 @@ const Examine = forwardRef((props, ref) => {
                   initialValue: check.content,
                 })(
                   <FormTextArea
-                    autoSize={3}
+                    autoSize={1}
                     indexText={check.content}
                     isEdit={!Noediting}
                     getVal={v => setFieldsValue({ content: v })}
@@ -104,7 +104,7 @@ const Examine = forwardRef((props, ref) => {
                   initialValue: check.content,
                 })(
                   <FormTextArea
-                    autoSize={3}
+                    autoSize={1}
                     indexText={check.content}
                     isEdit={!Noediting}
                     getVal={v => setFieldsValue({ content1: v })}

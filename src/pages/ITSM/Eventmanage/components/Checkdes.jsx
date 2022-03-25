@@ -26,7 +26,7 @@ function Checkdes(props) {
           </Col>
           <Col span={24}>
             <Form.Item label="审核意见"  {...forminladeLayout}>
-              <FormTextArea autoSize={3} indexText={info.content} />
+              <FormTextArea autoSize={1} indexText={info.content} />
             </Form.Item>
           </Col>
           <Col span={24}>

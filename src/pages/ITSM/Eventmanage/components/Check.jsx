@@ -87,7 +87,7 @@ const Check = forwardRef((props, ref) => {
               {getFieldDecorator('content1', {
                 initialValue: check?.content || '',
               })(<FormTextArea
-                autoSize={3}
+                autoSize={1}
                 indexText={check?.content || ''}
                 isEdit
                 getVal={v => setFieldsValue({ content1: v })}
@@ -100,7 +100,7 @@ const Check = forwardRef((props, ref) => {
                 rules: [{ required: true, message: '请输入审核意见' }],
                 initialValue: check?.content || '',
               })(<FormTextArea
-                autoSize={3}
+                autoSize={1}
                 indexText={check?.content || ''}
                 isEdit
                 getVal={v => setFieldsValue({ content2: v })}

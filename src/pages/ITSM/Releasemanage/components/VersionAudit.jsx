@@ -425,7 +425,7 @@ function VersionAudit(props, ref) {
                     {getFieldDecorator('checkComment', {
                       initialValue: formmap.get(taskName).checkComment,
                     })(<FormTextArea
-                      autoSize={3}
+                      autoSize={1}
                       indexText={formmap.get(taskName).checkComment}
                       isEdit={isEdit}
                       getVal={v => setFieldsValue({ checkComment: v })}
@@ -439,7 +439,7 @@ function VersionAudit(props, ref) {
                       rules: [{ required, message: `请输入审核说明` }],
                       initialValue: formmap.get(taskName).checkComment,
                     })(<FormTextArea
-                      autoSize={3}
+                      autoSize={1}
                       indexText={formmap.get(taskName).checkComment}
                       isEdit={isEdit}
                       getVal={v => setFieldsValue({ checkComment: v })}

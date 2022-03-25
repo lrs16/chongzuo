@@ -215,7 +215,7 @@ const Examine = forwardRef((props, ref) => {
                   rules: [{ required: false, message: `请输入${text}意见` }],
                   initialValue: info[0].opinion,
                 })(<FormTextArea
-                  autoSize={3}
+                  autoSize={1}
                   indexText={info[0].opinion}
                   isEdit
                   getVal={v => setFieldsValue({ opinion1: v })}
@@ -228,7 +228,7 @@ const Examine = forwardRef((props, ref) => {
                   rules: [{ required: true, message: `请输入${text}意见` }],
                   initialValue: info[0].opinion,
                 })(<FormTextArea
-                  autoSize={3}
+                  autoSize={1}
                   indexText={info[0].opinion}
                   isEdit
                   getVal={v => setFieldsValue({ opinion2: v })}

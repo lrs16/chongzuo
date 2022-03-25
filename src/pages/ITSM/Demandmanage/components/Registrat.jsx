@@ -668,7 +668,7 @@ const Registrat = forwardRef((props, ref) => {
                 initialValue: register.reason,
               })(
                 <FormTextArea
-                  autoSize={3}
+                  autoSize={1}
                   indexText={register.reason}
                   isEdit
                   getVal={v => setFieldsValue({ reason: v })}

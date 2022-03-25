@@ -559,7 +559,7 @@ function TemporaryRegistrat(props, ref) {
                 initialValue: info?.tempRegister?.affectedScope || '',
               })(
                 <FormTextArea
-                  autoSize={3}
+                  autoSize={1}
                   indexText={info?.tempRegister?.affectedScope || ''}
                   isEdit={isEdit}
                   getVal={v => setFieldsValue({ affectedScope: v })}
@@ -628,7 +628,7 @@ function TemporaryRegistrat(props, ref) {
                 initialValue: info?.tempRegister?.releaseStep || '',
               })(
                 <FormTextArea
-                  autoSize={3}
+                  autoSize={1}
                   indexText={info?.tempRegister?.releaseStep || ''}
                   isEdit={isEdit}
                   getVal={v => setFieldsValue({ releaseStep: v })}
@@ -643,7 +643,7 @@ function TemporaryRegistrat(props, ref) {
                 initialValue: info?.tempRegister?.risks || '',
               })(
                 <FormTextArea
-                  autoSize={3}
+                  autoSize={1}
                   indexText={info?.tempRegister?.risks || ''}
                   isEdit={isEdit}
                   getVal={v => setFieldsValue({ risks: v })}

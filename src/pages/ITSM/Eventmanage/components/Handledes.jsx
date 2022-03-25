@@ -38,7 +38,7 @@ function Handledes(props) {
           </Col>
           <Col span={24}>
             <Form.Item label="解决方案"  {...forminladeLayout}>
-              <FormTextArea autoSize={3} indexText={info.content} />
+              <FormTextArea autoSize={1} indexText={info.content} />
             </Form.Item>
           </Col>
           <Col span={24}>

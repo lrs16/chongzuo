@@ -71,7 +71,7 @@ function Examinedes(props) {
           )}
           <Col span={24} style={{ marginTop: 3 }}>
             <Form.Item label={`${text}意见`}  {...forminladeLayout}>
-              <FormTextArea autoSize={3} indexText={info.opinion} />
+              <FormTextArea autoSize={1} indexText={info.opinion} />
             </Form.Item>
           </Col>
           <Col span={24}>

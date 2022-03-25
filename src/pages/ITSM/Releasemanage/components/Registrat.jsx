@@ -413,7 +413,7 @@ function Registrat(props, ref) {
                 })(
                   // <TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />
                   <FormTextArea
-                    autoSize={3}
+                    autoSize={1}
                     indexText={info.releaseRegister.influenceScope}
                     isEdit={isEdit}
                     getVal={v => setFieldsValue({ influenceScope: v })}
@@ -503,7 +503,7 @@ function Registrat(props, ref) {
                   initialValue: formmap.get(taskName).testResult,
                 })(
                   <FormTextArea
-                    autoSize={3}
+                    autoSize={1}
                     indexText={formmap.get(taskName).testResult}
                     isEdit={isEdit}
                     getVal={v => setFieldsValue({ testResult: v })}

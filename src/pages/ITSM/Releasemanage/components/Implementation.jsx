@@ -140,7 +140,7 @@ function Implementation(props, ref) {
               {getFieldDecorator('doneDesc', {
                 initialValue: info.practiceDone.doneDesc || '',
               })(<FormTextArea
-                autoSize={3}
+                autoSize={1}
                 indexText={info.practiceDone.doneDesc || ''}
                 isEdit={isEdit}
                 getVal={v => setFieldsValue({ doneDesc: v })}
@@ -152,7 +152,7 @@ function Implementation(props, ref) {
               {getFieldDecorator('legacyDesc', {
                 initialValue: info.practiceDone.legacyDesc || '',
               })(<FormTextArea
-                autoSize={3}
+                autoSize={1}
                 indexText={info.practiceDone.legacyDesc || ''}
                 isEdit={isEdit}
                 getVal={v => setFieldsValue({ legacyDesc: v })}
