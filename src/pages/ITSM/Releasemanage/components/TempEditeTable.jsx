@@ -118,7 +118,7 @@ function EditeTable(props) {
     if (target) {
       target[fieldName] = e;
       target.taskId = taskId;
-      if (taskName === '科室负责人审核') {
+      if (taskName === '需求科室审核') {
         target.tempDirector = sessionStorage.getItem('userName');
       };
       if (taskName === '业务复核') {
@@ -239,7 +239,7 @@ function EditeTable(props) {
         ...item,
         editable: false,
         verification: taskName === '平台验证',
-        depaudit: taskName === '科室负责人审核',
+        depaudit: taskName === '需求科室审核',
         validate: taskName === '发布验证',
         review: taskName === '业务复核',
         key: (index + 1).toString(),
@@ -648,7 +648,7 @@ function EditeTable(props) {
       title: '科室审核结果',
       dataIndex: 'tempDirectorResult',
       key: 'tempDirectorResult',
-      fixed: taskName === '科室负责人审核' ? 'right' : '',
+      fixed: taskName === '需求科室审核' ? 'right' : '',
       width: 120,
       render: (text, record) => {
         if (record.depaudit && isEdit) {
@@ -667,7 +667,7 @@ function EditeTable(props) {
       dataIndex: 'tempDirector',
       key: 'tempDirector',
       align: 'center',
-      fixed: taskName === '科室负责人审核' ? 'right' : '',
+      fixed: taskName === '需求科室审核' ? 'right' : '',
       width: 100,
     }
   ];
@@ -808,7 +808,7 @@ function EditeTable(props) {
         newArr = [...newarr, ...platform];
         break;
       }
-      case '科室负责人审核':
+      case '需求科室审核':
       case '版本管理员审核':
       case '自动化科审核':
       case '中心领导审核':
@@ -877,7 +877,7 @@ function EditeTable(props) {
   return (
     <>
       <h4 style={{ fontSize: '1.1em' }}>
-        {(taskName === '新建' || taskName === '出厂测试' || taskName === '平台验证' || taskName === '科室负责人审核' || taskName === '业务验证') && (
+        {(taskName === '新建' || taskName === '出厂测试' || taskName === '平台验证' || taskName === '需求科室审核' || taskName === '业务验证') && (
           <span style={{ color: '#f5222d', marginRight: 4, fontWeight: 'normal' }}>*</span>
         )}
         {title}

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
-import { Button, Card, Spin, message, Collapse, Popconfirm, Badge } from 'antd';
+import { Button, Spin, message, Collapse, Popconfirm, Badge, Card } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { openNotification } from '@/utils/utils';
 import FilesContext from '@/layouts/MenuContext';
@@ -13,19 +13,19 @@ import TemporaryList from './components/TemporaryList';
 import TempTaskLinks from './components/TempTaskLinks';
 import { delOrder, saveRegister, exportTempReleaseApply } from './services/temp';
 import { releaseToQuality } from './services/api';
+import processImg from './img/nWcomAp2dTmXdmnpHm50sQ.png';
 
 const { Panel } = Collapse;
 
 const backnode = new Map([
   ['开发商项目经理审核', '出厂测试'],
   ['平台验证', '出厂测试'],
-  ['科室负责人审核', '平台验证'],
+  ['需求科室审核', '平台验证'],
   ['版本管理员审核', '平台验证'],
   ['自动化科审核', '版本管理员审核'],
   ['中心领导审核', '版本管理员审核'],
   ['业务复核', '版本管理员审核'],
 ])
-
 
 function TemporaryDetail(props) {
   const { dispatch, userinfo, location, location: { query: { Id, taskName, taskId } }, info, loading, } = props;
@@ -41,8 +41,23 @@ function TemporaryDetail(props) {
   const [visibleQuality, setVisibleQuality] = useState(false);
   const [clearselect, setClearselect] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
+  const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
 
   const RegistratRef = useRef();
+
+  const handleTabChange = key => {
+    settabActivekey(key)
+  };
+  const tabList = [
+    {
+      key: 'workorder',
+      tab: '临时发布工单',
+    },
+    {
+      key: 'process',
+      tab: '临时发布流程',
+    },
+  ];
 
   const openFlow = (clear) => {
     dispatch({
@@ -254,7 +269,7 @@ function TemporaryDetail(props) {
   }
 
   const operations = (
-    <>
+    <>{tabActivekey === 'workorder' && <>
       {info?.releaseTempLogs && info?.releaseTempLogs.length && info?.releaseTempLogs.length === 1 && taskName === '出厂测试' && (
         <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handledel()} disabled={loading || uploadStatus || !info?.taskInfo?.operationTask || !selectdata.ischange} >删除</Button>
       )}
@@ -359,6 +374,7 @@ function TemporaryDetail(props) {
         </>
       )}
       {taskName === '结束' && <Button type="primary" onClick={() => handleDownload()} >导出Word</Button>}
+    </>}
       <Button type="default" onClick={() => handleclose()} >关闭</Button>
     </>
   );
@@ -383,60 +399,69 @@ function TemporaryDetail(props) {
 
   return (
     <Spin spinning={loading || saveLoading}>
-      <PageHeaderWrapper title={pagetitle} extra={operations}>
-        <TempTaskLinks taskName={taskName} releaseTempLogs={info?.releaseTempLogs} />
-        <div className='noexplain'>
-          <div className='ordercollapse'>
-            <Collapse
-              expandIconPosition="right"
-              activeKey={activeKey}
-              bordered={false}
-              onChange={callback}
-            >
-              <Panel header={pheadertitle('发布基本信息', 1)} key="form">
-                {info && (
-                  <FilesContext.Provider value={{
-                    // files: info?.tempRegister?.attach ? JSON.parse(info.tempRegister.attach) : [],
-                    ChangeFiles: ((v) => { handleSave(v); }),
-                    getUploadStatus: (v) => { setUploadStatus(v) },
-                    ChangeButtype: (v) => {
-                      if (v === 'submit') {
-                        handleSubmit('1')
-                      };
-                      if (v === 'save' && taskName === '出厂测试') {
-                        handleSave()
-                      }
-                    },
-                    getSelectedRecords: (v) => { setSelectedRecords(v) },
-                    taskId: info?.taskId,
-                    location,
-                    clearselect,
-                  }}>
-                    <TemporaryRegistrat
-                      wrappedComponentRef={RegistratRef}
-                      selectdata={selectdata}
-                      info={info}
-                      userinfo={userinfo || {}}
-                      isEdit={taskName === '出厂测试' && info?.taskInfo?.operationList}
-                      taskName={taskName}
-                      loading={loading}
-                      operationList={info?.taskInfo?.operationList} // 是否可编辑清单
-                      location={location}
-                      taskId={info?.taskId || taskId}
-                    />
-                  </FilesContext.Provider>
-                )}
-              </Panel>
-              <Panel header={pheadertitle('处理过程', 2)} key="list">
+      <PageHeaderWrapper
+        title={pagetitle}
+        extra={operations}
+        tabList={tabList}
+        tabActiveKey={tabActivekey}
+        onTabChange={handleTabChange}
+      >
+        {tabActivekey === 'workorder' && <>
+          <TempTaskLinks taskName={taskName} releaseTempLogs={info?.releaseTempLogs} />
+          <div className='noexplain'>
+            <div className='ordercollapse'>
+              <Collapse
+                expandIconPosition="right"
+                activeKey={activeKey}
+                bordered={false}
+                onChange={callback}
+              >
+                <Panel header={pheadertitle('发布基本信息', 1)} key="form">
+                  {info && (
+                    <FilesContext.Provider value={{
+                      // files: info?.tempRegister?.attach ? JSON.parse(info.tempRegister.attach) : [],
+                      ChangeFiles: ((v) => { handleSave(v); }),
+                      getUploadStatus: (v) => { setUploadStatus(v) },
+                      ChangeButtype: (v) => {
+                        if (v === 'submit') {
+                          handleSubmit('1')
+                        };
+                        if (v === 'save' && taskName === '出厂测试') {
+                          handleSave()
+                        }
+                      },
+                      getSelectedRecords: (v) => { setSelectedRecords(v) },
+                      taskId: info?.taskId,
+                      location,
+                      clearselect,
+                    }}>
+                      <TemporaryRegistrat
+                        wrappedComponentRef={RegistratRef}
+                        selectdata={selectdata}
+                        info={info}
+                        userinfo={userinfo || {}}
+                        isEdit={taskName === '出厂测试' && info?.taskInfo?.operationList}
+                        taskName={taskName}
+                        loading={loading}
+                        operationList={info?.taskInfo?.operationList} // 是否可编辑清单
+                        location={location}
+                        taskId={info?.taskId || taskId}
+                      />
+                    </FilesContext.Provider>
+                  )}
+                </Panel>
+                <Panel header={pheadertitle('处理过程', 2)} key="list">
 
-                <TemporaryList
-                  dataSource={info?.releaseTempLogs}
-                  loading={loading}
-                />
-              </Panel>
-            </Collapse>
+                  <TemporaryList
+                    dataSource={info?.releaseTempLogs}
+                    loading={loading}
+                  />
+                </Panel>
+              </Collapse>
+            </div>
           </div>
-        </div>
+        </>}
+        {tabActivekey === 'process' && <Card className='blobimg' ><img src={processImg} alt="" /></Card>}
         <DictLower
           typeid="443"
           ChangeSelectdata={newvalue => setSelectData(newvalue)}

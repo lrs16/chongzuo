@@ -405,7 +405,7 @@ function VersionAudit(props, ref) {
             </Col>
 
           </>)}
-          {(taskName === '科室负责人审核' || taskName === '中心领导审核') && (
+          {(taskName === '需求科室审核' || taskName === '中心领导审核') && (
             <>
               <Col span={24}>
                 <Form.Item label='审核结果' {...formuintLayout} labelAlign='left'>

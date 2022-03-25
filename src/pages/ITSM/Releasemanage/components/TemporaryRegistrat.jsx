@@ -76,7 +76,7 @@ function TemporaryRegistrat(props, ref) {
         } else {
           callback();
         };
-      } else if (taskName === '科室负责人审核') {
+      } else if (taskName === '需求科室审核') {
         target = value.filter(item => !item.tempDirectorResult || !item.tempDirector);
         if (target.length > 0) {
           callback(`发布清单未全部审核`);
