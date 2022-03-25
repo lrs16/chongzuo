@@ -312,8 +312,8 @@ const Registrat = forwardRef((props, ref) => {
         e.target.style.maxHeight = '9.0072e+15px';
         e.target.style.height = `${textheight}px`;
       } else {
-        e.target.style.maxHeight = '73px';
-        e.target.style.height = '73px';
+        e.target.style.maxHeight = '31px';
+        e.target.style.height = '31px';
       };
       setDaileArea(!daileArea)
     }
@@ -690,13 +690,13 @@ const Registrat = forwardRef((props, ref) => {
                 //  onSelect={value => handleSearch(value, 'des')}
                 >
                   {daileArea ? (<TextArea
-                    style={{ height: 73 }}
+                    style={{ height: 31 }}
                     allowClear
                     placeholder="请输入"
                     onDoubleClick={(e) => handleDoubleClick(e)}
                   />) : (
                     <TextArea
-                      autoSize={{ minRows: 3 }}
+                      autoSize={{ minRows: 1 }}
                       auto
                       allowClear
                       placeholder="请输入"
