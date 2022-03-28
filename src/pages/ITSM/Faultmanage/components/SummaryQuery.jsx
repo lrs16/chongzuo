@@ -1,8 +1,8 @@
 import React from 'react';
 import { Form, Input, Row, Col, Radio } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile'; // 下载组件调用
+import FormTextArea from '@/components/FormTextArea';
 
-const { TextArea } = Input;
 const RadioGroup = Radio.Group;
 
 const forminladeLayout1 = {
@@ -43,11 +43,7 @@ function SummaryQuery(props) {
           </Col>
           <Col span={24}>
             <Form.Item label="总结说明" {...forminladeLayout}>
-              <TextArea
-                autoSize={{ minRows: 1 }}
-                defaultValue={info.finishContent || ''}
-                disabled
-              />
+              <FormTextArea autoSize={1} indexText={info.finishContent} />
             </Form.Item>
           </Col>
 

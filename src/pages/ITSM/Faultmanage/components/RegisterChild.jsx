@@ -41,6 +41,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
   const [desautodata, setDestoData] = useState([]);
   const [titlerecords, setTitleRecords] = useState([]);
   const [desrecords, setDesRecords] = useState([]);
+  const [daileArea, setDaileArea] = useState(true);
 
   useEffect(() => {
     ChangeFiles(fileslist);
@@ -140,6 +141,20 @@ const RegisterChild = React.forwardRef((props, ref) => {
   const priority = getTypebyTitle('严重程度');
   const effect = getTypebyTitle('影响范围');
   const faultType = getTypebyTitle('故障分类');
+
+  const handleDoubleClick = e => {
+    if (e.target) {
+      if (!daileArea) {
+        const textheight = e.target.scrollHeight + 2;
+        e.target.style.maxHeight = '9.0072e+15px';
+        e.target.style.height = `${textheight}px`;
+      } else {
+        e.target.style.maxHeight = '31px';
+        e.target.style.height = '31px';
+      }
+      setDaileArea(!daileArea);
+    }
+  };
 
   return (
     <Row gutter={24}>
@@ -384,7 +399,22 @@ const RegisterChild = React.forwardRef((props, ref) => {
                 filterOption={(inputValue, option) => option.props.children.includes(inputValue)}
                 //  onSelect={value => handleSearch(value, 'des')}
               >
-                <TextArea autoSize={{ minRows: 1 }} placeholder="请输入" />
+                {daileArea ? (
+                  <TextArea
+                    style={{ height: 31 }}
+                    allowClear
+                    placeholder="请输入"
+                    onDoubleClick={e => handleDoubleClick(e)}
+                  />
+                ) : (
+                  <TextArea
+                    autoSize={{ minRows: 1 }}
+                    auto
+                    allowClear
+                    placeholder="请输入"
+                    onDoubleClick={e => handleDoubleClick(e)}
+                  />
+                )}
               </AutoComplete>,
             )}
           </Form.Item>

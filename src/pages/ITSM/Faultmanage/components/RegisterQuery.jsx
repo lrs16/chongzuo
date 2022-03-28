@@ -1,9 +1,9 @@
 import React from 'react';
 import { Radio, Form, Input, Row, Col } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile'; // 下载组件调用
+import FormTextArea from '@/components/FormTextArea';
 
 const RadioGroup = Radio.Group;
-const { TextArea } = Input;
 
 const forminladeLayout1 = {
   labelCol: {
@@ -91,7 +91,7 @@ function RegisterQuery(props) {
           </Col>
           <Col span={24}>
             <Form.Item label="故障概要" {...forminladeLayout}>
-              <TextArea autoSize={{ minRows: 1 }} defaultValue={maindata.content || ''} disabled />
+              <FormTextArea autoSize={1} indexText={maindata.content} />
             </Form.Item>
           </Col>
           <Col span={24}>

@@ -75,6 +75,7 @@ function Registration(props) {
   const [titlerecords, setTitleRecords] = useState([]);
   const [desrecords, setDesRecords] = useState([]);
   const [faultUploadStatus, setFaultUploadStatus] = useState(false);
+  const [daileArea, setDaileArea] = useState(true);
 
   const {
     form: { getFieldDecorator, resetFields, getFieldsValue, setFieldsValue },
@@ -274,6 +275,20 @@ function Registration(props) {
     tabdata === undefined
       ? { registerLevel: '一般', registerEffect: '', registerMaster: '' }
       : tabdata;
+
+  const handleDoubleClick = e => {
+    if (e.target) {
+      if (!daileArea) {
+        const textheight = e.target.scrollHeight + 2;
+        e.target.style.maxHeight = '9.0072e+15px';
+        e.target.style.height = `${textheight}px`;
+      } else {
+        e.target.style.maxHeight = '31px';
+        e.target.style.height = '31px';
+      }
+      setDaileArea(!daileArea);
+    }
+  };
 
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
@@ -518,7 +533,22 @@ function Registration(props) {
                           option.props.children.includes(inputValue)
                         }
                       >
-                        <TextArea autoSize={{ minRows: 1 }} placeholder="请输入" />
+                        {daileArea ? (
+                          <TextArea
+                            style={{ height: 31 }}
+                            allowClear
+                            placeholder="请输入"
+                            onDoubleClick={e => handleDoubleClick(e)}
+                          />
+                        ) : (
+                          <TextArea
+                            autoSize={{ minRows: 1 }}
+                            auto
+                            allowClear
+                            placeholder="请输入"
+                            onDoubleClick={e => handleDoubleClick(e)}
+                          />
+                        )}
                       </AutoComplete>,
                     )}
                   </Form.Item>

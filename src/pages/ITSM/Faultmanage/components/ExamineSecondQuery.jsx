@@ -1,9 +1,9 @@
 import React from 'react';
 import { Radio, Form, Input, Row, Col } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile'; // 下载组件调用
+import FormTextArea from '@/components/FormTextArea';
 
 const RadioGroup = Radio.Group;
-const { TextArea } = Input;
 
 const forminladeLayout1 = {
   labelCol: {
@@ -56,7 +56,7 @@ function ExamineSecondQuery(props) {
           </Col>
           <Col span={24}>
             <Form.Item label="审核意见" {...forminladeLayout}>
-              <TextArea autoSize={{ minRows: 1 }} defaultValue={info.checkOpinion || ''} disabled />
+              <FormTextArea autoSize={1} indexText={info.checkOpinion} />
             </Form.Item>
           </Col>
           <Col span={24}>

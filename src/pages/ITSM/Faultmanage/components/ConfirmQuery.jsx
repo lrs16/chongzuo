@@ -1,9 +1,9 @@
 import React from 'react';
 import { Radio, Form, Input, Row, Col } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile'; // 下载组件调用
+import FormTextArea from '@/components/FormTextArea';
 
 const RadioGroup = Radio.Group;
-const { TextArea } = Input;
 
 function ConfirmQuery(props) {
   const { info, formItemLayout, forminladeLayout } = props;
@@ -32,11 +32,7 @@ function ConfirmQuery(props) {
           </Col>
           <Col span={24}>
             <Form.Item label="确认说明" {...forminladeLayout}>
-              <TextArea
-                autoSize={{ minRows: 1 }}
-                defaultValue={info.confirmContent || ''}
-                disabled
-              />
+              <FormTextArea autoSize={1} indexText={info.confirmContent} />
             </Form.Item>
           </Col>
           <Col span={24}>

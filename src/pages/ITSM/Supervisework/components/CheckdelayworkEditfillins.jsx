@@ -1,7 +1,7 @@
 import React from 'react';
 import { Radio, Form, Input, Row, Col } from 'antd';
 
-const { TextArea } = Input;
+import FormTextArea from '@/components/FormTextArea';
 
 const formItemLayout = {
   labelCol: {
@@ -49,7 +49,7 @@ function CheckdelayworkEditfillins(props) {
         </Col>
         <Col span={24}>
           <Form.Item label="延期审核意见" {...forminladeLayout}>
-            <TextArea autoSize={{ minRows: 1 }} defaultValue={info.content} disabled />
+            <FormTextArea autoSize={1} indexText={info.content} />
           </Form.Item>
         </Col>
         <Col span={8}>

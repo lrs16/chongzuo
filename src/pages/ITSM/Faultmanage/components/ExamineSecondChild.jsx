@@ -3,8 +3,8 @@ import moment from 'moment';
 import { Form, Row, Col, Input, DatePicker, Radio, Select, Button } from 'antd';
 import SysUpload from '@/components/SysUpload'; // 附件下载组件
 import SysDict from '@/components/SysDict';
+import FormTextArea from '@/components/FormTextArea'; // 文本域收缩: 默认展示一行
 
-const { TextArea } = Input;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
 
@@ -202,7 +202,14 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
               {getFieldDecorator('checkOpinion1', {
                 rules: [{ required: false, message: '请输入审核意见' }],
                 initialValue: check ? check.checkOpinion : '',
-              })(<TextArea autoSize={{ minRows: 1 }} placeholder="请输入" />)}
+              })(
+                <FormTextArea
+                  autoSize={1}
+                  indexText={check?.checkOpinion || ''}
+                  isEdit
+                  getVal={v => setFieldsValue({ checkOpinion1: v })}
+                />,
+              )}
             </Form.Item>
           )}
           {adopt === '0' && ( // 0 不通过
@@ -210,7 +217,14 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
               {getFieldDecorator('checkOpinion2', {
                 rules: [{ required: true, message: '请输入审核意见' }],
                 initialValue: check ? check.checkOpinion : '',
-              })(<TextArea autoSize={{ minRows: 1 }} placeholder="请输入" />)}
+              })(
+                <FormTextArea
+                  autoSize={1}
+                  indexText={check?.checkOpinion || ''}
+                  isEdit
+                  getVal={v => setFieldsValue({ checkOpinion2: v })}
+                />,
+              )}
             </Form.Item>
           )}
         </Col>

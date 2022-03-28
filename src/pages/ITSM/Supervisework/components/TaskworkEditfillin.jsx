@@ -2,9 +2,9 @@ import React, { useState, useRef, useImperativeHandle, useEffect } from 'react';
 import { Row, Col, Form, Input, Select, DatePicker, Tag } from 'antd';
 import moment from 'moment';
 import SysUpload from '@/components/SysUpload';
+import FormTextArea from '@/components/FormTextArea'; // 文本域收缩: 默认展示一行
 
 const { Option } = Select;
-const { TextArea } = Input;
 
 const TaskworkEditfillin = React.forwardRef((props, ref) => {
   const {
@@ -182,7 +182,14 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
               {getFieldDecorator('main_content', {
                 rules: [{ required, message: '请输入工作内容' }, {}],
                 initialValue: main.content,
-              })(<TextArea disabled={type === 'delay'} autoSize={{ minRows: 1 }} />)}
+              })(
+                <FormTextArea
+                  autoSize={1}
+                  indexText={main.content}
+                  isEdit={type !== 'delay'}
+                  getVal={v => setFieldsValue({ main_content: v })}
+                />,
+              )}
             </Form.Item>
           </Col>
           <Col span={8}>

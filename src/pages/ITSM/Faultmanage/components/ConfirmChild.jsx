@@ -3,8 +3,8 @@ import moment from 'moment';
 import { Form, Row, Col, Input, DatePicker, Radio, Select } from 'antd';
 import SysUpload from '@/components/SysUpload'; // 附件下载组件
 import SysDict from '@/components/SysDict';
+import FormTextArea from '@/components/FormTextArea'; // 文本域收缩: 默认展示一行
 
-const { TextArea } = Input;
 const { Option } = Select;
 
 const ConfirmChild = React.forwardRef((props, ref) => {
@@ -142,8 +142,15 @@ const ConfirmChild = React.forwardRef((props, ref) => {
             <Form.Item label="确认说明" {...forminladeLayout}>
               {getFieldDecorator('confirmContent1', {
                 rules: [{ required: false, message: '请输入确认说明' }],
-                initialValue: confirm ? confirm.confirmContent : '',
-              })(<TextArea autoSize={{ minRows: 1 }} placeholder="请输入" />)}
+                initialValue: confirm ? confirmContent : '',
+              })(
+                <FormTextArea
+                  autoSize={1}
+                  indexText={confirm?.confirmContent || ''}
+                  isEdit
+                  getVal={v => setFieldsValue({ confirmContent1: v })}
+                />,
+              )}
             </Form.Item>
           )}
           {adopt === '0' && (
@@ -151,7 +158,14 @@ const ConfirmChild = React.forwardRef((props, ref) => {
               {getFieldDecorator('confirmContent2', {
                 rules: [{ required: true, message: '请输入确认说明' }],
                 initialValue: confirm ? confirm.confirmContent : '',
-              })(<TextArea autoSize={{ minRows: 1 }} placeholder="请输入" />)}
+              })(
+                <FormTextArea
+                  autoSize={1}
+                  indexText={confirm?.confirmContent || ''}
+                  isEdit
+                  getVal={v => setFieldsValue({ confirmContent2: v })}
+                />,
+              )}
             </Form.Item>
           )}
         </Col>

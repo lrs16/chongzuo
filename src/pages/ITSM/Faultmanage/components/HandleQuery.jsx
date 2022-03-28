@@ -1,8 +1,7 @@
 import React from 'react';
 import { Form, Input, Row, Col } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
-// 下载组件调用
-const { TextArea } = Input;
+import FormTextArea from '@/components/FormTextArea';
 
 const formItemLayout = {
   labelCol: {
@@ -38,21 +37,17 @@ function HandleQuery(props) {
         <Form {...formItemLayout}>
           <Col span={24}>
             <Form.Item label="故障详细描述" {...forminladeLayout}>
-              <TextArea
-                autoSize={{ minRows: 1 }}
-                defaultValue={info.handleContent || ''}
-                disabled
-              />
+              <FormTextArea autoSize={1} indexText={info.handleContent} />
             </Form.Item>
           </Col>
           <Col span={24}>
             <Form.Item label="故障分析及原因" {...forminladeLayout}>
-              <TextArea autoSize={{ minRows: 1 }} defaultValue={info.handleReason || ''} disabled />
+              <FormTextArea autoSize={1} indexText={info.handleReason} />
             </Form.Item>
           </Col>
           <Col span={24}>
             <Form.Item label="故障措施或建议" {...forminladeLayout}>
-              <TextArea autoSize={{ minRows: 1 }} defaultValue={info.handleAdvise || ''} disabled />
+              <FormTextArea autoSize={1} indexText={info.handleAdvise} />
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -72,11 +67,7 @@ function HandleQuery(props) {
           </Col>
           <Col span={24}>
             <Form.Item label="处理过程" {...forminladeLayout}>
-              <TextArea
-                autoSize={{ minRows: 1 }}
-                defaultValue={info.handleProcess || ''}
-                disabled
-              />
+              <FormTextArea autoSize={1} indexText={info.handleProcess} />
             </Form.Item>
           </Col>
 

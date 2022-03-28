@@ -3,7 +3,8 @@ import { Row, Col, Form, Input, DatePicker, Select } from 'antd';
 import moment from 'moment';
 import SysUpload from '@/components/SysUpload';
 
-const { TextArea } = Input;
+import FormTextArea from '@/components/FormTextArea'; // 文本域收缩: 默认展示一行
+
 const { Option } = Select;
 
 const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
@@ -128,7 +129,14 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
               {getFieldDecorator('execute_content', {
                 rules: [{ required, message: '请输入工作执行情况说明' }],
                 initialValue: execute && execute.content ? execute.content : '',
-              })(<TextArea disabled={!showEdit} autoSize={{ minRows: 1 }} />)}
+              })(
+                <FormTextArea
+                  autoSize={1}
+                  indexText={execute?.content || ''}
+                  isEdit={!!showEdit}
+                  getVal={v => setFieldsValue({ execute_content: v })}
+                />,
+              )}
             </Form.Item>
           </Col>
 

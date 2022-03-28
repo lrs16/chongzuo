@@ -93,13 +93,13 @@ function Details(props) {
 
   useEffect(() => {
     if (loading) {
-      setActiveKey(['registdes'])
+      setActiveKey(['registdes']);
     }
     if (info && info.historys && info.historys.length >= 0 && !loading) {
       for (let i = 0; i < info.historys.length; i += 1) {
-        activeKey.push(i)
+        activeKey.push(i);
       }
-    };
+    }
   }, [loading]);
 
   // 点击页签右键刷新
@@ -220,7 +220,7 @@ function Details(props) {
                       );
                     }
                     return (
-                      <Panel header={pheadertitle(obj, index + 1)} key={index.toString()}>
+                      <Panel header={pheadertitle(obj, index + 2)} key={index.toString()}>
                         <Examinedes
                           info={obj}
                           formItemLayout={formItemLayout}

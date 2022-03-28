@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Input, Row, Col } from 'antd';
 
-const { TextArea } = Input;
+import FormTextArea from '@/components/FormTextArea';
 
 const formItemLayout = {
   labelCol: {
@@ -31,7 +31,7 @@ function SuperviseModelDetails(props) {
       <Form {...formItemLayout}>
         <Col span={24}>
           <Form.Item label="督办内容" {...forminladeLayout}>
-            <TextArea autoSize={{ minRows: 1 }} defaultValue={info.content} disabled />
+            <FormTextArea autoSize={1} indexText={info.content} />
           </Form.Item>
         </Col>
         <Col span={8}>

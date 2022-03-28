@@ -5,8 +5,8 @@ import router from 'umi/router';
 import SysUpload from '@/components/SysUpload'; // 附件下载组件
 import Downloadfile from '@/components/SysUpload/Downloadfile'; // 下载组件调用
 import SysDict from '@/components/SysDict';
+import FormTextArea from '@/components/FormTextArea'; // 文本域收缩: 默认展示一行
 
-const { TextArea } = Input;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
 
@@ -229,7 +229,14 @@ const SummaryChild = React.forwardRef((props, ref) => {
             <Form.Item label="总结说明" {...forminladeLayout}>
               {getFieldDecorator('finishContent', {
                 initialValue: finish.finishContent,
-              })(<TextArea autoSize={{ minRows: 1 }} placeholder="请输入" />)}
+              })(
+                <FormTextArea
+                  autoSize={1}
+                  indexText={finish.finishContent}
+                  isEdit
+                  getVal={v => setFieldsValue({ finishContent: v })}
+                />,
+              )}
             </Form.Item>
           </Col>
 

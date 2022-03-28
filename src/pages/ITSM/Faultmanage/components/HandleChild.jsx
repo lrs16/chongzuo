@@ -5,6 +5,7 @@ import { Form, Row, Col, Input, DatePicker, Select, AutoComplete } from 'antd';
 import KeyVal from '@/components/SysDict/KeyVal';
 import KnowledgCollect from '@/components/KnowledgeCollect';
 import { getAndField } from '@/pages/SysManage/services/api';
+import FormTextArea from '@/components/FormTextArea'; // 文本域收缩: 默认展示一行
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -40,6 +41,7 @@ const HandleChild = React.forwardRef((props, ref) => {
   const [knowledgecontent, setKonwledgeContent] = useState(''); // 知识内容
   const [valuealready, setValuealready] = useState(false); // 告知知识子组件可以走接口了
   const [desautodata, setDestoData] = useState([]);
+  const [daileArea, setDaileArea] = useState(true);
 
   // 获取知识数据
   const getContent = () => {
@@ -123,6 +125,20 @@ const HandleChild = React.forwardRef((props, ref) => {
     handledesSearch({ module: '故障单', field: '处理过程', key: '' });
   }, []);
 
+  const handleDoubleClick = e => {
+    if (e.target) {
+      if (!daileArea) {
+        const textheight = e.target.scrollHeight + 2;
+        e.target.style.maxHeight = '9.0072e+15px';
+        e.target.style.height = `${textheight}px`;
+      } else {
+        e.target.style.maxHeight = '31px';
+        e.target.style.height = '31px';
+      }
+      setDaileArea(!daileArea);
+    }
+  };
+
   return (
     <Row gutter={24}>
       <Form {...formItemLayout}>
@@ -142,7 +158,14 @@ const HandleChild = React.forwardRef((props, ref) => {
                 },
               ],
               initialValue: handle ? handle.handleContent : '',
-            })(<TextArea autoSize={{ minRows: 1 }} placeholder="请输入" />)}
+            })(
+              <FormTextArea
+                autoSize={1}
+                indexText={handle?.handleContent || ''}
+                isEdit
+                getVal={v => setFieldsValue({ handleContent: v })}
+              />,
+            )}
           </Form.Item>
         </Col>
 
@@ -156,7 +179,14 @@ const HandleChild = React.forwardRef((props, ref) => {
                 },
               ],
               initialValue: handle ? handle.handleReason : '',
-            })(<TextArea autoSize={{ minRows: 1 }} allowClear />)}
+            })(
+              <FormTextArea
+                autoSize={1}
+                indexText={handle?.handleReason || ''}
+                isEdit
+                getVal={v => setFieldsValue({ handleReason: v })}
+              />,
+            )}
           </Form.Item>
         </Col>
 
@@ -170,7 +200,14 @@ const HandleChild = React.forwardRef((props, ref) => {
                 },
               ],
               initialValue: handle ? handle.handleAdvise : '',
-            })(<TextArea autoSize={{ minRows: 1 }} allowClear />)}
+            })(
+              <FormTextArea
+                autoSize={1}
+                indexText={handle?.handleAdvise || ''}
+                isEdit
+                getVal={v => setFieldsValue({ handleAdvise: v })}
+              />,
+            )}
           </Form.Item>
         </Col>
 
@@ -191,7 +228,22 @@ const HandleChild = React.forwardRef((props, ref) => {
                 filterOption={(inputValue, option) => option.props.children.includes(inputValue)}
                 //  onSelect={value => handleSearch(value, 'des')}
               >
-                <TextArea autoSize={{ minRows: 1 }} placeholder="请输入" />
+                {daileArea ? (
+                  <TextArea
+                    style={{ height: 31 }}
+                    allowClear
+                    placeholder="请输入"
+                    onDoubleClick={e => handleDoubleClick(e)}
+                  />
+                ) : (
+                  <TextArea
+                    autoSize={{ minRows: 1 }}
+                    auto
+                    allowClear
+                    placeholder="请输入"
+                    onDoubleClick={e => handleDoubleClick(e)}
+                  />
+                )}
               </AutoComplete>,
             )}
           </Form.Item>

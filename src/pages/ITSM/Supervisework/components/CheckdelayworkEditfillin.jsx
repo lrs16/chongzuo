@@ -2,7 +2,7 @@ import React, { useRef, useState, useImperativeHandle, useEffect } from 'react';
 import { Row, Col, Form, Input, DatePicker, Radio, Tag } from 'antd';
 import moment from 'moment';
 
-const { TextArea } = Input;
+import FormTextArea from '@/components/FormTextArea'; // 文本域收缩: 默认展示一行
 
 const CheckdelayworkEditfillin = React.forwardRef((props, ref) => {
   const attRef = useRef();
@@ -106,7 +106,14 @@ const CheckdelayworkEditfillin = React.forwardRef((props, ref) => {
                 {getFieldDecorator('check_content', {
                   rules: [{ required: false, message: '请输入审核说明' }],
                   initialValue: check.content,
-                })(<TextArea autoSize={{ minRows: 1 }} placeholder="请输入" />)}
+                })(
+                  <FormTextArea
+                    autoSize={1}
+                    indexText={check.content}
+                    isEdit
+                    getVal={v => setFieldsValue({ check_content: v })}
+                  />,
+                )}
               </Form.Item>
             )}
             {adopt === '002' && (
@@ -114,7 +121,14 @@ const CheckdelayworkEditfillin = React.forwardRef((props, ref) => {
                 {getFieldDecorator('check_content', {
                   rules: [{ required: true, message: '请输入审核说明' }],
                   initialValue: check.content,
-                })(<TextArea autoSize={{ minRows: 1 }} placeholder="请输入" />)}
+                })(
+                  <FormTextArea
+                    autoSize={1}
+                    indexText={check.content}
+                    isEdit
+                    getVal={v => setFieldsValue({ check_content: v })}
+                  />,
+                )}
               </Form.Item>
             )}
           </Col>
