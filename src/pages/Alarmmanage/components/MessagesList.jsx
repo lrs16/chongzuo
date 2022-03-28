@@ -349,7 +349,7 @@ function MessagesList(props) {
   )
 
   return (
-    <Card style={{ marginTop: 24 }}>
+    <Card style={{ marginTop: 12 }}>
       <div className='noexplain'>
         <Form {...formItemLayout} onSubmit={handleSearch}>
           <Row gutter={24}>

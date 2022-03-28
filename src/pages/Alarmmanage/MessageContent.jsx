@@ -54,7 +54,7 @@ function MessageContent(props) {
   }, [tabdate])
 
   return (
-    <div style={{ marginTop: 24 }}>
+    <div style={{ marginTop: 12 }}>
       {tabActivekey === 'all' && (
         <Spin spinning={loading}>
           <Row gutter={24}>

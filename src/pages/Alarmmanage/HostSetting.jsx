@@ -115,7 +115,7 @@ function HostSetting(props) {
     <PageHeaderWrapper title={pagetitle}>
       <div>配 置 项：应用程序运行状态监测</div>
       <div style={{ marginTop: 12 }}>配置描述：监测内容超过设定的阈值则告警</div>
-      <Card style={{ marginTop: 24 }}>
+      <Card style={{ marginTop: 12 }}>
         {frequency && frequency.confValue && (
           <>
             监控频率：<Select placeholder="请选择" style={{ width: 200, }} onChange={onFrequency} defaultValue={frequency.confValue}>

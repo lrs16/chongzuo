@@ -102,7 +102,7 @@ function Today(props) {
         tabList={(distkey === 'clockpatrol' && tabActivekey === 'all') ? null : tabkeyDist}
         activeTabKey={activeTabKey}
         onTabChange={handleTabChange}
-        style={{ marginTop: 24, marginBottom: `${tabActivekey === 'today' ? '-50px' : '-1px'}` }}
+        style={{ marginTop: 12, marginBottom: `${tabActivekey === 'today' ? '-50px' : '-1px'}` }}
       >
         {tabActivekey === 'all' && (
           <Spin spinning={loading}>

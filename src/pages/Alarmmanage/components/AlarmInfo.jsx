@@ -149,7 +149,7 @@ function AlarmInfo(props) {
   return (
     <>
       {data && data.record && (
-        <Row gutter={24} style={{ marginTop: 24 }}>
+        <Row gutter={24} style={{ marginTop: 12 }}>
           <Form {...formItemLayout}>
             <Col span={8}>
               <Form.Item label='告警编号'>
