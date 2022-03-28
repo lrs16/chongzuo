@@ -76,22 +76,22 @@ function OperationPlanfillindes(props) {
         </Col>
         <Col span={24}>
           <Form.Item label="作业对象" {...forminladeLayout}>
-            <Input defaultValue={info.object} disabled />
+            <TextArea autoSize={{ maxRows: 1 }} disabled />
           </Form.Item>
         </Col>
         <Col span={24}>
           <Form.Item label="作业内容" {...forminladeLayout}>
-            <TextArea autoSize={{ minRows: 3 }} defaultValue={info.content} disabled />
+            <TextArea autoSize={{ maxRows: 1 }} defaultValue={info.content} disabled />
           </Form.Item>
         </Col>
         <Col span={24}>
           <Form.Item label="风险分析" {...forminladeLayout}>
-            <TextArea autoSize={{ minRows: 3 }} defaultValue={info.riskAnalysis} disabled />
+            <TextArea autoSize={{ maxRows: 1 }} defaultValue={info.riskAnalysis} disabled />
           </Form.Item>
         </Col>
         <Col span={24}>
           <Form.Item label="风险应对措施" {...forminladeLayout}>
-            <TextArea autoSize={{ minRows: 3 }} defaultValue={info.riskMeasures} disabled />
+            <TextArea autoSize={{ maxRows: 1 }} defaultValue={info.riskMeasures} disabled />
           </Form.Item>
         </Col>
         <Col span={8}>

@@ -10,6 +10,7 @@ import {
 import moment from 'moment';
 import { FatherContext } from '../Workorder';
 import SysUpload from '@/components/SysUpload';
+import styles from '../index.less';
 
 const { TextArea } = Input;
 
@@ -20,6 +21,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
     files, ChangeFiles,
     flowNodeName,
     allInfo,
+    form: { setFieldsValue }
   } = props;
   let secondFiles = [];
   if (flowNodeName === '自动化科审核') {
@@ -33,6 +35,8 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
   const { getFieldDecorator } = props.form;
 
   const [fileslist, setFilesList] = useState([]);
+  const [showinput, setShowinput] = useState(true);
+  const [showinput2, setShowinput2] = useState(true);
   useEffect(() => {
     ChangeFiles(fileslist);
   }, [fileslist]);
@@ -49,7 +53,6 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
   const {
     check,
     useInfo,
-    defaultRadio
   } = props;
 
   useEffect(() => {
@@ -60,14 +63,49 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
 
   const onChange = e => {
     setFlowtype(e.target.value);
+    setShowinput(true);
+    setShowinput2(true);
+  }
+
+  const handleDoubleClick = (e, type) => {
+    if (e.target) {
+      switch (type) {
+        case 'checkOpinion1':
+          if (showinput) {
+            const textheight = e.target.scrollHeight + 2;
+            e.target.style.maxHeight = '9.0072e+15px';
+            e.target.style.height = `${textheight}px`;
+          } else {
+            const h = 1 * 21 + 10;
+            e.target.style.maxHeight = `${h}px`;
+            e.target.style.height = `${h}px`;
+          };
+          setShowinput(!showinput)
+          break;
+        case 'checkOpinion2':
+          if (showinput2) {
+            const textheight = e.target.scrollHeight + 2;
+            e.target.style.maxHeight = '9.0072e+15px';
+            e.target.style.height = `${textheight}px`;
+          } else {
+            const h = 1 * 21
+            e.target.style.maxHeight = `${h}px`;
+            e.target.style.height = `${h}px`;
+          };
+          setShowinput2(!showinput2)
+          break;
+        default:
+          break;
+      }
+    }
   }
 
   const required = true;
 
   return (
-    <Row gutter={16}>
+    <Row gutter={24}>
       <Form  {...formItemLayout}>
-        <Col span={23}>
+        <Col span={24}>
           <Form.Item label='审核结果' {...forminladeLayout}>
             {getFieldDecorator('checkResult', {
               rules: [
@@ -104,17 +142,22 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-
-        <Col span={23}>
+        <div className={styles.allowClearicon}>
           {
             flowtype === '1' && (
-              <Col span={23}>
+              <Col span={24}>
                 <Form.Item label='审核意见' {...forminladeLayout}>
                   {
                     getFieldDecorator('checkOpinion1', {
                       initialValue: check.checkOpinion
                     })(
-                      <TextArea />
+                      <TextArea
+                        allowClear
+                        autoSize={{ maxRows: 1 }}
+                        style={{ height: 31 }}
+                        placeholder="请输入"
+                        onDoubleClick={(e) => handleDoubleClick(e, 'checkOpinion1')}
+                      />
                     )
                   }
                 </Form.Item>
@@ -124,26 +167,32 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
 
           {
             flowtype === '0' && (
-              <Form.Item label='审核意见' {...forminladeLayout}>
-                {
-                  getFieldDecorator('checkOpinion2', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入审核意见'
-                      }
-                    ],
-                    initialValue: check.checkOpinion
-                  })(
-                    <TextArea />
-                  )
-                }
-              </Form.Item>
+              <Col span={24}>
+                <Form.Item label='审核意见' {...forminladeLayout}>
+                  {
+                    getFieldDecorator('checkOpinion2', {
+                      rules: [
+                        {
+                          required,
+                          message: '请输入审核意见'
+                        }
+                      ],
+                      initialValue: check.checkOpinion
+                    })(
+                      <TextArea
+                        autoSize={{ maxRows: 1 }}
+                        allowClear
+                        style={{ height: 31 }}
+                        placeholder="请输入"
+                        onDoubleClick={(e) => handleDoubleClick(e, 'checkOpinion2')}
+                      />
+                    )
+                  }
+                </Form.Item>
+              </Col>
             )
           }
-        </Col>
-
-
+        </div>
 
         {
           flowNodeName === '系统运维商审核' && (
@@ -200,7 +249,6 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
             </Col>
           )
         }
-
 
         <Col span={8}>
           <Form.Item label="审核人">

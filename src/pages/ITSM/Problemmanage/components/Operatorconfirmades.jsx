@@ -50,7 +50,7 @@ function Operatorconfirmades(props) {
         </Col>
         <Col span={24}>
           <Form.Item label="确认意见"  {...forminladeLayout}>
-            <TextArea autoSize={{ minRows: 3 }} defaultValue={info.confirmContent} disabled />
+            <TextArea autoSize={{ maxRows: 1 }} defaultValue={info.confirmContent} disabled />
           </Form.Item>
         </Col>
         <Col span={24}>

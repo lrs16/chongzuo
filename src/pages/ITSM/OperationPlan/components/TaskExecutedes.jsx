@@ -47,7 +47,7 @@ function TaskExecutedes(props) {
         </Col>
         <Col span={24}>
           <Form.Item label="作业执行情况说明" {...forminladeLayout}>
-            <TextArea autoSize={{ minRows: 3 }} defaultValue={info.content} disabled />
+            <TextArea autoSize={{ manRows: 1 }} defaultValue={info.content} disabled />
           </Form.Item>
         </Col>
         <Col span={24}>

@@ -76,7 +76,7 @@ function Problemregistration(props) {
         </Col>
         <Col span={24}>
           <Form.Item label="问题描述"  {...forminladeLayout}>
-            <TextArea autoSize={{ minRows: 3 }} defaultValue={main.content} disabled />
+            <TextArea autoSize={{ maxRows: 1 }} defaultValue={main.content} disabled />
           </Form.Item>
         </Col>
         <Col span={24}>

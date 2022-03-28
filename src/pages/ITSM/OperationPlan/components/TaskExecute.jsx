@@ -1,7 +1,10 @@
 import React, { useRef, useImperativeHandle, useEffect, useState } from 'react';
 import { Row, Col, Form, Input, DatePicker, Select } from 'antd';
 import moment from 'moment';
+import FormTextArea from './FormTextArea';
 import SysUpload from '@/components/SysUpload';
+
+import styles from '../index.less';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -57,7 +60,7 @@ const TaskExecute = React.forwardRef((props, ref) => {
   const required = true;
 
   return (
-    <Row gutter={16}>
+    <Row gutter={24}>
       <Form {...formItemLayout}>
         <Col span={8}>
           <Form.Item label="作业结果">
@@ -137,19 +140,26 @@ const TaskExecute = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-        <Col span={23}>
-          <Form.Item label="作业执行情况说明" {...forminladeLayout}>
-            {getFieldDecorator('execute_content', {
-              rules: [
-                {
-                  required,
-                  message: '请输入作业执行情况说明',
-                },
-              ],
-              initialValue: execute.content,
-            })(<TextArea disabled={type === 'list'} />)}
-          </Form.Item>
-        </Col>
+        <div className={styles.autoCompleteallowclear}>
+          <Col span={24} >
+            <Form.Item label="作业执行情况说明" {...forminladeLayout}>
+              {getFieldDecorator('execute_content', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入作业执行情况说明',
+                  },
+                ],
+                initialValue: execute.content,
+              })(<FormTextArea
+                autoSize={1}
+                indexText={execute.content}
+                isEdit
+                getVal={v => setFieldsValue({ execute_content: v })}
+              />)}
+            </Form.Item>
+          </Col>
+        </div>
 
         <Col span={24}>
           <Form.Item label="上传附件" {...forminladeLayout}>

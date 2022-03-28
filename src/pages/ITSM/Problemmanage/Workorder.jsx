@@ -44,7 +44,7 @@ const formItemLayout = {
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 15 },
+    sm: { span: 18 },
   },
 };
 
@@ -78,7 +78,6 @@ function Workorder(props) {
   const ProblemconfirmRef = useRef();
   const [flowtype, setFlowtype] = useState('1');
   const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
-  //  const [changorder, setChangeOrder] = useState(undefined);
   const [problemHandle, setProblemHandle] = useState('');
   const [userchoice, setUserChoice] = useState(false); // 已经选择人员
   const [butandorder, setButandOrder] = useState(''); // 暂存按钮类型

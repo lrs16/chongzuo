@@ -53,7 +53,7 @@ function TaskCheckdes(props) {
         </Col>
         <Col span={24}>
           <Form.Item label="审核说明" {...forminladeLayout}>
-            <TextArea autoSize={{ minRows: 3 }} defaultValue={info.content} disabled />
+            <TextArea autoSize={{ maxRows: 1 }} defaultValue={info.content} disabled />
           </Form.Item>
         </Col>
         <Col span={8}>

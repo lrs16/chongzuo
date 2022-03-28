@@ -2,12 +2,14 @@ import React, { useContext, useRef, useImperativeHandle, useEffect } from 'react
 import { Row, Col, Form, Input, DatePicker, Radio, Tag } from 'antd';
 import moment from 'moment';
 import { FatherContext } from '../Work';
+import FormTextArea from './FormTextArea';
 
-const { TextArea } = Input;
+import styles from '../index.less';
+
 
 const TaskCheck = React.forwardRef((props, ref) => {
   const {
-    form: { getFieldDecorator },
+    form: { getFieldDecorator, setFieldsValue },
     check,
     formItemLayout,
     forminladeLayout,
@@ -85,31 +87,43 @@ const TaskCheck = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-        {flowtype === '002' && (
-          <Col span={23}>
-            <Form.Item label="审核说明" {...forminladeLayout}>
-              {getFieldDecorator('check_content', {
-                rules: [
-                  {
-                    required,
-                    message: '请输入审核说明',
-                  },
-                ],
-                initialValue: check.content,
-              })(<TextArea />)}
-            </Form.Item>
-          </Col>
-        )}
+        <div className={styles.autoCompleteallowclear}>
+          {flowtype === '002' && (
+            <Col span={23}>
+              <Form.Item label="审核说明" {...forminladeLayout}>
+                {getFieldDecorator('check_content', {
+                  rules: [
+                    {
+                      required,
+                      message: '请输入审核说明',
+                    },
+                  ],
+                  initialValue: check.content,
+                })(<FormTextArea
+                  autoSize={1}
+                  indexText={check.content}
+                  isEdit
+                  getVal={v => setFieldsValue({ check_content: v })}
+                />)}
+              </Form.Item>
+            </Col>
+          )}
 
-        {flowtype === '001' && (
-          <Col span={23}>
-            <Form.Item label="审核说明" {...forminladeLayout}>
-              {getFieldDecorator('check_content', {
-                initialValue: check.content,
-              })(<TextArea />)}
-            </Form.Item>
-          </Col>
-        )}
+          {flowtype === '001' && (
+            <Col span={23}>
+              <Form.Item label="审核说明" {...forminladeLayout}>
+                {getFieldDecorator('check_content', {
+                  initialValue: check.content,
+                })(<FormTextArea
+                  autoSize={1}
+                  indexText={check.content}
+                  isEdit
+                  getVal={v => setFieldsValue({ check_content: v })}
+                />)}
+              </Form.Item>
+            </Col>
+          )}
+        </div>
 
         <Col span={8}>
           <Form.Item label="审核人">

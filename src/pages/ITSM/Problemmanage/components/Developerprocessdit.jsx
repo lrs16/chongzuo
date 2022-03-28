@@ -20,7 +20,8 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
   const { getFieldDecorator, getFieldsValue } = props.form;
   const [fileslist, setFilesList] = useState([]);
   const [knowledgecontent, setKonwledgeContent] = useState('');    // 知识内容
-  const [valuealready, setValuealready] = useState(false)          // 告知知识子组件可以走接口了
+  const [valuealready, setValuealready] = useState(false);
+  const [showinput, setShowinput] = useState(true);          // 告知知识子组件可以走接口了
   // 获取知识数据
   const getContent = () => {
     const values = getFieldsValue(['handleContent'])
@@ -56,10 +57,24 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
     planTime = moment(new Date());
   }
 
+  const handleDoubleClick = (e) => {
+    if (e.target) {
+      if (showinput) {
+        const textheight = e.target.scrollHeight + 2;
+        e.target.style.maxHeight = '9.0072e+15px';
+        e.target.style.height = `${textheight}px`;
+      } else {
+        e.target.style.maxHeight = '31px';
+        e.target.style.height = '31px';
+      };
+      setShowinput(!showinput)
+    }
+  }
+
   const required = true;
 
   return (
-    <Row gutter={16}>
+    <Row gutter={24}>
       <Form {...formItemLayout}>
         <Col span={8}>
           <Form.Item label='接单时间'>
@@ -140,7 +155,13 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
                 }
               ],
               initialValue: handle.handleContent,
-            })(<TextArea autoSize={{ minRows: 3 }} disabled={showEdit} />)}
+            })(
+              <TextArea
+                style={{ height: 31 }}
+                placeholder="请输入"
+                onDoubleClick={(e) => handleDoubleClick(e)}
+              />
+            )}
           </Form.Item>
         </Col>
 

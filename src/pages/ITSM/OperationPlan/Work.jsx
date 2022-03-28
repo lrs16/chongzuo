@@ -34,7 +34,7 @@ const formItemLayout = {
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 15 },
+    sm: { span: 18 },
   },
 };
 

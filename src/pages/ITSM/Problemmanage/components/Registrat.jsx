@@ -24,6 +24,7 @@ const Registrat = React.forwardRef((props, ref) => {
   const [spinloading, setSpinLoading] = useState(true); // 自动完成加载
   const [persondata, setPersondata] = useState('');
   const [selectdata, setSelectData] = useState('');
+  const [showinput, setShowinput] = useState(true);
 
   useEffect(() => {
     ChangeFiles(fileslist);
@@ -155,6 +156,20 @@ const Registrat = React.forwardRef((props, ref) => {
     return [];
   };
 
+  const handleDoubleClick = (e) => {
+    if (e.target) {
+      if (showinput) {
+        const textheight = e.target.scrollHeight + 2;
+        e.target.style.maxHeight = '9.0072e+15px';
+        e.target.style.height = `${textheight}px`;
+      } else {
+        e.target.style.maxHeight = '31px';
+        e.target.style.height = '31px';
+      };
+      setShowinput(!showinput)
+    }
+  }
+
   const problemType = getTypebyTitle('问题分类');
   const source = getTypebyTitle('问题来源');
   const priority = getTypebyTitle('严重程度');
@@ -170,8 +185,8 @@ const Registrat = React.forwardRef((props, ref) => {
         style={{ display: 'none' }}
       />
       <div className='noexplain'>
-        <Row>
-          <Form {...formItemLayout}>
+        <Form {...formItemLayout}>
+          <Row gutter={24}>
             <Col span={8}>
               <Form.Item label="问题编号">
                 {getFieldDecorator('no', {
@@ -331,7 +346,7 @@ const Registrat = React.forwardRef((props, ref) => {
                     <Select
                       placeholder="请选择"
                       mode="multiple"
-                      getPopupContainer={e => e.parentNode}
+                      // getPopupContainer={e => e.parentNode}
                     >
                       {persondata.map(obj => [
                         <Option key={obj.key} value={obj.val}>
@@ -357,7 +372,7 @@ const Registrat = React.forwardRef((props, ref) => {
                 })(
                   <Select
                     placeholder='请选择'
-                    getPopupContainer={e => e.parentNode}
+                    // getPopupContainer={e => e.parentNode}
                   >
                     {(scope || []).map(obj => [
                       <Option key={obj.key} value={obj.dict_code}>
@@ -426,37 +441,50 @@ const Registrat = React.forwardRef((props, ref) => {
                   initialValue: main.title,
                 })(
                   <AutoComplete
+                    allowClear
                     getPopupContainer={e => e.parentNode}
                     dataSource={titleautodata}
                     onSearch={value => handleSearch(value, 'title')}
                   >
+
                     <Input placeholder="请输入" />
                   </AutoComplete>,
                 )}
               </Form.Item>
             </Col>
 
-            <Col span={24}>
-              <Form.Item label="问题描述" {...forminladeLayout}>
-                {getFieldDecorator('content', {
-                  rules: [
-                    {
-                      required,
-                      message: '请输入问题描述',
-                    },
-                  ],
-                  initialValue: main.content,
-                })(
-                  <AutoComplete
-                    getPopupContainer={e => e.parentNode}
-                    dataSource={desautodata}
-                    onSearch={value => handleSearch(value, 'des')}
-                  >
-                    <TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />
-                  </AutoComplete>,
-                )}
-              </Form.Item>
-            </Col>
+            <div className={styles.autoCompleteallowclear}>
+              <Col span={24}>
+                <Form.Item label="问题描述" {...forminladeLayout}>
+                  {getFieldDecorator('content', {
+                    rules: [
+                      {
+                        required,
+                        message: '请输入问题描述',
+                      },
+                    ],
+                    initialValue: main.content,
+                  })(
+                    <AutoComplete
+                      allowClear
+                      getPopupContainer={e => e.parentNode}
+                      dataSource={desautodata}
+                      filterOption={(inputValue, option) =>
+                        option.props.children.includes(inputValue)
+                      }
+                      onSearch={value => handleSearch(value, 'des')}
+                    >
+                      <TextArea
+                        auto
+                        style={{ height: 31 }}
+                        placeholder="请输入"
+                        onDoubleClick={(e) => handleDoubleClick(e)}
+                      />
+                    </AutoComplete>
+                  )}
+                </Form.Item>
+              </Col>
+            </div>
 
             <Col span={24}>
               <Form.Item label="上传附件" {...forminladeLayout}>
@@ -515,8 +543,8 @@ const Registrat = React.forwardRef((props, ref) => {
                 })(<Input disabled />)}
               </Form.Item>
             </Col>
-          </Form>
-        </Row>
+          </Row>
+        </Form>
       </div>
     </>
   );

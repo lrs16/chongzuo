@@ -31,7 +31,7 @@ function Problemsolving(props) {
         </Col>
         <Col span={24}>
           <Form.Item label="解决方案"  {...forminladeLayout}>
-            <TextArea autoSize={{ minRows: 3 }} defaultValue={info.handleContent} disabled />
+            <TextArea autoSize={{ maxRows: 1 }} defaultValue={info.handleContent} disabled />
           </Form.Item>
         </Col>
         <Col span={24}>
