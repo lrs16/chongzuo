@@ -462,6 +462,30 @@ function MydutyHandover(props) {
       width: 250,
     },
     {
+      title: '巡检及监控记录',
+      dataIndex: 'monitorNotes',
+      key: 'monitorNotes',
+      width: 250,
+    },
+    {
+      title: '异常情况记录',
+      dataIndex: 'alarmNotes',
+      key: 'alarmNotes',
+      width: 250,
+    },
+    {
+      title: '重大运维事件',
+      dataIndex: 'devopsNotes',
+      key: 'devopsNotes',
+      width: 250,
+    },
+    {
+      title: '其他情况记录',
+      dataIndex: 'otherNotes',
+      key: 'otherNotes',
+      width: 250,
+    },
+    {
       title: '需注意事项',
       dataIndex: 'attention',
       key: 'attention',
@@ -496,30 +520,6 @@ function MydutyHandover(props) {
       dataIndex: 'dutyStaffName',
       key: 'dutyStaffName',
       width: 150,
-    },
-    {
-      title: '巡检及监控记录',
-      dataIndex: 'monitorNotes',
-      key: 'monitorNotes',
-      width: 250,
-    },
-    {
-      title: '异常情况记录',
-      dataIndex: 'alarmNotes',
-      key: 'alarmNotes',
-      width: 250,
-    },
-    {
-      title: '重大运维事件',
-      dataIndex: 'devopsNotes',
-      key: 'devopsNotes',
-      width: 250,
-    },
-    {
-      title: '其他情况记录',
-      dataIndex: 'otherNotes',
-      key: 'otherNotes',
-      width: 250,
     },
     {
       title: '交接班说明',
@@ -737,38 +737,6 @@ function MydutyHandover(props) {
                     </Col>
 
                     <Col span={8}>
-                      <Form.Item label="巡检及监控记录">
-                        {getFieldDecorator('monitorNotes', {
-                          initialValue: cacheinfo.monitorNotes,
-                        })(<Input placeholder="请输入" allowClear />,)}
-                      </Form.Item>
-                    </Col>
-
-                    <Col span={8}>
-                      <Form.Item label="异常情况记录">
-                        {getFieldDecorator('alarmNotes', {
-                          initialValue: cacheinfo.alarmNotes,
-                        })(<Input placeholder="请输入" allowClear />)}
-                      </Form.Item>
-                    </Col>
-
-                    <Col span={8}>
-                      <Form.Item label="重大运维事件">
-                        {getFieldDecorator('devopsNotes', {
-                          initialValue: cacheinfo.devopsNotes,
-                        })(<Input placeholder="请输入" allowClear />,)}
-                      </Form.Item>
-                    </Col>
-
-                    <Col span={8}>
-                      <Form.Item label="其他情况记录">
-                        {getFieldDecorator('otherNotes', {
-                          initialValue: cacheinfo.otherNotes,
-                        })(<Input placeholder="请输入" allowClear />)}
-                      </Form.Item>
-                    </Col>
-
-                    <Col span={8}>
                       <Form.Item label="交班人">
                         {getFieldDecorator('handoverName', {
                           initialValue: cacheinfo.handoverName,
@@ -848,6 +816,38 @@ function MydutyHandover(props) {
                               style={{ width: '100%' }}
                             />
                           )}
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                      <Form.Item label="巡检及监控记录">
+                        {getFieldDecorator('monitorNotes', {
+                          initialValue: cacheinfo.monitorNotes,
+                        })(<Input placeholder="请输入" allowClear />,)}
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                      <Form.Item label="异常情况记录">
+                        {getFieldDecorator('alarmNotes', {
+                          initialValue: cacheinfo.alarmNotes,
+                        })(<Input placeholder="请输入" allowClear />)}
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                      <Form.Item label="重大运维事件">
+                        {getFieldDecorator('devopsNotes', {
+                          initialValue: cacheinfo.devopsNotes,
+                        })(<Input placeholder="请输入" allowClear />,)}
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                      <Form.Item label="其他情况记录">
+                        {getFieldDecorator('otherNotes', {
+                          initialValue: cacheinfo.otherNotes,
+                        })(<Input placeholder="请输入" allowClear />)}
                       </Form.Item>
                     </Col>
 
