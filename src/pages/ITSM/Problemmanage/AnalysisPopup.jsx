@@ -438,7 +438,6 @@ function AnalysisPopup(props) {
         title={title}
         visible={visible}
         width={1000}
-        centered
         maskClosable
         onClose={handleCancel}
         destroyOnClose='true'

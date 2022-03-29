@@ -155,7 +155,7 @@ function SmoothLine(props) {
                 <div style={{ margin: '10px 0' }}>{name}</div>
                 <ul className={styles.tooltipul}>
                   {
-                    items.map(it => {
+                    items.map((it,index) => {
                       const newArr = legendItem;
                       const uncheckedArr = newArr.filter(obj => !obj.unchecked);
                       const uncheckedKey = ObjkeyToArr(uncheckedArr, 'id');
@@ -170,6 +170,7 @@ function SmoothLine(props) {
                               handleValue()
                             }
                           }}
+                          key={index}
                         >
                           <span style={{ width: 8, height: 8, borderRadius: '50%', display: 'inline-block', marginRight: 8, background: it.mappingData.color }} />
                           <span style={{ pointerEvents: 'none' }}>{it.data.name}</span>
