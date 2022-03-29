@@ -101,6 +101,10 @@ function OperationPlanfillintion(props) {
             ? values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss')
             : '',
           main_fileIds: JSON.stringify(files.arr),
+          main_object: values.main_object || '',
+          main_content: values.main_content || '',
+          main_riskAnalysis: values.main_riskAnalysis || '',
+          main_riskMeasures: values.main_riskMeasures || '',
           flowNodeName: '计划登记',
           editState: 'add',
           main_id: '',

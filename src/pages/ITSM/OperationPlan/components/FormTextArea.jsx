@@ -19,6 +19,7 @@ function FormTextArea(props) {
   }, [indexText]);
 
   // const inputElement = useRef(null)
+  // console.log()
 
   return (
     <span

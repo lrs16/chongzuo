@@ -5,8 +5,8 @@ import UploadContext from '@/layouts/MenuContext';
 import { getAndField } from '@/pages/SysManage/services/api';
 import SysDict from '@/components/SysDict';
 import { DownloadOutlined } from '@ant-design/icons';
-import FormTextArea from './FormTextArea';
 import { FileDownload, FileDelete, getFileSecuritySuffix } from '@/services/upload';
+import FormTextArea from './FormTextArea';
 // import BraftEditor from 'braft-editor'
 // import 'braft-editor/dist/index.css';
 import styles from '../index.less'
@@ -540,7 +540,6 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                   >
                     <TextArea
                       disabled={type}
-                      auto
                       autoSize={{ minRows: 1 }}
                       placeholder="请输入"
                       onDoubleClick={(e) => handleDoubleClick(e, 'object')}

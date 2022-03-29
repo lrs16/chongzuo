@@ -10,9 +10,8 @@ import {
 import moment from 'moment';
 import SysUpload from '@/components/SysUpload';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
-
-const { TextArea } = Input;
-
+import FormTextArea from '../../../OperationPlan/components/FormTextArea';
+import styles from '../index.less'
 
 const ProviderConfirmation = React.forwardRef((props, ref) => {
   const {
@@ -46,10 +45,10 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
   )
 
   useEffect(() => {
-    selectPersonstate(providerConfirmation.isAppeal === null ? '1' : providerConfirmation.isAppeal);
-    changeIsappeal(providerConfirmation.isAppeal === null ? '1' : providerConfirmation.isAppeal)
+    selectPersonstate(providerConfirmation.isAppeal || '1');
+    changeIsappeal(providerConfirmation.isAppeal || '1');
+    setShowContent(providerConfirmation.isAppeal || '1')
   }, [])
-
 
   const handleChange = (e) => {
     setShowContent(e.target.value);
@@ -91,50 +90,57 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-        {
-          showContent === '1' && (
-            <Col span={24}>
-              <Form.Item label='申诉内容' {...forminladeLayout}>
-                {
-                  getFieldDecorator('appealContent', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入申诉内容'
-                      }
-                    ],
-                    initialValue: providerConfirmation.appealContent
-                  })
-                    (<TextArea
-                      disabled={search || noEdit}
-                      autoSize={{ minRows: 3 }}
-                      placeholder='请输入申诉内容'
-                    />)
-                }
-              </Form.Item>
-            </Col>
-          )
-        }
+        <div className={styles.allowClearicon}>
+          {
+            showContent === '1' && (
+              <Col span={24}>
+                <Form.Item label='申诉内容' {...forminladeLayout}>
+                  {
+                    getFieldDecorator('appealContent', {
+                      rules: [
+                        {
+                          required,
+                          message: '请输入申诉内容'
+                        }
+                      ],
+                      initialValue: providerConfirmation.appealContent
+                    })
+                        (
+                          <FormTextArea
+                          autoSize={1}
+                          indexText={providerConfirmation.appealContent}
+                          isEdit={!search}
+                          getVal={v => setFieldsValue({ appealContent: v })}
+                        />
+                      )
+                  }
+                </Form.Item>
+              </Col>
+            )
+          }
 
-        {
-          showContent === '0' && (
-            <Col span={24}>
-              <Form.Item label='申诉内容' {...forminladeLayout}>
-                {
-                  getFieldDecorator('appealContent', {
-                    initialValue: providerConfirmation.appealContent
-                  })
-                    (<TextArea
-                      disabled={search || noEdit}
-                      autoSize={{ minRows: 3 }}
-                      placeholder='请输入申诉内容'
-                    />)
-                }
-
-              </Form.Item>
-            </Col>
-          )
-        }
+          {
+            showContent === '0' && (
+              <Col span={24}>
+                <Form.Item label='申诉内容' {...forminladeLayout}>
+                  {
+                    getFieldDecorator('appealContent', {
+                      initialValue: providerConfirmation.appealContent
+                    })
+                      (
+                        <FormTextArea
+                        autoSize={1}
+                        indexText={providerConfirmation.appealContent}
+                        isEdit={!search}
+                        getVal={v => setFieldsValue({ appealContent: v })}
+                      />
+                      )
+                  }
+                </Form.Item>
+              </Col>
+            )
+          }
+        </div>
 
         {
           !search && (

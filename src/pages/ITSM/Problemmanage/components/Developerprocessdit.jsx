@@ -10,6 +10,7 @@ import {
 import moment from 'moment';
 import SysUpload from '@/components/SysUpload';
 import KnowledgCollect from '@/components/KnowledgeCollect';
+import styles from '../index.less';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -145,25 +146,30 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
             )}
           </Form.Item>
         </Col>
-        <Col span={24}>
-          <Form.Item label="解决方案" {...forminladeLayout}>
-            {getFieldDecorator('handleContent', {
-              rules: [
-                {
-                  required,
-                  message: '请输入解决方案'
-                }
-              ],
-              initialValue: handle.handleContent,
-            })(
-              <TextArea
-                style={{ height: 31 }}
-                placeholder="请输入"
-                onDoubleClick={(e) => handleDoubleClick(e)}
-              />
-            )}
-          </Form.Item>
-        </Col>
+
+        <div className={styles.allowClearicon}>
+          <Col span={24}>
+            <Form.Item label="解决方案" {...forminladeLayout}>
+              {getFieldDecorator('handleContent', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入解决方案'
+                  }
+                ],
+                initialValue: handle.handleContent,
+              })(
+                <TextArea
+                  allowClear
+                  autoSize={{ maxRows: 1 }}
+                  placeholder="请输入"
+                  onDoubleClick={(e) => handleDoubleClick(e)}
+                />
+              )}
+            </Form.Item>
+          </Col>
+        </div>
+
 
         <Col span={24} style={{ paddingLeft: '8.33333333% ' }} >
           <KnowledgCollect

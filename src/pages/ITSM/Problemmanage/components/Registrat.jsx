@@ -475,7 +475,6 @@ const Registrat = React.forwardRef((props, ref) => {
                       onSearch={value => handleSearch(value, 'des')}
                     >
                       <TextArea
-                        auto
                         style={{ height: 31 }}
                         placeholder="请输入"
                         onDoubleClick={(e) => handleDoubleClick(e)}

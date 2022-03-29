@@ -90,6 +90,7 @@ function TobedealtForm(props) {
     search,
     taskName,
     instanceId,
+    myOrder
   } = props.location.query;
   sessionStorage.setItem('Processtype', 'achievements');
   const getUserinfo = () => {
@@ -190,7 +191,7 @@ function TobedealtForm(props) {
   }, [assessNo]);
 
   const getArrayindex = (data) => {
-    return data.map((obj,index) => {
+    return data.map((obj, index) => {
       return index
     })
   }
@@ -386,7 +387,7 @@ function TobedealtForm(props) {
         });
       }
 
-      if (err && circulation) {
+      if (err) {
         openNotification(Object.values(err))
       }
       return []
@@ -405,6 +406,7 @@ function TobedealtForm(props) {
             instanceId,
             taskId,
             ...values,
+            appealContent:values.appealContent || '',
             confirmTime: moment(values.confirmTime).format('YYYY-MM-DD HH:mm:ss'),
             annex: JSON.stringify(files.arr),
           },
@@ -442,6 +444,9 @@ function TobedealtForm(props) {
             id: currentTask.id,
             instanceId,
             taskId,
+            assessContent:saveParams.assessContent || '',
+            confirmContent:saveParams.confirmContent || '',
+            appealContent:saveParams.appealContent || '',
             confirmTime: moment(values.confirmTime).format('YYYY-MM-DD HH:mm:ss'),
           },
         }).then(res => {
@@ -502,7 +507,7 @@ function TobedealtForm(props) {
           }}
         />
         <span>
-        {Object.keys((obj))[0]}
+          {Object.keys((obj))[0]}
         </span>
       </>
     );
@@ -863,6 +868,7 @@ function TobedealtForm(props) {
                       ChangeFiles={newvalue => {
                         setFiles(newvalue);
                       }}
+                      noEdit={search}
                       search={search}
                       key='1'
                       changeIsappeal={(e) => { setIsAppeal(e) }}
@@ -902,6 +908,7 @@ function TobedealtForm(props) {
                       search={search}
                       clauseList={clauseList}
                       editSign={currentTask.isEdit === '0' ? 'true' : ''}
+                      myOrder={myOrder}
                       key='1'
                     />
                   </Panel>
@@ -938,7 +945,7 @@ function TobedealtForm(props) {
                         setFiles(newvalue);
                       }}
                       loading={loading}
-                      search={search}
+                      search='true'
                       key="0"
                       noEdit="true"
                     />,
@@ -951,8 +958,7 @@ function TobedealtForm(props) {
                       forminladeLayout={forminladeLayout}
                       userinfo={userinfo}
                       selectPersonstate={newvalue => setNoselect(newvalue)}
-                      noEdit="true"
-                      search={search}
+                      search="true"
                       key="0"
                     />,
                   ],
@@ -964,8 +970,7 @@ function TobedealtForm(props) {
                       forminladeLayout={forminladeLayout}
                       userinfo={userinfo}
                       selectPersonstate={newvalue => setNoselect(newvalue)}
-                      noEdit="true"
-                      search={search}
+                      search="true"
                       key="0"
                     />,
                   ],
@@ -977,8 +982,7 @@ function TobedealtForm(props) {
                       forminladeLayout={forminladeLayout}
                       userinfo={userinfo}
                       selectPersonstate={newvalue => setNoselect(newvalue)}
-                      noEdit="true"
-                      search={search}
+                      search="true"
                       key="0"
                     />,
                   ],
@@ -994,8 +998,7 @@ function TobedealtForm(props) {
                       ChangeFiles={newvalue => {
                         setFiles(newvalue);
                       }}
-                      noEdit="true"
-                      search={search}
+                      search="true"
                       key="0"
                       changeIsappeal={(e) => { setIsAppeal(e) }}
                     />,
@@ -1014,7 +1017,7 @@ function TobedealtForm(props) {
                       target1={target1}
                       target2={target2}
                       clauseList={clauseList}
-                      search={search}
+                      search="true"
                       editSign='true'
                       noEdit="true"
                       key="0"
@@ -1022,11 +1025,11 @@ function TobedealtForm(props) {
                   ],
                 ]);
                 return (
-                  <Panel 
-                  Panel
-                  header={pheadertitle(obj, index + 1)}
+                  <Panel
+                    Panel
+                    header={pheadertitle(obj, index + 1)}
                     key={index.toString()}
-                    >
+                  >
                     {Paneldesmap.get(Object.keys(obj)[0])}
                   </Panel>
                 );
@@ -1034,7 +1037,6 @@ function TobedealtForm(props) {
             </Collapse>
           </div>
         </div>
-
       )}
 
       {tabActiveKey === 'process' && (

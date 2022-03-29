@@ -1,8 +1,8 @@
 import React, { useImperativeHandle, useRef, useState, useEffect } from 'react';
 import { Form, Input, Radio, Row, Col, Tag, DatePicker } from 'antd';
 import moment from 'moment';
-
-const { TextArea } = Input;
+import FormTextArea from '../../../OperationPlan/components/FormTextArea';
+import styles from '../index.less'
 
 const BusinessAudit = React.forwardRef((props, ref) => {
   const {
@@ -30,7 +30,8 @@ const BusinessAudit = React.forwardRef((props, ref) => {
   );
 
   useEffect(() => {
-    selectPersonstate(businessAudit.verifyValue === null ? '1' : businessAudit.verifyValue);
+    selectPersonstate(businessAudit.verifyValue || '1');
+    setShowContent(businessAudit.verifyValue || '1')
   }, []);
 
   const handleChange = e => {
@@ -65,37 +66,50 @@ const BusinessAudit = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-        {showContent === '1' && (
-          <Col span={24}>
-            <Form.Item label="审核说明" {...forminladeLayout}>
-              {getFieldDecorator('verifyContent', {
-                initialValue: businessAudit.verifyContent || businessAudit.reviewContent,
-              })(<TextArea disabled={search || noEdit} autoSize={{ minRows: 3 }} placeholder="请输入" />)}
-            </Form.Item>
-          </Col>
-        )}
+        <div className={styles.allowClearicon}>
+          {showContent === '1' && (
+            <Col span={24}>
+              <Form.Item label="审核说明" {...forminladeLayout}>
+                {getFieldDecorator('verifyContent', {
+                  initialValue: businessAudit.verifyContent || businessAudit.reviewContent,
+                })(
+                  <FormTextArea
+                    autoSize={1}
+                    indexText={businessAudit.verifyContent || businessAudit.reviewContent}
+                    isEdit={!search}
+                    getVal={v => setFieldsValue({ verifyContent: v })}
+                  />
+                )
+                }
+              </Form.Item>
+            </Col>
+          )}
 
-        {showContent === '0' && (
-          <Col span={24}>
-            <Form.Item label="审核说明" {...forminladeLayout}>
-              {getFieldDecorator('verifyContent2', {
-                rules: [
-                  {
-                    required,
-                    message: '请输入审核说明',
-                  },
-                ],
-                initialValue: businessAudit.verifyContent || businessAudit.reviewContent,
-              })(
-                <TextArea
-                  disabled={search || noEdit}
-                  autoSize={{ minRows: 3 }}
-                  placeholder="请输入"
-                />,
-              )}
-            </Form.Item>
-          </Col>
-        )}
+
+          {showContent === '0' && (
+            <Col span={24}>
+              <Form.Item label="审核说明" {...forminladeLayout}>
+                {getFieldDecorator('verifyContent2', {
+                  rules: [
+                    {
+                      required,
+                      message: '请输入审核说明',
+                    },
+                  ],
+                  initialValue: businessAudit.verifyContent || businessAudit.reviewContent,
+                })(
+                  <FormTextArea
+                    autoSize={1}
+                    indexText={businessAudit.verifyContent || businessAudit.reviewContent}
+                    isEdit={!search}
+                    getVal={v => setFieldsValue({ verifyContent2: v })}
+                  />
+                )}
+              </Form.Item>
+            </Col>
+          )}
+        </div>
+
 
         {!repeatAudit && (
           <Col span={24}>

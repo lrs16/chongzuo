@@ -19,6 +19,8 @@ import UploadContext from '@/layouts/MenuContext';
 import { searchUsers } from '@/services/common';
 import SysDict from '@/components/SysDict';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
+import FormTextArea from '../../../OperationPlan/components/FormTextArea';
+
 import {
   providerList,
   scoreListpage,
@@ -26,7 +28,7 @@ import {
 } from '../../services/quality';
 import styles from '../index.less';
 
-const { TextArea, Search } = Input;
+const { Search } = Input;
 const { Option } = Select;
 
 const Register = forwardRef((props, ref) => {
@@ -81,7 +83,6 @@ const Register = forwardRef((props, ref) => {
     [],
   );
 
-
   useEffect(() => {
     setProviderId(register.providerId);
     setScoreId(register.scoreId);
@@ -113,9 +114,9 @@ const Register = forwardRef((props, ref) => {
           scoreId: scoresid,
           scoreName,
           assessType: findassessType[0]?.assessType || '',
-          target1Name:'',
-          target2Name:'',
-          clauseId:'',
+          target1Name: '',
+          target2Name: '',
+          clauseId: '',
         });
         setScoreId(findassessType[0]?.id || '');
         getTarget1(findassessType[0]?.assessType === '功能开发' ? '1' : '2');
@@ -480,6 +481,7 @@ const Register = forwardRef((props, ref) => {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
+      <div className={styles.allowClearicon}>
       <Form {...formItemLayout}>
         <Col span={8}>
           <Form.Item label="服务绩效编号">
@@ -729,27 +731,26 @@ const Register = forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-
-        <Col span={24}>
-          <Form.Item label="考核内容说明" {...forminladeLayout}>
-            {getFieldDecorator('assessContent', {
-              rules: [
-                {
-                  required,
-                  message: '请输入考核内容说明',
-                },
-              ],
-              initialValue: register.assessContent,
-            })(
-              <TextArea
-                disabled={search || noEdit}
-                autoSize={{ minRows: 3 }}
-                placeholder="请控制字数在500字以内"
-                maxLength="500"
-              />,
-            )}
-          </Form.Item>
-        </Col>
+          <Col span={24}>
+            <Form.Item label="考核内容说明" {...forminladeLayout}>
+              {getFieldDecorator('assessContent', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入考核内容说明',
+                  },
+                ],
+                initialValue: register.assessContent,
+              })(
+                <FormTextArea
+                  autoSize={1}
+                  indexText={register.assessContent}
+                  isEdit={!search}
+                  getVal={v => setFieldsValue({ assessContent: v })}
+                />
+              )}
+            </Form.Item>
+          </Col>
 
         <Col span={8}>
           <Form.Item label="一级指标">
@@ -975,6 +976,8 @@ const Register = forwardRef((props, ref) => {
           </Form.Item>
         </Col>
       </Form>
+      </div>
+    
     </Row>
   );
 });

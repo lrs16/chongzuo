@@ -89,6 +89,7 @@ function NewHandover(props) {
 
   const handlelogbookReceive = () => {
     const values = ContentRef.current.getVal();
+    console.log('values: ', values);
     ContentRef.current.Forms((err) => {
       if (!err) {
         return dispatch({

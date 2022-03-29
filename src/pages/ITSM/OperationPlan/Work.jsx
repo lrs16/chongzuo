@@ -258,6 +258,10 @@ function Work(props) {
             ? values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss')
             : '',
           main_fileIds: JSON.stringify(files.arr),
+          main_object: values.main_object || '',
+          main_content: values.main_content || '',
+          main_riskAnalysis: values.main_riskAnalysis || '',
+          main_riskMeasures: values.main_riskMeasures || '',
           flowNodeName: '计划登记',
           editState: openFlowList.editState,
           main_status: '1',
@@ -322,6 +326,7 @@ function Work(props) {
         mainId,
         check_id: edit.check.id,
         check_checkUserId: userinfo.userId,
+        check_content:value.check_content || ''
       };
       saveApi(result);
     });
