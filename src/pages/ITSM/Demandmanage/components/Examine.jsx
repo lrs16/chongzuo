@@ -257,7 +257,7 @@ const Examine = forwardRef((props, ref) => {
               </>
             )}
           </Col>
-          <Col span={24} style={{ marginTop: '-12px' }}>
+          <Col span={24} style={{ marginTop: '-4px' }}>
             <Form.Item
               label="上传附件"
               {...forminladeLayout}

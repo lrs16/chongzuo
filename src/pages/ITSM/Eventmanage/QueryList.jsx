@@ -808,14 +808,14 @@ function QueryList(props) {
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
+              <Col span={8}>
+                <Form.Item label="登记人">
+                  {getFieldDecorator('registerUser', {
+                    initialValue: cacheinfo.registerUser,
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
+              </Col>
               <span style={{ display: expand ? 'block' : 'none' }}>
-                <Col span={8}>
-                  <Form.Item label="登记人">
-                    {getFieldDecorator('registerUser', {
-                      initialValue: cacheinfo.registerUser,
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
                 <Col span={8}>
                   <Form.Item label="登记人单位">
                     {getFieldDecorator('registerUnit', {
