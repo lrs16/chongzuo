@@ -921,7 +921,7 @@ const Registrat = forwardRef((props, ref) => {
             </div>
           </div>
         </Col> */}
-          <Col span={24}>
+          <Col span={24} style={{ marginBottom: '-10px' }}>
             <Form.Item label="事件描述" {...forminladeLayout}>
               {getFieldDecorator('main_content', {
                 rules: [{ required, message: '请输入事件描述' }],

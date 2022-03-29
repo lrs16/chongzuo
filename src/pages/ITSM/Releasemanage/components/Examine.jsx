@@ -103,7 +103,7 @@ function Examine(props, ref) {
             )}
           </Form.Item>
         </Col>
-        <Col span={24}>
+        <Col span={24} style={{ marginBottom: '-10px' }}>
           <Form.Item label={taskName === '开发商项目经理审核' ? '出厂测试结论' : '审核说明'} {...formuintLayout}>
             {getFieldDecorator('testResult', {
               rules: [{ required, message: `请输入${taskName === '开发商项目经理审核' ? '出厂测试' : '审核说明'}` }],

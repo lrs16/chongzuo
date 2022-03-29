@@ -120,7 +120,7 @@ function Implementation(props, ref) {
               )}
             </Form.Item>
           </Col> */}
-          <Col span={24}>
+          <Col span={24} style={{ marginTop: 4, marginBottom: '-6px' }}>
             <Form.Item label="发布实施人" {...formuintLayout}>
               {getFieldDecorator('practicer', {
                 rules: [{ required, message: `请输入发布实施人员名` }],
@@ -147,7 +147,7 @@ function Implementation(props, ref) {
               />)}
             </Form.Item>
           </Col>
-          <Col span={24}>
+          <Col span={24} style={{ marginTop: '-6px', marginBottom: '-6px' }}>
             <Form.Item label="遗留问题说明" {...formuintLayout}>
               {getFieldDecorator('legacyDesc', {
                 initialValue: info.practiceDone.legacyDesc || '',

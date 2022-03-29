@@ -26,7 +26,7 @@ function ReturnVisitdes(props) {
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item label="回访内容"  {...forminladeLayout}>
+            <Form.Item label="回访内容"  {...forminladeLayout} style={{ marginTop: 4, marginBottom: '-10px' }}>
               <FormTextArea autoSize={1} indexText={info.content} />
             </Form.Item>
           </Col>

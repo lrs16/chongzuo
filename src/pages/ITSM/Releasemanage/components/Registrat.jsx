@@ -387,7 +387,7 @@ function Registrat(props, ref) {
                   )}
                 </Form.Item>
               </Col>
-              <Col span={24}>
+              <Col span={24} style={{ marginTop: 4, marginBottom: '-6px' }}>
                 <Form.Item label="测试人员" {...formuintLayout}>
                   {getFieldDecorator('testOperator', {
                     rules: [{ required, message: `请输入测试人员` }],
@@ -405,7 +405,7 @@ function Registrat(props, ref) {
             </>
           )}
           {(taskName === '出厂测试' || taskName === '新建') && (
-            <Col span={24} style={{ marginTop: 4 }}>
+            <Col span={24} style={{ marginBottom: '-6px' }}>
               <Form.Item label="受影响业务范围" {...formuintLayout}>
                 {getFieldDecorator('influenceScope', {
                   rules: [{ required, message: `请填写受影响业务范围` }],

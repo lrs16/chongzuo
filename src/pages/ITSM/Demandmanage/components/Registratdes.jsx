@@ -87,7 +87,7 @@ function Registratdes(props) {
             <FormTextArea autoSize={1} indexText={info.reason} />
           </Form.Item>
         </Col>
-        <Col span={24} style={{ marginTop: 8 }}>
+        <Col span={24} style={{ marginBottom: '-10px' }}>
           <Form.Item label='需求描述'  {...forminladeLayout}>
             <FormTextArea autoSize={1} indexText={info.detail} />
           </Form.Item>

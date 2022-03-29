@@ -265,7 +265,7 @@ const Handle = React.forwardRef((props, ref) => {
             </div>
           </div>
         </Col> */}
-          <Col span={24} style={{ marginTop: 4 }}>
+          <Col span={24} style={{ marginTop: 4, marginBottom: '-6px' }}>
             <Form.Item label="解决方案" {...forminladeLayout}>
               {getFieldDecorator('handle_content', {
                 rules: [{ required, message: '请输入解决方案' }],

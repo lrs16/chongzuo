@@ -151,180 +151,176 @@ const ReturnVisit = React.forwardRef((props, ref) => {
   }
 
   return (
-    <>
+    <Form {...formItemLayout}>
       <Row gutter={24}>
-        <Form {...formItemLayout}>
-          <>
-            <Col span={8} style={{ display: 'none' }}>
-              <Form.Item label="回访表单id">
-                {getFieldDecorator('finish_id', {
-                  initialValue: finish?.id || '',
-                })(<Input placeholder="请输入" disabled />)}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="回访方式">
-                {getFieldDecorator('finish_revisitWay', {
-                  rules: [{ required, message: '请选择回访方式' }],
-                  initialValue: main?.revisitWay || '',
-                })(
-                  <Select placeholder="请选择">
-                    {revisitwaymap.map(obj => [
-                      <Option key={obj.key} value={obj.dict_code}>
-                        {obj.title}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="处理结果">
-                {getFieldDecorator('main_eventResult', {
-                  rules: [{ required, message: '请选择处理结果' }],
-                  initialValue: main?.eventResult || '',
-                })(
-                  <Select placeholder="请选择">
-                    {handleresultmap.map(obj => [
-                      <Option key={obj.key} value={obj.dict_code}>
-                        {obj.title}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-          </>
-          <Col span={8}>
-            <Form.Item label="满意度">
-              {getFieldDecorator('finish_satisfaction', {
-                rules: [{ required, message: '请选择满意度' }],
-                initialValue: finish?.satisfaction || '001',
-              })(
-                <Select placeholder="请选择" onChange={handlcheckChange}>
-                  {satisfactionmap.map(obj => [
-                    <Option key={obj.key} value={obj.dict_code}>
-                      {obj.title}
-                    </Option>,
-                  ])}
-                </Select>,
-              )}
-            </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Form.Item label="回访内容" {...forminladeLayout}>
-              {getFieldDecorator('finish_content', {
-                rules: [{ required, message: '请输入回访内容' }],
-                initialValue: finish?.content || '',
-              })(
-                <AutoComplete
-                  dataSource={desautodata}
-                  filterOption={(inputValue, option) =>
-                    option.props.children.includes(inputValue)
-                  }
-                //  onSelect={value => handleSearch(value, 'des')}
-                >
-                  {daileArea ? (<TextArea
-                    style={{ height: 31 }}
+        <Col span={8} style={{ display: 'none' }}>
+          <Form.Item label="回访表单id">
+            {getFieldDecorator('finish_id', {
+              initialValue: finish?.id || '',
+            })(<Input placeholder="请输入" disabled />)}
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="回访方式">
+            {getFieldDecorator('finish_revisitWay', {
+              rules: [{ required, message: '请选择回访方式' }],
+              initialValue: main?.revisitWay || '',
+            })(
+              <Select placeholder="请选择">
+                {revisitwaymap.map(obj => [
+                  <Option key={obj.key} value={obj.dict_code}>
+                    {obj.title}
+                  </Option>,
+                ])}
+              </Select>,
+            )}
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="处理结果">
+            {getFieldDecorator('main_eventResult', {
+              rules: [{ required, message: '请选择处理结果' }],
+              initialValue: main?.eventResult || '',
+            })(
+              <Select placeholder="请选择">
+                {handleresultmap.map(obj => [
+                  <Option key={obj.key} value={obj.dict_code}>
+                    {obj.title}
+                  </Option>,
+                ])}
+              </Select>,
+            )}
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="满意度">
+            {getFieldDecorator('finish_satisfaction', {
+              rules: [{ required, message: '请选择满意度' }],
+              initialValue: finish?.satisfaction || '001',
+            })(
+              <Select placeholder="请选择" onChange={handlcheckChange}>
+                {satisfactionmap.map(obj => [
+                  <Option key={obj.key} value={obj.dict_code}>
+                    {obj.title}
+                  </Option>,
+                ])}
+              </Select>,
+            )}
+          </Form.Item>
+        </Col>
+        <Col span={24} style={{ marginBottom: '-9px' }}>
+          <Form.Item label="回访内容" {...forminladeLayout}>
+            {getFieldDecorator('finish_content', {
+              rules: [{ required, message: '请输入回访内容' }],
+              initialValue: finish?.content || '',
+            })(
+              <AutoComplete
+                dataSource={desautodata}
+                filterOption={(inputValue, option) =>
+                  option.props.children.includes(inputValue)
+                }
+              //  onSelect={value => handleSearch(value, 'des')}
+              >
+                {daileArea ? (<TextArea
+                  style={{ height: 31 }}
+                  allowClear
+                  placeholder="请输入"
+                  onDoubleClick={(e) => handleDoubleClick(e)}
+                />) : (
+                  <TextArea
+                    autoSize={{ minRows: 1 }}
+                    auto
                     allowClear
                     placeholder="请输入"
                     onDoubleClick={(e) => handleDoubleClick(e)}
-                  />) : (
-                    <TextArea
-                      autoSize={{ minRows: 3 }}
-                      auto
-                      allowClear
-                      placeholder="请输入"
-                      onDoubleClick={(e) => handleDoubleClick(e)}
-                    />)}
-                </AutoComplete>,
-              )}
-            </Form.Item>
-          </Col>
-          <Col span={8}>
-            <Form.Item label="填单时间">
-              {getFieldDecorator('finish_addTime', {
-                rules: [{ required }],
-                initialValue: moment(finish?.addTime || undefined).format('YYYY-MM-DD HH:mm:ss'),
-              })(<Input disabled />)}
-            </Form.Item>
-          </Col>
-          <Col span={8}>
-            <Form.Item label="回访时间">
-              {getFieldDecorator('finish_revisitTime', {
-                rules: [{ required, message: '请选择回访时间' }],
-                initialValue: moment(finish?.revisitTime || undefined),
-              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
-            </Form.Item>
-          </Col>
-          <Col span={24} >
-            <Form.Item label="上传附件" {...forminladeLayout}
-            // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
-            >{getFieldDecorator('finish_fileIds', {
-              rules: [{ required, message: '请上传附件' }, {
-                validator: handleAttValidator
-              }],
-              initialValue: finish && finish.fileIds && finish.fileIds !== '[]' ? finish.fileIds : '',
-            })(
-              <div>
-                {!loading && (
-                  <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
-                )}
-              </div>
+                  />)}
+              </AutoComplete>,
             )}
-            </Form.Item>
-          </Col>
-          <Col span={8}>
-            <Form.Item label="回访人">
-              {getFieldDecorator('finish_revisitor', {
-                rules: [{ required }],
-                initialValue: userinfo.userName,
-              })(<Input placeholder="请输入" disabled />)}
-            </Form.Item>
-          </Col>
-          <Col span={8} style={{ display: 'none' }}>
-            <Form.Item label="回访人ID">
-              {getFieldDecorator('finish_revisitorId', {
-                rules: [{ required }],
-                initialValue: userinfo.userId,
-              })(<Input placeholder="请输入" />)}
-            </Form.Item>
-          </Col>
-          <Col span={8}>
-            <Form.Item label="回访人单位">
-              {getFieldDecorator('finish_revisitUnit', {
-                rules: [{ required }],
-                initialValue: userinfo.unitName,
-              })(<Input placeholder="请输入" disabled />)}
-            </Form.Item>
-          </Col>
-          <Col span={8} style={{ display: 'none' }}>
-            <Form.Item label="回访人单位ID">
-              {getFieldDecorator('finish_revisitUnitId', {
-                rules: [{ required }],
-                initialValue: userinfo.unitId,
-              })(<Input placeholder="请输入" />)}
-            </Form.Item>
-          </Col>
-          <Col span={8}>
-            <Form.Item label="回访人部门">
-              {getFieldDecorator('finish_revisitDept', {
-                rules: [{ required }],
-                initialValue: userinfo.deptName,
-              })(<Input placeholder="请输入" disabled />)}
-            </Form.Item>
-          </Col>
-          <Col span={8} style={{ display: 'none' }}>
-            <Form.Item label="回访人部门ID">
-              {getFieldDecorator('finish_revisitDeptId', {
-                rules: [{ required }],
-                initialValue: userinfo.deptId,
-              })(<Input placeholder="请输入" />)}
-            </Form.Item>
-          </Col>
-        </Form>
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="填单时间">
+            {getFieldDecorator('finish_addTime', {
+              rules: [{ required }],
+              initialValue: moment(finish?.addTime || undefined).format('YYYY-MM-DD HH:mm:ss'),
+            })(<Input disabled />)}
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="回访时间">
+            {getFieldDecorator('finish_revisitTime', {
+              rules: [{ required, message: '请选择回访时间' }],
+              initialValue: moment(finish?.revisitTime || undefined),
+            })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
+          </Form.Item>
+        </Col>
+        <Col span={24} >
+          <Form.Item label="上传附件" {...forminladeLayout}
+          // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+          >{getFieldDecorator('finish_fileIds', {
+            rules: [{ required, message: '请上传附件' }, {
+              validator: handleAttValidator
+            }],
+            initialValue: finish && finish.fileIds && finish.fileIds !== '[]' ? finish.fileIds : '',
+          })(
+            <div>
+              {!loading && (
+                <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+              )}
+            </div>
+          )}
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="回访人">
+            {getFieldDecorator('finish_revisitor', {
+              rules: [{ required }],
+              initialValue: userinfo.userName,
+            })(<Input placeholder="请输入" disabled />)}
+          </Form.Item>
+        </Col>
+        <Col span={8} style={{ display: 'none' }}>
+          <Form.Item label="回访人ID">
+            {getFieldDecorator('finish_revisitorId', {
+              rules: [{ required }],
+              initialValue: userinfo.userId,
+            })(<Input placeholder="请输入" />)}
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="回访人单位">
+            {getFieldDecorator('finish_revisitUnit', {
+              rules: [{ required }],
+              initialValue: userinfo.unitName,
+            })(<Input placeholder="请输入" disabled />)}
+          </Form.Item>
+        </Col>
+        <Col span={8} style={{ display: 'none' }}>
+          <Form.Item label="回访人单位ID">
+            {getFieldDecorator('finish_revisitUnitId', {
+              rules: [{ required }],
+              initialValue: userinfo.unitId,
+            })(<Input placeholder="请输入" />)}
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="回访人部门">
+            {getFieldDecorator('finish_revisitDept', {
+              rules: [{ required }],
+              initialValue: userinfo.deptName,
+            })(<Input placeholder="请输入" disabled />)}
+          </Form.Item>
+        </Col>
+        <Col span={8} style={{ display: 'none' }}>
+          <Form.Item label="回访人部门ID">
+            {getFieldDecorator('finish_revisitDeptId', {
+              rules: [{ required }],
+              initialValue: userinfo.deptId,
+            })(<Input placeholder="请输入" />)}
+          </Form.Item>
+        </Col>
       </Row>
-    </>
+    </Form>
   );
 });
 

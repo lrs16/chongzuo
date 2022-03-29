@@ -29,7 +29,7 @@ function KnowledgCollect(props) {
     }
   }, [valuealready])
   return (
-    <div style={{ paddingLeft: 4, paddingBottom: 24 }}>
+    <div style={{ paddingLeft: 4, paddingBottom: 6 }}>
       <Button onClick={() => handleClick()} type='primary'>
         <PlusSquareOutlined />  知识收录
       </Button>

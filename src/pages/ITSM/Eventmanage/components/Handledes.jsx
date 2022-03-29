@@ -36,7 +36,7 @@ function Handledes(props) {
               <Input defaultValue={info.endTime} disabled />
             </Form.Item>
           </Col>
-          <Col span={24}>
+          <Col span={24} style={{ marginTop: 4, marginBottom: '-10px' }}>
             <Form.Item label="解决方案"  {...forminladeLayout}>
               <FormTextArea autoSize={1} indexText={info.content} />
             </Form.Item>
