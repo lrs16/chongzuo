@@ -145,7 +145,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
         <div className={styles.allowClearicon}>
           {
             flowtype === '1' && (
-              <Col span={24}>
+              <Col span={24} style={{ marginTop: 4 }}>
                 <Form.Item label='审核意见' {...forminladeLayout}>
                   {
                     getFieldDecorator('checkOpinion1', {
@@ -167,7 +167,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
 
           {
             flowtype === '0' && (
-              <Col span={24}>
+              <Col span={24} style={{ marginTop: 4 }}>
                 <Form.Item label='审核意见' {...forminladeLayout}>
                   {
                     getFieldDecorator('checkOpinion2', {
@@ -196,7 +196,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
 
         {
           flowNodeName === '系统运维商审核' && (
-            <Col span={24}>
+            <Col span={24} style={{ marginTop: '-12px' }}>
               <Form.Item
                 label="上传附件"
                 {...forminladeLayout}
@@ -222,7 +222,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
 
         {
           flowNodeName === '自动化科审核' && (allInfo.editState === 'edit') && (
-            <Col span={24}>
+            <Col span={24} style={{ marginTop: '-12px' }}>
               <Form.Item
                 label="上传附件"
                 {...forminladeLayout}
@@ -237,7 +237,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
 
         {
           allInfo.editState !== undefined && (allInfo.editState === 'add') && flowNodeName === '自动化科审核' && (
-            <Col span={24}>
+            <Col span={24} style={{ marginTop: '-12px' }}>
               <Form.Item
                 label="上传附件"
                 {...forminladeLayout}

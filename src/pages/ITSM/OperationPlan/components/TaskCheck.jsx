@@ -89,7 +89,7 @@ const TaskCheck = React.forwardRef((props, ref) => {
 
         <div className={styles.autoCompleteallowclear}>
           {flowtype === '002' && (
-            <Col span={23}>
+            <Col span={24} style={{ marginTop: 4 }}>
               <Form.Item label="审核说明" {...forminladeLayout}>
                 {getFieldDecorator('check_content', {
                   rules: [
@@ -110,7 +110,7 @@ const TaskCheck = React.forwardRef((props, ref) => {
           )}
 
           {flowtype === '001' && (
-            <Col span={23}>
+            <Col span={24} style={{ marginTop: 4 }}>
               <Form.Item label="审核说明" {...forminladeLayout}>
                 {getFieldDecorator('check_content', {
                   initialValue: check.content,

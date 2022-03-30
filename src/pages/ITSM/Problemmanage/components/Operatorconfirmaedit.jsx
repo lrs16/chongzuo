@@ -104,7 +104,7 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
   return (
     <Row gutter={24}>
       <Form {...formItemLayout}>
-        <Col span={23}>
+        <Col span={24}>
           <Form.Item label='确认结果' {...forminladeLayout}>
             {getFieldDecorator('confirmResult', {
               rules: [
@@ -123,8 +123,8 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
             }
           </Form.Item>
         </Col>
-        <Col span={23}>
-          <Form.Item label='确认时间' {...forminladeLayout}>
+        <Col span={8}>
+          <Form.Item label='确认时间'>
             {
               getFieldDecorator('confirmTime', {
                 rules: [

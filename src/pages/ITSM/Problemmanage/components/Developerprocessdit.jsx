@@ -148,7 +148,7 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
         </Col>
 
         <div className={styles.allowClearicon}>
-          <Col span={24}>
+          <Col span={24} style={{ marginTop: 4 }}>
             <Form.Item label="解决方案" {...forminladeLayout}>
               {getFieldDecorator('handleContent', {
                 rules: [
@@ -171,7 +171,7 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
         </div>
 
 
-        <Col span={24} style={{ paddingLeft: '8.33333333% ' }} >
+        <Col span={24} style={{ paddingLeft: '8.33333333% ',marginTop: '-6px' }} >
           <KnowledgCollect
             valuealready={valuealready}
             content={knowledgecontent}

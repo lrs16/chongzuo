@@ -141,7 +141,7 @@ const TaskExecute = React.forwardRef((props, ref) => {
         </Col>
 
         <div className={styles.autoCompleteallowclear}>
-          <Col span={24} >
+          <Col span={24} style={{ marginTop: 4 }}>
             <Form.Item label="作业执行情况说明" {...forminladeLayout}>
               {getFieldDecorator('execute_content', {
                 rules: [
@@ -161,7 +161,7 @@ const TaskExecute = React.forwardRef((props, ref) => {
           </Col>
         </div>
 
-        <Col span={24}>
+        <Col span={24} style={{ marginTop: '-6px' }}>
           <Form.Item label="上传附件" {...forminladeLayout}>
             {getFieldDecorator('execute_fileIds', {
               initialValue: execute && execute.fileIds ? execute.fileIds : '',

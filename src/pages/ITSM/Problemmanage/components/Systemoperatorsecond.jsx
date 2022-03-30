@@ -8,9 +8,10 @@ import {
   Radio,
 } from 'antd';
 import moment from 'moment';
-import { FatherContext } from '../Workorder';
 import SysUpload from '@/components/SysUpload';
 import { getAndField } from '@/pages/SysManage/services/api';
+import { FatherContext } from '../Workorder';
+
 import styles from '../index.less';
 
 
@@ -154,7 +155,7 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
         <div className={styles.allowClearicon}>
           {
             flowtype === '1' && (
-              <Col span={24}>
+              <Col span={24} style={{ marginTop: 4 }}>
                 <Form.Item label='确认意见' {...forminladeLayout}>
                   {
                     getFieldDecorator('confirmContent1', {
@@ -177,7 +178,7 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
 
           {
             flowtype === '0' && (
-              <Col span={24}>
+              <Col span={24} style={{ marginTop: 4 }}>
                 <Form.Item label='确认意见' {...forminladeLayout}>
                   {
                     getFieldDecorator('confirmContent2', {
@@ -207,7 +208,7 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
 
         {
           flowNodeName === '系统运维商确认' && (
-            <Col span={24}>
+            <Col span={24} style={{ marginTop: '-12px' }}>
               <Form.Item
                 label="上传附件"
                 {...forminladeLayout}
@@ -222,7 +223,7 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
 
         {
           flowNodeName === '自动化科业务人员确认' && (
-            <Col span={24}>
+            <Col span={24} style={{ marginTop: '-12px' }}>
               <Form.Item
                 label="上传附件"
                 {...forminladeLayout}
@@ -237,7 +238,7 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
 
         {
           flowNodeName === '问题登记人员确认' && (
-            <Col span={24}>
+            <Col span={24} style={{ marginTop: '-12px' }}>
               <Form.Item
                 label="上传附件"
                 {...forminladeLayout}

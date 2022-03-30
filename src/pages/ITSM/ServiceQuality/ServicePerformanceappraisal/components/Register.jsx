@@ -731,7 +731,7 @@ const Register = forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-          <Col span={24}>
+          <Col span={24} style={{ marginTop: 4 }}>
             <Form.Item label="考核内容说明" {...forminladeLayout}>
               {getFieldDecorator('assessContent', {
                 rules: [

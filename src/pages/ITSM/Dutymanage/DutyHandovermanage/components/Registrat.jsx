@@ -185,7 +185,7 @@ const Registrat = forwardRef((props, ref) => {
             <Form {...forItemLayout}>
               {type && (
                 <Card title="接班说明" bordered={false}>
-                  <Col span={24}>
+                  <Col span={24} style={{ marginTop: 4 }}>
                     <Form.Item label="接班说明" {...forminladeLayout}>
                       {getFieldDecorator('receiveRemark', {
                         rules: [
@@ -359,7 +359,7 @@ const Registrat = forwardRef((props, ref) => {
                   })(<Input disabled />)}
                 </Form.Item>
 
-                <Col span={24}>
+                <Col span={24} style={{ marginTop: 4 }}>
                   <Form.Item label="巡检及监控记录" {...forminladeLayout}>
                     {getFieldDecorator('monitorNotes', {
                       rules: [
