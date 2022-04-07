@@ -706,7 +706,7 @@ const Registrat = forwardRef((props, ref) => {
               )}
             </Form.Item>
           </Col>
-          <Col span={24} style={{ marginTop: '-10px' }}>
+          <Col span={24} style={{ marginTop: '-6px' }}>
             <Form.Item
               label="上传附件"
               {...forminladeLayout}

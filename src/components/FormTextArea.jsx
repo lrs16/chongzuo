@@ -21,7 +21,7 @@ function FormTextArea(props) {
   // const inputElement = useRef(null)
 
   return (
-    <span
+    <div
       className='collapseArea'
       onDoubleClick={(e) => {
         if (isEdit) {
@@ -34,7 +34,7 @@ function FormTextArea(props) {
               e.target.style.maxHeight = '9.0072e+15px';
               e.target.style.height = `${textheight}px`;
             } else {
-              const h = autoSize * 21 + 10
+              const h = autoSize * 21 + 11
               e.target.style.maxHeight = `${h}px`;
               e.target.style.height = `${h}px`;
             }
@@ -64,7 +64,7 @@ function FormTextArea(props) {
         // ref={inputElement}
         />
       )}
-    </span>
+    </div>
 
   );
 }
