@@ -1,6 +1,8 @@
 import React from 'react';
 import { Radio, Form, Input, Row, Col } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
+import FormTextArea from '../../OperationPlan/components/FormTextArea'
+
 
 const formItemLayout = {
   labelCol: {
@@ -50,7 +52,11 @@ function Operatorconfirmades(props) {
         </Col>
         <Col span={24}>
           <Form.Item label="确认意见"  {...forminladeLayout}>
-            <TextArea autoSize={{ maxRows: 1 }} defaultValue={info.confirmContent} disabled />
+            <FormTextArea
+              autoSize={1}
+              indexText={info.confirmContent}
+              isEdit={false}
+            />
           </Form.Item>
         </Col>
         <Col span={24}>

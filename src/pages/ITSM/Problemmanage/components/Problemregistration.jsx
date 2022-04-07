@@ -1,8 +1,7 @@
 import React from 'react';
 import { Form, Input, Row, Col } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
-
-const { TextArea } = Input;
+import FormTextArea from '../../OperationPlan/components/FormTextArea'
 
 function Problemregistration(props) {
   const { main, info, formItemLayout, forminladeLayout } = props;
@@ -71,12 +70,20 @@ function Problemregistration(props) {
         </Col>
         <Col span={24} >
           <Form.Item label="问题标题" {...forminladeLayout}>
-            <Input defaultValue={main.title} disabled />
+            <FormTextArea
+              autoSize={1}
+              indexText={main.title}
+              isEdit={false}
+            />
           </Form.Item>
         </Col>
         <Col span={24}>
           <Form.Item label="问题描述"  {...forminladeLayout}>
-            <TextArea autoSize={{ maxRows: 1 }} defaultValue={main.content} disabled />
+            <FormTextArea
+              autoSize={1}
+              indexText={main.content}
+              isEdit={false}
+            />
           </Form.Item>
         </Col>
         <Col span={24}>

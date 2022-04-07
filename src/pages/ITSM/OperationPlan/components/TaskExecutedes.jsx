@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form, Input, Row, Col } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
+import FormTextArea from './FormTextArea'
 
 const { TextArea } = Input;
 const formItemLayout = {
@@ -47,7 +48,11 @@ function TaskExecutedes(props) {
         </Col>
         <Col span={24}>
           <Form.Item label="作业执行情况说明" {...forminladeLayout}>
-            <TextArea autoSize={{ manRows: 1 }} defaultValue={info.content} disabled />
+          <FormTextArea
+              autoSize={1}
+              indexText={info.content}
+              isEdit={false}
+            />
           </Form.Item>
         </Col>
         <Col span={24}>

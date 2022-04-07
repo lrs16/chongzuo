@@ -1,8 +1,7 @@
 import React from 'react';
 import { Radio, Form, Input, Row, Col } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
-
-const { TextArea } = Input;
+import FormTextArea from '../../OperationPlan/components/FormTextArea'
 
 const formItemLayout = {
   labelCol: {
@@ -53,7 +52,11 @@ function Problemreview(props) {
         </Col>
         <Col span={24}>
           <Form.Item label="审核意见"  {...forminladeLayout}>
-            <TextArea autoSize={{ maxRows: 1 }} defaultValue={info.checkOpinion} disabled />
+            <FormTextArea
+              autoSize={1}
+              indexText={info.checkOpinion}
+              isEdit={false}
+            />
           </Form.Item>
         </Col>
         <Col span={24}>

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Radio, Form, Input, Row, Col, } from 'antd';
-
-const { TextArea } = Input;
+import FormTextArea from './FormTextArea'
 
 const formItemLayout = {
   labelCol: {
@@ -53,7 +52,11 @@ function TaskCheckdes(props) {
         </Col>
         <Col span={24}>
           <Form.Item label="审核说明" {...forminladeLayout}>
-            <TextArea autoSize={{ maxRows: 1 }} defaultValue={info.content} disabled />
+            <FormTextArea
+              autoSize={1}
+              indexText={info.content}
+              isEdit={false}
+            />
           </Form.Item>
         </Col>
         <Col span={8}>

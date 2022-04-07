@@ -540,7 +540,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                   >
                     <TextArea
                       disabled={type}
-                      autoSize={{ minRows: 1 }}
+                      autoSize={{ maxRows: 1 }}
                       placeholder="请输入"
                       onDoubleClick={(e) => handleDoubleClick(e, 'object')}
                     />

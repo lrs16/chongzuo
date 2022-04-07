@@ -1,8 +1,8 @@
 import React from 'react';
 import { Form, Input, Row, Col, } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
+import FormTextArea from './FormTextArea'
 
-const { TextArea } = Input;
 
 const formItemLayout = {
   labelCol: {
@@ -76,22 +76,38 @@ function OperationPlanfillindes(props) {
         </Col>
         <Col span={24}>
           <Form.Item label="作业对象" {...forminladeLayout}>
-            <TextArea autoSize={{ maxRows: 1 }} disabled />
+            <FormTextArea
+              autoSize={1}
+              indexText={info.object}
+              isEdit={false}
+            />
           </Form.Item>
         </Col>
         <Col span={24}>
           <Form.Item label="作业内容" {...forminladeLayout}>
-            <TextArea autoSize={{ maxRows: 1 }} defaultValue={info.content} disabled />
+            <FormTextArea
+              autoSize={1}
+              indexText={info.content}
+              isEdit={false}
+            />
           </Form.Item>
         </Col>
         <Col span={24}>
           <Form.Item label="风险分析" {...forminladeLayout}>
-            <TextArea autoSize={{ maxRows: 1 }} defaultValue={info.riskAnalysis} disabled />
+            <FormTextArea
+              autoSize={1}
+              indexText={info.riskAnalysis}
+              isEdit={false}
+            />
           </Form.Item>
         </Col>
         <Col span={24}>
           <Form.Item label="风险应对措施" {...forminladeLayout}>
-            <TextArea autoSize={{ maxRows: 1 }} defaultValue={info.riskMeasures} disabled />
+            <FormTextArea
+              autoSize={1}
+              indexText={info.riskMeasures}
+              isEdit={false}
+            />
           </Form.Item>
         </Col>
         <Col span={8}>

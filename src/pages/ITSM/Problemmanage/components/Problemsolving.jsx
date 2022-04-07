@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form, Input, Row, Col } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
+import FormTextArea from '../../OperationPlan/components/FormTextArea'
 
 const { TextArea } = Input;
 
@@ -31,7 +32,11 @@ function Problemsolving(props) {
         </Col>
         <Col span={24}>
           <Form.Item label="解决方案"  {...forminladeLayout}>
-            <TextArea autoSize={{ maxRows: 1 }} defaultValue={info.handleContent} disabled />
+            <FormTextArea
+              autoSize={1}
+              indexText={info.handleContent}
+              isEdit={false}
+            />
           </Form.Item>
         </Col>
         <Col span={24}>
