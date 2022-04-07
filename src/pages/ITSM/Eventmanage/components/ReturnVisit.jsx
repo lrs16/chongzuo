@@ -223,14 +223,14 @@ const ReturnVisit = React.forwardRef((props, ref) => {
               >
                 {daileArea ? (<TextArea
                   style={{ height: 31 }}
-                  allowClear
+                  // allowClear
                   placeholder="请输入"
                   onDoubleClick={(e) => handleDoubleClick(e)}
                 />) : (
                   <TextArea
                     autoSize={{ minRows: 1 }}
                     auto
-                    allowClear
+                    //  allowClear
                     placeholder="请输入"
                     onDoubleClick={(e) => handleDoubleClick(e)}
                   />)}
