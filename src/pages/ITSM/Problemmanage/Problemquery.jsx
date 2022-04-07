@@ -472,6 +472,14 @@ function Besolved(props) {
       key: 'handleContent',
       width: 150,
       align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '系统开发商处理结果',
@@ -630,6 +638,14 @@ function Besolved(props) {
       key: 'handleContent',
       width: 150,
       align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '系统开发商处理结果',
@@ -1294,7 +1310,8 @@ function Besolved(props) {
         val.title === '问题描述' ||
         val.title === '开发负责人' ||
         val.title === '所属项目' ||
-        val.title === '问题名称'
+        val.title === '问题名称' ||
+        val.title === '处理解决方案'
       ) {
         obj.ellipsis = true;
         obj.render = (text, records) => {
@@ -1348,6 +1365,20 @@ function Besolved(props) {
     onChange: index => {
       setSelectedKeys([...index]);
     },
+  };
+
+  const setTableHeight = () => {
+    let height = 500;
+    // 最小兼容1600的全屏显示器
+    const clientHeight = window.document?.body?.clientHeight;
+    if (clientHeight > 750) {
+      if (expand) {
+        height = clientHeight - 568;
+      } else {
+        height = clientHeight - 510;
+      }
+    }
+    return height;
   };
 
   return (
@@ -1764,7 +1795,7 @@ function Besolved(props) {
           rowKey={records => records.id}
           pagination={pagination}
           rowSelection={rowSelection}
-          scroll={{ x: 800, y: 700 }}
+          scroll={{ x: 1500, y: setTableHeight() }}
         />
       </Card>
     </PageHeaderWrapper>

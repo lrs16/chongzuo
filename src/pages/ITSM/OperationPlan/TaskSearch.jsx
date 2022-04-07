@@ -148,6 +148,19 @@ function TaskSearch(props) {
       dataIndex: 'systemName',
       key: 'systemName',
       width: 150,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+            getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '作业类型',
@@ -184,6 +197,19 @@ function TaskSearch(props) {
       dataIndex: 'object',
       key: 'object',
       width: 150,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+            getPopupContainer={() => document.querySelector('.ant-drawer-body')}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '作业内容',
@@ -751,7 +777,9 @@ function TaskSearch(props) {
         val.title === '作业执行情况说明' ||
         val.title === '作业内容' ||
         val.title === '风险分析' ||
-        val.title === '风险应对措施'
+        val.title === '风险应对措施' ||
+        val.title === '作业对象' || 
+        val.title === '作业系统名称'
       ) {
         obj.ellipsis = true;
         obj.render = (text, records) => {
