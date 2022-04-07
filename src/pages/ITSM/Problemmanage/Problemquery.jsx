@@ -360,7 +360,6 @@ function Besolved(props) {
           <Tooltip
             placement="topLeft"
             title={text}
-            getPopupContainer={() => document.querySelector('.ant-drawer-body')}
           >
             <span>{text}</span>
           </Tooltip>
@@ -527,7 +526,6 @@ function Besolved(props) {
           <Tooltip
             placement="topLeft"
             title={text}
-            getPopupContainer={() => document.querySelector('.ant-drawer-body')}
           >
             <span>{text}</span>
           </Tooltip>
@@ -1356,6 +1354,7 @@ function Besolved(props) {
     }
     creataColumns();
   };
+
 
   const defaultAllkey = (initial ? controlTable : columns).map(item => {
     return item.title;

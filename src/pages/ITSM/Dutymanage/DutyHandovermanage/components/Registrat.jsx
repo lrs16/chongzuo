@@ -200,7 +200,7 @@ const Registrat = forwardRef((props, ref) => {
                           autoSize={1}
                           indexText={formrecord.receiveRemark}
                           isEdit={type === 'listButton'}
-                          getVal={v => setFieldsValue({ appealContent: v })}
+                          getVal={v => setFieldsValue({ receiveRemark: v })}
                         />
                       )}
                     </Form.Item>

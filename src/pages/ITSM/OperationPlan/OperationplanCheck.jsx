@@ -96,6 +96,20 @@ function OperationplanCheck(props) {
     });
   };
 
+  const setTableHeight = () => {
+    let height = 500;
+    // 最小兼容1600的全屏显示器
+    const clientHeight = window.document?.body?.clientHeight;
+    if (clientHeight > 750) {
+      if (expand) {
+        height = clientHeight - 568;
+      } else {
+        height = clientHeight - 510;
+      }
+    }
+    return height;
+  };
+
   const initialColumns = [
     {
       title: '作业计划编号',
@@ -653,7 +667,7 @@ function OperationplanCheck(props) {
         val.title === '作业内容' ||
         val.title === '风险分析' ||
         val.title === '风险应对措施' ||
-        val.title === '作业对象' || 
+        val.title === '作业对象' ||
         val.title === '作业系统名称'
       ) {
         obj.ellipsis = true;
@@ -1381,7 +1395,7 @@ function OperationplanCheck(props) {
           loading={loading}
           columns={columns && columns.length === (initialColumns && initialColumns.length) ? initialColumns : columns}
           dataSource={myTaskplanlist.rows}
-          scroll={{ x: 1500, y: 700 }}
+          scroll={{ x: 1500, y: setTableHeight() }}
           rowKey={records => records.id}
           rowSelection={rowSelection}
           pagination={pagination}

@@ -1275,6 +1275,21 @@ function TobedealtList(props) {
     return [];
   };
 
+    
+  const setTableHeight = () => {
+    let height = 500;
+    // 最小兼容1600的全屏显示器
+    const clientHeight = window.document?.body?.clientHeight;
+    if (clientHeight > 750) {
+      if (expand) {
+        height = clientHeight - 568;
+      } else {
+        height = clientHeight - 510;
+      }
+    }
+    return height;
+  };
+
   const assessmentObject = getTypebyTitle('考核对象');
   const currentProssing = getTypebyTitle('当前处理环节');
   const assessmentSource = getTypebyTitle('考核来源');
@@ -1976,7 +1991,7 @@ function TobedealtList(props) {
           loading={loading}
           columns={columns && columns.length === (initialColumns && initialColumns.length) ? initialColumns : columns}
           dataSource={tobeDealtarr.records}
-          scroll={{ x: 1500, y: 700 }}
+          scroll={{ x: 1500, y: setTableHeight() }}
           rowKey={records => records.assessNo}
           rowSelection={rowSelection}
           pagination={pagination}

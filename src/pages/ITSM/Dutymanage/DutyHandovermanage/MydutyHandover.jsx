@@ -15,7 +15,8 @@ import {
   Popover,
   Checkbox,
   Icon,
-  message
+  message,
+  Tooltip
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
@@ -465,37 +466,109 @@ function MydutyHandover(props) {
       title: '巡检及监控记录',
       dataIndex: 'monitorNotes',
       key: 'monitorNotes',
-      width: 250,
+      width: 150,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '异常情况记录',
       dataIndex: 'alarmNotes',
       key: 'alarmNotes',
-      width: 250,
+      width: 150,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '重大运维事件',
       dataIndex: 'devopsNotes',
       key: 'devopsNotes',
-      width: 250,
+      width: 150,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '其他情况记录',
       dataIndex: 'otherNotes',
       key: 'otherNotes',
-      width: 250,
+      width: 150,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '需注意事项',
       dataIndex: 'attention',
       key: 'attention',
-      width: 250,
+      width: 150,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '交接物品',
       dataIndex: 'handoverItems',
       key: 'handoverItems',
-      width: 250,
+      width: 150,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '接班时间',
@@ -564,21 +637,59 @@ function MydutyHandover(props) {
         dataIndex: val.key,
         width: val.width
       };
-      if (key === 0 || val.title === '值班交接编号') {
-        obj.render = (text, record) => {
+      // if (key === 0 || val.title === '值班交接编号') {
+      //   obj.render = (text, record) => {
+      //     return (
+      //       <a onClick={() => todetail(record, 'search')}>{text}</a>
+      //     )
+      //   }
+      //   obj.fixed = 'left';
+      //   obj.width = 350;
+      // }
+
+      if (
+        val.title === '巡检及监控记录' ||
+        val.title === '异常情况记录' ||
+        val.title === '重大运维事件' ||
+        val.title === '其他情况记录' ||
+        val.title === '需注意事项' ||
+        val.title === '交接物品'
+      ) {
+        obj.ellipsis = true;
+        obj.render = (text, records) => {
           return (
-            <a onClick={() => todetail(record, 'search')}>{text}</a>
-          )
-        }
-        obj.fixed = 'left';
-        obj.width = 350;
+            <Tooltip placement="topLeft" title={text}>
+              {key === 0 ? (
+                <a onClick={() => todetail(records, 'search')}>{text}</a>
+              ) : (
+                <span>{text}</span>
+              )}
+            </Tooltip>
+          );
+        };
       }
+
+      // if (key === 0) {
+      //   obj.render = (text, records) => {
+      //     return (
+      //       <a onClick={() => todetail(records, 'search')}>{text}</a>
+      //     )
+      //   }
+      //   obj.fixed = 'left';
+      //   obj.width = 350;
+      // }
+
       if (val.title === '值班时间') {
-        obj.render = (text, record) => {
+        obj.render = (text, records) => {
           obj.width = 350;
           return (
             <>
-              <span>{record.dutyBeginTime}</span> - <span>{record.dutyEndTime}</span>
+              {key === 0 ? (
+                <a onClick={() => todetail(records, 'search')}>{text}</a>
+              ) : (
+                <span>{records.dutyBeginTime}</span> - <span>{records.dutyEndTime}</span>
+              )}
+             
             </>
           )
         }
@@ -603,6 +714,20 @@ function MydutyHandover(props) {
       setColumns([])
     }
     creataColumns();
+  };
+
+  const setTableHeight = () => {
+    let height = 500;
+    // 最小兼容1600的全屏显示器
+    const clientHeight = window.document?.body?.clientHeight;
+    if (clientHeight > 750) {
+      if (expand) {
+        height = clientHeight - 568;
+      } else {
+        height = clientHeight - 510;
+      }
+    }
+    return height;
   };
 
   useEffect(() => {
@@ -996,7 +1121,7 @@ function MydutyHandover(props) {
           rowSelection={rowSelection}
           pagination={pagetitle === '我的值班交接' ? false : pagination}
           rowKey={r => r.id}
-          scroll={{ x: 800, y: 700 }}
+          scroll={{ x: 1500, y: setTableHeight() }}
         />
       </Card>
     </PageHeaderWrapper >

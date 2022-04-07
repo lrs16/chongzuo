@@ -594,7 +594,6 @@ function MyoperationPlan(props) {
           <Tooltip
             placement="topLeft"
             title={text}
-            getPopupContainer={() => document.querySelector('.ant-drawer-body')}
           >
             <span>{text}</span>
           </Tooltip>
@@ -643,7 +642,6 @@ function MyoperationPlan(props) {
           <Tooltip
             placement="topLeft"
             title={text}
-            getPopupContainer={() => document.querySelector('.ant-drawer-body')}
           >
             <span>{text}</span>
           </Tooltip>
@@ -852,6 +850,20 @@ function MyoperationPlan(props) {
       },
     },
   ];
+
+  const setTableHeight = () => {
+    let height = 500;
+    // 最小兼容1600的全屏显示器
+    const clientHeight = window.document?.body?.clientHeight;
+    if (clientHeight > 750) {
+      if (expand) {
+        height = clientHeight - 568;
+      } else {
+        height = clientHeight - 510;
+      }
+    }
+    return height;
+  };
 
   const creataColumns = () => {
     // columns
@@ -1470,7 +1482,7 @@ function MyoperationPlan(props) {
           loading={loading}
           columns={columns && columns.length === (initialColumns && initialColumns.length) ? initialColumns : columns}
           dataSource={myTaskplanlist.rows}
-          scroll={{ x: 1500, y: 700 }}
+          scroll={{ x: 1500, y: setTableHeight() }}
           rowKey={records => records.id}
           rowSelection={rowSelection}
           pagination={pagination}
