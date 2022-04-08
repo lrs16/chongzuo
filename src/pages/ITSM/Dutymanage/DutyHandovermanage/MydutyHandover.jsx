@@ -598,7 +598,19 @@ function MydutyHandover(props) {
       title: '交接班说明',
       dataIndex: 'receiveRemark',
       key: 'receiveRemark',
-      width: 250,
+      width: 150,
+      align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '值班班组',
@@ -653,7 +665,8 @@ function MydutyHandover(props) {
         val.title === '重大运维事件' ||
         val.title === '其他情况记录' ||
         val.title === '需注意事项' ||
-        val.title === '交接物品'
+        val.title === '交接物品' || 
+        val.title === '交接班说明'
       ) {
         obj.ellipsis = true;
         obj.render = (text, records) => {
