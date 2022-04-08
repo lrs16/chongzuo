@@ -444,7 +444,7 @@ function WorkOrder(props) {
         setUserChoice(false);
         sessionStorage.removeItem('NextflowUserId');
         const orderkeyAndTimeout = info && info.releaseMains && info.releaseMains.filter(item => item.timeoutResult && item.timeoutResult.timeout && !item.timeoutResult.reason);
-        if (orderkeyAndTimeout.length > 0) {
+        if (orderkeyAndTimeout.length > 0 && info.releaseMains?.length > 1) {
           message.error('有工单已超时且没有填写超时原因')
         } else {
           VersionAuditRef.current.Forms((err) => {
