@@ -556,7 +556,7 @@ function Statistics(props) {
                       type: 'unitStatistical',
                       name: v.name === '总数' ? '发布总次数' : v.name,
                       unit: v.name === '总数' ? '发布总次数' : v.name,
-                      datetype: 'D',
+                      datetype: values.type === 'Y' ? 'M' : 'D',
                       date: v.date,
                       pageIndex: 1,
                       pageSize: 12
@@ -613,7 +613,7 @@ function Statistics(props) {
                       type: 'typeStatistical',
                       name: v.name === '总数' ? '发布总次数' : v.name,
                       releaseType: v.name === '总数' ? '发布总次数' : v.name,
-                      datetype: 'D',
+                      datetype: values.type === 'Y' ? 'M' : 'D',
                       date: v.date,
                       pageIndex: 1,
                       pageSize: 12
