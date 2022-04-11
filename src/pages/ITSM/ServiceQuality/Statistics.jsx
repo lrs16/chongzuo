@@ -13,6 +13,7 @@ import { connect } from 'dva';
 import moment from 'moment';
 import StatisticsCard from '../Eventmanage/Eventstatistics/StatisticsCard';
 import AnalysisPopup from './AnalysisPopup';
+import Cycletag from './components/Cycletag';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -47,17 +48,16 @@ function Statistics(props) {
     setListdata(contractArr)
   }, [contractArr]);
 
-  const handleSelectChange = (value, option, index) => {
-    const replaceObj = JSON.parse(option.key);
+  const handleSelectChange = (option, index) => {
     const searchObj = listdata[index];
-    searchObj.extraScore = replaceObj.extraScore;
-    searchObj.minusScore = replaceObj.minusScore;
-    searchObj.totalScore = replaceObj.totalScore;
-    searchObj.extraRatio = replaceObj.extraRatio;
-    searchObj.minusRatio = replaceObj.minusRatio;
-    searchObj.beginTime = replaceObj.beginTime;
-    searchObj.endTime = replaceObj.endTime;
-    searchObj.active = replaceObj.assessCycle;
+    searchObj.extraScore = option.extraScore;
+    searchObj.minusScore = option.minusScore;
+    searchObj.totalScore = option.totalScore;
+    searchObj.extraRatio = option.extraRatio;
+    searchObj.minusRatio = option.minusRatio;
+    searchObj.beginTime = option.beginTime;
+    searchObj.endTime = option.endTime;
+    searchObj.active = option.assessCycle;
 
     const newArr = listdata;
     newArr.splice(index, 1, searchObj);
@@ -94,23 +94,13 @@ function Statistics(props) {
                   <b>{obj.contractName}</b>
                 </div>
 
-
                 <div>
-                  <span>考核周期：</span>
-                  <Select
-                    getPopupContainer={triggerNode => triggerNode.parentNode}
-                    style={{ width: 250 }}
-                    defaultValue={obj.active ? obj.active + moment(obj.beginTime).format('YYYY-MM-DD') + -moment(obj.endTime).format('YYYY-MM-DD') :''}
-                    onChange={(value, option) => handleSelectChange(value, option, index)}
-                  >
-                    {
-                      (obj.phases || []).map((objs) => [
-                        <Option key={JSON.stringify(objs)} value={objs.assessCycle + objs.beginTime + -objs.endTime}>
-                          <span>{objs.assessCycle} {objs.beginTime}-{objs.endTime}</span>
-                        </Option>
-                      ])
-                    }
-                  </Select>
+                  <span style={{fontWeight:900}}>考核周期：</span>
+                  <Cycletag
+                    tagList={obj.phases || []}
+                    arrIndex={index}
+                    changeData={(objs,arrIndex) => {handleSelectChange(objs,arrIndex)}}
+                  />
                 </div>
 
               </div>
@@ -126,14 +116,14 @@ function Statistics(props) {
                     setPicVal({
                       assessBeginTime: obj.beginTime,
                       assessEndTime: obj.endTime,
-                      contractId:obj.id,
+                      contractId: obj.id,
                       scoreType: '减'
                     });
                     setVisible(obj.beginTime);
-                    if(!obj.beginTime) {
+                    if (!obj.beginTime) {
                       message.info('没有考核周期的点击无效')
                     }
-                    setTitle('合同名称:'+ obj.contractName +';'+ '考核周期:' + (obj.active ? obj.active +'('+ moment(obj.beginTime).format('YYYY-MM-DD') + '-'+ moment(obj.endTime).format('YYYY-MM-DD')+')' : ''))
+                    setTitle('合同名称:' + obj.contractName + ';' + '考核周期:' + (obj.active ? obj.active + '(' + moment(obj.beginTime).format('YYYY-MM-DD') + '-' + moment(obj.endTime).format('YYYY-MM-DD') + ')' : ''))
                   }}
                 />
               </Col>
@@ -149,14 +139,14 @@ function Statistics(props) {
                     setPicVal({
                       assessBeginTime: obj.beginTime,
                       assessEndTime: obj.endTime,
-                      contractId:obj.id,
+                      contractId: obj.id,
                       scoreType: '加'
                     });
                     setVisible(obj.beginTime);
-                    if(!obj.beginTime) {
+                    if (!obj.beginTime) {
                       message.info('没有考核周期的点击无效')
                     }
-                    setTitle('合同名称:'+ obj.contractName +';'+ '考核周期:' + (obj.active ? obj.active +'('+ moment(obj.beginTime).format('YYYY-MM-DD') + '-'+ moment(obj.endTime).format('YYYY-MM-DD')+')' : ''))
+                    setTitle('合同名称:' + obj.contractName + ';' + '考核周期:' + (obj.active ? obj.active + '(' + moment(obj.beginTime).format('YYYY-MM-DD') + '-' + moment(obj.endTime).format('YYYY-MM-DD') + ')' : ''))
                   }}
                 />
               </Col>
@@ -172,14 +162,14 @@ function Statistics(props) {
                     setPicVal({
                       assessBeginTime: obj.beginTime,
                       assessEndTime: obj.endTime,
-                      contractId:obj.id,
+                      contractId: obj.id,
                       scoreType: '合计'
                     });
                     setVisible(obj.beginTime);
-                    if(!obj.beginTime) {
+                    if (!obj.beginTime) {
                       message.info('没有考核周期的点击无效')
                     }
-                    setTitle('合同名称:'+ obj.contractName +';'+ '考核周期:' + (obj.active ? obj.active +'('+ moment(obj.beginTime).format('YYYY-MM-DD') + '-'+ moment(obj.endTime).format('YYYY-MM-DD')+')' : ''))
+                    setTitle('合同名称:' + obj.contractName + ';' + '考核周期:' + (obj.active ? obj.active + '(' + moment(obj.beginTime).format('YYYY-MM-DD') + '-' + moment(obj.endTime).format('YYYY-MM-DD') + ')' : ''))
                   }}
                 />
               </Col>
@@ -192,7 +182,7 @@ function Statistics(props) {
         visible={visible}
         title={title}
         popupParameters={picval}
-        closePop={() => { setVisible(false)}}
+        closePop={() => { setVisible(false) }}
       />
     </>
   )
