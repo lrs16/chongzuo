@@ -5,6 +5,7 @@ import router from 'umi/router';
 import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Cascader, message, Popover, Tooltip } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined, AlertTwoTone } from '@ant-design/icons';
+import RangeTime from '@/components/SelectTime/RangeTime';
 import DictLower from '@/components/SysDict/DictLower';
 import TableColumns from '@/components/TableColumns';
 import AdminAuth from '@/components/AdminAuth';
@@ -12,16 +13,16 @@ import { querkeyVal } from '@/services/api';
 import { DemandDlete } from './services/api';
 
 const { Option } = Select;
-const { RangePicker } = DatePicker;
+// const { RangePicker } = DatePicker;
 
 const formItemLayout = {
   labelCol: {
-    xs: { span: 24 },
-    sm: { span: 8 },
+    xs: 24,
+    sm: 6,
   },
   wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 16 },
+    xs: 24,
+    sm: 18,
   },
 };
 
@@ -49,9 +50,9 @@ function QueryList(props) {
   const searchdata = (values, page, size) => {
     const newvalues = {
       createTime: '',
-      startTime: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD 00:00:00') : '',
-      endTime: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD 23:59:59') : '',
-      completeStatus: values.completeStatus === undefined ? '' : values.completeStatus,
+      startTime: values.createTime?.startTime ? moment(values.createTime.startTime).format('YYYY-MM-DD hh:mm:ss') : '',
+      endTime: values.createTime?.endTime ? moment(values.createTime.endTime).format('YYYY-MM-DD hh:mm:ss') : '',
+      completeStatus: !values.completeStatus ? '' : values.completeStatus,
     }
     dispatch({
       type: 'demandquery/querylist',
@@ -292,7 +293,7 @@ function QueryList(props) {
   };
 
 
-  const time = startTime ? [moment(startTime), moment(endTime)] : '';
+  // const time = startTime ? [moment(startTime), moment(endTime)] : '';
   const modulestatus = !module ? [] : module.split('/');
   const record = {
     demandId: '',
@@ -302,10 +303,11 @@ function QueryList(props) {
     demandType: '',
     sender: '',
     completeStatus,
-    createTime: time,
+    startTime: startTime ? moment(startTime).format('YYYY-MM-DD hh:mm:ss') : '',
+    endTime: endTime ? moment(endTime).format('YYYY-MM-DD 23:59:59') : '',
     paginations,
   };
-  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+  const cacheinfo = location.state?.cacheinfo ? location.state.cacheinfo : record;
 
   const handleReset = () => {
     router.push({
@@ -333,7 +335,7 @@ function QueryList(props) {
   }
 
   const download = () => {
-    validateFields((err, values) => {
+    validateFields((_, values) => {
       const tablecol = downloadColumns(defaultColumns);
       if (selectedRowKeys && selectedRowKeys.length > 0) {
         const ids = selectedRowRecord.map(item => {
@@ -362,38 +364,42 @@ function QueryList(props) {
             ...values,
             columns: JSON.stringify(tablecol),
             module: values.module === [] ? '' : values.module.join('/'),
-            startTime: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD 00:00:00') : '',
-            endTime: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD 23:59:59') : '',
+            startTime: values.createTime?.startTime ? moment(values.createTime.startTime).format('YYYY-MM-DD hh:mm:ss') : '',
+            endTime: values.createTime?.endTime ? moment(values.createTime.endTime).format('YYYY-MM-DD hh:mm:ss') : '',
             createTime: ''
           }
         }).then(res => {
-          const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
-          const blob = new Blob([res]);
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          a.click();
-          window.URL.revokeObjectURL(url);
+          if (res) {
+            const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+            const blob = new Blob([res]);
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+          } else {
+            message.error('下载失败，请刷新后重试...')
+          }
         });
       }
     })
   };
 
   // 设置时间
-  useEffect(() => {
-    if (location.state.cacheinfo) {
-      const cachestartTime = location.state.cacheinfo.startTime;
-      const cacheendTime = location.state.cacheinfo.endTime;
-      setFieldsValue({
-        createTime: cachestartTime ? [moment(cachestartTime), moment(cacheendTime)] : '',
-      })
-    } else {
-      setFieldsValue({
-        createTime: time,
-      })
-    }
-  }, [location.state]);
+  // useEffect(() => {
+  //   if (location.state.cacheinfo) {
+  //     const cachestartTime = location.state.cacheinfo.startTime;
+  //     const cacheendTime = location.state.cacheinfo.endTime;
+  //     setFieldsValue({
+  //       createTime: cachestartTime ? [moment(cachestartTime), moment(cacheendTime)] : '',
+  //     })
+  //   } else {
+  //     setFieldsValue({
+  //       createTime: time,
+  //     })
+  //   }
+  // }, [location.state]);
 
   useEffect(() => {
     if (location.state) {
@@ -427,11 +433,9 @@ function QueryList(props) {
 
   // 获取数据
   useEffect(() => {
-    if (cacheinfo !== undefined) {
-      validateFields((err, values) => {
-        if (!err) {
-          searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize)
-        }
+    if (cacheinfo) {
+      validateFields((_, values) => {
+        searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize)
       });
     }
     querkeyVal('demand', 'columns').then(res => {
@@ -481,10 +485,8 @@ function QueryList(props) {
         if (res.code === -1) {
           message.error(res.msg);
         };
-        validateFields((err, values) => {
-          if (!err) {
-            searchdata(values, paginations.current, paginations.pageSize);
-          }
+        validateFields((_, values) => {
+          searchdata(values, paginations.current, paginations.pageSize);
         });
       })
     } else if (len > 1) {
@@ -614,18 +616,37 @@ function QueryList(props) {
               <Col span={8}>
                 <Form.Item label="建单时间" >
                   {getFieldDecorator('createTime', {
-                    initialValue: '',
-                  })(<RangePicker
-                    // showTime={{
-                    //   hideDisabledOptions: true,
-                    //   defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                    // }}
-                    format='YYYY-MM-DD'
-                    allowClear
-                    style={{ width: '100%' }}
-                  />)}
+                    initialValue: { startTime: cacheinfo.startTime, endTime: cacheinfo.endTime },
+                  })(
+                    // <RangePicker
+                    // // showTime={{
+                    // //   hideDisabledOptions: true,
+                    // //   defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                    // // }}
+                    // format='YYYY-MM-DD'
+                    // allowClear
+                    // style={{ width: '100%' }}
+                    // />
+                    <RangeTime
+                      startVal={cacheinfo.startTime}
+                      endVal={cacheinfo.endTime}
+                      getTimes={(v) => { setFieldsValue({ createTime: v }) }}
+                    />
+                  )}
                 </Form.Item>
               </Col>
+              {(expand || (location && location.state && location.state.expand)) && (<Col span={8}>
+                <Form.Item label="申请时间">
+                  {getFieldDecorator('time', {
+                    initialValue: { startTime: cacheinfo.time1, endTime: cacheinfo.time2 },
+                  })(<></>)}
+                  <RangeTime
+                    startVal={cacheinfo.time1}
+                    endVal={cacheinfo.time2}
+                    getTimes={(v) => { setFieldsValue({ time: v }) }}
+                  />
+                </Form.Item>
+              </Col>)}
               <Col span={24} style={{ textAlign: 'right' }}>
                 <Button type="primary" onClick={handleSearch}>
                   查 询

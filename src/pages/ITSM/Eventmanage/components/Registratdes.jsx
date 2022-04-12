@@ -22,6 +22,11 @@ function Registratdes(props) {
             </Form.Item>
           </Col>
           <Col span={8}>
+            <Form.Item label="发生时间">
+              <Input defaultValue={info.occurTime} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
             <Form.Item label="事件来源">
               <Input defaultValue={main.eventSource} disabled />
             </Form.Item>
