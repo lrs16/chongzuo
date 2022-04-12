@@ -54,7 +54,7 @@ function MymonthlyReport(props) {
 
   const columns = [
     {
-      title: '周报类型',
+      title: '月报类型',
       dataIndex: 'type',
       key: 'type',
       render: (text, record) => {
@@ -110,7 +110,7 @@ function MymonthlyReport(props) {
       }
     },
     {
-      title: '周报名称',
+      title: '月报名称',
       dataIndex: 'name',
       key: 'name',
     },
