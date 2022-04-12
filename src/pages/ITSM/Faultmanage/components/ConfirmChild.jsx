@@ -142,7 +142,7 @@ const ConfirmChild = React.forwardRef((props, ref) => {
             <Form.Item label="确认说明" {...forminladeLayout}>
               {getFieldDecorator('confirmContent1', {
                 rules: [{ required: false, message: '请输入确认说明' }],
-                initialValue: confirm ? confirmContent : '',
+                initialValue: confirm ? confirm.confirmContent : '',
               })(
                 <FormTextArea
                   autoSize={1}
@@ -174,10 +174,10 @@ const ConfirmChild = React.forwardRef((props, ref) => {
           <Form.Item
             label="上传附件"
             {...forminladeLayout}
-            // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+          // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
           >
             {location &&
-            (!location.state || (location.state && !location.state.cache)) && ( // 位置已调
+              (!location.state || (location.state && !location.state.cache)) && ( // 位置已调
                 <div>
                   <SysUpload
                     fileslist={

@@ -208,7 +208,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
             )}
           </Form.Item>
         </Col>
-        <Col span={24} style={{ marginBottom: '-9px' }}>
+        <Col span={24} >
           <Form.Item label="回访内容" {...forminladeLayout}>
             {getFieldDecorator('finish_content', {
               rules: [{ required, message: '请输入回访内容' }],
