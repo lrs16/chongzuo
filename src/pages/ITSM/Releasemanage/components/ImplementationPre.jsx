@@ -140,13 +140,15 @@ function ImplementationPre(props, ref) {
     };
   }, [timeoutinfo]);
 
+  const [defaultSummary, setDefaultSummary] = useState('')
   useEffect(() => {
     if (info.practicePre && !info.practicePre.summary) {
       querkeyVal('release', 'summary').then(res => {
         if (res.code === 200) {
           const text = res.data.summary[0]?.val.split('-')[1];
-          const str = text.replace(/a/g, info.versionNo).replace(/b/g, info.moduleCount)
-          setFieldsValue({ summary: str })
+          const str = text.replace(/a/g, info.versionNo).replace(/b/g, info.moduleCount);
+          setFieldsValue({ summary: str });
+          setDefaultSummary(str);
         }
       });
     }
@@ -537,18 +539,18 @@ function ImplementationPre(props, ref) {
               </Form.Item>
             )}
           </Col>
-          <Col span={24}>
+          {(info.practicePre?.summary || defaultSummary) && (<Col span={24}>
             <Form.Item label="总述" {...forminladeLayout} labelAlign='left'>
               {getFieldDecorator('summary', {
-                initialValue: info.practicePre?.summary || '',
+                initialValue: info.practicePre?.summary || defaultSummary,
               })(<FormTextArea
                 autoSize={1}
-                indexText={info.practicePre?.summary || ''}
+                indexText={info.practicePre?.summary || defaultSummary}
                 isEdit={isEdit}
                 getVal={v => setFieldsValue({ summary: v })}
               />)}
             </Form.Item>
-          </Col>
+          </Col>)}
           <Col span={24} style={{ marginBottom: 16, marginTop: 4 }}>
             <DocumentAtt
               // rowkey='5'

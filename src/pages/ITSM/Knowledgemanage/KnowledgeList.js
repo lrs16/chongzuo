@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
-import { Card, Row, Col, Form, Input, Select, Button, Table, message, Modal } from 'antd';
+import { Card, Row, Col, Form, Input, Select, Button, Table, message, Modal, Tooltip } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
@@ -494,6 +494,18 @@ function KnowledgeList(props) {
       dataIndex: 'title',
       key: 'title',
       width: 200,
+      onCell: () => {
+        return {
+          style: {
+            maxWidth: 200,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            cursor: 'pointer'
+          }
+        }
+      },
+      render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
     },
     {
       title: '知识状态',
@@ -526,6 +538,12 @@ function KnowledgeList(props) {
       key: 'lookNum',
     },
   ];
+
+  const coldownload = {
+    title: '附件下载',
+    dataIndex: 'dowload',
+    key: 'dowload',
+  };
 
   useEffect(() => {
     if (location.state) {

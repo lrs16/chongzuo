@@ -635,7 +635,7 @@ function QueryList(props) {
                   )}
                 </Form.Item>
               </Col>
-              {(expand || (location && location.state && location.state.expand)) && (<Col span={8}>
+              {/* {(expand || (location && location.state && location.state.expand)) && (<Col span={8}>
                 <Form.Item label="申请时间">
                   {getFieldDecorator('time', {
                     initialValue: { startTime: cacheinfo.time1, endTime: cacheinfo.time2 },
@@ -646,7 +646,7 @@ function QueryList(props) {
                     getTimes={(v) => { setFieldsValue({ time: v }) }}
                   />
                 </Form.Item>
-              </Col>)}
+              </Col>)} */}
               <Col span={24} style={{ textAlign: 'right' }}>
                 <Button type="primary" onClick={handleSearch}>
                   查 询
