@@ -228,6 +228,15 @@ function Besolved(props) {
       title: '问题标题',
       dataIndex: 'title',
       key: 'title',
+      align: 'center',
+      ellipsis: true,
+      render: (text) => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '问题来源',
