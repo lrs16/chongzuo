@@ -116,13 +116,14 @@ function RelevancyOrder(props) {
       key: 'orderNo',
       render: (text, record) => {
         const handleClick = () => {
+          console.log(activeKey,'activeKey')
           switch (activeKey) {
             case 'event':
               router.push({
                 pathname: `/ITSM/eventmanage/query/details`,
                 query: {
                   pangekey: record.status,
-                  mainId: record.mainId,
+                  id: record.mainId,
                   No: text,
                 },
               });
