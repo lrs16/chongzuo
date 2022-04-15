@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 import router from 'umi/router';
 import { Card, Button, Spin } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -34,9 +35,9 @@ function Registration(props) {
       type: 'demandregister/start',
       payload: {
         ...values,
-        creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
-        registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-        completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
+        creationTime: values.creationTime ? moment(values.creationTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        registerTime: values.registerTime ? moment(values.registerTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        completeTime: values.completeTime ? moment(values.completeTime).format('YYYY-MM-DD HH:mm:ss') : '',
         proposingDepartment:
           values.proposingDepartment !== '' ? values.proposingDepartment : values.proposingUnit,
         proposingDepartmentId:
@@ -117,9 +118,9 @@ function Registration(props) {
           payload: {
             cacheinfo: {
               ...values,
-              creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
-              registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-              completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
+              creationTime: values.creationTime ? moment(values.creationTime).format('YYYY-MM-DD HH:mm:ss') : undefined,
+              registerTime: values.registerTime ? moment(values.registerTime).format('YYYY-MM-DD HH:mm:ss') : undefined,
+              completeTime: values.completeTime ? moment(values.completeTime).format('YYYY-MM-DD HH:mm:ss') : undefined,
               functionalModule: values.functionalModule.join('/'),
             },
             tabid: sessionStorage.getItem('tabid')

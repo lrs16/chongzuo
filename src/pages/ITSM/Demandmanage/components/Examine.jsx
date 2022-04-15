@@ -171,10 +171,11 @@ const Examine = forwardRef((props, ref) => {
               <Form.Item label={`${text}时间`}>
                 {getFieldDecorator('reviewTime', {
                   rules: [{ required, message: `请选择${text}时间` }],
-                  initialValue: moment(info[0].reviewTime),
+                  initialValue: moment(info[0].reviewTime || undefined),
                 })(<DatePicker
                   showTime
                   format="YYYY-MM-DD HH:mm:ss"
+                  allowClear={false}
                 />)}
               </Form.Item>
             </div>

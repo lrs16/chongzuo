@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-// import moment from 'moment';
+import moment from 'moment';
 import { connect } from 'dva';
 import { Collapse, Steps, Spin, message, Icon, Badge } from 'antd';
 import { openNotification } from '@/utils/utils';
@@ -173,9 +173,9 @@ function WorkOrder(props) {
     const values = RegistratRef.current.getVal();
     const formvalue = {
       ...values,
-      creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
-      registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-      completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
+      creationTime: values.creationTime ? moment(values.creationTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      registerTime: values.registerTime ? moment(values.registerTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      completeTime: values.completeTime ? moment(values.completeTime).format('YYYY-MM-DD HH:mm:ss') : '',
       registerId: info.demandForm.id,
       proposingDepartment:
         values.proposingDepartment !== '' ? values.proposingDepartment : values.proposingUnit,
@@ -238,7 +238,7 @@ function WorkOrder(props) {
     const values = ExamineRef.current.getVal();
     const formvalue = {
       ...values,
-      reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
+      reviewTime: values.reviewTime ? moment(values.reviewTime).format('YYYY-MM-DD HH:mm:ss') : '',
       opinion: values.result === 0 ? values.opinion2 : values.opinion1,
       business: Number(values.business),
       releases: Number(values.releases),
@@ -372,7 +372,7 @@ function WorkOrder(props) {
     const values = ExamineRef.current.getVal();
     const formvalue = {
       ...values,
-      reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
+      reviewTime: values.reviewTime ? moment(values.reviewTime).format('YYYY-MM-DD HH:mm:ss') : '',
       opinion: values.result === 0 ? values.opinion2 : values.opinion1,
       business: Number(values.business),
       releases: Number(values.releases),
@@ -525,16 +525,16 @@ function WorkOrder(props) {
 
   // 保存删除附件驱动表单保存
   useEffect(() => {
-    if (taskName === '需求登记' && files.ischange === true) {
+    if (taskName === '需求登记' && files.ischange) {
       const values = RegistratRef.current.getVal();
       dispatch({
         type: 'demandtodo/demandregisterupdate',
         payload: {
           paloadvalues: {
             ...values,
-            creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
-            registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-            completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
+            creationTime: values.creationTime ? moment(values.creationTime).format('YYYY-MM-DD HH:mm:ss') : '',
+            registerTime: values.registerTime ? moment(values.registerTime).format('YYYY-MM-DD HH:mm:ss') : '',
+            completeTime: values.completeTime ? moment(values.completeTime).format('YYYY-MM-DD HH:mm:ss') : '',
             proposingDepartment:
               values.proposingDepartment !== '' ? values.proposingDepartment : values.proposingUnit,
             attachment: JSON.stringify(files.arr),
@@ -557,7 +557,7 @@ function WorkOrder(props) {
         payload: {
           paloadvalues: {
             ...values,
-            reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
+            reviewTime: values.reviewTime ? moment(values.reviewTime).format('YYYY-MM-DD HH:mm:ss') : '',
             opinion: values.result === 0 ? values.opinion2 : values.opinion1,
             business: Number(values.business),
             releases: Number(values.releases),

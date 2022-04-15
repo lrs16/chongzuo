@@ -359,8 +359,8 @@ const Registrat = forwardRef((props, ref) => {
             <Form.Item label="建单时间">
               {getFieldDecorator('creationTime', {
                 rules: [{ required }],
-                initialValue: moment(register.creationTime),
-              })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" disabled style={{ width: '100%' }} />)}
+                initialValue: moment(register.creationTime || undefined),
+              })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" disabled style={{ width: '100%' }} allowClear={false} />)}
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -375,6 +375,7 @@ const Registrat = forwardRef((props, ref) => {
                     placeholder="请选择时间"
                     format="YYYY-MM-DD HH:mm:ss"
                     style={{ width: '100%' }}
+                    allowClear={false}
                   />)}
               </Form.Item>
             </div>
@@ -391,6 +392,7 @@ const Registrat = forwardRef((props, ref) => {
                   format="YYYY-MM-DD HH:mm:ss"
                   disabledDate={disabledDate}
                   style={{ width: '100%' }}
+                  allowClear={false}
                 />)}
               </Form.Item>
             </div>

@@ -576,36 +576,36 @@ function Track(props) {
       <Form {...formItemLayout}>
         <Row gutter={24}>
           <Col span={8}>
-            <Form.Item label="预计开发完成时间">
-              {getFieldDecorator('devFinishTime', {
-                rules: [{ required, message: '请选择预计开发完成时间' }],
-                initialValue: moment(data.length > 0 && data[data.length - 1].devFinishTime ? data[data.length - 1].devFinishTime : undefined),
-              })(<><DatePicker
-                showTime
-                placeholder="请选择时间"
-                format="YYYY-MM-DD HH:mm:ss"
-                style={{ width: '100%' }}
-                defaultValue={moment(data.length > 0 && data[data.length - 1].devFinishTime ? data[data.length - 1].devFinishTime : undefined)}
-                onChange={(v) => { setFieldsValue({ devFinishTime: moment(v) }) }}
-                allowClear={false}
-              /></>)}
-            </Form.Item>
+            <div onClick={e => e.stopPropagation()}>
+              <Form.Item label="预计开发完成时间">
+                {getFieldDecorator('devFinishTime', {
+                  rules: [{ required, message: '请选择预计开发完成时间' }],
+                  initialValue: moment(data.length > 0 && data[data.length - 1].devFinishTime ? data[data.length - 1].devFinishTime : undefined),
+                })(<DatePicker
+                  showTime
+                  placeholder="请选择时间"
+                  format="YYYY-MM-DD HH:mm:ss"
+                  style={{ width: '100%' }}
+                  allowClear={false}
+                />)}
+              </Form.Item>
+            </div>
           </Col>
           <Col span={8}>
-            <Form.Item label="预计发布时间">
-              {getFieldDecorator('releaseTime', {
-                rules: [{ required, message: '请选择预计发布时间' }],
-                initialValue: moment(data.length > 0 && data[data.length - 1].releaseTime ? data[data.length - 1].releaseTime : undefined),
-              })(<><DatePicker
-                showTime
-                placeholder="请选择时间"
-                format="YYYY-MM-DD HH:mm:ss"
-                style={{ width: '100%' }}
-                defaultValue={moment(data.length > 0 && data[data.length - 1].releaseTime ? data[data.length - 1].releaseTime : undefined)}
-                onChange={(v) => { setFieldsValue({ releaseTime: moment(v) }) }}
-                allowClear={false}
-              /></>)}
-            </Form.Item>
+            <div onClick={e => e.stopPropagation()}>
+              <Form.Item label="预计发布时间">
+                {getFieldDecorator('releaseTime', {
+                  rules: [{ required, message: '请选择预计发布时间' }],
+                  initialValue: moment(data.length > 0 && data[data.length - 1].releaseTime ? data[data.length - 1].releaseTime : undefined),
+                })(<DatePicker
+                  showTime
+                  placeholder="请选择时间"
+                  format="YYYY-MM-DD HH:mm:ss"
+                  style={{ width: '100%' }}
+                  allowClear={false}
+                />)}
+              </Form.Item>
+            </div>
           </Col>
           <Col span={8} style={{ paddingTop: 4 }}>
             {status === '' ? (
