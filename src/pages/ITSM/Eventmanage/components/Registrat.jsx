@@ -535,8 +535,14 @@ const Registrat = forwardRef((props, ref) => {
               <Form.Item label="发生时间">
                 {getFieldDecorator('register_occurTime', {
                   rules: [{ required, message: '请选择发生时间' }],
-                  initialValue: moment(register?.occurTime),
-                })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
+                  initialValue: moment(register?.occurTime || undefined),
+                })(<DatePicker
+                  showTime
+                  placeholder="请选择时间"
+                  format="YYYY-MM-DD HH:mm:ss"
+                  style={{ width: '100%' }}
+                  allowClear={false}
+                />)}
               </Form.Item>
             </div>
           </Col>

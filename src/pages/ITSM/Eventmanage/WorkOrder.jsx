@@ -216,7 +216,7 @@ function WorkOrder2(props) {
     setFormregistrat({
       ...values,
       main_eventObject: values.main_eventObject.slice(-1)[0],
-      register_occurTime: moment(values.register_occurTime).format('YYYY-MM-DD HH:mm:ss'),
+      register_occurTime: values.register_occurTime ? moment(values.register_occurTime).format('YYYY-MM-DD HH:mm:ss') : '',
       // register_applicationUserId: values.register_applicationUser === '' ? '' : values.register_applicationUser,
       register_mobilePhone:
         values.main_revisitWay === '002' ? values.mobilePhone1 : values.mobilePhone2,
@@ -254,7 +254,7 @@ function WorkOrder2(props) {
     const values = CheckRef.current.getVal();
     setFormcheck({
       ...values,
-      check_checkTime: moment(values.check_checkTime).format('YYYY-MM-DD HH:mm:ss'),
+      check_checkTime: values.check_checkTime ? moment(values.check_checkTime).format('YYYY-MM-DD HH:mm:ss') : '',
       check_fileIds: JSON.stringify(files.arr),
       check_content: values.check_checkResult === '001' ? values.content1 : values.content2,
       check_checkType: info.flowNodeName,
@@ -321,7 +321,7 @@ function WorkOrder2(props) {
     setFormhandle({
       ...values,
       main_eventObject: values.main_eventObject?.slice(-1)[0],
-      handle_endTime: moment(values.handle_endTime).format('YYYY-MM-DD HH:mm:ss'),
+      handle_endTime: values.handle_endTime ? moment(values.handle_endTime).format('YYYY-MM-DD HH:mm:ss') : '',
       handle_fileIds: JSON.stringify(files.arr),
     });
     switch (type) {
@@ -349,7 +349,7 @@ function WorkOrder2(props) {
     const values = ReturnVisitRef.current.getVal();
     setFormvisit({
       ...values,
-      finish_revisitTime: moment(values.finish_revisitTime).format('YYYY-MM-DD HH:mm:ss'),
+      finish_revisitTime: values.finish_revisitTime ? moment(values.finish_revisitTime).format('YYYY-MM-DD HH:mm:ss') : '',
       finish_fileIds: JSON.stringify(files.arr),
     });
     switch (type) {

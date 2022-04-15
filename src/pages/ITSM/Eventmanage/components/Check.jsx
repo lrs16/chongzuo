@@ -123,7 +123,7 @@ const Check = forwardRef((props, ref) => {
             {getFieldDecorator('check_checkTime', {
               rules: [{ required: true }],
               initialValue: moment(check?.checkTime || undefined),
-            })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
+            })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" allowClear={false} />)}
           </Form.Item>
         </Col>
         <Col span={24}>

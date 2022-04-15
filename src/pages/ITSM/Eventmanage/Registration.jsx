@@ -86,7 +86,7 @@ function Registration(props) {
     setFormregistrat({
       ...values,
       main_eventObject: values.main_eventObject?.slice(-1)[0],
-      register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
+      register_occurTime: values.register_occurTime ? moment(values.register_occurTime).format('YYYY-MM-DD HH:mm:ss') : '',
       register_applicationUnit: values.applicationUnit,
       register_applicationUnitId: values.applicationUnit === '' ? '' : values.register_applicationUnitId,
       register_mobilePhone: values.main_revisitWay === '002' ? values.mobilePhone1 : values.mobilePhone2,
@@ -122,7 +122,7 @@ function Registration(props) {
       setFormregistrat({
         ...values,
         main_eventObject: values.main_eventObject?.slice(-1)[0],
-        register_occurTime: moment(values.register_occurTime).format('YYYY-MM-DD HH:mm:ss'),
+        register_occurTime: values.register_occurTime ? moment(values.register_occurTime).format('YYYY-MM-DD HH:mm:ss') : '',
         register_applicationUnit: values.applicationUnit,
         register_applicationUnitId: values.applicationUnit === '' ? '' : values.register_applicationUnitId,
         register_mobilePhone: values.main_revisitWay === '002' ? values.mobilePhone1 : values.mobilePhone2,
@@ -136,7 +136,7 @@ function Registration(props) {
         const val = HandleRef.current?.getVal();
         setFormhandle({
           ...val,
-          handle_endTime: moment(val.handle_endTime).format('YYYY-MM-DD HH:mm:ss'),
+          handle_endTime: val.handle_endTime ? moment(val.handle_endTime).format('YYYY-MM-DD HH:mm:ss') : '',
           handle_fileIds: JSON.stringify(handlefiles.arr),
         });
         setIscheck({ save: false, flow: false });
@@ -263,7 +263,7 @@ function Registration(props) {
           applicationUserId: values.register_applicationUserId,
           applicationUserPhone: values.register_applicationUserPhone,
           id: '',
-          occurTime: moment(values.register_occurTime).format('YYYY-MM-DD HH:mm:ss'),
+          occurTime: values.register_occurTime ? moment(values.register_occurTime).format('YYYY-MM-DD HH:mm:ss') : '',
           selfhandle: values.register_selfhandle,
           supplement: values.register_supplement,
           mobilePhone: values.mobilePhone2 ? values.mobilePhone2 : values.mobilePhone1,
