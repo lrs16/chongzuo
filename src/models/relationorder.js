@@ -1,6 +1,7 @@
 import {
   getEventList,
   getTroubleList,
+  getRepairList,
   getProblemList,
   queryOrderRelationList,
   saveRelation,
@@ -71,6 +72,14 @@ export default {
     // 弹窗获取故障列表
     * fetchtrouble({ payload }, { put, call }) {
       const response = yield call(getTroubleList, payload);
+      yield put({
+        type: "saveorder",
+        payload: response.data
+      })
+    },
+    // 弹窗获取故障应急抢修票列表
+    *fetchrepair({ payload }, { put, call }) {
+      const response = yield call(getRepairList, payload);
       yield put({
         type: "saveorder",
         payload: response.data

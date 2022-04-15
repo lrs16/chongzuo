@@ -31,11 +31,11 @@ const plugins = [
       // },
       pwa: pwa
         ? {
-          workboxPluginMode: 'InjectManifest',
-          workboxOptions: {
-            importWorkboxFrom: 'local',
-          },
-        }
+            workboxPluginMode: 'InjectManifest',
+            workboxOptions: {
+              importWorkboxFrom: 'local',
+            },
+          }
         : false, // default close dll, because issue https://github.com/ant-design/ant-design-pro/issues/4665
       // dll features https://webpack.js.org/plugins/dll-plugin/
       // dll: {
@@ -169,7 +169,7 @@ export default {
                           icon: 'control',
                           component: './ITSM/ServiceQuality/Statistics',
                         },
-                      ]
+                      ],
                     },
                     {
                       path: '/ITSM/workbench',
@@ -223,16 +223,16 @@ export default {
                               name: '作业计划查询 ',
                               icon: 'cloud-server',
                               component: './ITSM/OperationPlan/TaskSearch',
-                            }
-                          ]
+                            },
+                          ],
                         },
                         {
                           path: '/ITSM/comprehensivequery/timeout',
                           name: '超时查询 ',
                           icon: 'cloud-server',
                           component: './ITSM/Eventmanage/Overtime',
-                        }
-                      ]
+                        },
+                      ],
                     },
                     {
                       path: '/ITSM/devopsStatistics',
@@ -246,18 +246,20 @@ export default {
                           component: './ITSM/Eventmanage/Eventstatistics/Maintenance',
                         },
                         {
-                          path: '/ITSM/devopsStatistics/eventmanage/eventstatistics/maintenanceservice',
+                          path:
+                            '/ITSM/devopsStatistics/eventmanage/eventstatistics/maintenanceservice',
                           name: '软件运维服务指标完成情况 ',
                           icon: 'cloud-server',
                           component: './ITSM/Eventmanage/Eventstatistics/Maintenanceservice',
                         },
                         {
-                          path: '/ITSM/devopsStatistics/eventmanage/eventstatistics/workordertreatmentrate',
+                          path:
+                            '/ITSM/devopsStatistics/eventmanage/eventstatistics/workordertreatmentrate',
                           name: '工单处理率 ',
                           icon: 'cloud-server',
                           component: './ITSM/Eventmanage/Eventstatistics/Workordertreatmentrate',
                         },
-                      ]
+                      ],
                     },
                     {
                       path: '/ITSM/todo',
@@ -347,7 +349,8 @@ export default {
                               path: '/ITSM/eventmanage/eventstatistics/workordertreatmentrate',
                               name: '工单处理率',
                               icon: 'cloud-server',
-                              component: './ITSM/Eventmanage/Eventstatistics/Workordertreatmentrate',
+                              component:
+                                './ITSM/Eventmanage/Eventstatistics/Workordertreatmentrate',
                             },
                             {
                               path: '/ITSM/eventmanage/eventstatistics/statisticsAnalysis',
@@ -590,6 +593,31 @@ export default {
                           component: './ITSM/Faultmanage/AnalysisReport',
                         },
                         {
+                          path: '/ITSM/faultmanage/tickemergent',
+                          name: '应急抢修票',
+                          icon: 'control',
+                          routes: [
+                            {
+                              path: '/ITSM/faultmanage/tickemergent/registration',
+                              name: '应急抢修票登记',
+                              icon: 'control',
+                              component: './ITSM/Faultmanage/TickemergentRegistration',
+                            },
+                            {
+                              path: '/ITSM/faultmanage/tickemergent/details',
+                              name: '应急抢修票工单',
+                              icon: 'control',
+                              component: './ITSM/Faultmanage/TickemergentDetail',
+                            },
+                            {
+                              path: '/ITSM/faultmanage/tickemergent/list',
+                              name: '应急抢修票列表',
+                              icon: 'control',
+                              component: './ITSM/Faultmanage/TickemergentList',
+                            },
+                          ],
+                        },
+                        {
                           path: '/ITSM/faultmanage/faultstaticount',
                           name: '故障统计',
                           icon: 'control',
@@ -690,7 +718,7 @@ export default {
                               icon: 'control',
                               component: './ITSM/Releasemanage/ReleaseRepo',
                             },
-                          ]
+                          ],
                         },
                         {
                           path: '/ITSM/releasemanage/temporary',
@@ -715,7 +743,7 @@ export default {
                               icon: 'control',
                               component: './ITSM/Releasemanage/TemporaryList',
                             },
-                          ]
+                          ],
                         },
                         {
                           path: '/ITSM/releasemanage/statistics',
@@ -750,9 +778,8 @@ export default {
                               icon: 'control',
                               component: './ITSM/Releasemanage/LibraryList',
                             },
-                          ]
+                          ],
                         },
-
                       ],
                     },
                     {
@@ -774,49 +801,49 @@ export default {
                           path: '/ITSM/knowledgemanage/myknowledge',
                           name: '我的知识',
                           icon: 'fork',
-                          component: './ITSM/Knowledgemanage/KnowledgeList'
+                          component: './ITSM/Knowledgemanage/KnowledgeList',
                         },
                         {
                           path: '/ITSM/knowledgemanage/myknowledge/new',
                           name: '新增知识',
                           icon: 'fork',
-                          component: './ITSM/Knowledgemanage/New'
+                          component: './ITSM/Knowledgemanage/New',
                         },
                         {
                           path: '/ITSM/knowledgemanage/myknowledge',
                           name: '我的知识',
                           icon: 'fork',
-                          component: './ITSM/Knowledgemanage/KnowledgeList'
+                          component: './ITSM/Knowledgemanage/KnowledgeList',
                         },
                         {
                           path: '/ITSM/knowledgemanage/:id/operation',
                           name: '知识单操作',
                           icon: 'fork',
-                          component: './ITSM/Knowledgemanage/Operation'
+                          component: './ITSM/Knowledgemanage/Operation',
                         },
                         {
                           path: '/ITSM/knowledgemanage/maintain',
                           name: '知识维护',
                           icon: 'fork',
-                          component: './ITSM/Knowledgemanage/KnowledgeList'
+                          component: './ITSM/Knowledgemanage/KnowledgeList',
                         },
                         {
                           path: '/ITSM/knowledgemanage/toexamine',
                           name: '知识审核',
                           icon: 'fork',
-                          component: './ITSM/Knowledgemanage/KnowledgeList'
+                          component: './ITSM/Knowledgemanage/KnowledgeList',
                         },
                         {
                           path: '/ITSM/knowledgemanage/query',
                           name: '知识查询',
                           icon: 'fork',
-                          component: './ITSM/Knowledgemanage/KnowledgeList'
+                          component: './ITSM/Knowledgemanage/KnowledgeList',
                         },
                         {
                           path: '/ITSM/knowledgemanage/query/details',
                           name: '知识详情',
                           icon: 'fork',
-                          component: './ITSM/Knowledgemanage/View'
+                          component: './ITSM/Knowledgemanage/View',
                         },
                         {
                           path: '/ITSM/knowledgemanage/statistics',
@@ -831,11 +858,11 @@ export default {
                               path: '/ITSM/knowledgemanage/statistics/type',
                               name: '知识分类统计',
                               icon: 'fork',
-                              component: './ITSM/Knowledgemanage/StatisticsbyType'
+                              component: './ITSM/Knowledgemanage/StatisticsbyType',
                             },
-                          ]
+                          ],
                         },
-                      ]
+                      ],
                     },
                     {
                       path: '/ITSM/operationreport',
@@ -844,7 +871,7 @@ export default {
                       routes: [
                         {
                           path: '/ITSM/operationreport',
-                          redirect: '/ITSM/operationreport/weeklyreport'
+                          redirect: '/ITSM/operationreport/weeklyreport',
                         },
                         {
                           path: '/ITSM/operationreport/weeklyreport',
@@ -856,63 +883,65 @@ export default {
                               path: '/ITSM/operationreport/weeklyreport/myweeklyreport',
                               name: '我的周报',
                               icon: 'fork',
-                              component: './ITSM/Operationreport/WeeklyReport/OperationmyweeklyReport'
+                              component:
+                                './ITSM/Operationreport/WeeklyReport/OperationmyweeklyReport',
                             },
                             {
                               path: '/ITSM/operationreport/weeklyreport/myweeklyreportsearch',
                               name: '周报查询',
                               icon: 'fork',
-                              component: './ITSM/Operationreport/WeeklyReport/WeeklySearch'
+                              component: './ITSM/Operationreport/WeeklyReport/WeeklySearch',
                             },
                             {
                               path: '/ITSM/operationreport/weeklyreport/softreport',
                               name: '软件运维周报',
                               icon: 'fork',
-                              component: './ITSM/Operationreport/WeeklyReport/SoftReport'
+                              component: './ITSM/Operationreport/WeeklyReport/SoftReport',
                             },
                             {
                               path: '/ITSM/operationreport/weeklyreport/detailSoft',
                               name: '软件运维周报详情页',
                               icon: 'fork',
-                              component: './ITSM/Operationreport/WeeklyReport/SoftReportdetail'
+                              component: './ITSM/Operationreport/WeeklyReport/SoftReportdetail',
                             },
                             {
                               path: '/ITSM/operationreport/weeklyreport/computerroomreport',
                               name: '机房运维周报',
                               icon: 'fork',
-                              component: './ITSM/Operationreport/WeeklyReport/ComputerroomReport'
+                              component: './ITSM/Operationreport/WeeklyReport/ComputerroomReport',
                             },
                             {
                               path: '/ITSM/operationreport/weeklyreport/computerroomreportdetail',
                               name: '机房运维周报详情页',
                               icon: 'fork',
-                              component: './ITSM/Operationreport/WeeklyReport/ComputerroomReportdetail'
+                              component:
+                                './ITSM/Operationreport/WeeklyReport/ComputerroomReportdetail',
                             },
                             {
                               path: '/ITSM/operationreport/weeklyreport/databasereport',
                               name: '数据库运维周报',
                               icon: 'fork',
-                              component: './ITSM/Operationreport/WeeklyReport/DatabaseReport'
+                              component: './ITSM/Operationreport/WeeklyReport/DatabaseReport',
                             },
                             {
                               path: '/ITSM/operationreport/weeklyreport/databasereportdetail',
                               name: '数据库运维周报详情页',
                               icon: 'fork',
-                              component: './ITSM/Operationreport/WeeklyReport/DatabaseReportdetail'
+                              component: './ITSM/Operationreport/WeeklyReport/DatabaseReportdetail',
                             },
                             {
                               path: '/ITSM/operationreport/weeklyreport/otherreport',
                               name: '其他运维周报',
                               icon: 'fork',
-                              component: './ITSM/Operationreport/WeeklyReport/OtherReport'
+                              component: './ITSM/Operationreport/WeeklyReport/OtherReport',
                             },
                             {
                               path: '/ITSM/operationreport/weeklyreport/otherreportdetail',
                               name: '其他运维周报详情',
                               icon: 'fork',
-                              component: './ITSM/Operationreport/WeeklyReport/OtherReportdetail'
+                              component: './ITSM/Operationreport/WeeklyReport/OtherReportdetail',
                             },
-                          ]
+                          ],
                         },
                         {
                           path: '/ITSM/operationreport/monthlyreport',
@@ -921,7 +950,7 @@ export default {
                           routes: [
                             {
                               path: '/ITSM/operationreport/monthlyreport',
-                              redirect: '/ITSM/operationreport/monthlyreport/mymonthlyreport'
+                              redirect: '/ITSM/operationreport/monthlyreport/mymonthlyreport',
                             },
                             {
                               path: '/ITSM/operationreport/monthlyreport/mymonthlyreport',
@@ -933,60 +962,61 @@ export default {
                               path: '/ITSM/operationreport/monthlyreport/mymonthlysearch',
                               name: '月报查询',
                               icon: 'fork',
-                              component: './ITSM/Operationreport/MonthlyReport/MymonthlySearch'
+                              component: './ITSM/Operationreport/MonthlyReport/MymonthlySearch',
                             },
                             {
                               path: '/ITSM/operationreport/monthlyreport/monthsoftreport',
                               name: '软件运维月报',
                               icon: 'fork',
-                              component: './ITSM/Operationreport/WeeklyReport/SoftReport'
+                              component: './ITSM/Operationreport/WeeklyReport/SoftReport',
                             },
                             {
                               path: '/ITSM/operationreport/monthlyreport/monthdetailSoft',
                               name: '软件运维月报详情页',
                               icon: 'fork',
-                              component: './ITSM/Operationreport/WeeklyReport/SoftReportdetail'
+                              component: './ITSM/Operationreport/WeeklyReport/SoftReportdetail',
                             },
                             {
                               path: '/ITSM/operationreport/monthlyreport/monthcomputerroomreport',
                               name: '机房运维月报',
                               icon: 'fork',
-                              component: './ITSM/Operationreport/WeeklyReport/ComputerroomReport'
+                              component: './ITSM/Operationreport/WeeklyReport/ComputerroomReport',
                             },
                             {
-                              path: '/ITSM/operationreport/monthlyreport/monthcomputerroomreportdetail',
+                              path:
+                                '/ITSM/operationreport/monthlyreport/monthcomputerroomreportdetail',
                               name: '机房运维月报详情页',
                               icon: 'fork',
-                              component: './ITSM/Operationreport/WeeklyReport/ComputerroomReportdetail'
+                              component:
+                                './ITSM/Operationreport/WeeklyReport/ComputerroomReportdetail',
                             },
                             {
                               path: '/ITSM/operationreport/monthlyreport/monthdatabasereport',
                               name: '数据库运维月报',
                               icon: 'fork',
-                              component: './ITSM/Operationreport/WeeklyReport/DatabaseReport'
+                              component: './ITSM/Operationreport/WeeklyReport/DatabaseReport',
                             },
                             {
                               path: '/ITSM/operationreport/monthlyreport/monthdatabasereportdetail',
                               name: '数据库运维月报详情页',
                               icon: 'fork',
-                              component: './ITSM/Operationreport/WeeklyReport/DatabaseReportdetail'
+                              component: './ITSM/Operationreport/WeeklyReport/DatabaseReportdetail',
                             },
                             {
                               path: '/ITSM/operationreport/monthlyreport/monthotherreport',
                               name: '其他运维月报',
                               icon: 'fork',
-                              component: './ITSM/Operationreport/WeeklyReport/OtherReport'
+                              component: './ITSM/Operationreport/WeeklyReport/OtherReport',
                             },
                             {
                               path: '/ITSM/operationreport/monthlyreport/monthotherreportdetail',
                               name: '其他运维月报详情',
                               icon: 'fork',
-                              component: './ITSM/Operationreport/WeeklyReport/OtherReportdetail'
+                              component: './ITSM/Operationreport/WeeklyReport/OtherReportdetail',
                             },
-                          ]
+                          ],
                         },
-
-                      ]
+                      ],
                     },
                     {
                       path: '/ITSM/operationplan',
@@ -996,7 +1026,7 @@ export default {
                       routes: [
                         {
                           path: '/ITSM/operationplan',
-                          redirect: '/ITSM/operationplan/myoperationplan'
+                          redirect: '/ITSM/operationplan/myoperationplan',
                         },
                         {
                           path: '/ITSM/operationplan/myoperationplan/',
@@ -1069,7 +1099,7 @@ export default {
                               icon: 'fork',
                               component: './ITSM/OperationPlan/OperationplanStatistics/Timeout',
                             },
-                          ]
+                          ],
                         },
                         {
                           path: '/ITSM/operationplan/personaccessmanage',
@@ -1080,35 +1110,40 @@ export default {
                               path: '/ITSM/operationplan/personaccessmanage/toregister',
                               name: '人员进出登记',
                               icon: 'fork',
-                              component: './ITSM/OperationPlan/OperationplanPersonaccessmanage/Toregister',
+                              component:
+                                './ITSM/OperationPlan/OperationplanPersonaccessmanage/Toregister',
                             },
                             {
                               path: '/ITSM/operationplan/personaccessmanage/tocheck',
                               name: '人员进出审核',
                               icon: 'fork',
-                              component: './ITSM/OperationPlan/OperationplanPersonaccessmanage/ToCheck',
+                              component:
+                                './ITSM/OperationPlan/OperationplanPersonaccessmanage/ToCheck',
                             },
                             {
                               path: '/ITSM/operationplan/personaccessmanage/tocheck/newcheck',
                               name: '人员进出审核',
                               icon: 'fork',
-                              component: './ITSM/OperationPlan/OperationplanPersonaccessmanage/Newcheck',
+                              component:
+                                './ITSM/OperationPlan/OperationplanPersonaccessmanage/Newcheck',
                             },
                             {
                               path: '/ITSM/operationplan/personaccessmanage/toquery',
                               name: '人员进出查询',
                               icon: 'fork',
-                              component: './ITSM/OperationPlan/OperationplanPersonaccessmanage/ToQuery',
+                              component:
+                                './ITSM/OperationPlan/OperationplanPersonaccessmanage/ToQuery',
                             },
                             {
                               path: '/ITSM/operationplan/personaccessmanage/record',
                               name: '人员进出查询',
                               icon: 'fork',
-                              component: './ITSM/OperationPlan/OperationplanPersonaccessmanage/ToQuerydetails',
+                              component:
+                                './ITSM/OperationPlan/OperationplanPersonaccessmanage/ToQuerydetails',
                             },
-                          ]
+                          ],
                         },
-                      ]
+                      ],
                     },
                     {
                       path: '/ITSM/supervisework',
@@ -1123,13 +1158,13 @@ export default {
                           path: '/ITSM/supervisework/mycreatework',
                           name: '我创建的工作',
                           icon: 'fork',
-                          component: './ITSM/Supervisework/MycreateWork'
+                          component: './ITSM/Supervisework/MycreateWork',
                         },
                         {
                           path: '/ITSM/supervisework/mycreatework/taskworkfillin',
                           name: '工作任务填报',
                           icon: 'fork',
-                          component: './ITSM/Supervisework/TaskworkFillin'
+                          component: './ITSM/Supervisework/TaskworkFillin',
                         },
                         {
                           path: '/ITSM/supervisework/workplandetail',
@@ -1141,7 +1176,7 @@ export default {
                           path: '/ITSM/supervisework/myresponwork',
                           name: '我负责的工作',
                           icon: 'fork',
-                          component: './ITSM/Supervisework/MyresponWork'
+                          component: './ITSM/Supervisework/MyresponWork',
                         },
                         {
                           path: '/ITSM/supervisework/executework',
@@ -1153,13 +1188,13 @@ export default {
                           path: '/ITSM/supervisework/todelayexamine',
                           name: '工作延期审核',
                           icon: 'fork',
-                          component: './ITSM/Supervisework/TodelayExamine'
+                          component: './ITSM/Supervisework/TodelayExamine',
                         },
                         {
                           path: '/ITSM/supervisework/querywork',
                           name: '工作查询',
                           icon: 'fork',
-                          component: './ITSM/Supervisework/QueryWork'
+                          component: './ITSM/Supervisework/QueryWork',
                         },
                         {
                           path: '/ITSM/supervisework/queryworkdetails',
@@ -1167,7 +1202,7 @@ export default {
                           icon: 'control',
                           component: './ITSM/Supervisework/QueryWorkDetails',
                         },
-                      ]
+                      ],
                     },
                     {
                       path: '/ITSM/servicequalityassessment',
@@ -1176,55 +1211,55 @@ export default {
                       routes: [
                         {
                           path: '/ITSM/servicequalityassessment',
-                          redirect: '/ITSM/servicequalityassessment/serviceprovidermaintenance'
+                          redirect: '/ITSM/servicequalityassessment/serviceprovidermaintenance',
                         },
                         {
                           path: '/ITSM/servicequalityassessment/serviceprovidermaintenance',
                           name: '服务商维护',
                           icon: 'control',
-                          component: './ITSM/ServiceQuality/ProviderMaintenance'
+                          component: './ITSM/ServiceQuality/ProviderMaintenance',
                         },
                         {
                           path: '/ITSM/servicequalityassessment/addserviceprovidermaintenance',
                           name: '新增服务商维护',
                           icon: 'control',
-                          component: './ITSM/ServiceQuality/components/AddProviderMaintenance'
+                          component: './ITSM/ServiceQuality/components/AddProviderMaintenance',
                         },
                         {
                           path: '/ITSM/servicequalityassessment/detailserviceprovidermaintenance',
                           name: '服务商维护详情',
                           icon: 'control',
-                          component: './ITSM/ServiceQuality/components/AddProviderMaintenance'
+                          component: './ITSM/ServiceQuality/components/AddProviderMaintenance',
                         },
                         {
                           path: '/ITSM/servicequalityassessment/serviceprovidersearch',
                           name: '服务商查询',
                           icon: 'control',
-                          component: './ITSM/ServiceQuality/ProviderMaintenance'
+                          component: './ITSM/ServiceQuality/ProviderMaintenance',
                         },
                         {
                           path: '/ITSM/servicequalityassessment/scoringrulesmaintenance',
                           name: '评分细则维护',
                           icon: 'control',
-                          component: './ITSM/ServiceQuality/ScoringRulesmaintenance'
+                          component: './ITSM/ServiceQuality/ScoringRulesmaintenance',
                         },
                         {
                           path: '/ITSM/servicequalityassessment/addscoringrulesmaintenance',
                           name: '新增评分细则维护',
                           icon: 'control',
-                          component: './ITSM/ServiceQuality/components/AddScoringRulesmaintenance'
+                          component: './ITSM/ServiceQuality/components/AddScoringRulesmaintenance',
                         },
                         {
                           path: '/ITSM/servicequalityassessment/detailscoringrulesmaintenance',
                           name: '评分细则维护详情页',
                           icon: 'control',
-                          component: './ITSM/ServiceQuality/components/AddScoringRulesmaintenance'
+                          component: './ITSM/ServiceQuality/components/AddScoringRulesmaintenance',
                         },
                         {
                           path: '/ITSM/servicequalityassessment/scoringrulessearch',
                           name: '评分细则查询',
                           icon: 'control',
-                          component: './ITSM/ServiceQuality/ScoringRulesmaintenance'
+                          component: './ITSM/ServiceQuality/ScoringRulesmaintenance',
                         },
                         {
                           path: '/ITSM/servicequalityassessment/serviceperformanceappraisal',
@@ -1232,42 +1267,54 @@ export default {
                           icon: 'control',
                           routes: [
                             {
-                              path: '/ITSM/servicequalityassessment/serviceperformanceappraisal/register',
+                              path:
+                                '/ITSM/servicequalityassessment/serviceperformanceappraisal/register',
                               name: '服务绩效考核登记',
                               icon: 'fork',
-                              component: './ITSM/ServiceQuality/ServicePerformanceappraisal/Registertion'
+                              component:
+                                './ITSM/ServiceQuality/ServicePerformanceappraisal/Registertion',
                             },
                             {
-                              path: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
+                              path:
+                                '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
                               name: '服务绩效考核待办详情',
                               icon: 'fork',
-                              component: './ITSM/ServiceQuality/ServicePerformanceappraisal/TobedealtForm'
+                              component:
+                                './ITSM/ServiceQuality/ServicePerformanceappraisal/TobedealtForm',
                             },
                             {
-                              path: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtlist',
+                              path:
+                                '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtlist',
                               name: '服务绩效考核待办',
                               icon: 'fork',
-                              component: './ITSM/ServiceQuality/ServicePerformanceappraisal/TobedealtList'
+                              component:
+                                './ITSM/ServiceQuality/ServicePerformanceappraisal/TobedealtList',
                             },
                             {
-                              path: '/ITSM/servicequalityassessment/serviceperformanceappraisal/search',
+                              path:
+                                '/ITSM/servicequalityassessment/serviceperformanceappraisal/search',
                               name: '服务绩效考核查询',
                               icon: 'fork',
-                              component: './ITSM/ServiceQuality/ServicePerformanceappraisal/TobedealtList'
+                              component:
+                                './ITSM/ServiceQuality/ServicePerformanceappraisal/TobedealtList',
                             },
                             {
-                              path: '/ITSM/servicequalityassessment/serviceperformanceappraisal/performancequerydetail',
+                              path:
+                                '/ITSM/servicequalityassessment/serviceperformanceappraisal/performancequerydetail',
                               name: '服务绩效考核详情页',
                               icon: 'fork',
-                              component: './ITSM/ServiceQuality/ServicePerformanceappraisal/Performancequerydetail'
+                              component:
+                                './ITSM/ServiceQuality/ServicePerformanceappraisal/Performancequerydetail',
                             },
                             {
-                              path: '/ITSM/servicequalityassessment/serviceperformanceappraisal/assessment',
+                              path:
+                                '/ITSM/servicequalityassessment/serviceperformanceappraisal/assessment',
                               name: '我的服务绩效考核',
                               icon: 'fork',
-                              component: './ITSM/ServiceQuality/ServicePerformanceappraisal/TobedealtList'
-                            }
-                          ]
+                              component:
+                                './ITSM/ServiceQuality/ServicePerformanceappraisal/TobedealtList',
+                            },
+                          ],
                         },
                         {
                           path: '/ITSM/servicequalityassessment/creditcard',
@@ -1278,41 +1325,42 @@ export default {
                               path: '/ITSM/servicequalityassessment/creditcard/creditcardregister',
                               name: '新建计分卡登记',
                               icon: 'fork',
-                              component: './ITSM/ServiceQuality/CreditCard/CreditCardRegister'
+                              component: './ITSM/ServiceQuality/CreditCard/CreditCardRegister',
                             },
                             {
-                              path: '/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail',
+                              path:
+                                '/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail',
                               name: '计分卡详情页',
                               icon: 'fork',
-                              component: './ITSM/ServiceQuality/CreditCard/CreditCardRegister'
+                              component: './ITSM/ServiceQuality/CreditCard/CreditCardRegister',
                             },
                             {
                               path: '/ITSM/servicequalityassessment/creditcard/creditcardtobe',
                               name: '计分卡登记',
                               icon: 'fork',
-                              component: './ITSM/ServiceQuality/CreditCard/CreditcardTobe'
+                              component: './ITSM/ServiceQuality/CreditCard/CreditcardTobe',
                             },
                             {
                               path: '/ITSM/servicequalityassessment/creditcard/creditcardsearch',
                               name: '计分卡查询',
                               icon: 'fork',
-                              component: './ITSM/ServiceQuality/CreditCard/CreditcardTobe'
+                              component: './ITSM/ServiceQuality/CreditCard/CreditcardTobe',
                             },
-                          ]
+                          ],
                         },
                         {
                           path: '/ITSM/servicequalityassessment/performancestatistics',
                           name: '服务绩效统计分析',
                           icon: 'control',
-                          component: '././ITSM/ServiceQuality/Statistics'
+                          component: '././ITSM/ServiceQuality/Statistics',
                         },
                         {
                           path: '/ITSM/servicequalityassessment/statisticalquery',
                           name: '服务绩效统计查询',
                           icon: 'caret-right',
-                          component: '././ITSM/ServiceQuality/Statisticalquery'
-                        }
-                      ]
+                          component: '././ITSM/ServiceQuality/Statisticalquery',
+                        },
+                      ],
                     },
                     {
                       path: '/ITSM/dutymanage',
@@ -1321,7 +1369,7 @@ export default {
                       routes: [
                         {
                           path: '/ITSM/dutymanage',
-                          redirect: '/ITSM/dutymanage/dutyconfiguration'
+                          redirect: '/ITSM/dutymanage/dutyconfiguration',
                         },
                         {
                           path: '/ITSM/dutymanage/dutyconfiguration',
@@ -1332,39 +1380,41 @@ export default {
                               path: '/ITSM/dutymanage/dutyconfiguration/dutyclassessetting',
                               name: '班次设置',
                               icon: 'fork',
-                              component: './ITSM/Dutymanage/DutyConfiguration/DutyclassesSetting'
+                              component: './ITSM/Dutymanage/DutyConfiguration/DutyclassesSetting',
                             },
                             {
-                              path: '/ITSM/dutymanage/dutyconfiguration/dutyclassessetting/newclasses',
+                              path:
+                                '/ITSM/dutymanage/dutyconfiguration/dutyclassessetting/newclasses',
                               name: '新增班次',
                               icon: 'fork',
-                              component: './ITSM/Dutymanage/DutyConfiguration/NewClasses'
+                              component: './ITSM/Dutymanage/DutyConfiguration/NewClasses',
                             },
                             {
-                              path: '/ITSM/dutymanage/dutyconfiguration/dutyclassessetting/holidaysetting',
+                              path:
+                                '/ITSM/dutymanage/dutyconfiguration/dutyclassessetting/holidaysetting',
                               name: '节假日设置',
                               icon: 'fork',
-                              component: './ITSM/Dutymanage/DutyConfiguration/HolidaySetting'
+                              component: './ITSM/Dutymanage/DutyConfiguration/HolidaySetting',
                             },
                             {
                               path: '/ITSM/dutymanage/dutyconfiguration/dutypersonnelsetting',
                               name: '值班人员设置',
                               icon: 'fork',
-                              component: './ITSM/Dutymanage/DutyConfiguration/DutypersonnelSetting'
+                              component: './ITSM/Dutymanage/DutyConfiguration/DutypersonnelSetting',
                             },
                             {
                               path: '/ITSM/dutymanage/dutyconfiguration/dutyaccordingsetting',
                               name: '排班设置',
                               icon: 'fork',
-                              component: './ITSM/Dutymanage/DutyConfiguration/DutyaccordingSetting'
+                              component: './ITSM/Dutymanage/DutyConfiguration/DutyaccordingSetting',
                             },
                             {
                               path: '/ITSM/dutymanage/dutyconfiguration/dutyaccordingsearch',
                               name: '排班查询',
                               icon: 'fork',
-                              component: './ITSM/Dutymanage/DutyConfiguration/DutyaccordingSetting'
+                              component: './ITSM/Dutymanage/DutyConfiguration/DutyaccordingSetting',
                             },
-                          ]
+                          ],
                         },
                         {
                           path: '/ITSM/dutymanage/dutyhandovermanage',
@@ -1373,7 +1423,7 @@ export default {
                           routes: [
                             {
                               path: '/ITSM/dutymanage/dutyhandovermanage',
-                              redirect: '/ITSM/dutymanage/dutyhandovermanage/mydutyhandover'
+                              redirect: '/ITSM/dutymanage/dutyhandovermanage/mydutyhandover',
                             },
                             {
                               path: '/ITSM/dutymanage/dutyhandovermanage/mydutyhandover',
@@ -1382,10 +1432,11 @@ export default {
                               component: './ITSM/Dutymanage/DutyHandovermanage/MydutyHandover',
                             },
                             {
-                              path: '/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/newhandover',
+                              path:
+                                '/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/newhandover',
                               name: '新增值班交接',
                               icon: 'fork',
-                              component: './ITSM/Dutymanage/DutyHandovermanage/NewHandover'
+                              component: './ITSM/Dutymanage/DutyHandovermanage/NewHandover',
                             },
                             {
                               path: '/ITSM/dutymanage/dutyhandovermanage/mydutyhandover',
@@ -1397,21 +1448,21 @@ export default {
                               path: '/ITSM/dutymanage/dutyhandovermanage/edithandoverdetail',
                               name: '编辑值班交接',
                               icon: 'fork',
-                              component: './ITSM/Dutymanage/DutyHandovermanage/NewHandover'
+                              component: './ITSM/Dutymanage/DutyHandovermanage/NewHandover',
                             },
                             {
                               path: '/ITSM/dutymanage/dutyhandovermanage/handoverdetail',
                               name: '值班交接详情',
                               icon: 'fork',
-                              component: './ITSM/Dutymanage/DutyHandovermanage/NewHandover'
+                              component: './ITSM/Dutymanage/DutyHandovermanage/NewHandover',
                             },
                             {
                               path: '/ITSM/dutymanage/dutyhandovermanage/mydutyhandoversearch',
                               name: '值班交接查询',
                               icon: 'fork',
-                              component: './ITSM/Dutymanage/DutyHandovermanage/MydutyHandover'
+                              component: './ITSM/Dutymanage/DutyHandovermanage/MydutyHandover',
                             },
-                          ]
+                          ],
                         },
                         {
                           path: '/ITSM/dutymanage/statistic',
@@ -1422,12 +1473,11 @@ export default {
                               path: '/ITSM/dutymanage/statistic/totalstatistic',
                               name: '值班工作统计',
                               icon: 'fork',
-                              component: './ITSM/Dutymanage/Statistic'
+                              component: './ITSM/Dutymanage/Statistic',
                             },
-                          ]
-                        }
-
-                      ]
+                          ],
+                        },
+                      ],
                     },
                     {
                       component: './500',
@@ -1443,7 +1493,7 @@ export default {
                   routes: [
                     {
                       path: '/automation',
-                      redirect: '/automation/objectmanage/equip'
+                      redirect: '/automation/objectmanage/equip',
                     },
                     {
                       path: '/automation/objectmanage',
@@ -1490,7 +1540,7 @@ export default {
                           icon: 'cloud-server',
                           component: './Automation/ObjectManage/ScriptConfig',
                         },
-                      ]
+                      ],
                     },
                     {
                       path: '/automation/automatedjob',
@@ -1499,7 +1549,7 @@ export default {
                       routes: [
                         {
                           path: '/automation/automatedjob',
-                          redirect: '/automation/automatedjob/jobmanagement'
+                          redirect: '/automation/automatedjob/jobmanagement',
                         },
                         {
                           path: '/automation/automatedjob/softstartandstop',
@@ -1508,33 +1558,37 @@ export default {
                           routes: [
                             {
                               path: '/automation/automatedjob/softstartandstop',
-                              redirect: '/automation/automatedjob/softstartandstop/softregister'
+                              redirect: '/automation/automatedjob/softstartandstop/softregister',
                             },
                             {
                               path: '/automation/automatedjob/softstartandstop/softregister',
                               name: '启停登记',
                               icon: 'fork',
-                              component: './Automation/AutomatedJob/SoftTTManagement/SoftTTRegister'
+                              component:
+                                './Automation/AutomatedJob/SoftTTManagement/SoftTTRegister',
                             },
                             {
-                              path: '/automation/automatedjob/softstartandstop/softregister/details',
+                              path:
+                                '/automation/automatedjob/softstartandstop/softregister/details',
                               name: '启停登记详情',
                               icon: 'fork',
-                              component: './Automation/AutomatedJob/SoftTTManagement/SoftregisterView'
+                              component:
+                                './Automation/AutomatedJob/SoftTTManagement/SoftregisterView',
                             },
                             {
                               path: '/automation/automatedjob/softstartandstop/softexecute',
                               name: '启停执行',
                               icon: 'fork',
-                              component: './Automation/AutomatedJob/SoftTTManagement/SoftTTExecute'
+                              component: './Automation/AutomatedJob/SoftTTManagement/SoftTTExecute',
                             },
                             {
-                              path: '/automation/automatedjob/softstartandstop/softregister/newregist',
+                              path:
+                                '/automation/automatedjob/softstartandstop/softregister/newregist',
                               name: '启停登记',
                               icon: 'fork',
-                              component: './Automation/AutomatedJob/SoftTTManagement/Newregist'
-                            }
-                          ]
+                              component: './Automation/AutomatedJob/SoftTTManagement/Newregist',
+                            },
+                          ],
                         },
                         {
                           path: '/automation/automatedjob/jobmanagement',
@@ -1543,7 +1597,7 @@ export default {
                           routes: [
                             {
                               path: '/automation/automatedjob/jobmanagement',
-                              redirect: '/automation/automatedjob/jobmanagement/jobconfig'
+                              redirect: '/automation/automatedjob/jobmanagement/jobconfig',
                             },
                             {
                               path: '/automation/automatedjob/jobmanagement/jobconfig',
@@ -1582,21 +1636,22 @@ export default {
                               component: './Automation/AutomatedJob/JobManagement/New',
                             },
                             {
-                              path: '/automation/automatedjob/jobmanagement/jobexecute/manualexecutionlog',
+                              path:
+                                '/automation/automatedjob/jobmanagement/jobexecute/manualexecutionlog',
                               name: '手动执行日志',
                               icon: 'fork',
                               component: './Automation/AutomatedJob/JobManagement/ManualLog',
                             },
                             {
-                              path: '/automation/automatedjob/jobmanagement/jobexecute/scheduledexecutionlog',
+                              path:
+                                '/automation/automatedjob/jobmanagement/jobexecute/scheduledexecutionlog',
                               name: '定时执行日志',
                               icon: 'fork',
                               component: './Automation/AutomatedJob/JobManagement/ScheduleLog',
                             },
-                          ]
+                          ],
                         },
-
-                      ]
+                      ],
                     },
                     {
                       path: '/automation/automaticinspection',
@@ -1643,7 +1698,7 @@ export default {
                           icon: 'cloud-server',
                           component: './Automation/AutomaticInspection/ClockDetailView',
                         },
-                      ]
+                      ],
                     },
                   ],
                 },
@@ -1800,7 +1855,7 @@ export default {
                           icon: 'cloud-server',
                           component: './Alarmmanage/DetailView',
                         },
-                      ]
+                      ],
                     },
                     {
                       path: '/alarmmanage/otheralarm',
@@ -1835,7 +1890,7 @@ export default {
                           icon: 'cloud-server',
                           component: './Alarmmanage/DetailView',
                         },
-                      ]
+                      ],
                     },
                     {
                       path: '/alarmmanage/:key1/:key2/details',
@@ -1856,29 +1911,28 @@ export default {
                           path: '/alarmmanage/alarmsetting/configuration',
                           name: '计量业务告警配置',
                           icon: 'interaction',
-                          component: './Alarmmanage/MonitorConfiguration'
+                          component: './Alarmmanage/MonitorConfiguration',
                         },
                         {
                           path: '/alarmmanage/alarmsetting/host',
                           name: '四大区主机告警配置',
                           icon: 'interaction',
-                          component: './Alarmmanage/HostSetting'
+                          component: './Alarmmanage/HostSetting',
                         },
                         {
                           path: '/alarmmanage/alarmsetting/other',
                           name: '其他告警配置',
                           icon: 'interaction',
-                          component: './Alarmmanage/AlarmSetting'
+                          component: './Alarmmanage/AlarmSetting',
                         },
                         {
                           path: '/alarmmanage/alarmsetting/noticesetting',
                           name: '告警通知对象',
                           icon: 'interaction',
-                          component: './Alarmmanage/NoticeSetting'
-                        }
-                      ]
-                    }
-
+                          component: './Alarmmanage/NoticeSetting',
+                        },
+                      ],
+                    },
                   ],
                 },
                 {
@@ -1955,7 +2009,7 @@ export default {
                       path: '/sysmanage/timedtask/schedultasklog',
                       name: '调度日志',
                       hideInMenu: true,
-                      component: './SysManage/SchedultaskLog'
+                      component: './SysManage/SchedultaskLog',
                     },
                     {
                       path: '/sysmanage/expressionsmanage',
@@ -2023,8 +2077,8 @@ export default {
               component: './500',
             },
           ],
-        }
-      ]
+        },
+      ],
     },
     {
       component: './404',
@@ -2139,6 +2193,11 @@ export default {
       target: ' http://172.16.10.33:9901/',
       changeOrigin: true,
     },
+     // 故障管理--抢修票管理
+     '/repair/': {
+      target: ' http://172.16.10.33:9901/',
+      changeOrigin: true,
+    },
     // 需求管理
     '/demand/': {
       target: ' http://172.16.10.33:9901/',
@@ -2168,55 +2227,55 @@ export default {
     },
     '/regist/': {
       target: 'http://172.16.10.33:9901/', // 人员进出管理-人员进出登记
-      changeOrigin: true
+      changeOrigin: true,
     },
     '/report/': {
       target: 'http://172.16.10.33:9901/',
-      changeOrigin: true
+      changeOrigin: true,
     },
     '/image/': {
       target: 'http://172.16.10.33:9901/',
-      changeOrigin: true
+      changeOrigin: true,
     },
     '/knowledge/': {
       target: 'http://172.16.10.33:9901/',
-      changeOrigin: true
+      changeOrigin: true,
     },
     '/release/': {
       target: 'http://172.16.10.33:9901/',        // 发布管理
       changeOrigin: true
     },
     '/lasting/': {
-      target: 'http://172.16.10.33:9901/',        // 自动化运维
-      changeOrigin: true
+      target: 'http://172.16.10.33:9901/', // 自动化运维
+      changeOrigin: true,
     },
     '/assets/': {
-      target: 'http://172.16.10.33:9901/',        // 自动化运维-设备管理、机柜管理
-      changeOrigin: true
+      target: 'http://172.16.10.33:9901/', // 自动化运维-设备管理、机柜管理
+      changeOrigin: true,
     },
     '/inspect/': {
-      target: 'http://172.16.10.33:9901/',        //  巡检
+      target: 'http://172.16.10.33:9901/', //  巡检
       changeOrigin: true,
     },
     '/job/': {
-      target: 'http://172.16.10.33:9901/',        // 任务调度
-      changeOrigin: true
+      target: 'http://172.16.10.33:9901/', // 任务调度
+      changeOrigin: true,
     },
     '/quality/': {
       target: 'http://172.16.10.33:9901/',
-      changeOrigin: true
+      changeOrigin: true,
     },
     '/warn/': {
       target: 'http://172.16.10.33:9901/',
-      changeOrigin: true
+      changeOrigin: true,
     },
     '/duty/': {
       target: 'http://172.16.10.33:9901/',
-      changeOrigin: true
+      changeOrigin: true,
     },
     '/main/': {
-      target: 'http://172.16.10.33:9901/',    // 主网集成
-      changeOrigin: true
+      target: 'http://172.16.10.33:9901/', // 主网集成
+      changeOrigin: true,
     },
   },
 };

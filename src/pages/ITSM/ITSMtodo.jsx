@@ -287,6 +287,21 @@ function ITSMtodo(props) {
                 },
               });
               break;
+            case 'repair':
+              router.push({
+                pathname: `/ITSM/faultmanage/tickemergent/details`,
+                query: {
+                  taskName: record.taskName,
+                  taskId: record.taskId,
+                  Id: record.itemWorkMainId,
+                  todo:true,
+                },
+                state: {
+                  dynamicpath: true,
+                  menuDesc: '抢修票工单详情',
+                },
+              });
+            break;
             default:
               break;
           }
@@ -313,6 +328,7 @@ function ITSMtodo(props) {
           ['work', '工作督办'],
           ['quality', '服务绩效'],
           ['tempRelease', '临时发布'],
+          ['repair', '应急抢修票'],
         ]);
         const releaseBizTodomap = new Map([
           ['业务验证', '计划发布业务验证'],

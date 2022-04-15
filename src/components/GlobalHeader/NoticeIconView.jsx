@@ -92,6 +92,7 @@ class GlobalHeaderRight extends Component {
       ['operation', '作业计划'],
       ['work', '工作督办'],
       ['quality', '服务绩效'],
+      ['repair', '应急抢修票'],
     ]);
     if (notices.length === 0) {
       return [];

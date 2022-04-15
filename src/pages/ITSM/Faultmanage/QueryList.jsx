@@ -1725,8 +1725,9 @@ function QueryList(props) {
                     <Cascader
                       placeholder="请选择"
                       options={faultType}
-                      fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
+                      fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }} 
                       allowClear
+                      changeOnSelect
                     />,
                   )}
                 </Form.Item>

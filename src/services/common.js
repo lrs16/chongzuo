@@ -35,6 +35,15 @@ export async function getTroubleList(params) {
   });
 }
 
+// 关联工单 故障应急抢修票
+export async function getRepairList(params) {
+  return request(`/common/relation/getRepairList`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
 // 关联工单 问题
 export async function getProblemList(params) {
   return request(`/common/relation/getProblemList`, {
