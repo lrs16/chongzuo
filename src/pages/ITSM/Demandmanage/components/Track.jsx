@@ -587,6 +587,7 @@ function Track(props) {
                 style={{ width: '100%' }}
                 defaultValue={moment(data.length > 0 && data[data.length - 1].devFinishTime ? data[data.length - 1].devFinishTime : undefined)}
                 onChange={(v) => { setFieldsValue({ devFinishTime: moment(v) }) }}
+                allowClear={false}
               /></>)}
             </Form.Item>
           </Col>
@@ -602,6 +603,7 @@ function Track(props) {
                 style={{ width: '100%' }}
                 defaultValue={moment(data.length > 0 && data[data.length - 1].releaseTime ? data[data.length - 1].releaseTime : undefined)}
                 onChange={(v) => { setFieldsValue({ releaseTime: moment(v) }) }}
+                allowClear={false}
               /></>)}
             </Form.Item>
           </Col>

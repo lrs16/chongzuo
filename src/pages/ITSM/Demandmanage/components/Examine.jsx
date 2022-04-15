@@ -167,17 +167,17 @@ const Examine = forwardRef((props, ref) => {
             </Col>
           )}
           <Col span={8}>
-            <Form.Item label={`${text}时间`}>
-              {getFieldDecorator('reviewTime', {
-                rules: [{ required, message: `请选择${text}时间` }],
-                initialValue: moment(info[0].reviewTime),
-              })(<><DatePicker
-                showTime
-                format="YYYY-MM-DD HH:mm:ss"
-                defaultValue={moment(info[0].reviewTime)}
-                onChange={(v) => { setFieldsValue({ reviewTime: moment(v) }) }}
-              /></>)}
-            </Form.Item>
+            <div onClick={e => e.stopPropagation()}>
+              <Form.Item label={`${text}时间`}>
+                {getFieldDecorator('reviewTime', {
+                  rules: [{ required, message: `请选择${text}时间` }],
+                  initialValue: moment(info[0].reviewTime),
+                })(<DatePicker
+                  showTime
+                  format="YYYY-MM-DD HH:mm:ss"
+                />)}
+              </Form.Item>
+            </div>
           </Col>
           {taskName === '自动化科审核' && adopt !== 0 && (
             <Col span={8}>

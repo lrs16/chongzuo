@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
-import { Card, Row, Col, Form, Input, Select, Button, Table, message, Modal, Tooltip } from 'antd';
+import { Card, Row, Col, Form, Input, Select, Button, Table, message, Modal, Tooltip, Popover } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
@@ -10,6 +10,7 @@ import UserContext from '@/layouts/MenuContext';
 import CheckOneUser from '@/components/SelectUser/CheckOneUser';
 import { knowledgeCheckUserList } from '@/services/user';
 import RangeTime from '@/components/SelectTime/RangeTime';
+import Downloadfile from '@/components/SysUpload/Downloadfile';
 import { submitkowledge, releasekowledge, revokekowledge, abolishkowledge, deletekowledge } from './services/api';
 import Examine from './components/Examine';
 
@@ -44,6 +45,7 @@ function KnowledgeList(props) {
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [visible, setVisible] = useState(false);
   const [tabrecord, setTabRecord] = useState({});
+  const [rangeTimeReset, setRangeTimeReset] = useState(false);
   const ExmaineRef = useRef(null);
 
   const userId = sessionStorage.getItem('userauthorityid');
@@ -107,6 +109,7 @@ function KnowledgeList(props) {
     setTabRecord({ ...val });
   }
   const handleReset = () => {
+    setRangeTimeReset(true);
     router.push({
       pathname: location.pathname,
       query: {},
@@ -127,6 +130,7 @@ function KnowledgeList(props) {
     };
     handleSearch(1, 15)
     setPageinations({ current: 1, pageSize: 15 });
+    setTimeout(() => { setRangeTimeReset(false) }, 50)
   };
   const download = () => {
     const values = getFieldsValue();
@@ -539,11 +543,31 @@ function KnowledgeList(props) {
     },
   ];
 
-  const coldownload = {
-    title: '附件下载',
-    dataIndex: 'dowload',
-    key: 'dowload',
+  const adddownloadclo = (arr) => {
+    let newArr;
+    if (pagetitle === '知识查询') {
+      newArr = arr;
+      newArr.push({
+        title: '附件下载',
+        dataIndex: 'fileIds',
+        key: 'fileIds',
+        render: (text) => {
+          if (text) {
+            const content = (<div style={{ overflow: 'hidden' }}> <Downloadfile files={text} /></div >)
+            return (
+              <Popover content={content} title="附件列表">
+                附件下载
+              </Popover>
+            )
+          }
+          return null;
+        }
+      })
+    }
+    return newArr
   };
+
+  const tableh = pagetitle && pagetitle === '知识查询' ? adddownloadclo(columns) : columns;
 
   useEffect(() => {
     if (location.state) {
@@ -756,11 +780,12 @@ function KnowledgeList(props) {
                 <Col span={8}>
                   <Form.Item label="编辑时间">
                     {getFieldDecorator('edittime', {
-                      initialValue: { startTime: cacheinfo.time3, endTime: cacheinfo.time4 },
+                      initialValue: { startTime: cacheinfo?.time3, endTime: cacheinfo?.time4 },
                     })(<></>)}
                     <RangeTime
                       startVal={cacheinfo?.time3}
                       endVal={cacheinfo?.time4}
+                      clear={rangeTimeReset}
                       getTimes={(v) => { setFieldsValue({ edittime: v }) }}
                     />
                   </Form.Item>
@@ -840,7 +865,7 @@ function KnowledgeList(props) {
         </div>
         < Table
           loading={loading}
-          columns={columns}
+          columns={tableh}
           dataSource={list.data}
           pagination={pagination}
           rowSelection={rowSelection}

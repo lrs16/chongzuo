@@ -231,12 +231,14 @@ const Handle = React.forwardRef((props, ref) => {
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="完成时间">
-              {getFieldDecorator('handle_endTime', {
-                rules: [{ required }],
-                initialValue: moment(handle?.endTime || undefined),
-              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
-            </Form.Item>
+            <div onClick={e => e.stopPropagation()}>
+              <Form.Item label="完成时间">
+                {getFieldDecorator('handle_endTime', {
+                  rules: [{ required }],
+                  initialValue: moment(handle?.endTime || undefined),
+                })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
+              </Form.Item>
+            </div>
           </Col>
           {/* <Col span={24}>
           <Form.Item label="二线标签" {...forminladeLayout}>

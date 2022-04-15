@@ -56,10 +56,10 @@ function Querylist(props) {
       payload: {
         ...values,
         orderType: 'LS',
-        beginTime: values.time?.startTime ? moment(values.time?.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        endTime: values.time?.endTime ? moment(values.time?.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        releaseBeginTime: values.releasetime?.startTime ? moment(values.releasetime?.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        releaseEndTime: values.releasetime?.endTime ? moment(values.releasetime?.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        beginTime: values.beginTime ? moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        releaseBeginTime: values.releaseBeginTime ? moment(values.releaseBeginTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        releaseEndTime: values.releaseEndTime ? moment(values.releaseEndTime).format('YYYY-MM-DD HH:mm:ss') : '',
         pageSize: size,
         pageIndex: page,
       },
@@ -67,10 +67,10 @@ function Querylist(props) {
     setTabRecord({
       ...values,
       orderType: 'LS',
-      beginTime: values.time?.startTime ? moment(values.time?.startTime).format('X') : '',
-      endTime: values.time?.endTime ? moment(values.time?.endTime).format('X') : '',
-      releaseBeginTime: values.releasetime?.startTime ? moment(values.releasetime?.startTime).format('X') : '',
-      releaseEndTime: values.releasetime?.endTime ? moment(values.releasetime?.endTime).format('X') : '',
+      beginTime: values.beginTime ? moment(values.beginTime).format('X') : '',
+      endTime: values.endTime ? moment(values.endTime).format('X') : '',
+      releaseBeginTime: values.releaseBeginTime ? moment(values.releaseBeginTime).format('X') : '',
+      releaseEndTime: values.releaseEndTime ? moment(values.releaseEndTime).format('X') : '',
       time: {},
       releasetime: {},
     });
@@ -146,10 +146,10 @@ function Querylist(props) {
     const val = getFieldsValue();
     const formval = {
       ...val,
-      beginTime: val.time?.startTime ? moment(val.time?.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
-      endTime: val.time?.endTime ? moment(val.time?.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
-      releaseBeginTime: val.releasetime?.startTime ? moment(val.releasetime?.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
-      releaseEndTime: val.releasetime?.endTime ? moment(val.releasetime?.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      beginTime: val.startTime ? moment(val.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      endTime: val.endTime ? moment(val.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      releaseBeginTime: val.releaseBeginTime ? moment(val.releaseBeginTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      releaseEndTime: val.releaseEndTime ? moment(val.releaseEndTime).format('YYYY-MM-DD HH:mm:ss') : '',
     };
     const releaseNos = selectedRecords.length > 0 && selectedRecords.map(item => {
       return item.releaseNo
@@ -312,7 +312,6 @@ function Querylist(props) {
       title: '发布时间',
       dataIndex: 'releaseTime',
       key: 'releaseTime',
-      sorter: (a, b) => a.releaseTime.localeCompare(b.releaseTime),
     },
   ];
 
@@ -556,7 +555,7 @@ function Querylist(props) {
                       })(<Input placeholder="请输入" allowClear />)}
                     </Form.Item>
                   </Col>
-                  <Col span={8}>
+                  {/* <Col span={8}>
                     <Form.Item label="出厂测试时间">
                       {getFieldDecorator('time', {
                         initialValue: {
@@ -585,8 +584,8 @@ function Querylist(props) {
                         getTimes={(v) => { setFieldsValue({ releasetime: v }) }}
                       />
                     </Form.Item>
-                  </Col>
-                  {/* <Col span={8}>
+                  </Col> */}
+                  <Col span={8}>
                     <Form.Item label="出厂测试时间">
                       <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                         {getFieldDecorator('beginTime', {
@@ -620,8 +619,8 @@ function Querylist(props) {
                         )}
                       </div>
                     </Form.Item>
-                  </Col> */}
-                  {/* <Col span={8}>
+                  </Col>
+                  <Col span={8}>
                     <Form.Item label="发布时间">
                       <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                         {getFieldDecorator('releaseBeginTime', {
@@ -655,7 +654,7 @@ function Querylist(props) {
                         )}
                       </div>
                     </Form.Item>
-                  </Col> */}
+                  </Col>
                 </>
               )}
               {expand ? (

@@ -95,14 +95,16 @@ function Implementation(props, ref) {
       <Row gutter={12}>
         <Form ref={formRef} {...formItemLayout}>
           <Col span={8}>
-            <Form.Item label="发布实施时间" >
-              {getFieldDecorator('practiceTime', {
-                rules: [{ required, message: `请选择发布实施时间` }],
-                initialValue: moment(info.practiceDone.practiceTime || undefined),
-              })(
-                <DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} />
-              )}
-            </Form.Item>
+            <div onClick={e => e.stopPropagation()}>
+              <Form.Item label="发布实施时间" >
+                {getFieldDecorator('practiceTime', {
+                  rules: [{ required, message: `请选择发布实施时间` }],
+                  initialValue: moment(info.practiceDone.practiceTime || undefined),
+                })(
+                  <DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} />
+                )}
+              </Form.Item>
+            </div>
           </Col>
           {/* <Col span={8} >
             <Form.Item label="发布结果">

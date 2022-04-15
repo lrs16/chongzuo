@@ -117,20 +117,20 @@ function Examine(props, ref) {
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="审核时间" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-            {getFieldDecorator('checkTime', {
-              rules: [{ required, message: `请选择审核时间` }],
-              initialValue: moment(formmap.get(taskName).checkTime || undefined).format('YYYY-MM-DD HH:mm:ss'),
-            })(
-              <><DatePicker
-                showTime
-                format="YYYY-MM-DD HH:mm:ss"
-                defaultValue={moment(formmap.get(taskName).checkTime || undefined)}
-                onChange={(v) => { setFieldsValue({ checkTime: moment(v) }) }}
-                disabled={!isEdit}
-              /></>
-            )}
-          </Form.Item>
+          <div onClick={e => e.stopPropagation()}>
+            <Form.Item label="审核时间" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+              {getFieldDecorator('checkTime', {
+                rules: [{ required, message: `请选择审核时间` }],
+                initialValue: moment(formmap.get(taskName).checkTime || undefined),
+              })(
+                <DatePicker
+                  showTime
+                  format="YYYY-MM-DD HH:mm:ss"
+                  disabled={!isEdit}
+                />
+              )}
+            </Form.Item>
+          </div>
         </Col>
         <Col span={24} style={{ marginBottom: 16, marginTop: 4 }}>
           <DocumentAtt

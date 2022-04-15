@@ -109,12 +109,14 @@ const Check = forwardRef((props, ref) => {
           )}
         </Col>
         <Col span={8} >
-          <Form.Item label="接单时间">
-            {getFieldDecorator('check_addTime', {
-              rules: [{ required: true }],
-              initialValue: moment(check?.addTime || undefined).format("YYYY-MM-DD HH:mm:ss"),
-            })(<Input placeholder="请输入" disabled />)}
-          </Form.Item>
+          <div onClick={e => e.stopPropagation()}>
+            <Form.Item label="接单时间">
+              {getFieldDecorator('check_addTime', {
+                rules: [{ required: true }],
+                initialValue: moment(check?.addTime || undefined).format("YYYY-MM-DD HH:mm:ss"),
+              })(<Input placeholder="请输入" disabled />)}
+            </Form.Item>
+          </div>
         </Col>
         <Col span={8}>
           <Form.Item label="审核时间">
@@ -186,7 +188,7 @@ const Check = forwardRef((props, ref) => {
           </Form.Item>
         </Col>
       </Form>
-    </Row>
+    </Row >
   );
 });
 

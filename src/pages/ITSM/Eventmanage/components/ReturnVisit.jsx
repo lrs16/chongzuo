@@ -247,12 +247,14 @@ const ReturnVisit = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="回访时间">
-            {getFieldDecorator('finish_revisitTime', {
-              rules: [{ required, message: '请选择回访时间' }],
-              initialValue: moment(finish?.revisitTime || undefined),
-            })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
-          </Form.Item>
+          <div onClick={e => e.stopPropagation()}>
+            <Form.Item label="回访时间">
+              {getFieldDecorator('finish_revisitTime', {
+                rules: [{ required, message: '请选择回访时间' }],
+                initialValue: moment(finish?.revisitTime || undefined),
+              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
+            </Form.Item>
+          </div>
         </Col>
         <Col span={24} >
           <Form.Item label="上传附件" {...forminladeLayout}

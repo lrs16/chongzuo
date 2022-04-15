@@ -128,16 +128,16 @@ function ReleaseRepo(props) {
       type: 'repolist/fetchlist',
       payload: {
         ...values,
-        beginTime: values.beginTime ? moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        beginRegisterTime: values.beginRegisterTime ? moment(values.beginRegisterTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        endRegisterTime: values.endRegisterTime ? moment(values.endRegisterTime).format('YYYY-MM-DD HH:mm:ss') : '',
         pageSize: size,
         pageIndex: page,
       },
     });
     setTabRecord({
       ...values,
-      beginTime: values.beginTime ? moment(values.beginTime).format('X') : '',
-      endTime: values.endTime ? moment(values.endTime).format('X') : '',
+      beginRegisterTime: values.beginRegisterTime ? moment(values.beginRegisterTime).format('X') : '',
+      endRegisterTime: values.endRegisterTime ? moment(values.endRegisterTime).format('X') : '',
     });
   };
 

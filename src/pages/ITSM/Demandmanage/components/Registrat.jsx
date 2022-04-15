@@ -364,35 +364,36 @@ const Registrat = forwardRef((props, ref) => {
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="申请时间">
-              {getFieldDecorator('registerTime', {
-                rules: [{ required, message: '请选择申请时间' }],
-                initialValue: moment(register.registerTime),
-              })(<><DatePicker
-                showTime
-                placeholder="请选择时间"
-                format="YYYY-MM-DD HH:mm:ss"
-                style={{ width: '100%' }}
-                defaultValue={moment(register.registerTime)}
-                onChange={(v) => { setFieldsValue({ registerTime: moment(v) }) }}
-              /></>)}
-            </Form.Item>
+            <div onClick={e => e.stopPropagation()}>
+              <Form.Item label="申请时间">
+                {getFieldDecorator('registerTime', {
+                  rules: [{ required, message: '请选择申请时间' }],
+                  initialValue: moment(register.registerTime || undefined),
+                })(
+                  <DatePicker
+                    showTime
+                    placeholder="请选择时间"
+                    format="YYYY-MM-DD HH:mm:ss"
+                    style={{ width: '100%' }}
+                  />)}
+              </Form.Item>
+            </div>
           </Col>
           <Col span={8}>
-            <Form.Item label="期待完成时间">
-              {getFieldDecorator('completeTime', {
-                rules: [{ required, message: '请选择期待完成时间' }],
-                initialValue: moment(newcompleteTime),
-              })(<><DatePicker
-                showTime
-                placeholder="请选择时间"
-                format="YYYY-MM-DD HH:mm:ss"
-                disabledDate={disabledDate}
-                defaultValue={moment(newcompleteTime)}
-                onChange={(v) => { setFieldsValue({ completeTime: moment(v) }) }}
-                style={{ width: '100%' }}
-              /></>)}
-            </Form.Item>
+            <div onClick={e => e.stopPropagation()}>
+              <Form.Item label="期待完成时间">
+                {getFieldDecorator('completeTime', {
+                  rules: [{ required, message: '请选择期待完成时间' }],
+                  initialValue: moment(newcompleteTime),
+                })(<DatePicker
+                  showTime
+                  placeholder="请选择时间"
+                  format="YYYY-MM-DD HH:mm:ss"
+                  disabledDate={disabledDate}
+                  style={{ width: '100%' }}
+                />)}
+              </Form.Item>
+            </div>
           </Col>
           <Col span={8}>
             <Form.Item label="申请人">

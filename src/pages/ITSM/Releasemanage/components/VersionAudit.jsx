@@ -375,20 +375,47 @@ function VersionAudit(props, ref) {
               </Form.Item>
             </Col> */}
             <Col span={8}>
-              <Form.Item label="发布开始时间">
-                {getFieldDecorator('releaseBeginTime', {
-                  rules: [{ required, message: `请选择发布开始时间` }],
-                  initialValue: moment(info.mergeOrder && info.mergeOrder.releaseBeginTime ? info.mergeOrder.releaseBeginTime : undefined),
-                })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
-              </Form.Item>
+              <div onClick={e => e.stopPropagation()}>
+                <Form.Item label="发布开始时间">
+                  {getFieldDecorator('releaseBeginTime', {
+                    rules: [{ required, message: `请选择发布开始时间` }],
+                    initialValue: moment(info.mergeOrder && info.mergeOrder.releaseBeginTime ? info.mergeOrder.releaseBeginTime : undefined),
+                  })(
+                    <DatePicker
+                      showTime
+                      placeholder="请选择时间"
+                      format="YYYY-MM-DD HH:mm:ss"
+                      disabled={!isEdit}
+                      style={{ width: '100%' }}
+                      disabledDate={(v) => {
+                        const dates = getFieldsValue(['releaseEndTime']);
+                        return v && v < moment(dates.releaseEndTime);
+                      }}
+                    />
+                  )}
+                </Form.Item>
+              </div>
             </Col>
             <Col span={8}>
-              <Form.Item label="发布结束时间">
-                {getFieldDecorator('releaseEndTime', {
-                  rules: [{ required, message: `请选择发布结束时间` }],
-                  initialValue: moment(info.mergeOrder && info.mergeOrder.releaseEndTime ? info.mergeOrder.releaseEndTime : undefined),
-                })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
-              </Form.Item>
+              <div onClick={e => e.stopPropagation()}>
+                <Form.Item label="发布结束时间">
+                  {getFieldDecorator('releaseEndTime', {
+                    rules: [{ required, message: `请选择发布结束时间` }],
+                    initialValue: moment(info.mergeOrder && info.mergeOrder.releaseEndTime ? info.mergeOrder.releaseEndTime : undefined),
+                  })(
+                    <DatePicker
+                      showTime
+                      placeholder="请选择时间"
+                      format="YYYY-MM-DD HH:mm:ss"
+                      disabled={!isEdit}
+                      style={{ width: '100%' }}
+                      disabledDate={(v) => {
+                        const dates = getFieldsValue(['releaseBeginTime']);
+                        return v && v > moment(dates.releaseBeginTime);
+                      }}
+                    />)}
+                </Form.Item>
+              </div>
             </Col>
             <Col span={8}>
               <Form.Item label="停止业务访问" >

@@ -465,6 +465,7 @@ function TemporaryRegistrat(props, ref) {
               })(
                 <div>
                   {info.tempRegister?.planStart && (<DatePicker
+                    key={sessionStorage.getItem('tabid')}
                     disabled={!isEdit}
                     showTime
                     placeholder="请选择时间"

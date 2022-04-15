@@ -213,7 +213,7 @@ function Registrat(props, ref) {
 
   function range(start, end) {
     const result = [];
-    for (let i = start; i < end; i++) {
+    for (let i = start; i < end; i += 1) {
       result.push(i);
     }
     return result;
@@ -282,86 +282,90 @@ function Registrat(props, ref) {
           {(taskName === '出厂测试' || taskName === '新建' || taskName === '平台验证') && (
             <>
               <Col span={8}>
-                <Form.Item label="测试开始时间">
-                  {getFieldDecorator('testStart', {
-                    rules: [{ required, message: `请选择出厂测试开始时间` }],
-                    initialValue: moment(formmap.get(taskName).testStart || undefined),
-                  })(<DatePicker
-                    showTime
-                    placeholder="请选择时间"
-                    format="YYYY-MM-DD HH:mm:ss"
-                    disabled={!isEdit}
-                    style={{ width: '100%' }}
-                    disabledDate={(v) => {
-                      return getFieldsValue(['testEnd'])?.testEnd && v && moment(v) > moment(getFieldsValue(['testEnd'])?.testEnd);
-                    }}
-                    disabledTime={() => {
-                      const time = getFieldsValue(['testEnd', 'testStart']);
-                      const Hours = moment(time.testEnd).format('HH');
-                      const Minutes = moment(time.testEnd).format('mm');
-                      const Seconds = moment(time.testEnd).format('ss');
-                      if (time.testStart && time.testEnd && moment(time.testStart).format('YYYY-MM-DD') === moment(time.testEnd).format('YYYY-MM-DD')) {
-                        return {
-                          disabledHours: () => range(Hours, 24),
-                          disabledMinutes: () => {
-                            if (moment(time.testStart).format('YYYY-MM-DD HH') === moment(time.testEnd).format('YYYY-MM-DD HH')) {
-                              return range(Minutes, 60)
-                            }
-                            return []
-                          },
-                          disabledSeconds: () => {
-                            if (moment(time.testStart).format('YYYY-MM-DD HH:mm') === moment(time.testEnd).format('YYYY-MM-DD HH:mm')) {
-                              return range(Seconds, 60)
-                            }
-                            return []
-                          },
-                        };
-                      }
-                      return null
-                    }}
-                  />)}
-                </Form.Item>
+                <div id='StartTime' onClick={e => e.stopPropagation()}>
+                  <Form.Item label="测试开始时间">
+                    {getFieldDecorator('testStart', {
+                      rules: [{ required, message: `请选择出厂测试开始时间` }],
+                      initialValue: moment(formmap.get(taskName).testStart || undefined),
+                    })(<DatePicker
+                      showTime
+                      placeholder="请选择时间"
+                      format="YYYY-MM-DD HH:mm:ss"
+                      disabled={!isEdit}
+                      style={{ width: '100%' }}
+                      disabledDate={(v) => {
+                        return getFieldsValue(['testEnd'])?.testEnd && v && moment(v) > moment(getFieldsValue(['testEnd'])?.testEnd);
+                      }}
+                      disabledTime={() => {
+                        const time = getFieldsValue(['testEnd', 'testStart']);
+                        const Hours = moment(time.testEnd).format('HH');
+                        const Minutes = moment(time.testEnd).format('mm');
+                        const Seconds = moment(time.testEnd).format('ss');
+                        if (time.testStart && time.testEnd && moment(time.testStart).format('YYYY-MM-DD') === moment(time.testEnd).format('YYYY-MM-DD')) {
+                          return {
+                            disabledHours: () => range(Hours, 24),
+                            disabledMinutes: () => {
+                              if (moment(time.testStart).format('YYYY-MM-DD HH') === moment(time.testEnd).format('YYYY-MM-DD HH')) {
+                                return range(Minutes, 60)
+                              }
+                              return []
+                            },
+                            disabledSeconds: () => {
+                              if (moment(time.testStart).format('YYYY-MM-DD HH:mm') === moment(time.testEnd).format('YYYY-MM-DD HH:mm')) {
+                                return range(Seconds, 60)
+                              }
+                              return []
+                            },
+                          };
+                        }
+                        return null
+                      }}
+                    />)}
+                  </Form.Item>
+                </div>
               </Col>
               <Col span={8}>
-                <Form.Item label="测试结束时间">
-                  {getFieldDecorator('testEnd', {
-                    rules: [{ required, message: `请选择出厂测试结束时间` }],
-                    initialValue: moment(formmap.get(taskName).testEnd || undefined),
-                  })(<DatePicker
-                    showTime
-                    placeholder="请选择时间"
-                    format="YYYY-MM-DD HH:mm:ss"
-                    disabled={!isEdit}
-                    style={{ width: '100%' }}
-                    disabledDate={(v) => {
-                      return getFieldsValue(['testStart'])?.testStart && v && moment(v) < moment(getFieldsValue(['testStart'])?.testStart);
-                    }}
-                    disabledTime={() => {
-                      const time = getFieldsValue(['testEnd', 'testStart']);
-                      const Hours = moment(time.testStart).format('HH');
-                      const Minutes = moment(time.testStart).format('mm');
-                      const Seconds = moment(time.testStart).format('ss');
-                      if (time.testStart && time.testEnd && moment(time.testStart).format('YYYY-MM-DD') === moment(time.testEnd).format('YYYY-MM-DD')) {
-                        return {
-                          disabledHours: () => range(0, Hours),
-                          disabledMinutes: () => {
-                            if (moment(time.testStart).format('YYYY-MM-DD HH') === moment(time.testEnd).format('YYYY-MM-DD HH')) {
-                              return range(0, Minutes)
-                            }
-                            return []
-                          },
-                          disabledSeconds: () => {
-                            if (moment(time.testStart).format('YYYY-MM-DD HH:mm') === moment(time.testEnd).format('YYYY-MM-DD HH:mm')) {
-                              return range(0, Seconds)
-                            }
-                            return []
-                          },
-                        };
-                      }
-                      return null
-                    }}
-                  />)}
-                </Form.Item>
+                <div id='EendTime' onClick={e => e.stopPropagation()}>
+                  <Form.Item label="测试结束时间">
+                    {getFieldDecorator('testEnd', {
+                      rules: [{ required, message: `请选择出厂测试结束时间` }],
+                      initialValue: moment(formmap.get(taskName).testEnd || undefined),
+                    })(<DatePicker
+                      showTime
+                      placeholder="请选择时间"
+                      format="YYYY-MM-DD HH:mm:ss"
+                      disabled={!isEdit}
+                      style={{ width: '100%' }}
+                      disabledDate={(v) => {
+                        return getFieldsValue(['testStart'])?.testStart && v && moment(v) < moment(getFieldsValue(['testStart'])?.testStart);
+                      }}
+                      disabledTime={() => {
+                        const time = getFieldsValue(['testEnd', 'testStart']);
+                        const Hours = moment(time.testStart).format('HH');
+                        const Minutes = moment(time.testStart).format('mm');
+                        const Seconds = moment(time.testStart).format('ss');
+                        if (time.testStart && time.testEnd && moment(time.testStart).format('YYYY-MM-DD') === moment(time.testEnd).format('YYYY-MM-DD')) {
+                          return {
+                            disabledHours: () => range(0, Hours),
+                            disabledMinutes: () => {
+                              if (moment(time.testStart).format('YYYY-MM-DD HH') === moment(time.testEnd).format('YYYY-MM-DD HH')) {
+                                return range(0, Minutes)
+                              }
+                              return []
+                            },
+                            disabledSeconds: () => {
+                              if (moment(time.testStart).format('YYYY-MM-DD HH:mm') === moment(time.testEnd).format('YYYY-MM-DD HH:mm')) {
+                                return range(0, Seconds)
+                              }
+                              return []
+                            },
+                          };
+                        }
+                        return null
+                      }}
+                    />)}
+                  </Form.Item>
+                </div>
               </Col>
               <Col span={24}>
                 <Form.Item label="测试地点" {...formuintLayout}>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import { DatePicker, } from 'antd';
+// 传参太复杂，建议直接写在页面上
 
 function RangeTime(props) {
   const { startVal, endVal, getTimes, clear } = props;
@@ -14,14 +15,22 @@ function RangeTime(props) {
     if (endVal) {
       setEndTime(endVal)
     }
-  }, [])
+  }, []);
+
+  // useEffect(() => {
+  //   setStartTime(startVal)
+  // }, [startVal]);
+
+  // useEffect(() => {
+  //   setEndTime(endVal)
+  // }, [endVal]);
 
   useEffect(() => {
     if (clear) {
       setStartTime(undefined);
       setEndTime(undefined)
     }
-  }, [clear])
+  }, [clear]);
 
   function range(start, end) {
     const result = [];
@@ -29,11 +38,13 @@ function RangeTime(props) {
       result.push(i);
     }
     return result;
-  }
+  };
 
   const timeformat = 'YYYY-MM-DD HH:mm:ss';
   return (
-    <>
+    <div onClick={(e) => {
+      e.stopPropagation(); // 阻止冒泡，解决时间控件设置value后不能选择上/下一月上/下一年
+    }}>
       <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
         <DatePicker
           value={startTime ? moment(startTime, timeformat) : null}
@@ -123,7 +134,7 @@ function RangeTime(props) {
           }}
         />
       </div>
-    </>
+    </div>
   );
 }
 

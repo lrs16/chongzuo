@@ -44,17 +44,6 @@ function TemporaryRegistration(props) {
     });
   };
 
-  const openNotificationWithIcon = (arr) => {
-    notification.error({
-      message: '请将以下信息填写完整',
-      description: <>
-        <div>111</div>
-        <div>222</div>
-      </>
-      ,
-    });
-  };
-
   const getformvalues = (saveItems, attach) => {
     const val = RegistratRef.current.getVal();
     const register = {

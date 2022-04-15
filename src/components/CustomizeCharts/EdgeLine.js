@@ -104,10 +104,10 @@ class EdgeLine extends Component {
                         <span>召测终端:</span>
                         <span className={styles.tooltipvalue}>{zddz}</span>
                       </li>
-                      {/*<li style={{ margin: '12px 0' }}>*/}
-                      {/*  <span>召测IP:</span>*/}
-                      {/*  <span className={styles.tooltipvalue}>{ip}</span>*/}
-                      {/*</li>*/}
+                      {/* <li style={{ margin: '12px 0' }}> */}
+                      {/*  <span>召测IP:</span> */}
+                      {/*  <span className={styles.tooltipvalue}>{ip}</span> */}
+                      {/* </li> */}
                     </ul>
                   </div>
                 );

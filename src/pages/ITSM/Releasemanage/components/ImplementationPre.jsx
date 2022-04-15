@@ -384,6 +384,7 @@ function ImplementationPre(props, ref) {
                           const dates = getFieldsValue(['bizStopEnd']);
                           return v && v > moment(dates.bizStopEnd);
                         }}
+                        allowClear={false}
                       />)}
                     </div>
                   )}
@@ -408,6 +409,7 @@ function ImplementationPre(props, ref) {
                           const dates = getFieldsValue(['bizStopBegin']);
                           return v && v < moment(dates.bizStopBegin);
                         }}
+                        allowClear={false}
                       />)}
                     </div>
                   )}

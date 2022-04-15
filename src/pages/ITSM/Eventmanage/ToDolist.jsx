@@ -36,6 +36,7 @@ function ToDolist(props) {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRowRecord, setSelectedRowRecord] = useState([]);
   const [tabrecord, setTabRecord] = useState({});
+  const [rangeTimeReset, setRangeTimeReset] = useState(false);
 
   // 查询
   const searchdata = (values, page, size) => {
@@ -252,6 +253,7 @@ function ToDolist(props) {
   ];
 
   const handleReset = () => {
+    setRangeTimeReset(true);
     router.push({
       pathname: location.pathname,
       query: {},
@@ -260,6 +262,7 @@ function ToDolist(props) {
     resetFields();
     searchdata(record, 1, 15);
     setPageinations({ current: 1, pageSize: 15 });
+    setTimeout(() => { setRangeTimeReset(false) }, 50)
   };
 
   useEffect(() => {
@@ -295,7 +298,7 @@ function ToDolist(props) {
 
   // 获取数据
   useEffect(() => {
-    if (cacheinfo !== undefined) {
+    if (cacheinfo) {
       validateFields((err, values) => {
         if (!err) {
           searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize)
@@ -438,6 +441,7 @@ function ToDolist(props) {
                     <RangeTime
                       startVal={cacheinfo.time3}
                       endVal={cacheinfo.time4}
+                      clear={rangeTimeReset}
                       getTimes={(v) => { setFieldsValue({ time: v }) }}
                     />
                   </Form.Item>

@@ -50,6 +50,7 @@ function Querylist(props) {
   const [selectedRecords, setSelectedRecords] = useState([]);
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [viewPages, setViewPages] = useState({ current: 1, pageSize: 5 });
+  const [rangeTimeReset, setRangeTimeReset] = useState(false);
 
   // 缓存页签查询条件
   const [tabrecord, setTabRecord] = useState({});
@@ -97,6 +98,7 @@ function Querylist(props) {
 
   // 重置
   const handleReset = () => {
+    setRangeTimeReset(true);
     router.push({
       pathname: `/ITSM/releasemanage/plan/query`,
       query: { pathpush: true },
@@ -104,6 +106,7 @@ function Querylist(props) {
     });
     resetFields();
     searchdata(searchrecord, 1, 15);
+    setTimeout(() => { setRangeTimeReset(false) }, 50);
   };
 
   useEffect(() => {
@@ -132,6 +135,17 @@ function Querylist(props) {
         const { current, pageSize } = location.state.cacheinfo.paginations;
         setExpand(location.state.cacheinfo.expand);
         setPageinations({ ...paginations, current, pageSize })
+        const { releaseBeginTime, releaseEndTime, beginTime, endTime } = location.state.cacheinfo;
+        setFieldsValue({
+          releasetime: {
+            startTime: releaseBeginTime ? moment(releaseBeginTime * 1000).format('YYYY-MM-DD HH:mm:ss') : '',
+            endTime: releaseEndTime ? moment(releaseEndTime * 1000).format('YYYY-MM-DD HH:mm:ss') : '',
+          },
+          time: {
+            startTime: beginTime ? moment(beginTime * 1000).format('YYYY-MM-DD HH:mm:ss') : '',
+            endTime: endTime ? moment(endTime * 1000).format('YYYY-MM-DD HH:mm:ss') : '',
+          },
+        });
       };
     }
   }, [location.state]);
@@ -648,6 +662,7 @@ function Querylist(props) {
                       <RangeTime
                         startVal={cacheinfo?.beginTime ? moment(cacheinfo.beginTime * 1000) : ''}
                         endVal={cacheinfo?.endTime ? moment(cacheinfo.endTime * 1000) : ''}
+                        clear={rangeTimeReset}
                         getTimes={(v) => { setFieldsValue({ time: v }) }}
                       />
                     </Form.Item>
@@ -663,6 +678,7 @@ function Querylist(props) {
                       <RangeTime
                         startVal={cacheinfo?.releaseBeginTime ? moment(cacheinfo.releaseBeginTime * 1000) : ''}
                         endVal={cacheinfo?.releaseEndTime ? moment(cacheinfo.releaseEndTime * 1000) : ''}
+                        clear={rangeTimeReset}
                         getTimes={(v) => { setFieldsValue({ releasetime: v }) }}
                       />
                     </Form.Item>

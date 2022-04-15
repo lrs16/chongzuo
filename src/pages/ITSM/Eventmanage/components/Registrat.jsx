@@ -531,14 +531,15 @@ const Registrat = forwardRef((props, ref) => {
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="发生时间">
-              {getFieldDecorator('register_occurTime', {
-                rules: [{ required, message: '请选择发生时间' }],
-                initialValue: moment(register?.occurTime),
-              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
-            </Form.Item>
+            <div onClick={e => e.stopPropagation()}>
+              <Form.Item label="发生时间">
+                {getFieldDecorator('register_occurTime', {
+                  rules: [{ required, message: '请选择发生时间' }],
+                  initialValue: moment(register?.occurTime),
+                })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
+              </Form.Item>
+            </div>
           </Col>
-
           <Col span={8}>
             <Form.Item label="申报人">
               {getFieldDecorator('register_applicationUser', {

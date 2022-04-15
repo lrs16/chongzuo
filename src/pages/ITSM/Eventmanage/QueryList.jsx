@@ -66,6 +66,7 @@ function QueryList(props) {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [username, setUserName] = useState('');
   const [tabrecord, setTabRecord] = useState({});
+  const [rangeTimeReset, setRangeTimeReset] = useState(false);
 
   if (time1) {
     title = '事件统计查询'
@@ -434,6 +435,7 @@ function QueryList(props) {
   const cacheinfo = location.state?.cacheinfo ? location.state.cacheinfo : record;
 
   const handleReset = () => {
+    setRangeTimeReset(true);
     router.push({
       pathname: location.pathname,
       query: {},
@@ -453,6 +455,7 @@ function QueryList(props) {
     }
     searchdata(record, 0, 15);
     setPageinations({ current: 1, pageSize: 15 });
+    setTimeout(() => { setRangeTimeReset(false) }, 50)
   };
 
   useEffect(() => {
@@ -902,6 +905,7 @@ function QueryList(props) {
                   <RangeTime
                     startVal={cacheinfo.time1}
                     endVal={cacheinfo.time2}
+                    clear={rangeTimeReset}
                     getTimes={(v) => { setFieldsValue({ time: v }) }}
                   />
                 </Form.Item>
@@ -910,7 +914,7 @@ function QueryList(props) {
                 <Button type="primary" onClick={() => handleSearch('search')}>
                   查 询
                 </Button>
-                <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>
+                <Button style={{ marginLeft: 8 }} onClick={() => { handleReset() }}>
                   重 置
                 </Button>
                 <Button

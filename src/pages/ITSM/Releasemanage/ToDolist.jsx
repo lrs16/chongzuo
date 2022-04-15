@@ -38,6 +38,7 @@ function ToDolist(props) {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRecords, setSelectedRecords] = useState([]);
   const [username, setUserName] = useState('');
+  const [rangeTimeReset, setRangeTimeReset] = useState(false);
 
   // 缓存页签查询条件
   const [tabrecord, setTabRecord] = useState({});
@@ -50,16 +51,16 @@ function ToDolist(props) {
       type: 'releasetodo/fetchlist',
       payload: {
         ...values,
-        beginTime: values.time?.startTime || '',
-        endTime: values.time?.endTime || '',
+        beginTime: values.beginTime ? moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
         pageSize: size,
         pageIndex: page,
       },
     });
     setTabRecord({
       ...values,
-      beginTime: values.time?.startTime || '',
-      endTime: values.time?.endTime || '',
+      beginTime: values.beginTime ? moment(values.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
     });
   };
 
@@ -73,6 +74,7 @@ function ToDolist(props) {
   };
 
   const handleReset = () => {
+    setRangeTimeReset(true);
     router.push({
       pathname: `/ITSM/releasemanage/plan/to-do`,
       query: { pathpush: true },
@@ -80,6 +82,7 @@ function ToDolist(props) {
     });
     resetFields();
     searchdata(searchrecord, 1, 15);
+    setTimeout(() => { setRangeTimeReset(false) }, 50)
   };
 
   useEffect(() => {
@@ -129,8 +132,8 @@ function ToDolist(props) {
     const val = getFieldsValue();
     const formval = {
       ...val,
-      beginTime: values.time?.beginTime || '',
-      endTime: values.time?.endTime || '',
+      beginTime: val.beginTime ? moment(val.beginTime).format('YYYY-MM-DD HH:mm:ss') : '',
+      endTime: val.endTime ? moment(val.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
     };
     const userid = sessionStorage.getItem('userauthorityid');
     const releaseNos = selectedRecords.length > 0 && selectedRecords.map(item => {
@@ -436,14 +439,37 @@ function ToDolist(props) {
                 </Col>
                 <Col span={8}>
                   <Form.Item label="发送时间">
-                    {getFieldDecorator('time', {
-                      initialValue: { beginTime: cacheinfo.beginTime, endTime: cacheinfo.endTime },
-                    })(<></>)}
-                    <RangeTime
-                      startVal={cacheinfo.beginTime}
-                      endVal={cacheinfo.endTime}
-                      getTimes={(v) => { setFieldsValue({ time: v }) }}
-                    />
+                    <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }} onClick={e => e.stopPropagation()}>
+                      {getFieldDecorator('beginTime', {
+                        initialValue: cacheinfo.beginTime ? moment(cacheinfo.beginTime) : '',
+                      })(
+                        <DatePicker
+                          showTime={{
+                            hideDisabledOptions: true,
+                            defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                          }}
+                          placeholder="开始时间"
+                          format='YYYY-MM-DD HH:mm:ss'
+                          style={{ minWidth: 120, width: '100%' }}
+                        />
+                      )}
+                    </div>
+                    <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
+                    <div style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                      {getFieldDecorator('endTime', {
+                        initialValue: cacheinfo.endTime ? moment(cacheinfo.endTime) : '',
+                      })(
+                        <DatePicker
+                          showTime={{
+                            hideDisabledOptions: true,
+                            defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                          }}
+                          placeholder="结束时间"
+                          format='YYYY-MM-DD HH:mm:ss'
+                          style={{ minWidth: 120, width: '100%' }}
+                        />
+                      )}
+                    </div>
                   </Form.Item>
                 </Col>
               </span>
