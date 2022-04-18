@@ -14,6 +14,7 @@ import {
   Icon,
   Table,
   Cascader,
+  Tooltip
   // Popconfirm
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -107,6 +108,22 @@ function ToDOlist(props) {
       dataIndex: 'title',
       key: 'title',
       width: 150,
+      onCell: () => {
+        return {
+          style: {
+            maxWidth: 150,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            cursor: 'pointer',
+          },
+        };
+      },
+      render: text => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '故障来源',

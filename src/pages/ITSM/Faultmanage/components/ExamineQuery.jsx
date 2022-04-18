@@ -33,7 +33,7 @@ function ExamineQuery(props) {
               <Input defaultValue={info.checkTime || ''} disabled />
             </Form.Item>
           </Col>
-          <Col span={24}>
+          <Col span={24} style={{ marginBottom: '-10px' }}>
             <Form.Item label="审核意见" {...forminladeLayout}>
               <FormTextArea autoSize={1} indexText={info.checkOpinion} />
             </Form.Item>

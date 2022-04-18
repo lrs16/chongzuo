@@ -89,7 +89,7 @@ function RegisterQuery(props) {
               <Input defaultValue={maindata.title || ''} disabled />
             </Form.Item>
           </Col>
-          <Col span={24}>
+          <Col span={24} style={{ marginBottom: '-10px' }}>
             <Form.Item label="故障概要" {...forminladeLayout}>
               <FormTextArea autoSize={1} indexText={maindata.content} />
             </Form.Item>

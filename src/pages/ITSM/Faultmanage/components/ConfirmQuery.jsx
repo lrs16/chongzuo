@@ -30,7 +30,7 @@ function ConfirmQuery(props) {
               <Input defaultValue={info.confirmBlame || ''} disabled />
             </Form.Item>
           </Col>
-          <Col span={24}>
+          <Col span={24} style={{ marginBottom: '-10px' }}>
             <Form.Item label="确认说明" {...forminladeLayout}>
               <FormTextArea autoSize={1} indexText={info.confirmContent} />
             </Form.Item>

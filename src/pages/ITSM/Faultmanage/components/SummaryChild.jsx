@@ -225,7 +225,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
             </Form.Item>
           </Col>
 
-          <Col span={24}>
+          <Col span={24} style={{ marginBottom: '-10px' }}>
             <Form.Item label="总结说明" {...forminladeLayout}>
               {getFieldDecorator('finishContent', {
                 initialValue: finish.finishContent,

@@ -35,19 +35,24 @@ function HandleQuery(props) {
     <>
       <Row gutter={24}>
         <Form {...formItemLayout}>
-          <Col span={24}>
+          <Col span={24} style={{ marginBottom: '-10px' }}>
             <Form.Item label="故障详细描述" {...forminladeLayout}>
               <FormTextArea autoSize={1} indexText={info.handleContent} />
             </Form.Item>
           </Col>
-          <Col span={24}>
+          <Col span={24} style={{ marginBottom: '-10px' }}>
             <Form.Item label="故障分析及原因" {...forminladeLayout}>
               <FormTextArea autoSize={1} indexText={info.handleReason} />
             </Form.Item>
           </Col>
-          <Col span={24}>
+          <Col span={24} style={{ marginBottom: '-10px' }}>
             <Form.Item label="故障措施或建议" {...forminladeLayout}>
               <FormTextArea autoSize={1} indexText={info.handleAdvise} />
+            </Form.Item>
+          </Col>
+          <Col span={24} style={{ marginBottom: '-10px' }}>
+            <Form.Item label="处理过程" {...forminladeLayout}>
+              <FormTextArea autoSize={1} indexText={info.handleProcess} />
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -65,12 +70,7 @@ function HandleQuery(props) {
               <Input defaultValue={info.handleResult || ''} disabled />
             </Form.Item>
           </Col>
-          <Col span={24}>
-            <Form.Item label="处理过程" {...forminladeLayout}>
-              <FormTextArea autoSize={1} indexText={info.handleProcess} />
-            </Form.Item>
-          </Col>
-
+          
           <Col span={24}>
             <Form.Item label="故障处理记录表" {...forminladeLayout}>
               {info.handleRecordAttachments && (

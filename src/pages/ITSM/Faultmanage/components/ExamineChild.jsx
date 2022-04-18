@@ -89,7 +89,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-        <Col span={24}>
+        <Col span={24} style={{ marginBottom: '-10px' }}>
           {adopt === '1' && (
             <Form.Item label="审核意见" {...forminladeLayout}>
               {getFieldDecorator('checkOpinion1', {

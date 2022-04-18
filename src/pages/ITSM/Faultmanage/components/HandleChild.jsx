@@ -148,7 +148,7 @@ const HandleChild = React.forwardRef((props, ref) => {
           dictType="handleresult"
           ChangeSelectdata={newvalue => setSelectData(newvalue)}
         />
-        <Col span={24}>
+        <Col span={24} style={{ marginBottom: '-10px' }}>
           <Form.Item label="故障详细描述" {...forminladeLayout}>
             {getFieldDecorator('handleContent', {
               rules: [
@@ -169,7 +169,7 @@ const HandleChild = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-        <Col span={24}>
+        <Col span={24} style={{ marginBottom: '-10px' }}>
           <Form.Item label="故障分析及原因" {...forminladeLayout}>
             {getFieldDecorator('handleReason', {
               rules: [
@@ -190,7 +190,7 @@ const HandleChild = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-        <Col span={24}>
+        <Col span={24} style={{ marginBottom: '-10px' }}>
           <Form.Item label="解决措施或建议" {...forminladeLayout}>
             {getFieldDecorator('handleAdvise', {
               rules: [
@@ -211,7 +211,7 @@ const HandleChild = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-        <Col span={24}>
+        <Col span={24} style={{ marginBottom: '-10px' }}>
           <Form.Item label="处理过程" {...forminladeLayout}>
             {getFieldDecorator('handleProcess', {
               rules: [

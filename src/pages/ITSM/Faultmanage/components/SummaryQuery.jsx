@@ -41,7 +41,7 @@ function SummaryQuery(props) {
               <Input defaultValue={info.finishTime || ''} disabled />
             </Form.Item>
           </Col>
-          <Col span={24}>
+          <Col span={24} style={{ marginBottom: '-10px' }}>
             <Form.Item label="总结说明" {...forminladeLayout}>
               <FormTextArea autoSize={1} indexText={info.finishContent} />
             </Form.Item>
