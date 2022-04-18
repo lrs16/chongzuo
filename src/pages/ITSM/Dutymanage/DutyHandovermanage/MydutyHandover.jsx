@@ -374,7 +374,7 @@ function MydutyHandover(props) {
     if(selectedKeys.length === 1 && logbookSearcharr.records[0].handoverStatus === '待接班') {
       todetail(logbookSearcharr.records[0], 'listButton')
     } else {
-      message.info('请选择一条数据进行接班')
+      message.info('请选择一条数据且交接班状态为：待接班')
     }
   }
 
