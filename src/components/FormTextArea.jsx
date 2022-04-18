@@ -50,7 +50,6 @@ function FormTextArea(props) {
           allowClear
           placeholder="请输入"
           onChange={handleChange}
-          key={sessionStorage.getItem('tabid')}
         // ref={inputElement}
         />) : (
         <TextArea
@@ -60,7 +59,6 @@ function FormTextArea(props) {
           allowClear
           placeholder="请输入"
           onChange={handleChange}
-          key={sessionStorage.getItem('tabid')}
         // ref={inputElement}
         />
       )}

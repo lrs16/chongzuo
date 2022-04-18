@@ -553,9 +553,9 @@ function KnowledgeList(props) {
         key: 'fileIds',
         render: (text) => {
           if (text) {
-            const content = (<div style={{ overflow: 'hidden' }}> <Downloadfile files={text} /></div >)
+            const content = (<div style={{ overflow: 'hidden', width: 700 }}> <Downloadfile files={text} /></div >)
             return (
-              <Popover content={content} title="附件列表">
+              <Popover content={content} title="附件列表" >
                 附件下载
               </Popover>
             )
