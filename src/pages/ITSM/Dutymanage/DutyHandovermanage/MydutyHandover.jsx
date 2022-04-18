@@ -371,7 +371,11 @@ function MydutyHandover(props) {
   };
 
   const handleSuccession = () => {
-    todetail(logbookSearcharr.records[0], 'listButton')
+    if(selectedKeys.length === 1 && logbookSearcharr.records[0].handoverStatus === '待接班') {
+      todetail(logbookSearcharr.records[0], 'listButton')
+    } else {
+      message.info('请选择一条数据进行接班')
+    }
   }
 
   const rowSelection = {
@@ -1079,7 +1083,7 @@ function MydutyHandover(props) {
           }
 
           {
-            pagetitle === '我的值班交接' && logbookSearcharr && logbookSearcharr.records && logbookSearcharr.records.length > 0 && logbookSearcharr.records[0].handoverStatus === '待接班' && (
+            pagetitle === '我的值班交接' && logbookSearcharr && logbookSearcharr.records && logbookSearcharr.records.length > 0 && (
               <Button type="primary" onClick={handleSuccession}>接班</Button>
             )
           }
