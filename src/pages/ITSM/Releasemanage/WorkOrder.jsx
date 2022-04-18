@@ -51,8 +51,8 @@ function WorkOrder(props) {
   const getregistratformvalues = () => {
     const val = RegistratRef.current.getVal();
     const { releaseAttaches, releaseEnvs, releaseLists, testOperator, testPlace, testResult, testUnit, versionNo } = val;
-    const testStart = moment(val.testStart).format('YYYY-MM-DD HH:mm:ss');
-    const testEnd = moment(val.testEnd).format('YYYY-MM-DD HH:mm:ss');
+    const testStart = val.testStart ? moment(val.testStart).format('YYYY-MM-DD HH:mm:ss') : '';
+    const testEnd = val.testEnd ? moment(val.testEnd).format('YYYY-MM-DD HH:mm:ss') : '';
     if (taskName === '出厂测试') {
       const { dutyUnit, influenceScope, registerTime, registerUnit, registerUnitId, registerUser, registerUserId, releaseNo, releaseType } = val;
       const register = {
@@ -345,10 +345,10 @@ function WorkOrder(props) {
             summary: val.summary,
             adjustRunMode: val.adjustRunMode,
             appModule: val.appModule,
-            beginPlanTime: moment(val.beginPlanTime).format('YYYY-MM-DD HH:mm:ss'),
-            endPlanTime: moment(val.endPlanTime).format('YYYY-MM-DD HH:mm:ss'),
-            bizStopBegin: moment(val.bizStopBegin).format('YYYY-MM-DD HH:mm:ss'),
-            bizStopEnd: moment(val.bizStopEnd).format('YYYY-MM-DD HH:mm:ss'),
+            beginPlanTime: val.beginPlanTime ? moment(val.beginPlanTime).format('YYYY-MM-DD HH:mm:ss') : '',
+            endPlanTime: val.endPlanTime ? moment(val.endPlanTime).format('YYYY-MM-DD HH:mm:ss') : '',
+            bizStopBegin: val.bizStopBegin ? moment(val.bizStopBegin).format('YYYY-MM-DD HH:mm:ss') : '',
+            bizStopEnd: val.bizStopEnd ? moment(val.bizStopEnd).format('YYYY-MM-DD HH:mm:ss') : '',
             bizStopVisit: val.bizStopVisit,
             syncData: val.syncData,
             affectBiz: val.syncData,

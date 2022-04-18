@@ -293,6 +293,7 @@ function Registrat(props, ref) {
                       format="YYYY-MM-DD HH:mm:ss"
                       disabled={!isEdit}
                       style={{ width: '100%' }}
+                      allowClear={false}
                       disabledDate={(v) => {
                         return getFieldsValue(['testEnd'])?.testEnd && v && moment(v) > moment(getFieldsValue(['testEnd'])?.testEnd);
                       }}
@@ -336,6 +337,7 @@ function Registrat(props, ref) {
                       format="YYYY-MM-DD HH:mm:ss"
                       disabled={!isEdit}
                       style={{ width: '100%' }}
+                      allowClear={false}
                       disabledDate={(v) => {
                         return getFieldsValue(['testStart'])?.testStart && v && moment(v) < moment(getFieldsValue(['testStart'])?.testStart);
                       }}

@@ -101,7 +101,7 @@ function Implementation(props, ref) {
                   rules: [{ required, message: `请选择发布实施时间` }],
                   initialValue: moment(info.practiceDone.practiceTime || undefined),
                 })(
-                  <DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} />
+                  <DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} allowClear={false} />
                 )}
               </Form.Item>
             </div>

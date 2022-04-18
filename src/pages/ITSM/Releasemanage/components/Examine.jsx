@@ -127,6 +127,7 @@ function Examine(props, ref) {
                   showTime
                   format="YYYY-MM-DD HH:mm:ss"
                   disabled={!isEdit}
+                  allowClear={false}
                 />
               )}
             </Form.Item>
