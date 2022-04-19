@@ -6,6 +6,7 @@
   "scripts": {
     "analyze": "cross-env ANALYZE=1 umi build",
     "build": "umi build",
+    "fix-memory-limit": "cross-env LIMIT=8048 increase-memory-limit",
     "deploy": "npm run site && npm run gh-pages",
     "fetch:blocks": "pro fetch-blocks && npm run prettier",
     "format-imports": "cross-env import-sort --write '**/*.{js,jsx,ts,tsx}'",
@@ -104,7 +105,7 @@
     "@umijs/fabric": "^2.0.0-beta.3",
     "chalk": "^3.0.0",
     "check-prettier": "^1.0.3",
-    "cross-env": "^6.0.0",
+    "cross-env": "^6.0.3",
     "cross-port-killer": "^1.1.1",
     "enzyme": "^3.9.0",
     "eslint-plugin-react-hooks": "^4.2.0",
