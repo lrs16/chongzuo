@@ -37,6 +37,7 @@ function RelationDrawer(props) {
   const [eventstatus, setEventstatus] = useState([]);
   const [problemstatus, setproblemstatus] = useState([]);
   const [releasestatus, setreleasestatus] = useState([]);
+  const [repairstatus, setrepairstatus] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [collapsed, setCollapsed] = useState(false);
@@ -95,6 +96,13 @@ function RelationDrawer(props) {
         payload: { assessNo: no || '', currentTaskName: status || '', pageIndex, pageSize },
       });
     }
+
+    if (orderTypeSuf === 'repair') {
+      dispatch({
+        type: 'relationorder/fetchrepair',
+        payload: { no, status: status === undefined ? '' : status, pageIndex, pageSize },
+      });
+    }
   };
 
   const handleSumit = () => {
@@ -150,6 +158,11 @@ function RelationDrawer(props) {
         setreleasestatus(res.data.statu);
       }
     });
+    querkeyVal('repair', 'taskName').then(res => {
+      if (res.code === 200) {
+        setrepairstatus(res.data.taskName);
+      }
+    });
   }, []);
 
   let notype;
@@ -183,6 +196,12 @@ function RelationDrawer(props) {
       currentStatus = 'currentTaskName';
       culumnsIndex = 'assessContent';
       culumnsTitle = '描述';
+      break;
+    case 'repair':
+      notype = '抢修票单';
+      indexType = 'no';
+      currentStatus = 'taskName';
+      culumnsTitle = '标题';
       break;
     default:
       break;
@@ -297,6 +316,22 @@ function RelationDrawer(props) {
                           <Option key="结束" value="结束">
                             结束
                           </Option>
+                        </Select>,
+                      )}
+                    </Form.Item>
+                  )}
+
+                  {orderTypeSuf === 'repair' && (
+                    <Form.Item label="状态">
+                      {getFieldDecorator('status', {
+                        initialValue: '',
+                      })(
+                        <Select placeholder="请选择" allowClear>
+                          {repairstatus.map(obj => (
+                            <Option key={obj.key} value={obj.val}>
+                              {obj.val}
+                            </Option>
+                          ))}
                         </Select>,
                       )}
                     </Form.Item>

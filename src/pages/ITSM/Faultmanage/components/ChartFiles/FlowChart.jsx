@@ -1,10 +1,11 @@
 import G6 from '@antv/g6';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
+import flowpic from '@/assets/flowpic.png';
 
 function FlowChart(props) {
   const { data, nodeSize, divHeight } = props;
-  const Util = G6.Util;
-  const ref = React.useRef(null);
+  const { Util } = G6;
+  const ChartRef = useRef(null);
 
   useEffect(() => {
     const container = document.getElementById('container');
@@ -20,7 +21,7 @@ function FlowChart(props) {
         nodeSize,
         preventOverlap: true, // 设置防止重叠
         preventOverlapPadding: 300,
-        controlPoints: true,
+        controlPoints: true, 
         nodesepFunc: () => -100,
         ranksepFunc: () => -60,
       },
@@ -56,7 +57,7 @@ function FlowChart(props) {
 
       if (node.type === 'inner-animate') { // 正在走的节点
         const obj = node;
-        obj.img = 'https://img-blog.csdnimg.cn/dd9e41273a894e91a1e09cae28d9f66a.png';
+        obj.img = flowpic;
         obj.size = [28, 28];
         return {
           style: {
@@ -161,10 +162,10 @@ function FlowChart(props) {
     {
       // 绘制节点
       afterDraw(cfg, group) { // 节点圆圈
-        const size = this.getSize(cfg);
-        const width = size[0];
         const { labels } = cfg;
         const newArr = labels.split(',');
+        const size = cfg.size;
+        const width = size[0];
         if (cfg.labels && newArr.length) {
           group.addShape('text', {
             attrs: {
@@ -205,7 +206,7 @@ function FlowChart(props) {
   return (
     <div
       id="container"
-      ref={ref}
+      ref={ChartRef}
       style={{
         height: divHeight, // 12个字时设置
         padding: 20,

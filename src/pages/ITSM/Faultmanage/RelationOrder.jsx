@@ -105,6 +105,9 @@ function RelevancyOrder(props) {
     case 'quality':
       orderNotype = '绩效单编号';
       break;
+    case 'repair':
+      orderNotype = '抢修票编号';
+    break;
     default:
       break;
   }
@@ -165,6 +168,19 @@ function RelevancyOrder(props) {
                 },
               });
               break;
+              case 'repair':
+              router.push({
+                pathname: `/ITSM/faultmanage/tickemergent/details`,
+                query: {
+                  Id: record.id,
+                  taskName: record.taskName,
+                },
+                state: {
+                  dynamicpath: true,
+                  menuDesc: '抢修票工单详情',
+                },
+              });
+              break;
             default:
               break;
           }
@@ -195,6 +211,7 @@ function RelevancyOrder(props) {
         <TabPane tab="问题单" key="problem" />
         <TabPane tab="计划发布单" key="release" />
         <TabPane tab="绩效单" key="quality" />
+        <TabPane tab="抢修票单" key="repair" />
       </Tabs>
       {activeKey === 'event' && (
         <Row>
@@ -289,7 +306,6 @@ function RelevancyOrder(props) {
           </Col>
         </Row>
       )}
-
       {activeKey === 'quality' && (
         <Row>
           <Col span={8}>
@@ -313,6 +329,37 @@ function RelevancyOrder(props) {
                 onClick={() => {
                   setVisible(true);
                   setTitle('绩效');
+                }}
+              >
+                关联工单
+              </Button>
+            )}
+          </Col>
+        </Row>
+      )}
+      {activeKey === 'repair' && (
+        <Row>
+          <Col span={8}>
+            <Input
+              onChange={e => setSearchKey(e.target.value)}
+              placeholder="请输入抢修票单号"
+              allowClear
+            />
+          </Col>
+          <Col span={8}>
+            <Button type="primary" style={{ marginLeft: 16 }} onClick={() => handleSearch()}>
+              本页查询
+            </Button>
+            <Button style={{ marginLeft: 16 }} onClick={() => setSearchRow(undefined)}>
+              重 置
+            </Button>
+            {relation && (
+              <Button
+                type="primary"
+                style={{ marginLeft: 8 }}
+                onClick={() => {
+                  setVisible(true);
+                  setTitle('抢修票');
                 }}
               >
                 关联工单
