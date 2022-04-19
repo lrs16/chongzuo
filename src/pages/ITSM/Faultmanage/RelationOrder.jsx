@@ -172,8 +172,8 @@ function RelevancyOrder(props) {
               router.push({
                 pathname: `/ITSM/faultmanage/tickemergent/details`,
                 query: {
-                  Id: record.id,
-                  taskName: record.taskName,
+                  Id: record.mainId,
+                  taskName: record.status,
                 },
                 state: {
                   dynamicpath: true,

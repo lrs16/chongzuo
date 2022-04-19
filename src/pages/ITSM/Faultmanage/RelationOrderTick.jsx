@@ -70,6 +70,10 @@ function RelevancyOrder(props) {
     }
   }, [statuscode]);
 
+  useEffect(() => {
+    getlist(paginations.current - 1, paginations.pageSize);
+  }, []);
+
   const columns = [
     {
       title: '故障单编码',
@@ -104,10 +108,7 @@ function RelevancyOrder(props) {
         };
       },
       render: text => (
-        <Tooltip
-          placement="topLeft"
-          title={text}
-        >
+        <Tooltip placement="topLeft" title={text}>
           {text}
         </Tooltip>
       ),
