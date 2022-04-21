@@ -7,6 +7,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined, AlertTwoTone } from '@ant-design/icons';
 import RangeTime from '@/components/SelectTime/RangeTime';
 import DictLower from '@/components/SysDict/DictLower';
+import { ThShort } from '@/utils/utils';
 import { exportReleaseOrder } from './services/api';
 
 const { Option } = Select;
@@ -388,7 +389,7 @@ function Querylist(props) {
       title: '发布时间',
       dataIndex: 'releaseTime',
       key: 'releaseTime',
-      // sorter: (a, b) => a.releaseTime.localeCompare(b.releaseTime),
+      sorter: (a, b) => ThShort(a, b, 'releaseTime'),
     },
   ];
 

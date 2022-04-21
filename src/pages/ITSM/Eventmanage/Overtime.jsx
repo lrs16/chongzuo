@@ -7,6 +7,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import KeyVal from '@/components/SysDict/KeyVal';
 import RangeTime from '@/components/SelectTime/RangeTime';
+import { ThShort } from '@/utils/utils';
 
 // const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -145,6 +146,7 @@ function Overtime(props) {
       key: 'eventNo',
       width: 150,
       fixed: 'left',
+      sorter: (a, b) => ThShort(a, b, 'eventNo'),
       render: (text, record) => {
         const handleClick = () => {
           dispatch({
@@ -452,9 +454,9 @@ function Overtime(props) {
     const clientHeight = window.document?.body?.clientHeight;
     if (clientHeight > 750) {
       if (expand) {
-        height = clientHeight - 544
+        height = clientHeight - 514
       } else {
-        height = clientHeight - 486
+        height = clientHeight - 470
       }
     }
     return height

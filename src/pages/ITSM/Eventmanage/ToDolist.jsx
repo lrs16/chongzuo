@@ -7,6 +7,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import SysDict from '@/components/SysDict';
 import RangeTime from '@/components/SelectTime/RangeTime';
+import { ThShort } from '@/utils/utils';
 
 const { Option } = Select;
 
@@ -167,6 +168,7 @@ function ToDolist(props) {
       key: 'eventNo',
       width: 180,
       fixed: 'left',
+      sorter: (a, b) => ThShort(a, b, 'eventNo'),
       render: (text, r) => {
         const handleClick = () => {
           dispatch({
@@ -243,6 +245,7 @@ function ToDolist(props) {
       dataIndex: 'createTime',
       key: 'createTime',
       width: 180,
+      sorter: (a, b) => ThShort(a, b, 'createTime'),
     },
     {
       title: '优先级',

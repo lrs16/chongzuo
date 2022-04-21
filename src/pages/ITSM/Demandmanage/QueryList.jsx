@@ -5,6 +5,7 @@ import router from 'umi/router';
 import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Cascader, message, Popover, Tooltip } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined, AlertTwoTone } from '@ant-design/icons';
+import { ThShort } from '@/utils/utils';
 import RangeTime from '@/components/SelectTime/RangeTime';
 import DictLower from '@/components/SysDict/DictLower';
 import TableColumns from '@/components/TableColumns';
@@ -95,6 +96,7 @@ function QueryList(props) {
       key: 'demandId',
       with: 100,
       fixed: 'left',
+      sorter: (a, b) => ThShort(a, b, 'demandId'),
       render: (text, record) => {
         const handleClick = () => {
           dispatch({
@@ -192,7 +194,8 @@ function QueryList(props) {
       vote.title = tablecolumns[i].val;
       vote.dataIndex = tablecolumns[i].key;
       vote.key = tablecolumns[i].key;
-      vote.width = 180;
+      vote.width = 200;
+      vote.sorter = (a, b) => ThShort(a, b, tablecolumns[i].key);
       if (tablecolumns[i].key === 'demandId') {
         vote.fixed = 'left';
         vote.render = (text, record) => {
@@ -514,9 +517,9 @@ function QueryList(props) {
     const clientHeight = window.document?.body?.clientHeight;
     if (clientHeight > 750) {
       if (expand) {
-        height = clientHeight - 558
+        height = clientHeight - 564
       } else {
-        height = clientHeight - 514
+        height = clientHeight - 520
       }
     }
     return height

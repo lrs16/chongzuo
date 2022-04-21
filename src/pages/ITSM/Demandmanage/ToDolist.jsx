@@ -6,6 +6,7 @@ import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Tooltip
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
+import { ThShort } from '@/utils/utils';
 
 const { Option } = Select;
 
@@ -124,6 +125,7 @@ function ToDolist(props) {
       dataIndex: 'demandId',
       key: 'demandId',
       with: 100,
+      sorter: (a, b) => ThShort(a, b, 'demandId'),
       fixed: 'left',
       render: (text, r) => {
         const handleClick = () => {
@@ -226,6 +228,7 @@ function ToDolist(props) {
       dataIndex: 'sendTime',
       key: 'sendTime',
       with: 150,
+      sorter: (a, b) => ThShort(a, b, 'sendTime'),
       render: text => {
         return <>{moment(text).format('YYYY-MM-DD HH:mm')}</>;
       },

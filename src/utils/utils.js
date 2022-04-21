@@ -99,4 +99,22 @@ export const openNotification = (data) => {
   // }, 50)
 };
 
+export const ThShort = (a, b, key) => {
+  const A = a[key]?.toUpperCase();
+  const B = b[key]?.toUpperCase();
+  if (A && B && A < B) {
+    return -1;
+  }
+  if (A && B && A > B) {
+    return 1;
+  }
+  if (!A && B) {
+    return 1
+  }
+  if (A && !B) {
+    return -1
+  }
+  return 0;
+}
+
 

@@ -20,6 +20,7 @@ import { DownOutlined, UpOutlined, AlertTwoTone } from '@ant-design/icons';
 import SysDict from '@/components/SysDict';
 import AdminAuth from '@/components/AdminAuth';
 import RangeTime from '@/components/SelectTime/RangeTime';
+import { ThShort } from '@/utils/utils';
 import { EventDelete } from './services/api';    // 删除工单
 
 const { Option } = Select;
@@ -100,6 +101,7 @@ function QueryList(props) {
       key: 'eventNo',
       width: 140,
       fixed: 'left',
+      sorter: (a, b) => ThShort(a, b, 'eventNo'),
       render: (text, record) => {
         const handleClick = () => {
           dispatch({
@@ -237,6 +239,7 @@ function QueryList(props) {
       dataIndex: 'addTime',
       key: 'addTime',
       width: 200,
+      sorter: (a, b) => ThShort(a, b, 'addTime'),
     },
     {
       title: '处理人',
@@ -527,7 +530,7 @@ function QueryList(props) {
     // 最小兼容1600的全屏显示器
     const clientHeight = window.document?.body?.clientHeight;
     if (clientHeight > 750 && !expand) {
-      height = clientHeight - 520
+      height = clientHeight - 562
     }
     return height
   };

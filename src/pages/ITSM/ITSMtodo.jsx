@@ -3,6 +3,7 @@ import { connect } from 'dva';
 import router from 'umi/router';
 import { Card, Table, Tooltip } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { ThShort } from '@/utils/utils';
 
 function ITSMtodo(props) {
   const { eventlist, loading, location } = props;
@@ -121,6 +122,7 @@ function ITSMtodo(props) {
       key: 'itemWorkId',
       with: 140,
       fixed: 'left',
+      sorter: (a, b) => ThShort(a, b, 'itemWorkId'),
       render: (text, record) => {
         const handleClick = () => {
           dispatch({
@@ -294,14 +296,14 @@ function ITSMtodo(props) {
                   taskName: record.taskName,
                   taskId: record.taskId,
                   Id: record.itemWorkMainId,
-                  todo:true,
+                  todo: true,
                 },
                 state: {
                   dynamicpath: true,
                   menuDesc: '抢修票工单详情',
                 },
               });
-            break;
+              break;
             default:
               break;
           }
@@ -376,7 +378,7 @@ function ITSMtodo(props) {
       dataIndex: 'timeoutTimeStatus',
       key: 'timeoutTimeStatus',
       with: 100,
-      sorter: (a, b) => a.itemWorkType.length - b.itemWorkType.length,
+      sorter: (a, b) => ThShort(a, b, 'timeoutTimeStatus'),
       render: text => {
         const statusmap = new Map([
           ['0', '正常'],
@@ -391,6 +393,17 @@ function ITSMtodo(props) {
       dataIndex: 'todoTime',
       key: 'todoTime',
       with: 150,
+      sorter: (a, b) => {
+        const A = a.timeoutTimeStatus.toUpperCase();
+        const B = b.timeoutTimeStatus.toUpperCase();
+        if (A < B) {
+          return -1
+        }
+        if (A > B) {
+          return 1
+        }
+        return 0
+      },
     },
   ];
 

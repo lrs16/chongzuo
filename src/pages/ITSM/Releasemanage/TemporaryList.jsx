@@ -5,7 +5,8 @@ import router from 'umi/router';
 import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, message, Tooltip, Divider } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
-import RangeTime from '@/components/SelectTime/RangeTime';
+// import RangeTime from '@/components/SelectTime/RangeTime';
+import { ThShort } from '@/utils/utils';
 import DictLower from '@/components/SysDict/DictLower';
 import { exportReleaseOrder } from './services/temp';
 
@@ -312,6 +313,7 @@ function Querylist(props) {
       title: '发布时间',
       dataIndex: 'releaseTime',
       key: 'releaseTime',
+      sorter: (a, b) => ThShort(a, b, 'releaseTime'),
     },
   ];
 

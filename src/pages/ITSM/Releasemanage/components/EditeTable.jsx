@@ -6,6 +6,7 @@ import UserContext from '@/layouts/MenuContext';
 import CheckOneUser from '@/components/SelectUser/CheckOneUser';
 import { dispatchBizUsers, dispatchPlatsers } from '@/services/user';
 import { querkeyVal } from '@/services/api';
+import AdminAuth from '@/components/AdminAuth';
 import styles from '../index.less';
 import OrderContent from './OrderContent';
 import { releaseListEdit, releaseListDel, classifyList, releaseListsDownload } from '../services/api';                   // 版本管理员审批清单添加编辑
@@ -47,6 +48,7 @@ function EditeTable(props) {
   const [releaseNoandId, setReleaseNo] = useState({ releaseNo: '', processInstanceId: '' });
   const [classify, setClassify] = useState('');
   const [selectdata, setSelectData] = useState([]); // 下拉值
+  const [username, setUserName] = useState('');
   const { ChangeButtype, taskId, ChangeaddAttaches, location } = useContext(UserContext);
 
   const listTypeFilter = [{ text: '计划', value: '计划' }, { text: '临时添加', value: '临时添加' }]
@@ -1155,26 +1157,34 @@ function EditeTable(props) {
                 </Button>
               )}
               {(taskName === '新建' || taskName === '出厂测试') && (
-                <Button
-                  type='primary'
-                  style={{ marginRight: 8 }}
-                  onClick={() => {
-                    newMember();
-                  }}
-                  disabled={newbutton}
-                >
-                  新增
-                </Button>)}
-              {(taskName === '新建' || taskName === '出厂测试') && (
-                <Button
-                  type='danger'
-                  style={{ marginRight: 8 }}
-                  ghost
-                  onMouseDown={() => ChangeButtype('')} onClick={() => handleDelete()}
-                  disabled={newbutton}
-                >
-                  移除
-                </Button>
+                <>
+                  <AdminAuth getAuth={v => setUserName(v)} code='addreleaselist' />
+                  {username ? (
+                    <>
+                      <Button
+                        type='primary'
+                        style={{ marginRight: 8 }}
+                        onClick={() => {
+                          newMember();
+                        }}
+                        disabled={newbutton}
+                      >
+                        新增
+                      </Button>
+                      <Button
+                        type='danger'
+                        style={{ marginRight: 8 }}
+                        ghost
+                        onMouseDown={() => ChangeButtype('')} onClick={() => handleDelete()}
+                        disabled={newbutton}
+                      >
+                        移除
+                      </Button>
+                    </>
+                  ) : (
+                    <span style={{ color: '#f81d22' }}>您没有编辑发布清单的权限，请联系系统管理员</span>
+                  )}
+                </>
               )}
               {/* {taskName === '出厂测试' && (
                 <Button

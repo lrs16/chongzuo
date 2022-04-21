@@ -11,6 +11,7 @@ import CheckOneUser from '@/components/SelectUser/CheckOneUser';
 import { knowledgeCheckUserList } from '@/services/user';
 import RangeTime from '@/components/SelectTime/RangeTime';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
+import { ThShort } from '@/utils/utils';
 import { submitkowledge, releasekowledge, revokekowledge, abolishkowledge, deletekowledge } from './services/api';
 import Examine from './components/Examine';
 
@@ -460,6 +461,7 @@ function KnowledgeList(props) {
       dataIndex: 'no',
       key: 'no',
       fixed: 'left',
+      sorter: (a, b) => ThShort(a, b, 'no'),
       render: (text, record) => {
         const desmap = new Map([
           ['我的知识', '编辑知识'],
@@ -535,6 +537,7 @@ function KnowledgeList(props) {
       title: '编辑时间',
       dataIndex: 'updateTime',
       key: 'updateTime',
+      sorter: (a, b) => ThShort(a, b, 'updateTime'),
     },
     {
       title: '阅读量',
