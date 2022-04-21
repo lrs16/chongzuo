@@ -172,6 +172,7 @@ function TobedealtList(props) {
     }
   };
 
+
   const initialColumns = [
     {
       title: '序号',
@@ -1275,7 +1276,7 @@ function TobedealtList(props) {
     return [];
   };
 
-    
+
   const setTableHeight = () => {
     let height = 500;
     // 最小兼容1600的全屏显示器
@@ -1992,11 +1993,10 @@ function TobedealtList(props) {
           columns={columns && columns.length === (initialColumns && initialColumns.length) ? initialColumns : columns}
           dataSource={tobeDealtarr.records}
           scroll={{ x: 1500, y: setTableHeight() }}
-          rowKey={records => records.assessNo}
+          rowKey={(records,index) => {return index} }
           rowSelection={rowSelection}
           pagination={pagination}
         />
-
       </Card>
     </PageHeaderWrapper>
   );
