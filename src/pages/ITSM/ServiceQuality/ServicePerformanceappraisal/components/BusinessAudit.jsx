@@ -1,5 +1,5 @@
 import React, { useImperativeHandle, useRef, useState, useEffect } from 'react';
-import { Form, Input, Radio, Row, Col, Tag, DatePicker } from 'antd';
+import { Form, Input, Radio, Row, Col, Tag, DatePicker, message } from 'antd';
 import moment from 'moment';
 import FormTextArea from '../../../OperationPlan/components/FormTextArea';
 import styles from '../index.less'
@@ -14,7 +14,8 @@ const BusinessAudit = React.forwardRef((props, ref) => {
     selectPersonstate,
     userinfo,
     noEdit,
-    search
+    search,
+    type
   } = props;
 
   const [showContent, setShowContent] = useState('1');
@@ -30,6 +31,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
   );
 
   useEffect(() => {
+    console.log(businessAudit.verifyValue,'businessAudit.verifyValue')
     selectPersonstate(businessAudit.verifyValue || '1');
     setShowContent(businessAudit.verifyValue || '1')
   }, []);
@@ -37,6 +39,9 @@ const BusinessAudit = React.forwardRef((props, ref) => {
   const handleChange = e => {
     setShowContent(e.target.value);
     selectPersonstate(e.target.value);
+    if(!type && e.target.value === '0') {
+      message.info('审核结果不通过，该工单下一步状态为结束')
+    }
   };
 
   const onChange = (date, dateString) => {
@@ -48,12 +53,12 @@ const BusinessAudit = React.forwardRef((props, ref) => {
     <Row gutter={24}>
       <Form {...formItemLayout}>
         <Col span={8}>
-          <Form.Item label="审核结果">
+          <Form.Item label={type ? '复核结果':'审核结果'}>
             {getFieldDecorator('verifyValue', {
               rules: [
                 {
                   required,
-                  message: '请输入审核结果',
+                  message: `${type ? '请输入复核结果':'请输入审核结果'}`,
                 },
               ],
               initialValue: businessAudit.verifyValue || '1',
@@ -69,7 +74,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
         <div className={styles.allowClearicon}>
           {showContent === '1' && (
             <Col span={24}>
-              <Form.Item label="审核说明" {...forminladeLayout}>
+              <Form.Item label={type ? '复核内容':'审核内容'} {...forminladeLayout}>
                 {getFieldDecorator('verifyContent', {
                   initialValue: businessAudit.verifyContent || businessAudit.reviewContent,
                 })(
@@ -88,12 +93,12 @@ const BusinessAudit = React.forwardRef((props, ref) => {
 
           {showContent === '0' && (
             <Col span={24}>
-              <Form.Item label="审核说明" {...forminladeLayout}>
+              <Form.Item label={type ? '复核内容':'审核内容'} {...forminladeLayout}>
                 {getFieldDecorator('verifyContent2', {
                   rules: [
                     {
                       required,
-                      message: '请输入审核说明',
+                      message: `${type ? '请输入复核说明':'请输入审核说明'}`,
                     },
                   ],
                   initialValue: businessAudit.verifyContent || businessAudit.reviewContent,
@@ -117,14 +122,14 @@ const BusinessAudit = React.forwardRef((props, ref) => {
               {getFieldDecorator('verifyStatus', {
                 initialValue: businessAudit.verifyStatus,
               })(
-                <Tag color="blue">{businessAudit.verifyStatus || businessAudit.reviewStatus}</Tag>,
+                <Tag color="blue">{businessAudit.verifyStatus || businessAudit.reviewStatus || '待审核'}</Tag>,
               )}
             </Form.Item>
           </Col>
         )}
 
         <Col span={8}>
-          <Form.Item label="审核人">
+          <Form.Item label={type ? '复核人':'审核人'}>
             {getFieldDecorator('verifier', {
               initialValue:
                 businessAudit.verifierName ||
@@ -136,12 +141,12 @@ const BusinessAudit = React.forwardRef((props, ref) => {
         </Col>
 
         <Col span={8}>
-          <Form.Item label="审核时间">
+          <Form.Item label={type ? '复核时间':'审核时间'}>
             {getFieldDecorator('verifyTime', {
               rules: [
                 {
                   required,
-                  message: '请选择审核时间',
+                  message: `${type ? '请选择复核时间' :'请选择审核时间'}`,
                 },
               ],
               initialValue:

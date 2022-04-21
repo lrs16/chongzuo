@@ -11,9 +11,9 @@ import {
 import moment from 'moment';
 import router from 'umi/router';
 import HadleContext from '@/layouts/MenuContext';
-import User from '@/components/SelectUser/User';
 import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import User from './PerformanceSelection';
 import { contractProvider } from '../services/quality';
 import BusinessAudit from './components/BusinessAudit';
 import Register from './components/Register';
@@ -102,9 +102,16 @@ function TobedealtForm(props) {
   const openFlow = () => {
     dispatch({
       type: 'performanceappraisal/getTaskData',
-      payload: { assessNo },
+      payload: { taskId },
     });
   };
+
+  const openSearch = () => {
+    dispatch({
+      type: 'performanceappraisal/openSearch',
+      payload: { assessNo },
+    })
+  }
 
   //  根据考核类型查询一级指标
   const getTarget1 = type => {
@@ -156,21 +163,20 @@ function TobedealtForm(props) {
   if (loading === false && taskData && currentTask && taskName) {
     switch (taskName) {
       case '服务绩效考核登记':
-        sessionStorage.setItem('Nextflowmane', '业务负责人审核人');
+        sessionStorage.setItem('Nextflowmane', '自动化科审核人');
         break;
       case '业务负责人审核':
-        sessionStorage.setItem('Nextflowmane', '服务商确认');
-        break;
       case '自动化科专责审核':
+      case '自动化科审核':
         sessionStorage.setItem('Nextflowmane', '服务商确认');
         break;
       case '服务商确认':
         sessionStorage.setItem(
           'Nextflowmane',
-          `${isappeal === '0' ? '服务绩效考核确认' : '自动化科复核'}`,
+          `${isappeal === '0' ? '服务绩效考核确认' : '自动化科申诉复核'}`,
         );
         break;
-      case '自动化科复核':
+      case '自动化科申诉复核':
         sessionStorage.setItem('Nextflowmane', '服务绩效考核确认人');
         break;
       case '自动化科业务负责人确认':
@@ -182,13 +188,17 @@ function TobedealtForm(props) {
   }
 
   useEffect(() => {
-    if (assessNo) {
+    if (mainId && !search) {
       getUserinfo();
       openFlow();
       gethisTask();
     }
+
+    if (assessNo && search) {
+      openSearch()
+    }
     setTabActiveKey('workorder');
-  }, [assessNo]);
+  }, [mainId, assessNo]);
 
   const getArrayindex = (data) => {
     return data.map((obj, index) => {
@@ -197,9 +207,16 @@ function TobedealtForm(props) {
   }
 
   useEffect(() => {
-    if (location.state && location.state.reset && assessNo) {
+    if (location.state && location.state.reset && mainId && !search) {
       getUserinfo();
       openFlow();
+      gethisTask();
+      sessionStorage.setItem('Processtype', 'achievements');
+      setTabActiveKey('workorder');
+    }
+    if (location.state && location.state.reset && assessNo && search) {
+      getUserinfo();
+      openSearch()
       gethisTask();
       sessionStorage.setItem('Processtype', 'achievements');
       setTabActiveKey('workorder');
@@ -279,7 +296,8 @@ function TobedealtForm(props) {
       type: 'performanceappraisal/assessComplete',
       payload: {
         taskId,
-        users: sessionStorage.getItem('NextflowUserId'),
+        users: sessionStorage.getItem('NextflowUserId')
+        ,
       },
     }).then(res => {
       if (res.code === 200) {
@@ -338,16 +356,21 @@ function TobedealtForm(props) {
   //  审核保存流转
   const auditSave = (flowType, circulation) => {
     let requestUrl;
-    if (flowType === '业务负责人审核') {
-      requestUrl = 'performanceappraisal/saveDirectorVerify';
-    } else if (flowType === '自动化科专责审核') {
-      requestUrl = 'performanceappraisal/saveExpertVerify';
-    } else {
-      requestUrl = 'performanceappraisal/saveDirectorReview';
+    switch (flowType) {
+      case '业务负责人审核':
+        requestUrl = 'performanceappraisal/saveDirectorVerify';
+        break;
+      case '自动化科专责审核':
+      case '自动化科审核':
+        requestUrl = 'performanceappraisal/saveExpertVerify';
+        break;
+      default:
+        requestUrl = 'performanceappraisal/saveDirectorReview';
+        break;
     }
     const obj = {};
     formRef.current.validateFields((err, values) => {
-      if (taskName === '自动化科复核') {
+      if (taskName === '自动化科申诉复核') {
         obj.reviewContent = values.verifyContent || values.verifyContent2 || '';
         obj.reviewer = values.verifier;
         obj.reviewTime = moment(values.verifyTime).format('YYYY-MM-DD HH:mm:ss');
@@ -406,7 +429,7 @@ function TobedealtForm(props) {
             instanceId,
             taskId,
             ...values,
-            appealContent:values.appealContent || '',
+            appealContent: values.appealContent || '',
             confirmTime: moment(values.confirmTime).format('YYYY-MM-DD HH:mm:ss'),
             annex: JSON.stringify(files.arr),
           },
@@ -444,9 +467,9 @@ function TobedealtForm(props) {
             id: currentTask.id,
             instanceId,
             taskId,
-            assessContent:saveParams.assessContent || '',
-            confirmContent:saveParams.confirmContent || '',
-            appealContent:saveParams.appealContent || '',
+            assessContent: saveParams.assessContent || '',
+            confirmContent: saveParams.confirmContent || '',
+            appealContent: saveParams.appealContent || '',
             confirmTime: moment(values.confirmTime).format('YYYY-MM-DD HH:mm:ss'),
           },
         }).then(res => {
@@ -520,7 +543,8 @@ function TobedealtForm(props) {
         break;
       case '业务负责人审核':
       case '自动化科专责审核':
-      case '自动化科复核':
+      case '自动化科申诉复核':
+      case '自动化科审核':
         auditSave(flowType, requestType);
         break;
       case '服务商确认':
@@ -549,7 +573,8 @@ function TobedealtForm(props) {
         break;
       case '自动化科专责审核':
       case '业务负责人审核':
-        buttonContent = '流转';
+      case '自动化科审核':
+        buttonContent = ((taskName === '自动化科审核' || taskName === '业务负责人审核') && noselect === '0') ? '结束' : '流转';
         break;
       default:
         break;
@@ -663,7 +688,8 @@ function TobedealtForm(props) {
 
               {taskName &&
                 taskName !== '服务绩效考核确认' &&
-                taskName !== '自动化科复核' &&
+                taskName !== '自动化科申诉复核' &&
+                taskName !== '业务负责人审核' &&
                 noselect === '1' &&
                 tabActiveKey === 'workorder' && (
                   <Button
@@ -671,17 +697,19 @@ function TobedealtForm(props) {
                     onClick={() => onClickSubmit(taskName, 'circula')}
                     disabled={uploadStatus || handleUploadStatus || loading || olduploadstatus}
                   >
-                    {taskName === '自动化科复核' ? '确认复核' : '流转'}
+                    {taskName === '自动化科申诉复核' ? '确认复核' : '流转'}
                   </Button>
                 )}
 
               {taskName &&
                 noselect === '0' &&
-                taskName !== '自动化科复核' &&
+                taskName !== '自动化科申诉复核' &&
                 taskName !== '服务商确认' &&
                 taskName !== '服务绩效考核确认' &&
                 (taskName === '业务负责人审核' ||
                   taskName === '自动化科专责审核' ||
+                  taskName === '自动化科审核' ||
+                  taskName === '业务负责人审核' ||
                   taskName === '服务绩效考核确认') &&
                 tabActiveKey === 'workorder' && (
                   <Button
@@ -693,17 +721,17 @@ function TobedealtForm(props) {
                   </Button>
                 )}
 
-              {taskName && taskName === '服务绩效考核确认' && tabActiveKey === 'workorder' && (
+              {taskName && (taskName === '服务绩效考核确认' || (taskName === '业务负责人审核' && noselect === '1')) && tabActiveKey === 'workorder' && (
                 <Button
                   type="primary"
                   onClick={() => onClickSubmit(taskName, '流转不选人')}
                   disabled={uploadStatus || handleUploadStatus || loading || olduploadstatus}
                 >
-                  确认考核
+                  {taskName === '服务绩效考核确认' ? '确认考核' : '流转'}
                 </Button>
               )}
 
-              {taskName && taskName === '自动化科复核' && tabActiveKey === 'workorder' && (
+              {taskName && taskName === '自动化科申诉复核' && tabActiveKey === 'workorder' && (
                 <Button
                   type="primary"
                   onClick={() => onClickSubmit(taskName, 'circula')}
@@ -773,7 +801,7 @@ function TobedealtForm(props) {
                             </div>
                           </div>
                         }
-                        icon={(index === hisTaskArr.length - 1) ? <Icon type="loading" spin /> : ''}
+                        icon={((index === hisTaskArr.length - 1) || taskStatus === '待审核') ? <Icon type="loading" spin /> : ''}
                       />
                     ),
                   ],
@@ -839,6 +867,22 @@ function TobedealtForm(props) {
                   </Panel>
                 )}
 
+                {taskName === '自动化科审核' && (
+                  <Panel header="自动化科审核" key="1" style={{ backgroundColor: 'white' }}>
+                    <BusinessAudit
+                      ref={formRef}
+                      businessAudit={currentTask}
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                      userinfo={userinfo}
+                      selectPersonstate={newvalue => setNoselect(newvalue)}
+                      noEdit={search}
+                      search={search}
+                      key='1'
+                    />
+                  </Panel>
+                )}
+
                 {taskName === '自动化科专责审核' && (
                   <Panel header="自动化科专责审核" key="1" style={{ backgroundColor: 'white' }}>
                     <BusinessAudit
@@ -876,8 +920,8 @@ function TobedealtForm(props) {
                   </Panel>
                 )}
 
-                {taskName === '自动化科复核' && (
-                  <Panel header="自动化科复核" key="1" style={{ backgroundColor: 'white' }}>
+                {taskName === '自动化科申诉复核' && (
+                  <Panel header="自动化科申诉复核" key="1" style={{ backgroundColor: 'white' }}>
                     <BusinessAudit
                       repeatAudit="true"
                       ref={formRef}
@@ -888,6 +932,7 @@ function TobedealtForm(props) {
                       selectPersonstate={newvalue => setNoselect(newvalue)}
                       search={search}
                       key='1'
+                      type='复核'
                     />
                   </Panel>
                 )}
@@ -951,13 +996,25 @@ function TobedealtForm(props) {
                     />,
                   ],
                   [
+                    `自动化科审核`,
+                    <BusinessAudit
+                      businessAudit={Object.values(obj)[0]}
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                      userinfo={userinfo}
+                      selectPersonstate={() => { }}
+                      search="true"
+                      key="0"
+                    />,
+                  ],
+                  [
                     `业务负责人审核`,
                     <BusinessAudit
                       businessAudit={Object.values(obj)[0]}
                       formItemLayout={formItemLayout}
                       forminladeLayout={forminladeLayout}
                       userinfo={userinfo}
-                      selectPersonstate={newvalue => setNoselect(newvalue)}
+                      selectPersonstate={() => { }}
                       search="true"
                       key="0"
                     />,
@@ -969,21 +1026,22 @@ function TobedealtForm(props) {
                       formItemLayout={formItemLayout}
                       forminladeLayout={forminladeLayout}
                       userinfo={userinfo}
-                      selectPersonstate={newvalue => setNoselect(newvalue)}
+                      selectPersonstate={() => { }}
                       search="true"
                       key="0"
                     />,
                   ],
                   [
-                    `自动化科复核`,
+                    `自动化科申诉复核`,
                     <BusinessAudit
                       businessAudit={Object.values(obj)[0]}
                       formItemLayout={formItemLayout}
                       forminladeLayout={forminladeLayout}
                       userinfo={userinfo}
-                      selectPersonstate={newvalue => setNoselect(newvalue)}
+                      selectPersonstate={() => { }}
                       search="true"
                       key="0"
+                      type='复核'
                     />,
                   ],
                   [
@@ -993,7 +1051,7 @@ function TobedealtForm(props) {
                       formItemLayout={formItemLayout}
                       forminladeLayout={forminladeLayout}
                       userinfo={userinfo}
-                      selectPersonstate={newvalue => setNoselect(newvalue)}
+                      selectPersonstate={() => { }}
                       files={Object.values(obj)[0] && Object.values(obj)[0].annex ? JSON.parse(Object.values(obj)[0].annex) : []}
                       ChangeFiles={newvalue => {
                         setFiles(newvalue);

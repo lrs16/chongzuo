@@ -60,15 +60,20 @@ export async function scoreGetTarget2(id) {
 }
 
 //  获取环节数据
-export async function getTaskData(assessNo) {
-  return request(`/quality/assess/openFlow/?assessNo=${assessNo}`)
+export async function getTaskData(taskId) {
+  return request(`/quality/assess/openFlow/?taskId=${taskId}`)
+}
+//  查询获取环节数据
+export async function searchTaskData(assessNo) {
+  return request(`/quality/assess/viewFlow/?assessNo=${assessNo}`)
 }
 
 //  流程传递
 export async function assessComplete(params) {
-  return request(`/quality/assess/complete?taskId=${params.taskId}&users=${params.users}`,{
+  return request(`/quality/assess/complete`,{
     method:'POST',
-    // body:JSON.stringify(params)
+    data:params,
+    requestType:'form'
   })
 }
 

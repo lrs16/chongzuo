@@ -148,3 +148,12 @@ export async function getPatrolAndExamineList(params) {
   })
 }
 
+//  保存机房月报
+export async function saveComputerRoomByMonth(params) {
+  return request(`/report/saveComputerRoomByMonth`,{
+    method:'POST',
+    data:params,
+    requestType:'form'
+  })
+}
+

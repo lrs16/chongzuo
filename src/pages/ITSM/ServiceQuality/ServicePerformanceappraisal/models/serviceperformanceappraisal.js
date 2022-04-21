@@ -30,7 +30,8 @@ import {
   getTypeTree,
   getscorecardlistPagetobe,
   statsSearch,
-  statsExport
+  statsExport,
+  searchTaskData
 } from '../services/serviceperformanceappraisalapi';
 
 export default {
@@ -120,8 +121,16 @@ export default {
     },
 
     //  获取环节数据
-    *getTaskData({ payload: { assessNo } }, { call, put }) {
-      const response = yield call(getTaskData, assessNo);
+    *getTaskData({ payload: { taskId } }, { call, put }) {
+      const response = yield call(getTaskData, taskId);
+      yield put({
+        type: 'taskData',
+        payload: response,
+      });
+    },
+    //  查询获取环节数据
+    *openSearch({ payload: { assessNo } }, { call, put }) {
+      const response = yield call(searchTaskData, assessNo);
       yield put({
         type: 'taskData',
         payload: response,
