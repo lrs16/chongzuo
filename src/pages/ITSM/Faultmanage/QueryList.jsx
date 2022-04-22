@@ -1187,6 +1187,7 @@ function QueryList(props) {
       dataIndex: 'no',
       key: 'no',
       width: 150,
+      sorter: (a, b) => a.no.localeCompare(b.no),
       render: (text, record) => {
         const handleClick = () => {
           dispatch({
@@ -1269,6 +1270,7 @@ function QueryList(props) {
       dataIndex: 'registerOccurTime',
       key: 'registerOccurTime',
       width: 200,
+      sorter: (a, b) => a.registerOccurTime.localeCompare(b.registerOccurTime),
     },
     {
       title: '故障概要',
@@ -1449,6 +1451,7 @@ function QueryList(props) {
       dataIndex: 'finishRequiredTime',
       key: 'finishRequiredTime',
       width: 250,
+      sorter: (a, b) => a.finishRequiredTime.localeCompare(b.finishRequiredTime),
     },
     {
       title: '操作',

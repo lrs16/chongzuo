@@ -71,6 +71,7 @@ function ToDOlist(props) {
       dataIndex: 'no',
       key: 'no',
       width: 140,
+      sorter: (a, b) => a.no.localeCompare(b.no),
       render: (text, record) => {
         const handleClick = () => {
           dispatch({
@@ -154,6 +155,7 @@ function ToDOlist(props) {
       dataIndex: 'registerOccurTime',
       key: 'registerOccurTime',
       width: 180,
+      sorter: (a, b) => a.registerOccurTime.localeCompare(b.registerOccurTime),
     },
     {
       title: '严重程度',

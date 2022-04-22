@@ -26,6 +26,7 @@ function SuperviseList(props) {
       title: '督办时间',
       dataIndex: 'superviseTime',
       key: 'superviseTime',
+      sorter: (a, b) => a.superviseTime.localeCompare(b.superviseTime),
     },
   ];
   return (

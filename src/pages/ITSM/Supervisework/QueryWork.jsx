@@ -284,6 +284,7 @@ function QueryWork(props) {
       dataIndex: 'no',
       key: 'no',
       width: 250,
+      sorter: (a, b) => a.no.localeCompare(b.no),
       render: (text, record) => {
         return <a onClick={() => gotoDetail(record)}>{text}</a>;
       },
@@ -293,6 +294,7 @@ function QueryWork(props) {
       dataIndex: 'addTime',
       key: 'addTime',
       width: 250,
+      sorter: (a, b) => a.addTime.localeCompare(b.addTime),
     },
     {
       title: '工作内容',
@@ -365,6 +367,7 @@ function QueryWork(props) {
       dataIndex: 'superviseTime',
       key: 'superviseTime',
       width: 250,
+      sorter: (a, b) => a.superviseTime.localeCompare(b.superviseTime),
     },
     {
       title: '督办人',
@@ -406,24 +409,28 @@ function QueryWork(props) {
       dataIndex: 'plannedStartTime',
       key: 'plannedStartTime',
       width: 250,
+      sorter: (a, b) => a.plannedStartTime.localeCompare(b.plannedStartTime),
     },
     {
       title: '计划结束时间',
       dataIndex: 'plannedEndTime',
       key: 'plannedEndTime',
       width: 250,
+      sorter: (a, b) => a.plannedEndTime.localeCompare(b.plannedEndTime),
     },
     {
       title: '实际开始时间',
       dataIndex: 'startTime',
       key: 'startTime',
       width: 250,
+      sorter: (a, b) => a.startTime.localeCompare(b.startTime),
     },
     {
       title: '实际结束时间',
       dataIndex: 'endTime',
       key: 'endTime',
       width: 250,
+      sorter: (a, b) => a.endTime.localeCompare(b.endTime),
     },
     {
       title: '工作执行情况说明',
@@ -452,6 +459,7 @@ function QueryWork(props) {
       dataIndex: 'executeTime',
       key: 'executeTime',
       width: 250,
+      sorter: (a, b) => a.executeTime.localeCompare(b.executeTime),
     },
     {
       title: '执行人',
@@ -488,6 +496,7 @@ function QueryWork(props) {
       dataIndex: 'checkTime',
       key: 'checkTime',
       width: 250,
+      sorter: (a, b) => a.checkTime.localeCompare(b.checkTime),
     },
     {
       title: '延期审核意见',

@@ -230,6 +230,7 @@ function TickemergentList(props) {
       dataIndex: 'no',
       key: 'no',
       fixed: 'left',
+      sorter: (a, b) => a.no.localeCompare(b.no),
       render: (text, record) => {
         const handleClick = () => {
           dispatch({
@@ -310,6 +311,7 @@ function TickemergentList(props) {
       title: '故障发生时间',
       dataIndex: 'occurrenceTime',
       key: 'occurrenceTime',
+      sorter: (a, b) => a.occurrenceTime.localeCompare(b.occurrenceTime),
     },
     {
       title: '故障范围',
