@@ -82,7 +82,9 @@ function RelevancyOrder(props) {
   };
 
   useEffect(() => {
-    getlist(paginations.current - 1, paginations.pageSize);
+    if (activeKey) {
+      getlist(paginations.current - 1, paginations.pageSize);
+    }
   }, [activeKey]);
 
   useEffect(() => {
