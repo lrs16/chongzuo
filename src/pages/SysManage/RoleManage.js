@@ -132,6 +132,7 @@ class RoleManage extends Component {
         title: '角色名',
         dataIndex: 'roleName',
         key: 'roleName',
+        width: 200,
       },
       {
         title: '角色描述',
@@ -142,6 +143,7 @@ class RoleManage extends Component {
         title: '启用状态',
         dataIndex: 'roleStatus',
         key: 'roleStatus',
+        width: 200,
         render: (text, record) => (
           <span>
             <Badge status={statusMap[record.roleStatus]} text={status[record.roleStatus]} />
@@ -152,6 +154,7 @@ class RoleManage extends Component {
         title: '操作',
         dataIndex: 'action',
         key: 'action',
+        width: 300,
         render: (text, record) => {
           const title = `【${record.roleName}】分配菜单`;
           return (
