@@ -195,7 +195,8 @@ function TobedealtForm(props) {
     }
 
     if (assessNo && search) {
-      openSearch()
+      openSearch();
+      gethisTask();
     }
     setTabActiveKey('workorder');
   }, [mainId, assessNo]);
@@ -679,6 +680,8 @@ function TobedealtForm(props) {
     };
   }, [loading, taskData]);
 
+  console.log(hisTaskArr,'hisTaskArr');
+
   return (
     <PageHeaderWrapper
       title={taskName}
@@ -812,7 +815,7 @@ function TobedealtForm(props) {
         <div className={styles.collapse}>
           {hisTaskArr && (
             <Steps
-              current={hisTaskArr.length - 1}
+              current={hisTaskArr.length}
               size="small"
               style={{
                 background: '#fff',
@@ -824,7 +827,6 @@ function TobedealtForm(props) {
               {hisTaskArr &&
                 hisTaskArr.map(
                   ({ key, name, taskStatus, totalTime, assignee, startTime, endTime }, index) => [
-                    name !== '开始节点' && name !== '结束节点' && (
                       <Step
                         key={key}
                         title={`${name}${'\xa0'}${'\xa0'}(${taskStatus})${'\xa0'}${'\xa0'}${totalTime ||
@@ -839,9 +841,8 @@ function TobedealtForm(props) {
                             </div>
                           </div>
                         }
-                        icon={((index === hisTaskArr.length - 1) || taskStatus === '待审核') ? <Icon type="loading" spin /> : ''}
+                        icon={((index === hisTaskArr.length - 1 && taskStatus !== '已完成' &&  taskStatus !== '已审核') || taskStatus === '待审核') ? <Icon type="loading" spin /> : ''}
                       />
-                    ),
                   ],
                 )}
             </Steps>

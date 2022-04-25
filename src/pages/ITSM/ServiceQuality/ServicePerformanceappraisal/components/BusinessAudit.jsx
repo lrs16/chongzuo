@@ -60,7 +60,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
                   message: `${type ? '请输入复核结果':'请输入审核结果'}`,
                 },
               ],
-              initialValue: businessAudit.verifyValue || '',
+              initialValue: businessAudit.verifyValue || '1',
             })(
               <Radio.Group disabled={search || noEdit} onChange={handleChange}>
                 <Radio value="1">通过</Radio>
