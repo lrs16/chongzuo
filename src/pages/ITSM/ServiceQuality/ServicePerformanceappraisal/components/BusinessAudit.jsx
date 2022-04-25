@@ -31,7 +31,6 @@ const BusinessAudit = React.forwardRef((props, ref) => {
   );
 
   useEffect(() => {
-    console.log(businessAudit.verifyValue,'businessAudit.verifyValue')
     selectPersonstate(businessAudit.verifyValue || '1');
     setShowContent(businessAudit.verifyValue || '1')
   }, []);

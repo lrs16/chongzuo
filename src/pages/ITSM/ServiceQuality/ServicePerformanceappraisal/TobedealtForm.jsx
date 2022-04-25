@@ -341,7 +341,11 @@ function TobedealtForm(props) {
               openFlow();
             }
           } else {
-            message.error(res.msg);
+            message.error(res.msg)
+            router.push({
+              pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
+              query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true },
+            });
           }
         });
       }
@@ -406,6 +410,12 @@ function TobedealtForm(props) {
               default:
                 break;
             }
+          } else {
+            message.error(res.msg)
+            router.push({
+              pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
+              query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true },
+            });
           }
         });
       }
@@ -442,6 +452,12 @@ function TobedealtForm(props) {
               message.success(res.msg);
               openFlow();
             }
+          } else {
+            message.error(res.msg)
+            router.push({
+              pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
+              query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true },
+            });
           }
         });
       }
@@ -481,7 +497,11 @@ function TobedealtForm(props) {
               message.success(res.msg);
             }
           } else {
-            message.error('保存失败');
+            message.error(res.msg)
+            router.push({
+              pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
+              query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true },
+            });
           }
         });
       }
@@ -505,7 +525,11 @@ function TobedealtForm(props) {
           state: { cache: false, closetabid: mainId },
         });
       } else {
-        message.error(res.msg);
+        message.error(res.msg)
+        router.push({
+          pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
+          query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true },
+        });
       }
     });
   };
@@ -587,13 +611,20 @@ function TobedealtForm(props) {
       payload: assessNo,
     }).then(res => {
       if (res.code === 200) {
+        message.success(res.msg);
         router.push({
           pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtlist`,
           query: { pathpush: true },
           state: { cache: false, closetabid: mainId },
         });
+      } else {
+        message.error(res.msg)
+        router.push({
+          pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
+          query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true },
+        });
       }
-      message.success(res.msg);
+
     });
   };
 
@@ -620,6 +651,12 @@ function TobedealtForm(props) {
     }).then(res => {
       if (res.code === 200) {
         setModalRollBack(true);
+      } else {
+        message.error(res.msg)
+        router.push({
+          pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
+          query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true },
+        });
       }
     });
   };
@@ -661,7 +698,7 @@ function TobedealtForm(props) {
                   </Button>
                 )}
 
-              {taskName === '业务负责人审核' &&
+              {(taskName === '业务负责人审核' || taskName === '自动化科审核') &&
                 taskData &&
                 taskData.currentTask &&
                 !currentTask.verifyValue &&
