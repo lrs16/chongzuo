@@ -15,7 +15,7 @@ const { TextArea } = Input;
 function FaultSummary(props) {
   const {
     getEventList,
-    uncloseaultlist,
+    eventList,
     mainId,
     reportSearch
   } = props;
@@ -60,25 +60,21 @@ function FaultSummary(props) {
     const target = getRowByKey(key, newData);
     getEventList(newData)
     if (target) {
-      if (fieldName === 'field2' || fieldName === 'field5') {
-        target[fieldName] = moment(e).format('YYYY-MM-DD');
-        getEventList(newData)
-        setData(newData);
-      } else {
-        target[fieldName] = e;
-        setData(newData);
-      }
+      target[fieldName] = e;
+      setData(newData);
     }
   }
 
   const handleTabledata = () => {
-    if (uncloseaultlist && uncloseaultlist.length && newbutton === false) {
-      const newarr = uncloseaultlist.map((item, index) => {
-        return Object.assign(item, { editable: true, isNew: false, key: index, field1: index + 1 })
+    if (eventList && eventList.length && newbutton === false) {
+      const newarr = eventList.map((item, index) => {
+        return Object.assign(item, { editable: true, isNew: false, key: index})
       })
       setData(newarr)
     }
   }
+
+  console.log(data,'data');
 
   const column = [
     {
@@ -101,10 +97,10 @@ function FaultSummary(props) {
       key: 'field2',
       render: (text, record) => {
         return (
-          <DatePicker
+          <Input
             disabled={reportSearch}
-            defaultValue={text ? moment(text) : ''}
-            onChange={e => handleFieldChange(e, 'field2', record.key)}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
           />
         )
       }
@@ -173,8 +169,7 @@ function FaultSummary(props) {
 
   useEffect(() => {
     handleTabledata();
-
-  }, [uncloseaultlist])
+  }, [eventList])
 
   useEffect(() => {
     if (deleteSign) {

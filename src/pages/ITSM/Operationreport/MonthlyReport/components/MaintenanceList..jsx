@@ -15,7 +15,7 @@ const { TextArea } = Input;
 function MaintenanceList(props) {
   const {
     gettroubleList,
-    uncloseaultlist,
+    troubleList,
     mainId,
     reportSearch
   } = props;
@@ -72,8 +72,8 @@ function MaintenanceList(props) {
   }
 
   const handleTabledata = () => {
-    if (uncloseaultlist && uncloseaultlist.length && newbutton === false) {
-      const newarr = uncloseaultlist.map((item, index) => {
+    if (troubleList && troubleList.length && newbutton === false) {
+      const newarr = troubleList.map((item, index) => {
         return Object.assign(item, { editable: true, isNew: false, key: index, field1: index + 1 })
       })
       setData(newarr)
@@ -173,8 +173,7 @@ function MaintenanceList(props) {
 
   useEffect(() => {
     handleTabledata();
-
-  }, [uncloseaultlist])
+  }, [troubleList])
 
   useEffect(() => {
     if (deleteSign) {

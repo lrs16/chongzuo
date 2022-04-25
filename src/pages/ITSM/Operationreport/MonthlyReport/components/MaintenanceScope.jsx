@@ -17,7 +17,7 @@ const { Option } = Select;
 function MaintenanceScope(props) {
 
   const {
-    faultlist,
+    maintenanceList,
     newTroubleList,
     reportSearch,
     mainId,
@@ -76,8 +76,8 @@ function MaintenanceScope(props) {
   }
 
   const handleTabledata = () => {
-    if (faultlist && faultlist.length && newbutton === false) {
-      const newarr = faultlist.map((item, index) => {
+    if (maintenanceList && maintenanceList.length && newbutton === false) {
+      const newarr = maintenanceList.map((item, index) => {
         return Object.assign(item, { editable: true, isNew: false, key: index, field1: index + 1 })
       })
       setData(newarr)
@@ -164,7 +164,7 @@ function MaintenanceScope(props) {
 
   useEffect(() => {
     handleTabledata();
-  }, [faultlist])
+  }, [maintenanceList])
 
   useEffect(() => {
     if (deleteSign) {

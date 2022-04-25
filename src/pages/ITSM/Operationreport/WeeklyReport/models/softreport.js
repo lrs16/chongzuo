@@ -21,7 +21,6 @@ import {
   saveOther,
   getContentRow,
   getPatrolAndExamineList,
-  saveComputerRoomByMonth
 } from '../services/softreportapi';
 
 export default {
@@ -196,41 +195,6 @@ export default {
           }
         } else {
           return yield call(saveComputerRoom,payload)
-        }
-    },
-
-    // 机房月报保存
-    *saveComputerRoomByMonth({ payload }, { call,put}) {
-      console.log('payload: ', payload);
-      yield put ({
-        type:'clearcache',
-        payload:[]
-      })
-        const response = yield call(addReport);
-        if(response.code === 200) {
-          const mainId = response.id;
-          const saveData = payload;
-          saveData.mainId = mainId;
-          delete saveData.status;
-          const type = payload.reporttype;
-          const saveresponse = yield call(saveComputerRoomByMonth,saveData);
-          if(saveresponse.code === 200) {
-              route.push({
-                pathname: `/ITSM/operationreport/monthlyreport/monthcomputerroomreport`,
-                query: { 
-                  tabid: sessionStorage.getItem('tabid'),
-                   closecurrent: true,
-                   }
-              })
-              route.push({
-                pathname: `/ITSM/operationreport/monthlyreport/monthcomputerroomreportdetail`,
-                query: {
-                  reporttype: type,
-                  mainId:mainId.toString(),
-                  orderNo:mainId.toString(),
-                },
-              })
-          }
         }
     },
     

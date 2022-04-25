@@ -403,6 +403,7 @@ function TobedealtForm(props) {
                 break;
               case 'circula':
                 setUserVisible(true);
+                openFlow();
                 break;
               case '流转不选人':
                 gotoCirapi();

@@ -19,11 +19,10 @@ import SysUpload from '@/components/SysUpload';
 import MaintenanceList from './components/MaintenanceList.';
 import MaintenanceScope from './components/MaintenanceScope';
 import FaultSummary from './components/FaultSummary';
-import LastweekHomework from '../WeeklyReport/components/LastweekHomework';
-import WeeklyMeeting from '../WeeklyReport/components/ComputerroomComponent/WeeklyMeeting';
 import AddForm from '../WeeklyReport/components/AddForm';
 
 import styles from '../WeeklyReport/index.less';
+import { conformsTo } from 'lodash';
 
 const forminladeLayout = {
   labelCol: {
@@ -33,17 +32,6 @@ const forminladeLayout = {
   wrapperCol: {
     xs: { span: 24 },
     sm: { span: 17 },
-  },
-};
-
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 6 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 18 },
   },
 };
 
@@ -77,7 +65,7 @@ function ComputerroommonthlyReport(props) {
     faultQueryList,
     nofaultQueryList,
     lastweekHomeworklist,
-    nextweekHomeworklist,
+    computerroom,
     loading,
     olduploadstatus
   } = props;
@@ -87,8 +75,8 @@ function ComputerroommonthlyReport(props) {
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [fileslist, setFilesList] = useState([]);
   const [materialsList, setMaterialsList] = useState([]) // 材料列表
-  const [eventList, setEventList ] = useState([]) // 运维事件列表
-  const [troubleList, settroubleList  ] = useState([]) // 本月运维事件故障列表
+  const [eventList, setEventList] = useState([]) // 运维事件列表
+  const [troubleList, settroubleList] = useState([]) // 本月运维事件故障列表
   const [newTroubleList, setNewTroubleList] = useState([]) // 新故障列表
   const [nextOperationList, setNextOperationList] = useState([]) // 下周作业列表
   const [operationList, setOperationList] = useState([]) // 更新列表
@@ -102,7 +90,33 @@ function ComputerroommonthlyReport(props) {
   const [timeshow, setTimeshow] = useState(true);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
-
+  const summarydefaults = '按照合同要求，博联机房运维组对省级集中计量自动化系统机房进行监控值班和巡检运维工作。所运维的设备分布于49个机柜，共计300台（套），其中60台服务器，网络设备96台，安全设备70台，其它设备37台，软件系统37套；运维期内机房新增的设备也在运维范围。'
+  const personnelOrganization = `项目经理：梁勇成
+技术工程师：利东 刘熙仑 
+值班工程师：高永迪 罗智辉 周延昌 欧文贵 林立昆 莫明建 杨名伟`
+  const placeWork = '计量中心白沙机房监控室、主机房、蓄电池室、配电室等';
+  const jobContent = `1、数据库监控
+2、服务器监控、巡检
+3、计量自动化系统运行监控
+4、机房动力环境系统监控、巡检
+5、蓄电池室监控、巡检
+6、供配电系统监控、巡检
+7、机房环境监控、巡检
+8、消防系统巡检
+9、网络通道监控、巡检
+10、信息安全监控 `
+  const maintenanceRecords = '详见每日的《广西计量机房硬件及基础环境日巡检报告》';
+  const dutySituation = `本月实行7*24小时值班，共值班${moment(endTime).endOf('month').format('DD')*3}个班次，提交运维简报${moment(endTime).endOf('month').format('DD')*3}次，按时提交率100%；巡检日报，机房出入登记表和值班日志等均按规定做了记录，无违规现象。`
+  const TroubleShooting = `本月巡检到设备硬件故障0起，监控到设备软件故障0起0；未发生网络故障和电源故障；修复历史硬件故障1起。
+目前机房设备无缺陷或告警，运行状态良好。`
+  const monitoringSituation = `本月监控到系统指标异常4起，比上月增加1起；监控到系统登录异常0起；监控到系统功能模块异常0起。
+异常情况均得到及时处理或当日恢复正常，系统运行未受影响。`
+  const securityMeasures = `IPS、防病毒软件、态势感知系统等网络安全系统监控总体情况正常，未发生攻击成功事件；按计划对安防设备进行了固件版本和特征库、病毒库升级；
+按上级通报和指令对系统进行安全加固、补丁升级。`
+  const operationControl = `每周均制定作业计划表，并按计划进行作业。
+本月开具工作票12份，作业票共13份；每周均对工作票及作业票规范性进行检查，本月规范性情况良好。
+本月进行服务器账号授权和查询操作审计共12次，例行审计发现有1起疑似违规操作，已报给相关负责人核实处理。`
+  const proposal = '无'
   //  保存表单
   const computerReportform = () => {
     props.form.validateFields((err, value) => {
@@ -115,7 +129,7 @@ function ComputerroommonthlyReport(props) {
           workFiles: value.workFiles || '',
           editStatus: mainId ? 'edit' : 'add',
           addData: JSON.stringify(list),
-          type:'机房运维月报',
+          type: '机房运维月报',
           reporttype,
           mainId,
           time1: moment(startTime).startOf('month').format('YYYY-MM-DD'),
@@ -124,7 +138,7 @@ function ComputerroommonthlyReport(props) {
           rangeFiles: value.rangeFiles || '',
           eventFiles: value.eventFiles || '',
           nextOperationList: JSON.stringify(nextOperationList || []),
-          operationFiles:  value.operationFiles || '',
+          operationFiles: value.operationFiles || '',
           troubleList: JSON.stringify(troubleList || []),
           eventList: JSON.stringify(eventList || []),
         }
@@ -249,7 +263,7 @@ function ComputerroommonthlyReport(props) {
   }, [timeshow])
 
   useEffect(() => {
-    setMaterialsList(copyData.materialsList  ||  materialsList );
+    setMaterialsList(copyData.materialsList || materialsList);
     setNewTroubleList(copyData.newTroubleList || faultQueryList);
     setEventList(copyData.eventList || eventList);
     setOperationList(copyData.operationList || lastweekHomeworklist);
@@ -278,16 +292,12 @@ function ComputerroommonthlyReport(props) {
   }
 
   //   七、上周作业完成情况--表格
-  const lastweekHomework = () => {
+  const getTroubleByComputerRoom = () => {
     dispatch({
-      type: 'softreport/lastweekHomework',
+      type: 'monthly/getTroubleByComputerRoom',
       payload: {
-        plannedEndTime1: reporttype === 'week' ? `${startTime} 00:00:00` : moment(startTime).startOf('month').format('YYYY-MM-DD 00:00:00'),
-        plannedEndTime2: reporttype === 'week' ? `${endTime} 23:59:59` : moment(endTime).endOf('month').format('YYYY-MM-DD 00:00:00'),
-        type: '机房作业',
-        pageIndex: 0,
-        pageSize: 1000,
-        database: 'true'
+        startTime: moment(startTime).startOf('month').format('YYYY-MM-DD 00:00:00'),
+        endTime: moment(endTime).endOf('month').format('YYYY-MM-DD 23:59:59'),
       }
     })
   }
@@ -317,17 +327,10 @@ function ComputerroommonthlyReport(props) {
   }, []);
 
   const getReportdata = () => {
-    lastweekHomework();
-    nextweekHomework();
-    getQuerylist();
+    getTroubleByComputerRoom();
+    // nextweekHomework();
+    // getQuerylist();
     initial = true;
-    // getInfoparams = true;
-    // const result = copyData || {};
-    // result.operationList = '';
-    // result.nextOperationList = '';
-    // result.newTroubleList = '';
-    // result.unCloseTroubleList = '';
-    // setCopyData(result)
   }
 
   //  暂时保留
@@ -436,7 +439,7 @@ function ComputerroommonthlyReport(props) {
       title={reporttype === 'week' ? '新建机房运维周报' : '新建机房运维月报'}
       extra={
         <>
-        {/* {
+          {/* {
           loading === false && (
             <>
             <Button
@@ -457,7 +460,7 @@ function ComputerroommonthlyReport(props) {
             </>
           )
         } */}
-           <Button
+          <Button
             type='primary'
             onClick={computerReportform}
             disabled={olduploadstatus}
@@ -533,15 +536,15 @@ function ComputerroommonthlyReport(props) {
 
             {
               initial && loading === false && startTime && (
-        
-                 <>
+
+                <>
                   <Col span={24}><p style={{ fontWeight: '900', fontSize: '16px', marginTop: 24 }}>一、概述</p></Col>
                   {/* 本周运维总结 */}
                   <Col span={24}>
                     <Form.Item label=''>
                       {
                         getFieldDecorator('content', {
-                          initialValue: copyData.main ? copyData.main.content : ''
+                          initialValue: (copyData.main && copyData.main.content) || summarydefaults
                         })
                           (<TextArea autoSize={{ minRows: 3 }} />)
                       }
@@ -579,7 +582,7 @@ function ComputerroommonthlyReport(props) {
                     <Form.Item label=''>
                       {
                         getFieldDecorator('personnelContent', {
-                          initialValue: copyData && copyData.personnelContent || ''
+                          initialValue: (copyData && copyData.personnelContent) || personnelOrganization
                         })
                           (<TextArea autoSize={{ minRows: 3 }} />)
                       }
@@ -592,12 +595,12 @@ function ComputerroommonthlyReport(props) {
                       {...formincontentLayout}
                     >
                       {getFieldDecorator('personnelFiles', {
-                        initialValue: copyData && copyData.personnelFiles  
+                        initialValue: copyData && copyData.personnelFiles
                       })
                         (
                           <div>
                             <SysUpload
-                              fileslist={copyData && copyData.personnelFiles   ? JSON.parse(copyData.personnelFiles ) : []}
+                              fileslist={copyData && copyData.personnelFiles ? JSON.parse(copyData.personnelFiles) : []}
                               ChangeFileslist={newvalue => {
                                 setFieldsValue({ personnelFiles: JSON.stringify(newvalue.arr) })
                                 setFilesList(newvalue);
@@ -616,7 +619,7 @@ function ComputerroommonthlyReport(props) {
                     <Form.Item label=''>
                       {
                         getFieldDecorator('workAddressContent', {
-                          initialValue: copyData && copyData.workAddressContent || ''  
+                          initialValue: copyData && copyData.workAddressContent || placeWork
                         })
                           (<TextArea autoSize={{ minRows: 3 }} />)
                       }
@@ -629,14 +632,14 @@ function ComputerroommonthlyReport(props) {
                       {...formincontentLayout}
                     >
                       {getFieldDecorator('workAddressFiles', {
-                        initialValue: copyData && copyData.workAddressFiles  
+                        initialValue: copyData && copyData.workAddressFiles
                       })
                         (
                           <div>
                             <SysUpload
                               fileslist={copyData && copyData.workAddressFiles ? JSON.parse(copyData.workAddressFiles) : []}
                               ChangeFileslist={newvalue => {
-                                setFieldsValue({ workAddressFiles : JSON.stringify(newvalue.arr) })
+                                setFieldsValue({ workAddressFiles: JSON.stringify(newvalue.arr) })
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
@@ -653,7 +656,7 @@ function ComputerroommonthlyReport(props) {
                     <Form.Item label=''>
                       {
                         getFieldDecorator('workContent', {
-                          initialValue: copyData && copyData.workContent  || ''
+                          initialValue: copyData && copyData.workContent || jobContent
                         })
                           (<TextArea autoSize={{ minRows: 3 }} />)
                       }
@@ -666,14 +669,14 @@ function ComputerroommonthlyReport(props) {
                       {...formincontentLayout}
                     >
                       {getFieldDecorator('workFiles', {
-                        initialValue: copyData && copyData.workFiles  
+                        initialValue: copyData && copyData.workFiles
                       })
                         (
                           <div>
                             <SysUpload
                               fileslist={copyData && copyData.workFiles ? JSON.parse(copyData.workFiles) : []}
                               ChangeFileslist={newvalue => {
-                                setFieldsValue({ workFiles : JSON.stringify(newvalue.arr) })
+                                setFieldsValue({ workFiles: JSON.stringify(newvalue.arr) })
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
@@ -689,8 +692,8 @@ function ComputerroommonthlyReport(props) {
                   <Col span={24}>
                     <MaintenanceScope
                       forminladeLayout={forminladeLayout}
-                      faultlist={copyData.rangeList ? copyData.rangeList  : faultQueryList}
-                      mainId={copyData.rangeList  ? true : mainId}
+                      maintenanceList={copyData.rangeList ? copyData.rangeList : []}
+                      mainId={copyData.rangeList ? true : mainId}
                       type={reporttype}
                       startTime={startTime}
                       endTime={endTime}
@@ -706,14 +709,14 @@ function ComputerroommonthlyReport(props) {
                       {...formincontentLayout}
                     >
                       {getFieldDecorator('rangeFiles', {
-                        initialValue: copyData && copyData.rangeFiles   
+                        initialValue: copyData && copyData.rangeFiles
                       })
                         (
                           <div>
                             <SysUpload
-                              fileslist={copyData && copyData.rangeFiles  ? JSON.parse(copyData.rangeFiles ) : []}
+                              fileslist={copyData && copyData.rangeFiles ? JSON.parse(copyData.rangeFiles) : []}
                               ChangeFileslist={newvalue => {
-                                setFieldsValue({ rangeFiles : JSON.stringify(newvalue.arr) })
+                                setFieldsValue({ rangeFiles: JSON.stringify(newvalue.arr) })
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
@@ -729,8 +732,8 @@ function ComputerroommonthlyReport(props) {
                   <Col span={24}>
                     <Form.Item label=''>
                       {
-                        getFieldDecorator('operationContent ', {
-                          initialValue: copyData && copyData.operationContent || ''   
+                        getFieldDecorator('operationContent', {
+                          initialValue: copyData && copyData.operationContent || maintenanceRecords
                         })
                           (<TextArea autoSize={{ minRows: 3 }} />)
                       }
@@ -743,14 +746,14 @@ function ComputerroommonthlyReport(props) {
                       {...formincontentLayout}
                     >
                       {getFieldDecorator('operationFiles', {
-                        initialValue: copyData && copyData.operationFiles   
+                        initialValue: copyData && copyData.operationFiles
                       })
                         (
                           <div>
                             <SysUpload
-                              fileslist={copyData && copyData.operationFiles  ? JSON.parse(copyData.operationFiles ) : []}
+                              fileslist={copyData && copyData.operationFiles ? JSON.parse(copyData.operationFiles) : []}
                               ChangeFileslist={newvalue => {
-                                setFieldsValue({ operationFiles : JSON.stringify(newvalue.arr) })
+                                setFieldsValue({ operationFiles: JSON.stringify(newvalue.arr) })
                                 setFilesList(newvalue);
                                 setFiles(newvalue)
                               }}
@@ -766,7 +769,7 @@ function ComputerroommonthlyReport(props) {
                   <Col span={24}>
                     <FaultSummary
                       forminladeLayout={forminladeLayout}
-                      uncloseaultlist={copyData.eventList  ? copyData.eventList : nofaultQueryList}
+                      eventList={copyData.eventList ? copyData.eventList : computerroom.eventList}
                       type={reporttype}
                       mainId={copyData.eventList ? true : mainId}
                       startTime={startTime}
@@ -780,9 +783,9 @@ function ComputerroommonthlyReport(props) {
                   <Col span={24}>
                     <MaintenanceList
                       forminladeLayout={forminladeLayout}
-                      uncloseaultlist={copyData.troubleList  ? copyData.troubleList  : nofaultQueryList}
+                      troubleList={copyData.troubleList ? copyData.troubleList : computerroom.troubleList}
                       type={reporttype}
-                      mainId={copyData.troubleList  ? true : mainId}
+                      mainId={copyData.troubleList ? true : mainId}
                       startTime={startTime}
                       endTime={endTime}
                       gettroubleList={contentrowdata => {
@@ -797,12 +800,12 @@ function ComputerroommonthlyReport(props) {
                       {...formincontentLayout}
                     >
                       {getFieldDecorator('eventFiles ', {
-                        initialValue: copyData && copyData.eventFiles 
+                        initialValue: copyData && copyData.eventFiles
                       })
                         (
                           <div>
                             <SysUpload
-                              fileslist={copyData && copyData.eventFiles  ? JSON.parse(copyData.eventFiles ) : []}
+                              fileslist={copyData && copyData.eventFiles ? JSON.parse(copyData.eventFiles) : []}
                               ChangeFileslist={newvalue => {
                                 setFieldsValue({ eventFiles: JSON.stringify(newvalue.arr) })
                                 setFilesList(newvalue);
@@ -822,7 +825,7 @@ function ComputerroommonthlyReport(props) {
                     <Form.Item label=''>
                       {
                         getFieldDecorator('dutyContent', {
-                          initialValue: copyData && copyData.dutyContent  || '' 
+                          initialValue: copyData && copyData.dutyContent || dutySituation
                         })
                           (<TextArea autoSize={{ minRows: 3 }} />)
                       }
@@ -834,7 +837,7 @@ function ComputerroommonthlyReport(props) {
                     <Form.Item label=''>
                       {
                         getFieldDecorator('troubleHandleContent', {
-                          initialValue: copyData && copyData.troubleHandleContent || ''   
+                          initialValue: copyData && copyData.troubleHandleContent || TroubleShooting
                         })
                           (<TextArea autoSize={{ minRows: 3 }} />)
                       }
@@ -846,7 +849,7 @@ function ComputerroommonthlyReport(props) {
                     <Form.Item label=''>
                       {
                         getFieldDecorator('monitorContent', {
-                          initialValue: copyData && copyData.monitorContent || '' 
+                          initialValue: copyData && copyData.monitorContent || monitoringSituation
                         })
                           (<TextArea autoSize={{ minRows: 3 }} />)
                       }
@@ -858,7 +861,7 @@ function ComputerroommonthlyReport(props) {
                     <Form.Item label=''>
                       {
                         getFieldDecorator('networkContent', {
-                          initialValue: copyData && copyData.networkContent || ''  
+                          initialValue: copyData && copyData.networkContent || securityMeasures
                         })
                           (<TextArea autoSize={{ minRows: 3 }} />)
                       }
@@ -870,7 +873,7 @@ function ComputerroommonthlyReport(props) {
                     <Form.Item label=''>
                       {
                         getFieldDecorator('controlContent', {
-                          initialValue: copyData && copyData.controlContent  || ''  
+                          initialValue: copyData && copyData.controlContent || operationControl
                         })
                           (<TextArea autoSize={{ minRows: 3 }} />)
                       }
@@ -882,15 +885,15 @@ function ComputerroommonthlyReport(props) {
                     <Form.Item label=''>
                       {
                         getFieldDecorator('problemContent', {
-                          initialValue: copyData && copyData.problemContent || ''  
+                          initialValue: copyData && copyData.problemContent || proposal
                         })
                           (<TextArea autoSize={{ minRows: 3 }} />)
                       }
                     </Form.Item>
                   </Col>
                 </>
-  
-              
+
+
               )
             }
 
@@ -950,12 +953,10 @@ function ComputerroommonthlyReport(props) {
 }
 
 export default Form.create({})(
-  connect(({ softreport, viewcache, loading }) => ({
-    lastweekHomeworklist: softreport.lastweekHomeworklist,
-    nextweekHomeworklist: softreport.nextweekHomeworklist,
-    faultQueryList: softreport.faultQueryList,
-    nofaultQueryList: softreport.nofaultQueryList,
-    loading: loading.models.softreport,
+  connect(({ monthly, viewcache, loading }) => ({
+    computerroom: monthly.computerroom,
+    nextweekHomeworklist: monthly.nextweekHomeworklist,
+    loading: loading.models.monthly,
     olduploadstatus: viewcache.olduploadstatus,
   }))(ComputerroommonthlyReport),
 );

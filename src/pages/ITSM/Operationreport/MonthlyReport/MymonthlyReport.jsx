@@ -400,7 +400,6 @@ function MymonthlyReport(props) {
       if (location.state.reset) {
         handleReset();
       }
-      console.log(location,'location')
       // 标签切回设置初始值
       // if (location.state.cacheinfo) {
       //   const { current, pageSize } = location.state.cacheinfo.paginations;
