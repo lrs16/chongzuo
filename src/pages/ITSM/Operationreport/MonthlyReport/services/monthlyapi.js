@@ -21,3 +21,8 @@ export async function saveComputerRoomByMonth(params) {
   })
 }
 
+ // 打开周报
+ export async function openReport(editStatus,id) {
+  return request(`/report/openReport?editStatus=${editStatus}&id=${id}`)
+}
+

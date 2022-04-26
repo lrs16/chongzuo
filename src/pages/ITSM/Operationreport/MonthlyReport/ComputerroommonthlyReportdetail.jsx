@@ -22,6 +22,7 @@ import FaultSummary from './components/FaultSummary';
 import AddForm from '../WeeklyReport/components/AddForm';
 
 import styles from '../WeeklyReport/index.less';
+import { conformsTo } from 'lodash';
 
 const forminladeLayout = {
   labelCol: {
@@ -50,7 +51,7 @@ const { TextArea } = Input;
 let initial = false;
 // let getInfoparams = false;
 
-function ComputerroommonthlyReport(props) {
+function ComputerroommonthlyReportdetail(props) {
   const {
     form: { getFieldDecorator, setFieldsValue },
     location: { query: {
@@ -88,6 +89,7 @@ function ComputerroommonthlyReport(props) {
   const [timeshow, setTimeshow] = useState(true);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
+  const { main } = openReportlist;
   const summarydefaults = '按照合同要求，博联机房运维组对省级集中计量自动化系统机房进行监控值班和巡检运维工作。所运维的设备分布于49个机柜，共计300台（套），其中60台服务器，网络设备96台，安全设备70台，其它设备37台，软件系统37套；运维期内机房新增的设备也在运维范围。'
   const personnelOrganization = `项目经理：梁勇成
 技术工程师：利东 刘熙仑 
@@ -141,7 +143,7 @@ function ComputerroommonthlyReport(props) {
           eventList: JSON.stringify(eventList || []),
         }
         dispatch({
-          type: 'monthly/saveComputerRoomByMonth',
+          type: 'monthly/saveComputerRoomByMonthdetail',
           payload: savedata
         })
       }
@@ -250,7 +252,7 @@ function ComputerroommonthlyReport(props) {
 
   const getopenFlow = () => {
     dispatch({
-      type: 'softreport/openReport',
+      type: 'monthly/openReport',
       payload: {
         editStatus: 'edit',
         id: mainId
@@ -433,17 +435,12 @@ function ComputerroommonthlyReport(props) {
 
   return (
     <PageHeaderWrapper
-      title={reporttype === 'week' ? '新建机房运维周报' : '新建机房运维月报'}
+      title='机房运维月报'
       extra={
         <>
           {
           loading === false && (
             <>
-            <Button
-            type='primary'
-            onClick={handlePaste}
-            disabled={olduploadstatus}
-          >粘贴</Button>
           <Button
             type='primary'
             onClick={computerReportform}
@@ -484,7 +481,7 @@ function ComputerroommonthlyReport(props) {
                       message: '请输入名称'
                     }
                   ],
-                  initialValue: copyData.main ? copyData.main.name : ''
+                  initialValue: main && main.name || ''
                 })
                   (
                     <Input style={{ width: 700 }} placeholder={`省级集中计量自动化系统机房运维${reporttype === 'week' ? '周' : '月'}报`} />
@@ -525,8 +522,7 @@ function ComputerroommonthlyReport(props) {
             }
 
             {
-              initial && loading === false && startTime && (
-
+              loading === false && main && main.time1 &&  troubleList !== undefined &&  (
                 <>
                   <Col span={24}><p style={{ fontWeight: '900', fontSize: '16px', marginTop: 24 }}>一、概述</p></Col>
                   {/* 本周运维总结 */}
@@ -949,5 +945,5 @@ export default Form.create({})(
     nextweekHomeworklist: monthly.nextweekHomeworklist,
     loading: loading.models.monthly,
     olduploadstatus: viewcache.olduploadstatus,
-  }))(ComputerroommonthlyReport),
+  }))(ComputerroommonthlyReportdetail),
 );

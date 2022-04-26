@@ -193,6 +193,7 @@ function ComputerroomReportdetail(props) {
   useEffect(() => {
     if (mainId) {
       getopenFlow()
+      initial = true;
     }
   }, [mainId])
 

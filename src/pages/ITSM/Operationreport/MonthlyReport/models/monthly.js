@@ -1,13 +1,17 @@
+import route from 'umi/router';
 import {
   getTroubleByComputerRoom,
-  saveComputerRoomByMonth
+  saveComputerRoomByMonth,
+  addReport,
+  openReport
 } from '../services/monthlyapi'
 
 export default {
   namespace:'monthly',
 
   state: {
-    computerroom:[]
+    computerroom:[],
+    openReportlist:[],
   },
 
   effects: {
@@ -65,6 +69,26 @@ export default {
           }
         }
     },
+
+    *saveComputerRoomByMonthdetail({ payload }, { call,put}) {
+      yield put ({
+        type:'clearcache',
+        payload:[]
+      })
+      return yield call(saveComputerRoomByMonth,payload)
+    },
+
+
+     //  打开待办
+     *openReport({payload:{editStatus,id}},{call,put}) {
+      const response = yield call(openReport,editStatus,id);
+      yield put ({
+        type:'openReportlist',
+        payload:response
+      })
+    },
+
+
   },
 
   reducers: {
@@ -73,6 +97,13 @@ export default {
         ...state,
         computerroom:action.payload
       }
-    }
+    },
+
+    openReportlist(state,action) {
+      return {
+        ...state,
+        openReportlist:action.payload
+      }
+    },
   }
 }
