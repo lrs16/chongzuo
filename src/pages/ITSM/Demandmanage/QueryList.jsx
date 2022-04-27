@@ -59,7 +59,7 @@ function QueryList(props) {
     demandType: '',
     sender: '',
     completeStatus,
-    startTime: startTime ? moment(startTime).format('YYYY-MM-DD hh:mm:ss') : '',
+    startTime: startTime ? moment(startTime).format('YYYY-MM-DD HH:mm:ss') : '',
     endTime: endTime ? moment(endTime).format('YYYY-MM-DD 23:59:59') : '',
     registerTime1: '',
     registerTime2: '',
@@ -378,10 +378,10 @@ function QueryList(props) {
             ...values,
             columns: JSON.stringify(tablecol),
             module: values.module === [] ? '' : values.module.join('/'),
-            startTime: values.createTime?.startTime ? moment(values.createTime.startTime).format('YYYY-MM-DD hh:mm:ss') : '',
-            endTime: values.createTime?.endTime ? moment(values.createTime.endTime).format('YYYY-MM-DD hh:mm:ss') : '',
-            registerTime1: values.registerTime?.startTime ? moment(values.registerTime.startTime).format('YYYY-MM-DD hh:mm:ss') : '',
-            registerTime2: values.registerTime?.endTime ? moment(values.registerTime.endTime).format('YYYY-MM-DD hh:mm:ss') : '',
+            startTime: values.createTime?.startTime ? moment(values.createTime.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
+            endTime: values.createTime?.endTime ? moment(values.createTime.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+            registerTime1: values.registerTime?.startTime ? moment(values.registerTime.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
+            registerTime2: values.registerTime?.endTime ? moment(values.registerTime.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
             createTime: ''
           }
         }).then(res => {
