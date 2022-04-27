@@ -1020,15 +1020,15 @@ function Todolistdetails(props) {
           {tabActiveKey === 'faultForm' && !loading && (
             <>
               {// 删除按钮只有故障登记有并且没有流转记录
-              flowNodeName === '故障登记' && troubleFlowNodeRows.length <= 1 && (
-                <Popconfirm title="确定删除吗？" onConfirm={() => handleDelete()}>
-                  <Button type="danger" style={{ marginRight: 8 }} ghost>
-                    删除
-                  </Button>
-                </Popconfirm>
-              )}
+                flowNodeName === '故障登记' && troubleFlowNodeRows.length <= 1 && (
+                  <Popconfirm title="确定删除吗？" onConfirm={() => handleDelete()}>
+                    <Button type="danger" style={{ marginRight: 8 }} ghost>
+                      删除
+                    </Button>
+                  </Popconfirm>
+                )}
               {// 回退按钮--系统运维商审核， 系统运维商确认总结，自动化科业务负责人审核, 自动化科确认有
-              flowNodeName !== '故障登记' &&
+                flowNodeName !== '故障登记' &&
                 flowNodeName !== '故障关闭' &&
                 main &&
                 main.status !== '45' &&
@@ -1049,15 +1049,15 @@ function Todolistdetails(props) {
                   </Button>
                 )}
               {// 接单只有系统运维商处理时有
-              main && (main.status === '40' || main.status === '45') && editState === 'add' && (
-                <Button
-                  type="primary"
-                  style={{ marginRight: 8 }}
-                  onClick={() => handleSubmit('accpt')}
-                >
-                  接单
-                </Button>
-              )}
+                main && (main.status === '40' || main.status === '45') && editState === 'add' && (
+                  <Button
+                    type="primary"
+                    style={{ marginRight: 8 }}
+                    onClick={() => handleSubmit('accpt')}
+                  >
+                    接单
+                  </Button>
+                )}
               {main && main.status !== '40' && !(main.status === '45' && editState === 'add') && (
                 <Button
                   type="primary"
@@ -1072,65 +1072,65 @@ function Todolistdetails(props) {
                 </Button>
               )}
               {// 转单只有系统运维商处理时有
-              main && (main.status === '45' || main.status === '40') && editState === 'edit' && (
-                <Button
-                  type="primary"
-                  style={{ marginRight: 8 }}
-                  onClick={() => {
-                    handleSubmit('submittransfer');
-                    setChangeOrder('请选择处理');
-                  }}
-                  onMouseDown={() => {
-                    setButtonType(undefined);
-                    setChangeOrder('');
-                  }}
-                  onMouseOver={() => {
-                    sessionStorage.setItem('flowtype', '9');
-                  }}
-                  onFocus={() => 0}
-                  disabled={faultUploadStatus}
-                >
-                  转单
-                </Button>
-              )}
+                main && (main.status === '45' || main.status === '40') && editState === 'edit' && (
+                  <Button
+                    type="primary"
+                    style={{ marginRight: 8 }}
+                    onClick={() => {
+                      handleSubmit('submittransfer');
+                      setChangeOrder('请选择处理');
+                    }}
+                    onMouseDown={() => {
+                      setButtonType(undefined);
+                      setChangeOrder('');
+                    }}
+                    onMouseOver={() => {
+                      sessionStorage.setItem('flowtype', '9');
+                    }}
+                    onFocus={() => 0}
+                    disabled={faultUploadStatus}
+                  >
+                    转单
+                  </Button>
+                )}
               {/* 确认过程的时候不需要选人 1通过直接关闭 */}
               {flowNodeName === '自动化科审核'
                 ? resultconfirm === '1' && (
-                    <Button
-                      type="primary"
-                      style={{ marginRight: 8 }}
-                      onClick={() => {
-                        handleSubmit('over');
-                      }}
-                      disabled={faultUploadStatus}
-                    >
-                      结束
-                    </Button>
-                  )
+                  <Button
+                    type="primary"
+                    style={{ marginRight: 8 }}
+                    onClick={() => {
+                      handleSubmit('over');
+                    }}
+                    disabled={faultUploadStatus}
+                  >
+                    结束
+                  </Button>
+                )
                 : main &&
-                  main.status !== '40' &&
-                  !(main.status === '45' && editState === 'add') &&
-                  result === '1' &&
-                  resultsecond === '1' && (
-                    <Button
-                      disabled={faultUploadStatus}
-                      type="primary"
-                      style={{ marginRight: 8 }}
-                      onClick={() => {
-                        handleSubmit('flow');
-                      }}
-                      onMouseOver={() => {
-                        sessionStorage.setItem('flowtype', '1');
-                      }}
-                      onMouseDown={() => {
-                        setButtonType(undefined);
-                        setChangeOrder(undefined);
-                      }}
-                      onFocus={() => 0}
-                    >
-                      流转
-                    </Button>
-                  )}
+                main.status !== '40' &&
+                !(main.status === '45' && editState === 'add') &&
+                result === '1' &&
+                resultsecond === '1' && (
+                  <Button
+                    disabled={faultUploadStatus}
+                    type="primary"
+                    style={{ marginRight: 8 }}
+                    onClick={() => {
+                      handleSubmit('flow');
+                    }}
+                    onMouseOver={() => {
+                      sessionStorage.setItem('flowtype', '1');
+                    }}
+                    onMouseDown={() => {
+                      setButtonType(undefined);
+                      setChangeOrder(undefined);
+                    }}
+                    onFocus={() => 0}
+                  >
+                    流转
+                  </Button>
+                )}
               {result === '0' && (
                 <Button
                   type="primary"
@@ -1207,7 +1207,7 @@ function Todolistdetails(props) {
                       title={`${name}${'\xa0'}${'\xa0'}(${status})${'\xa0'}${'\xa0'}${timeText}`}
                       icon={
                         name === troubleFlowLogs[troubleFlowLogs.length - 1].name &&
-                        status === troubleFlowLogs[troubleFlowLogs.length - 1].status ? (
+                          status === troubleFlowLogs[troubleFlowLogs.length - 1].status ? (
                           <Icon type="loading" spin />
                         ) : (
                           ''
@@ -1243,25 +1243,25 @@ function Todolistdetails(props) {
                     defaultActiveKey={activeKey}
                   >
                     {// 故障登记编辑页---（故障登记时）
-                    flowNodeName === '故障登记' && (
-                      <Panel header="故障登记" key="RegisterChild">
-                        <RegisterChild
-                          ChangeFiles={newvalue => {
-                            setFiles(newvalue);
-                          }}
-                          ref={RegisterRef}
-                          formItemLayout={formItemLayout}
-                          forminladeLayout={forminladeLayout}
-                          tododetailslist={tododetailslist}
-                          main={main}
-                          curruserinfo={curruserinfo}
-                          saveType={newvalue => {
-                            setType(newvalue);
-                          }}
-                          location={location}
-                        />
-                      </Panel>
-                    )}
+                      flowNodeName === '故障登记' && (
+                        <Panel header="故障登记" key="RegisterChild">
+                          <RegisterChild
+                            ChangeFiles={newvalue => {
+                              setFiles(newvalue);
+                            }}
+                            ref={RegisterRef}
+                            formItemLayout={formItemLayout}
+                            forminladeLayout={forminladeLayout}
+                            tododetailslist={tododetailslist}
+                            main={main}
+                            curruserinfo={curruserinfo}
+                            saveType={newvalue => {
+                              setType(newvalue);
+                            }}
+                            location={location}
+                          />
+                        </Panel>
+                      )}
                     {/* {// 系统运维商审核编辑页
                     flowNodeName === '系统运维商审核' && ( // 展开系统运维商审核表单时，显示故障登记详情（1）
                       <Panel header="系统运维商审核" key="ExamineChild">
@@ -1282,10 +1282,10 @@ function Todolistdetails(props) {
                       </Panel>
                     )} */}
                     {// 系统运维商处理编辑页
-                    flowNodeName === '系统运维商处理' &&
-                    main &&
-                    main.status === '45' &&
-                    editState === 'edit' && ( // 展开处理表单时，显示故障审核详情以及登记详情（2）
+                      flowNodeName === '系统运维商处理' &&
+                      main &&
+                      main.status === '45' &&
+                      editState === 'edit' && ( // 展开处理表单时，显示故障审核详情以及登记详情（2）
                         <Panel header="系统运维商处理" key="HandleChild">
                           <HandleChild
                             ref={HandleRef}
@@ -1303,74 +1303,74 @@ function Todolistdetails(props) {
                         </Panel>
                       )}
                     {// 系统运维商确认总结编辑页
-                    flowNodeName === '系统运维商确认总结' && (
-                      <Panel header="系统运维商确认总结" key="SummaryChild">
-                        <SummaryChild
-                          ref={SummaryRef}
-                          formItemLayout={formItemLayout}
-                          forminladeLayout={forminladeLayout}
-                          tododetailslist={tododetailslist}
-                          finish={finish}
-                          curruserinfo={curruserinfo}
-                          ChangeFiles={newvalue => {
-                            setFiles(newvalue);
-                          }}
-                          id={id}
-                          mainId={mainId}
-                          orderNo={orderNo}
-                          editState={editState}
-                          finishId={
-                            tododetailslist && tododetailslist.finish && tododetailslist.finish.id
-                          }
-                          showFilelist={troubleFlowNodeRows[1]}
-                          showFilelist2={troubleFlowNodeRows[2]}
-                          ChangeFileskey={newvalue => setFileskey(newvalue)}
-                          uploadStatus={olduploadstatus}
-                        />
-                      </Panel>
-                    )}
+                      flowNodeName === '系统运维商确认总结' && (
+                        <Panel header="系统运维商确认总结" key="SummaryChild">
+                          <SummaryChild
+                            ref={SummaryRef}
+                            formItemLayout={formItemLayout}
+                            forminladeLayout={forminladeLayout}
+                            tododetailslist={tododetailslist}
+                            finish={finish}
+                            curruserinfo={curruserinfo}
+                            ChangeFiles={newvalue => {
+                              setFiles(newvalue);
+                            }}
+                            id={id}
+                            mainId={mainId}
+                            orderNo={orderNo}
+                            editState={editState}
+                            finishId={
+                              tododetailslist && tododetailslist.finish && tododetailslist.finish.id
+                            }
+                            showFilelist={troubleFlowNodeRows[1]}
+                            showFilelist2={troubleFlowNodeRows[2]}
+                            ChangeFileskey={newvalue => setFileskey(newvalue)}
+                            uploadStatus={olduploadstatus}
+                          />
+                        </Panel>
+                      )}
                     {// 自动化科业务负责人审核编辑页
-                    flowNodeName === '自动化科业务负责人审核' && (
-                      <Panel header="自动化科业务负责人审核" key="ExamineSecondChild">
-                        <ExamineSecondChild
-                          ref={ExamineRef}
-                          formItemLayout={formItemLayout}
-                          forminladeLayout={forminladeLayout}
-                          check={check}
-                          tododetailslist={tododetailslist}
-                          curruserinfo={curruserinfo}
-                          ChangeFiles={newvalue => {
-                            setFiles(newvalue);
-                          }}
-                          ChangeResult={newvalue => {
-                            setResultsecond(newvalue);
-                          }}
-                          resultsecond={resultsecond}
-                          location={location}
-                          createQualityByMainId={() => createQualityByMainId('')}
-                        />
-                      </Panel>
-                    )}
+                      flowNodeName === '自动化科业务负责人审核' && (
+                        <Panel header="自动化科业务负责人审核" key="ExamineSecondChild">
+                          <ExamineSecondChild
+                            ref={ExamineRef}
+                            formItemLayout={formItemLayout}
+                            forminladeLayout={forminladeLayout}
+                            check={check}
+                            tododetailslist={tododetailslist}
+                            curruserinfo={curruserinfo}
+                            ChangeFiles={newvalue => {
+                              setFiles(newvalue);
+                            }}
+                            ChangeResult={newvalue => {
+                              setResultsecond(newvalue);
+                            }}
+                            resultsecond={resultsecond}
+                            location={location}
+                            createQualityByMainId={() => createQualityByMainId('')}
+                          />
+                        </Panel>
+                      )}
                     {// 自动化科专责确认编辑页
-                    flowNodeName === '自动化科审核' && (
-                      <Panel header="自动化科审核" key="ConfirmChild">
-                        <ConfirmChild
-                          ref={ConfirmRef}
-                          formItemLayout={formItemLayout}
-                          forminladeLayout={forminladeLayout}
-                          confirm={confirm}
-                          main={main}
-                          curruserinfo={curruserinfo}
-                          ChangeFiles={newvalue => {
-                            setFiles(newvalue);
-                          }}
-                          ChangeResult={newvalue => {
-                            setResultconfirm(newvalue);
-                          }}
-                          location={location}
-                        />
-                      </Panel>
-                    )}
+                      flowNodeName === '自动化科审核' && (
+                        <Panel header="自动化科审核" key="ConfirmChild">
+                          <ConfirmChild
+                            ref={ConfirmRef}
+                            formItemLayout={formItemLayout}
+                            forminladeLayout={forminladeLayout}
+                            confirm={confirm}
+                            main={main}
+                            curruserinfo={curruserinfo}
+                            ChangeFiles={newvalue => {
+                              setFiles(newvalue);
+                            }}
+                            ChangeResult={newvalue => {
+                              setResultconfirm(newvalue);
+                            }}
+                            location={location}
+                          />
+                        </Panel>
+                      )}
 
                     {troubleFlowNodeRows &&
                       troubleFlowNodeRows.map((obj, index) => {
@@ -1480,7 +1480,7 @@ function Todolistdetails(props) {
                             description={
                               <div className={styles.stepDescription}>
                                 处理人：{formHandler}
-                                <div>{moment(startTime).format('YYYY-MM-DD hh:mm:ss')}</div>
+                                <div>{moment(startTime).format('YYYY-MM-DD HH:mm:ss')}</div>
                                 <div>{status === '退回' && `回退原因：${backReason}`}</div>
                               </div>
                             }

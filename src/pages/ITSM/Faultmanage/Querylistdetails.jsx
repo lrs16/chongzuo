@@ -202,7 +202,7 @@ function Querylistdetails(props) {
                             title={`${name}${'\xa0'}${'\xa0'}(${status})${'\xa0'}${'\xa0'}${timeText}`}
                             icon={
                               name === troubleFlowLogs[troubleFlowLogs.length - 1].name &&
-                              status === troubleFlowLogs[troubleFlowLogs.length - 1].status ? (
+                                status === troubleFlowLogs[troubleFlowLogs.length - 1].status ? (
                                 <Icon type="loading" spin />
                               ) : (
                                 ''
@@ -341,7 +341,7 @@ function Querylistdetails(props) {
                               description={
                                 <div className={styles.stepDescription}>
                                   处理人：{formHandler}
-                                  <div>{moment(startTime).format('YYYY-MM-DD hh:mm:ss')}</div>
+                                  <div>{moment(startTime).format('YYYY-MM-DD HH:mm:ss')}</div>
                                   <div>{status === '退回' && `回退原因：${backReason}`}</div>
                                 </div>
                               }
