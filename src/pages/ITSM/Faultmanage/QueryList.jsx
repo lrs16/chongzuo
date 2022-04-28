@@ -1490,20 +1490,23 @@ function QueryList(props) {
             ids: selectedKeys.toString(),
             ...values,
             sendTime: '',
-            registerOccurTimeBegin: values.registerOccurTimeBegin
-              ? values.registerOccurTimeBegin.format('YYYY-MM-DD')
+            registerOccurTimeBegin: values.registerOccurTime?.length
+              ? moment(values.registerOccurTime[0]).format('YYYY-MM-DD HH:mm:ss')
+              : '',
+            registerOccurTimeEnd: values.registerOccurTime?.length
+              ? moment(values.registerOccurTime[1]).format('YYYY-MM-DD HH:mm:ss')
+              : '',
+            handleStartTimeBegin: values.handleTime?.length
+              ? moment(values.handleTime[0]).format('YYYY-MM-DD HH:mm:ss')
+              : '',
+            handleStartTimeEnd: values.handleTime?.length
+              ? moment(values.handleTime[1]).format('YYYY-MM-DD HH:mm:ss')
               : '',
             addTimeBegin: values.addTime?.length
               ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss')
               : '',
             addTimeEnd: values.addTime?.length
               ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss')
-              : '',
-            handleStartTimeBegin: values.handleStartTimeBegin
-              ? values.registerOccurTimeBegin.format('YYYY-MM-DD')
-              : '',
-            handleStartTimeEnd: values.handleStartTimeEnd
-              ? values.registerOccurTimeBegin.format('YYYY-MM-DD')
               : '',
             type: values.type ? values.type.slice(-1)[0] : '',
             createTimeBegin: values.createTime?.length
@@ -1728,7 +1731,7 @@ function QueryList(props) {
                     <Cascader
                       placeholder="请选择"
                       options={faultType}
-                      fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }} 
+                      fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
                       allowClear
                       changeOnSelect
                     />,
