@@ -5,10 +5,7 @@ import {
   Input,
   Button,
   Popconfirm,
-  message,
-  DatePicker
 } from 'antd';
-import moment from 'moment';
 
 let deleteSign = false;
 const { TextArea } = Input;
@@ -16,7 +13,6 @@ function FaultSummary(props) {
   const {
     getEventList,
     eventList,
-    mainId,
     reportSearch
   } = props;
   const [data, setData] = useState([]);
@@ -27,7 +23,6 @@ function FaultSummary(props) {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
-      field1: data.length + 1
     });
     setData(newData);
     getEventList(newData)
@@ -73,8 +68,6 @@ function FaultSummary(props) {
       setData(newarr)
     }
   }
-
-  console.log(data,'data');
 
   const column = [
     {

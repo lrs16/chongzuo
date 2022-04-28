@@ -64,8 +64,6 @@ const formincontentLayout = {
 
 const { MonthPicker } = DatePicker;
 const { TextArea } = Input;
-let initial = false;
-let getInfoparams = false;
 
 const TopnAnalysis = [
   {
@@ -258,12 +256,13 @@ function SoftReport(props) {
   const [timeshow, setTimeshow] = useState(true);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
+  const [initial, setInitial] = useState(false);
+  const [paste, setPaste] = useState(false);
 
   let lastSolute = [];
   if (soluteArr && soluteArr.length > 1) {
     lastSolute = [soluteArr[soluteArr.length - 1]];
   }
-
 
   //  保存表单
   const softReportform = () => {
@@ -497,6 +496,13 @@ function SoftReport(props) {
     }
   }, [timeshow])
 
+  useEffect(() => {
+    if (initial && paste) {
+      setStartTime(copyData.main.time1)
+      setEndTime(copyData.main.time2)
+    }
+  }, [initial])
+
   const newMember = () => {
     const nowNumber = list.map(item => ({ ...item }));
     const newarr = nowNumber.map((item, index) => {
@@ -565,6 +571,8 @@ function SoftReport(props) {
     }).then(res => {
       if (res.code === 200) {
         setCopyData(res);
+        setPaste(true);
+        setStartTime('')
         setList(res.addData);
         setContentRow(res.contentRow);
         setPatrolAndExamine(res.patrolAndExamineList);
@@ -581,7 +589,7 @@ function SoftReport(props) {
         setNextOperationList(res.nextOperationList);
         setAddTitle(res.addData);
         message.success('粘贴成功')
-        initial = true;
+        setInitial(true);
       } else {
         message.info('您无法复制该条记录，请返回列表重新选择')
       }
@@ -600,7 +608,6 @@ function SoftReport(props) {
 
   useEffect(() => {
     defaultTime();
-    initial = false;
   }, []);
 
   const getReportdata = () => {
@@ -610,23 +617,23 @@ function SoftReport(props) {
     getcontentRowlist();
     handlesoftservice();
     handlepatrolAndExamineList();
-    initial = true;
+    setInitial(true)
   }
 
   useEffect(() => {
-    setContentRow(copyData.contentRow !== undefined ? copyData.contentRow : contentRowlist);
-    setPatrolAndExamine(copyData.patrolAndExamineList !== undefined ? copyData.patrolAndExamineList : patrolAndExamineArr);
+    setContentRow(contentRowlist || copyData.contentRow);
+    setPatrolAndExamine(patrolAndExamineArr || copyData.patrolAndExamineList);
     setMaterialsList(copyData.materialsList !== undefined ? copyData.materialsList : []);
-    setTypeList(copyData.typeList !== undefined ? copyData.typeList : maintenanceArr);
-    setStatisList(copyData.statisList !== undefined ? copyData.statisList : maintenanceService);
-    setSelfhandleRow(copyData.selfhandleRow !== undefined ? copyData.selfhandleRow : lastSolute);
-    setTopNList(copyData.topNList !== undefined ? copyData.topNList : TopnAnalysis);
+    setTypeList(maintenanceArr || copyData.typeList);
+    setStatisList(maintenanceService || copyData.statisList);
+    setSelfhandleRow(lastSolute || copyData.selfhandleRow);
+    setTopNList(TopnAnalysis || copyData.topNList);
     setEventList(copyData.eventList !== undefined ? copyData.eventList : []);
     setUpgradeList(copyData.upgradeList !== undefined ? copyData.upgradeList : []);
     setUpdateList(copyData.updateList !== undefined ? copyData.updateList : []);
     setLegacyList(copyData.legacyList !== undefined ? copyData.legacyList : []);
-    setOperationList(copyData.operationList !== undefined ? copyData.operationList : lastweekHomeworklist);
-    setNextOperationList(copyData.nextOperationList !== undefined ? copyData.nextOperationList : nextweekHomeworklist);
+    setOperationList(lastweekHomeworklist || copyData.operationList);
+    setNextOperationList(nextweekHomeworklist || copyData.nextOperationList);
   }, [loading]);
 
   const dateFormat = 'YYYY-MM-DD';
@@ -691,13 +698,13 @@ function SoftReport(props) {
                   initialValue: copyData.main ? copyData.main.name : ''
                 })
                   (
-                    <Input style={{ width: 700 }} placeholder={`省级集中计量自动化系统软件运维${reporttype === 'week'? '周':'月'}报`} />
+                    <Input style={{ width: 700 }} placeholder={`省级集中计量自动化系统软件运维${reporttype === 'week' ? '周' : '月'}报`} />
                   )}
               </Form.Item>
             </Col>
 
             {
-              reporttype === 'week' && startTime && timeshow && (
+              reporttype === 'week' && loading === false && startTime && timeshow  && (
                 <Col span={24}>
                   <div>
                     <span style={{ marginLeft: 10 }}>填报时间 :</span>
@@ -770,7 +777,7 @@ function SoftReport(props) {
             }
 
             {
-              initial && loading === false && contentRowlist && startTime && (
+              initial && loading === false && startTime && (
                 <>
                   {/* 一、本周运维情况综述 */}
                   <Col span={24}>
@@ -847,7 +854,7 @@ function SoftReport(props) {
                       patrolAndExamineList={contentrowdata => {
                         setPatrolAndExamine(contentrowdata)
                       }}
-                      patrolAndExamine={copyData.patrolAndExamineList ? copyData.patrolAndExamineList : patrolAndExamineArr}
+                      patrolAndExamine={patrolAndExamineArr || copyData.patrolAndExamineList || []}
                     />
                   </Col>
 
@@ -903,7 +910,7 @@ function SoftReport(props) {
                   <Col span={24}>
                     <ServiceTableone
                       forminladeLayout={forminladeLayout}
-                      maintenanceArr={copyData.typeList ? copyData.typeList : maintenanceArr}
+                      maintenanceArr={maintenanceArr || copyData.typeList}
                       tabActiveKey={reporttype}
                       typeList={contentrowdata => {
                         setTypeList(contentrowdata)
@@ -929,7 +936,7 @@ function SoftReport(props) {
                   <Col span={24}>
                     <ServiceCompletionone
                       forminladeLayout={forminladeLayout}
-                      maintenanceService={copyData.statisList ? copyData.statisList : maintenanceService}
+                      maintenanceService={maintenanceService || copyData.statisList}
                       tabActiveKey={reporttype}
                       statisList={contentrowdata => {
                         setStatisList(contentrowdata)
@@ -940,7 +947,7 @@ function SoftReport(props) {
                   <Col span={24}>
                     <ServiceCompletion
                       forminladeLayout={forminladeLayout}
-                      soluteArr={copyData.selfhandleRow ? copyData.selfhandleRow : lastSolute}
+                      soluteArr={lastSolute || copyData.selfhandleRow || []}
                       startTime={startTime}
                       endTime={endTime}
                       tabActiveKey={reporttype}
@@ -967,7 +974,7 @@ function SoftReport(props) {
                       topNList={contentrowdata => {
                         setTopNList(contentrowdata)
                       }}
-                      topArr={copyData.topNList ? copyData.topNList : TopnAnalysis}
+                      topArr={TopnAnalysis || copyData.topNList}
                     />
                   </Col>
 
@@ -1173,7 +1180,7 @@ function SoftReport(props) {
                       operationList={contentrowdata => {
                         setOperationList(contentrowdata)
                       }}
-                      operationArr={copyData.operationList ? copyData.operationList : lastweekHomeworklist}
+                      operationArr={lastweekHomeworklist || copyData.operationList}
                       loading={loading}
                     />
                   </Col>
@@ -1215,7 +1222,7 @@ function SoftReport(props) {
                       operationList={contentrowdata => {
                         setNextOperationList(contentrowdata)
                       }}
-                      operationArr={copyData.nextOperationList ? copyData.nextOperationList : nextweekHomeworklist}
+                      operationArr={nextweekHomeworklist || copyData.nextOperationList}
                       loading={loading}
                     />
                   </Col>
@@ -1303,11 +1310,10 @@ function SoftReport(props) {
 }
 
 export default Form.create({})(
-  connect(({ softreport,viewcache, loading }) => ({
+  connect(({ softreport, viewcache, loading }) => ({
     maintenanceArr: softreport.maintenanceArr,
     maintenanceService: softreport.maintenanceService,
     soluteArr: softreport.soluteArr,
-    thisWeekitsmlist: softreport.thisWeekitsmlist,
     lastweekHomeworklist: softreport.lastweekHomeworklist,
     nextweekHomeworklist: softreport.nextweekHomeworklist,
     contentRowlist: softreport.contentRowlist,

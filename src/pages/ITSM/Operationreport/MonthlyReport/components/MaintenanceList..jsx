@@ -6,12 +6,14 @@ import {
   Button,
   Popconfirm,
   message,
-  DatePicker
+  DatePicker,
+  Select
 } from 'antd';
 import moment from 'moment';
 
 let deleteSign = false;
 const { TextArea } = Input;
+const { Option } = Select;
 function MaintenanceList(props) {
   const {
     gettroubleList,
@@ -60,7 +62,7 @@ function MaintenanceList(props) {
     const target = getRowByKey(key, newData);
     gettroubleList(newData)
     if (target) {
-      if (fieldName === 'field2' || fieldName === 'field5') {
+      if (fieldName === 'field2') {
         target[fieldName] = moment(e).format('YYYY-MM-DD');
         gettroubleList(newData)
         setData(newData);
@@ -103,6 +105,7 @@ function MaintenanceList(props) {
         return (
           <DatePicker
             disabled={reportSearch}
+            format='MM-DD'
             defaultValue={text ? moment(text) : ''}
             onChange={e => handleFieldChange(e, 'field2', record.key)}
           />
@@ -142,10 +145,13 @@ function MaintenanceList(props) {
       key: 'field5',
       render: (text, record) => {
         return (
-          <TextArea
+          <Select
             defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
-          />
+            onChange={e => handleFieldChange(e, 'field5', record.key)}
+          >
+            <Option value='是'>是</Option>
+            <Option value='否'>否</Option>
+          </Select>
         )
       }
     },
@@ -180,7 +186,6 @@ function MaintenanceList(props) {
       deleteSign = false
     }
   }, [data, deleteSign])
-
 
   return (
     <>

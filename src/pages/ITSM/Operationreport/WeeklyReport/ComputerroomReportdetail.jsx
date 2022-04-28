@@ -193,7 +193,6 @@ function ComputerroomReportdetail(props) {
   useEffect(() => {
     if (mainId) {
       getopenFlow()
-      initial = true;
     }
   }, [mainId])
 
@@ -351,7 +350,7 @@ function ComputerroomReportdetail(props) {
       type: 'softreport/exportWord',
       payload: { mainId }
     }).then(res => {
-      const fieldName = '下载.doc';
+      const fieldName = '下载机房运维月报.doc';
       const blob = new Blob([res]);
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');

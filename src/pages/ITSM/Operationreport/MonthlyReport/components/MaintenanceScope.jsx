@@ -6,7 +6,7 @@ import {
   Button,
   Popconfirm,
   Select,
-  message,
+  InputNumber,
   DatePicker,
 } from 'antd';
 import moment from 'moment';
@@ -133,7 +133,7 @@ function MaintenanceScope(props) {
       key: 'field4',
       render: (text, record) => {
         return (
-          <Input
+          <InputNumber
             disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}

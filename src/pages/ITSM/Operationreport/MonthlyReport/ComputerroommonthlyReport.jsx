@@ -21,8 +21,6 @@ import MaintenanceScope from './components/MaintenanceScope';
 import FaultSummary from './components/FaultSummary';
 import AddForm from '../WeeklyReport/components/AddForm';
 
-import styles from '../WeeklyReport/index.less';
-
 const forminladeLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -47,7 +45,6 @@ const formincontentLayout = {
 
 const { MonthPicker } = DatePicker;
 const { TextArea } = Input;
-let initial = false;
 // let getInfoparams = false;
 
 function ComputerroommonthlyReport(props) {
@@ -61,9 +58,6 @@ function ComputerroommonthlyReport(props) {
       reportSearch
     } },
     dispatch,
-    faultQueryList,
-    openReportlist,
-    lastweekHomeworklist,
     computerroom,
     loading,
     olduploadstatus
@@ -88,6 +82,7 @@ function ComputerroommonthlyReport(props) {
   const [timeshow, setTimeshow] = useState(true);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
+  const [initial, setInitial] = useState(false)
   const summarydefaults = '按照合同要求，博联机房运维组对省级集中计量自动化系统机房进行监控值班和巡检运维工作。所运维的设备分布于49个机柜，共计300台（套），其中60台服务器，网络设备96台，安全设备70台，其它设备37台，软件系统37套；运维期内机房新增的设备也在运维范围。'
   const personnelOrganization = `项目经理：梁勇成
 技术工程师：利东 刘熙仑 
@@ -104,7 +99,7 @@ function ComputerroommonthlyReport(props) {
 9、网络通道监控、巡检
 10、信息安全监控 `
   const maintenanceRecords = '详见每日的《广西计量机房硬件及基础环境日巡检报告》';
-  const dutySituation = `本月实行7*24小时值班，共值班${moment(endTime).endOf('month').format('DD')*3}个班次，提交运维简报${moment(endTime).endOf('month').format('DD')*3}次，按时提交率100%；巡检日报，机房出入登记表和值班日志等均按规定做了记录，无违规现象。`
+  const dutySituation = `本月实行7*24小时值班，共值班${moment(endTime).endOf('month').format('DD') * 3}个班次，提交运维简报${moment(endTime).endOf('month').format('DD') * 3}次，按时提交率100%；巡检日报，机房出入登记表和值班日志等均按规定做了记录，无违规现象。`
   const TroubleShooting = `本月巡检到设备硬件故障0起，监控到设备软件故障0起0；未发生网络故障和电源故障；修复历史硬件故障1起。
 目前机房设备无缺陷或告警，运行状态良好。`
   const monitoringSituation = `本月监控到系统指标异常4起，比上月增加1起；监控到系统登录异常0起；监控到系统功能模块异常0起。
@@ -125,7 +120,7 @@ function ComputerroommonthlyReport(props) {
           personnelFiles: value.personnelFiles || '',
           workAddressFiles: value.workAddressFiles || '',
           workFiles: value.workFiles || '',
-          editStatus: mainId ? 'edit' : 'add',
+          editStatus: 'add',
           addData: JSON.stringify(list),
           type: '机房运维月报',
           reporttype,
@@ -156,13 +151,14 @@ function ComputerroommonthlyReport(props) {
       return false;
     }
 
-    if (listreportType !== '机房运维周报') {
-      message.info('只能粘贴同种周报类型哦');
+    if (listreportType !== '机房运维月报') {
+      message.info('只能粘贴同种月报类型哦');
       return false;
     }
 
+
     return dispatch({
-      type: 'softreport/pasteReport',
+      type: 'monthly/pasteReport',
       payload: {
         editStatus: 'edit',
         id: listId
@@ -174,15 +170,16 @@ function ComputerroommonthlyReport(props) {
         setMaterialsList(res.materialsList);
         settroubleList(res.troubleList);
         setNewTroubleList(res.newTroubleList);
-        setOperationList(res.operationList);
-        setNextOperationList(res.nextOperationList);
+        setEventList(res.eventList);
+        settroubleList(res.troubleList);
+        setInitial(true)
         message.success('粘贴成功')
-        initial = true;
       } else {
         message.info('您无法复制该条记录，请返回列表重新选择')
       }
     })
   }
+
 
   // 动态保存信息
   const handleaddTable = (params, px, rowdelete) => {
@@ -271,11 +268,8 @@ function ComputerroommonthlyReport(props) {
   }, [timeshow])
 
   useEffect(() => {
-    setMaterialsList(copyData.materialsList || materialsList);
-    setNewTroubleList(copyData.newTroubleList || faultQueryList);
-    setEventList(copyData.eventList || eventList);
-    setOperationList(copyData.operationList || lastweekHomeworklist);
-    settroubleList(copyData.troubleList || troubleList);
+    setEventList(computerroom.eventList || copyData.eventList || []);
+    settroubleList(computerroom.troubleList || copyData.troubleList);
   }, [loading]);
 
   useEffect(() => {
@@ -283,27 +277,6 @@ function ComputerroommonthlyReport(props) {
       getopenFlow()
     }
   }, [mainId])
-
-  const getQuerylist = () => {
-    dispatch({
-      type: 'softreport/getfaultQueryList',
-      payload: {
-        time1: startTime,
-        time2: endTime,
-        type: '001',
-        result: '根本解决'
-      }
-    });
-    dispatch({
-      type: 'softreport/getnofaultQueryList',
-      payload: {
-        time1: startTime,
-        time2: endTime,
-        type: '001',
-        result: '无法解决'
-      }
-    })
-  }
 
   //   七、上周作业完成情况--表格
   const getTroubleByComputerRoom = () => {
@@ -319,15 +292,17 @@ function ComputerroommonthlyReport(props) {
 
   useEffect(() => {
     defaultTime();
-    initial = false;
-    // getInfoparams = false;
+    return () => {
+      dispatch({
+        type: 'monthly/setclearcomputerroom',
+        payload: []
+      })
+    }
   }, []);
 
   const getReportdata = () => {
     getTroubleByComputerRoom();
-    // nextweekHomework();
-    // getQuerylist();
-    initial = true;
+    setInitial(true);
   }
 
   //  暂时保留
@@ -349,27 +324,6 @@ function ComputerroommonthlyReport(props) {
       state: { cache: false }
     });
 
-    if (reporttype === 'week') {
-      if (!reportSearch) {
-        router.push({
-          pathname: '/ITSM/operationreport/weeklyreport/myweeklyreport',
-          query: { pathpush: true },
-          state: { cache: false }
-        }
-        );
-      }
-
-      if (reportSearch) {
-        router.push({
-          pathname: '/ITSM/operationreport/weeklyreport/myweeklyreportsearch',
-          query: { pathpush: true },
-          state: { cache: false }
-        }
-        );
-      }
-
-    }
-
     if (reporttype === 'month') {
       if (!reportSearch) {
         router.push({
@@ -389,26 +343,10 @@ function ComputerroommonthlyReport(props) {
   }
 
   const onChange = (date, dateString) => {
-    if (reporttype === 'week') {
-      const currentendTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
-      setTimeshow(false);
-      setStartTime(dateString);
-      setEndTime(currentendTime);
-      setFieldsValue({ time2: moment(endTime) });
-    } else {
-      const monthstartTime = date.startOf('month').format('YYYY-MM-DD');
-      const monthendTime = date.endOf('month').format('YYYY-MM-DD');
-      setStartTime(monthstartTime);
-      setEndTime(monthendTime);
-    }
-  }
-
-  const endonChange = (date, dateString) => {
-    const currendstartTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
-    setTimeshow(false);
-    setStartTime(currendstartTime);
-    setEndTime(dateString);
-    setFieldsValue({ time1: moment(startTime) })
+    const monthstartTime = date.startOf('month').format('YYYY-MM-DD');
+    const monthendTime = date.endOf('month').format('YYYY-MM-DD');
+    setStartTime(monthstartTime);
+    setEndTime(monthendTime);
   }
 
   const newMember = () => {
@@ -429,7 +367,7 @@ function ComputerroommonthlyReport(props) {
     setDeleteSign(false);
   }
 
-  const dateFormat = 'YYYY-MM-DD';
+  console.log(loading, 'loading');
 
   return (
     <PageHeaderWrapper
@@ -437,26 +375,26 @@ function ComputerroommonthlyReport(props) {
       extra={
         <>
           {
-          loading === false && (
-            <>
-            <Button
-            type='primary'
-            onClick={handlePaste}
-            disabled={olduploadstatus}
-          >粘贴</Button>
-          <Button
-            type='primary'
-            onClick={computerReportform}
-            disabled={olduploadstatus}
-          >
-            保存
-          </Button>
-          <Button onClick={handleBack}>
-            返回
-          </Button>
-            </>
-          )
-        }
+            (loading === false || loading === undefined) && (
+              <>
+                <Button
+                  type='primary'
+                  onClick={handlePaste}
+                  disabled={olduploadstatus}
+                >粘贴</Button>
+                <Button
+                  type='primary'
+                  onClick={computerReportform}
+                  disabled={olduploadstatus}
+                >
+                  保存
+                </Button>
+                <Button onClick={handleBack}>
+                  返回
+                </Button>
+              </>
+            )
+          }
         </>
       }
     >
@@ -526,7 +464,6 @@ function ComputerroommonthlyReport(props) {
 
             {
               initial && loading === false && startTime && (
-
                 <>
                   <Col span={24}><p style={{ fontWeight: '900', fontSize: '16px', marginTop: 24 }}>一、概述</p></Col>
                   {/* 本周运维总结 */}
@@ -685,8 +622,6 @@ function ComputerroommonthlyReport(props) {
                       maintenanceList={copyData.rangeList ? copyData.rangeList : []}
                       mainId={copyData.rangeList ? true : mainId}
                       type={reporttype}
-                      startTime={startTime}
-                      endTime={endTime}
                       newTroubleList={contentrowdata => {
                         setNewTroubleList(contentrowdata)
                       }}
@@ -759,7 +694,7 @@ function ComputerroommonthlyReport(props) {
                   <Col span={24}>
                     <FaultSummary
                       forminladeLayout={forminladeLayout}
-                      eventList={copyData.eventList ? copyData.eventList : computerroom.eventList}
+                      eventList={computerroom.eventList || copyData.eventList || []}
                       type={reporttype}
                       mainId={copyData.eventList ? true : mainId}
                       startTime={startTime}
@@ -773,7 +708,7 @@ function ComputerroommonthlyReport(props) {
                   <Col span={24}>
                     <MaintenanceList
                       forminladeLayout={forminladeLayout}
-                      troubleList={copyData.troubleList ? copyData.troubleList : computerroom.troubleList}
+                      troubleList={computerroom.troubleList || copyData.troubleList || []}
                       type={reporttype}
                       mainId={copyData.troubleList ? true : mainId}
                       startTime={startTime}

@@ -136,6 +136,10 @@ export default {
 
     //  粘贴
     *pasteReport({payload:{editStatus,id}},{call,put}) {
+      yield put({
+        type:'clearAutoget',
+        payload:[]
+      })
       return yield call(openReport,editStatus,id);
     },
 
@@ -147,6 +151,7 @@ export default {
       })
         if(payload.status) {
           const response = yield call(addReport);
+          const tabid = sessionStorage.getItem('tabid')
           if(response.code === 200) {
             const mainId = response.id;
             const saveData = payload;
@@ -157,30 +162,15 @@ export default {
             if(saveresponse.code === 200) {
               if(type === 'week') {
                 route.push({
-                  pathname: `/ITSM/operationreport/weeklyreport/computerroomreport`,
-                  query: { 
-                    tabid: sessionStorage.getItem('tabid'),
-                     closecurrent: true,
-                    //  addtab:true
-                     }
-                })
-                route.push({
                   pathname: `/ITSM/operationreport/weeklyreport/computerroomreportdetail`,
                   query: {
                     reporttype: type,
                     mainId:mainId.toString(),
                     orderNo:mainId.toString(),
                   },
+                  state: {closetabid: tabid},
                 })
               } else {
-                route.push({
-                  pathname: `/ITSM/operationreport/monthlyreport/monthcomputerroomreport`,
-                  query: { 
-                    tabid: sessionStorage.getItem('tabid'),
-                     closecurrent: true,
-                    //  addtab:true
-                     }
-                })
                 route.push({
                   pathname: `/ITSM/operationreport/monthlyreport/monthcomputerroomreportdetail`,
                   query: {
@@ -188,6 +178,7 @@ export default {
                     mainId:mainId.toString(),
                     orderNo:mainId.toString(),
                   },
+                  state: {closetabid: tabid},
                 })
               }
               
@@ -213,15 +204,9 @@ export default {
           delete saveData.status;
           const type = payload.reporttype;
           const saveresponse = yield call(saveDataBase,saveData);
+          const tabid = sessionStorage.getItem('tabid')
           if(saveresponse.code === 200) {
             if(type === 'week') {
-              route.push({
-                pathname: `/ITSM/operationreport/weeklyreport/databasereport`,
-                query: { 
-                  tabid: sessionStorage.getItem('tabid'),
-                   closecurrent: true
-                   }
-              })
               route.push({
                 pathname: `/ITSM/operationreport/weeklyreport/databasereportdetail`,
                 query: {
@@ -229,17 +214,10 @@ export default {
                   mainId:mainId.toString(),
                   orderNo:mainId.toString(),
                 },
-                state: {}
+                state: {closetabid: tabid},
               })
               message.success(response.msg)
             } else {
-              route.push({
-                pathname: `/ITSM/operationreport/monthlyreport/monthdatabasereport`,
-                query: { 
-                  tabid: sessionStorage.getItem('tabid'),
-                   closecurrent: true
-                   }
-              })
               route.push({
                 pathname: `/ITSM/operationreport/monthlyreport/monthdatabasereportdetail`,
                 query: {
@@ -247,7 +225,7 @@ export default {
                   mainId:mainId.toString(),
                   orderNo:mainId.toString(),
                 },
-                state: {}
+                state: {closetabid: tabid},
               })
               message.success(response.msg)
             }
@@ -266,6 +244,7 @@ export default {
       })
       if(payload.status) {
         const response = yield call(addReport);
+        const tabid = sessionStorage.getItem('tabid')
         if(response.code === 200) {
           const mainId = response.id;
           const saveData = payload;
@@ -276,29 +255,15 @@ export default {
           if(saveresponse.code === 200) {
             if(type === 'week') {
               route.push({
-                pathname: `/ITSM/operationreport/weeklyreport/otherreport`,
-                query: { 
-                  tabid: sessionStorage.getItem('tabid'),
-                   closecurrent: true
-                   }
-              })
-              route.push({
                 pathname: `/ITSM/operationreport/weeklyreport/otherreportdetail`,
                 query: {
                   reporttype: type,
                   mainId:mainId.toString(),
                   orderNo:mainId.toString(),
                 },
-                state: {}
+                state: {closetabid: tabid},
               })
             } else {
-              route.push({
-                pathname: `/ITSM/operationreport/monthlyreport/monthotherreport`,
-                query: { 
-                  tabid: sessionStorage.getItem('tabid'),
-                   closecurrent: true
-                   }
-              })
               route.push({
                 pathname: `/ITSM/operationreport/monthlyreport/monthotherreportdetail`,
                 query: {
@@ -306,7 +271,7 @@ export default {
                   mainId:mainId.toString(),
                   orderNo:mainId.toString(),
                 },
-                state: {}
+                state: {closetabid: tabid},
               })
             }
            
@@ -635,6 +600,21 @@ export default {
     return {
       ...state,
       openReportlist:[]
+    }
+  },
+
+  clearAutoget(state,action) {
+    return {
+      ...state,
+      lastweekHomeworklist:'',
+      nextweekHomeworklist:'',
+      faultQueryList:'',
+      nofaultQueryList:'',
+      maintenanceArr:'',
+      maintenanceService:'',
+      soluteArr:'',
+      contentRowlist:'',
+      patrolAndExamineArr:'',
     }
   }
   }

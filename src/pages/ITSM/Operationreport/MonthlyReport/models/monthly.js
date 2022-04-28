@@ -3,15 +3,16 @@ import {
   getTroubleByComputerRoom,
   saveComputerRoomByMonth,
   addReport,
-  openReport
+  openReport,
+  reportExport
 } from '../services/monthlyapi'
 
 export default {
   namespace:'monthly',
 
   state: {
-    computerroom:[],
-    openReportlist:[],
+    computerroom:{},
+    openReportlist:{},
   },
 
   effects: {
@@ -42,6 +43,7 @@ export default {
         type:'clearcache',
         payload:[]
       })
+      if(payload.editStatus === 'add') {
         const response = yield call(addReport);
         if(response.code === 200) {
           const mainId = response.id;
@@ -68,16 +70,11 @@ export default {
               })
           }
         }
+      } else {
+        return yield call(saveComputerRoomByMonth,payload)
+      }
+      return []
     },
-
-    *saveComputerRoomByMonthdetail({ payload }, { call,put}) {
-      yield put ({
-        type:'clearcache',
-        payload:[]
-      })
-      return yield call(saveComputerRoomByMonth,payload)
-    },
-
 
      //  打开待办
      *openReport({payload:{editStatus,id}},{call,put}) {
@@ -88,6 +85,25 @@ export default {
       })
     },
 
+    *pasteReport({payload:{editStatus,id}},{call,put}){
+      yield put({
+        type:'clearcomputerroom',
+        payload:[]
+      })
+      return yield call(openReport,editStatus,id);
+    },
+
+    *setclearcomputerroom({payload},{call,put}) {
+      yield put({
+        type:'clearcomputerroom',
+        payload:[]
+      })
+    },
+
+      //  下载word
+  *exportWord({payload:{mainId}},{call,put}) {
+    return yield call(reportExport,mainId)
+  },
 
   },
 
@@ -105,5 +121,12 @@ export default {
         openReportlist:action.payload
       }
     },
+
+    clearcomputerroom({state,action}) {
+      return {
+        ...state,
+        computerroom:{}
+      }
+    }
   }
 }

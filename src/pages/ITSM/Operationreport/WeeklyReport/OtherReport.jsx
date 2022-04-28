@@ -57,6 +57,7 @@ function OtherReport(props) {
   const [timeshow, setTimeshow] = useState(true);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
+  const [paste, setPaste] = useState(false);
 
   // 新增一条记录
 
@@ -149,6 +150,8 @@ function OtherReport(props) {
       }
     }).then(res => {
       if (res.code === 200) {
+        setPaste(true);
+        setStartTime('')
         setCopyData(res);
         setList(res.addData);
         message.success('粘贴成功')
@@ -158,7 +161,7 @@ function OtherReport(props) {
     })
   }
 
-  const dateFormat = 'YYYY/MM/DD';
+  const dateFormat = 'YYYY-MM-DD';
 
   // 上传删除附件触发保存
   useEffect(() => {
@@ -178,6 +181,13 @@ function OtherReport(props) {
       setTimeshow(true);
     }
   }, [timeshow])
+
+  useEffect(() => {
+    if (copyData && copyData.main && paste) {
+      setStartTime(copyData.main.time1)
+      setEndTime(copyData.main.time2)
+    }
+  }, [copyData,paste])
 
   const handleBack = () => {
     router.push({
@@ -330,7 +340,7 @@ function OtherReport(props) {
               </Col>
 
               {
-                reporttype === 'week' && startTime && timeshow && (
+                reporttype === 'week' && loading === false && startTime && timeshow && (
                   <Col span={16}>
                     <div>
                       <span style={{ marginLeft: 10 }}>填报时间 :</span>

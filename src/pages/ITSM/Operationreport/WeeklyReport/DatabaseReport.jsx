@@ -46,7 +46,6 @@ const formincontentLayout = {
   },
 };
 
-let initial = false;
 const { MonthPicker } = DatePicker;
 const { TextArea } = Input;
 function DatabaseReport(props) {
@@ -89,6 +88,8 @@ function DatabaseReport(props) {
   const [timeshow, setTimeshow] = useState(true);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
+  const [initial,setInitial] = useState(false);
+  const [paste, setPaste] = useState(false);
 
   //  保存表单
   const databaseReportform = () => {
@@ -150,15 +151,15 @@ function DatabaseReport(props) {
   }, [files]);
 
   useEffect(() => {
-    setOperationList(copyData.operationList ? copyData.operationList : lastweekHomeworklist);
+    setOperationList(lastweekHomeworklist || copyData.operationList || []);
     setDiscList(copyData.discList ? copyData.discList : discList);
     setTablespaceList(copyData.tablespaceList ? copyData.tablespaceList : tablespaceList);
     setDefectList(copyData.defectList ? copyData.defectList : defectList);
     setOperationList(copyData.operationList ? copyData.operationList : operationList);
-    setNextOperationList(copyData.nextOperationList ? copyData.nextOperationList : tableUpList);
+    setNextOperationList(nextweekHomeworklist || copyData.nextOperationList);
     setTable5GList(copyData.table5GList ? copyData.table5GList : table5GList);
+    setTableUpList(copyData.tableUpListb ||tableUpList)
   }, [loading])
-
 
   //   七、上周作业完成情况--表格
   const lastweekHomework = () => {
@@ -244,14 +245,13 @@ function DatabaseReport(props) {
 
   // 上传删除附件触发保存
   useEffect(() => {
-    initial = false;
     defaultTime();
   }, []);
 
   const getDatabasereportdata = () => {
     lastweekHomework();
     nextweekHomework();
-    initial = true;
+    setInitial(true)
   }
 
   //  粘贴
@@ -275,6 +275,8 @@ function DatabaseReport(props) {
     }).then(res => {
       if (res.code === 200) {
         setCopyData(res);
+        setPaste(true);
+        setStartTime('')
         setList(res.addData);
         setOperationList(res.operationList);
         setDiscList(res.discList);
@@ -284,7 +286,7 @@ function DatabaseReport(props) {
         setNextOperationList(res.nextOperationList);
         setTable5GList(res.table5GList);
         message.success('粘贴成功')
-        initial = true;
+        setInitial(true)
       } else {
         message.info('您无法复制该条记录，请返回列表重新选择')
       }
@@ -365,6 +367,13 @@ function DatabaseReport(props) {
       setTimeshow(true);
     }
   }, [timeshow])
+
+  useEffect(() => {
+    if (initial && paste) {
+      setStartTime(copyData.main.time1)
+      setEndTime(copyData.main.time2)
+    }
+  }, [initial])
 
   const newMember = () => {
     const nowNumber = list.map(item => ({ ...item }));
@@ -517,7 +526,7 @@ function DatabaseReport(props) {
 
             {/* 一、本周运维情况综述 */}
             {
-              initial && loading === false && lastweekHomeworklist && startTime && (
+              initial && loading === false && startTime && (
                 <>
                   <Col span={24}>
                     <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>{reporttype === 'week' ? '一、本周运维情况综述' : '一、本月运维情况综述'}</p>
@@ -587,7 +596,7 @@ function DatabaseReport(props) {
                   <Col span={24}>
                     <Top10Surface
                       forminladeLayout={forminladeLayout}
-                      tablespaceArr={copyData.tablespaceList ? copyData.tablespaceList : []}
+                      tablespaceArr={ copyData.tablespaceList || []}
                       tablespaceList={contentrowdata => {
                         setTablespaceList(contentrowdata)
                       }}
@@ -599,7 +608,7 @@ function DatabaseReport(props) {
                   <Col span={24}>
                     <Top10Increase
                       forminladeLayout={forminladeLayout}
-                      tableUpArr={copyData.tableUpList ? copyData.tableUpList : []}
+                      tableUpArr={ copyData.tableUpList || []}
                       tableUpList={contentrowdata => {
                         setTableUpList(contentrowdata)
                       }}
@@ -611,7 +620,7 @@ function DatabaseReport(props) {
                   <Col span={24}>
                     <Morethan5g
                       forminladeLayout={forminladeLayout}
-                      table5Garr={copyData.table5GList ? copyData.table5GList : []}
+                      table5Garr={copyData.table5GList || []}
                       table5GList={contentrowdata => {
                         setTable5GList(contentrowdata)
                       }}
@@ -650,7 +659,7 @@ function DatabaseReport(props) {
                   <Col span={24}>
                     <QuestionsComments
                       forminladeLayout={forminladeLayout}
-                      defectArr={copyData.defectList ? copyData.defectList : []}
+                      defectArr={copyData.defectList || []}
                       defectList={contentrowdata => {
                         setDefectList(contentrowdata)
                       }}
@@ -692,7 +701,7 @@ function DatabaseReport(props) {
                   <Col span={24}>
                     <LastweekHomework
                       forminladeLayout={forminladeLayout}
-                      operationArr={copyData.operationList !== undefined ? copyData.operationList : lastweekHomeworklist}
+                      operationArr={lastweekHomeworklist || copyData.operationList}
                       type={reporttype}
                       operationList={contentrowdata => {
                         setOperationList(contentrowdata)
@@ -738,7 +747,7 @@ function DatabaseReport(props) {
                       operationList={contentrowdata => {
                         setNextOperationList(contentrowdata)
                       }}
-                      operationArr={copyData.nextOperationList !== undefined ? copyData.nextOperationList : nextweekHomeworklist}
+                      operationArr={nextweekHomeworklist || copyData.nextOperationList}
                       mainId={mainId}
                       databaseParams='true'
                     />
@@ -828,11 +837,6 @@ function DatabaseReport(props) {
 
 export default Form.create({})(
   connect(({ softreport, viewcache, loading }) => ({
-    maintenanceArr: softreport.maintenanceArr,
-    ordertopnArr: softreport.ordertopnArr,
-    maintenanceService: softreport.maintenanceService,
-    soluteArr: softreport.soluteArr,
-    thisWeekitsmlist: softreport.thisWeekitsmlist,
     lastweekHomeworklist: softreport.lastweekHomeworklist,
     nextweekHomeworklist: softreport.nextweekHomeworklist,
     loading: loading.models.softreport,

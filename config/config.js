@@ -980,7 +980,7 @@ export default {
                               path: '/ITSM/operationreport/monthlyreport/monthcomputerroomreport',
                               name: '机房运维月报',
                               icon: 'fork',
-                              component: './ITSM/Operationreport/WeeklyReport/ComputerroomReport',
+                              component: './ITSM/Operationreport/MonthlyReport/ComputerroommonthlyReport',
                             },
                             {
                               path:
@@ -988,7 +988,7 @@ export default {
                               name: '机房运维月报详情页',
                               icon: 'fork',
                               component:
-                                './ITSM/Operationreport/WeeklyReport/ComputerroomReportdetail',
+                                './ITSM/Operationreport/MonthlyReport/ComputerroommonthlyReportdetail',
                             },
                             {
                               path: '/ITSM/operationreport/monthlyreport/monthdatabasereport',

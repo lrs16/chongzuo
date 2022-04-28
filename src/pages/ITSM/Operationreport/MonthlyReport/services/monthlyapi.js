@@ -26,3 +26,14 @@ export async function saveComputerRoomByMonth(params) {
   return request(`/report/openReport?editStatus=${editStatus}&id=${id}`)
 }
 
+// 导出word
+export async function reportExport(mainId) {
+  return request(`/report/export`,{
+    method:'POST',
+    data:{mainId},
+    requestType:'form',
+    responseType:'blob'
+  })
+}
+
+
