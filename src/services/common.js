@@ -91,7 +91,7 @@ export async function getOperationList(params) {
 
 // 关联工单 服务绩效（用的查询接口）
 export async function assessSearch(params) {
-  const val = { assessNo: params.assessNo, currentTaskName: params.assessNo }
+  const val = { assessNo: params.assessNo, currentTaskName: params.currentTaskName }
   return request(`/quality/assess/search/${params.pageIndex + 1}/${params.pageSize}`, {
     method: 'POST',
     body: JSON.stringify(val)
