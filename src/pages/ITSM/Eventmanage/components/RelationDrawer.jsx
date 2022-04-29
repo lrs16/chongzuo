@@ -204,7 +204,7 @@ function RelationDrawer(props) {
     },
     {
       title: '状态',
-      dataIndex: 'status',
+      dataIndex: title === '服务绩效' ? 'assessStatus' : 'status',
       key: 'status',
     },
   ];
