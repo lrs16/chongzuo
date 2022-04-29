@@ -184,7 +184,7 @@ function RelationDrawer(props) {
         getKeyVal('operation', 'status');
         break;
       case 'quality':
-        getKeyVal('servicequality', 'appraisalstatus');
+        getKeyVal('servicequality', 'processing');
         break;
       default:
         break;
