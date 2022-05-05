@@ -25,6 +25,7 @@ import { operationPerson } from '@/services/common';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
 import { providerList, scoreListpage, contractProvider, clauseListpage } from '../services/quality';
+import { ThShort } from '@/utils/utils';
 
 import styles from './index.less';
 
@@ -187,6 +188,7 @@ function TobedealtList(props) {
       dataIndex: 'assessNo',
       key: 'assessNo',
       width: 200,
+      sorter: (a, b) => a.assessNo.localeCompare(b.assessNo),
       render: (text, record) => {
         return <a onClick={() => todetail(record)}>{text}</a>;
       },
@@ -260,6 +262,7 @@ function TobedealtList(props) {
       dataIndex: 'assessTime',
       key: 'assessTime',
       width: 200,
+      sorter: (a, b) => ThShort(a, b, 'assessTime'),
     },
     {
       title: '考核得分',
@@ -310,6 +313,7 @@ function TobedealtList(props) {
       dataIndex: 'applyTime',
       key: 'applyTime',
       width: 200,
+      sorter: (a, b) => ThShort(a, b, 'applyTime'),
     },
     {
       title: '业务负责人审核结果',
@@ -348,6 +352,7 @@ function TobedealtList(props) {
       dataIndex: 'directorVerifyTime',
       key: 'directorVerifyTime',
       width: 200,
+      sorter: (a, b) => ThShort(a, b, 'directorVerifyTime'),
     },
     {
       title: '是否申诉',
@@ -380,6 +385,7 @@ function TobedealtList(props) {
       dataIndex: 'providerConfirmTime',
       key: 'providerConfirmTime',
       width: 200,
+      sorter: (a, b) => ThShort(a, b, 'providerConfirmTime'),
     },
     {
       title: '自动化科复核结果',
@@ -412,6 +418,7 @@ function TobedealtList(props) {
       dataIndex: 'directorReviewTime',
       key: 'directorReviewTime',
       width: 200,
+      sorter: (a, b) => ThShort(a, b, 'directorReviewTime'),
     },
     {
       title: '服务绩效考核确认结果',
@@ -444,6 +451,7 @@ function TobedealtList(props) {
       dataIndex: 'finallyConfirmTime',
       key: 'finallyConfirmTime',
       width: 200,
+      sorter: (a, b) => ThShort(a, b, 'finallyConfirmTime'),
     },
     {
       title: '考核来源',
@@ -1208,48 +1216,49 @@ function TobedealtList(props) {
   const creataColumns = () => {
     // columns
     initialColumns.length = 0;
-    formThead.map((val, key) => {
-      const obj = {
-        key: val.key,
-        title: val.title,
-        dataIndex: val.key,
-        width: val.width,
+
+    for(let i=0;i<formThead.length;i+=1) {
+      const objs = {
+        key: formThead[i].key,
+        title: formThead[i].title,
+        dataIndex: formThead[i].key,
+        width: formThead[i].width,
+        sorter : (a,b) => ThShort(a, b,formThead[i].key)
       };
-      if (key === 0) {
-        obj.render = (text, records) => {
+      if (i === 0) {
+        objs.render = (text, records) => {
           return <a onClick={() => todetail(records)}>{text}</a>;
         };
-        obj.fixed = 'left';
-        obj.width = 200;
+        objs.fixed = 'left';
+        objs.width = 200;
       }
       if (
-        val.title === '考核内容说明' ||
-        val.title === '申诉内容' ||
-        val.title === '自动化科复核说明' ||
-        val.title === '服务绩效考核确认说明' ||
-        val.title === '业务负责人审核说明' ||
-        val.title === '关联合同名称'
+        formThead[i].title === '考核内容说明' ||
+        formThead[i].title === '申诉内容' ||
+        formThead[i].title === '自动化科复核说明' ||
+        formThead[i].title === '服务绩效考核确认说明' ||
+        formThead[i].title === '业务负责人审核说明' ||
+        formThead[i].title === '关联合同名称'
       ) {
-        obj.render = (text, records) => {
-          obj.ellipsis = true;
-          obj.width = 200;
+        objs.render = (text, records) => {
+          objs.ellipsis = true;
+          objs.width = 200;
           return (
             <Tooltip placement="topLeft" title={text}>
-              {key === 0 ? <a onClick={() => todetail(records)}>{text}</a> : <span>{text}</span>}
+              {i === 0 ? <a onClick={() => todetail(records)}>{text}</a> : <span>{text}</span>}
             </Tooltip>
           );
         };
       }
 
-      if (val.title === '序号') {
-        obj.render = (text, records, index) => {
+      if (formThead[i].title === '序号') {
+        objs.render = (text, records, index) => {
           return <a onClick={() => todetail(records)}>{(paginations.current - 1) * paginations.pageSize + (index + 1)}</a>;
         }
       }
-      initialColumns.push(obj);
+      initialColumns.push(objs);
       setColumns(initialColumns);
-      return null;
-    });
+    }
   };
 
   const onCheckAllChange = e => {

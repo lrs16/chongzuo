@@ -21,6 +21,7 @@ import {
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
+import { ThShort } from '@/utils/utils';
 
 const formItemLayout = {
   labelCol: {
@@ -334,8 +335,8 @@ function Besolved(props) {
         },
       }
     });
-
   };
+
 
   const controlTable = [
     {
@@ -344,6 +345,7 @@ function Besolved(props) {
       key: 'no',
       width: 150,
       align: 'center',
+      sorter: (a, b) => a.no.localeCompare(b.no),
       render: (text, record) => {
         return <a onClick={() => gotoDetail(text, record)}>{text}</a>;
       },
@@ -436,6 +438,7 @@ function Besolved(props) {
       key: 'addTime',
       align: 'center',
       width: 200,
+      sorter: (a, b) => a.addTime.localeCompare(b.addTime),
     },
     {
       title: '系统运维商确认结果',
@@ -450,6 +453,7 @@ function Besolved(props) {
       key: 'handleTime',
       width: 200,
       align: 'center',
+      sorter: (a, b) => ThShort(a, b, 'handleTime'),
     },
     {
       title: '系统开发商处理人',
@@ -464,6 +468,7 @@ function Besolved(props) {
       key: 'planEndTime',
       width: 200,
       align: 'center',
+      sorter: (a, b) => ThShort(a, b, 'planEndTime'),
     },
     {
       title: '处理解决方案',
@@ -510,6 +515,7 @@ function Besolved(props) {
       key: 'no',
       width: 150,
       align: 'center',
+      sorter: (a, b) => a.no.localeCompare(b.no),
       render: (text, record) => {
         return <a onClick={() => gotoDetail(text, record)}>{text}</a>;
       },
@@ -601,6 +607,7 @@ function Besolved(props) {
       key: 'addTime',
       width: 200,
       align: 'center',
+      sorter: (a, b) => a.addTime.localeCompare(b.addTime),
     },
     {
       title: '系统运维商确认结果',
@@ -615,6 +622,7 @@ function Besolved(props) {
       key: 'handleTime',
       width: 200,
       align: 'center',
+      sorter: (a, b) => ThShort(a, b,'handleTime'),
     },
     {
       title: '系统开发商处理人',
@@ -629,6 +637,7 @@ function Besolved(props) {
       key: 'planEndTime',
       width: 200,
       align: 'center',
+      sorter: (a, b) => ThShort(a, b, 'planEndTime'),
     },
     {
       title: '处理解决方案',
@@ -742,6 +751,7 @@ function Besolved(props) {
       key: 'registerOccurTime',
       width: 200,
       align: 'center',
+      sorter: (a, b) => ThShort(a, b, 'registerOccurTime'),
     },
     {
       title: '期望完成时间',
@@ -840,6 +850,14 @@ function Besolved(props) {
       key: 'checkOneOpinion',
       width: 200,
       align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '系统运维商审核人单位',
@@ -903,6 +921,14 @@ function Besolved(props) {
       key: 'checkTwoOpinion',
       width: 250,
       align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '自动化科业务负责人审核人单位',
@@ -1001,6 +1027,17 @@ function Besolved(props) {
       key: 'confirmOneContent',
       width: 200,
       align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '系统运维商确认人单位',
@@ -1064,6 +1101,17 @@ function Besolved(props) {
       key: 'confirmTwoContent',
       width: 250,
       align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '自动化科业务负责人确认人单位',
@@ -1120,6 +1168,17 @@ function Besolved(props) {
       key: 'confirmThreeContent',
       width: 250,
       align: 'center',
+      ellipsis: true,
+      render: text => {
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={text}
+          >
+            <span>{text}</span>
+          </Tooltip>
+        );
+      },
     },
     {
       title: '问题登记人员确认人单位',
@@ -1167,13 +1226,6 @@ function Besolved(props) {
       title: '待办用户ID',
       dataIndex: 'taskUserId',
       key: 'taskUserId',
-      width: 150,
-      align: 'center',
-    },
-    {
-      title: '当前流程环节',
-      dataIndex: 'flowNodeName',
-      key: 'flowNodeName',
       width: 150,
       align: 'center',
     },
@@ -1289,14 +1341,16 @@ function Besolved(props) {
   const creataColumns = () => {
     // columns
     initialColumns.length = 0;
-    formThead.map((val, key) => {
+
+    for(let i = 0;i<formThead.length;i+=1) {
       const obj = {
-        key: val.key,
-        title: val.title,
-        dataIndex: val.key,
-        width: val.width,
+        key: formThead[i].key,
+        title: formThead[i].title,
+        dataIndex: formThead[i].key,
+        width: formThead[i].width,
+        sorter: (a,b) => ThShort(a,b,formThead[i].key)
       };
-      if (key === 0) {
+      if (i === 0) {
         obj.render = (text, records) => {
           return <a onClick={() => gotoDetail(text, records)}>{text}</a>;
         };
@@ -1304,18 +1358,23 @@ function Besolved(props) {
         obj.width = 200;
       }
       if (
-        val.title === '问题分类' ||
-        val.title === '问题描述' ||
-        val.title === '开发负责人' ||
-        val.title === '所属项目' ||
-        val.title === '问题名称' ||
-        val.title === '处理解决方案'
+        formThead[i].title === '问题分类' ||
+        formThead[i].title === '问题描述' ||
+        formThead[i].title === '开发负责人' ||
+        formThead[i].title === '所属项目' ||
+        formThead[i].title === '问题名称' ||
+        formThead[i].title === '处理解决方案' ||
+        formThead[i].title === '系统运维商审核意见' ||
+        formThead[i].title === '自动化科业务负责人审核意见' ||
+        formThead[i].title === '系统运维商确认说明' ||
+        formThead[i].title === '自动化科业务负责人确认说明' ||
+        formThead[i].title === '问题登记人员确认说明'
       ) {
         obj.ellipsis = true;
         obj.render = (text, records) => {
           return (
             <Tooltip placement="topLeft" title={text}>
-              {key === 0 ? (
+              {i === 0 ? (
                 <a onClick={() => gotoDetail(text, records)}>{text}</a>
               ) : (
                 <span>{text}</span>
@@ -1325,7 +1384,7 @@ function Besolved(props) {
         };
       }
 
-      if (val.title === '超时状态') {
+      if (formThead[i].title === '超时状态') {
         obj.render = (text) => {
           return (
             <>
@@ -1335,11 +1394,11 @@ function Besolved(props) {
           )
         }
       }
+
       initialColumns.push(obj);
       setColumns(initialColumns);
       setInitial(false)
-      return null;
-    });
+    }
   };
 
   const onCheckAllChange = e => {

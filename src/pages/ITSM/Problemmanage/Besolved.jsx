@@ -189,6 +189,7 @@ function Besolved(props) {
       dataIndex: 'no',
       key: 'no',
       width: 150,
+      sorter: (a, b) => a.no.localeCompare(b.no),
       render: (text, record) => {
         const handleClick = () => {
           dispatch({

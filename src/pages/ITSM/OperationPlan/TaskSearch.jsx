@@ -22,6 +22,7 @@ import moment from 'moment';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
+import { ThShort } from '@/utils/utils';
 
 const formItemLayout = {
   labelCol: {
@@ -133,6 +134,7 @@ function TaskSearch(props) {
       key: 'operationNo',
       width: 180,
       fixed: 'left',
+      sorter: (a, b) => a.operationNo.localeCompare(b.operationNo),
       render: (text, record) => {
         return <a onClick={() => gotoDetail(record)}>{text}</a>;
       },
@@ -142,6 +144,7 @@ function TaskSearch(props) {
       dataIndex: 'addTime',
       key: 'addTime',
       width: 200,
+      sorter: (a, b) => a.addTime.localeCompare(b.addTime),
     },
     {
       title: '作业系统名称',
@@ -267,12 +270,14 @@ function TaskSearch(props) {
       dataIndex: 'plannedStartTime',
       key: 'plannedStartTime',
       width: 200,
+      sorter: (a, b) => ThShort(a, b, 'plannedStartTime'),
     },
     {
       title: '计划结束时间',
       dataIndex: 'plannedEndTime',
       key: 'plannedEndTime',
       width: 200,
+      sorter: (a, b) => ThShort(a, b, 'plannedEndTime'),
     },
     {
       title: '作业状态',
@@ -303,12 +308,14 @@ function TaskSearch(props) {
       dataIndex: 'startTime',
       key: 'startTime',
       width: 200,
+      sorter: (a, b) => ThShort(a, b, 'startTime'),
     },
     {
       title: '实际结束时间',
       dataIndex: 'endTime',
       key: 'endTime',
       width: 200,
+      sorter: (a, b) => ThShort(a, b, 'endTime'),
     },
     {
       title: '作业执行情况说明',
@@ -329,6 +336,7 @@ function TaskSearch(props) {
       dataIndex: 'executeOperationTime',
       key: 'executeOperationTime',
       width: 200,
+      sorter: (a, b) => ThShort(a, b, 'executeOperationTime'),
     },
     {
       title: '填报人',
@@ -367,6 +375,7 @@ function TaskSearch(props) {
       dataIndex: 'checkTime',
       key: 'checkTime',
       width: 200,
+      sorter: (a, b) => ThShort(a, b, 'checkTime'),
     },
     {
       title: '审核说明',
@@ -515,7 +524,6 @@ function TaskSearch(props) {
       current: page,
     });
   };
-
 
   const getTypebyTitle = title => {
     if (selectdata.ischange) {
@@ -759,21 +767,22 @@ function TaskSearch(props) {
   const creataColumns = () => {
     // columns
     initialColumns.length = 0;
-    formThead.map((val, key) => {
-      const obj = {
-        key: val.key,
-        title: val.title,
-        dataIndex: val.key,
-        width: val.width,
-      };
-      if (key === 0) {
+    for(let i=0;i<formThead.length;i+=1) {
+      const obj = {};
+      obj.key = formThead[i].key;
+      obj.title = formThead[i].title;
+      obj.dataIndex = formThead[i].key;
+      obj.width = formThead[i].width;
+      obj.sorter =  (a,b) => ThShort(a,b,formThead[i].key);
+      if (i === 0) {
         obj.width = 180;
-        obj.render = (text, records) => {
-          return <a onClick={() => gotoDetail(records)}>{text}</a>;
+        obj.render = (text, record) => {
+          return <a onClick={() => gotoDetail(record)}>{text}</a>;
         };
         obj.fixed = 'left';
       }
-      if (val.title === '超时状态') {
+
+      if (formThead[i].title === '超时状态') {
         obj.render = text => {
           return (
             <span>
@@ -784,30 +793,30 @@ function TaskSearch(props) {
       }
 
       if (
-        val.title === '填报单位' ||
-        val.title === '超时信息' ||
-        val.title === '回退信息' ||
-        val.title === '审核说明' ||
-        val.title === '作业执行情况说明' ||
-        val.title === '作业内容' ||
-        val.title === '风险分析' ||
-        val.title === '风险应对措施' ||
-        val.title === '作业对象' || 
-        val.title === '作业系统名称'
+        formThead[i].title === '填报单位' ||
+        formThead[i].title === '超时信息' ||
+        formThead[i].title === '回退信息' ||
+        formThead[i].title === '审核说明' ||
+        formThead[i].title === '作业执行情况说明' ||
+        formThead[i].title === '作业内容' ||
+        formThead[i].title === '风险分析' ||
+        formThead[i].title === '风险应对措施' || 
+        formThead[i].title === '作业对象' || 
+        formThead[i].title === '作业系统名称'
       ) {
         obj.ellipsis = true;
         obj.render = (text, records) => {
           return (
             <Tooltip placement="topLeft" title={text}>
-              {key === 0 ? <a onClick={() => gotoDetail(records)}>{text}</a> : <span>{text}</span>}
+              {i === 0 ? <a onClick={() => gotoDetail(records)}>{text}</a> : <span>{text}</span>}
             </Tooltip>
           );
         };
       }
+
       initialColumns.push(obj);
       setColumns(initialColumns);
-      return null;
-    });
+      };
   };
 
   const onCheckAllChange = e => {

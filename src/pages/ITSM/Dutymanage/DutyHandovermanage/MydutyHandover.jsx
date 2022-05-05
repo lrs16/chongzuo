@@ -21,6 +21,7 @@ import {
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import SysDict from '@/components/SysDict';
+import { ThShort } from '@/utils/utils';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -371,7 +372,7 @@ function MydutyHandover(props) {
   };
 
   const handleSuccession = () => {
-    if(selectedKeys.length === 1 && logbookSearcharr.records[0].handoverStatus === '待接班') {
+    if (selectedKeys.length === 1 && logbookSearcharr.records[0].handoverStatus === '待接班') {
       todetail(logbookSearcharr.records[0], 'listButton')
     } else {
       message.info('请选择一条数据且交接班状态为：待接班')
@@ -425,6 +426,7 @@ function MydutyHandover(props) {
       dataIndex: 'logbookNo',
       key: 'logbookNo',
       width: 250,
+      sorter: (a, b) => a.logbookNo.localeCompare(b.logbookNo),
       render: (text, record) => {
         if (pagetitle === '我的值班交接') {
           return <a onClick={() => todetail(record, record.handoverStatus === '待接班')}>{text}</a>
@@ -465,6 +467,7 @@ function MydutyHandover(props) {
       dataIndex: 'handoverTime',
       key: 'handoverTime',
       width: 250,
+      sorter: (a, b) => ThShort(a, b, 'handoverTime'),
     },
     {
       title: '巡检及监控记录',
@@ -579,6 +582,7 @@ function MydutyHandover(props) {
       dataIndex: 'receiveTime',
       key: 'receiveTime',
       width: 250,
+      sorter: (a, b) => ThShort(a, b, 'receiveTime'),
     },
     {
       title: '交接班状态',
@@ -591,6 +595,7 @@ function MydutyHandover(props) {
       dataIndex: 'registerTime',
       key: 'registerTime',
       width: 250,
+      sorter: (a, b) => ThShort(a, b, 'registerTime'),
     },
     {
       title: '值班人',
@@ -646,38 +651,36 @@ function MydutyHandover(props) {
   const creataColumns = () => { // 创建列表
     // columns
     initialColumns.length = 0;
-    formThead.map((val, key) => {
+    for (let i = 0; i < formThead.length; i += 1) {
       const obj = {
-        key: val.key,
-        title: val.title,
-        dataIndex: val.key,
-        width: val.width
+        key: formThead[i].key,
+        title: formThead[i].title,
+        dataIndex: formThead[i].key,
+        width: formThead[i].width,
+        sorter: (a, b) => ThShort(a, b, formThead[i].key)
       };
-      // if (key === 0 || val.title === '值班交接编号') {
-      //   obj.render = (text, record) => {
-      //     return (
-      //       <a onClick={() => todetail(record, 'search')}>{text}</a>
-      //     )
-      //   }
-      //   obj.fixed = 'left';
-      //   obj.width = 350;
-      // }
-
+      if (i === 0) {
+        obj.render = (text, records) => {
+          return <a onClick={() => todetail(records, pagetitle === '我的值班交接'?true:'search')}>{text}</a>
+        };
+        obj.fixed = 'left';
+        obj.width = 200;
+      }
       if (
-        val.title === '巡检及监控记录' ||
-        val.title === '异常情况记录' ||
-        val.title === '重大运维事件' ||
-        val.title === '其他情况记录' ||
-        val.title === '需注意事项' ||
-        val.title === '交接物品' || 
-        val.title === '交接班说明'
+        formThead[i].title === '巡检及监控记录' ||
+        formThead[i].title === '异常情况记录' ||
+        formThead[i].title === '重大运维事件' ||
+        formThead[i].title === '其他情况记录' ||
+        formThead[i].title === '需注意事项' ||
+        formThead[i].title === '交接物品' ||
+        formThead[i].title === '交接班说明'
       ) {
         obj.ellipsis = true;
         obj.render = (text, records) => {
           return (
             <Tooltip placement="topLeft" title={text}>
-              {key === 0 ? (
-                <a onClick={() => todetail(records, 'search')}>{text}</a>
+              {i === 0 ? (
+                <a onClick={() => todetail(records, pagetitle === '值班交接查询' ? 'search' : '')}>{text}</a>
               ) : (
                 <span>{text}</span>
               )}
@@ -686,36 +689,24 @@ function MydutyHandover(props) {
         };
       }
 
-      // if (key === 0) {
-      //   obj.render = (text, records) => {
-      //     return (
-      //       <a onClick={() => todetail(records, 'search')}>{text}</a>
-      //     )
-      //   }
-      //   obj.fixed = 'left';
-      //   obj.width = 350;
-      // }
-
-      if (val.title === '值班时间') {
+      if (formThead[i].title === '值班时间') {
         obj.render = (text, records) => {
           obj.width = 350;
           return (
             <>
-              {key === 0 ? (
-                <a onClick={() => todetail(records, 'search')}>{text}</a>
+              {i === 0 ? (
+                <a onClick={() => todetail(records, pagetitle === '值班交接查询' ? 'search' : '')}>{text}</a>
               ) : (
                 <span>{records.dutyBeginTime}</span> - <span>{records.dutyEndTime}</span>
               )}
-             
+
             </>
           )
         }
       }
       initialColumns.push(obj);
       setColumns(initialColumns);
-      return null;
     }
-    )
   };
 
   const onCheckAllChange = e => {
