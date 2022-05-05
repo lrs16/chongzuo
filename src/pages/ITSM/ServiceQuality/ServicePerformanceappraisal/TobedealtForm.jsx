@@ -680,8 +680,6 @@ function TobedealtForm(props) {
     };
   }, [loading, taskData]);
 
-  console.log(hisTaskArr,'hisTaskArr');
-
   return (
     <PageHeaderWrapper
       title={taskName}
@@ -827,22 +825,22 @@ function TobedealtForm(props) {
               {hisTaskArr &&
                 hisTaskArr.map(
                   ({ key, name, taskStatus, totalTime, assignee, startTime, endTime }, index) => [
-                      <Step
-                        key={key}
-                        title={`${name}${'\xa0'}${'\xa0'}(${taskStatus})${'\xa0'}${'\xa0'}${totalTime ||
-                          ''}`}
-                        description={
-                          <div className={styles.stepDescription}>
-                            处理人：{assignee}
-                            <div>开始时间：{moment(startTime).format('YYYY-MM-DD HH:mm')}</div>
-                            <div>
-                              结束时间：
-                              {endTime ? moment(endTime).format('YYYY-MM-DD HH:mm') : ''}
-                            </div>
+                    <Step
+                      key={key}
+                      title={`${name}${'\xa0'}${'\xa0'}(${taskStatus})${'\xa0'}${'\xa0'}${totalTime ||
+                        ''}`}
+                      description={
+                        <div className={styles.stepDescription}>
+                          处理人：{assignee}
+                          <div>开始时间：{moment(startTime).format('YYYY-MM-DD HH:mm')}</div>
+                          <div>
+                            结束时间：
+                            {endTime ? moment(endTime).format('YYYY-MM-DD HH:mm') : ''}
                           </div>
-                        }
-                        icon={((index === hisTaskArr.length - 1 && taskStatus !== '已完成' &&  taskStatus !== '已审核') || taskStatus === '待审核') ? <Icon type="loading" spin /> : ''}
-                      />
+                        </div>
+                      }
+                      icon={((index === hisTaskArr.length - 1 && taskStatus !== '已完成' && taskStatus !== '已审核') || taskStatus === '待审核') ? <Icon type="loading" spin /> : ''}
+                    />
                   ],
                 )}
             </Steps>
@@ -1006,7 +1004,11 @@ function TobedealtForm(props) {
       {loading === false && hisTasks && hisTasks.length > 0 && tabActiveKey === 'workorder' && (
         <div className='noexplain'>
           <div className={styles.collapse}>
-            <Collapse expandIconPosition="right" bordered={false} defaultActiveKey={getArrayindex(hisTasks)}>
+            <Collapse
+              expandIconPosition="right"
+              bordered={false}
+              defaultActiveKey={getArrayindex(hisTasks)}
+            >
               {hisTasks.map((obj, index) => {
                 const Paneldesmap = new Map([
                   [

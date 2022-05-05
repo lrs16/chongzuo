@@ -115,13 +115,13 @@ const BusinessAudit = React.forwardRef((props, ref) => {
         </div>
 
 
-        {!repeatAudit && (
+        {!repeatAudit && !type && (
           <Col span={24}>
             <Form.Item label="考核状态" {...forminladeLayout}>
               {getFieldDecorator('verifyStatus', {
                 initialValue: businessAudit.verifyStatus,
               })(
-                <Tag color="blue">{businessAudit.verifyStatus || businessAudit.reviewStatus || '待审核'}</Tag>,
+                <Tag color="blue">{businessAudit.verifyStatus || businessAudit.reviewStatus || businessAudit.taskStatus || '待审核'}</Tag>,
               )}
             </Form.Item>
           </Col>

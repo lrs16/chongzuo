@@ -138,6 +138,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
             })(<DatePicker
               showTime
               format="YYYY-MM-DD HH:mm:ss"
+              allowClear={false}
             />)}
           </Form.Item>
         </Col>

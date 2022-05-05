@@ -210,7 +210,11 @@ const Registrat = React.forwardRef((props, ref) => {
                     },
                   ],
                   initialValue: register ? moment(register.registerTime) : moment(Date.now()),
-                })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
+                })(<DatePicker
+                  showTime
+                  format="YYYY-MM-DD HH:mm:ss"
+                  allowClear={false}
+                />)}
               </Form.Item>
             </Col>
 
@@ -224,7 +228,11 @@ const Registrat = React.forwardRef((props, ref) => {
                     },
                   ],
                   initialValue: occurtime,
-                })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
+                })(<DatePicker
+                  showTime
+                  format="YYYY-MM-DD HH:mm:ss"
+                  allowClear={false}
+                />)}
               </Form.Item>
             </Col>
 
@@ -346,7 +354,7 @@ const Registrat = React.forwardRef((props, ref) => {
                     <Select
                       placeholder="请选择"
                       mode="multiple"
-                      // getPopupContainer={e => e.parentNode}
+                    // getPopupContainer={e => e.parentNode}
                     >
                       {persondata.map(obj => [
                         <Option key={obj.key} value={obj.val}>
@@ -372,7 +380,7 @@ const Registrat = React.forwardRef((props, ref) => {
                 })(
                   <Select
                     placeholder='请选择'
-                    // getPopupContainer={e => e.parentNode}
+                  // getPopupContainer={e => e.parentNode}
                   >
                     {(scope || []).map(obj => [
                       <Option key={obj.key} value={obj.dict_code}>
@@ -425,7 +433,11 @@ const Registrat = React.forwardRef((props, ref) => {
                     },
                   ],
                   initialValue: (register && register.registerExpectTime) ? moment(register.registerExpectTime) : moment(new Date()),
-                })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
+                })(<DatePicker
+                 showTime
+                  format="YYYY-MM-DD HH:mm:ss"
+                  allowClear={false}
+                   />)}
               </Form.Item>
             </Col>
 

@@ -116,25 +116,25 @@ function RelationDrawer(props) {
       case 'trouble':
         dispatch({
           type: 'relationorder/fetchtrouble',
-          payload: { no, status, pageIndex, pageSize },
+          payload: { no, status, pageIndex:pageIndex-1, pageSize },
         })
         break;
       case 'problem':
         dispatch({
           type: 'relationorder/fetchproblem',
-          payload: { no, status, pageIndex, pageSize },
+          payload: { no, status, pageIndex:pageIndex-1, pageSize },
         })
         break;
       case 'release':
         dispatch({
           type: 'relationorder/fetchrelease',
-          payload: { no, status:status === undefined ? '' : status, pageIndex, pageSize },
+          payload: { no, status:status === undefined ? '' : status, pageIndex:pageIndex-1, pageSize },
         })
         break;
       case 'demand':
         dispatch({
           type: 'relationorder/fetchDemandList',
-          payload: { no, status, pageIndex, pageSize },
+          payload: { no, status, pageIndex:pageIndex-1, pageSize },
         })
         break;
       default:
