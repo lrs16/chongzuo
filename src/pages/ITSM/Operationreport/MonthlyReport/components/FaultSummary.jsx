@@ -119,6 +119,7 @@ function FaultSummary(props) {
       render: (text, record) => {
         return (
           <TextArea
+          disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
           />
@@ -132,6 +133,7 @@ function FaultSummary(props) {
       render: (text, record) => {
         return (
           <TextArea
+          disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
           />

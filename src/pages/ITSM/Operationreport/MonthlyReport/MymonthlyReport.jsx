@@ -210,8 +210,8 @@ function MymonthlyReport(props) {
         timeType: '月报',
         userId: sessionStorage.getItem('userauthorityid'),
         plannedStartTime: '',
-        time1: values.plannedStartTime ? (values.plannedStartTime).startOf('month').format('YYYY-MM-DD'):'',
-        time2: values.plannedStartTime ? (values.plannedStartTime).endOf('month').format('YYYY-MM-DD'):'',
+        time1: values.plannedStartTime ? (values.plannedStartTime).startOf('month').format('YYYY-MM-DD') : '',
+        time2: values.plannedStartTime ? (values.plannedStartTime).endOf('month').format('YYYY-MM-DD') : '',
         pageSize,
         pageIndex: page - 1,
       },
@@ -221,8 +221,8 @@ function MymonthlyReport(props) {
       timeType: '月报',
       userId: sessionStorage.getItem('userauthorityid'),
       plannedStartTime: '',
-      time1: values.plannedStartTime ? (values.plannedStartTime).startOf('month').format('YYYY-MM-DD'):'',
-      time2: values.plannedStartTime ? (values.plannedStartTime).endOf('month').format('YYYY-MM-DD'):'',
+      time1: values.plannedStartTime ? (values.plannedStartTime).startOf('month').format('YYYY-MM-DD') : '',
+      time2: values.plannedStartTime ? (values.plannedStartTime).endOf('month').format('YYYY-MM-DD') : '',
       paginations: {
         pageSize,
         current: page,
@@ -375,7 +375,7 @@ function MymonthlyReport(props) {
     if (location && location.state && location.state.cacheinfo) {
       const { time1 } = location.state.cacheinfo;
       setFieldsValue({
-        plannedStartTime: time1 ? moment(time1) :''
+        plannedStartTime: time1 ? moment(time1) : ''
       })
     }
   }, [location.state])
@@ -553,8 +553,6 @@ function MymonthlyReport(props) {
     </PageHeaderWrapper>
   )
 }
-
-
 
 export default Form.create({})(
   connect(({ softreport, loading }) => ({

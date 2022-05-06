@@ -21,6 +21,9 @@ import {
   saveOther,
   getContentRow,
   getPatrolAndExamineList,
+  // 机房保存
+  getTroubleByComputerRoom,
+  saveComputerRoomByMonth,
 } from '../services/softreportapi';
 
 export default {
@@ -35,12 +38,13 @@ export default {
     addMainid:[],
     lastweekHomeworklist:[],
     nextweekHomeworklist:[],
-    openReportlist:[],
     queryOrderlist:[],
     faultQueryList: [], // 已修复
     nofaultQueryList: [], // 未修复
     contentRowlist:[],
-    patrolAndExamineArr:[]
+    patrolAndExamineArr:[],
+    computerroom:{},
+    openReportlist:{},
   },
 
   effects: {  
@@ -501,8 +505,71 @@ export default {
               break;
           }
     }
-  }
-   
+  },
+
+  // 机房月报
+  *getTroubleByComputerRoom({payload},{call,put}) {
+    const response = yield call(getTroubleByComputerRoom,payload);
+    const result = response;
+    result.eventList = JSON.parse(JSON.stringify(response.eventList)
+    .replace(/name/g, 'field1')
+    .replace(/now/g, 'field2')
+    .replace(/last/g, 'field3')
+    .replace(/add/g, 'field4')
+    );
+    result.troubleList = JSON.parse(JSON.stringify(response.troubleList)
+    .replace(/time/g, 'field2')
+    .replace(/type/g, 'field3')
+    .replace(/content/g, 'field4')
+    .replace(/status/g, 'field5')
+    )
+    yield put({
+      type:'computerroom',
+      payload:result
+    })
+  },
+
+   // 机房月报保存
+   *saveComputerRoomByMonth({ payload }, { call,put}) {
+    yield put ({
+      type:'clearcache',
+      payload:[]
+    });
+    const tabid = sessionStorage.getItem('tabid')
+    if(payload.editStatus === 'add') {
+      const response = yield call(addReport);
+      if(response.code === 200) {
+        const mainId = response.id;
+        const saveData = payload;
+        saveData.mainId = mainId;
+        delete saveData.status;
+        const type = payload.reporttype;
+        const saveresponse = yield call(saveComputerRoomByMonth,saveData);
+        if(saveresponse.code === 200) {
+            route.push({
+              pathname: `/ITSM/operationreport/monthlyreport/monthcomputerroomreportdetail`,
+              query: {
+                reporttype: type,
+                mainId:mainId.toString(),
+                orderNo:mainId.toString(),
+              },
+              state: {closetabid: tabid},
+            })
+        }
+      }
+    } else {
+      return yield call(saveComputerRoomByMonth,payload)
+    }
+    return []
+  },
+
+  *clearcomputer({payload},{call,put}) {
+    yield put({
+      type:'clearcomputerroom',
+      payload:[]
+    })
+  },
+
   },
 
   reducers:{
@@ -616,6 +683,20 @@ export default {
       contentRowlist:'',
       patrolAndExamineArr:'',
     }
-  }
+  },
+  // 机房月报
+  computerroom(state,action) {
+    return {
+      ...state,
+      computerroom:action.payload
+    }
+  },
+
+  clearcomputerroom(state,action) {
+    return {
+      ...state,
+      computerroom:{}
+    }
+  },
   }
 }

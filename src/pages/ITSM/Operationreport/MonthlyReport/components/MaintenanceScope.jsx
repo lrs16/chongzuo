@@ -133,7 +133,7 @@ function MaintenanceScope(props) {
       key: 'field4',
       render: (text, record) => {
         return (
-          <InputNumber
+          <Input
             disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
@@ -164,7 +164,7 @@ function MaintenanceScope(props) {
 
   useEffect(() => {
     handleTabledata();
-  }, [maintenanceList])
+  }, [])
 
   useEffect(() => {
     if (deleteSign) {

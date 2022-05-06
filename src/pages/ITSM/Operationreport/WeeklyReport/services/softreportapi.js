@@ -148,6 +148,8 @@ export async function getPatrolAndExamineList(params) {
   })
 }
 
+// 机房月报
+
 //  保存机房月报
 export async function saveComputerRoomByMonth(params) {
   return request(`/report/saveComputerRoomByMonth`,{
@@ -156,4 +158,13 @@ export async function saveComputerRoomByMonth(params) {
     requestType:'form'
   })
 }
+
+// 机房获取故障清单
+export async function getTroubleByComputerRoom(params) {
+  return request(`/report/getTroubleByComputerRoom?time1=${params.startTime}&time2=${params.endTime}`)
+}
+
+
+
+
 

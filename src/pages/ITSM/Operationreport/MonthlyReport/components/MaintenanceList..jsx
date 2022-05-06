@@ -133,6 +133,7 @@ function MaintenanceList(props) {
       render: (text, record) => {
         return (
           <TextArea
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
           />
@@ -146,6 +147,7 @@ function MaintenanceList(props) {
       render: (text, record) => {
         return (
           <Select
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e, 'field5', record.key)}
           >

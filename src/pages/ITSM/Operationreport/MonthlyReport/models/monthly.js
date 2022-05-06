@@ -1,11 +1,15 @@
 import route from 'umi/router';
 import {
+message
+}from 'antd';
+
+import {
   getTroubleByComputerRoom,
   saveComputerRoomByMonth,
   addReport,
   openReport,
   reportExport
-} from '../services/monthlyapi'
+} from '../services/monthlyapi';
 
 export default {
   namespace:'monthly',
@@ -15,7 +19,7 @@ export default {
     openReportlist:{},
   },
 
-  effects: {
+  effects: {  
     *getTroubleByComputerRoom({payload},{call,put}) {
       const response = yield call(getTroubleByComputerRoom,payload);
       const result = response;
@@ -104,10 +108,9 @@ export default {
   *exportWord({payload:{mainId}},{call,put}) {
     return yield call(reportExport,mainId)
   },
-
   },
 
-  reducers: {
+  reducers:{
     computerroom(state,action) {
       return {
         ...state,
@@ -122,7 +125,7 @@ export default {
       }
     },
 
-    clearcomputerroom({state,action}) {
+    clearcomputerroom(state,action) {
       return {
         ...state,
         computerroom:{}

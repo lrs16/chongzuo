@@ -9,6 +9,7 @@ import {
   DatePicker,
   Icon,
   message,
+  Descriptions,
   Spin
 } from 'antd';
 import moment from 'moment';
@@ -16,6 +17,7 @@ import router from 'umi/router';
 import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysUpload from '@/components/SysUpload';
+import Downloadfile from '@/components/SysUpload/Downloadfile';
 import MaintenanceList from './components/MaintenanceList.';
 import MaintenanceScope from './components/MaintenanceScope';
 import FaultSummary from './components/FaultSummary';
@@ -116,7 +118,7 @@ function ComputerroommonthlyReportdetail(props) {
 
   const getopenFlow = () => {
     dispatch({
-      type: 'monthly/openReport',
+      type: 'softreport/openReport',
       payload: {
         editStatus: 'edit',
         id: mainId
@@ -149,7 +151,7 @@ function ComputerroommonthlyReportdetail(props) {
           eventList: JSON.stringify(eventList || []),
         }
         return dispatch({
-          type: 'monthly/saveComputerRoomByMonth',
+          type: 'softreport/saveComputerRoomByMonth',
           payload: savedata
         }).then(res => {
           if (res.code === 200) {
@@ -164,7 +166,6 @@ function ComputerroommonthlyReportdetail(props) {
           }
         })
       }
-
     })
   }
 
@@ -242,8 +243,9 @@ function ComputerroommonthlyReportdetail(props) {
     if (loading === false && openReportlist && openReportlist.main && openReportlist.main.addTime) {
       const { addData } = openReportlist;
       setList(addData);
-      setEventList(copyData.eventList || eventList);
-      settroubleList(copyData.troubleList || troubleList);
+      setEventList(openReportlist.eventList);
+      settroubleList(openReportlist.troubleList);
+      setNewTroubleList(openReportlist.rangeList);
     }
   }, [loading]);
 
@@ -262,7 +264,7 @@ function ComputerroommonthlyReportdetail(props) {
   //   七、上周作业完成情况--表格
   const getTroubleByComputerRoom = () => {
     dispatch({
-      type: 'monthly/getTroubleByComputerRoom',
+      type: 'softreport/getTroubleByComputerRoom',
       payload: {
         startTime: moment(startTime).startOf('month').format('YYYY-MM-DD 00:00:00'),
         endTime: moment(endTime).endOf('month').format('YYYY-MM-DD 23:59:59'),
@@ -274,7 +276,7 @@ function ComputerroommonthlyReportdetail(props) {
     defaultTime();
     return () => {
       dispatch({
-        type: 'monthly/setclearcomputerroom',
+        type: 'softreport/setclearcomputerroom',
         payload: []
       })
     }
@@ -283,18 +285,6 @@ function ComputerroommonthlyReportdetail(props) {
   const getReportdata = () => {
     getTroubleByComputerRoom();
   }
-
-  //  暂时保留
-  // useEffect(() => {
-  //   if (getInfoparams) {
-  //     const obj = copyData || {};
-  //     obj.operationList = lastweekHomeworklist;
-  //     obj.nextOperationList = nextweekHomeworklist;
-  //     obj.newTroubleList = faultQueryList;
-  //     obj.unCloseTroubleList = nofaultQueryList;
-  //     setCopyData(obj)
-  //   }
-  // }, [loading])
 
   const handleBack = () => {
     router.push({
@@ -356,7 +346,7 @@ function ComputerroommonthlyReportdetail(props) {
 
   const exportWord = () => {
     dispatch({
-      type: 'monthly/exportWord',
+      type: 'softreport/exportWord',
       payload: { mainId }
     }).then(res => {
       const fieldName = '下载.doc';
@@ -428,7 +418,7 @@ function ComputerroommonthlyReportdetail(props) {
                   initialValue: main && main.name || ''
                 })
                   (
-                    <Input style={{ width: 700 }} placeholder={`省级集中计量自动化系统机房运维${reporttype === 'week' ? '周' : '月'}报`} />
+                    <Input disabled={reportSearch} style={{ width: 700 }} placeholder={`省级集中计量自动化系统机房运维${reporttype === 'week' ? '周' : '月'}报`} />
                   )}
               </Form.Item>
             </Col>
@@ -447,9 +437,10 @@ function ComputerroommonthlyReportdetail(props) {
                           message: '请选择填报日期'
                         }
                       ],
-                      initialValue: moment(main &&main.time1 || startTime)
+                      initialValue: moment(main && main.time1 || startTime)
                     })(<MonthPicker
                       allowClear={false}
+                      disabled={reportSearch}
                       onChange={onChange}
                     />)}
                   </Form.Item>
@@ -458,6 +449,7 @@ function ComputerroommonthlyReportdetail(props) {
                     type='primary'
                     style={{ marginLeft: 10, marginTop: 5 }}
                     onClick={getReportdata}
+                    disabled={reportSearch}
                   >
                     获取数据
                   </Button>
@@ -476,35 +468,55 @@ function ComputerroommonthlyReportdetail(props) {
                         getFieldDecorator('content', {
                           initialValue: main.content || summarydefaults
                         })
-                          (<TextArea autoSize={{ minRows: 3 }} />)
+                          (<TextArea autoSize={{ minRows: 3 }} disabled={reportSearch} />)
                       }
                     </Form.Item>
                   </Col>
 
                   {/* 本周运维附件 */}
-                  <Col span={24}>
-                    <Form.Item
-                      label='上传附件'
-                      {...formincontentLayout}
-                    >
-                      {getFieldDecorator('contentFiles', {
-                        initialValue: openReportlist.contentFiles
-                      })
-                        (
-                          <div>
-                            <SysUpload
-                              fileslist={openReportlist.contentFiles ? JSON.parse(openReportlist.contentFiles) : []}
-                              ChangeFileslist={newvalue => {
-                                setFieldsValue({ contentFiles: JSON.stringify(newvalue.arr) })
-                                setFilesList(newvalue);
-                                setFiles(newvalue)
-                              }}
-                              banOpenFileDialog={olduploadstatus}
-                            />
-                          </div>
-                        )}
-                    </Form.Item>
-                  </Col>
+                  {
+                    !reportSearch && (
+                      <Col span={24}>
+                        <Form.Item
+                          label='上传附件'
+                          {...formincontentLayout}
+                        >
+                          {getFieldDecorator('contentFiles', {
+                            initialValue: openReportlist.contentFiles
+                          })
+                            (
+                              <div>
+                                <SysUpload
+                                  fileslist={openReportlist.contentFiles ? JSON.parse(openReportlist.contentFiles) : []}
+                                  ChangeFileslist={newvalue => {
+                                    setFieldsValue({ contentFiles: JSON.stringify(newvalue.arr) })
+                                    setFilesList(newvalue);
+                                    setFiles(newvalue)
+                                  }}
+                                  banOpenFileDialog={olduploadstatus}
+                                />
+                              </div>
+                            )}
+                        </Form.Item>
+                      </Col>
+                    )
+                  }
+
+                  {
+                    reportSearch && (
+                      <div style={{ marginLeft: 30, marginRight: 10, marginTop: 20 }}>
+                        <Descriptions size="middle">
+                          <Descriptions.Item label='上传附件'>
+                            <span style={{ color: 'blue', textDecoration: 'underline' }} >
+                              {openReportlist && <Downloadfile files={openReportlist.contentFiles === '' ? '[]' : openReportlist.contentFiles} />}
+                            </span>
+                          </Descriptions.Item>
+
+                        </Descriptions>
+                      </div>
+                    )
+                  }
+
 
                   <Col span={24}><p style={{ fontWeight: '900', fontSize: '16px' }}>二、人员组织安排</p></Col>
 
@@ -514,34 +526,55 @@ function ComputerroommonthlyReportdetail(props) {
                         getFieldDecorator('personnelContent', {
                           initialValue: openReportlist.personnelContent || personnelOrganization
                         })
-                          (<TextArea autoSize={{ minRows: 3 }} />)
+                          (<TextArea autoSize={{ minRows: 3 }} disabled={reportSearch} />)
                       }
                     </Form.Item>
                   </Col>
 
-                  <Col span={24} style={{ marginTop: 20 }}>
-                    <Form.Item
-                      label='上传附件'
-                      {...formincontentLayout}
-                    >
-                      {getFieldDecorator('personnelFiles', {
-                        initialValue: openReportlist.personnelFiles
-                      })
-                        (
-                          <div>
-                            <SysUpload
-                              fileslist={openReportlist.personnelFiles ? JSON.parse(openReportlist.personnelFiles) : []}
-                              ChangeFileslist={newvalue => {
-                                setFieldsValue({ personnelFiles: JSON.stringify(newvalue.arr) })
-                                setFilesList(newvalue);
-                                setFiles(newvalue)
-                              }}
-                              banOpenFileDialog={olduploadstatus}
-                            />
-                          </div>
-                        )}
-                    </Form.Item>
-                  </Col>
+                  {
+                    !reportSearch && (
+                      <Col span={24} style={{ marginTop: 20 }}>
+                        <Form.Item
+                          label='上传附件'
+                          {...formincontentLayout}
+                        >
+                          {getFieldDecorator('personnelFiles', {
+                            initialValue: openReportlist.personnelFiles
+                          })
+                            (
+                              <div>
+                                <SysUpload
+                                  fileslist={openReportlist.personnelFiles ? JSON.parse(openReportlist.personnelFiles) : []}
+                                  ChangeFileslist={newvalue => {
+                                    setFieldsValue({ personnelFiles: JSON.stringify(newvalue.arr) })
+                                    setFilesList(newvalue);
+                                    setFiles(newvalue)
+                                  }}
+                                  banOpenFileDialog={olduploadstatus}
+                                />
+                              </div>
+                            )}
+                        </Form.Item>
+                      </Col>
+                    )
+                  }
+
+                  {
+                    reportSearch && (
+                      <div style={{ marginLeft: 30, marginRight: 10, marginTop: 20 }}>
+                        <Descriptions size="middle">
+                          <Descriptions.Item label='上传附件'>
+                            <span style={{ color: 'blue', textDecoration: 'underline' }} >
+                              {openReportlist && <Downloadfile files={openReportlist.personnelFiles === '' ? '[]' : openReportlist.personnelFiles} />}
+                            </span>
+                          </Descriptions.Item>
+
+                        </Descriptions>
+                      </div>
+                    )
+                  }
+
+
 
                   <Col span={24}><p style={{ fontWeight: '900', fontSize: '16px' }}>三、工作地点</p></Col>
 
@@ -551,34 +584,55 @@ function ComputerroommonthlyReportdetail(props) {
                         getFieldDecorator('workAddressContent', {
                           initialValue: openReportlist.workAddressContent || placeWork
                         })
-                          (<TextArea autoSize={{ minRows: 3 }} />)
+                          (<TextArea autoSize={{ minRows: 3 }} disabled={reportSearch} />)
                       }
                     </Form.Item>
                   </Col>
 
-                  <Col span={24} style={{ marginTop: 20 }}>
-                    <Form.Item
-                      label='上传附件'
-                      {...formincontentLayout}
-                    >
-                      {getFieldDecorator('workAddressFiles', {
-                        initialValue: openReportlist.workAddressFiles
-                      })
-                        (
-                          <div>
-                            <SysUpload
-                              fileslist={openReportlist.workAddressFiles ? JSON.parse(openReportlist.workAddressFiles) : []}
-                              ChangeFileslist={newvalue => {
-                                setFieldsValue({ workAddressFiles: JSON.stringify(newvalue.arr) })
-                                setFilesList(newvalue);
-                                setFiles(newvalue)
-                              }}
-                              banOpenFileDialog={olduploadstatus}
-                            />
-                          </div>
-                        )}
-                    </Form.Item>
-                  </Col>
+                  {
+                    !reportSearch && (
+                      <Col span={24} style={{ marginTop: 20 }}>
+                        <Form.Item
+                          label='上传附件'
+                          {...formincontentLayout}
+                        >
+                          {getFieldDecorator('workAddressFiles', {
+                            initialValue: openReportlist.workAddressFiles
+                          })
+                            (
+                              <div>
+                                <SysUpload
+                                  fileslist={openReportlist.workAddressFiles ? JSON.parse(openReportlist.workAddressFiles) : []}
+                                  ChangeFileslist={newvalue => {
+                                    setFieldsValue({ workAddressFiles: JSON.stringify(newvalue.arr) })
+                                    setFilesList(newvalue);
+                                    setFiles(newvalue)
+                                  }}
+                                  banOpenFileDialog={olduploadstatus}
+                                />
+                              </div>
+                            )}
+                        </Form.Item>
+                      </Col>
+
+                    )
+                  }
+
+                  {
+                    reportSearch && (
+                      <div style={{ marginLeft: 30, marginRight: 10, marginTop: 20 }}>
+                        <Descriptions size="middle">
+                          <Descriptions.Item label='上传附件'>
+                            <span style={{ color: 'blue', textDecoration: 'underline' }} >
+                              {openReportlist && <Downloadfile files={openReportlist.workAddressFiles === '' ? '[]' : openReportlist.workAddressFiles} />}
+                            </span>
+                          </Descriptions.Item>
+
+                        </Descriptions>
+                      </div>
+                    )
+                  }
+
 
                   <Col span={24}><p style={{ fontWeight: '900', fontSize: '16px' }}>四、工作内容</p></Col>
 
@@ -588,34 +642,53 @@ function ComputerroommonthlyReportdetail(props) {
                         getFieldDecorator('workContent', {
                           initialValue: openReportlist.workContent || jobContent
                         })
-                          (<TextArea autoSize={{ minRows: 3 }} />)
+                          (<TextArea autoSize={{ minRows: 3 }} disabled={reportSearch} />)
                       }
                     </Form.Item>
                   </Col>
 
-                  <Col span={24} style={{ marginTop: 20 }}>
-                    <Form.Item
-                      label='上传附件'
-                      {...formincontentLayout}
-                    >
-                      {getFieldDecorator('workFiles', {
-                        initialValue: openReportlist.workFiles
-                      })
-                        (
-                          <div>
-                            <SysUpload
-                              fileslist={openReportlist.workFiles ? JSON.parse(openReportlist.workFiles) : []}
-                              ChangeFileslist={newvalue => {
-                                setFieldsValue({ workFiles: JSON.stringify(newvalue.arr) })
-                                setFilesList(newvalue);
-                                setFiles(newvalue)
-                              }}
-                              banOpenFileDialog={olduploadstatus}
-                            />
-                          </div>
-                        )}
-                    </Form.Item>
-                  </Col>
+                  {
+                    !reportSearch && (
+                      <Col span={24} style={{ marginTop: 20 }}>
+                        <Form.Item
+                          label='上传附件'
+                          {...formincontentLayout}
+                        >
+                          {getFieldDecorator('workFiles', {
+                            initialValue: openReportlist.workFiles
+                          })
+                            (
+                              <div>
+                                <SysUpload
+                                  fileslist={openReportlist.workFiles ? JSON.parse(openReportlist.workFiles) : []}
+                                  ChangeFileslist={newvalue => {
+                                    setFieldsValue({ workFiles: JSON.stringify(newvalue.arr) })
+                                    setFilesList(newvalue);
+                                    setFiles(newvalue)
+                                  }}
+                                  banOpenFileDialog={olduploadstatus}
+                                />
+                              </div>
+                            )}
+                        </Form.Item>
+                      </Col>
+                    )
+                  }
+
+                  {
+                    reportSearch && (
+                      <div style={{ marginLeft: 30, marginRight: 10, marginTop: 20 }}>
+                        <Descriptions size="middle">
+                          <Descriptions.Item label='上传附件'>
+                            <span style={{ color: 'blue', textDecoration: 'underline' }} >
+                              {openReportlist && <Downloadfile files={openReportlist.workFiles === '' ? '[]' : openReportlist.workFiles} />}
+                            </span>
+                          </Descriptions.Item>
+
+                        </Descriptions>
+                      </div>
+                    )
+                  }
 
                   <Col span={24}><p style={{ fontWeight: '900', fontSize: '16px' }}>五、运行运维范围如下</p></Col>
 
@@ -630,32 +703,52 @@ function ComputerroommonthlyReportdetail(props) {
                       newTroubleList={contentrowdata => {
                         setNewTroubleList(contentrowdata)
                       }}
+                      reportSearch={reportSearch}
                     />
                   </Col>
 
-                  <Col span={24} style={{ marginTop: 20 }}>
-                    <Form.Item
-                      label='上传附件'
-                      {...formincontentLayout}
-                    >
-                      {getFieldDecorator('rangeFiles', {
-                        initialValue: openReportlist.rangeFiles
-                      })
-                        (
-                          <div>
-                            <SysUpload
-                              fileslist={openReportlist.rangeFiles ? JSON.parse(openReportlist.rangeFiles) : []}
-                              ChangeFileslist={newvalue => {
-                                setFieldsValue({ rangeFiles: JSON.stringify(newvalue.arr) })
-                                setFilesList(newvalue);
-                                setFiles(newvalue)
-                              }}
-                              banOpenFileDialog={olduploadstatus}
-                            />
-                          </div>
-                        )}
-                    </Form.Item>
-                  </Col>
+                  {
+                    !reportSearch && (
+                      <Col span={24} style={{ marginTop: 20 }}>
+                        <Form.Item
+                          label='上传附件'
+                          {...formincontentLayout}
+                        >
+                          {getFieldDecorator('rangeFiles', {
+                            initialValue: openReportlist.rangeFiles
+                          })
+                            (
+                              <div>
+                                <SysUpload
+                                  fileslist={openReportlist.rangeFiles ? JSON.parse(openReportlist.rangeFiles) : []}
+                                  ChangeFileslist={newvalue => {
+                                    setFieldsValue({ rangeFiles: JSON.stringify(newvalue.arr) })
+                                    setFilesList(newvalue);
+                                    setFiles(newvalue)
+                                  }}
+                                  banOpenFileDialog={olduploadstatus}
+                                />
+                              </div>
+                            )}
+                        </Form.Item>
+                      </Col>
+                    )
+                  }
+
+                  {
+                    reportSearch && (
+                      <div style={{ marginLeft: 30, marginRight: 10, marginTop: 20 }}>
+                        <Descriptions size="middle">
+                          <Descriptions.Item label='上传附件'>
+                            <span style={{ color: 'blue', textDecoration: 'underline' }} >
+                              {openReportlist && <Downloadfile files={openReportlist.rangeFiles === '' ? '[]' : openReportlist.rangeFiles} />}
+                            </span>
+                          </Descriptions.Item>
+
+                        </Descriptions>
+                      </div>
+                    )
+                  }
 
                   <Col span={24}><p style={{ fontWeight: '900', fontSize: '16px' }}>六、运维记录</p></Col>
 
@@ -665,34 +758,54 @@ function ComputerroommonthlyReportdetail(props) {
                         getFieldDecorator('operationContent', {
                           initialValue: openReportlist.operationContent || maintenanceRecords
                         })
-                          (<TextArea autoSize={{ minRows: 3 }} />)
+                          (<TextArea autoSize={{ minRows: 3 }} disabled={reportSearch} />)
                       }
                     </Form.Item>
                   </Col>
 
-                  <Col span={24} style={{ marginTop: 20 }}>
-                    <Form.Item
-                      label='上传附件'
-                      {...formincontentLayout}
-                    >
-                      {getFieldDecorator('operationFiles', {
-                        initialValue: openReportlist.operationFiles
-                      })
-                        (
-                          <div>
-                            <SysUpload
-                              fileslist={openReportlist.operationFiles ? JSON.parse(openReportlist.operationFiles) : []}
-                              ChangeFileslist={newvalue => {
-                                setFieldsValue({ operationFiles: JSON.stringify(newvalue.arr) })
-                                setFilesList(newvalue);
-                                setFiles(newvalue)
-                              }}
-                              banOpenFileDialog={olduploadstatus}
-                            />
-                          </div>
-                        )}
-                    </Form.Item>
-                  </Col>
+                  {
+                    !reportSearch && (
+                      <Col span={24} style={{ marginTop: 20 }}>
+                        <Form.Item
+                          label='上传附件'
+                          {...formincontentLayout}
+                        >
+                          {getFieldDecorator('operationFiles', {
+                            initialValue: openReportlist.operationFiles
+                          })
+                            (
+                              <div>
+                                <SysUpload
+                                  fileslist={openReportlist.operationFiles ? JSON.parse(openReportlist.operationFiles) : []}
+                                  ChangeFileslist={newvalue => {
+                                    setFieldsValue({ operationFiles: JSON.stringify(newvalue.arr) })
+                                    setFilesList(newvalue);
+                                    setFiles(newvalue)
+                                  }}
+                                  banOpenFileDialog={olduploadstatus}
+                                />
+                              </div>
+                            )}
+                        </Form.Item>
+                      </Col>
+                    )
+                  }
+
+
+                  {
+                    reportSearch && (
+                      <div style={{ marginLeft: 30, marginRight: 10, marginTop: 20 }}>
+                        <Descriptions size="middle">
+                          <Descriptions.Item label='上传附件'>
+                            <span style={{ color: 'blue', textDecoration: 'underline' }} >
+                              {openReportlist && <Downloadfile files={openReportlist.operationFiles === '' ? '[]' : openReportlist.operationFiles} />}
+                            </span>
+                          </Descriptions.Item>
+
+                        </Descriptions>
+                      </div>
+                    )
+                  }
 
                   <Col span={24}><p style={{ fontWeight: '900', fontSize: '16px' }}>七、本月运维事件（故障）记录</p></Col>
 
@@ -704,6 +817,7 @@ function ComputerroommonthlyReportdetail(props) {
                       getEventList={contentrowdata => {
                         setEventList(contentrowdata)
                       }}
+                      reportSearch={reportSearch}
                     />
                   </Col>
 
@@ -715,32 +829,52 @@ function ComputerroommonthlyReportdetail(props) {
                       gettroubleList={contentrowdata => {
                         settroubleList(contentrowdata)
                       }}
+                      reportSearch={reportSearch}
                     />
                   </Col>
 
-                  <Col span={24} style={{ marginTop: 20 }}>
-                    <Form.Item
-                      label='上传附件'
-                      {...formincontentLayout}
-                    >
-                      {getFieldDecorator('eventFiles', {
-                        initialValue: openReportlist.eventFiles
-                      })
-                        (
-                          <div>
-                            <SysUpload
-                              fileslist={openReportlist.eventFiles ? JSON.parse(openReportlist.eventFiles) : []}
-                              ChangeFileslist={newvalue => {
-                                setFieldsValue({ eventFiles: JSON.stringify(newvalue.arr) })
-                                setFilesList(newvalue);
-                                setFiles(newvalue)
-                              }}
-                              banOpenFileDialog={olduploadstatus}
-                            />
-                          </div>
-                        )}
-                    </Form.Item>
-                  </Col>
+                  {
+                    !reportSearch && (
+                      <Col span={24} style={{ marginTop: 20 }}>
+                        <Form.Item
+                          label='上传附件'
+                          {...formincontentLayout}
+                        >
+                          {getFieldDecorator('eventFiles', {
+                            initialValue: openReportlist.eventFiles
+                          })
+                            (
+                              <div>
+                                <SysUpload
+                                  fileslist={openReportlist.eventFiles ? JSON.parse(openReportlist.eventFiles) : []}
+                                  ChangeFileslist={newvalue => {
+                                    setFieldsValue({ eventFiles: JSON.stringify(newvalue.arr) })
+                                    setFilesList(newvalue);
+                                    setFiles(newvalue)
+                                  }}
+                                  banOpenFileDialog={olduploadstatus}
+                                />
+                              </div>
+                            )}
+                        </Form.Item>
+                      </Col>
+                    )
+                  }
+
+                  {
+                    reportSearch && (
+                      <div style={{ marginLeft: 30, marginRight: 10, marginTop: 20 }}>
+                        <Descriptions size="middle">
+                          <Descriptions.Item label='上传附件'>
+                            <span style={{ color: 'blue', textDecoration: 'underline' }} >
+                              {openReportlist && <Downloadfile files={openReportlist.eventFiles === '' ? '[]' : openReportlist.eventFiles} />}
+                            </span>
+                          </Descriptions.Item>
+
+                        </Descriptions>
+                      </div>
+                    )
+                  }
 
                   <Col span={24}><p style={{ fontWeight: '900', fontSize: '16px' }}>八、运维工作小结</p></Col>
 
@@ -751,7 +885,7 @@ function ComputerroommonthlyReportdetail(props) {
                         getFieldDecorator('dutyContent', {
                           initialValue: openReportlist.dutyContent || dutySituation
                         })
-                          (<TextArea autoSize={{ minRows: 3 }} />)
+                          (<TextArea autoSize={{ minRows: 3 }} disabled={reportSearch} />)
                       }
                     </Form.Item>
                   </Col>
@@ -763,7 +897,7 @@ function ComputerroommonthlyReportdetail(props) {
                         getFieldDecorator('troubleHandleContent', {
                           initialValue: openReportlist.troubleHandleContent || TroubleShooting
                         })
-                          (<TextArea autoSize={{ minRows: 3 }} />)
+                          (<TextArea autoSize={{ minRows: 3 }} disabled={reportSearch} />)
                       }
                     </Form.Item>
                   </Col>
@@ -775,7 +909,7 @@ function ComputerroommonthlyReportdetail(props) {
                         getFieldDecorator('monitorContent', {
                           initialValue: openReportlist.monitorContent || monitoringSituation
                         })
-                          (<TextArea autoSize={{ minRows: 3 }} />)
+                          (<TextArea autoSize={{ minRows: 3 }} disabled={reportSearch} />)
                       }
                     </Form.Item>
                   </Col>
@@ -787,7 +921,7 @@ function ComputerroommonthlyReportdetail(props) {
                         getFieldDecorator('networkContent', {
                           initialValue: openReportlist.networkContent || securityMeasures
                         })
-                          (<TextArea autoSize={{ minRows: 3 }} />)
+                          (<TextArea autoSize={{ minRows: 3 }} disabled={reportSearch} />)
                       }
                     </Form.Item>
                   </Col>
@@ -799,7 +933,7 @@ function ComputerroommonthlyReportdetail(props) {
                         getFieldDecorator('controlContent', {
                           initialValue: openReportlist.controlContent || operationControl
                         })
-                          (<TextArea autoSize={{ minRows: 3 }} />)
+                          (<TextArea autoSize={{ minRows: 3 }} disabled={reportSearch} />)
                       }
                     </Form.Item>
                   </Col>
@@ -811,7 +945,7 @@ function ComputerroommonthlyReportdetail(props) {
                         getFieldDecorator('problemContent', {
                           initialValue: openReportlist.problemContent || proposal
                         })
-                          (<TextArea autoSize={{ minRows: 3 }} />)
+                          (<TextArea autoSize={{ minRows: 3 }} disabled={reportSearch} />)
                       }
                     </Form.Item>
                   </Col>
@@ -846,6 +980,7 @@ function ComputerroommonthlyReportdetail(props) {
                             className="dynamic-delete-button"
                             type="delete"
                             onClick={() => { removeForm(index); setDeleteSign(true) }}
+                            disabled={olduploadstatus || reportSearch}
                           />
                         </Col>
                       )
@@ -856,15 +991,13 @@ function ComputerroommonthlyReportdetail(props) {
             )
             }
 
-
-
             <Button
               style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
               type="primary"
               ghost
               onClick={() => { newMember() }}
               icon="plus"
-              disabled={olduploadstatus}
+              disabled={olduploadstatus || reportSearch}
             >
               新增其他内容
             </Button>
@@ -877,11 +1010,11 @@ function ComputerroommonthlyReportdetail(props) {
 }
 
 export default Form.create({})(
-  connect(({ monthly, viewcache, loading }) => ({
-    computerroom: monthly.computerroom,
-    openReportlist: monthly.openReportlist || {},
-    nextweekHomeworklist: monthly.nextweekHomeworklist,
-    loading: loading.models.monthly,
+  connect(({ softreport, viewcache, loading }) => ({
+    computerroom: softreport.computerroom,
+    openReportlist: softreport.openReportlist || {},
+    nextweekHomeworklist: softreport.nextweekHomeworklist,
+    loading: loading.models.softreport,
     olduploadstatus: viewcache.olduploadstatus,
   }))(ComputerroommonthlyReportdetail),
 );

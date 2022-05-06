@@ -60,7 +60,8 @@ function ComputerroommonthlyReport(props) {
     dispatch,
     computerroom,
     loading,
-    olduploadstatus
+    olduploadstatus,
+    computerroom22
   } = props;
 
   const required = true;
@@ -109,13 +110,62 @@ function ComputerroommonthlyReport(props) {
   const operationControl = `每周均制定作业计划表，并按计划进行作业。
 本月开具工作票12份，作业票共13份；每周均对工作票及作业票规范性进行检查，本月规范性情况良好。
 本月进行服务器账号授权和查询操作审计共12次，例行审计发现有1起疑似违规操作，已报给相关负责人核实处理。`
-  const proposal = '无'
+  const proposal = '无';
+  const defaultTable = [
+    {
+      field1: '1',
+      field2: '服务器设备',
+      field3: '服务器巡检、维护',
+      field4: '60台'
+    },
+    {
+      field1: '2',
+      field2: '网络设备',
+      field3: '网络设备巡检、维护',
+      field4: '96套'
+    },
+    {
+      field1: '3',
+      field2: '安全设备',
+      field3: '安全设备巡检、维护',
+      field4: '70台'
+    },
+    {
+      field1: '4',
+      field2: '其它设备',
+      field3: '其它设备巡检、维护',
+      field4: '37台'
+    },
+    {
+      field1: '5',
+      field2: '软件系统',
+      field3: '系统运行情况监控',
+      field4: '37套'
+    },
+    {
+      field1: '6',
+      field2: '运维期内机房新增设备',
+      field3: '巡检、维护、监控',
+      field4: '若干'
+    },
+  ]
   //  保存表单
   const computerReportform = () => {
     props.form.validateFields((err, value) => {
       if (!err) {
         const savedata = {
           ...value,
+          content:value.content || summarydefaults,
+          personnelContent:value.personnelContent || personnelOrganization,
+          workAddressContent:value.workAddressContent || placeWork,
+          workContent:value.workContent || jobContent,
+          operationContent:value.operationContent || maintenanceRecords,
+          dutyContent:value.dutyContent || dutySituation,
+          troubleHandleContent:value.troubleHandleContent || TroubleShooting,
+          monitorContent:value.monitorContent || monitoringSituation,
+          networkContent:value.networkContent || securityMeasures,
+          controlContent:value.controlContent || operationControl,
+          problemContent:value.problemContent || proposal,
           contentFiles: value.contentFiles || '',
           personnelFiles: value.personnelFiles || '',
           workAddressFiles: value.workAddressFiles || '',
@@ -127,20 +177,18 @@ function ComputerroommonthlyReport(props) {
           mainId,
           time1: moment(startTime).startOf('month').format('YYYY-MM-DD'),
           time2: moment(endTime).endOf('month').format('YYYY-MM-DD'),
-          rangeList: JSON.stringify(newTroubleList || []),
+          rangeList: JSON.stringify(newTroubleList?.length?newTroubleList : defaultTable),
           rangeFiles: value.rangeFiles || '',
           eventFiles: value.eventFiles || '',
-          nextOperationList: JSON.stringify(nextOperationList || []),
           operationFiles: value.operationFiles || '',
           troubleList: JSON.stringify(troubleList || []),
           eventList: JSON.stringify(eventList || []),
         }
         dispatch({
-          type: 'monthly/saveComputerRoomByMonth',
+          type: 'softreport/saveComputerRoomByMonth',
           payload: savedata
         })
       }
-
     })
   }
 
@@ -158,7 +206,7 @@ function ComputerroommonthlyReport(props) {
 
 
     return dispatch({
-      type: 'monthly/pasteReport',
+      type: 'softreport/pasteReport',
       payload: {
         editStatus: 'edit',
         id: listId
@@ -179,7 +227,6 @@ function ComputerroommonthlyReport(props) {
       }
     })
   }
-
 
   // 动态保存信息
   const handleaddTable = (params, px, rowdelete) => {
@@ -231,18 +278,10 @@ function ComputerroommonthlyReport(props) {
   }
 
   const defaultTime = () => {
-    //  周统计
-    if (reporttype === 'week') {
-      const currentstartTime = moment().subtract('days', 6).format('YYYY-MM-DD');
-      const currentendTime = moment().format('YYYY-MM-DD');
-      setStartTime(currentstartTime);
-      setEndTime(currentendTime);
-    } else {
-      const currentstartTime = moment().startOf('month').format('YYYY-MM-DD');
-      const currentendTime = moment().endOf('month').format('YYYY-MM-DD');
-      setStartTime(currentstartTime);
-      setEndTime(currentendTime);
-    }
+    const currentstartTime = moment().startOf('month').format('YYYY-MM-DD');
+    const currentendTime = moment().endOf('month').format('YYYY-MM-DD');
+    setStartTime(currentstartTime);
+    setEndTime(currentendTime);
   }
 
   const getopenFlow = () => {
@@ -270,6 +309,7 @@ function ComputerroommonthlyReport(props) {
   useEffect(() => {
     setEventList(computerroom.eventList || copyData.eventList || []);
     settroubleList(computerroom.troubleList || copyData.troubleList);
+    setNewTroubleList(copyData.rangeList || defaultTable);
   }, [loading]);
 
   useEffect(() => {
@@ -281,7 +321,7 @@ function ComputerroommonthlyReport(props) {
   //   七、上周作业完成情况--表格
   const getTroubleByComputerRoom = () => {
     dispatch({
-      type: 'monthly/getTroubleByComputerRoom',
+      type: 'softreport/getTroubleByComputerRoom',
       payload: {
         startTime: moment(startTime).startOf('month').format('YYYY-MM-DD 00:00:00'),
         endTime: moment(endTime).endOf('month').format('YYYY-MM-DD 23:59:59'),
@@ -289,13 +329,11 @@ function ComputerroommonthlyReport(props) {
     })
   }
 
-
   useEffect(() => {
     defaultTime();
     return () => {
       dispatch({
-        type: 'monthly/setclearcomputerroom',
-        payload: []
+        type: 'softreport/clearcomputer',
       })
     }
   }, []);
@@ -304,18 +342,6 @@ function ComputerroommonthlyReport(props) {
     getTroubleByComputerRoom();
     setInitial(true);
   }
-
-  //  暂时保留
-  // useEffect(() => {
-  //   if (getInfoparams) {
-  //     const obj = copyData || {};
-  //     obj.operationList = lastweekHomeworklist;
-  //     obj.nextOperationList = nextweekHomeworklist;
-  //     obj.newTroubleList = faultQueryList;
-  //     obj.unCloseTroubleList = nofaultQueryList;
-  //     setCopyData(obj)
-  //   }
-  // }, [loading])
 
   const handleBack = () => {
     router.push({
@@ -367,15 +393,13 @@ function ComputerroommonthlyReport(props) {
     setDeleteSign(false);
   }
 
-  console.log(loading, 'loading');
-
   return (
     <PageHeaderWrapper
       title={reporttype === 'week' ? '新建机房运维周报' : '新建机房运维月报'}
       extra={
         <>
           {
-            (loading === false || loading === undefined) && (
+            loading === false && (
               <>
                 <Button
                   type='primary'
@@ -619,7 +643,7 @@ function ComputerroommonthlyReport(props) {
                   <Col span={24}>
                     <MaintenanceScope
                       forminladeLayout={forminladeLayout}
-                      maintenanceList={copyData.rangeList ? copyData.rangeList : []}
+                      maintenanceList={copyData.rangeList ? copyData.rangeList : defaultTable}
                       mainId={copyData.rangeList ? true : mainId}
                       type={reporttype}
                       newTroubleList={contentrowdata => {
@@ -878,11 +902,12 @@ function ComputerroommonthlyReport(props) {
 }
 
 export default Form.create({})(
-  connect(({ monthly, viewcache, loading }) => ({
-    computerroom: monthly.computerroom,
-    openReportlist: monthly.openReportlist,
-    nextweekHomeworklist: monthly.nextweekHomeworklist,
-    loading: loading.models.monthly,
+  connect(({ softreport, viewcache, loading }) => ({
+    computerroom: softreport.computerroom,
+    openReportlist: softreport.openReportlist,
+    nextweekHomeworklist: softreport.nextweekHomeworklist,
+    computerroom22: softreport.computerroom22,
+    loading: loading.models.softreport,
     olduploadstatus: viewcache.olduploadstatus,
   }))(ComputerroommonthlyReport),
 );
