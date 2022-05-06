@@ -42,7 +42,7 @@ function FaultSummary(props) {
   const remove = key => {
     const target = deleteObj(key) || {};
     const newarr = target.map((item, index) => {
-      return Object.assign(item, { editable: true, isNew: false, key: index, field1: index + 1 })
+      return Object.assign(item, { editable: true, isNew: false, key: index })
     });
 
     deleteSign = true;

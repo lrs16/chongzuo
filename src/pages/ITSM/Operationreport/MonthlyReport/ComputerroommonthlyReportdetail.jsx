@@ -388,6 +388,22 @@ function ComputerroommonthlyReportdetail(props) {
               </>
             )
           }
+
+          {
+            loading === false && reportSearch && (
+              <>
+                <Button
+                  type='primary'
+                  onClick={exportWord}
+                  disabled={olduploadstatus}
+                >导出</Button>
+                
+                <Button onClick={handleBack}>
+                  返回
+                </Button>
+              </>
+            )
+          }
         </>
       }
     >
@@ -969,6 +985,7 @@ function ComputerroommonthlyReportdetail(props) {
                         loading={loading}
                         ChangeAddRow={v => setAddrow(v)}
                         sign={deleteSign}
+                        detailParams={reportSearch}
                         uploadStatus={olduploadstatus}
                       />
                     </Col>
