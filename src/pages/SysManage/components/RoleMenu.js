@@ -1,10 +1,66 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Drawer, Button, Message } from 'antd';
-import MenuTransfer from './MenuTransfer';
+import { Drawer, Button, Message, Tree, Input } from 'antd';
+// import MenuTransfer from './MenuTransfer';
+
+const { TreeNode } = Tree;
+const { Search } = Input;
+
+const addArr = datas => {
+  const newArr = [];
+  if (!Array.isArray(datas)) {
+    return newArr;
+  }
+  for (let i = 0; i < datas.length; i += 1) {
+    const vote = {};
+    vote.id = datas[i].id;
+    vote.key = datas[i].id;
+    vote.title = datas[i].menuDesc;
+    vote.menuSort = datas[i].menuSort;
+    vote.pid = datas[i].pid;
+    newArr.push(vote);
+  }
+  return newArr;
+};
+
+const toTree = (datas) => {
+  const data = addArr(datas);
+  const result = [];
+  if (!Array.isArray(data)) {
+    return result;
+  }
+  data.forEach(item => {
+    delete item.children;
+  });
+  const map = {};
+  data.forEach(item => {
+    map[item.key] = item;
+  });
+  data.forEach(item => {
+    const parent = map[item.pid];
+    if (parent) {
+      (parent.children || (parent.children = [])).push(item);
+    } else {
+      result.push(item);
+    }
+  });
+  return result;
+};
+
+const generateTree = (treeNodes = []) => {
+  return treeNodes.map(({ children, ...props }) => (
+    <TreeNode
+      {...props}
+      key={props.key}
+      title={props.title}
+    >
+      {generateTree(children)}
+    </TreeNode>
+  ));
+};
 
 // 克隆子元素按钮，并添加事件
-const withClick = (element, showDrawer = () => {}) => {
+const withClick = (element, showDrawer = () => { }) => {
   return <element.type {...element.props} onClick={showDrawer} />;
 };
 @connect(({ rolemenu, loading }) => ({
@@ -15,6 +71,7 @@ class RoleMenu extends Component {
   state = {
     visible: false,
     menulist: [],
+    defaultExpandAll: true,
   };
 
   showDrawer = () => {
@@ -68,8 +125,13 @@ class RoleMenu extends Component {
     });
   };
 
+  onChange = e => {
+    const { value } = e.target;
+    console.log(value);
+  };
+
   render() {
-    const { visible } = this.state;
+    const { visible, defaultExpandAll } = this.state;
     const {
       loading,
       children,
@@ -77,6 +139,9 @@ class RoleMenu extends Component {
       roleId,
       rolemenu: { sysmenu, rolemenus },
     } = this.props;
+    console.log(sysmenu, rolemenus);
+    const dataSource = toTree(sysmenu.data || []);
+    const targetKeys = rolemenus && rolemenus.data && rolemenus.data.map(item => item.id);
     return (
       <>
         {withClick(children, this.showDrawer)}
@@ -89,12 +154,26 @@ class RoleMenu extends Component {
           // destroyOnClose
           key={roleId}
         >
-          <MenuTransfer
+          {/* <MenuTransfer
             sysmenu={sysmenu.data}
             rolemenus={rolemenus.data}
             openloading={loading}
             UpdateMenu={this.handleChange}
-          />
+          /> */}
+          <div>
+            <Search style={{ marginBottom: 8 }} placeholder="Search" onChange={this.onChange} />
+            <Button type='link'>展开</Button><Button type='link'>收起</Button>
+            {sysmenu && sysmenu.data && rolemenus && rolemenus.data &&
+              <Tree
+                checkable
+                defaultSelectedKeys={targetKeys}
+                // onExpand={this.onExpand}
+                // //expandedKeys={expandedKeys}
+                defaultExpandAll={defaultExpandAll}
+              >
+                {generateTree(dataSource, targetKeys)}
+              </Tree>}
+          </div>
           <div
             style={{
               position: 'absolute',

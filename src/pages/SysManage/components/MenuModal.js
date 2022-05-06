@@ -56,7 +56,7 @@ class MenuModal extends Component {
     const { getFieldDecorator } = this.props.form;
     const required = true;
     // console.log(this.props.record);
-    const { id, menuSort, menuIcon, menuUrl, menuName, menuDesc, menuHide, menuRemark } = this.props.record;
+    const { id, menuSort, menuIcon, menuUrl, menuName, menuDesc, menuHide, menuRemark, menuAuth, menuType } = this.props.record;
     return (
       <>
         {withClick(children, this.handleopenClick)}
@@ -128,6 +128,17 @@ class MenuModal extends Component {
                 initialValue: menuName,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
+            <Form.Item label="权限值">
+              {getFieldDecorator('menuAuth', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入权限值',
+                  },
+                ],
+                initialValue: menuAuth,
+              })(<Input placeholder="请输入" />)}
+            </Form.Item>
             <Form.Item label="菜单名称">
               {getFieldDecorator('menuDesc', {
                 rules: [
@@ -138,6 +149,17 @@ class MenuModal extends Component {
                 ],
                 initialValue: menuDesc,
               })(<Input placeholder="请输入" />)}
+            </Form.Item>
+            <Form.Item label="菜单类型">
+              {getFieldDecorator('menuType', {
+                initialValue: menuType,
+              })(
+                <Radio.Group>
+                  <Radio value="1">菜单</Radio>
+                  <Radio value="2">按钮</Radio>
+                  <Radio value="3">资源</Radio>
+                </Radio.Group>,
+              )}
             </Form.Item>
             <Form.Item label="隐藏菜单">
               {getFieldDecorator('menuHide', {
@@ -194,6 +216,7 @@ MenuModal.defaultProps = {
     subDescription: '',
     menuHide: '0',
     menuRemark: '',
+    menuAuth: '',
   },
 };
 export default Form.create()(MenuModal);
