@@ -281,6 +281,7 @@ class MenuManage extends Component {
         title: 'ID',
         dataIndex: 'id',
         key: 'id',
+        width: 180,
       },
       {
         title: '菜单名称',
@@ -306,6 +307,24 @@ class MenuManage extends Component {
             <Icon type={record.menuIcon} style={{ fontSize: 22 }} />
           </span>
         ),
+      },
+      {
+        title: '权限值',
+        dataIndex: 'menuAuth',
+        key: 'menuAuth',
+      },
+      {
+        title: '菜单类型',
+        dataIndex: 'menuType',
+        key: 'menuType',
+        render: (text) => {
+          const typemap = new Map([
+            ['1', '菜单'],
+            ['2', '按钮'],
+            ['3', '资源'],
+          ])
+          return typemap.get(text)
+        }
       },
       {
         title: '更新时间',

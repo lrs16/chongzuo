@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Drawer, Button, Message, Tree, Input } from 'antd';
-// import MenuTransfer from './MenuTransfer';
+import { Drawer, Button, Message, Tree, Input, Switch } from 'antd';
+import MenuTransfer from './MenuTransfer';
 
 const { TreeNode } = Tree;
 const { Search } = Input;
@@ -71,15 +71,6 @@ class RoleMenu extends Component {
   state = {
     visible: false,
     menulist: [],
-    defaultExpandAll: true,
-  };
-
-  showDrawer = () => {
-    this.setState({
-      visible: true,
-    });
-    this.loadsysMenu();
-    this.loadroleMenu();
   };
 
   onClose = () => {
@@ -88,15 +79,30 @@ class RoleMenu extends Component {
     });
   };
 
-  handleChange = menulist => {
-    this.setState({ menulist });
+  onExpand = expandedKeys => {
+    this.setState({
+      // expandedKeys,
+      // autoExpandParent: false,
+    });
+  };
+
+  handleChange = (menulist, e) => {
+    // const newArr = [...menulist.checked];
+    // if (e.checked) {
+    //   const index = newArr.indexOf(e.node.props.pid);
+    //   if (index === -1) {
+    //     newArr.push(e.node.props.pid)
+    //   }
+    // };
+    // console.log(newArr);
+    this.setState({ menulist: menulist.checked });
   };
 
   handleOk = () => {
     const { dispatch } = this.props;
     const { roleId } = this.props;
     const menuvalue = this.state.menulist;
-    // console.log(menuvalue);
+    console.log(menuvalue);
     return dispatch({
       type: 'rolemenu/unpdatemune',
       payload: { roleId, menuvalue },
@@ -125,13 +131,23 @@ class RoleMenu extends Component {
     });
   };
 
-  onChange = e => {
+  showDrawer = () => {
+    this.setState({
+      visible: true,
+    });
+    this.loadsysMenu();
+    this.loadroleMenu();
+  };
+
+  handleSearchChange = e => {
     const { value } = e.target;
     console.log(value);
   };
 
+  change
+
   render() {
-    const { visible, defaultExpandAll } = this.state;
+    const { visible } = this.state;
     const {
       loading,
       children,
@@ -139,9 +155,9 @@ class RoleMenu extends Component {
       roleId,
       rolemenu: { sysmenu, rolemenus },
     } = this.props;
-    console.log(sysmenu, rolemenus);
     const dataSource = toTree(sysmenu.data || []);
     const targetKeys = rolemenus && rolemenus.data && rolemenus.data.map(item => item.id);
+    // this.setState({ menulist: targetKeys })
     return (
       <>
         {withClick(children, this.showDrawer)}
@@ -161,15 +177,17 @@ class RoleMenu extends Component {
             UpdateMenu={this.handleChange}
           /> */}
           <div>
-            <Search style={{ marginBottom: 8 }} placeholder="Search" onChange={this.onChange} />
-            <Button type='link'>展开</Button><Button type='link'>收起</Button>
+            <Search style={{ marginBottom: 8 }} placeholder="Search" onChange={this.handleSearchChange} />
             {sysmenu && sysmenu.data && rolemenus && rolemenus.data &&
               <Tree
                 checkable
-                defaultSelectedKeys={targetKeys}
+                checkStrictly
+                defaultCheckedKeys={targetKeys}
+                onCheck={this.handleChange}
                 // onExpand={this.onExpand}
                 // //expandedKeys={expandedKeys}
-                defaultExpandAll={defaultExpandAll}
+                // defaultExpandAll={defaultExpandAll}
+                defaultExpandParent
               >
                 {generateTree(dataSource, targetKeys)}
               </Tree>}
