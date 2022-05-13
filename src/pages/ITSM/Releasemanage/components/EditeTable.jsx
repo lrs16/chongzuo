@@ -782,12 +782,12 @@ function EditeTable(props) {
             <div id='firstRow'>
               <RadioGroup value={text} onChange={e => handleFieldChange(e.target.value, 'passTest', record.key)}>
                 <Radio value='通过'>通过</Radio>
-                <Radio value='不通过'>不通过</Radio>
+                <Radio value='不通过'><span style={{ color: '#f5222d' }}>不通过</span></Radio>
               </RadioGroup>
             </div>
           )
         }
-        return <div style={{ textAlign: 'center' }}>{text}</div>;
+        return <div style={{ textAlign: 'center', color: `${text === '不通过' && '#f5222d'}` }}>{text}</div>;
       }
     },
     {

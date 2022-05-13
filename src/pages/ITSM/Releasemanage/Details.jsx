@@ -49,6 +49,15 @@ function Details(props) {
       // 点击菜单刷新,并获取数据
       if (location.state.reset) {
         settabActivekey('workorder');
+        dispatch({
+          type: 'releaseview/cleardata'
+        });
+        dispatch({
+          type: 'releaseview/fetchview',
+          payload: {
+            releaseNo: Id,
+          },
+        });
       };
     }
   }, [location.state]);
@@ -56,6 +65,9 @@ function Details(props) {
   useEffect(() => {
     if (Id) {
       // 获取工单历史信息
+      dispatch({
+        type: 'releaseview/cleardata'
+      });
       dispatch({
         type: 'releaseview/fetchview',
         payload: {

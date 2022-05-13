@@ -71,6 +71,8 @@ class RoleMenu extends Component {
   state = {
     visible: false,
     menulist: [],
+    expandedKeys: '',
+    searchValue: '',
   };
 
   onClose = () => {
@@ -81,7 +83,7 @@ class RoleMenu extends Component {
 
   onExpand = expandedKeys => {
     this.setState({
-      // expandedKeys,
+      expandedKeys,
       // autoExpandParent: false,
     });
   };
@@ -101,8 +103,8 @@ class RoleMenu extends Component {
   handleOk = () => {
     const { dispatch } = this.props;
     const { roleId } = this.props;
+    const { menulist } = this.state;
     const menuvalue = this.state.menulist;
-    console.log(menuvalue);
     return dispatch({
       type: 'rolemenu/unpdatemune',
       payload: { roleId, menuvalue },
@@ -139,15 +141,36 @@ class RoleMenu extends Component {
     this.loadroleMenu();
   };
 
-  handleSearchChange = e => {
-    const { value } = e.target;
-    console.log(value);
+  getParentKey = (key, data) => {
+    let parentKey;
+    for (let i = 0; i < data.length; i += 1) {
+      if (data[i].id === key && data[i].pid !== '1') {
+        parentKey = data[i].pid;
+        this.getParentKey(data[i].pid, data);
+      }
+    }
+    return parentKey
+  }
+
+  handleSearchChange = value => {
+    const { data } = this.props.rolemenu.sysmenu;
+    const Keys = data.filter((item) => item && item.menuDesc.indexOf(value) > -1);
+    const expandedKeys = Keys.map(item => item.pid);
+    const parentKeys = data.map(item => {
+      if (item.menuDesc.indexOf(value) > -1) {
+        return this.getParentKey(item.pid, data)
+      }
+    }).filter(item => item && item);
+    this.setState({
+      expandedKeys: [...expandedKeys, ...parentKeys],
+      searchValue: value,
+    });
   };
 
   change
 
   render() {
-    const { visible } = this.state;
+    const { visible, expandedKeys, searchValue } = this.state;
     const {
       loading,
       children,
@@ -158,6 +181,30 @@ class RoleMenu extends Component {
     const dataSource = toTree(sysmenu.data || []);
     const targetKeys = rolemenus && rolemenus.data && rolemenus.data.map(item => item.id);
     // this.setState({ menulist: targetKeys })
+    const loop = data =>
+      data.map(item => {
+        const index = item.title.indexOf(searchValue);
+        const beforeStr = item.title.substr(0, index);
+        const afterStr = item.title.substr(index + searchValue.length);
+        const title =
+          index > -1 ? (
+            <span>
+              {beforeStr}
+              <span style={{ color: '#f50' }}>{searchValue}</span>
+              {afterStr}
+            </span>
+          ) : (
+            <span>{item.title}</span>
+          );
+        if (item.children) {
+          return (
+            <TreeNode key={item.key} title={title}>
+              {loop(item.children)}
+            </TreeNode>
+          );
+        }
+        return <TreeNode key={item.key} title={title} />;
+      });
     return (
       <>
         {withClick(children, this.showDrawer)}
@@ -176,22 +223,22 @@ class RoleMenu extends Component {
             openloading={loading}
             UpdateMenu={this.handleChange}
           /> */}
-          <div>
-            <Search style={{ marginBottom: 8 }} placeholder="Search" onChange={this.handleSearchChange} />
+          {visible && (<div>
+            <Search style={{ marginBottom: 8 }} placeholder="请输入关键字" onSearch={this.handleSearchChange} />
             {sysmenu && sysmenu.data && rolemenus && rolemenus.data &&
               <Tree
                 checkable
                 checkStrictly
                 defaultCheckedKeys={targetKeys}
                 onCheck={this.handleChange}
-                // onExpand={this.onExpand}
-                // //expandedKeys={expandedKeys}
+                onExpand={this.onExpand}
+                expandedKeys={expandedKeys}
                 // defaultExpandAll={defaultExpandAll}
                 defaultExpandParent
               >
-                {generateTree(dataSource, targetKeys)}
+                {loop(dataSource)}
               </Tree>}
-          </div>
+          </div>)}
           <div
             style={{
               position: 'absolute',

@@ -739,7 +739,7 @@ const BasicLayout = props => {
               <Result
                 status="404"
                 title="404"
-                subTitle="Sorry, 您访问的页面不存在"
+                subTitle="Sorry, 您访问的页面不存在或您无权访问该页面"
               // extra={
               //   <Button type="primary">
               //     <Link

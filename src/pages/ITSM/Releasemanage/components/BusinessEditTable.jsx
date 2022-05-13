@@ -303,6 +303,7 @@ function BusinessEditTable(props) {
                     placement="leftTop"
                   >
                     <RadioGroup
+                      key={record.id}
                       value={text}
                       // onChange={e => handleFieldChange(e.target.value, 'passTest', record.key)}
                       onMouseDown={() => { setVisible(false); setResult({}); }}
@@ -318,17 +319,17 @@ function BusinessEditTable(props) {
                       }}
                     >
                       <Radio value='通过'>通过</Radio>
-                      <Radio value='不通过'>不通过</Radio>
+                      <Radio value='不通过'><span style={{ color: '#f5222d' }}>不通过</span></Radio>
                     </RadioGroup>
                   </Popconfirm>
                 ) : (
-                  <RadioGroup value={text}>
+                  <RadioGroup value={text} key={record.id}>
                     <Radio value='通过'>通过</Radio>
-                    <Radio value='不通过'>不通过</Radio>
+                    <Radio value='不通过'><span style={{ color: '#f5222d' }}>不通过</span></Radio>
                   </RadioGroup>
                 )}
               </>
-            ) : <>{text}</>}
+            ) : <div key={record.id} style={{ textAlign: 'center', color: `${text === '不通过' && '#f5222d'}` }}>{text}</div>}
           </>
         )
       }
@@ -345,6 +346,7 @@ function BusinessEditTable(props) {
             {isEdit ? (
               <div className={!text && record.passTest === '不通过' ? styles.requiredform : ''}>
                 <TextArea
+                  key={record.id}
                   defaultValue={text}
                   autoSize={{ minRows: 4 }}
                   placeholder="请输入"

@@ -25,6 +25,9 @@ export default {
 
     // 获取菜单权限
     *querymune({ payload: { roleId } }, { call, put }) {
+      yield put({
+        type: 'clearcache',
+      });
       const response = yield call(queryRolemenu, roleId);
       yield put({
         type: 'menudatas',
@@ -34,6 +37,12 @@ export default {
   },
 
   reducers: {
+    clearcache(state) {
+      return {
+        ...state,
+        rolemenus: [],
+      };
+    },
     show(state, action) {
       return {
         ...state,

@@ -7,10 +7,9 @@ function FormTextArea(props) {
   const { indexText, isEdit, autoSize, getVal } = props;
   const [disabled, setDisabled] = useState(false);
   const [indexHight, setIndexHight] = useState(true);
-  const [showEllipsis, setShowEllipsis] = useState(false);
+  // const [showEllipsis, setShowEllipsis] = useState(false);
 
   const handleChange = (e) => {
-    console.log('textArea:', e);
     if (getVal) {
       getVal(e?.target?.value || undefined)
     }

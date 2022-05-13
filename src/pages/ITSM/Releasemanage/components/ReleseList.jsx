@@ -173,6 +173,9 @@ function ReleseList(props) {
       key: 'passTest',
       align: 'center',
       width: 100,
+      render: (text, record) => {
+        return <div key={record.id} style={{ textAlign: 'center', color: `${text === '不通过' && '#f5222d'}` }}>{text}</div>
+      }
     },
     {
       title: '业务负责人',
