@@ -117,7 +117,7 @@ function ToDolist(props) {
     onShowSizeChange: (page, size) => onShowSizeChange(page, size),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    total: list.total,
+    total: list.total || 0,
     showTotal: total => `总共  ${total}  条记录`,
     onChange: page => changePage(page),
   };

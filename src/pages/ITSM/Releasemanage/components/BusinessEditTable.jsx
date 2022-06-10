@@ -247,6 +247,17 @@ function BusinessEditTable(props) {
               </div>
             </InputGroup>
             <Divider type='horizontal' style={{ margin: '6px 0' }} />
+            {record.repoList === 'Y' && record.testResultExt && (
+              <>
+                <InputGroup compact>
+                  <div style={{ position: 'relative' }}>
+                    <div style={{ width: 70, textAlign: 'right', position: 'absolute', left: 0, top: 0 }}>补充内容：</div>
+                    <div style={{ marginLeft: 70 }} dangerouslySetInnerHTML={{ __html: record.testResultExt?.replace(/[\n]/g, '<br/>') }} />
+                  </div>
+                </InputGroup>
+                <Divider type='horizontal' style={{ margin: '6px 0' }} />
+              </>
+            )}
             <InputGroup compact>
               <div style={{ position: 'relative' }}>
                 <div style={{ width: 70, textAlign: 'right', position: 'absolute', left: 0, top: 0 }}>验证步骤：</div>

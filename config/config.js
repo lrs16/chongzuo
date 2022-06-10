@@ -31,11 +31,11 @@ const plugins = [
       // },
       pwa: pwa
         ? {
-            workboxPluginMode: 'InjectManifest',
-            workboxOptions: {
-              importWorkboxFrom: 'local',
-            },
-          }
+          workboxPluginMode: 'InjectManifest',
+          workboxOptions: {
+            importWorkboxFrom: 'local',
+          },
+        }
         : false, // default close dll, because issue https://github.com/ant-design/ant-design-pro/issues/4665
       // dll features https://webpack.js.org/plugins/dll-plugin/
       // dll: {
@@ -2193,8 +2193,8 @@ export default {
       target: ' http://172.16.10.33:9901/',
       changeOrigin: true,
     },
-     // 故障管理--抢修票管理
-     '/repair/': {
+    // 故障管理--抢修票管理
+    '/repair/': {
       target: ' http://172.16.10.33:9901/',
       changeOrigin: true,
     },

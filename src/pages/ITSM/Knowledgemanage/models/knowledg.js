@@ -120,8 +120,6 @@ export default {
           type: 'saveinfo',
           payload: response,
         });
-      } else {
-        message.error(response.msg)
       }
     },
     // 打开查询
@@ -135,8 +133,6 @@ export default {
           type: 'saveview',
           payload: response.data,
         });
-      } else {
-        message.error(response.msg)
       }
     },
 
@@ -255,8 +251,6 @@ export default {
           type: 'save',
           payload: response,
         });
-      } else {
-        message.error(response.msg)
       }
     },
     // 统计
@@ -267,8 +261,6 @@ export default {
           type: 'savestatis',
           payload: response.data,
         });
-      } else {
-        message.error(response.msg)
       }
     },
 

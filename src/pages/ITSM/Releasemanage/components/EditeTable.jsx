@@ -223,13 +223,34 @@ function EditeTable(props) {
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData) || {};
     if (taskName === '业务验证') {
-      if (!target.module || !target.abilityType || !target.module || !target.appName || !target.problemType || !target.testMenu || !target.testResult || !target.testStep || !target.developer) {
+      if (!target.module
+        || !target.abilityType
+        || !target.module
+        || !target.appName
+        || !target.problemType
+        || !target.testMenu
+        || !target.testResult
+        || !target.testStep
+        || !target.developer
+      ) {
         message.error('请填写完整的发布清单信息');
         e.target.focus();
         return;
       };
     } else {
-      if (!target.module || !target.abilityType || !target.module || !target.appName || !target.problemType || !target.testMenu || !target.testResult || !target.testStep || !target.developer || !target.responsible || !target.responsibleId) {
+      if (!target.module
+        || !target.abilityType
+        || !target.module
+        || !target.appName
+        || !target.problemType
+        || !target.testMenu
+        || !target.testResult
+        || !target.testStep
+        || !target.developer
+        || !target.responsible
+        || !target.responsibleId
+        // || (target.repoList === 'Y' && !target.testResultExt)   // 需求未说明是否必填，暂不加判断
+      ) {
         message.error('请填写完整的发布清单信息');
         e.target.focus();
         return;
@@ -265,7 +286,17 @@ function EditeTable(props) {
     e.preventDefault();
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData) || {};
-    if (!target.module || !target.abilityType || !target.module || !target.appName || !target.problemType || !target.testMenu || !target.testResult || !target.testStep || !target.developer || !target.responsible) {
+    if (!target.module
+      || !target.abilityType
+      || !target.module
+      || !target.appName
+      || !target.problemType
+      || !target.testMenu
+      || !target.testResult
+      || !target.testStep
+      || !target.developer
+      || !target.responsible
+    ) {
       message.error('请填写完整的发布清单信息');
       e.target.focus();
       return;
@@ -651,6 +682,7 @@ function EditeTable(props) {
                 autoSize
                 placeholder="请输入"
                 onChange={e => handleFieldChange(e.target.value, 'problemType', record.key)}
+                disabled={record.repoList === 'Y'}
               />
             </div>
           )
@@ -677,6 +709,7 @@ function EditeTable(props) {
                     autoSize
                     style={{ width: w }}
                     onChange={e => handleFieldChange(e.target.value, 'testMenu', record.key)}
+                    disabled={record.repoList === 'Y'}
                   />
                 </InputGroup>
               </div>
@@ -688,9 +721,21 @@ function EditeTable(props) {
                     autoSize
                     style={{ width: w }}
                     onChange={e => handleFieldChange(e.target.value, 'testResult', record.key)}
+                    disabled={record.repoList === 'Y'}
                   />
                 </InputGroup>
               </div>
+              {record.repoList === 'Y' && (
+                <InputGroup compact style={{ marginBottom: 12 }}>
+                  <span style={{ width: 70, textAlign: 'right', paddingTop: 4 }}>补充内容：</span>
+                  <TextArea
+                    defaultValue={record.testResultExt}
+                    autoSize
+                    style={{ width: w }}
+                    onChange={e => handleFieldChange(e.target.value, 'testResultExt', record.key)}
+                  />
+                </InputGroup>
+              )}
               <div className={!record.testStep ? styles.requiredform : ''} >
                 <InputGroup compact>
                   <span style={{ width: 70, textAlign: 'right', paddingTop: 4 }}>验证步骤：</span>
@@ -721,6 +766,17 @@ function EditeTable(props) {
               </div>
             </InputGroup>
             <Divider type='horizontal' style={{ margin: '6px 0' }} />
+            {record.repoList === 'Y' && record.testResultExt && (
+              <>
+                <InputGroup compact>
+                  <div style={{ position: 'relative' }}>
+                    <div style={{ width: 70, textAlign: 'right', position: 'absolute', left: 0, top: 0 }}>补充内容：</div>
+                    <div style={{ marginLeft: 70 }} dangerouslySetInnerHTML={{ __html: record.testResultExt?.replace(/[\n]/g, '<br/>') }} />
+                  </div>
+                </InputGroup>
+                <Divider type='horizontal' style={{ margin: '6px 0' }} />
+              </>
+            )}
             <InputGroup compact>
               <div style={{ position: 'relative' }}>
                 <div style={{ width: 70, textAlign: 'right', position: 'absolute', left: 0, top: 0 }}>验证步骤：</div>

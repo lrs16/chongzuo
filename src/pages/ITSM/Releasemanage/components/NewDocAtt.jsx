@@ -243,7 +243,7 @@ function NewDocAtt(props) {
       render: (text, record) => {
         const dowload = ({ name, reportName }) => {
           exportTaskToDocx({ docTaskId: record.docTaskId, reportName }).then(res => {
-            if (res) {
+            if (res.status === 200) {
               const filename = `${name || reportName}.docx`;
               const blob = new Blob([res], { type: 'application/octet-stream' });
               const url = window.URL.createObjectURL(blob);
@@ -253,7 +253,7 @@ function NewDocAtt(props) {
               a.click();
               window.URL.revokeObjectURL(url);
             } else {
-              message.error(res.msg)
+              message.error(res.msg || '下载失败！')
             }
 
           })

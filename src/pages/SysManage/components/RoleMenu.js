@@ -186,7 +186,7 @@ class RoleMenu extends Component {
         const index = item.title.indexOf(searchValue);
         const beforeStr = item.title.substr(0, index);
         const afterStr = item.title.substr(index + searchValue.length);
-        const title =
+        const titles =
           index > -1 ? (
             <span>
               {beforeStr}
@@ -197,13 +197,17 @@ class RoleMenu extends Component {
             <span>{item.title}</span>
           );
         if (item.children) {
+          const newTitle = <>
+            {titles}
+            {/* <Button type='link'>【全选】</Button> */}
+          </>
           return (
-            <TreeNode key={item.key} title={title}>
+            <TreeNode key={item.key} title={newTitle}>
               {loop(item.children)}
             </TreeNode>
           );
         }
-        return <TreeNode key={item.key} title={title} />;
+        return <TreeNode key={item.key} title={titles} />;
       });
     return (
       <>

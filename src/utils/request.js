@@ -73,7 +73,7 @@ const errorHandler = error => {
     if (status >= 403 && status < 422) {
       router.push('/404');
     }
-    if (status !== 401) {
+    if (status >= 500 && status <= 505) {
       notification.destroy();
       const resJson = response.json();
       resJson.then((res) => {
@@ -150,19 +150,26 @@ request.interceptors.request.use(async (url, options) => {
 });
 
 // // 拦截返回后的特殊处理
-// request.interceptors.response.use((response, options) => {
-//   console.log(response)
-//   if (response.status === 401) {
-//     console.log(options)
-//     const res = response.json();
-//     console.log(res)
-//   }
-//   // if(response.data.code == 1000001){
-//   //   console.log(response.data.msg)
-//   //   //通过返回的code 提示 token 过期 、token校验失败，做相应跳转
-//   // }
-//   return response;
-// });
+request.interceptors.response.use((response, options) => {
+  // if (response.status === 200 && options.responseType === 'blob') {
+  //   // const newRes = response;
+  //   console.log(response);
+  //   // return new Promise((resolve, reject) => {
+  //   //   newRes.json().then(res => {
+  //   //     if (res.code === -1) {
+  //   //       return reject();
+  //   //     }
+  //   //   }).catch(res => {
+  //   //     return resolve(response)
+  //   //   })
+  //   // })
+  // }
+  // if(response.data.code == 1000001){
+  //   console.log(response.data.msg)
+  //   //通过返回的code 提示 token 过期 、token校验失败，做相应跳转
+  // }
+  return response;
+});
 
 /**
  * 刷新token

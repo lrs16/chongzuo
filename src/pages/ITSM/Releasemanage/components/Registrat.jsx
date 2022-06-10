@@ -56,6 +56,7 @@ function Registrat(props, ref) {
   const [alertvisible, setAlertVisible] = useState(false);  // 超时告警是否显示
   const [alertmessage, setAlertMessage] = useState('');
   const [check, setCheck] = useState(false);
+  const [testResultText, setTestResultText] = useState({ show: false, text: '' });
   // const [adopt, setAdopt] = useState('通过');
   const { ChangeSubmitType, ChangeButtype, location } = useContext(SubmitTypeContext);
 
@@ -127,7 +128,7 @@ function Registrat(props, ref) {
     const key = statumap.get(taskName);
     const target = v.filter(item => item.key === key)[0];
     if (target && target.attachFile !== '[]') {
-      setCheck(false);
+      setCheck(false);      // 旧需求:校验文档必填
     };
     if (files === 'files') {
       ChangeButtype('save')
@@ -161,6 +162,27 @@ function Registrat(props, ref) {
       };
       if (info.releaseBizValid.validResult === '不通过') {
         ChangeSubmitType(0)
+      }
+    };
+    if (info) {
+      const v = info.releaseLists;
+      if (info.releaseLists
+        && info.releaseLists.length
+        && info.releaseLists.length > 0
+        && (taskName === '出厂测试' || taskName === '平台验证')
+      ) {
+        if (!formmap.get(taskName).testResult) {
+          const passTotal = v.filter(item => item.passTest === '通过')?.length;
+          const noPassTotal = v.filter(item => item.passTest === '不通过')?.length;
+          setFieldsValue({ testResult: `总功能共${v.length}项，通过${passTotal}项，不通过${noPassTotal}项。` });
+          setTestResultText({ show: true, text: `总功能共${v.length}项，通过${passTotal}项，不通过${noPassTotal}项。` })
+        } else {
+          setTestResultText({ show: true, text: formmap.get(taskName).testResult })
+        }
+      };
+      if (taskName === '新建') {
+        setFieldsValue({ testResult: `总功能共0项，通过0项，不通过0项。` });
+        setTestResultText({ show: true, text: `总功能共0项，通过0项，不通过0项。` })
       }
     }
   }, [info])
@@ -454,7 +476,24 @@ function Registrat(props, ref) {
               isEdit={taskName !== '业务验证' && isEdit}
               taskName={taskName}
               dataSource={info.releaseLists}
-              ChangeValue={v => { setFieldsValue({ releaseLists: v }); }}
+              ChangeValue={v => {
+                const Text = getFieldsValue(['testResult']);
+                const text1 = Text?.testResult?.indexOf('总功能共');
+                const text2 = Text?.testResult?.indexOf('项，通过');
+                const text3 = Text?.testResult?.indexOf('项，不通过');
+                const text4 = Text?.testResult?.indexOf('项。');
+                if ((taskName === '新建' || taskName === '平台验证' || taskName === '出厂测试') && text1 > -1 && text2 > -1 && text3 > -1 && text4 > -1) {
+                  setTestResultText(false);
+                  const passTotal = v.filter(item => item.passTest === '通过')?.length;
+                  const noPassTotal = v.filter(item => item.passTest === '不通过')?.length;
+                  const index = Text?.testResult?.indexOf('项。');
+                  const afterStr = Text?.testResult?.substr(index + 2, Text?.testResult?.length) || '';
+                  setFieldsValue({ releaseLists: v, testResult: `总功能共${v.length}项，通过${passTotal}项，不通过${noPassTotal}项。${afterStr}` });
+                  setTimeout(() => { setTestResultText({ show: true, text: `总功能共${v.length}项，通过${passTotal}项，不通过${noPassTotal}项。${afterStr}` }) }, 50)
+                } else {
+                  setFieldsValue({ releaseLists: v });
+                }
+              }}
               listmsg={listmsg}
             />
             <Form.Item wrapperCol={{ span: 24 }}>
@@ -468,7 +507,7 @@ function Registrat(props, ref) {
               )}
             </Form.Item>
           </Col>
-          {(taskName === '平台验证') && (
+          {(taskName === '平台验证 ') && (
             <>
               <Col span={24}>
                 <Form.Item label='验证结果' {...forminladeLayout} labelAlign='left'>
@@ -501,18 +540,33 @@ function Registrat(props, ref) {
                 </Col>)} */}
             </>
           )}
-          {taskName !== '业务验证' && (
+          {taskName !== '业务验证' && testResultText.show && (
             <Col span={24}>
-              <Form.Item label={taskName === '新建' ? `出厂测试结论` : `${taskName}结论`} {...forminladeLayout} labelAlign='left'>
+              <Form.Item
+                label={taskName === '新建' ? `出厂测试结论` : `${taskName}结论`}
+                {...forminladeLayout}
+                labelAlign='left'
+              >
                 {getFieldDecorator('testResult', {
                   rules: [{ required, message: taskName === '新建' ? `请填写出厂测试结论` : `请填写${taskName}结论` }],
-                  initialValue: formmap.get(taskName).testResult,
+                  initialValue: testResultText.text,
                 })(
                   <FormTextArea
                     autoSize={1}
-                    indexText={formmap.get(taskName).testResult}
+                    indexText={testResultText.text}
                     isEdit={isEdit}
-                    getVal={v => setFieldsValue({ testResult: v })}
+                    getVal={v => {
+                      if (v) {
+                        setFieldsValue({ testResult: v });
+                      } else {
+                        const val = getFieldsValue(['releaseLists'])?.releaseLists;
+                        setTestResultText(false);
+                        const passTotal = val.filter(item => item.passTest === '通过')?.length;
+                        const noPassTotal = val.filter(item => item.passTest === '不通过')?.length;
+                        setFieldsValue({ testResult: `总功能共${val.length}项，通过${passTotal}项，不通过${noPassTotal}项。` });
+                        setTimeout(() => { setTestResultText({ show: true, text: `总功能共${val.length}项，通过${passTotal}项，不通过${noPassTotal}项。` }) }, 50)
+                      }
+                    }}
                   />
                 )}
               </Form.Item>

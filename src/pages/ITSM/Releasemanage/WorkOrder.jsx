@@ -60,7 +60,7 @@ function WorkOrder(props) {
         releaseMain: { releaseType, dutyUnit, releaseNo },
         releaseRegister: {
           testUnit: testUnit.toString(),
-          testStart, testEnd, testPlace, testOperator, influenceScope, testResult, registerTime, registerUnit, registerUnitId, registerUser, registerUserId,
+          testStart, testEnd, testPlace, testOperator, influenceScope, testResult: testResult || '', registerTime, registerUnit, registerUnitId, registerUser, registerUserId,
         },
         releaseAttaches,
         releaseEnvs,

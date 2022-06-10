@@ -232,11 +232,11 @@ const Handle = React.forwardRef((props, ref) => {
           </Col>
           <Col span={8}>
             <div onClick={e => e.stopPropagation()}>
-              <Form.Item label="完成时间">
+              <Form.Item label="处理完成时间">
                 {getFieldDecorator('handle_endTime', {
-                  rules: [{ required }],
-                  initialValue: moment(handle?.endTime || undefined),
-                })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
+                  //  rules: [{ required }],
+                  initialValue: handle?.endTime || undefined,
+                })(<Input disabled />)}
               </Form.Item>
             </div>
           </Col>
