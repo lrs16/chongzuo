@@ -6,7 +6,7 @@ import { getAndField } from '@/pages/SysManage/services/api';
 import SysDict from '@/components/SysDict';
 import { DownloadOutlined } from '@ant-design/icons';
 import { FileDownload, FileDelete, getFileSecuritySuffix } from '@/services/upload';
-import FormTextArea from './FormTextArea';
+import OperationText from './OperationText';
 // import BraftEditor from 'braft-editor'
 // import 'braft-editor/dist/index.css';
 import styles from '../index.less'
@@ -463,14 +463,8 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
             )}
 
             <Col span={8} style={{ display: 'none' }}>
-              <Form.Item label="开工作票">
+              <Form.Item label="作业负责人id">
                 {getFieldDecorator('main_operationUserId', {
-                  rules: [
-                    {
-                      required,
-                      message: '请选择是否开工作票',
-                    },
-                  ],
                   initialValue: main.operationUserId,
                 })(
                   <Radio.Group>
@@ -560,7 +554,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                   ],
                   initialValue: main.content,
                 })(
-                  <FormTextArea
+                  <OperationText
                     autoSize={1}
                     indexText={main.content}
                     isEdit
@@ -581,7 +575,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                   ],
                   initialValue: main.riskAnalysis,
                 })(
-                  <FormTextArea
+                  <OperationText
                     autoSize={1}
                     indexText={main.riskAnalysis}
                     isEdit
@@ -602,7 +596,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                   ],
                   initialValue: main.riskMeasures,
                 })(
-                  <FormTextArea
+                  <OperationText
                     autoSize={1}
                     indexText={main.riskMeasures}
                     isEdit

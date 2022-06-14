@@ -163,6 +163,8 @@ function OperationPlanfillintion(props) {
                 billing: values.main_billing,
                 object: values.main_object,
                 content: values.main_content,
+                riskAnalysis: values.main_riskAnalysis,
+                riskMeasures: values.main_riskMeasures,
                 plannedStartTime: values.main_plannedStartTime.format('YYYY-MM-DD HH:mm:ss'),
                 plannedEndTime: values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss'),
                 addTime: values.main_addTime.format('YYYY-MM-DD HH:mm:ss'),
@@ -181,6 +183,7 @@ function OperationPlanfillintion(props) {
       setCopyData(tabdata);
     }
   }, [tabdata]);
+
 
   return (
     <PageHeaderWrapper
@@ -243,8 +246,6 @@ function OperationPlanfillintion(props) {
           </Collapse>
         </div>
       </div>
-
-
 
     </PageHeaderWrapper>
   );

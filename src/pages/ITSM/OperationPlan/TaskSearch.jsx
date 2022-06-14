@@ -177,6 +177,17 @@ function TaskSearch(props) {
       width: 150,
     },
     {
+      title: '超时状态',
+      dataIndex: 'timeoutStatus',
+      key: 'timeoutStatus',
+      width: 150,
+      render: text => (
+        <span>
+          <Badge status={statusMap[statusContent.indexOf(text)]} text={text} />
+        </span>
+      ),
+    },
+    {
       title: '作业性质',
       dataIndex: 'nature',
       key: 'nature',
@@ -253,17 +264,6 @@ function TaskSearch(props) {
           </Tooltip>
         );
       },
-    },
-    {
-      title: '超时状态',
-      dataIndex: 'timeoutStatus',
-      key: 'timeoutStatus',
-      width: 150,
-      render: text => (
-        <span>
-          <Badge status={statusMap[statusContent.indexOf(text)]} text={text} />
-        </span>
-      ),
     },
     {
       title: '计划开始时间',
@@ -1123,22 +1123,6 @@ function TaskSearch(props) {
                       })(
                         <Select placeholder="请选择" allowClear>
                           {checkStatus.map(obj => [
-                            <Option key={obj.key} value={obj.title}>
-                              {obj.title}
-                            </Option>,
-                          ])}
-                        </Select>,
-                      )}
-                    </Form.Item>
-                  </Col>
-
-                  <Col span={8}>
-                    <Form.Item label="超时状态">
-                      {getFieldDecorator('timeoutStatus', {
-                        initialValue: cacheinfo.timeoutStatus,
-                      })(
-                        <Select placeholder="请选择" allowClear>
-                          {timeoutStatusselect.map(obj => [
                             <Option key={obj.key} value={obj.title}>
                               {obj.title}
                             </Option>,

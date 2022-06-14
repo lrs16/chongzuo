@@ -616,6 +616,17 @@ function MyoperationPlan(props) {
       width: 150,
     },
     {
+      title: '超时状态',
+      dataIndex: 'timeoutStatus',
+      key: 'timeoutStatus',
+      width: 150,
+      render: text => (
+        <span>
+          <Badge status={statusMap[statusContent.indexOf(text)]} text={text} />
+        </span>
+      ),
+    },
+    {
       title: '作业性质',
       dataIndex: 'nature',
       key: 'nature',
@@ -692,17 +703,6 @@ function MyoperationPlan(props) {
           </Tooltip>
         );
       },
-    },
-    {
-      title: '超时状态',
-      dataIndex: 'timeoutStatus',
-      key: 'timeoutStatus',
-      width: 150,
-      render: text => (
-        <span>
-          <Badge status={statusMap[statusContent.indexOf(text)]} text={text} />
-        </span>
-      ),
     },
     {
       title: '计划开始时间',
