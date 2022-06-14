@@ -6,6 +6,15 @@ import FormTextArea from '@/components/FormTextArea'; // 文本域收缩: 默认
 
 const { Option } = Select;
 
+const categorymaps = [
+  { key: '0', title: '硬件运维' },
+  { key: '1', title: '软件运维' },
+  { key: '2', title: '功能开发' },
+  { key: '3', title: '新电力' },
+  { key: '4', title: '实用化指标' },
+  { key: '5', title: '其他' },
+];
+
 const TaskworkEditfillin = React.forwardRef((props, ref) => {
   const {
     form: { getFieldDecorator, getFieldsValue, resetFields, setFieldsValue },
@@ -128,6 +137,27 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
               )}
             </Form.Item>
           </Col>
+          <Col span={8}>
+            <Form.Item label="督办类别">
+              {getFieldDecorator('type', {
+                rules: [
+                  {
+                    required,
+                    message: '请选择督办类别',
+                  },
+                ],
+                initialValue: main.type,
+              })(
+                <Select placeholder="请选择" allowClear>
+                  {categorymaps.map(obj => (
+                    <Option key={obj.key} value={obj.title}>
+                      {obj.title}
+                    </Option>
+                  ))}
+                </Select>,
+              )}
+            </Form.Item>
+          </Col>
           {superviseworkPersonSelect && superviseworkPersonSelect.length && (
             <Col span={8}>
               <Form.Item label="工作负责人">
@@ -177,7 +207,7 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
               </Form.Item>
             </Col>
           )}
-          <Col span={24}>
+          <Col span={24} style={{ marginTop: 4, marginBottom: '-10px' }}>
             <Form.Item label="工作内容" {...forminladeLayout}>
               {getFieldDecorator('main_content', {
                 rules: [{ required, message: '请输入工作内容' }, {}],

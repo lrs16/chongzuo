@@ -124,7 +124,7 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
             </Form.Item>
           </Col>
 
-          <Col span={24}>
+          <Col span={24} style={{ marginTop: 4, marginBottom: '-10px' }}>
             <Form.Item label="工作执行情况说明" {...forminladeLayout}>
               {getFieldDecorator('execute_content', {
                 rules: [{ required, message: '请输入工作执行情况说明' }],

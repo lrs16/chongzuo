@@ -286,14 +286,14 @@ const HandleChild = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请选择处理完成时间',
+                  // message: '请选择处理完成时间',
                 },
               ],
               initialValue:
-                handle && handle.handleStartTime
+                handle && handle.handleEndTime
                   ? moment(handle.handleEndTime)
-                  : moment(Date.now()),
-            })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
+                  : undefined,
+            })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} disabled />)}
           </Form.Item>
         </Col>
         {selectdata.handleresult !== undefined && (

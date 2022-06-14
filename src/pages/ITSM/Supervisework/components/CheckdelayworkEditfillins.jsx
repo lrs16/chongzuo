@@ -47,7 +47,7 @@ function CheckdelayworkEditfillins(props) {
             <Input defaultValue={info.status} disabled />
           </Form.Item>
         </Col>
-        <Col span={24}>
+        <Col span={24} style={{ marginTop: 4, marginBottom: '-10px' }}>
           <Form.Item label="延期审核意见" {...forminladeLayout}>
             <FormTextArea autoSize={1} indexText={info.content} />
           </Form.Item>

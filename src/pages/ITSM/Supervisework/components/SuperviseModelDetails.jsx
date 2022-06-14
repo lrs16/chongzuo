@@ -29,7 +29,7 @@ function SuperviseModelDetails(props) {
   return (
     <Row gutter={24}>
       <Form {...formItemLayout}>
-        <Col span={24}>
+        <Col span={24} style={{ marginTop: 4, marginBottom: '-10px' }}>
           <Form.Item label="督办内容" {...forminladeLayout}>
             <FormTextArea autoSize={1} indexText={info.content} />
           </Form.Item>

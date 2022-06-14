@@ -100,7 +100,7 @@ const CheckdelayworkEditfillin = React.forwardRef((props, ref) => {
             </Form.Item>
           </Col>
 
-          <Col span={24}>
+          <Col span={24} style={{ marginTop: 4, marginBottom: '-10px' }}>
             {adopt === '001' && (
               <Form.Item label="审核说明" {...forminladeLayout}>
                 {getFieldDecorator('check_content', {

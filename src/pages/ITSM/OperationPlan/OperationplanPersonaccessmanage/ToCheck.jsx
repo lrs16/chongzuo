@@ -213,7 +213,7 @@ function ToCheck(props) {
       title: '审核单位',
       dataIndex: 'checkUnit',
       key: 'checkUnit',
-      width: 200,
+      width: 300,
     },
   ];
 

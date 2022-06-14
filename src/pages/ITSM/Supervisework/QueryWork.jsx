@@ -697,6 +697,7 @@ function QueryWork(props) {
   const checkstatus = getTypebyTitle('审核状态');
   const result = getTypebyTitle('执行结果');
   const executestatus = getTypebyTitle('执行状态');
+  const worktypemap = getTypebyTitle('督办类别');
 
   // 查询
   const extra = (
@@ -1039,6 +1040,21 @@ function QueryWork(props) {
                     {getFieldDecorator('no', {
                       initialValue: cacheinfo.no,
                     })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="督办类别">
+                    {getFieldDecorator('type', {
+                      initialValue: cacheinfo.type,
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {worktypemap.map(obj => (
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>
+                        ))}
+                      </Select>,
+                    )}
                   </Form.Item>
                 </Col>
               </span>
