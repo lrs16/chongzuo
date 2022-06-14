@@ -218,6 +218,7 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
                   indexText={main.content}
                   isEdit={type !== 'delay'}
                   getVal={v => setFieldsValue({ main_content: v })}
+                  key={main.content}
                 />,
               )}
             </Form.Item>

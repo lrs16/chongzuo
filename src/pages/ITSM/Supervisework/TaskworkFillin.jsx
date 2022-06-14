@@ -106,6 +106,7 @@ function TaskworkFillin(props) {
           flowNodeName: '工作登记',
           editState: 'add',
           main_status: '1',
+          main_type: values.type,
           main_addUserId: userinfo.userId,
           main_addUnitId: userinfo.unitId,
         },
@@ -135,6 +136,7 @@ function TaskworkFillin(props) {
             flowNodeName: '工作登记',
             editState: 'add',
             main_status: '1',
+            main_type: values.type,
             main_addUserId: userinfo.userId,
             main_addUnitId: userinfo.unitId,
             main_workUser: JSON.stringify(values.main_workUser),
@@ -238,6 +240,7 @@ function TaskworkFillin(props) {
                 ),
                 plannedEndTime: moment(values.main_plannedEndTime).format('YYYY-MM-DD HH:mm:ss'),
                 status: values.main_status, // 工作状态
+                type: values.type, // 督办类别
                 content: values.main_content, // 工作内容
                 addUser: values.main_addUser, // 填报人
                 addUserId: userinfo.userId,
