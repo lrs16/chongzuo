@@ -110,20 +110,15 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="处理完成时间">
             {getFieldDecorator('handleTime', {
-              rules: [
-                {
-                  required,
-                  message: '请输入处理完成时间',
-                },
-              ],
-              initialValue: handleTime,
+              initialValue: (handle && handle.handleTime) ? moment(handle.handleTime):undefined,
             })((<DatePicker
               showTime
-              disabled={showEdit}
+              disabled
               allowClear={false}
             />))}
           </Form.Item>
         </Col>
+
         <Col span={8}>
           <Form.Item label="处理结果">
             {getFieldDecorator('handleResult', {
@@ -174,7 +169,7 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
         </div>
 
 
-        <Col span={24} style={{ paddingLeft: '8.33333333% ',marginTop: '-6px' }} >
+        <Col span={24} style={{ paddingLeft: '8.33333333% ', marginTop: '-6px' }} >
           <KnowledgCollect
             valuealready={valuealready}
             content={knowledgecontent}
