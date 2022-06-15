@@ -349,7 +349,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
               ],
               initialValue: tododetailslist ? tododetailslist.register.registerScope : '',
             })(
-              <Select getPopupContainer={e => e.parentNode} placeholder="请选择">
+              <Select placeholder="请选择">
                 {effect.map(obj => [
                   <Option key={obj.key} value={obj.title}>
                     {obj.title}

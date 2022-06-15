@@ -283,16 +283,10 @@ const HandleChild = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="处理完成时间">
             {getFieldDecorator('handleEndTime', {
-              rules: [
-                {
-                  required,
-                  // message: '请选择处理完成时间',
-                },
-              ],
               initialValue:
                 handle && handle.handleEndTime
                   ? moment(handle.handleEndTime)
-                  : undefined,
+                  : moment(Date.now()),
             })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} disabled />)}
           </Form.Item>
         </Col>
