@@ -46,6 +46,11 @@ function TaskworkEditfillins(props) {
           </Form.Item>
         </Col>
         <Col span={8}>
+          <Form.Item label="督办类别">
+            <Input defaultValue={info.type} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
           <Form.Item label="工作负责人">
             <Input defaultValue={info.workUser} disabled />
           </Form.Item>
