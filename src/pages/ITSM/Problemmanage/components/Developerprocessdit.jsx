@@ -110,11 +110,9 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="处理完成时间">
             {getFieldDecorator('handleTime', {
-              initialValue: (handle && handle.handleTime) ? moment(handle.handleTime):undefined,
-            })((<DatePicker
-              showTime
+              initialValue: (handle?.handleTime) ? handle.handleTime:'',
+            })((<Input
               disabled
-              allowClear={false}
             />))}
           </Form.Item>
         </Col>
