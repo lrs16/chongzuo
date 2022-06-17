@@ -1046,7 +1046,7 @@ function Workorder(props) {
                           <div>
                             处理人：{obj.formHandler}
                             <div>
-                              结束时间：{moment(obj.endTime).format('YYYY-MM-DD HH:mm:ss')}
+                              结束时间：{obj.endTime === null ? undefined : moment(obj.endTime).format('YYYY-MM-DD HH:mm:ss')}
                             </div>
 
                           </div>

@@ -212,7 +212,7 @@ function Querylistdetails(props) {
                               <div className={styles.stepDescription}>
                                 处理人：{formHandler}
                                 <div>
-                                  结束时间：{moment(endTime).format('YYYY-MM-DD HH:mm:ss')}
+                                  结束时间：{endTime === null ? undefined : moment(endTime).format('YYYY-MM-DD HH:mm:ss')}
                                 </div>
                               </div>
                             }
