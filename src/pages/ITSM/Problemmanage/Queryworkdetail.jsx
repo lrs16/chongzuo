@@ -184,7 +184,7 @@ function Queryworkdetail(props) {
                           description={
                             <div className={styles.stepDescription}>
                               处理人：{obj.formHandler}
-                              <div>结束时间：{moment(obj.startTime).format('YYYY-MM-DD HH:mm:ss')}</div>
+                              <div>结束时间：{moment(obj.endTime).format('YYYY-MM-DD HH:mm:ss')}</div>
                             </div>
                           }
                           icon={(obj.name !== '结束节点' && index === problemFlowLogs.length - 1 || obj.status === '待审核') ? <Icon type="loading" spin /> : ''}

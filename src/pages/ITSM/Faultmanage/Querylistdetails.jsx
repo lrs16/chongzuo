@@ -195,7 +195,7 @@ function Querylistdetails(props) {
                 >
                   {troubleFlowLogs &&
                     troubleFlowLogs.map(
-                      ({ key, name, status, timeText, formHandler, startTime }) => [
+                      ({ key, name, status, timeText, formHandler, endTime }) => [
                         name !== '开始节点' && name !== '结束节点' && (
                           <Step
                             key={key}
@@ -212,7 +212,7 @@ function Querylistdetails(props) {
                               <div className={styles.stepDescription}>
                                 处理人：{formHandler}
                                 <div>
-                                  结束时间：{moment(startTime).format('YYYY-MM-DD HH:mm:ss')}
+                                  结束时间：{moment(endTime).format('YYYY-MM-DD HH:mm:ss')}
                                 </div>
                               </div>
                             }
