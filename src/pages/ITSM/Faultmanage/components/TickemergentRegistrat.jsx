@@ -171,12 +171,19 @@ function TickemergentRegistrat(props, ref) {
               )}
             </Form.Item>
           </Col>
-          <Col span={8}>
-            <Form.Item label="抢修风险">
+          <Col span={24} style={{ marginTop: 4, marginBottom: '-10px' }}>
+            <Form.Item label="抢修风险" {...forminladeLayout}>
               {getFieldDecorator('risk', {
                 rules: [{ required, message: '请输入抢修风险' }],
                 initialValue: formrecord?.risk || '',
-              })(<Input placeholder="请输入" allowClear disabled={unedit} />)}
+              })(
+                <FormTextArea
+                  autoSize={1}
+                  indexText={formrecord?.risk || ''}
+                  isEdit={!unedit}
+                  getVal={v => setFieldsValue({ risk: v })}
+                />,
+              )}
             </Form.Item>
           </Col>
           <Col span={24} style={{ marginTop: 4, marginBottom: '-10px' }}>
