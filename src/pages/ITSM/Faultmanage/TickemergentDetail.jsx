@@ -152,26 +152,11 @@ function TickemergentDetail(props) {
     });
   };
 
-  // 确认工作
+  // 确认工作，完成工作
   const handlefirmSubmit = v => {
     const val = {
       mainId: info?.task?.mainId,
       remark: v.remark,
-      taskName: info?.task?.taskName,
-    };
-    dispatch({
-      type: 'tickemergent/repairSubmit',
-      payload: {
-        ...val,
-      },
-    });
-  };
-
-  // 完成工作
-  const handlefinishWork = () => {
-    const val = {
-      mainId: info?.task?.mainId,
-      remark: '完成工作',
       taskName: info?.task?.taskName,
     };
     dispatch({
@@ -239,7 +224,7 @@ function TickemergentDetail(props) {
           <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleDownload()}>
             导出WORD
           </Button>
-          {(info?.task?.taskName === '待开放商确认' ||
+          {(info?.task?.taskName === '待开发商确认' ||
             info?.task?.taskName === '待许可人确认' ||
             info?.task?.taskName === '待签发人确认' ||
             info?.task?.taskName === '待接收人确认' ||
@@ -249,7 +234,7 @@ function TickemergentDetail(props) {
             </Button>
           )}
           {info?.task?.taskName === '值班员确认' && (
-            <Button type="primary" style={{ marginRight: 8 }} onClick={() => handlefinishWork()}>
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => setVisible(true)}>
               完成工作
             </Button>
           )}
