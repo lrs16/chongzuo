@@ -243,7 +243,7 @@ function NewDocAtt(props) {
       render: (text, record) => {
         const dowload = ({ name, reportName }) => {
           exportTaskToDocx({ docTaskId: record.docTaskId, reportName }).then(res => {
-            if (res.status === 200) {
+            if (res) {
               const filename = `${name || reportName}.docx`;
               const blob = new Blob([res], { type: 'application/octet-stream' });
               const url = window.URL.createObjectURL(blob);

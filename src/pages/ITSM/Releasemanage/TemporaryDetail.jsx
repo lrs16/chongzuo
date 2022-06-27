@@ -254,7 +254,7 @@ function TemporaryDetail(props) {
   const handleDownload = () => {
     exportTempReleaseApply(Id).then(res => {
       if (res) {
-        const filename = `临时发布申请审批表_${moment().format('YYYY-MM-DD HH:mm')}.pdf`;
+        const filename = `临时发布申请审批表_${moment().format('YYYY-MM-DD HH:mm')}.docx`;
         const blob = new Blob([res]);
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -373,7 +373,7 @@ function TemporaryDetail(props) {
           </Popconfirm>
         </>
       )}
-      {taskName === '结束' && <Button type="primary" onClick={() => handleDownload()} >导出PDF</Button>}
+      {taskName === '结束' && <Button type="primary" onClick={() => handleDownload()} >导出Word</Button>}
     </>}
       <Button type="default" onClick={() => handleclose()} >关闭</Button>
     </>
