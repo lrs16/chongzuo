@@ -355,7 +355,7 @@ function OtherReportdetail(props) {
                     initialValue: main ? main.name : ''
                   })
                     (
-                      <Input disabled={reportSearch} style={{ width: 700 }} placeholder={`省级集中计量自动化系统其他运维${reporttype === 'week' ? '周' : '月'}报`} />
+                      <Input disabled={reportSearch} style={{ width: 700 }} placeholder={`省级集中XXXX系统其他运维${reporttype === 'week' ? '周' : '月'}报`} />
                     )}
                 </Form.Item>
               </Col>

@@ -87,14 +87,14 @@ function ComputerroommonthlyReportdetail(props) {
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const { main } = openReportlist;
-  const summarydefaults = '按照合同要求，博联机房运维组对省级集中计量自动化系统机房进行监控值班和巡检运维工作。所运维的设备分布于49个机柜，共计300台（套），其中60台服务器，网络设备96台，安全设备70台，其它设备37台，软件系统37套；运维期内机房新增的设备也在运维范围。'
+  const summarydefaults = '按照合同要求，博联机房运维组对省级集中XXXX系统机房进行监控值班和巡检运维工作。所运维的设备分布于49个机柜，共计300台（套），其中60台服务器，网络设备96台，安全设备70台，其它设备37台，软件系统37套；运维期内机房新增的设备也在运维范围。'
   const personnelOrganization = `项目经理：梁勇成
 技术工程师：利东 刘熙仑 
 值班工程师：高永迪 罗智辉 周延昌 欧文贵 林立昆 莫明建 杨名伟`
-  const placeWork = '计量中心白沙机房监控室、主机房、蓄电池室、配电室等';
+  const placeWork = 'XX中心白沙机房监控室、主机房、蓄电池室、配电室等';
   const jobContent = `1、数据库监控
 2、服务器监控、巡检
-3、计量自动化系统运行监控
+3、XXXX系统运行监控
 4、机房动力环境系统监控、巡检
 5、蓄电池室监控、巡检
 6、供配电系统监控、巡检
@@ -102,7 +102,7 @@ function ComputerroommonthlyReportdetail(props) {
 8、消防系统巡检
 9、网络通道监控、巡检
 10、信息安全监控 `
-  const maintenanceRecords = '详见每日的《广西计量机房硬件及基础环境日巡检报告》';
+  const maintenanceRecords = '详见每日的《广西XX机房硬件及基础环境日巡检报告》';
   const dutySituation = `本月实行7*24小时值班，共值班${moment(endTime).endOf('month').format('DD') * 3}个班次，提交运维简报${moment(endTime).endOf('month').format('DD') * 3}次，按时提交率100%；巡检日报，机房出入登记表和值班日志等均按规定做了记录，无违规现象。`
   const TroubleShooting = `本月巡检到设备硬件故障0起，监控到设备软件故障0起0；未发生网络故障和电源故障；修复历史硬件故障1起。
 目前机房设备无缺陷或告警，运行状态良好。`
@@ -397,7 +397,7 @@ function ComputerroommonthlyReportdetail(props) {
                   onClick={exportWord}
                   disabled={olduploadstatus}
                 >导出</Button>
-                
+
                 <Button onClick={handleBack}>
                   返回
                 </Button>
@@ -434,7 +434,7 @@ function ComputerroommonthlyReportdetail(props) {
                   initialValue: main && main.name || ''
                 })
                   (
-                    <Input disabled={reportSearch} style={{ width: 700 }} placeholder={`省级集中计量自动化系统机房运维${reporttype === 'week' ? '周' : '月'}报`} />
+                    <Input disabled={reportSearch} style={{ width: 700 }} placeholder={`省级集中XXXX系统机房运维${reporttype === 'week' ? '周' : '月'}报`} />
                   )}
               </Form.Item>
             </Col>

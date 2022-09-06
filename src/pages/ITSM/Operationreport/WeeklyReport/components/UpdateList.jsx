@@ -174,7 +174,7 @@ function UpgradeList(props) {
 
   return (
     <>
-      <p style={{ marginTop: 20 }}>(2)计划{startTime}至{endTime},计量自动化系统开展 次发布变更（消缺），变更内容如下</p>
+      <p style={{ marginTop: 20 }}>(2)计划{startTime}至{endTime},XXXX系统开展 次发布变更（消缺），变更内容如下</p>
 
       <div style={{ textAlign: 'right', marginBottom: 10 }}>
         <Button

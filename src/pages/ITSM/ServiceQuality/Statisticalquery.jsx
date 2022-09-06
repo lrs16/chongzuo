@@ -13,7 +13,7 @@ import moment from 'moment';
 import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import AnalysisPopup from './AnalysisPopup';
-import { scoreListpage } from '../ServiceQuality/services/quality';
+import { scoreListpage } from "./services/quality";
 
 
 let startTime;
@@ -75,7 +75,7 @@ function Statisticalquery(props) {
               scoreType: '减'
             });
             setVisible(true)
-            setTitle('合同名称:' + record.contractName + ';' + '考核周期:' + (record.assessPhase || ''))
+            setTitle(`合同名称:${record.contractName};` + `考核周期:${record.assessPhase || ''}`)
           } else {
             message.info('请点击查询查询数据后才可查看本周扣分详情')
           }
@@ -97,7 +97,7 @@ function Statisticalquery(props) {
               scoreType: '加'
             });
             setVisible(true)
-            setTitle('合同名称:' + record.contractName + ';' + '考核周期:' + (record.assessPhase || ''))
+            setTitle(`合同名称:${record.contractName};` + `考核周期:${record.assessPhase || ''}`)
           } else {
             message.info('请点击查询查询数据后才可查看本周加分详情')
           }
@@ -117,7 +117,7 @@ function Statisticalquery(props) {
             contractId: record.contractId,
             scoreType: '减'
           });
-          setTitle('合同名称:' + record.contractName + ';' + '考核周期:' + (record.assessPhase || ''))
+          setTitle(`合同名称:${record.contractName};` + `考核周期:${record.assessPhase || ''}`)
           setVisible(true)
         }}>{text}</a>
 
@@ -135,7 +135,7 @@ function Statisticalquery(props) {
             contractId: record.contractId,
             scoreType: '加'
           });
-          setTitle('合同名称:' + record.contractName + ';' + '考核周期:' + (record.assessPhase || ''))
+          setTitle(`合同名称:${record.contractName};` + `考核周期:${record.assessPhase || ''}`)
           setVisible(true)
         }}>{text}</a>
       }
@@ -152,7 +152,7 @@ function Statisticalquery(props) {
             contractId: record.contractId,
             scoreType: '合计'
           });
-          setTitle('合同名称:' + record.contractName + ';' + '考核周期:' + (record.assessPhase || ''))
+          setTitle(`合同名称:${record.contractName};` + `考核周期:${record.assessPhase || ''}`)
           setVisible(true)
         }}>{text}</a>
       }
@@ -178,7 +178,7 @@ function Statisticalquery(props) {
               scoreId: record.scoreId || '1',
               assessType: findassessType[0].assessType === '功能开发' ? '1' : '2' || '1',
               version: '1.1',
-              deptName: '广西电网责任有限责任公司',
+              deptName: '广西XX责任有限责任公司',
               evaluationInterval: [],
               details: [],
               beginTime: record.beginTime,
@@ -230,7 +230,7 @@ function Statisticalquery(props) {
             contractId: record.contractId,
             scoreType: '减'
           });
-          setTitle('合同名称:' + record.contractName + ';' + '考核周期:' + (record.assessPhase || ''))
+          setTitle(`合同名称:${record.contractName};` + `考核周期:${record.assessPhase || ''}`)
           setVisible(true)
         }}>{text}</a>
       }
@@ -247,7 +247,7 @@ function Statisticalquery(props) {
             contractId: record.contractId,
             scoreType: '加'
           });
-          setTitle('合同名称:' + record.contractName + ';' + '考核周期:' + (record.assessPhase || ''))
+          setTitle(`合同名称:${record.contractName};` + `考核周期:${record.assessPhase || ''}`)
           setVisible(true)
         }}>{text}</a>
       }
@@ -264,7 +264,7 @@ function Statisticalquery(props) {
             contractId: record.contractId,
             scoreType: '合计'
           });
-          setTitle('合同名称:' + record.contractName + ';' + '考核周期:' + (record.assessPhase || ''))
+          setTitle(`合同名称:${record.contractName};` + `考核周期:${record.assessPhase || ''}`)
           setVisible(true)
         }}>{text}</a>
       }
@@ -290,7 +290,7 @@ function Statisticalquery(props) {
               scoreId: record.scoreId || '1',
               assessType: findassessType[0].assessType === '功能开发' ? '1' : '2' || '1',
               version: '1.1',
-              deptName: '广西电网责任有限责任公司',
+              deptName: '广西XX责任有限责任公司',
               evaluationInterval: [],
               details: [],
               beginTime: record.beginTime,

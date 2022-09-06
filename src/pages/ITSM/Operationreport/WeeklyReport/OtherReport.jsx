@@ -187,7 +187,7 @@ function OtherReport(props) {
       setStartTime(copyData.main.time1)
       setEndTime(copyData.main.time2)
     }
-  }, [copyData,paste])
+  }, [copyData, paste])
 
   const handleBack = () => {
     router.push({
@@ -334,7 +334,7 @@ function OtherReport(props) {
                     initialValue: copyData.main ? copyData.main.name : ''
                   })
                     (
-                      <Input style={{ width: 700 }} placeholder={`省级集中计量自动化系统其他运维${reporttype === 'week'? '周':'月'}报`} />
+                      <Input style={{ width: 700 }} placeholder={`省级集中XXXX系统其他运维${reporttype === 'week' ? '周' : '月'}报`} />
                     )}
                 </Form.Item>
               </Col>

@@ -99,7 +99,7 @@ function ComputerroomReport(props) {
   const [timeshow, setTimeshow] = useState(true);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
-  const [initial,setInitial] = useState(false);
+  const [initial, setInitial] = useState(false);
   const [paste, setPaste] = useState(false);
 
   //  保存表单
@@ -262,7 +262,7 @@ function ComputerroomReport(props) {
   }, [initial])
 
   useEffect(() => {
-    setMaterialsList(copyData.materialsList  ||  materialsList );
+    setMaterialsList(copyData.materialsList || materialsList);
     setNewTroubleList(faultQueryList || copyData.newTroubleList);
     setUnCloseTroubleList(nofaultQueryList || copyData.unCloseTroubleList);
     setOperationList(lastweekHomeworklist || copyData.operationList);
@@ -440,27 +440,27 @@ function ComputerroomReport(props) {
       title={reporttype === 'week' ? '新建机房运维周报' : '新建机房运维月报'}
       extra={
         <>
-        {
-          loading === false && (
-            <>
-            <Button
-            type='primary'
-            onClick={handlePaste}
-            disabled={olduploadstatus}
-          >粘贴</Button>
-          <Button
-            type='primary'
-            onClick={computerReportform}
-            disabled={olduploadstatus}
-          >
-            保存
-          </Button>
-          <Button onClick={handleBack}>
-            返回
-          </Button>
-            </>
-          )
-        }
+          {
+            loading === false && (
+              <>
+                <Button
+                  type='primary'
+                  onClick={handlePaste}
+                  disabled={olduploadstatus}
+                >粘贴</Button>
+                <Button
+                  type='primary'
+                  onClick={computerReportform}
+                  disabled={olduploadstatus}
+                >
+                  保存
+                </Button>
+                <Button onClick={handleBack}>
+                  返回
+                </Button>
+              </>
+            )
+          }
         </>
       }
     >
@@ -491,7 +491,7 @@ function ComputerroomReport(props) {
                   initialValue: copyData.main ? copyData.main.name : ''
                 })
                   (
-                    <Input style={{ width: 700 }} placeholder={`省级集中计量自动化系统机房运维${reporttype === 'week' ? '周' : '月'}报`} />
+                    <Input style={{ width: 700 }} placeholder={`省级集中XXXX系统机房运维${reporttype === 'week' ? '周' : '月'}报`} />
                   )}
               </Form.Item>
             </Col>

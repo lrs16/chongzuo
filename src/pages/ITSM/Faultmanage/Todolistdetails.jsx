@@ -1470,24 +1470,23 @@ function Todolistdetails(props) {
                     border: '1px solid #e8e8e8',
                   }}
                 >
-                  {flowlog &&
-                    flowlog.troubleFlowLogs.map(
-                      ({ key, name, status, startTime, formHandler, backReason }) => [
-                        name !== '开始节点' && name !== '结束节点' && (
-                          <Step
-                            key={key}
-                            title={`${name}${'\xa0'}${'\xa0'}(${status})`}
-                            description={
-                              <div className={styles.stepDescription}>
-                                处理人：{formHandler}
-                                <div>{moment(startTime).format('YYYY-MM-DD HH:mm:ss')}</div>
-                                <div>{status === '退回' && `回退原因：${backReason}`}</div>
-                              </div>
-                            }
-                          />
-                        ),
-                      ],
-                    )}
+                  {flowlog && flowlog.troubleFlowLogs.map((obj, index) => {
+                    const backoff = obj.status === '' ? '' : '（回退）';
+                    const desc = (
+                      <div>
+                        <div>处理人：{obj.formHandler}</div>
+                        <div>{moment(obj.startTime).format('YYYY-MM-DD HH:mm:ss')}</div>
+                        {obj.status !== '' && <div>回退原因：{obj.status}</div>}
+                      </div>
+                    );
+                    return (
+                      <Step
+                        title={`${obj.name}${backoff}`}
+                        description={desc}
+                        key={index.toString()}
+                      />
+                    );
+                  })}
                 </Steps>
               </div>
             )}

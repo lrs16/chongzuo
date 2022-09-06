@@ -397,7 +397,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
                 getPopupContainer={e => e.parentNode}
                 dataSource={desautodata}
                 filterOption={(inputValue, option) => option.props.children.includes(inputValue)}
-                //  onSelect={value => handleSearch(value, 'des')}
+              //  onSelect={value => handleSearch(value, 'des')}
               >
                 {daileArea ? (
                   <TextArea
@@ -437,12 +437,12 @@ const RegisterChild = React.forwardRef((props, ref) => {
         </Col>
 
         <Col span={16}>
-          <Form.Item label="是否影响计量主站" {...forminladeLayout1}>
+          <Form.Item label="是否影响XX主站" {...forminladeLayout1}>
             {getFieldDecorator('registerMaster', {
               rules: [
                 {
                   required,
-                  message: '请选择是否影响计量主站',
+                  message: '请选择是否影响XX主站',
                 },
               ],
               initialValue:
@@ -462,10 +462,10 @@ const RegisterChild = React.forwardRef((props, ref) => {
           <Form.Item
             label="上传附件"
             {...forminladeLayout}
-            // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+          // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
           >
             {location &&
-            (!location.state || (location.state && !location.state.cache)) && ( // 位置已调
+              (!location.state || (location.state && !location.state.cache)) && ( // 位置已调
                 <div>
                   <SysUpload
                     fileslist={

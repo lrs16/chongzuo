@@ -13,6 +13,7 @@ import router from 'umi/router';
 import HadleContext from '@/layouts/MenuContext';
 import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { openNotification } from '@/utils/utils';
 import User from './PerformanceSelection';
 import { contractProvider } from '../services/quality';
 import BusinessAudit from './components/BusinessAudit';
@@ -26,7 +27,6 @@ import TimeoutModal from '../../components/TimeoutModal';
 import Reasonregression from '../../Problemmanage/components/Reasonregression';
 import styles from './index.less';
 
-import { openNotification } from '@/utils/utils';
 
 const formItemLayout = {
   labelCol: {
@@ -514,10 +514,13 @@ function TobedealtForm(props) {
     });
   };
 
-  const reasonSubmit = () => {
+  const reasonSubmit = (reason) => {
     return dispatch({
       type: 'performanceappraisal/rollback',
-      payload: taskId,
+      payload: {
+        taskId,
+        reason: reason.backReason
+      },
     }).then(res => {
       if (res.code === 200) {
         message.success(res.msg);
@@ -701,9 +704,6 @@ function TobedealtForm(props) {
                 )}
 
               {(taskName === '业务负责人审核' || taskName === '自动化科审核') &&
-                taskData &&
-                taskData.currentTask &&
-                !currentTask.verifyValue &&
                 tabActiveKey === 'workorder' && (
                   <Button
                     type="danger"

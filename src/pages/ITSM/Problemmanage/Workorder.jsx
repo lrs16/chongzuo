@@ -13,6 +13,7 @@ import { connect } from 'dva';
 import router from 'umi/router';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import User from '@/components/ProblemSelect/User';
+import { openNotification } from '@/utils/utils';
 import Registrat from './components/Registrat';
 import Systemoperatoredit from './components/Systemoperatoredit';
 import Developerprocessdit from './components/Developerprocessdit';
@@ -30,7 +31,6 @@ import TimeoutModal from '../components/TimeoutModal'; // 超时信息填写
 import { judgeTimeoutStatus, saveTimeoutMsg } from '../services/api'; // 超时接口
 
 import RelationOrder from './RelationOrder';
-import { openNotification } from '@/utils/utils';
 
 import styles from './index.less';
 
@@ -373,7 +373,6 @@ function Workorder(props) {
       if (params2 ? !err : true) {
         const saveData = {
           ...values,
-          handleTime: values.handleTime ? values.handleTime.format('YYYY-MM-DD HH:mm:ss') : '',
           orderReceivingtime: values.orderReceivingtime
             ? values.orderReceivingtime.format('YYYY-MM-DD HH:mm:ss')
             : '',
@@ -797,7 +796,7 @@ function Workorder(props) {
   };
 
   const getArrayindex = (data) => {
-    return data.map((obj,index) => {
+    return data.map((obj, index) => {
       return index
     })
   }
@@ -1332,7 +1331,7 @@ function Workorder(props) {
                     return (
                       <Panel
                         Panel
-                        header={pheadertitle(obj, index+1)}
+                        header={pheadertitle(obj, index + 1)}
                         key={index.toString()}
                       >
                         {Paneldesmap.get(obj.fnname)}

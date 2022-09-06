@@ -15,6 +15,9 @@ import {
 import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
+import Downloadfile from '@/components/SysUpload/Downloadfile';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import SysUpload from '@/components/SysUpload';
 import Diskgroup from './components/DatabaseComponent/Diskgroup';
 import Top10Surface from './components/DatabaseComponent/Top10Surface';
 import Top10Increase from './components/DatabaseComponent/Top10Increase';
@@ -22,9 +25,6 @@ import Morethan5g from './components/DatabaseComponent/Morethan5g';
 import QuestionsComments from './components/DatabaseComponent/QuestionsComments';
 import LastweekHomework from './components/LastweekHomework';
 import AddForm from './components/AddForm';
-import Downloadfile from '@/components/SysUpload/Downloadfile';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import SysUpload from '@/components/SysUpload';
 
 const forminladeLayout = {
   labelCol: {
@@ -417,7 +417,7 @@ function DatabaseReportdetail(props) {
                     initialValue: main?.name ? main.name : ''
                   })
                     (
-                      <Input disabled={reportSearch} style={{ width: 700 }} placeholder={`省级集中计量自动化系统数据库运维${reporttype === 'week' ? '周' : '月'}报`} />
+                      <Input disabled={reportSearch} style={{ width: 700 }} placeholder={`省级集中XXXX系统数据库运维${reporttype === 'week' ? '周' : '月'}报`} />
                     )}
                 </Form.Item>
               </Col>

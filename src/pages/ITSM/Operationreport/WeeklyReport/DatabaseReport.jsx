@@ -88,7 +88,7 @@ function DatabaseReport(props) {
   const [timeshow, setTimeshow] = useState(true);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
-  const [initial,setInitial] = useState(false);
+  const [initial, setInitial] = useState(false);
   const [paste, setPaste] = useState(false);
 
   //  保存表单
@@ -158,7 +158,7 @@ function DatabaseReport(props) {
     setOperationList(copyData.operationList ? copyData.operationList : operationList);
     setNextOperationList(nextweekHomeworklist || copyData.nextOperationList);
     setTable5GList(copyData.table5GList ? copyData.table5GList : table5GList);
-    setTableUpList(copyData.tableUpListb ||tableUpList)
+    setTableUpList(copyData.tableUpListb || tableUpList)
   }, [loading])
 
   //   七、上周作业完成情况--表格
@@ -444,7 +444,7 @@ function DatabaseReport(props) {
                   initialValue: copyData.main ? copyData.main.name : ''
                 })
                   (
-                    <Input style={{ width: 700 }} placeholder={`省级集中计量自动化系统数据库运维${reporttype === 'week'? '周':'月'}报`} />
+                    <Input style={{ width: 700 }} placeholder={`省级集中XXXX系统数据库运维${reporttype === 'week' ? '周' : '月'}报`} />
                   )}
               </Form.Item>
             </Col>
@@ -596,7 +596,7 @@ function DatabaseReport(props) {
                   <Col span={24}>
                     <Top10Surface
                       forminladeLayout={forminladeLayout}
-                      tablespaceArr={ copyData.tablespaceList || []}
+                      tablespaceArr={copyData.tablespaceList || []}
                       tablespaceList={contentrowdata => {
                         setTablespaceList(contentrowdata)
                       }}
@@ -608,7 +608,7 @@ function DatabaseReport(props) {
                   <Col span={24}>
                     <Top10Increase
                       forminladeLayout={forminladeLayout}
-                      tableUpArr={ copyData.tableUpList || []}
+                      tableUpArr={copyData.tableUpList || []}
                       tableUpList={contentrowdata => {
                         setTableUpList(contentrowdata)
                       }}

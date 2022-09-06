@@ -394,7 +394,7 @@ function SoftReportdetail(props) {
   }, [location.state])
 
   const dateFormat = 'YYYY-MM-DD';
-  
+
   return (
     <PageHeaderWrapper
       title={reporttype === 'week' ? '软件运维周报详情页' : '软件运维月报详情页'}
@@ -437,7 +437,7 @@ function SoftReportdetail(props) {
           </div>
         )
       }
-      
+
       <Card style={{ padding: 24 }}>
         {loading === false && main && main.time1 && nextOperationList !== undefined && (
           <Row gutter={24}>
@@ -457,7 +457,7 @@ function SoftReportdetail(props) {
                     initialValue: main ? main.name : ''
                   })
                     (
-                      <Input disabled={reportSearch} style={{ width: 500 }} placeholder={`省级集中计量自动化系统软件运维${reporttype === 'week'? '周':'月'}报`} />
+                      <Input disabled={reportSearch} style={{ width: 500 }} placeholder={`省级集中XXXX系统软件运维${reporttype === 'week' ? '周' : '月'}报`} />
                     )}
                 </Form.Item>
               </Col>
@@ -940,7 +940,7 @@ function SoftReportdetail(props) {
               </Col>
 
               <Col span={24}>
-                <p>(2)计划{main ? main.time1 : ''}至{main ? main.time2 : ''},计量自动化系统开展 次发布变更（消缺），变更内容如下</p>
+                <p>(2)计划{main ? main.time1 : ''}至{main ? main.time2 : ''},XXXX系统开展 次发布变更（消缺），变更内容如下</p>
               </Col>
 
               {/* 变更 */}

@@ -93,8 +93,6 @@ function WorkOrder2(props) {
   const HandleRef = useRef();
   const ReturnVisitRef = useRef();
 
-  // console.log(info, info.edit);
-
   // 保存、流转表单信息
   const paloadvalues = {
     ...formregistrat,
@@ -412,9 +410,11 @@ function WorkOrder2(props) {
       case '处理':
       case '审核':
       case '登记':
-      case '回访':
       case '重分派':
         eventflow();
+        break;
+      case '回访':
+        eventflow('1');
         break;
       case '转单':
         eventflow('3');

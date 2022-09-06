@@ -257,7 +257,7 @@ function DisableduserDrawer(props) {
         <Form.Item label="单位" style={{ display: 'none' }}>
           {getFieldDecorator('unit', {
             rules: [{ required, message: '请选择单位' }],
-            initialValue: unitId,
+            initialValue: unit,
           })(<Input />)}
         </Form.Item>
         <Form.Item label="单位Id" style={{ display: 'none' }}>
