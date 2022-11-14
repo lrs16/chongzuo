@@ -271,18 +271,18 @@ function SoftReport(props) {
         const savedata = {
           ...values,
           content: values.content || '',
-          contentFiles: values.contentFiles || '',
+          contentFiles: values.contentFiles || '[]',
           security: values.security || '',
-          materialsFiles: values.materialsFiles || '',
+          materialsFiles: values.materialsFiles || '[]',
           typeContent: values.typeContent || '',
           selfhandleContent: values.selfhandleContent || '',
-          topNFiles: values.topNFiles || '',
-          eventFiles: values.eventFiles || '',
+          topNFiles: values.topNFiles || '[]',
+          eventFiles: values.eventFiles || '[]',
           completeContent: values.completeContent || '',
-          updateFiles: values.updateFiles || '',
-          legacyFiles: values.legacyFiles || '',
-          operationFiles: values.operationFiles || '',
-          nextOperationFiles: values.nextOperationFiles || '',
+          updateFiles: values.updateFiles || '[]',
+          legacyFiles: values.legacyFiles || '[]',
+          operationFiles: values.operationFiles || '[]',
+          nextOperationFiles: values.nextOperationFiles || '[]',
           status: 'add',
           editStatus: mainId ? 'edit' : 'add',
           addData: JSON.stringify(list),
@@ -291,19 +291,19 @@ function SoftReport(props) {
           mainId,
           time1: reporttype === 'week' ? moment(startTime).format('YYYY-MM-DD') : moment(startTime).startOf('month').format('YYYY-MM-DD'),
           time2: reporttype === 'week' ? moment(endTime).format('YYYY-MM-DD') : moment(endTime).endOf('month').format('YYYY-MM-DD'),
-          contentRow: JSON.stringify(contentRow || ''),
-          patrolAndExamineList: JSON.stringify(patrolAndExamineList || ''),
-          materialsList: JSON.stringify(materialsList || ''),
-          eventList: JSON.stringify(eventList || ''),
-          upgradeList: JSON.stringify(upgradeList || ''),
-          updateList: JSON.stringify(updateList || ''),
-          legacyList: JSON.stringify(legacyList || ''),
-          operationList: JSON.stringify(operationList || ''),
-          nextOperationList: JSON.stringify(nextOperationList || ''),
-          statisList: JSON.stringify(statisList || ''),
-          topNList: JSON.stringify(topNList || ''),
-          typeList: JSON.stringify(typeList || ''),
-          selfhandleRow: JSON.stringify(selfhandleRow || ''),
+          contentRow: JSON.stringify(contentRow || []),
+          patrolAndExamineList: JSON.stringify(patrolAndExamineList || []),
+          materialsList: JSON.stringify(materialsList || []),
+          eventList: JSON.stringify(eventList || []),
+          upgradeList: JSON.stringify(upgradeList || []),
+          updateList: JSON.stringify(updateList || []),
+          legacyList: JSON.stringify(legacyList || []),
+          operationList: JSON.stringify(operationList || []),
+          nextOperationList: JSON.stringify(nextOperationList || []),
+          statisList: JSON.stringify(statisList || []),
+          topNList: JSON.stringify(topNList || []),
+          typeList: JSON.stringify(typeList || []),
+          selfhandleRow: JSON.stringify(selfhandleRow || []),
         }
         dispatch({
           type: 'softreport/saveSoft',
@@ -543,20 +543,20 @@ function SoftReport(props) {
   }
 
   const handlePaste = () => {
-    if (!listreportType || !listId) {
+    if (!localStorage.getItem('listId')) {
       message.info('请在列表选择一条数据复制哦')
       return false;
     }
 
     if (reporttype === 'week') {
-      if (listreportType !== '软件运维周报') {
+      if (localStorage.getItem('listreportType') !== '软件运维周报') {
         message.info('只能粘贴同种周报类型哦');
         return false;
       }
     }
 
     if (reporttype === 'month') {
-      if (listreportType !== '软件运维月报') {
+      if (localStorage.getItem('listreportType') !== '软件运维月报') {
         message.info('只能粘贴同种月报类型哦');
         return false;
       }
@@ -566,7 +566,7 @@ function SoftReport(props) {
       type: 'softreport/pasteReport',
       payload: {
         editStatus: 'edit',
-        id: listId
+        id: localStorage.getItem('listId')
       }
     }).then(res => {
       if (res.code === 200) {

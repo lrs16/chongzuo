@@ -90,7 +90,7 @@ function ServiceCompletionone(props) {
           <Input
             disabled={detailParams}
             defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
+            onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
           />
         )
       }
@@ -104,7 +104,7 @@ function ServiceCompletionone(props) {
           <Input
             disabled={detailParams}
             defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
+            onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
           />
         )
       }

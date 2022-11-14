@@ -98,12 +98,12 @@ function DatabaseReport(props) {
         const savedata = {
           ...values,
           content: values.content || '',
-          contentFiles: values.contentFiles || '',
+          contentFiles: values.contentFiles || '[]',
           patrolAndExamineContent: values.patrolAndExamineContent || '',
-          tableUpFiles: values.tableUpFiles || '',
-          defectFiles: values.defectFiles || '',
-          operationFiles: values.operationFiles || '',
-          nextOperationFiles: values.nextOperationFiles || '',
+          tableUpFiles: values.tableUpFiles || '[]',
+          defectFiles: values.defectFiles || '[]',
+          operationFiles: values.operationFiles || '[]',
+          nextOperationFiles: values.nextOperationFiles || '[]',
           status: 'add',
           editStatus: mainId ? 'edit' : 'add',
           addData: list?.length ? JSON.stringify(list) : '',
@@ -112,13 +112,13 @@ function DatabaseReport(props) {
           mainId,
           time1: moment(startTime).format('YYYY-MM-DD'),
           time2: moment(endTime).format('YYYY-MM-DD'),
-          discList: JSON.stringify(discList || ''),
-          tablespaceList: JSON.stringify(tablespaceList || ''),
-          tableUpList: JSON.stringify(tableUpList || ''),
-          defectList: JSON.stringify(defectList || ''),
-          operationList: JSON.stringify(operationList || ''),
-          nextOperationList: JSON.stringify(nextOperationList || ''),
-          table5GList: JSON.stringify(table5GList || ''),
+          discList: JSON.stringify(discList || []),
+          tablespaceList: JSON.stringify(tablespaceList || []),
+          tableUpList: JSON.stringify(tableUpList || []),
+          defectList: JSON.stringify(defectList || []),
+          operationList: JSON.stringify(operationList || []),
+          nextOperationList: JSON.stringify(nextOperationList || []),
+          table5GList: JSON.stringify(table5GList || []),
         }
         dispatch({
           type: 'softreport/saveDataBase',
@@ -163,6 +163,7 @@ function DatabaseReport(props) {
 
   //   七、上周作业完成情况--表格
   const lastweekHomework = () => {
+
     dispatch({
       type: 'softreport/lastweekHomework',
       payload: {
@@ -256,21 +257,32 @@ function DatabaseReport(props) {
 
   //  粘贴
   const handlePaste = () => {
-    if (!listreportType || !listId) {
+    if (!localStorage.getItem('listId')) {
       message.info('请在列表选择一条数据复制哦')
       return false;
     }
 
-    if (listreportType !== '数据库运维周报') {
-      message.info('只能粘贴同种周报类型哦');
-      return false;
+    if (reporttype === 'week') {
+      if (localStorage.getItem('listreportType') !== '数据库运维周报') {
+        message.info('只能粘贴同种周报类型哦');
+        return false;
+      }
     }
+
+    if (reporttype === 'month') {
+      if (localStorage.getItem('listreportType') !== '数据库运维月报') {
+        message.info('只能粘贴同种月报类型哦');
+        return false;
+      }
+    }
+
+
 
     return dispatch({
       type: 'softreport/pasteReport',
       payload: {
         editStatus: 'edit',
-        id: listId
+        id: localStorage.getItem('listId')
       }
     }).then(res => {
       if (res.code === 200) {

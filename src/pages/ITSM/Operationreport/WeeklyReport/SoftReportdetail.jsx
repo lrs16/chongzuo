@@ -69,6 +69,9 @@ const { TextArea } = Input;
 
 let saveSign = true;
 let showTimecomponent = false;
+let newtime = ''
+let newtime2 = ''
+
 function SoftReportdetail(props) {
   const {
     form: { getFieldDecorator, setFieldsValue },
@@ -114,6 +117,50 @@ function SoftReportdetail(props) {
 
   const { main } = openReportlist;
 
+  useEffect(() => {
+    if (loading === false && saveSign) {
+      const { addData } = openReportlist;
+      setList(addData);
+
+
+    }
+
+    const contentArr = openReportlist.contentRow;
+    const patrolAndExamineArr = openReportlist.patrolAndExamineList;
+    const materialsArr = openReportlist.materialsList;
+    const eventArr = openReportlist.eventList;
+    const upgradeArr = openReportlist.upgradeList;
+    const legacyArr = openReportlist.legacyList;
+    const operationArr = openReportlist.operationList;
+    const selfhandleArr = openReportlist.selfhandleRow;
+    const statisArr = openReportlist.statisList;
+    const topNArr = openReportlist.topNList;
+    const typeArr = openReportlist.typeList;
+    const nextOperationArr = openReportlist.nextOperationList;
+
+
+    setContentRow(contentArr);
+    setPatrolAndExamine(patrolAndExamineArr);
+    setMaterialsList(materialsArr);
+    setEventList(eventArr);
+    setUpgradeList(upgradeArr);
+    setLegacyList(legacyArr);
+    setOperationList(operationArr);
+    setSelfhandleRow(selfhandleArr);
+    setStatisList(statisArr);
+    setTopNList(topNArr);
+    setTypeList(typeArr);
+    setNextOperationList(nextOperationArr);
+
+    if (openReportlist && main) {
+      const saveInitlatime1 = openReportlist.main.time1;
+      const saveInitlatime2 = openReportlist.main.time2;
+      newtime = saveInitlatime1;
+      newtime2 = saveInitlatime2;
+    }
+
+
+  }, [loading])
   const getopenFlow = () => {
     dispatch({
       type: 'softreport/openReport',
@@ -136,19 +183,19 @@ function SoftReportdetail(props) {
         mainId,
         time1: reporttype === 'week' ? moment(startTime).format('YYYY-MM-DD') : moment(startTime).startOf('month').format('YYYY-MM-DD'),
         time2: reporttype === 'week' ? moment(endTime).format('YYYY-MM-DD') : moment(endTime).endOf('month').format('YYYY-MM-DD'),
-        contentRow: JSON.stringify(contentRow || ''),
-        patrolAndExamineList: JSON.stringify(patrolAndExamineList || ''),
-        materialsList: JSON.stringify(materialsList || ''),
-        eventList: JSON.stringify(eventList || ''),
-        upgradeList: JSON.stringify(upgradeList || ''),
-        updateList: JSON.stringify(updateList || ''),
-        legacyList: JSON.stringify(legacyList || ''),
-        operationList: JSON.stringify(operationList || ''),
-        nextOperationList: JSON.stringify(nextOperationList || ''),
-        statisList: JSON.stringify(statisList || ''),
-        topNList: JSON.stringify(topNList || ''),
-        typeList: JSON.stringify(typeList || ''),
-        selfhandleRow: JSON.stringify(selfhandleRow || ''),
+        contentRow: JSON.stringify(contentRow || []),
+        patrolAndExamineList: JSON.stringify(patrolAndExamineList || []),
+        materialsList: JSON.stringify(materialsList || []),
+        eventList: JSON.stringify(eventList || []),
+        upgradeList: JSON.stringify(upgradeList || []),
+        updateList: JSON.stringify(updateList || []),
+        legacyList: JSON.stringify(legacyList || []),
+        operationList: JSON.stringify(operationList || []),
+        nextOperationList: JSON.stringify(nextOperationList || []),
+        statisList: JSON.stringify(statisList || []),
+        topNList: JSON.stringify(topNList || []),
+        typeList: JSON.stringify(typeList || []),
+        selfhandleRow: JSON.stringify(selfhandleRow || []),
       }
       // if (mainId) {
       return dispatch({
@@ -158,6 +205,7 @@ function SoftReportdetail(props) {
         if (res.code === 200) {
           message.success(res.msg);
           getopenFlow();
+          saveSign = true;
         } else {
           message.info('保存失败')
         }
@@ -172,8 +220,9 @@ function SoftReportdetail(props) {
   }, [files]);
 
   useEffect(() => {
-    if (mainId) {
-      getopenFlow();
+    newtime = ''
+    if (mainId && newtime === '') {
+      getopenFlow()
     }
   }, [mainId])
 
@@ -227,8 +276,8 @@ function SoftReportdetail(props) {
     if (reporttype === 'week') {
       const currentendTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
       setTimeshow(false);
-      setStartTime(dateString);
-      setEndTime(currentendTime);
+      newtime = dateString;
+      newtime2 = currentendTime
       setFieldsValue({ time2: moment(endTime) });
     } else {
       const monthstartTime = date.startOf('month').format('YYYY-MM-DD');
@@ -241,8 +290,8 @@ function SoftReportdetail(props) {
   const endonChange = (date, dateString) => {
     const currendstartTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
     setTimeshow(false);
-    setStartTime(currendstartTime);
-    setEndTime(dateString);
+    newtime = currendstartTime;
+    newtime2 = dateString
     setFieldsValue({ time1: moment(startTime) })
   }
 
@@ -330,46 +379,7 @@ function SoftReportdetail(props) {
     })
   }
 
-  useEffect(() => {
-    if (loading === false && saveSign) {
-      const { addData } = openReportlist;
-      setList(addData);
-    }
 
-    const contentArr = openReportlist.contentRow;
-    const patrolAndExamineArr = openReportlist.patrolAndExamineList;
-    const materialsArr = openReportlist.materialsList;
-    const eventArr = openReportlist.eventList;
-    const upgradeArr = openReportlist.upgradeList;
-    const legacyArr = openReportlist.legacyList;
-    const operationArr = openReportlist.operationList;
-    const selfhandleArr = openReportlist.selfhandleRow;
-    const statisArr = openReportlist.statisList;
-    const topNArr = openReportlist.topNList;
-    const typeArr = openReportlist.typeList;
-    const nextOperationArr = openReportlist.nextOperationList;
-
-
-    setContentRow(contentArr);
-    setPatrolAndExamine(patrolAndExamineArr);
-    setMaterialsList(materialsArr);
-    setEventList(eventArr);
-    setUpgradeList(upgradeArr);
-    setLegacyList(legacyArr);
-    setOperationList(operationArr);
-    setSelfhandleRow(selfhandleArr);
-    setStatisList(statisArr);
-    setTopNList(topNArr);
-    setTypeList(typeArr);
-    setNextOperationList(nextOperationArr);
-
-    if (openReportlist && main) {
-      const saveInitlatime1 = openReportlist.main.time1;
-      const saveInitlatime2 = openReportlist.main.time2;
-      setStartTime(saveInitlatime1)
-      setEndTime(saveInitlatime2)
-    }
-  }, [loading])
 
   useEffect(() => {
     saveSign = true;
@@ -382,15 +392,20 @@ function SoftReportdetail(props) {
   }, [showTimecomponent])
 
   useEffect(() => {
-    if (startTime) {
+    if (newtime && loading === false) {
+      setStartTime(newtime)
+      setEndTime(newtime2)
       setTimeshow(true);
     }
-  }, [timeshow])
+  }, [timeshow, loading])
+
 
   useEffect(() => {
-    if (location.state && location.state.reset && mainId) {
+    newtime = ''
+    if (location.state && location.state.reset && mainId && newtime === '') {
       getopenFlow()
     }
+    setTimeshow(false);
   }, [location.state])
 
   const dateFormat = 'YYYY-MM-DD';
@@ -477,6 +492,7 @@ function SoftReportdetail(props) {
                               format={dateFormat}
                               defaultValue={moment(startTime)}
                               onChange={onChange}
+                              disabled={reportSearch}
                             />
                           </span>
                         )
@@ -494,6 +510,7 @@ function SoftReportdetail(props) {
                               format={dateFormat}
                               defaultValue={moment(endTime)}
                               onChange={endonChange}
+                              disabled={reportSearch}
                             />
                           </span>
 

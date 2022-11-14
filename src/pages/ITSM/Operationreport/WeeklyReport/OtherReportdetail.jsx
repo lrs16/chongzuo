@@ -30,6 +30,8 @@ const formincontentLayout = {
 
 const { MonthPicker } = DatePicker;
 let saveSign = true;
+let newtime = ''
+let newtime2 = ''
 
 function OtherReportdetail(props) {
   const pagetitle = props.route.name;
@@ -60,6 +62,23 @@ function OtherReportdetail(props) {
   const [endTime, setEndTime] = useState('');
 
   const { main } = openReportlist;
+
+  useEffect(() => {
+    if (loading === false && saveSign) {
+      const { addData } = openReportlist;
+      setList(addData)
+
+      if (openReportlist && main) {
+        const saveInitlatime1 = openReportlist.main.time1;
+        const saveInitlatime2 = openReportlist.main.time2;
+        newtime = saveInitlatime1;
+        newtime2 = saveInitlatime2;
+      }
+    }
+
+
+
+  }, [loading])
 
   // 动态添加表格暂存数据
 
@@ -118,7 +137,7 @@ function OtherReportdetail(props) {
           ...value,
           status,
           editStatus: mainId ? 'edit' : 'add',
-          addData: JSON.stringify(list),
+          addData: JSON.stringify(list || []),
           type: reporttype === 'week' ? '其他运维周报' : '其他运维月报',
           reporttype,
           mainId,
@@ -132,6 +151,7 @@ function OtherReportdetail(props) {
           if (res.code === 200) {
             message.info(res.msg);
             getopenFlow();
+            saveSign = true;
             setTimeshow(false)
           }
         })
@@ -192,8 +212,9 @@ function OtherReportdetail(props) {
   }
 
   useEffect(() => {
-    if (mainId) {
-      getopenFlow();
+    newtime = ''
+    if (mainId && newtime === '') {
+      getopenFlow()
     }
   }, [mainId])
 
@@ -216,24 +237,29 @@ function OtherReportdetail(props) {
     saveSign = true;
   }, [])
 
-  useEffect(() => {
-    if (timeshow === false) {
-      setTimeshow(true);
-    }
-  }, [timeshow])
 
   useEffect(() => {
-    if (location.state && location.state.reset && mainId) {
+    if (newtime && loading === false) {
+      setStartTime(newtime)
+      setEndTime(newtime2)
+      setTimeshow(true);
+    }
+  }, [timeshow, loading])
+
+  useEffect(() => {
+    newtime = ''
+    if (location.state && location.state.reset && mainId && newtime === '') {
       getopenFlow()
     }
+    setTimeshow(false);
   }, [location.state])
 
   const onChange = (date, dateString) => {
     if (reporttype === 'week') {
       const currentendTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
       setTimeshow(false);
-      setStartTime(dateString);
-      setEndTime(currentendTime);
+      newtime = dateString;
+      newtime2 = currentendTime
       setFieldsValue({ time2: moment(endTime) });
     } else {
       const monthstartTime = date.startOf('month').format('YYYY-MM-DD');
@@ -246,10 +272,11 @@ function OtherReportdetail(props) {
   const endonChange = (date, dateString) => {
     const currendstartTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
     setTimeshow(false);
-    setStartTime(currendstartTime);
-    setEndTime(dateString);
+    newtime = currendstartTime;
+    newtime2 = dateString;
     setFieldsValue({ time1: moment(startTime) })
   }
+
 
   const newMember = () => {
     const nowNumber = list.map(item => ({ ...item }));
@@ -374,6 +401,7 @@ function OtherReportdetail(props) {
                           format={dateFormat}
                           defaultValue={moment(startTime)}
                           onChange={onChange}
+                          disabled={reportSearch}
                         />
                       </span>
 
@@ -388,6 +416,7 @@ function OtherReportdetail(props) {
                           format={dateFormat}
                           defaultValue={moment(endTime)}
                           onChange={endonChange}
+                          disabled={reportSearch}
 
                         />
                       </span>

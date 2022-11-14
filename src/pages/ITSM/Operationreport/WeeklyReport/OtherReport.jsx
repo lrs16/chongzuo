@@ -36,8 +36,6 @@ function OtherReport(props) {
     location: { query: {
       reporttype,
       mainId,
-      listreportType,
-      listId,
       reportSearch
     } },
     dispatch,
@@ -106,7 +104,7 @@ function OtherReport(props) {
           ...value,
           status: 'add',
           editStatus: mainId ? 'edit' : 'add',
-          addData: JSON.stringify(list),
+          addData: JSON.stringify(list || []),
           type: reporttype === 'week' ? '其他运维周报' : '其他运维月报',
           reporttype,
           mainId,
@@ -132,21 +130,30 @@ function OtherReport(props) {
   }
 
   const handlePaste = () => {
-    if (!listreportType || !listId) {
+    if (!localStorage.getItem('listId')) {
       message.info('请在列表选择一条数据复制哦')
       return false;
     }
 
-    if (listreportType !== '其他运维周报') {
-      message.info('只能粘贴同种周报类型哦');
-      return false;
+    if (reporttype === 'week') {
+      if (localStorage.getItem('listreportType') !== '其他运维周报') {
+        message.info('只能粘贴同种周报类型哦');
+        return false;
+      }
+    }
+
+    if (reporttype === 'month') {
+      if (localStorage.getItem('listreportType') !== '其他运维月报') {
+        message.info('只能粘贴同种月报类型哦');
+        return false;
+      }
     }
 
     return dispatch({
       type: 'softreport/pasteReport',
       payload: {
         editStatus: 'edit',
-        id: listId
+        id: localStorage.getItem('listId')
       }
     }).then(res => {
       if (res.code === 200) {

@@ -38,7 +38,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
   const handleChange = e => {
     setShowContent(e.target.value);
     selectPersonstate(e.target.value);
-    if(!type && e.target.value === '0') {
+    if (!type && e.target.value === '0') {
       message.info('审核结果不通过，该工单下一步状态为结束')
     }
   };
@@ -52,15 +52,15 @@ const BusinessAudit = React.forwardRef((props, ref) => {
     <Row gutter={24}>
       <Form {...formItemLayout}>
         <Col span={8}>
-          <Form.Item label={type ? '复核结果':'审核结果'}>
+          <Form.Item label={type ? '复核结果' : '审核结果'}>
             {getFieldDecorator('verifyValue', {
               rules: [
                 {
                   required,
-                  message: `${type ? '请输入复核结果':'请输入审核结果'}`,
+                  message: `${type ? '请输入复核结果' : '请输入审核结果'}`,
                 },
               ],
-              initialValue: search ? (businessAudit.verifyValue || undefined) :(businessAudit.verifyValue || '1'),
+              initialValue: search ? (businessAudit.verifyValue || undefined) : (businessAudit.verifyValue || '1'),
             })(
               <Radio.Group disabled={search || noEdit} onChange={handleChange}>
                 <Radio value="1">通过</Radio>
@@ -73,7 +73,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
         <div className={styles.allowClearicon}>
           {showContent === '1' && (
             <Col span={24}>
-              <Form.Item label={type ? '复核内容':'审核内容'} {...forminladeLayout}>
+              <Form.Item label={type ? '复核内容' : '审核内容'} {...forminladeLayout}>
                 {getFieldDecorator('verifyContent', {
                   initialValue: businessAudit.verifyContent || businessAudit.reviewContent,
                 })(
@@ -92,12 +92,12 @@ const BusinessAudit = React.forwardRef((props, ref) => {
 
           {showContent === '0' && (
             <Col span={24}>
-              <Form.Item label={type ? '复核内容':'审核内容'} {...forminladeLayout}>
+              <Form.Item label={type ? '复核内容' : '审核内容'} {...forminladeLayout}>
                 {getFieldDecorator('verifyContent2', {
                   rules: [
                     {
                       required,
-                      message: `${type ? '请输入复核说明':'请输入审核说明'}`,
+                      message: `${type ? '请输入复核说明' : '请输入审核说明'}`,
                     },
                   ],
                   initialValue: businessAudit.verifyContent || businessAudit.reviewContent,
@@ -128,24 +128,23 @@ const BusinessAudit = React.forwardRef((props, ref) => {
         )}
 
         <Col span={8}>
-          <Form.Item label={type ? '复核人':'审核人'}>
+          <Form.Item label={type ? '复核人' : '审核人'}>
             {getFieldDecorator('verifier', {
               initialValue:
                 businessAudit.verifierName ||
                 businessAudit.verifierName ||
-                businessAudit.reviewerName ||
-                userinfo.userName,
+                businessAudit.reviewerName
             })(<Input disabled />)}
           </Form.Item>
         </Col>
 
         <Col span={8}>
-          <Form.Item label={type ? '复核时间':'审核时间'}>
+          <Form.Item label={type ? '复核时间' : '审核时间'}>
             {getFieldDecorator('verifyTime', {
               rules: [
                 {
                   required,
-                  message: `${type ? '请选择复核时间' :'请选择审核时间'}`,
+                  message: `${type ? '请选择复核时间' : '请选择审核时间'}`,
                 },
               ],
               initialValue:

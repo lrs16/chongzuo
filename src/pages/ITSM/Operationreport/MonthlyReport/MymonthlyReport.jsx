@@ -351,6 +351,8 @@ function MymonthlyReport(props) {
     }
 
     if (selectedRows.length === 1) {
+      localStorage.setItem('listId', selectedRows?.length ? selectedRows[0].id : '')
+      localStorage.setItem('listreportType', selectedRows?.length ? selectedRows[0].type : '')
       message.info('复制成功')
     }
 

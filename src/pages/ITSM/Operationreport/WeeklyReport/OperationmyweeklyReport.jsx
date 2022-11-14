@@ -135,8 +135,8 @@ function OperationmyweeklyReport(props) {
           pathname: `/ITSM/operationreport/weeklyreport/softreport`,
           query: {
             reporttype: 'week',
-            listreportType: selectedRows?.length ? selectedRows[0].type : '',
-            listId: selectedRows?.length ? selectedRows[0].id : '',
+            listreportType: localStorage.getItem('listreportType'),
+            listId: localStorage.getItem('listId'),
             addtab: true,
           }
         })
@@ -146,8 +146,8 @@ function OperationmyweeklyReport(props) {
           pathname: `/ITSM/operationreport/weeklyreport/computerroomreport`,
           query: {
             reporttype: 'week',
-            listreportType: selectedRows?.length ? selectedRows[0].type : '',
-            listId: selectedRows?.length ? selectedRows[0].id : '',
+            listreportType: localStorage.getItem('listreportType'),
+            listId: localStorage.getItem('listId'),
             addtab: true,
           }
         })
@@ -157,8 +157,8 @@ function OperationmyweeklyReport(props) {
           pathname: `/ITSM/operationreport/weeklyreport/databasereport`,
           query: {
             reporttype: 'week',
-            listreportType: selectedRows?.length ? selectedRows[0].type : '',
-            listId: selectedRows?.length ? selectedRows[0].id : '',
+            listreportType: localStorage.getItem('listreportType'),
+            listId: localStorage.getItem('listId'),
             addtab: true,
           }
         })
@@ -168,8 +168,8 @@ function OperationmyweeklyReport(props) {
           pathname: `/ITSM/operationreport/weeklyreport/otherreport`,
           query: {
             reporttype: 'week',
-            listreportType: selectedRows?.length ? selectedRows[0].type : '',
-            listId: selectedRows?.length ? selectedRows[0].id : '',
+            listreportType: localStorage.getItem('listreportType'),
+            listId: localStorage.getItem('listId'),
             addtab: true,
           }
         })
@@ -366,6 +366,8 @@ function OperationmyweeklyReport(props) {
     }
 
     if (selectedRows.length === 1) {
+      localStorage.setItem('listId', selectedRows?.length ? selectedRows[0].id : '')
+      localStorage.setItem('listreportType', selectedRows?.length ? selectedRows[0].type : '')
       message.info('复制成功')
     }
     return null

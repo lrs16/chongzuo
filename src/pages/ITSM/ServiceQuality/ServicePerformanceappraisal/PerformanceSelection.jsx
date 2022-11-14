@@ -158,21 +158,30 @@ const PerformanceSelection = props => {
 
   const handleOk = () => {
     if (type === 'achievements' && nextflowuser === '自动化科审核人') {
-      if (demandvalue[0].userIds.length && demandvalue[1].userIds.length) {
+      if (demandvalue.length < 2) {
+        message.error('每个环节最少选择一个处理人！');
+      } else {
         const obj = {
-          '业务负责人审核': demandvalue[0].userIds,
-          '自动化科审核': demandvalue[1].userIds,
+          '业务负责人审核': '',
+          '自动化科审核': '',
+        }
+        for (let i = 0; i < demandvalue.length; i++) {
+          if (demandvalue[i].taskName === '业务负责人审核') {
+            obj['业务负责人审核'] = demandvalue[i].userIds
+          }
+
+          if (demandvalue[i].taskName === '自动化科审核') {
+            obj['自动化科审核'] = demandvalue[i].userIds
+          }
         }
         sessionStorage.setItem('NextflowUserId', JSON.stringify(obj));
         ChangeChoice(true);
         ChangeUserVisible(false);
-      } else {
-        message.error('每个环节最少选择一个处理人！');
-      };
+      }
     };
 
-    if(type === 'achievements' && nextflowuser !== '自动化科审核人') {
-      if(value.length) {
+    if (type === 'achievements' && nextflowuser !== '自动化科审核人') {
+      if (value.length) {
         ChangeChoice(true);
         ChangeUserVisible(false);
       } else {
@@ -180,6 +189,7 @@ const PerformanceSelection = props => {
       }
     }
   };
+
 
   const handleCancel = () => {
     ChangeChoice(false);
@@ -193,7 +203,7 @@ const PerformanceSelection = props => {
     sessionStorage.setItem('NextflowUserId', checkedValues.join(',').toString());
   };
 
- 
+
   return (
     <>
       <Modal title="选择下一环节处理人" visible={visible} onOk={handleOk} onCancel={handleCancel} width={700}>
@@ -202,7 +212,7 @@ const PerformanceSelection = props => {
             {type === 'achievements' && nextflowuser === '自动化科审核人' && userlist && userlist.length && userlist.map((obj, index) => {
               return (
                 <div key={index.toString()}>
-                  <div style={{ marginTop: 6,fontSize: 16 }}>{obj.taskName}人员</div>
+                  <div style={{ marginTop: 6, fontSize: 16 }}>{obj.taskName}人员</div>
                   <div>
                     <Checkbox.Group
                       defaultValue={indexUser || defaultvalue}
@@ -214,9 +224,9 @@ const PerformanceSelection = props => {
                 </div>
               );
             })}
-           
+
             {type === 'achievements' && nextflowuser !== '自动化科审核人' && userlist && userlist.length && (<div style={{ marginTop: 12 }} className={styles.useritem}>
-              <div style={{fontSize: 16 }}>{nextflowuser}人员</div>
+              <div style={{ fontSize: 16 }}>{nextflowuser}人员</div>
               <Checkbox.Group
                 defaultValue={indexUser || defaultvalue}
                 options={dataArr(defaultUsers || userlist)}

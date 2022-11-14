@@ -52,6 +52,8 @@ const { MonthPicker } = DatePicker;
 const { TextArea } = Input;
 let saveSign = true;
 let showTimecomponent = false;
+let newtime = ''
+let newtime2 = ''
 
 function DatabaseReportdetail(props) {
   const pagetitle = props.route.name;
@@ -95,6 +97,38 @@ function DatabaseReportdetail(props) {
 
   const { main } = openReportlist;
 
+
+  useEffect(() => {
+    if (loading === false && saveSign) {
+      const { addData } = openReportlist;
+      setList(addData)
+
+    }
+
+    const discArr = openReportlist.discList;
+    const tablespaceArr = openReportlist.tablespaceList;
+    const tableUpArr = openReportlist.tableUpList;
+    const defectArr = openReportlist.defectList;
+    const operationArr = openReportlist.operationList;
+    const nextOperationArr = openReportlist.nextOperationList;
+    const table5GListArr = openReportlist.table5GList;
+    setDiscList(discArr);
+    setTablespaceList(tablespaceArr);
+    setTableUpList(tableUpArr);
+    setDefectList(defectArr);
+    setOperationList(operationArr);
+    setNextOperationList(nextOperationArr);
+    setTable5GList(table5GListArr);
+
+    if (openReportlist && main) {
+      const saveInitlatime1 = openReportlist.main.time1;
+      const saveInitlatime2 = openReportlist.main.time2;
+      newtime = saveInitlatime1;
+      newtime2 = saveInitlatime2;
+    }
+  }, [loading]);
+
+
   const getopenFlow = () => {
     dispatch({
       type: 'softreport/openReport',
@@ -133,6 +167,7 @@ function DatabaseReportdetail(props) {
           if (res.code === 200) {
             message.success(res.msg);
             getopenFlow();
+            saveSign = true
           } else {
             message.info('保存失败')
           }
@@ -191,8 +226,8 @@ function DatabaseReportdetail(props) {
     if (reporttype === 'week') {
       const currentendTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
       setTimeshow(false);
-      setStartTime(dateString);
-      setEndTime(currentendTime);
+      newtime = dateString;
+      newtime2 = currentendTime
       setFieldsValue({ time2: moment(endTime) });
     } else {
       const monthstartTime = date.startOf('month').format('YYYY-MM-DD');
@@ -206,14 +241,15 @@ function DatabaseReportdetail(props) {
   const endonChange = (date, dateString) => {
     const currendstartTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
     setTimeshow(false);
-    setStartTime(currendstartTime);
-    setEndTime(dateString);
+    newtime = currendstartTime;
+    newtime2 = dateString
     setFieldsValue({ time1: moment(startTime) })
   }
 
 
   useEffect(() => {
-    if (mainId) {
+    newtime = ''
+    if (mainId && newtime === '') {
       getopenFlow()
     }
   }, [mainId])
@@ -229,45 +265,20 @@ function DatabaseReportdetail(props) {
   }, [showTimecomponent])
 
   useEffect(() => {
-    if (startTime) {
+    if (newtime && loading === false) {
+      setStartTime(newtime)
+      setEndTime(newtime2)
       setTimeshow(true);
     }
-  }, [timeshow])
+  }, [timeshow, loading])
+
 
   useEffect(() => {
-    if (loading === false && saveSign) {
-      const { addData } = openReportlist;
-      setList(addData)
-    }
-
-    const discArr = openReportlist.discList;
-    const tablespaceArr = openReportlist.tablespaceList;
-    const tableUpArr = openReportlist.tableUpList;
-    const defectArr = openReportlist.defectList;
-    const operationArr = openReportlist.operationList;
-    const nextOperationArr = openReportlist.nextOperationList;
-    const table5GListArr = openReportlist.table5GList;
-    setDiscList(discArr);
-    setTablespaceList(tablespaceArr);
-    setTableUpList(tableUpArr);
-    setDefectList(defectArr);
-    setOperationList(operationArr);
-    setNextOperationList(nextOperationArr);
-    setTable5GList(table5GListArr);
-
-    if (openReportlist && main) {
-      const saveInitlatime1 = openReportlist.main.time1;
-      const saveInitlatime2 = openReportlist.main.time2;
-      setStartTime(saveInitlatime1)
-      setEndTime(saveInitlatime2)
-    }
-
-  }, [loading]);
-
-  useEffect(() => {
-    if (location.state && location.state.reset && mainId) {
+    newtime = ''
+    if (location.state && location.state.reset && mainId && newtime === '') {
       getopenFlow()
     }
+    setTimeshow(false);
   }, [location.state])
 
   const handleBack = () => {
@@ -436,6 +447,7 @@ function DatabaseReportdetail(props) {
                           format={dateFormat}
                           defaultValue={moment(startTime)}
                           onChange={onChange}
+                          disabled={reportSearch}
                         />
                       </span>
 
@@ -449,6 +461,7 @@ function DatabaseReportdetail(props) {
                           format={dateFormat}
                           defaultValue={moment(endTime)}
                           onChange={endonChange}
+                          disabled={reportSearch}
                         />
                       </span>
 

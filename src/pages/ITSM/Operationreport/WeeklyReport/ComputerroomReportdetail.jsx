@@ -61,6 +61,8 @@ const { MonthPicker } = DatePicker;
 const { TextArea } = Input;
 
 let saveSign = true;
+let newtime = ''
+let newtime2 = ''
 
 function ComputerroomReportdetail(props) {
   const pagetitle = props.route.name;
@@ -128,7 +130,7 @@ function ComputerroomReportdetail(props) {
           mainId,
           time1: moment(startTime).format('YYYY-MM-DD'),
           time2: moment(endTime).format('YYYY-MM-DD'),
-          materialsList: JSON.stringify(materialsList || ''),
+          materialsList: JSON.stringify(materialsList || []),
           meetingSummaryList: JSON.stringify(meetingSummaryList || ''),
           newTroubleList: JSON.stringify(newTroubleList || ''),
           nextOperationList: JSON.stringify(nextOperationList || ''),
@@ -142,6 +144,7 @@ function ComputerroomReportdetail(props) {
           if (res.code === 200) {
             message.success(res.msg);
             getopenFlow();
+            saveSign = true
           } else {
             message.info('保存失败')
           }
@@ -157,6 +160,7 @@ function ComputerroomReportdetail(props) {
       computerReportform();
     }
   }, [files]);
+
 
   useEffect(() => {
     if (loading === false && saveSign) {
@@ -181,8 +185,8 @@ function ComputerroomReportdetail(props) {
     if (openReportlist && main) {
       const saveInitlatime1 = openReportlist.main.time1;
       const saveInitlatime2 = openReportlist.main.time2;
-      setStartTime(saveInitlatime1)
-      setEndTime(saveInitlatime2)
+      newtime = saveInitlatime1;
+      newtime2 = saveInitlatime2;
     }
   }, [loading])
 
@@ -191,7 +195,8 @@ function ComputerroomReportdetail(props) {
   }, [])
 
   useEffect(() => {
-    if (mainId) {
+    newtime = ''
+    if (mainId && newtime === '') {
       getopenFlow()
     }
   }, [mainId])
@@ -245,8 +250,8 @@ function ComputerroomReportdetail(props) {
     if (reporttype === 'week') {
       const currentendTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
       setTimeshow(false);
-      setStartTime(dateString);
-      setEndTime(currentendTime);
+      newtime = dateString;
+      newtime2 = currentendTime
       setFieldsValue({ time2: moment(endTime) });
     } else {
       const monthstartTime = date.startOf('month').format('YYYY-MM-DD');
@@ -259,8 +264,8 @@ function ComputerroomReportdetail(props) {
   const endonChange = (date, dateString) => {
     const currendstartTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
     setTimeshow(false);
-    setStartTime(currendstartTime);
-    setEndTime(dateString);
+    newtime = currendstartTime;
+    newtime2 = dateString;
     setFieldsValue({ time1: moment(startTime) })
   }
 
@@ -284,15 +289,19 @@ function ComputerroomReportdetail(props) {
   }
 
   useEffect(() => {
-    if (startTime) {
+    if (newtime && loading === false) {
+      setStartTime(newtime)
+      setEndTime(newtime2)
       setTimeshow(true);
     }
-  }, [timeshow])
+  }, [timeshow, loading])
 
   useEffect(() => {
-    if (location.state && location.state.reset && mainId) {
+    newtime = ''
+    if (location.state && location.state.reset && mainId && newtime === '') {
       getopenFlow()
     }
+    setTimeshow(false);
   }, [location.state])
 
   // 动态保存
@@ -436,6 +445,7 @@ function ComputerroomReportdetail(props) {
                           format={dateFormat}
                           defaultValue={moment(startTime)}
                           onChange={onChange}
+                          disabled={reportSearch}
                         />
                       </span>
 
@@ -449,6 +459,7 @@ function ComputerroomReportdetail(props) {
                           format={dateFormat}
                           defaultValue={moment(endTime)}
                           onChange={endonChange}
+                          disabled={reportSearch}
 
                         />
                       </span>

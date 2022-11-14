@@ -375,7 +375,7 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
             <Col span={8}>
               <Form.Item label="确认人">
                 {getFieldDecorator('confirmer', {
-                  initialValue: assessmentConfirmation.confirmerName || userinfo.userName,
+                  initialValue: assessmentConfirmation.confirmerName,
                 })(<Input disabled />)}
               </Form.Item>
             </Col>

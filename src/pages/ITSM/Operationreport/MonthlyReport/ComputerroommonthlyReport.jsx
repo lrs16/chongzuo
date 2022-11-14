@@ -194,12 +194,12 @@ function ComputerroommonthlyReport(props) {
 
   //  粘贴
   const handlePaste = () => {
-    if (!listreportType || !listId) {
+    if (!localStorage.getItem('listId')) {
       message.info('请在列表选择一条数据复制哦')
       return false;
     }
 
-    if (listreportType !== '机房运维月报') {
+    if (localStorage.getItem('listreportType') !== '机房运维月报') {
       message.info('只能粘贴同种月报类型哦');
       return false;
     }
@@ -209,7 +209,7 @@ function ComputerroommonthlyReport(props) {
       type: 'softreport/pasteReport',
       payload: {
         editStatus: 'edit',
-        id: listId
+        id: localStorage.getItem('listId')
       }
     }).then(res => {
       if (res.code === 200) {

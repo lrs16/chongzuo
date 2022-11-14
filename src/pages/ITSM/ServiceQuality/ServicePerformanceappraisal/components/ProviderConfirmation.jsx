@@ -105,8 +105,8 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
                       ],
                       initialValue: providerConfirmation.appealContent
                     })
-                        (
-                          <FormTextArea
+                      (
+                        <FormTextArea
                           autoSize={1}
                           indexText={providerConfirmation.appealContent}
                           isEdit={!search}
@@ -129,11 +129,11 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
                     })
                       (
                         <FormTextArea
-                        autoSize={1}
-                        indexText={providerConfirmation.appealContent}
-                        isEdit={!search}
-                        getVal={v => setFieldsValue({ appealContent: v })}
-                      />
+                          autoSize={1}
+                          indexText={providerConfirmation.appealContent}
+                          isEdit={!search}
+                          getVal={v => setFieldsValue({ appealContent: v })}
+                        />
                       )
                   }
                 </Form.Item>
@@ -176,7 +176,7 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
           <Form.Item label='确认人'>
             {
               getFieldDecorator('confirmer', {
-                initialValue: providerConfirmation.confirmerName || userinfo.userName
+                initialValue: providerConfirmation.confirmerName
               })
                 (<Input disabled />)
             }

@@ -70,8 +70,8 @@ function Achievementsflow(props) {
                   <div>结束时间:{obj.endTime ? moment(obj.endTime).format('YYYY-MM-DD HH:mm') : ''}</div>
                   <div>状态:{obj.taskStatus}</div>
                   {
-                    obj.taskStatus === '已退回' && (
-                      <div>回退原因:{obj.backReason}</div>
+                    obj.taskStatus === '已回退' && (
+                      <div>回退原因:{obj.reason}</div>
                     )
                   }
                 </div>
