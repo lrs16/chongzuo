@@ -500,7 +500,7 @@ function ChartDrawer(props) {
                     : moment(value.date).format('YYYY-MM-DD 23:59:59')),
             },
           });
-        } else if (value.name === 'XX主站故障') {
+        } else if (value.name === '计量主站故障') {
           // 曲线
           dispatch({
             type: 'fault/getfaultQueryList',
@@ -1071,7 +1071,7 @@ function ChartDrawer(props) {
             a.click();
             window.URL.revokeObjectURL(url);
           });
-        } else if (value.name === 'XX主站故障') {
+        } else if (value.name === '计量主站故障') {
           // 曲线
           dispatch({
             type: 'fault/faultQuerydownload',

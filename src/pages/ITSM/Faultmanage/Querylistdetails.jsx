@@ -342,7 +342,7 @@ function Querylistdetails(props) {
                                 <div className={styles.stepDescription}>
                                   处理人：{formHandler}
                                   <div>{moment(startTime).format('YYYY-MM-DD HH:mm:ss')}</div>
-                                  <div>{status === '退回' && `回退原因：${backReason}`}</div>
+                                  <div>{backReason !== '' && `回退原因：${backReason}`}</div>
                                 </div>
                               }
                             />

@@ -437,12 +437,12 @@ const RegisterChild = React.forwardRef((props, ref) => {
         </Col>
 
         <Col span={16}>
-          <Form.Item label="是否影响XX主站" {...forminladeLayout1}>
+          <Form.Item label="是否影响计量主站" {...forminladeLayout1}>
             {getFieldDecorator('registerMaster', {
               rules: [
                 {
                   required,
-                  message: '请选择是否影响XX主站',
+                  message: '请选择是否影响计量主站',
                 },
               ],
               initialValue:
