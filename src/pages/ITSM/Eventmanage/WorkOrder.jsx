@@ -301,13 +301,15 @@ function WorkOrder2(props) {
           handle_endTime: moment(values.handle_endTime).format('YYYY-MM-DD HH:mm:ss'),
           handle_fileIds: JSON.stringify(files.arr),
         });
-        if (type === 'save') {
-          noverification();
-        } else {
-          HandleRef.current.Forms(err => {
-            noUser(err);
-          });
-          // console.clear();
+        if (type) {
+          if (type === 'save') {
+            noverification();
+          } else {
+            HandleRef.current.Forms(err => {
+              noUser(err);
+            });
+            // console.clear();
+          }
         }
       } else {
         formerr(e);
@@ -377,6 +379,7 @@ function WorkOrder2(props) {
 
   // 点击保存，流转触发表单校验
   const handlesubmit = () => {
+    ChangeChoice(false);
     switch (taskName) {
       case '事件登记': {
         if (show) {
@@ -548,6 +551,7 @@ function WorkOrder2(props) {
     if (registratfiles.ischange && !olduploadstatus) {
       ChangeType('save');
       setRegistratFiles({ ...registratfiles, ischange: false });
+      handlesubmit();
     }
   }, [registratfiles]);
 
@@ -556,6 +560,7 @@ function WorkOrder2(props) {
     if (files.ischange) {
       ChangeType('save');
       setFiles({ ...files, ischange: false });
+      handlesubmit();
     }
   }, [files.ischange]);
 

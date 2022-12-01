@@ -72,7 +72,7 @@ const Registrat = forwardRef((props, ref) => {
   const [daileArea, setDaileArea] = useState(true);
   const [banOpenFileDialog, setBanOpenFileDialog] = useState(true);
 
-  const { getRegistUploadStatus, handleUploadStatus, ChangeSubmitType, ChangeButtonName } = useContext(UploadContext);
+  const { getRegistUploadStatus, handleUploadStatus, ChangeSubmitType, ChangeButtonName, ChangeUserChoice } = useContext(UploadContext);
 
   useEffect(() => {
     if (files && files.length > 0) {
@@ -986,7 +986,7 @@ const Registrat = forwardRef((props, ref) => {
         <Row gutter={24}>
           <Col span={24}>
             <Form.Item label="上传附件"  {...forminladeLayout}>
-              <div>
+              <div onMouseDown={() => { if (ChangeUserChoice) { ChangeUserChoice(false) } }}>
                 {((location && location.state && !location.state.cache) || orderNo) && !loading && (
                   <Upload {...uploadprops} key={localStorage.getItem('tabid')}>
                     <Button

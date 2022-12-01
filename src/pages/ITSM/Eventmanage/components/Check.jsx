@@ -18,7 +18,7 @@ const Check = forwardRef((props, ref) => {
   const { getFieldDecorator, getFieldsValue, resetFields, setFieldsValue } = props.form;
   const [adopt, setAdopt] = useState('001');
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
-  const { ChangeSubmitType, ChangeButtonName } = useContext(SubmitContext);
+  const { ChangeSubmitType, ChangeButtonName, ChangeUserChoice } = useContext(SubmitContext);
   useEffect(() => {
     if (fileslist.ischange) {
       ChangeFiles(fileslist);
@@ -132,7 +132,7 @@ const Check = forwardRef((props, ref) => {
             {...forminladeLayout}
           // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
           >
-            <div>
+            <div onMouseDown={() => ChangeUserChoice('')}>
               {!loading && (
                 <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
               )}

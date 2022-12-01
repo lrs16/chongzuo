@@ -42,7 +42,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
   const [desautodata, setDestoData] = useState([]);
   const [desrecords, setDesRecords] = useState([]);
   const [daileArea, setDaileArea] = useState(true);
-  const { ChangeSubmitType, ChangeButtonName } = useContext(SubmitContext);
+  const { ChangeSubmitType, ChangeButtonName, ChangeUserChoice } = useContext(SubmitContext);
 
   useEffect(() => {
     if (fileslist.ischange) {
@@ -265,7 +265,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
             }],
             initialValue: finish && finish.fileIds && finish.fileIds !== '[]' ? finish.fileIds : '',
           })(
-            <div>
+            <div onMouseDown={ChangeUserChoice(false)}>
               {!loading && (
                 <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
               )}

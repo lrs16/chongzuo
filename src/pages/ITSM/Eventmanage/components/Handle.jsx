@@ -33,7 +33,7 @@ const Handle = React.forwardRef((props, ref) => {
   const [knowledgecontent, setKonwledgeContent] = useState('');    // 知识内容
   const [valuealready, setValuealready] = useState(false)          // 告知知识子组件可以走接口了
 
-  const { ChangeSubmitType, ChangeButtonName } = useContext(SubmitContext);
+  const { ChangeSubmitType, ChangeButtonName, ChangeUserChoice } = useContext(SubmitContext);
 
   // 获取知识数据
   const getContent = () => {
@@ -297,7 +297,7 @@ const Handle = React.forwardRef((props, ref) => {
             // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
             >
               {((location && location.state && !location.state.cache) || orderNo) && !loading && (
-                <div>
+                <div onMouseDown={ChangeUserChoice(false)}>
                   <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} banOpenFileDialog={uploadStatus} />
                   <span style={{ color: '#ff0000' }}> 转回访请上传附件 </span>
                 </div>

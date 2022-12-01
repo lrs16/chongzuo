@@ -286,7 +286,8 @@ function ToDodetails(props) {
             getRegistUploadStatus: (v) => { setRegistUploadStatus(v) },
             submittype,                                              // 流轉類型
             ChangeSubmitType: (v => setSubmitType(v)),               // 根據選項返回流轉類型
-            ChangeButtonName: (v => setButtonName(v))                // 自行處理返回按鈕名稱
+            ChangeButtonName: (v => setButtonName(v)),                // 自行處理返回按鈕名稱
+            ChangeUserChoice: (v => setUserChoice(v))                // 点击附件清除选人状态
           }}>
             <WorkOrder
               location={location}
