@@ -394,7 +394,7 @@ const BasicLayout = props => {
     };
     if (menuItemProps && menuItemProps.itemPath === '/mainNetwork') {
       const tk = 'itsm'
-      window.location.href = `https://10.172.208.29:7005/pro/#/login?tk=${tk}`;
+      window.location.href = `https://10.172.210.132:7005/pro/#/login?tk=${tk}`;
       // window.open(`https://10.172.208.29:7005/pro/#/login?tk=${tk}`);
       // getNetworkToken().then(res => {
       //   if (res && res.data) {
