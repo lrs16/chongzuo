@@ -1,3 +1,5 @@
+@import '~antd/lib/style/themes/default.less';
+
 .textOverflow() {
   overflow: hidden;
   white-space: nowrap;
@@ -13,6 +15,7 @@
   overflow: hidden;
   line-height: 1.5em;
   text-align: justify;
+
   &::before {
     position: absolute;
     right: 14px;
@@ -21,6 +24,7 @@
     background: @bg;
     content: '...';
   }
+
   &::after {
     position: absolute;
     right: 14px;
@@ -36,15 +40,98 @@
 // ------------------------
 .clearfix() {
   zoom: 1;
+
   &::before,
   &::after {
     display: table;
     content: ' ';
   }
+
   &::after {
     clear: both;
     height: 0;
     font-size: 0;
     visibility: hidden;
   }
+}
+
+.disableuser span {
+  padding-right: 16px;
+}
+
+
+.ordercollapse {
+  :global(.ant-collapse > .ant-collapse-item > .ant-collapse-header) {
+    font-weight: 900;
+    font-size: 1.1em;
+    border-bottom: 1px solid #e8e8e8;
+  }
+}
+
+.ordercollapse {
+  :global(.ant-collapse) {
+    border-radius: 0;
+  }
+}
+
+.ordercollapse {
+  :global(.ant-collapse-item:last-child > .ant-collapse-content) {
+    border-radius: 0;
+  }
+}
+
+.ordercollapse {
+  :global(.ant-collapse-borderless > .ant-collapse-item) {
+    border: 1px solid #e8e8e8;
+    margin-top: 12px;
+    background: #fff;
+  }
+}
+
+.ordercollapse {
+  :global(.ant-collapse-borderless) {
+    background: none;
+  }
+}
+
+.ordercollapse {
+  :global(.ant-steps-horizontal:not(.ant-steps-label-vertical) .ant-steps-item-description) {
+    max-width: 210px;
+    text-align: left;
+  }
+}
+
+.ordercollapse {
+  :global(.ant-steps-horizontal:not(.ant-steps-label-vertical) .ant-steps-item) {
+    min-width: 250px;
+  }
+}
+
+.ordercollapse {
+  :global(.ant-descriptions-item-label) {
+    vertical-align: top;
+  }
+}
+
+.ordercollapse {
+  :global(.ant-descriptions-row > td) {
+    width: 33%;
+  }
+}
+
+.ordercollapse {
+  :global(.ant-descriptions-bordered.ant-descriptions-small .ant-descriptions-item-label, ) {
+    padding: 8px 24px;
+  }
+}
+
+.ordercollapse th {
+  display: table-cell;
+  white-space: nowrap;
+  text-align: right;
+  padding-left: 30px;
+}
+
+.ordercollapse tr {
+  vertical-align: middle;
 }

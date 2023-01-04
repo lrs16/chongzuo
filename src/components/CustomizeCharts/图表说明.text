@@ -1,0 +1,22 @@
+图表效果：
+组件名               图例                    图表类型                      官网地址             
+LineChart:          关口0点采集              多线，单曲线，警戒线
+Columncolor：       采集完成率               柱线，单线，柱状
+Bardiverge          正负对比条形图（官网）    柱状                          
+Arearangeline       范围区域图与线图（官网）  面积，线图  
+Curved              普通折线图（曲线）        曲线                          https://bizcharts.net/product/bizcharts/demo/143
+ColumnarY           参数下发                 Y方向柱状图       
+Wafflegrouped       多柱形图（官网）          Y方向多柱状图   
+Treecompactbox      紧凑树布局(官网)          树形关系图                     https://bizcharts.net/product/bizcharts/demo/53
+EdgeLine            档案召测测试              直线关系图        
+Labelline           關口0點采集               玫瑰图        
+SeriesLine                                   多曲线，线条颜色自定义
+StackingArea                                  堆叠面积图
+Cylinder            监测管理监控台            柱形，圆柱形
+BasicBarchart       磁盘使用率               条形图
+Donut               抄表结算接口              饼图（百分比，数值） 
+DonutPCT            告警概览                  饼图（百分比）     
+SmoothLine          月度告警数量              多曲线
+OrdinaryLine        统计类折线图              多条折线图
+Barchart            统计类基础条形图                基础条形图
+GroupedColumn       上下行报文页面监测         分组柱形图

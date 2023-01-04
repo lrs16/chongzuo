@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Tag, message } from 'antd';
 import { connect } from 'dva';
+import router from 'umi/router';
 import { formatMessage } from 'umi-plugin-react/locale';
 import groupBy from 'lodash/groupBy';
 import moment from 'moment';
@@ -8,27 +9,60 @@ import NoticeIcon from '../NoticeIcon';
 import styles from './index.less';
 
 class GlobalHeaderRight extends Component {
-  componentDidMount() {
-    const { dispatch } = this.props;
+  state = {
+    num: 0,
+    pathname: '/',
+    timeoutnum: []
+  };
 
-    if (dispatch) {
-      dispatch({
-        type: 'global/fetchNotices',
+  componentDidMount() {
+    this.getcount();
+    this.getovertimenum();
+    //  this.interval = setInterval(() => { this.getcount(); this.getovertimenum(); }, 30000);    // 打包到计量要放开
+  }
+
+  componentDidUpdate(newProps, _) {
+    if (this.state.pathname !== newProps.pathname) {
+      setTimeout(() => {
+        this.setState({ pathname: newProps.pathname });
       });
+      this.getcount();
+      this.getovertimenum();
     }
   }
 
-  changeReadState = clickedItem => {
-    const { id } = clickedItem;
-    const { dispatch } = this.props;
+  componentWillUnmount() {
+    clearTimeout(this.interval);
+  }
 
-    if (dispatch) {
-      dispatch({
-        type: 'global/changeNoticeReadState',
-        payload: id,
+  getcount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'global/fetchCount',
+    }).then(res => {
+      this.setState({
+        num: res.data,
       });
-    }
+    });
+  }
+
+  getovertimenum() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'global/fetchovertimenum',
+    }).then(res => {
+      if (res.code === 200) {
+        this.setState({
+          timeoutnum: res.data,
+        });
+      }
+    });
+  }
+
+  changeReadState = clickedItem => {
+    router.push({ pathname: `/ITSM/todo`, query: { pathpush: true, itemWorkType: clickedItem.type }, state: {} });
   };
+
   handleNoticeClear = (title, key) => {
     const { dispatch } = this.props;
     message.success(
@@ -44,22 +78,36 @@ class GlobalHeaderRight extends Component {
       });
     }
   };
+
   getNoticeData = () => {
-    const { notices = [] } = this.props;
-
+    const notices = this.state.timeoutnum;
+    const typemap = new Map([
+      ['event', '事件'],
+      ['trouble', '故障'],
+      ['problem', '问题'],
+      ['demand', '需求'],
+      ['release', '计划发布'],
+      ['tempRelease', '临时发布'],
+      ['releaseBizTodo', '业务验证/复核'],
+      ['operation', '作业计划'],
+      ['work', '工作督办'],
+      ['quality', '服务绩效'],
+      ['repair', '应急抢修票'],
+    ]);
     if (notices.length === 0) {
-      return {};
+      return [];
     }
-
     const newNotices = notices.map(notice => {
-      const newNotice = { ...notice };
+      const newNotice = {
+        key: notice.itemWorkType,
+        title: `${typemap.get(notice.itemWorkType)}单`,
+        description: notice.num,
+        type: notice.itemWorkType,
+        status: 'doing'
+      };
 
       if (newNotice.datetime) {
         newNotice.datetime = moment(notice.datetime).fromNow();
-      }
-
-      if (newNotice.id) {
-        newNotice.key = newNotice.id;
       }
 
       if (newNotice.extra && newNotice.status) {
@@ -80,11 +128,12 @@ class GlobalHeaderRight extends Component {
           </Tag>
         );
       }
-
       return newNotice;
     });
-    return groupBy(newNotices, 'type');
+    return newNotices;
+    //  return groupBy(newNotices, 'type');
   };
+
   getUnreadData = noticeData => {
     const unreadMsg = {};
     Object.keys(noticeData).forEach(key => {
@@ -102,32 +151,40 @@ class GlobalHeaderRight extends Component {
   };
 
   render() {
-    const { currentUser, fetchingNotices, onNoticeVisibleChange } = this.props;
+    const { loading, onNoticeVisibleChange } = this.props;
     const noticeData = this.getNoticeData();
-    const unreadMsg = this.getUnreadData(noticeData);
+    // const unreadMsg = this.getUnreadData(noticeData);
     return (
       <NoticeIcon
         className={styles.action}
-        count={currentUser && currentUser.unreadCount}
+        count={this.state.num}
         onItemClick={item => {
           this.changeReadState(item);
         }}
-        loading={fetchingNotices}
+        loading={loading}
         clearText={formatMessage({
           id: 'component.noticeIcon.clear',
         })}
-        viewMoreText={formatMessage({
-          id: 'component.noticeIcon.view-more',
-        })}
+        viewMoreText='查看全部待办单'
         onClear={this.handleNoticeClear}
         onPopupVisibleChange={onNoticeVisibleChange}
-        onViewMore={() => message.info('Click on view more')}
+        onViewMore={() => router.push({ pathname: `/ITSM/todo`, query: { pathpush: true, itemWorkType: 'all' }, state: { pageNum: 1, pageSize: 15, } })}
         clearClose
       >
+        {/* 待办 */}
         <NoticeIcon.Tab
+          tabKey="todo"
+          title='待办'
+          emptyText='你已完成所有待办'
+          count={this.state.num}
+          list={noticeData}
+          showViewMore
+        />
+        {/* 通知 */}
+        {/* <NoticeIcon.Tab
           tabKey="notification"
-          count={unreadMsg.notification}
-          list={noticeData.notification}
+          // count={unreadMsg.notification}
+          // list={noticeData.notification}
           title={formatMessage({
             id: 'component.globalHeader.notification',
           })}
@@ -135,11 +192,12 @@ class GlobalHeaderRight extends Component {
             id: 'component.globalHeader.notification.empty',
           })}
           showViewMore
-        />
-        <NoticeIcon.Tab
+        /> */}
+        {/* 消息 */}
+        {/* <NoticeIcon.Tab
           tabKey="message"
-          count={unreadMsg.message}
-          list={noticeData.message}
+          // count={unreadMsg.message}
+          // list={noticeData.message}
           title={formatMessage({
             id: 'component.globalHeader.message',
           })}
@@ -147,19 +205,7 @@ class GlobalHeaderRight extends Component {
             id: 'component.globalHeader.message.empty',
           })}
           showViewMore
-        />
-        <NoticeIcon.Tab
-          tabKey="event"
-          title={formatMessage({
-            id: 'component.globalHeader.event',
-          })}
-          emptyText={formatMessage({
-            id: 'component.globalHeader.event.empty',
-          })}
-          count={unreadMsg.event}
-          list={noticeData.event}
-          showViewMore
-        />
+        /> */}
       </NoticeIcon>
     );
   }
@@ -168,7 +214,10 @@ class GlobalHeaderRight extends Component {
 export default connect(({ user, global, loading }) => ({
   currentUser: user.currentUser,
   collapsed: global.collapsed,
-  fetchingMoreNotices: loading.effects['global/fetchMoreNotices'],
-  fetchingNotices: loading.effects['global/fetchNotices'],
-  notices: global.notices,
+  num: global.num,
+  //  eventlist: global.eventlist,
+  //  notices: global.notices,
+  // fetchingMoreNotices: loading.effects['global/fetchMoreNotices'],
+  // fetchingNotices: loading.effects['global/fetchNotices'],
+  loading: loading.models.global,
 }))(GlobalHeaderRight);

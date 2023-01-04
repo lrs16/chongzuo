@@ -1,10 +1,11 @@
-import { Icon, Tooltip } from 'antd';
+// import { Icon, Tooltip } from 'antd';
 import React from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi-plugin-react/locale';
 import Avatar from './AvatarDropdown';
 import HeaderSearch from '../HeaderSearch';
-import SelectLang from '../SelectLang';
+// import SelectLang from '../SelectLang';
+import Notice from './NoticeIconView';
 import styles from './index.less';
 
 const GlobalHeaderRight = props => {
@@ -34,13 +35,11 @@ const GlobalHeaderRight = props => {
             id: 'component.globalHeader.search.example3',
           }),
         ]}
-        onSearch={value => {
-          console.log('input', value);
-        }}
-        onPressEnter={value => {
-          console.log('enter', value);
-        }}
+        onSearch={value => {}}
+        onPressEnter={value => {}}
       />
+      {/* 帮助
+      
       <Tooltip
         title={formatMessage({
           id: 'component.globalHeader.help',
@@ -54,9 +53,10 @@ const GlobalHeaderRight = props => {
         >
           <Icon type="question-circle-o" />
         </a>
-      </Tooltip>
+      </Tooltip> */}
+      <Notice pathname={props.location.pathname} />
       <Avatar />
-      <SelectLang className={styles.action} />
+      {/* <SelectLang className={styles.action} /> */}
     </div>
   );
 };

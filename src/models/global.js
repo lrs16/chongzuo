@@ -1,11 +1,31 @@
-import { queryNotices } from '@/services/user';
+import { queryNotices, queryAllEvent, queryNoticeCount, queryOverTimeNum } from '@/services/user';
+
 const GlobalModel = {
   namespace: 'global',
   state: {
     collapsed: false,
     notices: [],
+    num: 0,
+    eventlist: [],
+    eventtotal: '',
   },
   effects: {
+    *fetchCount(_, { call }) {
+      return yield call(queryNoticeCount);
+    },
+
+    *fetchovertimenum(_, { call }) {
+      return yield call(queryOverTimeNum);
+    },
+
+    *fetchallevent({ payload }, { call, put }) {
+      const list = yield call(queryAllEvent, { ...payload, itemWorkType: payload.itemWorkType === 'all' ? '' : payload.itemWorkType });
+      yield put({
+        type: 'saveeventlist',
+        payload: list,
+      });
+    },
+
     *fetchNotices(_, { call, put, select }) {
       const data = yield call(queryNotices);
       yield put({
@@ -68,6 +88,18 @@ const GlobalModel = {
     },
   },
   reducers: {
+    savenum(state, action) {
+      return {
+        ...state,
+        num: action.payload,
+      };
+    },
+    saveeventlist(state, action) {
+      return {
+        ...state,
+        eventlist: action.payload.data,
+      };
+    },
     changeLayoutCollapsed(
       state = {
         notices: [],

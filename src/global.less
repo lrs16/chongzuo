@@ -6,6 +6,13 @@ body,
   height: 100%;
 }
 
+body {
+  color: rgba(0, 0, 0, 0.85);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .colorWeak {
   filter: invert(80%);
 }
@@ -14,15 +21,309 @@ body,
   min-height: 100vh;
 }
 
+.ant-layout-header {
+  background: #0366c3;
+}
+
+.ant-menu-dark,
+.ant-menu-dark .ant-menu-sub {
+  background: #0366c3;
+}
+
+.ant-pro-top-nav-header-logo {
+  min-width: 220px;
+  margin-right: 24px;
+}
+
+.ant-pro-top-nav-header-logo h1 {
+  margin: 0 0 0 6px;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.ant-layout .ant-layout {
+  position: 'fixed';
+  min-height: calc(100vh - 257px);
+}
+
+.ant-input[disabled] {
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.ant-table-thead>tr>th,
+.ant-table-tbody>tr>td {
+  padding: 12px 12px;
+}
+
+.noexplain .ant-form-explain {
+  display: none;
+}
+.ant-form-explain,
+.ant-form-extra {
+  min-height: 16px;
+}
+
+.noexplain .ant-form-item {
+  margin-bottom: 2px
+}
+
+.noregpad .ant-card-body {
+  padding: 8px 16px;
+  zoom: 1;
+}
+.ant-form-item {
+  margin-bottom: 18px
+}
+.ant-form-item-with-help {
+  margin-bottom: 0;
+}
+
+.ant-form-item-label>label {
+  color: rgba(0, 0, 0, 85);
+}
+
+.ant-table-thead>tr>th {
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.ant-table {
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.ant-btn-dashed {
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.ant-menu {
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.ant-tabs {
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.ant-card-head .ant-tabs {
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.ant-radio-button-wrapper {
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.ant-pagination {
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.ant-breadcrumb {
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.ant-breadcrumb>span:last-child {
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.ant-breadcrumb>span:last-child a {
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.ant-menu-dark .ant-menu-item,
+.ant-menu-dark .ant-menu-item-group-title,
+.ant-menu-dark .ant-menu-item>a {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.ant-descriptions-item-content {
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.ant-steps-item-process>.ant-steps-item-container>.ant-steps-item-content>.ant-steps-item-description {
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.ant-collapse-borderless > .ant-collapse-item > .ant-collapse-content > .ant-collapse-content-box{
+  padding:8px 16px;
+}
+
+.ant-menu-item>a {
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.ant-radio-disabled+span {
+  color: rgba(0, 0, 0, 0.85);
+  cursor: not-allowed;
+}
+
+.ant-tabs-bar {
+  margin: 0 0 8px 0;
+}
+
+.ant-list {
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.ant-input-group {
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.ant-select-disabled {
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab-disabled {
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.ant-checkbox-disabled+span {
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.ant-form-item>.ant-col-sm-2 {
+  margin-left: -4px;
+}
+
+.ant-cascader-menu {
+  height: 300px;
+}
+
+.w-e-text table td,
+.w-e-text table th {
+  height: 40px;
+}
+
+.ant-form {
+  color: rgba(0, 0, 0, 1);
+}
+
+.w-e-text-container {
+  min-height: calc(100vh - 550px);
+}
+
+.ant-statistic-content-value-int {
+  color: #0366c3;
+  font-weight: 500;
+  font-size: 30px;
+}
+
+.ant-page-header {
+  padding: 8px 16px 12px 16px;
+}
+
+.ant-page-header-footer {
+  margin-top: 0;
+}
+
+.ant-pro-page-header-wrap .ant-page-header.has-breadcrumb {
+  padding-top: 0;
+}
+
+.ant-pro-page-header-wrap .ant-pro-page-header-wrap-children-content {
+  margin: 16px 12px 0
+}
+
+.ant-breadcrumb+.ant-page-header-heading {
+  margin-top: 0;
+}
+
+.ant-modal {
+  color: rgba(0, 0, 0, 1);
+}
+.ant-checkbox-group {
+  color: rgba(0, 0, 0, 1);
+}
+.ant-checkbox-wrapper {
+  color: rgba(0, 0, 0, 1);
+}
+.ant-modal-body #user .ant-checkbox-group .ant-checkbox-wrapper {
+  width: 120px;
+}
+.ant-form-item .ant-col-sm-24 {
+  line-height: 30px;
+}
+.ant-select-auto-complete.ant-select .ant-input[disabled] {
+  color: rgba(0, 0, 0, 0.65);
+}
+.ant-select-disabled .ant-select-selection--multiple .ant-select-selection__choice {
+  color: rgba(0, 0, 0, 0.65);
+}
+// label换行
+// .ant-form-item-label label{
+//   padding-right: 16px;
+//   word-wrap:break-word;
+//   ::before{
+//     content: none !important;
+//   }
+// }
+.ant-steps-dot .ant-steps-item-finish .ant-steps-item-icon {
+  border: none;
+}
+
+.ant-steps-dot .ant-steps-item-process .ant-steps-item-icon {
+  background-color: #fff;
+}
+
+.ant-steps-item-finish .ant-steps-item-icon {
+  background-color: #C1EB08; // 这个配色绝了
+  border: 2px solid #10C510;
+}
+.ant-steps-item-finish .ant-steps-item-icon>.ant-steps-icon {
+  color: #10C510;
+  //  background-color: #C1EB08;
+}
+.ant-steps-item-finish>.ant-steps-item-container>.ant-steps-item-content>.ant-steps-item-title::after {
+  background-color: #10C510;
+}
+.ant-steps-item-process .ant-steps-item-icon {
+  background-color: #10C510;
+}
+.ant-steps-item-custom.ant-steps-item-process .ant-steps-item-icon>.ant-steps-icon {
+  color: #10C510;
+
+  .anticon-loading {
+    color: #0124c5;
+  }
+}
+
+.ant-steps:not(.ant-steps-vertical) .ant-steps-item-custom .ant-steps-item-icon {
+  width: auto;
+  background-color: #C1EB08;
+  border-radius: 50%;
+}
+
+// 日期选择禁选年
+.ant-calendar-year-panel-cell-disabled .ant-calendar-year-panel-year,.ant-calendar-year-panel-cell-disabled .ant-calendar-year-panel-year:hover{
+  color: rgba(0, 0, 0, 0.25);
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+
+// 禁用状态文本域鼠标指针形态
+.collapseArea{
+  position: relative;
+}
+.collapseArea .ant-input[disabled]{
+  cursor: pointer;
+}
+
+.ant-tabs .ant-tabs-large-bar .ant-tabs-tab{
+  padding: 12px 16px;
+}
+// .ant-steps-item-process .ant-steps-item-icon{
+//   background-color: #52c41a;
+// }
+// .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title::after{
+//   background-color: #52c41a;
+// }
+// .ant-steps-item-wait .ant-steps-item-icon > .ant-steps-icon{
+//   color: #52c41a; 
+// }
+// .ant-steps-item-wait > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-title{
+//   color: rgba(0, 0, 0, 0.85);
+// }
 canvas {
   display: block;
 }
 
-body {
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+
 
 ul,
 ol {
@@ -33,15 +334,117 @@ ol {
   .ant-table {
     width: 100%;
     overflow-x: auto;
-    &-thead > tr,
-    &-tbody > tr {
-      > th,
-      > td {
+
+    &-thead>tr,
+    &-tbody>tr {
+
+      >th,
+      >td {
         white-space: pre;
-        > span {
+
+        >span {
           display: block;
         }
       }
     }
   }
+}
+
+.toptabs {
+  :global {
+    .ant-tabs-nav-scroll {
+      margin: 0 -24px;
+    }
+  }
+}
+
+// 工单详情
+.ordercollapse .ant-collapse > .ant-collapse-item > .ant-collapse-header{
+  font-weight: 900;
+  font-size: 1.1em;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.ordercollapse .ant-collapse{
+  border-radius: 0;
+}
+
+.ordercollapse  .ant-collapse-borderless > .ant-collapse-item{
+  margin-top: 4px;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+}
+
+.ordercollapse  .ant-collapse-borderless{
+  background: none;
+}
+
+.ordercollapse .ant-steps-horizontal:not(.ant-steps-label-vertical) .ant-steps-item-description{
+  max-width: 210px;
+  text-align: left;
+}
+
+.ordercollapse .ant-steps-horizontal:not(.ant-steps-label-vertical) .ant-steps-item{
+  min-width: 250px;
+}
+
+.ordercollapse .ant-descriptions-item-label{
+  vertical-align: top;
+}
+
+.ordercollapse .ant-descriptions-row > td{
+  width: 33%;
+}
+
+.ordercollapse .ant-descriptions-bordered.ant-descriptions-small .ant-descriptions-item-label{
+  padding: 8px 24px;
+}
+
+.ordercollapse th {
+  display: table-cell;
+  padding-left: 30px;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.ordercollapse tr {
+  vertical-align: middle;
+}
+// 工单流程
+.stepDescription {
+  position: relative;
+  left: 0;
+  padding-top: 8px;
+  font-size: 14px;
+  text-align: left;
+
+  >div {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+@media screen and (max-width: @screen-sm) {
+  .stepDescription {
+    left: 8px;
+  }
+}
+
+.processstept .ant-steps-dot .ant-steps-item-content {
+  width: 500px;
+}
+
+// 事件管理推荐标签
+.margin_r button {
+  margin-right: 8px;
+}
+.textSecondary {
+  color: @text-color-secondary;
+}
+
+.blobimg img {
+  width: calc(100vw - 400px);
+}
+
+.disableuser span {
+  padding-right: 16px;
 }

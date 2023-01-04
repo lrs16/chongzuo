@@ -7,7 +7,7 @@ This project is initialized with [Ant Design Pro](https://pro.ant.design). Follo
 Install `node_modules`:
 
 ```bash
-npm install
+cnpm install
 ```
 
 or
@@ -15,6 +15,8 @@ or
 ```bash
 yarn
 ```
+
+##20200519 引入 bizcharts 图表 cnpm install bizcharts --save 引入 G2 cnpm install @antv/g2 --save 使用 antdproV2 中图表 cnpm install ant-design-pro --save ,引入 antd-cron cnpm install bizcharts --save
 
 ## Provided Scripts
 

@@ -2,16 +2,16 @@ export default {
   navTheme: 'dark',
   // 拂晓蓝
   primaryColor: 'daybreak',
-  layout: 'topmenu',　// topmenu or sidemenu
+  // layout: 'topmenu',　 // topmenu or sidemenu
   contentWidth: 'Fluid',
-  fixedHeader: false,
+  // fixedHeader: true,
   autoHideHeader: false,
-  fixSiderbar: false,
+  // fixSiderbar: true,
   colorWeak: false,
   menu: {
-    locale: true,
+    locale: false,
   },
-  title: '运维监控平台',
+  title: '计量主站系统辅助运维模块',
   pwa: false,
   iconfontUrl: '',
 };

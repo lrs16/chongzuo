@@ -44,6 +44,7 @@ const SelectLang = props => {
           title={formatMessage({
             id: 'navBar.lang',
           })}
+          style={{ color: '#bbb' }}
         />
       </span>
     </HeaderDropdown>

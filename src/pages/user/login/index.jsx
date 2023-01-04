@@ -1,10 +1,11 @@
 import { Alert, Checkbox, Icon } from 'antd';
 import { FormattedMessage, formatMessage } from 'umi-plugin-react/locale';
 import React, { Component } from 'react';
-import Link from 'umi/link';
+// import Link from 'umi/link';
 import { connect } from 'dva';
 import LoginComponents from './components/Login';
-import styles from './style.less';
+import styles from '../style.less';
+
 const { Tab, UserName, Password, Mobile, Captcha, Submit } = LoginComponents;
 
 @connect(({ login, loading }) => ({
@@ -13,31 +14,50 @@ const { Tab, UserName, Password, Mobile, Captcha, Submit } = LoginComponents;
 }))
 class Login extends Component {
   loginForm = undefined;
+
   state = {
     type: 'account',
-    autoLogin: true,
+    Authorization: 'Basic d2ViQXBwX3JlYWN0',
+    itsmuser: false,
   };
-  changeAutoLogin = e => {
-    this.setState({
-      autoLogin: e.target.checked,
-    });
-  };
-  handleSubmit = (err, values) => {
-    const { type } = this.state;
 
+  handleSubmit = (err, values) => {
+    const { Authorization, itsmuser } = this.state;
     if (!err) {
       const { dispatch } = this.props;
-      dispatch({
-        type: 'login/login',
-        payload: { ...values, type },
-      });
+      if (itsmuser === false) {
+        dispatch({
+          type: 'login/login',
+          payload: {
+            ...values,
+            Authorization,
+          },
+        });
+      }
+      if (itsmuser === true) {
+        const { logincode } = values;
+        dispatch({
+          type: 'login/login',
+          payload: {
+            ...values,
+            logincode: `${logincode}_itsm`,
+            Authorization,
+          },
+        });
+      }
     }
   };
+
+  onChangeCheck = e => {
+    this.setState({ itsmuser: e.target.checked });
+  };
+
   onTabChange = type => {
     this.setState({
       type,
     });
   };
+
   onGetCaptcha = () =>
     new Promise((resolve, reject) => {
       if (!this.loginForm) {
@@ -62,6 +82,7 @@ class Login extends Component {
         }
       });
     });
+
   renderMessage = content => (
     <Alert
       style={{
@@ -75,8 +96,8 @@ class Login extends Component {
 
   render() {
     const { userLogin, submitting } = this.props;
-    const { status, type: loginType } = userLogin;
-    const { type, autoLogin } = this.state;
+    const { status, msg, type: loginType } = userLogin;
+    const { type } = this.state;
     return (
       <div className={styles.main}>
         <LoginComponents
@@ -93,7 +114,7 @@ class Login extends Component {
               id: 'user-login.login.tab-login-credentials',
             })}
           >
-            {status === 'error' &&
+            {status !== -1 &&
               loginType === 'account' &&
               !submitting &&
               this.renderMessage(
@@ -101,11 +122,14 @@ class Login extends Component {
                   id: 'user-login.login.message-invalid-credentials',
                 }),
               )}
+            {/* <Checkbox onChange={this.onChangeCheck} style={{ marginBottom: 20, color: '#1890ff' }}>
+              ITSM用户
+            </Checkbox> */}
             <UserName
-              name="userName"
+              name="logincode"
               placeholder={`${formatMessage({
                 id: 'user-login.login.userName',
-              })}: admin or user`}
+              })}`}
               rules={[
                 {
                   required: true,
@@ -119,7 +143,7 @@ class Login extends Component {
               name="password"
               placeholder={`${formatMessage({
                 id: 'user-login.login.password',
-              })}: ant.design`}
+              })}`}
               rules={[
                 {
                   required: true,
@@ -143,7 +167,7 @@ class Login extends Component {
               id: 'user-login.login.tab-login-mobile',
             })}
           >
-            {status === 'error' &&
+            {status !== -1 &&
               loginType === 'mobile' &&
               !submitting &&
               this.renderMessage(
@@ -195,22 +219,23 @@ class Login extends Component {
             />
           </Tab>
           <div>
-            <Checkbox checked={autoLogin} onChange={this.changeAutoLogin}>
+            {/* <Checkbox checked={autoLogin} onChange={this.changeAutoLogin}>
               <FormattedMessage id="user-login.login.remember-me" />
-            </Checkbox>
-            <a
+            </Checkbox> */}
+            {status === -1 && <Alert message={msg} type="error" showIcon />}
+            {/* <a
               style={{
                 float: 'right',
               }}
               href=""
             >
               <FormattedMessage id="user-login.login.forgot-password" />
-            </a>
+            </a> */}
           </div>
           <Submit loading={submitting}>
             <FormattedMessage id="user-login.login.login" />
           </Submit>
-          <div className={styles.other}>
+          {/* <div className={styles.other}>
             <FormattedMessage id="user-login.login.sign-in-with" />
             <Icon type="alipay-circle" className={styles.icon} theme="outlined" />
             <Icon type="taobao-circle" className={styles.icon} theme="outlined" />
@@ -218,7 +243,7 @@ class Login extends Component {
             <Link className={styles.register} to="/user/register">
               <FormattedMessage id="user-login.login.signup" />
             </Link>
-          </div>
+          </div> */}
         </LoginComponents>
       </div>
     );
